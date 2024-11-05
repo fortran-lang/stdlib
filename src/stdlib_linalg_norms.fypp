@@ -24,6 +24,12 @@ submodule(stdlib_linalg) stdlib_linalg_norms
      integer(ilp), parameter :: NORM_INF       = +huge(0_ilp) ! infinity norm 
      integer(ilp), parameter :: NORM_POW_LAST  = NORM_INF - 1_ilp
      integer(ilp), parameter :: NORM_MINUSINF  = -huge(0_ilp)
+          
+     !> Wrappers to LAPACK *LANGE matrix norm flags
+     character, parameter :: LANGE_NORM_MAT = 'M' ! maxval(sum(abs(a)))   ! over whole matrix: unused
+     character, parameter :: LANGE_NORM_ONE = '1' ! maxval(sum(abs(a),1)) ! over columns
+     character, parameter :: LANGE_NORM_INF = 'I' ! maxval(sum(abs(a),2)) ! over rows
+     character, parameter :: LANGE_NORM_TWO = 'E' ! "Euclidean" or "Frobenius"     
      
      interface parse_norm_type
         module procedure parse_norm_type_integer
@@ -99,6 +105,27 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         end select    
         
      end subroutine parse_norm_type_character
+
+     !> From a user norm request, generate a *LANGE task command
+     pure subroutine lange_task_request(norm_type,lange_task,err)
+        !> Parsed matrix norm type
+        integer(ilp), intent(in) :: norm_type
+        !> LANGE task
+        character, intent(out) :: lange_task
+        !> Error flag
+        type(linalg_state_type), intent(inout) :: err
+        
+        select case (norm_type)
+           case (NORM_INF)
+              lange_task = LANGE_NORM_INF 
+           case (NORM_ONE)
+              lange_task = LANGE_NORM_ONE
+           case (NORM_TWO)
+              lange_task = LANGE_NORM_TWO
+           case default 
+              err = linalg_state_type(this,LINALG_VALUE_ERROR,'Order ',norm_type,' is not a valid matrix norm input.')
+        end select
+     end subroutine lange_task_request
 
     #:for rk,rt,ri in ALL_KINDS_TYPES
     
