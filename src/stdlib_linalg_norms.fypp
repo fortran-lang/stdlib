@@ -8,8 +8,8 @@
 ! Vector norms
 submodule(stdlib_linalg) stdlib_linalg_norms
      use stdlib_linalg_constants
-     use stdlib_linalg_blas, only: nrm2
-     use stdlib_linalg_lapack, only: lange
+     use stdlib_linalg_blas
+     use stdlib_linalg_lapack
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR     
      use iso_c_binding, only: c_intptr_t,c_char,c_loc
