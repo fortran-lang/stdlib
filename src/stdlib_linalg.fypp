@@ -32,6 +32,7 @@ module stdlib_linalg
   public :: lstsq
   public :: lstsq_space
   public :: norm
+  public :: mnorm
   public :: get_norm
   public :: solve
   public :: solve_lu  
@@ -1319,6 +1320,40 @@ module stdlib_linalg
      #:endfor
      #:endfor
   end interface get_norm
+
+  !> Matrix norm: function interface
+  interface mnorm
+      #:for rk,rt,ri in RC_KINDS_TYPES
+      #:for it,ii in NORM_INPUT_OPTIONS   
+      module function matrix_norm_${ii}$_${ri}$(a, order, err) result(nrm)
+        !> Input matrix a(m,n)
+        ${rt}$, intent(in), target :: a(:,:)
+        !> Norm of the matrix.        
+        real(${rk}$) :: nrm
+        !> Order of the matrix norm being computed.
+        ${it}$, intent(in) :: order
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), intent(out), optional :: err      
+      end function matrix_norm_${ii}$_${ri}$
+      
+      #:for rank in range(3, MAXRANK + 1)
+      !> N-D array with optional `dim` specifier
+      module function matrix_norm_${rank}$D_to_${rank-2}$D_${ii}$_${ri}$(a, order, dim, err) result(nrm)
+          !> Input matrix a(m,n)
+          ${rt}$, intent(in), contiguous, target :: a${ranksuffix(rank)}$
+          !> Norm of the matrix.        
+          real(${rk}$), allocatable :: nrm${ranksuffix(rank-2)}$
+          !> Order of the matrix norm being computed.
+          ${it}$, intent(in) :: order
+          !> [optional] dimensions of the sub-matrices the norms should be evaluated at (default = [1,2])
+          integer(ilp), optional, intent(in) :: dim(2)
+          !> [optional] state return flag. On error if not requested, the code will stop
+          type(linalg_state_type), intent(out), optional :: err        
+      end function matrix_norm_${rank}$D_to_${rank-2}$D_${ii}$_${ri}$
+      #:endfor            
+      #:endfor
+      #:endfor            
+  end interface mnorm
 
 contains
 
