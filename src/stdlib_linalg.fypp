@@ -1321,10 +1321,58 @@ module stdlib_linalg
      #:endfor
   end interface get_norm
 
-  !> Matrix norm: function interface
+  !> Matrix norms: function interface
   interface mnorm
+     !! version: experimental 
+     !!
+     !! Computes the matrix norm of a generic-rank array \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#mnorm-computes-the-matrix-norm-of-a-generic-rank-array))
+     !! 
+     !!### Summary 
+     !! Return one of several matrix norm metrics of a `real` or `complex` input array \( A \), 
+     !! that can have rank 2 or higher. For rank-2 arrays, the matrix norm is returned.
+     !! If rank>2 and the optional input dimensions `dim` are specified, 
+     !! a rank `n-2` array is returned with dimensions `dim(1),dim(2)` collapsed, containing all 
+     !! matrix norms evaluated over the specified dimensions only.
+     !! 
+     !!### Description
+     !! 
+     !! This interface provides methods for computing the matrix norm(s) of an array.  
+     !! Supported data types include `real` and `complex`. 
+     !! Input arrays must have rank >= 2.
+     !!
+     !! Norm type input is mandatory, and it is provided via the `order` argument. 
+     !! This can be provided as either an `integer` value or a `character` string. 
+     !! Allowed metrics are: 
+     !! - 1-norm: `order` = 1 or '1'    
+     !! - 2-norm/Euclidean: `order` = 2 or '2' or 'Euclidean'
+     !! - p-norm: `order` >= 3 
+     !! - Infinity norm: `order` = huge(0) or 'Inf'
+     !! - Minus-infinity norm: `order` = '-Inf'
+     !! 
+     !! If an invalid norm type is provided, the routine defaults to 1-norm and returns an error state.
+     !!
+     !!### Example
+     !!
+     !!```fortran
+     !!    real(sp) :: a(3,3), na
+     !!    real(sp) :: b(3,3,4), nb(4)  ! Array of 4 3x3 matrices
+     !!    a = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
+     !!    
+     !!    ! 2-norm/Euclidean norm of single matrix
+     !!    na = mnorm(a, 'Euclidean')
+     !!   
+     !!    ! 1-norm of each 3x3 matrix in b
+     !!    nb = mnorm(b, 1, dim=[1,2])
+     !!     
+     !!    ! p-norm with p=3
+     !!    na = mnorm(a, 3)
+     !!```     
+     !!
       #:for rk,rt,ri in RC_KINDS_TYPES
       #:for it,ii in NORM_INPUT_OPTIONS   
+      
+      !> Matrix norms: ${rt}$ rank-2 arrays
       module function matrix_norm_${ii}$_${ri}$(a, order, err) result(nrm)
         !> Input matrix a(m,n)
         ${rt}$, intent(in), target :: a(:,:)
@@ -1336,8 +1384,8 @@ module stdlib_linalg
         type(linalg_state_type), intent(out), optional :: err      
       end function matrix_norm_${ii}$_${ri}$
       
+      !> Matrix norms: ${rt}$ higher rank arrays
       #:for rank in range(3, MAXRANK + 1)
-      !> N-D array with optional `dim` specifier
       module function matrix_norm_${rank}$D_to_${rank-2}$D_${ii}$_${ri}$(a, order, dim, err) result(nrm)
           !> Input matrix a(m,n)
           ${rt}$, intent(in), contiguous, target :: a${ranksuffix(rank)}$
