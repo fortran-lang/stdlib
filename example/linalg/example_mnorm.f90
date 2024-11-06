@@ -20,5 +20,7 @@ program example_mnorm
     
     ! Compute infinity norm of each 3x3 matrix in b
     nb = mnorm(b, 'inf', dim=[1,2])
+
+    ! 18.0000000       36.0000000       54.0000000       72.0000000
     print *, "Infinity norms of matrices in b:", nb
 end program example_mnorm
