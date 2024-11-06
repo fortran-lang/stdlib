@@ -22,7 +22,6 @@ module test_linalg_mnorm
         #:for rank in range(3, MAXRANK)
         tests = [tests,new_unittest("test_mnorm_${ri}$_${rank}$d",test_mnorm_${ri}$_${rank}$d)]
         #:endfor
-        #:endfor
         
     end subroutine test_matrix_norms
     
@@ -105,7 +104,6 @@ module test_linalg_mnorm
         
     end subroutine test_mnorm_${ri}$_${rank}$d
     #:endfor    
-    
     
     #:endfor
 
