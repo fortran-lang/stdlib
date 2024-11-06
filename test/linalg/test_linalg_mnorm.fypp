@@ -49,7 +49,7 @@ module test_linalg_mnorm
         if (allocated(error)) return
 
         ! 2-norm (Frobenius norm)
-        call check(error, abs(mnorm(A, '2', err) - sqrt(sum(A**2))) < tol*mnorm(A, '2', err), &
+        call check(error, abs(mnorm(A, err=err) - sqrt(sum(A**2))) < tol*mnorm(A, err=err), &
                    'Matrix Frobenius norm does not match expected value')
         if (allocated(error)) return
 
@@ -65,8 +65,8 @@ module test_linalg_mnorm
     subroutine test_mnorm_${ri}$_${rank}$d(error)
         type(error_type), allocatable, intent(out) :: error
 
-        integer(ilp) :: i,j,k,l,dim1,dim2,dim(2),dim_sizes(2),order,ptr(${rank}$)
-        integer(ilp), parameter :: orders(*) = [1_ilp,2_ilp,huge(0_ilp)]
+        integer(ilp) :: i,j,k,l,dim1,dim2,dim(2),dim_sizes(2),ptr(${rank}$)
+        character(3), parameter :: orders(*) = ['1  ','fro','inf']
         integer(ilp), parameter :: ndim = ${rank}$
         integer(ilp), parameter :: n    = 2_ilp**ndim
         integer(ilp), parameter :: dims(*) = [(dim1, dim1=1,ndim)]
@@ -74,6 +74,7 @@ module test_linalg_mnorm
         real(${rk}$) :: one_nrm
         real(${rk}$), allocatable :: bnrm${ranksuffix(rank-2)}$
         ${rt}$, allocatable :: a(:), b${ranksuffix(rank)}$, one_mat(:,:)
+        character(:), allocatable :: order
         
         character(64) :: msg
         
@@ -86,7 +87,7 @@ module test_linalg_mnorm
         
         ! Test norm as collapsed around dimensions
         do k = 1, size(orders)
-            order = orders(k)
+            order = trim(orders(k))
             do dim1 = 1, ndim
                 do dim2 = dim1+1, ndim
                                     
@@ -97,7 +98,7 @@ module test_linalg_mnorm
                     bnrm = mnorm(b,order,dim)
                                    
                     ! Assert size
-                    write(msg,"('dim=[',i0,',',i0,'] order=',i0,' ${rk}$ norm returned wrong shape')") dim, order
+                    write(msg,"('dim=[',i0,',',i0,'] order=',a,' ${rk}$ norm returned wrong shape')") dim, order
                     call check(error,all(shape(bnrm)==pack(shape(b),dims/=dim1 .and. dims/=dim2) ), trim(msg))
                     if (allocated(error)) return    
                     
@@ -117,7 +118,7 @@ module test_linalg_mnorm
                        end do
                        one_nrm = mnorm(one_mat,order)
                     
-                       write(msg,"('dim=[',i0,',',i0,'] order=',i0,' ${rk}$ ',i0,'-th norm is wrong')") dim, order, l
+                       write(msg,"('dim=[',i0,',',i0,'] order=',a,' ${rk}$ ',i0,'-th norm is wrong')") dim, order, l
                        call check(error, abs(one_nrm-bnrm(${fixedranksuffix(rank-2,'l')}$))<tol*one_nrm, trim(msg))
                        if (allocated(error)) return    
                        deallocate(one_mat) 

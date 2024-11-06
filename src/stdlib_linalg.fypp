@@ -1333,7 +1333,8 @@ module stdlib_linalg
      !! that can have rank 2 or higher. For rank-2 arrays, the matrix norm is returned.
      !! If rank>2 and the optional input dimensions `dim` are specified, 
      !! a rank `n-2` array is returned with dimensions `dim(1),dim(2)` collapsed, containing all 
-     !! matrix norms evaluated over the specified dimensions only.
+     !! matrix norms evaluated over the specified dimensions only. `dim==[1,2]` are assumed as default
+     !! dimensions if not specified.
      !! 
      !!### Description
      !! 
@@ -1345,12 +1346,10 @@ module stdlib_linalg
      !! This can be provided as either an `integer` value or a `character` string. 
      !! Allowed metrics are: 
      !! - 1-norm: `order` = 1 or '1'    
-     !! - 2-norm/Euclidean: `order` = 2 or '2' or 'Euclidean'
-     !! - p-norm: `order` >= 3 
+     !! - Euclidean/Frobenius: `order` = 'Euclidean','Frobenius', or argument not specified
      !! - Infinity norm: `order` = huge(0) or 'Inf'
-     !! - Minus-infinity norm: `order` = '-Inf'
      !! 
-     !! If an invalid norm type is provided, the routine defaults to 1-norm and returns an error state.
+     !! If an invalid norm type is provided, the routine returns an error state.
      !!
      !!### Example
      !!
@@ -1359,14 +1358,15 @@ module stdlib_linalg
      !!    real(sp) :: b(3,3,4), nb(4)  ! Array of 4 3x3 matrices
      !!    a = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
      !!    
-     !!    ! 2-norm/Euclidean norm of single matrix
+     !!    ! Euclidean/Frobenius norm of single matrix
+     !!    na = mnorm(a)
      !!    na = mnorm(a, 'Euclidean')
      !!   
      !!    ! 1-norm of each 3x3 matrix in b
      !!    nb = mnorm(b, 1, dim=[1,2])
      !!     
-     !!    ! p-norm with p=3
-     !!    na = mnorm(a, 3)
+     !!    ! Infinity-norm 
+     !!    na = mnorm(b, 'inf', dim=[3,2])
      !!```     
      !!
       #:for rk,rt,ri in RC_KINDS_TYPES
@@ -1379,7 +1379,7 @@ module stdlib_linalg
         !> Norm of the matrix.        
         real(${rk}$) :: nrm
         !> Order of the matrix norm being computed.
-        ${it}$, intent(in) :: order
+        ${it}$, #{if 'integer' in it}#optional, #{endif}#intent(in) :: order
         !> [optional] state return flag. On error if not requested, the code will stop
         type(linalg_state_type), intent(out), optional :: err      
       end function matrix_norm_${ii}$_${ri}$
@@ -1392,7 +1392,7 @@ module stdlib_linalg
           !> Norm of the matrix.        
           real(${rk}$), allocatable :: nrm${ranksuffix(rank-2)}$
           !> Order of the matrix norm being computed.
-          ${it}$, intent(in) :: order
+          ${it}$, #{if 'integer' in it}#optional, #{endif}#intent(in) :: order
           !> [optional] dimensions of the sub-matrices the norms should be evaluated at (default = [1,2])
           integer(ilp), optional, intent(in) :: dim(2)
           !> [optional] state return flag. On error if not requested, the code will stop

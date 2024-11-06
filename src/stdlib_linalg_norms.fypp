@@ -29,12 +29,17 @@ submodule(stdlib_linalg) stdlib_linalg_norms
      character, parameter :: LANGE_NORM_MAT = 'M' ! maxval(sum(abs(a)))   ! over whole matrix: unused
      character, parameter :: LANGE_NORM_ONE = '1' ! maxval(sum(abs(a),1)) ! over columns
      character, parameter :: LANGE_NORM_INF = 'I' ! maxval(sum(abs(a),2)) ! over rows
-     character, parameter :: LANGE_NORM_TWO = 'E' ! "Euclidean" or "Frobenius"     
+     character, parameter :: LANGE_NORM_FRO = 'E' ! sqrt(sum(a**2))       ! "Euclidean" or "Frobenius"     
      
      interface parse_norm_type
         module procedure parse_norm_type_integer
         module procedure parse_norm_type_character
      end interface parse_norm_type
+     
+     interface lange_task_request
+        module procedure lange_task_request_integer
+        module procedure lange_task_request_character
+     end interface lange_task_request
      
      
      interface stride_1d
@@ -107,25 +112,61 @@ submodule(stdlib_linalg) stdlib_linalg_norms
      end subroutine parse_norm_type_character
 
      !> From a user norm request, generate a *LANGE task command
-     pure subroutine lange_task_request(norm_type,lange_task,err)
+     pure subroutine lange_task_request_integer(order,lange_task,err)
         !> Parsed matrix norm type
-        integer(ilp), intent(in) :: norm_type
+        integer(ilp), optional, intent(in) :: order
         !> LANGE task
         character, intent(out) :: lange_task
         !> Error flag
         type(linalg_state_type), intent(inout) :: err
         
-        select case (norm_type)
-           case (NORM_INF)
-              lange_task = LANGE_NORM_INF 
-           case (NORM_ONE)
+        if (present(order)) then 
+        
+            select case (order)
+               case (NORM_INF)
+                  lange_task = LANGE_NORM_INF 
+               case (NORM_ONE)
+                  lange_task = LANGE_NORM_ONE
+               case default 
+                  err = linalg_state_type(this,LINALG_VALUE_ERROR,'Integer order ',order,' is not a valid matrix norm input.')
+            end select
+            
+        else
+            
+            ! No user input: Frobenius norm
+            lange_task = LANGE_NORM_FRO
+            
+        endif
+     end subroutine lange_task_request_integer
+
+     pure subroutine lange_task_request_character(order,lange_task,err)
+        !> User input value
+        character(len=*), intent(in) :: order
+        !> Return value: norm type
+        character, intent(out) :: lange_task
+        !> State return flag
+        type(linalg_state_type), intent(out) :: err
+        
+        integer(ilp) :: int_order,read_err
+        
+        select case (order)
+           case ('inf','Inf','INF')
+              lange_task = LANGE_NORM_INF
+           case ('Euclidean','euclidean','EUCLIDEAN','Frobenius','frobenius','FROBENIUS','Fro','fro','frob')
+              lange_task = LANGE_NORM_FRO
+           case default
+            
+              ! Check if this input can be read as an integer
+              read(order,*,iostat=read_err) int_order
+              if (read_err/=0 .or. int_order/=1) then 
+                 ! Cannot read as an integer                 
+                 err = linalg_state_type(this,LINALG_ERROR,'Matrix norm input',order,' is not recognized.')                 
+              endif
               lange_task = LANGE_NORM_ONE
-           case (NORM_TWO)
-              lange_task = LANGE_NORM_TWO
-           case default 
-              err = linalg_state_type(this,LINALG_VALUE_ERROR,'Order ',norm_type,' is not a valid matrix norm input.')
-        end select
-     end subroutine lange_task_request
+
+        end select    
+        
+     end subroutine lange_task_request_character
 
     #:for rk,rt,ri in ALL_KINDS_TYPES
     
@@ -399,12 +440,12 @@ ${loop_variables_end(rank-1," "*12)}$
         !> Norm of the matrix.        
         real(${rk}$) :: nrm
         !> Order of the matrix norm being computed.
-        ${it}$, intent(in) :: order
+        ${it}$, #{if 'integer' in it}#optional, #{endif}#intent(in) :: order
         !> [optional] state return flag. On error if not requested, the code will stop
         type(linalg_state_type), intent(out), optional :: err           
         
         type(linalg_state_type) :: err_
-        integer(ilp) :: m,n,norm_request
+        integer(ilp) :: m,n
         character :: lange_task
         real(${rk}$), target :: work1(1)
         real(${rk}$), pointer :: work(:)        
@@ -422,8 +463,7 @@ ${loop_variables_end(rank-1," "*12)}$
         end if
 
         ! Check norm request: user + *LANGE support
-        call parse_norm_type(order,norm_request,err_)
-        call lange_task_request(norm_request,lange_task,err_)
+        call lange_task_request(order,lange_task,err_)
         if (err_%error()) then 
             call linalg_error_handling(err_,err)
             return
@@ -451,7 +491,7 @@ ${loop_variables_end(rank-1," "*12)}$
         !> Norm of the matrix.        
         real(${rk}$), allocatable :: nrm${ranksuffix(rank-2)}$
         !> Order of the matrix norm being computed.
-        ${it}$, intent(in) :: order
+        ${it}$, #{if 'integer' in it}#optional, #{endif}#intent(in) :: order
         !> [optional] dimensions of the sub-matrices the norms should be evaluated at (default = [1,2])
         integer(ilp), optional, intent(in) :: dim(2)
         !> [optional] state return flag. On error if not requested, the code will stop
@@ -485,8 +525,7 @@ ${loop_variables_end(rank-1," "*12)}$
         endif
         
         ! Check norm request: user + *LANGE support
-        call parse_norm_type(order,norm_request,err_)
-        call lange_task_request(norm_request,lange_task,err_)
+        call lange_task_request(order,lange_task,err_)
         if (err_%error()) then 
             allocate(nrm${emptyranksuffix(rank-2)}$)
             call linalg_error_handling(err_,err)
