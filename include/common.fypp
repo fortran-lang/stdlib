@@ -338,6 +338,34 @@ ${prefix + joinstr.join([line.strip() for line in txt.split("\n")]) + suffix}$
     #:endcall
 #:enddef
 
+#!
+#! Generates a list of loop variables from an array
+#!
+#! Args:
+#!   varname(str): Name of the array variable to be used as prefix
+#!   n      (int): Number of loop variables to be created
+#!   offset (int): Optional index offset
+#!
+#! Returns:
+#!   Variable definition string 
+#!
+#! E.g.,
+#!  loop_array_variables('j', 5)
+#!   -> "j(1), j(2), j(3), j(4), j(5)
+#!
+#!  loop_array_variables('j', 5, 2)
+#!   -> "j(3), j(4), j(5), j(6), j(7)
+#!
+#:def loop_array_variables(varname, n, offset=0)
+  #:assert n > 0
+    #:call join_lines(joinstr=", ")
+      #:for i in range(1, n + 1)
+        ${varname}$(${i+offset}$)
+      #:endfor
+    #:endcall
+#:enddef
+
+
 #! Generates an array shape specifier from an N-D array size
 #!
 #! Args:

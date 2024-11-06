@@ -65,14 +65,15 @@ module test_linalg_mnorm
     subroutine test_mnorm_${ri}$_${rank}$d(error)
         type(error_type), allocatable, intent(out) :: error
 
-        integer(ilp) :: j,dim1,dim2,dim(2),order
+        integer(ilp) :: i,j,k,l,dim1,dim2,dim(2),dim_sizes(2),order,ptr(${rank}$)
         integer(ilp), parameter :: orders(*) = [1_ilp,2_ilp,huge(0_ilp)]
         integer(ilp), parameter :: ndim = ${rank}$
-        integer(ilp), parameter :: n   = 2_ilp**ndim
+        integer(ilp), parameter :: n    = 2_ilp**ndim
         integer(ilp), parameter :: dims(*) = [(dim1, dim1=1,ndim)]
         real(${rk}$), parameter :: tol = 10*sqrt(epsilon(0.0_${rk}$))
+        real(${rk}$) :: one_nrm
         real(${rk}$), allocatable :: bnrm${ranksuffix(rank-2)}$
-        ${rt}$, allocatable :: a(:), b${ranksuffix(rank)}$
+        ${rt}$, allocatable :: a(:), b${ranksuffix(rank)}$, one_mat(:,:)
         
         character(64) :: msg
         
@@ -84,12 +85,13 @@ module test_linalg_mnorm
         b = reshape(a, shape(b))
         
         ! Test norm as collapsed around dimensions
-        do j = 1, size(orders)
-            order = orders(j)
+        do k = 1, size(orders)
+            order = orders(k)
             do dim1 = 1, ndim
                 do dim2 = dim1+1, ndim
                                     
-                    dim = [dim1,dim2]
+                    dim       = [dim1,dim2]
+                    dim_sizes = [size(b,dim1,kind=ilp),size(b,dim2,kind=ilp)]
                     
                     ! Get norms collapsed on these dims
                     bnrm = mnorm(b,order,dim)
@@ -97,7 +99,30 @@ module test_linalg_mnorm
                     ! Assert size
                     write(msg,"('dim=[',i0,',',i0,'] order=',i0,' ${rk}$ norm returned wrong shape')") dim, order
                     call check(error,all(shape(bnrm)==pack(shape(b),dims/=dim1 .and. dims/=dim2) ), trim(msg))
-                    if (allocated(error)) return                                     
+                    if (allocated(error)) return    
+                    
+                    ! Assert some matrix results: check that those on same index i.e. (l,l,l,:,l,l,:) etc.
+                    ! are equal to the corresponding 2d-array result
+                    do l = 1, minval(shape(b))
+                    
+                       ptr = l
+                    
+                       allocate(one_mat(dim_sizes(1),dim_sizes(2)))
+                       do j = 1, dim_sizes(2)
+                           ptr(dim(2)) = j
+                           do i = 1, dim_sizes(1)
+                               ptr(dim(1)) = i
+                               one_mat(i,j) = b(${loop_array_variables('ptr',rank)}$) 
+                           end do
+                       end do
+                       one_nrm = mnorm(one_mat,order)
+                    
+                       write(msg,"('dim=[',i0,',',i0,'] order=',i0,' ${rk}$ ',i0,'-th norm is wrong')") dim, order, l
+                       call check(error, abs(one_nrm-bnrm(${fixedranksuffix(rank-2,'l')}$))<tol*one_nrm, trim(msg))
+                       if (allocated(error)) return    
+                       deallocate(one_mat) 
+                    
+                    end do
                                    
                 end do
             end do
