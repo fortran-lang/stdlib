@@ -89,7 +89,9 @@ module test_linalg_mnorm
         do k = 1, size(orders)
             order = trim(orders(k))
             do dim1 = 1, ndim
-                do dim2 = dim1+1, ndim
+                do dim2 = 1, ndim
+                    
+                    if (dim1==dim2) cycle
                                     
                     dim       = [dim1,dim2]
                     dim_sizes = [size(b,dim1,kind=ilp),size(b,dim2,kind=ilp)]
