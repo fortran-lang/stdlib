@@ -26,20 +26,22 @@ submodule(stdlib_linalg) stdlib_linalg_norms
      integer(ilp), parameter :: NORM_MINUSINF  = -huge(0_ilp)
           
      !> Wrappers to LAPACK *LANGE matrix norm flags
-     character, parameter :: LANGE_NORM_MAT = 'M' ! maxval(sum(abs(a)))   ! over whole matrix: unused
-     character, parameter :: LANGE_NORM_ONE = '1' ! maxval(sum(abs(a),1)) ! over columns
-     character, parameter :: LANGE_NORM_INF = 'I' ! maxval(sum(abs(a),2)) ! over rows
-     character, parameter :: LANGE_NORM_FRO = 'E' ! sqrt(sum(a**2))       ! "Euclidean" or "Frobenius"     
+     character, parameter :: MAT_NORM_MAT = 'M' ! maxval(sum(abs(a)))   ! over whole matrix: unused
+     character, parameter :: MAT_NORM_ONE = '1' ! maxval(sum(abs(a),1)) ! over columns
+     character, parameter :: MAT_NORM_INF = 'I' ! maxval(sum(abs(a),2)) ! over rows
+     character, parameter :: MAT_NORM_FRO = 'E' ! sqrt(sum(a**2))       ! "Euclidean" or "Frobenius"     
+     !> Other wrappers to matrix norms
+     character, parameter :: MAT_NORM_SVD = '2' ! maxval(svdvals(a))    ! Maximum singular value
      
      interface parse_norm_type
         module procedure parse_norm_type_integer
         module procedure parse_norm_type_character
      end interface parse_norm_type
      
-     interface lange_task_request
-        module procedure lange_task_request_integer
-        module procedure lange_task_request_character
-     end interface lange_task_request
+     interface mat_task_request
+        module procedure mat_task_request_integer
+        module procedure mat_task_request_character
+     end interface mat_task_request
      
      
      interface stride_1d
@@ -112,11 +114,11 @@ submodule(stdlib_linalg) stdlib_linalg_norms
      end subroutine parse_norm_type_character
 
      !> From a user norm request, generate a *LANGE task command
-     pure subroutine lange_task_request_integer(order,lange_task,err)
+     pure subroutine mat_task_request_integer(order,mat_task,err)
         !> Parsed matrix norm type
         integer(ilp), optional, intent(in) :: order
         !> LANGE task
-        character, intent(out) :: lange_task
+        character, intent(out) :: mat_task
         !> Error flag
         type(linalg_state_type), intent(inout) :: err
         
@@ -124,9 +126,11 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
             select case (order)
                case (NORM_INF)
-                  lange_task = LANGE_NORM_INF 
+                  mat_task = MAT_NORM_INF 
+               case (NORM_TWO)
+                  mat_task = MAT_NORM_SVD 
                case (NORM_ONE)
-                  lange_task = LANGE_NORM_ONE
+                  mat_task = MAT_NORM_ONE
                case default 
                   err = linalg_state_type(this,LINALG_VALUE_ERROR,'Integer order ',order,' is not a valid matrix norm input.')
             end select
@@ -134,16 +138,16 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         else
             
             ! No user input: Frobenius norm
-            lange_task = LANGE_NORM_FRO
+            mat_task = MAT_NORM_FRO
             
         endif
-     end subroutine lange_task_request_integer
+     end subroutine mat_task_request_integer
 
-     pure subroutine lange_task_request_character(order,lange_task,err)
+     pure subroutine mat_task_request_character(order,mat_task,err)
         !> User input value
         character(len=*), intent(in) :: order
         !> Return value: norm type
-        character, intent(out) :: lange_task
+        character, intent(out) :: mat_task
         !> State return flag
         type(linalg_state_type), intent(out) :: err
         
@@ -151,22 +155,27 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         select case (order)
            case ('inf','Inf','INF')
-              lange_task = LANGE_NORM_INF
+              mat_task = MAT_NORM_INF
            case ('Euclidean','euclidean','EUCLIDEAN','Frobenius','frobenius','FROBENIUS','Fro','fro','frob')
-              lange_task = LANGE_NORM_FRO
+              mat_task = MAT_NORM_FRO
            case default
             
               ! Check if this input can be read as an integer
               read(order,*,iostat=read_err) int_order
-              if (read_err/=0 .or. int_order/=1) then 
+              if (read_err/=0 .or. all(int_order/=[1,2]) then 
                  ! Cannot read as an integer                 
                  err = linalg_state_type(this,LINALG_ERROR,'Matrix norm input',order,' is not recognized.')                 
               endif
-              lange_task = LANGE_NORM_ONE
-
+              
+              select case (int_order)
+                 case (1);     mat_task = MAT_NORM_ONE
+                 case (2);     mat_task = MAT_NORM_SVD
+                 case default; mat_task = MAT_NORM_ONE   
+              end select
+              
         end select    
         
-     end subroutine lange_task_request_character
+     end subroutine mat_task_request_character
 
     #:for rk,rt,ri in ALL_KINDS_TYPES
     
@@ -446,7 +455,7 @@ ${loop_variables_end(rank-1," "*12)}$
         
         type(linalg_state_type) :: err_
         integer(ilp) :: m,n
-        character :: lange_task
+        character :: mat_task
         real(${rk}$), target :: work1(1)
         real(${rk}$), pointer :: work(:)        
         
@@ -463,22 +472,22 @@ ${loop_variables_end(rank-1," "*12)}$
         end if
 
         ! Check norm request: user + *LANGE support
-        call lange_task_request(order,lange_task,err_)
+        call mat_task_request(order,mat_task,err_)
         if (err_%error()) then 
             call linalg_error_handling(err_,err)
             return
         endif       
         
-        if (lange_task==LANGE_NORM_INF) then 
+        if (mat_task==MAT_NORM_INF) then 
             allocate(work(m))
         else
             work => work1
         endif
         
         ! LAPACK interface
-        nrm = lange(lange_task,m,n,a,m,work)
+        nrm = lange(mat_task,m,n,a,m,work)
         
-        if (lange_task==LANGE_NORM_INF) deallocate(work)
+        if (mat_task==MAT_NORM_INF) deallocate(work)
         
     end function matrix_norm_${ii}$_${ri}$
     
@@ -503,7 +512,7 @@ ${loop_variables_end(rank-1," "*12)}$
         integer(ilp), dimension(${rank}$), parameter :: dim_range = [(m,m=1_ilp,${rank}$_ilp)]
         integer(ilp) :: ${loop_variables('j',rank-2,2)}$
         logical :: contiguous_data
-        character :: lange_task
+        character :: mat_task
         real(${rk}$), target :: work1(1)
         real(${rk}$), pointer :: work(:)        
         ${rt}$, pointer :: apack${ranksuffix(rank)}$
@@ -525,7 +534,7 @@ ${loop_variables_end(rank-1," "*12)}$
         endif
         
         ! Check norm request: user + *LANGE support
-        call lange_task_request(order,lange_task,err_)
+        call mat_task_request(order,mat_task,err_)
         if (err_%error()) then 
             allocate(nrm${emptyranksuffix(rank-2)}$)
             call linalg_error_handling(err_,err)
@@ -559,7 +568,7 @@ ${loop_variables_end(rank-1," "*12)}$
             
         endif
             
-        if (lange_task==LANGE_NORM_INF) then 
+        if (mat_task==MAT_NORM_INF) then 
             allocate(work(m))
         else
             work => work1
@@ -573,10 +582,10 @@ ${loop_variables_end(rank-1," "*12)}$
         ! LAPACK interface
 ${loop_variables_start('j', 'apack', rank-2, 2)}$
         nrm(${loop_variables('j',rank-2,2)}$) = &
-        lange(lange_task,m,n,apack(:,:,${loop_variables('j',rank-2,2)}$),lda,work)
+        lange(mat_task,m,n,apack(:,:,${loop_variables('j',rank-2,2)}$),lda,work)
 ${loop_variables_end(rank-2)}$
         
-        if (lange_task==LANGE_NORM_INF) deallocate(work)
+        if (mat_task==MAT_NORM_INF) deallocate(work)
         if (.not.contiguous_data) deallocate(apack)
                 
     end function matrix_norm_${rank}$D_to_${rank-2}$D_${ii}$_${ri}$    
