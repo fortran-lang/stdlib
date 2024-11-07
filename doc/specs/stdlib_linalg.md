@@ -1590,6 +1590,7 @@ matrix norms are computed over specified dimensions.
 | Integer input    | Character Input            | Norm type                                               |
 |------------------|---------------------------|---------------------------------------------------------|
 | `1`              | `'1'`                     | 1-norm (maximum column sum) \( \max_j \sum_i{ \left|a_{i,j}\right| } \) |
+| `2`              | `'2'`                     | 2-norm (largest singular value) |
 | (not prov.)      | `'Euclidean','Frobenius','Fro'` | Frobenius norm \( \sqrt{\sum_{i,j}{ \left|a_{i,j}\right|^2 }} \) |
 | `huge(0)`        | `'inf', 'Inf', 'INF'`     | Infinity norm (maximum row sum) \( \max_i \sum_j{ \left|a_{i,j}\right| } \) |
 

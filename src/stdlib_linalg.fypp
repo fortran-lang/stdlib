@@ -1346,6 +1346,7 @@ module stdlib_linalg
      !! This can be provided as either an `integer` value or a `character` string. 
      !! Allowed metrics are: 
      !! - 1-norm: `order` = 1 or '1'    
+     !! - 2-norm: `order` = 2 or '2'
      !! - Euclidean/Frobenius: `order` = 'Euclidean','Frobenius', or argument not specified
      !! - Infinity norm: `order` = huge(0) or 'Inf'
      !! 

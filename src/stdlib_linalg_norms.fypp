@@ -162,7 +162,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
             
               ! Check if this input can be read as an integer
               read(order,*,iostat=read_err) int_order
-              if (read_err/=0 .or. all(int_order/=[1,2]) then 
+              if (read_err/=0 .or. all(int_order/=[1,2])) then 
                  ! Cannot read as an integer                 
                  err = linalg_state_type(this,LINALG_ERROR,'Matrix norm input',order,' is not recognized.')                 
               endif
@@ -482,10 +482,15 @@ ${loop_variables_end(rank-1," "*12)}$
             allocate(work(m))
         else
             work => work1
-        endif
-        
-        ! LAPACK interface
-        nrm = lange(mat_task,m,n,a,m,work)
+        end if
+                
+        if (mat_task==MAT_NORM_SVD) then 
+           nrm = maxval(svdvals(a,err_),1) 
+           call linalg_error_handling(err_,err)
+        else
+           ! LAPACK interface 
+           nrm = lange(mat_task,m,n,a,m,work)
+        end if
         
         if (mat_task==MAT_NORM_INF) deallocate(work)
         
@@ -507,7 +512,7 @@ ${loop_variables_end(rank-1," "*12)}$
         type(linalg_state_type), intent(out), optional :: err  
         
         type(linalg_state_type) :: err_
-        integer(ilp) :: j,m,n,lda,dims(2),norm_request
+        integer(ilp) :: j,m,n,lda,dims(2),norm_request,svd_errors
         integer(ilp), dimension(${rank}$) :: s,spack,perm,iperm
         integer(ilp), dimension(${rank}$), parameter :: dim_range = [(m,m=1_ilp,${rank}$_ilp)]
         integer(ilp) :: ${loop_variables('j',rank-2,2)}$
@@ -525,6 +530,7 @@ ${loop_variables_end(rank-1," "*12)}$
         endif
         
         nullify(apack)
+        svd_errors = 0
 
         if (dims(1)==dims(2) .or. .not.all(dims>0 .and. dims<=${rank}$)) then 
             err_ = linalg_state_type(this,LINALG_VALUE_ERROR,'Rank-',${rank}$,' matrix norm has invalid dim=',dims)
@@ -551,6 +557,13 @@ ${loop_variables_end(rank-1," "*12)}$
         m = s(dims(1))
         n = s(dims(2))
 
+        if (m<=0 .or. n<=0) then
+            err_ = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix shape: a=',[m,n])
+            allocate(nrm${emptyranksuffix(rank-2)}$)
+            call linalg_error_handling(err_,err)
+            return
+        end if
+
         ! Get packed data with norm dimensions as 1:2
         if (contiguous_data) then 
             
@@ -570,6 +583,8 @@ ${loop_variables_end(rank-1," "*12)}$
             
         if (mat_task==MAT_NORM_INF) then 
             allocate(work(m))
+        elseif (mat_task==MAT_NORM_SVD) then 
+            allocate(work(min(m,n)))
         else
             work => work1
         endif
@@ -581,12 +596,23 @@ ${loop_variables_end(rank-1," "*12)}$
         
         ! LAPACK interface
 ${loop_variables_start('j', 'apack', rank-2, 2)}$
-        nrm(${loop_variables('j',rank-2,2)}$) = &
-        lange(mat_task,m,n,apack(:,:,${loop_variables('j',rank-2,2)}$),lda,work)
+        if (mat_task==MAT_NORM_SVD) then
+            work(:) = svdvals(apack(:,:,${loop_variables('j',rank-2,2)}$),err_)
+            nrm(${loop_variables('j',rank-2,2)}$) = maxval(work,1)
+            if (err_%error()) svd_errors = svd_errors+1
+        else
+            nrm(${loop_variables('j',rank-2,2)}$) = &
+            lange(mat_task,m,n,apack(:,:,${loop_variables('j',rank-2,2)}$),lda,work)            
+        end if
 ${loop_variables_end(rank-2)}$
         
-        if (mat_task==MAT_NORM_INF) deallocate(work)
+        if (any(mat_task==[MAT_NORM_INF,MAT_NORM_SVD])) deallocate(work)
         if (.not.contiguous_data) deallocate(apack)
+        
+        if (svd_errors>0) then 
+            err_ = linalg_state_type(this,LINALG_VALUE_ERROR,svd_errors,'failed SVDs')
+            call linalg_error_handling(err_,err)
+        endif             
                 
     end function matrix_norm_${rank}$D_to_${rank-2}$D_${ii}$_${ri}$    
     
