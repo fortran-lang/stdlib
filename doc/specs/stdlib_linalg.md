@@ -1587,12 +1587,12 @@ matrix norms are computed over specified dimensions.
 
 `order` (optional): Shall be an `integer` value or a `character` flag that specifies the norm type, as follows. It is an `intent(in)` argument. 
 
-| Integer input    | Character Input            | Norm type                                               |
-|------------------|---------------------------|---------------------------------------------------------|
-| `1`              | `'1'`                     | 1-norm (maximum column sum) \( \max_j \sum_i{ \left|a_{i,j}\right| } \) |
-| `2`              | `'2'`                     | 2-norm (largest singular value) |
-| (not prov.)      | `'Euclidean','Frobenius','Fro'` | Frobenius norm \( \sqrt{\sum_{i,j}{ \left|a_{i,j}\right|^2 }} \) |
-| `huge(0)`        | `'inf', 'Inf', 'INF'`     | Infinity norm (maximum row sum) \( \max_i \sum_j{ \left|a_{i,j}\right| } \) |
+| Integer input    | Character Input                 | Norm type                                                                   |
+|------------------|---------------------------------|-----------------------------------------------------------------------------|
+| `1`              | `'1'`                           | 1-norm (maximum column sum) \( \max_j \sum_i{ \left|a_{i,j}\right| } \)     |
+| `2`              | `'2'`                           | 2-norm (largest singular value)                                             |
+| (not prov.)      | `'Euclidean','Frobenius','Fro'` | Frobenius norm \( \sqrt{\sum_{i,j}{ \left|a_{i,j}\right|^2 }} \)            |
+| `huge(0)`        | `'inf', 'Inf', 'INF'`           | Infinity norm (maximum row sum) \( \max_i \sum_j{ \left|a_{i,j}\right| } \) |
 
 `dim` (optional): For arrays of rank > 2, shall be an integer array of size 2 specifying the dimensions over which to compute the matrix norm. Default value is `[1,2]`. It is an `intent(in)` argument.
 
