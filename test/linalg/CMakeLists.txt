@@ -12,6 +12,7 @@ set(
   "test_linalg_qr.fypp"
   "test_linalg_svd.fypp"
   "test_linalg_matrix_property_checks.fypp"
+  "test_linalg_sparse.fypp"
 )
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
@@ -27,3 +28,4 @@ ADDTEST(linalg_lstsq)
 ADDTEST(linalg_qr)
 ADDTEST(linalg_svd)
 ADDTEST(blas_lapack)
+ADDTEST(linalg_sparse)
