@@ -1,8 +1,8 @@
 ! SPDX-Identifier: MIT
 module test_string_match
     use testdrive, only : new_unittest, unittest_type, error_type, check
-    use stdlib_ascii, only : reverse
-    use stdlib_strings, only : starts_with, ends_with
+    ! use stdlib_ascii, only : reverse
+    use stdlib_strings, only : starts_with, ends_with, reverse
     use stdlib_string_type, only : string_type
     implicit none
 

@@ -14,7 +14,7 @@
 !> The specification of this module is available [here](../page/specs/stdlib_string_type.html).
 module stdlib_string_type
     use stdlib_ascii, only: to_lower_ => to_lower, to_upper_ => to_upper, &
-       & to_title_ => to_title, to_sentence_ => to_sentence, reverse_ => reverse
+       & to_title_ => to_title, to_sentence_ => to_sentence
     use stdlib_kinds, only : int8, int16, int32, int64, lk, c_bool
     use stdlib_optval, only: optval
     implicit none
@@ -23,7 +23,7 @@ module stdlib_string_type
     public :: string_type
     public :: len, len_trim, trim, index, scan, verify, repeat, adjustr, adjustl
     public :: lgt, lge, llt, lle, char, ichar, iachar
-    public :: to_lower, to_upper, to_title, to_sentence, reverse, move
+    public :: to_lower, to_upper, to_title, to_sentence, move
     public :: assignment(=)
     public :: operator(>), operator(>=), operator(<), operator(<=)
     public :: operator(==), operator(/=), operator(//)
@@ -140,14 +140,6 @@ module stdlib_string_type
     interface to_sentence
         module procedure :: to_sentence_string
     end interface to_sentence
-
-    !> Reverses the character sequence hold by the input string
-    !> 
-    !> This method is elemental and returns a new string_type instance which holds this
-    !> reverse character sequence
-    interface reverse
-        module procedure :: reverse_string
-    end interface reverse
 
     !> Return the character sequence represented by the string.
     !>
@@ -550,16 +542,6 @@ contains
         sentence_string%raw = to_sentence_(maybe(string))
 
     end function to_sentence_string
-
-
-    !> Reverse the character sequence hold by the input string
-    elemental function reverse_string(string) result(reversed_string)
-        type(string_type), intent(in) :: string
-        type(string_type) :: reversed_string
-
-        reversed_string%raw = reverse_(maybe(string))
-
-    end function reverse_string
 
 
     !> Position of a sequence of character within a character sequence.
