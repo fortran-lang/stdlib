@@ -71,7 +71,7 @@ contains
         if (line <= 0) then
             str = ""
         else
-            str = esc//"["//to_string(line)//"A"
+            str = esc//"["//to_string(line)//"B"
         end if
 
     end function move_down
@@ -85,7 +85,7 @@ contains
         if (line <= 0) then
             str = ""
         else
-            str = esc//"["//to_string(line)//"A"
+            str = esc//"["//to_string(line)//"C"
         end if
 
     end function move_right
@@ -99,7 +99,7 @@ contains
         if (line <= 0) then
             str = ""
         else
-            str = esc//"["//to_string(line)//"A"
+            str = esc//"["//to_string(line)//"D"
         end if
 
     end function move_left
