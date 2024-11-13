@@ -74,6 +74,11 @@
 $:"s" if cmplx=="c" else "d" if cmplx=="z" else "x" if cmplx=="y" else "q" if cmplx=="w" else "ERROR"
 #:enddef
 
+#! BLAS/LAPACK/Linear Algebra Integer Kinds
+#:set LINALG_INT_KINDS       = ["ilp","ilp64"]
+#:set LINALG_INT_TYPES       = ["integer({})".format(k) for k in LINALG_INT_KINDS]
+#:set LINALG_INT_KINDS_TYPES = list(zip(LINALG_INT_KINDS, LINALG_INT_TYPES))
+
 #! Complex types to be considered during templating
 #:set CMPLX_TYPES = ["complex({})".format(k) for k in CMPLX_KINDS]
 #:set CMPLX_SUFFIX = ["c{}".format(k) for k in CMPLX_KINDS]
