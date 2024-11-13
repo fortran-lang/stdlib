@@ -8,39 +8,20 @@ module stdlib_linalg_blas_aux
 
      public :: sp,dp,qp,lk,ilp
      public :: stdlib_cabs1
-     #:for rk,rt,ri in RC_KINDS_TYPES
-     public :: stdlib_i${ri}$amax
-     #:endfor     
      public :: stdlib_lsame
-     public :: stdlib_xerbla
-     public :: stdlib_xerbla_array
+     #:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     #:for rk,rt,ri in RC_KINDS_TYPES
+     public :: stdlib${ii}$_i${ri}$amax
+     #:endfor          
+     public :: stdlib${ii}$_xerbla
+     public :: stdlib${ii}$_xerbla_array
+     #:endfor
 
      interface stdlib_cabs1
         #:for rk,rt,ri in REAL_KINDS_TYPES
         module procedure stdlib_${ri}$cabs1
         #:endfor
      end interface stdlib_cabs1
-     
-     #:for rk,rt,ri in RC_KINDS_TYPES
-     interface stdlib_i${ri}$amax
-         #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-         module procedure stdlib${ii}$_i${ri}$amax
-         #:endfor        
-     end interface stdlib_i${ri}$amax
-     #:endfor
-
-     interface stdlib_xerbla
-         #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-         module procedure stdlib${ii}$_xerbla
-         #:endfor        
-     end interface stdlib_xerbla
-
-     interface stdlib_xerbla_array
-         #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-         module procedure stdlib${ii}$_xerbla_array
-         #:endfor        
-     end interface stdlib_xerbla_array
-
 
      contains
 
@@ -165,7 +146,7 @@ module stdlib_linalg_blas_aux
            do i = 1, min( srname_len, len( srname ) )
               srname( i:i ) = srname_array( i )
            end do
-           call stdlib_xerbla( srname, info )
+           call stdlib${ii}$_xerbla( srname, info )
            return
      end subroutine stdlib${ii}$_xerbla_array
 
