@@ -29177,8 +29177,7 @@ module stdlib_linalg_lapack_d
               end do
               f = finit + tau*fc
               erretm = eight*( abs( finit )+abs( tau )*erretm ) +abs( tau )*df
-              if( ( abs( f )<=four*eps*erretm ) .or.( (ubd-lbd)<=four*eps*abs(tau) )  )go to &
-                        60
+              if( ( abs( f )<=four*eps*erretm ) .or.( (ubd-lbd)<=four*eps*abs(tau) )  ) go to 60
               if( f <= zero )then
                  lbd = tau
               else
@@ -35315,8 +35314,7 @@ module stdlib_linalg_lapack_d
            nn = 4*n0 + pp
            if( n0==( i0+1 ) )go to 40
            ! check whether e(n0-1) is negligible, 1 eigenvalue.
-           if( z( nn-5 )>tol2*( sigma+z( nn-3 ) ) .and.z( nn-2*pp-4 )>tol2*z( nn-7 ) )go to &
-                     30
+           if( z( nn-5 )>tol2*( sigma+z( nn-3 ) ) .and.z( nn-2*pp-4 )>tol2*z( nn-7 ) ) go to 30
            20 continue
            z( 4*n0-3 ) = z( 4*n0+pp-3 ) + sigma
            n0 = n0 - 1
@@ -66034,8 +66032,7 @@ module stdlib_linalg_lapack_d
               call stdlib_dlarfx( 'L', 3, 3, u, tau, d, ldd, work )
               call stdlib_dlarfx( 'R', 3, 3, u, tau, d, ldd, work )
               ! test whether to reject swap.
-              if( max( abs( d( 3, 1 ) ), abs( d( 3, 2 ) ), abs( d( 3,3 )-t11 ) )>thresh )go to &
-                        50
+              if( max( abs( d( 3, 1 ) ), abs( d( 3, 2 ) ), abs( d( 3,3 )-t11 ) )>thresh ) go to 50
               ! accept swap: apply transformation to the entire matrix t.
               call stdlib_dlarfx( 'L', 3, n-j1+1, u, tau, t( j1, j1 ), ldt, work )
               call stdlib_dlarfx( 'R', j2, 3, u, tau, t( 1, j1 ), ldt, work )
@@ -66062,8 +66059,7 @@ module stdlib_linalg_lapack_d
               call stdlib_dlarfx( 'L', 3, 3, u, tau, d, ldd, work )
               call stdlib_dlarfx( 'R', 3, 3, u, tau, d, ldd, work )
               ! test whether to reject swap.
-              if( max( abs( d( 2, 1 ) ), abs( d( 3, 1 ) ), abs( d( 1,1 )-t33 ) )>thresh )go to &
-                        50
+              if( max( abs( d( 2, 1 ) ), abs( d( 3, 1 ) ), abs( d( 1,1 )-t33 ) )>thresh ) go to 50
               ! accept swap: apply transformation to the entire matrix t.
               call stdlib_dlarfx( 'R', j3, 3, u, tau, t( 1, j1 ), ldt, work )
               call stdlib_dlarfx( 'L', 3, n-j1, u, tau, t( j1, j2 ), ldt, work )
@@ -68845,25 +68841,23 @@ module stdlib_linalg_lapack_d
               ! aggressive enforcement of lower numerical rank by introducing a
               ! backward error of the order of n*epsln*||a||.
               temp1 = sqrt(real(n,KIND=dp))*epsln
-              do p = 2, n
+              loop_3002: do p = 2, n
                  if ( abs(a(p,p)) >= (temp1*abs(a(1,1))) ) then
                     nr = nr + 1
                  else
-                    go to 3002
+                    exit loop_3002
                  end if
-              end do
-              3002 continue
+              end do loop_3002
            else if ( l2rank ) then
               ! .. similarly as above, only slightly more gentle (less aggressive).
               ! sudden drop on the diagonal of r1 is used as the criterion for
               ! close-to-rank-deficient.
               temp1 = sqrt(sfmin)
-              do p = 2, n
+              loop_3402: do p = 2, n
                  if ( ( abs(a(p,p)) < (epsln*abs(a(p-1,p-1))) ) .or.( abs(a(p,p)) < small ) .or.( &
-                           l2kill .and. (abs(a(p,p)) < temp1) ) ) go to 3402
+                           l2kill .and. (abs(a(p,p)) < temp1) ) ) exit loop_3402
                  nr = nr + 1
-              end do
-              3402 continue
+              end do loop_3402
            else
               ! the goal is high relative accuracy. however, if the matrix
               ! has high scaled condition number the relative accuracy is in
@@ -68873,12 +68867,10 @@ module stdlib_linalg_lapack_d
               ! factor. this prevents the situation in which the code is
               ! working hard to get the accuracy not warranted by the data.
               temp1  = sqrt(sfmin)
-              do p = 2, n
-                 if ( ( abs(a(p,p)) < small ) .or.( l2kill .and. (abs(a(p,p)) < temp1) ) ) go to &
-                           3302
+              loop_3302: do p = 2, n
+                 if ( ( abs(a(p,p)) < small ) .or.( l2kill .and. (abs(a(p,p)) < temp1) ) ) exit loop_3302
                  nr = nr + 1
-              end do
-              3302 continue
+              end do loop_3302              
            end if
            almort = .false.
            if ( nr == n ) then
@@ -78664,11 +78656,10 @@ module stdlib_linalg_lapack_d
               ! backward error of the order of n*eps*||a||_f.
               nr = 1
               rtmp = sqrt(real(n,KIND=dp))*epsln
-              do p = 2, n
-                 if ( abs(a(p,p)) < (rtmp*abs(a(1,1))) ) go to 3002
+              loop_3002: do p = 2, n
+                 if ( abs(a(p,p)) < (rtmp*abs(a(1,1))) ) exit loop_3002
                     nr = nr + 1
-              end do
-              3002 continue
+              end do loop_3002
            elseif ( acclm ) then
               ! .. similarly as above, only slightly more gentle (less aggressive).
               ! sudden drop on the diagonal of r is used as the criterion for being
@@ -78677,23 +78668,20 @@ module stdlib_linalg_lapack_d
               ! with a user specified threshold.]] also, the values that underflow
               ! will be truncated.
               nr = 1
-              do p = 2, n
-                 if ( ( abs(a(p,p)) < (epsln*abs(a(p-1,p-1))) ) .or.( abs(a(p,p)) < sfmin ) ) go &
-                           to 3402
+              loop_3402: do p = 2, n
+                 if ( ( abs(a(p,p)) < (epsln*abs(a(p-1,p-1))) ) .or.( abs(a(p,p)) < sfmin ) ) exit loop_3402
                  nr = nr + 1
-              end do
-              3402 continue
+              end do loop_3402
            else
               ! Rrqr Not Authorized To Determine Numerical Rank Except In The
               ! obvious case of zero pivots.
               ! .. inspect r for exact zeros on the diagonal;
               ! r(i,i)=0 => r(i:n,i:n)=0.
               nr = 1
-              do p = 2, n
-                 if ( abs(a(p,p)) == zero ) go to 3502
-                 nr = nr + 1
-              end do
-              3502 continue
+              loop_3502: do p = 2, n
+                 if ( abs(a(p,p)) == zero ) exit loop_3502
+                 nr = nr + 1 
+              end do loop_3502
               if ( conda ) then
                  ! estimate the scaled condition number of a. use the fact that it is
                  ! the same as the scaled condition number of r.
@@ -80397,7 +80385,7 @@ module stdlib_linalg_lapack_d
            kwtop, kwv, ld, ls, lwkopt, ndec, ndfl, nh, nho, nibble, nmin, ns, nsmax, nsr, nve, nw,&
                       nwmax, nwr, nwupbd
            logical(lk) :: sorted
-           character :: jbcmpz*2
+           character(len=2) :: jbcmpz
            ! Local Arrays 
            real(dp) :: zdum(1,1)
            ! Intrinsic Functions 
@@ -81084,7 +81072,7 @@ module stdlib_linalg_lapack_d
            kwtop, kwv, ld, ls, lwkopt, ndec, ndfl, nh, nho, nibble, nmin, ns, nsmax, nsr, nve, nw,&
                       nwmax, nwr, nwupbd
            logical(lk) :: sorted
-           character :: jbcmpz*2
+           character(len=2) :: jbcmpz
            ! Local Arrays 
            real(dp) :: zdum(1,1)
            ! Intrinsic Functions 
@@ -81464,7 +81452,7 @@ module stdlib_linalg_lapack_d
             istopm, iwants, iwantq, iwantz, norm_info, aed_info, nwr, nbr, nsr, itemp1, itemp2, &
                       rcost, i
            logical(lk) :: ilschur, ilq, ilz
-           character :: jbcmpz*3
+           character(len=3) :: jbcmpz
            if( stdlib_lsame( wants, 'E' ) ) then
               ilschur = .false.
               iwants = 1
