@@ -77,7 +77,7 @@ $:"s" if cmplx=="c" else "d" if cmplx=="z" else "x" if cmplx=="y" else "q" if cm
 #! BLAS/LAPACK/Linear Algebra Integer Kinds
 #:set LINALG_INT_KINDS       = ["ilp","ilp64"]
 #:set LINALG_INT_TYPES       = ["integer({})".format(k) for k in LINALG_INT_KINDS]
-#:set LINALG_INT_SUFFIX      = ["","_i64"]
+#:set LINALG_INT_SUFFIX      = ["","_I64"]
 #:set LINALG_INT_KINDS_TYPES = list(zip(LINALG_INT_KINDS, LINALG_INT_TYPES, LINALG_INT_SUFFIX))
 
 #! Complex types to be considered during templating
