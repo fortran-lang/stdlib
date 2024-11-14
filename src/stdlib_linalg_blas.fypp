@@ -112,13 +112,7 @@ module stdlib_linalg_blas
 #else
                module procedure stdlib${ii}$_zaxpy
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib${ii}$_${ri}$axpy
-
-#:endif
-#:endfor
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
+#:for rk,rt,ri in RC_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$axpy
 
@@ -174,13 +168,7 @@ module stdlib_linalg_blas
 #else
                module procedure stdlib${ii}$_zcopy
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib${ii}$_${ri}$copy
-
-#:endif
-#:endfor
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
+#:for rk,rt,ri in RC_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$copy
 
@@ -216,7 +204,6 @@ module stdlib_linalg_blas
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$dot
-
 #:endif
 #:endfor
 #:endfor
@@ -343,16 +330,9 @@ module stdlib_linalg_blas
 #else
                module procedure stdlib${ii}$_zgbmv
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
+#:for rk,rt,ri in RC_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$gbmv
-
-#:endif
-#:endfor
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib${ii}$_${ri}$gbmv
-
 #:endif
 #:endfor
 #:endfor
@@ -414,16 +394,9 @@ module stdlib_linalg_blas
 #else
                module procedure stdlib${ii}$_zgemm
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
+#:for rk,rt,ri in RC_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$gemm
-
-#:endif
-#:endfor
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib${ii}$_${ri}$gemm
-
 #:endif
 #:endfor
 #:endfor
@@ -484,16 +457,9 @@ module stdlib_linalg_blas
 #else
                module procedure stdlib${ii}$_zgemv
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
+#:for rk,rt,ri in RC_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$gemv
-
-#:endif
-#:endfor
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib${ii}$_${ri}$gemv
-
 #:endif
 #:endfor
 #:endfor
@@ -530,7 +496,6 @@ module stdlib_linalg_blas
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$ger
-
 #:endif
 #:endfor
 #:endfor
@@ -1102,7 +1067,6 @@ module stdlib_linalg_blas
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$rot
-
 #:endif
 #:endfor
 #:endfor
@@ -1176,16 +1140,9 @@ module stdlib_linalg_blas
 #:endif               
 #endif
 #:endfor
-#:for rk,rt,ri in REAL_KINDS_TYPES
+#:for rk,rt,ri in RC_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib_${ri}$rotg
-
-#:endif
-#:endfor
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$rotg
-
 #:endif
 #:endfor
           end interface rotg
@@ -1228,7 +1185,6 @@ module stdlib_linalg_blas
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$rotm
-
 #:endif
 #:endfor
 #:endfor
@@ -1278,7 +1234,6 @@ module stdlib_linalg_blas
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib_${ri}$rotmg
-
 #:endif
 #:endfor
           end interface rotmg
@@ -1316,7 +1271,6 @@ module stdlib_linalg_blas
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$sbmv
-
 #:endif
 #:endfor
 #:endfor
@@ -1369,16 +1323,9 @@ module stdlib_linalg_blas
 #else
                module procedure stdlib${ii}$_zscal
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
+#:for rk,rt,ri in RC_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$scal
-
-#:endif
-#:endfor
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib${ii}$_${ri}$scal
-
 #:endif
 #:endfor
 #:endfor
@@ -1447,7 +1394,6 @@ module stdlib_linalg_blas
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$spmv
-
 #:endif
 #:endfor
 #:endfor
@@ -1486,7 +1432,6 @@ module stdlib_linalg_blas
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$spr
-
 #:endif
 #:endfor
 #:endfor
@@ -1525,7 +1470,6 @@ module stdlib_linalg_blas
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$spr2
-
 #:endif
 #:endfor
 #:endfor
@@ -1610,16 +1554,9 @@ module stdlib_linalg_blas
 #else
                module procedure stdlib${ii}$_zswap
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
+#:for rk,rt,ri in RC_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$swap
-
-#:endif
-#:endfor
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib${ii}$_${ri}$swap
-
 #:endif
 #:endfor
 #:endfor
@@ -1681,16 +1618,9 @@ module stdlib_linalg_blas
 #else
                module procedure stdlib${ii}$_zsymm
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
+#:for rk,rt,ri in RC_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$symm
-
-#:endif
-#:endfor
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib${ii}$_${ri}$symm
-
 #:endif
 #:endfor
 #:endfor
@@ -1729,7 +1659,6 @@ module stdlib_linalg_blas
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$symv
-
 #:endif
 #:endfor
 #:endfor
@@ -1768,7 +1697,6 @@ module stdlib_linalg_blas
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$syr
-
 #:endif
 #:endfor
 #:endfor
@@ -1807,7 +1735,6 @@ module stdlib_linalg_blas
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$syr2
-
 #:endif
 #:endfor
 #:endfor
@@ -1870,16 +1797,9 @@ module stdlib_linalg_blas
 #else
                module procedure stdlib${ii}$_zsyr2k
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
+#:for rk,rt,ri in RC_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$syr2k
-
-#:endif
-#:endfor
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib${ii}$_${ri}$syr2k
-
 #:endif
 #:endfor
 #:endfor
@@ -1942,16 +1862,9 @@ module stdlib_linalg_blas
 #else
                module procedure stdlib${ii}$_zsyrk
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
+#:for rk,rt,ri in RC_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$syrk
-
-#:endif
-#:endfor
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib${ii}$_${ri}$syrk
-
 #:endif
 #:endfor
 #:endfor
@@ -2011,16 +1924,9 @@ module stdlib_linalg_blas
 #else
                module procedure stdlib${ii}$_ztbmv
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
+#:for rk,rt,ri in RC_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$tbmv
-
-#:endif
-#:endfor
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib${ii}$_${ri}$tbmv
-
 #:endif
 #:endfor
 #:endfor
@@ -2083,16 +1989,9 @@ module stdlib_linalg_blas
 #else
                module procedure stdlib${ii}$_ztbsv
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
+#:for rk,rt,ri in RC_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$tbsv
-
-#:endif
-#:endfor
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib${ii}$_${ri}$tbsv
-
 #:endif
 #:endfor
 #:endfor
@@ -2152,16 +2051,9 @@ module stdlib_linalg_blas
 #else
                module procedure stdlib${ii}$_ztpmv
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
+#:for rk,rt,ri in RC_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$tpmv
-
-#:endif
-#:endfor
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib${ii}$_${ri}$tpmv
-
 #:endif
 #:endfor
 #:endfor
@@ -2223,16 +2115,9 @@ module stdlib_linalg_blas
 #else
                module procedure stdlib${ii}$_ztpsv
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
+#:for rk,rt,ri in RC_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$tpsv
-
-#:endif
-#:endfor
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib${ii}$_${ri}$tpsv
-
 #:endif
 #:endfor
 #:endfor
@@ -2293,16 +2178,9 @@ module stdlib_linalg_blas
 #else
                module procedure stdlib${ii}$_ztrmm
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
+#:for rk,rt,ri in RC_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$trmm
-
-#:endif
-#:endfor
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib${ii}$_${ri}$trmm
-
 #:endif
 #:endfor
 #:endfor
@@ -2362,16 +2240,9 @@ module stdlib_linalg_blas
 #else
                module procedure stdlib${ii}$_ztrmv
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
+#:for rk,rt,ri in RC_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$trmv
-
-#:endif
-#:endfor
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib${ii}$_${ri}$trmv
-
 #:endif
 #:endfor
 #:endfor
@@ -2433,16 +2304,9 @@ module stdlib_linalg_blas
 #else
                module procedure stdlib${ii}$_ztrsm
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
+#:for rk,rt,ri in RC_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$trsm
-
-#:endif
-#:endfor
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib${ii}$_${ri}$trsm
-
 #:endif
 #:endfor
 #:endfor
@@ -2504,13 +2368,7 @@ module stdlib_linalg_blas
 #else
                module procedure stdlib${ii}$_ztrsv
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib${ii}$_${ri}$trsv
-
-#:endif
-#:endfor
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
+#:for rk,rt,ri in RC_KINDS_TYPES
 #:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$trsv
 #:endif
