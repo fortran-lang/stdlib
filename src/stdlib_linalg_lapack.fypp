@@ -18,7 +18,8 @@ module stdlib_linalg_lapack
           !! X = [----------------]
           !!     [ B21 | B22 0  0 ]
           !!     [  0  |  0  0  I ]
-          !!     [  C | -S  0  0 ]
+          !!     [  C  | -S  0  0 ]
+          !! 
           !!     [ U1 |    ] [  0 |  0 -I  0 ] [ V1 |    ]**H
           !!   = [---------] [---------------] [---------]   .
           !!     [    | U2 ] [  S |  C  0  0 ] [    | V2 ]
@@ -33,8 +34,10 @@ module stdlib_linalg_lapack
           !! The input matrices are pre- or post-multiplied by the appropriate
           !! singular vector matrices.
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#:for rk,rt,ri in RC_KINDS_TYPES
+#:if rk in ["sp","dp"]
 #ifdef STDLIB_EXTERNAL_LAPACK${ii}$
-               pure subroutine cbbcsd( jobu1, jobu2, jobv1t, jobv2t, trans, m, p, q,theta, phi, &
+               pure subroutine ${ri}$bbcsd( jobu1, jobu2, jobv1t, jobv2t, trans, m, p, q,theta, phi, &
                u1, ldu1, u2, ldu2, v1t, ldv1t,v2t, ldv2t, b11d, b11e, b12d, b12e, b21d, b21e,b22d,&
                           b22e, rwork, lrwork, info )
                     import sp,dp,qp,${ik}$,lk
@@ -42,77 +45,17 @@ module stdlib_linalg_lapack
                     character, intent(in) :: jobu1,jobu2,jobv1t,jobv2t,trans
                     integer(${ik}$), intent(out) :: info
                     integer(${ik}$), intent(in) :: ldu1,ldu2,ldv1t,ldv2t,lrwork,m,p,q
-                    real(sp), intent(out) :: b11d(*),b11e(*),b12d(*),b12e(*),b21d(*),b21e(*),b22d(&
-                              *),b22e(*),rwork(*)
-                    real(sp), intent(inout) :: phi(*),theta(*)
-                    complex(sp), intent(inout) :: u1(ldu1,*),u2(ldu2,*),v1t(ldv1t,*),v2t(ldv2t,*)
+                    real(${rk}$), intent(out) :: b11d(*),b11e(*),b12d(*),b12e(*),b21d(*),b21e(*),&
+                              b22d(*),b22e(*),rwork(*)
+                    real(${rk}$), intent(inout) :: phi(*),theta(*)
+                    ${rt}$, intent(inout) :: u1(ldu1,*),u2(ldu2,*),v1t(ldv1t,*),v2t(ldv2t,*)
 
-               end subroutine cbbcsd
+               end subroutine ${ri}$bbcsd
 #else
-               module procedure stdlib${ii}$_cbbcsd
-#endif
-#ifdef STDLIB_EXTERNAL_LAPACK${ii}$
-               pure subroutine dbbcsd( jobu1, jobu2, jobv1t, jobv2t, trans, m, p, q,theta, phi, &
-               u1, ldu1, u2, ldu2, v1t, ldv1t,v2t, ldv2t, b11d, b11e, b12d, b12e, b21d, b21e,b22d,&
-                          b22e, work, lwork, info )
-                    import sp,dp,qp,${ik}$,lk
-                    implicit none(type,external)
-                    character, intent(in) :: jobu1,jobu2,jobv1t,jobv2t,trans
-                    integer(${ik}$), intent(out) :: info
-                    integer(${ik}$), intent(in) :: ldu1,ldu2,ldv1t,ldv2t,lwork,m,p,q
-                    real(dp), intent(out) :: b11d(*),b11e(*),b12d(*),b12e(*),b21d(*),b21e(*),b22d(&
-                              *),b22e(*),work(*)
-                    real(dp), intent(inout) :: phi(*),theta(*),u1(ldu1,*),u2(ldu2,*),v1t(ldv1t,*),&
-                              v2t(ldv2t,*)
-               end subroutine dbbcsd
-#else
-               module procedure stdlib${ii}$_dbbcsd
-#endif
-#ifdef STDLIB_EXTERNAL_LAPACK${ii}$
-               pure subroutine sbbcsd( jobu1, jobu2, jobv1t, jobv2t, trans, m, p, q,theta, phi, &
-               u1, ldu1, u2, ldu2, v1t, ldv1t,v2t, ldv2t, b11d, b11e, b12d, b12e, b21d, b21e,b22d,&
-                          b22e, work, lwork, info )
-                    import sp,dp,qp,${ik}$,lk
-                    implicit none(type,external)
-                    character, intent(in) :: jobu1,jobu2,jobv1t,jobv2t,trans
-                    integer(${ik}$), intent(out) :: info
-                    integer(${ik}$), intent(in) :: ldu1,ldu2,ldv1t,ldv2t,lwork,m,p,q
-                    real(sp), intent(out) :: b11d(*),b11e(*),b12d(*),b12e(*),b21d(*),b21e(*),b22d(&
-                              *),b22e(*),work(*)
-                    real(sp), intent(inout) :: phi(*),theta(*),u1(ldu1,*),u2(ldu2,*),v1t(ldv1t,*),&
-                              v2t(ldv2t,*)
-               end subroutine sbbcsd
-#else
-               module procedure stdlib${ii}$_sbbcsd
-#endif
-#ifdef STDLIB_EXTERNAL_LAPACK${ii}$
-               pure subroutine zbbcsd( jobu1, jobu2, jobv1t, jobv2t, trans, m, p, q,theta, phi, &
-               u1, ldu1, u2, ldu2, v1t, ldv1t,v2t, ldv2t, b11d, b11e, b12d, b12e, b21d, b21e,b22d,&
-                          b22e, rwork, lrwork, info )
-                    import sp,dp,qp,${ik}$,lk
-                    implicit none(type,external)
-                    character, intent(in) :: jobu1,jobu2,jobv1t,jobv2t,trans
-                    integer(${ik}$), intent(out) :: info
-                    integer(${ik}$), intent(in) :: ldu1,ldu2,ldv1t,ldv2t,lrwork,m,p,q
-                    real(dp), intent(out) :: b11d(*),b11e(*),b12d(*),b12e(*),b21d(*),b21e(*),b22d(&
-                              *),b22e(*),rwork(*)
-                    real(dp), intent(inout) :: phi(*),theta(*)
-                    complex(dp), intent(inout) :: u1(ldu1,*),u2(ldu2,*),v1t(ldv1t,*),v2t(ldv2t,*)
-
-               end subroutine zbbcsd
-#else
-               module procedure stdlib${ii}$_zbbcsd
-#endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib${ii}$_${ri}$bbcsd
-
 #:endif
-#:endfor
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
                module procedure stdlib${ii}$_${ri}$bbcsd
-
+#:if rk in ["sp","dp"]               
+#endif
 #:endif
 #:endfor
 #:endfor
