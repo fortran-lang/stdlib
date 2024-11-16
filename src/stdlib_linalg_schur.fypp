@@ -1,0 +1,140 @@
+#:include "common.fypp"
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+submodule (stdlib_linalg) stdlib_linalg_schur
+    use stdlib_linalg_constants
+    use stdlib_linalg_lapack, only: gees
+    use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
+        LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
+    implicit none(type,external)
+
+    character(*), parameter :: this = 'schur'
+
+    contains
+
+    elemental subroutine handle_gees_info(info, m, sort, err)
+        integer(ilp), intent(in) :: info, m
+        logical, intent(in) :: sort
+        type(linalg_state_type), intent(out) :: err
+
+        ! Process GEES output
+        select case (info)
+        case (0)
+            ! Success
+        case (-1)
+            err = linalg_state_type(this, LINALG_VALUE_ERROR, 'invalid matrix size m=', m)
+        case default
+            if (sort .and. info > 0) then
+                err = linalg_state_type(this, LINALG_INTERNAL_ERROR, 'sorting eigenvalues failed at index ', info)
+            else
+                err = linalg_state_type(this, LINALG_INTERNAL_ERROR, 'GEES catastrophic error: info=', info)
+            end if
+        end select
+    end subroutine handle_gees_info
+
+    #:for rk, rt, ri in RC_KINDS_TYPES
+
+    ! Schur decomposition subroutine
+    pure module subroutine stdlib_linalg_${ri}$_schur(a, t, z, lwork, overwrite_a, sort, err)
+        !> Input matrix a[m, m]
+        ${rt}$, intent(inout), target :: a(:,:)
+        !> Schur form of the matrix A
+        ${rt}$, intent(out), contiguous, target :: t(:,:)
+        !> Unitary/orthogonal matrix Z
+        ${rt}$, intent(out), contiguous, target :: z(:,:)
+        !> Workspace size (optional)
+        integer(ilp), optional, intent(inout) :: lwork
+        !> Overwrite input matrix A? (optional)
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> Sorting eigenvalues? (optional)
+        logical(lk), optional, intent(in) :: sort
+        !> State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+
+        ! Local variables
+        type(linalg_state_type) :: err0
+        integer(ilp) :: m, lda, info, liwork
+        logical(lk) :: overwrite_a_
+        logical, pointer :: bwork(:)
+        integer(ilp), allocatable :: iwork(:)
+        ${rt}$, pointer :: amat(:,:), tau(:), work(:)
+        ${rt}$ :: rwork_dummy(1)  ! Dummy for real/complex cases
+        ${rt}$, allocatable :: tmat(:,:), zmat(:,:)
+        character :: jobz
+
+        ! Problem size
+        m = size(a, 1, kind=ilp)
+        lda = size(a, 1, kind=ilp)
+
+        ! Validate dimensions
+        if (size(a, 1, kind=ilp) /= size(a, 2, kind=ilp)) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'Matrix A must be square: a=', [size(a,1), size(a,2)])
+            call linalg_error_handling(err0, err)
+            return
+        end if
+
+        ! Set default values
+        overwrite_a_ = .false._lk
+        if (present(overwrite_a)) overwrite_a_ = overwrite_a
+
+        ! Job type based on sorting request
+        if (present(sort) .and. sort) then
+            jobz = 'S'  ! Compute and sort eigenvalues
+        else
+            jobz = 'N'  ! Compute Schur decomposition without sorting
+        end if
+
+        ! Prepare storage
+        allocate(tmat(m, m), source=0.0_${rk}$)
+        allocate(zmat(m, m), source=0.0_${rk}$)
+
+        if (overwrite_a_) then
+            amat => a
+        else
+            allocate(amat(m, m), source=a)
+        end if
+
+        ! Allocate workspace
+        liwork = -1
+        if (present(lwork)) then
+            allocate(work(lwork))
+        else
+            allocate(work(1))  ! Temporary workspace for querying size
+        end if
+
+        ! Workspace query
+        call #{if rt.startswith('complex')}# zgees #{else}# gees #{endif}# &
+            (jobz, 'N', nullify(bwork), m, amat, lda, tau, zmat, lda, work, liwork, iwork, info)
+        call handle_gees_info(info, m, .false._lk, err0)
+        if (err0%error()) then
+            call linalg_error_handling(err0, err)
+            return
+        end if
+
+        ! Update workspace size
+        if (.not.present(lwork)) then
+            liwork = ceiling(real(work(1), kind=${rk}$), kind=ilp)
+            deallocate(work)
+            allocate(work(liwork))
+        end if
+
+        ! Compute Schur decomposition
+        call #{if rt.startswith('complex')}# zgees #{else}# gees #{endif}# &
+            (jobz, 'N', nullify(bwork), m, amat, lda, tau, zmat, lda, work, liwork, iwork, info)
+        call handle_gees_info(info, m, present(sort) .and. sort, err0)
+        if (err0%error()) then
+            call linalg_error_handling(err0, err)
+            return
+        end if
+
+        ! Output results
+        t = amat
+        z = zmat
+
+        if (.not.overwrite_a_) deallocate(amat)
+        if (.not.present(lwork)) deallocate(work)
+    end subroutine stdlib_linalg_${ri}$_schur
+
+    #:endfor
+
+end submodule stdlib_linalg_schur
+
