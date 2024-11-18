@@ -24,11 +24,21 @@ contains
 
         str = move_to(-10, 20)
         call check(error, str, "")
-        if (allocated(error)) return
+        if (allocated(error)) then
+            print *, "ERROR: move_to fails with negative values"
+            return
+        end if
         str = move_to(10, 20)
         call check(error, iachar(str(1:1)), 27)
-        if (allocated(error)) return
+        if (allocated(error)) then
+            print *, "ERROR: move_to doesn't add ESC character at the beggining"
+            return
+        end if
         call check(error, str(2:), "[10;20H")
+        if (allocated(error)) then
+            print *, "ERROR: move_to logically failed"
+            return
+        end if
     end subroutine test_move_to
 
     subroutine test_move_direction(error)
@@ -38,11 +48,21 @@ contains
 
         str = move_up(-15)
         call check(error, str, "")
-        if (allocated(error)) return
+        if (allocated(error)) then
+            print *, "ERROR: move_up fails with negative values"
+            return
+        end if
         str = move_up(15)
         call check(error, iachar(str(1:1)), 27)
-        if (allocated(error)) return
+        if (allocated(error)) then
+            print *, "ERROR: move_up doesn't add ESC character at the beggining"
+            return
+        end if
         call check(error, str(2:), "[15A")
+        if (allocated(error)) then
+            print *, "ERROR: move_up logically failed"
+            return
+        end if
     end subroutine test_move_direction
 
     subroutine test_move_to_column(error)
@@ -52,11 +72,21 @@ contains
 
         str = move_to_column(-5)
         call check(error, str, "")
-        if (allocated(error)) return
+        if (allocated(error)) then
+            print *, "ERROR: move_to_column fails with negative values"
+            return
+        end if
         str = move_to_column(5)
         call check(error, iachar(str(1:1)), 27)
-        if (allocated(error)) return
+        if (allocated(error)) then
+            print *, "ERROR: move_to_column doesn't add ESC character at the beggining"
+            return
+        end if
         call check(error, str(2:), "[5G")
+        if (allocated(error)) then
+            print *, "ERROR: move_to_column logically fails"
+            return
+        end if
     end subroutine test_move_to_column
 
 end module test_cursor
