@@ -10,7 +10,7 @@ title: ansi_cursor
 
 Module for cursor control using ansi terminal escape sequences
 
-## Constants provided by `stdlib_ascii`
+## Constants provided by `stdlib_ansi_cursor`
 
 ### ``esc``
 
@@ -19,7 +19,7 @@ The ESC character
 
 ### ``home``
 
-ansi escape code to move the cursor to it's home coordinates `(0,0)`
+ansi escape code to move the cursor to it's home coordinates `(1,1)`
 
 
 ### ``clear_till_screen_start``
@@ -93,9 +93,15 @@ program test
 
     character(len=1) :: input
 
-    print *, move_to(0, 0) ! Same as printing the constant `home`
+    print *, move_to(1, 1) ! Same as printing the constant `home`
     read (*,*), input  ! Waiting for input to actually see the effect of the `move_to` function
 end program test
+```
+
+A more detailed example of drawing a blue box in a terminal
+
+```fortran
+{!example/terminal/example_ansi_cursor.f90!}
 ```
 
 

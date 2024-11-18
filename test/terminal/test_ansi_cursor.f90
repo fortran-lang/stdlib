@@ -31,7 +31,7 @@ contains
         str = move_to(10, 20)
         call check(error, iachar(str(1:1)), 27)
         if (allocated(error)) then
-            print *, "ERROR: move_to doesn't add ESC character at the beggining"
+            print *, "ERROR: move_to doesn't add ESC character at the beginning"
             return
         end if
         call check(error, str(2:), "[10;20H")
@@ -55,7 +55,7 @@ contains
         str = move_up(15)
         call check(error, iachar(str(1:1)), 27)
         if (allocated(error)) then
-            print *, "ERROR: move_up doesn't add ESC character at the beggining"
+            print *, "ERROR: move_up doesn't add ESC character at the beginning"
             return
         end if
         call check(error, str(2:), "[15A")
@@ -79,7 +79,7 @@ contains
         str = move_to_column(5)
         call check(error, iachar(str(1:1)), 27)
         if (allocated(error)) then
-            print *, "ERROR: move_to_column doesn't add ESC character at the beggining"
+            print *, "ERROR: move_to_column doesn't add ESC character at the beginning"
             return
         end if
         call check(error, str(2:), "[5G")

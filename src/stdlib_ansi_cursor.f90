@@ -10,7 +10,7 @@ module stdlib_ansi_cursor
 
     !> the ESC character
     character(len=*), parameter :: esc = achar(27)
-    !> moves the cursor to home => `(0,0)`
+    !> moves the cursor to home => `(1,1)`
     character(len=*), parameter :: home = esc//"[H"
     !> erases from the cursor till the end of the screen
     character(len=*), parameter :: clear_till_screen_end = esc//"[0J"
@@ -29,14 +29,14 @@ contains
     !> Version: Experimental
     !>
     !> moves the cursor to `(line, column)`
-    !> returns an empty string if any of them is negative
+    !> returns an empty string if any of them is negative or zero
     !> [Specification](../page/specs/stdlib_ansi_cursor.html#move_to)
     pure function move_to(line, col) result(str)
         integer, intent(in) :: line
         integer, intent(in) :: col
         character(:), allocatable :: str
 
-        if (line < 0 .or. col < 0) then
+        if (line <= 0 .or. col <= 0) then
             str = ""
         else
             str = esc//"["//to_string(line)//";"//to_string(col)//"H"
@@ -47,13 +47,13 @@ contains
     !> Version: Experimental
     !>
     !> moves the cursor to column `col`
-    !> returns an empty string if `col` is negative
+    !> returns an empty string if `col` is negative or zero
     !> [Specification](../page/specs/stdlib_ansi_cursor.html#move_to_column)
     pure function move_to_column(col) result(str)
         integer, intent(in) :: col
         character(:), allocatable :: str
 
-        if (col < 0) then
+        if (col <= 0) then
             str = ""
         else
             str = esc//"["//to_string(col)//"G"
@@ -64,7 +64,7 @@ contains
     !> Version: Experimental
     !>
     !> moves the cursor up by `line` lines
-    !> returns an empty string if `line` is negative
+    !> returns an empty string if `line` is negative or zero
     !> [Specification](../page/specs/stdlib_ansi_cursor.html#move_up)
     pure function move_up(line) result(str)
         integer, intent(in) :: line
@@ -81,7 +81,7 @@ contains
     !> Version: Experimental
     !>
     !> moves the cursor down by `line` lines
-    !> returns an empty string if `line` is negative
+    !> returns an empty string if `line` is negative or zero
     !> [Specification](../page/specs/stdlib_ansi_cursor.html#move_down)
     pure function move_down(line) result(str)
         integer, intent(in) :: line
@@ -98,7 +98,7 @@ contains
     !> Version: Experimental
     !>
     !> moves the cursor right by `line` lines
-    !> returns an empty string if `line` is negative
+    !> returns an empty string if `line` is negative or zero
     !> [Specification](../page/specs/stdlib_ansi_cursor.html#move_right)
     pure function move_right(col) result(str)
         integer, intent(in) :: col
@@ -115,7 +115,7 @@ contains
     !> Version: Experimental
     !>
     !> moves the cursor left by `line` lines
-    !> returns an empty string if `line` is negative
+    !> returns an empty string if `line` is negative or zero
     !> [Specification](../page/specs/stdlib_ansi_cursor.html#move_left)
     pure function move_left(col) result(str)
         integer, intent(in) :: col
