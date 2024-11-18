@@ -1579,7 +1579,7 @@ matrix norms are computed over specified dimensions.
 
 ### Syntax
 
-`x = ` [[stdlib_linalg(module):mnorm(interface)]] `(a, order [, dim, err])`
+`x = ` [[stdlib_linalg(module):mnorm(interface)]] `(a [, order, dim, err])`
 
 ### Arguments
 
