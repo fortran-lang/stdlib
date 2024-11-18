@@ -1342,7 +1342,7 @@ module stdlib_linalg
      !! Supported data types include `real` and `complex`. 
      !! Input arrays must have rank >= 2.
      !!
-     !! Norm type input is mandatory, and it is provided via the `order` argument. 
+     !! Norm type input is optional, and it is provided via the `order` argument. 
      !! This can be provided as either an `integer` value or a `character` string. 
      !! Allowed metrics are: 
      !! - 1-norm: `order` = 1 or '1'    
