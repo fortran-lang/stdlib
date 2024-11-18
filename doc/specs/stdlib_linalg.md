@@ -1583,7 +1583,7 @@ matrix norms are computed over specified dimensions.
 
 ### Arguments
 
-`a`: Shall be a rank-n `real` or `complex` array containing the data, where n ³ 2. It is an `intent(in)` argument.
+`a`: Shall be a rank-n `real` or `complex` array containing the data, where n >= 2. It is an `intent(in)` argument.
 
 `order` (optional): Shall be an `integer` value or a `character` flag that specifies the norm type, as follows. It is an `intent(in)` argument. 
 
