@@ -79,7 +79,7 @@ submodule (stdlib_linalg) stdlib_linalg_schur
 
     #:for rk, rt, ri in RC_KINDS_TYPES    
     !> Workspace query
-    subroutine get_schur_${ri}$_workspace(a,lwork,err)
+    module subroutine get_schur_${ri}$_workspace(a,lwork,err)
         !> Input matrix a[m,m]
         ${rt}$, intent(in), target :: a(:,:)
         !> Minimum workspace size for the decomposition operation
@@ -126,7 +126,7 @@ submodule (stdlib_linalg) stdlib_linalg_schur
     end subroutine get_schur_${ri}$_workspace   
 
     ! Schur decomposition subroutine
-    subroutine stdlib_linalg_${ri}$_schur(a, t, z, eigvals, storage, err)
+    module subroutine stdlib_linalg_${ri}$_schur(a,t,z,eigvals,overwrite_a,storage,err)
         !> Input matrix a[m,m]
         ${rt}$, intent(inout), target :: a(:,:)
         !> Schur form of A: upper-triangular or quasi-upper-triangular matrix T
@@ -137,11 +137,14 @@ submodule (stdlib_linalg) stdlib_linalg_schur
         complex(${rk}$), optional, intent(out), contiguous, target :: eigvals(:)
         !> [optional] Provide pre-allocated workspace, size to be checked with schur_space
         ${rt}$, optional, intent(inout), target :: storage(:)
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a        
         !> [optional] State return flag. On error if not requested, the code will stop
         type(linalg_state), optional, intent(out) :: err
 
         ! Local variables
         integer(ilp) :: m,n,mt,nt,ldvs,nvs,lde,lwork,sdim,info
+        logical(lk) :: overwrite_a_
         logical(lk), target :: bwork_dummy(1),local_eigs
         logical(lk), pointer :: bwork(:)
         real(${rk}$), allocatable :: rwork(:)
@@ -171,6 +174,13 @@ submodule (stdlib_linalg) stdlib_linalg_schur
         
         !> Copy data into the output array
         t = a 
+        
+        ! Can A be overwritten? By default, do not overwrite
+        if (present(overwrite_a)) then 
+            overwrite_a_ = overwrite_a .and. n>=2    
+        else
+            overwrite_a_ = .false._lk
+        endif
         
         !> SORTING: no sorting options are currently supported
         sort  = gees_sort_eigs(.false.)
@@ -230,13 +240,26 @@ submodule (stdlib_linalg) stdlib_linalg_schur
             eigs => eigvals
             local_eigs = .false.
             #:else
-            allocate(eigs(n),eigi(n))
+            ! use A storage if possible
+            if (overwrite_a_) then                 
+                eigs => a(:,1)
+                eigi => a(:,2)
+            else
+                allocate(eigs(n),eigi(n))
+            end if            
             local_eigs = .true.
             #:endif
             
         else
             
-            allocate(eigs(n)#{if rt.startswith('r')}#,eigi(n)#{endif}#)
+            ! Use A storage if possible
+            if (overwrite_a_) then                 
+                eigs => a(:,1)
+                eigi => a(:,2)
+            else
+                allocate(eigs(n)#{if rt.startswith('r')}#,eigi(n)#{endif}#)
+            end if               
+            
             local_eigs = .true.
             lde = n
             
@@ -261,10 +284,8 @@ submodule (stdlib_linalg) stdlib_linalg_schur
            #:if rt.startswith('r')
            ! Build complex eigenvalues
            eigvals = cmplx(eigs,eigi,kind=${rk}$)
-           deallocate(eigs,eigi)
-           #:else
-           deallocate(eigs)
            #:endif
+           if (.not.overwrite_a_) deallocate(eigs#{if rt.startswith('r')}#,eigi#{endif}#)
         endif eigenvalue_output
         if (.not.present(storage)) deallocate(work)
       1 if (sort/=GEES_NOT) deallocate(bwork)
