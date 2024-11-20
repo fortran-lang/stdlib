@@ -38,7 +38,7 @@ submodule (stdlib_linalg) stdlib_linalg_schur
     !> Wrapper function to handle GEES error codes
     elemental subroutine handle_gees_info(info, m, n, ldvs, err)
         integer(ilp), intent(in) :: info, m, n, ldvs
-        type(linalg_state), intent(out) :: err
+        type(linalg_state_type), intent(out) :: err
 
         ! Process GEES output
         select case (info)
@@ -77,7 +77,53 @@ submodule (stdlib_linalg) stdlib_linalg_schur
         
     end subroutine handle_gees_info
 
-    #:for rk, rt, ri in RC_KINDS_TYPES
+    #:for rk, rt, ri in RC_KINDS_TYPES    
+    !> Workspace query
+    subroutine get_schur_${ri}$_workspace(a,lwork,err)
+        !> Input matrix a[m,m]
+        ${rt}$, intent(in), target :: a(:,:)
+        !> Minimum workspace size for the decomposition operation
+        integer(ilp), intent(out) :: lwork
+        !> State return flag. Returns an error if the query failed
+        type(linalg_state_type), optional, intent(out) :: err
+        
+        integer(ilp) :: m,n,sdim,info
+        character :: jobvs,sort
+        logical(lk) :: bwork_dummy(1)
+        ${rt}$, pointer :: amat(:,:)
+        real(${rk}$) :: rwork_dummy(1)
+        ${rt}$ :: wr_dummy(1),wi_dummy(1),vs_dummy(1,1),work_dummy(1)
+        type(linalg_state_type) :: err0
+        
+        !> Initialize problem
+        lwork = -1_ilp
+        m = size(a,1,kind=ilp)
+        n = size(a,2,kind=ilp)         
+        
+        !> Create a dummy intent(inout) argument
+        amat => a
+        
+        !> Select dummy task
+        jobvs = gees_vectors(.true.)
+        sort  = gees_sort_eigs(.false.)
+        sdim  = 0_ilp
+        
+        !> Get Schur workspace 
+        call gees(jobvs,sort,do_not_select,n,amat,m,sdim,wr_dummy,#{if rt.startswith('r')}#wi_dummy, #{endif}#&
+                  vs_dummy,m,work_dummy,lwork,#{if rt.startswith('c')}#rwork_dummy,#{endif}#bwork_dummy,info)
+        if (info==0) lwork = nint(real(work_dummy(1),kind=${rk}$),kind=ilp)
+        call handle_gees_info(info,m,n,m,err0)
+        call linalg_error_handling(err0,err)
+        
+        contains
+        
+            ! Interface to dummy select routine
+            pure logical(lk) function do_not_select(alpha#{if rt.startswith('r')}#r,alphai#{endif}#) 
+                ${rt}$, intent(in) :: alpha#{if rt.startswith('r')}#r,alphai#{endif}# 
+                do_not_select = .false.
+            end function do_not_select 
+        
+    end subroutine get_schur_${ri}$_workspace   
 
     ! Schur decomposition subroutine
     pure module subroutine stdlib_linalg_${ri}$_schur(a, t, z, lwork, overwrite_a, sort, err)

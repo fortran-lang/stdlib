@@ -662,7 +662,7 @@ module stdlib_linalg
     !! are provided, no internal allocations will take place during the decomposition.
     !!     
     #:for rk,rt,ri in RC_KINDS_TYPES
-      pure module subroutine get_schur_${ri}$_workspace(a,lwork,err)
+      module subroutine get_schur_${ri}$_workspace(a,lwork,err)
          !> Input matrix a[m,m]
          ${rt}$, intent(in), target :: a(:,:)
          !> Minimum workspace size for the decomposition operation
