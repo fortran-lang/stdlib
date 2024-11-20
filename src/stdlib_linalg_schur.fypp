@@ -46,32 +46,32 @@ submodule (stdlib_linalg) stdlib_linalg_schur
             ! Success
         case (-1_ilp)
             ! Vector not wanted, but task is wrong
-            err = linalg_state(this, LINALG_INTERNAL_ERROR,'Invalid Schur vector task request')
+            err = linalg_state_type(this, LINALG_INTERNAL_ERROR,'Invalid Schur vector task request')
         case (-2_ilp)
             ! Vector not wanted, but task is wrong
-            err = linalg_state(this, LINALG_INTERNAL_ERROR,'Invalid sorting task request')            
+            err = linalg_state_type(this, LINALG_INTERNAL_ERROR,'Invalid sorting task request')            
         case (-4_ilp,-6_ilp)
             ! Vector not wanted, but task is wrong
-            err = linalg_state(this, LINALG_VALUE_ERROR,'Invalid/non-square input matrix size:',[m,n])  
+            err = linalg_state_type(this, LINALG_VALUE_ERROR,'Invalid/non-square input matrix size:',[m,n])  
         case (-11_ilp)
-            err = linalg_state(this, LINALG_VALUE_ERROR,'Schur vector matrix has insufficient size',[ldvs,n])
+            err = linalg_state_type(this, LINALG_VALUE_ERROR,'Schur vector matrix has insufficient size',[ldvs,n])
         case (-13_ilp)
-            err = linalg_state(this, LINALG_INTERNAL_ERROR,'Insufficient working storage size')
+            err = linalg_state_type(this, LINALG_INTERNAL_ERROR,'Insufficient working storage size')
         case (1_ilp:)
             
             if (info==n+2) then 
-                err = linalg_state(this, LINALG_ERROR, 'Ill-conditioned problem: could not sort eigenvalues')
+                err = linalg_state_type(this, LINALG_ERROR, 'Ill-conditioned problem: could not sort eigenvalues')
             elseif (info==n+1) then 
-                err = linalg_state(this, LINALG_ERROR, 'Some selected eigenvalues lost property due to sorting')                
+                err = linalg_state_type(this, LINALG_ERROR, 'Some selected eigenvalues lost property due to sorting')                
             elseif (info==n) then 
-                err = linalg_state(this, LINALG_ERROR, 'Convergence failure: no converged eigenvalues')
+                err = linalg_state_type(this, LINALG_ERROR, 'Convergence failure: no converged eigenvalues')
             else
-                err = linalg_state(this, LINALG_ERROR, 'Convergence failure; converged range is',[info,n])                            
+                err = linalg_state_type(this, LINALG_ERROR, 'Convergence failure; converged range is',[info,n])                            
             end if
             
         case default
             
-            err = linalg_state(this, LINALG_INTERNAL_ERROR, 'GEES catastrophic error: info=', info)
+            err = linalg_state_type(this, LINALG_INTERNAL_ERROR, 'GEES catastrophic error: info=', info)
 
         end select
         
@@ -140,7 +140,7 @@ submodule (stdlib_linalg) stdlib_linalg_schur
         !> [optional] Can A data be overwritten and destroyed?
         logical(lk), optional, intent(in) :: overwrite_a        
         !> [optional] State return flag. On error if not requested, the code will stop
-        type(linalg_state), optional, intent(out) :: err
+        type(linalg_state_type), optional, intent(out) :: err
 
         ! Local variables
         integer(ilp) :: m,n,mt,nt,ldvs,nvs,lde,lwork,sdim,info
@@ -151,7 +151,7 @@ submodule (stdlib_linalg) stdlib_linalg_schur
         ${rt}$, target :: vs_dummy(1,1)
         ${rt}$, pointer :: vs(:,:),work(:),eigs(:)#{if rt.startswith('r')}#,eigi(:)#{endif}#
         character :: jobvs,sort
-        type(linalg_state) :: err0
+        type(linalg_state_type) :: err0
         
         ! Problem size
         m  = size(a, 1, kind=ilp)
@@ -161,12 +161,12 @@ submodule (stdlib_linalg) stdlib_linalg_schur
         
         ! Validate dimensions
         if (m/=n .or. m<=0 .or. n<=0) then
-            err0 = linalg_state(this, LINALG_VALUE_ERROR, 'Matrix A must be square: size(a)=',[m,n])
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'Matrix A must be square: size(a)=',[m,n])
             call linalg_error_handling(err0, err)
             return
         end if    
         if (mt/=nt .or. mt/=n .or. nt/=n) then
-            err0 = linalg_state(this, LINALG_VALUE_ERROR, 'Matrix T must be square: size(T)=',[mt,nt], &
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'Matrix T must be square: size(T)=',[mt,nt], &
                                                           'should be',[m,n])
             call linalg_error_handling(err0, err)
             return
@@ -205,7 +205,7 @@ submodule (stdlib_linalg) stdlib_linalg_schur
             nvs  = size(vs, 2, kind=ilp)
             
             if (ldvs<n .or. nvs/=n) then
-                err0 = linalg_state(this, LINALG_VALUE_ERROR, 'Schur vectors size=',[ldvs,nvs], &
+                err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'Schur vectors size=',[ldvs,nvs], &
                                                               'should be n=',n)
                 goto 1
             end if             
@@ -232,45 +232,37 @@ submodule (stdlib_linalg) stdlib_linalg_schur
         end if
         
         !> User or self-allocated eigenvalue storage
-        if (present(eigvals)) then 
-            
-            lde = size(eigvals, 1, kind=ilp)
-            
+        if (present(eigvals)) then             
+            lde = size(eigvals, 1, kind=ilp)            
             #:if rt.startswith('c')
             eigs => eigvals
             local_eigs = .false.
             #:else
-            ! use A storage if possible
-            if (overwrite_a_) then                 
-                eigs => a(:,1)
-                eigi => a(:,2)
-            else
-                allocate(eigs(n),eigi(n))
-            end if            
             local_eigs = .true.
-            #:endif
-            
-        else
-            
+            #:endif            
+        else            
+            local_eigs = .true.
+            lde = n            
+        end if
+
+        if (local_eigs) then 
             ! Use A storage if possible
             if (overwrite_a_) then                 
                 eigs => a(:,1)
+                #:if rt.startswith('r') 
                 eigi => a(:,2)
+                #:endif
             else
                 allocate(eigs(n)#{if rt.startswith('r')}#,eigi(n)#{endif}#)
-            end if               
-            
-            local_eigs = .true.
-            lde = n
-            
-        end if
+            end if  
+        endif
         
         #:if rt.startswith('c')
         allocate(rwork(n))
         #:endif
 
         if (lde<n) then
-            err0 = linalg_state(this, LINALG_VALUE_ERROR, 'Insufficient eigenvalue array size=',lde, &
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'Insufficient eigenvalue array size=',lde, &
                                                           'should be >=',n)
             goto 2
         end if  

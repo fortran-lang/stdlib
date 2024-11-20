@@ -44,6 +44,8 @@ module stdlib_linalg
   public :: cross_product
   public :: qr
   public :: qr_space
+  public :: schur
+  public :: schur_space
   public :: is_square
   public :: is_diagonal
   public :: is_symmetric
