@@ -8,8 +8,32 @@ submodule (stdlib_linalg) stdlib_linalg_schur
     implicit none(type,external)
 
     character(*), parameter :: this = 'schur'
+    
+    !> List of internal GEES tasks:     
+    !> No task request
+    character, parameter :: GEES_NOT            = 'N'
+    
+    !> Request Schur vectors to be computed
+    character, parameter :: GEES_WITH_VECTORS   = 'V'
+    
+    !> Request Schur vectors to be sorted
+    character, parameter :: GEES_SORTED_VECTORS = 'S' 
 
     contains
+
+    !> Wrapper function for Schur vectors request
+    elemental character function gees_vectors(wanted) 
+        !> Are Schur vectors wanted?
+        logical(lk), intent(in) :: wanted 
+        gees_vectors = merge(GEES_WITH_VECTORS,GEES_NOT,wanted)
+    end function gees_vectors
+    
+    !> Wrapper function for Schur vectors request
+    elemental character function gees_sort_eigs(sorted) 
+        !> Should the eigenvalues be sorted?
+        logical(lk), intent(in) :: sorted 
+        gees_sort_eigs = merge(GEES_SORTED_VECTORS,GEES_NOT,sorted)
+    end function gees_sort_eigs    
 
     !> Wrapper function to handle GEES error codes
     elemental subroutine handle_gees_info(info, m, n, ldvs, err)
