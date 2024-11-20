@@ -275,7 +275,7 @@ submodule (stdlib_linalg) stdlib_linalg_schur
       2 eigenvalue_output: if (local_eigs) then 
            #:if rt.startswith('r')
            ! Build complex eigenvalues
-           eigvals = cmplx(eigs,eigi,kind=${rk}$)
+           if (present(eigvals)) eigvals = cmplx(eigs,eigi,kind=${rk}$)
            #:endif
            if (.not.overwrite_a_) deallocate(eigs#{if rt.startswith('r')}#,eigi#{endif}#)
         endif eigenvalue_output
