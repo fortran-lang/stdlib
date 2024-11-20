@@ -623,23 +623,17 @@ module stdlib_linalg
     !! are implemented using LAPACK's eigenvalue sorting mechanism.
     !! 
     #:for rk,rt,ri in RC_KINDS_TYPES
-      pure module subroutine stdlib_linalg_${ri}$_schur(a,t,z,sdim,output,overwrite_a,sort,storage,err)
+      module subroutine stdlib_linalg_${ri}$_schur(a, t, z, eigvals, storage, err)
          !> Input matrix a[m,m]
          ${rt}$, intent(inout), target :: a(:,:)
          !> Schur form of A: upper-triangular or quasi-upper-triangular matrix T
          ${rt}$, intent(out), contiguous, target :: t(:,:)
          !> Unitary/orthonormal transformation matrix Z
-         ${rt}$, intent(out), contiguous, target :: z(:,:)
-         !> [optional] Number of eigenvalues satisfying the sort condition
-         integer(ilp), optional, intent(out) :: sdim
-         !> [optional] Output type: 'real' or 'complex'
-         character(*), optional, intent(in) :: output
-         !> [optional] Can A data be overwritten and destroyed?
-         logical(lk), optional, intent(in) :: overwrite_a
-         !> [optional] Sorting criterion: callable or predefined values ('lhp', 'rhp', 'iuc', 'ouc', or None)
-         class(*), optional, intent(in) :: sort
+         ${rt}$, optional, intent(out), contiguous, target :: z(:,:)
+         !> [optional] Output eigenvalues that appear on the diagonal of T
+         complex(${rk}$), optional, intent(out), contiguous, target :: eigvals(:)
          !> [optional] Provide pre-allocated workspace, size to be checked with schur_space
-         ${rt}$, intent(out), optional, target :: storage(:)
+         ${rt}$, optional, intent(inout), target :: storage(:)
          !> [optional] State return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err
       end subroutine stdlib_linalg_${ri}$_schur
