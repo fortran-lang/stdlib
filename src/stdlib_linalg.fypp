@@ -316,7 +316,7 @@ module stdlib_linalg
     !!
 
     #:for k1, t1 in RCI_KINDS_TYPES
-    module function hermitian_${t1[0]}$${k1}$(a) result(ah)
+    pure module function hermitian_${t1[0]}$${k1}$(a) result(ah)
         ${t1}$, intent(in) :: a(:,:)
         ${t1}$ :: ah(size(a, 2), size(a, 1))
     end function hermitian_${t1[0]}$${k1}$
