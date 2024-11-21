@@ -312,7 +312,7 @@ module stdlib_linalg
     !! AH = hermitian(A)
     !! ```
     !!
-    !! [Specification](../page/specs/stdlib_linalg.html#hermitian)
+    !! [Specification](../page/specs/stdlib_linalg.html#hermitian-compute-the-hermitian-version-of-a-rank-2-matrix)
     !!
 
     #:for k1, t1 in RCI_KINDS_TYPES
