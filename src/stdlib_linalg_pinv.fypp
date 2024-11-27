@@ -110,12 +110,23 @@ submodule(stdlib_linalg) stdlib_linalg_pseudoinverse
          ${rt}$, intent(in), target :: a(:,:)
          !> Result matrix
          ${rt}$ :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))
+         
+         type(linalg_state_type) :: err
 
          ! Use pointer to circumvent svd intent(inout) restriction
          ${rt}$, pointer :: ap(:,:)
          ap => a
 
-         call stdlib_linalg_pseudoinvert_${ri}$(ap,pinva)
+         call stdlib_linalg_pseudoinvert_${ri}$(ap,pinva,err=err)
+
+         if (err%error()) then 
+         #:if rt.startswith('real')
+         pinva = ieee_value(1.0_${rk}$,ieee_quiet_nan)
+         #:else
+         pinva = cmplx(ieee_value(1.0_${rk}$,ieee_quiet_nan), &
+                       ieee_value(1.0_${rk}$,ieee_quiet_nan), kind=${rk}$)
+         #:endif
+         endif
 
      end function stdlib_linalg_pinv_${ri}$_operator
 
