@@ -1,0 +1,208 @@
+#:include "common.fypp"
+! Test inverse matrix
+module test_linalg_pseudoinverse
+    use stdlib_linalg_interface
+
+    implicit none (type,external)
+
+    contains
+
+    !> Matrix inversion tests
+    subroutine test_pseudoinverse_matrix(error)
+        logical, intent(out) :: error
+
+        real :: t0,t1
+
+        call cpu_time(t0)
+
+        #:for rk,rt,ri in REAL_KINDS_TYPES
+        call test_${ri}$_eye_pseudoinverse(error)
+        if (error) return
+        #:endfor
+        #:for ck,ct,ci in ALL_KINDS_TYPES
+        call test_${ci}$_square_pseudoinverse(error)
+        if (error) return
+        call test_${ci}$_tall_pseudoinverse(error)
+        if (error) return
+        call test_${ci}$_wide_pseudoinverse(error)
+        if (error) return
+        call test_${ci}$_singular_pseudoinverse(error)
+        if (error) return        
+                
+        #:endfor
+
+        call cpu_time(t1)
+
+        print 1, 1000*(t1-t0), merge('SUCCESS','ERROR  ',.not.error)
+
+        1 format('Pseudo-Inverse matrix tests completed in ',f9.4,' milliseconds, result=',a)
+
+    end subroutine test_pseudoinverse_matrix
+
+    !> Invert identity matrix
+    #:for rk,rt,ri in REAL_KINDS_TYPES
+    subroutine test_${ri}$_eye_pseudoinverse(error)
+        logical, intent(out) :: error
+
+        type(linalg_state) :: state
+
+        integer(ilp) :: i,j
+        integer(ilp), parameter :: n = 15_ilp
+        real(${rk}$), parameter :: tol = sqrt(epsilon(0.0_${rk}$))
+
+        ${rt}$ :: a(n,n),inva(n,n)
+
+        do concurrent (i=1:n,j=1:n)
+          a(i,j) = merge(1.0_${rk}$,0.0_${rk}$,i==j)
+        end do
+
+        !> Invert function
+        inva = pinv(a,err=state)
+        error = state%error() .or. .not.all(abs(a-inva)<tol)
+        if (error) return
+
+        !> Inverse subroutine
+        call pseudoinvert(a,inva,err=state)
+        error = state%error() .or. .not.all(abs(a-inva)<tol)
+        
+        !> Operator 
+        inva = .pinv.a
+        error = .not.all(abs(a-inva)<tol)
+
+    end subroutine test_${ri}$_eye_pseudoinverse
+
+    #:endfor
+
+    #:for ck,ct,ci in ALL_KINDS_TYPES
+
+    !> Test edge case: square matrix
+    subroutine test_${ci}$_square_pseudoinverse(error)
+        logical, intent(out) :: error
+
+        type(linalg_state) :: state
+
+        integer(ilp) :: failed
+        integer(ilp), parameter :: n = 10
+        real(${ck}$), parameter :: tol = sqrt(epsilon(0.0_${ck}$))
+        ${ct}$ :: a(n, n), inva(n, n)
+        #:if ct.startswith('complex')
+        real(${ck}$) :: rea(n, n, 2)
+        
+        call random_number(rea)
+        a = cmplx(rea(:, :, 1), rea(:, :, 2), kind=${ck}$)
+        #:else
+        
+        call random_number(a)
+        #:endif
+        
+        inva = pinv(a, err=state)
+        error = state%error(); if (error) return
+        
+        failed = count(abs(a - matmul(a, matmul(inva, a))) > tol)
+        error = failed > 0; if (error) return
+        
+        failed = count(abs(inva - matmul(inva, matmul(a, inva))) > tol)
+        error = failed > 0; if (error) return
+
+    end subroutine test_${ci}$_square_pseudoinverse
+
+    !> Test edge case: tall matrix
+    subroutine test_${ci}$_tall_pseudoinverse(error)
+        logical, intent(out) :: error
+
+        type(linalg_state) :: state
+
+        integer(ilp) :: failed
+        integer(ilp), parameter :: m = 20, n = 10
+        real(${ck}$), parameter :: tol = sqrt(epsilon(0.0_${ck}$))
+        ${ct}$ :: a(m, n), inva(n, m)
+        #:if ct.startswith('complex')
+        real(${ck}$) :: rea(m, n, 2)
+        
+        call random_number(rea)
+        a = cmplx(rea(:, :, 1), rea(:, :, 2), kind=${ck}$)
+        #:else
+        
+        call random_number(a)
+        #:endif
+        
+        inva = pinv(a, err=state)
+        error = state%error(); if (error) return
+        
+        failed = count(abs(a - matmul(a, matmul(inva, a))) > tol)
+        error = failed > 0; if (error) return
+        
+        failed = count(abs(inva - matmul(inva, matmul(a, inva))) > tol)
+        error = failed > 0; if (error) return
+
+    end subroutine test_${ci}$_tall_pseudoinverse
+
+    !> Test edge case: wide matrix
+    subroutine test_${ci}$_wide_pseudoinverse(error)
+        logical, intent(out) :: error
+
+        type(linalg_state) :: state
+
+        integer(ilp) :: failed
+        integer(ilp), parameter :: m = 10, n = 20
+        real(${ck}$), parameter :: tol = sqrt(epsilon(0.0_${ck}$))
+        ${ct}$ :: a(m, n), inva(n, m)
+        #:if ct.startswith('complex')
+        real(${ck}$) :: rea(m, n, 2)
+        
+        call random_number(rea)
+        a = cmplx(rea(:, :, 1), rea(:, :, 2), kind=${ck}$)
+        #:else
+        
+        call random_number(a)
+        #:endif
+        
+        inva = pinv(a, err=state)
+        error = state%error(); if (error) return
+        
+        failed = count(abs(a - matmul(a, matmul(inva, a))) > tol)
+        error = failed > 0; if (error) return
+        
+        failed = count(abs(inva - matmul(inva, matmul(a, inva))) > tol)
+        error = failed > 0; if (error) return
+
+    end subroutine test_${ci}$_wide_pseudoinverse
+
+    !> Test edge case: singular matrix
+    subroutine test_${ci}$_singular_pseudoinverse(error)
+        logical, intent(out) :: error
+
+        type(linalg_state) :: state
+
+        integer(ilp) :: failed
+        integer(ilp), parameter :: n = 10
+        real(${ck}$), parameter :: tol = sqrt(epsilon(0.0_${ck}$))
+        ${ct}$ :: a(n, n), inva(n, n)
+        #:if ct.startswith('complex')
+        real(${ck}$) :: rea(n, n, 2)
+        
+        call random_number(rea)
+        a = cmplx(rea(:, :, 1), rea(:, :, 2), kind=${ck}$)
+        #:else
+        
+        call random_number(a)
+        #:endif
+        
+        ! Make the matrix singular
+        a(:, 1) = a(:, 2)
+        
+        inva = pinv(a, err=state)
+        
+        failed = count(abs(a - matmul(a, matmul(inva, a))) > tol)
+        error = failed > 0; if (error) return
+        
+        failed = count(abs(inva - matmul(inva, matmul(a, inva))) > tol)
+        error = failed > 0; if (error) return
+        
+    end subroutine test_${ci}$_singular_pseudoinverse
+
+    #:endfor
+
+end module test_linalg_pseudoinverse
+
+
