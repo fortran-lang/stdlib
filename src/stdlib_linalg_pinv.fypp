@@ -7,7 +7,7 @@ submodule(stdlib_linalg) stdlib_linalg_pseudoinverse
      use stdlib_linalg_lapack
      use stdlib_linalg_state
      use stdlib_linalg, only: svd
-     use iso_fortran_env,only:real32,real64,real128,int8,int16,int32,int64,stderr => error_unit
+     use ieee_arithmetic, only: ieee_value, ieee_quiet_nan
      implicit none(type,external)
      
      character(*), parameter :: this = 'pseudo-inverse'
@@ -21,8 +21,8 @@ submodule(stdlib_linalg) stdlib_linalg_pseudoinverse
          !> Input matrix a[m,n]
          ${rt}$, intent(inout) :: a(:,:)
          !> Output pseudo-inverse matrix
-         ${rt}$, intent(inout) :: pinva(:,:)
-         !> [optional] ....
+         ${rt}$, intent(out) :: pinva(:,:)
+         !> [optional] Relative tolerance for singular value cutoff
          real(${rk}$), optional, intent(in) :: rtol
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err
@@ -89,7 +89,7 @@ submodule(stdlib_linalg) stdlib_linalg_pseudoinverse
      module function stdlib_linalg_pseudoinverse_${ri}$(a,rtol,err) result(pinva)
          !> Input matrix a[m,n]
          ${rt}$, intent(in), target :: a(:,:)
-         !> [optional] ....
+         !> [optional] Relative tolerance for singular value cutoff
          real(${rk}$), optional, intent(in) :: rtol         
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err
@@ -108,7 +108,7 @@ submodule(stdlib_linalg) stdlib_linalg_pseudoinverse
      module function stdlib_linalg_pinv_${ri}$_operator(a) result(pinva)
          !> Input matrix a[m,n]
          ${rt}$, intent(in), target :: a(:,:)
-         !> Result matrix
+         !> Result pseudo-inverse matrix
          ${rt}$ :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))
          
          type(linalg_state_type) :: err
