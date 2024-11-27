@@ -910,7 +910,7 @@ module stdlib_linalg
     !! version: experimental 
     !!
     !! Pseudo-inverse operator of a matrix
-    !! ([Specification](../page/specs/stdlib_linalg.html#pinv-pseudo-inverse-operator-of-a-matrix))
+    !! ([Specification](../page/specs/stdlib_linalg.html#pinv-moore-penrose-pseudo-inverse-operator))
     !!
     !!### Summary
     !! Operator interface for computing the Moore-Penrose pseudo-inverse of a `real` or `complex` matrix.
