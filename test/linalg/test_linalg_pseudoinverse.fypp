@@ -5,7 +5,6 @@ module test_linalg_pseudoinverse
     use testdrive, only: error_type, check, new_unittest, unittest_type
     use stdlib_linalg
     use stdlib_linalg_constants
-    use stdlib_linalg_pseudoinverse
 
     implicit none (type,external)
     private

@@ -29,6 +29,9 @@ module stdlib_linalg
   public :: inv
   public :: invert
   public :: operator(.inv.)
+  public :: pinv
+  public :: pseudoinvert
+  public :: operator(.pinv.)
   public :: lstsq
   public :: lstsq_space
   public :: norm
@@ -808,6 +811,50 @@ module stdlib_linalg
     #:endfor
   end interface operator(.inv.)
 
+
+  ! Moose-Penrose Pseudo-Inverse: Function interface
+  interface pinv
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    module function stdlib_linalg_pseudoinverse_${ri}$(a,rtol,err) result(pinva)
+        !> Input matrix a[m,n]
+        ${rt}$, intent(in), target :: a(:,:)
+        !> [optional] ....
+        real(${rk}$), optional, intent(in) :: rtol         
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+        !> Matrix pseudo-inverse
+        ${rt}$ :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))         
+     end function stdlib_linalg_pseudoinverse_${ri}$
+    #:endfor
+  end interface pinv
+
+  ! Matrix Inverse: Subroutine interface - in-place inversion
+  interface pseudoinvert
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    module subroutine stdlib_linalg_pseudoinvert_${ri}$(a,pinva,rtol,err)
+        !> Input matrix a[m,n]
+        ${rt}$, intent(inout) :: a(:,:)
+        !> Output pseudo-inverse matrix
+        ${rt}$, intent(inout) :: pinva(:,:)
+        !> [optional] ....
+        real(${rk}$), optional, intent(in) :: rtol
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine
+    #:endfor
+  end interface pseudoinvert
+
+  ! Operator interface
+  interface operator(.pinv.)
+     #:for rk,rt,ri in RC_KINDS_TYPES
+     module function stdlib_linalg_pinv_${ri}$_operator(a) result(pinva)
+         !> Input matrix a[m,n]
+         ${rt}$, intent(in), target :: a(:,:)
+         !> Result matrix
+         ${rt}$ :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))
+     end function  
+     #:endfor
+  end interface operator(.pinv.)
 
   ! Eigendecomposition of a square matrix: eigenvalues, and optionally eigenvectors
   interface eig    
