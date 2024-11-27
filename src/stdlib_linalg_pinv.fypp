@@ -1,11 +1,12 @@
 #:include "common.fypp"
-! Compute the (Moore-Penrose) pseudo-inverse of a matrix.
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 module stdlib_linalg_pseudoinverse
+!! Compute the (Moore-Penrose) pseudo-inverse of a matrix.    
      use stdlib_linalg_constants
      use stdlib_linalg_blas
      use stdlib_linalg_lapack
      use stdlib_linalg_state
-     use stdlib_linalg_svd, only: svd
+     use stdlib_linalg, only: svd
      use iso_fortran_env,only:real32,real64,real128,int8,int16,int32,int64,stderr => error_unit
      implicit none(type,external)
      private
@@ -19,21 +20,21 @@ module stdlib_linalg_pseudoinverse
 
      ! Function interface
      interface pinv
-        #:for rk,rt,ri in ALL_KINDS_TYPES
+        #:for rk,rt,ri in RC_KINDS_TYPES
         module procedure stdlib_linalg_pseudoinverse_${ri}$
         #:endfor
      end interface pinv
 
      ! Subroutine interface
      interface pseudoinvert
-        #:for rk,rt,ri in ALL_KINDS_TYPES
+        #:for rk,rt,ri in RC_KINDS_TYPES
         module procedure stdlib_linalg_pseudoinvert_${ri}$
         #:endfor
      end interface pseudoinvert
 
      ! Operator interface
      interface operator(.pinv.)
-        #:for rk,rt,ri in ALL_KINDS_TYPES
+        #:for rk,rt,ri in RC_KINDS_TYPES
         module procedure stdlib_linalg_pinv_${ri}$_operator
         #:endfor
      end interface operator(.pinv.)
@@ -42,7 +43,7 @@ module stdlib_linalg_pseudoinverse
 
      contains
 
-     #:for rk,rt,ri in ALL_KINDS_TYPES
+     #:for rk,rt,ri in RC_KINDS_TYPES
 
      ! Compute the in-place pseudo-inverse of matrix a
      subroutine stdlib_linalg_pseudoinvert_${ri}$(a,pinva,rtol,err)
@@ -53,13 +54,13 @@ module stdlib_linalg_pseudoinverse
          !> [optional] ....
          real(${rk}$), optional, intent(in) :: rtol
          !> [optional] state return flag. On error if not requested, the code will stop
-         type(linalg_state), optional, intent(out) :: err
+         type(linalg_state_type), optional, intent(out) :: err
 
          ! Local variables
          real(${rk}$) :: tolerance,cutoff
          real(${rk}$), allocatable :: s(:)
          ${rt}$, allocatable :: u(:,:),vt(:,:)
-         type(linalg_state) :: err0
+         type(linalg_state_type) :: err0
          integer(ilp) :: m,n,k,i,j
          
          ! Problem size
@@ -67,13 +68,13 @@ module stdlib_linalg_pseudoinverse
          n = size(a,2,kind=ilp)
          k = min(m,n)
          if (m<1 .or. n<1) then
-            err0 = linalg_state(this,LINALG_VALUE_ERROR,'invalid matrix size: a=',[m,n])
+            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size: a=',[m,n])
             call linalg_error_handling(err0,err)
             return
          end if         
          
          if (any(shape(pinva,kind=ilp)/=[n,m])) then
-            err0 = linalg_state(this,LINALG_VALUE_ERROR,'invalid pinv size:',shape(pinva),'should be',[n,m])
+            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid pinv size:',shape(pinva),'should be',[n,m])
             call linalg_error_handling(err0,err)
             return
          end if                  
@@ -89,7 +90,7 @@ module stdlib_linalg_pseudoinverse
          allocate(s(k),u(m,k),vt(k,n))
          call svd(a,s,u,vt,overwrite_a=.false.,full_matrices=.false.,err=err0)
          if (err0%error()) then 
-            err0 = linalg_state(this,LINALG_ERROR,'svd failure -',err0%message)
+            err0 = linalg_state_type(this,LINALG_ERROR,'svd failure -',err0%message)
             call linalg_error_handling(err0,err)
             return
          endif
@@ -120,7 +121,7 @@ module stdlib_linalg_pseudoinverse
          !> [optional] ....
          real(${rk}$), optional, intent(in) :: rtol         
          !> [optional] state return flag. On error if not requested, the code will stop
-         type(linalg_state), optional, intent(out) :: err
+         type(linalg_state_type), optional, intent(out) :: err
          !> Matrix pseudo-inverse
          ${rt}$ :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))         
          
