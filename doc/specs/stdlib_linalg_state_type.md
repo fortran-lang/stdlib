@@ -1,11 +1,7 @@
----
-title: linalg_state_type
----
+# `stdlib_linalg_state`
 
-# Linear Algebra -- State and Error Handling Module
-
-[TOC]
-
+Linear Algebra : State and Error Handling Module
+ 
 ## Introduction
 
 The `stdlib_linalg_state` module provides a derived type holding information on the  
@@ -46,8 +42,8 @@ Experimental
 
 #### Example
 
-```fortran
-{!example/linalg/example_state1.f90!}
+```{literalinclude} ../../example/linalg/example_state1.f90
+:language: Fortran
 ```
 
 ## Error flags provided

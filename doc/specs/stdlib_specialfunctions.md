@@ -1,11 +1,5 @@
----
-title: specialfunctions
----
-
-# Special functions
-
-[TOC]
-
+# `stdlib_specialfunctions`
+ 
 ## `legendre` - Calculate Legendre polynomials
 
 ### Status
