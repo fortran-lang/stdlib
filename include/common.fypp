@@ -18,6 +18,11 @@
 #:set WITH_XDP = False
 #:endif
 
+#! Support for linear algebra with 64-bit integer sizes
+#:if not defined("WITH_ILP64")
+#:set WITH_ILP64 = False
+#:endif
+
 #! Real kinds to be considered during templating
 #:set REAL_KINDS = ["sp", "dp"]
 #:if WITH_XDP
@@ -73,6 +78,16 @@
 #:def c2ri(cmplx)
 $:"s" if cmplx=="c" else "d" if cmplx=="z" else "x" if cmplx=="y" else "q" if cmplx=="w" else "ERROR"
 #:enddef
+
+#! BLAS/LAPACK/Linear Algebra Integer Kinds
+#:set LINALG_INT_KINDS       = ["ilp"]
+#:set LINALG_INT_SUFFIX      = [""]
+#:if WITH_ILP64
+#:set LINALG_INT_KINDS       = LINALG_INT_KINDS+["ilp64"]
+#:set LINALG_INT_SUFFIX      = LINALG_INT_SUFFIX+["_I64"]
+#:endif
+#:set LINALG_INT_TYPES       = ["integer({})".format(k) for k in LINALG_INT_KINDS]
+#:set LINALG_INT_KINDS_TYPES = list(zip(LINALG_INT_KINDS, LINALG_INT_TYPES, LINALG_INT_SUFFIX))
 
 #! Complex types to be considered during templating
 #:set CMPLX_TYPES = ["complex({})".format(k) for k in CMPLX_KINDS]
