@@ -7,6 +7,7 @@ module stdlib_io
   use, intrinsic :: iso_fortran_env, only : input_unit
   use stdlib_kinds, only: sp, dp, xdp, qp, &
       int8, int16, int32, int64
+  use stdlib_error, only: error_stop
   use stdlib_optval, only: optval
   use stdlib_ascii, only: is_blank
   use stdlib_string_type, only : string_type
@@ -150,7 +151,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
-           error stop trim(msgout)
+           call error_stop(msg=trim(msgout))
         end if
         
       end do
@@ -165,7 +166,7 @@ contains
           
           if (ios/=0) then 
              write(msgout,1) trim(iomsg),i,trim(filename) 
-             error stop trim(msgout)
+             call error_stop(msg=trim(msgout))
           end if          
           
         enddo
@@ -176,7 +177,7 @@ contains
           
           if (ios/=0) then 
              write(msgout,1) trim(iomsg),i,trim(filename) 
-             error stop trim(msgout)
+             call error_stop(msg=trim(msgout))
           end if             
           
         enddo
@@ -250,7 +251,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
-           error stop trim(msgout)
+           call error_stop(msg=trim(msgout))
         end if
         
       end do
@@ -265,7 +266,7 @@ contains
           
           if (ios/=0) then 
              write(msgout,1) trim(iomsg),i,trim(filename) 
-             error stop trim(msgout)
+             call error_stop(msg=trim(msgout))
           end if          
           
         enddo
@@ -276,7 +277,7 @@ contains
           
           if (ios/=0) then 
              write(msgout,1) trim(iomsg),i,trim(filename) 
-             error stop trim(msgout)
+             call error_stop(msg=trim(msgout))
           end if             
           
         enddo
@@ -350,7 +351,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
-           error stop trim(msgout)
+           call error_stop(msg=trim(msgout))
         end if
         
       end do
@@ -365,7 +366,7 @@ contains
           
           if (ios/=0) then 
              write(msgout,1) trim(iomsg),i,trim(filename) 
-             error stop trim(msgout)
+             call error_stop(msg=trim(msgout))
           end if          
           
         enddo
@@ -376,7 +377,7 @@ contains
           
           if (ios/=0) then 
              write(msgout,1) trim(iomsg),i,trim(filename) 
-             error stop trim(msgout)
+             call error_stop(msg=trim(msgout))
           end if             
           
         enddo
@@ -450,7 +451,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
-           error stop trim(msgout)
+           call error_stop(msg=trim(msgout))
         end if
         
       end do
@@ -465,7 +466,7 @@ contains
           
           if (ios/=0) then 
              write(msgout,1) trim(iomsg),i,trim(filename) 
-             error stop trim(msgout)
+             call error_stop(msg=trim(msgout))
           end if          
           
         enddo
@@ -476,7 +477,7 @@ contains
           
           if (ios/=0) then 
              write(msgout,1) trim(iomsg),i,trim(filename) 
-             error stop trim(msgout)
+             call error_stop(msg=trim(msgout))
           end if             
           
         enddo
@@ -550,7 +551,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
-           error stop trim(msgout)
+           call error_stop(msg=trim(msgout))
         end if
         
       end do
@@ -565,7 +566,7 @@ contains
           
           if (ios/=0) then 
              write(msgout,1) trim(iomsg),i,trim(filename) 
-             error stop trim(msgout)
+             call error_stop(msg=trim(msgout))
           end if          
           
         enddo
@@ -576,7 +577,7 @@ contains
           
           if (ios/=0) then 
              write(msgout,1) trim(iomsg),i,trim(filename) 
-             error stop trim(msgout)
+             call error_stop(msg=trim(msgout))
           end if             
           
         enddo
@@ -650,7 +651,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
-           error stop trim(msgout)
+           call error_stop(msg=trim(msgout))
         end if
         
       end do
@@ -665,7 +666,7 @@ contains
           
           if (ios/=0) then 
              write(msgout,1) trim(iomsg),i,trim(filename) 
-             error stop trim(msgout)
+             call error_stop(msg=trim(msgout))
           end if          
           
         enddo
@@ -676,7 +677,7 @@ contains
           
           if (ios/=0) then 
              write(msgout,1) trim(iomsg),i,trim(filename) 
-             error stop trim(msgout)
+             call error_stop(msg=trim(msgout))
           end if             
           
         enddo
@@ -751,7 +752,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
-           error stop trim(msgout)
+           call error_stop(msg=trim(msgout))
         end if
         
       end do
@@ -766,7 +767,7 @@ contains
           
           if (ios/=0) then 
              write(msgout,1) trim(iomsg),i,trim(filename) 
-             error stop trim(msgout)
+             call error_stop(msg=trim(msgout))
           end if          
           
         enddo
@@ -777,7 +778,7 @@ contains
           
           if (ios/=0) then 
              write(msgout,1) trim(iomsg),i,trim(filename) 
-             error stop trim(msgout)
+             call error_stop(msg=trim(msgout))
           end if             
           
         enddo
@@ -852,7 +853,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
-           error stop trim(msgout)
+           call error_stop(msg=trim(msgout))
         end if
         
       end do
@@ -867,7 +868,7 @@ contains
           
           if (ios/=0) then 
              write(msgout,1) trim(iomsg),i,trim(filename) 
-             error stop trim(msgout)
+             call error_stop(msg=trim(msgout))
           end if          
           
         enddo
@@ -878,7 +879,7 @@ contains
           
           if (ios/=0) then 
              write(msgout,1) trim(iomsg),i,trim(filename) 
-             error stop trim(msgout)
+             call error_stop(msg=trim(msgout))
           end if             
           
         enddo
@@ -920,7 +921,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
-           error stop trim(msgout)
+           call error_stop(msg=trim(msgout))
         end if           
         
       end do
@@ -958,7 +959,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
-           error stop trim(msgout)
+           call error_stop(msg=trim(msgout))
         end if           
         
       end do
@@ -996,7 +997,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
-           error stop trim(msgout)
+           call error_stop(msg=trim(msgout))
         end if           
         
       end do
@@ -1034,7 +1035,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
-           error stop trim(msgout)
+           call error_stop(msg=trim(msgout))
         end if           
         
       end do
@@ -1072,7 +1073,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
-           error stop trim(msgout)
+           call error_stop(msg=trim(msgout))
         end if           
         
       end do
@@ -1110,7 +1111,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
-           error stop trim(msgout)
+           call error_stop(msg=trim(msgout))
         end if           
         
       end do
@@ -1148,7 +1149,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
-           error stop trim(msgout)
+           call error_stop(msg=trim(msgout))
         end if           
         
       end do
@@ -1186,7 +1187,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
-           error stop trim(msgout)
+           call error_stop(msg=trim(msgout))
         end if           
         
       end do
@@ -1321,7 +1322,7 @@ contains
       position_='asis'
       status_='new'
     case default
-      error stop "Unsupported mode: "//mode_(1:2)
+      call error_stop("Unsupported mode: "//mode_(1:2))
     end select
 
     select case (mode_(3:3))
@@ -1330,7 +1331,7 @@ contains
     case('b')
       form_='unformatted'
     case default
-      error stop "Unsupported mode: "//mode_(3:3)   
+      call error_stop("Unsupported mode: "//mode_(3:3))
     end select
 
     access_ = 'stream'
@@ -1376,9 +1377,9 @@ contains
       else if (a(i:i) == ' ') then
         cycle
       else if(any(.not.lfirst)) then
-        error stop "Wrong mode: "//trim(a)
+        call error_stop("Wrong mode: "//trim(a))
       else
-        error stop "Wrong character: "//a(i:i)
+        call error_stop("Wrong character: "//a(i:i))
       endif
     end do
 
@@ -1427,7 +1428,7 @@ contains
     if (present(iostat)) then
       iostat = stat
     else if (stat /= 0) then
-      error stop trim(msg)  
+      call error_stop(trim(msg))
     end if
   end subroutine getline_char
 
