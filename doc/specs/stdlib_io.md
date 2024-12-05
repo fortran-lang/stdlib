@@ -136,11 +136,11 @@ Loads an `array` from a npy formatted binary file.
 
 ### Syntax
 
-`call ` [[stdlib_io_npy(module):load_npy(interface)]] `(filename, array[, iostat][, iomsg])`
+`call ` [[stdlib_io_np(module):load_npy(interface)]] `(filename, array[, iostat][, iomsg])`
 
 ### Arguments
 
-`filename`: Shall be  a character expression containing the file name from which to load the `array`.
+`filename`: Shall be a character expression containing the file name from which to load the `array`.
             This argument is `intent(in)`.
 
 `array`: Shall be an allocatable array of any rank of type `real`, `complex` or `integer`.
@@ -164,7 +164,6 @@ Returns an allocated `array` with the content of `filename` in case of success.
 {!example/io/example_loadnpy.f90!}
 ```
 
-
 ## `save_npy`
 
 ### Status
@@ -177,7 +176,7 @@ Saves an `array` into a npy formatted binary file.
 
 ### Syntax
 
-`call ` [[stdlib_io_npy(module):save_npy(interface)]] `(filename, array[, iostat][, iomsg])`
+`call ` [[stdlib_io_np(module):save_npy(interface)]] `(filename, array[, iostat][, iomsg])`
 
 ### Arguments
 
@@ -203,6 +202,70 @@ Provides a npy file called `filename` that contains the rank-2 `array`.
 
 ```fortran
 {!example/io/example_savenpy.f90!}
+```
+
+## `load_npz`
+
+### Status
+
+Experimental
+
+### Description
+
+Populates an array of `array_wrapper_type` with the contents of an npz file.
+
+### Syntax
+
+`call ` [[stdlib_io_np(module):load_npz(interface)]] `(filename, arrays[, iostat][, iomsg][, tmp_dir])`
+
+### Arguments
+
+`filename`: Shall be a character expression containing the name of the npz file to load from. The argument is `intent(in)`.
+
+`arrays`: Shall be an allocatable array of type `array_wrapper_type` to load the content of the npz file to. This argument is `intent(out)`.
+
+`iostat`: Default integer, contains status of loading to file, zero in case of success. This argument is `optional` and `intent(out)`.
+
+`iomsg`: Deferred length character value, contains error message in case `iostat` is non-zero. It is an optional argument, error message will be dropped if not present. This argument is `intent(out)`.
+
+`tmp_dir`: Shall be a character expression containing the name of the temporary directory to extract the npz file to. The argument is `optional` and `intent(in)`.
+
+### Example
+
+```fortran
+{!example/io/example_load_npz.f90!}
+```
+
+## `save_npz`
+
+### Status
+
+Experimental
+
+### Description
+
+Saves an array of `array_wrapper_type` into a npz file.
+
+### Syntax
+
+`call ` [[stdlib_io_np(module):save_npz(interface)]] `(filename, arrays[, iostat][, iomsg][, compressed])`
+
+### Arguments
+
+`filename`: Shall be a character expression containing the name of the file that contains the arrays. This argument is `intent(in)`.
+
+`arrays`: Shall be arrays of type `array_wrapper_type` that are meant to be saved to disk. This argument is `intent(in)`.
+
+`iostat`: Default integer, contains status of saving to file, zero in case of success. This argument is `optional` and `intent(out)`.
+
+`iomsg`: Deferred length character value, contains error message in case `iostat` is non-zero. It is an optional argument, error message will be dropped if not present. This argument is `intent(out)`.
+
+`compressed`: Shall be a logical expression that determines if the npz file should be compressed. The argument is `optional` and `intent(in)`. The default value is `.false.`.
+
+### Example
+
+```fortran
+{!example/io/example_save_npz.f90!}
 ```
 
 ## `getline`
@@ -260,3 +323,117 @@ Provides formats for all kinds as defined in the `stdlib_kinds` module.
 ```fortran
 {!example/io/example_fmt_constants.f90!}
 ```
+
+## `zip`
+
+### Status
+
+Experimental
+
+### Description
+
+Compresses a file or directory into a zip archive.
+
+### Syntax
+
+`call ` [[stdlib_io_zip(module):zip(subroutine)]] ` (output_file, files[, stat][, msg][, compressed])`
+
+### Arguments
+
+`output_file`: Character expression representing the name of the zip file to create. This argument is `intent(in)`.
+
+`files`: Array of `string_type` representing the names of the files to compress. This argument is `intent(in)`.
+
+`stat`: Default integer, contains status of reading from unit, zero in case of success. This argument is `optional` and `intent(out)`.
+
+`msg`: Deferred length character value, contains error message in case `iostat` is non-zero. It is an `optional` argument, error message will be dropped if not present. This argument is `intent(out)`.
+
+`compressed`: Logical expression that determines if the zip file should be compressed. The argument is `optional` and `intent(in)`. The default value is `.true.`.
+
+## `unzip`
+
+### Status
+
+Experimental
+
+### Description
+
+Extracts a zip archive into a directory.
+
+### Syntax
+
+`call ` [[stdlib_io_zip(module):unzip(subroutine)]] ` (filename, outputdir[, stat][, msg])`
+
+### Arguments
+
+`filename`: Character expression representing the name of the zip file to extract. This argument is `intent(in)`.
+
+`outputdir`: Character expression representing the name of the directory to extract the zip file to. This argument is `intent(in)`.
+
+`stat`: Default integer, contains status of reading from unit, zero in case of success. This argument is `optional` and `intent(out)`.
+
+`msg`: Deferred length character value, contains error message in case `iostat` is non-zero. It is an `optional` argument, error message will be dropped if not present. This argument is `intent(out)`.
+
+## `exists`
+
+### Status
+
+Experimental
+
+### Description
+
+Whether a file or directory exists at the given location in the filesystem.
+
+### Syntax
+
+`is_existing = ` [[stdlib_io_filesystem(module):exists(function)]] ` (filename)`
+
+### Arguments
+
+`filename`: Character expression representing the name of the file or directory to check for existence. This argument is `intent(in)`.
+
+## `list_dir`
+
+### Status
+
+Experimental
+
+### Description
+
+Lists the contents of a directory.
+
+### Syntax
+
+`call ` [[stdlib_io_filesystem(module):list_dir(subroutine)]] ` (dir, files[, iostat][, iomsg])`
+
+### Arguments
+
+`dir`: Character expression representing the name of the directory to list. This argument is `intent(in)`.
+
+`files`: Array of `string_type` representing the names of the files in the directory. This argument is `intent(out)`.
+
+`iostat`: Default integer, contains status of reading from unit, zero in case of success. This argument is `optional` and `intent(out)`.
+
+`iomsg`: Deferred length character value, contains error message in case `iostat` is non-zero. It is an `optional` argument, error message will be dropped if not present. This argument is `intent(out)`.
+
+## `run`
+
+### Status
+
+Experimental
+
+### Description
+
+Runs a command in the shell.
+
+### Syntax
+
+`call ` [[stdlib_io_filesystem(module):run(subroutine)]] ` (command[, iostat][, iomsg])`
+
+### Arguments
+
+`command`: Character expression representing the command to run. This argument is `intent(in)`.
+
+`iostat`: Default integer, contains status of reading from unit, zero in case of success. This argument is `optional` and `intent(out)`.
+
+`iomsg`: Deferred length character value, contains error message in case `iostat` is non-zero. It is an `optional` argument, error message will be dropped if not present. This argument is `intent(out)`.

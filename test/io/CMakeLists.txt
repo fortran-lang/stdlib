@@ -13,7 +13,12 @@ ADDTEST(savetxt_qp)
 set_tests_properties(loadtxt_qp PROPERTIES LABELS quadruple_precision)
 set_tests_properties(savetxt_qp PROPERTIES LABELS quadruple_precision)
 
+ADDTEST(filesystem)
 ADDTEST(getline)
-ADDTEST(npy)
 ADDTEST(open)
 ADDTEST(parse_mode)
+
+ADDTEST(np)
+ADDTEST(zip)
+set_tests_properties(np PROPERTIES WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+set_tests_properties(zip PROPERTIES WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
