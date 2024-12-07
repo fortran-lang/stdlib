@@ -25,6 +25,7 @@ module stdlib_linalg
   public :: lstsq
   public :: lstsq_space
   public :: norm
+  public :: mnorm
   public :: get_norm
   public :: solve
   public :: solve_lu  
@@ -4453,6 +4454,361 @@ module stdlib_linalg
            type(linalg_state_type), intent(out), optional :: err           
         end subroutine  norm_4D_to_3D_int_z
   end interface get_norm
+
+  !> Matrix norms: function interface
+  interface mnorm
+     !! version: experimental 
+     !!
+     !! Computes the matrix norm of a generic-rank array \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#mnorm-computes-the-matrix-norm-of-a-generic-rank-array))
+     !! 
+     !!### Summary 
+     !! Return one of several matrix norm metrics of a `real` or `complex` input array \( A \), 
+     !! that can have rank 2 or higher. For rank-2 arrays, the matrix norm is returned.
+     !! If rank>2 and the optional input dimensions `dim` are specified, 
+     !! a rank `n-2` array is returned with dimensions `dim(1),dim(2)` collapsed, containing all 
+     !! matrix norms evaluated over the specified dimensions only. `dim==[1,2]` are assumed as default
+     !! dimensions if not specified.
+     !! 
+     !!### Description
+     !! 
+     !! This interface provides methods for computing the matrix norm(s) of an array.  
+     !! Supported data types include `real` and `complex`. 
+     !! Input arrays must have rank >= 2.
+     !!
+     !! Norm type input is optional, and it is provided via the `order` argument. 
+     !! This can be provided as either an `integer` value or a `character` string. 
+     !! Allowed metrics are: 
+     !! - 1-norm: `order` = 1 or '1'    
+     !! - 2-norm: `order` = 2 or '2'
+     !! - Euclidean/Frobenius: `order` = 'Euclidean','Frobenius', or argument not specified
+     !! - Infinity norm: `order` = huge(0) or 'Inf'
+     !! 
+     !! If an invalid norm type is provided, the routine returns an error state.
+     !!
+     !!### Example
+     !!
+     !!```fortran
+     !!    real(sp) :: a(3,3), na
+     !!    real(sp) :: b(3,3,4), nb(4)  ! Array of 4 3x3 matrices
+     !!    a = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
+     !!    
+     !!    ! Euclidean/Frobenius norm of single matrix
+     !!    na = mnorm(a)
+     !!    na = mnorm(a, 'Euclidean')
+     !!   
+     !!    ! 1-norm of each 3x3 matrix in b
+     !!    nb = mnorm(b, 1, dim=[1,2])
+     !!     
+     !!    ! Infinity-norm 
+     !!    na = mnorm(b, 'inf', dim=[3,2])
+     !!```     
+     !!
+      
+      !> Matrix norms: real(sp) rank-2 arrays
+      module function matrix_norm_char_s(a, order, err) result(nrm)
+        !> Input matrix a(m,n)
+        real(sp), intent(in), target :: a(:,:)
+        !> Norm of the matrix.        
+        real(sp) :: nrm
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), intent(out), optional :: err      
+      end function matrix_norm_char_s
+      
+      !> Matrix norms: real(sp) higher rank arrays
+      module function matrix_norm_3D_to_1D_char_s(a, order, dim, err) result(nrm)
+          !> Input matrix a(m,n)
+          real(sp), intent(in), contiguous, target :: a(:,:,:)
+          !> Norm of the matrix.        
+          real(sp), allocatable :: nrm(:)
+          !> Order of the matrix norm being computed.
+          character(len=*), intent(in) :: order
+          !> [optional] dimensions of the sub-matrices the norms should be evaluated at (default = [1,2])
+          integer(ilp), optional, intent(in) :: dim(2)
+          !> [optional] state return flag. On error if not requested, the code will stop
+          type(linalg_state_type), intent(out), optional :: err        
+      end function matrix_norm_3D_to_1D_char_s
+      module function matrix_norm_4D_to_2D_char_s(a, order, dim, err) result(nrm)
+          !> Input matrix a(m,n)
+          real(sp), intent(in), contiguous, target :: a(:,:,:,:)
+          !> Norm of the matrix.        
+          real(sp), allocatable :: nrm(:,:)
+          !> Order of the matrix norm being computed.
+          character(len=*), intent(in) :: order
+          !> [optional] dimensions of the sub-matrices the norms should be evaluated at (default = [1,2])
+          integer(ilp), optional, intent(in) :: dim(2)
+          !> [optional] state return flag. On error if not requested, the code will stop
+          type(linalg_state_type), intent(out), optional :: err        
+      end function matrix_norm_4D_to_2D_char_s
+      
+      !> Matrix norms: real(sp) rank-2 arrays
+      module function matrix_norm_int_s(a, order, err) result(nrm)
+        !> Input matrix a(m,n)
+        real(sp), intent(in), target :: a(:,:)
+        !> Norm of the matrix.        
+        real(sp) :: nrm
+        !> Order of the matrix norm being computed.
+        integer(ilp), optional, intent(in) :: order
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), intent(out), optional :: err      
+      end function matrix_norm_int_s
+      
+      !> Matrix norms: real(sp) higher rank arrays
+      module function matrix_norm_3D_to_1D_int_s(a, order, dim, err) result(nrm)
+          !> Input matrix a(m,n)
+          real(sp), intent(in), contiguous, target :: a(:,:,:)
+          !> Norm of the matrix.        
+          real(sp), allocatable :: nrm(:)
+          !> Order of the matrix norm being computed.
+          integer(ilp), optional, intent(in) :: order
+          !> [optional] dimensions of the sub-matrices the norms should be evaluated at (default = [1,2])
+          integer(ilp), optional, intent(in) :: dim(2)
+          !> [optional] state return flag. On error if not requested, the code will stop
+          type(linalg_state_type), intent(out), optional :: err        
+      end function matrix_norm_3D_to_1D_int_s
+      module function matrix_norm_4D_to_2D_int_s(a, order, dim, err) result(nrm)
+          !> Input matrix a(m,n)
+          real(sp), intent(in), contiguous, target :: a(:,:,:,:)
+          !> Norm of the matrix.        
+          real(sp), allocatable :: nrm(:,:)
+          !> Order of the matrix norm being computed.
+          integer(ilp), optional, intent(in) :: order
+          !> [optional] dimensions of the sub-matrices the norms should be evaluated at (default = [1,2])
+          integer(ilp), optional, intent(in) :: dim(2)
+          !> [optional] state return flag. On error if not requested, the code will stop
+          type(linalg_state_type), intent(out), optional :: err        
+      end function matrix_norm_4D_to_2D_int_s
+      
+      !> Matrix norms: real(dp) rank-2 arrays
+      module function matrix_norm_char_d(a, order, err) result(nrm)
+        !> Input matrix a(m,n)
+        real(dp), intent(in), target :: a(:,:)
+        !> Norm of the matrix.        
+        real(dp) :: nrm
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), intent(out), optional :: err      
+      end function matrix_norm_char_d
+      
+      !> Matrix norms: real(dp) higher rank arrays
+      module function matrix_norm_3D_to_1D_char_d(a, order, dim, err) result(nrm)
+          !> Input matrix a(m,n)
+          real(dp), intent(in), contiguous, target :: a(:,:,:)
+          !> Norm of the matrix.        
+          real(dp), allocatable :: nrm(:)
+          !> Order of the matrix norm being computed.
+          character(len=*), intent(in) :: order
+          !> [optional] dimensions of the sub-matrices the norms should be evaluated at (default = [1,2])
+          integer(ilp), optional, intent(in) :: dim(2)
+          !> [optional] state return flag. On error if not requested, the code will stop
+          type(linalg_state_type), intent(out), optional :: err        
+      end function matrix_norm_3D_to_1D_char_d
+      module function matrix_norm_4D_to_2D_char_d(a, order, dim, err) result(nrm)
+          !> Input matrix a(m,n)
+          real(dp), intent(in), contiguous, target :: a(:,:,:,:)
+          !> Norm of the matrix.        
+          real(dp), allocatable :: nrm(:,:)
+          !> Order of the matrix norm being computed.
+          character(len=*), intent(in) :: order
+          !> [optional] dimensions of the sub-matrices the norms should be evaluated at (default = [1,2])
+          integer(ilp), optional, intent(in) :: dim(2)
+          !> [optional] state return flag. On error if not requested, the code will stop
+          type(linalg_state_type), intent(out), optional :: err        
+      end function matrix_norm_4D_to_2D_char_d
+      
+      !> Matrix norms: real(dp) rank-2 arrays
+      module function matrix_norm_int_d(a, order, err) result(nrm)
+        !> Input matrix a(m,n)
+        real(dp), intent(in), target :: a(:,:)
+        !> Norm of the matrix.        
+        real(dp) :: nrm
+        !> Order of the matrix norm being computed.
+        integer(ilp), optional, intent(in) :: order
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), intent(out), optional :: err      
+      end function matrix_norm_int_d
+      
+      !> Matrix norms: real(dp) higher rank arrays
+      module function matrix_norm_3D_to_1D_int_d(a, order, dim, err) result(nrm)
+          !> Input matrix a(m,n)
+          real(dp), intent(in), contiguous, target :: a(:,:,:)
+          !> Norm of the matrix.        
+          real(dp), allocatable :: nrm(:)
+          !> Order of the matrix norm being computed.
+          integer(ilp), optional, intent(in) :: order
+          !> [optional] dimensions of the sub-matrices the norms should be evaluated at (default = [1,2])
+          integer(ilp), optional, intent(in) :: dim(2)
+          !> [optional] state return flag. On error if not requested, the code will stop
+          type(linalg_state_type), intent(out), optional :: err        
+      end function matrix_norm_3D_to_1D_int_d
+      module function matrix_norm_4D_to_2D_int_d(a, order, dim, err) result(nrm)
+          !> Input matrix a(m,n)
+          real(dp), intent(in), contiguous, target :: a(:,:,:,:)
+          !> Norm of the matrix.        
+          real(dp), allocatable :: nrm(:,:)
+          !> Order of the matrix norm being computed.
+          integer(ilp), optional, intent(in) :: order
+          !> [optional] dimensions of the sub-matrices the norms should be evaluated at (default = [1,2])
+          integer(ilp), optional, intent(in) :: dim(2)
+          !> [optional] state return flag. On error if not requested, the code will stop
+          type(linalg_state_type), intent(out), optional :: err        
+      end function matrix_norm_4D_to_2D_int_d
+      
+      !> Matrix norms: complex(sp) rank-2 arrays
+      module function matrix_norm_char_c(a, order, err) result(nrm)
+        !> Input matrix a(m,n)
+        complex(sp), intent(in), target :: a(:,:)
+        !> Norm of the matrix.        
+        real(sp) :: nrm
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), intent(out), optional :: err      
+      end function matrix_norm_char_c
+      
+      !> Matrix norms: complex(sp) higher rank arrays
+      module function matrix_norm_3D_to_1D_char_c(a, order, dim, err) result(nrm)
+          !> Input matrix a(m,n)
+          complex(sp), intent(in), contiguous, target :: a(:,:,:)
+          !> Norm of the matrix.        
+          real(sp), allocatable :: nrm(:)
+          !> Order of the matrix norm being computed.
+          character(len=*), intent(in) :: order
+          !> [optional] dimensions of the sub-matrices the norms should be evaluated at (default = [1,2])
+          integer(ilp), optional, intent(in) :: dim(2)
+          !> [optional] state return flag. On error if not requested, the code will stop
+          type(linalg_state_type), intent(out), optional :: err        
+      end function matrix_norm_3D_to_1D_char_c
+      module function matrix_norm_4D_to_2D_char_c(a, order, dim, err) result(nrm)
+          !> Input matrix a(m,n)
+          complex(sp), intent(in), contiguous, target :: a(:,:,:,:)
+          !> Norm of the matrix.        
+          real(sp), allocatable :: nrm(:,:)
+          !> Order of the matrix norm being computed.
+          character(len=*), intent(in) :: order
+          !> [optional] dimensions of the sub-matrices the norms should be evaluated at (default = [1,2])
+          integer(ilp), optional, intent(in) :: dim(2)
+          !> [optional] state return flag. On error if not requested, the code will stop
+          type(linalg_state_type), intent(out), optional :: err        
+      end function matrix_norm_4D_to_2D_char_c
+      
+      !> Matrix norms: complex(sp) rank-2 arrays
+      module function matrix_norm_int_c(a, order, err) result(nrm)
+        !> Input matrix a(m,n)
+        complex(sp), intent(in), target :: a(:,:)
+        !> Norm of the matrix.        
+        real(sp) :: nrm
+        !> Order of the matrix norm being computed.
+        integer(ilp), optional, intent(in) :: order
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), intent(out), optional :: err      
+      end function matrix_norm_int_c
+      
+      !> Matrix norms: complex(sp) higher rank arrays
+      module function matrix_norm_3D_to_1D_int_c(a, order, dim, err) result(nrm)
+          !> Input matrix a(m,n)
+          complex(sp), intent(in), contiguous, target :: a(:,:,:)
+          !> Norm of the matrix.        
+          real(sp), allocatable :: nrm(:)
+          !> Order of the matrix norm being computed.
+          integer(ilp), optional, intent(in) :: order
+          !> [optional] dimensions of the sub-matrices the norms should be evaluated at (default = [1,2])
+          integer(ilp), optional, intent(in) :: dim(2)
+          !> [optional] state return flag. On error if not requested, the code will stop
+          type(linalg_state_type), intent(out), optional :: err        
+      end function matrix_norm_3D_to_1D_int_c
+      module function matrix_norm_4D_to_2D_int_c(a, order, dim, err) result(nrm)
+          !> Input matrix a(m,n)
+          complex(sp), intent(in), contiguous, target :: a(:,:,:,:)
+          !> Norm of the matrix.        
+          real(sp), allocatable :: nrm(:,:)
+          !> Order of the matrix norm being computed.
+          integer(ilp), optional, intent(in) :: order
+          !> [optional] dimensions of the sub-matrices the norms should be evaluated at (default = [1,2])
+          integer(ilp), optional, intent(in) :: dim(2)
+          !> [optional] state return flag. On error if not requested, the code will stop
+          type(linalg_state_type), intent(out), optional :: err        
+      end function matrix_norm_4D_to_2D_int_c
+      
+      !> Matrix norms: complex(dp) rank-2 arrays
+      module function matrix_norm_char_z(a, order, err) result(nrm)
+        !> Input matrix a(m,n)
+        complex(dp), intent(in), target :: a(:,:)
+        !> Norm of the matrix.        
+        real(dp) :: nrm
+        !> Order of the matrix norm being computed.
+        character(len=*), intent(in) :: order
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), intent(out), optional :: err      
+      end function matrix_norm_char_z
+      
+      !> Matrix norms: complex(dp) higher rank arrays
+      module function matrix_norm_3D_to_1D_char_z(a, order, dim, err) result(nrm)
+          !> Input matrix a(m,n)
+          complex(dp), intent(in), contiguous, target :: a(:,:,:)
+          !> Norm of the matrix.        
+          real(dp), allocatable :: nrm(:)
+          !> Order of the matrix norm being computed.
+          character(len=*), intent(in) :: order
+          !> [optional] dimensions of the sub-matrices the norms should be evaluated at (default = [1,2])
+          integer(ilp), optional, intent(in) :: dim(2)
+          !> [optional] state return flag. On error if not requested, the code will stop
+          type(linalg_state_type), intent(out), optional :: err        
+      end function matrix_norm_3D_to_1D_char_z
+      module function matrix_norm_4D_to_2D_char_z(a, order, dim, err) result(nrm)
+          !> Input matrix a(m,n)
+          complex(dp), intent(in), contiguous, target :: a(:,:,:,:)
+          !> Norm of the matrix.        
+          real(dp), allocatable :: nrm(:,:)
+          !> Order of the matrix norm being computed.
+          character(len=*), intent(in) :: order
+          !> [optional] dimensions of the sub-matrices the norms should be evaluated at (default = [1,2])
+          integer(ilp), optional, intent(in) :: dim(2)
+          !> [optional] state return flag. On error if not requested, the code will stop
+          type(linalg_state_type), intent(out), optional :: err        
+      end function matrix_norm_4D_to_2D_char_z
+      
+      !> Matrix norms: complex(dp) rank-2 arrays
+      module function matrix_norm_int_z(a, order, err) result(nrm)
+        !> Input matrix a(m,n)
+        complex(dp), intent(in), target :: a(:,:)
+        !> Norm of the matrix.        
+        real(dp) :: nrm
+        !> Order of the matrix norm being computed.
+        integer(ilp), optional, intent(in) :: order
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), intent(out), optional :: err      
+      end function matrix_norm_int_z
+      
+      !> Matrix norms: complex(dp) higher rank arrays
+      module function matrix_norm_3D_to_1D_int_z(a, order, dim, err) result(nrm)
+          !> Input matrix a(m,n)
+          complex(dp), intent(in), contiguous, target :: a(:,:,:)
+          !> Norm of the matrix.        
+          real(dp), allocatable :: nrm(:)
+          !> Order of the matrix norm being computed.
+          integer(ilp), optional, intent(in) :: order
+          !> [optional] dimensions of the sub-matrices the norms should be evaluated at (default = [1,2])
+          integer(ilp), optional, intent(in) :: dim(2)
+          !> [optional] state return flag. On error if not requested, the code will stop
+          type(linalg_state_type), intent(out), optional :: err        
+      end function matrix_norm_3D_to_1D_int_z
+      module function matrix_norm_4D_to_2D_int_z(a, order, dim, err) result(nrm)
+          !> Input matrix a(m,n)
+          complex(dp), intent(in), contiguous, target :: a(:,:,:,:)
+          !> Norm of the matrix.        
+          real(dp), allocatable :: nrm(:,:)
+          !> Order of the matrix norm being computed.
+          integer(ilp), optional, intent(in) :: order
+          !> [optional] dimensions of the sub-matrices the norms should be evaluated at (default = [1,2])
+          integer(ilp), optional, intent(in) :: dim(2)
+          !> [optional] state return flag. On error if not requested, the code will stop
+          type(linalg_state_type), intent(out), optional :: err        
+      end function matrix_norm_4D_to_2D_int_z
+  end interface mnorm
 
 contains
 
