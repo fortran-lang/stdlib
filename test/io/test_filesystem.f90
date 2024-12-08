@@ -1,6 +1,6 @@
 module test_filesystem
     use stdlib_io_filesystem
-    use stdlib_string_type, only: char, string_type
+    use stdlib_error, only: state_type    
     use testdrive, only: new_unittest, unittest_type, error_type, check, test_failed
     implicit none
     private
@@ -18,7 +18,59 @@ contains
 
         allocate(testsuite(0))
 
+        testsuite = [ &
+             new_unittest("fs_delete_non_existent", test_delete_file_non_existent), &
+             new_unittest("fs_delete_existing_file", test_delete_file_existing) &
+             ]
+
     end subroutine collect_filesystem
+
+    subroutine test_delete_file_non_existent(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        type(state_type) :: state
+        
+        ! Attempt to delete a file that doesn't exist
+        call delete_file('non_existent_file_blurp.txt', state)
+        
+        call check(error, state%error(), 'Error should be triggered for non-existent file')
+        if (allocated(error)) return
+        
+    end subroutine test_delete_file_non_existent
+
+    subroutine test_delete_file_existing(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        
+        character(len=256) :: filename
+        type(state_type) :: state
+        integer :: ios,iunit
+        logical :: is_present
+        character(len=512) :: msg
+        
+        filename = 'existing_file.txt'
+        
+        ! Create a file to be deleted
+        open(newunit=iunit, file=filename, status='replace', iostat=ios, iomsg=msg)
+        call check(error, ios==0, 'Failed to create test file')
+        if (allocated(error)) return
+        close(iunit)
+
+        ! Attempt to delete the existing file
+        call delete_file(filename, state)
+        
+        ! Check deletion successful
+        call check(error, state%ok(), state%print())
+        if (allocated(error)) return
+        
+        ! Check if the file was successfully deleted (should no longer exist)
+        inquire(file=filename, exist=is_present)
+        
+        call check(error, .not.is_present, 'File still present after delete')
+        if (allocated(error)) return
+        
+    end subroutine test_delete_file_existing
+
 
 end module test_filesystem
 

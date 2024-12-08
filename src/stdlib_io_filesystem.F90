@@ -6,6 +6,8 @@ module stdlib_io_filesystem
     use stdlib_error, only: state_type, STDLIB_FS_ERROR
     implicit none
     private
+    
+    public :: delete_file
 
 contains
 
