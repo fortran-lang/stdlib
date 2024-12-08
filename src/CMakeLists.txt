@@ -8,6 +8,7 @@ set(fppFiles
     stdlib_bitsets_large.fypp
     stdlib_codata_type.fypp
     stdlib_constants.fypp
+    stdlib_error.fypp
     stdlib_hash_32bit.fypp
     stdlib_hash_32bit_fnv.fypp
     stdlib_hash_32bit_nm.fypp
