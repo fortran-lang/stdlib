@@ -78,6 +78,9 @@ module stdlib_error
            !> State properties
            procedure :: ok        => state_is_ok
            procedure :: error     => state_is_error
+           
+           !> Handle optional error message 
+           procedure :: handle    => error_handling
 
     end type state_type
 
@@ -106,6 +109,11 @@ module stdlib_error
         module procedure state_ge_flag
         module procedure flag_ge_state
     end interface
+    
+    !> Assignment operator
+    interface assignment(=)
+        module procedure state_assign_state
+    end interface assignment(=)
 
     interface state_type
         module procedure new_state
@@ -227,6 +235,23 @@ contains
 
     end function state_message
 
+    !> Flow control: on output flag present, return it; otherwise, halt on error
+    pure subroutine error_handling(ierr,ierr_out)
+         class(state_type), intent(in) :: ierr
+         class(state_type), optional, intent(inout) :: ierr_out
+
+         character(len=:),allocatable :: err_msg
+
+         if (present(ierr_out)) then
+             ! Return error flag
+             ierr_out = ierr
+         elseif (ierr%error()) then
+             err_msg = ierr%print()
+             error stop err_msg
+         end if
+
+    end subroutine error_handling
+
     !> Produce a nice error string
     pure function state_print(this) result(msg)
          class(state_type),intent(in) :: this
@@ -337,6 +362,17 @@ contains
         class(state_type),intent(in) :: err
         flag_ge_state = err%state >= flag
     end function flag_ge_state
+
+    !> Assign a state type to another
+    elemental subroutine state_assign_state(to, from)
+        class(state_type), intent(inout) :: to
+        class(state_type), intent(in)    :: from
+        
+        to%state = from%state
+        to%message = from%message
+        to%where_at = from%where_at
+        
+    end subroutine state_assign_state
 
     !> Append a generic value to the error flag (rank-agnostic)
     pure subroutine appendr(msg,a,prefix)
