@@ -56,6 +56,7 @@ contains
         ! Windows API interface 
         integer(c_int) :: attrs
         integer(c_int), parameter :: FILE_ATTRIBUTE_DIRECTORY = int(z'10',c_int)
+
         interface
             ! Declare the GetFileAttributesA function from kernel32.dll
             integer(c_int) function GetFileAttributesA(lpFileName) bind(c, name="GetFileAttributesA")

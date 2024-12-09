@@ -63,7 +63,7 @@ contains
         call delete_file(filename, state)
         
         ! Check deletion successful
-        call check(error, state%ok(), state%print())
+        call check(error, state%ok(), 'delete_file returned '//state%print())
         if (allocated(error)) return
         
         ! Check if the file was successfully deleted (should no longer exist)
@@ -85,11 +85,13 @@ contains
         filename = 'test_directory'
         
         ! The directory is not nested: it should be cross-platform to just call `mkdir`
+        print *, 'mkdir'
         call execute_command_line('mkdir ' // filename, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
         call check(error, ios==0 .and. iocmd==0, 'Cannot init delete_directory test: '//trim(msg))
         if (allocated(error)) return
         
         ! Attempt to delete a directory (which should fail)
+        print *, 'dfelete'
         call delete_file(filename, state)
         
         ! Check that an error was raised since the target is a directory
@@ -97,6 +99,7 @@ contains
         if (allocated(error)) return
 
         ! Clean up: remove the empty directory
+        print *, 'rmdir'
         call execute_command_line('rmdir ' // filename, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
         call check(error, ios==0 .and. iocmd==0, 'Cannot cleanup delete_directory test: '//trim(msg))
         if (allocated(error)) return        
