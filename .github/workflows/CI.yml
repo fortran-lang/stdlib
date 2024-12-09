@@ -38,6 +38,8 @@ jobs:
             toolchain: {compiler: intel-classic, version: '2021.9'}
           - os: macos-13
             toolchain: {compiler: intel, version: '2024.1'}
+          - os: macos-13
+            toolchain: {compiler: gcc, version: 13} 
     env:
       BUILD_DIR: ${{ matrix.build == 'cmake' && 'build' || '.' }}
 
