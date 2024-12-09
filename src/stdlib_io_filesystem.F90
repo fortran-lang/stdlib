@@ -73,13 +73,14 @@ contains
 
             case (OS_WINDOWS)
                 
-#ifdef _WIN32                
+#ifdef _WIN32      
+                ! Use Windows API if available          
                 attrs = GetFileAttributesA(c_path(windows_path(path)))
-                print *, 'attrs = ',attrs
                 stat = merge(0,-1, attrs /= -1 & ! attributes received
                                    .and. btest(attrs,FILE_ATTRIBUTE_DIRECTORY) ! is directory
 #else
-                call run('cmd /c "if not exist ' // windows_path(path) // '\ exit /B 1"', exit_state=stat)
+                ! Fallback to cmd.exe otherwise
+                call run('cmd /c "if not exist ' // windows_path(path) // '\* exit /B 1"', exit_state=stat)
 #endif                               
                 
             case default
@@ -121,7 +122,13 @@ contains
         end if
 
         ! Close and delete the file
-        close(unit=file_unit, status="delete", iostat=ios, iomsg=msg)
+        open(newunit=file_unit, file=path, status='old', iostat=ios, iomsg=msg)
+        if (ios /= 0) then
+            err0 = state_type(STDLIB_FS_ERROR,'Cannot delete',path,'-',msg)
+            call err0%handle(err)
+            return              
+        end if        
+        close(unit=file_unit, status='delete', iostat=ios, iomsg=msg)
         if (ios /= 0) then
             err0 = state_type(STDLIB_FS_ERROR,'Cannot delete',path,'-',msg)
             call err0%handle(err)
