@@ -82,16 +82,30 @@ public :: OS_TYPE
 !!                    
 public :: runtime_os
 
-!! Public parameters defining known OS types                    
-                    public :: OS_NAME                    
-integer, parameter, public :: OS_UNKNOWN = 0
-integer, parameter, public :: OS_LINUX   = 1
-integer, parameter, public :: OS_MACOS   = 2
-integer, parameter, public :: OS_WINDOWS = 3
-integer, parameter, public :: OS_CYGWIN  = 4
-integer, parameter, public :: OS_SOLARIS = 5
-integer, parameter, public :: OS_FREEBSD = 6
-integer, parameter, public :: OS_OPENBSD = 7
+!> Version: experimental
+!>
+!> Integer constants representing known operating system (OS) types
+!> ([Specification](../page/specs/stdlib_system.html))
+integer, parameter, public :: &
+    !> Represents an unknown operating system
+    OS_UNKNOWN = 0, &
+    !> Represents a Linux operating system
+    OS_LINUX = 1, &
+    !> Represents a macOS operating system
+    OS_MACOS = 2, &
+    !> Represents a Windows operating system
+    OS_WINDOWS = 3, &
+    !> Represents a Cygwin environment
+    OS_CYGWIN = 4, &
+    !> Represents a Solaris operating system
+    OS_SOLARIS = 5, &
+    !> Represents a FreeBSD operating system
+    OS_FREEBSD = 6, &
+    !> Represents an OpenBSD operating system
+    OS_OPENBSD = 7
+
+!! Helper function returning the name of an OS parameter
+public :: OS_NAME                    
 
 !! Static storage for the current OS
 logical :: have_os    = .false.
