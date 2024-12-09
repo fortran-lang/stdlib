@@ -310,6 +310,7 @@ subroutine run(cmd, exit_state, command_state, stdout, stderr)
     
     want_stdout = present(stdout)
     want_stderr = present(stderr)
+    iomsg = repeat(' ',4096)
 
     if (want_stdout) then
         ! Redirect output to a file
