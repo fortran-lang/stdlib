@@ -22,7 +22,8 @@ contains
              new_unittest("fs_delete_non_existent", test_delete_file_non_existent), &
              new_unittest("fs_delete_existing_file", test_delete_file_existing), &
              new_unittest("fs_delete_file_being_dir", test_delete_directory), &
-             new_unittest("fs_is_directory_dir", test_is_directory_dir) &
+             new_unittest("fs_is_directory_dir", test_is_directory_dir), &
+             new_unittest("fs_is_directory_file", test_is_directory_file) &
              ]
 
     end subroutine collect_filesystem
@@ -124,6 +125,34 @@ contains
         call execute_command_line("rmdir " // dirname, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
         call check(error, ios == 0 .and. iocmd == 0, "Cannot remove test directory: " // trim(msg))
     end subroutine test_is_directory_dir
+
+    ! Test `is_directory` for a regular file
+    subroutine test_is_directory_file(error)
+        type(error_type), allocatable, intent(out) :: error
+        character(len=256) :: filename
+        logical :: result
+        integer :: ios, iunit
+        character(len=512) :: msg
+        type(state_type) :: err
+
+        filename = "test_file.txt"
+
+        ! Create a file
+        open(newunit=iunit, file=filename, status="replace", iostat=ios, iomsg=msg)
+        call check(error, ios == 0, "Cannot create test file: " // trim(msg))
+        if (allocated(error)) return
+        close(iunit)
+
+        ! Verify `is_directory` identifies it as not a directory
+        result = is_directory(filename)
+        call check(error, .not. result, "is_directory falsely recognized a regular file as a directory")
+        if (allocated(error)) return
+
+        ! Clean up: remove the file
+        call delete_file(filename, err)
+        call check(error, err%ok(), err%print())
+        
+    end subroutine test_is_directory_file
 
 end module test_filesystem
 
