@@ -9,6 +9,7 @@ module stdlib_io_filesystem
     private
     
     public :: delete_file
+    public :: is_directory
 
 contains
 
@@ -40,8 +41,8 @@ contains
         
     end function is_directory
 
-    subroutine delete_file(filename, err)
-        character(*), intent(in) :: filename
+    subroutine delete_file(path, err)
+        character(*), intent(in) :: path
         type(state_type), optional, intent(out) :: err
         
         !> Local variables
@@ -50,25 +51,19 @@ contains
         character(len=512) :: msg
         logical :: file_exists
 
-        ! Check if the filename is a file or a directory by inquiring about its existence
-        inquire(file=filename, exist=file_exists)
+        ! Check if the path exists
+        inquire(file=path, exist=file_exists)
         if (.not. file_exists) then
             ! File does not exist, return error status
-            err0 = state_type(STDLIB_FS_ERROR,'Cannot delete',filename,': file does not exist')
+            err0 = state_type(STDLIB_FS_ERROR,'Cannot delete',path,': file does not exist')
             call err0%handle(err)
             return
         endif
 
-        ! Try opening the file in "readwrite" mode to verify it is a file, not a directory
-        ! Because we're trying to delete the file, we need write access anyways. This will 
-        ! be forbidden if this is a directory
-        open(newunit=file_unit, file=filename, status="old", action="readwrite", iostat=ios, iomsg=msg)
-        
-        print *, 'IOS ',ios,' IOMSG ',trim(msg)
-        
-        if (ios /= 0) then
+        ! Verify the file is not a directory
+        if (is_directory(path)) then 
             ! If unable to open, assume it's a directory or inaccessible
-            err0 = state_type(STDLIB_FS_ERROR,'Cannot delete',filename,'-',msg)
+            err0 = state_type(STDLIB_FS_ERROR,'Cannot delete',path,'- is a directory')
             call err0%handle(err)
             return            
         end if
@@ -76,7 +71,7 @@ contains
         ! Close and delete the file
         close(unit=file_unit, status="delete", iostat=ios, iomsg=msg)
         if (ios /= 0) then
-            err0 = state_type(STDLIB_FS_ERROR,'Cannot delete',filename,'-',msg)
+            err0 = state_type(STDLIB_FS_ERROR,'Cannot delete',path,'-',msg)
             call err0%handle(err)
             return              
         end if
