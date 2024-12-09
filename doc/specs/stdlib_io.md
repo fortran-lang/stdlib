@@ -273,7 +273,7 @@ This function reads the entirety of a specified ASCII file and returns its conte
 
 ### Syntax
 
-`call [[stdlib_io(module):getfile(interface)]] (fileName [, err] [, delete])`
+`call [[stdlib_io(module):getfile(function)]] (fileName [, err] [, delete=.false.])`
 
 ### Class
 Function
@@ -411,8 +411,8 @@ program example_delete_file
   ! Delete a file with error handling
   call delete_file("example.txt", err)
 
-  if (err%is_error) then
-    print *, "Failed to delete file:", err%message
+  if (err%error()) then
+    print *, "Failed to delete file:", err%print()
   else
     print *, "File deleted successfully."
   end if
