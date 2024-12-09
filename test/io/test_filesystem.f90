@@ -32,7 +32,7 @@ contains
         type(state_type) :: state
         
         ! Attempt to delete a file that doesn't exist
-        call delete_file('non_existent_file_blurp.txt', state)
+        call delete_file('non_existent_file.txt', state)
         
         call check(error, state%error(), 'Error should be triggered for non-existent file')
         if (allocated(error)) return
@@ -61,7 +61,7 @@ contains
         call delete_file(filename, state)
         
         ! Check deletion successful
-        call check(error, state%ok(), state%print())
+        call check(error, state%ok(), 'delete_file returned '//state%print())
         if (allocated(error)) return
         
         ! Check if the file was successfully deleted (should no longer exist)
@@ -83,11 +83,13 @@ contains
         filename = 'test_directory'
         
         ! The directory is not nested: it should be cross-platform to just call `mkdir`
+        print *, 'mkdir'
         call execute_command_line('mkdir ' // filename, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
         call check(error, ios==0 .and. iocmd==0, 'Cannot init delete_directory test: '//trim(msg))
         if (allocated(error)) return
         
         ! Attempt to delete a directory (which should fail)
+        print *, 'dfelete'
         call delete_file(filename, state)
         
         ! Check that an error was raised since the target is a directory
@@ -95,12 +97,37 @@ contains
         if (allocated(error)) return
 
         ! Clean up: remove the empty directory
+        print *, 'rmdir'
         call execute_command_line('rmdir ' // filename, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
         call check(error, ios==0 .and. iocmd==0, 'Cannot cleanup delete_directory test: '//trim(msg))
         if (allocated(error)) return        
         
     end subroutine test_delete_directory
 
+    ! Test `is_directory` for a directory
+    subroutine test_is_directory_dir(error)
+        type(error_type), allocatable, intent(out) :: error
+        character(len=256) :: dirname
+        logical :: result
+        integer :: ios, iocmd
+        character(len=512) :: msg
+
+        dirname = "test_dir"
+
+        ! Create a directory
+        call execute_command_line("mkdir " // dirname, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        call check(error, ios == 0 .and. iocmd == 0, "Cannot create test directory: " // trim(msg))
+        if (allocated(error)) return
+
+        ! Verify `is_directory` identifies it as a directory
+        result = is_directory(dirname)
+        call check(error, result, "is_directory did not recognize a valid directory")
+        if (allocated(error)) return
+
+        ! Clean up: remove the directory
+        call execute_command_line("rmdir " // dirname, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        call check(error, ios == 0 .and. iocmd == 0, "Cannot remove test directory: " // trim(msg))
+    end subroutine test_is_directory_dir
 
 end module test_filesystem
 

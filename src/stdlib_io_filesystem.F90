@@ -2,9 +2,10 @@
 
 !> Interaction with the filesystem.
 module stdlib_io_filesystem
-    use stdlib_string_type, only: string_type
+    use stdlib_string_type, only: string_type,write(formatted)
     use stdlib_error, only: state_type, STDLIB_FS_ERROR
     use stdlib_system, only: run, OS_TYPE, OS_UNKNOWN, OS_MACOS, OS_LINUX, OS_CYGWIN, OS_SOLARIS, OS_FREEBSD, OS_OPENBSD, OS_WINDOWS
+    use iso_c_binding, only: c_char, c_int, c_null_char
     implicit none
     private
     
@@ -48,18 +49,36 @@ contains
         !> Input path to evaluate
         character(*), intent(in) :: path
         
-        integer :: stat
+        integer :: stat,cstat
+        type(string_type) :: stdout,stderr
+        
+        ! Windows API interface 
+        integer(c_int) :: attrs
+        integer(c_int), parameter :: FILE_ATTRIBUTE_DIRECTORY = int(z'10',c_int)
+
+        interface
+            ! Declare the GetFileAttributesA function from kernel32.dll
+            integer(c_int) function GetFileAttributesA(lpFileName) bind(c, name="GetFileAttributesA")
+                import c_int, c_char
+                character(kind=c_char), dimension(*), intent(in) :: lpFileName
+            end function GetFileAttributesA
+        end interface
         
         select case (OS_TYPE())
 
             case (OS_UNKNOWN, OS_LINUX, OS_MACOS, OS_CYGWIN, OS_SOLARIS, OS_FREEBSD, OS_OPENBSD)
                 
-                call run("test -d " // path, exit_state=stat)
+                call run("test -d " // trim(path), exit_state=stat, command_state=cstat, stdout=stdout,stderr=stderr)
 
             case (OS_WINDOWS)
                 
-                call run('cmd /c "if not exist ' // windows_path(path) // '\ exit /B 1"', exit_state=stat)
-                        
+                attrs = GetFileAttributesA(c_path(windows_path(path)))
+                
+                print *, 'ATTRS = ',attrs
+                
+                is_directory = attrs /= -1 & ! attributes received
+                               .and. btest(attrs,FILE_ATTRIBUTE_DIRECTORY) ! is directory
+                
             case default
                 
                 ! Unknown/invalid OS
@@ -111,11 +130,11 @@ contains
     function windows_path(path) result(winpath)
 
         character(*), intent(in) :: path
-        character(len(path)) :: winpath
+        character(len_trim(path)) :: winpath
 
         integer :: idx
 
-        winpath = path
+        winpath = trim(path)
         idx = index(winpath,'/')
         do while(idx > 0)
             winpath(idx:idx) = '\'
@@ -123,5 +142,17 @@ contains
         end do
 
     end function windows_path
+    
+    !> Get a C path
+    function c_path(path) 
+        character(*), intent(in) :: path
+        character(c_char) :: c_path(len(path)+1) 
+        
+        integer :: i
+        
+        forall(i=1:len(path)) c_path(i) = path(i:i)
+        c_path(len(path)+1) = c_null_char
+        
+    end function c_path
 
 end module stdlib_io_filesystem
