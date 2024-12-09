@@ -42,6 +42,8 @@ def pre_process_fypp(args):
         kwd.append("-DWITH_QP=True")
     if args.with_xdp:
         kwd.append("-DWITH_XDP=True")
+    if args.with_ilp64:
+        kwd.append("-DWITH_ILP64=True")
 
     optparser = fypp.get_option_parser()
     options, leftover = optparser.parse_args(args=kwd)
@@ -140,8 +142,9 @@ if __name__ == "__main__":
     parser.add_argument("--maxrank",type=int, default=4, help="Set the maximum allowed rank for arrays")
     parser.add_argument("--with_qp",action='store_true', help="Include WITH_QP in the command")
     parser.add_argument("--with_xdp",action='store_true', help="Include WITH_XDP in the command")
+    parser.add_argument("--with_ilp64",action='store_true', help="Include WITH_ILP64 to build 64-bit BLAS/LAPACK")
     parser.add_argument("--lnumbering",action='store_true', help="Add line numbering in preprocessed files")
-    parser.add_argument("--deploy_stdlib_fpm",action='store_true', help="create the stdlib-fpm folder")
+    parser.add_argument("--deploy_stdlib_fpm",action='store_true', help="create the stdlib-fpm folder")    
     # external libraries arguments
     parser.add_argument("--build", action='store_true', help="Build the project")
 
