@@ -7,7 +7,23 @@ implicit none
 private
 public :: sleep
 
-!! Sub-processing
+!! version: experimental
+!!
+!! Executes a synchronous command in the system shell and optionally retrieves output and error messages.
+!! ([Specification](../page/specs/stdlib_system.html#run-execute-a-synchronous-command))
+!!
+!! ### Summary
+!! Subroutine interface for running a shell command synchronously, capturing its exit and command states, 
+!! and optionally retrieving the command's `stdout` and `stderr`.
+!!
+!! ### Description
+!!
+!! This interface enables executing a system command with the option to retrieve outputs. The execution 
+!! is synchronous, meaning the calling program waits until the command completes before proceeding. 
+!! The command's status codes, `stdout`, and `stderr` outputs can be retrieved through optional arguments.
+!!
+!! @note Implementation is based on Fortran's `execute_command_line`.
+!!
 public :: run
 
 
@@ -207,13 +223,20 @@ pure function OS_NAME(os)
     end select
 end function OS_NAME
 
-! Run a syncronous command
-subroutine run(cmd,exit_state,command_state,stdout,stderr)
+!> Executes a synchronous shell command and optionally retrieves its outputs.
+pure subroutine run(cmd, exit_state, command_state, stdout, stderr)
+    !> Command to execute as a string
     character(len=*), intent(in) :: cmd
-    integer, intent(out), optional :: exit_state,command_state
+    !> [optional] Exit state of the command
+    integer, intent(out), optional :: exit_state
+    !> [optional] Command state, indicating issues with command invocation
+    integer, intent(out), optional :: command_state
+    !> [optional] Captured standard output (stdout)
     type(string_type), optional, intent(out) :: stdout
+    !> [optional] Captured standard error (stderr)
     type(string_type), optional, intent(out) :: stderr
 
+    !> Local variables
     character(len=4096) :: iomsg
     type(state_type) :: err
     logical :: want_stdout, want_stderr
