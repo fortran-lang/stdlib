@@ -9,14 +9,14 @@ module stdlib_io
   use, intrinsic :: iso_fortran_env, only : input_unit
   use stdlib_kinds, only: sp, dp, xdp, qp, &
       int8, int16, int32, int64
-  use stdlib_error, only: error_stop
+  use stdlib_error, only: error_stop, state_type, STDLIB_IO_ERROR
   use stdlib_optval, only: optval
   use stdlib_ascii, only: is_blank
-  use stdlib_string_type, only : string_type
+  use stdlib_string_type
   implicit none
   private
   ! Public API
-  public :: loadtxt, savetxt, open, getline
+  public :: loadtxt, savetxt, open, getline, getfile
 
   ! Private API that is exposed so that we can test it in tests
   public :: parse_mode
@@ -524,4 +524,89 @@ contains
     call getline(input_unit, line, iostat, iomsg)
   end subroutine getline_input_string
 
+  !> Version: experimental
+  !> 
+  !> Read a whole ascii file and load it into a string variable
+  type(string_type) function getfile(fileName,err,delete) result(file)
+      character(*), intent(in) :: fileName
+      type(state_type), optional, intent(out) :: err
+      !> [optional] delete file after reading
+      logical, optional, intent(in) :: delete
+
+      type(state_type) :: err0
+      integer, parameter :: buffer_len = 65536
+      character(len=:), allocatable :: buffer,fileString
+      character(len=512) :: iomsg
+      integer :: lun,iostat
+      integer(8) :: mypos,oldpos,size_read
+      logical :: is_present,want_deleted
+
+      ! Initializations
+      file = ""
+      allocate(character(len=buffer_len) :: buffer)
+      
+      !> Check if the file should be deleted after reading
+      if (present(delete)) then 
+         want_deleted = delete
+      else
+         want_deleted = .false.   
+      end if
+
+      !> Check file existing
+      inquire(file=fileName, exist=is_present)
+      if (.not.is_present) then
+         err0 = state_type('getfile',STDLIB_IO_ERROR,'File not present:',fileName)
+         call err0%handle(err)
+         return
+      end if
+
+      open(newunit=lun,file=fileName, &
+           form='unformatted',action='read',access='stream',status='old', &
+           iostat=iostat,iomsg=iomsg)
+      if (iostat/=0) then 
+         err0 = state_type('getfile',STDLIB_IO_ERROR,'Cannot open',fileName,'for read:',iomsg)
+         call err0%handle(err)
+         return
+      end if
+
+      allocate(character(len=0)::fileString)
+      read_by_chunks: do
+
+          ! Read another buffer
+          inquire(unit=lun,pos=oldpos)
+          
+          read (lun, iostat=iostat, iomsg=iomsg) buffer
+          
+          if (is_iostat_end(iostat) .or. is_iostat_eor(iostat)) then
+             ! Partial buffer read
+             inquire(unit=lun,pos=mypos)
+             size_read  = mypos-oldpos
+             fileString = fileString // buffer(:size_read)
+             iostat = 0
+             iomsg  = ''
+             exit read_by_chunks
+          else if (iostat == 0) then
+             ! Full buffer read
+             fileString = fileString // buffer
+          else
+             ! Read error
+             err0 = state_type('getfile',STDLIB_IO_ERROR,'Error reading',fileName,'at character',oldpos)
+             exit read_by_chunks
+          end if
+      end do read_by_chunks
+
+      if (want_deleted) then 
+         close(lun,iostat=iostat,status='delete')
+         if (iostat/=0) err0 = state_type('getfile',STDLIB_IO_ERROR,'Cannot delete',fileName,'after reading')
+      else
+         close(lun,iostat=iostat)
+         if (iostat/=0) err0 = state_type('getfile',STDLIB_IO_ERROR,'Cannot close',fileName,'after reading')
+      endif   
+      
+      ! Process output
+      call move(from=fileString,to=file)
+      call err0%handle(err)
+
+    end function getfile
+    
 end module stdlib_io
