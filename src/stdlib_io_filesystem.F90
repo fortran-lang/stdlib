@@ -42,11 +42,11 @@ module stdlib_io_filesystem
 
 contains
 
-  !! Tests if a given path matches an existing directory.
-  !! Cross-platform implementation without using external C libraries.
-  pure logical function is_directory(path)
-      !> Input path to evaluate
-      character(*), intent(in) :: path
+    !! Tests if a given path matches an existing directory.
+    !! Cross-platform implementation without using external C libraries.
+    logical function is_directory(path)
+        !> Input path to evaluate
+        character(*), intent(in) :: path
         
         integer :: stat
         

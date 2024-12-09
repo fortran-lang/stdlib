@@ -154,7 +154,7 @@ if (ierr/=0) call error_stop('problem with usleep() system call')
 end subroutine sleep
 
 !> Retrieves the cached OS type for minimal runtime overhead.
-pure integer function OS_TYPE() result(os)
+integer function OS_TYPE() result(os)
     !! This function uses a static cache to avoid recalculating the OS type after the first call.
     !! It is recommended for performance-sensitive use cases where the OS type is checked multiple times.
     if (.not.have_os) then 
@@ -165,7 +165,7 @@ pure integer function OS_TYPE() result(os)
 end function OS_TYPE
 
 !> Returns the file path of the null device for the current operating system.
-pure function null_device() result(path)
+function null_device() result(path)
     !> File path of the null device
     character(:), allocatable :: path
     if (OS_TYPE()==OS_WINDOWS) then 
@@ -289,7 +289,7 @@ pure function OS_NAME(os)
 end function OS_NAME
 
 !> Executes a synchronous shell command and optionally retrieves its outputs.
-pure subroutine run(cmd, exit_state, command_state, stdout, stderr)
+subroutine run(cmd, exit_state, command_state, stdout, stderr)
     !> Command to execute as a string
     character(len=*), intent(in) :: cmd
     !> [optional] Exit state of the command
