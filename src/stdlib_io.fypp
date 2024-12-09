@@ -16,7 +16,27 @@ module stdlib_io
   implicit none
   private
   ! Public API
-  public :: loadtxt, savetxt, open, getline, getfile
+  public :: loadtxt, savetxt, open, getline
+    
+  !! version: experimental 
+  !!
+  !! Reads a whole ASCII file and loads its contents into a string variable. 
+  !! ([Specification](../page/specs/stdlib_io.html#getfile-read-a-whole-ascii-file-into-a-string-variable))
+  !! 
+  !!### Summary 
+  !! Function interface for reading the content of a file into a string.
+  !!
+  !!### Description
+  !! 
+  !! This function reads the entirety of a specified ASCII file and returns it as a string. The optional 
+  !! `err` argument allows for handling errors through the library's `state_type` class. 
+  !! An optional `logical` flag can be passed to delete the file after reading.  
+  !! 
+  !!@note Handles errors using the library's `state_type` error-handling class. If not provided, 
+  !! exceptions will trigger an `error stop`. 
+  !!         
+  public :: getfile
+  
 
   ! Private API that is exposed so that we can test it in tests
   public :: parse_mode
@@ -526,13 +546,17 @@ contains
 
   !> Version: experimental
   !> 
-  !> Read a whole ascii file and load it into a string variable
+  !> Reads a whole ASCII file and loads its contents into a string variable.
+  !> The function handles error states and optionally deletes the file after reading.
   type(string_type) function getfile(fileName,err,delete) result(file)
+      !> Input file name
       character(*), intent(in) :: fileName
+      !> [optional] State return flag. On error, if not requested, the code will stop.
       type(state_type), optional, intent(out) :: err
-      !> [optional] delete file after reading
+      !> [optional] Delete file after reading? Default: do not delete
       logical, optional, intent(in) :: delete
-
+        
+      ! Local variables
       type(state_type) :: err0
       integer, parameter :: buffer_len = 65536
       character(len=:), allocatable :: buffer,fileString
