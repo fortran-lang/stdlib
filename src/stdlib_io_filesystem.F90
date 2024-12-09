@@ -4,7 +4,7 @@
 module stdlib_io_filesystem
     use stdlib_string_type, only: string_type
     use stdlib_error, only: state_type, STDLIB_FS_ERROR
-    use stdlib_system, only: OS_TYPE
+    use stdlib_system, only: run, OS_TYPE, OS_UNKNOWN, OS_MACOS, OS_LINUX, OS_CYGWIN, OS_SOLARIS, OS_FREEBSD, OS_OPENBSD, OS_WINDOWS
     implicit none
     private
     
@@ -17,25 +17,28 @@ contains
     logical function is_directory(path)
         character(*), intent(in) :: path 
         
-        integer :: ios
+        integer :: stat
         
-
-        select case (get_os_type())
+        select case (OS_TYPE())
 
             case (OS_UNKNOWN, OS_LINUX, OS_MACOS, OS_CYGWIN, OS_SOLARIS, OS_FREEBSD, OS_OPENBSD)
-                call execute_command_line("test -d " // dir,   &
-                        & exitstat=stat,echo=.false.,verbose=.false.)
+                
+                call run("test -d " // path, exit_state=stat)
 
             case (OS_WINDOWS)
-                call run('cmd /c "if not exist ' // windows_path(dir) // '\ exit /B 1"', &
-                        & exitstat=stat,echo=.false.,verbose=.false.)
+                
+                call run('cmd /c "if not exist ' // windows_path(path) // '\ exit /B 1"', exit_state=stat)
+                        
+            case default
+                
+                ! Unknown/invalid OS
+                stat = -1
 
         end select
 
         is_directory = stat == 0
         
     end function is_directory
-
 
     subroutine delete_file(filename, err)
         character(*), intent(in) :: filename
@@ -78,53 +81,6 @@ contains
             return              
         end if
     end subroutine delete_file
-
-    ! Run a command
-    subroutine run(cmd,exitstat,cmdstat,cmdmsg,screen_output)
-        character(len=*), intent(in) :: cmd
-        integer, intent(out), optional :: exitstat,cmdstat
-        character(*), optional, intent(out) :: cmdmsg
-        type(string_type), optional, intent(out) :: screen_output
-
-        character(len=256) :: iomsg
-        logical :: want_output
-        character(:), allocatable :: redirect_str,redirect_file
-        integer :: cstat, stat, fh, iostat
-        
-        want_output = present(screen_output)
-
-        if (want_output) then
-            
-            ! Redirect output to a file
-            redirect_file = scratch_name()
-            redirect_str  =  ">"//redirect_file//" 2>&1"
-
-        else
-            ! No redirection and non-verbose output
-            if (os_is_unix()) then
-                redirect_str = " >/dev/null 2>&1"
-            else
-                redirect_str = " >NUL 2>&1"
-            end if
-                        
-        end if
-
-        call execute_command_line(cmd//redirect_str, exitstat=stat,cmdstat=cstat,cmdmsg=iomsg)
-        
-        if (want_output) then            
-            call screen_output%read_ascii_file(redirect_file,iostat=iostat,iomsg=iomsg,delete=.true.)
-        end if
-
-        if (present(exitstat)) then
-            exitstat = stat
-        elseif (stat /= 0) then
-            error stop 'Cannot run '//cmd
-        end if
-
-        if (present(cmdstat))  cmdstat  = cstat
-        if (present(cmdmsg))   cmdmsg   = iomsg
-
-    end subroutine run
 
     !> Replace file system separators for windows
     function windows_path(path) result(winpath)
