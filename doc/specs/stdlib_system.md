@@ -108,3 +108,112 @@ program example_null_device
     print *, "The null device path is: ", null_path
 end program example_null_device
 ```
+
+## `runtime_os` - Determine the OS type at runtime
+
+### Status
+
+Experimental
+
+### Description
+
+`runtime_os` inspects the runtime environment to identify the current OS type. It evaluates environment variables (`OSTYPE`, `OS`) and checks for specific files associated with known operating systems.
+The supported OS types are:
+
+- **Linux** (`OS_LINUX`)
+- **macOS** (`OS_MACOS`)
+- **Windows** (`OS_WINDOWS`)
+- **Cygwin** (`OS_CYGWIN`)
+- **Solaris** (`OS_SOLARIS`)
+- **FreeBSD** (`OS_FREEBSD`)
+- **OpenBSD** (`OS_OPENBSD`)
+
+If the OS cannot be identified, the function returns `OS_UNKNOWN`.
+
+### Syntax
+
+`os = [[stdlib_system(module):runtime_os(function)]]()`
+
+### Class
+
+Function
+
+### Arguments
+
+None.
+
+### Return Value
+
+- **Type:** `integer`
+- Returns a constant representing the OS type, or `OS_UNKNOWN` if undetermined.
+
+### Example
+
+```fortran
+program example_os_detection
+    use stdlib_system, only: OS_TYPE, runtime_os
+    implicit none
+    integer :: os_type_cached, os_type_runtime
+
+    ! Cached OS detection
+    os_type_cached = OS_TYPE()
+    print *, "Cached OS Type: ", os_type_cached
+
+    ! Runtime OS detection (full inspection)
+    os_type_runtime = runtime_os()
+    print *, "Runtime OS Type: ", os_type_runtime
+end program example_os_detection
+```
+
+---
+
+## `OS_TYPE` - Cached OS type retrieval
+
+### Status
+
+Experimental
+
+### Description
+
+`OS_TYPE` provides a cached result of the `runtime_os` function. The OS type is determined during the first invocation and stored in a static variable. 
+Subsequent calls reuse the cached value, making this function highly efficient.
+
+This caching mechanism ensures negligible overhead for repeated calls, unlike `runtime_os`, which performs a full runtime inspection.
+
+### Syntax
+
+`os = [[stdlib_system(module):OS_TYPE(function)]]()`
+
+### Class
+
+Function
+
+### Arguments
+
+None.
+
+### Return Value
+
+- **Type:** `integer`
+- Returns a cached constant representing the OS type, as determined by `runtime_os`.
+
+---
+
+### Example
+
+```fortran
+program example_os_detection
+    use stdlib_system, only: OS_TYPE, runtime_os
+    implicit none
+    integer :: os_type_cached, os_type_runtime
+
+    ! Cached OS detection
+    os_type_cached = OS_TYPE()
+    print *, "Cached OS Type: ", os_type_cached
+
+    ! Runtime OS detection (full inspection)
+    os_type_runtime = runtime_os()
+    print *, "Runtime OS Type: ", os_type_runtime
+end program example_os_detection
+```
+

@@ -43,11 +43,47 @@ public :: run
 !!
 public :: null_device
 
-!! OS type inquiry
-                    public :: OS_NAME
-                    public :: OS_TYPE
-                    
+!! version: experimental
+!!
+!! Cached OS type retrieval with negligible runtime overhead.
+!! ([Specification](../page/specs/stdlib_system.html#os_type-cached-os-type-retrieval))
+!!
+!! ### Summary
+!! Provides a cached value for the runtime OS type. 
+!!
+!! ### Description
+!! 
+!! This function caches the result of `runtime_os` after the first invocation. 
+!! Subsequent calls return the cached value, ensuring minimal overhead.
+!!
+public :: OS_TYPE
+
+!! version: experimental
+!!
+!! Determine the current operating system (OS) type at runtime.
+!! ([Specification](../page/specs/stdlib_system.html#runtime_os-determine-the-os-type-at-runtime))
+!!
+!! ### Summary
+!! This function inspects the runtime environment to identify the OS type. 
+!!
+!! ### Description
+!! 
+!! The function evaluates environment variables (`OSTYPE` or `OS`) and filesystem attributes
+!! to identify the OS. It distinguishes between several common operating systems:
+!! - Linux
+!! - macOS
+!! - Windows
+!! - Cygwin
+!! - Solaris
+!! - FreeBSD
+!! - OpenBSD
+!!
+!! Returns a constant representing the OS type or `OS_UNKNOWN` if the OS cannot be determined.
+!!                    
+public :: runtime_os
+
 !! Public parameters defining known OS types                    
+                    public :: OS_NAME                    
 integer, parameter, public :: OS_UNKNOWN = 0
 integer, parameter, public :: OS_LINUX   = 1
 integer, parameter, public :: OS_MACOS   = 2
@@ -103,8 +139,10 @@ if (ierr/=0) call error_stop('problem with usleep() system call')
 
 end subroutine sleep
 
-!> Determine the current OS type
-integer function OS_TYPE() result(os)
+!> Retrieves the cached OS type for minimal runtime overhead.
+pure integer function OS_TYPE() result(os)
+    !! This function uses a static cache to avoid recalculating the OS type after the first call.
+    !! It is recommended for performance-sensitive use cases where the OS type is checked multiple times.
     if (.not.have_os) then 
         OS_CURRENT = runtime_os()
         have_os = .true.        
@@ -123,18 +161,16 @@ pure function null_device() result(path)
     end if
 end function null_device
 
-!> Determine the current OS type at runtime
 integer function runtime_os() result(os)
+    !! The function identifies the OS by inspecting environment variables and filesystem attributes.
     !!
-    !! Returns one of OS_UNKNOWN, OS_LINUX, OS_MACOS, OS_WINDOWS, OS_CYGWIN,
-    !! OS_SOLARIS, OS_FREEBSD, OS_OPENBSD.
+    !! ### Returns:
+    !! - **OS_UNKNOWN**: If the OS cannot be determined.
+    !! - **OS_LINUX**, **OS_MACOS**, **OS_WINDOWS**, **OS_CYGWIN**, **OS_SOLARIS**, **OS_FREEBSD**, or **OS_OPENBSD**.
     !!
-    !! At first, the environment variable `OS` is checked, which is usually
-    !! found on Windows. Then, `OSTYPE` is read in and compared with common
-    !! names. If this fails too, check the existence of files that can be
-    !! found on specific system types only.
-    !!
-    !! Returns OS_UNKNOWN if the operating system cannot be determined.
+    !! Note: This function performs a detailed runtime inspection, so it has non-negligible overhead.
+    
+    ! Local variables
     character(len=255) :: val
     integer            :: length, rc
     logical            :: file_exists
