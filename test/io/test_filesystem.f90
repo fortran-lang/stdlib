@@ -20,7 +20,8 @@ contains
 
         testsuite = [ &
              new_unittest("fs_delete_non_existent", test_delete_file_non_existent), &
-             new_unittest("fs_delete_existing_file", test_delete_file_existing) &
+             new_unittest("fs_delete_existing_file", test_delete_file_existing), &
+             new_unittest("fd_delete_file_being_dir", test_delete_directory) &
              ]
 
     end subroutine collect_filesystem
@@ -70,6 +71,35 @@ contains
         if (allocated(error)) return
         
     end subroutine test_delete_file_existing
+
+    subroutine test_delete_directory(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        character(len=256) :: filename
+        type(state_type) :: state
+        integer :: ios,iocmd
+        character(len=512) :: msg
+        
+        filename = 'test_directory'
+        
+        ! The directory is not nested: it should be cross-platform to just call `mkdir`
+        call execute_command_line('mkdir ' // filename, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        call check(error, ios==0 .and. iocmd==0, 'Cannot init delete_directory test: '//trim(msg))
+        if (allocated(error)) return
+        
+        ! Attempt to delete a directory (which should fail)
+        call delete_file(filename, state)
+        
+        ! Check that an error was raised since the target is a directory
+        call check(error, state%ok(), 'Error was not triggered trying to delete directory')
+        if (allocated(error)) return
+
+        ! Clean up: remove the empty directory
+        call execute_command_line('rmdir ' // filename, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        call check(error, ios==0 .and. iocmd==0, 'Cannot cleanup delete_directory test: '//trim(msg))
+        if (allocated(error)) return        
+        
+    end subroutine test_delete_directory
 
 
 end module test_filesystem
