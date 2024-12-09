@@ -8,15 +8,45 @@ module stdlib_io_filesystem
     implicit none
     private
     
+    !! version: experimental
+    !!
+    !! Deletes a specified file from the filesystem.
+    !! ([Specification](../page/specs/stdlib_io.html#delete_file-delete-a-file))
+    !!
+    !!### Summary
+    !! Subroutine to safely delete a file from the filesystem. It handles errors gracefully using the library's `state_type`.
+    !!
+    !!### Description
+    !! 
+    !! This subroutine deletes a specified file. If the file does not exist, or if it is a directory or inaccessible, 
+    !! an error is raised. Errors are handled using the library's `state_type` mechanism. If the optional `err` argument 
+    !! is not provided, exceptions trigger an `error stop`.
+    !!
     public :: delete_file
+    
+    !! version: experimental
+    !!
+    !! Tests if a given path matches an existing directory.
+    !! ([Specification](../page/specs/stdlib_io.html#is_directory-test-if-a-path-is-a-directory))
+    !!
+    !!### Summary
+    !! Function to evaluate whether a specified path corresponds to an existing directory.
+    !!
+    !!### Description
+    !! 
+    !! This function checks if a given file system path is a directory. It is cross-platform and avoids reliance 
+    !! on external C libraries by utilizing system calls. It supports common operating systems such as Linux, macOS, 
+    !! Windows, and various UNIX-like environments. On unsupported operating systems, the function will return `.false.`.
+    !!
     public :: is_directory
 
 contains
 
-    !> test if a name matches an existing directory path. 
-    !> Cross-platform version that does not use C externals
-    logical function is_directory(path)
-        character(*), intent(in) :: path 
+  !! Tests if a given path matches an existing directory.
+  !! Cross-platform implementation without using external C libraries.
+  pure logical function is_directory(path)
+      !> Input path to evaluate
+      character(*), intent(in) :: path
         
         integer :: stat
         

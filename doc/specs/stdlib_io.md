@@ -313,3 +313,108 @@ program example_getfile
   end if
 end program example_getfile
 ```
+
+## `is_directory` - Test if a path is a directory
+
+### Status
+
+Experimental
+
+### Description
+
+This function checks if a specified file system path is a directory. It is designed to work across multiple platforms without relying on external C libraries, using system commands native to the detected operating system.
+
+Supported operating systems include Linux, macOS, Windows, and UNIX-like environments (e.g., FreeBSD, OpenBSD). If the operating system is unknown or unsupported, the function will return `.false.`.
+
+### Syntax
+
+`result = [[stdlib_io(module):is_directory(function)]] (path)`
+
+### Class
+Function
+
+### Arguments
+
+`path`: Shall be a character string containing the file system path to evaluate. It is an `intent(in)` argument.
+
+### Return values
+
+The function returns a `logical` value:
+
+- `.true.` if the path matches an existing directory.
+- `.false.` otherwise, or if the operating system is unsupported.
+
+### Example
+
+```fortran
+program example_is_directory
+  use stdlib_io
+  implicit none
+
+  logical :: isDir
+
+  ! Test a directory path
+  isDir = is_directory("/path/to/check")
+
+  if (isDir) then
+    print *, "The specified path is a directory."
+  else
+    print *, "The specified path is not a directory."
+  end if
+end program example_is_directory
+```
+
+## `delete_file` - Delete a file
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine deletes a specified file from the filesystem. It ensures that the file exists and is not a directory before attempting deletion.
+If the file cannot be deleted due to permissions, being a directory, or other issues, an error is raised. 
+Errors are handled using the library's `state_type`. If the optional `err` argument is not provided, exceptions trigger an `error stop`.
+
+### Syntax
+
+`call [[stdlib_fs(module):delete_file(subroutine)]] (path [, err])`
+
+### Class
+Subroutine
+
+### Arguments
+
+`path`: Shall be a character string containing the path to the file to be deleted. It is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(state_type)` variable for error handling. If provided, errors are returned as a state object. If not provided, the program stops execution on error.
+
+### Behavior
+
+- Checks if the file exists. If not, an error is raised.
+- Ensures the path is not a directory before deletion.
+- Attempts to delete the file, raising an error if unsuccessful.
+
+### Return values
+
+The file is removed from the filesystem if the operation is successful. If the operation fails, an error is raised.
+
+### Example
+
+```fortran
+program example_delete_file
+  use stdlib_fs
+  implicit none
+
+  type(state_type) :: err
+
+  ! Delete a file with error handling
+  call delete_file("example.txt", err)
+
+  if (err%is_error) then
+    print *, "Failed to delete file:", err%message
+  else
+    print *, "File deleted successfully."
+  end if
+end program example_delete_file
+```
