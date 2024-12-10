@@ -24,11 +24,24 @@ submodule(stdlib_linalg) stdlib_linalg_norms
      integer(ilp), parameter :: NORM_INF       = +huge(0_ilp) ! infinity norm 
      integer(ilp), parameter :: NORM_POW_LAST  = NORM_INF - 1_ilp
      integer(ilp), parameter :: NORM_MINUSINF  = -huge(0_ilp)
+          
+     !> Wrappers to LAPACK *LANGE matrix norm flags
+     character, parameter :: MAT_NORM_MAT = 'M' ! maxval(sum(abs(a)))   ! over whole matrix: unused
+     character, parameter :: MAT_NORM_ONE = '1' ! maxval(sum(abs(a),1)) ! over columns
+     character, parameter :: MAT_NORM_INF = 'I' ! maxval(sum(abs(a),2)) ! over rows
+     character, parameter :: MAT_NORM_FRO = 'E' ! sqrt(sum(a**2))       ! "Euclidean" or "Frobenius"     
+     !> Other wrappers to matrix norms
+     character, parameter :: MAT_NORM_SVD = '2' ! maxval(svdvals(a))    ! Maximum singular value
      
      interface parse_norm_type
         module procedure parse_norm_type_integer
         module procedure parse_norm_type_character
      end interface parse_norm_type
+     
+     interface mat_task_request
+        module procedure mat_task_request_integer
+        module procedure mat_task_request_character
+     end interface mat_task_request
      
      
      interface stride_1d
@@ -99,6 +112,70 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         end select    
         
      end subroutine parse_norm_type_character
+
+     !> From a user norm request, generate a *LANGE task command
+     pure subroutine mat_task_request_integer(order,mat_task,err)
+        !> Parsed matrix norm type
+        integer(ilp), optional, intent(in) :: order
+        !> LANGE task
+        character, intent(out) :: mat_task
+        !> Error flag
+        type(linalg_state_type), intent(inout) :: err
+        
+        if (present(order)) then 
+        
+            select case (order)
+               case (NORM_INF)
+                  mat_task = MAT_NORM_INF 
+               case (NORM_TWO)
+                  mat_task = MAT_NORM_SVD 
+               case (NORM_ONE)
+                  mat_task = MAT_NORM_ONE
+               case default 
+                  err = linalg_state_type(this,LINALG_VALUE_ERROR,'Integer order ',order,' is not a valid matrix norm input.')
+            end select
+            
+        else
+            
+            ! No user input: Frobenius norm
+            mat_task = MAT_NORM_FRO
+            
+        endif
+     end subroutine mat_task_request_integer
+
+     pure subroutine mat_task_request_character(order,mat_task,err)
+        !> User input value
+        character(len=*), intent(in) :: order
+        !> Return value: norm type
+        character, intent(out) :: mat_task
+        !> State return flag
+        type(linalg_state_type), intent(out) :: err
+        
+        integer(ilp) :: int_order,read_err
+        
+        select case (order)
+           case ('inf','Inf','INF')
+              mat_task = MAT_NORM_INF
+           case ('Euclidean','euclidean','EUCLIDEAN','Frobenius','frobenius','FROBENIUS','Fro','fro','frob')
+              mat_task = MAT_NORM_FRO
+           case default
+            
+              ! Check if this input can be read as an integer
+              read(order,*,iostat=read_err) int_order
+              if (read_err/=0 .or. all(int_order/=[1,2])) then 
+                 ! Cannot read as an integer                 
+                 err = linalg_state_type(this,LINALG_ERROR,'Matrix norm input',order,' is not recognized.')                 
+              endif
+              
+              select case (int_order)
+                 case (1);     mat_task = MAT_NORM_ONE
+                 case (2);     mat_task = MAT_NORM_SVD
+                 case default; mat_task = MAT_NORM_ONE   
+              end select
+              
+        end select    
+        
+     end subroutine mat_task_request_character
 
     #:for rk,rt,ri in ALL_KINDS_TYPES
     
@@ -360,6 +437,187 @@ ${loop_variables_end(rank-1," "*12)}$
     end subroutine norm_${rank}$D_to_${rank-1}$D_${ii}$_${ri}$
 
     #:endfor
+    
+    !====================================================================
+    ! Matrix norms
+    !====================================================================    
+    
+    ! Internal implementation 
+    module function matrix_norm_${ii}$_${ri}$(a, order, err) result(nrm)
+        !> Input matrix a(m,n)
+        ${rt}$, intent(in), target :: a(:,:)
+        !> Norm of the matrix.        
+        real(${rk}$) :: nrm
+        !> Order of the matrix norm being computed.
+        ${it}$, #{if 'integer' in it}#optional, #{endif}#intent(in) :: order
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), intent(out), optional :: err           
+        
+        type(linalg_state_type) :: err_
+        integer(ilp) :: m,n
+        character :: mat_task
+        real(${rk}$), target :: work1(1)
+        real(${rk}$), pointer :: work(:)        
+        
+        m = size(a,dim=1,kind=ilp)
+        n = size(a,dim=2,kind=ilp)
+        
+        ! Initialize norm to zero
+        nrm = 0.0_${rk}$
+        
+        if (m<=0 .or. n<=0) then
+            err_ = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix shape: a=',[m,n])
+            call linalg_error_handling(err_,err)
+            return
+        end if
+
+        ! Check norm request: user + *LANGE support
+        call mat_task_request(order,mat_task,err_)
+        if (err_%error()) then 
+            call linalg_error_handling(err_,err)
+            return
+        endif       
+        
+        if (mat_task==MAT_NORM_INF) then 
+            allocate(work(m))
+        else
+            work => work1
+        end if
+                
+        if (mat_task==MAT_NORM_SVD) then 
+           nrm = maxval(svdvals(a,err_),1) 
+           call linalg_error_handling(err_,err)
+        else
+           ! LAPACK interface 
+           nrm = lange(mat_task,m,n,a,m,work)
+        end if
+        
+        if (mat_task==MAT_NORM_INF) deallocate(work)
+        
+    end function matrix_norm_${ii}$_${ri}$
+    
+    #:for rank in range(3, MAXRANK + 1)
+    
+    ! Pure function interface with DIM specifier. On error, the code will stop
+    module function matrix_norm_${rank}$D_to_${rank-2}$D_${ii}$_${ri}$(a, order, dim, err) result(nrm)
+        !> Input matrix a(m,n)
+        ${rt}$, intent(in), contiguous, target :: a${ranksuffix(rank)}$
+        !> Norm of the matrix.        
+        real(${rk}$), allocatable :: nrm${ranksuffix(rank-2)}$
+        !> Order of the matrix norm being computed.
+        ${it}$, #{if 'integer' in it}#optional, #{endif}#intent(in) :: order
+        !> [optional] dimensions of the sub-matrices the norms should be evaluated at (default = [1,2])
+        integer(ilp), optional, intent(in) :: dim(2)
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), intent(out), optional :: err  
+        
+        type(linalg_state_type) :: err_
+        integer(ilp) :: j,m,n,lda,dims(2),norm_request,svd_errors
+        integer(ilp), dimension(${rank}$) :: s,spack,perm,iperm
+        integer(ilp), dimension(${rank}$), parameter :: dim_range = [(m,m=1_ilp,${rank}$_ilp)]
+        integer(ilp) :: ${loop_variables('j',rank-2,2)}$
+        logical :: contiguous_data
+        character :: mat_task
+        real(${rk}$), target :: work1(1)
+        real(${rk}$), pointer :: work(:)        
+        ${rt}$, pointer :: apack${ranksuffix(rank)}$
+        
+        ! Get dimensions
+        if (present(dim)) then 
+           dims = dim 
+        else
+           dims = [1,2]
+        endif
+        
+        nullify(apack)
+        svd_errors = 0
+
+        if (dims(1)==dims(2) .or. .not.all(dims>0 .and. dims<=${rank}$)) then 
+            err_ = linalg_state_type(this,LINALG_VALUE_ERROR,'Rank-',${rank}$,' matrix norm has invalid dim=',dims)
+            allocate(nrm${emptyranksuffix(rank-2)}$)
+            call linalg_error_handling(err_,err)
+            return
+        endif
+        
+        ! Check norm request: user + *LANGE support
+        call mat_task_request(order,mat_task,err_)
+        if (err_%error()) then 
+            allocate(nrm${emptyranksuffix(rank-2)}$)
+            call linalg_error_handling(err_,err)
+            return
+        endif             
+        
+        ! Input matrix properties
+        s = shape(a,kind=ilp)
+        
+        ! Check if input column data is contiguous
+        contiguous_data = all(dims==[1,2])
+        
+        ! Matrix norm size
+        m = s(dims(1))
+        n = s(dims(2))
+
+        if (m<=0 .or. n<=0) then
+            err_ = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix shape: a=',[m,n])
+            allocate(nrm${emptyranksuffix(rank-2)}$)
+            call linalg_error_handling(err_,err)
+            return
+        end if
+
+        ! Get packed data with norm dimensions as 1:2
+        if (contiguous_data) then 
+            
+            ! Reshape without moving data
+            spack =  s
+            apack => a
+            
+        else
+            
+            ! Dimension permutations to map dims(1),dims(2) => 1:2
+            perm = [dims,pack(dim_range, dim_range/=dims(1) .and. dim_range/=dims(2))]            
+            iperm(perm) = dim_range            
+            spack = s(perm)            
+            allocate(apack,source=reshape(a, shape=spack, order=iperm))
+            
+        endif
+            
+        if (mat_task==MAT_NORM_INF) then 
+            allocate(work(m))
+        elseif (mat_task==MAT_NORM_SVD) then 
+            allocate(work(min(m,n)))
+        else
+            work => work1
+        endif
+        
+        ! Allocate norm        
+        allocate(nrm${shape_from_array_size('apack',rank-2, 2)}$)
+        
+        lda = size(apack,dim=1,kind=ilp)
+        
+        ! LAPACK interface
+${loop_variables_start('j', 'apack', rank-2, 2)}$
+        if (mat_task==MAT_NORM_SVD) then
+            work(:) = svdvals(apack(:,:,${loop_variables('j',rank-2,2)}$),err_)
+            nrm(${loop_variables('j',rank-2,2)}$) = maxval(work,1)
+            if (err_%error()) svd_errors = svd_errors+1
+        else
+            nrm(${loop_variables('j',rank-2,2)}$) = &
+            lange(mat_task,m,n,apack(:,:,${loop_variables('j',rank-2,2)}$),lda,work)            
+        end if
+${loop_variables_end(rank-2)}$
+        
+        if (any(mat_task==[MAT_NORM_INF,MAT_NORM_SVD])) deallocate(work)
+        if (.not.contiguous_data) deallocate(apack)
+        
+        if (svd_errors>0) then 
+            err_ = linalg_state_type(this,LINALG_VALUE_ERROR,svd_errors,'failed SVDs')
+            call linalg_error_handling(err_,err)
+        endif             
+                
+    end function matrix_norm_${rank}$D_to_${rank-2}$D_${ii}$_${ri}$    
+    
+    #:endfor
+    
     #:endfor
     #:endfor
 
