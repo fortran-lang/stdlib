@@ -1,12 +1,5 @@
----
-title: terminal colors
-...
-
-
-# The `stdlib_ansi` module
-
-[TOC]
-
+# `stdlib_ansi`
+ 
 ## Introduction
 
 Support terminal escape sequences to produce styled and colored terminal output.
