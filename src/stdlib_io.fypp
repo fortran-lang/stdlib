@@ -558,16 +558,14 @@ contains
         
       ! Local variables
       type(state_type) :: err0
-      integer, parameter :: buffer_len = 65536
-      character(len=:), allocatable :: buffer,fileString
+      character(len=:), allocatable :: fileString
       character(len=512) :: iomsg
       integer :: lun,iostat
-      integer(8) :: mypos,oldpos,size_read
+      integer(int64) :: errpos,fileSize
       logical :: is_present,want_deleted
 
       ! Initializations
       file = ""
-      allocate(character(len=buffer_len) :: buffer)
       
       !> Check if the file should be deleted after reading
       if (present(delete)) then 
@@ -583,54 +581,59 @@ contains
          call err0%handle(err)
          return
       end if
+      
+      !> Retrieve file size
+      inquire(file=fileName,size=fileSize)
+      
+      invalid_size: if (fileSize<0) then 
 
+          err0 = state_type('getfile',STDLIB_IO_ERROR,fileName,'has invalid size=',fileSize)
+          call err0%handle(err)
+          return            
+            
+      endif invalid_size  
+            
+      ! Read file
       open(newunit=lun,file=fileName, &
            form='unformatted',action='read',access='stream',status='old', &
            iostat=iostat,iomsg=iomsg)
+             
       if (iostat/=0) then 
          err0 = state_type('getfile',STDLIB_IO_ERROR,'Cannot open',fileName,'for read:',iomsg)
          call err0%handle(err)
          return
-      end if
+      end if     
+        
+      allocate(character(len=fileSize) :: fileString)
+        
+      read_data: if (fileSize>0) then 
+            
+          read(lun, pos=1, iostat=iostat, iomsg=iomsg) fileString
+            
+          ! Read error
+          if (iostat/=0) then 
+                
+              inquire(unit=lun,pos=errpos)                    
+              err0 = state_type('getfile',STDLIB_IO_ERROR,'Error reading',fileName,'at byte',errpos)
+              call err0%handle(err)
+              return
 
-      allocate(character(len=0)::fileString)
-      read_by_chunks: do
-
-          ! Read another buffer
-          inquire(unit=lun,pos=oldpos)
-          
-          read (lun, iostat=iostat, iomsg=iomsg) buffer
-          
-          if (is_iostat_end(iostat) .or. is_iostat_eor(iostat)) then
-             ! Partial buffer read
-             inquire(unit=lun,pos=mypos)
-             size_read  = mypos-oldpos
-             fileString = fileString // buffer(:size_read)
-             iostat = 0
-             iomsg  = ''
-             exit read_by_chunks
-          else if (iostat == 0) then
-             ! Full buffer read
-             fileString = fileString // buffer
-          else
-             ! Read error
-             err0 = state_type('getfile',STDLIB_IO_ERROR,'Error reading',fileName,'at character',oldpos)
-             exit read_by_chunks
-          end if
-      end do read_by_chunks
-
+          endif
+            
+      end if read_data
+                   
       if (want_deleted) then 
          close(lun,iostat=iostat,status='delete')
          if (iostat/=0) err0 = state_type('getfile',STDLIB_IO_ERROR,'Cannot delete',fileName,'after reading')
       else
          close(lun,iostat=iostat)
          if (iostat/=0) err0 = state_type('getfile',STDLIB_IO_ERROR,'Cannot close',fileName,'after reading')
-      endif   
+      endif 
       
       ! Process output
       call move(from=fileString,to=file)
       call err0%handle(err)
 
-    end function getfile
+  end function getfile
     
 end module stdlib_io
