@@ -1,6 +1,7 @@
 module test_getline
-    use stdlib_io, only : getline
-    use stdlib_string_type, only : string_type, len
+    use stdlib_io, only : getline, getfile
+    use stdlib_error, only: state_type
+    use stdlib_string_type, only : string_type, len, len_trim
     use testdrive, only : new_unittest, unittest_type, error_type, check
     implicit none
     private
@@ -20,7 +21,10 @@ contains
             new_unittest("pad-no", test_pad_no), &
             new_unittest("iostat-end", test_iostat_end), &
             new_unittest("closed-unit", test_closed_unit, should_fail=.true.), &
-            new_unittest("no-unit", test_no_unit, should_fail=.true.) &
+            new_unittest("no-unit", test_no_unit, should_fail=.true.), &
+            new_unittest("getfile-no", test_getfile_missing), &
+            new_unittest("getfile-empty", test_getfile_empty), &
+            new_unittest("getfile-non-empty", test_getfile_non_empty) &
             ]
     end subroutine collect_getline
 
@@ -138,6 +142,77 @@ contains
         call getline(io, line, stat, msg)
         call check(error, stat, msg)
     end subroutine test_no_unit
+
+    subroutine test_getfile_missing(error)
+        !> Test for a missing file.
+        type(error_type), allocatable, intent(out) :: error
+
+        type(string_type) :: fileContents
+        type(state_type) :: err
+
+        fileContents = getfile("nonexistent_file.txt", err)
+        
+        ! Check that an error was returned
+        call check(error, err%error(), "Error not returned on a missing file")
+        if (allocated(error)) return
+        
+    end subroutine test_getfile_missing
+
+    subroutine test_getfile_empty(error)
+        !> Test for an empty file.
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: ios
+        character(len=:), allocatable :: filename
+        type(string_type) :: fileContents
+        type(state_type) :: err
+        
+        ! Get a temporary file name
+        filename = "test_getfile_empty.txt"
+
+        ! Create an empty file        
+        open(newunit=ios, file=filename, action="write", form="formatted", access="sequential")        
+        close(ios)
+
+        ! Read and delete it
+        fileContents = getfile(filename, err, delete=.true.)
+
+        call check(error, err%ok(), "Should not return error reading an empty file")
+        if (allocated(error)) return
+        
+        call check(error, len_trim(fileContents) == 0, "String from empty file should be empty")
+        if (allocated(error)) return
+        
+    end subroutine test_getfile_empty
+
+    subroutine test_getfile_non_empty(error)
+        !> Test for a non-empty file.
+        type(error_type), allocatable, intent(out) :: error
+
+        integer :: ios
+        character(len=:), allocatable :: filename
+        type(string_type) :: fileContents
+        type(state_type) :: err
+        
+        ! Get a temporary file name
+        filename = "test_getfile_size5.txt"
+
+        ! Create a fixed-size file
+        open(newunit=ios, file=filename, action="write", form="unformatted", access="stream")        
+        write(ios) "12345"
+        close(ios)
+
+        ! Read and delete it
+        fileContents = getfile(filename, err, delete=.true.)
+
+        call check(error, err%ok(), "Should not return error reading a non-empty file")
+        if (allocated(error)) return
+        
+        call check(error, len_trim(fileContents) == 5, "Wrong string size returned")
+        if (allocated(error)) return
+
+    end subroutine test_getfile_non_empty
+
 
 end module test_getline
 
