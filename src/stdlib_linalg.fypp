@@ -1342,7 +1342,7 @@ contains
 
         integer, intent(in) :: dim1
         integer, intent(in), optional :: dim2
-        ${t1}$, intent(in) #{if 'int8' in t1}#, optional #{endif}#:: mold
+        ${t1}$, intent(in) #{if t1 == 'real(dp)'}#, optional #{endif}#:: mold        
         ${t1}$, allocatable :: result(:, :)
 
         integer :: dim2_
