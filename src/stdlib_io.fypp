@@ -614,7 +614,7 @@ contains
           if (iostat/=0) then 
                 
               inquire(unit=lun,pos=errpos)                    
-              err0 = state_type('getfile',STDLIB_IO_ERROR,'Error reading',fileName,'at byte',errpos)
+              err0 = state_type('getfile',STDLIB_IO_ERROR,iomsg,'(',fileName,'at byte',errpos,')')
               call err0%handle(err)
               return
 
