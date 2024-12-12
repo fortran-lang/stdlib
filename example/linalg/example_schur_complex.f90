@@ -3,16 +3,14 @@ program example_schur_complex
   use stdlib_linalg, only: schur
   use stdlib_linalg_constants, only: dp
   implicit none
-  complex(dp), allocatable :: A(:,:), T(:,:), Z(:,:)
-  integer :: n
+  
+  integer, parameter :: n = 3
+  complex(dp), dimension(n,n) :: A, T, Z
 
   ! Initialize a complex-valued square matrix
-  n = 3
-  allocate(A(n,n), T(n,n), Z(n,n))
-  A = reshape([ &
-       (1.0_dp, 2.0_dp), (3.0_dp, -1.0_dp), (4.0_dp, 1.0_dp), &
-       (0.0_dp, -1.0_dp), (2.0_dp, 0.0_dp), (1.0_dp, -2.0_dp), &
-       (2.0_dp, 3.0_dp), (1.0_dp, 1.0_dp), (0.0_dp, -1.0_dp) ], shape=[n,n])
+  A = reshape([ (1, 2), (3,-1), (4, 1), &
+                (0,-1), (2, 0), (1,-2), &
+                (2, 3), (1, 1), (0,-1) ], shape=[n,n])
 
   ! Compute the Schur decomposition: A = Z T Z^H
   call schur(A, T, Z)
@@ -28,6 +26,5 @@ program example_schur_complex
   ! Test factorization: Z*T*Z^H = A
   print *, "Max error in reconstruction:", maxval(abs(matmul(Z, matmul(T, conjg(transpose(Z)))) - A))
 
-  deallocate(A, T, Z)
 end program example_schur_complex
 
