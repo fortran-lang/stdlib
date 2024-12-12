@@ -182,20 +182,6 @@ submodule (stdlib_linalg) stdlib_linalg_schur
             overwrite_a_ = .false._lk
         endif
         
-        !> SORTING: no sorting options are currently supported
-        sort  = gees_sort_eigs(.false.)
-        sdim  = 0_ilp     
-        
-        if (sort/=GEES_NOT) then 
-            
-           allocate(bwork(n),source=.false.)
-        
-        else
-            
-           bwork => bwork_dummy 
-            
-        end if        
-        
         !> Schur vectors
         jobvs = gees_vectors(present(z))        
         if (present(z)) then 
@@ -207,7 +193,8 @@ submodule (stdlib_linalg) stdlib_linalg_schur
             if (ldvs<n .or. nvs/=n) then
                 err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'Schur vectors size=',[ldvs,nvs], &
                                                               'should be n=',n)
-                goto 1
+                call linalg_error_handling(err0, err)
+                return
             end if             
             
         else
@@ -226,10 +213,29 @@ submodule (stdlib_linalg) stdlib_linalg_schur
             
             ! Query optimal workspace            
             call get_schur_${ri}$_workspace(a,lwork,err0)
-            if (err0%error()) goto 1
-            allocate(work(lwork))
             
-        end if
+            if (err0%error()) then 
+                call linalg_error_handling(err0, err)
+                return
+            else
+                allocate(work(lwork))
+            end if
+            
+        end if        
+        
+        !> SORTING: no sorting options are currently supported
+        sort  = gees_sort_eigs(.false.)
+        sdim  = 0_ilp     
+        
+        if (sort/=GEES_NOT) then 
+            
+           allocate(bwork(n),source=.false.)
+        
+        else
+            
+           bwork => bwork_dummy 
+            
+        end if            
         
         !> User or self-allocated eigenvalue storage
         if (present(eigvals)) then             
@@ -262,17 +268,22 @@ submodule (stdlib_linalg) stdlib_linalg_schur
         #:endif
 
         if (lde<n) then
-            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'Insufficient eigenvalue array size=',lde, &
-                                                          'should be >=',n)
-            goto 2
+            
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, &
+                                           'Insufficient eigenvalue array size=',lde, &
+                                           'should be >=',n)
+        
+        else
+            
+            ! Compute Schur decomposition
+            call gees(jobvs,sort,eig_select,nt,t,mt,sdim,eigs,#{if rt.startswith('r')}#eigi,#{endif}# &
+                      vs,ldvs,work,lwork,#{if rt.startswith('c')}#rwork,#{endif}#bwork,info)
+            call handle_gees_info(info,m,n,m,err0)            
+            
+        
         end if  
 
-        ! Compute Schur decomposition
-        call gees(jobvs,sort,eig_select,nt,t,mt,sdim,eigs,#{if rt.startswith('r')}#eigi,#{endif}# &
-                  vs,ldvs,work,lwork,#{if rt.startswith('c')}#rwork,#{endif}#bwork,info)
-        call handle_gees_info(info,m,n,m,err0)
-
-      2 eigenvalue_output: if (local_eigs) then 
+        eigenvalue_output: if (local_eigs) then 
            #:if rt.startswith('r')
            ! Build complex eigenvalues
            if (present(eigvals)) eigvals = cmplx(eigs,eigi,kind=${rk}$)
@@ -280,7 +291,7 @@ submodule (stdlib_linalg) stdlib_linalg_schur
            if (.not.overwrite_a_) deallocate(eigs#{if rt.startswith('r')}#,eigi#{endif}#)
         endif eigenvalue_output
         if (.not.present(storage)) deallocate(work)
-      1 if (sort/=GEES_NOT) deallocate(bwork)
+        if (sort/=GEES_NOT) deallocate(bwork)
         call linalg_error_handling(err0,err)
         
         contains
