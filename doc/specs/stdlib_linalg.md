@@ -1562,4 +1562,53 @@ If `err` is not present, exceptions trigger an `error stop`.
 {!example/linalg/example_norm.f90!}
 ```
 
+## `mnorm` - Computes the matrix norm of a generic-rank array.
+
+### Status
+
+Experimental
+
+### Description
+
+This function computes one of several matrix norms of `real` or `complex` array \( A \), depending on 
+the value of the `order` input argument. \( A \) must be an array of rank 2 or higher. For arrays of rank > 2,
+matrix norms are computed over specified dimensions.
+
+### Syntax
+
+`x = ` [[stdlib_linalg(module):mnorm(interface)]] `(a [, order, dim, err])`
+
+### Arguments
+
+`a`: Shall be a rank-n `real` or `complex` array containing the data, where n >= 2. It is an `intent(in)` argument.
+
+`order` (optional): Shall be an `integer` value or a `character` flag that specifies the norm type, as follows. It is an `intent(in)` argument. 
+
+| Integer input    | Character Input                 | Norm type                                                                   |
+|------------------|---------------------------------|-----------------------------------------------------------------------------|
+| `1`              | `'1'`                           | 1-norm (maximum column sum) \( \max_j \sum_i{ \left|a_{i,j}\right| } \)     |
+| `2`              | `'2'`                           | 2-norm (largest singular value)                                             |
+| (not prov.)      | `'Euclidean','Frobenius','Fro'` | Frobenius norm \( \sqrt{\sum_{i,j}{ \left|a_{i,j}\right|^2 }} \)            |
+| `huge(0)`        | `'inf', 'Inf', 'INF'`           | Infinity norm (maximum row sum) \( \max_i \sum_j{ \left|a_{i,j}\right| } \) |
+
+`dim` (optional): For arrays of rank > 2, shall be an integer array of size 2 specifying the dimensions over which to compute the matrix norm. Default value is `[1,2]`. It is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument. 
+
+### Return value
+
+For rank-2 input arrays, the return value `x` is a scalar containing the matrix norm.
+For arrays of rank > 2, if the optional `dim` argument is present, `x` is a rank `n-2` array with the same shape as \( A \) except 
+for dimensions `dim(1)` and `dim(2)`, which are dropped. Each element of `x` contains the matrix norm of the corresponding submatrix of \( A \),
+evaluated over the specified dimensions only, with the given order.
+
+If an invalid norm type is provided, defaults to 1-norm and raises `LINALG_ERROR`.
+Raises `LINALG_VALUE_ERROR` if any of the arguments has an invalid size.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_mnorm.f90!}
+```
 
