@@ -993,7 +993,7 @@ The results are returned in output matrices \( T \) and \( Z \). Matrix \( T \) 
 
 ### Syntax
 
-`call ` [[stdlib_linalg(module):schur(interface)]] `(a, t, z, [, eigvals] [, overwrite_a] [, storage] [, err])`
+`call ` [[stdlib_linalg(module):schur(interface)]] `(a, t [, z,] [, eigvals] [, overwrite_a] [, storage] [, err])`
 
 ### Arguments
 
