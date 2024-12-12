@@ -1045,7 +1045,7 @@ This subroutine computes the internal working space requirements for the Schur d
 
 - `a`: Shall be a rank-2 `real` or `complex` array containing the matrix to be decomposed. It is an `intent(in)` argument.
 
-- `lwork`: Shall be an `integer` scalar that returns the minimum array size required for the working storage in [[stdlib_linalg(module):schur(interface)]] to decompose `a`.
+- `lwork`: Shall be an `integer` scalar that returns the minimum array size required for the working storage in [[stdlib_linalg(module):schur(interface)]] to decompose `a`. It is an `intent(out)` argument.
 
 - `err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument.
 
