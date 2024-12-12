@@ -4,13 +4,12 @@ program example_schur_eigenvalues
   use stdlib_linalg, only: schur
   use stdlib_linalg_constants, only: dp
   implicit none
-  real(dp), allocatable :: A(:,:), T(:,:), Z(:,:)
-  complex(dp), allocatable :: eigenvalues(:)
-  integer :: n
-
+  
+  integer, parameter :: n = 5  
+  real(dp), dimension(n,n) :: A, T, Z
+  complex(dp), dimension(n) :: eigenvalues
+  
   ! Create a random real-valued square matrix
-  n = 5
-  allocate(A(n,n), T(n,n), Z(n,n), eigenvalues(n))
   call random_number(A)
 
   ! Compute the Schur decomposition and eigenvalues
@@ -29,6 +28,5 @@ program example_schur_eigenvalues
   ! Test factorization: Z*T*Z^T = A
   print *, "Max error in reconstruction:", maxval(abs(matmul(Z, matmul(T, transpose(Z))) - A))
 
-  deallocate(A, T, Z, eigenvalues)
 end program example_schur_eigenvalues
 
