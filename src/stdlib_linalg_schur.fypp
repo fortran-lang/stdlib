@@ -136,7 +136,7 @@ submodule (stdlib_linalg) stdlib_linalg_schur
         !> [optional] Output eigenvalues that appear on the diagonal of T
         complex(${rk}$), optional, intent(out), contiguous, target :: eigvals(:)
         !> [optional] Provide pre-allocated workspace, size to be checked with schur_space
-        ${rt}$, optional, intent(inout), target :: storage(:)
+        ${rt}$, optional, intent(out), target :: storage(:)
         !> [optional] Can A data be overwritten and destroyed?
         logical(lk), optional, intent(in) :: overwrite_a        
         !> [optional] State return flag. On error if not requested, the code will stop

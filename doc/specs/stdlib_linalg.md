@@ -1007,7 +1007,7 @@ The results are returned in output matrices \( T \) and \( Z \). Matrix \( T \) 
 
 - `overwrite_a` (optional): Shall be a `logical` flag (default: `.false.`). If `.true.`, the input matrix `a` will be overwritten and destroyed upon return, avoiding internal data allocation. It is an `intent(in)` argument.
 
-- `storage` (optional): Shall be a rank-1 array of the same type and kind as `a`, providing working storage for the solver. Its minimum size can be determined with a call to [[stdlib_linalg(module):schur_space(interface)]]. It is an `intent(inout)` argument.
+- `storage` (optional): Shall be a rank-1 array of the same type and kind as `a`, providing working storage for the solver. Its minimum size can be determined with a call to [[stdlib_linalg(module):schur_space(interface)]]. It is an `intent(out)` argument.
 
 - `err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument. If not provided, exceptions trigger an `error stop`.
 
