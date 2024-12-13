@@ -989,7 +989,7 @@ Stable
 
 This subroutine computes the solution to the eigenproblem \( A \cdot \bar{v} - \lambda \cdot \bar{v} \), 
 where \( A \) is a square, full-rank, `real` or `complex` matrix, or to the generalized eigenproblem \( A \cdot \bar{v} - \lambda \cdot B \cdot \bar{v} \), 
-where \( B \) is a square matrix with the same type and kind as \( A \).
+where \( B \) is a square matrix with the same type, kind and size as \( A \).
 
 Result array `lambda` returns the eigenvalues of \( A \). The user can request eigenvectors to be returned: if provided, on output `left` will contain the left eigenvectors, `right` the right eigenvectors of \( A \).
 Both `left` and `right` are rank-2 arrays, where eigenvectors are stored as columns.
