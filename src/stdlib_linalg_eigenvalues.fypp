@@ -131,7 +131,11 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      module function stdlib_linalg_eigvals_${ep}$_${ri}$(a#{if ei=='ggev'}#,b#{endif}#,err) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         ${rt}$, intent(in), dimension(:,:), target :: a #{if ei=='ggev'}#, b #{endif}#
+         ${rt}$, intent(in), dimension(:,:), target :: a 
+         #:if ei=='ggev'
+         !> Generalized problem matrix B[n,n]
+         ${rt}$, intent(inout), dimension(:,:), target :: b         
+         #:endif                  
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), intent(out) :: err
          !> Array of eigenvalues
@@ -153,14 +157,18 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          allocate(lambda(k))
 
          !> Compute eigenvalues only
-         call stdlib_linalg_eig_${ep}$_${ri}$(amat,#{if ei=='ggev'}#,bmat#{endif}#lambda,overwrite_a=.false.,err=err)
+         call stdlib_linalg_eig_${ep}$_${ri}$(amat#{if ei=='ggev'}#,bmat#{endif}#,lambda,overwrite_a=.false.,err=err)
 
      end function stdlib_linalg_eigvals_${ep}$_${ri}$
 
      module function stdlib_linalg_eigvals_noerr_${ep}$_${ri}$(a#{if ei=='ggev'}#,b#{endif}#) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         ${rt}$, intent(in), dimension(:,:), target :: a #{if ei=='ggev'}#, b #{endif}#
+         ${rt}$, intent(in), dimension(:,:), target :: a
+         #:if ei=='ggev'
+         !> Generalized problem matrix B[n,n]
+         ${rt}$, intent(inout), dimension(:,:), target :: b         
+         #:endif         
          !> Array of eigenvalues
          complex(${rk}$), allocatable :: lambda(:)
 
@@ -180,15 +188,19 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          allocate(lambda(k))
 
          !> Compute eigenvalues only
-         call stdlib_linalg_eig_${ep}$_${ri}$(amat,#{if ei=='ggev'}#,bmat#{endif}#lambda,overwrite_a=.false.)
+         call stdlib_linalg_eig_${ep}$_${ri}$(amat#{if ei=='ggev'}#,bmat#{endif}#,lambda,overwrite_a=.false.)
 
      end function stdlib_linalg_eigvals_noerr_${ep}$_${ri}$
 
-     module subroutine stdlib_linalg_eig_${ep}$_${ri}$(a,#{if ei=='ggev'}#,b#{endif}#lambda,right,left,overwrite_a,err)
+     module subroutine stdlib_linalg_eig_${ep}$_${ri}$(a#{if ei=='ggev'}#,b#{endif}#,lambda,right,left,overwrite_a,err)
      !! Eigendecomposition of matrix A returning an array `lambda` of eigenvalues, 
      !! and optionally right or left eigenvectors.        
          !> Input matrix A[m,n]
-         ${rt}$, intent(inout), target :: a(:,:)
+         ${rt}$, intent(inout), dimension(:,:), target :: a 
+         #:if ei=='ggev'
+         !> Generalized problem matrix B[n,n]
+         ${rt}$, intent(inout), dimension(:,:), target :: b         
+         #:endif         
          !> Array of eigenvalues
          complex(${rk}$), intent(out) :: lambda(:)
          !> [optional] RIGHT eigenvectors of A (as columns)
@@ -207,7 +219,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          character :: task_u,task_v
          ${rt}$, target :: work_dummy(1),u_dummy(1,1),v_dummy(1,1)
          ${rt}$, allocatable :: work(:)
-         ${rt}$, pointer :: amat(:,:),umat(:,:),vmat(:,:)
+         ${rt}$, dimension(:,:), pointer :: amat,umat,vmat#{if ei=='ggev'}#,bmat#{endif}#
          #:if rt.startswith('complex')
          real(${rk}$), allocatable :: rwork(:)
          #:else
@@ -596,7 +608,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
           n = size(lambda,dim=1,kind=ilp)
           allocate(clambda(n))
           
-          call stdlib_linalg_eig_${ri}$(a,clambda,right,left,overwrite_a,err0)
+          call stdlib_linalg_eig_standard_${ri}$(a,clambda,right,left,overwrite_a,err0)
           
           ! Check that no eigenvalues have meaningful imaginary part
           if (err0%ok() .and. any(aimag(clambda)>atol+rtol*abs(abs(clambda)))) then 

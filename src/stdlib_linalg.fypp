@@ -5,6 +5,9 @@
 #:set RHS_SYMBOL = [ranksuffix(r) for r in [1,2]]
 #:set RHS_EMPTY  = [emptyranksuffix(r) for r in [1,2]]
 #:set ALL_RHS    = list(zip(RHS_SYMBOL,RHS_SUFFIX,RHS_EMPTY))
+#:set EIG_PROBLEM  = ["standard", "generalized"]
+#:set EIG_FUNCTION = ["geev","ggev"]
+#:set EIG_PROBLEM_LIST = list(zip(EIG_PROBLEM, EIG_FUNCTION))
 module stdlib_linalg
   !!Provides a support for various linear algebra procedures
   !! ([Specification](../page/specs/stdlib_linalg.html))
@@ -832,12 +835,16 @@ module stdlib_linalg
      !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
      !!       
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp"
-    module subroutine stdlib_linalg_eig_${ri}$(a,lambda,right,left,overwrite_a,err)
+    #:for ep,ei in EIG_PROBLEM_LIST
+    module subroutine stdlib_linalg_eig_${ep}$_${ri}$(a#{if ei=='ggev'}#,b#{endif}#,lambda,right,left,overwrite_a,err)
      !! Eigendecomposition of matrix A returning an array `lambda` of eigenvalues, 
      !! and optionally right or left eigenvectors.        
          !> Input matrix A[m,n]
          ${rt}$, intent(inout), target :: a(:,:)
+         #:if ei=='ggev'
+         !> Generalized problem matrix B[n,n]
+         ${rt}$, intent(inout), target :: b(:,:)
+         #:endif         
          !> Array of eigenvalues
          complex(${rk}$), intent(out) :: lambda(:)
          !> The columns of RIGHT contain the right eigenvectors of A
@@ -848,17 +855,18 @@ module stdlib_linalg
          logical(lk), optional, intent(in) :: overwrite_a
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err
-    end subroutine stdlib_linalg_eig_${ri}$
-    #:endif
-    #:endfor
-    #:for rk,rt,ri in REAL_KINDS_TYPES
-    #:if rk!="xdp"
-    module subroutine stdlib_linalg_real_eig_${ri}$(a,lambda,right,left,overwrite_a,err)
+    end subroutine stdlib_linalg_eig_${ep}$_${ri}$
+
+    module subroutine stdlib_linalg_real_eig_${ep}$_${ri}$(a#{if ei=='ggev'}#,b#{endif}#,lambda,right,left,overwrite_a,err)
      !! Eigendecomposition of matrix A returning an array `lambda` of real eigenvalues, 
      !! and optionally right or left eigenvectors. Returns an error if the eigenvalues had
      !! non-trivial imaginary parts.
          !> Input matrix A[m,n]
-         ${rt}$, intent(inout), target :: a(:,:)
+         ${rt}$, intent(in), target :: a(:,:)
+         #:if ei=='ggev'
+         !> Generalized problem matrix B[n,n]
+         ${rt}$, intent(inout), target :: b(:,:)  
+         #:endif
          !> Array of real eigenvalues
          real(${rk}$), intent(out) :: lambda(:)
          !> The columns of RIGHT contain the right eigenvectors of A
@@ -869,9 +877,9 @@ module stdlib_linalg
          logical(lk), optional, intent(in) :: overwrite_a
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err
-    end subroutine stdlib_linalg_real_eig_${ri}$
-    #:endif
+    end subroutine stdlib_linalg_real_eig_${ep}$_${ri}$
     #:endfor    
+    #:endfor
   end interface eig
 
   ! Eigenvalues of a square matrix
@@ -895,25 +903,33 @@ module stdlib_linalg
      !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
      !!       
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp"
-    module function stdlib_linalg_eigvals_${ri}$(a,err) result(lambda)
+    #:for ep,ei in EIG_PROBLEM_LIST
+    module function stdlib_linalg_eigvals_${ep}$_${ri}$(a#{if ei=='ggev'}#,b#{endif}#,err) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         ${rt}$, intent(in), target :: a(:,:)
+         ${rt}$, intent(in), dimension(:,:), target :: a 
+         #:if ei=='ggev'
+         !> Generalized problem matrix B[n,n]
+         ${rt}$, intent(inout), dimension(:,:), target :: b         
+         #:endif                  
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), intent(out) :: err
          !> Array of singular values
          complex(${rk}$), allocatable :: lambda(:)        
-    end function stdlib_linalg_eigvals_${ri}$
+    end function stdlib_linalg_eigvals_${ep}$_${ri}$
     
-    module function stdlib_linalg_eigvals_noerr_${ri}$(a) result(lambda)
+    module function stdlib_linalg_eigvals_noerr_${ep}$_${ri}$(a#{if ei=='ggev'}#,b#{endif}#) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         ${rt}$, intent(in), target :: a(:,:)
+         ${rt}$, intent(in), dimension(:,:), target :: a 
+         #:if ei=='ggev'
+         !> Generalized problem matrix B[n,n]
+         ${rt}$, intent(inout), dimension(:,:), target :: b         
+         #:endif                  
          !> Array of singular values
          complex(${rk}$), allocatable :: lambda(:)
-    end function stdlib_linalg_eigvals_noerr_${ri}$
-    #:endif
+    end function stdlib_linalg_eigvals_noerr_${ep}$_${ri}$
+    #:endfor
     #:endfor
   end interface eigvals
      
@@ -942,7 +958,6 @@ module stdlib_linalg
      !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
      !!      
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp"
     module subroutine stdlib_linalg_eigh_${ri}$(a,lambda,vectors,upper_a,overwrite_a,err)
      !! Eigendecomposition of a real symmetric or complex Hermitian matrix A returning an array `lambda` 
      !! of eigenvalues, and optionally right or left eigenvectors.        
@@ -959,7 +974,6 @@ module stdlib_linalg
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err
     end subroutine stdlib_linalg_eigh_${ri}$
-    #:endif
     #:endfor        
   end interface eigh
      
@@ -987,7 +1001,6 @@ module stdlib_linalg
      !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
      !!         
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp"
     module function stdlib_linalg_eigvalsh_${ri}$(a,upper_a,err) result(lambda)
      !! Return an array of eigenvalues of real symmetric / complex hermitian A
          !> Input matrix A[m,n]
@@ -1009,7 +1022,6 @@ module stdlib_linalg
          !> Array of singular values
          real(${rk}$), allocatable :: lambda(:)
     end function stdlib_linalg_eigvalsh_noerr_${ri}$
-    #:endif
     #:endfor                
   end interface eigvalsh
 
