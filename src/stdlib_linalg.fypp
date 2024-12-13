@@ -836,7 +836,8 @@ module stdlib_linalg
      !!       
     #:for rk,rt,ri in RC_KINDS_TYPES
     #:for ep,ei in EIG_PROBLEM_LIST
-    module subroutine stdlib_linalg_eig_${ep}$_${ri}$(a#{if ei=='ggev'}#,b#{endif}#,lambda,right,left,overwrite_a,err)
+    module subroutine stdlib_linalg_eig_${ep}$_${ri}$(a#{if ei=='ggev'}#,b#{endif}#,lambda,right,left, &
+                                                      overwrite_a#{if ei=='ggev'}#,overwrite_b#{endif}#,err)
      !! Eigendecomposition of matrix A returning an array `lambda` of eigenvalues, 
      !! and optionally right or left eigenvectors.        
          !> Input matrix A[m,n]
@@ -853,16 +854,21 @@ module stdlib_linalg
          complex(${rk}$), optional, intent(out), target :: left(:,:)
          !> [optional] Can A data be overwritten and destroyed?
          logical(lk), optional, intent(in) :: overwrite_a
+         #:if ei=='ggev'
+         !> [optional] Can B data be overwritten and destroyed? (default: no)
+         logical(lk), optional, intent(in) :: overwrite_b
+         #:endif         
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err
     end subroutine stdlib_linalg_eig_${ep}$_${ri}$
 
-    module subroutine stdlib_linalg_real_eig_${ep}$_${ri}$(a#{if ei=='ggev'}#,b#{endif}#,lambda,right,left,overwrite_a,err)
+    module subroutine stdlib_linalg_real_eig_${ep}$_${ri}$(a#{if ei=='ggev'}#,b#{endif}#,lambda,right,left, &
+                                                           overwrite_a#{if ei=='ggev'}#,overwrite_b#{endif}#,err)
      !! Eigendecomposition of matrix A returning an array `lambda` of real eigenvalues, 
      !! and optionally right or left eigenvectors. Returns an error if the eigenvalues had
      !! non-trivial imaginary parts.
          !> Input matrix A[m,n]
-         ${rt}$, intent(in), target :: a(:,:)
+         ${rt}$, intent(inout), target :: a(:,:)
          #:if ei=='ggev'
          !> Generalized problem matrix B[n,n]
          ${rt}$, intent(inout), target :: b(:,:)  
@@ -875,6 +881,10 @@ module stdlib_linalg
          complex(${rk}$), optional, intent(out), target :: left(:,:)
          !> [optional] Can A data be overwritten and destroyed?
          logical(lk), optional, intent(in) :: overwrite_a
+         #:if ei=='ggev'
+         !> [optional] Can B data be overwritten and destroyed? (default: no)
+         logical(lk), optional, intent(in) :: overwrite_b
+         #:endif         
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err
     end subroutine stdlib_linalg_real_eig_${ep}$_${ri}$
