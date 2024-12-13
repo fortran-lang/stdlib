@@ -58,6 +58,41 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
 
      end subroutine handle_geev_info
 
+     !> Process GGEV output flags
+     pure subroutine handle_ggev_info(err,info,shapea,shapeb)
+        !> Error handler
+        type(linalg_state_type), intent(inout) :: err
+        !> GEEV return flag
+        integer(ilp), intent(in) :: info
+        !> Input matrix size
+        integer(ilp), intent(in) :: shapea(2),shapeb(2)
+
+        select case (info)
+           case (0)
+               ! Success!
+               err%state = LINALG_SUCCESS
+           case (-1)
+               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Invalid task ID: left eigenvectors.')
+           case (-2)
+               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Invalid task ID: right eigenvectors.')
+           case (-5,-3)
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size: a=',shapea)
+           case (-7)
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size: b=',shapeb)               
+           case (-12)
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'insufficient left vector matrix size.')
+           case (-14)
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'insufficient right vector matrix size.')
+           case (-16)
+               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Insufficient work array size.')
+           case (1:)
+               err = linalg_state_type(this,LINALG_ERROR,'Eigenvalue computation did not converge.')
+           case default
+               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Unknown error returned by ggev.')
+        end select
+
+     end subroutine handle_ggev_info
+
      !> Process SYEV/HEEV output flags
      elemental subroutine handle_heev_info(err,info,m,n)
         !> Error handler
