@@ -1,5 +1,8 @@
 #:include "common.fypp"
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+#:set EIG_PROBLEM  = ["standard", "generalized"]
+#:set EIG_FUNCTION = ["geev","ggev"]
+#:set EIG_PROBLEM_LIST = list(zip(EIG_PROBLEM, EIG_FUNCTION))
 submodule (stdlib_linalg) stdlib_linalg_eigenvalues
 !! Compute eigenvalues and eigenvectors    
      use stdlib_linalg_constants
@@ -123,23 +126,24 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      end subroutine handle_heev_info
 
      #:for rk,rt,ri in RC_KINDS_TYPES
-     #:if rk!="xdp"
+     #:for ep,ei in EIG_PROBLEM_LIST
 
-     module function stdlib_linalg_eigvals_${ri}$(a,err) result(lambda)
+     module function stdlib_linalg_eigvals_${ep}$_${ri}$(a#{if ei=='ggev'}#,b#{endif}#,err) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         ${rt}$, intent(in), target :: a(:,:)
+         ${rt}$, intent(in), dimension(:,:), target :: a #{if ei=='ggev'}#, b #{endif}#
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), intent(out) :: err
          !> Array of eigenvalues
          complex(${rk}$), allocatable :: lambda(:)
 
          !> Create
-         ${rt}$, pointer :: amat(:,:)
+         ${rt}$, pointer, dimension(:,:) :: amat#{if ei=='ggev'}#, bmat #{endif}#
          integer(ilp) :: m,n,k
 
          !> Create an internal pointer so the intent of A won't affect the next call
          amat => a
+         #{if ei=='ggev'}#bmat => b#{endif}#
 
          m   = size(a,1,kind=ilp)
          n   = size(a,2,kind=ilp)
@@ -149,23 +153,24 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          allocate(lambda(k))
 
          !> Compute eigenvalues only
-         call stdlib_linalg_eig_${ri}$(amat,lambda,overwrite_a=.false.,err=err)
+         call stdlib_linalg_eig_${ep}$_${ri}$(amat,#{if ei=='ggev'}#,bmat#{endif}#lambda,overwrite_a=.false.,err=err)
 
-     end function stdlib_linalg_eigvals_${ri}$
+     end function stdlib_linalg_eigvals_${ep}$_${ri}$
 
-     module function stdlib_linalg_eigvals_noerr_${ri}$(a) result(lambda)
+     module function stdlib_linalg_eigvals_noerr_${ep}$_${ri}$(a#{if ei=='ggev'}#,b#{endif}#) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         ${rt}$, intent(in), target :: a(:,:)
+         ${rt}$, intent(in), dimension(:,:), target :: a #{if ei=='ggev'}#, b #{endif}#
          !> Array of eigenvalues
          complex(${rk}$), allocatable :: lambda(:)
 
          !> Create
-         ${rt}$, pointer :: amat(:,:)
+         ${rt}$, pointer, dimension(:,:) :: amat#{if ei=='ggev'}#, bmat #{endif}#
          integer(ilp) :: m,n,k
 
          !> Create an internal pointer so the intent of A won't affect the next call
          amat => a
+         #{if ei=='ggev'}#bmat => b#{endif}#
 
          m   = size(a,1,kind=ilp)
          n   = size(a,2,kind=ilp)
@@ -175,11 +180,11 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          allocate(lambda(k))
 
          !> Compute eigenvalues only
-         call stdlib_linalg_eig_${ri}$(amat,lambda,overwrite_a=.false.)
+         call stdlib_linalg_eig_${ep}$_${ri}$(amat,#{if ei=='ggev'}#,bmat#{endif}#lambda,overwrite_a=.false.)
 
-     end function stdlib_linalg_eigvals_noerr_${ri}$
+     end function stdlib_linalg_eigvals_noerr_${ep}$_${ri}$
 
-     module subroutine stdlib_linalg_eig_${ri}$(a,lambda,right,left,overwrite_a,err)
+     module subroutine stdlib_linalg_eig_${ep}$_${ri}$(a,#{if ei=='ggev'}#,b#{endif}#lambda,right,left,overwrite_a,err)
      !! Eigendecomposition of matrix A returning an array `lambda` of eigenvalues, 
      !! and optionally right or left eigenvectors.        
          !> Input matrix A[m,n]
@@ -345,7 +350,9 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          #:endif           
          call linalg_error_handling(err0,err)
 
-     end subroutine stdlib_linalg_eig_${ri}$
+     end subroutine stdlib_linalg_eig_${ep}$_${ri}$
+     
+     #:endfor
      
      module function stdlib_linalg_eigvalsh_${ri}$(a,upper_a,err) result(lambda)
      !! Return an array of eigenvalues of real symmetric / complex hermitian A
