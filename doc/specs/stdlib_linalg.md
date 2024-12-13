@@ -1089,32 +1089,45 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Status
 
-Stable
+Experimental
 
 ### Description
 
-This function returns the eigenvalues to matrix \( A \): a square, full-rank, `real` or `complex` matrix.
-The eigenvalues are solutions to the eigenproblem \( A \cdot \bar{v} - \lambda \cdot \bar{v} \).
+This function computes the eigenvalues for either a standard or generalized eigenproblem:
 
-Result array `lambda` is `complex`, and returns the eigenvalues of \( A \). 
-The solver is based on LAPACK's `*GEEV` backends.
+- **Standard eigenproblem**: \( A \cdot \bar{v} - \lambda \cdot \bar{v} \), where \( A \) is a square, full-rank `real` or `complex` matrix.
+- **Generalized eigenproblem**: \( A \cdot \bar{v} - \lambda \cdot B \cdot \bar{v} \), where \( B \) is a square matrix with the same type and kind as \( A \).
+
+The eigenvalues are stored in the result array `lambda`, which is `complex` (even for real input matrices).  
+The solver uses LAPACK's `*GEEV` and `*GGEV` backends for the standard and generalized problems, respectively.
 
 ### Syntax
 
-`lambda = ` [[stdlib_linalg(module):eigvals(interface)]] `(a, [,err])`
+For the standard eigenproblem:
+
+`lambda = ` [[stdlib_linalg(module):eigvals(interface)]] `(a [, err])`
+
+For the generalized eigenproblem:
+
+`lambda = ` [[stdlib_linalg(module):eigvals(interface)]] `(a, b [, err])`
 
 ### Arguments
 
-`a` : `real` or `complex` square array containing the coefficient matrix. It is an `intent(in)` argument.
+`a`:  
+Shall be a `real` or `complex` square array containing the coefficient matrix. It is an `intent(in)` argument.
 
-`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+`b` (optional):  
+Shall be a `real` or `complex` square array containing the second coefficient matrix for the generalized problem. It is an `intent(in)` argument.
 
-### Return value
+`err` (optional):  
+Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
 
-Returns a `complex` array containing the eigenvalues of `a`. 
+### Return Value
 
-Raises `LINALG_ERROR` if the calculation did not converge.
-Raises `LINALG_VALUE_ERROR` if any matrix or arrays have invalid/incompatible sizes.
+Returns a `complex` rank-1 array containing the eigenvalues of the problem.  
+
+Raises `LINALG_ERROR` if the calculation did not converge.  
+Raises `LINALG_VALUE_ERROR` if any matrix or arrays have invalid/incompatible sizes.  
 If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
