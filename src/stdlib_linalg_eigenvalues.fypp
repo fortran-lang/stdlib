@@ -6,7 +6,7 @@
 submodule (stdlib_linalg) stdlib_linalg_eigenvalues
 !! Compute eigenvalues and eigenvectors    
      use stdlib_linalg_constants
-     use stdlib_linalg_lapack, only: geev, heev, syev
+     use stdlib_linalg_lapack, only: geev, ggev, heev, syev
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
           LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR, LINALG_SUCCESS     
      implicit none(type,external)
@@ -29,13 +29,13 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      end function symmetric_triangle_task
 
      !> Process GEEV output flags
-     elemental subroutine handle_geev_info(err,info,m,n)
+     pure subroutine handle_geev_info(err,info,shapea)
         !> Error handler
         type(linalg_state_type), intent(inout) :: err
         !> GEEV return flag
         integer(ilp), intent(in) :: info
         !> Input matrix size
-        integer(ilp), intent(in) :: m,n
+        integer(ilp), intent(in) :: shapea(2)
 
         select case (info)
            case (0)
@@ -46,7 +46,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
            case (-2)
                err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Invalid task ID: right eigenvectors.')
            case (-5,-3)
-               err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size: a=',[m,n])
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size: a=',shapea)
            case (-9)
                err = linalg_state_type(this,LINALG_VALUE_ERROR,'insufficient left vector matrix size.')
            case (-11)
@@ -322,7 +322,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
                        #{if rt.startswith('complex')}#lambda,#{else}#lreal,limag,#{endif}#  &
                        umat,ldu,vmat,ldv,&
                        work_dummy,lwork,#{if rt.startswith('complex')}#rwork,#{endif}#info)
-             call handle_geev_info(err0,info,m,n)
+             call handle_${ei}$_info(err0,info,[m,n]#{if ei=='ggev'}#,shape(bmat)#{endif}#)
 
              ! Compute eigenvalues
              if (info==0) then
@@ -336,7 +336,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
                           #{if rt.startswith('complex')}#lambda,#{else}#lreal,limag,#{endif}#  &
                           umat,ldu,vmat,ldv,&            
                           work,lwork,#{if rt.startswith('complex')}#rwork,#{endif}#info)
-                call handle_geev_info(err0,info,m,n)
+                call handle_${ei}$_info(err0,info,[m,n]#{if ei=='ggev'}#,shape(bmat)#{endif}#)
 
              endif
              
