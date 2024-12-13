@@ -533,11 +533,9 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
 
      end subroutine stdlib_linalg_eigh_${ri}$
      
-     #:endif
      #:endfor
      
      #:for rk,rt,ri in REAL_KINDS_TYPES
-     #:if rk!="xdp"
      pure subroutine assign_real_eigenvectors_${rk}$(n,lambda,lmat,out_mat)
      !! GEEV for real matrices returns complex eigenvalues in real arrays, where two consecutive
      !! reals at [j,j+1] locations represent the real and imaginary parts of two complex conjugate 
@@ -613,7 +611,6 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
           
      end subroutine stdlib_linalg_real_eig_${ri}$       
      
-     #:endif
      #:endfor
 
 end submodule stdlib_linalg_eigenvalues
