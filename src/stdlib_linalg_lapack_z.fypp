@@ -33168,7 +33168,7 @@ module stdlib_linalg_lapack_z
            ! Executable Statements 
            ! test the input parameters.
            info = 0_${ik}$
-           onenrm = norm=='1_${ik}$' .or. stdlib_lsame( norm, 'O' )
+           onenrm = norm=='1' .or. stdlib_lsame( norm, 'O' )
            if( .not.onenrm .and. .not.stdlib_lsame( norm, 'I' ) ) then
               info = -1_${ik}$
            else if( n<0_${ik}$ ) then
@@ -33761,7 +33761,7 @@ module stdlib_linalg_lapack_z
            ! Executable Statements 
            ! test the input parameters.
            info = 0_${ik}$
-           onenrm = norm=='1_${ik}$' .or. stdlib_lsame( norm, 'O' )
+           onenrm = norm=='1' .or. stdlib_lsame( norm, 'O' )
            if( .not.onenrm .and. .not.stdlib_lsame( norm, 'I' ) ) then
               info = -1_${ik}$
            else if( n<0_${ik}$ ) then
@@ -41709,7 +41709,7 @@ module stdlib_linalg_lapack_z
                     if( value<temp .or. stdlib${ii}$_disnan( temp ) ) value = temp
                  end do
               end do
-           else if( ( stdlib_lsame( norm, 'O' ) ) .or. ( norm=='1_${ik}$' ) ) then
+           else if( ( stdlib_lsame( norm, 'O' ) ) .or. ( norm=='1' ) ) then
               ! find norm1(a).
               value = zero
               do j = 1, n
@@ -41784,7 +41784,7 @@ module stdlib_linalg_lapack_z
                     if( value<temp .or. stdlib${ii}$_disnan( temp ) ) value = temp
                  end do
               end do
-           else if( ( stdlib_lsame( norm, 'O' ) ) .or. ( norm=='1_${ik}$' ) ) then
+           else if( ( stdlib_lsame( norm, 'O' ) ) .or. ( norm=='1' ) ) then
               ! find norm1(a).
               value = zero
               do j = 1, n
@@ -41857,7 +41857,7 @@ module stdlib_linalg_lapack_z
                  if( anorm<abs( du( i ) ) .or. stdlib${ii}$_disnan (abs( du( i ) ) ) )anorm = abs(du(i))
                            
               end do
-           else if( stdlib_lsame( norm, 'O' ) .or. norm=='1_${ik}$' ) then
+           else if( stdlib_lsame( norm, 'O' ) .or. norm=='1' ) then
               ! find norm1(a).
               if( n==1_${ik}$ ) then
                  anorm = abs( d( 1_${ik}$ ) )
@@ -41946,7 +41946,7 @@ module stdlib_linalg_lapack_z
                  end do
               end if
            else if( ( stdlib_lsame( norm, 'I' ) ) .or. ( stdlib_lsame( norm, 'O' ) ) .or.( &
-                     norm=='1_${ik}$' ) ) then
+                     norm=='1' ) ) then
               ! find normi(a) ( = norm1(a), since a is hermitian).
               value = zero
               if( stdlib_lsame( uplo, 'U' ) ) then
@@ -42065,7 +42065,7 @@ module stdlib_linalg_lapack_z
                  end do
               end if
            else if( ( stdlib_lsame( norm, 'I' ) ) .or. ( stdlib_lsame( norm, 'O' ) ) .or.( &
-                     norm=='1_${ik}$' ) ) then
+                     norm=='1' ) ) then
               ! find normi(a) ( = norm1(a), since a is hermitian).
               value = zero
               if( stdlib_lsame( uplo, 'U' ) ) then
@@ -42477,7 +42477,7 @@ module stdlib_linalg_lapack_z
                  end if
               end if
            else if( ( stdlib_lsame( norm, 'I' ) ) .or. ( stdlib_lsame( norm, 'O' ) ) .or.( &
-                     norm=='1_${ik}$' ) ) then
+                     norm=='1' ) ) then
              ! find normi(a) ( = norm1(a), since a is hermitian).
               if( ifm==1_${ik}$ ) then
                  ! a is 'n'
@@ -43399,7 +43399,7 @@ module stdlib_linalg_lapack_z
                  end do
               end if
            else if( ( stdlib_lsame( norm, 'I' ) ) .or. ( stdlib_lsame( norm, 'O' ) ) .or.( &
-                     norm=='1_${ik}$' ) ) then
+                     norm=='1' ) ) then
               ! find normi(a) ( = norm1(a), since a is hermitian).
               value = zero
               k = 1_${ik}$
@@ -43509,7 +43509,7 @@ module stdlib_linalg_lapack_z
                     if( value < sum .or. stdlib${ii}$_disnan( sum ) ) value = sum
                  end do
               end do
-           else if( ( stdlib_lsame( norm, 'O' ) ) .or. ( norm=='1_${ik}$' ) ) then
+           else if( ( stdlib_lsame( norm, 'O' ) ) .or. ( norm=='1' ) ) then
               ! find norm1(a).
               value = zero
               do j = 1, n
@@ -43581,7 +43581,7 @@ module stdlib_linalg_lapack_z
                  sum = abs( e( i ) )
                  if( anorm < sum .or. stdlib${ii}$_disnan( sum ) ) anorm = sum
               end do
-           else if( stdlib_lsame( norm, 'O' ) .or. norm=='1_${ik}$' .or.stdlib_lsame( norm, 'I' ) ) &
+           else if( stdlib_lsame( norm, 'O' ) .or. norm=='1' .or.stdlib_lsame( norm, 'I' ) ) &
                      then
               ! find norm1(a).
               if( n==1_${ik}$ ) then
@@ -43654,7 +43654,7 @@ module stdlib_linalg_lapack_z
                  end do
               end if
            else if( ( stdlib_lsame( norm, 'I' ) ) .or. ( stdlib_lsame( norm, 'O' ) ) .or.( &
-                     norm=='1_${ik}$' ) ) then
+                     norm=='1' ) ) then
               ! find normi(a) ( = norm1(a), since a is symmetric).
               value = zero
               if( stdlib_lsame( uplo, 'U' ) ) then
@@ -43763,7 +43763,7 @@ module stdlib_linalg_lapack_z
                  end do
               end if
            else if( ( stdlib_lsame( norm, 'I' ) ) .or. ( stdlib_lsame( norm, 'O' ) ) .or.( &
-                     norm=='1_${ik}$' ) ) then
+                     norm=='1' ) ) then
               ! find normi(a) ( = norm1(a), since a is symmetric).
               value = zero
               k = 1_${ik}$
@@ -43892,7 +43892,7 @@ module stdlib_linalg_lapack_z
                  end do
               end if
            else if( ( stdlib_lsame( norm, 'I' ) ) .or. ( stdlib_lsame( norm, 'O' ) ) .or.( &
-                     norm=='1_${ik}$' ) ) then
+                     norm=='1' ) ) then
               ! find normi(a) ( = norm1(a), since a is symmetric).
               value = zero
               if( stdlib_lsame( uplo, 'U' ) ) then
@@ -44007,7 +44007,7 @@ module stdlib_linalg_lapack_z
                     end do
                  end if
               end if
-           else if( ( stdlib_lsame( norm, 'O' ) ) .or. ( norm=='1_${ik}$' ) ) then
+           else if( ( stdlib_lsame( norm, 'O' ) ) .or. ( norm=='1' ) ) then
               ! find norm1(a).
               value = zero
               udiag = stdlib_lsame( diag, 'U' )
@@ -44205,7 +44205,7 @@ module stdlib_linalg_lapack_z
                     end do
                  end if
               end if
-           else if( ( stdlib_lsame( norm, 'O' ) ) .or. ( norm=='1_${ik}$' ) ) then
+           else if( ( stdlib_lsame( norm, 'O' ) ) .or. ( norm=='1' ) ) then
               ! find norm1(a).
               value = zero
               k = 1_${ik}$
@@ -44406,7 +44406,7 @@ module stdlib_linalg_lapack_z
                     end do
                  end if
               end if
-           else if( ( stdlib_lsame( norm, 'O' ) ) .or. ( norm=='1_${ik}$' ) ) then
+           else if( ( stdlib_lsame( norm, 'O' ) ) .or. ( norm=='1' ) ) then
               ! find norm1(a).
               value = zero
               udiag = stdlib_lsame( diag, 'U' )
@@ -49462,7 +49462,7 @@ module stdlib_linalg_lapack_z
            ! test the input parameters.
            info = 0_${ik}$
            upper = stdlib_lsame( uplo, 'U' )
-           onenrm = norm=='1_${ik}$' .or. stdlib_lsame( norm, 'O' )
+           onenrm = norm=='1' .or. stdlib_lsame( norm, 'O' )
            nounit = stdlib_lsame( diag, 'N' )
            if( .not.onenrm .and. .not.stdlib_lsame( norm, 'I' ) ) then
               info = -1_${ik}$
@@ -50542,7 +50542,7 @@ module stdlib_linalg_lapack_z
            ! test the input parameters.
            info = 0_${ik}$
            upper = stdlib_lsame( uplo, 'U' )
-           onenrm = norm=='1_${ik}$' .or. stdlib_lsame( norm, 'O' )
+           onenrm = norm=='1' .or. stdlib_lsame( norm, 'O' )
            nounit = stdlib_lsame( diag, 'N' )
            if( .not.onenrm .and. .not.stdlib_lsame( norm, 'I' ) ) then
               info = -1_${ik}$
@@ -51008,7 +51008,7 @@ module stdlib_linalg_lapack_z
            ! test the input parameters.
            info = 0_${ik}$
            upper = stdlib_lsame( uplo, 'U' )
-           onenrm = norm=='1_${ik}$' .or. stdlib_lsame( norm, 'O' )
+           onenrm = norm=='1' .or. stdlib_lsame( norm, 'O' )
            nounit = stdlib_lsame( diag, 'N' )
            if( .not.onenrm .and. .not.stdlib_lsame( norm, 'I' ) ) then
               info = -1_${ik}$
@@ -53375,7 +53375,7 @@ module stdlib_linalg_lapack_z
            ! compute the norm of the matrix a and the
            ! reciprocal pivot growth factor rpvgrw.
            if( notran ) then
-              norm = '1_${ik}$'
+              norm = '1'
            else
               norm = 'I'
            end if
@@ -55247,7 +55247,7 @@ module stdlib_linalg_lapack_z
            ! Executable Statements 
            ! test the input arguments.
            info = 0_${ik}$
-           onenrm = norm=='1_${ik}$' .or. stdlib_lsame( norm, 'O' )
+           onenrm = norm=='1' .or. stdlib_lsame( norm, 'O' )
            if( .not.onenrm .and. .not.stdlib_lsame( norm, 'I' ) ) then
               info = -1_${ik}$
            else if( n<0_${ik}$ ) then
@@ -55573,7 +55573,7 @@ module stdlib_linalg_lapack_z
            end if
            ! compute the norm of the matrix a.
            if( notran ) then
-              norm = '1_${ik}$'
+              norm = '1'
            else
               norm = 'I'
            end if
@@ -61157,7 +61157,7 @@ module stdlib_linalg_lapack_z
               end if
            end if
            ! compute the norm of the matrix a.
-           anorm = stdlib${ii}$_zlanhb( '1_${ik}$', uplo, n, kd, ab, ldab, rwork )
+           anorm = stdlib${ii}$_zlanhb( '1', uplo, n, kd, ab, ldab, rwork )
            ! compute the reciprocal of the condition number of a.
            call stdlib${ii}$_zpbcon( uplo, n, kd, afb, ldafb, anorm, rcond, work, rwork,info )
            ! compute the solution matrix x.
@@ -61687,7 +61687,7 @@ module stdlib_linalg_lapack_z
               end if
            end if
            ! compute the norm of the matrix a.
-           anorm = stdlib${ii}$_zlanhe( '1_${ik}$', uplo, n, a, lda, rwork )
+           anorm = stdlib${ii}$_zlanhe( '1', uplo, n, a, lda, rwork )
            ! compute the reciprocal of the condition number of a.
            call stdlib${ii}$_zpocon( uplo, n, af, ldaf, anorm, rcond, work, rwork, info )
            ! compute the solution matrix x.
@@ -62036,7 +62036,7 @@ module stdlib_linalg_lapack_z
               end if
            end if
            ! compute the norm of the matrix a.
-           anorm = stdlib${ii}$_zlanht( '1_${ik}$', n, d, e )
+           anorm = stdlib${ii}$_zlanht( '1', n, d, e )
            ! compute the reciprocal of the condition number of a.
            call stdlib${ii}$_zptcon( n, df, ef, anorm, rcond, rwork, info )
            ! compute the solution vectors x.
@@ -62824,7 +62824,7 @@ module stdlib_linalg_lapack_z
            ! quick return if possible
            if( m==n .or. m==0_${ik}$ ) then
               if( wants )s = one
-              if( wantsp )sep = stdlib${ii}$_zlange( '1_${ik}$', n, n, t, ldt, rwork )
+              if( wantsp )sep = stdlib${ii}$_zlange( '1', n, n, t, ldt, rwork )
               go to 40
            end if
            ! collect the selected eigenvalues at the top left corner of t.
@@ -70868,7 +70868,7 @@ module stdlib_linalg_lapack_z
            ! compute the norm of the matrix a and the
            ! reciprocal pivot growth factor rpvgrw.
            if( notran ) then
-              norm = '1_${ik}$'
+              norm = '1'
            else
               norm = 'I'
            end if
@@ -72302,13 +72302,13 @@ module stdlib_linalg_lapack_z
            call stdlib${ii}$_zggbal( balanc, n, a, lda, b, ldb, ilo, ihi, lscale, rscale,rwork, ierr )
                      
            ! compute abnrm and bbnrm
-           abnrm = stdlib${ii}$_zlange( '1_${ik}$', n, n, a, lda, rwork( 1_${ik}$ ) )
+           abnrm = stdlib${ii}$_zlange( '1', n, n, a, lda, rwork( 1_${ik}$ ) )
            if( ilascl ) then
               rwork( 1_${ik}$ ) = abnrm
               call stdlib${ii}$_dlascl( 'G', 0_${ik}$, 0_${ik}$, anrmto, anrm, 1_${ik}$, 1_${ik}$, rwork( 1_${ik}$ ), 1_${ik}$,ierr )
               abnrm = rwork( 1_${ik}$ )
            end if
-           bbnrm = stdlib${ii}$_zlange( '1_${ik}$', n, n, b, ldb, rwork( 1_${ik}$ ) )
+           bbnrm = stdlib${ii}$_zlange( '1', n, n, b, ldb, rwork( 1_${ik}$ ) )
            if( ilbscl ) then
               rwork( 1_${ik}$ ) = bbnrm
               call stdlib${ii}$_dlascl( 'G', 0_${ik}$, 0_${ik}$, bnrmto, bnrm, 1_${ik}$, 1_${ik}$, rwork( 1_${ik}$ ), 1_${ik}$,ierr )
@@ -74703,7 +74703,7 @@ module stdlib_linalg_lapack_z
            if( scalea )call stdlib${ii}$_zlascl( 'G', 0_${ik}$, 0_${ik}$, anrm, cscale, n, n, a, lda, ierr )
            ! balance the matrix and compute abnrm
            call stdlib${ii}$_zgebal( balanc, n, a, lda, ilo, ihi, scale, ierr )
-           abnrm = stdlib${ii}$_zlange( '1_${ik}$', n, n, a, lda, dum )
+           abnrm = stdlib${ii}$_zlange( '1', n, n, a, lda, dum )
            if( scalea ) then
               dum( 1_${ik}$ ) = abnrm
               call stdlib${ii}$_dlascl( 'G', 0_${ik}$, 0_${ik}$, cscale, anrm, 1_${ik}$, 1_${ik}$, dum, 1_${ik}$, ierr )
