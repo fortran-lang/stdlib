@@ -1003,7 +1003,7 @@ The results are returned in output matrices \( T \) and \( Z \). Matrix \( T \) 
 
 - `z`: Shall be a rank-2 array of the same kind as `a`, containing the unitary matrix \( Z \). It is an `intent(out)` argument and is optional. If provided, it should have the shape `[n,n]`.
 
-- `eigvals` (optional): Shall be a rank-1 `complex` array containing the eigenvalues of \( A \) (the diagonal elements of \( T \)). The array must be of size `[n]`. If not provided, the eigenvalues are not returned.
+- `eigvals` (optional): Shall be a rank-1 `complex` or `real` array of the same kind as `a`, containing the eigenvalues of \( A \) (the diagonal elements of \( T \)), or their `real` component only. The array must be of size `[n]`. If not provided, the eigenvalues are not returned. It is an `intent(out)` argument.
 
 - `overwrite_a` (optional): Shall be a `logical` flag (default: `.false.`). If `.true.`, the input matrix `a` will be overwritten and destroyed upon return, avoiding internal data allocation. It is an `intent(in)` argument.
 
@@ -1016,6 +1016,7 @@ The results are returned in output matrices \( T \) and \( Z \). Matrix \( T \) 
 Returns the Schur decomposition matrices into the \( T \) and \( Z \) arguments. If `eigvals` is provided, it will also return the eigenvalues of the matrix \( A \).
 
 Raises `LINALG_VALUE_ERROR` if any of the matrices have invalid or unsuitable size for the decomposition.  
+Raises `LINALG_VALUE_ERROR` if the `real` component is only requested, but the eigenvalues have non-trivial imaginary parts.
 Raises `LINALG_ERROR` on insufficient user storage space.  
 If the state argument `err` is not present, exceptions trigger an `error stop`.
 
