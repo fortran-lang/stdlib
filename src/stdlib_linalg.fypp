@@ -640,6 +640,24 @@ module stdlib_linalg
          !> [optional] State return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err
       end subroutine stdlib_linalg_${ri}$_schur
+      
+      ! Schur decomposition subroutine: real eigenvalue interface
+      module subroutine stdlib_linalg_real_eig_${ri}$_schur(a,t,z,eigvals,overwrite_a,storage,err)
+         !> Input matrix a[m,m]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Schur form of A: upper-triangular or quasi-upper-triangular matrix T
+         ${rt}$, intent(out), contiguous, target :: t(:,:)
+         !> Unitary/orthonormal transformation matrix Z
+         ${rt}$, optional, intent(out), contiguous, target :: z(:,:)
+         !> Output real eigenvalues that appear on the diagonal of T
+         real(${rk}$), intent(out), contiguous, target :: eigvals(:)
+         !> [optional] Provide pre-allocated workspace, size to be checked with schur_space
+         ${rt}$, optional, intent(out), target :: storage(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a        
+         !> [optional] State return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err        
+      end subroutine stdlib_linalg_real_eig_${ri}$_schur 
     #:endfor
   end interface schur
 

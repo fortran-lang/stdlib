@@ -310,6 +310,48 @@ submodule (stdlib_linalg) stdlib_linalg_schur
 
     end subroutine stdlib_linalg_${ri}$_schur
 
+    ! Schur decomposition subroutine: real eigenvalue interface
+    module subroutine stdlib_linalg_real_eig_${ri}$_schur(a,t,z,eigvals,overwrite_a,storage,err)
+        !> Input matrix a[m,m]
+        ${rt}$, intent(inout), target :: a(:,:)
+        !> Schur form of A: upper-triangular or quasi-upper-triangular matrix T
+        ${rt}$, intent(out), contiguous, target :: t(:,:)
+        !> Unitary/orthonormal transformation matrix Z
+        ${rt}$, optional, intent(out), contiguous, target :: z(:,:)
+        !> Output eigenvalues that appear on the diagonal of T
+        real(${rk}$), intent(out), contiguous, target :: eigvals(:)
+        !> [optional] Provide pre-allocated workspace, size to be checked with schur_space
+        ${rt}$, optional, intent(out), target :: storage(:)
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a        
+        !> [optional] State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+        
+        type(linalg_state_type) :: err0
+        integer(ilp) :: n
+        complex(${rk}$), allocatable :: ceigvals(:)
+        real(${rk}$), parameter :: rtol = epsilon(0.0_${rk}$)
+        real(${rk}$), parameter :: atol = tiny(0.0_${rk}$)
+          
+        n = size(eigvals,dim=1,kind=ilp)
+        allocate(ceigvals(n))
+          
+        !> Compute Schur decomposition with complex eigenvalues
+        call stdlib_linalg_${ri}$_schur(a,t,z,ceigvals,overwrite_a,storage,err0)
+          
+        ! Check that no eigenvalues have meaningful imaginary part
+        if (err0%ok() .and. any(aimag(ceigvals)>atol+rtol*abs(abs(ceigvals)))) then 
+           err0 = linalg_state_type(this,LINALG_VALUE_ERROR, &
+                              'complex eigenvalues detected: max(imag(lambda))=',maxval(aimag(ceigvals)))
+        endif
+          
+        ! Return real components only
+        eigvals(:n) = real(ceigvals,kind=${rk}$)
+          
+        call linalg_error_handling(err0,err)        
+        
+    end subroutine stdlib_linalg_real_eig_${ri}$_schur
+
     #:endfor
 
 end submodule stdlib_linalg_schur
