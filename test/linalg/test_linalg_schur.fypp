@@ -23,7 +23,8 @@ module test_linalg_schur
         
         #:for rk,rt,ri in RC_KINDS_TYPES
         tests = [tests,new_unittest("schur_api_${ri}$",test_schur_api_${ri}$), &
-                       new_unittest("schur_random_${ri}$",test_schur_random_${ri}$)]
+                       new_unittest("schur_random_${ri}$",test_schur_random_${ri}$), &
+                       new_unittest("schur_symmetric_${ri}$",test_schur_symmetric_${ri}$)]
         #:endfor
 
     end subroutine test_schur_decomposition
@@ -161,6 +162,50 @@ module test_linalg_schur
         end function schur_error
         
     end subroutine test_schur_random_${ri}$
+
+    !> Test symmetric matrix (real eigenvalues)
+    subroutine test_schur_symmetric_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer(ilp), parameter :: n = 3_ilp
+        real(${rk}$), parameter :: rtol = 1.0e-4_${rk}$
+        real(${rk}$), parameter :: eps  = sqrt(epsilon(0.0_${rk}$))
+        real(${rk}$) :: reigs(n)
+        ${rt}$, dimension(n,n) :: a, t, z
+        type(linalg_state_type) :: state
+
+        ! Define a symmetric 3x3 matrix with real eigenvalues
+        a = reshape([ 3, 1, 0, &
+                      1, 3, 1, &
+                      0, 1, 3], shape=[n, n])
+
+        ! Return real eigenvalues (Should trigger an error if they have an imaginary part)
+        call schur(a, t, z, eigvals=reigs, err=state)
+        
+        ! Check return code
+        call check(error, state%ok(), state%print())
+        if (allocated(error)) return
+
+        ! Check solution
+        call check(error, all(schur_error(a, z, t) <= max(rtol * abs(a), eps)), &
+                          'converged solution (real symmetric, real eigs)')
+        if (allocated(error)) return
+
+    contains
+    
+        pure function schur_error(a,z,t) result(err)
+            ${rt}$, intent(in), dimension(:,:) :: a,z,t
+            real(${rk}$), dimension(size(a,1),size(a,2)) :: err
+            
+            #:if rt.startswith('real')
+            err = abs(matmul(matmul(z,t),transpose(z)) - a)
+            #:else
+            err = abs(matmul(matmul(z,t),conjg(transpose(z))) - a)
+            #:endif                
+        end function schur_error        
+
+    end subroutine test_schur_symmetric_${ri}$
+
 
     #:endfor
 
