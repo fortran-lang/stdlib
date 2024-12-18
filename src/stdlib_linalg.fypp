@@ -35,6 +35,7 @@ module stdlib_linalg
   public :: lstsq
   public :: lstsq_space
   public :: norm
+  public :: mnorm
   public :: get_norm
   public :: solve
   public :: solve_lu  
@@ -1447,6 +1448,89 @@ module stdlib_linalg
      #:endfor
      #:endfor
   end interface get_norm
+
+  !> Matrix norms: function interface
+  interface mnorm
+     !! version: experimental 
+     !!
+     !! Computes the matrix norm of a generic-rank array \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#mnorm-computes-the-matrix-norm-of-a-generic-rank-array))
+     !! 
+     !!### Summary 
+     !! Return one of several matrix norm metrics of a `real` or `complex` input array \( A \), 
+     !! that can have rank 2 or higher. For rank-2 arrays, the matrix norm is returned.
+     !! If rank>2 and the optional input dimensions `dim` are specified, 
+     !! a rank `n-2` array is returned with dimensions `dim(1),dim(2)` collapsed, containing all 
+     !! matrix norms evaluated over the specified dimensions only. `dim==[1,2]` are assumed as default
+     !! dimensions if not specified.
+     !! 
+     !!### Description
+     !! 
+     !! This interface provides methods for computing the matrix norm(s) of an array.  
+     !! Supported data types include `real` and `complex`. 
+     !! Input arrays must have rank >= 2.
+     !!
+     !! Norm type input is optional, and it is provided via the `order` argument. 
+     !! This can be provided as either an `integer` value or a `character` string. 
+     !! Allowed metrics are: 
+     !! - 1-norm: `order` = 1 or '1'    
+     !! - 2-norm: `order` = 2 or '2'
+     !! - Euclidean/Frobenius: `order` = 'Euclidean','Frobenius', or argument not specified
+     !! - Infinity norm: `order` = huge(0) or 'Inf'
+     !! 
+     !! If an invalid norm type is provided, the routine returns an error state.
+     !!
+     !!### Example
+     !!
+     !!```fortran
+     !!    real(sp) :: a(3,3), na
+     !!    real(sp) :: b(3,3,4), nb(4)  ! Array of 4 3x3 matrices
+     !!    a = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
+     !!    
+     !!    ! Euclidean/Frobenius norm of single matrix
+     !!    na = mnorm(a)
+     !!    na = mnorm(a, 'Euclidean')
+     !!   
+     !!    ! 1-norm of each 3x3 matrix in b
+     !!    nb = mnorm(b, 1, dim=[1,2])
+     !!     
+     !!    ! Infinity-norm 
+     !!    na = mnorm(b, 'inf', dim=[3,2])
+     !!```     
+     !!
+      #:for rk,rt,ri in RC_KINDS_TYPES
+      #:for it,ii in NORM_INPUT_OPTIONS   
+      
+      !> Matrix norms: ${rt}$ rank-2 arrays
+      module function matrix_norm_${ii}$_${ri}$(a, order, err) result(nrm)
+        !> Input matrix a(m,n)
+        ${rt}$, intent(in), target :: a(:,:)
+        !> Norm of the matrix.        
+        real(${rk}$) :: nrm
+        !> Order of the matrix norm being computed.
+        ${it}$, #{if 'integer' in it}#optional, #{endif}#intent(in) :: order
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), intent(out), optional :: err      
+      end function matrix_norm_${ii}$_${ri}$
+      
+      !> Matrix norms: ${rt}$ higher rank arrays
+      #:for rank in range(3, MAXRANK + 1)
+      module function matrix_norm_${rank}$D_to_${rank-2}$D_${ii}$_${ri}$(a, order, dim, err) result(nrm)
+          !> Input matrix a(m,n)
+          ${rt}$, intent(in), contiguous, target :: a${ranksuffix(rank)}$
+          !> Norm of the matrix.        
+          real(${rk}$), allocatable :: nrm${ranksuffix(rank-2)}$
+          !> Order of the matrix norm being computed.
+          ${it}$, #{if 'integer' in it}#optional, #{endif}#intent(in) :: order
+          !> [optional] dimensions of the sub-matrices the norms should be evaluated at (default = [1,2])
+          integer(ilp), optional, intent(in) :: dim(2)
+          !> [optional] state return flag. On error if not requested, the code will stop
+          type(linalg_state_type), intent(out), optional :: err        
+      end function matrix_norm_${rank}$D_to_${rank-2}$D_${ii}$_${ri}$
+      #:endfor            
+      #:endfor
+      #:endfor            
+  end interface mnorm
 
 contains
 
