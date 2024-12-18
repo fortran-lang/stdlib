@@ -67,7 +67,7 @@ submodule(stdlib_linalg) stdlib_linalg_pseudoinverse
          
          !> Discard singular values
          cutoff = tolerance*maxval(s)
-         s = merge(1/s,0.0_${rk}$,s>cutoff)
+         s = merge(1.0_${rk}$/s,0.0_${rk}$,s>cutoff)
 
          ! Get pseudo-inverse: A_pinv = V * (diag(1/s) * U^H) = V * (U * diag(1/s))^H
          
