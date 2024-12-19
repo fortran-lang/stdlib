@@ -1,11 +1,5 @@
----
-title: selection
----
-
-# The `stdlib_selection` module
-
-[TOC]
-
+# `stdlib_selection`
+ 
 ## Overview of selection
 
 Suppose you wish to find the value of the k-th smallest entry in an array of size N, or
@@ -106,8 +100,8 @@ code here to be released under stdlib's MIT license.
 
 ### Example
 
-```fortran
-{!example/selection/example_select.f90!}
+```{literalinclude} ../../example/selection/example_select.f90
+:language: Fortran
 ```
 
 ## `arg_select` - find the index of the k-th smallest value in an input array
@@ -189,8 +183,8 @@ code here to be released under stdlib's MIT license.
 ### Example
 
 
-```fortran
-{!example/selection/example_arg_select.f90!}
+```{literalinclude} ../../example/selection/example_arg_select.f90
+:language: Fortran
 ```
 
 ## Comparison with using `sort`
@@ -200,8 +194,8 @@ computing the median of an array, vs using `sort` from `stdlib`.  In theory we
 should see a speed improvement with the selection routines which grows like
 LOG(size(`array`)).
 
-```fortran
-{!example/selection/selection_vs_sort.f90!}
+```{literalinclude} ../../example/selection/selection_vs_sort.f90
+:language: Fortran
 ```
 
 The results seem consistent with expectations when the `array` is large; the program prints:

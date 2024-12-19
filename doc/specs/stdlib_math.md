@@ -1,11 +1,5 @@
----
-title: math
----
-
-# The `stdlib_math` module
-
-[TOC]
-
+# `stdlib_math`
+ 
 ## Introduction
 
 `stdlib_math` module provides general purpose mathematical functions.
@@ -50,15 +44,15 @@ The output is a scalar of `type` and `kind` same as to that of the arguments.
 ##### Example 1:
 
 Here inputs are of type `integer` and kind `int32`
-```fortran
-{!example/math/example_clip_integer.f90!}
+```{literalinclude} ../../example/math/example_clip_integer.f90
+:language: Fortran
 ```
 
 ##### Example 2:
 
 Here inputs are of type `real` and kind `sp`
-```fortran
-{!example/math/example_clip_real.f90!}
+```{literalinclude} ../../example/math/example_clip_real.f90
+:language: Fortran
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -129,8 +123,8 @@ Returns an integer of the same `kind` as that of the arguments.
 
 ##### Example 1:
 
-```fortran
-{!example/math/example_gcd.f90!}
+```{literalinclude} ../../example/math/example_gcd.f90
+:language: Fortran
 ```
 
 ### `linspace` - Create a linearly spaced rank one array
@@ -172,15 +166,15 @@ If `start`/`end` are `integer` types, the `result` will default to a `real(dp)` 
 ##### Example 1:
 
 Here inputs are of type `complex` and kind `dp`
-```fortran
-{!example/math/example_linspace_complex.f90!}
+```{literalinclude} ../../example/math/example_linspace_complex.f90
+:language: Fortran
 ```
 
 ##### Example 2:
 
 Here inputs are of type `integer` and kind `int16`, with the result defaulting to `real(dp)`.
-```fortran
-{!example/math/example_linspace_int16.f90!}
+```{literalinclude} ../../example/math/example_linspace_int16.f90
+:language: Fortran
 ```
 
 ### `logspace` - Create a logarithmically spaced rank one array
@@ -241,22 +235,22 @@ For function calls where the `base` is specified, the `type` and `kind` of the r
 ##### Example 1:
 
 Here inputs are of type `complex` and kind `dp`. `n` and `base` is not specified and thus default to 50 and 10, respectively.
-```fortran
-{!example/math/example_logspace_complex.f90!}
+```{literalinclude} ../../example/math/example_logspace_complex.f90
+:language: Fortran
 ```
 
 ##### Example 2:
 
 Here inputs are of type `integer` and default kind. `base` is not specified and thus defaults to 10.
-```fortran
-{!example/math/example_logspace_int.f90!}
+```{literalinclude} ../../example/math/example_logspace_int.f90
+:language: Fortran
 ```
 
 ##### Example 3:
 
 Here `start`/`end` are of type `real` and double precision. `base` is type `complex` and also double precision.
-```fortran
-{!example/math/example_logspace_rstart_cbase.f90!}
+```{literalinclude} ../../example/math/example_logspace_rstart_cbase.f90
+:language: Fortran
 ```
 ### `arange` function
 
@@ -305,8 +299,8 @@ For `real` type arguments, the length of the result vector is `floor((end - star
 
 #### Example
 
-```fortran
-{!example/math/example_math_arange.f90!}
+```{literalinclude} ../../example/math/example_math_arange.f90
+:language: Fortran
 ```
 
 ### `arg` function
@@ -341,8 +335,8 @@ Notes: Although the angle of the complex number `0` is undefined, `arg((0,0))` r
 
 #### Example
 
-```fortran
-{!example/math/example_math_arg.f90!}
+```{literalinclude} ../../example/math/example_math_arg.f90
+:language: Fortran
 ```
 
 ### `argd` function
@@ -377,8 +371,8 @@ Notes: Although the angle of the complex number `0` is undefined, `argd((0,0))` 
 
 #### Example
 
-```fortran
-{!example/math/example_math_argd.f90!}
+```{literalinclude} ../../example/math/example_math_argd.f90
+:language: Fortran
 ```
 
 ### `argpi` function
@@ -413,8 +407,8 @@ Notes: Although the angle of the complex number `0` is undefined, `argpi((0,0))`
 
 #### Example
 
-```fortran
-{!example/math/example_math_argpi.f90!}
+```{literalinclude} ../../example/math/example_math_argpi.f90
+:language: Fortran
 ```
 
 ### `deg2rad`
@@ -445,8 +439,8 @@ Returns the `real` phase angle in radians.
 
 #### Example
 
-```fortran
-{!example/math/example_math_deg2rad.f90!}
+```{literalinclude} ../../example/math/example_math_deg2rad.f90
+:language: Fortran
 ```
 
 ### `rad2deg`
@@ -477,8 +471,8 @@ Returns the `real` phase angle in degrees.
 
 #### Example
 
-```fortran
-{!example/math/example_math_rad2deg.f90!}
+```{literalinclude} ../../example/math/example_math_rad2deg.f90
+:language: Fortran
 ```
 
 ### `is_close` function
@@ -537,8 +531,8 @@ Returns a `logical` scalar/array.
 
 #### Example
 
-```fortran
-{!example/math/example_math_is_close.f90!}
+```{literalinclude} ../../example/math/example_math_is_close.f90
+:language: Fortran
 ```
 
 ### `all_close` function
@@ -588,8 +582,8 @@ Returns a `logical` scalar.
 
 #### Example
 
-```fortran
-{!example/math/example_math_all_close.f90!}
+```{literalinclude} ../../example/math/example_math_all_close.f90
+:language: Fortran
 ```
 
 ### `diff` function
@@ -650,8 +644,8 @@ When both `prepend` and `append` are not present, the result `y` has one fewer e
 
 #### Example
 
-```fortran
-{!example/math/example_diff.f90!}
+```{literalinclude} ../../example/math/example_diff.f90
+:language: Fortran
 ```
 
 ### `meshgrid` subroutine
@@ -706,6 +700,6 @@ This argument is `intent(in)` and `optional`, and is equal to `stdlib_meshgrid_x
 
 #### Example
 
-```fortran
-{!example/math/example_meshgrid.f90!}
+```{literalinclude} ../../example/math/example_meshgrid.f90
+:language: Fortran
 ```

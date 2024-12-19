@@ -1,8 +1,4 @@
----
-title: constants
----
-
-[TOC]
+# `stdlib_constants`
 
 ## Introduction
 
@@ -73,6 +69,6 @@ Returns a scalar of `real` type which is either the value or the uncertainty of 
 
 ## Example
 
-```fortran
-{!example/constants/example_constants.f90!}
+```{literalinclude} ../../example/constants/example_constants.f90
+:language: Fortran
 ```

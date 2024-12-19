@@ -1,11 +1,5 @@
----
-title: array
----
-
-# The `stdlib_array` module
-
-[TOC]
-
+# `stdlib_array`
+ 
 ## Introduction
 
 Module for index manipulation and array handling tasks.
@@ -45,8 +39,8 @@ Returns an array of default integer size, with a maximum length of `size(array)`
 
 #### Examples
 
-```fortran
-{!example/array/example_trueloc.f90!}
+```{literalinclude} ../../example/array/example_trueloc.f90
+:language: Fortran
 ```
 
 
@@ -82,6 +76,6 @@ Returns an array of default integer size, with a maximum length of `size(array)`
 
 #### Examples
 
-```fortran
-{!example/array/example_falseloc.f90!}
+```{literalinclude} ../../example/array/example_falseloc.f90
+:language: Fortran
 ```

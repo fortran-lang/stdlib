@@ -1,11 +1,5 @@
----
-title: strings
----
-
-# The `stdlib_strings` module
-
-[TOC]
-
+# `stdlib_strings`
+ 
 ## Introduction
 
 The `stdlib_strings` module provides basic string handling and manipulation routines.
@@ -44,8 +38,8 @@ The result is of the same type as `string`.
 
 #### Example
 
-```fortran
-{!example/strings/example_strip.f90!}
+```{literalinclude} ../../example/strings/example_strip.f90
+:language: Fortran
 ```
 
 
@@ -83,8 +77,8 @@ The result is of the same type as `string`.
 
 #### Example
 
-```fortran
-{!example/strings/example_chomp.f90!}
+```{literalinclude} ../../example/strings/example_chomp.f90
+:language: Fortran
 ```
 
 
@@ -120,8 +114,8 @@ The result is of scalar logical type.
 
 #### Example
 
-```fortran
-{!example/strings/example_starts_with.f90!}
+```{literalinclude} ../../example/strings/example_starts_with.f90
+:language: Fortran
 ```
 
 
@@ -157,8 +151,8 @@ The result is of scalar logical type.
 
 #### Example
 
-```fortran
-{!example/strings/example_ends_with.f90!}
+```{literalinclude} ../../example/strings/example_ends_with.f90
+:language: Fortran
 ```
 
 
@@ -212,8 +206,8 @@ The result is of the same type as `string`.
 
 #### Example
 
-```fortran
-{!example/strings/example_slice.f90!}
+```{literalinclude} ../../example/strings/example_slice.f90
+:language: Fortran
 ```
 
 
@@ -257,8 +251,8 @@ The result is a scalar of integer type or an integer array of rank equal to the 
 
 #### Example
 
-```fortran
-{!example/strings/example_find.f90!}
+```{literalinclude} ../../example/strings/example_find.f90
+:language: Fortran
 ```
 
 
@@ -297,8 +291,8 @@ The result is of the same type as `string`.
 
 #### Example
 
-```fortran
-{!example/strings/example_replace_all.f90!}
+```{literalinclude} ../../example/strings/example_replace_all.f90
+:language: Fortran
 ```
 
 
@@ -337,8 +331,8 @@ The result is of the same type as `string`.
 
 #### Example
 
-```fortran
-{!example/strings/example_padl.f90!}
+```{literalinclude} ../../example/strings/example_padl.f90
+:language: Fortran
 ```
 
 
@@ -377,8 +371,8 @@ The result is of the same type as `string`.
 
 #### Example
 
-```fortran
-{!example/strings/example_padr.f90!}
+```{literalinclude} ../../example/strings/example_padr.f90
+:language: Fortran
 ```
 
 
@@ -417,8 +411,8 @@ The result is a scalar of integer type or an integer array of rank equal to the 
 
 #### Example
 
-```fortran
-{!example/strings/example_count.f90!}
+```{literalinclude} ../../example/strings/example_count.f90
+:language: Fortran
 ```
 
 
@@ -455,8 +449,8 @@ The result is of the same type as `string`.
 
 #### Example
 
-```fortran
-{!example/strings/example_zfill.f90!}
+```{literalinclude} ../../example/strings/example_zfill.f90
+:language: Fortran
 ```
 
 
@@ -495,6 +489,6 @@ The result is an `allocatable` length `character` scalar with up to `128` cached
 
 #### Example
 
-```fortran
-{!example/strings/example_to_string.f90!}
+```{literalinclude} ../../example/strings/example_to_string.f90
+:language: Fortran
 ```

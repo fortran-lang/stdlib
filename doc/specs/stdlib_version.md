@@ -1,11 +1,5 @@
----
-title: version
----
-
-# The `stdlib_version` module
-
-[TOC]
-
+# `stdlib_version`
+ 
 ## Introduction
 
 The `stdlib_version` module contains the version of the standard library.
@@ -53,6 +47,6 @@ Pure subroutine.
 
 #### Example
 
-```fortran
-{!example/version/example_version.f90!}
+```{literalinclude} ../../example/version/example_version.f90
+:language: Fortran
 ``` 

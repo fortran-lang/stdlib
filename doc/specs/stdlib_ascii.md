@@ -1,11 +1,5 @@
----
-title: ascii
----
-
-# The `stdlib_ascii` module
-
-[TOC]
-
+# `stdlib_ascii`
+ 
 ## Introduction
 
 The `stdlib_ascii` module provides procedures for handling and manipulating
@@ -50,9 +44,9 @@ The result is an intrinsic character type of the same length as `string`.
 
 #### Example
 
-```fortran
-{!example/ascii/example_ascii_to_lower.f90!}
-``` 
+```{literalinclude} ../../example/ascii/example_ascii_to_lower.f90
+:language: Fortran
+```
 
 ### `to_upper`
 
@@ -82,8 +76,8 @@ The result is an intrinsic character type of the same length as `string`.
 
 #### Example
 
-```fortran
-{!example/ascii/example_ascii_to_upper.f90!}
+```{literalinclude} ../../example/ascii/example_ascii_to_upper.f90
+:language: Fortran
 ```
 
 ### `to_title`
@@ -119,8 +113,8 @@ The result is an intrinsic character type of the same length as `string`.
 
 #### Example
 
-```fortran
-{!example/ascii/example_ascii_to_title.f90!}
+```{literalinclude} ../../example/ascii/example_ascii_to_title.f90
+:language: Fortran
 ```
 
 ### `to_sentence`
@@ -154,8 +148,8 @@ The result is an intrinsic character type of the same length as `string`.
 
 #### Example
 
-```fortran
-{!example/ascii/example_ascii_to_sentence.f90!}
+```{literalinclude} ../../example/ascii/example_ascii_to_sentence.f90
+:language: Fortran
 ```
 
 ### `reverse`
@@ -186,6 +180,6 @@ The result is an intrinsic character type of the same length as `string`.
 
 #### Example
 
-```fortran
-{!example/ascii/example_ascii_reverse.f90!}
+```{literalinclude} ../../example/ascii/example_ascii_reverse.f90
+:language: Fortran
 ```

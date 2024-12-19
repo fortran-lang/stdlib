@@ -1,11 +1,5 @@
----
-title: error
----
-
-# The `stdlib_error` module
-
-[TOC]
-
+# `stdlib_error`
+ 
 ## Introduction
 
 Catching and handling errors.
@@ -52,17 +46,17 @@ If `condition` is `.false.`, and:
 
 #### Examples
 
-```fortran
-{!example/error/example_check1.f90!}
+```{literalinclude} ../../example/error/example_check1.f90
+:language: Fortran
 ```
-```fortran
-{!example/error/example_check2.f90!}
+```{literalinclude} ../../example/error/example_check2.f90
+:language: Fortran
 ```
-```fortran
-{!example/error/example_check3.f90!}
+```{literalinclude} ../../example/error/example_check3.f90
+:language: Fortran
 ```
-```fortran
-{!example/error/example_check4.f90!}
+```{literalinclude} ../../example/error/example_check4.f90
+:language: Fortran
 ```
 
 ### `error_stop` - aborts the program
@@ -93,12 +87,12 @@ Aborts the program with printing the message `msg` to `stderr` and a nonzero exi
 
 Without error code:
 
-```fortran
-{!example/error/example_error_stop1.f90!}
+```{literalinclude} ../../example/error/example_error_stop1.f90
+:language: Fortran
 ```
 
 With error code:
 
-```fortran
-{!example/error/example_error_stop2.f90!}
+```{literalinclude} ../../example/error/example_error_stop2.f90
+:language: Fortran
 ```

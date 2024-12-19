@@ -1,11 +1,5 @@
----
-title: io
----
-
-# IO
-
-[TOC]
-
+# `stdlib_io`
+ 
 ## `loadtxt` - load a 2D array from a text file
 
 ### Status
@@ -39,8 +33,8 @@ Returns an allocated rank-2 `array` with the content of `filename`.
 
 ### Example
 
-```fortran
-{!example/io/example_loadtxt.f90!}
+```{literalinclude} ../../example/io/example_loadtxt.f90
+:language: Fortran
 ```
 
 
@@ -89,8 +83,8 @@ The result is a scalar of type `integer`.
 
 ### Example
 
-```fortran
-{!example/io/example_open.f90!}
+```{literalinclude} ../../example/io/example_open.f90
+:language: Fortran
 ```
 
 
@@ -119,8 +113,8 @@ Provides a text file called `filename` that contains the rank-2 `array`.
 
 ### Example
 
-```fortran
-{!example/io/example_savetxt.f90!}
+```{literalinclude} ../../example/io/example_savetxt.f90
+:language: Fortran
 ```
 
 
@@ -160,8 +154,8 @@ Returns an allocated `array` with the content of `filename` in case of success.
 
 ### Example
 
-```fortran
-{!example/io/example_loadnpy.f90!}
+```{literalinclude} ../../example/io/example_loadnpy.f90
+:language: Fortran
 ```
 
 
@@ -201,8 +195,8 @@ Provides a npy file called `filename` that contains the rank-2 `array`.
 
 ### Example
 
-```fortran
-{!example/io/example_savenpy.f90!}
+```{literalinclude} ../../example/io/example_savenpy.f90
+:language: Fortran
 ```
 
 ## `getline`
@@ -240,8 +234,8 @@ Read a whole line from a formatted unit into a string variable
 
 ### Example
 
-```fortran
-{!example/io/example_getline.f90!}
+```{literalinclude} ../../example/io/example_getline.f90
+:language: Fortran
 ```
 
 ## Formatting constants
@@ -257,6 +251,6 @@ Provides formats for all kinds as defined in the `stdlib_kinds` module.
 
 ### Example
 
-```fortran
-{!example/io/example_fmt_constants.f90!}
+```{literalinclude} ../../example/io/example_fmt_constants.f90
+:language: Fortran
 ```

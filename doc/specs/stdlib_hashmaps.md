@@ -1,11 +1,5 @@
----
-title: Hash maps
----
-
-# The `stdlib_hashmap_wrappers`, and `stdlib_hashmaps` modules
-
-[TOC]
-
+# `stdlib_hashmap_wrappers`, and `stdlib_hashmaps`
+ 
 ## Overview of hash maps
 
 A hash map (hash table) is a data structure that maps *keys* to
@@ -93,7 +87,7 @@ type `other_type`.
 The maps allow the addition, removal, and lookup of entries, and the
 inclusion of data in addition to the entry key.
 
-## The `stdlib_hashmap_wrappers` module
+## `stdlib_hashmap_wrappers` module
 
 The `stdlib_hashmap_wrappers` module provides data types to
 represent keys and associated data stored in a module, but is also, a
@@ -109,14 +103,14 @@ as a kind value,`int_hash`. It also defines two types, `key_type` and
 `other_type`, and associated procedures, for storing and manipulating
 keys and their associated data.
 
-### The `stdlib_hashmap_wrappers`'s constant, `int_hash`
+### `stdlib_hashmap_wrappers`'s constant, `int_hash`
 
 The constant `int_hash` is used to define the integer kind value for
 the returned hash codes and variables used to access them. It
 currently is imported from `stdlib_hash_32bit` where it has the
 value, `int32`. 
 
-### The `stdlib_hashmap_wrappers`' module's derived types
+### `stdlib_hashmap_wrappers`' module's derived types
 
 The `stdlib_hashmap_wrappers` module defines two derived types:
 `key_type`, and `other_type`. The `key_type` is intended to be used
@@ -228,8 +222,8 @@ is an `intent(out)` argument.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_copy_key.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_copy_key.f90
+:language: Fortran
 ```
 
 #### `copy_other` - Returns a copy of the other data
@@ -260,8 +254,8 @@ is an `intent(out)` argument.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_copy_other.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_copy_other.f90
+:language: Fortran
 ```
 
 
@@ -326,8 +320,8 @@ expected to be minor compared to its faster hashing rate.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_fnv_1_hasher.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_fnv_1_hasher.f90
+:language: Fortran
 ```
 
 
@@ -378,8 +372,8 @@ expected to be minor compared to its faster hashing rate.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_fnv_1a_hasher.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_fnv_1a_hasher.f90
+:language: Fortran
 ```
 
 #### `free_key` - frees the memory associated with a key
@@ -408,8 +402,8 @@ is an `intent(out)` argument.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_free_key.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_free_key.f90
+:language: Fortran
 ```
 
 #### `free_other` - frees the memory associated with other data
@@ -438,8 +432,8 @@ is an `intent(out)` argument.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_free_other.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_free_other.f90
+:language: Fortran
 ```
 
 
@@ -482,8 +476,8 @@ shall be an allocatable of `class(*)`. It is an `intent(out)` argument.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_get.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_get.f90
+:language: Fortran
 ```
 
 
@@ -526,8 +520,8 @@ pointers intended for use as a hash function for the hash maps.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_hasher_fun.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_hasher_fun.f90
+:language: Fortran
 ```
 
 #### `operator(==)` - Compares two keys for equality 
@@ -566,8 +560,8 @@ The result is `.true.` if the keys are equal, otherwise `.falss.`.
 
 ##### Example 
 
-```fortran 
-{!example/hashmaps/example_hashmaps_equal_keys.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_equal_keys.f90
+:language: Fortran
 ```
 
 #### `seeded_nmhash32_hasher`- calculates a hash code from a key
@@ -616,8 +610,8 @@ This code passes the SMHasher tests.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_seeded_nmhash32_hasher.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_seeded_nmhash32_hasher.f90
+:language: Fortran
 ```
 
 #### `seeded_nmhash32x_hasher`- calculates a hash code from a key
@@ -665,8 +659,8 @@ This code passes the SMHasher tests.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_seeded_nmhash32x_hasher.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_seeded_nmhash32x_hasher.f90
+:language: Fortran
 ```
 
 #### `seeded_water_hasher`- calculates a hash code from a key
@@ -715,8 +709,8 @@ This code passes the SMHasher tests.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_seeded_water_hasher.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_seeded_water_hasher.f90
+:language: Fortran
 ```
 
 
@@ -765,12 +759,12 @@ value to an `int8` vector.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_set.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_set.f90
+:language: Fortran
 ```
 
 
-## The `stdlib_hashmaps` module
+## `stdlib_hashmaps` module
 
 The `stdlib_hashmaps` module defines three public data types,
 associated procedures and constants that implement two simple hash map
@@ -798,7 +792,7 @@ key field as well as the base `key` type.  So for `key_test`,
 for the key field and so on.  Procedures other than `key_key_test` will call
 the `set` function to generate a key type and pass to `key_key_test`.         
 
-### The `stdlib_hashmaps` module's public constants
+### `stdlib_hashmaps` module's public constants
 
 The module defines several categories of public constants. Some are
 used to parameterize the empirical slot expansion code. Others
@@ -852,7 +846,7 @@ failed. Finally the `array_size_error` indicates that on table
 creation `slots_bits` is less than `default_bits` or
 greater than `max_bits`.
 
-### The `stdlib_hashmaps` module's derived types
+### `stdlib_hashmaps` module's derived types
 
 The `stdlib_hashmaps` module defines three public derived types and
 seven private types used in the implementation of the public
@@ -1259,8 +1253,8 @@ The result will be the number of procedure calls on the hash map.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_calls.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_calls.f90
+:language: Fortran
 ```
 
 
@@ -1297,8 +1291,8 @@ The result will be the number of entries in the hash map.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_entries.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_entries.f90
+:language: Fortran
 ```
 
 
@@ -1332,8 +1326,8 @@ Subroutine
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_get_all_keys.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_get_all_keys.f90
+:language: Fortran
 ```
 
 
@@ -1380,8 +1374,8 @@ undefined.
   associated with a `key`:
 
 
-```fortran
-{!example/hashmaps/example_hashmaps_get_other_data.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_get_other_data.f90
+:language: Fortran
 ```
 
 
@@ -1443,8 +1437,8 @@ has the value `alloc_fault`.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_init.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_init.f90
+:language: Fortran
 ```
 
 
@@ -1485,8 +1479,8 @@ presence in the `map` is being examined.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_key_test.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_key_test.f90
+:language: Fortran
 ```
 
 
@@ -1525,8 +1519,8 @@ number of slots in the hash map.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_loading.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_loading.f90
+:language: Fortran
 ```
 
 #### `map_entry` - inserts an entry into the hash map
@@ -1575,8 +1569,8 @@ is ignored.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_map_entry.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_map_entry.f90
+:language: Fortran
 ```
 
 #### `map_probes` - returns the number of hash map probes
@@ -1614,8 +1608,8 @@ rehashing.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_probes.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_probes.f90
+:language: Fortran
 ```
 
 #### `num_slots` - returns the number of hash map slots.
@@ -1652,8 +1646,8 @@ The result is the number of slots in `map`.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_num_slots.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_num_slots.f90
+:language: Fortran
 ```
 
 
@@ -1687,8 +1681,8 @@ It is the hash method to be used by `map`.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_rehash.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_rehash.f90
+:language: Fortran
 ```
 
 #### `remove` - removes an entry from the hash map
@@ -1728,8 +1722,8 @@ absent, the procedure returns with no entry with the given key.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_remove.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_remove.f90
+:language: Fortran
 ```
 
 #### `set_other_data` - replaces the other data for an entry
@@ -1775,8 +1769,8 @@ not exist and nothing was done.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_set_other_data.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_set_other_data.f90
+:language: Fortran
 ```
 
 #### `slots_bits` - returns the number of bits used to address the hash map slots 
@@ -1813,8 +1807,8 @@ The result is the number of bits used in addressing the slots in `map`.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_slots_bits.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_slots_bits.f90
+:language: Fortran
 ```
 
 
@@ -1854,6 +1848,6 @@ from their slot index the map.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_total_depth.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_total_depth.f90
+:language: Fortran
 ```

@@ -1,10 +1,5 @@
----
-title: logger
----
-# Loggers
-
-[TOC]
-
+# `stdlib_logger`
+ 
 ## Introduction
 
 This module defines a derived type, its methods, a variable, and
@@ -47,7 +42,7 @@ is empty then the messages go to the `output_unit` of the intrinsic
 module `iso_fortran_env`.
 
 
-## The `stdlib_logger` constants
+## `stdlib_logger` constants
 
 The module defines nine distinct public integer constants for
 reporting errors in the `stat` arguments of some of the module's
@@ -104,7 +99,7 @@ significant events encountered during the execution of a program.
 | `time_stamp`     | Logical       | Flag to precede output by a time stamp          | `.true.`            |
 | `units`          | Integer       | Count of the number of active output units      | 0                   |
 
-## The `stdlib_logger` variable
+## `stdlib_logger` variable
 
 The module defines one public variable, `global_logger`, of type
 `logger_type`. As might be guessed from its name, `global_logger` is
@@ -194,8 +189,8 @@ an `intent(in)` argument. It shall be the name of the file to be opened.
 
 #### Example
 
-```fortran
-{!example/logger/example_global_logger.f90!}
+```{literalinclude} ../../example/logger/example_global_logger.f90
+:language: Fortran
 ```
 
 ### `add_log_unit` - add a unit to the array `self % log_units`
@@ -250,8 +245,8 @@ to `unit`.
 
 #### Example
 
-```fortran
-{!example/logger/example_add_log_unit.f90!}
+```{literalinclude} ../../example/logger/example_add_log_unit.f90
+:language: Fortran
 ```
 
 ### `configuration` - report a logger's configuration
@@ -377,8 +372,8 @@ Pure subroutine
   
 #### Example
 
-```fortran
-{!example/logger/example_configure.f90!}
+```{literalinclude} ../../example/logger/example_configure.f90
+:language: Fortran
 ```
 
 ### `log_debug` - Writes the string `message` to `self % log_units`
@@ -667,8 +662,8 @@ Subroutine
 
 #### Example
 
-```fortran
-{!example/logger/example_log_io_error.f90!}
+```{literalinclude} ../../example/logger/example_log_io_error.f90
+:language: Fortran
 ```
 
 ### `log_message` - write the string `message` to `self % log_units` 
@@ -816,8 +811,8 @@ Subroutine
 
 #### Example
 
-```fortran
-{!example/logger/example_log_text_error.f90!}
+```{literalinclude} ../../example/logger/example_log_text_error.f90
+:language: Fortran
 ```
 
 ### `log_units_assigned` - returns the number of active I/O units

@@ -1,11 +1,7 @@
----
-title: stats_distribution_uniform
----
+# `stdlib_stats_distribution_uniform`
 
-# Statistical Distributions -- Uniform Distribution Module
-
-[TOC]
-
+Statistical Distributions : Uniform Distribution Module
+ 
 ## `shuffle` - Using Fisher-Yates algorithm to generate a random permutation of a list
 
 ### Status
@@ -34,8 +30,8 @@ Return a randomized rank one array of the input type.
 
 ### Example
 
-```fortran
-{!example/stats_distribution_uniform/example_shuffle.f90!}
+```{literalinclude} ../../example/stats_distribution_uniform/example_shuffle.f90
+:language: Fortran
 ```
 
 ## `rvs_uniform` - uniform distribution random variates
@@ -84,8 +80,8 @@ The result is a scalar or a rank one array with size of `array_size`, of type `i
 
 ### Example
 
-```fortran
-{!example/stats_distribution_uniform/example_uniform_rvs.f90!}
+```{literalinclude} ../../example/stats_distribution_uniform/example_uniform_rvs.f90
+:language: Fortran
 ```
 
 ## `pdf_uniform` - Uniform distribution probability density function
@@ -132,8 +128,8 @@ The result is a scalar or an array, with a shape conformable to arguments, of ty
 
 ### Example
 
-```fortran
-{!example/stats_distribution_uniform/example_uniform_pdf.f90!}
+```{literalinclude} ../../example/stats_distribution_uniform/example_uniform_pdf.f90
+:language: Fortran
 ```
 
 ## `cdf_uniform` - Uniform distribution cumulative distribution function
@@ -182,6 +178,6 @@ The result is a scalar or an array, with a shape conformable to arguments, of ty
 
 ### Example
 
-```fortran
-{!example/stats_distribution_uniform/example_uniform_cdf.f90!}
+```{literalinclude} ../../example/stats_distribution_uniform/example_uniform_cdf.f90
+:language: Fortran
 ```

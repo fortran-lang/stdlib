@@ -1,11 +1,7 @@
----
-title: stringlist_type
----
+# `stdlib_stringlist_type` 
 
-# `stdlib_stringlist_type` module (1-D list of strings)
-
-[TOC]
-
+1-D list of strings
+ 
 ## Introduction
 
 The `stdlib_stringlist_type` module provides with 2 derived types to deal with lists of strings.
@@ -71,8 +67,8 @@ The result is of type `stringlist_index_type`.
 
 #### Example
 
-```fortran
-{!example/stringlist_type/example_stringlist_type_fidx_bidx.f90!}
+```{literalinclude} ../../example/stringlist_type/example_stringlist_type_fidx_bidx.f90
+:language: Fortran
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -107,8 +103,8 @@ The result is an instance of type `stringlist_type`.
 
 #### Example
 
-```fortran
-{!example/stringlist_type/example_stringlist_type_constructor.f90!}
+```{literalinclude} ../../example/stringlist_type/example_stringlist_type_constructor.f90
+:language: Fortran
 ```
 
 
@@ -141,8 +137,8 @@ Pure subroutine.
 
 #### Example
 
-```fortran
-{!example/stringlist_type/example_stringlist_type_insert_at.f90!}
+```{literalinclude} ../../example/stringlist_type/example_stringlist_type_insert_at.f90
+:language: Fortran
 ```
 
 
@@ -176,8 +172,8 @@ The result is a string of type `string_type`.
 
 #### Example
 
-```fortran
-{!example/stringlist_type/example_stringlist_type_get.f90!}
+```{literalinclude} ../../example/stringlist_type/example_stringlist_type_get.f90
+:language: Fortran
 ```
 
 
@@ -210,8 +206,8 @@ The result is of type `integer`.
 
 #### Example
 
-```fortran
-{!example/stringlist_type/example_stringlist_type_len.f90!}
+```{literalinclude} ../../example/stringlist_type/example_stringlist_type_len.f90
+:language: Fortran
 ```
 
 
@@ -240,8 +236,8 @@ No arguments.
 
 #### Example
 
-```fortran
-{!example/stringlist_type/example_stringlist_type_clear.f90!}
+```{literalinclude} ../../example/stringlist_type/example_stringlist_type_clear.f90
+:language: Fortran
 ```
 
 
@@ -282,8 +278,8 @@ The result is a default `logical` scalar value.
 
 #### Example
 
-```fortran
-{!example/stringlist_type/example_stringlist_type_equality_operator.f90!}
+```{literalinclude} ../../example/stringlist_type/example_stringlist_type_equality_operator.f90
+:language: Fortran
 ```
 
 
@@ -324,8 +320,8 @@ The result is a default `logical` scalar value.
 
 #### Example
 
-```fortran
-{!example/stringlist_type/example_stringlist_type_inequality_operator.f90!}
+```{literalinclude} ../../example/stringlist_type/example_stringlist_type_inequality_operator.f90
+:language: Fortran
 ```
 
 
@@ -364,6 +360,6 @@ The result is an instance of [[stdlib_stringlist_type(module):stringlist_type(ty
 
 #### Example
 
-```fortran
-{!example/stringlist_type/example_stringlist_type_concatenate_operator.f90!}
+```{literalinclude} ../../example/stringlist_type/example_stringlist_type_concatenate_operator.f90
+:language: Fortran
 ```
