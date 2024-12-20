@@ -32,6 +32,8 @@ submodule(stdlib_linalg) stdlib_linalg_pseudoinverse
          ${rt}$, allocatable :: u(:,:),vt(:,:)
          type(linalg_state_type) :: err0
          integer(ilp) :: m,n,k,i,j
+         ${rt}$, parameter :: alpha = 1.0_${rk}$, beta = 0.0_${rk}$         
+         character, parameter :: H = #{if rt.startswith('complex')}# 'C' #{else}# 'T' #{endif}#
          
          ! Problem size
          m = size(a,1,kind=ilp)
@@ -74,13 +76,9 @@ submodule(stdlib_linalg) stdlib_linalg_pseudoinverse
          ! 1) compute (U * diag(1/s)) in-place
          do concurrent (i=1:m,j=1:k); u(i,j) = s(j)*u(i,j); end do
             
-         ! 2) commutate matmul: A_pinv = V^H * (U * diag(1/s))^H = ((U * diag(1/s)) * V^H)^H. 
+         ! 2) commutate matmul: A_pinv = V * (U * diag(1/s))^H = ((U * diag(1/s)) * V^H)^H. 
          !    This avoids one matrix transpose
-         #:if rt.startswith('complex')
-         pinva = conjg(transpose(matmul(u,vt)))
-         #:else
-         pinva = transpose(matmul(u,vt))
-         #:endif
+         call gemm(H, H, n, m, k, alpha, vt, k, u, m, beta, pinva, size(pinva,1,kind=ilp))
 
      end subroutine stdlib_linalg_pseudoinvert_${ri}$
 
