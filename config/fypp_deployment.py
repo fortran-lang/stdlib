@@ -91,7 +91,7 @@ def deploy_stdlib_fpm(with_ilp64):
     
     if with_ilp64:
         base_folder = 'stdlib-fpm-ilp64'
-    else
+    else:
         base_folder = 'stdlib-fpm'        
 
     if not os.path.exists(base_folder+os.sep+'src'):
