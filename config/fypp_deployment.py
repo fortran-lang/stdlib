@@ -80,7 +80,7 @@ def pre_process_fypp(args):
     return
 
 
-def deploy_stdlib_fpm():
+def deploy_stdlib_fpm(with_ilp64):
     """create the stdlib-fpm folder for backwards compatibility (to be deprecated)
     """
     import shutil
@@ -88,24 +88,30 @@ def deploy_stdlib_fpm():
         "test_hash_functions.f90",
         "f18estop.f90",
     )
-    if not os.path.exists('stdlib-fpm'+os.sep+'src'):
-        os.makedirs('stdlib-fpm'+os.sep+'src')
-    if not os.path.exists('stdlib-fpm'+os.sep+'test'):
-        os.makedirs('stdlib-fpm'+os.sep+'test')
-    if not os.path.exists('stdlib-fpm'+os.sep+'example'):
-        os.makedirs('stdlib-fpm'+os.sep+'example')
+    
+    if with_ilp64:
+        base_folder = 'stdlib-fpm-ilp64'
+    else
+        base_folder = 'stdlib-fpm'        
+
+    if not os.path.exists(base_folder+os.sep+'src'):
+        os.makedirs(base_folder+os.sep+'src')
+    if not os.path.exists(base_folder+os.sep+'test'):
+        os.makedirs(base_folder+os.sep+'test')
+    if not os.path.exists(base_folder+os.sep+'example'):
+        os.makedirs(base_folder+os.sep+'example')
 
     def recursive_copy(folder):
         for root, _, files in os.walk(folder):
             for file in files:
                 if file not in prune:
                     if file.endswith(".f90") or file.endswith(".F90") or file.endswith(".dat") or file.endswith(".npy"):
-                        shutil.copy2(os.path.join(root, file), 'stdlib-fpm'+os.sep+folder+os.sep+file)
+                        shutil.copy2(os.path.join(root, file), base_folder+os.sep+folder+os.sep+file)
     recursive_copy('src')
     recursive_copy('test')
     recursive_copy('example')
     for file in ['.gitignore','fpm.toml','LICENSE','VERSION']:
-        shutil.copy2(file, 'stdlib-fpm'+os.sep+file)
+        shutil.copy2(file, base_folder+os.sep+file)
     return
 
 def fpm_build(args,unknown):
@@ -161,7 +167,7 @@ if __name__ == "__main__":
     # pre process the meta programming fypp files
     pre_process_fypp(args)
     if args.deploy_stdlib_fpm:
-        deploy_stdlib_fpm()
+        deploy_stdlib_fpm(args.with_ilp64)
     #==========================================
     # build using fpm
     if args.build:
