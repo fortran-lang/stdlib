@@ -1009,7 +1009,7 @@ For the generalized eigenproblem:
 
 `a` : `real` or `complex` square array containing the coefficient matrix. If `overwrite_a=.false.`, it is an `intent(in)` argument. Otherwise, it is an `intent(inout)` argument and is destroyed by the call. 
 
-`b`: `real` or `complex` square array containing the second coefficient matrix. If `overwrite_b=.false.`, it is an intent(in) argument.  Otherwise, it is an `intent(inout)` argument and is destroyed by the call. 
+`b`: `real` or `complex` square array containing the second coefficient matrix. If `overwrite_b=.false.`, it is an `intent(in)` argument.  Otherwise, it is an `intent(inout)` argument and is destroyed by the call. 
 
 `lambda`: Shall be a `complex` or `real` rank-1 array of the same kind as `a`, containing the eigenvalues, or their `real` component only. It is an `intent(out)` argument.
 
