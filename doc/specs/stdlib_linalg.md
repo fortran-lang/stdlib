@@ -1089,7 +1089,7 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Status
 
-Experimental
+Stable
 
 ### Description
 
