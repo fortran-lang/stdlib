@@ -993,7 +993,7 @@ where \( B \) is a square matrix with the same type, kind and size as \( A \).
 
 Result array `lambda` returns the eigenvalues of \( A \). The user can request eigenvectors to be returned: if provided, on output `left` will contain the left eigenvectors, `right` the right eigenvectors of \( A \).
 Both `left` and `right` are rank-2 arrays, where eigenvectors are stored as columns.
-The solver is based on LAPACK's `*GEEV` and `*GGEV` backends.
+The solver is based on LAPACK's `*GEEV` (standard eigenproblem) and `*GGEV` (generalized eigenproblem) backends.
 
 ### Syntax
 
