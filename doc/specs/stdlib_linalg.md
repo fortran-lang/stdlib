@@ -1480,7 +1480,7 @@ singular value, are treated as zero.
 
 ### Syntax
 
-`b ` [[stdlib_linalg(module):pinv(interface)]] `(a, [, rtol, err])`
+`b =` [[stdlib_linalg(module):pinv(interface)]] `(a, [, rtol, err])`
 
 ### Arguments
 
