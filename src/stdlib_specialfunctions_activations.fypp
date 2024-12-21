@@ -113,6 +113,36 @@ end function
 #:endfor
 
 !==================================================
+! Scaled Exponential Linear Unit (SELU)
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+elemental module function selu_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    ${rt}$, parameter :: scale = 1.0507009873554804934193349852946_${rk}$
+    ${rt}$, parameter :: alpha = 1.6732632423543772848170429916717_${rk}$
+    if(x > 0._${rk}$)then
+        y = scale * x
+    else
+        y = scale * (alpha * exp(x) - alpha)
+    end if
+end function
+
+elemental module function selu_grad_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    ${rt}$, parameter :: scale = 1.0507009873554804934193349852946_${rk}$
+    ${rt}$, parameter :: alpha = 1.6732632423543772848170429916717_${rk}$
+    if(x > 0._${rk}$)then
+        y = scale
+    else
+        y = scale * alpha * exp(x)
+    end if
+end function
+
+#:endfor
+
+!==================================================
 ! Sigmoid
 !==================================================
 #:for rk, rt in REAL_KINDS_TYPES

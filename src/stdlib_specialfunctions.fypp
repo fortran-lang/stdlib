@@ -163,6 +163,32 @@ module stdlib_specialfunctions
     end interface
     public :: gelu_approx_grad
 
+    interface selu
+        !! Version: experimental
+        !!
+        !! Scaled Exponential Linear Unit
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental module function selu_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x
+            ${rt}$ :: y
+        end function
+        #:endfor
+    end interface
+    public :: selu
+
+    interface selu_grad
+        !! Version: experimental
+        !!
+        !! Scaled Exponential Linear Unit
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental module function selu_grad_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x
+            ${rt}$ :: y
+        end function
+        #:endfor
+    end interface
+    public :: selu_grad
+
     interface sigmoid
         !! Version: experimental
         !!
