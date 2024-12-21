@@ -1,6 +1,6 @@
 ! Eigendecomposition of a real square matrix for the generalized eigenproblem
 program example_eig_generalized
-  use stdlib_linalg, only: eig
+  use stdlib_linalg, only: eig, eye
   implicit none
 
   integer :: i
@@ -10,12 +10,10 @@ program example_eig_generalized
   ! Matrices for the generalized eigenproblem: A * v = lambda * B * v
   ! NB Fortran is column-major -> transpose input
   A = transpose(reshape([ [2, 2, 4], &
-                           [1, 3, 5], &
-                           [2, 3, 4] ], [3,3]))
+                          [1, 3, 5], &
+                          [2, 3, 4] ], [3,3]))
 
-  B = transpose(reshape([ [1, 0, 0], &
-                           [0, 1, 0], &
-                           [0, 0, 1] ], [3,3]))
+  B = eye(3)
 
   ! Allocate eigenvalues and right eigenvectors
   allocate(lambda(3), vectors(3,3))
