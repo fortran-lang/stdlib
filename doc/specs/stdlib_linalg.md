@@ -532,7 +532,7 @@ For `real` or `integer` matrices, the function returns the transpose (`transpose
 ### Return value
 
 Returns a rank-2 array of the same shape and type as `a`. If `a` is of type `complex`, the Hermitian matrix is computed as `conjg(transpose(a))`. 
-For `real` or `integer` types, it is equivalent to `transpose(a)`.
+For `real` or `integer` types, it is equivalent to the intrinsic `transpose(a)`.
 
 ### Example
 
