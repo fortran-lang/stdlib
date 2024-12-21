@@ -1459,7 +1459,7 @@ If `err` is not present, exceptions trigger an `error stop`.
 {!example/linalg/example_inverse_function.f90!}
 ```
 
-## `pinv` - Moore-Penrose pseudo-inverse of a matrix.
+## `pinv` - Moore-Penrose pseudo-inverse of a matrix
 
 ### Status
 
