@@ -300,6 +300,74 @@ Elemental function
 
 The function returns a value with the same type and kind as input argument.
 
+## `Selu` - Scaled Exponential Linear Unit function
+
+### Status
+
+Experimental
+
+### Description
+
+Applies the Scaled Exponential Linear Unit activation function:
+$$
+f(x) =
+\begin{cases} 
+scale * x, & \text{if } x \ge 0 \\
+scale * (\alpha * exp(x) - \alpha ), & \text{otherwise}
+\end{cases}
+$$
+Where,
+$$scale = 1.0507009873554804934193349852946 \text{and} \alpha = 1.6732632423543772848170429916717$$
+
+### Syntax
+
+`result = ` [[stdlib_specialfunctions(module):selu(interface)]] ` (x)`
+
+### Class
+
+Elemental function
+
+### Arguments
+
+`x`: Shall be a scalar or array of any `real` kind. 
+
+### Return value
+
+The function returns a value with the same type and kind as input argument.
+
+## `selu_grad` - Gradient of the Scaled Exponential Linear Unit function
+
+### Status
+
+Experimental
+
+### Description
+
+Applies the gradient of the Scaled Exponential Linear Unit activation function:
+$$
+f(x) =
+\begin{cases} 
+scale, & \text{if } x \ge 0 \\
+scale * \alpha * exp(x) , & \text{otherwise}
+\end{cases}
+$$
+
+### Syntax
+
+`result = ` [[stdlib_specialfunctions(module):selu_grad(interface)]] ` (x)`
+
+### Class
+
+Elemental function
+
+### Arguments
+
+`x`: Shall be a scalar or array of any `real` kind.
+
+### Return value
+
+The function returns a value with the same type and kind as input argument.
+
 ## `Sigmoid` - Sigmoid function
 
 ### Status
