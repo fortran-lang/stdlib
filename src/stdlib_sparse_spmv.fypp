@@ -1,0 +1,593 @@
+#:include "common.fypp"
+#:set RANKS = range(1, 2+1)
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
+#! define ranks without parentheses
+#:def rksfx2(rank)
+#{if rank > 0}#${":," + ":," * (rank - 1)}$#{endif}#
+#:enddef
+!! The `stdlib_sparse_spmv` submodule provides matrix-vector product kernels.
+!!
+! This code was modified from https://github.com/jalvesz/FSPARSE by its author: Alves Jose
+module stdlib_sparse_spmv
+    use stdlib_sparse_constants
+    use stdlib_sparse_kinds
+    implicit none
+    private
+
+    !! Version experimental
+    !!
+    !! Apply the sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
+    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    interface spmv
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        #:for rank in RANKS
+        module procedure :: spmv_coo_${rank}$d_${s1}$
+        module procedure :: spmv_csr_${rank}$d_${s1}$
+        module procedure :: spmv_csc_${rank}$d_${s1}$
+        module procedure :: spmv_ell_${rank}$d_${s1}$
+        #:endfor
+        module procedure :: spmv_sellc_${s1}$
+        #:endfor
+    end interface
+    public :: spmv
+
+contains
+
+    !! spmv_coo
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    #:for rank in RANKS
+    subroutine spmv_coo_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta,op)
+        type(COO_${s1}$_type), intent(in) :: matrix
+        ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
+        ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
+        ${t1}$, intent(in), optional :: alpha
+        ${t1}$, intent(in), optional :: beta
+        character(1), intent(in), optional :: op
+        ${t1}$ :: alpha_
+        character(1) :: op_
+        integer(ilp) :: k, ik, jk
+
+        op_ = sparse_op_none; if(present(op)) op_ = op
+        alpha_ = one_${k1}$
+        if(present(alpha)) alpha_ = alpha
+        if(present(beta)) then
+            vec_y = beta * vec_y
+        else 
+            vec_y = zero_${s1}$
+        endif
+
+        associate( data => matrix%data, index => matrix%index, storage => matrix%storage, nnz => matrix%nnz )
+        select case(op_)
+        case(sparse_op_none)
+            if(storage == sparse_full) then
+                do concurrent (k = 1:nnz)
+                    ik = index(1,k)
+                    jk = index(2,k)
+                    vec_y(${rksfx2(rank-1)}$ik) = vec_y(${rksfx2(rank-1)}$ik) + alpha_*data(k) * vec_x(${rksfx2(rank-1)}$jk)
+                end do
+
+            else 
+                do concurrent (k = 1:nnz)
+                    ik = index(1,k)
+                    jk = index(2,k)
+                    vec_y(${rksfx2(rank-1)}$ik) = vec_y(${rksfx2(rank-1)}$ik) + alpha_*data(k) * vec_x(${rksfx2(rank-1)}$jk)
+                    if( ik==jk ) cycle
+                    vec_y(${rksfx2(rank-1)}$jk) = vec_y(${rksfx2(rank-1)}$jk) + alpha_*data(k) * vec_x(${rksfx2(rank-1)}$ik)
+                end do
+
+            end if
+        case(sparse_op_transpose)
+            if(storage == sparse_full) then
+                do concurrent (k = 1:nnz)
+                    jk = index(1,k)
+                    ik = index(2,k)
+                    vec_y(${rksfx2(rank-1)}$ik) = vec_y(${rksfx2(rank-1)}$ik) + alpha_*data(k) * vec_x(${rksfx2(rank-1)}$jk)
+                end do
+
+            else 
+                do concurrent (k = 1:nnz)
+                    jk = index(1,k)
+                    ik = index(2,k)
+                    vec_y(${rksfx2(rank-1)}$ik) = vec_y(${rksfx2(rank-1)}$ik) + alpha_*data(k) * vec_x(${rksfx2(rank-1)}$jk)
+                    if( ik==jk ) cycle
+                    vec_y(${rksfx2(rank-1)}$jk) = vec_y(${rksfx2(rank-1)}$jk) + alpha_*data(k) * vec_x(${rksfx2(rank-1)}$ik)
+                end do
+
+            end if
+        #:if t1.startswith('complex') 
+        case(sparse_op_hermitian)
+            if(storage == sparse_full) then
+                do concurrent (k = 1:nnz)
+                    jk = index(1,k)
+                    ik = index(2,k)
+                    vec_y(${rksfx2(rank-1)}$ik) = vec_y(${rksfx2(rank-1)}$ik) + alpha_*conjg(data(k)) * vec_x(${rksfx2(rank-1)}$jk)
+                end do
+
+            else 
+                do concurrent (k = 1:nnz)
+                    jk = index(1,k)
+                    ik = index(2,k)
+                    vec_y(${rksfx2(rank-1)}$ik) = vec_y(${rksfx2(rank-1)}$ik) + alpha_*conjg(data(k)) * vec_x(${rksfx2(rank-1)}$jk)
+                    if( ik==jk ) cycle
+                    vec_y(${rksfx2(rank-1)}$jk) = vec_y(${rksfx2(rank-1)}$jk) + alpha_*conjg(data(k)) * vec_x(${rksfx2(rank-1)}$ik)
+                end do
+
+            end if
+        #:endif
+        end select
+        end associate
+    end subroutine
+
+    #:endfor
+    #:endfor
+
+    !! spmv_csr
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    #:for rank in RANKS
+    subroutine spmv_csr_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta,op)
+        type(CSR_${s1}$_type), intent(in) :: matrix
+        ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
+        ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
+        ${t1}$, intent(in), optional :: alpha
+        ${t1}$, intent(in), optional :: beta
+        character(1), intent(in), optional :: op
+        ${t1}$ :: alpha_
+        character(1) :: op_
+        integer(ilp) :: i, j
+        #:if rank == 1
+        ${t1}$ :: aux, aux2
+        #:else
+        ${t1}$ :: aux(size(vec_x,dim=1)), aux2(size(vec_x,dim=1))
+        #:endif
+        
+        op_ = sparse_op_none; if(present(op)) op_ = op
+        alpha_ = one_${k1}$
+        if(present(alpha)) alpha_ = alpha
+        if(present(beta)) then
+            vec_y = beta * vec_y
+        else 
+            vec_y = zero_${s1}$
+        endif
+
+        associate( data => matrix%data, col => matrix%col, rowptr => matrix%rowptr, &
+            & nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage )
+    
+            if( storage == sparse_full .and. op_==sparse_op_none ) then
+                do i = 1, nrows
+                    aux = zero_${k1}$
+                    do j = rowptr(i), rowptr(i+1)-1
+                        aux = aux + data(j) * vec_x(${rksfx2(rank-1)}$col(j))
+                    end do
+                    vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_ * aux
+                end do
+
+            else if( storage == sparse_full .and. op_==sparse_op_transpose ) then
+                do i = 1, nrows
+                    aux = alpha_ * vec_x(${rksfx2(rank-1)}$i)
+                    do j = rowptr(i), rowptr(i+1)-1
+                        vec_y(${rksfx2(rank-1)}$col(j)) = vec_y(${rksfx2(rank-1)}$col(j)) + data(j) * aux
+                    end do
+                end do
+                
+            else if( storage == sparse_lower .and. op_/=sparse_op_hermitian )then
+                do i = 1 , nrows
+                    aux  = zero_${s1}$
+                    aux2 = alpha_ * vec_x(${rksfx2(rank-1)}$i)
+                    do j = rowptr(i), rowptr(i+1)-2
+                        aux = aux + data(j) * vec_x(${rksfx2(rank-1)}$col(j))
+                        vec_y(${rksfx2(rank-1)}$col(j)) = vec_y(${rksfx2(rank-1)}$col(j)) + data(j) * aux2
+                    end do
+                    aux = alpha_ * aux + data(j) * aux2
+                    vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + aux
+                end do
+
+            else if( storage == sparse_upper .and. op_/=sparse_op_hermitian )then
+                do i = 1 , nrows
+                    aux  = vec_x(${rksfx2(rank-1)}$i) * data(rowptr(i))
+                    aux2 = alpha_ * vec_x(${rksfx2(rank-1)}$i)
+                    do j = rowptr(i)+1, rowptr(i+1)-1
+                        aux = aux + data(j) * vec_x(${rksfx2(rank-1)}$col(j))
+                        vec_y(${rksfx2(rank-1)}$col(j)) = vec_y(${rksfx2(rank-1)}$col(j)) + data(j) * aux2
+                    end do
+                    vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_ * aux
+                end do
+                
+            #:if t1.startswith('complex')
+            else if( storage == sparse_full .and. op_==sparse_op_hermitian) then
+                do i = 1, nrows
+                    aux = alpha_ * vec_x(${rksfx2(rank-1)}$i)
+                    do j = rowptr(i), rowptr(i+1)-1
+                        vec_y(${rksfx2(rank-1)}$col(j)) = vec_y(${rksfx2(rank-1)}$col(j)) + conjg(data(j)) * aux
+                    end do
+                end do
+
+            else if( storage == sparse_lower .and. op_==sparse_op_hermitian )then
+                do i = 1 , nrows
+                    aux  = zero_${s1}$
+                    aux2 = alpha_ * vec_x(${rksfx2(rank-1)}$i)
+                    do j = rowptr(i), rowptr(i+1)-2
+                        aux = aux + conjg(data(j)) * vec_x(${rksfx2(rank-1)}$col(j))
+                        vec_y(${rksfx2(rank-1)}$col(j)) = vec_y(${rksfx2(rank-1)}$col(j)) + conjg(data(j)) * aux2
+                    end do
+                    aux = alpha_ * aux + conjg(data(j)) * aux2
+                    vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + aux
+                end do
+
+            else if( storage == sparse_upper .and. op_==sparse_op_hermitian )then
+                do i = 1 , nrows
+                    aux  = vec_x(${rksfx2(rank-1)}$i) * conjg(data(rowptr(i)))
+                    aux2 = alpha_ * vec_x(${rksfx2(rank-1)}$i)
+                    do j = rowptr(i)+1, rowptr(i+1)-1
+                        aux = aux + conjg(data(j)) * vec_x(${rksfx2(rank-1)}$col(j))
+                        vec_y(${rksfx2(rank-1)}$col(j)) = vec_y(${rksfx2(rank-1)}$col(j)) + conjg(data(j)) * aux2
+                    end do
+                    vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_ * aux
+                end do
+            #:endif
+            end if
+        end associate
+    end subroutine
+    
+    #:endfor
+    #:endfor
+
+    !! spmv_csc
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    #:for rank in RANKS
+    subroutine spmv_csc_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta,op)
+        type(CSC_${s1}$_type), intent(in) :: matrix
+        ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
+        ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
+        ${t1}$, intent(in), optional :: alpha
+        ${t1}$, intent(in), optional :: beta
+        character(1), intent(in), optional :: op
+        ${t1}$ :: alpha_
+        character(1) :: op_
+        integer(ilp) :: i, j
+        #:if rank == 1
+        ${t1}$ :: aux
+        #:else
+        ${t1}$ :: aux(size(vec_x,dim=1))
+        #:endif
+
+        op_ = sparse_op_none; if(present(op)) op_ = op
+        alpha_ = one_${k1}$
+        if(present(alpha)) alpha_ = alpha
+        if(present(beta)) then
+            vec_y = beta * vec_y
+        else 
+            vec_y = zero_${s1}$
+        endif
+
+        associate( data => matrix%data, colptr => matrix%colptr, row => matrix%row, &
+            & nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage )
+            if( storage == sparse_full .and. op_==sparse_op_none ) then
+                do concurrent(j=1:ncols)
+                    aux = alpha_ * vec_x(${rksfx2(rank-1)}$j)
+                    do i = colptr(j), colptr(j+1)-1
+                        vec_y(${rksfx2(rank-1)}$row(i)) = vec_y(${rksfx2(rank-1)}$row(i)) + data(i) * aux
+                    end do
+                end do
+
+            else if( storage == sparse_full .and. op_==sparse_op_transpose ) then
+                do concurrent(j=1:ncols)
+                    aux = zero_${k1}$
+                    do i = colptr(j), colptr(j+1)-1
+                        aux = aux + data(i) * vec_x(${rksfx2(rank-1)}$row(i))
+                    end do
+                    vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_ * aux
+                end do
+
+            else if( storage == sparse_lower .and. op_/=sparse_op_hermitian )then
+                do j = 1 , ncols
+                    aux  = vec_x(${rksfx2(rank-1)}$j) * data(colptr(j))
+                    do i = colptr(j)+1, colptr(j+1)-1
+                        aux = aux + data(i) * vec_x(${rksfx2(rank-1)}$row(i))
+                        vec_y(${rksfx2(rank-1)}$row(i)) = vec_y(${rksfx2(rank-1)}$row(i)) + alpha_ * data(i) * vec_x(${rksfx2(rank-1)}$j)
+                    end do
+                    vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_ * aux
+                end do
+
+            else if( storage == sparse_upper .and. op_/=sparse_op_hermitian )then
+                do j = 1 , ncols
+                    aux  = zero_${s1}$
+                    do i = colptr(j), colptr(i+1)-2
+                        aux = aux + data(i) * vec_x(${rksfx2(rank-1)}$j)
+                        vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_ * data(i) * vec_x(${rksfx2(rank-1)}$row(i))
+                    end do
+                    aux = aux + data(colptr(j)) * vec_x(${rksfx2(rank-1)}$j)
+                    vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_ * aux
+                end do
+
+            #:if t1.startswith('complex')
+            else if( storage == sparse_full .and. op_==sparse_op_hermitian ) then
+                do concurrent(j=1:ncols)
+                    aux = zero_${k1}$
+                    do i = colptr(j), colptr(j+1)-1
+                        aux = aux + conjg(data(i)) * vec_x(${rksfx2(rank-1)}$row(i))
+                    end do
+                    vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_ * aux
+                end do
+
+            else if( storage == sparse_lower .and. op_==sparse_op_hermitian )then
+                do j = 1 , ncols
+                    aux  = vec_x(${rksfx2(rank-1)}$j) * conjg(data(colptr(j)))
+                    do i = colptr(j)+1, colptr(j+1)-1
+                        aux = aux + conjg(data(i)) * vec_x(${rksfx2(rank-1)}$row(i))
+                        vec_y(${rksfx2(rank-1)}$row(i)) = vec_y(${rksfx2(rank-1)}$row(i)) + alpha_ * conjg(data(i)) * vec_x(${rksfx2(rank-1)}$j)
+                    end do
+                    vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_ * aux
+                end do
+
+            else if( storage == sparse_upper .and. op_==sparse_op_hermitian )then
+                do j = 1 , ncols
+                    aux  = zero_${s1}$
+                    do i = colptr(j), colptr(i+1)-2
+                        aux = aux + conjg(data(i)) * vec_x(${rksfx2(rank-1)}$j)
+                        vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_ * conjg(data(i)) * vec_x(${rksfx2(rank-1)}$row(i))
+                    end do
+                    aux = aux + conjg(data(colptr(j))) * vec_x(${rksfx2(rank-1)}$j)
+                    vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_ * aux
+                end do
+            #:endif
+            end if
+        end associate
+    end subroutine
+    
+    #:endfor
+    #:endfor
+
+    !! spmv_ell
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    #:for rank in RANKS
+    subroutine spmv_ell_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta,op)
+        type(ELL_${s1}$_type), intent(in) :: matrix
+        ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
+        ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
+        ${t1}$, intent(in), optional :: alpha
+        ${t1}$, intent(in), optional :: beta
+        character(1), intent(in), optional :: op
+        ${t1}$ :: alpha_
+        character(1) :: op_
+        integer(ilp) :: i, j, k
+        
+        op_ = sparse_op_none; if(present(op)) op_ = op
+        alpha_ = one_${k1}$
+        if(present(alpha)) alpha_ = alpha
+        if(present(beta)) then
+            vec_y = beta * vec_y
+        else 
+            vec_y = zero_${s1}$
+        endif
+        associate( data => matrix%data, index => matrix%index, MNZ_P_ROW => matrix%K, &
+            & nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage )
+            if( storage == sparse_full .and. op_==sparse_op_none ) then
+                do concurrent (i = 1:nrows, k = 1:MNZ_P_ROW)
+                    j = index(i,k)
+                    if(j>0) vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_*data(i,k) * vec_x(${rksfx2(rank-1)}$j)
+                end do
+            else if( storage == sparse_full .and. op_==sparse_op_transpose ) then
+                do concurrent (i = 1:nrows, k = 1:MNZ_P_ROW)
+                    j = index(i,k)
+                    if(j>0) vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_*data(i,k) * vec_x(${rksfx2(rank-1)}$i)
+                end do
+            else if( storage /= sparse_full .and. op_/=sparse_op_hermitian ) then
+                do concurrent (i = 1:nrows, k = 1:MNZ_P_ROW)
+                    j = index(i,k)
+                    if(j>0) then
+                        vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_*data(i,k) * vec_x(${rksfx2(rank-1)}$j)
+                        if(i==j) cycle 
+                        vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_*data(i,k) * vec_x(${rksfx2(rank-1)}$i)
+                    end if
+                end do
+            #:if t1.startswith('complex')
+            else if( storage == sparse_full .and. op_==sparse_op_hermitian ) then
+                do concurrent (i = 1:nrows, k = 1:MNZ_P_ROW)
+                    j = index(i,k)
+                    if(j>0) vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_*conjg(data(i,k)) * vec_x(${rksfx2(rank-1)}$i)
+                end do
+            else if( storage /= sparse_full .and. op_==sparse_op_hermitian ) then
+                do concurrent (i = 1:nrows, k = 1:MNZ_P_ROW)
+                    j = index(i,k)
+                    if(j>0) then
+                        vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_*conjg(data(i,k)) * vec_x(${rksfx2(rank-1)}$j)
+                        if(i==j) cycle 
+                        vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_*conjg(data(i,k)) * vec_x(${rksfx2(rank-1)}$i)
+                    end if
+                end do
+            #:endif
+            end if
+        end associate
+    end subroutine
+    
+    #:endfor
+    #:endfor
+
+    !! spmv_sellc
+    #:set CHUNKS = [4,8,16]
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    subroutine spmv_sellc_${s1}$(matrix,vec_x,vec_y,alpha,beta,op)
+        !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
+        type(SELLC_${s1}$_type), intent(in) :: matrix
+        ${t1}$, intent(in)    :: vec_x(:)
+        ${t1}$, intent(inout) :: vec_y(:)
+        ${t1}$, intent(in), optional :: alpha
+        ${t1}$, intent(in), optional :: beta
+        character(1), intent(in), optional :: op
+        ${t1}$ :: alpha_
+        character(1) :: op_
+        integer(ilp) :: i, nz, rowidx, num_chunks, rm
+
+        op_ = sparse_op_none; if(present(op)) op_ = op
+        alpha_ = one_${s1}$
+        if(present(alpha)) alpha_ = alpha
+        if(present(beta)) then
+            vec_y = beta * vec_y
+        else 
+            vec_y = zero_${s1}$
+        endif
+
+        associate( data => matrix%data, ia => matrix%rowptr , ja => matrix%col, cs => matrix%chunk_size, &
+        &   nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage  )
+
+        if( .not.any( ${CHUNKS}$ == cs ) ) then
+            print *, "error: sellc chunk size not supported."
+            return
+        end if
+
+        num_chunks = nrows / cs
+        rm = nrows - num_chunks * cs
+        if( storage == sparse_full .and. op_==sparse_op_none ) then
+
+            select case(cs)
+            #:for chunk in CHUNKS
+            case(${chunk}$)
+                do i = 1, num_chunks
+                    nz = ia(i+1) - ia(i)
+                    rowidx = (i - 1)*${chunk}$ + 1 
+                    call chunk_kernel_${chunk}$(nz,data(:,ia(i)),ja(:,ia(i)),vec_x,vec_y(rowidx:))
+                end do
+            #:endfor
+            end select
+            
+            ! remainder
+            if(rm>0)then 
+                i = num_chunks + 1 
+                nz = ia(i+1) - ia(i)
+                rowidx = (i - 1)*cs + 1
+                call chunk_kernel_rm(nz,cs,rm,data(:,ia(i)),ja(:,ia(i)),vec_x,vec_y(rowidx:))
+            end if
+            
+        else if( storage == sparse_full .and. op_==sparse_op_transpose ) then
+
+            select case(cs)
+            #:for chunk in CHUNKS
+            case(${chunk}$)
+                do i = 1, num_chunks
+                    nz = ia(i+1) - ia(i)
+                    rowidx = (i - 1)*${chunk}$ + 1 
+                    call chunk_kernel_trans_${chunk}$(nz,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
+                end do
+            #:endfor
+            end select
+            
+            ! remainder
+            if(rm>0)then 
+                i = num_chunks + 1 
+                nz = ia(i+1) - ia(i)
+                rowidx = (i - 1)*cs + 1
+                call chunk_kernel_rm_trans(nz,cs,rm,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
+            end if
+        
+        #:if t1.startswith('complex')
+        else if( storage == sparse_full .and. op_==sparse_op_hermitian ) then
+
+            select case(cs)
+            #:for chunk in CHUNKS
+            case(${chunk}$)
+                do i = 1, num_chunks
+                    nz = ia(i+1) - ia(i)
+                    rowidx = (i - 1)*${chunk}$ + 1 
+                    call chunk_kernel_herm_${chunk}$(nz,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
+                end do
+            #:endfor
+            end select
+            
+            ! remainder
+            if(rm>0)then 
+                i = num_chunks + 1 
+                nz = ia(i+1) - ia(i)
+                rowidx = (i - 1)*cs + 1
+                call chunk_kernel_rm_herm(nz,cs,rm,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
+            end if
+        #:endif
+        else
+            print *, "error: sellc format for spmv operation not yet supported."
+            return
+        end if
+        end associate
+
+    contains
+        #:for chunk in CHUNKS
+        pure subroutine chunk_kernel_${chunk}$(n,a,col,x,y)
+            integer, value      :: n
+            ${t1}$, intent(in)  :: a(${chunk}$,n), x(*)
+            integer(ilp), intent(in) :: col(${chunk}$,n)
+            ${t1}$, intent(inout) :: y(${chunk}$)
+            integer :: j
+            do j = 1, n
+                where(col(:,j) > 0) y = y + alpha_ * a(:,j) * x(col(:,j))
+            end do
+        end subroutine
+        pure subroutine chunk_kernel_trans_${chunk}$(n,a,col,x,y)
+            integer, value      :: n
+            ${t1}$, intent(in)  :: a(${chunk}$,n), x(${chunk}$)
+            integer(ilp), intent(in) :: col(${chunk}$,n)
+            ${t1}$, intent(inout) :: y(*)
+            integer :: j, k
+            do j = 1, n
+                do k = 1, ${chunk}$
+                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                end do
+            end do
+        end subroutine
+        #:if t1.startswith('complex')
+        pure subroutine chunk_kernel_herm_${chunk}$(n,a,col,x,y)
+            integer, value      :: n
+            ${t1}$, intent(in)  :: a(${chunk}$,n), x(${chunk}$)
+            integer(ilp), intent(in) :: col(${chunk}$,n)
+            ${t1}$, intent(inout) :: y(*)
+            integer :: j, k
+            do j = 1, n
+                do k = 1, ${chunk}$
+                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
+                end do
+            end do
+        end subroutine
+        #:endif
+        #:endfor
+    
+        pure subroutine chunk_kernel_rm(n,cs,r,a,col,x,y)
+            integer, value      :: n, cs, r
+            ${t1}$, intent(in)  :: a(cs,n), x(*)
+            integer(ilp), intent(in) :: col(cs,n)
+            ${t1}$, intent(inout) :: y(r)
+            integer :: j
+            do j = 1, n
+                where(col(1:r,j) > 0) y = y + alpha_ * a(1:r,j) * x(col(1:r,j))
+            end do
+        end subroutine
+        pure subroutine chunk_kernel_rm_trans(n,cs,r,a,col,x,y)
+            integer, value      :: n, cs, r
+            ${t1}$, intent(in)  :: a(cs,n), x(r)
+            integer(ilp), intent(in) :: col(cs,n)
+            ${t1}$, intent(inout) :: y(*)
+            integer :: j, k
+            do j = 1, n
+                do k = 1, r
+                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                end do
+            end do
+        end subroutine
+        #:if t1.startswith('complex')
+        pure subroutine chunk_kernel_rm_herm(n,cs,r,a,col,x,y)
+            integer, value      :: n, cs, r
+            ${t1}$, intent(in)  :: a(cs,n), x(r)
+            integer(ilp), intent(in) :: col(cs,n)
+            ${t1}$, intent(inout) :: y(*)
+            integer :: j, k
+            do j = 1, n
+                do k = 1, r
+                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
+                end do
+            end do
+        end subroutine
+        #:endif
+
+    end subroutine
+    
+    #:endfor
+    
+end module
