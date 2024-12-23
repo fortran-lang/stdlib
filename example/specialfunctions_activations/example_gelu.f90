@@ -9,5 +9,6 @@ program example_gelu
   
     x = linspace(-2._sp, 2._sp, n)
     y = gelu( x )
+    print *, y
 end program example_gelu
   

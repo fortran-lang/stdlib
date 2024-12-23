@@ -9,5 +9,6 @@ program example_selu
   
     x = linspace(-2._sp, 2._sp, n)
     y = selu( x )
+    print *, y
 end program example_selu
   

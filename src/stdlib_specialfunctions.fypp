@@ -35,6 +35,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! gaussian function
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#gaussian))
         #:for rk, rt in REAL_KINDS_TYPES
         elemental module function gaussian_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
@@ -48,6 +49,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! gradient of the gaussian function
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#gaussian_grad))
         #:for rk, rt in REAL_KINDS_TYPES
         elemental module function gaussian_grad_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
@@ -61,6 +63,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! exponential linear unit function
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#elu))
         #:for rk, rt in REAL_KINDS_TYPES
         elemental module function elu_${rk}$( x , a ) result( y )
             ${rt}$, intent(in) :: x
@@ -75,6 +78,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! gradient of the exponential linear unit function
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#elu_grad))
         #:for rk, rt in REAL_KINDS_TYPES
         elemental module function elu_grad_${rk}$( x , a ) result( y )
             ${rt}$, intent(in) :: x
@@ -89,6 +93,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Rectified linear unit function
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#relu))
         #:for rk, rt in REAL_KINDS_TYPES
         elemental module function relu_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
@@ -102,6 +107,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Gradient rectified linear unit function
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#relu_grad))
         #:for rk, rt in REAL_KINDS_TYPES
         elemental module function relu_grad_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
@@ -115,6 +121,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Gaussian error linear unit function
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#gelu))
         #:for rk, rt in REAL_KINDS_TYPES
         elemental module function gelu_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
@@ -128,6 +135,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Gradient of the gaussian error linear unit function
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#gelu_grad))
         #:for rk, rt in REAL_KINDS_TYPES
         elemental module function gelu_grad_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
@@ -141,6 +149,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Approximated gaussian error linear unit function
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#gelu_approx))
         #:for rk, rt in REAL_KINDS_TYPES
         elemental module function gelu_approx_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
@@ -154,6 +163,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Gradient of the approximated gaussian error linear unit function
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#gelu_approx_grad))
         #:for rk, rt in REAL_KINDS_TYPES
         elemental module function gelu_approx_grad_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
@@ -167,6 +177,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Scaled Exponential Linear Unit
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#selu))
         #:for rk, rt in REAL_KINDS_TYPES
         elemental module function selu_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
@@ -180,6 +191,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Scaled Exponential Linear Unit
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#selu_grad))
         #:for rk, rt in REAL_KINDS_TYPES
         elemental module function selu_grad_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
@@ -193,6 +205,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Sigmoid function
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#sigmoid))
         #:for rk, rt in REAL_KINDS_TYPES
         elemental module function sigmoid_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
@@ -206,6 +219,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Gradient of the sigmoid function
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#sigmoid_grad))
         #:for rk, rt in REAL_KINDS_TYPES
         elemental module function sigmoid_grad_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
@@ -219,6 +233,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Sigmoid Linear Unit function
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#silu))
         #:for rk, rt in REAL_KINDS_TYPES
         elemental module function silu_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
@@ -232,6 +247,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Gradient of the Sigmoid Linear Unit function
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#silu_grad))
         #:for rk, rt in REAL_KINDS_TYPES
         elemental module function silu_grad_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
@@ -245,6 +261,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Step function
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#step))
         #:for rk, rt in REAL_KINDS_TYPES
         elemental module function step_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
@@ -258,6 +275,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Gradient of the step function
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#step_grad))
         #:for rk, rt in REAL_KINDS_TYPES
         elemental module function step_grad_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
@@ -297,6 +315,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Softmax function. Available for ranks 1 to 4
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#Softmax))
         #:for rk, rt in REAL_KINDS_TYPES
         pure module function Softmax_r1_${rk}$( x , dim ) result( y )
             ${rt}$, intent(in) :: x(:)
@@ -318,6 +337,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Gradient of the softmax function. Available for ranks 1 to 4
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#Softmax_grad))
         #:for rk, rt in REAL_KINDS_TYPES
         pure module function Softmax_grad_r1_${rk}$( x , dim ) result( y )
             ${rt}$, intent(in) :: x(:)
@@ -339,6 +359,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Softmax function. Available for ranks 1 to 4
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#LogSoftmax))
         #:for rk, rt in REAL_KINDS_TYPES
         pure module function LogSoftmax_r1_${rk}$( x, dim ) result( y )
             ${rt}$, intent(in) :: x(:)
@@ -360,6 +381,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Softplus function
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#Softplus))
         #:for rk, rt in REAL_KINDS_TYPES
         elemental module function Softplus_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
@@ -373,6 +395,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Gradient of the softplus function
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#Softplus_grad))
         #:for rk, rt in REAL_KINDS_TYPES
         elemental module function Softplus_grad_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x

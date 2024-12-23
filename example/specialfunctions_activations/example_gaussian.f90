@@ -9,5 +9,6 @@ program example_gaussian
   
     x = linspace(-2._sp, 2._sp, n)
     y = gaussian( x )
+    print *, y
 end program example_gaussian
   

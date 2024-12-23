@@ -9,5 +9,6 @@ program example_relu
   
     x = linspace(-2._sp, 2._sp, n)
     y = relu( x )
+    print *, y
 end program example_relu
   

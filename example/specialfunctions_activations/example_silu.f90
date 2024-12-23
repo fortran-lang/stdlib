@@ -9,5 +9,6 @@ program example_silu
   
     x = linspace(-2._sp, 2._sp, n)
     y = silu( x )
+    print *, y
 end program example_silu
   

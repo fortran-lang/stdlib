@@ -1,5 +1,5 @@
 ---
-title: specialfunctions
+title: specialfunctions_activations
 ---
 
 # Special functions - Neural Networks activations and their gradients
@@ -337,7 +337,7 @@ scale * (\alpha * exp(x) - \alpha ), & \text{otherwise}
 \end{cases}
 $$
 Where,
-$$scale = 1.0507009873554804934193349852946 \text{and} \alpha = 1.6732632423543772848170429916717$$
+$scale = 1.0507009873554804934193349852946$ and $\alpha = 1.6732632423543772848170429916717$
 
 ### Syntax
 
@@ -406,7 +406,7 @@ $$f(x) = \frac{1}{1+\exp(-x)} $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):Sigmoid(interface)]] ` (x)`
+`result = ` [[stdlib_specialfunctions(module):sigmoid(interface)]] ` (x)`
 
 ### Class
 
@@ -433,7 +433,7 @@ $$f(x) = \frac{\exp(x)}{(1+\exp(x))^2} $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):Sigmoid_grad(interface)]] ` (x)`
+`result = ` [[stdlib_specialfunctions(module):sigmoid_grad(interface)]] ` (x)`
 
 ### Class
 
@@ -525,7 +525,7 @@ $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):Step(interface)]] ` (x)`
+`result = ` [[stdlib_specialfunctions(module):step(interface)]] ` (x)`
 
 ### Class
 
@@ -538,6 +538,11 @@ Elemental function
 ### Return value
 
 The function returns a value with the same type and kind as input argument.
+
+### Example
+```fortran
+{!example/specialfunctions_activations/example_step.f90!}
+```
 
 ## `Step_grad` - Gradient of the Step function
 
@@ -552,7 +557,7 @@ $$f(x) = 0 $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):Step_grad(interface)]] ` (x)`
+`result = ` [[stdlib_specialfunctions(module):step_grad(interface)]] ` (x)`
 
 ### Class
 
@@ -579,7 +584,7 @@ $$f(x) = \frac{\exp(x)-\text{max}(x_j)}{\sum_j{\exp(x)-\text{max}(x_j)}}$$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):Softmax(interface)]] ` (x,dim)`
+`result = ` [[stdlib_specialfunctions(module):softmax(interface)]] ` (x,dim)`
 
 ### Class
 
@@ -594,6 +599,11 @@ Pure function for ranks 1 to 4.
 
 The function returns an array with the same rank and kind as the input argument `x`.
 
+### Example
+```fortran
+{!example/specialfunctions_activations/example_softmax.f90!}
+```
+
 ## `Softmax_grad` - Gradient of the Softmax function
 
 ### Status
@@ -607,7 +617,7 @@ $$f(x,dim) = \text{Softmax}(x,dim)*(1-\text{Softmax}(x,dim)) $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):Softmax_grad(interface)]] ` (x,dim)`
+`result = ` [[stdlib_specialfunctions(module):softmax_grad(interface)]] ` (x,dim)`
 
 ### Class
 
@@ -635,7 +645,7 @@ $$f(x) = \log(\exp(x)+1)$$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):Softplus(interface)]] ` (x)`
+`result = ` [[stdlib_specialfunctions(module):softplus(interface)]] ` (x)`
 
 ### Class
 
@@ -648,6 +658,11 @@ Elemental function
 ### Return value
 
 The function returns a value with the same type and kind as input argument.
+
+### Example
+```fortran
+{!example/specialfunctions_activations/example_softplus.f90!}
+```
 
 ## `Softplus_grad` - Gradient of the Softplus function
 
@@ -662,7 +677,7 @@ $$f(x) = \frac{\exp(x)}{\exp(x)+1} $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):Softplus_grad(interface)]] ` (x)`
+`result = ` [[stdlib_specialfunctions(module):softplus_grad(interface)]] ` (x)`
 
 ### Class
 
