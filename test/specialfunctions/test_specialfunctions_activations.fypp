@@ -28,8 +28,8 @@ contains
             new_unittest("selu"   , test_selu),             &
             new_unittest("sigmoid", test_sigmoid),          &
             new_unittest("silu"   , test_silu),             &
-            new_unittest("softmax", test_softmax)           &
-            new_unittest("logsoftmax", test_logsoftmax),    &
+            new_unittest("softmax", test_softmax),          &
+            new_unittest("logsoftmax", test_logsoftmax)     &
             ]
     end subroutine collect_specialfunctions_activation
 
@@ -81,11 +81,11 @@ contains
     subroutine test_relu(error)
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: n = 10
-        real(sp) :: x(n), y(n), y_ref(n), a
+        real(sp) :: x(n), y(n), y_ref(n)
 
         x = linspace(-2._sp, 2._sp, n)
         y_ref = max(0._sp, x)
-        y = relu( x , a )
+        y = relu( x )
         call check(error, norm2(y-y_ref) < n*tol_sp )
         if (allocated(error)) return
 
@@ -95,7 +95,7 @@ contains
         elsewhere
             y_ref = 0.0_sp
         end where
-        y = relu_grad( x , a )
+        y = relu_grad( x )
         call check(error, norm2(y-y_ref) < n*tol_sp )
         if (allocated(error)) return
     end subroutine
@@ -113,7 +113,7 @@ contains
         elsewhere
             y_ref = scale * (alpha * exp(x) - alpha)
         end where
-        y = selu( x , a )
+        y = selu( x )
         call check(error, norm2(y-y_ref) < n*tol_sp )
         if (allocated(error)) return
 
@@ -123,7 +123,7 @@ contains
         elsewhere
             y_ref = scale * alpha * exp(x)
         end where
-        y = selu_grad( x , a )
+        y = selu_grad( x )
         call check(error, norm2(y-y_ref) < n*tol_sp )
         if (allocated(error)) return
     end subroutine
