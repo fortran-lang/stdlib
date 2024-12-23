@@ -1,0 +1,13 @@
+program example_gelu
+    use stdlib_kinds, only: sp
+    use stdlib_math, only: linspace
+    use stdlib_specialfunctions, only: gelu
+    
+    integer, parameter :: n = 10
+    real(sp) :: x(n), y(n)
+    implicit none
+  
+    x = linspace(-2._sp, 2._sp, n)
+    y = gelu( x )
+end program example_gelu
+  

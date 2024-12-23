@@ -33,6 +33,11 @@ Elemental function
 
 The function returns a value with the same type and kind as input argument.
 
+### Example
+```fortran
+{!example/specialfunctions_activations/example_gaussian.f90!}
+```
+
 ## `Gaussian_grad` - Gradient of the Gaussian function
 
 ### Status
@@ -93,6 +98,11 @@ Elemental function
 ### Return value
 
 The function returns a value with the same type and kind as input argument.
+
+### Example
+```fortran
+{!example/specialfunctions_activations/example_elu.f90!}
+```
 
 ## `Elu_grad` - Gradient of the Exponential Linear Unit function
 
@@ -155,6 +165,11 @@ Elemental function
 
 The function returns a value with the same type and kind as input argument.
 
+### Example
+```fortran
+{!example/specialfunctions_activations/example_relu.f90!}
+```
+
 ## `Relu_grad` - Gradient of the Rectified Linear Unit function
 
 ### Status
@@ -214,6 +229,11 @@ Elemental function
 ### Return value
 
 The function returns a value with the same type and kind as input argument.
+
+### Example
+```fortran
+{!example/specialfunctions_activations/example_gelu.f90!}
+```
 
 ## `Gelu_grad` - Gradient of the Gaussian Error Linear Unit function
 
@@ -335,6 +355,11 @@ Elemental function
 
 The function returns a value with the same type and kind as input argument.
 
+### Example
+```fortran
+{!example/specialfunctions_activations/example_selu.f90!}
+```
+
 ## `selu_grad` - Gradient of the Scaled Exponential Linear Unit function
 
 ### Status
@@ -448,6 +473,11 @@ Elemental function
 ### Return value
 
 The function returns a value with the same type and kind as input argument.
+
+### Example
+```fortran
+{!example/specialfunctions_activations/example_silu.f90!}
+```
 
 ## `Silu_grad` - Gradient of the Sigmoid Linear Unit function
 
