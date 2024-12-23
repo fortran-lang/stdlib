@@ -9,3 +9,4 @@ set(fppFiles
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
 ADDTEST(specialfunctions_gamma)
+ADDTEST(specialfunctions_activations)

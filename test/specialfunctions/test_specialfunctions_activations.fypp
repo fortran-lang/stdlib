@@ -21,24 +21,109 @@ contains
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [                                       &
+            new_unittest("gaussian", test_gaussian),        &
+            new_unittest("elu", test_elu),                  &
+            new_unittest("relu", test_relu),                &
+            new_unittest("gelu"   , test_gelu),             &
+            new_unittest("selu"   , test_selu),             &
             new_unittest("sigmoid", test_sigmoid),          &
-            new_unittest("logsoftmax", test_logsoftmax),    &
-            new_unittest("gelu"   , test_gelu   ),          &
+            new_unittest("silu"   , test_silu),             &
             new_unittest("softmax", test_softmax)           &
+            new_unittest("logsoftmax", test_logsoftmax),    &
             ]
     end subroutine collect_specialfunctions_activation
 
-    subroutine test_sigmoid(error)
+    subroutine test_gaussian(error)
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: n = 10
         real(sp) :: x(n), y(n), y_ref(n)
 
-        y_ref = [0.119202919304371, 0.174285307526588, 0.247663781046867,&
-                 0.339243650436401, 0.444671928882599, 0.555328071117401,&
-                 0.660756349563599, 0.752336204051971, 0.825714707374573,&
-                 0.880797028541565]
         x = linspace(-2._sp, 2._sp, n)
-        y = sigmoid( x )
+        y_ref = exp(-x**2)
+        y = gaussian( x )
+        call check(error, norm2(y-y_ref) < n*tol_sp )
+        if (allocated(error)) return
+
+        ! Derivative
+        y_ref = -2.0 * x * exp(-x**2)
+        y = gaussian_grad( x )
+        call check(error, norm2(y-y_ref) < n*tol_sp )
+        if (allocated(error)) return
+    end subroutine
+
+    subroutine test_elu(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 10
+        real(sp) :: x(n), y(n), y_ref(n), a
+
+        x = linspace(-2._sp, 2._sp, n)
+        a = 1.0_sp
+        where(x >= 0._sp)
+            y_ref = x
+        elsewhere
+            y_ref = a * (exp(x) - 1._sp)
+        end where
+        y = elu( x , a )
+        call check(error, norm2(y-y_ref) < n*tol_sp )
+        if (allocated(error)) return
+
+        ! Derivative
+        where(x >= 0._sp)
+            y_ref = 1.0_sp
+        elsewhere
+            y_ref = a * exp(x)
+        end where
+        y = elu_grad( x , a )
+        call check(error, norm2(y-y_ref) < n*tol_sp )
+        if (allocated(error)) return
+    end subroutine
+
+    subroutine test_relu(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 10
+        real(sp) :: x(n), y(n), y_ref(n), a
+
+        x = linspace(-2._sp, 2._sp, n)
+        y_ref = max(0._sp, x)
+        y = relu( x , a )
+        call check(error, norm2(y-y_ref) < n*tol_sp )
+        if (allocated(error)) return
+
+        ! Derivative
+        where(x > 0._sp)
+            y_ref = 1.0_sp
+        elsewhere
+            y_ref = 0.0_sp
+        end where
+        y = relu_grad( x , a )
+        call check(error, norm2(y-y_ref) < n*tol_sp )
+        if (allocated(error)) return
+    end subroutine
+
+    subroutine test_selu(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 10
+        real(sp), parameter :: scale = 1.0507009873554804934193349852946_sp
+        real(sp), parameter :: alpha = 1.6732632423543772848170429916717_sp
+        real(sp) :: x(n), y(n), y_ref(n)
+
+        x = linspace(-2._sp, 2._sp, n)
+        where(x >= 0._sp)
+            y_ref = scale * x
+        elsewhere
+            y_ref = scale * (alpha * exp(x) - alpha)
+        end where
+        y = selu( x , a )
+        call check(error, norm2(y-y_ref) < n*tol_sp )
+        if (allocated(error)) return
+
+        ! Derivative
+        where(x >= 0._sp)
+            y_ref = scale
+        elsewhere
+            y_ref = scale * alpha * exp(x)
+        end where
+        y = selu_grad( x , a )
         call check(error, norm2(y-y_ref) < n*tol_sp )
         if (allocated(error)) return
     end subroutine
@@ -58,6 +143,40 @@ contains
         if (allocated(error)) return
 
         y = gelu_approx( x )
+        call check(error, norm2(y-y_ref) < n*tol_sp )
+        if (allocated(error)) return
+    end subroutine
+
+    subroutine test_sigmoid(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 10
+        real(sp) :: x(n), y(n), y_ref(n)
+
+        y_ref = [0.119202919304371, 0.174285307526588, 0.247663781046867,&
+                 0.339243650436401, 0.444671928882599, 0.555328071117401,&
+                 0.660756349563599, 0.752336204051971, 0.825714707374573,&
+                 0.880797028541565]
+        x = linspace(-2._sp, 2._sp, n)
+        y = sigmoid( x )
+        call check(error, norm2(y-y_ref) < n*tol_sp )
+        if (allocated(error)) return
+    end subroutine
+
+    subroutine test_silu(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 10
+        real(sp) :: x(n), y(n), y_ref(n), a
+
+        x = linspace(-2._sp, 2._sp, n)
+        y_ref = x / (1._sp + exp(-x))
+        y = silu( x )
+        call check(error, norm2(y-y_ref) < n*tol_sp )
+        if (allocated(error)) return
+
+        ! Derivative
+        y_ref = (1._sp + exp(x))**2
+        y_ref = exp(x) * ( x + y_ref ) / y_ref
+        y = silu_grad( x )
         call check(error, norm2(y-y_ref) < n*tol_sp )
         if (allocated(error)) return
     end subroutine
