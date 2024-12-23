@@ -8,6 +8,6 @@ program example_relu
     implicit none
   
     x = linspace(-2._sp, 2._sp, n)
-    y = relu( x , 1.0 )
+    y = relu( x )
 end program example_relu
   
