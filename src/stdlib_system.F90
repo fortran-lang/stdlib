@@ -13,6 +13,8 @@ public :: is_completed
 public :: is_running
 public :: update
 public :: wait
+public :: elapsed
+public :: has_win32
      
 ! CPU clock ticks storage
 integer, parameter, private :: TICKS = int64
@@ -121,5 +123,12 @@ interface sleep
         integer, intent(in) :: millisec
     end subroutine sleep
 end interface sleep        
+
+!! version: experimental
+!!
+interface 
+    module logical function has_win32()
+    end function has_win32
+end interface    
 
 end module stdlib_system

@@ -1,6 +1,6 @@
 module test_subprocess
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
-    use stdlib_system, only: process_type, run, is_running, wait, update
+    use stdlib_system, only: process_type, run, is_running, wait, update, elapsed, has_win32
 
     implicit none
 
@@ -27,8 +27,8 @@ contains
         process = run(command, wait=.true., want_stdout=.true.)
         call check(error, process%completed)
         if (allocated(error)) return
-
-        call check(error, trim(process%stdout) == "Hello")
+        
+        call check(error, trim(process%stdout) == "Hello", "stdout=<"//trim(process%stdout)//">, expected <Hello>")
     end subroutine test_run_synchronous
 
     !> Test running an asynchronous process
@@ -36,18 +36,27 @@ contains
         type(error_type), allocatable, intent(out) :: error
         type(process_type) :: process
         logical :: running
-        character(len=*), parameter :: command = "sleep 1"
 
-        process = run(command, wait=.false.)
-        call check(error, .not. process%completed)
+        ! The closest possible to a cross-platform command that waits
+        if (has_win32()) then 
+            process = run("ping -n 2 127.0.0.1", wait=.false.)
+        else
+            process = run("ping -c 2 127.0.0.1", wait=.false.)
+        endif
+        ! Should not be immediately completed
+        call check(error, .not. process%completed, "ping process should not complete immediately")
         if (allocated(error)) return
 
         running = is_running(process)
-        call check(error, running)
+        call check(error, running, "ping process should still be running immediately after started")
         if (allocated(error)) return
 
         call wait(process)
-        call check(error, process%completed)
+        call check(error, process%completed, "process should be complete after `call wait`")
+        if (allocated(error)) return
+
+        call check(error, elapsed(process)>1.0e-4, "There should be a non-zero elapsed time")
+        
     end subroutine test_run_asynchronous
 
     !> Test updating and checking process state
@@ -62,10 +71,13 @@ contains
         call check(error, process%completed)
         if (allocated(error)) return
 
-        call check(error, process%exit_code == 0)
+        call check(error, process%exit_code == 0, "Check zero exit code")
+        if (allocated(error)) return
+        
+        call check(error, len_trim(process%stderr) == 0, "Check no stderr output")
         if (allocated(error)) return
 
-        call check(error, trim(process%stdout) == "Testing")
+        call check(error, trim(process%stdout) == "Testing", "stdout=<"//trim(process%stdout)//">, expected <Testing>")
         if (allocated(error)) return
     end subroutine test_process_state
 
