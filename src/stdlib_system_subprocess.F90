@@ -69,8 +69,23 @@ contains
         
     end subroutine sleep
 
-    !> Open a new, asynchronous process
-    module type(process_type) function process_open(args,wait,stdin,want_stdout,want_stderr) result(process)
+    !> Open a new process
+    module type(process_type) function process_open_cmd(cmd,wait,stdin,want_stdout,want_stderr) result(process)
+        !> The command and arguments
+        character(*), intent(in) :: cmd
+        !> Optional character input to be sent to the process via pipe
+        character(*), optional, intent(in) :: stdin
+        !> Define if the process should be synchronous (wait=.true.), or asynchronous(wait=.false.)
+        logical, optional, intent(in) :: wait
+        !> Require collecting output
+        logical, optional, intent(in) :: want_stdout, want_stderr
+        
+        process = process_open_args([cmd],wait,stdin,want_stdout,want_stderr)
+        
+    end function process_open_cmd
+
+    !> Open a new process
+    module type(process_type) function process_open_args(args,wait,stdin,want_stdout,want_stderr) result(process)
         !> The command and arguments
         character(*), intent(in) :: args(:)
         !> Optional character input to be sent to the process via pipe
@@ -138,7 +153,7 @@ contains
         ! Run a first update
         call update_process_state(process)   
            
-    end function process_open
+    end function process_open_args
     
     subroutine launch_asynchronous(process, args, stdin)
         class(process_type), intent(inout) :: process

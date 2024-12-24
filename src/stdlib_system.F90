@@ -11,6 +11,8 @@ public :: run
 public :: process_type
 public :: is_completed
 public :: is_running
+public :: update
+public :: wait
      
 ! CPU clock ticks storage
 integer, parameter, private :: TICKS = int64
@@ -33,9 +35,6 @@ type :: process_type
     logical :: completed = .false.        
     integer(TICKS) :: start_time = 0
     
-    !> Process exit code
-    integer :: exit_code = 0
-    
     !> Stdin file name
     character(:), allocatable :: stdin_file
     
@@ -44,6 +43,7 @@ type :: process_type
     character(:), allocatable :: stdout
     
     !> Error output
+    integer :: exit_code = 0    
     character(:), allocatable :: stderr_file
     character(:), allocatable :: stderr
     
@@ -53,8 +53,19 @@ type :: process_type
 end type process_type
 
 interface run
-    !> Open a new, asynchronous process
-    module type(process_type) function process_open(args,wait,stdin,want_stdout,want_stderr) result(process)
+    !> Open a new process from a command line
+    module type(process_type) function process_open_cmd(cmd,wait,stdin,want_stdout,want_stderr) result(process)
+        !> The command and arguments
+        character(*), intent(in) :: cmd
+        !> Optional character input to be sent to the process via pipe
+        character(*), optional, intent(in) :: stdin
+        !> Define if the process should be synchronous (wait=.true.), or asynchronous(wait=.false.)
+        logical, optional, intent(in) :: wait
+        !> Require collecting output
+        logical, optional, intent(in) :: want_stdout, want_stderr        
+    end function process_open_cmd
+    !> Open a new, asynchronous process from a list of arguments
+    module type(process_type) function process_open_args(args,wait,stdin,want_stdout,want_stderr) result(process)
         !> The command and arguments
         character(*), intent(in) :: args(:)
         !> Optional character input to be sent to the process via pipe
@@ -63,7 +74,7 @@ interface run
         logical, optional, intent(in) :: wait
         !> Require collecting output
         logical, optional, intent(in) :: want_stdout, want_stderr        
-    end function process_open
+    end function process_open_args
 end interface run
 
 !> Live check if a process is still running
@@ -101,7 +112,7 @@ interface update
     module subroutine update_process_state(process)
         type(process_type), intent(inout) :: process
     end subroutine update_process_state
-end interface
+end interface update
 
 !! version: experimental
 !!
