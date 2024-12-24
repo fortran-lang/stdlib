@@ -2,7 +2,7 @@ module fortran_subprocess
     use iso_c_binding  
     use iso_fortran_env, only: int64, real64
     use stdlib_system
-    use stdlib_strings, only: to_c_string
+    use stdlib_strings, only: to_c_string, join
     use stdlib_linalg_state, only: linalg_state_type, LINALG_ERROR, linalg_error_handling
     implicit none
     public
@@ -59,6 +59,12 @@ module fortran_subprocess
             implicit none
             real(c_float), intent(in) :: seconds
         end subroutine process_wait
+        
+        type(c_ptr) function process_null_device(len) bind(C,name='process_null_device')
+            import c_ptr, c_int    
+            implicit none
+            integer(c_int), intent(out) :: len
+        end function process_null_device
   
     end interface
 
@@ -189,11 +195,11 @@ contains
         character(c_char), dimension(:), allocatable, target :: c_cmd,c_stdin,c_stdin_file,c_stdout_file,c_stderr_file
         
         ! Assemble C strings 
-                                            c_cmd   = c_string(join(args))
-        if (present(stdin))                 c_stdin = c_string(stdin)
-        if (allocated(process%stdin_file))  c_stdin_file  = c_string(process%stdin_file)
-        if (allocated(process%stdout_file)) c_stdout_file = c_string(process%stdout_file)
-        if (allocated(process%stderr_file)) c_stderr_file = c_string(process%stderr_file)
+                                            c_cmd   = to_c_string(join(args))
+        if (present(stdin))                 c_stdin = to_c_string(stdin)
+        if (allocated(process%stdin_file))  c_stdin_file  = to_c_string(process%stdin_file)
+        if (allocated(process%stdout_file)) c_stdout_file = to_c_string(process%stdout_file)
+        if (allocated(process%stderr_file)) c_stderr_file = to_c_string(process%stderr_file)
             
         ! On Windows, this 1) creates 2) launches an external process from C.
         ! On unix, this 1) forks an external process
@@ -417,7 +423,68 @@ contains
         
     end function scratch_name
         
-    !> Helper function. 
+        
+    !> Assemble a single-line proces command line from a list of arguments.
+    !> 
+    !> Version: Helper function.
+    function assemble_cmd(args, stdin, stdout, stderr) result(cmd)
+        !> Command to execute as a string
+        character(len=*), intent(in) :: args(:)    
+        !> [optional] File name standard input (stdin) should be taken from
+        character(len=*), optional, intent(in) :: stdin    
+        !> [optional] File name standard output (stdout) should be directed to
+        character(len=*), optional, intent(in) :: stdout
+        !> [optional] File name error output (stderr) should be directed to
+        character(len=*), optional, intent(in) :: stderr
+        
+        character(:), allocatable :: cmd,stdout_file,input_file,stderr_file
+        
+        if (present(stdin)) then 
+            input_file = stdin
+        else
+            input_file = null_device()        
+        end if
+
+        if (present(stdout)) then
+            ! Redirect output to a file
+            stdout_file = stdout
+        else
+            stdout_file = null_device()
+        endif     
+        
+        if (present(stderr)) then 
+            stderr_file = stderr
+        else
+            stderr_file = null_device()
+        end if
+        
+        cmd = join(args)//" <"//input_file//" 1>"//stdout_file//" 2>"//stderr_file   
+        
+    end function assemble_cmd            
+    
+    !> Returns the file path of the null device for the current operating system.
+    !>
+    !> Version: Helper function.
+    function null_device() 
+        character(:), allocatable :: null_device
+        
+        integer(c_int) :: i, len
+        type(c_ptr) :: c_path_ptr
+        character(kind=c_char), pointer :: c_path(:)
+        
+        ! Call the C function to get the null device path and its length
+        c_path_ptr = process_null_device(len)
+        call c_f_pointer(c_path_ptr,c_path,[len])
+
+        ! Allocate the Fortran string with the length returned from C
+        allocate(character(len=len) :: null_device)
+        
+        do concurrent (i=1:len)
+            null_device(i:i) = c_path(i)
+        end do
+        
+    end function null_device
+    
     !> Reads a whole ASCII file and loads its contents into an allocatable character string..
     !> The function handles error states and optionally deletes the file after reading.
     !> Temporarily uses `linalg_state_type` in lieu of the generalized `state_type`.

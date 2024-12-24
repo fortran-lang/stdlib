@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <string.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -249,4 +250,16 @@ void process_wait(float seconds)
    int uSeconds = (int) 1.0e6*seconds;
    usleep(uSeconds);
 #endif // _WIN32    
+}
+
+// Returns the cross-platform file path of the null device for the current operating system.
+const char* process_null_device(int* len) 
+{
+#ifdef _WIN32    
+        (*len) = strlen("NUL");
+        return "NUL";
+#else
+        (*len) = strlen("/dev/null");
+        return "/dev/null";
+#endif
 }
