@@ -1,5 +1,6 @@
 #include <sys/types.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
@@ -9,6 +10,8 @@
 #else
 #include <sys/wait.h>
 #include <unistd.h>
+#include <time.h>
+#include <errno.h>
 #endif // _WIN32
 
 // Typedefs
@@ -248,7 +251,34 @@ void process_wait(float seconds)
    Sleep(dwMilliseconds);
 #else
    int uSeconds = (int) 1.0e6*seconds;
-   usleep(uSeconds);
+   
+   struct timespec t;
+
+   t.tv_sec  = seconds;
+   t.tv_nsec = seconds * 1000000;
+
+   int ierr = nanosleep(&t, NULL);
+
+   if (ierr != 0){
+     switch(errno){
+       case EINTR:
+         fprintf(stderr, "nanosleep() interrupted\n");
+         break;
+       case EINVAL:
+         fprintf(stderr, "nanosleep() bad milliseconds value\n");
+         exit(EINVAL);
+       case EFAULT:
+         fprintf(stderr, "nanosleep() bad milliseconds value\n");
+         exit(EFAULT);
+       case ENOSYS:
+         fprintf(stderr, "nanosleep() not supported on this system\n");
+         exit(ENOSYS);
+       default:
+         fprintf(stderr, "nanosleep() error\n");
+         exit(1);
+     }
+   }   
+   
 #endif // _WIN32    
 }
 
