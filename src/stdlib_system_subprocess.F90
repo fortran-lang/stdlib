@@ -2,8 +2,8 @@ module fortran_subprocess
     use iso_c_binding  
     use iso_fortran_env, only: int64, real64
     use stdlib_system
-    use stdlib_io, only: getfile
     use stdlib_strings, only: to_c_string
+    use stdlib_linalg_state, only: linalg_state_type, LINALG_ERROR, linalg_error_handling
     implicit none
     public
     
@@ -417,5 +417,100 @@ contains
         
     end function scratch_name
         
+    !> Helper function. 
+    !> Reads a whole ASCII file and loads its contents into an allocatable character string..
+    !> The function handles error states and optionally deletes the file after reading.
+    !> Temporarily uses `linalg_state_type` in lieu of the generalized `state_type`.
+    !> 
+    !> Version: to be replaced after `getfile` is standardized in `stdlib_io`.
+    function getfile(fileName,err,delete) result(file)
+      !> Input file name
+      character(*), intent(in) :: fileName
+      !> [optional] State return flag. On error, if not requested, the code will stop.
+      type(linalg_state_type), optional, intent(out) :: err
+      !> [optional] Delete file after reading? Default: do not delete
+      logical, optional, intent(in) :: delete
+      !> Return as an allocatable string
+      character(:), allocatable :: file
+        
+      ! Local variables
+      type(linalg_state_type) :: err0
+      character(len=:), allocatable :: fileString
+      character(len=512) :: iomsg
+      integer :: lun,iostat
+      integer(int64) :: errpos,fileSize
+      logical :: is_present,want_deleted
+
+      ! Initializations
+      file = ""
+      
+      !> Check if the file should be deleted after reading
+      if (present(delete)) then 
+         want_deleted = delete
+      else
+         want_deleted = .false.   
+      end if
+
+      !> Check file existing
+      inquire(file=fileName, exist=is_present)
+      if (.not.is_present) then
+         err0 = linalg_state_type('getfile',LINALG_ERROR,'File not present:',fileName)
+         call linalg_error_handling(err0,err)
+         return
+      end if
+      
+      !> Retrieve file size
+      inquire(file=fileName,size=fileSize)
+      
+      invalid_size: if (fileSize<0) then 
+
+          err0 = linalg_state_type('getfile',LINALG_ERROR,fileName,'has invalid size=',fileSize)
+          call linalg_error_handling(err0,err)
+          return            
+            
+      endif invalid_size  
+            
+      ! Read file
+      open(newunit=lun,file=fileName, &
+           form='unformatted',action='read',access='stream',status='old', &
+           iostat=iostat,iomsg=iomsg)
+             
+      if (iostat/=0) then 
+         err0 = linalg_state_type('getfile',LINALG_ERROR,'Cannot open',fileName,'for read:',iomsg)
+         call linalg_error_handling(err0,err)
+         return
+      end if     
+        
+      allocate(character(len=fileSize) :: fileString)
+        
+      read_data: if (fileSize>0) then 
+            
+          read(lun, pos=1, iostat=iostat, iomsg=iomsg) fileString
+            
+          ! Read error
+          if (iostat/=0) then 
+                
+              inquire(unit=lun,pos=errpos)                    
+              err0 = linalg_state_type('getfile',LINALG_ERROR,iomsg,'(',fileName,'at byte',errpos,')')
+              call linalg_error_handling(err0,err)
+              return
+
+          endif
+            
+      end if read_data
+                   
+      if (want_deleted) then 
+         close(lun,iostat=iostat,status='delete')
+         if (iostat/=0) err0 = linalg_state_type('getfile',LINALG_ERROR,'Cannot delete',fileName,'after reading')
+      else
+         close(lun,iostat=iostat)
+         if (iostat/=0) err0 = linalg_state_type('getfile',LINALG_ERROR,'Cannot close',fileName,'after reading')
+      endif 
+      
+      ! Process output
+      call move_alloc(from=fileString,to=file)
+      call linalg_error_handling(err0,err)
+
+    end function getfile
 
 end module fortran_subprocess
