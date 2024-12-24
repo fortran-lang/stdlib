@@ -189,6 +189,16 @@ module stdlib_linalg
     #:endfor
   end interface
 
+  ! Identity matrix 
+  interface eye
+    !! version: experimental
+    !!
+    !! Constructs the identity matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#eye-construct-the-identity-matrix))    
+    #:for k1, t1 in RCI_KINDS_TYPES
+      module procedure eye_${t1[0]}$${k1}$
+    #:endfor
+  end interface eye
 
   ! Outer product (of two vectors)
   interface outer_product
@@ -1411,11 +1421,13 @@ contains
     !>
     !> Constructs the identity matrix.
     !> ([Specification](../page/specs/stdlib_linalg.html#eye-construct-the-identity-matrix))
-    pure function eye(dim1, dim2) result(result)
+    #:for k1, t1 in RCI_KINDS_TYPES
+    pure function eye_${t1[0]}$${k1}$(dim1, dim2, mold) result(result)
 
         integer, intent(in) :: dim1
         integer, intent(in), optional :: dim2
-        integer(int8), allocatable :: result(:, :)
+        ${t1}$, intent(in) #{if t1 == 'real(dp)'}#, optional #{endif}#:: mold        
+        ${t1}$, allocatable :: result(:, :)
 
         integer :: dim2_
         integer :: i
@@ -1423,12 +1435,13 @@ contains
         dim2_ = optval(dim2, dim1)
         allocate(result(dim1, dim2_))
         
-        result = 0_int8
+        result = 0
         do i = 1, min(dim1, dim2_)
-            result(i, i) = 1_int8
+            result(i, i) = 1
         end do
 
-    end function eye
+    end function eye_${t1[0]}$${k1}$
+    #:endfor
 
     #:for k1, t1 in RCI_KINDS_TYPES
       function trace_${t1[0]}$${k1}$(A) result(res)
