@@ -43,12 +43,18 @@ submodule (stdlib_system) stdlib_system_subprocess
             integer(process_ID), intent(out)        :: pid
         end subroutine process_create
         
+        logical(c_bool) function process_system_kill(pid) bind(C, name='process_kill')
+            import c_bool, process_ID
+            implicit none
+            integer(process_ID), intent(in), value :: pid
+        end function process_system_kill
+        
         ! System implementation of a wait function
         subroutine process_wait(seconds) bind(C,name='process_wait')
             import c_float
             implicit none
             real(c_float), intent(in) :: seconds
-        end subroutine process_wait
+        end subroutine process_wait            
         
         ! Return path to the null device
         type(c_ptr) function process_null_device(len) bind(C,name='process_null_device')
@@ -280,7 +286,7 @@ contains
 
     end subroutine wait_for_completion
 
-    !> Update a process's state, and 
+    !> Update a process's state, and save it to the process variable
     module subroutine update_process_state(process)
         type(process_type), intent(inout) :: process
         
@@ -317,6 +323,39 @@ contains
         endif
         
     end subroutine update_process_state
+    
+    ! Kill a process 
+    module subroutine process_kill(process, success)
+        type(process_type), intent(inout) :: process
+        ! Return a boolean flag for successful operation
+        logical, intent(out) :: success
+        
+        integer(c_int) :: exit_code
+        logical(c_bool) :: running
+        
+        success = .true.
+        
+        ! No need to
+        if (process%completed) return
+        if (process%id == FORKED_PROCESS) return
+        
+        success = logical(process_system_kill(process%id))
+        
+        if (success) then 
+            
+            call process_query_status(process%id, wait=C_TRUE, is_running=running, exit_code=exit_code)
+            
+            process%completed = .not.running
+            
+            if (process%completed) then 
+               ! Process completed, may have returned an error code  
+               process%exit_code = exit_code
+               call save_completed_state(process,delete_files=.true.)                 
+            end if            
+            
+        end if
+        
+    end subroutine process_kill
     
     subroutine save_completed_state(process,delete_files)
         type(process_type), intent(inout) :: process

@@ -13,6 +13,7 @@ public :: is_completed
 public :: is_running
 public :: update
 public :: wait
+public :: kill
 public :: elapsed
 public :: has_win32
      
@@ -115,6 +116,15 @@ interface update
         type(process_type), intent(inout) :: process
     end subroutine update_process_state
 end interface update
+
+! Kill a process 
+interface kill
+    module subroutine process_kill(process, success)
+        type(process_type), intent(inout) :: process
+        ! Return a boolean flag for successful operation
+        logical, intent(out) :: success
+    end subroutine process_kill
+end interface kill    
 
 !! version: experimental
 !!

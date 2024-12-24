@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <errno.h>
+#include <signal.h>
 #endif // _WIN32
 
 // Typedefs
@@ -164,6 +165,33 @@ void process_query_status_windows(int pid, bool wait, bool* is_running, int* exi
     CloseHandle(hProcess);
 }
 
+// Kill a process on Windows by sending a PROCESS_TERMINATE signal. 
+// Return true if the operation succeeded, or false if it failed (process does not 
+// exist anymore, or we may not have the rights to kill the process).
+bool process_kill_windows(int pid) {
+    HANDLE hProcess;
+
+    // Open the process with terminate rights
+    hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, pid);
+
+    if (hProcess == NULL) {
+        // Failed to open the process; return false
+        return false;
+    }
+
+    // Attempt to terminate the process
+    if (!TerminateProcess(hProcess, 1)) {
+        // Failed to terminate the process
+        CloseHandle(hProcess);
+        return false;
+    }
+
+    // Successfully terminated the process
+    CloseHandle(hProcess);
+    return true;
+}
+
+
 #else // _WIN32
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -208,6 +236,26 @@ void process_query_status_unix(int pid, bool wait, bool* is_running, int* exit_c
     }
 }
 
+// Kill a process by sending a SIGKILL signal. Return .true. if succeeded, or false if not. 
+// Killing process may fail due to unexistent process, or not enough rights to kill.
+bool process_kill_unix(int pid) {
+    // Send the SIGKILL signal to the process
+    if (kill(pid, SIGKILL) == 0) {
+        // Successfully sent the signal
+        return true;
+    }
+
+    // If `kill` fails, check if the process no longer exists
+    if (errno == ESRCH) {
+        // Process does not exist
+        return true; // Already "terminated"
+    }
+
+    // Other errors occurred
+    return false;
+}
+
+
 // On UNIX systems: just fork a new process. The command line will be executed from Fortran.
 void process_create_posix(stdlib_handle* handle, stdlib_pid* pid) 
 {
@@ -240,6 +288,16 @@ void process_query_status(int pid, bool wait, bool* is_running, int* exit_code)
    process_query_status_windows(pid, wait, is_running, exit_code);
 #else
    process_query_status_unix   (pid, wait, is_running, exit_code);
+#endif // _WIN32
+}
+
+// Cross-platform interface: kill process by ID
+bool process_kill(int pid)
+{
+#ifdef _WIN32
+   return process_kill_windows(pid);
+#else
+   return process_kill_unix(pid);
 #endif // _WIN32
 }
 
