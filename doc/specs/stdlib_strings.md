@@ -498,3 +498,33 @@ The result is an `allocatable` length `character` scalar with up to `128` cached
 ```fortran
 {!example/strings/example_to_string.f90!}
 ```
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `to_c_string`
+
+#### Description
+
+Convert a Fortran character string to a C character array.  
+This function converts a Fortran string into a C-style string, ensuring proper null-termination for use in C functions or libraries.  
+
+#### Syntax
+
+`cstr = ` [[stdlib_strings(module):to_c_string(function)]] ` (value)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function.
+
+#### Argument
+
+- `value`: Shall be a `character(len=*)` string.  
+  This is an `intent(in)` argument.  
+  The Fortran string that will be converted to a C character array.
+
+#### Result value
+
+The result is a `character(kind=c_char)` array with a dimension of `len(value) + 1` to accommodate the null terminator.

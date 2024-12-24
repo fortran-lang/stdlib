@@ -2,6 +2,8 @@ module fortran_subprocess
     use iso_c_binding  
     use iso_fortran_env, only: int64, real64
     use stdlib_system
+    use stdlib_io, only: getfile
+    use stdlib_strings, only: to_c_string
     implicit none
     public
     
@@ -198,15 +200,6 @@ contains
         call process_create(c_cmd, c_stdin, c_stdin_file, c_stdout_file, c_stderr_file, process%handle, process%id)
         
     end subroutine launch_asynchronous
-    
-    pure function c_string(str) result(cstr)
-       character(*), intent(in) :: str
-       character(c_char), allocatable :: cstr(:)
-       integer :: i
-       allocate(cstr(len(str)+1))
-       forall(i=1:len(str)) cstr(i) = str(i:i)
-       cstr(len(str)+1) = c_null_char
-    end function c_string
     
     subroutine launch_synchronous(process, args, stdin)        
         class(process_type), intent(inout) :: process
