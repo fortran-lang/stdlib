@@ -1,0 +1,159 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set RANKS = range(2, 2)
+module stdlib_intrinsics
+    use stdlib_kinds
+    implicit none
+    private
+
+    interface fsum 
+        #:for rk, rt in REAL_KINDS_TYPES
+        module procedure :: fsum_1d_${rk}$
+        module procedure :: fsum_1d_${rk}$_mask
+        #:endfor
+    end interface
+    public :: fsum
+
+    interface fsum_kahan
+        #:for rk, rt in REAL_KINDS_TYPES
+        module procedure :: fsum_kahan_1d_${rk}$
+        module procedure :: fsum_kahan_1d_${rk}$_mask
+        #:endfor
+    end interface
+    public :: fsum_kahan
+
+    interface vkahan 
+        #:for rk, rt in REAL_KINDS_TYPES
+        module procedure :: vkahan_${rk}$
+        module procedure :: vkahan_m_${rk}$
+        #:endfor
+    end interface
+
+    #:for k1, t1, s1 in (R_KINDS_TYPES)
+    ${t1}$, parameter :: zero_${s1}$ = 0._${k1}$
+    #:endfor
+    #:for k1, t1, s1 in (C_KINDS_TYPES)
+    ${t1}$, parameter :: zero_${s1}$ = (0._${k1}$,0._${k1}$)
+    #:endfor
+    integer, parameter :: chunk = 64
+    
+contains
+
+#:for k1, t1, s1 in R_KINDS_TYPES
+pure function fsum_1d_${s1}$(a) result(s)
+    ${t1}$, intent(in) :: a(:)
+    ${t1}$ :: s
+    ${t1}$ :: abatch(chunk)
+    integer :: i, dr, rr
+    ! -----------------------------
+    dr = size(a)/chunk
+    rr = size(a) - dr*chunk
+
+    abatch = zero_${s1}$
+    do i = 1, dr
+      abatch(1:chunk) = abatch(1:chunk) + a(chunk*i-chunk+1:chunk*i)
+    end do
+    abatch(1:rr) = abatch(1:rr) + a(size(a)-rr+1:size(a))
+
+    s = zero_${s1}$
+    do i = 1, chunk/2
+      s = s + abatch(i)+abatch(chunk/2+i)
+    end do
+end function
+
+pure function fsum_1d_${s1}$_mask(a,mask) result(s)
+    ${t1}$, intent(in) :: a(:)
+    logical, intent(in) :: mask(:)
+    ${t1}$ :: s
+    ${t1}$ :: abatch(chunk)
+    integer :: i, dr, rr
+    ! -----------------------------
+    dr = size(a)/chunk
+    rr = size(a) - dr*chunk
+
+    abatch = zero_${s1}$
+    do i = 1, dr
+      abatch(1:chunk) = abatch(1:chunk) + merge( zero_${s1}$ , a(chunk*i-chunk+1:chunk*i) , mask(chunk*i-chunk+1:chunk*i) )
+    end do
+    abatch(1:rr) = abatch(1:rr) + merge( zero_${s1}$ , a(size(a)-rr+1:size(a)) , mask(size(a)-rr+1:size(a)) )
+    
+    s = zero_${s1}$
+    do i = 1, chunk/2
+        s = s + abatch(i)+abatch(chunk/2+i)
+    end do
+end function
+#:endfor
+
+#:for k1, t1, s1 in R_KINDS_TYPES
+pure function fsum_kahan_1d_${s1}$(a) result(s)
+    ${t1}$, intent(in) :: a(:)
+    ${t1}$ :: s
+    ${t1}$ :: sbatch(chunk)
+    ${t1}$ :: cbatch(chunk)
+    integer :: i, dr, rr
+    ! -----------------------------
+    dr = size(a)/(chunk)
+    rr = size(a) - dr*chunk     
+    sbatch = zero_${s1}$
+    cbatch = zero_${s1}$
+    do i = 1, dr
+        call vkahan( a(chunk*i-chunk+1:chunk*i) , sbatch(1:chunk) , cbatch(1:chunk) )
+    end do
+    call vkahan( a(size(a)-rr+1:size(a)) , sbatch(1:rr) , cbatch(1:rr) )      
+
+    s = zero_${s1}$
+    do i = 1,chunk
+        call vkahan( sbatch(i) , s , cbatch(i) )
+    end do
+end function
+
+pure function fsum_kahan_1d_${s1}$_mask(a,mask) result(s)
+    ${t1}$, intent(in) :: a(:)
+    logical, intent(in) :: mask(:)
+    ${t1}$ :: s
+    ${t1}$ :: sbatch(chunk)
+    ${t1}$ :: cbatch(chunk)
+    integer :: i, dr, rr
+    ! -----------------------------
+    dr = size(a)/(chunk)
+    rr = size(a) - dr*chunk     
+    sbatch = zero_${s1}$
+    cbatch = zero_${s1}$
+    do i = 1, dr
+        call vkahan( a(chunk*i-chunk+1:chunk*i) , sbatch(1:chunk) , cbatch(1:chunk) , mask(chunk*i-chunk+1:chunk*i) )
+    end do
+    call vkahan( a(size(a)-rr+1:size(a)) , sbatch(1:rr) , cbatch(1:rr) , mask(size(a)-rr+1:size(a)) )
+
+    s = zero_${s1}$
+    do i = 1,chunk
+        call vkahan( sbatch(i) , s , cbatch(i) )
+    end do
+end function
+#:endfor
+
+#:for k1, t1, s1 in R_KINDS_TYPES
+elemental subroutine vkahan_${s1}$(a,s,c)
+    ${t1}$, intent(in) :: a
+    ${t1}$, intent(inout) :: s
+    ${t1}$, intent(inout) :: c
+    ${t1}$ :: t, y
+    y = a - c
+    t = s + y
+    c = (t - s) - y
+    s = t
+end subroutine  
+elemental subroutine vkahan_m_${s1}$(a,s,c,m)
+    ${t1}$, intent(in) :: a
+    ${t1}$, intent(inout) :: s
+    ${t1}$, intent(inout) :: c
+    logical, intent(in) :: m
+    ${t1}$ :: t, y
+    y = a - c
+    t = s + y
+    c = (t - s) - y
+    s = merge( s , t , m )
+end subroutine 
+#:endfor
+
+end module stdlib_intrinsics
