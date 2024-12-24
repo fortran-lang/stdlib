@@ -1,27 +1,16 @@
-module fortran_subprocess
+submodule (stdlib_system) stdlib_system_subprocess
     use iso_c_binding  
     use iso_fortran_env, only: int64, real64
     use stdlib_system
     use stdlib_strings, only: to_c_string, join
     use stdlib_linalg_state, only: linalg_state_type, LINALG_ERROR, linalg_error_handling
-    implicit none
-    public
+    implicit none(type, external)
     
-    ! Interoperable types    
-    integer, parameter, public :: pid_t = c_int64_t
-    
-    logical(c_bool), parameter, private :: C_FALSE = .false._c_bool
-    logical(c_bool), parameter, private :: C_TRUE  = .true._c_bool
-    
-    ! CPU clock ticks range
-    integer, parameter, private ::  TICKS = int64
-    integer, parameter, private :: RTICKS = real64
+    logical(c_bool), parameter :: C_FALSE = .false._c_bool
+    logical(c_bool), parameter :: C_TRUE  = .true._c_bool
     
     ! Number of CPU ticks between status updates
     integer(TICKS), parameter :: CHECK_EVERY_TICKS = 100
-    
-    ! Default flag for the runner process
-    integer(pid_t), parameter :: FORKED_PROCESS = 0_pid_t
     
     ! Interface to C support functions from stdlib_system_subprocess.c
     interface
@@ -29,10 +18,10 @@ module fortran_subprocess
         ! C wrapper to query process status
         subroutine process_query_status(pid, wait, is_running, exit_code) &
                    bind(C, name='process_query_status')
-            import c_int, c_bool, pid_t
+            import c_int, c_bool, process_ID
             implicit none
             ! Process ID
-            integer(pid_t), value :: pid       
+            integer(process_ID), value :: pid       
             ! Whether to wait for process completion      
             logical(c_bool), value :: wait     
             ! Whether the process is still running
@@ -43,7 +32,7 @@ module fortran_subprocess
 
         subroutine process_create(cmd, stdin_stream, stdin_file, stdout_file, stderr_file, handle, pid) &
                    bind(C, name='process_create')
-            import c_char, c_ptr, pid_t
+            import c_char, c_ptr, process_ID
             implicit none
             character(c_char), intent(in)           :: cmd(*)
             character(c_char), intent(in), optional :: stdin_stream(*)
@@ -51,7 +40,7 @@ module fortran_subprocess
             character(c_char), intent(in), optional :: stdout_file(*)
             character(c_char), intent(in), optional :: stderr_file(*)
             type(c_ptr)      , intent(out)          :: handle
-            integer(pid_t),    intent(out)          :: pid
+            integer(process_ID), intent(out)        :: pid
         end subroutine process_create
         
         subroutine process_wait(seconds) bind(C,name='process_wait')
@@ -68,52 +57,13 @@ module fortran_subprocess
   
     end interface
 
-    type, public :: process_type
-        
-        !> Process ID (if external); 0 if run by the program process
-        integer(pid_t) :: id = FORKED_PROCESS
-        type(c_ptr) :: handle = c_null_ptr
-        
-        !> Process is completed
-        logical :: completed = .false.        
-        integer(TICKS) :: start_time = 0
-        
-        !> Process exit code
-        integer :: exit_code = 0
-        
-        !> Stdin file name
-        character(:), allocatable :: stdin_file
-        
-        !> Standard output
-        character(:), allocatable :: stdout_file
-        character(:), allocatable :: stdout
-        
-        !> Error output
-        character(:), allocatable :: stderr_file
-        character(:), allocatable :: stderr
-        
-        !> Store time at the last update
-        integer(TICKS) :: last_update = 0
-        
-        contains
-        
-           !> Return process lifetime so far, in seconds
-           procedure :: elapsed => process_lifetime
-           
-           !> Live check if a process is still running
-           procedure :: is_running   => process_is_running
-           procedure :: is_completed => process_is_completed
-           
-           !> Wait until a running process is completed
-           procedure :: wait => wait_for_completion
-            
-    end type process_type
+
     
   
 contains
 
     !> Open a new, asynchronous process
-    type(process_type) function process_open(args,wait,stdin,want_stdout,want_stderr) result(process)
+    module type(process_type) function process_open(args,wait,stdin,want_stdout,want_stderr) result(process)
         !> The command and arguments
         character(*), intent(in) :: args(:)
         !> Optional character input to be sent to the process via pipe
@@ -178,8 +128,6 @@ contains
            
         endif
               
-
-           
         ! Run a first update
         call update_process_state(process)   
            
@@ -249,7 +197,7 @@ contains
     end subroutine launch_synchronous
     
     !> Return the current (or total) process lifetime, in seconds
-    real(RTICKS) function process_lifetime(process) result(delta_t)
+    module real(RTICKS) function process_lifetime(process) result(delta_t)
         class(process_type), intent(in) :: process 
         
         real(RTICKS) :: ticks_per_second
@@ -271,7 +219,7 @@ contains
     end function process_lifetime
     
     !> Wait for a process to be completed
-    subroutine wait_for_completion(process, max_wait_time)
+    module subroutine wait_for_completion(process, max_wait_time)
         class(process_type), intent(inout) :: process
         ! Optional max wait time in seconds
         real, optional, intent(in) :: max_wait_time
@@ -310,7 +258,7 @@ contains
         
         real(RTICKS) :: count_rate        
         integer(TICKS) :: count_max,current_time
-        logical(c_bool) :: is_running
+        logical(c_bool) :: running
         integer(c_int) :: exit_code
         
         ! If the process has completed, should not be queried again
@@ -328,9 +276,9 @@ contains
         if (process%id /= FORKED_PROCESS) then 
         
             ! Query process state
-            call process_query_status(process%id, wait=C_FALSE, is_running=is_running, exit_code=exit_code)
+            call process_query_status(process%id, wait=C_FALSE, is_running=running, exit_code=exit_code)
             
-            process%completed = .not.is_running
+            process%completed = .not.running
             
             if (process%completed) then 
                ! Process completed, may have returned an error code  
@@ -346,7 +294,7 @@ contains
         type(process_type), intent(inout) :: process
         logical, intent(in) :: delete_files
         
-        logical(c_bool) :: is_running        
+        logical(c_bool) :: running        
         integer(c_int) :: exit_code        
         integer :: delete
         
@@ -354,7 +302,7 @@ contains
         process%completed = .true.
         
         ! Clean up process state using waitpid
-        if (process%id/=FORKED_PROCESS) call process_query_status(process%id, C_TRUE, is_running, exit_code)
+        if (process%id/=FORKED_PROCESS) call process_query_status(process%id, C_TRUE, running, exit_code)
        
         ! Process is over: load stdout/stderr if requested
         if (allocated(process%stderr_file)) then 
@@ -376,7 +324,7 @@ contains
     end subroutine save_completed_state
 
     !> Live check if a process is running
-    logical function process_is_running(process) result(is_running)
+    module logical function process_is_running(process) result(is_running)
         class(process_type), intent(inout) :: process
         
         ! Each evaluation triggers a state update
@@ -387,7 +335,7 @@ contains
     end function process_is_running
     
     !> Live check if a process has completed
-    logical function process_is_completed(process) result(is_completed)
+    module logical function process_is_completed(process) result(is_completed)
         class(process_type), intent(inout) :: process
         
         ! Each evaluation triggers a state update
@@ -580,4 +528,4 @@ contains
 
     end function getfile
 
-end module fortran_subprocess
+end submodule stdlib_system_subprocess
