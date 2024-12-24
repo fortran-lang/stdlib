@@ -96,49 +96,19 @@ interface wait
     end subroutine wait_for_completion
 end interface wait
 
-interface
-#ifdef _WIN32
-subroutine winsleep(dwMilliseconds) bind (C, name='Sleep')
-!! version: experimental
-!!
-!! void Sleep(DWORD dwMilliseconds)
-!! https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-sleep
-import c_long
-integer(c_long), value, intent(in) :: dwMilliseconds
-end subroutine winsleep
-#else
-integer(c_int) function usleep(usec) bind (C)
-!! version: experimental
-!!
-!! int usleep(useconds_t usec);
-!! https://linux.die.net/man/3/usleep
-import c_int
-integer(c_int), value, intent(in) :: usec
-end function usleep
-#endif
+!> Query the system to update a process's state 
+interface update
+    module subroutine update_process_state(process)
+        type(process_type), intent(inout) :: process
+    end subroutine update_process_state
 end interface
 
-
-
-
-contains
-
-subroutine sleep(millisec)
 !! version: experimental
 !!
-integer, intent(in) :: millisec
-integer(c_int) :: ierr
-
-#ifdef _WIN32
-!! PGI Windows, Ifort Windows, ....
-call winsleep(int(millisec, c_long))
-#else
-!! Linux, Unix, MacOS, MSYS2, ...
-ierr = usleep(int(millisec * 1000, c_int))
-if (ierr/=0) error stop 'problem with usleep() system call'
-#endif
-
-
-end subroutine sleep
+interface sleep
+    module subroutine sleep(millisec)
+        integer, intent(in) :: millisec
+    end subroutine sleep
+end interface sleep        
 
 end module stdlib_system

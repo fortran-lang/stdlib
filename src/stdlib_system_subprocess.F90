@@ -32,23 +32,25 @@ submodule (stdlib_system) stdlib_system_subprocess
 
         subroutine process_create(cmd, stdin_stream, stdin_file, stdout_file, stderr_file, handle, pid) &
                    bind(C, name='process_create')
-            import c_char, c_ptr, process_ID
+            import c_char, process_handle, process_ID
             implicit none
             character(c_char), intent(in)           :: cmd(*)
             character(c_char), intent(in), optional :: stdin_stream(*)
             character(c_char), intent(in), optional :: stdin_file(*)
             character(c_char), intent(in), optional :: stdout_file(*)
             character(c_char), intent(in), optional :: stderr_file(*)
-            type(c_ptr)      , intent(out)          :: handle
+            type(process_handle), intent(out)       :: handle
             integer(process_ID), intent(out)        :: pid
         end subroutine process_create
         
+        ! System implementation of a wait function
         subroutine process_wait(seconds) bind(C,name='process_wait')
             import c_float
             implicit none
             real(c_float), intent(in) :: seconds
         end subroutine process_wait
         
+        ! Return path to the null device
         type(c_ptr) function process_null_device(len) bind(C,name='process_null_device')
             import c_ptr, c_int    
             implicit none
@@ -57,10 +59,15 @@ submodule (stdlib_system) stdlib_system_subprocess
   
     end interface
 
-
-    
-  
 contains
+
+    ! Call system-dependent wait implementation
+    module subroutine sleep(millisec)
+        integer, intent(in) :: millisec
+                        
+        call process_wait(real(0.001*millisec,c_float))
+        
+    end subroutine sleep
 
     !> Open a new, asynchronous process
     module type(process_type) function process_open(args,wait,stdin,want_stdout,want_stderr) result(process)
@@ -243,7 +250,7 @@ contains
         wait_loop: do while (process_is_running(process) .and. elapsed <= wait_time)
             
             ! Small sleep to avoid CPU hogging (1 ms)
-            call process_wait(0.001_c_float)
+            call sleep(1)
             
             call system_clock(current_time)
             elapsed = real(current_time - start_time, RTICKS) / count_rate
@@ -253,8 +260,8 @@ contains
     end subroutine wait_for_completion
 
     !> Update a process's state, and 
-    subroutine update_process_state(process)
-        class(process_type), intent(inout) :: process
+    module subroutine update_process_state(process)
+        type(process_type), intent(inout) :: process
         
         real(RTICKS) :: count_rate        
         integer(TICKS) :: count_max,current_time
