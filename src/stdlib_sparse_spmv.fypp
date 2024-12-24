@@ -518,7 +518,7 @@ contains
             ${t1}$, intent(inout) :: y(${chunk}$)
             integer :: j
             do j = 1, n
-                where(col(:,j) > 0) y = y + alpha_ * a(:,j) * x(col(:,j))
+                y = y + alpha_ * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_${chunk}$(n,a,col,x,y)
@@ -529,7 +529,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, ${chunk}$
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -542,7 +542,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, ${chunk}$
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
                 end do
             end do
         end subroutine
@@ -556,7 +556,7 @@ contains
             ${t1}$, intent(inout) :: y(r)
             integer :: j
             do j = 1, n
-                where(col(1:r,j) > 0) y = y + alpha_ * a(1:r,j) * x(col(1:r,j))
+                y = y + alpha_ * a(1:r,j) * x(col(1:r,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_rm_trans(n,cs,r,a,col,x,y)
@@ -567,7 +567,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, r
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -580,7 +580,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, r
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
                 end do
             end do
         end subroutine
