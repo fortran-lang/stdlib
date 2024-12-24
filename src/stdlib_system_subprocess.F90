@@ -471,9 +471,11 @@ contains
       character(:), allocatable :: file
         
       ! Local variables
+      character(*), parameter :: CRLF  = achar(13)//new_line('a')
       type(linalg_state_type) :: err0
       character(len=:), allocatable :: fileString
       character(len=512) :: iomsg
+      character :: last_char
       integer :: lun,iostat
       integer(int64) :: errpos,fileSize
       logical :: is_present,want_deleted
@@ -517,6 +519,27 @@ contains
          call linalg_error_handling(err0,err)
          return
       end if     
+      
+      remove_trailing_newline: if (fileSize>0) then 
+      
+         last_char = CRLF(1:1)
+         fileSize  = fileSize+1
+      
+         do while (scan(last_char,CRLF)>0 .and. fileSize>1)
+            fileSize = fileSize-1
+            read(lun, pos=fileSize, iostat=iostat, iomsg=iomsg) last_char
+            
+            ! Read error
+            if (iostat/=0) then 
+                    
+                err0 = linalg_state_type('getfile',LINALG_ERROR,iomsg,'(',fileName,'at byte',fileSize,')')
+                call linalg_error_handling(err0,err)
+                return
+
+            endif            
+            
+         end do
+      endif remove_trailing_newline      
         
       allocate(character(len=fileSize) :: fileString)
         
