@@ -35,22 +35,14 @@ elemental module function elu_${rk}$( x , a ) result ( y )
     ${rt}$, intent(in) :: x
     ${rt}$, intent(in) :: a
     ${rt}$ :: y
-    if(x >= 0._${rk}$)then
-        y = x
-    else
-        y = a * (exp(x) - 1._${rk}$)
-    end if
+    y = merge( x , a * (exp(x) - 1._${rk}$), x >= 0._${rk}$)
 end function
 
 elemental module function elu_grad_${rk}$( x , a ) result ( y )
     ${rt}$, intent(in) :: x
     ${rt}$, intent(in) :: a
     ${rt}$ :: y
-    if(x >= 0._${rk}$)then
-        y = 1._${rk}$ 
-    else
-        y = a * exp(x)
-    end if
+    y = merge( 1._${rk}$ , a * exp(x), x >= 0._${rk}$)
 end function
 
 #:endfor
@@ -68,11 +60,7 @@ end function
 elemental module function relu_grad_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
     ${rt}$ :: y
-    if(x > 0._${rk}$)then
-        y = 1._${rk}$ 
-    else
-        y = 0._${rk}$
-    end if
+    y = merge( 1._${rk}$ , 0._${rk}$, x > 0._${rk}$)
 end function
 
 #:endfor
@@ -121,11 +109,8 @@ elemental module function selu_${rk}$( x ) result( y )
     ${rt}$ :: y
     ${rt}$, parameter :: scale = 1.0507009873554804934193349852946_${rk}$
     ${rt}$, parameter :: alpha = 1.6732632423543772848170429916717_${rk}$
-    if(x > 0._${rk}$)then
-        y = scale * x
-    else
-        y = scale * (alpha * exp(x) - alpha)
-    end if
+    y = merge( x , alpha * exp(x) - alpha, x > 0._${rk}$)
+    y = scale * y
 end function
 
 elemental module function selu_grad_${rk}$( x ) result( y )
@@ -133,11 +118,7 @@ elemental module function selu_grad_${rk}$( x ) result( y )
     ${rt}$ :: y
     ${rt}$, parameter :: scale = 1.0507009873554804934193349852946_${rk}$
     ${rt}$, parameter :: alpha = 1.6732632423543772848170429916717_${rk}$
-    if(x > 0._${rk}$)then
-        y = scale
-    else
-        y = scale * alpha * exp(x)
-    end if
+    y = merge( scale , scale * alpha * exp(x), x > 0._${rk}$)
 end function
 
 #:endfor
@@ -186,11 +167,7 @@ end function
 elemental module function Step_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
     ${rt}$ :: y
-    if(x > 0._${rk}$)then
-        y = 1._${rk}$ 
-    else
-        y = 0._${rk}$
-    end if
+    y = merge( 1._${rk}$ , 0._${rk}$, x > 0._${rk}$)
 end function
 
 elemental module function Step_grad_${rk}$( x ) result( y )
@@ -360,16 +337,10 @@ elemental module function ftanh_${rk}$( x ) result( y )
     ${rt}$ :: y
     ${rt}$ :: x2, a, b
     
-    if (x > 5._${rk}$) then
-        y = 1._${rk}$
-    elseif (x < -5._${rk}$) then
-        y = -1._${rk}$
-    else
-        x2 = x*x
-        a = x * (135135.0_${rk}$ + x2 * (17325.0_${rk}$ + x2 * (378.0_${rk}$ + x2)))
-        b = 135135.0_${rk}$ + x2 * (62370.0_${rk}$ + x2 * (3150.0_${rk}$ + x2 * 28.0_${rk}$))
-        y = a / b
-    end if
+    x2 = x*x
+    a = x * (135135.0_${rk}$ + x2 * (17325.0_${rk}$ + x2 * (378.0_${rk}$ + x2)))
+    b = 135135.0_${rk}$ + x2 * (62370.0_${rk}$ + x2 * (3150.0_${rk}$ + x2 * 28.0_${rk}$))
+    y = merge( a / b , sign(1._${rk}$,x) , x2 <= 25._${rk}$ )
 end function
 
 elemental module function ferf_${rk}$( x ) result( y )
