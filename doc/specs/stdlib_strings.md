@@ -459,8 +459,52 @@ The result is of the same type as `string`.
 {!example/strings/example_zfill.f90!}
 ```
 
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `join`
+
+#### Description
+
+Joins an array of strings into a single string. This function concatenates the strings from the input array, 
+inserting a separator between each string (default: space). A user-defined separator may be provided, The resulting string is returned.
+
+
+#### Syntax
+
+`cmd = ` [[stdlib_strings(module):join(interface)]] ` (strings, separator)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function
+
+#### Argument
+
+- `strings`: Array of strings (either `type(string_type)` or `character(len=*)`).
+  This argument is `intent(in)`. It is an array of strings that will be concatenated together.
+- `separator`: Character scalar (optional).
+  This argument is `intent(in)`. It specifies the separator to be used between the strings. If not provided, the default separator (a space) is used.
+
+#### Result value
+
+The result is of the same type as the elements of `strings` (`type(string_type)` or `character(len=:), allocatable`).
+
+#### Example
+
+```fortran
+! Example usage:
+program test_join
+    type(string_type) :: result
+    type(string_type), dimension(3) :: words = [string_type('hello'), string_type('world'), string_type('fortran')]
+    result = join_string(words, ', ')  ! Joins with comma and space
+    print *, result  ! Output: "hello, world, fortran"
+end program test_join
+```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+
 ### `to_string`
 
 #### Description

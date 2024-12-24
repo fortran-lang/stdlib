@@ -5,7 +5,7 @@
 !> The specification of this module is available [here](../page/specs/stdlib_strings.html).
 module stdlib_strings
     use stdlib_ascii, only: whitespace
-    use stdlib_string_type, only: string_type, char, verify, repeat, len
+    use stdlib_string_type, only: string_type, char, verify, repeat, len, len_trim, move
     use stdlib_optval, only: optval
     use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64, lk, c_bool
     use iso_c_binding, only: c_char, c_null_char
@@ -16,7 +16,7 @@ module stdlib_strings
     public :: to_c_string
     public :: strip, chomp
     public :: starts_with, ends_with
-    public :: slice, find, replace_all, padl, padr, count, zfill
+    public :: slice, find, replace_all, padl, padr, count, zfill, join
 
     !> Version: experimental
     !>
@@ -165,6 +165,16 @@ module stdlib_strings
         module procedure :: zfill_string
         module procedure :: zfill_char
     end interface zfill
+
+    !> Version: experimental
+    !>
+    !> Joins an array of strings into a single string. 
+    !> The chunks are separated with a space, or an optional user-defined separator.
+    !> [Specifications](../page/specs/stdlib_strings.html#join)
+    interface join
+        module procedure :: join_string
+        module procedure :: join_char
+    end interface join
 
 contains
 
@@ -957,5 +967,78 @@ contains
        end do 
        cstr(len(value)+1) = c_null_char
     end function to_c_string
+
+    !> Joins a list of strings with a separator (default: space).
+    !> Returns a new string
+    pure function join_string(strings, separator) result(cmd)
+        type(string_type), intent(in) :: strings(:)
+        character(len=*), intent(in), optional :: separator
+        type(string_type) :: cmd
+
+        integer :: ltot, i, lt, pos
+        character(len=:), allocatable :: sep,cmd_char
+
+        ! Determine separator: use user-provided separator or default space
+        if (present(separator)) then
+            sep = separator
+        else
+            sep = ' '
+        end if
+
+        ! Calculate the total length required, including separators
+        ltot = sum(len_trim(strings)) + (size(strings) - 1) * len(sep)
+        allocate(character(len=ltot) :: cmd_char)
+        
+        ! Concatenate strings with separator
+        pos = 0
+        do i = 1, size(strings)
+            lt = len_trim(strings(i))
+            cmd_char(pos+1:pos+lt) = char(strings(i),1,lt)
+            pos = pos + lt
+            if (i < size(strings)) then
+                cmd_char(pos+1:pos+len(sep)) = sep
+                pos = pos + len(sep)
+            end if
+        end do
+        
+        call move(from=cmd_char,to=cmd)
+        
+    end function join_string
+
+    !> Joins a list of strings with a separator (default: space).
+    !> Returns a new string
+    pure function join_char(strings, separator) result(cmd)
+        character(*), intent(in) :: strings(:)
+        character(len=*), intent(in), optional :: separator
+        character(:), allocatable :: cmd
+
+        integer :: ltot, i, lt, pos
+        character(len=:), allocatable :: sep
+
+        ! Determine separator: use user-provided separator or default space
+        if (present(separator)) then
+            sep = separator
+        else
+            sep = ' '
+        end if
+
+        ! Calculate the total length required, including separators
+        ltot = sum(len_trim(strings)) + (size(strings) - 1) * len(sep)
+        allocate(character(len=ltot) :: cmd)
+        
+        cmd = repeat(' ',ltot)
+
+        ! Concatenate strings with separator
+        pos = 0
+        do i = 1, size(strings)
+            lt = len_trim(strings(i))
+            cmd(pos+1:pos+lt) = strings(i)(1:lt)
+            pos = pos + lt
+            if (i < size(strings)) then
+                cmd(pos+1:pos+len(sep)) = sep
+                pos = pos + len(sep)
+            end if
+        end do
+    end function join_char
 
 end module stdlib_strings
