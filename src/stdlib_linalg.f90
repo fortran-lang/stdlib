@@ -400,6 +400,21 @@ module stdlib_linalg
       module procedure trace_iint64
   end interface
 
+  ! Identity matrix 
+  interface eye
+    !! version: experimental
+    !!
+    !! Constructs the identity matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#eye-construct-the-identity-matrix))    
+      module procedure eye_rsp
+      module procedure eye_rdp
+      module procedure eye_csp
+      module procedure eye_cdp
+      module procedure eye_iint8
+      module procedure eye_iint16
+      module procedure eye_iint32
+      module procedure eye_iint64
+  end interface eye
 
   ! Outer product (of two vectors)
   interface outer_product
@@ -4817,10 +4832,87 @@ contains
     !>
     !> Constructs the identity matrix.
     !> ([Specification](../page/specs/stdlib_linalg.html#eye-construct-the-identity-matrix))
-    pure function eye(dim1, dim2) result(result)
+    pure function eye_rsp(dim1, dim2, mold) result(result)
 
         integer, intent(in) :: dim1
         integer, intent(in), optional :: dim2
+        real(sp), intent(in) :: mold        
+        real(sp), allocatable :: result(:, :)
+
+        integer :: dim2_
+        integer :: i
+
+        dim2_ = optval(dim2, dim1)
+        allocate(result(dim1, dim2_))
+        
+        result = 0
+        do i = 1, min(dim1, dim2_)
+            result(i, i) = 1
+        end do
+
+    end function eye_rsp
+    pure function eye_rdp(dim1, dim2, mold) result(result)
+
+        integer, intent(in) :: dim1
+        integer, intent(in), optional :: dim2
+        real(dp), intent(in) , optional :: mold        
+        real(dp), allocatable :: result(:, :)
+
+        integer :: dim2_
+        integer :: i
+
+        dim2_ = optval(dim2, dim1)
+        allocate(result(dim1, dim2_))
+        
+        result = 0
+        do i = 1, min(dim1, dim2_)
+            result(i, i) = 1
+        end do
+
+    end function eye_rdp
+    pure function eye_csp(dim1, dim2, mold) result(result)
+
+        integer, intent(in) :: dim1
+        integer, intent(in), optional :: dim2
+        complex(sp), intent(in) :: mold        
+        complex(sp), allocatable :: result(:, :)
+
+        integer :: dim2_
+        integer :: i
+
+        dim2_ = optval(dim2, dim1)
+        allocate(result(dim1, dim2_))
+        
+        result = 0
+        do i = 1, min(dim1, dim2_)
+            result(i, i) = 1
+        end do
+
+    end function eye_csp
+    pure function eye_cdp(dim1, dim2, mold) result(result)
+
+        integer, intent(in) :: dim1
+        integer, intent(in), optional :: dim2
+        complex(dp), intent(in) :: mold        
+        complex(dp), allocatable :: result(:, :)
+
+        integer :: dim2_
+        integer :: i
+
+        dim2_ = optval(dim2, dim1)
+        allocate(result(dim1, dim2_))
+        
+        result = 0
+        do i = 1, min(dim1, dim2_)
+            result(i, i) = 1
+        end do
+
+    end function eye_cdp
+    pure function eye_iint8(dim1, dim2, mold) result(result)
+
+        integer, intent(in) :: dim1
+        integer, intent(in), optional :: dim2
+        integer(int8), intent(in) :: mold        
         integer(int8), allocatable :: result(:, :)
 
         integer :: dim2_
@@ -4829,12 +4921,69 @@ contains
         dim2_ = optval(dim2, dim1)
         allocate(result(dim1, dim2_))
         
-        result = 0_int8
+        result = 0
         do i = 1, min(dim1, dim2_)
-            result(i, i) = 1_int8
+            result(i, i) = 1
         end do
 
-    end function eye
+    end function eye_iint8
+    pure function eye_iint16(dim1, dim2, mold) result(result)
+
+        integer, intent(in) :: dim1
+        integer, intent(in), optional :: dim2
+        integer(int16), intent(in) :: mold        
+        integer(int16), allocatable :: result(:, :)
+
+        integer :: dim2_
+        integer :: i
+
+        dim2_ = optval(dim2, dim1)
+        allocate(result(dim1, dim2_))
+        
+        result = 0
+        do i = 1, min(dim1, dim2_)
+            result(i, i) = 1
+        end do
+
+    end function eye_iint16
+    pure function eye_iint32(dim1, dim2, mold) result(result)
+
+        integer, intent(in) :: dim1
+        integer, intent(in), optional :: dim2
+        integer(int32), intent(in) :: mold        
+        integer(int32), allocatable :: result(:, :)
+
+        integer :: dim2_
+        integer :: i
+
+        dim2_ = optval(dim2, dim1)
+        allocate(result(dim1, dim2_))
+        
+        result = 0
+        do i = 1, min(dim1, dim2_)
+            result(i, i) = 1
+        end do
+
+    end function eye_iint32
+    pure function eye_iint64(dim1, dim2, mold) result(result)
+
+        integer, intent(in) :: dim1
+        integer, intent(in), optional :: dim2
+        integer(int64), intent(in) :: mold        
+        integer(int64), allocatable :: result(:, :)
+
+        integer :: dim2_
+        integer :: i
+
+        dim2_ = optval(dim2, dim1)
+        allocate(result(dim1, dim2_))
+        
+        result = 0
+        do i = 1, min(dim1, dim2_)
+            result(i, i) = 1
+        end do
+
+    end function eye_iint64
 
       function trace_rsp(A) result(res)
         real(sp), intent(in) :: A(:,:)
