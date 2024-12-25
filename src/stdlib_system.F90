@@ -256,14 +256,31 @@ interface kill
     end subroutine process_kill
 end interface kill
  
-
-!! version: experimental
-!!
 interface sleep
+    !! version: experimental
+    !!
+    !! Pauses execution for a specified time in milliseconds.
+    !! ([Specification](../page/specs/stdlib_system.html#sleep-pause-execution-for-a-specified-time))
+    !!
+    !! ### Summary
+    !! Pauses code execution for a specified number of milliseconds. This routine is a cross-platform
+    !! wrapper around platform-specific sleep functions, providing consistent behavior on different operating systems.
+    !!
+    !! ### Description
+    !! 
+    !! This interface allows the user to pause the execution of a program for a specified duration, expressed in
+    !! milliseconds. It provides a cross-platform wrapper around native sleep functions, ensuring that the program 
+    !! will sleep for the requested amount of time on different systems (e.g., using `Sleep` on Windows or `nanosleep`
+    !! on Unix-like systems).
+    !!
+    !! @note The precision of the sleep may vary depending on the system and platform.
+    !!
     module subroutine sleep(millisec)
+        !> The number of milliseconds to pause execution for.
         integer, intent(in) :: millisec
     end subroutine sleep
-end interface sleep        
+end interface sleep
+      
 
 !! version: experimental
 !!

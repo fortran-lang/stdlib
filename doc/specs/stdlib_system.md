@@ -315,3 +315,35 @@ else
     print *, "Failed to kill the process."
 end if
 ```
+
+## `sleep` - Pause execution for a specified time in milliseconds
+
+### Status
+
+Experimental
+
+### Description
+
+The `sleep` interface pauses the execution of a program for a specified duration, given in milliseconds. 
+This routine acts as a cross-platform wrapper, abstracting the underlying platform-specific sleep implementations. 
+It ensures that the requested sleep duration is honored on both Windows and Unix-like systems.
+
+### Syntax
+
+`call ` [[stdlib_system(module):sleep(subroutine)]] `(millisec)`
+
+### Arguments
+
+`millisec`: Shall be an `integer` representing the number of milliseconds to sleep. This is an `intent(in)` argument.
+
+### Example
+
+```fortran
+! Example usage of sleep
+print *, "Starting sleep..."
+
+! Sleep for 500 milliseconds
+call sleep(500)
+
+print *, "Finished sleeping!"
+```
