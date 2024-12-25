@@ -28,7 +28,7 @@ typedef int64_t stdlib_pid;
 // On Windows systems: create a new process
 void process_create_windows(const char* cmd, const char* stdin_stream,  
                     const char* stdin_file, const char* stdout_file, const char* stderr_file, 
-                    stdlib_handle* handle, stdlib_pid* pid) {
+                    stdlib_pid* pid) {
                                                   
     STARTUPINFO si;
     PROCESS_INFORMATION pi;
@@ -37,7 +37,6 @@ void process_create_windows(const char* cmd, const char* stdin_stream,
     FILE* stdin_fp = NULL;
     
     // Initialize null handle
-    (*handle) = NULL;
     (*pid) = 0;
 
     ZeroMemory(&si, sizeof(si));
@@ -112,7 +111,6 @@ void process_create_windows(const char* cmd, const char* stdin_stream,
 
     // Return the process handle for status queries
     CloseHandle(pi.hThread);  // Close the thread handle
-    (*handle) = (stdlib_handle) pi.hProcess;       // Return the process handle
     (*pid) = (stdlib_pid) pi.dwProcessId;
     
 }
@@ -257,10 +255,9 @@ bool process_kill_unix(int pid) {
 
 
 // On UNIX systems: just fork a new process. The command line will be executed from Fortran.
-void process_create_posix(stdlib_handle* handle, stdlib_pid* pid) 
+void process_create_posix(stdlib_pid* pid) 
 {
 
-    (*handle) = NULL;
     (*pid) = (stdlib_pid) fork();
 }
 
@@ -273,11 +270,11 @@ void process_create_posix(stdlib_handle* handle, stdlib_pid* pid)
 // Create or fork process
 void process_create(const char* cmd, const char* stdin_stream, const char* stdin_file, 
                     const char* stdout_file, const char* stderr_file, 
-                    stdlib_handle* handle, stdlib_pid* pid) {                                                  
+                    stdlib_pid* pid) {                                                  
 #ifdef _WIN32
-    process_create_windows(cmd, stdin_stream, stdin_file, stdout_file, stderr_file, handle, pid);
+    process_create_windows(cmd, stdin_stream, stdin_file, stdout_file, stderr_file, pid);
 #else
-    process_create_posix(handle, pid);
+    process_create_posix(pid);
 #endif // _WIN32
 }
 

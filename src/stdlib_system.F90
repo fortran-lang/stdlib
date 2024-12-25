@@ -1,6 +1,5 @@
 module stdlib_system
 use, intrinsic :: iso_c_binding, only : c_int, c_long, c_null_ptr, c_int64_t
-use, intrinsic :: iso_c_binding, only : process_handle => c_ptr, null_process => c_null_ptr 
 use stdlib_kinds, only: int64, dp
 implicit none
 private
@@ -27,12 +26,11 @@ integer, parameter, public :: process_ID = c_int64_t
 ! Default flag for the runner process
 integer(process_ID), parameter, private :: FORKED_PROCESS = 0_process_ID
 
-! Public type to describe a process
+!> Process type holding process information and the connected stdout, stderr, stdin units 
 type :: process_type
     
     !> Process ID (if external); 0 if run by the program process
     integer(process_ID)  :: id = FORKED_PROCESS
-    type(process_handle) :: handle = null_process
     
     !> Process is completed
     logical :: completed = .false.        

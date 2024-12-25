@@ -30,16 +30,15 @@ submodule (stdlib_system) stdlib_system_subprocess
             integer(c_int), intent(out) :: exit_code     
         end subroutine process_query_status
 
-        subroutine process_create(cmd, stdin_stream, stdin_file, stdout_file, stderr_file, handle, pid) &
+        subroutine process_create(cmd, stdin_stream, stdin_file, stdout_file, stderr_file, pid) &
                    bind(C, name='process_create')
-            import c_char, process_handle, process_ID
+            import c_char, process_ID
             implicit none
             character(c_char), intent(in)           :: cmd(*)
             character(c_char), intent(in), optional :: stdin_stream(*)
             character(c_char), intent(in), optional :: stdin_file(*)
             character(c_char), intent(in), optional :: stdout_file(*)
             character(c_char), intent(in), optional :: stderr_file(*)
-            type(process_handle), intent(out)       :: handle
             integer(process_ID), intent(out)        :: pid
         end subroutine process_create
         
@@ -185,7 +184,7 @@ contains
             
         ! On Windows, this 1) creates 2) launches an external process from C.
         ! On unix, this 1) forks an external process
-        call process_create(c_cmd, c_stdin, c_stdin_file, c_stdout_file, c_stderr_file, process%handle, process%id)
+        call process_create(c_cmd, c_stdin, c_stdin_file, c_stdout_file, c_stderr_file, process%id)
         
     end subroutine launch_asynchronous
     
