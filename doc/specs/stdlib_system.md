@@ -273,3 +273,45 @@ if (p%completed) then
     print *, "Standard Error: ", p%stderr
 endif
 ```
+
+## `kill` - Terminate a running process
+
+### Status
+
+Experimental
+
+### Description
+
+The `kill` interface is used to terminate a running external process. It attempts to stop the process and returns a boolean flag indicating whether the operation was successful.
+This interface is useful when a process needs to be forcefully stopped, for example, if it becomes unresponsive or if its execution is no longer required.
+
+### Syntax
+
+`call ` [[stdlib_subprocess(module):kill(subroutine)]] `(process, success)`
+
+### Arguments
+
+`process`: Shall be a `type(process_type)` object representing the external process to be terminated.  
+This is an `intent(inout)` argument, and on return is updated with the terminated process state.
+
+`success`: Shall be a `logical` variable. It is set to `.true.` if the process was successfully killed, or `.false.` otherwise.
+
+### Example
+
+```fortran
+! Example usage of kill
+type(process_type) :: p
+logical :: success
+
+! Start a process asynchronously
+p = run("sleep 10", wait=.false.)
+
+! Attempt to kill the process
+call kill(p, success)
+
+if (success) then
+    print *, "Process successfully killed."
+else
+    print *, "Failed to kill the process."
+end if
+```

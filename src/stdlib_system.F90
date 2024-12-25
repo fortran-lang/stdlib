@@ -228,15 +228,34 @@ interface update
     end subroutine update_process_state
 end interface update
 
-
-! Kill a process 
 interface kill
+    !! version: experimental
+    !!
+    !! Terminates a running process.
+    !! ([Specification](../page/specs/stdlib_system.html#kill-terminate-a-running-process))
+    !!
+    !! ### Summary
+    !! Provides a method to kill or terminate a running process.
+    !! Returns a boolean flag indicating whether the termination was successful.
+    !!
+    !! ### Description
+    !! 
+    !! This interface allows for the termination of an external process that is still running.  
+    !! If the process is successfully killed, the `success` output flag is set to `.true.`, otherwise `.false.`.
+    !! This function is useful for controlling and managing processes that are no longer needed or for forcefully
+    !! stopping an unresponsive process.
+    !!
+    !! @note This operation may be system-dependent and could fail if the underlying user does not have 
+    !! the necessary rights to kill a process.
+    !!
     module subroutine process_kill(process, success)
+        !> The process object to be terminated.
         type(process_type), intent(inout) :: process
-        ! Return a boolean flag for successful operation
+        !> Boolean flag indicating whether the termination was successful.
         logical, intent(out) :: success
     end subroutine process_kill
-end interface kill    
+end interface kill
+ 
 
 !! version: experimental
 !!
