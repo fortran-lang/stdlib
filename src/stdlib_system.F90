@@ -168,7 +168,7 @@ interface elapsed
     !! If the process is still running, the value returned reflects the time from the creation of the process 
     !! until the call to this function. Otherwise, the total process duration until completion is returned.
     !!
-    module real(RTICKS) function process_lifetime(process) result(delta_t)
+    module function process_lifetime(process) result(delta_t)
         !> The process object for which to calculate elapsed time.
         class(process_type), intent(in) :: process
         !> The elapsed time in seconds since the process started.
