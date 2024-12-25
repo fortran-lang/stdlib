@@ -49,4 +49,141 @@ p(1) = run("echo 'Hello, world!'", wait=.true., want_stdout=.true.)
 
 ! Run a command using an argument list asynchronously
 p(2) = run(["/usr/bin/ls", "-l"], wait=.false.)
+```
+
+## `is_running` - Check if a process is still running
+
+### Status
+
+Experimental
+
+### Description
+
+The `is_running` interface provides a method to check if an external process is still running.  
+This is useful for monitoring the status of asynchronous processes created with the `run` interface.
+
+### Syntax
+
+`status = ` [[stdlib_subprocess(module):is_running(interface)]] `(process)`
+
+### Arguments
+
+`process`:  Shall be a `type(process_type)` object representing the external process to check. This is an `intent(inout)` argument.
+
+
+### Return Value
+
+Returns a `logical` value: `.true.` if the process is still running, or `.false.` if the process has terminated.
+After a call to `is_running`, the `type(process_type)` structure is also updated to the latest process state.
+
+### Example
+
+```fortran
+! Example usage of is_running
+type(process_type) :: proc
+logical :: status
+
+! Start an asynchronous process
+proc = run("sleep 10", wait=.false.)
+
+! Check if the process is running
+status = is_running(proc)
+
+if (status) then
+    print *, "Process is still running."
+else
+    print *, "Process has terminated."
+end if
+```
+
+## `is_completed` - Check if a process has completed execution
+
+### Status
+
+Experimental
+
+### Description
+
+The `is_completed` interface provides a method to check if an external process has finished execution.  
+This is useful for determining whether asynchronous processes created with the `run` interface have terminated.
+
+### Syntax
+
+`status = ` [[stdlib_subprocess(module):is_completed(interface)]] `(process)`
+
+### Arguments
+
+`process`: Shall be a `type(process_type)` object representing the external process to check. This is an `intent(inout)` argument.
+
+### Return Value
+
+Returns a `logical` value:  
+- `.true.` if the process has completed.  
+- `.false.` if the process is still running.  
+
+After a call to `is_completed`, the `type(process_type)` structure is updated to reflect the latest process state.
+
+### Example
+
+```fortran
+! Example usage of is_completed
+type(process_type) :: proc
+logical :: status
+
+! Start an asynchronous process
+proc = run("sleep 5", wait=.false.)
+
+! Check if the process has completed
+status = is_completed(proc)
+
+if (status) then
+    print *, "Process has completed."
+else
+    print *, "Process is still running."
+end if
+```
+
+## `elapsed` - Return process lifetime in seconds
+
+### Status
+
+Experimental
+
+### Description
+
+The `elapsed` interface provides a method to calculate the total time that has elapsed since a process was started.  
+This is useful for tracking the duration of an external process or for performance monitoring purposes.  
+
+The result is a real value representing the elapsed time in seconds, measured from the time the process was created.
+
+### Syntax
+
+`delta_t = ` [[stdlib_subprocess(module):elapsed(interface)]] `(process)`
+
+### Arguments
+
+`process`: Shall be a `type(process_type)` object representing the external process. It is an `intent(in)` argument.
+
+### Return Value
+
+Returns a `real(real64)` value that represents the elapsed time (in seconds) since the process was started.  
+If the process is still running, the value returned is the time elapsed until the call to this function. 
+Otherwise, the total process duration from creation until completion is returned.
+
+### Example
+
+```fortran
+! Example usage of elapsed
+type(process_type) :: p
+real(RTICKS) :: delta_t
+
+! Create a process
+p = run("sleep 5", wait=.false.)
+
+! Check elapsed time after 2 seconds
+call sleep(2)
+delta_t = elapsed(p)
+print *, "Elapsed time (s): ", delta_t
+```
+
 

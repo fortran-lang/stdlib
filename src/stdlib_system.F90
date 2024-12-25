@@ -72,7 +72,7 @@ interface run
     !!
     !! @note The implementation depends on system-level process management capabilities.
     !!
-    !! #### Procedures
+    !! #### Methods
     !!
     !! - `process_open_cmd`: Opens a process using a command string.
     !! - `process_open_args`: Opens a process using an array of arguments.
@@ -104,27 +104,78 @@ interface run
     end function process_open_args
 end interface run
 
-
-!> Live check if a process is still running
 interface is_running
+    !! version: experimental
+    !!
+    !! Checks if an external process is still running.
+    !! ([Specification](../page/specs/stdlib_system.html#is_running-check-if-a-process-is-still-running))
+    !!
+    !! ### Summary
+    !! Provides a method to determine if an external process is still actively running.
+    !!
+    !! ### Description
+    !! 
+    !! This interface checks the status of an external process to determine whether it is still actively running. 
+    !! It is particularly useful for monitoring asynchronous processes created using the `run` interface. 
+    !! The internal state of the `process_type` object is updated after the call to reflect the current process status.
+    !!
+    !! @note The implementation relies on system-level process management capabilities.
+    !!
     module logical function process_is_running(process) result(is_running)
+        !> The process object to check.
         class(process_type), intent(inout) :: process
+        !> Logical result: `.true.` if the process is still running, `.false.` otherwise.
     end function process_is_running
 end interface is_running
 
-!> Live check if a process is still running
+
 interface is_completed
+    !! version: experimental
+    !!
+    !! Checks if an external process has completed execution.
+    !! ([Specification](../page/specs/stdlib_system.html#is_completed-check-if-a-process-has-completed-execution))
+    !!
+    !! ### Summary
+    !! Provides a method to determine if an external process has finished execution.
+    !!
+    !! ### Description
+    !! 
+    !! This interface checks the status of an external process to determine whether it has finished execution. 
+    !! It is particularly useful for monitoring asynchronous processes created using the `run` interface. 
+    !! The internal state of the `process_type` object is updated after the call to reflect the current process status.
+    !!
+    !! @note The implementation relies on system-level process management capabilities.
+    !!
     module logical function process_is_completed(process) result(is_completed)
+        !> The process object to check.
         class(process_type), intent(inout) :: process
+        !> Logical result: `.true.` if the process has completed, `.false.` otherwise.
     end function process_is_completed
 end interface is_completed
 
-!> Return process lifetime so far, in seconds
 interface elapsed
+    !! version: experimental
+    !!
+    !! Returns the lifetime of a process, in seconds.
+    !! ([Specification](../page/specs/stdlib_system.html#elapsed-return-process-lifetime-in-seconds))
+    !!
+    !! ### Summary
+    !! Provides the total elapsed time (in seconds) since the creation of the specified process.
+    !!
+    !! ### Description
+    !! 
+    !! This interface returns the total elapsed time (in seconds) for a given process since it was started. 
+    !! If the process is still running, the value returned reflects the time from the creation of the process 
+    !! until the call to this function. Otherwise, the total process duration until completion is returned.
+    !!
     module real(RTICKS) function process_lifetime(process) result(delta_t)
-        class(process_type), intent(in) :: process 
+        !> The process object for which to calculate elapsed time.
+        class(process_type), intent(in) :: process
+        !> The elapsed time in seconds since the process started.
+        real(RTICKS) :: delta_t
     end function process_lifetime
 end interface elapsed
+
 
 !> Wait until a running process is completed
 interface wait
