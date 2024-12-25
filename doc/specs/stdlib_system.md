@@ -161,7 +161,7 @@ The result is a real value representing the elapsed time in seconds, measured fr
 
 ### Syntax
 
-`delta_t = ` [[stdlib_subprocess(module):elapsed(interface)]] `(process)`
+`delta_t = ` [[stdlib_subprocess(module):elapsed(subroutine)]] `(process)`
 
 ### Arguments
 
@@ -189,4 +189,46 @@ delta_t = elapsed(p)
 print *, "Elapsed time (s): ", delta_t
 ```
 
+## `wait` - Wait until a running process is completed
 
+### Status
+
+Experimental
+
+### Description
+
+The `wait` interface provides a method to block the calling program until the specified process completes.  
+If the process is running asynchronously, this subroutine will pause the workflow until the given process finishes.  
+Additionally, an optional maximum wait time can be provided. If the process does not finish within the specified time, 
+the subroutine will return without waiting further.
+
+On return from this routine, the process state is accordingly updated.
+This is useful when you want to wait for a background task to complete, but want to avoid indefinite blocking 
+in case of process hang or delay.
+
+
+### Syntax
+
+`call ` [[stdlib_subprocess(module):wait(subroutine)]] `(process [, max_wait_time])`
+
+### Arguments
+
+`process`: Shall be a `type(process_type)` object representing the external process to monitor.  
+This is an `intent(inout)` argument, and its state is updated upon completion.
+
+`max_wait_time` (optional): Shall be a `real` value specifying the maximum wait time in seconds.  
+If not provided, the subroutine will wait indefinitely until the process completes.
+
+### Example
+
+```fortran
+! Example usage of wait
+type(process_type) :: p
+
+! Start an asynchronous process
+p = run("sleep 5", wait=.false.)
+
+! Wait for process to complete with a 10-second timeout
+call wait(p, max_wait_time=10.0)
+print *, "Process completed or timed out."
+```

@@ -177,14 +177,32 @@ interface elapsed
 end interface elapsed
 
 
-!> Wait until a running process is completed
 interface wait
+    !! version: experimental
+    !!
+    !! Waits for a running process to complete.
+    !! ([Specification](../page/specs/stdlib_system.html#wait-wait-until-a-running-process-is-completed))
+    !!
+    !! ### Summary
+    !! Provides a method to block the execution and wait until the specified process finishes.
+    !! Supports an optional maximum wait time, after which the function returns regardless of process completion.
+    !!
+    !! ### Description
+    !! 
+    !! This interface allows waiting for a process to complete. If the process is running asynchronously, this subroutine
+    !! will block further execution until the process finishes. Optionally, a maximum wait time can be specified; if 
+    !! the process doesn't complete within this time, the subroutine returns without further waiting.
+    !!
+    !! @note The process state is accordingly updated on return from this call.
+    !!
     module subroutine wait_for_completion(process, max_wait_time)
+        !> The process object to monitor.
         class(process_type), intent(inout) :: process
-        ! Optional max wait time in seconds
+        !> Optional maximum wait time in seconds. If not provided, waits indefinitely.
         real, optional, intent(in) :: max_wait_time
     end subroutine wait_for_completion
 end interface wait
+
 
 !> Query the system to update a process's state 
 interface update
