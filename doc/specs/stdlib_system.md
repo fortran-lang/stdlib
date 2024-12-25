@@ -232,3 +232,44 @@ p = run("sleep 5", wait=.false.)
 call wait(p, max_wait_time=10.0)
 print *, "Process completed or timed out."
 ```
+
+## `update` - Update the internal state of a process
+
+### Status
+
+Experimental
+
+### Description
+
+The `update` interface allows the internal state of a process object to be updated by querying the system.  
+After the process completes, the standard output and standard error are retrieved, if they were requested, and loaded into the `process%stdout` and `process%stderr` string variables, respectively.
+
+This is especially useful for monitoring asynchronous processes and retrieving their output after they have finished.
+
+### Syntax
+
+`call ` [[stdlib_subprocess(module):update(subroutine)]] `(process)`
+
+### Arguments
+
+`process`: Shall be a `type(process_type)` object representing the external process whose state needs to be updated.  
+This is an `intent(inout)` argument, and its internal state is updated on completion.
+
+### Example
+
+```fortran
+! Example usage of update
+type(process_type) :: p
+
+! Start an asynchronous process
+p = run("sleep 5", wait=.false., want_stdout=.true., want_stderr=.true.)
+
+! Periodically update the process state
+call update(p)
+
+! After completion, print the captured stdout and stderr
+if (p%completed) then 
+    print *, "Standard Output: ", p%stdout
+    print *, "Standard Error: ", p%stderr
+endif
+```

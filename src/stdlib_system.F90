@@ -203,13 +203,31 @@ interface wait
     end subroutine wait_for_completion
 end interface wait
 
-
-!> Query the system to update a process's state 
 interface update
+    !! version: experimental
+    !!
+    !! Updates the internal state of a process variable.
+    !! ([Specification](../page/specs/stdlib_system.html#update-update-the-internal-state-of-a-process))
+    !!
+    !! ### Summary
+    !! Provides a method to query the system and update the internal state of the specified process variable.
+    !!
+    !! ### Description
+    !! 
+    !! This subroutine queries the system to retrieve and update information about the state of the process.
+    !! Once the process is completed, and if standard output or standard error were requested, their respective
+    !! data is loaded into the `process%stdout` and `process%stderr` variables. This routine is useful for keeping
+    !! track of the latest state and output of a process, particularly for asynchronous processes.
+    !!
+    !! @note This subroutine should be called periodically for asynchronous processes to check their completion
+    !! and retrieve the output.
+    !!
     module subroutine update_process_state(process)
+        !> The process object whose state needs to be updated.
         type(process_type), intent(inout) :: process
     end subroutine update_process_state
 end interface update
+
 
 ! Kill a process 
 interface kill
