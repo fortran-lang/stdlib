@@ -54,29 +54,56 @@ type :: process_type
 end type process_type
 
 interface run
-    !> Open a new process from a command line
-    module type(process_type) function process_open_cmd(cmd,wait,stdin,want_stdout,want_stderr) result(process)
-        !> The command and arguments
+    !! version: experimental
+    !!
+    !! Executes an external process, either synchronously or asynchronously.
+    !! ([Specification](../page/specs/stdlib_system.html#run-execute-an-external-process))
+    !!
+    !! ### Summary
+    !! Provides methods for executing external processes via a single command string or an argument list, 
+    !! with options for synchronous or asynchronous execution and output collection.
+    !!
+    !! ### Description
+    !! 
+    !! This interface allows the user to spawn external processes using either a single command string 
+    !! or a list of arguments. Processes can be executed synchronously (blocking) or asynchronously 
+    !! (non-blocking), with optional request to collect standard output and error streams, or to provide
+    !! a standard input stream via a `character` string.
+    !!
+    !! @note The implementation depends on system-level process management capabilities.
+    !!
+    !! #### Procedures
+    !!
+    !! - `process_open_cmd`: Opens a process using a command string.
+    !! - `process_open_args`: Opens a process using an array of arguments.
+    !! 
+    module type(process_type) function process_open_cmd(cmd, wait, stdin, want_stdout, want_stderr) result(process)
+        !> The command line string to execute.
         character(*), intent(in) :: cmd
-        !> Optional character input to be sent to the process via pipe
+        !> Optional input sent to the process via standard input (stdin).
         character(*), optional, intent(in) :: stdin
-        !> Define if the process should be synchronous (wait=.true.), or asynchronous(wait=.false.)
+        !> Whether to wait for process completion (synchronous).
         logical, optional, intent(in) :: wait
-        !> Require collecting output
-        logical, optional, intent(in) :: want_stdout, want_stderr        
+        !> Whether to collect standard output.
+        logical, optional, intent(in) :: want_stdout
+        !> Whether to collect standard error output.
+        logical, optional, intent(in) :: want_stderr
     end function process_open_cmd
-    !> Open a new, asynchronous process from a list of arguments
-    module type(process_type) function process_open_args(args,wait,stdin,want_stdout,want_stderr) result(process)
-        !> The command and arguments
+
+    module type(process_type) function process_open_args(args, wait, stdin, want_stdout, want_stderr) result(process)
+        !> List of arguments for the process to execute.
         character(*), intent(in) :: args(:)
-        !> Optional character input to be sent to the process via pipe
+        !> Optional input sent to the process via standard input (stdin).
         character(*), optional, intent(in) :: stdin
-        !> Define if the process should be synchronous (wait=.true.), or asynchronous(wait=.false.)
+        !> Whether to wait for process completion (synchronous).
         logical, optional, intent(in) :: wait
-        !> Require collecting output
-        logical, optional, intent(in) :: want_stdout, want_stderr        
+        !> Whether to collect standard output.
+        logical, optional, intent(in) :: want_stdout
+        !> Whether to collect standard error output.
+        logical, optional, intent(in) :: want_stderr
     end function process_open_args
 end interface run
+
 
 !> Live check if a process is still running
 interface is_running

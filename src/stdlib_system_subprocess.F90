@@ -6,9 +6,6 @@ submodule (stdlib_system) stdlib_system_subprocess
     use stdlib_linalg_state, only: linalg_state_type, LINALG_ERROR, linalg_error_handling
     implicit none(type, external)
     
-    logical(c_bool), parameter :: C_FALSE = .false._c_bool
-    logical(c_bool), parameter :: C_TRUE  = .true._c_bool
-    
     ! Number of CPU ticks between status updates
     integer(TICKS), parameter :: CHECK_EVERY_TICKS = 100
     
@@ -69,6 +66,10 @@ submodule (stdlib_system) stdlib_system_subprocess
         end function process_has_win32
   
     end interface
+
+    ! C boolean constants
+    logical(c_bool), parameter :: C_FALSE = .false._c_bool
+    logical(c_bool), parameter :: C_TRUE  = .true._c_bool
 
 contains
 
