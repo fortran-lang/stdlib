@@ -260,7 +260,7 @@ interface sleep
     !! version: experimental
     !!
     !! Pauses execution for a specified time in milliseconds.
-    !! ([Specification](../page/specs/stdlib_system.html#sleep-pause-execution-for-a-specified-time))
+    !! ([Specification](../page/specs/stdlib_system.html#sleep-pause-execution-for-a-specified-time=in-milliseconds))
     !!
     !! ### Summary
     !! Pauses code execution for a specified number of milliseconds. This routine is a cross-platform
@@ -281,12 +281,30 @@ interface sleep
     end subroutine sleep
 end interface sleep
       
-
-!! version: experimental
-!!
 interface 
+    
+    !! version: experimental
+    !!
+    !! Returns a `logical` flag indicating if the system is Windows.
+    !! ([Specification](../page/specs/stdlib_system.html#has_win32-check-if-the-system-is-running-on-windows))
+    !!
+    !! ### Summary
+    !! A fast, compile-time check to determine if the system is running Windows, based on the `_WIN32` macro.
+    !!
+    !! ### Description
+    !! 
+    !! This interface provides a function to check if the current system is Windows. The check is performed by
+    !! wrapping a C function that tests if the `_WIN32` macro is defined. This check is fast and occurs at
+    !! compile-time, making it a more efficient alternative to platform-specific runtime checks.
+    !!
+    !! The `has_win32` function is particularly useful for conditional compilation or system-specific code paths
+    !! that are dependent on whether the code is running on Windows.
+    !!
+    !! @note This function relies on the `_WIN32` macro, which is defined in C compilers when targeting Windows.
+    !!
     module logical function has_win32()
     end function has_win32
-end interface    
+    
+end interface 
 
 end module stdlib_system

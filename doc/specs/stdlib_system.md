@@ -347,3 +347,31 @@ call sleep(500)
 
 print *, "Finished sleeping!"
 ```
+
+## `has_win32` - Check if the system is running on Windows
+
+### Status
+
+Experimental
+
+### Description
+
+The `has_win32` interface provides a quick, compile-time check to determine if the current system is Windows. It leverages a C function that checks for the presence of the `_WIN32` macro, which is defined in C compilers when targeting Windows. This function is highly efficient and works during the compilation phase, avoiding the need for runtime checks.
+
+### Syntax
+
+`result = ` [[stdlib_system(module):has_win32(function)]] `()`
+
+### Return Value
+
+Returns a `logical` flag: `.true.` if the system is Windows, or `.false.` otherwise.
+
+### Example
+
+```fortran
+if (has_win32()) then
+    print *, "Running on Windows!"
+else
+    print *, "Not running on Windows."
+end if
+```
