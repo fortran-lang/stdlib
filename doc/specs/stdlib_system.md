@@ -2,7 +2,10 @@
 title: system
 ---
 
-# System
+# System and sub-processing module
+
+The `stdlib_system` module provides interface for interacting with external processes, enabling the execution 
+and monitoring of system commands or applications directly from Fortran. 
 
 [TOC]
 
