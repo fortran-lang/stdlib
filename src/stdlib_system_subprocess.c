@@ -129,14 +129,16 @@ void process_create_windows(const char* cmd, const char* stdin_stream,
 }
 
 // Query process state on a Windows system
-void process_query_status_windows(int pid, bool wait, bool* is_running, int* exit_code)
+void process_query_status_windows(stdlib_pid pid, bool wait, bool* is_running, int* exit_code)
 {
     int wait_code;
     HANDLE hProcess;
-    DWORD dwExitCode;
+    DWORD dwExitCode,dwPid;
+    
+    dwPid = (DWORD) pid;    
     
     // Open the process with the appropriate access rights
-    hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | SYNCHRONIZE, FALSE, pid);
+    hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | SYNCHRONIZE, FALSE, dwPid);
     
     // Error opening the process, likely pid does not exist
     if (hProcess == NULL) {
@@ -179,11 +181,14 @@ void process_query_status_windows(int pid, bool wait, bool* is_running, int* exi
 // Kill a process on Windows by sending a PROCESS_TERMINATE signal. 
 // Return true if the operation succeeded, or false if it failed (process does not 
 // exist anymore, or we may not have the rights to kill the process).
-bool process_kill_windows(int pid) {
+bool process_kill_windows(stdlib_pid pid) {
     HANDLE hProcess;
+    DWORD dwPid;
+    
+    dwPid = (DWORD) pid;
 
     // Open the process with terminate rights
-    hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, pid);
+    hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, dwPid);
 
     if (hProcess == NULL) {
         // Failed to open the process; return false
@@ -208,7 +213,7 @@ bool process_kill_windows(int pid) {
 /////////////////////////////////////////////////////////////////////////////////////
 // Unix-specific code
 /////////////////////////////////////////////////////////////////////////////////////
-void process_query_status_unix(int pid, bool wait, bool* is_running, int* exit_code)
+void process_query_status_unix(stdlib_pid pid, bool wait, bool* is_running, int* exit_code)
 {
     int status;    
     int wait_code;
@@ -249,7 +254,7 @@ void process_query_status_unix(int pid, bool wait, bool* is_running, int* exit_c
 
 // Kill a process by sending a SIGKILL signal. Return .true. if succeeded, or false if not. 
 // Killing process may fail due to unexistent process, or not enough rights to kill.
-bool process_kill_unix(int pid) {
+bool process_kill_unix(stdlib_pid pid) {
     // Send the SIGKILL signal to the process
     if (kill(pid, SIGKILL) == 0) {
         // Successfully sent the signal
@@ -292,7 +297,7 @@ void process_create(const char* cmd, const char* stdin_stream, const char* stdin
 }
 
 // Cross-platform interface: query process state
-void process_query_status(int pid, bool wait, bool* is_running, int* exit_code)
+void process_query_status(stdlib_pid pid, bool wait, bool* is_running, int* exit_code)
 {
 #ifdef _WIN32
    process_query_status_windows(pid, wait, is_running, exit_code);
@@ -302,7 +307,7 @@ void process_query_status(int pid, bool wait, bool* is_running, int* exit_code)
 }
 
 // Cross-platform interface: kill process by ID
-bool process_kill(int pid)
+bool process_kill(stdlib_pid pid)
 {
 #ifdef _WIN32
    return process_kill_windows(pid);
