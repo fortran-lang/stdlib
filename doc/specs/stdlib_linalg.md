@@ -1498,7 +1498,7 @@ where \( \epsilon \) is the machine precision for the element type of `a`. It is
 Returns an array value of the same type, kind, and rank as `a` with shape `[n, m]`, that contains the pseudo-inverse matrix \( A^{+} \).
 
 Raises `LINALG_ERROR` if the underlying SVD did not converge.
-Raises `LINALG_VALUE_ERROR` if `pinva` and `a` have degenerate or incompatible sizes.
+Raises `LINALG_VALUE_ERROR` if `a` has invalid size.
 If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
