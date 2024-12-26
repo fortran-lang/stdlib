@@ -18,8 +18,8 @@ subroutine collect_suite(testsuite)
     type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
     testsuite = [ &
-        new_unittest('sum', test_sum) &
-        !new_unittest('dot_product', test_dot_product) &
+        new_unittest('sum', test_sum), &
+        new_unittest('dot_product', test_dot_product) &
     ]
 end subroutine
 
@@ -127,6 +127,82 @@ subroutine test_sum(error)
         err(1:ncalc) = err(1:ncalc) / niter 
         
         call check(error, all(err(:)<tolerance) , "complex masked sum is not accurate" )
+        if (allocated(error)) return
+    end block
+    #:endfor
+
+end subroutine
+
+subroutine test_dot_product(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    !> Internal parameters and variables
+    integer, parameter :: n = 1e3, ncalc = 3, niter = 100
+    real(sp) :: u
+    integer :: iter, i, j
+    !====================================================================================
+    #:for k1, t1, s1 in R_KINDS_TYPES
+    block
+        ${t1}$, allocatable :: x(:)
+        ${t1}$, parameter :: total_sum = 4*atan(1._${k1}$), tolerance = epsilon(1._${k1}$)*100
+        ${t1}$ :: xsum(ncalc), meanval(ncalc), err(ncalc)
+
+        allocate(x(n))
+        do i = 1, n 
+            x(i) = sqrt( 8*atan(1._${k1}$)*(real(i,kind=${k1}$)-0.5_${k1}$)/real(n,kind=${k1}$)**2 )
+        end do
+        ! scramble array
+        do i = 1, n
+            call random_number(u) 
+            j = 1 + floor(n*u)
+            call swap( x(i), x(j) )
+        end do
+        
+        err(:) = 0._${k1}$
+        do iter = 1, niter
+            xsum(1) = dot_product(x,x) ! compiler intrinsic
+            xsum(2) = fprod_kahan(x,x) ! chunked Kahan summation
+            xsum(3) = fprod(x,x)       ! chunked summation
+            err(1:ncalc) = err(1:ncalc) + abs(1._${k1}$-xsum(1:ncalc)/total_sum)
+        end do
+        err(1:ncalc) = err(1:ncalc) / niter 
+        
+        call check(error, all(err(:)<tolerance) , "real dot_product is not accurate" )
+        if (allocated(error)) return
+    end block
+    #:endfor
+
+    #:for k1, t1, s1 in C_KINDS_TYPES
+    block
+        ${t1}$, allocatable :: x(:)
+        real(${k1}$), parameter :: total_sum = 4*atan(1._${k1}$), tolerance = epsilon(1._${k1}$)*100
+        real(${k1}$) :: err(ncalc)
+        ${t1}$ :: xsum(ncalc), meanval(ncalc)
+
+        allocate(x(n))
+        do i = 1, n
+            x(i) = complex(&
+                sqrt(8*atan(1._${k1}$)*(real(i,kind=${k1}$)-0.5_${k1}$)/real(2*n,kind=${k1}$)**2),&
+                sqrt(8*atan(1._${k1}$)*(real(i+n,kind=${k1}$)-0.5_${k1}$)/real(2*n,kind=${k1}$)**2))
+        end do
+        ! scramble array
+        do i = 1, n
+            call random_number(u) 
+            j = 1 + floor(n*u)
+            call swap( x(i), x(j) )
+        end do
+        
+        err(:) = 0._${k1}$
+        do iter = 1, niter
+            xsum(1) = dot_product(x,x) ! compiler intrinsic
+            xsum(2) = fprod_kahan(x,x) ! chunked Kahan dot_product
+            xsum(3) = fprod(x,x)       ! chunked dot_product
+            err(1:ncalc) = err(1:ncalc) + abs(1._${k1}$-(xsum(1:ncalc)%re+xsum(1:ncalc)%im)/total_sum)
+        end do
+        err(1:ncalc) = err(1:ncalc) / niter 
+        
+        call check(error, all(err(:)<tolerance) , "complex dot_product is not accurate" )
         if (allocated(error)) return
     end block
     #:endfor
