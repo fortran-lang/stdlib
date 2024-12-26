@@ -42,6 +42,7 @@ module stdlib_linalg
   public :: is_diagonal
   public :: is_symmetric
   public :: is_skew_symmetric
+  public :: hermitian
   public :: is_hermitian
   public :: is_triangular
   public :: is_hessenberg
@@ -627,6 +628,57 @@ module stdlib_linalg
       module procedure is_hermitian_iint32
       module procedure is_hermitian_iint64
   end interface is_hermitian
+
+  interface hermitian
+    !! version: experimental
+    !!
+    !! Computes the Hermitian version of a rank-2 matrix.
+    !! For complex matrices, this returns `conjg(transpose(a))`.
+    !! For real or integer matrices, this returns `transpose(a)`.
+    !!
+    !! Usage:
+    !! ```
+    !! A  = reshape([(1, 2), (3, 4), (5, 6), (7, 8)], [2, 2])
+    !! AH = hermitian(A)
+    !! ```
+    !!
+    !! [Specification](../page/specs/stdlib_linalg.html#hermitian-compute-the-hermitian-version-of-a-rank-2-matrix)
+    !!
+
+    pure module function hermitian_rsp(a) result(ah)
+        real(sp), intent(in) :: a(:,:)
+        real(sp) :: ah(size(a, 2), size(a, 1))
+    end function hermitian_rsp
+    pure module function hermitian_rdp(a) result(ah)
+        real(dp), intent(in) :: a(:,:)
+        real(dp) :: ah(size(a, 2), size(a, 1))
+    end function hermitian_rdp
+    pure module function hermitian_csp(a) result(ah)
+        complex(sp), intent(in) :: a(:,:)
+        complex(sp) :: ah(size(a, 2), size(a, 1))
+    end function hermitian_csp
+    pure module function hermitian_cdp(a) result(ah)
+        complex(dp), intent(in) :: a(:,:)
+        complex(dp) :: ah(size(a, 2), size(a, 1))
+    end function hermitian_cdp
+    pure module function hermitian_iint8(a) result(ah)
+        integer(int8), intent(in) :: a(:,:)
+        integer(int8) :: ah(size(a, 2), size(a, 1))
+    end function hermitian_iint8
+    pure module function hermitian_iint16(a) result(ah)
+        integer(int16), intent(in) :: a(:,:)
+        integer(int16) :: ah(size(a, 2), size(a, 1))
+    end function hermitian_iint16
+    pure module function hermitian_iint32(a) result(ah)
+        integer(int32), intent(in) :: a(:,:)
+        integer(int32) :: ah(size(a, 2), size(a, 1))
+    end function hermitian_iint32
+    pure module function hermitian_iint64(a) result(ah)
+        integer(int64), intent(in) :: a(:,:)
+        integer(int64) :: ah(size(a, 2), size(a, 1))
+    end function hermitian_iint64
+
+  end interface hermitian
 
 
   ! Check for triangularity
@@ -5672,6 +5724,46 @@ contains
         res = .true. !otherwise A is Hermitian
       end function is_hermitian_cdp
 
+      pure module function hermitian_rsp(a) result(ah)
+        real(sp), intent(in) :: a(:,:)
+        real(sp) :: ah(size(a, 2), size(a, 1))
+        ah = transpose(a)
+      end function hermitian_rsp
+      pure module function hermitian_rdp(a) result(ah)
+        real(dp), intent(in) :: a(:,:)
+        real(dp) :: ah(size(a, 2), size(a, 1))
+        ah = transpose(a)
+      end function hermitian_rdp
+      pure module function hermitian_csp(a) result(ah)
+        complex(sp), intent(in) :: a(:,:)
+        complex(sp) :: ah(size(a, 2), size(a, 1))
+        ah = conjg(transpose(a))
+      end function hermitian_csp
+      pure module function hermitian_cdp(a) result(ah)
+        complex(dp), intent(in) :: a(:,:)
+        complex(dp) :: ah(size(a, 2), size(a, 1))
+        ah = conjg(transpose(a))
+      end function hermitian_cdp
+      pure module function hermitian_iint8(a) result(ah)
+        integer(int8), intent(in) :: a(:,:)
+        integer(int8) :: ah(size(a, 2), size(a, 1))
+        ah = transpose(a)
+      end function hermitian_iint8
+      pure module function hermitian_iint16(a) result(ah)
+        integer(int16), intent(in) :: a(:,:)
+        integer(int16) :: ah(size(a, 2), size(a, 1))
+        ah = transpose(a)
+      end function hermitian_iint16
+      pure module function hermitian_iint32(a) result(ah)
+        integer(int32), intent(in) :: a(:,:)
+        integer(int32) :: ah(size(a, 2), size(a, 1))
+        ah = transpose(a)
+      end function hermitian_iint32
+      pure module function hermitian_iint64(a) result(ah)
+        integer(int64), intent(in) :: a(:,:)
+        integer(int64) :: ah(size(a, 2), size(a, 1))
+        ah = transpose(a)
+      end function hermitian_iint64
 
       function is_triangular_rsp(A,uplo) result(res)
         real(sp), intent(in) :: A(:,:)

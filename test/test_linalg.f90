@@ -2,7 +2,7 @@
 module test_linalg
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
-    use stdlib_linalg, only: diag, eye, trace, outer_product, cross_product, kronecker_product
+    use stdlib_linalg, only: diag, eye, trace, outer_product, cross_product, kronecker_product, hermitian
     use stdlib_linalg_state, only: linalg_state_type, LINALG_SUCCESS, linalg_error_handling
 
     implicit none
@@ -53,6 +53,8 @@ contains
             new_unittest("kronecker_product_iint16", test_kronecker_product_iint16), &
             new_unittest("kronecker_product_iint32", test_kronecker_product_iint32), &
             new_unittest("kronecker_product_iint64", test_kronecker_product_iint64), &
+            new_unittest("hermitian_csp", test_hermitian_csp), &
+            new_unittest("hermitian_cdp", test_hermitian_cdp), &
             new_unittest("outer_product_rsp", test_outer_product_rsp), &
             new_unittest("outer_product_rdp", test_outer_product_rdp), &
             new_unittest("outer_product_rqp", test_outer_product_rqp), &
@@ -779,6 +781,53 @@ contains
       ! Expected: C = [1*B, 2*B] = [[1,2,3, 2,4,6], [2,4,6, 4, 8, 12]]
 
     end subroutine test_kronecker_product_iint64
+
+    subroutine test_hermitian_csp(error)
+      !> Error handling
+      type(error_type), allocatable, intent(out) :: error
+      integer, parameter :: m = 2, n = 3      
+      complex(sp), dimension(m,n) :: A
+      complex(sp), dimension(n,m) :: AT, expected, diff
+      real(sp), parameter :: tol = 1.e-6_sp
+
+      integer :: i,j
+      
+      do concurrent (i=1:m,j=1:n) 
+        A       (i,j) = cmplx(i,-j,kind=sp)
+        expected(j,i) = cmplx(i,+j,kind=sp)
+      end do 
+
+
+      AT = hermitian(A)
+
+      diff = AT - expected
+
+      call check(error, all(abs(diff) < abs(tol)), "hermitian: all(abs(diff) < abs(tol)) failed")
+
+    end subroutine test_hermitian_csp
+    subroutine test_hermitian_cdp(error)
+      !> Error handling
+      type(error_type), allocatable, intent(out) :: error
+      integer, parameter :: m = 2, n = 3      
+      complex(dp), dimension(m,n) :: A
+      complex(dp), dimension(n,m) :: AT, expected, diff
+      real(dp), parameter :: tol = 1.e-6_dp
+
+      integer :: i,j
+      
+      do concurrent (i=1:m,j=1:n) 
+        A       (i,j) = cmplx(i,-j,kind=dp)
+        expected(j,i) = cmplx(i,+j,kind=dp)
+      end do 
+
+
+      AT = hermitian(A)
+
+      diff = AT - expected
+
+      call check(error, all(abs(diff) < abs(tol)), "hermitian: all(abs(diff) < abs(tol)) failed")
+
+    end subroutine test_hermitian_cdp
 
     subroutine test_outer_product_rsp(error)
         !> Error handling
