@@ -37,16 +37,21 @@ subroutine test_sum(error)
         ${t1}$, allocatable :: x(:)
         ${t1}$, parameter :: total_sum = 4*atan(1._${k1}$), tolerance = epsilon(1._${k1}$)*100
         ${t1}$ :: xsum(ncalc), meanval(ncalc), err(ncalc)
+        logical, allocatable :: mask(:), nmask(:)
 
         allocate(x(n))
         do i = 1, n 
             x(i) = 8*atan(1._${k1}$)*(real(i,kind=${k1}$)-0.5_${k1}$)/real(n,kind=${k1}$)**2
         end do
+        allocate(mask(n),source=.false.); mask(1:n:2) = .true.
+        allocate(nmask(n)); nmask = .not.mask
         ! scramble array
         do i = 1, n
             call random_number(u) 
             j = 1 + floor(n*u)
             call swap( x(i), x(j) )
+            call swap( mask(i), mask(j) )
+            call swap( nmask(i), nmask(j) )
         end do
         
         err(:) = 0._${k1}$
@@ -60,6 +65,18 @@ subroutine test_sum(error)
         
         call check(error, all(err(:)<tolerance) , "real sum is not accurate" )
         if (allocated(error)) return
+
+        err(:) = 0._${k1}$
+        do iter = 1, niter
+            xsum(1) = sum(x,mask)+sum(x,nmask) ! compiler intrinsic
+            xsum(2) = fsum_kahan(x,mask)+fsum_kahan(x,nmask) ! chunked Kahan summation
+            xsum(3) = fsum(x,mask)+fsum(x,nmask) ! chunked summation
+            err(1:ncalc) = err(1:ncalc) + abs(1._${k1}$-xsum(1:ncalc)/total_sum)
+        end do
+        err(1:ncalc) = err(1:ncalc) / niter 
+        
+        call check(error, all(err(:)<tolerance) , "masked real sum is not accurate" )
+        if (allocated(error)) return
     end block
     #:endfor
 
@@ -69,6 +86,7 @@ subroutine test_sum(error)
         real(${k1}$), parameter :: total_sum = 4*atan(1._${k1}$), tolerance = epsilon(1._${k1}$)*100
         real(${k1}$) :: err(ncalc)
         ${t1}$ :: xsum(ncalc), meanval(ncalc)
+        logical, allocatable :: mask(:), nmask(:)
 
         allocate(x(n))
         do i = 1, n
@@ -76,11 +94,15 @@ subroutine test_sum(error)
                 8*atan(1._${k1}$)*(real(i,kind=${k1}$)-0.5_${k1}$)/real(2*n,kind=${k1}$)**2,&
                 8*atan(1._${k1}$)*(real(i+n,kind=${k1}$)-0.5_${k1}$)/real(2*n,kind=${k1}$)**2)
         end do
+        allocate(mask(n),source=.false.); mask(1:n:2) = .true.
+        allocate(nmask(n)); nmask = .not.mask
         ! scramble array
         do i = 1, n
             call random_number(u) 
             j = 1 + floor(n*u)
             call swap( x(i), x(j) )
+            call swap( mask(i), mask(j) )
+            call swap( nmask(i), nmask(j) )
         end do
         
         err(:) = 0._${k1}$
@@ -93,6 +115,18 @@ subroutine test_sum(error)
         err(1:ncalc) = err(1:ncalc) / niter 
         
         call check(error, all(err(:)<tolerance) , "complex sum is not accurate" )
+        if (allocated(error)) return
+
+        err(:) = 0._${k1}$
+        do iter = 1, niter
+            xsum(1) = sum(x,mask)+sum(x,nmask) ! compiler intrinsic
+            xsum(2) = fsum_kahan(x,mask)+fsum_kahan(x,nmask) ! chunked Kahan summation
+            xsum(3) = fsum(x,mask)+fsum(x,nmask) ! chunked summation
+            err(1:ncalc) = err(1:ncalc) + abs(1._${k1}$-(xsum(1:ncalc)%re+xsum(1:ncalc)%im)/total_sum)
+        end do
+        err(1:ncalc) = err(1:ncalc) / niter 
+        
+        call check(error, all(err(:)<tolerance) , "complex masked sum is not accurate" )
         if (allocated(error)) return
     end block
     #:endfor
