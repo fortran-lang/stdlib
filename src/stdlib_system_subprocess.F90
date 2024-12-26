@@ -82,7 +82,7 @@ contains
     end subroutine sleep
 
     !> Open a new process
-    module type(process_type) function process_open_cmd(cmd,wait,stdin,want_stdout,want_stderr) result(process)
+    module function process_open_cmd(cmd,wait,stdin,want_stdout,want_stderr) result(process)
         !> The command and arguments
         character(*), intent(in) :: cmd
         !> Optional character input to be sent to the process via pipe
@@ -91,13 +91,15 @@ contains
         logical, optional, intent(in) :: wait
         !> Require collecting output
         logical, optional, intent(in) :: want_stdout, want_stderr
+        !> The output process handler
+        type(process_type) :: process        
         
         process = process_open_args([cmd],wait,stdin,want_stdout,want_stderr)
         
     end function process_open_cmd
 
     !> Open a new process
-    module type(process_type) function process_open_args(args,wait,stdin,want_stdout,want_stderr) result(process)
+    module function process_open_args(args,wait,stdin,want_stdout,want_stderr) result(process)
         !> The command and arguments
         character(*), intent(in) :: args(:)
         !> Optional character input to be sent to the process via pipe
@@ -106,6 +108,8 @@ contains
         logical, optional, intent(in) :: wait
         !> Require collecting output
         logical, optional, intent(in) :: want_stdout, want_stderr
+        !> The output process handler
+        type(process_type) :: process
         
         real(RTICKS) :: count_rate
         logical :: asynchronous, collect_stdout, collect_stderr, has_stdin
