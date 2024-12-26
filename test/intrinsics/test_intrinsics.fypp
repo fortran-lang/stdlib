@@ -45,20 +45,54 @@ subroutine test_sum(error)
         ! scramble array
         do i = 1, n
             call random_number(u) 
-            j = 1 + FLOOR(n*u)
+            j = 1 + floor(n*u)
             call swap( x(i), x(j) )
         end do
         
         err(:) = 0._${k1}$
         do iter = 1, niter
-            xsum(1) = sum(x)
-            xsum(2) = fsum_kahan(x)
-            xsum(3) = fsum(x) 
+            xsum(1) = sum(x)        ! compiler intrinsic
+            xsum(2) = fsum_kahan(x) ! chunked Kahan summation
+            xsum(3) = fsum(x)       ! chunked summation
             err(1:ncalc) = err(1:ncalc) + abs(1._${k1}$-xsum(1:ncalc)/total_sum)
         end do
         err(1:ncalc) = err(1:ncalc) / niter 
-        print *, err
-        call check(error, all(err(:)<tolerance) )
+        
+        call check(error, all(err(:)<tolerance) , "real sum is not accurate" )
+        if (allocated(error)) return
+    end block
+    #:endfor
+
+    #:for k1, t1, s1 in C_KINDS_TYPES
+    block
+        ${t1}$, allocatable :: x(:)
+        real(${k1}$), parameter :: total_sum = 4*atan(1._${k1}$), tolerance = epsilon(1._${k1}$)*100
+        real(${k1}$) :: err(ncalc)
+        ${t1}$ :: xsum(ncalc), meanval(ncalc)
+
+        allocate(x(n))
+        do i = 1, n
+            x(i) = complex(&
+                8*atan(1._${k1}$)*(real(i,kind=${k1}$)-0.5_${k1}$)/real(2*n,kind=${k1}$)**2,&
+                8*atan(1._${k1}$)*(real(i+n,kind=${k1}$)-0.5_${k1}$)/real(2*n,kind=${k1}$)**2)
+        end do
+        ! scramble array
+        do i = 1, n
+            call random_number(u) 
+            j = 1 + floor(n*u)
+            call swap( x(i), x(j) )
+        end do
+        
+        err(:) = 0._${k1}$
+        do iter = 1, niter
+            xsum(1) = sum(x)        ! compiler intrinsic
+            xsum(2) = fsum_kahan(x) ! chunked Kahan summation
+            xsum(3) = fsum(x)       ! chunked summation
+            err(1:ncalc) = err(1:ncalc) + abs(1._${k1}$-(xsum(1:ncalc)%re+xsum(1:ncalc)%im)/total_sum)
+        end do
+        err(1:ncalc) = err(1:ncalc) / niter 
+        
+        call check(error, all(err(:)<tolerance) , "complex sum is not accurate" )
         if (allocated(error)) return
     end block
     #:endfor
