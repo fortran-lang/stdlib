@@ -49,7 +49,7 @@ submodule (stdlib_system) stdlib_system_subprocess
         subroutine process_wait(seconds) bind(C,name='process_wait')
             import c_float
             implicit none
-            real(c_float), intent(in) :: seconds
+            real(c_float), intent(in), value :: seconds
         end subroutine process_wait            
         
         ! Return path to the null device
@@ -76,8 +76,12 @@ contains
     ! Call system-dependent wait implementation
     module subroutine sleep(millisec)
         integer, intent(in) :: millisec
+        
+        real(c_float) :: seconds
+        
+        seconds = 0.001_c_float*max(0,millisec)
                         
-        call process_wait(real(0.001*real(max(0,millisec),c_float),c_float))
+        call process_wait(seconds)
         
     end subroutine sleep
 
@@ -262,8 +266,16 @@ contains
         ! Optional max wait time in seconds
         real, optional, intent(in) :: max_wait_time
 
+        integer :: sleep_interval
         real(RTICKS) :: wait_time, elapsed
         integer(TICKS) :: start_time, current_time, count_rate
+        
+        ! Sleep interval ms
+        integer, parameter :: MIN_WAIT_MS = 1
+        integer, parameter :: MAX_WAIT_MS = 100
+        
+        ! Starting sleep interval: 1ms
+        sleep_interval = MIN_WAIT_MS
 
         ! Determine the wait time
         if (present(max_wait_time)) then
@@ -279,9 +291,11 @@ contains
 
         ! Wait loop
         wait_loop: do while (process_is_running(process) .and. elapsed <= wait_time)
-            
-            ! Small sleep to avoid CPU hogging (1 ms)
-            call sleep(1)
+        
+            ! Small sleep to avoid CPU hogging, with exponential backoff  (1 ms)
+            ! from 1ms up to 100ms
+            call sleep(millisec=sleep_interval)
+            sleep_interval = min(sleep_interval*2, MAX_WAIT_MS)
             
             call system_clock(current_time)
             elapsed = real(current_time - start_time, RTICKS) / count_rate
