@@ -529,7 +529,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, ${chunk}$
-                    y(col(:,j)) = y(col(:,j)) + alpha_ * a(:,j) * x(:)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
                 end do
             end do
         end subroutine
