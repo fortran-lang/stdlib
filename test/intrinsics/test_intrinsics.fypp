@@ -1,0 +1,94 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set RC_KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES
+
+module test_intrinsics
+    use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
+    use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
+    use stdlib_intrinsics
+    use stdlib_math, only: swap
+    implicit none
+    
+contains
+
+!> Collect all exported unit tests
+subroutine collect_suite(testsuite)
+    !> Collection of tests
+    type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+    testsuite = [ &
+        new_unittest('sum', test_sum) &
+        !new_unittest('dot_product', test_dot_product) &
+    ]
+end subroutine
+
+subroutine test_sum(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+
+    !> Internal parameters and variables
+    integer, parameter :: n = 1e3, ncalc = 3, niter = 100
+    real(sp) :: u
+    integer :: iter, i, j
+    !====================================================================================
+    #:for k1, t1, s1 in R_KINDS_TYPES
+    block
+        ${t1}$, allocatable :: x(:)
+        ${t1}$, parameter :: total_sum = 4*atan(1._${k1}$), tolerance = epsilon(1._${k1}$)*100
+        ${t1}$ :: xsum(ncalc), meanval(ncalc), err(ncalc)
+
+        allocate(x(n))
+        do i = 1, n 
+            x(i) = 8*atan(1._${k1}$)*(real(i,kind=${k1}$)-0.5_${k1}$)/real(n,kind=${k1}$)**2
+        end do
+        ! scramble array
+        do i = 1, n
+            call random_number(u) 
+            j = 1 + FLOOR(n*u)
+            call swap( x(i), x(j) )
+        end do
+        
+        err(:) = 0._${k1}$
+        do iter = 1, niter
+            xsum(1) = sum(x)
+            xsum(2) = fsum_kahan(x)
+            xsum(3) = fsum(x) 
+            err(1:ncalc) = err(1:ncalc) + abs(1._${k1}$-xsum(1:ncalc)/total_sum)
+        end do
+        err(1:ncalc) = err(1:ncalc) / niter 
+        print *, err
+        call check(error, all(err(:)<tolerance) )
+        if (allocated(error)) return
+    end block
+    #:endfor
+
+end subroutine
+    
+end module test_intrinsics
+
+program tester
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_intrinsics, only : collect_suite
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("sparse", collect_suite) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program
