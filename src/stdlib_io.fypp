@@ -167,7 +167,7 @@ contains
           read (s,*,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),i,trim(filename) 
+             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
              call error_stop(msg=trim(msgout))
           end if          
           
@@ -178,7 +178,7 @@ contains
           read (s,fmt_,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),i,trim(filename) 
+             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
              call error_stop(msg=trim(msgout))
           end if             
           
@@ -187,7 +187,7 @@ contains
 
       close(s)
       
-      1 format('loadtxt: error <',a,'> reading line ',i0,' of ',a,'.')
+      1 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
 
     end subroutine loadtxt_${t1[0]}$${k1}$
   #:endfor
@@ -230,14 +230,14 @@ contains
                 iostat=ios,iomsg=iomsg) d(i, :)
         
         if (ios/=0) then 
-           write(msgout,1) trim(iomsg),i,trim(filename) 
+           write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
            call error_stop(msg=trim(msgout))
         end if           
         
       end do
       close(s)
       
-      1 format('savetxt: error <',a,'> writing line ',i0,' of ',a,'.')
+      1 format('savetxt: error <',a,'> writing ',i0,' values to line ',i0,' of ',a,'.')
       
     end subroutine savetxt_${t1[0]}$${k1}$
   #:endfor
