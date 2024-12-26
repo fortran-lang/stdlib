@@ -77,7 +77,7 @@ contains
     module subroutine sleep(millisec)
         integer, intent(in) :: millisec
                         
-        call process_wait(real(0.001*millisec,c_float))
+        call process_wait(real(0.001*real(max(0,millisec),c_float),c_float))
         
     end subroutine sleep
 

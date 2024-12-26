@@ -109,9 +109,6 @@ void process_create_windows(const char* cmd, const char* stdin_stream,
         snprintf(full_cmd, full_cmd_len, "%s", cmd);
     }
 
-    // Free the allocated memory
-    free(full_cmd);
-    
     // Create the process
     BOOL success = CreateProcess(
         NULL,               // Application name
@@ -126,8 +123,11 @@ void process_create_windows(const char* cmd, const char* stdin_stream,
         &pi                 // PROCESS_INFORMATION
     );
 
+    // Free the allocated memory
+    free(full_cmd);    
+    
     if (!success) {
-        fprintf(stderr, "CreateProcess failed (%lud).\n", GetLastError());
+        fprintf(stderr, "CreateProcess failed (%lu).\n", GetLastError());
         return;
     }
 
@@ -333,15 +333,18 @@ bool process_kill(stdlib_pid pid)
 void process_wait(float seconds)
 {
 #ifdef _WIN32
-   DWORD dwMilliseconds = 1000*seconds;
+   DWORD dwMilliseconds = (DWORD) (seconds * 1000);
    Sleep(dwMilliseconds);
 #else
    int ierr;
    
-   struct timespec ts_remaining;
-   ts_remaining.tv_sec  = seconds;
-   ts_remaining.tv_nsec = seconds * 1000000000L;
-
+   unsigned int ms = (unsigned int) (seconds * 1000);
+   struct timespec ts_remaining =
+   { 
+     ms / 1000, 
+     (ms % 1000) * 1000000L 
+   };   
+   
    do
    {
      struct timespec ts_sleep = ts_remaining;
@@ -358,7 +361,7 @@ void process_wait(float seconds)
          fprintf(stderr, "nanosleep() bad milliseconds value\n");
          exit(EINVAL);
        case EFAULT:
-         fprintf(stderr, "nanosleep() bad milliseconds value\n");
+         fprintf(stderr, "nanosleep() problem copying information to user space\n");
          exit(EFAULT);
        case ENOSYS:
          fprintf(stderr, "nanosleep() not supported on this system\n");

@@ -30,7 +30,7 @@ program example_process_kill
 
     ! Verify the process is no longer running
     running = is_running(process)
-    print *, "Process running after kill:", running
+    print *, "Process running after kill:", running,' runtime=',elapsed(process)
 
     stop 0
 

@@ -5,8 +5,8 @@ program run_async
 
     type(process_type) :: p
 
-    ! Run an asynchronous process to sleep for 5 seconds
-    p = run("sleep 3", wait=.false.)
+    ! Run an asynchronous process to sleep for 1 second
+    p = run("sleep 1", wait=.false.)
 
     ! Check if the process is running
     if (is_running(p)) then
