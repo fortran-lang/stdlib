@@ -165,7 +165,7 @@ contains
           read (s,*,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),i,trim(filename) 
+             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
              call error_stop(msg=trim(msgout))
           end if          
           
@@ -176,7 +176,7 @@ contains
           read (s,fmt_,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),i,trim(filename) 
+             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
              call error_stop(msg=trim(msgout))
           end if             
           
@@ -185,7 +185,7 @@ contains
 
       close(s)
       
-      1 format('loadtxt: error <',a,'> reading line ',i0,' of ',a,'.')
+      1 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
 
     end subroutine loadtxt_rsp
     subroutine  loadtxt_rdp(filename, d, skiprows, max_rows, fmt)
@@ -265,7 +265,7 @@ contains
           read (s,*,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),i,trim(filename) 
+             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
              call error_stop(msg=trim(msgout))
           end if          
           
@@ -276,7 +276,7 @@ contains
           read (s,fmt_,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),i,trim(filename) 
+             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
              call error_stop(msg=trim(msgout))
           end if             
           
@@ -285,7 +285,7 @@ contains
 
       close(s)
       
-      1 format('loadtxt: error <',a,'> reading line ',i0,' of ',a,'.')
+      1 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
 
     end subroutine loadtxt_rdp
     subroutine  loadtxt_iint8(filename, d, skiprows, max_rows, fmt)
@@ -365,7 +365,7 @@ contains
           read (s,*,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),i,trim(filename) 
+             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
              call error_stop(msg=trim(msgout))
           end if          
           
@@ -376,7 +376,7 @@ contains
           read (s,fmt_,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),i,trim(filename) 
+             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
              call error_stop(msg=trim(msgout))
           end if             
           
@@ -385,7 +385,7 @@ contains
 
       close(s)
       
-      1 format('loadtxt: error <',a,'> reading line ',i0,' of ',a,'.')
+      1 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
 
     end subroutine loadtxt_iint8
     subroutine  loadtxt_iint16(filename, d, skiprows, max_rows, fmt)
@@ -465,7 +465,7 @@ contains
           read (s,*,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),i,trim(filename) 
+             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
              call error_stop(msg=trim(msgout))
           end if          
           
@@ -476,7 +476,7 @@ contains
           read (s,fmt_,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),i,trim(filename) 
+             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
              call error_stop(msg=trim(msgout))
           end if             
           
@@ -485,7 +485,7 @@ contains
 
       close(s)
       
-      1 format('loadtxt: error <',a,'> reading line ',i0,' of ',a,'.')
+      1 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
 
     end subroutine loadtxt_iint16
     subroutine  loadtxt_iint32(filename, d, skiprows, max_rows, fmt)
@@ -565,7 +565,7 @@ contains
           read (s,*,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),i,trim(filename) 
+             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
              call error_stop(msg=trim(msgout))
           end if          
           
@@ -576,7 +576,7 @@ contains
           read (s,fmt_,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),i,trim(filename) 
+             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
              call error_stop(msg=trim(msgout))
           end if             
           
@@ -585,7 +585,7 @@ contains
 
       close(s)
       
-      1 format('loadtxt: error <',a,'> reading line ',i0,' of ',a,'.')
+      1 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
 
     end subroutine loadtxt_iint32
     subroutine  loadtxt_iint64(filename, d, skiprows, max_rows, fmt)
@@ -665,7 +665,7 @@ contains
           read (s,*,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),i,trim(filename) 
+             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
              call error_stop(msg=trim(msgout))
           end if          
           
@@ -676,7 +676,7 @@ contains
           read (s,fmt_,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),i,trim(filename) 
+             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
              call error_stop(msg=trim(msgout))
           end if             
           
@@ -685,7 +685,7 @@ contains
 
       close(s)
       
-      1 format('loadtxt: error <',a,'> reading line ',i0,' of ',a,'.')
+      1 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
 
     end subroutine loadtxt_iint64
     subroutine  loadtxt_csp(filename, d, skiprows, max_rows, fmt)
@@ -766,7 +766,7 @@ contains
           read (s,*,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),i,trim(filename) 
+             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
              call error_stop(msg=trim(msgout))
           end if          
           
@@ -777,7 +777,7 @@ contains
           read (s,fmt_,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),i,trim(filename) 
+             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
              call error_stop(msg=trim(msgout))
           end if             
           
@@ -786,7 +786,7 @@ contains
 
       close(s)
       
-      1 format('loadtxt: error <',a,'> reading line ',i0,' of ',a,'.')
+      1 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
 
     end subroutine loadtxt_csp
     subroutine  loadtxt_cdp(filename, d, skiprows, max_rows, fmt)
@@ -867,7 +867,7 @@ contains
           read (s,*,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),i,trim(filename) 
+             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
              call error_stop(msg=trim(msgout))
           end if          
           
@@ -878,7 +878,7 @@ contains
           read (s,fmt_,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),i,trim(filename) 
+             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
              call error_stop(msg=trim(msgout))
           end if             
           
@@ -887,7 +887,7 @@ contains
 
       close(s)
       
-      1 format('loadtxt: error <',a,'> reading line ',i0,' of ',a,'.')
+      1 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
 
     end subroutine loadtxt_cdp
 
@@ -920,14 +920,14 @@ contains
                 iostat=ios,iomsg=iomsg) d(i, :)
         
         if (ios/=0) then 
-           write(msgout,1) trim(iomsg),i,trim(filename) 
+           write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
            call error_stop(msg=trim(msgout))
         end if           
         
       end do
       close(s)
       
-      1 format('savetxt: error <',a,'> writing line ',i0,' of ',a,'.')
+      1 format('savetxt: error <',a,'> writing ',i0,' values to line ',i0,' of ',a,'.')
       
     end subroutine savetxt_rsp
     subroutine savetxt_rdp(filename, d)
@@ -958,14 +958,14 @@ contains
                 iostat=ios,iomsg=iomsg) d(i, :)
         
         if (ios/=0) then 
-           write(msgout,1) trim(iomsg),i,trim(filename) 
+           write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
            call error_stop(msg=trim(msgout))
         end if           
         
       end do
       close(s)
       
-      1 format('savetxt: error <',a,'> writing line ',i0,' of ',a,'.')
+      1 format('savetxt: error <',a,'> writing ',i0,' values to line ',i0,' of ',a,'.')
       
     end subroutine savetxt_rdp
     subroutine savetxt_iint8(filename, d)
@@ -996,14 +996,14 @@ contains
                 iostat=ios,iomsg=iomsg) d(i, :)
         
         if (ios/=0) then 
-           write(msgout,1) trim(iomsg),i,trim(filename) 
+           write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
            call error_stop(msg=trim(msgout))
         end if           
         
       end do
       close(s)
       
-      1 format('savetxt: error <',a,'> writing line ',i0,' of ',a,'.')
+      1 format('savetxt: error <',a,'> writing ',i0,' values to line ',i0,' of ',a,'.')
       
     end subroutine savetxt_iint8
     subroutine savetxt_iint16(filename, d)
@@ -1034,14 +1034,14 @@ contains
                 iostat=ios,iomsg=iomsg) d(i, :)
         
         if (ios/=0) then 
-           write(msgout,1) trim(iomsg),i,trim(filename) 
+           write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
            call error_stop(msg=trim(msgout))
         end if           
         
       end do
       close(s)
       
-      1 format('savetxt: error <',a,'> writing line ',i0,' of ',a,'.')
+      1 format('savetxt: error <',a,'> writing ',i0,' values to line ',i0,' of ',a,'.')
       
     end subroutine savetxt_iint16
     subroutine savetxt_iint32(filename, d)
@@ -1072,14 +1072,14 @@ contains
                 iostat=ios,iomsg=iomsg) d(i, :)
         
         if (ios/=0) then 
-           write(msgout,1) trim(iomsg),i,trim(filename) 
+           write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
            call error_stop(msg=trim(msgout))
         end if           
         
       end do
       close(s)
       
-      1 format('savetxt: error <',a,'> writing line ',i0,' of ',a,'.')
+      1 format('savetxt: error <',a,'> writing ',i0,' values to line ',i0,' of ',a,'.')
       
     end subroutine savetxt_iint32
     subroutine savetxt_iint64(filename, d)
@@ -1110,14 +1110,14 @@ contains
                 iostat=ios,iomsg=iomsg) d(i, :)
         
         if (ios/=0) then 
-           write(msgout,1) trim(iomsg),i,trim(filename) 
+           write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
            call error_stop(msg=trim(msgout))
         end if           
         
       end do
       close(s)
       
-      1 format('savetxt: error <',a,'> writing line ',i0,' of ',a,'.')
+      1 format('savetxt: error <',a,'> writing ',i0,' values to line ',i0,' of ',a,'.')
       
     end subroutine savetxt_iint64
     subroutine savetxt_csp(filename, d)
@@ -1148,14 +1148,14 @@ contains
                 iostat=ios,iomsg=iomsg) d(i, :)
         
         if (ios/=0) then 
-           write(msgout,1) trim(iomsg),i,trim(filename) 
+           write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
            call error_stop(msg=trim(msgout))
         end if           
         
       end do
       close(s)
       
-      1 format('savetxt: error <',a,'> writing line ',i0,' of ',a,'.')
+      1 format('savetxt: error <',a,'> writing ',i0,' values to line ',i0,' of ',a,'.')
       
     end subroutine savetxt_csp
     subroutine savetxt_cdp(filename, d)
@@ -1186,14 +1186,14 @@ contains
                 iostat=ios,iomsg=iomsg) d(i, :)
         
         if (ios/=0) then 
-           write(msgout,1) trim(iomsg),i,trim(filename) 
+           write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
            call error_stop(msg=trim(msgout))
         end if           
         
       end do
       close(s)
       
-      1 format('savetxt: error <',a,'> writing line ',i0,' of ',a,'.')
+      1 format('savetxt: error <',a,'> writing ',i0,' values to line ',i0,' of ',a,'.')
       
     end subroutine savetxt_cdp
 

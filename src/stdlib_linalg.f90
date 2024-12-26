@@ -22,6 +22,9 @@ module stdlib_linalg
   public :: inv
   public :: invert
   public :: operator(.inv.)
+  public :: pinv
+  public :: pseudoinvert
+  public :: operator(.pinv.)
   public :: lstsq
   public :: lstsq_space
   public :: norm
@@ -1950,6 +1953,203 @@ module stdlib_linalg
          complex(dp), allocatable :: inva(:,:)        
     end function stdlib_linalg_inverse_z_operator
   end interface operator(.inv.)
+
+
+  ! Moore-Penrose Pseudo-Inverse: Function interface
+  interface pinv
+    !! version: experimental 
+    !!
+    !! Pseudo-inverse of a matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#pinv-moore-penrose-pseudo-inverse-of-a-matrix))
+    !!
+    !!### Summary
+    !! This interface provides methods for computing the Moore-Penrose pseudo-inverse of a matrix.
+    !! The pseudo-inverse \( A^{+} \) is a generalization of the matrix inverse, computed for square, singular, 
+    !! or rectangular matrices. It is defined such that it satisfies the conditions:
+    !! - \( A \cdot A^{+} \cdot A = A \)
+    !! - \( A^{+} \cdot A \cdot A^{+} = A^{+} \)
+    !! - \( (A \cdot A^{+})^T = A \cdot A^{+} \)
+    !! - \( (A^{+} \cdot A)^T = A^{+} \cdot A \)
+    !!
+    !!### Description
+    !!     
+    !! This function interface provides methods that return the Moore-Penrose pseudo-inverse of a matrix.    
+    !! Supported data types include `real` and `complex`. 
+    !! The pseudo-inverse \( A^{+} \) is returned as a function result. The computation is based on the 
+    !! singular value decomposition (SVD). An optional relative tolerance `rtol` is provided to control the 
+    !! inclusion of singular values during inversion. Singular values below \( \text{rtol} \cdot \sigma_{\max} \) 
+    !! are treated as zero, where \( \sigma_{\max} \) is the largest singular value. If `rtol` is not provided, 
+    !! a default threshold is applied.
+    !! 
+    !! Exceptions are raised in case of computational errors or invalid input, and trigger an `error stop` 
+    !! if the state flag `err` is not provided. 
+    !!
+    !!@note The provided functions are intended for both rectangular and square matrices.
+    !!       
+    module function stdlib_linalg_pseudoinverse_s(a,rtol,err) result(pinva)
+        !> Input matrix a[m,n]
+        real(sp), intent(in), target :: a(:,:)
+        !> [optional] Relative tolerance for singular value cutoff
+        real(sp), optional, intent(in) :: rtol         
+        !> [optional] State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+        !> Output matrix pseudo-inverse [n,m]
+        real(sp) :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))         
+     end function stdlib_linalg_pseudoinverse_s
+    module function stdlib_linalg_pseudoinverse_d(a,rtol,err) result(pinva)
+        !> Input matrix a[m,n]
+        real(dp), intent(in), target :: a(:,:)
+        !> [optional] Relative tolerance for singular value cutoff
+        real(dp), optional, intent(in) :: rtol         
+        !> [optional] State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+        !> Output matrix pseudo-inverse [n,m]
+        real(dp) :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))         
+     end function stdlib_linalg_pseudoinverse_d
+    module function stdlib_linalg_pseudoinverse_c(a,rtol,err) result(pinva)
+        !> Input matrix a[m,n]
+        complex(sp), intent(in), target :: a(:,:)
+        !> [optional] Relative tolerance for singular value cutoff
+        real(sp), optional, intent(in) :: rtol         
+        !> [optional] State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+        !> Output matrix pseudo-inverse [n,m]
+        complex(sp) :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))         
+     end function stdlib_linalg_pseudoinverse_c
+    module function stdlib_linalg_pseudoinverse_z(a,rtol,err) result(pinva)
+        !> Input matrix a[m,n]
+        complex(dp), intent(in), target :: a(:,:)
+        !> [optional] Relative tolerance for singular value cutoff
+        real(dp), optional, intent(in) :: rtol         
+        !> [optional] State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+        !> Output matrix pseudo-inverse [n,m]
+        complex(dp) :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))         
+     end function stdlib_linalg_pseudoinverse_z
+  end interface pinv
+
+  ! Moore-Penrose Pseudo-Inverse: Subroutine interface 
+  interface pseudoinvert
+    !! version: experimental 
+    !!
+    !! Computation of the Moore-Penrose pseudo-inverse
+    !! ([Specification](../page/specs/stdlib_linalg.html#pseudoinvert-moore-penrose-pseudo-inverse-of-a-matrix))
+    !!
+    !!### Summary
+    !! This interface provides methods for computing the Moore-Penrose pseudo-inverse of a rectangular 
+    !! or square `real` or `complex` matrix.
+    !! The pseudo-inverse \( A^{+} \) generalizes the matrix inverse and satisfies the properties:
+    !! - \( A \cdot A^{+} \cdot A = A \)
+    !! - \( A^{+} \cdot A \cdot A^{+} = A^{+} \)
+    !! - \( (A \cdot A^{+})^T = A \cdot A^{+} \)
+    !! - \( (A^{+} \cdot A)^T = A^{+} \cdot A \)
+    !!
+    !!### Description
+    !!     
+    !! This subroutine interface provides a way to compute the Moore-Penrose pseudo-inverse of a matrix.    
+    !! Supported data types include `real` and `complex`. 
+    !! Users must provide two matrices: the input matrix `a` [m,n] and the output pseudo-inverse `pinva` [n,m]. 
+    !! The input matrix `a` is used to compute the pseudo-inverse and is not modified. The computed 
+    !! pseudo-inverse is stored in `pinva`. The computation is based on the singular value decomposition (SVD).
+    !! 
+    !! An optional relative tolerance `rtol` is used to control the inclusion of singular values in the 
+    !! computation. Singular values below \( \text{rtol} \cdot \sigma_{\max} \) are treated as zero, 
+    !! where \( \sigma_{\max} \) is the largest singular value. If `rtol` is not provided, a default 
+    !! threshold is applied. 
+    !! 
+    !! Exceptions are raised in case of computational errors or invalid input, and trigger an `error stop` 
+    !! if the state flag `err` is not provided.
+    !!
+    !!@note The provided subroutines are intended for both rectangular and square matrices.
+    !!       
+    module subroutine stdlib_linalg_pseudoinvert_s(a,pinva,rtol,err)
+        !> Input matrix a[m,n]
+        real(sp), intent(inout) :: a(:,:)
+        !> Output pseudo-inverse matrix [n,m]
+        real(sp), intent(out) :: pinva(:,:)
+        !> [optional] Relative tolerance for singular value cutoff
+        real(sp), optional, intent(in) :: rtol
+        !> [optional] State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_pseudoinvert_s
+    module subroutine stdlib_linalg_pseudoinvert_d(a,pinva,rtol,err)
+        !> Input matrix a[m,n]
+        real(dp), intent(inout) :: a(:,:)
+        !> Output pseudo-inverse matrix [n,m]
+        real(dp), intent(out) :: pinva(:,:)
+        !> [optional] Relative tolerance for singular value cutoff
+        real(dp), optional, intent(in) :: rtol
+        !> [optional] State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_pseudoinvert_d
+    module subroutine stdlib_linalg_pseudoinvert_c(a,pinva,rtol,err)
+        !> Input matrix a[m,n]
+        complex(sp), intent(inout) :: a(:,:)
+        !> Output pseudo-inverse matrix [n,m]
+        complex(sp), intent(out) :: pinva(:,:)
+        !> [optional] Relative tolerance for singular value cutoff
+        real(sp), optional, intent(in) :: rtol
+        !> [optional] State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_pseudoinvert_c
+    module subroutine stdlib_linalg_pseudoinvert_z(a,pinva,rtol,err)
+        !> Input matrix a[m,n]
+        complex(dp), intent(inout) :: a(:,:)
+        !> Output pseudo-inverse matrix [n,m]
+        complex(dp), intent(out) :: pinva(:,:)
+        !> [optional] Relative tolerance for singular value cutoff
+        real(dp), optional, intent(in) :: rtol
+        !> [optional] State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_pseudoinvert_z
+  end interface pseudoinvert
+
+  ! Moore-Penrose Pseudo-Inverse: Operator interface
+  interface operator(.pinv.)
+    !! version: experimental 
+    !!
+    !! Pseudo-inverse operator of a matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#pinv-moore-penrose-pseudo-inverse-operator))
+    !!
+    !!### Summary
+    !! Operator interface for computing the Moore-Penrose pseudo-inverse of a `real` or `complex` matrix.
+    !!
+    !!### Description
+    !! 
+    !! This operator interface provides a convenient way to compute the Moore-Penrose pseudo-inverse 
+    !! of a matrix. Supported data types include `real` and `complex`. The pseudo-inverse \( A^{+} \) 
+    !! is computed using singular value decomposition (SVD), with singular values below an internal 
+    !! threshold treated as zero.
+    !! 
+    !! For computational errors or invalid input, the function may return a matrix filled with NaNs.
+    !!
+    !!@note The provided functions are intended for both rectangular and square matrices.
+    !!
+    module function stdlib_linalg_pinv_s_operator(a) result(pinva)
+         !> Input matrix a[m,n]
+         real(sp), intent(in), target :: a(:,:)
+         !> Result pseudo-inverse matrix
+         real(sp) :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))
+    end function stdlib_linalg_pinv_s_operator
+    module function stdlib_linalg_pinv_d_operator(a) result(pinva)
+         !> Input matrix a[m,n]
+         real(dp), intent(in), target :: a(:,:)
+         !> Result pseudo-inverse matrix
+         real(dp) :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))
+    end function stdlib_linalg_pinv_d_operator
+    module function stdlib_linalg_pinv_c_operator(a) result(pinva)
+         !> Input matrix a[m,n]
+         complex(sp), intent(in), target :: a(:,:)
+         !> Result pseudo-inverse matrix
+         complex(sp) :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))
+    end function stdlib_linalg_pinv_c_operator
+    module function stdlib_linalg_pinv_z_operator(a) result(pinva)
+         !> Input matrix a[m,n]
+         complex(dp), intent(in), target :: a(:,:)
+         !> Result pseudo-inverse matrix
+         complex(dp) :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))
+    end function stdlib_linalg_pinv_z_operator
+  end interface operator(.pinv.)
 
 
   ! Eigendecomposition of a square matrix: eigenvalues, and optionally eigenvectors
