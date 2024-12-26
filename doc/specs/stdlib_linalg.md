@@ -506,6 +506,37 @@ Returns a `logical` scalar that is `.true.` if the input matrix is skew-symmetri
 {!example/linalg/example_is_skew_symmetric.f90!}
 ```
 
+## `hermitian` - Compute the Hermitian version of a rank-2 matrix
+
+### Status
+
+Experimental
+
+### Description
+
+Compute the Hermitian version of a rank-2 matrix. 
+For `complex` matrices, the function returns the conjugate transpose (`conjg(transpose(a))`). 
+For `real` or `integer` matrices, the function returns the transpose (`transpose(a)`).
+
+### Syntax
+
+`h = ` [[stdlib_linalg(module):hermitian(interface)]] `(a)`
+
+### Arguments
+
+`a`: Shall be a rank-2 array of type `integer`, `real`, or `complex`. The input matrix `a` is not modified.
+
+### Return value
+
+Returns a rank-2 array of the same shape and type as `a`. If `a` is of type `complex`, the Hermitian matrix is computed as `conjg(transpose(a))`. 
+For `real` or `integer` types, it is equivalent to the intrinsic `transpose(a)`.
+
+### Example
+
+```fortran
+{!example/linalg/example_hermitian.f90!}
+```
+
 ## `is_hermitian` - Checks if a matrix is Hermitian
 
 ### Status

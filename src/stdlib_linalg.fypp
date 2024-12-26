@@ -49,6 +49,7 @@ module stdlib_linalg
   public :: is_diagonal
   public :: is_symmetric
   public :: is_skew_symmetric
+  public :: hermitian
   public :: is_hermitian
   public :: is_triangular
   public :: is_hessenberg
@@ -308,6 +309,31 @@ module stdlib_linalg
       module procedure is_hermitian_${t1[0]}$${k1}$
     #:endfor
   end interface is_hermitian
+
+  interface hermitian
+    !! version: experimental
+    !!
+    !! Computes the Hermitian version of a rank-2 matrix.
+    !! For complex matrices, this returns `conjg(transpose(a))`.
+    !! For real or integer matrices, this returns `transpose(a)`.
+    !!
+    !! Usage:
+    !! ```
+    !! A  = reshape([(1, 2), (3, 4), (5, 6), (7, 8)], [2, 2])
+    !! AH = hermitian(A)
+    !! ```
+    !!
+    !! [Specification](../page/specs/stdlib_linalg.html#hermitian-compute-the-hermitian-version-of-a-rank-2-matrix)
+    !!
+
+    #:for k1, t1 in RCI_KINDS_TYPES
+    pure module function hermitian_${t1[0]}$${k1}$(a) result(ah)
+        ${t1}$, intent(in) :: a(:,:)
+        ${t1}$ :: ah(size(a, 2), size(a, 1))
+    end function hermitian_${t1[0]}$${k1}$
+    #:endfor
+
+  end interface hermitian
 
 
   ! Check for triangularity
@@ -1568,6 +1594,17 @@ contains
       end function is_hermitian_${t1[0]}$${k1}$
     #:endfor
 
+    #:for k1, t1 in RCI_KINDS_TYPES
+      pure module function hermitian_${t1[0]}$${k1}$(a) result(ah)
+        ${t1}$, intent(in) :: a(:,:)
+        ${t1}$ :: ah(size(a, 2), size(a, 1))
+        #:if t1.startswith('complex')
+        ah = conjg(transpose(a))
+        #:else
+        ah = transpose(a)
+        #:endif
+      end function hermitian_${t1[0]}$${k1}$
+    #:endfor
 
     #:for k1, t1 in RCI_KINDS_TYPES
       function is_triangular_${t1[0]}$${k1}$(A,uplo) result(res)
