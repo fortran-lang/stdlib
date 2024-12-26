@@ -16,6 +16,6 @@ program run_async
     end if
 
     ! Wait for the process to complete
-    call wait(p)
+    call wait(p, max_wait_time = 5.0)
     print *, "Process has now completed."
 end program run_async
