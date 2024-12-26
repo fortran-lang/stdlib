@@ -56,28 +56,40 @@ void process_create_windows(const char* cmd, const char* stdin_stream,
         fclose(stdin_fp);
     }
 
-    // Open stdout file if provided
+    // Open stdout file if provided, otherwise use the null device
     if (stdout_file) {
         hStdout = CreateFile(stdout_file, GENERIC_WRITE, 0, &sa, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
         if (hStdout == INVALID_HANDLE_VALUE) {
             fprintf(stderr, "Failed to open stdout file\n");
             return;
         }
-        si.hStdOutput = hStdout;
-        si.dwFlags |= STARTF_USESTDHANDLES;
+    } else {
+        hStdout = CreateFile("NUL", GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+        if (hStdout == INVALID_HANDLE_VALUE) {
+            fprintf(stderr, "Failed to open null device for stdout\n");
+            return;
+        }
     }
+    si.hStdOutput = hStdout;
+    si.dwFlags |= STARTF_USESTDHANDLES;
 
-    // Open stderr file if provided
+    // Open stderr file if provided, otherwise use the null device
     if (stderr_file) {
         hStderr = CreateFile(stderr_file, GENERIC_WRITE, 0, &sa, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
         if (hStderr == INVALID_HANDLE_VALUE) {
             fprintf(stderr, "Failed to open stderr file\n");
             return;
         }
-        si.hStdError = hStderr;
-        si.dwFlags |= STARTF_USESTDHANDLES;
+    } else {
+        hStderr = CreateFile("NUL", GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+        if (hStderr == INVALID_HANDLE_VALUE) {
+            fprintf(stderr, "Failed to open null device for stderr\n");
+            return;
+        }
     }
-
+    si.hStdError = hStderr;
+    si.dwFlags |= STARTF_USESTDHANDLES;
+    
     // Prepare the command line with redirected stdin
     char full_cmd[4096];
     if (stdin_file) {
