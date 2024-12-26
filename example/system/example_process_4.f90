@@ -17,7 +17,7 @@ program example_process_kill
     print *, "Process running:", running
 
     ! Wait a bit before killing the process
-    call sleep(millisec=1250)  ! Portable subroutine for sleeping
+    call sleep(millisec=250) 
 
     print *, "Killing the process..."
     call kill(process, success)
@@ -31,4 +31,7 @@ program example_process_kill
     ! Verify the process is no longer running
     running = is_running(process)
     print *, "Process running after kill:", running
+
+    stop 0
+
 end program example_process_kill

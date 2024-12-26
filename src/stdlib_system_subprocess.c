@@ -8,6 +8,7 @@
 #ifdef _WIN32
 #include <windows.h>
 #else
+#define _POSIX_C_SOURCE 199309L
 #include <sys/wait.h>
 #include <unistd.h>
 #include <time.h>
@@ -317,15 +318,19 @@ void process_wait(float seconds)
    DWORD dwMilliseconds = 1000*seconds;
    Sleep(dwMilliseconds);
 #else
-   int uSeconds = (int) 1.0e6*seconds;
+   int ierr;
    
-   struct timespec t;
+   struct timespec ts_remaining;
+   ts_remaining.tv_sec  = seconds;
+   ts_remaining.tv_nsec = seconds * 1000000000L;
 
-   t.tv_sec  = seconds;
-   t.tv_nsec = seconds * 1000000;
-
-   int ierr = nanosleep(&t, NULL);
-
+   do
+   {
+     struct timespec ts_sleep = ts_remaining;
+     ierr = nanosleep(&ts_sleep, &ts_remaining);
+   } 
+   while ((EINTR == errno) && (-1 == ierr));
+      
    if (ierr != 0){
      switch(errno){
        case EINTR:
