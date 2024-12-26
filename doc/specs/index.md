@@ -17,6 +17,7 @@ This is an index/directory of the specifications (specs) for each new module/fea
  - [constants](./stdlib_constants.html) - Constants
  - [bitsets](./stdlib_bitsets.html) - Bitset data types and procedures
  - [error](./stdlib_error.html) - Catching and handling errors
+ - [filesystem](./stdlib_filesystem.html) - Filesystem interactions
  - [hash](./stdlib_hash_procedures.html) - Hashing integer
  vectors or character strings
  - [hashmaps](./stdlib_hashmaps.html) - Hash maps/tables
