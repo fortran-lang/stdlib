@@ -239,36 +239,33 @@ Pure function.
 
 ### Description
 
-Construct the identity matrix.
+Constructs the identity matrix.
 
 ### Syntax
 
-`I = ` [[stdlib_linalg(module):eye(function)]] `(dim1 [, dim2])`
+`I = ` [[stdlib_linalg(module):eye(function)]] `(dim1 [, dim2] [, mold])`
 
 ### Arguments
 
-`dim1`: Shall be a scalar of default type `integer`.
-This is an `intent(in)` argument. 
-
-`dim2`: Shall be a scalar of default type `integer`.
-This is an `intent(in)` and `optional` argument. 
+- `dim1`: A scalar of type `integer`. This is an `intent(in)` argument and specifies the number of rows.
+- `dim2`: A scalar of type `integer`. This is an optional `intent(in)` argument specifying the number of columns. If not provided, the matrix is square (`dim1 = dim2`).
+- `mold`: A scalar of any supported `integer`, `real`, or `complex` type. This is an optional `intent(in)` argument. If provided, the returned identity matrix will have the same type and kind as `mold`. If not provided, the matrix will be of type `real(real64)` by default.
 
 ### Return value
 
-Return the identity matrix, i.e. a matrix with ones on the main diagonal and zeros elsewhere. The return value is of type `integer(int8)`.
-The use of `int8` was suggested to save storage.
+Returns the identity matrix, with ones on the main diagonal and zeros elsewhere. 
 
-#### Warning
-
-Since the result of `eye` is of `integer(int8)` type, one should be careful about using it in arithmetic expressions. For example:
-```fortran
-!> Be careful
-A = eye(2,2)/2     !! A == 0.0
-!> Recommend
-A = eye(2,2)/2.0   !! A == diag([0.5, 0.5])
-```
+- By default, the return value is of type `real(real64)`, which is recommended for arithmetic safety.
+- If the `mold` argument is provided, the return value will match the type and kind of `mold`, allowing for arbitrary `integer`, `real`, or `complex` return types.
 
 ### Example
+
+```fortran
+!> Return default type (real64)
+A = eye(2,2)/2             !! A == diag([0.5_dp, 0.5_dp])
+!> Return 32-bit complex
+A = eye(2,2, mold=(0.0,0.0))/2   !! A == diag([(0.5,0.5), (0.5,0.5)])
+```
 
 ```fortran
 {!example/linalg/example_eye1.f90!}
@@ -507,6 +504,37 @@ Returns a `logical` scalar that is `.true.` if the input matrix is skew-symmetri
 
 ```fortran
 {!example/linalg/example_is_skew_symmetric.f90!}
+```
+
+## `hermitian` - Compute the Hermitian version of a rank-2 matrix
+
+### Status
+
+Experimental
+
+### Description
+
+Compute the Hermitian version of a rank-2 matrix. 
+For `complex` matrices, the function returns the conjugate transpose (`conjg(transpose(a))`). 
+For `real` or `integer` matrices, the function returns the transpose (`transpose(a)`).
+
+### Syntax
+
+`h = ` [[stdlib_linalg(module):hermitian(interface)]] `(a)`
+
+### Arguments
+
+`a`: Shall be a rank-2 array of type `integer`, `real`, or `complex`. The input matrix `a` is not modified.
+
+### Return value
+
+Returns a rank-2 array of the same shape and type as `a`. If `a` is of type `complex`, the Hermitian matrix is computed as `conjg(transpose(a))`. 
+For `real` or `integer` types, it is equivalent to the intrinsic `transpose(a)`.
+
+### Example
+
+```fortran
+{!example/linalg/example_hermitian.f90!}
 ```
 
 ## `is_hermitian` - Checks if a matrix is Hermitian
