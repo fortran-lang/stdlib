@@ -92,13 +92,26 @@ void process_create_windows(const char* cmd, const char* stdin_stream,
     si.dwFlags |= STARTF_USESTDHANDLES;
     
     // Prepare the command line with redirected stdin
-    char full_cmd[4096];
+    char* full_cmd;
+    size_t cmd_len = strlen(cmd);
+    size_t stdin_len = stdin_file ? strlen(stdin_file) : 0;    
+    size_t full_cmd_len = cmd_len + stdin_len + 5;
+    full_cmd = (char*)malloc(full_cmd_len);
+    if (!full_cmd) {
+        fprintf(stderr, "Failed to allocate memory for full_cmd\n");
+        return;
+    }
+    
+    // Use full_cmd as needed (e.g., pass to CreateProcess)    
     if (stdin_file) {
-        snprintf(full_cmd, sizeof(full_cmd), "%s < %s", cmd, stdin_file);
+        snprintf(full_cmd, full_cmd_len, "%s < %s", cmd, stdin_file);
     } else {
-        snprintf(full_cmd, sizeof(full_cmd), "%s", cmd);
+        snprintf(full_cmd, full_cmd_len, "%s", cmd);
     }
 
+    // Free the allocated memory
+    free(full_cmd);
+    
     // Create the process
     BOOL success = CreateProcess(
         NULL,               // Application name
