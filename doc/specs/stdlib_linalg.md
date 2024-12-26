@@ -1487,6 +1487,142 @@ If `err` is not present, exceptions trigger an `error stop`.
 {!example/linalg/example_inverse_function.f90!}
 ```
 
+## `pinv` - Moore-Penrose pseudo-inverse of a matrix
+
+### Status
+
+Experimental
+
+### Description
+
+This function computes the Moore-Penrose pseudo-inverse of a `real` or `complex` matrix.  
+The pseudo-inverse, \( A^{+} \), generalizes the matrix inverse and satisfies the conditions:
+- \( A \cdot A^{+} \cdot A = A \)
+- \( A^{+} \cdot A \cdot A^{+} = A^{+} \)
+- \( (A \cdot A^{+})^T = A \cdot A^{+} \)
+- \( (A^{+} \cdot A)^T = A^{+} \cdot A \)
+
+The computation is based on singular value decomposition (SVD). Singular values below a relative 
+tolerance threshold \( \text{rtol} \cdot \sigma_{\max} \), where \( \sigma_{\max} \) is the largest 
+singular value, are treated as zero.
+
+### Syntax
+
+`b =` [[stdlib_linalg(module):pinv(interface)]] `(a, [, rtol, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2, `real` or `complex` array of shape `[m, n]` containing the coefficient matrix. 
+It is an `intent(in)` argument.
+
+`rtol` (optional): Shall be a scalar `real` value specifying the relative tolerance for singular value cutoff.  
+If `rtol` is not provided, the default relative tolerance is \( \text{rtol} = \text{max}(m, n) \cdot \epsilon \),  
+where \( \epsilon \) is the machine precision for the element type of `a`. It is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument.
+
+### Return value
+
+Returns an array value of the same type, kind, and rank as `a` with shape `[n, m]`, that contains the pseudo-inverse matrix \( A^{+} \).
+
+Raises `LINALG_ERROR` if the underlying SVD did not converge.
+Raises `LINALG_VALUE_ERROR` if `a` has invalid size.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_pseudoinverse.f90!}
+```
+
+## `pseudoinvert` - Moore-Penrose pseudo-inverse of a matrix
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the Moore-Penrose pseudo-inverse of a `real` or `complex` matrix.
+The pseudo-inverse \( A^{+} \) is a generalization of the matrix inverse and satisfies the following properties:
+- \( A \cdot A^{+} \cdot A = A \)
+- \( A^{+} \cdot A \cdot A^{+} = A^{+} \)
+- \( (A \cdot A^{+})^T = A \cdot A^{+} \)
+- \( (A^{+} \cdot A)^T = A^{+} \cdot A \)
+
+The computation is based on singular value decomposition (SVD). Singular values below a relative 
+tolerance threshold \( \text{rtol} \cdot \sigma_{\max} \), where \( \sigma_{\max} \) is the largest 
+singular value, are treated as zero.
+
+On return, matrix `pinva` `[n, m]` will store the pseudo-inverse of `a` `[m, n]`.
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):pseudoinvert(interface)]] `(a, pinva [, rtol] [, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2, `real` or `complex` array containing the coefficient matrix.  
+It is an `intent(in)` argument.  
+
+`pinva`: Shall be a rank-2 array of the same kind as `a`, and size equal to that of `transpose(a)`.  
+On output, it contains the Moore-Penrose pseudo-inverse of `a`.
+
+`rtol` (optional): Shall be a scalar `real` value specifying the relative tolerance for singular value cutoff.  
+If not provided, the default threshold is \( \text{max}(m, n) \cdot \epsilon \), where \( \epsilon \) is the 
+machine precision for the element type of `a`.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument.
+
+### Return value
+
+Computes the Moore-Penrose pseudo-inverse of the matrix \( A \), \( A^{+} \), and returns it in matrix `pinva`.
+
+Raises `LINALG_ERROR` if the underlying SVD did not converge.
+Raises `LINALG_VALUE_ERROR` if `pinva` and `a` have degenerate or incompatible sizes.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_pseudoinverse.f90!}
+```
+
+## `.pinv.` - Moore-Penrose Pseudo-Inverse operator
+
+### Status
+
+Experimental
+
+### Description
+
+This operator returns the Moore-Penrose pseudo-inverse of a `real` or `complex` matrix \( A \).
+The pseudo-inverse \( A^{+} \) is computed using Singular Value Decomposition (SVD), and singular values 
+below a given threshold are treated as zero.
+
+This interface is equivalent to the function [[stdlib_linalg(module):pinv(interface)]].
+
+### Syntax
+
+`b = ` [[stdlib_linalg(module):operator(.pinv.)(interface)]] `a`
+
+### Arguments
+
+`a`: Shall be a rank-2 array of any `real` or `complex` kinds, with arbitrary dimensions \( m \times n \). It is an `intent(in)` argument.
+
+### Return value
+
+Returns a rank-2 array with the same type, kind, and rank as `a`, that contains the Moore-Penrose pseudo-inverse of `a`.
+
+If an exception occurs, or if the input matrix is degenerate (e.g., rank-deficient), the returned matrix will contain `NaN`s.
+For more detailed error handling, it is recommended to use the `subroutine` or `function` interfaces.
+
+### Example
+
+```fortran
+{!example/linalg/example_pseudoinverse.f90!}
+```
+
 ## `get_norm` - Computes the vector norm of a generic-rank array.
 
 ### Status
