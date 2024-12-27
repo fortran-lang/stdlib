@@ -176,11 +176,8 @@ submodule (stdlib_linalg) stdlib_linalg_schur
         t = a 
         
         ! Can A be overwritten? By default, do not overwrite
-        if (present(overwrite_a)) then 
-            overwrite_a_ = overwrite_a .and. n>=2    
-        else
-            overwrite_a_ = .false._lk
-        endif
+        overwrite_a_ = .false._lk
+        if (present(overwrite_a)) overwrite_a_ = overwrite_a .and. n>=2    
         
         !> Schur vectors
         jobvs = gees_vectors(present(z))        
