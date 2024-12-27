@@ -6,6 +6,7 @@ set(
   "test_linalg_eigenvalues.fypp"
   "test_linalg_solve.fypp"
   "test_linalg_inverse.fypp"
+  "test_linalg_pseudoinverse.fypp"
   "test_linalg_lstsq.fypp"
   "test_linalg_norm.fypp"
   "test_linalg_mnorm.fypp"
@@ -24,6 +25,7 @@ ADDTEST(linalg_determinant)
 ADDTEST(linalg_eigenvalues)
 ADDTEST(linalg_matrix_property_checks)
 ADDTEST(linalg_inverse)
+ADDTEST(linalg_pseudoinverse)
 ADDTEST(linalg_norm)
 ADDTEST(linalg_mnorm)
 ADDTEST(linalg_solve)

@@ -239,36 +239,33 @@ Pure function.
 
 ### Description
 
-Construct the identity matrix.
+Constructs the identity matrix.
 
 ### Syntax
 
-`I = ` [[stdlib_linalg(module):eye(function)]] `(dim1 [, dim2])`
+`I = ` [[stdlib_linalg(module):eye(function)]] `(dim1 [, dim2] [, mold])`
 
 ### Arguments
 
-`dim1`: Shall be a scalar of default type `integer`.
-This is an `intent(in)` argument. 
-
-`dim2`: Shall be a scalar of default type `integer`.
-This is an `intent(in)` and `optional` argument. 
+- `dim1`: A scalar of type `integer`. This is an `intent(in)` argument and specifies the number of rows.
+- `dim2`: A scalar of type `integer`. This is an optional `intent(in)` argument specifying the number of columns. If not provided, the matrix is square (`dim1 = dim2`).
+- `mold`: A scalar of any supported `integer`, `real`, or `complex` type. This is an optional `intent(in)` argument. If provided, the returned identity matrix will have the same type and kind as `mold`. If not provided, the matrix will be of type `real(real64)` by default.
 
 ### Return value
 
-Return the identity matrix, i.e. a matrix with ones on the main diagonal and zeros elsewhere. The return value is of type `integer(int8)`.
-The use of `int8` was suggested to save storage.
+Returns the identity matrix, with ones on the main diagonal and zeros elsewhere. 
 
-#### Warning
-
-Since the result of `eye` is of `integer(int8)` type, one should be careful about using it in arithmetic expressions. For example:
-```fortran
-!> Be careful
-A = eye(2,2)/2     !! A == 0.0
-!> Recommend
-A = eye(2,2)/2.0   !! A == diag([0.5, 0.5])
-```
+- By default, the return value is of type `real(real64)`, which is recommended for arithmetic safety.
+- If the `mold` argument is provided, the return value will match the type and kind of `mold`, allowing for arbitrary `integer`, `real`, or `complex` return types.
 
 ### Example
+
+```fortran
+!> Return default type (real64)
+A = eye(2,2)/2             !! A == diag([0.5_dp, 0.5_dp])
+!> Return 32-bit complex
+A = eye(2,2, mold=(0.0,0.0))/2   !! A == diag([(0.5,0.5), (0.5,0.5)])
+```
 
 ```fortran
 {!example/linalg/example_eye1.f90!}
@@ -507,6 +504,37 @@ Returns a `logical` scalar that is `.true.` if the input matrix is skew-symmetri
 
 ```fortran
 {!example/linalg/example_is_skew_symmetric.f90!}
+```
+
+## `hermitian` - Compute the Hermitian version of a rank-2 matrix
+
+### Status
+
+Experimental
+
+### Description
+
+Compute the Hermitian version of a rank-2 matrix. 
+For `complex` matrices, the function returns the conjugate transpose (`conjg(transpose(a))`). 
+For `real` or `integer` matrices, the function returns the transpose (`transpose(a)`).
+
+### Syntax
+
+`h = ` [[stdlib_linalg(module):hermitian(interface)]] `(a)`
+
+### Arguments
+
+`a`: Shall be a rank-2 array of type `integer`, `real`, or `complex`. The input matrix `a` is not modified.
+
+### Return value
+
+Returns a rank-2 array of the same shape and type as `a`. If `a` is of type `complex`, the Hermitian matrix is computed as `conjg(transpose(a))`. 
+For `real` or `integer` types, it is equivalent to the intrinsic `transpose(a)`.
+
+### Example
+
+```fortran
+{!example/linalg/example_hermitian.f90!}
 ```
 
 ## `is_hermitian` - Checks if a matrix is Hermitian
@@ -1533,6 +1561,142 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ```fortran
 {!example/linalg/example_inverse_function.f90!}
+```
+
+## `pinv` - Moore-Penrose pseudo-inverse of a matrix
+
+### Status
+
+Experimental
+
+### Description
+
+This function computes the Moore-Penrose pseudo-inverse of a `real` or `complex` matrix.  
+The pseudo-inverse, \( A^{+} \), generalizes the matrix inverse and satisfies the conditions:
+- \( A \cdot A^{+} \cdot A = A \)
+- \( A^{+} \cdot A \cdot A^{+} = A^{+} \)
+- \( (A \cdot A^{+})^T = A \cdot A^{+} \)
+- \( (A^{+} \cdot A)^T = A^{+} \cdot A \)
+
+The computation is based on singular value decomposition (SVD). Singular values below a relative 
+tolerance threshold \( \text{rtol} \cdot \sigma_{\max} \), where \( \sigma_{\max} \) is the largest 
+singular value, are treated as zero.
+
+### Syntax
+
+`b =` [[stdlib_linalg(module):pinv(interface)]] `(a, [, rtol, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2, `real` or `complex` array of shape `[m, n]` containing the coefficient matrix. 
+It is an `intent(in)` argument.
+
+`rtol` (optional): Shall be a scalar `real` value specifying the relative tolerance for singular value cutoff.  
+If `rtol` is not provided, the default relative tolerance is \( \text{rtol} = \text{max}(m, n) \cdot \epsilon \),  
+where \( \epsilon \) is the machine precision for the element type of `a`. It is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument.
+
+### Return value
+
+Returns an array value of the same type, kind, and rank as `a` with shape `[n, m]`, that contains the pseudo-inverse matrix \( A^{+} \).
+
+Raises `LINALG_ERROR` if the underlying SVD did not converge.
+Raises `LINALG_VALUE_ERROR` if `a` has invalid size.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_pseudoinverse.f90!}
+```
+
+## `pseudoinvert` - Moore-Penrose pseudo-inverse of a matrix
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the Moore-Penrose pseudo-inverse of a `real` or `complex` matrix.
+The pseudo-inverse \( A^{+} \) is a generalization of the matrix inverse and satisfies the following properties:
+- \( A \cdot A^{+} \cdot A = A \)
+- \( A^{+} \cdot A \cdot A^{+} = A^{+} \)
+- \( (A \cdot A^{+})^T = A \cdot A^{+} \)
+- \( (A^{+} \cdot A)^T = A^{+} \cdot A \)
+
+The computation is based on singular value decomposition (SVD). Singular values below a relative 
+tolerance threshold \( \text{rtol} \cdot \sigma_{\max} \), where \( \sigma_{\max} \) is the largest 
+singular value, are treated as zero.
+
+On return, matrix `pinva` `[n, m]` will store the pseudo-inverse of `a` `[m, n]`.
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):pseudoinvert(interface)]] `(a, pinva [, rtol] [, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2, `real` or `complex` array containing the coefficient matrix.  
+It is an `intent(in)` argument.  
+
+`pinva`: Shall be a rank-2 array of the same kind as `a`, and size equal to that of `transpose(a)`.  
+On output, it contains the Moore-Penrose pseudo-inverse of `a`.
+
+`rtol` (optional): Shall be a scalar `real` value specifying the relative tolerance for singular value cutoff.  
+If not provided, the default threshold is \( \text{max}(m, n) \cdot \epsilon \), where \( \epsilon \) is the 
+machine precision for the element type of `a`.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument.
+
+### Return value
+
+Computes the Moore-Penrose pseudo-inverse of the matrix \( A \), \( A^{+} \), and returns it in matrix `pinva`.
+
+Raises `LINALG_ERROR` if the underlying SVD did not converge.
+Raises `LINALG_VALUE_ERROR` if `pinva` and `a` have degenerate or incompatible sizes.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_pseudoinverse.f90!}
+```
+
+## `.pinv.` - Moore-Penrose Pseudo-Inverse operator
+
+### Status
+
+Experimental
+
+### Description
+
+This operator returns the Moore-Penrose pseudo-inverse of a `real` or `complex` matrix \( A \).
+The pseudo-inverse \( A^{+} \) is computed using Singular Value Decomposition (SVD), and singular values 
+below a given threshold are treated as zero.
+
+This interface is equivalent to the function [[stdlib_linalg(module):pinv(interface)]].
+
+### Syntax
+
+`b = ` [[stdlib_linalg(module):operator(.pinv.)(interface)]] `a`
+
+### Arguments
+
+`a`: Shall be a rank-2 array of any `real` or `complex` kinds, with arbitrary dimensions \( m \times n \). It is an `intent(in)` argument.
+
+### Return value
+
+Returns a rank-2 array with the same type, kind, and rank as `a`, that contains the Moore-Penrose pseudo-inverse of `a`.
+
+If an exception occurs, or if the input matrix is degenerate (e.g., rank-deficient), the returned matrix will contain `NaN`s.
+For more detailed error handling, it is recommended to use the `subroutine` or `function` interfaces.
+
+### Example
+
+```fortran
+{!example/linalg/example_pseudoinverse.f90!}
 ```
 
 ## `get_norm` - Computes the vector norm of a generic-rank array.

@@ -219,7 +219,29 @@ python config/fypp_deployment.py --help
 git checkout stdlib-fpm
 fpm build --profile release
 ```
-#### Runing the examples
+
+
+#### Installing with fpm
+
+Either option you chose for building the `stdlib`, you can install it with:
+```sh
+fpm install --profile release
+```
+The command above will install the following files:
+- `libstdlib.a` into `~/.local/lib/` (Unix) or `C:\Users\<username>\AppData\Roaming\local\lib\` (Windows)
+- all the `.[s]mod` files produced by the compiler into `~/.local/include/` (Unix) or `C:\Users\<username>\AppData\Roaming\local\include\` (Windows)
+
+You can change the installation path by setting the prefix option to `fpm`:
+```sh
+fpm install --profile release --prefix /my/custom/installation/path/
+```
+
+You can use the `stdlib` by adding the `-lstdlib` flag to your compiler.
+If your prefix is a non standard path, add also:
+- `-L/my/custom/installation/path/lib`
+- `-I/my/custom/installation/path/include`
+
+#### Running the examples
 You can run the examples with `fpm` as:
 
 ```sh
