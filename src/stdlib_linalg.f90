@@ -22,6 +22,9 @@ module stdlib_linalg
   public :: inv
   public :: invert
   public :: operator(.inv.)
+  public :: pinv
+  public :: pseudoinvert
+  public :: operator(.pinv.)
   public :: lstsq
   public :: lstsq_space
   public :: norm
@@ -42,6 +45,7 @@ module stdlib_linalg
   public :: is_diagonal
   public :: is_symmetric
   public :: is_skew_symmetric
+  public :: hermitian
   public :: is_hermitian
   public :: is_triangular
   public :: is_hessenberg
@@ -400,6 +404,21 @@ module stdlib_linalg
       module procedure trace_iint64
   end interface
 
+  ! Identity matrix 
+  interface eye
+    !! version: experimental
+    !!
+    !! Constructs the identity matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#eye-construct-the-identity-matrix))    
+      module procedure eye_rsp
+      module procedure eye_rdp
+      module procedure eye_csp
+      module procedure eye_cdp
+      module procedure eye_iint8
+      module procedure eye_iint16
+      module procedure eye_iint32
+      module procedure eye_iint64
+  end interface eye
 
   ! Outer product (of two vectors)
   interface outer_product
@@ -612,6 +631,57 @@ module stdlib_linalg
       module procedure is_hermitian_iint32
       module procedure is_hermitian_iint64
   end interface is_hermitian
+
+  interface hermitian
+    !! version: experimental
+    !!
+    !! Computes the Hermitian version of a rank-2 matrix.
+    !! For complex matrices, this returns `conjg(transpose(a))`.
+    !! For real or integer matrices, this returns `transpose(a)`.
+    !!
+    !! Usage:
+    !! ```
+    !! A  = reshape([(1, 2), (3, 4), (5, 6), (7, 8)], [2, 2])
+    !! AH = hermitian(A)
+    !! ```
+    !!
+    !! [Specification](../page/specs/stdlib_linalg.html#hermitian-compute-the-hermitian-version-of-a-rank-2-matrix)
+    !!
+
+    pure module function hermitian_rsp(a) result(ah)
+        real(sp), intent(in) :: a(:,:)
+        real(sp) :: ah(size(a, 2), size(a, 1))
+    end function hermitian_rsp
+    pure module function hermitian_rdp(a) result(ah)
+        real(dp), intent(in) :: a(:,:)
+        real(dp) :: ah(size(a, 2), size(a, 1))
+    end function hermitian_rdp
+    pure module function hermitian_csp(a) result(ah)
+        complex(sp), intent(in) :: a(:,:)
+        complex(sp) :: ah(size(a, 2), size(a, 1))
+    end function hermitian_csp
+    pure module function hermitian_cdp(a) result(ah)
+        complex(dp), intent(in) :: a(:,:)
+        complex(dp) :: ah(size(a, 2), size(a, 1))
+    end function hermitian_cdp
+    pure module function hermitian_iint8(a) result(ah)
+        integer(int8), intent(in) :: a(:,:)
+        integer(int8) :: ah(size(a, 2), size(a, 1))
+    end function hermitian_iint8
+    pure module function hermitian_iint16(a) result(ah)
+        integer(int16), intent(in) :: a(:,:)
+        integer(int16) :: ah(size(a, 2), size(a, 1))
+    end function hermitian_iint16
+    pure module function hermitian_iint32(a) result(ah)
+        integer(int32), intent(in) :: a(:,:)
+        integer(int32) :: ah(size(a, 2), size(a, 1))
+    end function hermitian_iint32
+    pure module function hermitian_iint64(a) result(ah)
+        integer(int64), intent(in) :: a(:,:)
+        integer(int64) :: ah(size(a, 2), size(a, 1))
+    end function hermitian_iint64
+
+  end interface hermitian
 
 
   ! Check for triangularity
@@ -1883,6 +1953,203 @@ module stdlib_linalg
          complex(dp), allocatable :: inva(:,:)        
     end function stdlib_linalg_inverse_z_operator
   end interface operator(.inv.)
+
+
+  ! Moore-Penrose Pseudo-Inverse: Function interface
+  interface pinv
+    !! version: experimental 
+    !!
+    !! Pseudo-inverse of a matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#pinv-moore-penrose-pseudo-inverse-of-a-matrix))
+    !!
+    !!### Summary
+    !! This interface provides methods for computing the Moore-Penrose pseudo-inverse of a matrix.
+    !! The pseudo-inverse \( A^{+} \) is a generalization of the matrix inverse, computed for square, singular, 
+    !! or rectangular matrices. It is defined such that it satisfies the conditions:
+    !! - \( A \cdot A^{+} \cdot A = A \)
+    !! - \( A^{+} \cdot A \cdot A^{+} = A^{+} \)
+    !! - \( (A \cdot A^{+})^T = A \cdot A^{+} \)
+    !! - \( (A^{+} \cdot A)^T = A^{+} \cdot A \)
+    !!
+    !!### Description
+    !!     
+    !! This function interface provides methods that return the Moore-Penrose pseudo-inverse of a matrix.    
+    !! Supported data types include `real` and `complex`. 
+    !! The pseudo-inverse \( A^{+} \) is returned as a function result. The computation is based on the 
+    !! singular value decomposition (SVD). An optional relative tolerance `rtol` is provided to control the 
+    !! inclusion of singular values during inversion. Singular values below \( \text{rtol} \cdot \sigma_{\max} \) 
+    !! are treated as zero, where \( \sigma_{\max} \) is the largest singular value. If `rtol` is not provided, 
+    !! a default threshold is applied.
+    !! 
+    !! Exceptions are raised in case of computational errors or invalid input, and trigger an `error stop` 
+    !! if the state flag `err` is not provided. 
+    !!
+    !!@note The provided functions are intended for both rectangular and square matrices.
+    !!       
+    module function stdlib_linalg_pseudoinverse_s(a,rtol,err) result(pinva)
+        !> Input matrix a[m,n]
+        real(sp), intent(in), target :: a(:,:)
+        !> [optional] Relative tolerance for singular value cutoff
+        real(sp), optional, intent(in) :: rtol         
+        !> [optional] State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+        !> Output matrix pseudo-inverse [n,m]
+        real(sp) :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))         
+     end function stdlib_linalg_pseudoinverse_s
+    module function stdlib_linalg_pseudoinverse_d(a,rtol,err) result(pinva)
+        !> Input matrix a[m,n]
+        real(dp), intent(in), target :: a(:,:)
+        !> [optional] Relative tolerance for singular value cutoff
+        real(dp), optional, intent(in) :: rtol         
+        !> [optional] State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+        !> Output matrix pseudo-inverse [n,m]
+        real(dp) :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))         
+     end function stdlib_linalg_pseudoinverse_d
+    module function stdlib_linalg_pseudoinverse_c(a,rtol,err) result(pinva)
+        !> Input matrix a[m,n]
+        complex(sp), intent(in), target :: a(:,:)
+        !> [optional] Relative tolerance for singular value cutoff
+        real(sp), optional, intent(in) :: rtol         
+        !> [optional] State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+        !> Output matrix pseudo-inverse [n,m]
+        complex(sp) :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))         
+     end function stdlib_linalg_pseudoinverse_c
+    module function stdlib_linalg_pseudoinverse_z(a,rtol,err) result(pinva)
+        !> Input matrix a[m,n]
+        complex(dp), intent(in), target :: a(:,:)
+        !> [optional] Relative tolerance for singular value cutoff
+        real(dp), optional, intent(in) :: rtol         
+        !> [optional] State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+        !> Output matrix pseudo-inverse [n,m]
+        complex(dp) :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))         
+     end function stdlib_linalg_pseudoinverse_z
+  end interface pinv
+
+  ! Moore-Penrose Pseudo-Inverse: Subroutine interface 
+  interface pseudoinvert
+    !! version: experimental 
+    !!
+    !! Computation of the Moore-Penrose pseudo-inverse
+    !! ([Specification](../page/specs/stdlib_linalg.html#pseudoinvert-moore-penrose-pseudo-inverse-of-a-matrix))
+    !!
+    !!### Summary
+    !! This interface provides methods for computing the Moore-Penrose pseudo-inverse of a rectangular 
+    !! or square `real` or `complex` matrix.
+    !! The pseudo-inverse \( A^{+} \) generalizes the matrix inverse and satisfies the properties:
+    !! - \( A \cdot A^{+} \cdot A = A \)
+    !! - \( A^{+} \cdot A \cdot A^{+} = A^{+} \)
+    !! - \( (A \cdot A^{+})^T = A \cdot A^{+} \)
+    !! - \( (A^{+} \cdot A)^T = A^{+} \cdot A \)
+    !!
+    !!### Description
+    !!     
+    !! This subroutine interface provides a way to compute the Moore-Penrose pseudo-inverse of a matrix.    
+    !! Supported data types include `real` and `complex`. 
+    !! Users must provide two matrices: the input matrix `a` [m,n] and the output pseudo-inverse `pinva` [n,m]. 
+    !! The input matrix `a` is used to compute the pseudo-inverse and is not modified. The computed 
+    !! pseudo-inverse is stored in `pinva`. The computation is based on the singular value decomposition (SVD).
+    !! 
+    !! An optional relative tolerance `rtol` is used to control the inclusion of singular values in the 
+    !! computation. Singular values below \( \text{rtol} \cdot \sigma_{\max} \) are treated as zero, 
+    !! where \( \sigma_{\max} \) is the largest singular value. If `rtol` is not provided, a default 
+    !! threshold is applied. 
+    !! 
+    !! Exceptions are raised in case of computational errors or invalid input, and trigger an `error stop` 
+    !! if the state flag `err` is not provided.
+    !!
+    !!@note The provided subroutines are intended for both rectangular and square matrices.
+    !!       
+    module subroutine stdlib_linalg_pseudoinvert_s(a,pinva,rtol,err)
+        !> Input matrix a[m,n]
+        real(sp), intent(inout) :: a(:,:)
+        !> Output pseudo-inverse matrix [n,m]
+        real(sp), intent(out) :: pinva(:,:)
+        !> [optional] Relative tolerance for singular value cutoff
+        real(sp), optional, intent(in) :: rtol
+        !> [optional] State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_pseudoinvert_s
+    module subroutine stdlib_linalg_pseudoinvert_d(a,pinva,rtol,err)
+        !> Input matrix a[m,n]
+        real(dp), intent(inout) :: a(:,:)
+        !> Output pseudo-inverse matrix [n,m]
+        real(dp), intent(out) :: pinva(:,:)
+        !> [optional] Relative tolerance for singular value cutoff
+        real(dp), optional, intent(in) :: rtol
+        !> [optional] State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_pseudoinvert_d
+    module subroutine stdlib_linalg_pseudoinvert_c(a,pinva,rtol,err)
+        !> Input matrix a[m,n]
+        complex(sp), intent(inout) :: a(:,:)
+        !> Output pseudo-inverse matrix [n,m]
+        complex(sp), intent(out) :: pinva(:,:)
+        !> [optional] Relative tolerance for singular value cutoff
+        real(sp), optional, intent(in) :: rtol
+        !> [optional] State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_pseudoinvert_c
+    module subroutine stdlib_linalg_pseudoinvert_z(a,pinva,rtol,err)
+        !> Input matrix a[m,n]
+        complex(dp), intent(inout) :: a(:,:)
+        !> Output pseudo-inverse matrix [n,m]
+        complex(dp), intent(out) :: pinva(:,:)
+        !> [optional] Relative tolerance for singular value cutoff
+        real(dp), optional, intent(in) :: rtol
+        !> [optional] State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_pseudoinvert_z
+  end interface pseudoinvert
+
+  ! Moore-Penrose Pseudo-Inverse: Operator interface
+  interface operator(.pinv.)
+    !! version: experimental 
+    !!
+    !! Pseudo-inverse operator of a matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#pinv-moore-penrose-pseudo-inverse-operator))
+    !!
+    !!### Summary
+    !! Operator interface for computing the Moore-Penrose pseudo-inverse of a `real` or `complex` matrix.
+    !!
+    !!### Description
+    !! 
+    !! This operator interface provides a convenient way to compute the Moore-Penrose pseudo-inverse 
+    !! of a matrix. Supported data types include `real` and `complex`. The pseudo-inverse \( A^{+} \) 
+    !! is computed using singular value decomposition (SVD), with singular values below an internal 
+    !! threshold treated as zero.
+    !! 
+    !! For computational errors or invalid input, the function may return a matrix filled with NaNs.
+    !!
+    !!@note The provided functions are intended for both rectangular and square matrices.
+    !!
+    module function stdlib_linalg_pinv_s_operator(a) result(pinva)
+         !> Input matrix a[m,n]
+         real(sp), intent(in), target :: a(:,:)
+         !> Result pseudo-inverse matrix
+         real(sp) :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))
+    end function stdlib_linalg_pinv_s_operator
+    module function stdlib_linalg_pinv_d_operator(a) result(pinva)
+         !> Input matrix a[m,n]
+         real(dp), intent(in), target :: a(:,:)
+         !> Result pseudo-inverse matrix
+         real(dp) :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))
+    end function stdlib_linalg_pinv_d_operator
+    module function stdlib_linalg_pinv_c_operator(a) result(pinva)
+         !> Input matrix a[m,n]
+         complex(sp), intent(in), target :: a(:,:)
+         !> Result pseudo-inverse matrix
+         complex(sp) :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))
+    end function stdlib_linalg_pinv_c_operator
+    module function stdlib_linalg_pinv_z_operator(a) result(pinva)
+         !> Input matrix a[m,n]
+         complex(dp), intent(in), target :: a(:,:)
+         !> Result pseudo-inverse matrix
+         complex(dp) :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))
+    end function stdlib_linalg_pinv_z_operator
+  end interface operator(.pinv.)
 
 
   ! Eigendecomposition of a square matrix: eigenvalues, and optionally eigenvectors
@@ -4817,10 +5084,87 @@ contains
     !>
     !> Constructs the identity matrix.
     !> ([Specification](../page/specs/stdlib_linalg.html#eye-construct-the-identity-matrix))
-    pure function eye(dim1, dim2) result(result)
+    pure function eye_rsp(dim1, dim2, mold) result(result)
 
         integer, intent(in) :: dim1
         integer, intent(in), optional :: dim2
+        real(sp), intent(in) :: mold        
+        real(sp), allocatable :: result(:, :)
+
+        integer :: dim2_
+        integer :: i
+
+        dim2_ = optval(dim2, dim1)
+        allocate(result(dim1, dim2_))
+        
+        result = 0
+        do i = 1, min(dim1, dim2_)
+            result(i, i) = 1
+        end do
+
+    end function eye_rsp
+    pure function eye_rdp(dim1, dim2, mold) result(result)
+
+        integer, intent(in) :: dim1
+        integer, intent(in), optional :: dim2
+        real(dp), intent(in) , optional :: mold        
+        real(dp), allocatable :: result(:, :)
+
+        integer :: dim2_
+        integer :: i
+
+        dim2_ = optval(dim2, dim1)
+        allocate(result(dim1, dim2_))
+        
+        result = 0
+        do i = 1, min(dim1, dim2_)
+            result(i, i) = 1
+        end do
+
+    end function eye_rdp
+    pure function eye_csp(dim1, dim2, mold) result(result)
+
+        integer, intent(in) :: dim1
+        integer, intent(in), optional :: dim2
+        complex(sp), intent(in) :: mold        
+        complex(sp), allocatable :: result(:, :)
+
+        integer :: dim2_
+        integer :: i
+
+        dim2_ = optval(dim2, dim1)
+        allocate(result(dim1, dim2_))
+        
+        result = 0
+        do i = 1, min(dim1, dim2_)
+            result(i, i) = 1
+        end do
+
+    end function eye_csp
+    pure function eye_cdp(dim1, dim2, mold) result(result)
+
+        integer, intent(in) :: dim1
+        integer, intent(in), optional :: dim2
+        complex(dp), intent(in) :: mold        
+        complex(dp), allocatable :: result(:, :)
+
+        integer :: dim2_
+        integer :: i
+
+        dim2_ = optval(dim2, dim1)
+        allocate(result(dim1, dim2_))
+        
+        result = 0
+        do i = 1, min(dim1, dim2_)
+            result(i, i) = 1
+        end do
+
+    end function eye_cdp
+    pure function eye_iint8(dim1, dim2, mold) result(result)
+
+        integer, intent(in) :: dim1
+        integer, intent(in), optional :: dim2
+        integer(int8), intent(in) :: mold        
         integer(int8), allocatable :: result(:, :)
 
         integer :: dim2_
@@ -4829,12 +5173,69 @@ contains
         dim2_ = optval(dim2, dim1)
         allocate(result(dim1, dim2_))
         
-        result = 0_int8
+        result = 0
         do i = 1, min(dim1, dim2_)
-            result(i, i) = 1_int8
+            result(i, i) = 1
         end do
 
-    end function eye
+    end function eye_iint8
+    pure function eye_iint16(dim1, dim2, mold) result(result)
+
+        integer, intent(in) :: dim1
+        integer, intent(in), optional :: dim2
+        integer(int16), intent(in) :: mold        
+        integer(int16), allocatable :: result(:, :)
+
+        integer :: dim2_
+        integer :: i
+
+        dim2_ = optval(dim2, dim1)
+        allocate(result(dim1, dim2_))
+        
+        result = 0
+        do i = 1, min(dim1, dim2_)
+            result(i, i) = 1
+        end do
+
+    end function eye_iint16
+    pure function eye_iint32(dim1, dim2, mold) result(result)
+
+        integer, intent(in) :: dim1
+        integer, intent(in), optional :: dim2
+        integer(int32), intent(in) :: mold        
+        integer(int32), allocatable :: result(:, :)
+
+        integer :: dim2_
+        integer :: i
+
+        dim2_ = optval(dim2, dim1)
+        allocate(result(dim1, dim2_))
+        
+        result = 0
+        do i = 1, min(dim1, dim2_)
+            result(i, i) = 1
+        end do
+
+    end function eye_iint32
+    pure function eye_iint64(dim1, dim2, mold) result(result)
+
+        integer, intent(in) :: dim1
+        integer, intent(in), optional :: dim2
+        integer(int64), intent(in) :: mold        
+        integer(int64), allocatable :: result(:, :)
+
+        integer :: dim2_
+        integer :: i
+
+        dim2_ = optval(dim2, dim1)
+        allocate(result(dim1, dim2_))
+        
+        result = 0
+        do i = 1, min(dim1, dim2_)
+            result(i, i) = 1
+        end do
+
+    end function eye_iint64
 
       function trace_rsp(A) result(res)
         real(sp), intent(in) :: A(:,:)
@@ -5523,6 +5924,46 @@ contains
         res = .true. !otherwise A is Hermitian
       end function is_hermitian_cdp
 
+      pure module function hermitian_rsp(a) result(ah)
+        real(sp), intent(in) :: a(:,:)
+        real(sp) :: ah(size(a, 2), size(a, 1))
+        ah = transpose(a)
+      end function hermitian_rsp
+      pure module function hermitian_rdp(a) result(ah)
+        real(dp), intent(in) :: a(:,:)
+        real(dp) :: ah(size(a, 2), size(a, 1))
+        ah = transpose(a)
+      end function hermitian_rdp
+      pure module function hermitian_csp(a) result(ah)
+        complex(sp), intent(in) :: a(:,:)
+        complex(sp) :: ah(size(a, 2), size(a, 1))
+        ah = conjg(transpose(a))
+      end function hermitian_csp
+      pure module function hermitian_cdp(a) result(ah)
+        complex(dp), intent(in) :: a(:,:)
+        complex(dp) :: ah(size(a, 2), size(a, 1))
+        ah = conjg(transpose(a))
+      end function hermitian_cdp
+      pure module function hermitian_iint8(a) result(ah)
+        integer(int8), intent(in) :: a(:,:)
+        integer(int8) :: ah(size(a, 2), size(a, 1))
+        ah = transpose(a)
+      end function hermitian_iint8
+      pure module function hermitian_iint16(a) result(ah)
+        integer(int16), intent(in) :: a(:,:)
+        integer(int16) :: ah(size(a, 2), size(a, 1))
+        ah = transpose(a)
+      end function hermitian_iint16
+      pure module function hermitian_iint32(a) result(ah)
+        integer(int32), intent(in) :: a(:,:)
+        integer(int32) :: ah(size(a, 2), size(a, 1))
+        ah = transpose(a)
+      end function hermitian_iint32
+      pure module function hermitian_iint64(a) result(ah)
+        integer(int64), intent(in) :: a(:,:)
+        integer(int64) :: ah(size(a, 2), size(a, 1))
+        ah = transpose(a)
+      end function hermitian_iint64
 
       function is_triangular_rsp(A,uplo) result(res)
         real(sp), intent(in) :: A(:,:)
