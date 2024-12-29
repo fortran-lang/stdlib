@@ -6,7 +6,7 @@ module stdlib_linalg_blas_c
      private
 
 
-     public :: sp,dp,qp,lk,ilp
+     public :: sp,dp,qp,lk,ilp,ilp64
      public :: stdlib_caxpy
      public :: stdlib_ccopy
      public :: stdlib_cdotc
@@ -82,7 +82,6 @@ module stdlib_linalg_blas_c
 
 
      contains
-
 
      pure subroutine stdlib_caxpy(n,ca,cx,incx,cy,incy)
      !! CAXPY constant times a vector plus a vector.
@@ -5050,7 +5049,6 @@ module stdlib_linalg_blas_c
            end if
            return
      end subroutine stdlib_ctrsv
-
 
 
 end module stdlib_linalg_blas_c

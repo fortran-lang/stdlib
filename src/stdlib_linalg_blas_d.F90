@@ -7,7 +7,7 @@ module stdlib_linalg_blas_d
      private
 
 
-     public :: sp,dp,qp,lk,ilp
+     public :: sp,dp,qp,lk,ilp,ilp64
      public :: stdlib_dasum
      public :: stdlib_daxpy
      public :: stdlib_dcopy
@@ -84,7 +84,6 @@ module stdlib_linalg_blas_d
 
 
      contains
-
 
      pure real(dp) function stdlib_dasum(n,dx,incx)
      !! DASUM takes the sum of the absolute values.
@@ -4421,12 +4420,12 @@ module stdlib_linalg_blas_d
         real(dp), parameter :: maxn = huge(0.0_dp)
         ! .. blue's scaling constants ..
         ! Scalar Arguments 
-     integer(ilp), intent(in) :: incx, n
+        integer(ilp), intent(in) :: incx, n
         ! Array Arguments 
         complex(dp), intent(in) :: x(*)
         ! Local Scalars 
-     integer(ilp) :: i, ix
-     logical(lk) :: notbig
+        integer(ilp) :: i, ix
+        logical(lk) :: notbig
         real(dp) :: abig, amed, asml, ax, scl, sumsq, ymax, ymin
         ! quick return if possible
         stdlib_dznrm2 = zero
@@ -4502,7 +4501,6 @@ module stdlib_linalg_blas_d
         stdlib_dznrm2 = scl*sqrt( sumsq )
         return
      end function stdlib_dznrm2
-
 
 
 end module stdlib_linalg_blas_d

@@ -5,7 +5,7 @@ module stdlib_linalg_lapack_aux
      private
 
 
-     public :: sp,dp,qp,lk,ilp
+     public :: sp,dp,qp,lk,ilp,ilp64
      public :: stdlib_chla_transtype          
      public :: stdlib_ieeeck
      public :: stdlib_iladiag     
@@ -18,31 +18,28 @@ module stdlib_linalg_lapack_aux
      public :: stdlib_iparmq     
      public :: stdlib_lsamen
      public :: stdlib_xerbla
-     public :: stdlib_xerbla_array
-     
+     public :: stdlib_xerbla_array     
+     public :: stdlib_sroundup_lwork
+     public :: stdlib_droundup_lwork
+     public :: stdlib_icmax1
+     public :: stdlib_izmax1
      public :: stdlib_ilaslc
      public :: stdlib_ilaslr
-     public :: stdlib_select_s
-     public :: stdlib_selctg_s     
      public :: stdlib_iladlc
      public :: stdlib_iladlr
-     public :: stdlib_select_d
-     public :: stdlib_selctg_d     
      public :: stdlib_ilaclc
      public :: stdlib_ilaclr
-     public :: stdlib_select_c
-     public :: stdlib_selctg_c     
      public :: stdlib_ilazlc
      public :: stdlib_ilazlr
+     public :: stdlib_select_s
+     public :: stdlib_selctg_s     
+     public :: stdlib_select_d
+     public :: stdlib_selctg_d     
+     public :: stdlib_select_c
+     public :: stdlib_selctg_c     
      public :: stdlib_select_z
      public :: stdlib_selctg_z     
      
-     public :: stdlib_sroundup_lwork
-     public :: stdlib_droundup_lwork
-     
-     public :: stdlib_icmax1
-     public :: stdlib_izmax1
-
      ! SELCTG is a LOGICAL FUNCTION of three DOUBLE PRECISION arguments 
      ! used to select eigenvalues to sort to the top left of the Schur form. 
      ! An eigenvalue (ALPHAR(j)+ALPHAI(j))/BETA(j) is selected if SELCTG is true, i.e., 
@@ -90,7 +87,6 @@ module stdlib_linalg_lapack_aux
      end interface 
 
      contains
-
 
      pure character function stdlib_chla_transtype( trans )
      !! This subroutine translates from a BLAST-specified integer constant to
@@ -1370,7 +1366,7 @@ module stdlib_linalg_lapack_aux
            ! stdlib_ilaenv = 0
            stdlib_ilaenv = 1
            if( stdlib_ilaenv==1 ) then
-              stdlib_ilaenv = stdlib_ieeeck( 1, 0.0, 1.0 )
+              stdlib_ilaenv = stdlib_ieeeck( 1_ilp, 0.0, 1.0 )
            end if
            return
            150 continue
@@ -1378,7 +1374,7 @@ module stdlib_linalg_lapack_aux
            ! stdlib_ilaenv = 0
            stdlib_ilaenv = 1
            if( stdlib_ilaenv==1 ) then
-              stdlib_ilaenv = stdlib_ieeeck( 0, 0.0, 1.0 )
+              stdlib_ilaenv = stdlib_ieeeck( 0_ilp, 0.0, 1.0 )
            end if
            return
            160 continue
@@ -1535,9 +1531,9 @@ module stdlib_linalg_lapack_aux
               lwork        = -1
               subnam(1:1)  = prec
               subnam(2:6)  = 'GEQRF'
-              qroptnb      = stdlib_ilaenv( 1, subnam, ' ', ni, nbi, -1, -1 )
+              qroptnb      = stdlib_ilaenv( 1_ilp, subnam, ' ', ni, nbi, -1_ilp, -1_ilp )
               subnam(2:6)  = 'GELQF'
-              lqoptnb      = stdlib_ilaenv( 1, subnam, ' ', nbi, ni, -1, -1 )
+              lqoptnb      = stdlib_ilaenv( 1_ilp, subnam, ' ', nbi, ni, -1_ilp, -1_ilp )
               ! could be qr or lq for trd and the max for brd
               factoptnb    = max(qroptnb, lqoptnb)
               if( algo=='TRD' ) then
@@ -1611,7 +1607,6 @@ module stdlib_linalg_lapack_aux
            stdlib_ilaenv2stage = stdlib_iparam2stage( iispec, name, opts,n1, n2, n3, n4 )
            return
      end function stdlib_ilaenv2stage
-
 
 
 end module stdlib_linalg_lapack_aux

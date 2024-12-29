@@ -6,11 +6,11 @@ module stdlib_linalg_blas_aux
 
      public :: sp,dp,qp,lk,ilp
      public :: stdlib_cabs1
+     public :: stdlib_lsame
      public :: stdlib_isamax
      public :: stdlib_idamax
      public :: stdlib_icamax
      public :: stdlib_izamax
-     public :: stdlib_lsame
      public :: stdlib_xerbla
      public :: stdlib_xerbla_array
 
@@ -18,7 +18,7 @@ module stdlib_linalg_blas_aux
         module procedure stdlib_scabs1
         module procedure stdlib_dcabs1
      end interface stdlib_cabs1
-     
+
      contains
 
 
@@ -66,13 +66,13 @@ module stdlib_linalg_blas_aux
            stdlib_lsame = ca == cb
            if (stdlib_lsame) return
            ! now test for equivalence if both characters are alphabetic.
-           zcode = ichar('Z')
+           zcode = ichar('Z',kind=ilp)
            ! use 'z' rather than 'a' so that ascii can be detected on prime
            ! machines, on which ichar returns a value with bit 8 set.
            ! ichar('a') on prime machines returns 193 which is the same as
            ! ichar('a') on an ebcdic machine.
-           inta = ichar(ca)
-           intb = ichar(cb)
+           inta = ichar(ca,kind=ilp)
+           intb = ichar(cb,kind=ilp)
            if (zcode==90 .or. zcode==122) then
               ! ascii is assumed - zcode is the ascii code of either lower or
               ! upper case 'z'.
@@ -156,7 +156,7 @@ module stdlib_linalg_blas_aux
            return
      end subroutine stdlib_xerbla_array
 
-     pure integer(ilp) function stdlib_isamax(n,dx,incx)
+     pure integer(ilp) function stdlib_isamax(n,dx,incx) result(iamax)
      !! IDAMAX: finds the index of the first element having maximum absolute value.
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
@@ -171,16 +171,16 @@ module stdlib_linalg_blas_aux
            integer(ilp) :: i, ix
            ! Intrinsic Functions 
            intrinsic :: abs
-           stdlib_isamax = 0
+           iamax = 0
            if (n<1 .or. incx<=0) return
-           stdlib_isamax = 1
+           iamax = 1
            if (n==1) return
            if (incx==1) then
               ! code for increment equal to 1
               dmax = abs(dx(1))
               do i = 2,n
                  if (abs(dx(i))>dmax) then
-                    stdlib_isamax = i
+                    iamax = i
                     dmax = abs(dx(i))
                  end if
               end do
@@ -191,7 +191,7 @@ module stdlib_linalg_blas_aux
               ix = ix + incx
               do i = 2,n
                  if (abs(dx(ix))>dmax) then
-                    stdlib_isamax = i
+                    iamax = i
                     dmax = abs(dx(ix))
                  end if
                  ix = ix + incx
@@ -200,7 +200,7 @@ module stdlib_linalg_blas_aux
            return
      end function stdlib_isamax
      
-     pure integer(ilp) function stdlib_idamax(n,dx,incx)
+     pure integer(ilp) function stdlib_idamax(n,dx,incx) result(iamax)
      !! IDAMAX: finds the index of the first element having maximum absolute value.
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
@@ -215,16 +215,16 @@ module stdlib_linalg_blas_aux
            integer(ilp) :: i, ix
            ! Intrinsic Functions 
            intrinsic :: abs
-           stdlib_idamax = 0
+           iamax = 0
            if (n<1 .or. incx<=0) return
-           stdlib_idamax = 1
+           iamax = 1
            if (n==1) return
            if (incx==1) then
               ! code for increment equal to 1
               dmax = abs(dx(1))
               do i = 2,n
                  if (abs(dx(i))>dmax) then
-                    stdlib_idamax = i
+                    iamax = i
                     dmax = abs(dx(i))
                  end if
               end do
@@ -235,7 +235,7 @@ module stdlib_linalg_blas_aux
               ix = ix + incx
               do i = 2,n
                  if (abs(dx(ix))>dmax) then
-                    stdlib_idamax = i
+                    iamax = i
                     dmax = abs(dx(ix))
                  end if
                  ix = ix + incx
@@ -244,8 +244,7 @@ module stdlib_linalg_blas_aux
            return
      end function stdlib_idamax
      
-
-     pure integer(ilp) function stdlib_icamax(n,zx,incx)
+     pure integer(ilp) function stdlib_icamax(n,zx,incx) result(iamax)
      !! IZAMAX: finds the index of the first element having maximum |Re(.)| + |Im(.)|
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
@@ -258,16 +257,16 @@ module stdlib_linalg_blas_aux
            ! Local Scalars 
            real(sp) :: dmax
            integer(ilp) :: i, ix
-           stdlib_icamax = 0
+           iamax = 0
            if (n<1 .or. incx<=0) return
-           stdlib_icamax = 1
+           iamax = 1
            if (n==1) return
            if (incx==1) then
               ! code for increment equal to 1
               dmax = stdlib_cabs1(zx(1))
               do i = 2,n
                  if (stdlib_cabs1(zx(i))>dmax) then
-                    stdlib_icamax = i
+                    iamax = i
                     dmax = stdlib_cabs1(zx(i))
                  end if
               end do
@@ -278,7 +277,7 @@ module stdlib_linalg_blas_aux
               ix = ix + incx
               do i = 2,n
                  if (stdlib_cabs1(zx(ix))>dmax) then
-                    stdlib_icamax = i
+                    iamax = i
                     dmax = stdlib_cabs1(zx(ix))
                  end if
                  ix = ix + incx
@@ -287,7 +286,7 @@ module stdlib_linalg_blas_aux
            return
      end function stdlib_icamax
      
-     pure integer(ilp) function stdlib_izamax(n,zx,incx)
+     pure integer(ilp) function stdlib_izamax(n,zx,incx) result(iamax)
      !! IZAMAX: finds the index of the first element having maximum |Re(.)| + |Im(.)|
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
@@ -300,16 +299,16 @@ module stdlib_linalg_blas_aux
            ! Local Scalars 
            real(dp) :: dmax
            integer(ilp) :: i, ix
-           stdlib_izamax = 0
+           iamax = 0
            if (n<1 .or. incx<=0) return
-           stdlib_izamax = 1
+           iamax = 1
            if (n==1) return
            if (incx==1) then
               ! code for increment equal to 1
               dmax = stdlib_cabs1(zx(1))
               do i = 2,n
                  if (stdlib_cabs1(zx(i))>dmax) then
-                    stdlib_izamax = i
+                    iamax = i
                     dmax = stdlib_cabs1(zx(i))
                  end if
               end do
@@ -320,7 +319,7 @@ module stdlib_linalg_blas_aux
               ix = ix + incx
               do i = 2,n
                  if (stdlib_cabs1(zx(ix))>dmax) then
-                    stdlib_izamax = i
+                    iamax = i
                     dmax = stdlib_cabs1(zx(ix))
                  end if
                  ix = ix + incx

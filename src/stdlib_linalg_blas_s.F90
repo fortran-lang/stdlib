@@ -5,7 +5,7 @@ module stdlib_linalg_blas_s
      private
 
 
-     public :: sp,dp,qp,lk,ilp
+     public :: sp,dp,qp,lk,ilp,ilp64
      public :: stdlib_sasum
      public :: stdlib_saxpy
      public :: stdlib_scasum
@@ -82,7 +82,6 @@ module stdlib_linalg_blas_s
 
 
      contains
-
 
      pure real(sp) function stdlib_sasum(n,sx,incx)
      !! SASUM takes the sum of the absolute values.
@@ -4505,7 +4504,6 @@ module stdlib_linalg_blas_s
            end if
            return
      end subroutine stdlib_strsv
-
 
 
 end module stdlib_linalg_blas_s
