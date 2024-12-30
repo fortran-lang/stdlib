@@ -2557,6 +2557,7 @@ module stdlib_linalg_blas_c
         complex(sp), intent(inout) :: a
         complex(sp), intent(in) :: b
         complex(sp), intent(out) :: s
+        ! =====================================================================
         ! Local Scalars 
         real(sp) :: d, f1, f2, g1, g2, h2, p, u, uu, v, vv, w
         complex(sp) :: f, fs, g, gs, r, t

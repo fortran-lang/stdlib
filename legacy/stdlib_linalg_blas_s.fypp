@@ -225,22 +225,22 @@ module stdlib_linalg_blas_s
      end function stdlib${ii}$_scasum
 
 
-     pure function stdlib${ii}$_scnrm2( n, x, incx )
+     pure real(sp) function stdlib${ii}$_scnrm2( n, x, incx )
      !! SCNRM2 returns the euclidean norm of a vector via the function
      !! name, so that
      !! SCNRM2 := sqrt( x**H*x )
-        real(sp) :: stdlib${ii}$_scnrm2
         ! -- reference blas level1 routine (version 3.9.1_sp) --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! march 2021
+        ! Scalar Arguments 
+        integer(${ik}$), intent(in) :: incx, n
+        ! Array Arguments 
+        complex(sp), intent(in) :: x(*)
+        ! =====================================================================
         ! Constants 
         real(sp), parameter :: maxn = huge(0.0_sp)
         ! .. blue's scaling constants ..
-        ! Scalar Arguments 
-     integer(${ik}$), intent(in) :: incx, n
-        ! Array Arguments 
-        complex(sp), intent(in) :: x(*)
         ! Local Scalars 
      integer(${ik}$) :: i, ix
      logical(lk) :: notbig
@@ -445,6 +445,7 @@ module stdlib_linalg_blas_s
            integer(${ik}$), intent(in) :: incx, incy, n
            ! Array Arguments 
            real(sp), intent(in) :: sx(*), sy(*)
+           ! =====================================================================
            ! Local Scalars 
            real(dp) :: dsdot
            integer(${ik}$) :: i, kx, ky, ns
@@ -1019,22 +1020,22 @@ module stdlib_linalg_blas_s
      end subroutine stdlib${ii}$_sger
 
 
-     pure function stdlib${ii}$_snrm2( n, x, incx )
+     pure real(sp) function stdlib${ii}$_snrm2( n, x, incx )
      !! SNRM2 returns the euclidean norm of a vector via the function
      !! name, so that
      !! SNRM2 := sqrt( x'*x ).
-        real(sp) :: stdlib${ii}$_snrm2
         ! -- reference blas level1 routine (version 3.9.1_sp) --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! march 2021
+        ! Scalar Arguments 
+        integer(${ik}$), intent(in) :: incx, n
+        ! Array Arguments 
+        real(sp), intent(in) :: x(*)
+        ! =====================================================================
         ! Constants 
         real(sp), parameter :: maxn = huge(0.0_sp)
         ! .. blue's scaling constants ..
-        ! Scalar Arguments 
-     integer(${ik}$), intent(in) :: incx, n
-        ! Array Arguments 
-        real(sp), intent(in) :: x(*)
         ! Local Scalars 
      integer(${ik}$) :: i, ix
      logical(lk) :: notbig
@@ -1170,6 +1171,7 @@ module stdlib_linalg_blas_s
         ! Scalar Arguments 
         real(sp), intent(inout) :: a, b
         real(sp), intent(out) :: c, s
+        ! =====================================================================
         ! Local Scalars 
         real(sp) :: anorm, bnorm, scl, sigma, r, z
         anorm = abs(a)
@@ -1229,11 +1231,9 @@ module stdlib_linalg_blas_s
            real(sp), intent(inout) :: sx(*), sy(*)
         ! =====================================================================
            ! Local Scalars 
-           real(sp) :: sflag, sh11, sh12, sh21, sh22, two, w, z, zero
+           real(sp) :: sflag, sh11, sh12, sh21, sh22, w, z
            integer(${ik}$) :: i, kx, ky, nsteps
            ! Data Statements 
-           zero = 0.0_sp
-           two = 2.0_sp
            sflag = sparam(1)
            if (n<=0 .or. (sflag+two==zero)) return
            if (incx==incy.and.incx>0) then
@@ -1337,14 +1337,11 @@ module stdlib_linalg_blas_s
            real(sp), intent(out) :: sparam(5)
         ! =====================================================================
            ! Local Scalars 
-           real(sp) :: gam, gamsq, one, rgamsq, sflag, sh11, sh12, sh21, sh22, sp1, sp2, sq1, sq2,&
-                      stemp, su, two, zero
+           real(sp) :: gam, gamsq, rgamsq, sflag, sh11, sh12, sh21, sh22, sp1, sp2, sq1, sq2,&
+                      stemp, su
            ! Intrinsic Functions 
            intrinsic :: abs
            ! Data Statements 
-           zero = 0.0_sp
-           one = 1.0_sp
-           two = 2.0_sp
            gam = 4096.0_sp
            gamsq = 1.67772e7_sp
            rgamsq = 5.96046e-8_sp

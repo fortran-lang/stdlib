@@ -5831,6 +5831,7 @@ module stdlib_linalg_lapack_s
         ! Scalar Arguments 
         real(sp), intent(out) :: c, r, s
         real(sp), intent(in) :: f, g
+        ! =====================================================================
         ! Local Scalars 
         real(sp) :: d, f1, fs, g1, gs, p, u, uu
         ! Intrinsic Functions 
@@ -7727,7 +7728,8 @@ module stdlib_linalg_lapack_s
         real(sp), intent(inout) :: scl, sumsq
         ! Array Arguments 
         real(sp), intent(in) :: x(*)
-        ! Local Scalars 
+        ! =====================================================================
+        ! Local Scalars
      integer(${ik}$) :: i, ix
      logical(lk) :: notbig
         real(sp) :: abig, amed, asml, ax, ymax, ymin
@@ -32021,7 +32023,7 @@ module stdlib_linalg_lapack_s
            integer(${ik}$), intent( in ) :: lda, ldb
            real(sp), intent( in ) :: a( lda, * ), b( ldb, * ), sr1, sr2, si,beta1, beta2
            real(sp), intent( out ) :: v( * )
-           
+           ! ================================================================
            ! local scalars
            real(sp) :: w(2_${ik}$), safmin, safmax, scale1, scale2
            safmin = stdlib${ii}$_slamch( 'SAFE MINIMUM' )
@@ -32070,7 +32072,7 @@ module stdlib_linalg_lapack_s
            integer(${ik}$), intent( in ) :: k, lda, ldb, ldq, ldz, istartm, istopm,nq, nz, qstart, &
                      zstart, ihi
            real(sp), intent(inout) :: a(lda,*), b(ldb,*), q(ldq,*), z(ldz,*)
-           
+           ! ================================================================
            ! local variables
            real(sp) :: h(2_${ik}$,3_${ik}$), c1, s1, c2, s2, temp
            if( k+2 == ihi ) then
@@ -32183,8 +32185,8 @@ module stdlib_linalg_lapack_s
            real(sp), intent( inout ) :: a( lda, * ), b( ldb, * ), q( ldq, * ),z( ldz, * ), qc( &
                      ldqc, * ), zc( ldzc, * ), work( * ), sr( * ),si( * ), ss( * )
            integer(${ik}$), intent( out ) :: info
-           
-           ! local scalars
+           ! ================================================================
+           ! local variables
            integer(${ik}$) :: i, j, ns, istartm, istopm, sheight, swidth, k, np, istartb, istopb, &
                      ishift, nblock, npos
            real(sp) :: temp, v(3_${ik}$), c1, s1, c2, s2, swap
@@ -35235,6 +35237,7 @@ module stdlib_linalg_lapack_s
            integer(${ik}$), intent(inout) :: iter, n0, ndiv, nfail, pp
            real(sp), intent(inout) :: desig, dmin1, dmin2, dn, dn1, dn2, g, qmax, tau
            real(sp), intent(out) :: dmin, sigma
+           integer(${ik}$), intent(inout) :: ttype
            ! Array Arguments 
            real(sp), intent(inout) :: z(*)
         ! =====================================================================
@@ -35246,7 +35249,6 @@ module stdlib_linalg_lapack_s
            
            ! Local Scalars 
            integer(${ik}$) :: ipn4, j4, n0in, nn
-           integer(${ik}$), intent(inout) :: ttype
            real(sp) :: eps, s, t, temp, tol, tol2
            ! Intrinsic Functions 
            intrinsic :: abs,max,min,sqrt
@@ -38509,7 +38511,7 @@ module stdlib_linalg_lapack_s
      end subroutine stdlib${ii}$_spttrs
 
 
-     pure subroutine  stdlib${ii}$_ssb2st_kernels( uplo, wantz, ttype,st, ed, sweep, n, nb, ib,a, lda, &
+     pure subroutine stdlib${ii}$_ssb2st_kernels( uplo, wantz, ttype,st, ed, sweep, n, nb, ib,a, lda, &
      !! SSB2ST_KERNELS is an internal routine used by the SSYTRD_SB2ST
      !! subroutine.
                v, tau, ldvt, work)

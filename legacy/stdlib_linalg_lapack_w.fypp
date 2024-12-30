@@ -22172,7 +22172,7 @@ module stdlib_linalg_lapack_${ci}$
      end subroutine stdlib${ii}$_${ci}$gtts2
 
 
-     pure subroutine  stdlib${ii}$_${ci}$hb2st_kernels( uplo, wantz, ttype,st, ed, sweep, n, nb, ib,a, lda, &
+     pure subroutine stdlib${ii}$_${ci}$hb2st_kernels( uplo, wantz, ttype,st, ed, sweep, n, nb, ib,a, lda, &
      !! ZHB2ST_KERNELS: is an internal routine used by the ZHETRD_HB2ST
      !! subroutine.
                v, tau, ldvt, work)
@@ -47679,7 +47679,7 @@ module stdlib_linalg_lapack_${ci}$
                      alpha( * ), beta( * ), work( * )
            real(${ck}$), intent( out ) :: rwork( * )
            
-           
+           ! ================================================================
            ! local scalars
            real(${ck}$) :: smlnum, ulp, safmin, safmax, c1, tempr
            complex(${ck}$) :: eshift, s1, temp
@@ -48049,7 +48049,7 @@ module stdlib_linalg_lapack_${ci}$
            complex(${ck}$), intent(out) :: work(*)
            real(${ck}$), intent(out) :: rwork(*)
            
-           
+           ! ================================================================
            ! local scalars
            integer(${ik}$) :: jw, kwtop, kwbot, istopm, istartm, k, k2, ztgexc_info, ifst, ilst, &
                      lworkreq, qz_small_info
@@ -48235,7 +48235,7 @@ module stdlib_linalg_lapack_${ci}$
                      ldqc, * ), zc( ldzc, * ), work( * ),alpha( * ), beta( * )
            integer(${ik}$), intent( out ) :: info
            
-           
+           ! ================================================================
            ! local scalars
            integer(${ik}$) :: i, j, ns, istartm, istopm, sheight, swidth, k, np, istartb, istopb, &
                      ishift, nblock, npos
@@ -51118,6 +51118,7 @@ module stdlib_linalg_lapack_${ci}$
         real(${ck}$), intent(out) :: c
         complex(${ck}$), intent(in) :: f, g
         complex(${ck}$), intent(out) :: r, s
+        ! =====================================================================
         ! Local Scalars 
         real(${ck}$) :: d, f1, f2, g1, g2, h2, p, u, uu, v, vv, w
         complex(${ck}$) :: fs, gs, t
@@ -51980,6 +51981,7 @@ module stdlib_linalg_lapack_${ci}$
         real(${ck}$), intent(inout) :: scl, sumsq
         ! Array Arguments 
         complex(${ck}$), intent(in) :: x(*)
+        ! =====================================================================
         ! Local Scalars 
      integer(${ik}$) :: i, ix
      logical(lk) :: notbig

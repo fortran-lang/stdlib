@@ -844,22 +844,22 @@ module stdlib_linalg_blas_${ri}$
      end subroutine stdlib${ii}$_${ri}$ger
 
 
-     pure function stdlib${ii}$_${ri}$nrm2( n, x, incx )
+     pure real(${rk}$) function stdlib${ii}$_${ri}$nrm2( n, x, incx )
      !! DNRM2: returns the euclidean norm of a vector via the function
      !! name, so that
      !! DNRM2 := sqrt( x'*x )
-        real(${rk}$) :: stdlib${ii}$_${ri}$nrm2
         ! -- reference blas level1 routine (version 3.9.1_${rk}$) --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! march 2021
+        ! Scalar Arguments 
+        integer(${ik}$), intent(in) :: incx, n
+        ! Array Arguments 
+        real(${rk}$), intent(in) :: x(*)
+        ! =====================================================================
         ! Constants 
         real(${rk}$), parameter :: maxn = huge(0.0_${rk}$)
         ! .. blue's scaling constants ..
-        ! Scalar Arguments 
-     integer(${ik}$), intent(in) :: incx, n
-        ! Array Arguments 
-        real(${rk}$), intent(in) :: x(*)
         ! Local Scalars 
      integer(${ik}$) :: i, ix
      logical(lk) :: notbig
@@ -994,6 +994,7 @@ module stdlib_linalg_blas_${ri}$
         ! Scalar Arguments 
         real(${rk}$), intent(inout) :: a, b
         real(${rk}$), intent(out) :: c, s
+        ! =====================================================================
         ! Local Scalars 
         real(${rk}$) :: anorm, bnorm, scl, sigma, r, z
         anorm = abs(a)
@@ -1053,11 +1054,9 @@ module stdlib_linalg_blas_${ri}$
            real(${rk}$), intent(inout) :: dx(*), dy(*)
         ! =====================================================================
            ! Local Scalars 
-           real(${rk}$) :: dflag, dh11, dh12, dh21, dh22, two, w, z, zero
+           real(${rk}$) :: dflag, dh11, dh12, dh21, dh22, w, z
            integer(${ik}$) :: i, kx, ky, nsteps
            ! Data Statements 
-           zero = 0.0_${rk}$
-           two = 2.0_${rk}$
            dflag = dparam(1)
            if (n<=0 .or. (dflag+two==zero)) return
            if (incx==incy.and.incx>0) then
@@ -1162,13 +1161,10 @@ module stdlib_linalg_blas_${ri}$
         ! =====================================================================
            ! Local Scalars 
            real(${rk}$) :: dflag, dh11, dh12, dh21, dh22, dp1, dp2, dq1, dq2, dtemp, du, gam, gamsq, &
-                     one, rgamsq, two, zero
+                     rgamsq
            ! Intrinsic Functions 
            intrinsic :: abs
            ! Data Statements 
-           zero = 0.0_${rk}$
-           one = 1.0_${rk}$
-           two = 2.0_${rk}$
            gam = 4096.0_${rk}$
            gamsq = 16777216.0_${rk}$
            rgamsq = 5.9604645e-8_${rk}$
@@ -4415,22 +4411,22 @@ module stdlib_linalg_blas_${ri}$
      end function stdlib${ii}$_${ri}$zasum
 
 
-     pure function stdlib${ii}$_${ri}$znrm2( n, x, incx )
+     pure real(${rk}$) function stdlib${ii}$_${ri}$znrm2( n, x, incx )
      !! DZNRM2: returns the euclidean norm of a vector via the function
      !! name, so that
      !! DZNRM2 := sqrt( x**H*x )
-        real(${rk}$) :: stdlib${ii}$_${ri}$znrm2
         ! -- reference blas level1 routine (version 3.9.1_${rk}$) --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! march 2021
-        ! Constants 
-        real(${rk}$), parameter :: maxn = huge(0.0_${rk}$)
-        ! .. blue's scaling constants ..
         ! Scalar Arguments 
         integer(${ik}$), intent(in) :: incx, n
         ! Array Arguments 
         complex(${rk}$), intent(in) :: x(*)
+        ! =====================================================================
+        ! Constants 
+        real(${rk}$), parameter :: maxn = huge(0.0_${rk}$)
+        ! .. blue's scaling constants ..
         ! Local Scalars 
         integer(${ik}$) :: i, ix
         logical(lk) :: notbig

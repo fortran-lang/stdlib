@@ -10536,9 +10536,10 @@ module stdlib_linalg_lapack_c
 
 
      pure subroutine stdlib${ii}$_clarfb( side, trans, direct, storev, m, n, k, v, ldv,t, ldt, c, ldc, &
+     work, ldwork )
      !! CLARFB applies a complex block reflector H or its transpose H**H to a
      !! complex M-by-N matrix C, from either the left or the right.
-               work, ldwork )
+               
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -11973,6 +11974,7 @@ module stdlib_linalg_lapack_c
         real(sp), intent(out) :: c
         complex(sp), intent(in) :: f, g
         complex(sp), intent(out) :: r, s
+        ! =====================================================================
         ! Local Scalars 
         real(sp) :: d, f1, f2, g1, g2, h2, p, u, uu, v, vv, w
         complex(sp) :: fs, gs, t
@@ -12835,6 +12837,7 @@ module stdlib_linalg_lapack_c
         real(sp), intent(inout) :: scl, sumsq
         ! Array Arguments 
         complex(sp), intent(in) :: x(*)
+        ! =====================================================================
         ! Local Scalars 
      integer(${ik}$) :: i, ix
      logical(lk) :: notbig
@@ -29205,7 +29208,7 @@ module stdlib_linalg_lapack_c
      end subroutine stdlib${ii}$_cunbdb
 
 
-     pure subroutine stdlib${ii}$_cunbdb6( m1, m2, n, x1, incx1, x2, incx2, q1, ldq1, q2,ldq2, work, &
+     pure subroutine stdlib${ii}$_cunbdb6( m1, m2, n, x1, incx1, x2, incx2, q1, ldq1, q2,ldq2, work, lwork, info )
      !! CUNBDB6 orthogonalizes the column vector
      !! X = [ X1 ]
      !! [ X2 ]
@@ -29215,7 +29218,7 @@ module stdlib_linalg_lapack_c
      !! The columns of Q must be orthonormal.
      !! If the projection is zero according to Kahan's "twice is enough"
      !! criterion, then the zero vector is returned.
-               lwork, info )
+               
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -31636,6 +31639,8 @@ module stdlib_linalg_lapack_c
 
 
      pure subroutine stdlib${ii}$_cbbcsd( jobu1, jobu2, jobv1t, jobv2t, trans, m, p, q,theta, phi, u1, &
+     ldu1, u2, ldu2, v1t, ldv1t,v2t, ldv2t, b11d, b11e, b12d, b12e, b21d, b21e,b22d, b22e, rwork, &
+               lrwork, info )
      !! CBBCSD computes the CS decomposition of a unitary matrix in
      !! bidiagonal-block form,
      !! [ B11 | B12 0  0 ]
@@ -31657,8 +31662,7 @@ module stdlib_linalg_lapack_c
      !! The unitary matrices U1, U2, V1T, and V2T are input/output.
      !! The input matrices are pre- or post-multiplied by the appropriate
      !! singular vector matrices.
-     ldu1, u2, ldu2, v1t, ldv1t,v2t, ldv2t, b11d, b11e, b12d, b12e, b21d, b21e,b22d, b22e, rwork, &
-               lrwork, info )
+     
         ! -- lapack computational routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -35383,7 +35387,7 @@ module stdlib_linalg_lapack_c
      end subroutine stdlib${ii}$_cgttrs
 
 
-     pure subroutine  stdlib${ii}$_chb2st_kernels( uplo, wantz, ttype,st, ed, sweep, n, nb, ib,a, lda, &
+     pure subroutine stdlib${ii}$_chb2st_kernels( uplo, wantz, ttype,st, ed, sweep, n, nb, ib,a, lda, &
      !! CHB2ST_KERNELS is an internal routine used by the CHETRD_HB2ST
      !! subroutine.
                v, tau, ldvt, work)
@@ -44797,7 +44801,7 @@ module stdlib_linalg_lapack_c
                      zstart, ihi
            complex(sp), intent(inout) :: a(lda,*), b(ldb,*), q(ldq,*), z(ldz,*)
            
-           
+           ! ================================================================
            ! local variables
            real(sp) :: c
            complex(sp) :: s, temp
@@ -44853,7 +44857,7 @@ module stdlib_linalg_lapack_c
                      ldqc, * ), zc( ldzc, * ), work( * ),alpha( * ), beta( * )
            integer(${ik}$), intent( out ) :: info
            
-           
+           ! ================================================================
            ! local scalars
            integer(${ik}$) :: i, j, ns, istartm, istopm, sheight, swidth, k, np, istartb, istopb, &
                      ishift, nblock, npos
@@ -80021,7 +80025,7 @@ module stdlib_linalg_lapack_c
            complex(sp), intent(out) :: work(*)
            real(sp), intent(out) :: rwork(*)
            
-           
+           ! ================================================================
            ! local scalars
            integer(${ik}$) :: jw, kwtop, kwbot, istopm, istartm, k, k2, ctgexc_info, ifst, ilst, &
                      lworkreq, qz_small_info

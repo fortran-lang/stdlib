@@ -36811,7 +36811,7 @@ module stdlib_linalg_lapack_${ri}$
            integer(${ik}$), intent( out ) :: info
            real(${rk}$), intent( inout ) :: a( lda, * ), b( ldb, * ),q( ldq, * ), z( ldz, * ), alphar(&
                       * ),alphai( * ), beta( * ), work( * )
-           
+           ! ================================================================
            ! local scalars
            real(${rk}$) :: smlnum, ulp, eshift, safmin, safmax, c1, s1, temp, swap
            integer(${ik}$) :: istart, istop, iiter, maxit, istart2, k, ld, nshifts, nblock, nw, nmin,&
@@ -37162,7 +37162,7 @@ module stdlib_linalg_lapack_${ri}$
            integer(${ik}$), intent( in ) :: lda, ldb
            real(${rk}$), intent( in ) :: a( lda, * ), b( ldb, * ), sr1,sr2, si, beta1, beta2
            real(${rk}$), intent( out ) :: v( * )
-           
+           ! ================================================================
            ! local scalars
            real(${rk}$) :: w(2_${ik}$), safmin, safmax, scale1, scale2
            safmin = stdlib${ii}$_${ri}$lamch( 'SAFE MINIMUM' )
@@ -37211,7 +37211,7 @@ module stdlib_linalg_lapack_${ri}$
            integer(${ik}$), intent( in ) :: k, lda, ldb, ldq, ldz, istartm, istopm,nq, nz, qstart, &
                      zstart, ihi
            real(${rk}$), intent(inout) :: a(lda,*), b(ldb,*), q(ldq,*), z(ldz,*)
-           
+           ! ================================================================
            ! local variables
            real(${rk}$) :: h(2_${ik}$,3_${ik}$), c1, s1, c2, s2, temp
            if( k+2 == ihi ) then
@@ -37326,7 +37326,7 @@ module stdlib_linalg_lapack_${ri}$
            integer(${ik}$), intent( out ) :: ns, nd, info
            real(${rk}$), intent(inout) :: qc(ldqc,*), zc(ldzc,*)
            real(${rk}$), intent(out) :: work(*)
-           
+           ! ================================================================
            ! local scalars
            logical(lk) :: bulge
            integer(${ik}$) :: jw, kwtop, kwbot, istopm, istartm, k, k2, dtgexc_info, ifst, ilst, &
@@ -37596,7 +37596,7 @@ module stdlib_linalg_lapack_${ri}$
            real(${rk}$), intent( inout ) :: a( lda, * ), b( ldb, * ),q( ldq, * ), z( ldz, * ), qc( &
                      ldqc, * ),zc( ldzc, * ), work( * ), sr( * ), si( * ),ss( * )
            integer(${ik}$), intent( out ) :: info
-           
+           ! ================================================================
            ! local scalars
            integer(${ik}$) :: i, j, ns, istartm, istopm, sheight, swidth, k, np, istartb, istopb, &
                      ishift, nblock, npos
@@ -42175,6 +42175,7 @@ module stdlib_linalg_lapack_${ri}$
         ! Scalar Arguments 
         real(${rk}$), intent(out) :: c, r, s
         real(${rk}$), intent(in) :: f, g
+        ! =====================================================================
         ! Local Scalars 
         real(${rk}$) :: d, f1, fs, g1, gs, p, u, uu
         ! Intrinsic Functions 
@@ -46067,6 +46068,7 @@ module stdlib_linalg_lapack_${ri}$
            integer(${ik}$), intent(inout) :: iter, n0, ndiv, nfail, pp
            real(${rk}$), intent(inout) :: desig, dmin1, dmin2, dn, dn1, dn2, g, qmax, tau
            real(${rk}$), intent(out) :: dmin, sigma
+           integer(${ik}$), intent(inout) :: ttype
            ! Array Arguments 
            real(${rk}$), intent(inout) :: z(*)
         ! =====================================================================
@@ -46078,7 +46080,6 @@ module stdlib_linalg_lapack_${ri}$
            
            ! Local Scalars 
            integer(${ik}$) :: ipn4, j4, n0in, nn
-           integer(${ik}$), intent(inout) :: ttype
            real(${rk}$) :: eps, s, t, temp, tol, tol2
            ! Intrinsic Functions 
            intrinsic :: abs,max,min,sqrt
@@ -47228,7 +47229,8 @@ module stdlib_linalg_lapack_${ri}$
         real(${rk}$), intent(inout) :: scl, sumsq
         ! Array Arguments 
         real(${rk}$), intent(in) :: x(*)
-        ! Local Scalars 
+        ! =====================================================================
+        ! Local Scalars
      integer(${ik}$) :: i, ix
      logical(lk) :: notbig
         real(${rk}$) :: abig, amed, asml, ax, ymax, ymin
@@ -60702,7 +60704,7 @@ module stdlib_linalg_lapack_${ri}$
      end subroutine stdlib${ii}$_${ri}$rscl
 
 
-     pure subroutine  stdlib${ii}$_${ri}$sb2st_kernels( uplo, wantz, ttype,st, ed, sweep, n, nb, ib,a, lda, &
+     pure subroutine stdlib${ii}$_${ri}$sb2st_kernels( uplo, wantz, ttype,st, ed, sweep, n, nb, ib,a, lda, &
      !! DSB2ST_KERNELS: is an internal routine used by the DSYTRD_SB2ST
      !! subroutine.
                v, tau, ldvt, work)

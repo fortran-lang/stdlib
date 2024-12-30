@@ -12087,6 +12087,7 @@ module stdlib_linalg_lapack_z
         real(dp), intent(out) :: c
         complex(dp), intent(in) :: f, g
         complex(dp), intent(out) :: r, s
+        ! =====================================================================
         ! Local Scalars 
         real(dp) :: d, f1, f2, g1, g2, h2, p, u, uu, v, vv, w
         complex(dp) :: fs, gs, t
@@ -12949,6 +12950,7 @@ module stdlib_linalg_lapack_z
         real(dp), intent(inout) :: scl, sumsq
         ! Array Arguments 
         complex(dp), intent(in) :: x(*)
+        ! =====================================================================
         ! Local Scalars 
      integer(${ik}$) :: i, ix
      logical(lk) :: notbig
@@ -35799,7 +35801,7 @@ module stdlib_linalg_lapack_z
      end subroutine stdlib${ii}$_zgttrs
 
 
-     pure subroutine  stdlib${ii}$_zhb2st_kernels( uplo, wantz, ttype,st, ed, sweep, n, nb, ib,a, lda, &
+     pure subroutine stdlib${ii}$_zhb2st_kernels( uplo, wantz, ttype,st, ed, sweep, n, nb, ib,a, lda, &
      !! ZHB2ST_KERNELS is an internal routine used by the ZHETRD_HB2ST
      !! subroutine.
                v, tau, ldvt, work)
@@ -45205,7 +45207,7 @@ module stdlib_linalg_lapack_z
                      zstart, ihi
            complex(dp), intent(inout) :: a(lda,*), b(ldb,*), q(ldq,*), z(ldz,*)
            
-           
+           ! ================================================================
            ! local variables
            real(dp) :: c
            complex(dp) :: s, temp
@@ -45261,7 +45263,7 @@ module stdlib_linalg_lapack_z
                      ldqc, * ), zc( ldzc, * ), work( * ),alpha( * ), beta( * )
            integer(${ik}$), intent( out ) :: info
            
-           
+           ! ================================================================
            ! local scalars
            integer(${ik}$) :: i, j, ns, istartm, istopm, sheight, swidth, k, np, istartb, istopb, &
                      ishift, nblock, npos
@@ -80180,7 +80182,7 @@ module stdlib_linalg_lapack_z
                      alpha( * ), beta( * ), work( * )
            real(dp), intent( out ) :: rwork( * )
            
-           
+           ! ================================================================
            ! local scalars
            real(dp) :: smlnum, ulp, safmin, safmax, c1, tempr
            complex(dp) :: eshift, s1, temp
@@ -80497,7 +80499,7 @@ module stdlib_linalg_lapack_z
            complex(dp), intent(out) :: work(*)
            real(dp), intent(out) :: rwork(*)
            
-           
+           ! ================================================================
            ! local scalars
            integer(${ik}$) :: jw, kwtop, kwbot, istopm, istartm, k, k2, ztgexc_info, ifst, ilst, &
                      lworkreq, qz_small_info

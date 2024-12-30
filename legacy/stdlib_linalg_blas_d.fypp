@@ -840,22 +840,22 @@ module stdlib_linalg_blas_d
      end subroutine stdlib${ii}$_dger
 
 
-     pure function stdlib${ii}$_dnrm2( n, x, incx )
+     pure real(dp) function stdlib${ii}$_dnrm2( n, x, incx )
      !! DNRM2 returns the euclidean norm of a vector via the function
      !! name, so that
      !! DNRM2 := sqrt( x'*x )
-        real(dp) :: stdlib${ii}$_dnrm2
         ! -- reference blas level1 routine (version 3.9.1_dp) --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! march 2021
+        ! Scalar Arguments 
+        integer(${ik}$), intent(in) :: incx, n
+        ! Array Arguments 
+        real(dp), intent(in) :: x(*)
+        ! =====================================================================
         ! Constants 
         real(dp), parameter :: maxn = huge(0.0_dp)
         ! .. blue's scaling constants ..
-        ! Scalar Arguments 
-     integer(${ik}$), intent(in) :: incx, n
-        ! Array Arguments 
-        real(dp), intent(in) :: x(*)
         ! Local Scalars 
      integer(${ik}$) :: i, ix
      logical(lk) :: notbig
@@ -990,6 +990,7 @@ module stdlib_linalg_blas_d
         ! Scalar Arguments 
         real(dp), intent(inout) :: a, b
         real(dp), intent(out) :: c, s
+        ! =====================================================================
         ! Local Scalars 
         real(dp) :: anorm, bnorm, scl, sigma, r, z
         anorm = abs(a)
@@ -1049,11 +1050,9 @@ module stdlib_linalg_blas_d
            real(dp), intent(inout) :: dx(*), dy(*)
         ! =====================================================================
            ! Local Scalars 
-           real(dp) :: dflag, dh11, dh12, dh21, dh22, two, w, z, zero
+           real(dp) :: dflag, dh11, dh12, dh21, dh22, w, z
            integer(${ik}$) :: i, kx, ky, nsteps
            ! Data Statements 
-           zero = 0.0_dp
-           two = 2.0_dp
            dflag = dparam(1)
            if (n<=0 .or. (dflag+two==zero)) return
            if (incx==incy.and.incx>0) then
@@ -1158,13 +1157,10 @@ module stdlib_linalg_blas_d
         ! =====================================================================
            ! Local Scalars 
            real(dp) :: dflag, dh11, dh12, dh21, dh22, dp1, dp2, dq1, dq2, dtemp, du, gam, gamsq, &
-                     one, rgamsq, two, zero
+                     rgamsq
            ! Intrinsic Functions 
            intrinsic :: abs
            ! Data Statements 
-           zero = 0.0_dp
-           one = 1.0_dp
-           two = 2.0_dp
            gam = 4096.0_dp
            gamsq = 16777216.0_dp
            rgamsq = 5.9604645e-8_dp
@@ -4411,22 +4407,22 @@ module stdlib_linalg_blas_d
      end function stdlib${ii}$_dzasum
 
 
-     pure function stdlib${ii}$_dznrm2( n, x, incx )
+     pure real(dp) function stdlib${ii}$_dznrm2( n, x, incx )
      !! DZNRM2 returns the euclidean norm of a vector via the function
      !! name, so that
      !! DZNRM2 := sqrt( x**H*x )
-        real(dp) :: stdlib${ii}$_dznrm2
         ! -- reference blas level1 routine (version 3.9.1_dp) --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! march 2021
-        ! Constants 
-        real(dp), parameter :: maxn = huge(0.0_dp)
-        ! .. blue's scaling constants ..
         ! Scalar Arguments 
         integer(${ik}$), intent(in) :: incx, n
         ! Array Arguments 
         complex(dp), intent(in) :: x(*)
+        ! =====================================================================
+        ! Constants 
+        real(dp), parameter :: maxn = huge(0.0_dp)
+        ! .. blue's scaling constants ..
         ! Local Scalars 
         integer(${ik}$) :: i, ix
         logical(lk) :: notbig
