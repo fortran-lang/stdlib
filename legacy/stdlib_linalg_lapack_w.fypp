@@ -47990,7 +47990,7 @@ module stdlib_linalg_lapack_${ci}$
            integer(${ik}$), intent( in ) :: k, lda, ldb, ldq, ldz, istartm, istopm,nq, nz, qstart, &
                      zstart, ihi
            complex(${ck}$), intent(inout) :: a(lda,*), b(ldb,*), q(ldq,*), z(ldz,*)
-           
+           ! ================================================================
            ! local variables
            real(${ck}$) :: c
            complex(${ck}$) :: s, temp

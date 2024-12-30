@@ -2717,17 +2717,11 @@ module stdlib_linalg_lapack_d
        ! =====================================================================
            
            ! Local Scalars 
-           real(dp) :: rnd, eps, sfmin, small, rmach
+           real(dp) :: sfmin, small, rmach
            ! Intrinsic Functions 
            intrinsic :: digits,epsilon,huge,maxexponent,minexponent,radix,tiny
            ! Executable Statements 
            ! assume rounding, not chopping. always.
-           rnd = one
-           if( one==rnd ) then
-              eps = epsilon(zero) * 0.5
-           else
-              eps = epsilon(zero)
-           end if
            if( stdlib_lsame( cmach, 'E' ) ) then
               rmach = eps
            else if( stdlib_lsame( cmach, 'S' ) ) then
@@ -2746,7 +2740,7 @@ module stdlib_linalg_lapack_d
            else if( stdlib_lsame( cmach, 'N' ) ) then
               rmach = digits(zero)
            else if( stdlib_lsame( cmach, 'R' ) ) then
-              rmach = rnd
+              rmach = one
            else if( stdlib_lsame( cmach, 'M' ) ) then
               rmach = minexponent(zero)
            else if( stdlib_lsame( cmach, 'U' ) ) then
@@ -32077,7 +32071,7 @@ module stdlib_linalg_lapack_d
            integer(${ik}$), intent( in ) :: lda, ldb
            real(dp), intent( in ) :: a( lda, * ), b( ldb, * ), sr1,sr2, si, beta1, beta2
            real(dp), intent( out ) :: v( * )
-           
+           ! ================================================================
            ! local scalars
            real(dp) :: w(2_${ik}$), safmin, safmax, scale1, scale2
            safmin = stdlib${ii}$_dlamch( 'SAFE MINIMUM' )
