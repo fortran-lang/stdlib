@@ -4,9 +4,13 @@ module stdlib_linalg_lapack
      use stdlib_linalg_constants
      use stdlib_linalg_blas
      use stdlib_linalg_lapack_aux
-     #:for rk,rt,ri in RC_KINDS_TYPES
-     use stdlib_linalg_lapack_${ri}$
-     #:endfor
+
+     use stdlib_lapack_base
+     use stdlib_lapack_solve
+     use stdlib_lapack_other
+     use stdlib_lapack_orthogonal_factors
+     use stdlib_lapack_eig_svd_lsq
+     
      implicit none(type,external)
      public
          

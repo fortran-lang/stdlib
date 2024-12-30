@@ -6,7 +6,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
   contains
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
 
-     real(sp)             module function stdlib${ii}$_slange( norm, m, n, a, lda, work )
+     real(sp) module function stdlib${ii}$_slange( norm, m, n, a, lda, work )
      !! SLANGE returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! real matrix A.
@@ -224,7 +224,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 #:endif
 #:endfor
 
-     real(sp)             module function stdlib${ii}$_clange( norm, m, n, a, lda, work )
+     real(sp) module function stdlib${ii}$_clange( norm, m, n, a, lda, work )
      !! CLANGE returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! complex matrix A.
@@ -444,7 +444,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 
 
 
-     real(sp)             module function stdlib${ii}$_slangb( norm, n, kl, ku, ab, ldab,work )
+     real(sp) module function stdlib${ii}$_slangb( norm, n, kl, ku, ab, ldab,work )
      !! SLANGB returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the element of  largest absolute value  of an
      !! n by n band matrix  A,  with kl sub-diagonals and ku super-diagonals.
@@ -671,7 +671,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 #:endif
 #:endfor
 
-     real(sp)             module function stdlib${ii}$_clangb( norm, n, kl, ku, ab, ldab,work )
+     real(sp) module function stdlib${ii}$_clangb( norm, n, kl, ku, ab, ldab,work )
      !! CLANGB returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the element of  largest absolute value  of an
      !! n by n band matrix  A,  with kl sub-diagonals and ku super-diagonals.
@@ -900,7 +900,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 
 
 
-     pure real(sp)             module function stdlib${ii}$_slangt( norm, n, dl, d, du )
+     pure real(sp) module function stdlib${ii}$_slangt( norm, n, dl, d, du )
      !! SLANGT returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! real tridiagonal matrix A.
@@ -1130,7 +1130,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 #:endif
 #:endfor
 
-     pure real(sp)             module function stdlib${ii}$_clangt( norm, n, dl, d, du )
+     pure real(sp) module function stdlib${ii}$_clangt( norm, n, dl, d, du )
      !! CLANGT returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! complex tridiagonal matrix A.
@@ -1362,7 +1362,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 
 
 
-     real(sp)             module function stdlib${ii}$_slanhs( norm, n, a, lda, work )
+     real(sp) module function stdlib${ii}$_slanhs( norm, n, a, lda, work )
      !! SLANHS returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! Hessenberg matrix A.
@@ -1580,7 +1580,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 #:endif
 #:endfor
 
-     real(sp)             module function stdlib${ii}$_clanhs( norm, n, a, lda, work )
+     real(sp) module function stdlib${ii}$_clanhs( norm, n, a, lda, work )
      !! CLANHS returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! Hessenberg matrix A.
@@ -7580,7 +7580,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 
 
 
-     real(sp)             module function stdlib${ii}$_clanhp( norm, uplo, n, ap, work )
+     real(sp) module function stdlib${ii}$_clanhp( norm, uplo, n, ap, work )
      !! CLANHP returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! complex hermitian matrix A,  supplied in packed form.
@@ -7968,7 +7968,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 
 
 
-     real(sp)             module function stdlib${ii}$_slansp( norm, uplo, n, ap, work )
+     real(sp) module function stdlib${ii}$_slansp( norm, uplo, n, ap, work )
      !! SLANSP returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! real symmetric matrix A,  supplied in packed form.
@@ -8342,7 +8342,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 #:endif
 #:endfor
 
-     real(sp)             module function stdlib${ii}$_clansp( norm, uplo, n, ap, work )
+     real(sp) module function stdlib${ii}$_clansp( norm, uplo, n, ap, work )
      !! CLANSP returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! complex symmetric matrix A,  supplied in packed form.
@@ -8745,7 +8745,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 
 
 
-     real(sp)             module function stdlib${ii}$_clanhb( norm, uplo, n, k, ab, ldab,work )
+     real(sp) module function stdlib${ii}$_clanhb( norm, uplo, n, k, ab, ldab,work )
      !! CLANHB returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the element of  largest absolute value  of an
      !! n by n hermitian band matrix A,  with k super-diagonals.
@@ -9106,7 +9106,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 
 
 
-     real(sp)             module function stdlib${ii}$_slansb( norm, uplo, n, k, ab, ldab,work )
+     real(sp) module function stdlib${ii}$_slansb( norm, uplo, n, k, ab, ldab,work )
      !! SLANSB returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the element of  largest absolute value  of an
      !! n by n symmetric band matrix A,  with k super-diagonals.
@@ -9423,7 +9423,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 #:endif
 #:endfor
 
-     real(sp)             module function stdlib${ii}$_clansb( norm, uplo, n, k, ab, ldab,work )
+     real(sp) module function stdlib${ii}$_clansb( norm, uplo, n, k, ab, ldab,work )
      !! CLANSB returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the element of  largest absolute value  of an
      !! n by n symmetric band matrix A,  with k super-diagonals.
@@ -9742,7 +9742,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 
 
 
-     pure real(sp)             module function stdlib${ii}$_clanht( norm, n, d, e )
+     pure real(sp) module function stdlib${ii}$_clanht( norm, n, d, e )
      !! CLANHT returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! complex Hermitian tridiagonal matrix A.
@@ -9935,7 +9935,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 
 
 
-     pure real(sp)             module function stdlib${ii}$_slanst( norm, n, d, e )
+     pure real(sp) module function stdlib${ii}$_slanst( norm, n, d, e )
      !! SLANST returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! real symmetric tridiagonal matrix A.
@@ -10125,7 +10125,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 
 
 
-     real(sp)             module function stdlib${ii}$_slantr( norm, uplo, diag, m, n, a, lda,work )
+     real(sp) module function stdlib${ii}$_slantr( norm, uplo, diag, m, n, a, lda,work )
      !! SLANTR returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! trapezoidal or triangular matrix A.
@@ -10685,7 +10685,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 #:endif
 #:endfor
 
-     real(sp)             module function stdlib${ii}$_clantr( norm, uplo, diag, m, n, a, lda,work )
+     real(sp) module function stdlib${ii}$_clantr( norm, uplo, diag, m, n, a, lda,work )
      !! CLANTR returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! trapezoidal or triangular matrix A.
@@ -11247,7 +11247,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 
 
 
-     real(sp)             module function stdlib${ii}$_slantp( norm, uplo, diag, n, ap, work )
+     real(sp) module function stdlib${ii}$_slantp( norm, uplo, diag, n, ap, work )
      !! SLANTP returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! triangular matrix A, supplied in packed form.
@@ -11867,7 +11867,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 #:endif
 #:endfor
 
-     real(sp)             module function stdlib${ii}$_clantp( norm, uplo, diag, n, ap, work )
+     real(sp) module function stdlib${ii}$_clantp( norm, uplo, diag, n, ap, work )
      !! CLANTP returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! triangular matrix A, supplied in packed form.
@@ -12489,7 +12489,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 
 
 
-     real(sp)             module function stdlib${ii}$_slantb( norm, uplo, diag, n, k, ab,ldab, work )
+     real(sp) module function stdlib${ii}$_slantb( norm, uplo, diag, n, k, ab,ldab, work )
      !! SLANTB returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the element of  largest absolute value  of an
      !! n by n triangular band matrix A,  with ( k + 1 ) diagonals.
@@ -13070,7 +13070,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 #:endif
 #:endfor
 
-     real(sp)             module function stdlib${ii}$_clantb( norm, uplo, diag, n, k, ab,ldab, work )
+     real(sp) module function stdlib${ii}$_clantb( norm, uplo, diag, n, k, ab,ldab, work )
      !! CLANTB returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the element of  largest absolute value  of an
      !! n by n triangular band matrix A,  with ( k + 1 ) diagonals.
@@ -13653,7 +13653,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 
 
 
-     real(sp)             module function stdlib${ii}$_slansy( norm, uplo, n, a, lda, work )
+     real(sp) module function stdlib${ii}$_slansy( norm, uplo, n, a, lda, work )
      !! SLANSY returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! real symmetric matrix A.
@@ -13943,7 +13943,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 #:endif
 #:endfor
 
-     real(sp)             module function stdlib${ii}$_clansy( norm, uplo, n, a, lda, work )
+     real(sp) module function stdlib${ii}$_clansy( norm, uplo, n, a, lda, work )
      !! CLANSY returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! complex symmetric matrix A.
@@ -14235,7 +14235,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_mnorm
 
 
 
-     real(sp)             module function stdlib${ii}$_clanhe( norm, uplo, n, a, lda, work )
+     real(sp) module function stdlib${ii}$_clanhe( norm, uplo, n, a, lda, work )
      !! CLANHE returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! complex hermitian matrix A.

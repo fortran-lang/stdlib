@@ -7,7 +7,7 @@ module stdlib_lapack_base
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-     pure real(sp)             module function stdlib${ii}$_slamch( cmach )
+     pure real(sp) module function stdlib${ii}$_slamch( cmach )
            use stdlib_blas_constants_sp, only: zero, one, eps
            character, intent(in) :: cmach
      end function stdlib${ii}$_slamch
@@ -45,7 +45,7 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-     pure real(sp)             module function stdlib${ii}$_slamc3( a, b )
+     pure real(sp) module function stdlib${ii}$_slamc3( a, b )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            real(sp), intent(in) :: a, b
      end function stdlib${ii}$_slamc3
@@ -1202,7 +1202,7 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-     pure real(sp)             module function stdlib${ii}$_slapy2( x, y )
+     pure real(sp) module function stdlib${ii}$_slapy2( x, y )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            real(sp), intent(in) :: x, y
      end function stdlib${ii}$_slapy2
@@ -1228,7 +1228,7 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-     pure real(sp)             module function stdlib${ii}$_slapy3( x, y, z )
+     pure real(sp) module function stdlib${ii}$_slapy3( x, y, z )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            real(sp), intent(in) :: x, y, z
      end function stdlib${ii}$_slapy3
@@ -2220,7 +2220,7 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-     real(sp)             module function stdlib${ii}$_slange( norm, m, n, a, lda, work )
+     real(sp) module function stdlib${ii}$_slange( norm, m, n, a, lda, work )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: norm
            integer(${ik}$), intent(in) :: lda, m, n
@@ -2249,7 +2249,7 @@ interface
 #:endif
 #:endfor
 
-     real(sp)             module function stdlib${ii}$_clange( norm, m, n, a, lda, work )
+     real(sp) module function stdlib${ii}$_clange( norm, m, n, a, lda, work )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: norm
            integer(${ik}$), intent(in) :: lda, m, n
@@ -2284,7 +2284,7 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-     real(sp)             module function stdlib${ii}$_slangb( norm, n, kl, ku, ab, ldab,work )
+     real(sp) module function stdlib${ii}$_slangb( norm, n, kl, ku, ab, ldab,work )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: norm
            integer(${ik}$), intent(in) :: kl, ku, ldab, n
@@ -2313,7 +2313,7 @@ interface
 #:endif
 #:endfor
 
-     real(sp)             module function stdlib${ii}$_clangb( norm, n, kl, ku, ab, ldab,work )
+     real(sp) module function stdlib${ii}$_clangb( norm, n, kl, ku, ab, ldab,work )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: norm
            integer(${ik}$), intent(in) :: kl, ku, ldab, n
@@ -2348,7 +2348,7 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-     pure real(sp)             module function stdlib${ii}$_slangt( norm, n, dl, d, du )
+     pure real(sp) module function stdlib${ii}$_slangt( norm, n, dl, d, du )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: norm
            integer(${ik}$), intent(in) :: n
@@ -2374,7 +2374,7 @@ interface
 #:endif
 #:endfor
 
-     pure real(sp)             module function stdlib${ii}$_clangt( norm, n, dl, d, du )
+     pure real(sp) module function stdlib${ii}$_clangt( norm, n, dl, d, du )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: norm
            integer(${ik}$), intent(in) :: n
@@ -2406,7 +2406,7 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-     real(sp)             module function stdlib${ii}$_slanhs( norm, n, a, lda, work )
+     real(sp) module function stdlib${ii}$_slanhs( norm, n, a, lda, work )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: norm
            integer(${ik}$), intent(in) :: lda, n
@@ -2435,7 +2435,7 @@ interface
 #:endif
 #:endfor
 
-     real(sp)             module function stdlib${ii}$_clanhs( norm, n, a, lda, work )
+     real(sp) module function stdlib${ii}$_clanhs( norm, n, a, lda, work )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: norm
            integer(${ik}$), intent(in) :: lda, n
@@ -2540,7 +2540,7 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-     real(sp)             module function stdlib${ii}$_clanhp( norm, uplo, n, ap, work )
+     real(sp) module function stdlib${ii}$_clanhp( norm, uplo, n, ap, work )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: norm, uplo
            integer(${ik}$), intent(in) :: n
@@ -2575,7 +2575,7 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-     real(sp)             module function stdlib${ii}$_slansp( norm, uplo, n, ap, work )
+     real(sp) module function stdlib${ii}$_slansp( norm, uplo, n, ap, work )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: norm, uplo
            integer(${ik}$), intent(in) :: n
@@ -2604,7 +2604,7 @@ interface
 #:endif
 #:endfor
 
-     real(sp)             module function stdlib${ii}$_clansp( norm, uplo, n, ap, work )
+     real(sp) module function stdlib${ii}$_clansp( norm, uplo, n, ap, work )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: norm, uplo
            integer(${ik}$), intent(in) :: n
@@ -2639,7 +2639,7 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-     real(sp)             module function stdlib${ii}$_clanhb( norm, uplo, n, k, ab, ldab,work )
+     real(sp) module function stdlib${ii}$_clanhb( norm, uplo, n, k, ab, ldab,work )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: norm, uplo
            integer(${ik}$), intent(in) :: k, ldab, n
@@ -2674,7 +2674,7 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-     real(sp)             module function stdlib${ii}$_slansb( norm, uplo, n, k, ab, ldab,work )
+     real(sp) module function stdlib${ii}$_slansb( norm, uplo, n, k, ab, ldab,work )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: norm, uplo
            integer(${ik}$), intent(in) :: k, ldab, n
@@ -2703,7 +2703,7 @@ interface
 #:endif
 #:endfor
 
-     real(sp)             module function stdlib${ii}$_clansb( norm, uplo, n, k, ab, ldab,work )
+     real(sp) module function stdlib${ii}$_clansb( norm, uplo, n, k, ab, ldab,work )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: norm, uplo
            integer(${ik}$), intent(in) :: k, ldab, n
@@ -2738,7 +2738,7 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-     pure real(sp)             module function stdlib${ii}$_clanht( norm, n, d, e )
+     pure real(sp) module function stdlib${ii}$_clanht( norm, n, d, e )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: norm
            integer(${ik}$), intent(in) :: n
@@ -2773,7 +2773,7 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-     pure real(sp)             module function stdlib${ii}$_slanst( norm, n, d, e )
+     pure real(sp) module function stdlib${ii}$_slanst( norm, n, d, e )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: norm
            integer(${ik}$), intent(in) :: n
@@ -2805,7 +2805,7 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-     real(sp)             module function stdlib${ii}$_slantr( norm, uplo, diag, m, n, a, lda,work )
+     real(sp) module function stdlib${ii}$_slantr( norm, uplo, diag, m, n, a, lda,work )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: diag, norm, uplo
            integer(${ik}$), intent(in) :: lda, m, n
@@ -2834,7 +2834,7 @@ interface
 #:endif
 #:endfor
 
-     real(sp)             module function stdlib${ii}$_clantr( norm, uplo, diag, m, n, a, lda,work )
+     real(sp) module function stdlib${ii}$_clantr( norm, uplo, diag, m, n, a, lda,work )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: diag, norm, uplo
            integer(${ik}$), intent(in) :: lda, m, n
@@ -2869,7 +2869,7 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-     real(sp)             module function stdlib${ii}$_slantp( norm, uplo, diag, n, ap, work )
+     real(sp) module function stdlib${ii}$_slantp( norm, uplo, diag, n, ap, work )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: diag, norm, uplo
            integer(${ik}$), intent(in) :: n
@@ -2898,7 +2898,7 @@ interface
 #:endif
 #:endfor
 
-     real(sp)             module function stdlib${ii}$_clantp( norm, uplo, diag, n, ap, work )
+     real(sp) module function stdlib${ii}$_clantp( norm, uplo, diag, n, ap, work )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: diag, norm, uplo
            integer(${ik}$), intent(in) :: n
@@ -2933,7 +2933,7 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-     real(sp)             module function stdlib${ii}$_slantb( norm, uplo, diag, n, k, ab,ldab, work )
+     real(sp) module function stdlib${ii}$_slantb( norm, uplo, diag, n, k, ab,ldab, work )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: diag, norm, uplo
            integer(${ik}$), intent(in) :: k, ldab, n
@@ -2962,7 +2962,7 @@ interface
 #:endif
 #:endfor
 
-     real(sp)             module function stdlib${ii}$_clantb( norm, uplo, diag, n, k, ab,ldab, work )
+     real(sp) module function stdlib${ii}$_clantb( norm, uplo, diag, n, k, ab,ldab, work )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: diag, norm, uplo
            integer(${ik}$), intent(in) :: k, ldab, n
@@ -2997,7 +2997,7 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-     real(sp)             module function stdlib${ii}$_slansy( norm, uplo, n, a, lda, work )
+     real(sp) module function stdlib${ii}$_slansy( norm, uplo, n, a, lda, work )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: norm, uplo
            integer(${ik}$), intent(in) :: lda, n
@@ -3026,7 +3026,7 @@ interface
 #:endif
 #:endfor
 
-     real(sp)             module function stdlib${ii}$_clansy( norm, uplo, n, a, lda, work )
+     real(sp) module function stdlib${ii}$_clansy( norm, uplo, n, a, lda, work )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: norm, uplo
            integer(${ik}$), intent(in) :: lda, n
@@ -3061,7 +3061,7 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-     real(sp)             module function stdlib${ii}$_clanhe( norm, uplo, n, a, lda, work )
+     real(sp) module function stdlib${ii}$_clanhe( norm, uplo, n, a, lda, work )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: norm, uplo
            integer(${ik}$), intent(in) :: lda, n

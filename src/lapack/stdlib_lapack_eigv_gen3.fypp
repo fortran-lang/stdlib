@@ -13474,7 +13474,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            integer(${ik}$), intent( out ) :: info
            real(sp), intent( inout ) :: a( lda, * ), b( ldb, * ), q( ldq, * ),z( ldz, * ), alphar(&
                       * ), alphai( * ), beta( * ), work( * )
-           
+           ! ================================================================
            ! local scalars
            real(sp) :: smlnum, ulp, eshift, safmin, safmax, c1, s1, temp, swap
            integer(${ik}$) :: istart, istop, iiter, maxit, istart2, k, ld, nshifts, nblock, nw, nmin,&
@@ -14651,7 +14651,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
                      alpha( * ), beta( * ), work( * )
            real(sp), intent( out ) :: rwork( * )
            
-           
+           ! ================================================================
            ! local scalars
            real(sp) :: smlnum, ulp, safmin, safmax, c1, tempr
            complex(sp) :: eshift, s1, temp
@@ -15736,7 +15736,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            integer(${ik}$), intent( in ) :: lda, ldb
            real(dp), intent( in ) :: a( lda, * ), b( ldb, * ), sr1,sr2, si, beta1, beta2
            real(dp), intent( out ) :: v( * )
-           
+           ! ================================================================
            ! local scalars
            real(dp) :: w(2_${ik}$), safmin, safmax, scale1, scale2
            safmin = stdlib${ii}$_dlamch( 'SAFE MINIMUM' )
@@ -15955,7 +15955,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            integer(${ik}$), intent( in ) :: k, lda, ldb, ldq, ldz, istartm, istopm,nq, nz, qstart, &
                      zstart, ihi
            complex(${ck}$), intent(inout) :: a(lda,*), b(ldb,*), q(ldq,*), z(ldz,*)
-           
+           ! ================================================================
            ! local variables
            real(${ck}$) :: c
            complex(${ck}$) :: s, temp
@@ -16930,6 +16930,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            real(sp), intent(inout) :: qc(ldqc,*), zc(ldzc,*)
            real(sp), intent(out) :: work(*)
            
+           ! ================================================================
            ! local scalars
            logical(lk) :: bulge
            integer(${ik}$) :: jw, kwtop, kwbot, istopm, istartm, k, k2, stgexc_info, ifst, ilst, &

@@ -419,7 +419,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_scalar
 
 
 
-     pure real(sp)             module function stdlib${ii}$_slapy2( x, y )
+     pure real(sp) module function stdlib${ii}$_slapy2( x, y )
      !! SLAPY2 returns sqrt(x**2+y**2), taking care not to cause unnecessary
      !! overflow and unnecessary underflow.
         ! -- lapack auxiliary routine --
@@ -534,7 +534,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_scalar
 
 
 
-     pure real(sp)             module function stdlib${ii}$_slapy3( x, y, z )
+     pure real(sp) module function stdlib${ii}$_slapy3( x, y, z )
      !! SLAPY3 returns sqrt(x**2+y**2+z**2), taking care not to cause
      !! unnecessary overflow and unnecessary underflow.
         ! -- lapack auxiliary routine --
