@@ -12080,10 +12080,6 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl_comp4
 
 
 
-
-
-
-
      pure module subroutine stdlib${ii}$_slaqsy( uplo, n, a, lda, s, scond, amax, equed )
      !! SLAQSY equilibrates a symmetric matrix A using the scaling factors
      !! in the vector S.

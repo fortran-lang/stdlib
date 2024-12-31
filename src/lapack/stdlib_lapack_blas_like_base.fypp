@@ -8301,8 +8301,6 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_base
 
 
 
-
-
      pure module subroutine stdlib${ii}$_dlag2s( m, n, a, lda, sa, ldsa, info )
      !! DLAG2S converts a DOUBLE PRECISION matrix, SA, to a SINGLE
      !! PRECISION matrix, A.
@@ -8522,8 +8520,6 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_base
            end do
            return
      end subroutine stdlib${ii}$_slag2d
-
-
 
 
 #:endfor

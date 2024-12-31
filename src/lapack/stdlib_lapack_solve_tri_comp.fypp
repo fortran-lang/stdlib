@@ -3794,8 +3794,6 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_tri_comp
 
 
 
-
-
      pure module subroutine stdlib${ii}$_strtri( uplo, diag, n, a, lda, info )
      !! STRTRI computes the inverse of a real upper or lower triangular
      !! matrix A.

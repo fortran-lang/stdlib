@@ -4464,8 +4464,6 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_lu_comp
 
 
 
-
-
      pure module subroutine stdlib${ii}$_sgeequ( m, n, a, lda, r, c, rowcnd, colcnd, amax,info )
      !! SGEEQU computes row and column scalings intended to equilibrate an
      !! M-by-N matrix A and reduce its condition number.  R returns the row
@@ -8898,8 +8896,6 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_lu_comp
 
 #:endif
 #:endfor
-
-
 
 
 
@@ -13580,8 +13576,6 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_lu_comp
 
 
 
-
-
      pure module subroutine stdlib${ii}$_sgbequ( m, n, kl, ku, ab, ldab, r, c, rowcnd, colcnd,amax, info )
      !! SGBEQU computes row and column scalings intended to equilibrate an
      !! M-by-N band matrix A and reduce its condition number.  R returns the
@@ -16436,8 +16430,6 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_lu_comp
 
 #:endif
 #:endfor
-
-
 
 
 

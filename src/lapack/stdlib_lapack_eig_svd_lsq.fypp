@@ -393,12 +393,6 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_stgsja( jobu, jobv, jobq, m, p, n, k, l, a, lda, b,ldb, tola, tolb, &
                alpha, beta, u, ldu, v, ldv,q, ldq, work, ncycle, info )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
@@ -2949,54 +2943,6 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgebal( job, n, a, lda, ilo, ihi, scale, info )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: job
@@ -3959,12 +3905,6 @@ interface
 #:endif
 #:endfor
 
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
 #:endfor
 end interface 
 
@@ -5370,12 +5310,6 @@ interface
 #:endif
 #:endfor
 
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
 #:endfor
 end interface 
 
@@ -9226,12 +9160,6 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
      module subroutine stdlib${ii}$_sgesdd( jobz, m, n, a, lda, s, u, ldu, vt, ldvt,work, lwork, iwork, info )
                
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
@@ -9311,12 +9239,6 @@ interface
 #:endif
 #:endfor
 
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
 #:endfor
 end interface 
 
@@ -9610,12 +9532,6 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
      module subroutine stdlib${ii}$_ssyev( jobz, uplo, n, a, lda, w, work, lwork, info )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: jobz, uplo
@@ -9783,30 +9699,6 @@ interface
 #:endif
 #:endfor
 
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
 #:endfor
 end interface 
 
@@ -10071,24 +9963,6 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
      module subroutine stdlib${ii}$_cheev( jobz, uplo, n, a, lda, w, work, lwork, rwork,info )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: jobz, uplo
@@ -10271,30 +10145,6 @@ interface
 #:endif
 #:endfor
 
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
 #:endfor
 end interface 
 
@@ -10571,24 +10421,6 @@ interface
 #:endif
 #:endfor
 
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
 #:endfor
 end interface 
 
@@ -11903,12 +11735,6 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
      module subroutine stdlib${ii}$_ssygvd( itype, jobz, uplo, n, a, lda, b, ldb, w, work,lwork, iwork, liwork,&
                 info )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
@@ -12422,24 +12248,6 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_ssb2st_kernels( uplo, wantz, ttype,st, ed, sweep, n, nb, ib,a, lda, &
                v, tau, ldvt, work)
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
@@ -12519,12 +12327,6 @@ interface
 #:endif
 #:endfor
 
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
 #:endfor
 end interface 
 
@@ -13068,12 +12870,6 @@ interface
 #:endif
 #:endfor
 
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
 #:endfor
 end interface 
 
@@ -13883,12 +13679,6 @@ interface
 #:endif
 #:endfor
 
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
 #:endfor
 end interface 
 

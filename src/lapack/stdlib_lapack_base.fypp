@@ -33,18 +33,6 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure real(sp) module function stdlib${ii}$_slamc3( a, b )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            real(sp), intent(in) :: a, b
@@ -71,18 +59,6 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_slabad( small, large )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            real(sp), intent(inout) :: large, small
@@ -103,12 +79,6 @@ interface
 #:endif
 #:endfor
 
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
 #:endfor
 end interface 
 
@@ -220,30 +190,6 @@ interface
 #:endif
 #:endfor
 
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
 #:endfor
 end interface 
 
@@ -1016,12 +962,6 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_dlag2s( m, n, a, lda, sa, ldsa, info )
            use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
@@ -1086,12 +1026,6 @@ interface
            real(dp), intent(out) :: a(lda,*)
      end subroutine stdlib${ii}$_slag2d
 
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
 #:endfor
 end interface 
 
@@ -1248,12 +1182,6 @@ interface
 #:endif
 #:endfor
 
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
 #:endfor
 end interface 
 
@@ -1688,18 +1616,6 @@ interface
 #:endif
 #:endfor
 
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
 #:endfor
 end interface 
 

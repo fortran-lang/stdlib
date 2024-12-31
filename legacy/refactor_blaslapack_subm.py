@@ -28,16 +28,16 @@ blas_groups = {
 # Define the LAPACK routine groups
 lapack_groups = {
     "auxiliary_parameters": [
-        "lamch", "lamc1", "lamc2", "lamc3", "lamc4", "lamc5", "labad", "sum1", "csum1", "zsum1",
+        "lamch", "lamc3", "labad", "csum1", "zsum1",
         "laqsb"
     ],
     "auxiliary_others": [
-        "lsame","lsamen","roundup_lwork","scond","ladiv1","ladiv2", "rot"
+        "ladiv1","ladiv2", "rot"
     ],
 
     "blas_like_base": [
         "laset","larnv","laruv","lacpy","lacp2","tfttp","tfttr","tpttf",
-        "tpttr","trttf","trttp","lat2","lag2s","lat2s","lag2d","lat2d"
+        "tpttr","trttf","trttp","lag2s","lat2s","lag2d",
     ],
     "blas_like_mnorm": [
         "lange","langb","langt","lanhs","lanhf","lansf","lanhp","lansp",
@@ -45,13 +45,13 @@ lapack_groups = {
         "lanhe",
     ],
     "blas_like_scalar": [
-        "isnan","laisnan","ladiv","lapy2","lapy3","larmm"
+        "isnan","laisnan","ladiv","lapy2","lapy3"
     ],
     "blas_like_l1": [
         "lacgv","lasrt","lassq","rscl","srscl","drscl"
     ],
     "blas_like_l2": [
-        "lascl","la_geamv","la_gbamv","la_heamv","lascl2","larscl2","la_wwaddw",
+        "lascl","la_geamv","la_gbamv","la_heamv","la_wwaddw",
         "spmv", "spr", "symv", "syr", 
     ],
     "blas_like_l3": [
@@ -69,22 +69,22 @@ lapack_groups = {
         "lacn2", "lacon", "la_lin_berr"
     ],
     "solve_lu": [
-        "gesv", "gesvx", "gesvxx",  
-        "gbsv", "gbsvx", "gbsvxx",
+        "gesv", "gesvx",   
+        "gbsv", "gbsvx", 
         "gtsv", "gtsvx"
     ],
     "solve_lu_comp": [
-        "gecon", "getrf", "getrf2", "getf2", "getrs", "getri", "gerfs", "gerfsx", "geequ", "geequb", "laqge", "laswp", "getc2", "gesc2", "latdf",  "la_gercond", "la_gerfsx_extended",
-        "gbcon", "gbtrf", "gbtf2", "gbtrs", "gbrfs", "gbrfsx", "gbequ", "gbequb", "laqgb", "la_gbrcond", "la_gbrpvgrw", "la_gbrfsx_extended",
+        "gecon", "getrf", "getrf2", "getf2", "getrs", "getri", "gerfs", "geequ", "geequb", "laqge", "laswp", "getc2", "gesc2", "latdf",  "la_gercond", 
+        "gbcon", "gbtrf", "gbtf2", "gbtrs", "gbrfs", "gbequ", "gbequb", "laqgb", "la_gbrcond", "la_gbrpvgrw", 
         "gtcon", "gttrf", "gttrs", "gtts2", "gtrfs"
     ],
     "solve_chol": [
-        "posv", "posvx", "posvxx", 
-        "ppsv", "ppsvx", "pfsv",
+        "posv", "posvx",  
+        "ppsv", "ppsvx", 
         "pbsv", "pbsvx", "ptsv", "ptsvx"
     ],
     "solve_chol_comp": [
-        "pocon","potrf", "potrf2", "potf2", "pstrf", "pstf2", "potrs", "potri", "porfs", "porfsx", "poequ", "poequb", "laqhe", "la_porcond", "la_porpvgrw", "la_porfsx_extended",
+        "pocon","potrf", "potrf2", "potf2", "pstrf", "pstf2", "potrs", "potri", "porfs", "poequ", "poequb", "laqhe", "la_porcond", "la_porpvgrw", 
         "ppcon", "pptrf", "pptrs", "pptri", "pprfs", "ppequ", "laqhp",
         "pftrf", "pftrs", "pftri",
         "pbcon", "pbtrf", "pbtf2", "pbtrs", "pbrfs", "pbequ", "laqhb",
@@ -92,37 +92,37 @@ lapack_groups = {
         "laqsp"
     ],
     "solve_ldl": [
-        "sysv", "sysvx", "sysv_rk", "sysv_rook", "sysvxx", 
-        "hesv", "hesvx", "hesv_rk", "hesv_rook", "hesvxx", 
+        "sysv", "sysvx", "sysv_rk", "sysv_rook",  
+        "hesv", "hesvx", "hesv_rk", "hesv_rook", 
         "spsv", "spsvx", "hpsv", "hpsvx", 
-        "sysv_aa", "sysv_aa_2stage",
-        "hesv_aa", "hesv_aa_2stage"
+        "sysv_aa", 
+        "hesv_aa", 
     ],
     "solve_ldl_comp": [
-        "sycon","sytrf","lasyf","sytf2","sytrs","sytri","syrfs","syrfsx","syequb",
-        "syconv","sycon_3","sytri2","sytri2x","sytri_3","sytri_3x","sytrs2","sytrs_3",
-        "syswapr","la_hercond","la_herfsx_extended","la_herpvgrw","spcon","sptrf",
+        "sycon","sytrf","lasyf","sytf2","sytrs","sytri","syrfs","syequb",
+        "syconv","sytrs2","sytrs_3",
+        "syswapr","la_herpvgrw","spcon","sptrf",
     ],
     "solve_ldl_comp2": [
         "sptrs","sptri","sprfs","sycon_rook","sytrf_rook","lasyf_rook","sytf2_rook",
         "sytrs_rook","sytri_rook","sytrf_rk","lasyf_rk","sytf2_rk","syconvf","syconvf_rook",
-        "sytrf_aa","lasyf_aa","sytrs_aa","sytrf_aa_2stage","sytrs_aa_2stage",
+        "sytrf_aa","lasyf_aa","sytrs_aa",
     ],
     "solve_ldl_comp3": [
-        "hecon","hetrf","lahef","hetf2","hetrs","hetri","herfs","herfsx","heequb",
-        "hecon_3","hetri2","hetri2x","hetri_3","hetri_3x","hetrs2","hetrs_3","heswapr",
+        "hecon","hetrf","lahef","hetf2","hetrs","hetri","herfs","heequb",
+        "hetrs2","hetrs_3","heswapr",
         "hpcon","hptrf","hptrs","hptri",
     ],
     "solve_ldl_comp4": [
         "hprfs","hecon_rook","hetrf_rook","lahef_rook","hetf2_rook","hetrs_rook",
         "hetri_rook","hetrf_rk","lahef_rk","hetf2_rk","hetrf_aa",
-        "lahef_aa","hetrs_aa","hetrf_aa_2stage","hetrs_aa_2stage",
+        "lahef_aa","hetrs_aa",
         "laqsy"
     ],
     
     "solve_tri_comp": [
         "trcon", "trtrs", 
-        "latrs", "latrs3",
+        "latrs", 
         "trtri","trti2","trrfs",
         "lauum","lauu2",
         "tpcon", "tptrs", 
@@ -150,7 +150,7 @@ lapack_groups = {
     ],
     
     "lsq": [
-        "gelss", "gelsy", "gels", "gelst", "gelsd", "getsls"
+        "gelss", "gelsy", "gels", "gelsd", "getsls"
     ],
     "lsq_constrained": [
         "gglse", "ggglm"
@@ -170,16 +170,15 @@ lapack_groups = {
     
     "eigv_gen": [
         "geev","geevx","gees","geesx","ggev3","ggev","ggevx","gges3","gges",
-        "ggesx","cgedmd","cgedmdq","dgedmd","dgedmdq","sgedmd","sgedmdq","zgedmd",
-        "zgedmdq","gebal","gehrd","gehd2","gebak","lahr2","unghr","unmhr","orghr","ormhr",
+        "ggesx","gebal","gehrd","gehd2","gebak","lahr2","unghr","unmhr","orghr","ormhr",
     ],
     "eigv_gen2": [
-        "hseqr","hsein","trevc","trevc3","laln2","trsyl","trsyl3","lasy2",
+        "hseqr","hsein","trevc","trevc3","laln2","trsyl","lasy2",
         "trsna","trexc","trsen","laexc","lanv2","laein",
     ],
     "eigv_gen3": [
         "laqtr","lahqr","laqr0","laqr1","laqr2","laqr3","laqr4","laqr5",
-        "laqz0","laqz1","laqz2","laqz3","laqz4","iparmq",
+        "laqz0","laqz1","laqz2","laqz3","laqz4",
     ],
     "eigv_comp": [
         "ggbal","gghrd","gghd3","hgeqz","ggbak",
@@ -194,11 +193,11 @@ lapack_groups = {
         "upgtr","upmtr","hbtrd"
     ],
     "eigv_sym": [
-        "sygv","sygv_2stage","sygvd","sygvx","spgv","spgvd","spgvx","sbgv",
-        "sbgvd","sbgvx","sytrd","sytd2","orgtr","ormtr","sytrd_2stage","sytrd_he2hb",
-        "sytrd_hb2st","sb2st_kernels","hegv","hegv_2stage","hegvd","hegvx","hpgv",
+        "sygv","sygvd","sygvx","spgv","spgvd","spgvx","sbgv",
+        "sbgvd","sbgvx","sytrd","sytd2","orgtr","ormtr",
+        "sb2st_kernels","hegv","hegvd","hegvx","hpgv",
         "hpgvd","hpgvx","hbgv","hbgvd","hbgvx","hetrd","hetd2","ungtr","unmtr",
-        "hetrd_2stage","hetrd_he2hb","hetrd_hb2st","hb2st_kernels",
+        "hetrd_he2hb","hetrd_hb2st","hb2st_kernels",
         "sytrd_sb2st", "sytrd_sy2sb",
     ],
     "eigv_tridiag": [
@@ -218,23 +217,23 @@ lapack_groups = {
         "lasda","lasd6","lasd7","lasd8",
     ],
     "eigv_svd_drivers": [
-        "gesvd", "gesvdq", "ggsvd3", 
+        "gesvd", "gesvdq", 
     ],
     "eigv_svd_drivers2": [
-        "gesdd", "gesvdx", "gejsv", "gesvj",
+        "gesdd", "gejsv", "gesvj",
     ],
     "eigv_svd_drivers3": [
-        "bdsqr", "bdsdc", "bdsvdx", 
+        "bdsqr", "bdsdc", 
     ],
     "eigv_std_driver": [
-        "syev","syevd","syevr","syevx","syev_2stage","syevd_2stage","syevr_2stage",
-        "syevx_2stage","spev","spevd","spevx","sbev","sbevd","sbevx","sbev_2stage",
-        "sbevd_2stage","sbevx_2stage","heev","heevd","heevr","heevx","heev_2stage",
-        "heevd_2stage","heevr_2stage","heevx_2stage","hpev","hpevd","hpevx","hbev",
-        "hbevd","hbevx","hbev_2stage","hbevd_2stage","hbevx_2stage",
+        "syev","syevd","syevr","syevx",
+        "spev","spevd","spevx","sbev","sbevd","sbevx",
+        "heev","heevd","heevr","heevx",
+        "hpev","hpevd","hpevx","hbev",
+        "hbevd","hbevx",
     ],
     "svd_comp": [ 
-        "gebrd", "gebd2", "gbbrd", "gsvj0", "gsvj1","ggsvp3","tgsja", 
+        "gebrd", "gebd2", "gbbrd", "gsvj0", "gsvj1","tgsja", 
         "ungbr","orgbr","unmbr","ormbr",
     ],
     "svd_comp2": [ 

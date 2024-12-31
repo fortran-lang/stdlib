@@ -160,10 +160,6 @@ submodule(stdlib_lapack_base) stdlib_lapack_auxiliary_parameters
 
 
 
-
-
-
-
      pure real(sp) module function stdlib${ii}$_slamc3( a, b )
         ! -- lapack auxiliary routine --
            ! univ. of tennessee, univ. of california berkeley and nag ltd..
@@ -204,10 +200,6 @@ submodule(stdlib_lapack_base) stdlib_lapack_auxiliary_parameters
 
 #:endif
 #:endfor
-
-
-
-
 
 
 
@@ -296,8 +288,6 @@ submodule(stdlib_lapack_base) stdlib_lapack_auxiliary_parameters
 
 #:endif
 #:endfor
-
-
 
 
 

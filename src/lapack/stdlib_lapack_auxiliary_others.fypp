@@ -6,14 +6,6 @@ submodule(stdlib_lapack_base) stdlib_lapack_auxiliary_others
   contains
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
 
-
-
-
-
-
-
-
-
      pure module subroutine stdlib${ii}$_sladiv1( a, b, c, d, p, q )
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --

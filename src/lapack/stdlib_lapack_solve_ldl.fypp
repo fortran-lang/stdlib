@@ -2015,8 +2015,6 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
 
 
 
-
-
      pure module subroutine stdlib${ii}$_chesv( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
      !! CHESV computes the solution to a complex system of linear equations
      !! A * X = B,
@@ -3022,8 +3020,6 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
 
 #:endif
 #:endfor
-
-
 
 
 
@@ -4646,8 +4642,6 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
 
 
 
-
-
      pure module subroutine stdlib${ii}$_chesv_aa( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
      !! CHESV_AA computes the solution to a complex system of linear equations
      !! A * X = B,
@@ -4865,8 +4859,6 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl
 
 #:endif
 #:endfor
-
-
 
 
 #:endfor

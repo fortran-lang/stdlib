@@ -5126,8 +5126,6 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl_comp3
 
 
 
-
-
      pure module subroutine stdlib${ii}$_cheequb( uplo, n, a, lda, s, scond, amax, work, info )
      !! CHEEQUB computes row and column scalings intended to equilibrate a
      !! Hermitian matrix A (with respect to the Euclidean norm) and reduce
@@ -5675,16 +5673,6 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl_comp3
 
 #:endif
 #:endfor
-
-
-
-
-
-
-
-
-
-
 
 
 

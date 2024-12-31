@@ -17262,22 +17262,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
      pure module subroutine stdlib${ii}$_sgebal( job, n, a, lda, ilo, ihi, scale, info )
      !! SGEBAL balances a general real matrix A.  This involves, first,
      !! permuting A by a similarity transformation to isolate eigenvalues

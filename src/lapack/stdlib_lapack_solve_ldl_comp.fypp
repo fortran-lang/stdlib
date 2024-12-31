@@ -9193,8 +9193,6 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl_comp
 
 
 
-
-
      pure module subroutine stdlib${ii}$_ssyequb( uplo, n, a, lda, s, scond, amax, work, info )
      !! SSYEQUB computes row and column scalings intended to equilibrate a
      !! symmetric matrix A (with respect to the Euclidean norm) and reduce
@@ -11514,16 +11512,6 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl_comp
 
 #:endif
 #:endfor
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -13966,10 +13954,6 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl_comp
 
 #:endif
 #:endfor
-
-
-
-
 
 
 

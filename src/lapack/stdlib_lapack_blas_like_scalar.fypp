@@ -633,7 +633,5 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_scalar
 #:endfor
 
 
-
-
 #:endfor
 end submodule stdlib_lapack_blas_like_scalar

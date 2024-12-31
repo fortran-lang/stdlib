@@ -1533,8 +1533,6 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_lu
 
 
 
-
-
      pure module subroutine stdlib${ii}$_sgbsv( n, kl, ku, nrhs, ab, ldab, ipiv, b, ldb, info )
      !! SGBSV computes the solution to a real system of linear equations
      !! A * X = B, where A is a band matrix of order N with KL subdiagonals
@@ -3209,8 +3207,6 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_lu
 
 #:endif
 #:endfor
-
-
 
 
 

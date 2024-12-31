@@ -8823,8 +8823,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_svd_comp
 
 
 
-
-
      pure module subroutine stdlib${ii}$_stgsja( jobu, jobv, jobq, m, p, n, k, l, a, lda, b,ldb, tola, tolb, &
      !! STGSJA computes the generalized singular value decomposition (GSVD)
      !! of two real upper triangular (or trapezoidal) matrices A and B.

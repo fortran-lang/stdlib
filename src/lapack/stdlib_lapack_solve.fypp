@@ -461,12 +461,6 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_strtri( uplo, diag, n, a, lda, info )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: diag, uplo
@@ -2103,12 +2097,6 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgeequ( m, n, a, lda, r, c, rowcnd, colcnd, amax,info )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
@@ -2622,12 +2610,6 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgbcon( norm, n, kl, ku, ab, ldab, ipiv, anorm, rcond,work, iwork, &
                info )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
@@ -3026,12 +3008,6 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgbequ( m, n, kl, ku, ab, ldab, r, c, rowcnd, colcnd,amax, info )
                
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
@@ -3353,12 +3329,6 @@ interface
 #:endif
 #:endfor
 
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
 #:endfor
 end interface 
 
@@ -3939,12 +3909,6 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgbsv( n, kl, ku, nrhs, ab, ldab, ipiv, b, ldb, info )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
@@ -4106,12 +4070,6 @@ interface
 #:endif
 #:endfor
 
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
 #:endfor
 end interface 
 
@@ -4942,12 +4900,6 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_spoequ( n, a, lda, s, scond, amax, info )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
@@ -5231,12 +5183,6 @@ interface
 #:endif
 #:endfor
 
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
 #:endfor
 end interface 
 
@@ -7423,12 +7369,6 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_ssyequb( uplo, n, a, lda, s, scond, amax, work, info )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
@@ -7578,36 +7518,6 @@ interface
 #:endif
 #:endfor
 
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
 #:endfor
 end interface 
 
@@ -7818,18 +7728,6 @@ interface
 #:endif
 #:endfor
 
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
 #:endfor
 end interface 
 
@@ -9351,18 +9249,6 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_checon( uplo, n, a, lda, ipiv, anorm, rcond, work,info )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: uplo
@@ -9662,12 +9548,6 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_cheequb( uplo, n, a, lda, s, scond, amax, work, info )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
@@ -9706,36 +9586,6 @@ interface
 #:endif
 #:endfor
 
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
 #:endfor
 end interface 
 
@@ -10571,18 +10421,6 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_slaqsy( uplo, n, a, lda, s, scond, amax, equed )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(out) :: equed
@@ -10820,12 +10658,6 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sppsv( uplo, n, nrhs, ap, b, ldb, info )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: uplo
@@ -10981,12 +10813,6 @@ interface
 #:endif
 #:endfor
 
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
 #:endfor
 end interface 
 
@@ -11652,12 +11478,6 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_chesv( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: uplo
@@ -11834,12 +11654,6 @@ interface
 #:endif
 #:endfor
 
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
 #:endfor
 end interface 
 
@@ -12189,12 +12003,6 @@ end interface
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_chesv_aa( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
                
            use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
@@ -12233,12 +12041,6 @@ interface
 #:endif
 #:endfor
 
-#:endfor
-end interface 
-
-
-interface 
-#:for ik,it,ii in LINALG_INT_KINDS_TYPES
 #:endfor
 end interface 
 

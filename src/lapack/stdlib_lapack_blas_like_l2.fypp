@@ -3877,10 +3877,6 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_l2
 
 
 
-
-
-
-
      pure module subroutine stdlib${ii}$_sla_wwaddw( n, x, y, w )
      !! SLA_WWADDW adds a vector W into a doubled-single vector (X, Y).
      !! This works for all extant IBM's hex and binary floating point

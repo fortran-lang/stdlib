@@ -2459,14 +2459,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_std_driver
 
 
 
-
-
-
-
-
-
-
-
      module subroutine stdlib${ii}$_sspev( jobz, uplo, n, ap, w, z, ldz, work, info )
      !! SSPEV computes all the eigenvalues and, optionally, eigenvectors of a
      !! real symmetric matrix A in packed storage.
@@ -5164,12 +5156,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_std_driver
 
 
 
-
-
-
-
-
-
      module subroutine stdlib${ii}$_cheev( jobz, uplo, n, a, lda, w, work, lwork, rwork,info )
      !! CHEEV computes all eigenvalues and, optionally, eigenvectors of a
      !! complex Hermitian matrix A.
@@ -7733,14 +7719,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_std_driver
 
 #:endif
 #:endfor
-
-
-
-
-
-
-
-
 
 
 
@@ -10588,12 +10566,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_std_driver
 
 #:endif
 #:endfor
-
-
-
-
-
-
 
 
 #:endfor

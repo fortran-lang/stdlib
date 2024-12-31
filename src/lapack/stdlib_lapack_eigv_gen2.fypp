@@ -11515,8 +11515,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen2
 
 
 
-
-
      pure module subroutine stdlib${ii}$_slasy2( ltranl, ltranr, isgn, n1, n2, tl, ldtl, tr,ldtr, b, ldb, &
      !! SLASY2 solves for the N1 by N2 matrix X, 1 <= N1,N2 <= 2, in
      !! op(TL)*X + ISGN*X*op(TR) = SCALE*B,

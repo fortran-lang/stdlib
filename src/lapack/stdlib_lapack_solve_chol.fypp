@@ -1185,8 +1185,6 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_chol
 
 
 
-
-
      pure module subroutine stdlib${ii}$_sppsv( uplo, n, nrhs, ap, b, ldb, info )
      !! SPPSV computes the solution to a real system of linear equations
      !! A * X = B,
@@ -2327,8 +2325,6 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_chol
 
 #:endif
 #:endfor
-
-
 
 
 
