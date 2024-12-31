@@ -3,9 +3,9 @@ import re
 from collections import defaultdict
 
 # Directory containing your Fortran files
-input_dir = os.path.join(".","legacy") 
-output_dir_blas = os.path.join(".","src","blas") 
-output_dir_lapack = os.path.join(".","src","lapack") 
+input_dir = os.path.join(os.getcwd(),"legacy") 
+output_dir_blas = os.path.join(os.getcwd(),"src","blas") 
+output_dir_lapack = os.path.join(os.getcwd(),"src","lapack") 
 # Ensure the output directory exists
 os.makedirs(output_dir_blas, exist_ok=True)
 os.makedirs(output_dir_lapack, exist_ok=True)
