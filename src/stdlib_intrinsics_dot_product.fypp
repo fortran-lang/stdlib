@@ -1,0 +1,75 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set RC_KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES
+
+#:def cnjg(type,expression)
+#:if 'complex' in type
+conjg(${expression}$)
+#:else
+${expression}$
+#:endif
+#:enddef
+
+! This module is based on https://github.com/jalvesz/fast_math
+submodule(stdlib_intrinsics) stdlib_intrinsics_dot_product
+    !!Replacement for certain Fortran intrinsic functions offering either faster and/or more accurate implementations.
+    !! ([Specification](../page/specs/stdlib_intrinsics.html))
+    use stdlib_kinds
+    use stdlib_constants
+    implicit none
+
+    integer, parameter :: chunk = 64
+    
+contains
+
+#:for k1, t1, s1 in RC_KINDS_TYPES
+pure module function fprod_${s1}$(a,b) result(p)
+    ${t1}$, intent(in) :: a(:)
+    ${t1}$, intent(in) :: b(:)
+    ${t1}$ :: p
+    ${t1}$ :: abatch(chunk)
+    integer :: i, dr, rr
+    ! -----------------------------
+    dr = size(a)/chunk
+    rr = size(a) - dr*chunk
+
+    abatch = zero_${s1}$
+    do i = 1, dr
+        abatch(1:chunk) = abatch(1:chunk) + a(chunk*i-chunk+1:chunk*i)*${cnjg(t1,'b(chunk*i-chunk+1:chunk*i)')}$
+    end do
+    abatch(1:rr) = abatch(1:rr) + a(size(a)-rr+1:size(a))*${cnjg(t1,'b(size(a)-rr+1:size(a))')}$
+
+    p = zero_${s1}$
+    do i = 1, chunk/2
+        p = p + abatch(i)+abatch(chunk/2+i)
+    end do
+end function
+#:endfor
+
+#:for k1, t1, s1 in RC_KINDS_TYPES
+pure module function fprod_kahan_${s1}$(a,b) result(p)
+    ${t1}$, intent(in) :: a(:)
+    ${t1}$, intent(in) :: b(:)
+    ${t1}$ :: p
+    ${t1}$ :: pbatch(chunk)
+    ${t1}$ :: cbatch(chunk)
+    integer :: i, dr, rr
+    ! -----------------------------
+    dr = size(a)/(chunk)
+    rr = size(a) - dr*chunk     
+    pbatch = zero_${s1}$
+    cbatch = zero_${s1}$
+    do i = 1, dr
+        call vkahan( a(chunk*i-chunk+1:chunk*i)*${cnjg(t1,'b(chunk*i-chunk+1:chunk*i)')}$ , pbatch(1:chunk) , cbatch(1:chunk) )
+    end do
+    call vkahan( a(size(a)-rr+1:size(a))*${cnjg(t1,'b(size(a)-rr+1:size(a))')}$ , pbatch(1:rr) , cbatch(1:rr) )      
+
+    p = zero_${s1}$
+    do i = 1,chunk
+        call vkahan( pbatch(i) , p , cbatch(i) )
+    end do      
+end function
+#:endfor
+
+end submodule stdlib_intrinsics_dot_product
