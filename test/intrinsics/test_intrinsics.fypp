@@ -90,7 +90,7 @@ subroutine test_sum(error)
 
         allocate(x(n))
         do i = 1, n
-            x(i) = complex(&
+            x(i) = cmplx(&
                 8*atan(1._${k1}$)*(real(i,kind=${k1}$)-0.5_${k1}$)/real(2*n,kind=${k1}$)**2,&
                 8*atan(1._${k1}$)*(real(i+n,kind=${k1}$)-0.5_${k1}$)/real(2*n,kind=${k1}$)**2)
         end do
@@ -182,7 +182,7 @@ subroutine test_dot_product(error)
 
         allocate(x(n))
         do i = 1, n
-            x(i) = complex(&
+            x(i) = cmplx(&
                 sqrt(8*atan(1._${k1}$)*(real(i,kind=${k1}$)-0.5_${k1}$)/real(2*n,kind=${k1}$)**2),&
                 sqrt(8*atan(1._${k1}$)*(real(i+n,kind=${k1}$)-0.5_${k1}$)/real(2*n,kind=${k1}$)**2))
         end do
