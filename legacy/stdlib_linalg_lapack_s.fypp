@@ -2737,7 +2737,7 @@ module stdlib_linalg_lapack_s
      end function stdlib${ii}$_slaisnan
 
 
-     pure real(sp)             function stdlib${ii}$_slamch( cmach )
+     pure real(sp) function stdlib${ii}$_slamch( cmach )
      !! SLAMCH determines single precision machine parameters.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
@@ -2747,17 +2747,11 @@ module stdlib_linalg_lapack_s
        ! =====================================================================
            
            ! Local Scalars 
-           real(sp) :: rnd, eps, sfmin, small, rmach
+           real(sp) :: sfmin, small, rmach
            ! Intrinsic Functions 
            intrinsic :: digits,epsilon,huge,maxexponent,minexponent,radix,tiny
            ! Executable Statements 
            ! assume rounding, not chopping. always.
-           rnd = one
-           if( one==rnd ) then
-              eps = epsilon(zero) * 0.5
-           else
-              eps = epsilon(zero)
-           end if
            if( stdlib_lsame( cmach, 'E' ) ) then
               rmach = eps
            else if( stdlib_lsame( cmach, 'S' ) ) then
@@ -2776,7 +2770,7 @@ module stdlib_linalg_lapack_s
            else if( stdlib_lsame( cmach, 'N' ) ) then
               rmach = digits(zero)
            else if( stdlib_lsame( cmach, 'R' ) ) then
-              rmach = rnd
+              rmach = one
            else if( stdlib_lsame( cmach, 'M' ) ) then
               rmach = minexponent(zero)
            else if( stdlib_lsame( cmach, 'U' ) ) then
@@ -2793,7 +2787,7 @@ module stdlib_linalg_lapack_s
      end function stdlib${ii}$_slamch
 
 
-     pure real(sp)             function stdlib${ii}$_slamc3( a, b )
+     pure real(sp) function stdlib${ii}$_slamc3( a, b )
         ! -- lapack auxiliary routine --
            ! univ. of tennessee, univ. of california berkeley and nag ltd..
            ! Scalar Arguments 
@@ -3135,7 +3129,7 @@ module stdlib_linalg_lapack_s
      end subroutine stdlib${ii}$_slapmt
 
 
-     pure real(sp)             function stdlib${ii}$_slapy3( x, y, z )
+     pure real(sp) function stdlib${ii}$_slapy3( x, y, z )
      !! SLAPY3 returns sqrt(x**2+y**2+z**2), taking care not to cause
      !! unnecessary overflow and unnecessary underflow.
         ! -- lapack auxiliary routine --
@@ -5831,6 +5825,7 @@ module stdlib_linalg_lapack_s
         ! Scalar Arguments 
         real(sp), intent(out) :: c, r, s
         real(sp), intent(in) :: f, g
+        ! =====================================================================
         ! Local Scalars 
         real(sp) :: d, f1, fs, g1, gs, p, u, uu
         ! Intrinsic Functions 
@@ -7727,7 +7722,8 @@ module stdlib_linalg_lapack_s
         real(sp), intent(inout) :: scl, sumsq
         ! Array Arguments 
         real(sp), intent(in) :: x(*)
-        ! Local Scalars 
+        ! =====================================================================
+        ! Local Scalars
      integer(${ik}$) :: i, ix
      logical(lk) :: notbig
         real(sp) :: abig, amed, asml, ax, ymax, ymin
@@ -29905,7 +29901,7 @@ module stdlib_linalg_lapack_s
      end function stdlib${ii}$_slaneg
 
 
-     real(sp)             function stdlib${ii}$_slangb( norm, n, kl, ku, ab, ldab,work )
+     real(sp) function stdlib${ii}$_slangb( norm, n, kl, ku, ab, ldab,work )
      !! SLANGB returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the element of  largest absolute value  of an
      !! n by n band matrix  A,  with kl sub-diagonals and ku super-diagonals.
@@ -29980,7 +29976,7 @@ module stdlib_linalg_lapack_s
      end function stdlib${ii}$_slangb
 
 
-     real(sp)             function stdlib${ii}$_slange( norm, m, n, a, lda, work )
+     real(sp) function stdlib${ii}$_slange( norm, m, n, a, lda, work )
      !! SLANGE returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! real matrix A.
@@ -30052,7 +30048,7 @@ module stdlib_linalg_lapack_s
      end function stdlib${ii}$_slange
 
 
-     pure real(sp)             function stdlib${ii}$_slangt( norm, n, dl, d, du )
+     pure real(sp) function stdlib${ii}$_slangt( norm, n, dl, d, du )
      !! SLANGT returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! real tridiagonal matrix A.
@@ -30128,7 +30124,7 @@ module stdlib_linalg_lapack_s
      end function stdlib${ii}$_slangt
 
 
-     real(sp)             function stdlib${ii}$_slanhs( norm, n, a, lda, work )
+     real(sp) function stdlib${ii}$_slanhs( norm, n, a, lda, work )
      !! SLANHS returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! Hessenberg matrix A.
@@ -30200,7 +30196,7 @@ module stdlib_linalg_lapack_s
      end function stdlib${ii}$_slanhs
 
 
-     real(sp)             function stdlib${ii}$_slansb( norm, uplo, n, k, ab, ldab,work )
+     real(sp) function stdlib${ii}$_slansb( norm, uplo, n, k, ab, ldab,work )
      !! SLANSB returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the element of  largest absolute value  of an
      !! n by n symmetric band matrix A,  with k super-diagonals.
@@ -31009,7 +31005,7 @@ module stdlib_linalg_lapack_s
      end function stdlib${ii}$_slansf
 
 
-     real(sp)             function stdlib${ii}$_slansp( norm, uplo, n, ap, work )
+     real(sp) function stdlib${ii}$_slansp( norm, uplo, n, ap, work )
      !! SLANSP returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! real symmetric matrix A,  supplied in packed form.
@@ -31133,7 +31129,7 @@ module stdlib_linalg_lapack_s
      end function stdlib${ii}$_slansp
 
 
-     pure real(sp)             function stdlib${ii}$_slanst( norm, n, d, e )
+     pure real(sp) function stdlib${ii}$_slanst( norm, n, d, e )
      !! SLANST returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! real symmetric tridiagonal matrix A.
@@ -31195,7 +31191,7 @@ module stdlib_linalg_lapack_s
      end function stdlib${ii}$_slanst
 
 
-     real(sp)             function stdlib${ii}$_slansy( norm, uplo, n, a, lda, work )
+     real(sp) function stdlib${ii}$_slansy( norm, uplo, n, a, lda, work )
      !! SLANSY returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! real symmetric matrix A.
@@ -31291,7 +31287,7 @@ module stdlib_linalg_lapack_s
      end function stdlib${ii}$_slansy
 
 
-     real(sp)             function stdlib${ii}$_slantb( norm, uplo, diag, n, k, ab,ldab, work )
+     real(sp) function stdlib${ii}$_slantb( norm, uplo, diag, n, k, ab,ldab, work )
      !! SLANTB returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the element of  largest absolute value  of an
      !! n by n triangular band matrix A,  with ( k + 1 ) diagonals.
@@ -31484,7 +31480,7 @@ module stdlib_linalg_lapack_s
      end function stdlib${ii}$_slantb
 
 
-     real(sp)             function stdlib${ii}$_slantp( norm, uplo, diag, n, ap, work )
+     real(sp) function stdlib${ii}$_slantp( norm, uplo, diag, n, ap, work )
      !! SLANTP returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! triangular matrix A, supplied in packed form.
@@ -31690,7 +31686,7 @@ module stdlib_linalg_lapack_s
      end function stdlib${ii}$_slantp
 
 
-     real(sp)             function stdlib${ii}$_slantr( norm, uplo, diag, m, n, a, lda,work )
+     real(sp) function stdlib${ii}$_slantr( norm, uplo, diag, m, n, a, lda,work )
      !! SLANTR returns the value of the one norm,  or the Frobenius norm, or
      !! the  infinity norm,  or the  element of  largest absolute value  of a
      !! trapezoidal or triangular matrix A.
@@ -31970,7 +31966,7 @@ module stdlib_linalg_lapack_s
      end subroutine stdlib${ii}$_slaorhr_col_getrfnp
 
 
-     pure real(sp)             function stdlib${ii}$_slapy2( x, y )
+     pure real(sp) function stdlib${ii}$_slapy2( x, y )
      !! SLAPY2 returns sqrt(x**2+y**2), taking care not to cause unnecessary
      !! overflow and unnecessary underflow.
         ! -- lapack auxiliary routine --
@@ -32021,7 +32017,7 @@ module stdlib_linalg_lapack_s
            integer(${ik}$), intent( in ) :: lda, ldb
            real(sp), intent( in ) :: a( lda, * ), b( ldb, * ), sr1, sr2, si,beta1, beta2
            real(sp), intent( out ) :: v( * )
-           
+           ! ================================================================
            ! local scalars
            real(sp) :: w(2_${ik}$), safmin, safmax, scale1, scale2
            safmin = stdlib${ii}$_slamch( 'SAFE MINIMUM' )
@@ -32070,7 +32066,7 @@ module stdlib_linalg_lapack_s
            integer(${ik}$), intent( in ) :: k, lda, ldb, ldq, ldz, istartm, istopm,nq, nz, qstart, &
                      zstart, ihi
            real(sp), intent(inout) :: a(lda,*), b(ldb,*), q(ldq,*), z(ldz,*)
-           
+           ! ================================================================
            ! local variables
            real(sp) :: h(2_${ik}$,3_${ik}$), c1, s1, c2, s2, temp
            if( k+2 == ihi ) then
@@ -32183,8 +32179,8 @@ module stdlib_linalg_lapack_s
            real(sp), intent( inout ) :: a( lda, * ), b( ldb, * ), q( ldq, * ),z( ldz, * ), qc( &
                      ldqc, * ), zc( ldzc, * ), work( * ), sr( * ),si( * ), ss( * )
            integer(${ik}$), intent( out ) :: info
-           
-           ! local scalars
+           ! ================================================================
+           ! local variables
            integer(${ik}$) :: i, j, ns, istartm, istopm, sheight, swidth, k, np, istartb, istopb, &
                      ishift, nblock, npos
            real(sp) :: temp, v(3_${ik}$), c1, s1, c2, s2, swap
@@ -35235,6 +35231,7 @@ module stdlib_linalg_lapack_s
            integer(${ik}$), intent(inout) :: iter, n0, ndiv, nfail, pp
            real(sp), intent(inout) :: desig, dmin1, dmin2, dn, dn1, dn2, g, qmax, tau
            real(sp), intent(out) :: dmin, sigma
+           integer(${ik}$), intent(inout) :: ttype
            ! Array Arguments 
            real(sp), intent(inout) :: z(*)
         ! =====================================================================
@@ -35246,7 +35243,6 @@ module stdlib_linalg_lapack_s
            
            ! Local Scalars 
            integer(${ik}$) :: ipn4, j4, n0in, nn
-           integer(${ik}$), intent(inout) :: ttype
            real(sp) :: eps, s, t, temp, tol, tol2
            ! Intrinsic Functions 
            intrinsic :: abs,max,min,sqrt
@@ -38509,7 +38505,7 @@ module stdlib_linalg_lapack_s
      end subroutine stdlib${ii}$_spttrs
 
 
-     pure subroutine  stdlib${ii}$_ssb2st_kernels( uplo, wantz, ttype,st, ed, sweep, n, nb, ib,a, lda, &
+     pure subroutine stdlib${ii}$_ssb2st_kernels( uplo, wantz, ttype,st, ed, sweep, n, nb, ib,a, lda, &
      !! SSB2ST_KERNELS is an internal routine used by the SSYTRD_SB2ST
      !! subroutine.
                v, tau, ldvt, work)
@@ -81040,7 +81036,7 @@ module stdlib_linalg_lapack_s
            integer(${ik}$), intent( out ) :: info
            real(sp), intent( inout ) :: a( lda, * ), b( ldb, * ), q( ldq, * ),z( ldz, * ), alphar(&
                       * ), alphai( * ), beta( * ), work( * )
-           
+           ! ================================================================
            ! local scalars
            real(sp) :: smlnum, ulp, eshift, safmin, safmax, c1, s1, temp, swap
            integer(${ik}$) :: istart, istop, iiter, maxit, istart2, k, ld, nshifts, nblock, nw, nmin,&
@@ -81390,6 +81386,7 @@ module stdlib_linalg_lapack_s
            real(sp), intent(inout) :: qc(ldqc,*), zc(ldzc,*)
            real(sp), intent(out) :: work(*)
            
+           ! ================================================================
            ! local scalars
            logical(lk) :: bulge
            integer(${ik}$) :: jw, kwtop, kwbot, istopm, istartm, k, k2, stgexc_info, ifst, ilst, &

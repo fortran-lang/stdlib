@@ -3,9 +3,8 @@
 module stdlib_linalg_blas
      use stdlib_linalg_constants
      use stdlib_linalg_blas_aux
-     #:for rk,rt,ri in RC_KINDS_TYPES
-     use stdlib_linalg_blas_${ri}$
-     #:endfor
+     use stdlib_blas
+     
      implicit none(type,external)
      public     
          
