@@ -1007,6 +1007,82 @@ This subroutine computes the internal working space requirements for the QR fact
 {!example/linalg/example_qr_space.f90!}
 ```
 
+## `schur` - Compute the Schur decomposition of a matrix
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the Schur decomposition of a `real` or `complex` matrix: \( A = Z T Z^H \), where \( Z \) is unitary (orthonormal) and \( T \) is upper-triangular (for complex matrices) or quasi-upper-triangular (for real matrices, with possible \( 2 \times 2 \) blocks on the diagonal). Matrix \( A \) has size `[n,n]`.
+
+The results are returned in output matrices \( T \) and \( Z \). Matrix \( T \) is the Schur form, and matrix \( Z \) is the unitary transformation matrix such that \( A = Z T Z^H \). If requested, the eigenvalues of \( T \) can also be returned as a `complex` array of size `[n]`.
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):schur(interface)]] `(a, t [, z,] [, eigvals] [, overwrite_a] [, storage] [, err])`
+
+### Arguments
+
+- `a`: Shall be a rank-2 `real` or `complex` array containing the matrix to be decomposed. It is an `intent(inout)` argument if `overwrite_a = .true.`; otherwise, it is an `intent(in)` argument.
+
+- `t`: Shall be a rank-2 array of the same kind as `a`, containing the Schur form \( T \) of the matrix. It is an `intent(out)` argument and should have a shape of `[n,n]`.
+
+- `z`: Shall be a rank-2 array of the same kind as `a`, containing the unitary matrix \( Z \). It is an `intent(out)` argument and is optional. If provided, it should have the shape `[n,n]`.
+
+- `eigvals` (optional): Shall be a rank-1 `complex` or `real` array of the same kind as `a`, containing the eigenvalues of \( A \) (the diagonal elements of \( T \)), or their `real` component only. The array must be of size `[n]`. If not provided, the eigenvalues are not returned. It is an `intent(out)` argument.
+
+- `overwrite_a` (optional): Shall be a `logical` flag (default: `.false.`). If `.true.`, the input matrix `a` will be overwritten and destroyed upon return, avoiding internal data allocation. It is an `intent(in)` argument.
+
+- `storage` (optional): Shall be a rank-1 array of the same type and kind as `a`, providing working storage for the solver. Its minimum size can be determined with a call to [[stdlib_linalg(module):schur_space(interface)]]. It is an `intent(inout)` argument.
+
+- `err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument. If not provided, exceptions trigger an `error stop`.
+
+### Return value
+
+Returns the Schur decomposition matrices into the \( T \) and \( Z \) arguments. If `eigvals` is provided, it will also return the eigenvalues of the matrix \( A \).
+
+Raises `LINALG_VALUE_ERROR` if any of the matrices have invalid or unsuitable size for the decomposition.  
+Raises `LINALG_VALUE_ERROR` if the `real` component is only requested, but the eigenvalues have non-trivial imaginary parts.
+Raises `LINALG_ERROR` on insufficient user storage space.  
+If the state argument `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_schur_eigvals.f90!}
+```
+
+---
+
+## `schur_space` - Compute internal working space requirements for the Schur decomposition
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the internal working space requirements for the Schur decomposition, [[stdlib_linalg(module):schur(interface)]].
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):schur_space(interface)]] `(a, lwork, [, err])`
+
+### Arguments
+
+- `a`: Shall be a rank-2 `real` or `complex` array containing the matrix to be decomposed. It is an `intent(in)` argument.
+
+- `lwork`: Shall be an `integer` scalar that returns the minimum array size required for the working storage in [[stdlib_linalg(module):schur(interface)]] to decompose `a`. It is an `intent(out)` argument.
+
+- `err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument.
+
+### Return value
+
+Returns the required working storage size `lwork` for the Schur decomposition. This value can be used to pre-allocate a workspace array in case multiple Schur decompositions of the same matrix size are needed. If pre-allocated working arrays are provided, no internal memory allocations will take place during the decomposition.
+
+
 ## `eig` - Eigenvalues and Eigenvectors of a Square Matrix
 
 ### Status
