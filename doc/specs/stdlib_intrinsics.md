@@ -32,17 +32,12 @@ Pure function.
 #### Argument(s)
 
 `x`: 1D array of either `real` or `complex` type. This argument is `intent(in)`.
+
 `mask` (optional): 1D array of `logical` values. This argument is `intent(in)`.
 
 #### Output value or Result value
 
 The output is a scalar of `type` and `kind` same as to that of `x`.
-
-#### Example
-
-```fortran
-{!example/math/example_intrinsics_sum.f90!}
-```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### `fsum_kahan` function
@@ -79,6 +74,7 @@ Pure function.
 #### Argument(s)
 
 `x`: 1D array of either `real` or `complex` type. This argument is `intent(in)`.
+
 `mask` (optional): 1D array of `logical` values. This argument is `intent(in)`.
 
 #### Output value or Result value
@@ -88,7 +84,7 @@ The output is a scalar of `type` and `kind` same as to that of `x`.
 #### Example
 
 ```fortran
-{!example/math/example_intrinsics_sum.f90!}
+{!example/intrinsics/example_sum.f90!}
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -113,17 +109,12 @@ Pure function.
 #### Argument(s)
 
 `x`: 1D array of either `real` or `complex` type. This argument is `intent(in)`.
+
 `y`: 1D array of the same type and kind as `x`. This argument is `intent(in)`.
 
 #### Output value or Result value
 
 The output is a scalar of `type` and `kind` same as to that of `x` and `y`.
-
-#### Example
-
-```fortran
-{!example/math/example_intrinsics_dot_duct.f90!}
-```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### `fprod_kahan` function
@@ -147,6 +138,7 @@ Pure function.
 #### Argument(s)
 
 `x`: 1D array of either `real` or `complex` type. This argument is `intent(in)`.
+
 `y`: 1D array of the same type and kind as `x`. This argument is `intent(in)`.
 
 #### Output value or Result value
@@ -154,5 +146,5 @@ Pure function.
 The output is a scalar of `type` and `kind` same as to that of `x` and `y`.
 
 ```fortran
-{!example/math/example_intrinsics_dot_duct.f90!}
+{!example/intrinsics/example_dot_product.f90!}
 ```
