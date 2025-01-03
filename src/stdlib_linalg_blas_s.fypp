@@ -6,43 +6,45 @@ module stdlib_linalg_blas_s
      private
 
 
-     public :: sp,dp,qp,lk,ilp
-     public :: stdlib_sasum
-     public :: stdlib_saxpy
-     public :: stdlib_scasum
-     public :: stdlib_scnrm2
-     public :: stdlib_scopy
-     public :: stdlib_sdot
-     public :: stdlib_sdsdot
-     public :: stdlib_sgbmv
-     public :: stdlib_sgemm
-     public :: stdlib_sgemv
-     public :: stdlib_sger
-     public :: stdlib_snrm2
-     public :: stdlib_srot
-     public :: stdlib_srotg
-     public :: stdlib_srotm
-     public :: stdlib_srotmg
-     public :: stdlib_ssbmv
-     public :: stdlib_sscal
-     public :: stdlib_sspmv
-     public :: stdlib_sspr
-     public :: stdlib_sspr2
-     public :: stdlib_sswap
-     public :: stdlib_ssymm
-     public :: stdlib_ssymv
-     public :: stdlib_ssyr
-     public :: stdlib_ssyr2
-     public :: stdlib_ssyr2k
-     public :: stdlib_ssyrk
-     public :: stdlib_stbmv
-     public :: stdlib_stbsv
-     public :: stdlib_stpmv
-     public :: stdlib_stpsv
-     public :: stdlib_strmm
-     public :: stdlib_strmv
-     public :: stdlib_strsm
-     public :: stdlib_strsv
+     public :: sp,dp,qp,lk,ilp,ilp64
+     #:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     public :: stdlib${ii}$_sasum
+     public :: stdlib${ii}$_saxpy
+     public :: stdlib${ii}$_scasum
+     public :: stdlib${ii}$_scnrm2
+     public :: stdlib${ii}$_scopy
+     public :: stdlib${ii}$_sdot
+     public :: stdlib${ii}$_sdsdot
+     public :: stdlib${ii}$_sgbmv
+     public :: stdlib${ii}$_sgemm
+     public :: stdlib${ii}$_sgemv
+     public :: stdlib${ii}$_sger
+     public :: stdlib${ii}$_snrm2
+     public :: stdlib${ii}$_srot
+     public :: stdlib${ii}$_srotg
+     public :: stdlib${ii}$_srotm
+     public :: stdlib${ii}$_srotmg
+     public :: stdlib${ii}$_ssbmv
+     public :: stdlib${ii}$_sscal
+     public :: stdlib${ii}$_sspmv
+     public :: stdlib${ii}$_sspr
+     public :: stdlib${ii}$_sspr2
+     public :: stdlib${ii}$_sswap
+     public :: stdlib${ii}$_ssymm
+     public :: stdlib${ii}$_ssymv
+     public :: stdlib${ii}$_ssyr
+     public :: stdlib${ii}$_ssyr2
+     public :: stdlib${ii}$_ssyr2k
+     public :: stdlib${ii}$_ssyrk
+     public :: stdlib${ii}$_stbmv
+     public :: stdlib${ii}$_stbsv
+     public :: stdlib${ii}$_stpmv
+     public :: stdlib${ii}$_stpsv
+     public :: stdlib${ii}$_strmm
+     public :: stdlib${ii}$_strmv
+     public :: stdlib${ii}$_strsm
+     public :: stdlib${ii}$_strsv
+     #:endfor
 
      ! 32-bit real constants 
      real(sp),    parameter, private ::     negone = -1.00_sp
@@ -84,24 +86,24 @@ module stdlib_linalg_blas_s
 
      contains
 
-
-     pure real(sp) function stdlib_sasum(n,sx,incx)
+     #:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure real(sp) function stdlib${ii}$_sasum(n,sx,incx)
      !! SASUM takes the sum of the absolute values.
      !! uses unrolled loops for increment equal to one.
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           integer(ilp), intent(in) :: incx, n
+           integer(${ik}$), intent(in) :: incx, n
            ! Array Arguments 
            real(sp), intent(in) :: sx(*)
         ! =====================================================================
            ! Local Scalars 
            real(sp) :: stemp
-           integer(ilp) :: i, m, mp1, nincx
+           integer(${ik}$) :: i, m, mp1, nincx
            ! Intrinsic Functions 
            intrinsic :: abs,mod
-           stdlib_sasum = zero
+           stdlib${ii}$_sasum = zero
            stemp = zero
            if (n<=0 .or. incx<=0) return
            if (incx==1) then
@@ -113,7 +115,7 @@ module stdlib_linalg_blas_s
                     stemp = stemp + abs(sx(i))
                  end do
                  if (n<6) then
-                    stdlib_sasum = stemp
+                    stdlib${ii}$_sasum = stemp
                     return
                  end if
               end if
@@ -129,12 +131,12 @@ module stdlib_linalg_blas_s
                  stemp = stemp + abs(sx(i))
               end do
            end if
-           stdlib_sasum = stemp
+           stdlib${ii}$_sasum = stemp
            return
-     end function stdlib_sasum
+     end function stdlib${ii}$_sasum
 
 
-     pure subroutine stdlib_saxpy(n,sa,sx,incx,sy,incy)
+     pure subroutine stdlib${ii}$_saxpy(n,sa,sx,incx,sy,incy)
      !! SAXPY constant times a vector plus a vector.
      !! uses unrolled loops for increments equal to one.
         ! -- reference blas level1 routine --
@@ -142,13 +144,13 @@ module stdlib_linalg_blas_s
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            real(sp), intent(in) :: sa
-           integer(ilp), intent(in) :: incx, incy, n
+           integer(${ik}$), intent(in) :: incx, incy, n
            ! Array Arguments 
            real(sp), intent(in) :: sx(*)
            real(sp), intent(inout) :: sy(*)
         ! =====================================================================
            ! Local Scalars 
-           integer(ilp) :: i, ix, iy, m, mp1
+           integer(${ik}$) :: i, ix, iy, m, mp1
            ! Intrinsic Functions 
            intrinsic :: mod
            if (n<=0) return
@@ -184,26 +186,26 @@ module stdlib_linalg_blas_s
               end do
            end if
            return
-     end subroutine stdlib_saxpy
+     end subroutine stdlib${ii}$_saxpy
 
 
-     pure real(sp) function stdlib_scasum(n,cx,incx)
+     pure real(sp) function stdlib${ii}$_scasum(n,cx,incx)
      !! SCASUM takes the sum of the (|Re(.)| + |Im(.)|)'s of a complex vector and
      !! returns a single precision result.
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           integer(ilp), intent(in) :: incx, n
+           integer(${ik}$), intent(in) :: incx, n
            ! Array Arguments 
            complex(sp), intent(in) :: cx(*)
         ! =====================================================================
            ! Local Scalars 
            real(sp) :: stemp
-           integer(ilp) :: i, nincx
+           integer(${ik}$) :: i, nincx
            ! Intrinsic Functions 
            intrinsic :: abs,aimag,real
-           stdlib_scasum = zero
+           stdlib${ii}$_scasum = zero
            stemp = zero
            if (n<=0 .or. incx<=0) return
            if (incx==1) then
@@ -218,16 +220,16 @@ module stdlib_linalg_blas_s
                  stemp = stemp + abs(real(cx(i),KIND=sp)) + abs(aimag(cx(i)))
               end do
            end if
-           stdlib_scasum = stemp
+           stdlib${ii}$_scasum = stemp
            return
-     end function stdlib_scasum
+     end function stdlib${ii}$_scasum
 
 
-     pure function stdlib_scnrm2( n, x, incx )
+     pure function stdlib${ii}$_scnrm2( n, x, incx )
      !! SCNRM2 returns the euclidean norm of a vector via the function
      !! name, so that
      !! SCNRM2 := sqrt( x**H*x )
-        real(sp) :: stdlib_scnrm2
+        real(sp) :: stdlib${ii}$_scnrm2
         ! -- reference blas level1 routine (version 3.9.1_sp) --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -236,15 +238,15 @@ module stdlib_linalg_blas_s
         real(sp), parameter :: maxn = huge(0.0_sp)
         ! .. blue's scaling constants ..
         ! Scalar Arguments 
-     integer(ilp), intent(in) :: incx, n
+     integer(${ik}$), intent(in) :: incx, n
         ! Array Arguments 
         complex(sp), intent(in) :: x(*)
         ! Local Scalars 
-     integer(ilp) :: i, ix
+     integer(${ik}$) :: i, ix
      logical(lk) :: notbig
         real(sp) :: abig, amed, asml, ax, scl, sumsq, ymax, ymin
         ! quick return if possible
-        stdlib_scnrm2 = zero
+        stdlib${ii}$_scnrm2 = zero
         if( n <= 0 ) return
         scl = one
         sumsq = zero
@@ -314,25 +316,25 @@ module stdlib_linalg_blas_s
            scl = one
            sumsq = amed
         end if
-        stdlib_scnrm2 = scl*sqrt( sumsq )
+        stdlib${ii}$_scnrm2 = scl*sqrt( sumsq )
         return
-     end function stdlib_scnrm2
+     end function stdlib${ii}$_scnrm2
 
 
-     pure subroutine stdlib_scopy(n,sx,incx,sy,incy)
+     pure subroutine stdlib${ii}$_scopy(n,sx,incx,sy,incy)
      !! SCOPY copies a vector, x, to a vector, y.
      !! uses unrolled loops for increments equal to 1.
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           integer(ilp), intent(in) :: incx, incy, n
+           integer(${ik}$), intent(in) :: incx, incy, n
            ! Array Arguments 
            real(sp), intent(in) :: sx(*)
            real(sp), intent(out) :: sy(*)
         ! =====================================================================
            ! Local Scalars 
-           integer(ilp) :: i, ix, iy, m, mp1
+           integer(${ik}$) :: i, ix, iy, m, mp1
            ! Intrinsic Functions 
            intrinsic :: mod
            if (n<=0) return
@@ -370,27 +372,27 @@ module stdlib_linalg_blas_s
               end do
            end if
            return
-     end subroutine stdlib_scopy
+     end subroutine stdlib${ii}$_scopy
 
 
-     pure real(sp) function stdlib_sdot(n,sx,incx,sy,incy)
+     pure real(sp) function stdlib${ii}$_sdot(n,sx,incx,sy,incy)
      !! SDOT forms the dot product of two vectors.
      !! uses unrolled loops for increments equal to one.
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           integer(ilp), intent(in) :: incx, incy, n
+           integer(${ik}$), intent(in) :: incx, incy, n
            ! Array Arguments 
            real(sp), intent(in) :: sx(*), sy(*)
         ! =====================================================================
            ! Local Scalars 
            real(sp) :: stemp
-           integer(ilp) :: i, ix, iy, m, mp1
+           integer(${ik}$) :: i, ix, iy, m, mp1
            ! Intrinsic Functions 
            intrinsic :: mod
            stemp = zero
-           stdlib_sdot = zero
+           stdlib${ii}$_sdot = zero
            if (n<=0) return
            if (incx==1 .and. incy==1) then
               ! code for both increments equal to 1
@@ -401,7 +403,7 @@ module stdlib_linalg_blas_s
                     stemp = stemp + sx(i)*sy(i)
                  end do
                  if (n<5) then
-                    stdlib_sdot=stemp
+                    stdlib${ii}$_sdot=stemp
                  return
                  end if
               end if
@@ -423,12 +425,12 @@ module stdlib_linalg_blas_s
                  iy = iy + incy
               end do
            end if
-           stdlib_sdot = stemp
+           stdlib${ii}$_sdot = stemp
            return
-     end function stdlib_sdot
+     end function stdlib${ii}$_sdot
 
 
-     pure real(sp) function stdlib_sdsdot(n,sb,sx,incx,sy,incy)
+     pure real(sp) function stdlib${ii}$_sdsdot(n,sb,sx,incx,sy,incy)
      !! Compute the inner product of two vectors with extended
      !! precision accumulation.
      !! Returns S.P. result with dot product accumulated in D.P.
@@ -440,17 +442,17 @@ module stdlib_linalg_blas_s
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            real(sp), intent(in) :: sb
-           integer(ilp), intent(in) :: incx, incy, n
+           integer(${ik}$), intent(in) :: incx, incy, n
            ! Array Arguments 
            real(sp), intent(in) :: sx(*), sy(*)
            ! Local Scalars 
            real(dp) :: dsdot
-           integer(ilp) :: i, kx, ky, ns
+           integer(${ik}$) :: i, kx, ky, ns
            ! Intrinsic Functions 
            intrinsic :: real
            dsdot = sb
            if (n<=0) then
-              stdlib_sdsdot = dsdot
+              stdlib${ii}$_sdsdot = dsdot
               return
            end if
            if (incx==incy .and. incx>0) then
@@ -471,12 +473,12 @@ module stdlib_linalg_blas_s
                  ky = ky + incy
               end do
            end if
-           stdlib_sdsdot = dsdot
+           stdlib${ii}$_sdsdot = dsdot
            return
-     end function stdlib_sdsdot
+     end function stdlib${ii}$_sdsdot
 
 
-     pure subroutine stdlib_sgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
+     pure subroutine stdlib${ii}$_sgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
      !! SGBMV performs one of the matrix-vector operations
      !! y := alpha*A*x + beta*y,   or   y := alpha*A**T*x + beta*y,
      !! where alpha and beta are scalars, x and y are vectors and A is an
@@ -486,7 +488,7 @@ module stdlib_linalg_blas_s
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            real(sp), intent(in) :: alpha, beta
-           integer(ilp), intent(in) :: incx, incy, kl, ku, lda, m, n
+           integer(${ik}$), intent(in) :: incx, incy, kl, ku, lda, m, n
            character, intent(in) :: trans
            ! Array Arguments 
            real(sp), intent(in) :: a(lda,*), x(*)
@@ -495,7 +497,7 @@ module stdlib_linalg_blas_s
            
            ! Local Scalars 
            real(sp) :: temp
-           integer(ilp) :: i, info, ix, iy, j, jx, jy, k, kup1, kx, ky, lenx, leny
+           integer(${ik}$) :: i, info, ix, iy, j, jx, jy, k, kup1, kx, ky, lenx, leny
            ! Intrinsic Functions 
            intrinsic :: max,min
            ! test the input parameters.
@@ -519,7 +521,7 @@ module stdlib_linalg_blas_s
                info = 13
            end if
            if (info/=0) then
-               call stdlib_xerbla('SGBMV ',info)
+               call stdlib${ii}$_xerbla('SGBMV ',info)
                return
            end if
            ! quick return if possible.
@@ -628,10 +630,10 @@ module stdlib_linalg_blas_s
                end if
            end if
            return
-     end subroutine stdlib_sgbmv
+     end subroutine stdlib${ii}$_sgbmv
 
 
-     pure subroutine stdlib_sgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
+     pure subroutine stdlib${ii}$_sgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
      !! SGEMM performs one of the matrix-matrix operations
      !! C := alpha*op( A )*op( B ) + beta*C,
      !! where  op( X ) is one of
@@ -643,7 +645,7 @@ module stdlib_linalg_blas_s
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            real(sp), intent(in) :: alpha, beta
-           integer(ilp), intent(in) :: k, lda, ldb, ldc, m, n
+           integer(${ik}$), intent(in) :: k, lda, ldb, ldc, m, n
            character, intent(in) :: transa, transb
            ! Array Arguments 
            real(sp), intent(in) :: a(lda,*), b(ldb,*)
@@ -653,7 +655,7 @@ module stdlib_linalg_blas_s
            intrinsic :: max
            ! Local Scalars 
            real(sp) :: temp
-           integer(ilp) :: i, info, j, l, nrowa, nrowb
+           integer(${ik}$) :: i, info, j, l, nrowa, nrowb
            logical(lk) :: nota, notb
            
            ! set  nota  and  notb  as  true if  a  and  b  respectively are not
@@ -693,7 +695,7 @@ module stdlib_linalg_blas_s
                info = 13
            end if
            if (info/=0) then
-               call stdlib_xerbla('SGEMM ',info)
+               call stdlib${ii}$_xerbla('SGEMM ',info)
                return
            end if
            ! quick return if possible.
@@ -791,10 +793,10 @@ module stdlib_linalg_blas_s
                end if
            end if
            return
-     end subroutine stdlib_sgemm
+     end subroutine stdlib${ii}$_sgemm
 
 
-     pure subroutine stdlib_sgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
+     pure subroutine stdlib${ii}$_sgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
      !! SGEMV performs one of the matrix-vector operations
      !! y := alpha*A*x + beta*y,   or   y := alpha*A**T*x + beta*y,
      !! where alpha and beta are scalars, x and y are vectors and A is an
@@ -804,7 +806,7 @@ module stdlib_linalg_blas_s
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            real(sp), intent(in) :: alpha, beta
-           integer(ilp), intent(in) :: incx, incy, lda, m, n
+           integer(${ik}$), intent(in) :: incx, incy, lda, m, n
            character, intent(in) :: trans
            ! Array Arguments 
            real(sp), intent(in) :: a(lda,*), x(*)
@@ -813,7 +815,7 @@ module stdlib_linalg_blas_s
            
            ! Local Scalars 
            real(sp) :: temp
-           integer(ilp) :: i, info, ix, iy, j, jx, jy, kx, ky, lenx, leny
+           integer(${ik}$) :: i, info, ix, iy, j, jx, jy, kx, ky, lenx, leny
            ! Intrinsic Functions 
            intrinsic :: max
            ! test the input parameters.
@@ -833,7 +835,7 @@ module stdlib_linalg_blas_s
                info = 11
            end if
            if (info/=0) then
-               call stdlib_xerbla('SGEMV ',info)
+               call stdlib${ii}$_xerbla('SGEMV ',info)
                return
            end if
            ! quick return if possible.
@@ -935,10 +937,10 @@ module stdlib_linalg_blas_s
                end if
            end if
            return
-     end subroutine stdlib_sgemv
+     end subroutine stdlib${ii}$_sgemv
 
 
-     pure subroutine stdlib_sger(m,n,alpha,x,incx,y,incy,a,lda)
+     pure subroutine stdlib${ii}$_sger(m,n,alpha,x,incx,y,incy,a,lda)
      !! SGER performs the rank 1 operation
      !! A := alpha*x*y**T + A,
      !! where alpha is a scalar, x is an m element vector, y is an n element
@@ -948,7 +950,7 @@ module stdlib_linalg_blas_s
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            real(sp), intent(in) :: alpha
-           integer(ilp), intent(in) :: incx, incy, lda, m, n
+           integer(${ik}$), intent(in) :: incx, incy, lda, m, n
            ! Array Arguments 
            real(sp), intent(inout) :: a(lda,*)
            real(sp), intent(in) :: x(*), y(*)
@@ -956,7 +958,7 @@ module stdlib_linalg_blas_s
            
            ! Local Scalars 
            real(sp) :: temp
-           integer(ilp) :: i, info, ix, j, jy, kx
+           integer(${ik}$) :: i, info, ix, j, jy, kx
            ! Intrinsic Functions 
            intrinsic :: max
            ! test the input parameters.
@@ -973,7 +975,7 @@ module stdlib_linalg_blas_s
                info = 9
            end if
            if (info/=0) then
-               call stdlib_xerbla('SGER  ',info)
+               call stdlib${ii}$_xerbla('SGER  ',info)
                return
            end if
            ! quick return if possible.
@@ -1014,14 +1016,14 @@ module stdlib_linalg_blas_s
                end do
            end if
            return
-     end subroutine stdlib_sger
+     end subroutine stdlib${ii}$_sger
 
 
-     pure function stdlib_snrm2( n, x, incx )
+     pure function stdlib${ii}$_snrm2( n, x, incx )
      !! SNRM2 returns the euclidean norm of a vector via the function
      !! name, so that
      !! SNRM2 := sqrt( x'*x ).
-        real(sp) :: stdlib_snrm2
+        real(sp) :: stdlib${ii}$_snrm2
         ! -- reference blas level1 routine (version 3.9.1_sp) --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -1030,15 +1032,15 @@ module stdlib_linalg_blas_s
         real(sp), parameter :: maxn = huge(0.0_sp)
         ! .. blue's scaling constants ..
         ! Scalar Arguments 
-     integer(ilp), intent(in) :: incx, n
+     integer(${ik}$), intent(in) :: incx, n
         ! Array Arguments 
         real(sp), intent(in) :: x(*)
         ! Local Scalars 
-     integer(ilp) :: i, ix
+     integer(${ik}$) :: i, ix
      logical(lk) :: notbig
         real(sp) :: abig, amed, asml, ax, scl, sumsq, ymax, ymin
         ! quick return if possible
-        stdlib_snrm2 = zero
+        stdlib${ii}$_snrm2 = zero
         if( n <= 0 ) return
         scl = one
         sumsq = zero
@@ -1099,25 +1101,25 @@ module stdlib_linalg_blas_s
            scl = one
            sumsq = amed
         end if
-        stdlib_snrm2 = scl*sqrt( sumsq )
+        stdlib${ii}$_snrm2 = scl*sqrt( sumsq )
         return
-     end function stdlib_snrm2
+     end function stdlib${ii}$_snrm2
 
 
-     pure subroutine stdlib_srot(n,sx,incx,sy,incy,c,s)
+     pure subroutine stdlib${ii}$_srot(n,sx,incx,sy,incy,c,s)
      !! applies a plane rotation.
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            real(sp), intent(in) :: c, s
-           integer(ilp), intent(in) :: incx, incy, n
+           integer(${ik}$), intent(in) :: incx, incy, n
            ! Array Arguments 
            real(sp), intent(inout) :: sx(*), sy(*)
         ! =====================================================================
            ! Local Scalars 
            real(sp) :: stemp
-           integer(ilp) :: i, ix, iy
+           integer(${ik}$) :: i, ix, iy
            if (n<=0) return
            if (incx==1 .and. incy==1) then
              ! code for both increments equal to 1
@@ -1142,10 +1144,10 @@ module stdlib_linalg_blas_s
               end do
            end if
            return
-     end subroutine stdlib_srot
+     end subroutine stdlib${ii}$_srot
 
 
-     pure subroutine stdlib_srotg( a, b, c, s )
+     pure subroutine stdlib${ii}$_srotg( a, b, c, s )
      !! The computation uses the formulas
      !! sigma = sgn(a)    if |a| >  |b|
      !! = sgn(b)    if |b| >= |a|
@@ -1202,10 +1204,10 @@ module stdlib_linalg_blas_s
            b = z
         end if
         return
-     end subroutine stdlib_srotg
+     end subroutine stdlib${ii}$_srotg
 
 
-     pure subroutine stdlib_srotm(n,sx,incx,sy,incy,sparam)
+     pure subroutine stdlib${ii}$_srotm(n,sx,incx,sy,incy,sparam)
      !! SROTM applies the modified Givens transformation, \(H\), to the 2-by-N matrix 
      !! $$ \left[ \begin{array}{c}SX^T\\SY^T\\ \end{array} \right], $$ 
      !! where \(^T\) indicates transpose. The elements of \(SX\) are in 
@@ -1221,14 +1223,14 @@ module stdlib_linalg_blas_s
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           integer(ilp), intent(in) :: incx, incy, n
+           integer(${ik}$), intent(in) :: incx, incy, n
            ! Array Arguments 
            real(sp), intent(in) :: sparam(5)
            real(sp), intent(inout) :: sx(*), sy(*)
         ! =====================================================================
            ! Local Scalars 
            real(sp) :: sflag, sh11, sh12, sh21, sh22, two, w, z, zero
-           integer(ilp) :: i, kx, ky, nsteps
+           integer(${ik}$) :: i, kx, ky, nsteps
            ! Data Statements 
            zero = 0.0_sp
            two = 2.0_sp
@@ -1309,10 +1311,10 @@ module stdlib_linalg_blas_s
               end if
            end if
            return
-     end subroutine stdlib_srotm
+     end subroutine stdlib${ii}$_srotm
 
 
-     pure subroutine stdlib_srotmg(sd1,sd2,sx1,sy1,sparam)
+     pure subroutine stdlib${ii}$_srotmg(sd1,sd2,sx1,sy1,sparam)
      !! SROTMG Constructs the modified Givens transformation matrix \(H\) which zeros the 
      !! second component of the 2-vector 
      !! $$ \left[ {\sqrt{SD_1}\cdot SX_1,\sqrt{SD_2}\cdot SY_2} \right]^T. $$
@@ -1474,10 +1476,10 @@ module stdlib_linalg_blas_s
            end if
            sparam(1) = sflag
            return
-     end subroutine stdlib_srotmg
+     end subroutine stdlib${ii}$_srotmg
 
 
-     pure subroutine stdlib_ssbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
+     pure subroutine stdlib${ii}$_ssbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
      !! SSBMV performs the matrix-vector  operation
      !! y := alpha*A*x + beta*y,
      !! where alpha and beta are scalars, x and y are n element vectors and
@@ -1487,7 +1489,7 @@ module stdlib_linalg_blas_s
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            real(sp), intent(in) :: alpha, beta
-           integer(ilp), intent(in) :: incx, incy, k, lda, n
+           integer(${ik}$), intent(in) :: incx, incy, k, lda, n
            character, intent(in) :: uplo
            ! Array Arguments 
            real(sp), intent(in) :: a(lda,*), x(*)
@@ -1496,7 +1498,7 @@ module stdlib_linalg_blas_s
            
            ! Local Scalars 
            real(sp) :: temp1, temp2
-           integer(ilp) :: i, info, ix, iy, j, jx, jy, kplus1, kx, ky, l
+           integer(${ik}$) :: i, info, ix, iy, j, jx, jy, kplus1, kx, ky, l
            ! Intrinsic Functions 
            intrinsic :: max,min
            ! test the input parameters.
@@ -1515,7 +1517,7 @@ module stdlib_linalg_blas_s
                info = 11
            end if
            if (info/=0) then
-               call stdlib_xerbla('SSBMV ',info)
+               call stdlib${ii}$_xerbla('SSBMV ',info)
                return
            end if
            ! quick return if possible.
@@ -1636,10 +1638,10 @@ module stdlib_linalg_blas_s
                end if
            end if
            return
-     end subroutine stdlib_ssbmv
+     end subroutine stdlib${ii}$_ssbmv
 
 
-     pure subroutine stdlib_sscal(n,sa,sx,incx)
+     pure subroutine stdlib${ii}$_sscal(n,sa,sx,incx)
      !! SSCAL scales a vector by a constant.
      !! uses unrolled loops for increment equal to 1.
         ! -- reference blas level1 routine --
@@ -1647,12 +1649,12 @@ module stdlib_linalg_blas_s
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            real(sp), intent(in) :: sa
-           integer(ilp), intent(in) :: incx, n
+           integer(${ik}$), intent(in) :: incx, n
            ! Array Arguments 
            real(sp), intent(inout) :: sx(*)
         ! =====================================================================
            ! Local Scalars 
-           integer(ilp) :: i, m, mp1, nincx
+           integer(${ik}$) :: i, m, mp1, nincx
            ! Intrinsic Functions 
            intrinsic :: mod
            if (n<=0 .or. incx<=0) return
@@ -1682,10 +1684,10 @@ module stdlib_linalg_blas_s
               end do
            end if
            return
-     end subroutine stdlib_sscal
+     end subroutine stdlib${ii}$_sscal
 
 
-     pure subroutine stdlib_sspmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
+     pure subroutine stdlib${ii}$_sspmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
      !! SSPMV performs the matrix-vector operation
      !! y := alpha*A*x + beta*y,
      !! where alpha and beta are scalars, x and y are n element vectors and
@@ -1695,7 +1697,7 @@ module stdlib_linalg_blas_s
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            real(sp), intent(in) :: alpha, beta
-           integer(ilp), intent(in) :: incx, incy, n
+           integer(${ik}$), intent(in) :: incx, incy, n
            character, intent(in) :: uplo
            ! Array Arguments 
            real(sp), intent(in) :: ap(*), x(*)
@@ -1704,7 +1706,7 @@ module stdlib_linalg_blas_s
            
            ! Local Scalars 
            real(sp) :: temp1, temp2
-           integer(ilp) :: i, info, ix, iy, j, jx, jy, k, kk, kx, ky
+           integer(${ik}$) :: i, info, ix, iy, j, jx, jy, k, kk, kx, ky
            ! test the input parameters.
            info = 0
            if (.not.stdlib_lsame(uplo,'U') .and. .not.stdlib_lsame(uplo,'L')) then
@@ -1717,7 +1719,7 @@ module stdlib_linalg_blas_s
                info = 9
            end if
            if (info/=0) then
-               call stdlib_xerbla('SSPMV ',info)
+               call stdlib${ii}$_xerbla('SSPMV ',info)
                return
            end if
            ! quick return if possible.
@@ -1838,10 +1840,10 @@ module stdlib_linalg_blas_s
                end if
            end if
            return
-     end subroutine stdlib_sspmv
+     end subroutine stdlib${ii}$_sspmv
 
 
-     pure subroutine stdlib_sspr(uplo,n,alpha,x,incx,ap)
+     pure subroutine stdlib${ii}$_sspr(uplo,n,alpha,x,incx,ap)
      !! SSPR performs the symmetric rank 1 operation
      !! A := alpha*x*x**T + A,
      !! where alpha is a real scalar, x is an n element vector and A is an
@@ -1851,7 +1853,7 @@ module stdlib_linalg_blas_s
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            real(sp), intent(in) :: alpha
-           integer(ilp), intent(in) :: incx, n
+           integer(${ik}$), intent(in) :: incx, n
            character, intent(in) :: uplo
            ! Array Arguments 
            real(sp), intent(inout) :: ap(*)
@@ -1860,7 +1862,7 @@ module stdlib_linalg_blas_s
            
            ! Local Scalars 
            real(sp) :: temp
-           integer(ilp) :: i, info, ix, j, jx, k, kk, kx
+           integer(${ik}$) :: i, info, ix, j, jx, k, kk, kx
            ! test the input parameters.
            info = 0
            if (.not.stdlib_lsame(uplo,'U') .and. .not.stdlib_lsame(uplo,'L')) then
@@ -1871,7 +1873,7 @@ module stdlib_linalg_blas_s
                info = 5
            end if
            if (info/=0) then
-               call stdlib_xerbla('SSPR  ',info)
+               call stdlib${ii}$_xerbla('SSPR  ',info)
                return
            end if
            ! quick return if possible.
@@ -1945,10 +1947,10 @@ module stdlib_linalg_blas_s
                end if
            end if
            return
-     end subroutine stdlib_sspr
+     end subroutine stdlib${ii}$_sspr
 
 
-     pure subroutine stdlib_sspr2(uplo,n,alpha,x,incx,y,incy,ap)
+     pure subroutine stdlib${ii}$_sspr2(uplo,n,alpha,x,incx,y,incy,ap)
      !! SSPR2 performs the symmetric rank 2 operation
      !! A := alpha*x*y**T + alpha*y*x**T + A,
      !! where alpha is a scalar, x and y are n element vectors and A is an
@@ -1958,7 +1960,7 @@ module stdlib_linalg_blas_s
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            real(sp), intent(in) :: alpha
-           integer(ilp), intent(in) :: incx, incy, n
+           integer(${ik}$), intent(in) :: incx, incy, n
            character, intent(in) :: uplo
            ! Array Arguments 
            real(sp), intent(inout) :: ap(*)
@@ -1967,7 +1969,7 @@ module stdlib_linalg_blas_s
            
            ! Local Scalars 
            real(sp) :: temp1, temp2
-           integer(ilp) :: i, info, ix, iy, j, jx, jy, k, kk, kx, ky
+           integer(${ik}$) :: i, info, ix, iy, j, jx, jy, k, kk, kx, ky
            ! test the input parameters.
            info = 0
            if (.not.stdlib_lsame(uplo,'U') .and. .not.stdlib_lsame(uplo,'L')) then
@@ -1980,7 +1982,7 @@ module stdlib_linalg_blas_s
                info = 7
            end if
            if (info/=0) then
-               call stdlib_xerbla('SSPR2 ',info)
+               call stdlib${ii}$_xerbla('SSPR2 ',info)
                return
            end if
            ! quick return if possible.
@@ -2072,23 +2074,23 @@ module stdlib_linalg_blas_s
                end if
            end if
            return
-     end subroutine stdlib_sspr2
+     end subroutine stdlib${ii}$_sspr2
 
 
-     pure subroutine stdlib_sswap(n,sx,incx,sy,incy)
+     pure subroutine stdlib${ii}$_sswap(n,sx,incx,sy,incy)
      !! SSWAP interchanges two vectors.
      !! uses unrolled loops for increments equal to 1.
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           integer(ilp), intent(in) :: incx, incy, n
+           integer(${ik}$), intent(in) :: incx, incy, n
            ! Array Arguments 
            real(sp), intent(inout) :: sx(*), sy(*)
         ! =====================================================================
            ! Local Scalars 
            real(sp) :: stemp
-           integer(ilp) :: i, ix, iy, m, mp1
+           integer(${ik}$) :: i, ix, iy, m, mp1
            ! Intrinsic Functions 
            intrinsic :: mod
            if (n<=0) return
@@ -2132,10 +2134,10 @@ module stdlib_linalg_blas_s
               end do
            end if
            return
-     end subroutine stdlib_sswap
+     end subroutine stdlib${ii}$_sswap
 
 
-     pure subroutine stdlib_ssymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
+     pure subroutine stdlib${ii}$_ssymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
      !! SSYMM performs one of the matrix-matrix operations
      !! C := alpha*A*B + beta*C,
      !! or
@@ -2147,7 +2149,7 @@ module stdlib_linalg_blas_s
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            real(sp), intent(in) :: alpha, beta
-           integer(ilp), intent(in) :: lda, ldb, ldc, m, n
+           integer(${ik}$), intent(in) :: lda, ldb, ldc, m, n
            character, intent(in) :: side, uplo
            ! Array Arguments 
            real(sp), intent(in) :: a(lda,*), b(ldb,*)
@@ -2157,7 +2159,7 @@ module stdlib_linalg_blas_s
            intrinsic :: max
            ! Local Scalars 
            real(sp) :: temp1, temp2
-           integer(ilp) :: i, info, j, k, nrowa
+           integer(${ik}$) :: i, info, j, k, nrowa
            logical(lk) :: upper
            
            ! set nrowa as the number of rows of a.
@@ -2185,7 +2187,7 @@ module stdlib_linalg_blas_s
                info = 12
            end if
            if (info/=0) then
-               call stdlib_xerbla('SSYMM ',info)
+               call stdlib${ii}$_xerbla('SSYMM ',info)
                return
            end if
            ! quick return if possible.
@@ -2279,10 +2281,10 @@ module stdlib_linalg_blas_s
                end do loop_170
            end if
            return
-     end subroutine stdlib_ssymm
+     end subroutine stdlib${ii}$_ssymm
 
 
-     pure subroutine stdlib_ssymv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
+     pure subroutine stdlib${ii}$_ssymv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
      !! SSYMV performs the matrix-vector  operation
      !! y := alpha*A*x + beta*y,
      !! where alpha and beta are scalars, x and y are n element vectors and
@@ -2292,7 +2294,7 @@ module stdlib_linalg_blas_s
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            real(sp), intent(in) :: alpha, beta
-           integer(ilp), intent(in) :: incx, incy, lda, n
+           integer(${ik}$), intent(in) :: incx, incy, lda, n
            character, intent(in) :: uplo
            ! Array Arguments 
            real(sp), intent(in) :: a(lda,*), x(*)
@@ -2301,7 +2303,7 @@ module stdlib_linalg_blas_s
            
            ! Local Scalars 
            real(sp) :: temp1, temp2
-           integer(ilp) :: i, info, ix, iy, j, jx, jy, kx, ky
+           integer(${ik}$) :: i, info, ix, iy, j, jx, jy, kx, ky
            ! Intrinsic Functions 
            intrinsic :: max
            ! test the input parameters.
@@ -2318,7 +2320,7 @@ module stdlib_linalg_blas_s
                info = 10
            end if
            if (info/=0) then
-               call stdlib_xerbla('SSYMV ',info)
+               call stdlib${ii}$_xerbla('SSYMV ',info)
                return
            end if
            ! quick return if possible.
@@ -2431,10 +2433,10 @@ module stdlib_linalg_blas_s
                end if
            end if
            return
-     end subroutine stdlib_ssymv
+     end subroutine stdlib${ii}$_ssymv
 
 
-     pure subroutine stdlib_ssyr(uplo,n,alpha,x,incx,a,lda)
+     pure subroutine stdlib${ii}$_ssyr(uplo,n,alpha,x,incx,a,lda)
      !! SSYR performs the symmetric rank 1 operation
      !! A := alpha*x*x**T + A,
      !! where alpha is a real scalar, x is an n element vector and A is an
@@ -2444,7 +2446,7 @@ module stdlib_linalg_blas_s
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            real(sp), intent(in) :: alpha
-           integer(ilp), intent(in) :: incx, lda, n
+           integer(${ik}$), intent(in) :: incx, lda, n
            character, intent(in) :: uplo
            ! Array Arguments 
            real(sp), intent(inout) :: a(lda,*)
@@ -2453,7 +2455,7 @@ module stdlib_linalg_blas_s
            
            ! Local Scalars 
            real(sp) :: temp
-           integer(ilp) :: i, info, ix, j, jx, kx
+           integer(${ik}$) :: i, info, ix, j, jx, kx
            ! Intrinsic Functions 
            intrinsic :: max
            ! test the input parameters.
@@ -2468,7 +2470,7 @@ module stdlib_linalg_blas_s
                info = 7
            end if
            if (info/=0) then
-               call stdlib_xerbla('SSYR  ',info)
+               call stdlib${ii}$_xerbla('SSYR  ',info)
                return
            end if
            ! quick return if possible.
@@ -2534,10 +2536,10 @@ module stdlib_linalg_blas_s
                end if
            end if
            return
-     end subroutine stdlib_ssyr
+     end subroutine stdlib${ii}$_ssyr
 
 
-     pure subroutine stdlib_ssyr2(uplo,n,alpha,x,incx,y,incy,a,lda)
+     pure subroutine stdlib${ii}$_ssyr2(uplo,n,alpha,x,incx,y,incy,a,lda)
      !! SSYR2 performs the symmetric rank 2 operation
      !! A := alpha*x*y**T + alpha*y*x**T + A,
      !! where alpha is a scalar, x and y are n element vectors and A is an n
@@ -2547,7 +2549,7 @@ module stdlib_linalg_blas_s
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            real(sp), intent(in) :: alpha
-           integer(ilp), intent(in) :: incx, incy, lda, n
+           integer(${ik}$), intent(in) :: incx, incy, lda, n
            character, intent(in) :: uplo
            ! Array Arguments 
            real(sp), intent(inout) :: a(lda,*)
@@ -2556,7 +2558,7 @@ module stdlib_linalg_blas_s
            
            ! Local Scalars 
            real(sp) :: temp1, temp2
-           integer(ilp) :: i, info, ix, iy, j, jx, jy, kx, ky
+           integer(${ik}$) :: i, info, ix, iy, j, jx, jy, kx, ky
            ! Intrinsic Functions 
            intrinsic :: max
            ! test the input parameters.
@@ -2573,7 +2575,7 @@ module stdlib_linalg_blas_s
                info = 9
            end if
            if (info/=0) then
-               call stdlib_xerbla('SSYR2 ',info)
+               call stdlib${ii}$_xerbla('SSYR2 ',info)
                return
            end if
            ! quick return if possible.
@@ -2657,10 +2659,10 @@ module stdlib_linalg_blas_s
                end if
            end if
            return
-     end subroutine stdlib_ssyr2
+     end subroutine stdlib${ii}$_ssyr2
 
 
-     pure subroutine stdlib_ssyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
+     pure subroutine stdlib${ii}$_ssyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
      !! SSYR2K performs one of the symmetric rank 2k operations
      !! C := alpha*A*B**T + alpha*B*A**T + beta*C,
      !! or
@@ -2673,7 +2675,7 @@ module stdlib_linalg_blas_s
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            real(sp), intent(in) :: alpha, beta
-           integer(ilp), intent(in) :: k, lda, ldb, ldc, n
+           integer(${ik}$), intent(in) :: k, lda, ldb, ldc, n
            character, intent(in) :: trans, uplo
            ! Array Arguments 
            real(sp), intent(in) :: a(lda,*), b(ldb,*)
@@ -2683,7 +2685,7 @@ module stdlib_linalg_blas_s
            intrinsic :: max
            ! Local Scalars 
            real(sp) :: temp1, temp2
-           integer(ilp) :: i, info, j, l, nrowa
+           integer(${ik}$) :: i, info, j, l, nrowa
            logical(lk) :: upper
            
            ! test the input parameters.
@@ -2711,7 +2713,7 @@ module stdlib_linalg_blas_s
                info = 12
            end if
            if (info/=0) then
-               call stdlib_xerbla('SSYR2K',info)
+               call stdlib${ii}$_xerbla('SSYR2K',info)
                return
            end if
            ! quick return if possible.
@@ -2832,10 +2834,10 @@ module stdlib_linalg_blas_s
                end if
            end if
            return
-     end subroutine stdlib_ssyr2k
+     end subroutine stdlib${ii}$_ssyr2k
 
 
-     pure subroutine stdlib_ssyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
+     pure subroutine stdlib${ii}$_ssyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
      !! SSYRK performs one of the symmetric rank k operations
      !! C := alpha*A*A**T + beta*C,
      !! or
@@ -2848,7 +2850,7 @@ module stdlib_linalg_blas_s
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            real(sp), intent(in) :: alpha, beta
-           integer(ilp), intent(in) :: k, lda, ldc, n
+           integer(${ik}$), intent(in) :: k, lda, ldc, n
            character, intent(in) :: trans, uplo
            ! Array Arguments 
            real(sp), intent(in) :: a(lda,*)
@@ -2858,7 +2860,7 @@ module stdlib_linalg_blas_s
            intrinsic :: max
            ! Local Scalars 
            real(sp) :: temp
-           integer(ilp) :: i, info, j, l, nrowa
+           integer(${ik}$) :: i, info, j, l, nrowa
            logical(lk) :: upper
            
            ! test the input parameters.
@@ -2884,7 +2886,7 @@ module stdlib_linalg_blas_s
                info = 10
            end if
            if (info/=0) then
-               call stdlib_xerbla('SSYRK ',info)
+               call stdlib${ii}$_xerbla('SSYRK ',info)
                return
            end if
            ! quick return if possible.
@@ -2999,10 +3001,10 @@ module stdlib_linalg_blas_s
                end if
            end if
            return
-     end subroutine stdlib_ssyrk
+     end subroutine stdlib${ii}$_ssyrk
 
 
-     pure subroutine stdlib_stbmv(uplo,trans,diag,n,k,a,lda,x,incx)
+     pure subroutine stdlib${ii}$_stbmv(uplo,trans,diag,n,k,a,lda,x,incx)
      !! STBMV performs one of the matrix-vector operations
      !! x := A*x,   or   x := A**T*x,
      !! where x is an n element vector and  A is an n by n unit, or non-unit,
@@ -3011,7 +3013,7 @@ module stdlib_linalg_blas_s
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           integer(ilp), intent(in) :: incx, k, lda, n
+           integer(${ik}$), intent(in) :: incx, k, lda, n
            character, intent(in) :: diag, trans, uplo
            ! Array Arguments 
            real(sp), intent(in) :: a(lda,*)
@@ -3020,7 +3022,7 @@ module stdlib_linalg_blas_s
            
            ! Local Scalars 
            real(sp) :: temp
-           integer(ilp) :: i, info, ix, j, jx, kplus1, kx, l
+           integer(${ik}$) :: i, info, ix, j, jx, kplus1, kx, l
            logical(lk) :: nounit
            ! Intrinsic Functions 
            intrinsic :: max,min
@@ -3043,7 +3045,7 @@ module stdlib_linalg_blas_s
                info = 9
            end if
            if (info/=0) then
-               call stdlib_xerbla('STBMV ',info)
+               call stdlib${ii}$_xerbla('STBMV ',info)
                return
            end if
            ! quick return if possible.
@@ -3182,10 +3184,10 @@ module stdlib_linalg_blas_s
                end if
            end if
            return
-     end subroutine stdlib_stbmv
+     end subroutine stdlib${ii}$_stbmv
 
 
-     pure subroutine stdlib_stbsv(uplo,trans,diag,n,k,a,lda,x,incx)
+     pure subroutine stdlib${ii}$_stbsv(uplo,trans,diag,n,k,a,lda,x,incx)
      !! STBSV solves one of the systems of equations
      !! A*x = b,   or   A**T*x = b,
      !! where b and x are n element vectors and A is an n by n unit, or
@@ -3197,7 +3199,7 @@ module stdlib_linalg_blas_s
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           integer(ilp), intent(in) :: incx, k, lda, n
+           integer(${ik}$), intent(in) :: incx, k, lda, n
            character, intent(in) :: diag, trans, uplo
            ! Array Arguments 
            real(sp), intent(in) :: a(lda,*)
@@ -3206,7 +3208,7 @@ module stdlib_linalg_blas_s
            
            ! Local Scalars 
            real(sp) :: temp
-           integer(ilp) :: i, info, ix, j, jx, kplus1, kx, l
+           integer(${ik}$) :: i, info, ix, j, jx, kplus1, kx, l
            logical(lk) :: nounit
            ! Intrinsic Functions 
            intrinsic :: max,min
@@ -3229,7 +3231,7 @@ module stdlib_linalg_blas_s
                info = 9
            end if
            if (info/=0) then
-               call stdlib_xerbla('STBSV ',info)
+               call stdlib${ii}$_xerbla('STBSV ',info)
                return
            end if
            ! quick return if possible.
@@ -3368,10 +3370,10 @@ module stdlib_linalg_blas_s
                end if
            end if
            return
-     end subroutine stdlib_stbsv
+     end subroutine stdlib${ii}$_stbsv
 
 
-     pure subroutine stdlib_stpmv(uplo,trans,diag,n,ap,x,incx)
+     pure subroutine stdlib${ii}$_stpmv(uplo,trans,diag,n,ap,x,incx)
      !! STPMV performs one of the matrix-vector operations
      !! x := A*x,   or   x := A**T*x,
      !! where x is an n element vector and  A is an n by n unit, or non-unit,
@@ -3380,7 +3382,7 @@ module stdlib_linalg_blas_s
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           integer(ilp), intent(in) :: incx, n
+           integer(${ik}$), intent(in) :: incx, n
            character, intent(in) :: diag, trans, uplo
            ! Array Arguments 
            real(sp), intent(in) :: ap(*)
@@ -3389,7 +3391,7 @@ module stdlib_linalg_blas_s
            
            ! Local Scalars 
            real(sp) :: temp
-           integer(ilp) :: i, info, ix, j, jx, k, kk, kx
+           integer(${ik}$) :: i, info, ix, j, jx, k, kk, kx
            logical(lk) :: nounit
            ! test the input parameters.
            info = 0
@@ -3406,7 +3408,7 @@ module stdlib_linalg_blas_s
                info = 7
            end if
            if (info/=0) then
-               call stdlib_xerbla('STPMV ',info)
+               call stdlib${ii}$_xerbla('STPMV ',info)
                return
            end if
            ! quick return if possible.
@@ -3550,10 +3552,10 @@ module stdlib_linalg_blas_s
                end if
            end if
            return
-     end subroutine stdlib_stpmv
+     end subroutine stdlib${ii}$_stpmv
 
 
-     pure subroutine stdlib_stpsv(uplo,trans,diag,n,ap,x,incx)
+     pure subroutine stdlib${ii}$_stpsv(uplo,trans,diag,n,ap,x,incx)
      !! STPSV solves one of the systems of equations
      !! A*x = b,   or   A**T*x = b,
      !! where b and x are n element vectors and A is an n by n unit, or
@@ -3564,7 +3566,7 @@ module stdlib_linalg_blas_s
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           integer(ilp), intent(in) :: incx, n
+           integer(${ik}$), intent(in) :: incx, n
            character, intent(in) :: diag, trans, uplo
            ! Array Arguments 
            real(sp), intent(in) :: ap(*)
@@ -3573,7 +3575,7 @@ module stdlib_linalg_blas_s
            
            ! Local Scalars 
            real(sp) :: temp
-           integer(ilp) :: i, info, ix, j, jx, k, kk, kx
+           integer(${ik}$) :: i, info, ix, j, jx, k, kk, kx
            logical(lk) :: nounit
            ! test the input parameters.
            info = 0
@@ -3590,7 +3592,7 @@ module stdlib_linalg_blas_s
                info = 7
            end if
            if (info/=0) then
-               call stdlib_xerbla('STPSV ',info)
+               call stdlib${ii}$_xerbla('STPSV ',info)
                return
            end if
            ! quick return if possible.
@@ -3734,10 +3736,10 @@ module stdlib_linalg_blas_s
                end if
            end if
            return
-     end subroutine stdlib_stpsv
+     end subroutine stdlib${ii}$_stpsv
 
 
-     pure subroutine stdlib_strmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
+     pure subroutine stdlib${ii}$_strmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
      !! STRMM performs one of the matrix-matrix operations
      !! B := alpha*op( A )*B,   or   B := alpha*B*op( A ),
      !! where  alpha  is a scalar,  B  is an m by n matrix,  A  is a unit, or
@@ -3748,7 +3750,7 @@ module stdlib_linalg_blas_s
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            real(sp), intent(in) :: alpha
-           integer(ilp), intent(in) :: lda, ldb, m, n
+           integer(${ik}$), intent(in) :: lda, ldb, m, n
            character, intent(in) :: diag, side, transa, uplo
            ! Array Arguments 
            real(sp), intent(in) :: a(lda,*)
@@ -3758,7 +3760,7 @@ module stdlib_linalg_blas_s
            intrinsic :: max
            ! Local Scalars 
            real(sp) :: temp
-           integer(ilp) :: i, info, j, k, nrowa
+           integer(${ik}$) :: i, info, j, k, nrowa
            logical(lk) :: lside, nounit, upper
            
            ! test the input parameters.
@@ -3791,7 +3793,7 @@ module stdlib_linalg_blas_s
                info = 11
            end if
            if (info/=0) then
-               call stdlib_xerbla('STRMM ',info)
+               call stdlib${ii}$_xerbla('STRMM ',info)
                return
            end if
            ! quick return if possible.
@@ -3940,10 +3942,10 @@ module stdlib_linalg_blas_s
                end if
            end if
            return
-     end subroutine stdlib_strmm
+     end subroutine stdlib${ii}$_strmm
 
 
-     pure subroutine stdlib_strmv(uplo,trans,diag,n,a,lda,x,incx)
+     pure subroutine stdlib${ii}$_strmv(uplo,trans,diag,n,a,lda,x,incx)
      !! STRMV performs one of the matrix-vector operations
      !! x := A*x,   or   x := A**T*x,
      !! where x is an n element vector and  A is an n by n unit, or non-unit,
@@ -3952,7 +3954,7 @@ module stdlib_linalg_blas_s
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           integer(ilp), intent(in) :: incx, lda, n
+           integer(${ik}$), intent(in) :: incx, lda, n
            character, intent(in) :: diag, trans, uplo
            ! Array Arguments 
            real(sp), intent(in) :: a(lda,*)
@@ -3961,7 +3963,7 @@ module stdlib_linalg_blas_s
            
            ! Local Scalars 
            real(sp) :: temp
-           integer(ilp) :: i, info, ix, j, jx, kx
+           integer(${ik}$) :: i, info, ix, j, jx, kx
            logical(lk) :: nounit
            ! Intrinsic Functions 
            intrinsic :: max
@@ -3982,7 +3984,7 @@ module stdlib_linalg_blas_s
                info = 8
            end if
            if (info/=0) then
-               call stdlib_xerbla('STRMV ',info)
+               call stdlib${ii}$_xerbla('STRMV ',info)
                return
            end if
            ! quick return if possible.
@@ -4106,10 +4108,10 @@ module stdlib_linalg_blas_s
                end if
            end if
            return
-     end subroutine stdlib_strmv
+     end subroutine stdlib${ii}$_strmv
 
 
-     pure subroutine stdlib_strsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
+     pure subroutine stdlib${ii}$_strsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
      !! STRSM solves one of the matrix equations
      !! op( A )*X = alpha*B,   or   X*op( A ) = alpha*B,
      !! where alpha is a scalar, X and B are m by n matrices, A is a unit, or
@@ -4121,7 +4123,7 @@ module stdlib_linalg_blas_s
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            real(sp), intent(in) :: alpha
-           integer(ilp), intent(in) :: lda, ldb, m, n
+           integer(${ik}$), intent(in) :: lda, ldb, m, n
            character, intent(in) :: diag, side, transa, uplo
            ! Array Arguments 
            real(sp), intent(in) :: a(lda,*)
@@ -4131,7 +4133,7 @@ module stdlib_linalg_blas_s
            intrinsic :: max
            ! Local Scalars 
            real(sp) :: temp
-           integer(ilp) :: i, info, j, k, nrowa
+           integer(${ik}$) :: i, info, j, k, nrowa
            logical(lk) :: lside, nounit, upper
            
            ! test the input parameters.
@@ -4164,7 +4166,7 @@ module stdlib_linalg_blas_s
                info = 11
            end if
            if (info/=0) then
-               call stdlib_xerbla('STRSM ',info)
+               call stdlib${ii}$_xerbla('STRSM ',info)
                return
            end if
            ! quick return if possible.
@@ -4337,10 +4339,10 @@ module stdlib_linalg_blas_s
                end if
            end if
            return
-     end subroutine stdlib_strsm
+     end subroutine stdlib${ii}$_strsm
 
 
-     pure subroutine stdlib_strsv(uplo,trans,diag,n,a,lda,x,incx)
+     pure subroutine stdlib${ii}$_strsv(uplo,trans,diag,n,a,lda,x,incx)
      !! STRSV solves one of the systems of equations
      !! A*x = b,   or   A**T*x = b,
      !! where b and x are n element vectors and A is an n by n unit, or
@@ -4351,7 +4353,7 @@ module stdlib_linalg_blas_s
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           integer(ilp), intent(in) :: incx, lda, n
+           integer(${ik}$), intent(in) :: incx, lda, n
            character, intent(in) :: diag, trans, uplo
            ! Array Arguments 
            real(sp), intent(in) :: a(lda,*)
@@ -4360,7 +4362,7 @@ module stdlib_linalg_blas_s
            
            ! Local Scalars 
            real(sp) :: temp
-           integer(ilp) :: i, info, ix, j, jx, kx
+           integer(${ik}$) :: i, info, ix, j, jx, kx
            logical(lk) :: nounit
            ! Intrinsic Functions 
            intrinsic :: max
@@ -4381,7 +4383,7 @@ module stdlib_linalg_blas_s
                info = 8
            end if
            if (info/=0) then
-               call stdlib_xerbla('STRSV ',info)
+               call stdlib${ii}$_xerbla('STRSV ',info)
                return
            end if
            ! quick return if possible.
@@ -4505,8 +4507,8 @@ module stdlib_linalg_blas_s
                end if
            end if
            return
-     end subroutine stdlib_strsv
+     end subroutine stdlib${ii}$_strsv
 
-
+     #:endfor
 
 end module stdlib_linalg_blas_s

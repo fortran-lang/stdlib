@@ -7,36 +7,37 @@ module stdlib_linalg_lapack_aux
      private
 
 
-     public :: sp,dp,qp,lk,ilp
-     public :: stdlib_chla_transtype          
-     public :: stdlib_ieeeck
-     public :: stdlib_iladiag     
-     public :: stdlib_ilaenv
-     public :: stdlib_ilaenv2stage
-     public :: stdlib_ilaprec     
-     public :: stdlib_ilatrans
-     public :: stdlib_ilauplo
-     public :: stdlib_iparam2stage
-     public :: stdlib_iparmq     
-     public :: stdlib_lsamen
-     public :: stdlib_xerbla
-     public :: stdlib_xerbla_array
-     
+     public :: sp,dp,qp,lk,ilp,ilp64
+     #:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     public :: stdlib${ii}$_chla_transtype          
+     public :: stdlib${ii}$_ieeeck
+     public :: stdlib${ii}$_iladiag     
+     public :: stdlib${ii}$_ilaenv
+     public :: stdlib${ii}$_ilaenv2stage
+     public :: stdlib${ii}$_ilaprec     
+     public :: stdlib${ii}$_ilatrans
+     public :: stdlib${ii}$_ilauplo
+     public :: stdlib${ii}$_iparam2stage
+     public :: stdlib${ii}$_iparmq     
+     public :: stdlib${ii}$_lsamen
+     public :: stdlib${ii}$_xerbla
+     public :: stdlib${ii}$_xerbla_array     
+     #:for rk,rt,ri in REAL_KINDS_TYPES
+     public :: stdlib${ii}$_${ri}$roundup_lwork
+     #:endfor     
+     #:for ck,ct,ci in CMPLX_KINDS_TYPES     
+     public :: stdlib${ii}$_i${ci}$max1
+     #:endfor
      #:for rk,rt,ri in RC_KINDS_TYPES
-     public :: stdlib_ila${ri}$lc
-     public :: stdlib_ila${ri}$lr
+     public :: stdlib${ii}$_ila${ri}$lc
+     public :: stdlib${ii}$_ila${ri}$lr
+     #:endfor     
+     #:endfor     
+     #:for rk,rt,ri in RC_KINDS_TYPES
      public :: stdlib_select_${ri}$
      public :: stdlib_selctg_${ri}$     
-     #:endfor
+     #:endfor   
      
-     #:for rk,rt,ri in REAL_KINDS_TYPES
-     public :: stdlib_${ri}$roundup_lwork
-     #:endfor
-     
-     #:for ck,ct,ci in CMPLX_KINDS_TYPES     
-     public :: stdlib_i${ci}$max1
-     #:endfor
-
      ! SELCTG is a LOGICAL FUNCTION of three DOUBLE PRECISION arguments 
      ! used to select eigenvalues to sort to the top left of the Schur form. 
      ! An eigenvalue (ALPHAR(j)+ALPHAI(j))/BETA(j) is selected if SELCTG is true, i.e., 
@@ -69,8 +70,8 @@ module stdlib_linalg_lapack_aux
 
      contains
 
-
-     pure character function stdlib_chla_transtype( trans )
+     #:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure character function stdlib${ii}$_chla_transtype( trans )
      !! This subroutine translates from a BLAST-specified integer constant to
      !! the character string specifying a transposition operation.
      !! CHLA_TRANSTYPE returns an CHARACTER*1.  If CHLA_TRANSTYPE: is 'X',
@@ -81,78 +82,78 @@ module stdlib_linalg_lapack_aux
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           integer(ilp), intent(in) :: trans
+           integer(${ik}$), intent(in) :: trans
         ! =====================================================================
            ! Parameters 
-           integer(ilp), parameter :: blas_no_trans = 111
-           integer(ilp), parameter :: blas_trans = 112
-           integer(ilp), parameter :: blas_conj_trans = 113
+           integer(${ik}$), parameter :: blas_no_trans = 111
+           integer(${ik}$), parameter :: blas_trans = 112
+           integer(${ik}$), parameter :: blas_conj_trans = 113
            
            ! Executable Statements 
            if( trans==blas_no_trans ) then
-              stdlib_chla_transtype = 'N'
+              stdlib${ii}$_chla_transtype = 'N'
            else if( trans==blas_trans ) then
-              stdlib_chla_transtype = 'T'
+              stdlib${ii}$_chla_transtype = 'T'
            else if( trans==blas_conj_trans ) then
-              stdlib_chla_transtype = 'C'
+              stdlib${ii}$_chla_transtype = 'C'
            else
-              stdlib_chla_transtype = 'X'
+              stdlib${ii}$_chla_transtype = 'X'
            end if
            return
-     end function stdlib_chla_transtype
+     end function stdlib${ii}$_chla_transtype
 
-     pure integer(ilp) function stdlib_ieeeck( ispec, zero, one )
+     pure integer(${ik}$) function stdlib${ii}$_ieeeck( ispec, zero, one )
      !! IEEECK is called from the ILAENV to verify that Infinity and
      !! possibly NaN arithmetic is safe (i.e. will not trap).
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           integer(ilp), intent(in) :: ispec
+           integer(${ik}$), intent(in) :: ispec
            real(sp), intent(in) :: one, zero
         ! =====================================================================
            ! Local Scalars 
            real(sp) :: nan1, nan2, nan3, nan4, nan5, nan6, neginf, negzro, newzro, posinf
            ! Executable Statements 
-           stdlib_ieeeck = 1
+           stdlib${ii}$_ieeeck = 1
            posinf = one / zero
            if( posinf<=one ) then
-              stdlib_ieeeck = 0
+              stdlib${ii}$_ieeeck = 0
               return
            end if
            neginf = -one / zero
            if( neginf>=zero ) then
-              stdlib_ieeeck = 0
+              stdlib${ii}$_ieeeck = 0
               return
            end if
            negzro = one / ( neginf+one )
            if( negzro/=zero ) then
-              stdlib_ieeeck = 0
+              stdlib${ii}$_ieeeck = 0
               return
            end if
            neginf = one / negzro
            if( neginf>=zero ) then
-              stdlib_ieeeck = 0
+              stdlib${ii}$_ieeeck = 0
               return
            end if
            newzro = negzro + zero
            if( newzro/=zero ) then
-              stdlib_ieeeck = 0
+              stdlib${ii}$_ieeeck = 0
               return
            end if
            posinf = one / newzro
            if( posinf<=one ) then
-              stdlib_ieeeck = 0
+              stdlib${ii}$_ieeeck = 0
               return
            end if
            neginf = neginf*posinf
            if( neginf>=zero ) then
-              stdlib_ieeeck = 0
+              stdlib${ii}$_ieeeck = 0
               return
            end if
            posinf = posinf*posinf
            if( posinf<=one ) then
-              stdlib_ieeeck = 0
+              stdlib${ii}$_ieeeck = 0
               return
            end if
            ! return if we were only asked to check infinity arithmetic
@@ -164,36 +165,36 @@ module stdlib_linalg_lapack_aux
            nan5 = neginf*negzro
            nan6 = nan5*zero
            if( nan1==nan1 ) then
-              stdlib_ieeeck = 0
+              stdlib${ii}$_ieeeck = 0
               return
            end if
            if( nan2==nan2 ) then
-              stdlib_ieeeck = 0
+              stdlib${ii}$_ieeeck = 0
               return
            end if
            if( nan3==nan3 ) then
-              stdlib_ieeeck = 0
+              stdlib${ii}$_ieeeck = 0
               return
            end if
            if( nan4==nan4 ) then
-              stdlib_ieeeck = 0
+              stdlib${ii}$_ieeeck = 0
               return
            end if
            if( nan5==nan5 ) then
-              stdlib_ieeeck = 0
+              stdlib${ii}$_ieeeck = 0
               return
            end if
            if( nan6==nan6 ) then
-              stdlib_ieeeck = 0
+              stdlib${ii}$_ieeeck = 0
               return
            end if
            return
-     end function stdlib_ieeeck
+     end function stdlib${ii}$_ieeeck
 
 
 
 
-     integer(ilp) function stdlib_iladiag( diag )
+     integer(${ik}$) function stdlib${ii}$_iladiag( diag )
      !! This subroutine translated from a character string specifying if a
      !! matrix has unit diagonal or not to the relevant BLAST-specified
      !! integer constant.
@@ -207,24 +208,24 @@ module stdlib_linalg_lapack_aux
            character :: diag
         ! =====================================================================
            ! Parameters 
-           integer(ilp), parameter :: blas_non_unit_diag = 131
-           integer(ilp), parameter :: blas_unit_diag = 132
+           integer(${ik}$), parameter :: blas_non_unit_diag = 131
+           integer(${ik}$), parameter :: blas_unit_diag = 132
            
            ! Executable Statements 
            if( stdlib_lsame( diag, 'N' ) ) then
-              stdlib_iladiag = blas_non_unit_diag
+              stdlib${ii}$_iladiag = blas_non_unit_diag
            else if( stdlib_lsame( diag, 'U' ) ) then
-              stdlib_iladiag = blas_unit_diag
+              stdlib${ii}$_iladiag = blas_unit_diag
            else
-              stdlib_iladiag = -1
+              stdlib${ii}$_iladiag = -1
            end if
            return
-     end function stdlib_iladiag
+     end function stdlib${ii}$_iladiag
 
 
 
 
-     integer(ilp) function stdlib_ilaprec( prec )
+     integer(${ik}$) function stdlib${ii}$_ilaprec( prec )
      !! This subroutine translated from a character string specifying an
      !! intermediate precision to the relevant BLAST-specified integer
      !! constant.
@@ -238,29 +239,29 @@ module stdlib_linalg_lapack_aux
            character :: prec
         ! =====================================================================
            ! Parameters 
-           integer(ilp), parameter :: blas_prec_single = 211
-           integer(ilp), parameter :: blas_prec_double = 212
-           integer(ilp), parameter :: blas_prec_indigenous = 213
-           integer(ilp), parameter :: blas_prec_extra = 214
+           integer(${ik}$), parameter :: blas_prec_single = 211
+           integer(${ik}$), parameter :: blas_prec_double = 212
+           integer(${ik}$), parameter :: blas_prec_indigenous = 213
+           integer(${ik}$), parameter :: blas_prec_extra = 214
            
            ! Executable Statements 
            if( stdlib_lsame( prec, 'S' ) ) then
-              stdlib_ilaprec = blas_prec_single
+              stdlib${ii}$_ilaprec = blas_prec_single
            else if( stdlib_lsame( prec, 'D' ) ) then
-              stdlib_ilaprec = blas_prec_double
+              stdlib${ii}$_ilaprec = blas_prec_double
            else if( stdlib_lsame( prec, 'I' ) ) then
-              stdlib_ilaprec = blas_prec_indigenous
+              stdlib${ii}$_ilaprec = blas_prec_indigenous
            else if( stdlib_lsame( prec, 'X' ) .or. stdlib_lsame( prec, 'E' ) ) then
-              stdlib_ilaprec = blas_prec_extra
+              stdlib${ii}$_ilaprec = blas_prec_extra
            else
-              stdlib_ilaprec = -1
+              stdlib${ii}$_ilaprec = -1
            end if
            return
-     end function stdlib_ilaprec
+     end function stdlib${ii}$_ilaprec
 
 
 
-     integer(ilp) function stdlib_ilatrans( trans )
+     integer(${ik}$) function stdlib${ii}$_ilatrans( trans )
      !! This subroutine translates from a character string specifying a
      !! transposition operation to the relevant BLAST-specified integer
      !! constant.
@@ -274,25 +275,25 @@ module stdlib_linalg_lapack_aux
            character :: trans
         ! =====================================================================
            ! Parameters 
-           integer(ilp), parameter :: blas_no_trans = 111
-           integer(ilp), parameter :: blas_trans = 112
-           integer(ilp), parameter :: blas_conj_trans = 113
+           integer(${ik}$), parameter :: blas_no_trans = 111
+           integer(${ik}$), parameter :: blas_trans = 112
+           integer(${ik}$), parameter :: blas_conj_trans = 113
            
            ! Executable Statements 
            if( stdlib_lsame( trans, 'N' ) ) then
-              stdlib_ilatrans = blas_no_trans
+              stdlib${ii}$_ilatrans = blas_no_trans
            else if( stdlib_lsame( trans, 'T' ) ) then
-              stdlib_ilatrans = blas_trans
+              stdlib${ii}$_ilatrans = blas_trans
            else if( stdlib_lsame( trans, 'C' ) ) then
-              stdlib_ilatrans = blas_conj_trans
+              stdlib${ii}$_ilatrans = blas_conj_trans
            else
-              stdlib_ilatrans = -1
+              stdlib${ii}$_ilatrans = -1
            end if
            return
-     end function stdlib_ilatrans
+     end function stdlib${ii}$_ilatrans
 
 
-     integer(ilp) function stdlib_ilauplo( uplo )
+     integer(${ik}$) function stdlib${ii}$_ilauplo( uplo )
      !! This subroutine translated from a character string specifying a
      !! upper- or lower-triangular matrix to the relevant BLAST-specified
      !! integer constant.
@@ -306,22 +307,22 @@ module stdlib_linalg_lapack_aux
            character :: uplo
         ! =====================================================================
            ! Parameters 
-           integer(ilp), parameter :: blas_upper = 121
-           integer(ilp), parameter :: blas_lower = 122
+           integer(${ik}$), parameter :: blas_upper = 121
+           integer(${ik}$), parameter :: blas_lower = 122
            
            ! Executable Statements 
            if( stdlib_lsame( uplo, 'U' ) ) then
-              stdlib_ilauplo = blas_upper
+              stdlib${ii}$_ilauplo = blas_upper
            else if( stdlib_lsame( uplo, 'L' ) ) then
-              stdlib_ilauplo = blas_lower
+              stdlib${ii}$_ilauplo = blas_lower
            else
-              stdlib_ilauplo = -1
+              stdlib${ii}$_ilauplo = -1
            end if
            return
-     end function stdlib_ilauplo
+     end function stdlib${ii}$_ilauplo
 
 
-     pure integer(ilp) function stdlib_iparmq( ispec, name, opts, n, ilo, ihi, lwork )
+     pure integer(${ik}$) function stdlib${ii}$_iparmq( ispec, name, opts, n, ilo, ihi, lwork )
      !! This program sets problem and machine dependent parameters
      !! useful for xHSEQR and related subroutines for eigenvalue
      !! problems. It is called whenever
@@ -330,29 +331,29 @@ module stdlib_linalg_lapack_aux
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           integer(ilp), intent(in) :: ihi, ilo, ispec, lwork, n
+           integer(${ik}$), intent(in) :: ihi, ilo, ispec, lwork, n
            character, intent(in) :: name*(*), opts*(*)
         ! ================================================================
            ! Parameters 
-           integer(ilp), parameter :: inmin = 12
-           integer(ilp), parameter :: inwin = 13
-           integer(ilp), parameter :: inibl = 14
-           integer(ilp), parameter :: ishfts = 15
-           integer(ilp), parameter :: iacc22 = 16
-           integer(ilp), parameter :: icost = 17
-           integer(ilp), parameter :: nmin = 75
-           integer(ilp), parameter :: k22min = 14
-           integer(ilp), parameter :: kacmin = 14
-           integer(ilp), parameter :: nibble = 14
-           integer(ilp), parameter :: knwswp = 500
-           integer(ilp), parameter :: rcost = 10
+           integer(${ik}$), parameter :: inmin = 12
+           integer(${ik}$), parameter :: inwin = 13
+           integer(${ik}$), parameter :: inibl = 14
+           integer(${ik}$), parameter :: ishfts = 15
+           integer(${ik}$), parameter :: iacc22 = 16
+           integer(${ik}$), parameter :: icost = 17
+           integer(${ik}$), parameter :: nmin = 75
+           integer(${ik}$), parameter :: k22min = 14
+           integer(${ik}$), parameter :: kacmin = 14
+           integer(${ik}$), parameter :: nibble = 14
+           integer(${ik}$), parameter :: knwswp = 500
+           integer(${ik}$), parameter :: rcost = 10
            real(sp), parameter :: two = 2.0
            
            
            
            ! Local Scalars 
-           integer(ilp) :: nh, ns
-           integer(ilp) :: i, ic, iz
+           integer(${ik}$) :: nh, ns
+           integer(${ik}$) :: i, ic, iz
            character :: subnam*6
            ! Intrinsic Functions 
            intrinsic :: log,max,mod,nint,real
@@ -374,21 +375,21 @@ module stdlib_linalg_lapack_aux
               ! ===== matrices of order smaller than nmin get sent
               ! .     to xlahqr, the classic double shift algorithm.
               ! .     this must be at least 11. ====
-              stdlib_iparmq = nmin
+              stdlib${ii}$_iparmq = nmin
            else if( ispec==inibl ) then
               ! ==== inibl: skip a multi-shift qr iteration and
               ! .    whenever aggressive early deflation finds
               ! .    at least (nibble*(window size)/100) deflations. ====
-              stdlib_iparmq = nibble
+              stdlib${ii}$_iparmq = nibble
            else if( ispec==ishfts ) then
               ! ==== nshfts: the number of simultaneous shifts =====
-              stdlib_iparmq = ns
+              stdlib${ii}$_iparmq = ns
            else if( ispec==inwin ) then
               ! ==== nw: deflation window size.  ====
               if( nh<=knwswp ) then
-                 stdlib_iparmq = ns
+                 stdlib${ii}$_iparmq = ns
               else
-                 stdlib_iparmq = 3*ns / 2
+                 stdlib${ii}$_iparmq = 3*ns / 2
               end if
            else if( ispec==iacc22 ) then
               ! ==== iacc22: whether to accumulate reflections
@@ -398,7 +399,7 @@ module stdlib_linalg_lapack_aux
               ! .     by making this choice dependent also upon the
               ! .     nh=ihi-ilo+1.
               ! convert name to upper case if the first character is lower case.
-              stdlib_iparmq = 0
+              stdlib${ii}$_iparmq = 0
               subnam = name
               ic = ichar( subnam( 1: 1 ) )
               iz = ichar( 'Z' )
@@ -433,26 +434,26 @@ module stdlib_linalg_lapack_aux
                  end if
               end if
               if( subnam( 2:6 )=='GGHRD' .or.subnam( 2:6 )=='GGHD3' ) then
-                 stdlib_iparmq = 1
-                 if( nh>=k22min )stdlib_iparmq = 2
+                 stdlib${ii}$_iparmq = 1
+                 if( nh>=k22min )stdlib${ii}$_iparmq = 2
               else if ( subnam( 4:6 )=='EXC' ) then
-                 if( nh>=kacmin )stdlib_iparmq = 1
-                 if( nh>=k22min )stdlib_iparmq = 2
+                 if( nh>=kacmin )stdlib${ii}$_iparmq = 1
+                 if( nh>=k22min )stdlib${ii}$_iparmq = 2
               else if ( subnam( 2:6 )=='HSEQR' .or.subnam( 2:5 )=='LAQR' ) then
-                 if( ns>=kacmin )stdlib_iparmq = 1
-                 if( ns>=k22min )stdlib_iparmq = 2
+                 if( ns>=kacmin )stdlib${ii}$_iparmq = 1
+                 if( ns>=k22min )stdlib${ii}$_iparmq = 2
               end if
            else if( ispec==icost ) then
               ! === relative cost of near-the-diagonal chase vs
                   ! blas updates ===
-              stdlib_iparmq = rcost
+              stdlib${ii}$_iparmq = rcost
            else
               ! ===== invalid value of ispec =====
-              stdlib_iparmq = -1
+              stdlib${ii}$_iparmq = -1
            end if
-     end function stdlib_iparmq
+     end function stdlib${ii}$_iparmq
 
-     pure logical(lk) function stdlib_lsamen( n, ca, cb )
+     pure logical(lk) function stdlib${ii}$_lsamen( n, ca, cb )
      !! LSAMEN tests if the first N letters of CA are the same as the
      !! first N letters of CB, regardless of case.
      !! LSAMEN returns .TRUE. if CA and CB are equivalent except for case
@@ -463,56 +464,56 @@ module stdlib_linalg_lapack_aux
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            character(len=*), intent(in) :: ca, cb
-           integer(ilp), intent(in) :: n
+           integer(${ik}$), intent(in) :: n
        ! =====================================================================
            ! Local Scalars 
-           integer(ilp) :: i
+           integer(${ik}$) :: i
            ! Intrinsic Functions 
            intrinsic :: len
            ! Executable Statements 
-           stdlib_lsamen = .false.
+           stdlib${ii}$_lsamen = .false.
            if( len( ca )<n .or. len( cb )<n )go to 20
            ! do for each character in the two strings.
            do i = 1, n
-              ! test if the characters are equal using stdlib_lsame.
+              ! test if the characters are equal using stdlib${ii}$_lsame.
               if( .not.stdlib_lsame( ca( i: i ), cb( i: i ) ) )go to 20
            end do
-           stdlib_lsamen = .true.
+           stdlib${ii}$_lsamen = .true.
            20 continue
            return
-     end function stdlib_lsamen
+     end function stdlib${ii}$_lsamen
 
 #:for rk,rt,ri in REAL_KINDS_TYPES
-     pure real(${rk}$) function stdlib_${ri}$roundup_lwork( lwork )
+     pure real(${rk}$) function stdlib${ii}$_${ri}$roundup_lwork( lwork )
      !! ROUNDUP_LWORK >= LWORK.
      !! ROUNDUP_LWORK is guaranteed to have zero decimal part.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           integer(ilp), intent(in) :: lwork
+           integer(${ik}$), intent(in) :: lwork
        ! =====================================================================
            ! Intrinsic Functions 
            intrinsic :: epsilon,real,int
            ! Executable Statements 
-           stdlib_${ri}$roundup_lwork = real(lwork,KIND=${rk}$)
-           if (int( stdlib_${ri}$roundup_lwork,KIND=ilp)<lwork) then
+           stdlib${ii}$_${ri}$roundup_lwork = real(lwork,KIND=${rk}$)
+           if (int( stdlib${ii}$_${ri}$roundup_lwork,KIND=ilp)<lwork) then
                ! force round up of lwork
-               stdlib_${ri}$roundup_lwork = stdlib_${ri}$roundup_lwork * (1.0e+0_${rk}$ + epsilon(0.0e+0_${rk}$))
+               stdlib${ii}$_${ri}$roundup_lwork = stdlib${ii}$_${ri}$roundup_lwork * (1.0e+0_${rk}$ + epsilon(0.0e+0_${rk}$))
            endif
            return
-     end function stdlib_${ri}$roundup_lwork
+     end function stdlib${ii}$_${ri}$roundup_lwork
      
 #:endfor
 
 #:for rk,rt,ri in RC_KINDS_TYPES
-     pure integer(ilp) function stdlib_ila${ri}$lc( m, n, a, lda )
+     pure integer(${ik}$) function stdlib${ii}$_ila${ri}$lc( m, n, a, lda )
      !! ILADLC: scans A for its last non-zero column.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           integer(ilp), intent(in) :: m, n, lda
+           integer(${ik}$), intent(in) :: m, n, lda
            ! Array Arguments 
            ${rt}$, intent(in) :: a(lda,*)
         ! =====================================================================
@@ -520,31 +521,31 @@ module stdlib_linalg_lapack_aux
            ${rt}$, parameter :: zero = 0.0_${rk}$
            
            ! Local Scalars 
-           integer(ilp) :: i
+           integer(${ik}$) :: i
            ! Executable Statements 
            ! quick test for the common case where one corner is non-zero.
            if( n==0 ) then
-              stdlib_ila${ri}$lc = n
+              stdlib${ii}$_ila${ri}$lc = n
            else if (a(1, n)/=zero .or. a(m, n)/=zero) then
-              stdlib_ila${ri}$lc = n
+              stdlib${ii}$_ila${ri}$lc = n
            else
            ! now scan each column from the end, returning with the first non-zero.
-              do stdlib_ila${ri}$lc = n, 1, -1
+              do stdlib${ii}$_ila${ri}$lc = n, 1, -1
                  do i = 1, m
-                    if (a(i, stdlib_ila${ri}$lc)/=zero) return
+                    if (a(i, stdlib${ii}$_ila${ri}$lc)/=zero) return
                  end do
               end do
            end if
            return
-     end function stdlib_ila${ri}$lc
+     end function stdlib${ii}$_ila${ri}$lc
      
-     pure integer(ilp) function stdlib_ila${ri}$lr( m, n, a, lda )
+     pure integer(${ik}$) function stdlib${ii}$_ila${ri}$lr( m, n, a, lda )
      !! ILADLR: scans A for its last non-zero row.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           integer(ilp), intent(in) :: m, n, lda
+           integer(${ik}$), intent(in) :: m, n, lda
            ! Array Arguments 
            ${rt}$, intent(in) :: a(lda,*)
         ! =====================================================================
@@ -552,31 +553,31 @@ module stdlib_linalg_lapack_aux
            ${rt}$, parameter :: zero = 0.0_${rk}$
            
            ! Local Scalars 
-           integer(ilp) :: i, j
+           integer(${ik}$) :: i, j
            ! Executable Statements 
            ! quick test for the common case where one corner is non-zero.
            if( m==0 ) then
-              stdlib_ila${ri}$lr = m
+              stdlib${ii}$_ila${ri}$lr = m
            else if( a(m, 1)/=zero .or. a(m, n)/=zero ) then
-              stdlib_ila${ri}$lr = m
+              stdlib${ii}$_ila${ri}$lr = m
            else
            ! scan up each column tracking the last zero row seen.
-              stdlib_ila${ri}$lr = 0
+              stdlib${ii}$_ila${ri}$lr = 0
               do j = 1, n
                  i=m
                  do while((a(max(i,1),j)==zero).and.(i>=1))
                     i=i-1
                  enddo
-                 stdlib_ila${ri}$lr = max( stdlib_ila${ri}$lr, i )
+                 stdlib${ii}$_ila${ri}$lr = max( stdlib${ii}$_ila${ri}$lr, i )
               end do
            end if
            return
-     end function stdlib_ila${ri}$lr     
+     end function stdlib${ii}$_ila${ri}$lr     
      
 #:endfor 
 
 #:for ck,ct,ci in CMPLX_KINDS_TYPES     
-     pure integer(ilp) function stdlib_i${ci}$max1( n, zx, incx )
+     pure integer(${ik}$) function stdlib${ii}$_i${ci}$max1( n, zx, incx )
      !! I*MAX1: finds the index of the first vector element of maximum absolute value.
      !! Based on I*AMAX from Level 1 BLAS.
      !! The change is to use the 'genuine' absolute value.
@@ -584,26 +585,26 @@ module stdlib_linalg_lapack_aux
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
-           integer(ilp), intent(in) :: incx, n
+           integer(${ik}$), intent(in) :: incx, n
            ! Array Arguments 
            complex(${ck}$), intent(in) :: zx(*)
         ! =====================================================================
            ! Local Scalars 
            real(${ck}$) :: dmax
-           integer(ilp) :: i, ix
+           integer(${ik}$) :: i, ix
            ! Intrinsic Functions 
            intrinsic :: abs
            ! Executable Statements 
-           stdlib_i${ci}$max1 = 0
+           stdlib${ii}$_i${ci}$max1 = 0
            if (n<1 .or. incx<=0) return
-           stdlib_i${ci}$max1 = 1
+           stdlib${ii}$_i${ci}$max1 = 1
            if (n==1) return
            if (incx==1) then
               ! code for increment equal to 1
               dmax = abs(zx(1))
               do i = 2,n
                  if (abs(zx(i))>dmax) then
-                    stdlib_i${ci}$max1 = i
+                    stdlib${ii}$_i${ci}$max1 = i
                     dmax = abs(zx(i))
                  end if
               end do
@@ -614,18 +615,18 @@ module stdlib_linalg_lapack_aux
               ix = ix + incx
               do i = 2,n
                  if (abs(zx(ix))>dmax) then
-                    stdlib_i${ci}$max1 = i
+                    stdlib${ii}$_i${ci}$max1 = i
                     dmax = abs(zx(ix))
                  end if
                  ix = ix + incx
               end do
            end if
            return
-     end function stdlib_i${ci}$max1
+     end function stdlib${ii}$_i${ci}$max1
 #:endfor
 
 
-     pure integer(ilp) function stdlib_ilaenv( ispec, name, opts, n1, n2, n3, n4 )
+     pure integer(${ik}$) function stdlib${ii}$_ilaenv( ispec, name, opts, n1, n2, n3, n4 )
      !! ILAENV is called from the LAPACK routines to choose problem-dependent
      !! parameters for the local environment.  See ISPEC for a description of
      !! the parameters.
@@ -644,10 +645,10 @@ module stdlib_linalg_lapack_aux
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            character(len=*), intent(in) :: name, opts
-           integer(ilp), intent(in) :: ispec, n1, n2, n3, n4
+           integer(${ik}$), intent(in) :: ispec, n1, n2, n3, n4
         ! =====================================================================
            ! Local Scalars 
-           integer(ilp) :: i, ic, iz, nb, nbmin, nx
+           integer(${ik}$) :: i, ic, iz, nb, nbmin, nx
            logical(lk) :: cname, sname, twostage
            character :: c1*1, c2*2, c4*2, c3*3, subnam*16
            ! Intrinsic Functions 
@@ -656,11 +657,11 @@ module stdlib_linalg_lapack_aux
            go to ( 10, 10, 10, 80, 90, 100, 110, 120,130, 140, 150, 160, 160, 160, 160, 160, 160)&
                      ispec
            ! invalid value for ispec
-           stdlib_ilaenv = -1
+           stdlib${ii}$_ilaenv = -1
            return
            10 continue
            ! convert name to upper case if the first character is lower case.
-           stdlib_ilaenv = 1
+           stdlib${ii}$_ilaenv = 1
            subnam = name
            ic = ichar( subnam( 1: 1 ) )
            iz = ichar( 'Z' )
@@ -926,7 +927,7 @@ module stdlib_linalg_lapack_aux
                  end if
               end if
            end if
-           stdlib_ilaenv = nb
+           stdlib${ii}$_ilaenv = nb
            return
            60 continue
            ! ispec = 2:  minimum block size
@@ -1001,7 +1002,7 @@ module stdlib_linalg_lapack_aux
                  nbmin = 2
               end if
            end if
-           stdlib_ilaenv = nbmin
+           stdlib${ii}$_ilaenv = nbmin
            return
            70 continue
            ! ispec = 3:  crossover point
@@ -1054,58 +1055,58 @@ module stdlib_linalg_lapack_aux
                  nx = 128
               end if
            end if
-           stdlib_ilaenv = nx
+           stdlib${ii}$_ilaenv = nx
            return
            80 continue
            ! ispec = 4:  number of shifts (used by xhseqr)
-           stdlib_ilaenv = 6
+           stdlib${ii}$_ilaenv = 6
            return
            90 continue
            ! ispec = 5:  minimum column dimension (not used)
-           stdlib_ilaenv = 2
+           stdlib${ii}$_ilaenv = 2
            return
            100 continue
            ! ispec = 6:  crossover point for svd (used by xgelss and xgesvd)
-           stdlib_ilaenv = int( real( min( n1, n2 ),KIND=dp)*1.6e0,KIND=ilp)
+           stdlib${ii}$_ilaenv = int( real( min( n1, n2 ),KIND=dp)*1.6e0,KIND=ilp)
            return
            110 continue
            ! ispec = 7:  number of processors (not used)
-           stdlib_ilaenv = 1
+           stdlib${ii}$_ilaenv = 1
            return
            120 continue
            ! ispec = 8:  crossover point for multishift (used by xhseqr)
-           stdlib_ilaenv = 50
+           stdlib${ii}$_ilaenv = 50
            return
            130 continue
            ! ispec = 9:  maximum size of the subproblems at the bottom of the
                        ! computation tree in the divide-and-conquer algorithm
                        ! (used by xgelsd and xgesdd)
-           stdlib_ilaenv = 25
+           stdlib${ii}$_ilaenv = 25
            return
            140 continue
            ! ispec = 10: ieee and infinity nan arithmetic can be trusted not to trap
-           ! stdlib_ilaenv = 0
-           stdlib_ilaenv = 1
-           if( stdlib_ilaenv==1 ) then
-              stdlib_ilaenv = stdlib_ieeeck( 1, 0.0, 1.0 )
+           ! stdlib${ii}$_ilaenv = 0
+           stdlib${ii}$_ilaenv = 1
+           if( stdlib${ii}$_ilaenv==1 ) then
+              stdlib${ii}$_ilaenv = stdlib${ii}$_ieeeck( 1_${ik}$, 0.0, 1.0 )
            end if
            return
            150 continue
            ! ispec = 11: ieee infinity arithmetic can be trusted not to trap
-           ! stdlib_ilaenv = 0
-           stdlib_ilaenv = 1
-           if( stdlib_ilaenv==1 ) then
-              stdlib_ilaenv = stdlib_ieeeck( 0, 0.0, 1.0 )
+           ! stdlib${ii}$_ilaenv = 0
+           stdlib${ii}$_ilaenv = 1
+           if( stdlib${ii}$_ilaenv==1 ) then
+              stdlib${ii}$_ilaenv = stdlib${ii}$_ieeeck( 0_${ik}$, 0.0, 1.0 )
            end if
            return
            160 continue
            ! 12 <= ispec <= 17: xhseqr or related subroutines.
-           stdlib_ilaenv = stdlib_iparmq( ispec, name, opts, n1, n2, n3, n4 )
+           stdlib${ii}$_ilaenv = stdlib${ii}$_iparmq( ispec, name, opts, n1, n2, n3, n4 )
            return
-     end function stdlib_ilaenv
+     end function stdlib${ii}$_ilaenv
 
 
-     integer(ilp) function stdlib_iparam2stage( ispec, name, opts,ni, nbi, ibi, nxi )
+     integer(${ik}$) function stdlib${ii}$_iparam2stage( ispec, name, opts,ni, nbi, ibi, nxi )
      !! This program sets problem and machine dependent parameters
      !! useful for xHETRD_2STAGE, xHETRD_HE2HB, xHETRD_HB2ST,
      !! xGEBRD_2STAGE, xGEBRD_GE2GB, xGEBRD_GB2BD
@@ -1118,10 +1119,10 @@ module stdlib_linalg_lapack_aux
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
            ! Scalar Arguments 
            character(len=*), intent(in) :: name, opts
-           integer(ilp), intent(in) :: ispec, ni, nbi, ibi, nxi
+           integer(${ik}$), intent(in) :: ispec, ni, nbi, ibi, nxi
         ! ================================================================
            ! Local Scalars 
-           integer(ilp) :: i, ic, iz, kd, ib, lhous, lwork, nthreads, factoptnb, qroptnb, &
+           integer(${ik}$) :: i, ic, iz, kd, ib, lhous, lwork, nthreads, factoptnb, qroptnb, &
                      lqoptnb
            logical(lk) :: rprec, cprec
            character :: prec*1, algo*3, stag*5, subnam*12, vect*1
@@ -1130,7 +1131,7 @@ module stdlib_linalg_lapack_aux
            ! Executable Statements 
            ! invalid value for ispec
            if( (ispec<17).or.(ispec>21) ) then
-               stdlib_iparam2stage = -1
+               stdlib${ii}$_iparam2stage = -1
                return
            endif
            ! get the number of threads
@@ -1140,7 +1141,7 @@ module stdlib_linalg_lapack_aux
            ! write(*,*) 'iparam voici nthreads ispec ',nthreads, ispec
            if( ispec /= 19 ) then
               ! convert name to upper case if the first character is lower case.
-              stdlib_iparam2stage = -1
+              stdlib${ii}$_iparam2stage = -1
               subnam = name
               ic = ichar( subnam( 1: 1 ) )
               iz = ichar( 'Z' )
@@ -1181,7 +1182,7 @@ module stdlib_linalg_lapack_aux
               cprec = prec=='C' .or. prec=='Z'
               ! invalid value for precision
               if( .not.( rprec .or. cprec ) ) then
-                  stdlib_iparam2stage = -1
+                  stdlib${ii}$_iparam2stage = -1
                   return
               endif
            endif
@@ -1216,8 +1217,8 @@ module stdlib_linalg_lapack_aux
                     ib = 16
                  endif
               endif
-              if( ispec==17 ) stdlib_iparam2stage = kd
-              if( ispec==18 ) stdlib_iparam2stage = ib
+              if( ispec==17 ) stdlib${ii}$_iparam2stage = kd
+              if( ispec==18 ) stdlib${ii}$_iparam2stage = ib
            else if ( ispec == 19 ) then
            ! ispec = 19:
            ! lhous length of the houselholder representation
@@ -1231,9 +1232,9 @@ module stdlib_linalg_lapack_aux
                  lhous = max( 1, 4*ni ) + ibi
               endif
               if( lhous>=0 ) then
-                 stdlib_iparam2stage = lhous
+                 stdlib${ii}$_iparam2stage = lhous
               else
-                 stdlib_iparam2stage = -1
+                 stdlib${ii}$_iparam2stage = -1
               endif
            else if ( ispec == 20 ) then
            ! ispec = 20: (21 for future use)
@@ -1252,9 +1253,9 @@ module stdlib_linalg_lapack_aux
               lwork        = -1
               subnam(1:1)  = prec
               subnam(2:6)  = 'GEQRF'
-              qroptnb      = stdlib_ilaenv( 1, subnam, ' ', ni, nbi, -1, -1 )
+              qroptnb      = stdlib${ii}$_ilaenv( 1_${ik}$, subnam, ' ', ni, nbi, -1_${ik}$, -1_${ik}$ )
               subnam(2:6)  = 'GELQF'
-              lqoptnb      = stdlib_ilaenv( 1, subnam, ' ', nbi, ni, -1, -1 )
+              lqoptnb      = stdlib${ii}$_ilaenv( 1_${ik}$, subnam, ' ', nbi, ni, -1_${ik}$, -1_${ik}$ )
               ! could be qr or lq for trd and the max for brd
               factoptnb    = max(qroptnb, lqoptnb)
               if( algo=='TRD' ) then
@@ -1278,18 +1279,18 @@ module stdlib_linalg_lapack_aux
               endif
               lwork = max ( 1, lwork )
               if( lwork>0 ) then
-                 stdlib_iparam2stage = lwork
+                 stdlib${ii}$_iparam2stage = lwork
               else
-                 stdlib_iparam2stage = -1
+                 stdlib${ii}$_iparam2stage = -1
               endif
            else if ( ispec == 21 ) then
            ! ispec = 21 for future use
-              stdlib_iparam2stage = nxi
+              stdlib${ii}$_iparam2stage = nxi
            endif
-     end function stdlib_iparam2stage
+     end function stdlib${ii}$_iparam2stage
 
 
-     integer(ilp) function stdlib_ilaenv2stage( ispec, name, opts, n1, n2, n3, n4 )
+     integer(${ik}$) function stdlib${ii}$_ilaenv2stage( ispec, name, opts, n1, n2, n3, n4 )
      !! ILAENV2STAGE is called from the LAPACK routines to choose problem-dependent
      !! parameters for the local environment.  See ISPEC for a description of
      !! the parameters.
@@ -1313,22 +1314,22 @@ module stdlib_linalg_lapack_aux
            ! july 2017
            ! Scalar Arguments 
            character(len=*), intent(in) :: name, opts
-           integer(ilp), intent(in) :: ispec, n1, n2, n3, n4
+           integer(${ik}$), intent(in) :: ispec, n1, n2, n3, n4
         ! =====================================================================
            ! Local Scalars 
-           integer(ilp) :: iispec
+           integer(${ik}$) :: iispec
            ! Executable Statements 
            go to ( 10, 10, 10, 10, 10 )ispec
            ! invalid value for ispec
-           stdlib_ilaenv2stage = -1
+           stdlib${ii}$_ilaenv2stage = -1
            return
            10 continue
            ! 2stage eigenvalues and svd or related subroutines.
            iispec = 16 + ispec
-           stdlib_ilaenv2stage = stdlib_iparam2stage( iispec, name, opts,n1, n2, n3, n4 )
+           stdlib${ii}$_ilaenv2stage = stdlib${ii}$_iparam2stage( iispec, name, opts,n1, n2, n3, n4 )
            return
-     end function stdlib_ilaenv2stage
+     end function stdlib${ii}$_ilaenv2stage
 
-
+     #:endfor
 
 end module stdlib_linalg_lapack_aux

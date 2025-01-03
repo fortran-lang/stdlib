@@ -32,10 +32,12 @@ set(fppFiles
     stdlib_linalg_determinant.fypp
     stdlib_linalg_qr.fypp
     stdlib_linalg_inverse.fypp
+    stdlib_linalg_pinv.fypp
     stdlib_linalg_norms.fypp
     stdlib_linalg_state.fypp
     stdlib_linalg_svd.fypp 
     stdlib_linalg_cholesky.fypp
+    stdlib_linalg_schur.fypp
     stdlib_optval.fypp
     stdlib_selection.fypp
     stdlib_sorting.fypp
