@@ -90,7 +90,7 @@ Name | Version | Platform | Architecture
 GCC Fortran | 10, 11, 12, 13 | Ubuntu 22.04.2 LTS | x86_64
 GCC Fortran | 10, 11, 12, 13 | macOS 12.6.3 (21G419) | x86_64
 GCC Fortran (MSYS) | 13 | Windows Server 2022 (10.0.20348 Build 1547) | x86_64
-GCC Fortran (MinGW) | 13 | Windows Server 2022 (10.0.20348 Build 1547) | x86_64, i686
+GCC Fortran (MinGW) | 13 | Windows Server 2022 (10.0.20348 Build 1547) | x86_64
 Intel oneAPI LLVM | 2024.0 | Ubuntu 22.04.2 LTS | x86_64
 Intel oneAPI classic | 2023.1 | macOS 12.6.3 (21G419) | x86_64
 
@@ -98,7 +98,7 @@ The following combinations are known to work, but they are not tested in the CI:
 
 Name | Version | Platform | Architecture
 --- | --- | --- | ---
-GCC Fortran (MinGW) | 9.3.0, 10.2.0, 11.2.0 | Windows 10 | x86_64, i686
+GCC Fortran (MinGW) | 9.3.0, 10.2.0, 11.2.0 | Windows 10 | x86_64
 
 We try to test as many available compilers and platforms as possible.
 A list of tested compilers which are currently not working and the respective issue are listed below.
