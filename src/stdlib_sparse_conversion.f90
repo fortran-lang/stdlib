@@ -1033,7 +1033,7 @@ contains
         end block
         !-------------------------------------------
         ! copy values and colum index
-        allocate(SELLC%col(chunk_size,nnz), source = -1)
+        allocate(SELLC%col(chunk_size,nnz), source = 1)
         allocate(SELLC%data(chunk_size,nnz), source = zero )
         block
             integer :: lb, ri, iaa, iab, rownnz
@@ -1096,7 +1096,7 @@ contains
         end block
         !-------------------------------------------
         ! copy values and colum index
-        allocate(SELLC%col(chunk_size,nnz), source = -1)
+        allocate(SELLC%col(chunk_size,nnz), source = 1)
         allocate(SELLC%data(chunk_size,nnz), source = zero )
         block
             integer :: lb, ri, iaa, iab, rownnz
@@ -1159,7 +1159,7 @@ contains
         end block
         !-------------------------------------------
         ! copy values and colum index
-        allocate(SELLC%col(chunk_size,nnz), source = -1)
+        allocate(SELLC%col(chunk_size,nnz), source = 1)
         allocate(SELLC%data(chunk_size,nnz), source = zero )
         block
             integer :: lb, ri, iaa, iab, rownnz
@@ -1222,7 +1222,7 @@ contains
         end block
         !-------------------------------------------
         ! copy values and colum index
-        allocate(SELLC%col(chunk_size,nnz), source = -1)
+        allocate(SELLC%col(chunk_size,nnz), source = 1)
         allocate(SELLC%data(chunk_size,nnz), source = zero )
         block
             integer :: lb, ri, iaa, iab, rownnz

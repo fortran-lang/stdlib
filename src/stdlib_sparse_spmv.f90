@@ -2440,90 +2440,90 @@ contains
     contains
         pure subroutine chunk_kernel_4(n,a,col,x,y)
             integer, value      :: n
-            real(sp), intent(in)  :: a(4,n), x(*)
+            real(sp), intent(in)  :: a(4,n), x(:)
             integer(ilp), intent(in) :: col(4,n)
             real(sp), intent(inout) :: y(4)
             integer :: j
             do j = 1, n
-                where(col(:,j) > 0) y = y + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_4(n,a,col,x,y)
             integer, value      :: n
             real(sp), intent(in)  :: a(4,n), x(4)
             integer(ilp), intent(in) :: col(4,n)
-            real(sp), intent(inout) :: y(*)
+            real(sp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, 4
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
                 end do
             end do
         end subroutine
         pure subroutine chunk_kernel_8(n,a,col,x,y)
             integer, value      :: n
-            real(sp), intent(in)  :: a(8,n), x(*)
+            real(sp), intent(in)  :: a(8,n), x(:)
             integer(ilp), intent(in) :: col(8,n)
             real(sp), intent(inout) :: y(8)
             integer :: j
             do j = 1, n
-                where(col(:,j) > 0) y = y + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_8(n,a,col,x,y)
             integer, value      :: n
             real(sp), intent(in)  :: a(8,n), x(8)
             integer(ilp), intent(in) :: col(8,n)
-            real(sp), intent(inout) :: y(*)
+            real(sp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, 8
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
                 end do
             end do
         end subroutine
         pure subroutine chunk_kernel_16(n,a,col,x,y)
             integer, value      :: n
-            real(sp), intent(in)  :: a(16,n), x(*)
+            real(sp), intent(in)  :: a(16,n), x(:)
             integer(ilp), intent(in) :: col(16,n)
             real(sp), intent(inout) :: y(16)
             integer :: j
             do j = 1, n
-                where(col(:,j) > 0) y = y + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_16(n,a,col,x,y)
             integer, value      :: n
             real(sp), intent(in)  :: a(16,n), x(16)
             integer(ilp), intent(in) :: col(16,n)
-            real(sp), intent(inout) :: y(*)
+            real(sp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, 16
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
                 end do
             end do
         end subroutine
     
         pure subroutine chunk_kernel_rm(n,cs,r,a,col,x,y)
             integer, value      :: n, cs, r
-            real(sp), intent(in)  :: a(cs,n), x(*)
+            real(sp), intent(in)  :: a(cs,n), x(:)
             integer(ilp), intent(in) :: col(cs,n)
             real(sp), intent(inout) :: y(r)
             integer :: j
             do j = 1, n
-                where(col(1:r,j) > 0) y = y + alpha_ * a(1:r,j) * x(col(1:r,j))
+                y(1:r) = y(1:r) + alpha_ * a(1:r,j) * x(col(1:r,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_rm_trans(n,cs,r,a,col,x,y)
             integer, value      :: n, cs, r
             real(sp), intent(in)  :: a(cs,n), x(r)
             integer(ilp), intent(in) :: col(cs,n)
-            real(sp), intent(inout) :: y(*)
+            real(sp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, r
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -2632,90 +2632,90 @@ contains
     contains
         pure subroutine chunk_kernel_4(n,a,col,x,y)
             integer, value      :: n
-            real(dp), intent(in)  :: a(4,n), x(*)
+            real(dp), intent(in)  :: a(4,n), x(:)
             integer(ilp), intent(in) :: col(4,n)
             real(dp), intent(inout) :: y(4)
             integer :: j
             do j = 1, n
-                where(col(:,j) > 0) y = y + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_4(n,a,col,x,y)
             integer, value      :: n
             real(dp), intent(in)  :: a(4,n), x(4)
             integer(ilp), intent(in) :: col(4,n)
-            real(dp), intent(inout) :: y(*)
+            real(dp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, 4
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
                 end do
             end do
         end subroutine
         pure subroutine chunk_kernel_8(n,a,col,x,y)
             integer, value      :: n
-            real(dp), intent(in)  :: a(8,n), x(*)
+            real(dp), intent(in)  :: a(8,n), x(:)
             integer(ilp), intent(in) :: col(8,n)
             real(dp), intent(inout) :: y(8)
             integer :: j
             do j = 1, n
-                where(col(:,j) > 0) y = y + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_8(n,a,col,x,y)
             integer, value      :: n
             real(dp), intent(in)  :: a(8,n), x(8)
             integer(ilp), intent(in) :: col(8,n)
-            real(dp), intent(inout) :: y(*)
+            real(dp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, 8
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
                 end do
             end do
         end subroutine
         pure subroutine chunk_kernel_16(n,a,col,x,y)
             integer, value      :: n
-            real(dp), intent(in)  :: a(16,n), x(*)
+            real(dp), intent(in)  :: a(16,n), x(:)
             integer(ilp), intent(in) :: col(16,n)
             real(dp), intent(inout) :: y(16)
             integer :: j
             do j = 1, n
-                where(col(:,j) > 0) y = y + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_16(n,a,col,x,y)
             integer, value      :: n
             real(dp), intent(in)  :: a(16,n), x(16)
             integer(ilp), intent(in) :: col(16,n)
-            real(dp), intent(inout) :: y(*)
+            real(dp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, 16
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
                 end do
             end do
         end subroutine
     
         pure subroutine chunk_kernel_rm(n,cs,r,a,col,x,y)
             integer, value      :: n, cs, r
-            real(dp), intent(in)  :: a(cs,n), x(*)
+            real(dp), intent(in)  :: a(cs,n), x(:)
             integer(ilp), intent(in) :: col(cs,n)
             real(dp), intent(inout) :: y(r)
             integer :: j
             do j = 1, n
-                where(col(1:r,j) > 0) y = y + alpha_ * a(1:r,j) * x(col(1:r,j))
+                y(1:r) = y(1:r) + alpha_ * a(1:r,j) * x(col(1:r,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_rm_trans(n,cs,r,a,col,x,y)
             integer, value      :: n, cs, r
             real(dp), intent(in)  :: a(cs,n), x(r)
             integer(ilp), intent(in) :: col(cs,n)
-            real(dp), intent(inout) :: y(*)
+            real(dp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, r
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -2854,23 +2854,23 @@ contains
     contains
         pure subroutine chunk_kernel_4(n,a,col,x,y)
             integer, value      :: n
-            complex(sp), intent(in)  :: a(4,n), x(*)
+            complex(sp), intent(in)  :: a(4,n), x(:)
             integer(ilp), intent(in) :: col(4,n)
             complex(sp), intent(inout) :: y(4)
             integer :: j
             do j = 1, n
-                where(col(:,j) > 0) y = y + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_4(n,a,col,x,y)
             integer, value      :: n
             complex(sp), intent(in)  :: a(4,n), x(4)
             integer(ilp), intent(in) :: col(4,n)
-            complex(sp), intent(inout) :: y(*)
+            complex(sp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, 4
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -2878,33 +2878,33 @@ contains
             integer, value      :: n
             complex(sp), intent(in)  :: a(4,n), x(4)
             integer(ilp), intent(in) :: col(4,n)
-            complex(sp), intent(inout) :: y(*)
+            complex(sp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, 4
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
                 end do
             end do
         end subroutine
         pure subroutine chunk_kernel_8(n,a,col,x,y)
             integer, value      :: n
-            complex(sp), intent(in)  :: a(8,n), x(*)
+            complex(sp), intent(in)  :: a(8,n), x(:)
             integer(ilp), intent(in) :: col(8,n)
             complex(sp), intent(inout) :: y(8)
             integer :: j
             do j = 1, n
-                where(col(:,j) > 0) y = y + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_8(n,a,col,x,y)
             integer, value      :: n
             complex(sp), intent(in)  :: a(8,n), x(8)
             integer(ilp), intent(in) :: col(8,n)
-            complex(sp), intent(inout) :: y(*)
+            complex(sp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, 8
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -2912,33 +2912,33 @@ contains
             integer, value      :: n
             complex(sp), intent(in)  :: a(8,n), x(8)
             integer(ilp), intent(in) :: col(8,n)
-            complex(sp), intent(inout) :: y(*)
+            complex(sp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, 8
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
                 end do
             end do
         end subroutine
         pure subroutine chunk_kernel_16(n,a,col,x,y)
             integer, value      :: n
-            complex(sp), intent(in)  :: a(16,n), x(*)
+            complex(sp), intent(in)  :: a(16,n), x(:)
             integer(ilp), intent(in) :: col(16,n)
             complex(sp), intent(inout) :: y(16)
             integer :: j
             do j = 1, n
-                where(col(:,j) > 0) y = y + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_16(n,a,col,x,y)
             integer, value      :: n
             complex(sp), intent(in)  :: a(16,n), x(16)
             integer(ilp), intent(in) :: col(16,n)
-            complex(sp), intent(inout) :: y(*)
+            complex(sp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, 16
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -2946,34 +2946,34 @@ contains
             integer, value      :: n
             complex(sp), intent(in)  :: a(16,n), x(16)
             integer(ilp), intent(in) :: col(16,n)
-            complex(sp), intent(inout) :: y(*)
+            complex(sp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, 16
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
                 end do
             end do
         end subroutine
     
         pure subroutine chunk_kernel_rm(n,cs,r,a,col,x,y)
             integer, value      :: n, cs, r
-            complex(sp), intent(in)  :: a(cs,n), x(*)
+            complex(sp), intent(in)  :: a(cs,n), x(:)
             integer(ilp), intent(in) :: col(cs,n)
             complex(sp), intent(inout) :: y(r)
             integer :: j
             do j = 1, n
-                where(col(1:r,j) > 0) y = y + alpha_ * a(1:r,j) * x(col(1:r,j))
+                y(1:r) = y(1:r) + alpha_ * a(1:r,j) * x(col(1:r,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_rm_trans(n,cs,r,a,col,x,y)
             integer, value      :: n, cs, r
             complex(sp), intent(in)  :: a(cs,n), x(r)
             integer(ilp), intent(in) :: col(cs,n)
-            complex(sp), intent(inout) :: y(*)
+            complex(sp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, r
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -2981,11 +2981,11 @@ contains
             integer, value      :: n, cs, r
             complex(sp), intent(in)  :: a(cs,n), x(r)
             integer(ilp), intent(in) :: col(cs,n)
-            complex(sp), intent(inout) :: y(*)
+            complex(sp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, r
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
                 end do
             end do
         end subroutine
@@ -3124,23 +3124,23 @@ contains
     contains
         pure subroutine chunk_kernel_4(n,a,col,x,y)
             integer, value      :: n
-            complex(dp), intent(in)  :: a(4,n), x(*)
+            complex(dp), intent(in)  :: a(4,n), x(:)
             integer(ilp), intent(in) :: col(4,n)
             complex(dp), intent(inout) :: y(4)
             integer :: j
             do j = 1, n
-                where(col(:,j) > 0) y = y + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_4(n,a,col,x,y)
             integer, value      :: n
             complex(dp), intent(in)  :: a(4,n), x(4)
             integer(ilp), intent(in) :: col(4,n)
-            complex(dp), intent(inout) :: y(*)
+            complex(dp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, 4
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -3148,33 +3148,33 @@ contains
             integer, value      :: n
             complex(dp), intent(in)  :: a(4,n), x(4)
             integer(ilp), intent(in) :: col(4,n)
-            complex(dp), intent(inout) :: y(*)
+            complex(dp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, 4
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
                 end do
             end do
         end subroutine
         pure subroutine chunk_kernel_8(n,a,col,x,y)
             integer, value      :: n
-            complex(dp), intent(in)  :: a(8,n), x(*)
+            complex(dp), intent(in)  :: a(8,n), x(:)
             integer(ilp), intent(in) :: col(8,n)
             complex(dp), intent(inout) :: y(8)
             integer :: j
             do j = 1, n
-                where(col(:,j) > 0) y = y + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_8(n,a,col,x,y)
             integer, value      :: n
             complex(dp), intent(in)  :: a(8,n), x(8)
             integer(ilp), intent(in) :: col(8,n)
-            complex(dp), intent(inout) :: y(*)
+            complex(dp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, 8
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -3182,33 +3182,33 @@ contains
             integer, value      :: n
             complex(dp), intent(in)  :: a(8,n), x(8)
             integer(ilp), intent(in) :: col(8,n)
-            complex(dp), intent(inout) :: y(*)
+            complex(dp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, 8
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
                 end do
             end do
         end subroutine
         pure subroutine chunk_kernel_16(n,a,col,x,y)
             integer, value      :: n
-            complex(dp), intent(in)  :: a(16,n), x(*)
+            complex(dp), intent(in)  :: a(16,n), x(:)
             integer(ilp), intent(in) :: col(16,n)
             complex(dp), intent(inout) :: y(16)
             integer :: j
             do j = 1, n
-                where(col(:,j) > 0) y = y + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_16(n,a,col,x,y)
             integer, value      :: n
             complex(dp), intent(in)  :: a(16,n), x(16)
             integer(ilp), intent(in) :: col(16,n)
-            complex(dp), intent(inout) :: y(*)
+            complex(dp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, 16
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -3216,34 +3216,34 @@ contains
             integer, value      :: n
             complex(dp), intent(in)  :: a(16,n), x(16)
             integer(ilp), intent(in) :: col(16,n)
-            complex(dp), intent(inout) :: y(*)
+            complex(dp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, 16
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
                 end do
             end do
         end subroutine
     
         pure subroutine chunk_kernel_rm(n,cs,r,a,col,x,y)
             integer, value      :: n, cs, r
-            complex(dp), intent(in)  :: a(cs,n), x(*)
+            complex(dp), intent(in)  :: a(cs,n), x(:)
             integer(ilp), intent(in) :: col(cs,n)
             complex(dp), intent(inout) :: y(r)
             integer :: j
             do j = 1, n
-                where(col(1:r,j) > 0) y = y + alpha_ * a(1:r,j) * x(col(1:r,j))
+                y(1:r) = y(1:r) + alpha_ * a(1:r,j) * x(col(1:r,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_rm_trans(n,cs,r,a,col,x,y)
             integer, value      :: n, cs, r
             complex(dp), intent(in)  :: a(cs,n), x(r)
             integer(ilp), intent(in) :: col(cs,n)
-            complex(dp), intent(inout) :: y(*)
+            complex(dp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, r
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -3251,11 +3251,11 @@ contains
             integer, value      :: n, cs, r
             complex(dp), intent(in)  :: a(cs,n), x(r)
             integer(ilp), intent(in) :: col(cs,n)
-            complex(dp), intent(inout) :: y(*)
+            complex(dp), intent(inout) :: y(:)
             integer :: j, k
             do j = 1, n
                 do k = 1, r
-                    if(col(k,j) > 0) y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
                 end do
             end do
         end subroutine
