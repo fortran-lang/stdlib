@@ -41,6 +41,8 @@ module stdlib_linalg
   public :: cross_product
   public :: qr
   public :: qr_space
+  public :: schur
+  public :: schur_space
   public :: is_square
   public :: is_diagonal
   public :: is_symmetric
@@ -1606,6 +1608,214 @@ module stdlib_linalg
       end subroutine get_qr_z_workspace
   end interface qr_space
  
+  ! Schur decomposition of rank-2 array A
+  interface schur
+    !! version: experimental
+    !!
+    !! Computes the Schur decomposition of matrix \( A = Z T Z^H \).
+    !! ([Specification](../page/specs/stdlib_linalg.html#schur-compute-the-schur-decomposition-of-a-matrix))
+    !!
+    !!### Summary
+    !! Compute the Schur decomposition of a `real` or `complex` matrix: \( A = Z T Z^H \), where \( Z \) is
+    !! orthonormal/unitary and \( T \) is upper-triangular or quasi-upper-triangular. Matrix \( A \) has size `[m,m]`.
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the Schur decomposition of a matrix.
+    !! Supported data types include `real` and `complex`. If a pre-allocated workspace is provided, no internal 
+    !! memory allocations take place when using this interface.
+    !!
+    !! The output matrix \( T \) is upper-triangular for `complex` input matrices and quasi-upper-triangular
+    !! for `real` input matrices (with possible \( 2 \times 2 \) blocks on the diagonal).
+    !!
+    !!@note The solution is based on LAPACK's Schur decomposition routines (`*GEES`). 
+    !! 
+      module subroutine stdlib_linalg_s_schur(a, t, z, eigvals, overwrite_a, storage, err)
+         !> Input matrix a[m,m]
+         real(sp), intent(inout), target :: a(:,:)
+         !> Schur form of A: upper-triangular or quasi-upper-triangular matrix T
+         real(sp), intent(out), contiguous, target :: t(:,:)
+         !> Unitary/orthonormal transformation matrix Z
+         real(sp), optional, intent(out), contiguous, target :: z(:,:)
+         !> [optional] Output eigenvalues that appear on the diagonal of T
+         complex(sp), optional, intent(out), contiguous, target :: eigvals(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a                 
+         !> [optional] Provide pre-allocated workspace, size to be checked with schur_space         
+         real(sp), optional, intent(inout), target :: storage(:)
+         !> [optional] State return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_s_schur
+      
+      ! Schur decomposition subroutine: real eigenvalue interface
+      module subroutine stdlib_linalg_real_eig_s_schur(a,t,z,eigvals,overwrite_a,storage,err)
+         !> Input matrix a[m,m]
+         real(sp), intent(inout), target :: a(:,:)
+         !> Schur form of A: upper-triangular or quasi-upper-triangular matrix T
+         real(sp), intent(out), contiguous, target :: t(:,:)
+         !> Unitary/orthonormal transformation matrix Z
+         real(sp), optional, intent(out), contiguous, target :: z(:,:)
+         !> Output real eigenvalues that appear on the diagonal of T
+         real(sp), intent(out), contiguous, target :: eigvals(:)
+         !> [optional] Provide pre-allocated workspace, size to be checked with schur_space
+         real(sp), optional, intent(inout), target :: storage(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a        
+         !> [optional] State return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err        
+      end subroutine stdlib_linalg_real_eig_s_schur 
+      module subroutine stdlib_linalg_d_schur(a, t, z, eigvals, overwrite_a, storage, err)
+         !> Input matrix a[m,m]
+         real(dp), intent(inout), target :: a(:,:)
+         !> Schur form of A: upper-triangular or quasi-upper-triangular matrix T
+         real(dp), intent(out), contiguous, target :: t(:,:)
+         !> Unitary/orthonormal transformation matrix Z
+         real(dp), optional, intent(out), contiguous, target :: z(:,:)
+         !> [optional] Output eigenvalues that appear on the diagonal of T
+         complex(dp), optional, intent(out), contiguous, target :: eigvals(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a                 
+         !> [optional] Provide pre-allocated workspace, size to be checked with schur_space         
+         real(dp), optional, intent(inout), target :: storage(:)
+         !> [optional] State return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_d_schur
+      
+      ! Schur decomposition subroutine: real eigenvalue interface
+      module subroutine stdlib_linalg_real_eig_d_schur(a,t,z,eigvals,overwrite_a,storage,err)
+         !> Input matrix a[m,m]
+         real(dp), intent(inout), target :: a(:,:)
+         !> Schur form of A: upper-triangular or quasi-upper-triangular matrix T
+         real(dp), intent(out), contiguous, target :: t(:,:)
+         !> Unitary/orthonormal transformation matrix Z
+         real(dp), optional, intent(out), contiguous, target :: z(:,:)
+         !> Output real eigenvalues that appear on the diagonal of T
+         real(dp), intent(out), contiguous, target :: eigvals(:)
+         !> [optional] Provide pre-allocated workspace, size to be checked with schur_space
+         real(dp), optional, intent(inout), target :: storage(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a        
+         !> [optional] State return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err        
+      end subroutine stdlib_linalg_real_eig_d_schur 
+      module subroutine stdlib_linalg_c_schur(a, t, z, eigvals, overwrite_a, storage, err)
+         !> Input matrix a[m,m]
+         complex(sp), intent(inout), target :: a(:,:)
+         !> Schur form of A: upper-triangular or quasi-upper-triangular matrix T
+         complex(sp), intent(out), contiguous, target :: t(:,:)
+         !> Unitary/orthonormal transformation matrix Z
+         complex(sp), optional, intent(out), contiguous, target :: z(:,:)
+         !> [optional] Output eigenvalues that appear on the diagonal of T
+         complex(sp), optional, intent(out), contiguous, target :: eigvals(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a                 
+         !> [optional] Provide pre-allocated workspace, size to be checked with schur_space         
+         complex(sp), optional, intent(inout), target :: storage(:)
+         !> [optional] State return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_c_schur
+      
+      ! Schur decomposition subroutine: real eigenvalue interface
+      module subroutine stdlib_linalg_real_eig_c_schur(a,t,z,eigvals,overwrite_a,storage,err)
+         !> Input matrix a[m,m]
+         complex(sp), intent(inout), target :: a(:,:)
+         !> Schur form of A: upper-triangular or quasi-upper-triangular matrix T
+         complex(sp), intent(out), contiguous, target :: t(:,:)
+         !> Unitary/orthonormal transformation matrix Z
+         complex(sp), optional, intent(out), contiguous, target :: z(:,:)
+         !> Output real eigenvalues that appear on the diagonal of T
+         real(sp), intent(out), contiguous, target :: eigvals(:)
+         !> [optional] Provide pre-allocated workspace, size to be checked with schur_space
+         complex(sp), optional, intent(inout), target :: storage(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a        
+         !> [optional] State return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err        
+      end subroutine stdlib_linalg_real_eig_c_schur 
+      module subroutine stdlib_linalg_z_schur(a, t, z, eigvals, overwrite_a, storage, err)
+         !> Input matrix a[m,m]
+         complex(dp), intent(inout), target :: a(:,:)
+         !> Schur form of A: upper-triangular or quasi-upper-triangular matrix T
+         complex(dp), intent(out), contiguous, target :: t(:,:)
+         !> Unitary/orthonormal transformation matrix Z
+         complex(dp), optional, intent(out), contiguous, target :: z(:,:)
+         !> [optional] Output eigenvalues that appear on the diagonal of T
+         complex(dp), optional, intent(out), contiguous, target :: eigvals(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a                 
+         !> [optional] Provide pre-allocated workspace, size to be checked with schur_space         
+         complex(dp), optional, intent(inout), target :: storage(:)
+         !> [optional] State return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_z_schur
+      
+      ! Schur decomposition subroutine: real eigenvalue interface
+      module subroutine stdlib_linalg_real_eig_z_schur(a,t,z,eigvals,overwrite_a,storage,err)
+         !> Input matrix a[m,m]
+         complex(dp), intent(inout), target :: a(:,:)
+         !> Schur form of A: upper-triangular or quasi-upper-triangular matrix T
+         complex(dp), intent(out), contiguous, target :: t(:,:)
+         !> Unitary/orthonormal transformation matrix Z
+         complex(dp), optional, intent(out), contiguous, target :: z(:,:)
+         !> Output real eigenvalues that appear on the diagonal of T
+         real(dp), intent(out), contiguous, target :: eigvals(:)
+         !> [optional] Provide pre-allocated workspace, size to be checked with schur_space
+         complex(dp), optional, intent(inout), target :: storage(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a        
+         !> [optional] State return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err        
+      end subroutine stdlib_linalg_real_eig_z_schur 
+  end interface schur
+
+  ! Return the working array space required by the Schur decomposition solver
+  interface schur_space
+    !! version: experimental
+    !!
+    !! Computes the working array space required by the Schur decomposition solver
+    !! ([Specification](../page/specs/stdlib_linalg.html#schur-space-compute-internal-working-space-requirements-for-the-schur-decomposition))
+    !!
+    !!### Description
+    !! 
+    !! This interface returns the size of the `real` or `complex` working storage required by the 
+    !! Schur decomposition solver. The working size only depends on the kind (`real` or `complex`) and size of
+    !! the matrix being decomposed. Storage size can be used to pre-allocate a working array in case several 
+    !! repeated Schur decompositions of same-size matrices are sought. If pre-allocated working arrays 
+    !! are provided, no internal allocations will take place during the decomposition.
+    !!     
+      module subroutine get_schur_s_workspace(a,lwork,err)
+         !> Input matrix a[m,m]
+         real(sp), intent(in), target :: a(:,:)
+         !> Minimum workspace size for the decomposition operation
+         integer(ilp), intent(out) :: lwork
+         !> State return flag. Returns an error if the query failed
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine get_schur_s_workspace
+      module subroutine get_schur_d_workspace(a,lwork,err)
+         !> Input matrix a[m,m]
+         real(dp), intent(in), target :: a(:,:)
+         !> Minimum workspace size for the decomposition operation
+         integer(ilp), intent(out) :: lwork
+         !> State return flag. Returns an error if the query failed
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine get_schur_d_workspace
+      module subroutine get_schur_c_workspace(a,lwork,err)
+         !> Input matrix a[m,m]
+         complex(sp), intent(in), target :: a(:,:)
+         !> Minimum workspace size for the decomposition operation
+         integer(ilp), intent(out) :: lwork
+         !> State return flag. Returns an error if the query failed
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine get_schur_c_workspace
+      module subroutine get_schur_z_workspace(a,lwork,err)
+         !> Input matrix a[m,m]
+         complex(dp), intent(in), target :: a(:,:)
+         !> Minimum workspace size for the decomposition operation
+         integer(ilp), intent(out) :: lwork
+         !> State return flag. Returns an error if the query failed
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine get_schur_z_workspace
+  end interface schur_space
 
   interface det
     !! version: experimental 
