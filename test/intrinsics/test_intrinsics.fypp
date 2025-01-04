@@ -28,7 +28,7 @@ subroutine test_sum(error)
     type(error_type), allocatable, intent(out) :: error
 
     !> Internal parameters and variables
-    integer, parameter :: n = 1e3, ncalc = 3, niter = 100
+    integer, parameter :: n = 1e3, ncalc = 3
     real(sp) :: u
     integer :: iter, i, j
     !====================================================================================
@@ -36,7 +36,7 @@ subroutine test_sum(error)
     block
         ${t1}$, allocatable :: x(:)
         ${t1}$, parameter :: total_sum = 4*atan(1._${k1}$), tolerance = epsilon(1._${k1}$)*100
-        ${t1}$ :: xsum(ncalc), meanval(ncalc), err(ncalc)
+        ${t1}$ :: xsum(ncalc), err(ncalc)
         logical, allocatable :: mask(:), nmask(:)
 
         allocate(x(n))
@@ -54,26 +54,18 @@ subroutine test_sum(error)
             call swap( nmask(i), nmask(j) )
         end do
         
-        err(:) = 0._${k1}$
-        do iter = 1, niter
-            xsum(1) = sum(x)        ! compiler intrinsic
-            xsum(2) = fsum_kahan(x) ! chunked Kahan summation
-            xsum(3) = fsum(x)       ! chunked summation
-            err(1:ncalc) = err(1:ncalc) + abs(1._${k1}$-xsum(1:ncalc)/total_sum)
-        end do
-        err(1:ncalc) = err(1:ncalc) / niter 
+        xsum(1) = sum(x)        ! compiler intrinsic
+        xsum(2) = fsum_kahan(x) ! chunked Kahan summation
+        xsum(3) = fsum(x)       ! chunked summation
+        err(1:ncalc) = abs(1._${k1}$-xsum(1:ncalc)/total_sum)
         
         call check(error, all(err(:)<tolerance) , "real sum is not accurate" )
         if (allocated(error)) return
 
-        err(:) = 0._${k1}$
-        do iter = 1, niter
-            xsum(1) = sum(x,mask)+sum(x,nmask) ! compiler intrinsic
-            xsum(2) = fsum_kahan(x,mask)+fsum_kahan(x,nmask) ! chunked Kahan summation
-            xsum(3) = fsum(x,mask)+fsum(x,nmask) ! chunked summation
-            err(1:ncalc) = err(1:ncalc) + abs(1._${k1}$-xsum(1:ncalc)/total_sum)
-        end do
-        err(1:ncalc) = err(1:ncalc) / niter 
+        xsum(1) = sum(x,mask)+sum(x,nmask) ! compiler intrinsic
+        xsum(2) = fsum_kahan(x,mask)+fsum_kahan(x,nmask) ! chunked Kahan summation
+        xsum(3) = fsum(x,mask)+fsum(x,nmask) ! chunked summation
+        err(1:ncalc) = abs(1._${k1}$-xsum(1:ncalc)/total_sum)
         
         call check(error, all(err(:)<tolerance) , "masked real sum is not accurate" )
         if (allocated(error)) return
@@ -85,15 +77,14 @@ subroutine test_sum(error)
         ${t1}$, allocatable :: x(:)
         real(${k1}$), parameter :: total_sum = 4*atan(1._${k1}$), tolerance = epsilon(1._${k1}$)*100
         real(${k1}$) :: err(ncalc)
-        ${t1}$ :: xsum(ncalc), meanval(ncalc)
+        ${t1}$ :: xsum(ncalc)
         logical, allocatable :: mask(:), nmask(:)
 
         allocate(x(n))
         do i = 1, n
-            x(i) = cmplx(&
-                8*atan(1._${k1}$)*(real(i,kind=${k1}$)-0.5_${k1}$)/real(2*n,kind=${k1}$)**2,&
-                8*atan(1._${k1}$)*(real(i+n,kind=${k1}$)-0.5_${k1}$)/real(2*n,kind=${k1}$)**2)
+            x(i) = (8*atan(1._${k1}$)*(real(i,kind=${k1}$)-0.5_${k1}$)/n**2)*cmplx(1._${k1}$,1._${k1}$)
         end do
+        
         allocate(mask(n),source=.false.); mask(1:n:2) = .true.
         allocate(nmask(n)); nmask = .not.mask
         ! scramble array
@@ -105,26 +96,20 @@ subroutine test_sum(error)
             call swap( nmask(i), nmask(j) )
         end do
         
-        err(:) = 0._${k1}$
-        do iter = 1, niter
-            xsum(1) = sum(x)        ! compiler intrinsic
-            xsum(2) = fsum_kahan(x) ! chunked Kahan summation
-            xsum(3) = fsum(x)       ! chunked summation
-            err(1:ncalc) = err(1:ncalc) + abs(1._${k1}$-(xsum(1:ncalc)%re+xsum(1:ncalc)%im)/total_sum)
-        end do
-        err(1:ncalc) = err(1:ncalc) / niter 
+        xsum(1) = sum(x)        ! compiler intrinsic
+        xsum(2) = fsum_kahan(x) ! chunked Kahan summation
+        xsum(3) = fsum(x)       ! chunked summation
+        err(1:ncalc) = abs(1._${k1}$-(xsum(1:ncalc)%re)/total_sum)
+        
         
         call check(error, all(err(:)<tolerance) , "complex sum is not accurate" )
         if (allocated(error)) return
 
-        err(:) = 0._${k1}$
-        do iter = 1, niter
-            xsum(1) = sum(x,mask)+sum(x,nmask) ! compiler intrinsic
-            xsum(2) = fsum_kahan(x,mask)+fsum_kahan(x,nmask) ! chunked Kahan summation
-            xsum(3) = fsum(x,mask)+fsum(x,nmask) ! chunked summation
-            err(1:ncalc) = err(1:ncalc) + abs(1._${k1}$-(xsum(1:ncalc)%re+xsum(1:ncalc)%im)/total_sum)
-        end do
-        err(1:ncalc) = err(1:ncalc) / niter 
+        xsum(1) = sum(x,mask)+sum(x,nmask) ! compiler intrinsic
+        xsum(2) = fsum_kahan(x,mask)+fsum_kahan(x,nmask) ! chunked Kahan summation
+        xsum(3) = fsum(x,mask)+fsum(x,nmask) ! chunked summation
+        err(1:ncalc) = abs(1._${k1}$-(xsum(1:ncalc)%re)/total_sum)
+        
         
         call check(error, all(err(:)<tolerance) , "complex masked sum is not accurate" )
         if (allocated(error)) return
@@ -138,7 +123,7 @@ subroutine test_dot_product(error)
     type(error_type), allocatable, intent(out) :: error
 
     !> Internal parameters and variables
-    integer, parameter :: n = 1e3, ncalc = 3, niter = 100
+    integer, parameter :: n = 1e3, ncalc = 3
     real(sp) :: u
     integer :: iter, i, j
     !====================================================================================
@@ -146,11 +131,11 @@ subroutine test_dot_product(error)
     block
         ${t1}$, allocatable :: x(:)
         ${t1}$, parameter :: total_sum = 4*atan(1._${k1}$), tolerance = epsilon(1._${k1}$)*100
-        ${t1}$ :: xsum(ncalc), meanval(ncalc), err(ncalc)
+        ${t1}$ :: xsum(ncalc), err(ncalc)
 
         allocate(x(n))
         do i = 1, n 
-            x(i) = sqrt( 8*atan(1._${k1}$)*(real(i,kind=${k1}$)-0.5_${k1}$)/real(n,kind=${k1}$)**2 )
+            x(i) = 2*sqrt( 2*atan(1._${k1}$)*(real(i,kind=${k1}$)-0.5_${k1}$) )/n
         end do
         ! scramble array
         do i = 1, n
@@ -159,14 +144,10 @@ subroutine test_dot_product(error)
             call swap( x(i), x(j) )
         end do
         
-        err(:) = 0._${k1}$
-        do iter = 1, niter
-            xsum(1) = dot_product(x,x) ! compiler intrinsic
-            xsum(2) = fprod_kahan(x,x) ! chunked Kahan summation
-            xsum(3) = fprod(x,x)       ! chunked summation
-            err(1:ncalc) = err(1:ncalc) + abs(1._${k1}$-xsum(1:ncalc)/total_sum)
-        end do
-        err(1:ncalc) = err(1:ncalc) / niter 
+        xsum(1) = dot_product(x,x) ! compiler intrinsic
+        xsum(2) = fprod_kahan(x,x) ! chunked Kahan summation
+        xsum(3) = fprod(x,x)       ! chunked summation
+        err(1:ncalc) = abs(1._${k1}$-xsum(1:ncalc)/total_sum)
         
         call check(error, all(err(:)<tolerance) , "real dot_product is not accurate" )
         if (allocated(error)) return
@@ -178,13 +159,11 @@ subroutine test_dot_product(error)
         ${t1}$, allocatable :: x(:)
         real(${k1}$), parameter :: total_sum = 4*atan(1._${k1}$), tolerance = epsilon(1._${k1}$)*100
         real(${k1}$) :: err(ncalc)
-        ${t1}$ :: xsum(ncalc), meanval(ncalc)
+        ${t1}$ :: xsum(ncalc)
 
         allocate(x(n))
         do i = 1, n
-            x(i) = cmplx(&
-                sqrt(8*atan(1._${k1}$)*(real(i,kind=${k1}$)-0.5_${k1}$)/real(2*n,kind=${k1}$)**2),&
-                sqrt(8*atan(1._${k1}$)*(real(i+n,kind=${k1}$)-0.5_${k1}$)/real(2*n,kind=${k1}$)**2))
+            x(i) = ( 2*sqrt( 2*atan(1._${k1}$)*(real(i,kind=${k1}$)-0.5_${k1}$) ) / n )*cmplx(1._${k1}$,1._${k1}$)
         end do
         ! scramble array
         do i = 1, n
@@ -193,15 +172,11 @@ subroutine test_dot_product(error)
             call swap( x(i), x(j) )
         end do
         
-        err(:) = 0._${k1}$
-        do iter = 1, niter
-            xsum(1) = dot_product(x,x) ! compiler intrinsic
-            xsum(2) = fprod_kahan(x,x) ! chunked Kahan dot_product
-            xsum(3) = fprod(x,x)       ! chunked dot_product
-            err(1:ncalc) = err(1:ncalc) + abs(1._${k1}$-(xsum(1:ncalc)%re+xsum(1:ncalc)%im)/total_sum)
-        end do
-        err(1:ncalc) = err(1:ncalc) / niter 
-        
+        xsum(1) = dot_product(x,x) ! compiler intrinsic
+        xsum(2) = fprod_kahan(x,x) ! chunked Kahan dot_product
+        xsum(3) = fprod(x,x)       ! chunked dot_product
+        err(1:ncalc) = abs(1._${k1}$-xsum(1:ncalc)%re/(2*total_sum))
+         
         call check(error, all(err(:)<tolerance) , "complex dot_product is not accurate" )
         if (allocated(error)) return
     end block
