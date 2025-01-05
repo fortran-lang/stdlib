@@ -110,11 +110,29 @@ subroutine test_sum(error)
         xsum(3) = fsum(x,mask)+fsum(x,nmask) ! chunked summation
         err(1:ncalc) = abs(1._${k1}$-(xsum(1:ncalc)%re)/total_sum)
         
-        
         call check(error, all(err(:)<tolerance) , "complex masked sum is not accurate" )
         if (allocated(error)) return
     end block
     #:endfor
+
+    ndarray : block
+        use stdlib_strings, only: to_string
+        real(sp), allocatable :: x(:,:,:)
+        real(sp), parameter :: tolerance = epsilon(1._sp)*100
+        integer :: i 
+
+        allocate(x(100,100,10))
+        call random_number(x)
+        !> sum all elements
+        call check(error, abs( sum(x) - fsum(x) )<tolerance*size(x) , "KO: full ndarray fsum" )
+        if (allocated(error)) return
+
+        !> sum over specific rank dim
+        do i = 1, rank(x)
+            call check(error, norm2( sum(x,dim=i) - fsum(x,dim=i) )<tolerance*size(x) , "KO: ndarray fsum over dim "//to_string(i) )
+            if (allocated(error)) return
+        end do
+    end block ndarray
 
 end subroutine
 

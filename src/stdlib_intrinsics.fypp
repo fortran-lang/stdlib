@@ -2,6 +2,7 @@
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
 #:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
 #:set RC_KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES
+#:set RANKS = range(1, MAXRANK + 1)
 
 ! This module is based on https://github.com/jalvesz/fast_math
 module stdlib_intrinsics
@@ -22,6 +23,19 @@ module stdlib_intrinsics
             logical, intent(in) :: mask(:)
             ${rt}$ :: s
         end function
+        #:for rank in RANKS
+        pure module function fsum_${rank}$d_${rs}$( x, mask ) result( s )
+            ${rt}$, intent(in) :: x${ranksuffix(rank)}$
+            logical, intent(in), optional :: mask${ranksuffix(rank)}$
+            ${rt}$ :: s
+        end function
+        pure module function fsum_${rank}$d_dim_${rs}$( x , dim, mask ) result( s )
+            ${rt}$, intent(in) :: x${ranksuffix(rank)}$
+            integer, intent(in):: dim
+            logical, intent(in), optional :: mask${ranksuffix(rank)}$
+            ${rt}$ :: s${reduced_shape('x', rank, 'dim')}$
+        end function
+        #:endfor
         #:endfor
     end interface
     public :: fsum
