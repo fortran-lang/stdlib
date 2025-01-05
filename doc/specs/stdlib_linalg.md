@@ -1091,19 +1091,29 @@ Stable
 
 ### Description
 
-This subroutine computes the solution to the eigenproblem \( A \cdot \bar{v} - \lambda \cdot \bar{v} \), where \( A \) is a square, full-rank, `real` or `complex` matrix.
+This subroutine computes the solution to the eigenproblem \( A \cdot \bar{v} - \lambda \cdot \bar{v} \), 
+where \( A \) is a square, full-rank, `real` or `complex` matrix, or to the generalized eigenproblem \( A \cdot \bar{v} - \lambda \cdot B \cdot \bar{v} \), 
+where \( B \) is a square matrix with the same type, kind and size as \( A \).
 
 Result array `lambda` returns the eigenvalues of \( A \). The user can request eigenvectors to be returned: if provided, on output `left` will contain the left eigenvectors, `right` the right eigenvectors of \( A \).
 Both `left` and `right` are rank-2 arrays, where eigenvectors are stored as columns.
-The solver is based on LAPACK's `*GEEV` backends.
+The solver is based on LAPACK's `*GEEV` (standard eigenproblem) and `*GGEV` (generalized eigenproblem) backends.
 
 ### Syntax
 
+For the standard eigenproblem: 
+
 `call ` [[stdlib_linalg(module):eig(interface)]] `(a, lambda [, right] [,left] [,overwrite_a] [,err])`
+
+For the generalized eigenproblem: 
+
+`call ` [[stdlib_linalg(module):eig(interface)]] `(a, b, lambda [, right] [, left] [, overwrite_a] [, overwrite_b] [, err])
 
 ### Arguments
 
 `a` : `real` or `complex` square array containing the coefficient matrix. If `overwrite_a=.false.`, it is an `intent(in)` argument. Otherwise, it is an `intent(inout)` argument and is destroyed by the call. 
+
+`b`: `real` or `complex` square array containing the second coefficient matrix. If `overwrite_b=.false.`, it is an `intent(in)` argument.  Otherwise, it is an `intent(inout)` argument and is destroyed by the call. 
 
 `lambda`: Shall be a `complex` or `real` rank-1 array of the same kind as `a`, containing the eigenvalues, or their `real` component only. It is an `intent(out)` argument.
 
@@ -1112,6 +1122,8 @@ The solver is based on LAPACK's `*GEEV` backends.
 `left` (optional): Shall be a `complex` rank-2 array of the same size and kind as `a`, containing the left eigenvectors of `a`. It is an `intent(out)` argument.
 
 `overwrite_a` (optional): Shall be an input logical flag. if `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
+
+`overwrite_b` (optional): Shall be an input logical flag. If `.true.`, input matrix `b` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
 
 `err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
 
@@ -1185,28 +1197,41 @@ Stable
 
 ### Description
 
-This function returns the eigenvalues to matrix \( A \): a square, full-rank, `real` or `complex` matrix.
-The eigenvalues are solutions to the eigenproblem \( A \cdot \bar{v} - \lambda \cdot \bar{v} \).
+This function computes the eigenvalues for either a standard or generalized eigenproblem:
 
-Result array `lambda` is `complex`, and returns the eigenvalues of \( A \). 
-The solver is based on LAPACK's `*GEEV` backends.
+- **Standard eigenproblem**: \( A \cdot \bar{v} - \lambda \cdot \bar{v} \), where \( A \) is a square, full-rank `real` or `complex` matrix.
+- **Generalized eigenproblem**: \( A \cdot \bar{v} - \lambda \cdot B \cdot \bar{v} \), where \( B \) is a square matrix with the same type and kind as \( A \).
+
+The eigenvalues are stored in the result array `lambda`, which is `complex` (even for real input matrices).  
+The solver uses LAPACK's `*GEEV` and `*GGEV` backends for the standard and generalized problems, respectively.
 
 ### Syntax
 
-`lambda = ` [[stdlib_linalg(module):eigvals(interface)]] `(a, [,err])`
+For the standard eigenproblem:
+
+`lambda = ` [[stdlib_linalg(module):eigvals(interface)]] `(a [, err])`
+
+For the generalized eigenproblem:
+
+`lambda = ` [[stdlib_linalg(module):eigvals(interface)]] `(a, b [, err])`
 
 ### Arguments
 
-`a` : `real` or `complex` square array containing the coefficient matrix. It is an `intent(in)` argument.
+`a`:  
+Shall be a `real` or `complex` square array containing the coefficient matrix. It is an `intent(in)` argument.
 
-`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+`b` (optional):  
+Shall be a `real` or `complex` square array containing the second coefficient matrix for the generalized problem. It is an `intent(in)` argument.
 
-### Return value
+`err` (optional):  
+Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
 
-Returns a `complex` array containing the eigenvalues of `a`. 
+### Return Value
 
-Raises `LINALG_ERROR` if the calculation did not converge.
-Raises `LINALG_VALUE_ERROR` if any matrix or arrays have invalid/incompatible sizes.
+Returns a `complex` rank-1 array containing the eigenvalues of the problem.  
+
+Raises `LINALG_ERROR` if the calculation did not converge.  
+Raises `LINALG_VALUE_ERROR` if any matrix or arrays have invalid/incompatible sizes.  
 If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
