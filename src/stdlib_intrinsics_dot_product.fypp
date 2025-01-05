@@ -61,13 +61,13 @@ pure module function fprod_kahan_${s1}$(a,b) result(p)
     pbatch = zero_${s1}$
     cbatch = zero_${s1}$
     do i = 1, dr
-        call vkahan( a(chunk*i-chunk+1:chunk*i)*${cnjg(t1,'b(chunk*i-chunk+1:chunk*i)')}$ , pbatch(1:chunk) , cbatch(1:chunk) )
+        call kahan_kernel( a(chunk*i-chunk+1:chunk*i)*${cnjg(t1,'b(chunk*i-chunk+1:chunk*i)')}$ , pbatch(1:chunk) , cbatch(1:chunk) )
     end do
-    call vkahan( a(size(a)-rr+1:size(a))*${cnjg(t1,'b(size(a)-rr+1:size(a))')}$ , pbatch(1:rr) , cbatch(1:rr) )      
+    call kahan_kernel( a(size(a)-rr+1:size(a))*${cnjg(t1,'b(size(a)-rr+1:size(a))')}$ , pbatch(1:rr) , cbatch(1:rr) )      
 
     p = zero_${s1}$
     do i = 1,chunk
-        call vkahan( pbatch(i) , p , cbatch(i) )
+        call kahan_kernel( pbatch(i) , p , cbatch(i) )
     end do      
 end function
 #:endfor

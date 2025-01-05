@@ -2,7 +2,7 @@
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
 #:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
 #:set RC_KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES
-#:set RANKS = range(1, MAXRANK + 1)
+#:set RANKS = range(2, MAXRANK + 1)
 
 ! This module is based on https://github.com/jalvesz/fast_math
 submodule(stdlib_intrinsics) stdlib_intrinsics_sum
@@ -146,13 +146,13 @@ pure module function fsum_kahan_1d_${rs}$(a) result(s)
     sbatch = zero_${rs}$
     cbatch = zero_${rs}$
     do i = 1, dr
-        call vkahan( a(chunk*i-chunk+1:chunk*i) , sbatch(1:chunk) , cbatch(1:chunk) )
+        call kahan_kernel( a(chunk*i-chunk+1:chunk*i) , sbatch(1:chunk) , cbatch(1:chunk) )
     end do
-    call vkahan( a(size(a)-rr+1:size(a)) , sbatch(1:rr) , cbatch(1:rr) )      
+    call kahan_kernel( a(size(a)-rr+1:size(a)) , sbatch(1:rr) , cbatch(1:rr) )      
 
     s = zero_${rs}$
     do i = 1,chunk
-        call vkahan( sbatch(i) , s , cbatch(i) )
+        call kahan_kernel( sbatch(i) , s , cbatch(i) )
     end do
 end function
 
@@ -169,13 +169,13 @@ pure module function fsum_kahan_1d_${rs}$_mask(a,mask) result(s)
     sbatch = zero_${rs}$
     cbatch = zero_${rs}$
     do i = 1, dr
-        call vkahan( a(chunk*i-chunk+1:chunk*i) , sbatch(1:chunk) , cbatch(1:chunk) , mask(chunk*i-chunk+1:chunk*i) )
+        call kahan_kernel( a(chunk*i-chunk+1:chunk*i) , sbatch(1:chunk) , cbatch(1:chunk) , mask(chunk*i-chunk+1:chunk*i) )
     end do
-    call vkahan( a(size(a)-rr+1:size(a)) , sbatch(1:rr) , cbatch(1:rr) , mask(size(a)-rr+1:size(a)) )
+    call kahan_kernel( a(size(a)-rr+1:size(a)) , sbatch(1:rr) , cbatch(1:rr) , mask(size(a)-rr+1:size(a)) )
 
     s = zero_${rs}$
     do i = 1,chunk
-        call vkahan( sbatch(i) , s , cbatch(i) )
+        call kahan_kernel( sbatch(i) , s , cbatch(i) )
     end do
 end function
 #:endfor

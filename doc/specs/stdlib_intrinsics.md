@@ -15,11 +15,13 @@ The `stdlib_intrinsics` module provides replacements for some of the well known 
 
 #### Description
 
-The `fsum` function can replace the intrinsic `sum` for 1D `real` or `complex` arrays. It follows a chunked implementation which maximizes vectorization potential as well as reducing the round-off error. This procedure is recommended when summing large arrays, for repetitive summation of smaller arrays consider the classical `sum`.
+The `fsum` function can replace the intrinsic `sum` for `real` or `complex` arrays. It follows a chunked implementation which maximizes vectorization potential as well as reducing the round-off error. This procedure is recommended when summing large arrays, for repetitive summation of smaller arrays consider the classical `sum`.
 
 #### Syntax
 
 `res = ` [[stdlib_intrinsics(module):fsum(interface)]] ` (x [,mask] )`
+
+`res = ` [[stdlib_intrinsics(module):fsum(interface)]] ` (x, dim [,mask] )`
 
 #### Status
 
@@ -31,13 +33,15 @@ Pure function.
 
 #### Argument(s)
 
-`x`: 1D array of either `real` or `complex` type. This argument is `intent(in)`.
+`x`: N-D array of either `real` or `complex` type. This argument is `intent(in)`.
 
-`mask` (optional): 1D array of `logical` values. This argument is `intent(in)`.
+`dim` (optional): scalar of type `integer` with a value in the range from 1 to n, where n equals the rank of `x`.
+
+`mask` (optional): N-D array of `logical` values, with the same shape as `x`. This argument is `intent(in)`.
 
 #### Output value or Result value
 
-The output is a scalar of `type` and `kind` same as to that of `x`.
+If `dim` is absent, the output is a scalar of the same `type` and `kind` as to that of `x`. Otherwise, an array of rank n-1, where n equals the rank of `x`, and a shape similar to that of `x` with dimension `dim` dropped is returned.
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### `fsum_kahan` function
@@ -47,7 +51,7 @@ The output is a scalar of `type` and `kind` same as to that of `x`.
 The `fsum_kahan` function can replace the intrinsic `sum` for 1D `real` or `complex` arrays. It follows a chunked implementation which maximizes vectorization potential, complemented by an `elemental` kernel based on the [kahan summation](https://en.wikipedia.org/wiki/Kahan_summation_algorithm) strategy to reduce the round-off error:
 
 ```fortran
-elemental subroutine vkahan_<kind>(a,s,c)
+elemental subroutine kahan_kernel_<kind>(a,s,c)
     type(<kind>), intent(in) :: a
     type(<kind>), intent(inout) :: s
     type(<kind>), intent(inout) :: c
