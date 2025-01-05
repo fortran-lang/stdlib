@@ -4,14 +4,6 @@
 #:set RC_KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES
 #:set RANKS = range(1, MAXRANK + 1)
 
-#:def cnjg(type,expression)
-#:if 'complex' in type
-conjg(${expression}$)
-#:else
-${expression}$
-#:endif
-#:enddef
-
 ! This module is based on https://github.com/jalvesz/fast_math
 submodule(stdlib_intrinsics) stdlib_intrinsics_sum
     !!Replacement for certain Fortran intrinsic functions offering either faster and/or more accurate implementations.
