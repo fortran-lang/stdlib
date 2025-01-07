@@ -460,7 +460,6 @@ contains
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     recursive subroutine quicksort_i_${s1}$(a, b, first, last)
-        integer, parameter :: wp = sp
         integer(ilp), intent(inout) :: a(*) !! reference table to sort
         ${t1}$, intent(inout)  :: b(*) !! secondary real data to sort w.r.t. a
         integer(ilp), intent(in)     :: first, last
