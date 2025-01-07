@@ -16,6 +16,7 @@ submodule(stdlib_intrinsics) stdlib_intrinsics_sum
     
 contains
 
+!================= 1D Base implementations ============
 #:for rk, rt, rs in RC_KINDS_TYPES
 pure module function fsum_1d_${rs}$(a) result(s)
     ${rt}$, intent(in) :: a(:)
@@ -60,6 +61,54 @@ pure module function fsum_1d_${rs}$_mask(a,mask) result(s)
     end do
 end function
 
+pure module function fsum_kahan_1d_${rs}$(a) result(s)
+    ${rt}$, intent(in) :: a(:)
+    ${rt}$ :: s
+    ${rt}$ :: sbatch(chunk)
+    ${rt}$ :: cbatch(chunk)
+    integer :: i, dr, rr
+    ! -----------------------------
+    dr = size(a)/(chunk)
+    rr = size(a) - dr*chunk     
+    sbatch = zero_${rs}$
+    cbatch = zero_${rs}$
+    do i = 1, dr
+        call kahan_kernel( a(chunk*i-chunk+1:chunk*i) , sbatch(1:chunk) , cbatch(1:chunk) )
+    end do
+    call kahan_kernel( a(size(a)-rr+1:size(a)) , sbatch(1:rr) , cbatch(1:rr) )      
+
+    s = zero_${rs}$
+    do i = 1,chunk
+        call kahan_kernel( sbatch(i) , s , cbatch(i) )
+    end do
+end function
+
+pure module function fsum_kahan_1d_${rs}$_mask(a,mask) result(s)
+    ${rt}$, intent(in) :: a(:)
+    logical, intent(in) :: mask(:)
+    ${rt}$ :: s
+    ${rt}$ :: sbatch(chunk)
+    ${rt}$ :: cbatch(chunk)
+    integer :: i, dr, rr
+    ! -----------------------------
+    dr = size(a)/(chunk)
+    rr = size(a) - dr*chunk     
+    sbatch = zero_${rs}$
+    cbatch = zero_${rs}$
+    do i = 1, dr
+        call kahan_kernel( a(chunk*i-chunk+1:chunk*i) , sbatch(1:chunk) , cbatch(1:chunk) , mask(chunk*i-chunk+1:chunk*i) )
+    end do
+    call kahan_kernel( a(size(a)-rr+1:size(a)) , sbatch(1:rr) , cbatch(1:rr) , mask(size(a)-rr+1:size(a)) )
+
+    s = zero_${rs}$
+    do i = 1,chunk
+        call kahan_kernel( sbatch(i) , s , cbatch(i) )
+    end do
+end function
+#:endfor
+
+!================= N-D implementations ============
+#:for rk, rt, rs in RC_KINDS_TYPES
 #:for rank in RANKS
 pure module function fsum_${rank}$d_${rs}$( x , mask ) result( s )
     ${rt}$, intent(in) :: x${ranksuffix(rank)}$
@@ -131,53 +180,6 @@ pure module function fsum_${rank}$d_dim_${rs}$( x , dim, mask ) result( s )
 
 end function
 #:endfor
-#:endfor
-
-#:for rk, rt, rs in RC_KINDS_TYPES
-pure module function fsum_kahan_1d_${rs}$(a) result(s)
-    ${rt}$, intent(in) :: a(:)
-    ${rt}$ :: s
-    ${rt}$ :: sbatch(chunk)
-    ${rt}$ :: cbatch(chunk)
-    integer :: i, dr, rr
-    ! -----------------------------
-    dr = size(a)/(chunk)
-    rr = size(a) - dr*chunk     
-    sbatch = zero_${rs}$
-    cbatch = zero_${rs}$
-    do i = 1, dr
-        call kahan_kernel( a(chunk*i-chunk+1:chunk*i) , sbatch(1:chunk) , cbatch(1:chunk) )
-    end do
-    call kahan_kernel( a(size(a)-rr+1:size(a)) , sbatch(1:rr) , cbatch(1:rr) )      
-
-    s = zero_${rs}$
-    do i = 1,chunk
-        call kahan_kernel( sbatch(i) , s , cbatch(i) )
-    end do
-end function
-
-pure module function fsum_kahan_1d_${rs}$_mask(a,mask) result(s)
-    ${rt}$, intent(in) :: a(:)
-    logical, intent(in) :: mask(:)
-    ${rt}$ :: s
-    ${rt}$ :: sbatch(chunk)
-    ${rt}$ :: cbatch(chunk)
-    integer :: i, dr, rr
-    ! -----------------------------
-    dr = size(a)/(chunk)
-    rr = size(a) - dr*chunk     
-    sbatch = zero_${rs}$
-    cbatch = zero_${rs}$
-    do i = 1, dr
-        call kahan_kernel( a(chunk*i-chunk+1:chunk*i) , sbatch(1:chunk) , cbatch(1:chunk) , mask(chunk*i-chunk+1:chunk*i) )
-    end do
-    call kahan_kernel( a(size(a)-rr+1:size(a)) , sbatch(1:rr) , cbatch(1:rr) , mask(size(a)-rr+1:size(a)) )
-
-    s = zero_${rs}$
-    do i = 1,chunk
-        call kahan_kernel( sbatch(i) , s , cbatch(i) )
-    end do
-end function
 #:endfor
 
 end submodule stdlib_intrinsics_sum

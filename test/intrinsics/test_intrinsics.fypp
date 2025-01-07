@@ -129,7 +129,8 @@ subroutine test_sum(error)
 
         !> sum over specific rank dim
         do i = 1, rank(x)
-            call check(error, norm2( sum(x,dim=i) - fsum(x,dim=i) )<tolerance*size(x) , "KO: ndarray fsum over dim "//to_string(i) )
+            call check(error, norm2( sum(x,dim=i) - fsum(x,dim=i) )<tolerance*size(x) ,&
+                        "KO: ndarray fsum over dim "//to_string(i) )
             if (allocated(error)) return
         end do
     end block ndarray
