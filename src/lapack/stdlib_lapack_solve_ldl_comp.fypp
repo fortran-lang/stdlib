@@ -1,6 +1,6 @@
 #:include "common.fypp" 
 submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl_comp
-  implicit none(type,external)
+  implicit none
 
 
   contains

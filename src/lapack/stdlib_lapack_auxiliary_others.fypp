@@ -1,6 +1,6 @@
 #:include "common.fypp" 
 submodule(stdlib_lapack_base) stdlib_lapack_auxiliary_others
-  implicit none(type,external)
+  implicit none
 
 
   contains

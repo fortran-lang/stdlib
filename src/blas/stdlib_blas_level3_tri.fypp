@@ -1,6 +1,6 @@
 #:include "common.fypp" 
 submodule(stdlib_blas) stdlib_blas_level3_tri
-  implicit none(type,external)
+  implicit none
 
 
   contains

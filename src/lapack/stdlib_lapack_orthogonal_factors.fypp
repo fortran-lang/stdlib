@@ -4,12 +4,11 @@ module stdlib_lapack_orthogonal_factors
   use stdlib_linalg_lapack_aux
   use stdlib_linalg_blas
   use stdlib_lapack_base
-  implicit none(type,external)
+  implicit none
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_stzrzf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            real(sp), intent(inout) :: a(lda,*)
@@ -17,7 +16,6 @@ interface
      end subroutine stdlib${ii}$_stzrzf
 
      pure module subroutine stdlib${ii}$_dtzrzf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            real(dp), intent(inout) :: a(lda,*)
@@ -27,7 +25,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$tzrzf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -38,7 +35,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_ctzrzf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            complex(sp), intent(inout) :: a(lda,*)
@@ -46,7 +42,6 @@ interface
      end subroutine stdlib${ii}$_ctzrzf
 
      pure module subroutine stdlib${ii}$_ztzrzf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            complex(dp), intent(inout) :: a(lda,*)
@@ -56,7 +51,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$tzrzf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -74,7 +68,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_cunmrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
                info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, l, lda, ldc, lwork, m, n
@@ -85,7 +78,6 @@ interface
 
      pure module subroutine stdlib${ii}$_zunmrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
                info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, l, lda, ldc, lwork, m, n
@@ -98,7 +90,6 @@ interface
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$unmrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
                info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, l, lda, ldc, lwork, m, n
@@ -118,7 +109,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sormrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
                info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, l, lda, ldc, lwork, m, n
@@ -129,7 +119,6 @@ interface
 
      pure module subroutine stdlib${ii}$_dormrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
                info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, l, lda, ldc, lwork, m, n
@@ -142,7 +131,6 @@ interface
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$ormrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
                info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, l, lda, ldc, lwork, m, n
@@ -162,7 +150,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_cunmr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, info )
                
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, l, lda, ldc, m, n
@@ -173,7 +160,6 @@ interface
 
      pure module subroutine stdlib${ii}$_zunmr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, info )
                
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, l, lda, ldc, m, n
@@ -186,7 +172,6 @@ interface
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$unmr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, info )
                
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, l, lda, ldc, m, n
@@ -206,7 +191,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sormr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, info )
                
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, l, lda, ldc, m, n
@@ -217,7 +201,6 @@ interface
 
      pure module subroutine stdlib${ii}$_dormr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, info )
                
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, l, lda, ldc, m, n
@@ -230,7 +213,6 @@ interface
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$ormr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, info )
                
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, l, lda, ldc, m, n
@@ -249,7 +231,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_slarz( side, m, n, l, v, incv, tau, c, ldc, work )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side
            integer(${ik}$), intent(in) :: incv, l, ldc, m, n
            real(sp), intent(in) :: tau
@@ -259,7 +240,6 @@ interface
      end subroutine stdlib${ii}$_slarz
 
      pure module subroutine stdlib${ii}$_dlarz( side, m, n, l, v, incv, tau, c, ldc, work )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side
            integer(${ik}$), intent(in) :: incv, l, ldc, m, n
            real(dp), intent(in) :: tau
@@ -271,7 +251,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$larz( side, m, n, l, v, incv, tau, c, ldc, work )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side
            integer(${ik}$), intent(in) :: incv, l, ldc, m, n
            real(${rk}$), intent(in) :: tau
@@ -284,7 +263,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_clarz( side, m, n, l, v, incv, tau, c, ldc, work )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side
            integer(${ik}$), intent(in) :: incv, l, ldc, m, n
            complex(sp), intent(in) :: tau
@@ -294,7 +272,6 @@ interface
      end subroutine stdlib${ii}$_clarz
 
      pure module subroutine stdlib${ii}$_zlarz( side, m, n, l, v, incv, tau, c, ldc, work )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side
            integer(${ik}$), intent(in) :: incv, l, ldc, m, n
            complex(dp), intent(in) :: tau
@@ -306,7 +283,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$larz( side, m, n, l, v, incv, tau, c, ldc, work )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side
            integer(${ik}$), intent(in) :: incv, l, ldc, m, n
            complex(${ck}$), intent(in) :: tau
@@ -326,7 +302,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_slarzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
                ldc, work, ldwork )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: direct, side, storev, trans
            integer(${ik}$), intent(in) :: k, l, ldc, ldt, ldv, ldwork, m, n
            real(sp), intent(inout) :: c(ldc,*), t(ldt,*), v(ldv,*)
@@ -335,7 +310,6 @@ interface
 
      pure module subroutine stdlib${ii}$_dlarzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
                ldc, work, ldwork )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: direct, side, storev, trans
            integer(${ik}$), intent(in) :: k, l, ldc, ldt, ldv, ldwork, m, n
            real(dp), intent(inout) :: c(ldc,*), t(ldt,*), v(ldv,*)
@@ -346,7 +320,6 @@ interface
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$larzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
                ldc, work, ldwork )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: direct, side, storev, trans
            integer(${ik}$), intent(in) :: k, l, ldc, ldt, ldv, ldwork, m, n
            real(${rk}$), intent(inout) :: c(ldc,*), t(ldt,*), v(ldv,*)
@@ -358,7 +331,6 @@ interface
 
      pure module subroutine stdlib${ii}$_clarzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
                ldc, work, ldwork )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: direct, side, storev, trans
            integer(${ik}$), intent(in) :: k, l, ldc, ldt, ldv, ldwork, m, n
            complex(sp), intent(inout) :: c(ldc,*), t(ldt,*), v(ldv,*)
@@ -367,7 +339,6 @@ interface
 
      pure module subroutine stdlib${ii}$_zlarzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
                ldc, work, ldwork )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: direct, side, storev, trans
            integer(${ik}$), intent(in) :: k, l, ldc, ldt, ldv, ldwork, m, n
            complex(dp), intent(inout) :: c(ldc,*), t(ldt,*), v(ldv,*)
@@ -378,7 +349,6 @@ interface
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$larzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
                ldc, work, ldwork )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: direct, side, storev, trans
            integer(${ik}$), intent(in) :: k, l, ldc, ldt, ldv, ldwork, m, n
            complex(${ck}$), intent(inout) :: c(ldc,*), t(ldt,*), v(ldv,*)
@@ -395,7 +365,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_slarzt( direct, storev, n, k, v, ldv, tau, t, ldt )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: direct, storev
            integer(${ik}$), intent(in) :: k, ldt, ldv, n
            real(sp), intent(out) :: t(ldt,*)
@@ -404,7 +373,6 @@ interface
      end subroutine stdlib${ii}$_slarzt
 
      pure module subroutine stdlib${ii}$_dlarzt( direct, storev, n, k, v, ldv, tau, t, ldt )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: direct, storev
            integer(${ik}$), intent(in) :: k, ldt, ldv, n
            real(dp), intent(out) :: t(ldt,*)
@@ -415,7 +383,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$larzt( direct, storev, n, k, v, ldv, tau, t, ldt )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: direct, storev
            integer(${ik}$), intent(in) :: k, ldt, ldv, n
            real(${rk}$), intent(out) :: t(ldt,*)
@@ -427,7 +394,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_clarzt( direct, storev, n, k, v, ldv, tau, t, ldt )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: direct, storev
            integer(${ik}$), intent(in) :: k, ldt, ldv, n
            complex(sp), intent(out) :: t(ldt,*)
@@ -436,7 +402,6 @@ interface
      end subroutine stdlib${ii}$_clarzt
 
      pure module subroutine stdlib${ii}$_zlarzt( direct, storev, n, k, v, ldv, tau, t, ldt )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: direct, storev
            integer(${ik}$), intent(in) :: k, ldt, ldv, n
            complex(dp), intent(out) :: t(ldt,*)
@@ -447,7 +412,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$larzt( direct, storev, n, k, v, ldv, tau, t, ldt )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: direct, storev
            integer(${ik}$), intent(in) :: k, ldt, ldv, n
            complex(${ck}$), intent(out) :: t(ldt,*)
@@ -465,14 +429,12 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_slatrz( m, n, l, a, lda, tau, work )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(in) :: l, lda, m, n
            real(sp), intent(inout) :: a(lda,*)
            real(sp), intent(out) :: tau(*), work(*)
      end subroutine stdlib${ii}$_slatrz
 
      pure module subroutine stdlib${ii}$_dlatrz( m, n, l, a, lda, tau, work )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(in) :: l, lda, m, n
            real(dp), intent(inout) :: a(lda,*)
            real(dp), intent(out) :: tau(*), work(*)
@@ -481,7 +443,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$latrz( m, n, l, a, lda, tau, work )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(in) :: l, lda, m, n
            real(${rk}$), intent(inout) :: a(lda,*)
            real(${rk}$), intent(out) :: tau(*), work(*)
@@ -491,14 +452,12 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_clatrz( m, n, l, a, lda, tau, work )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(in) :: l, lda, m, n
            complex(sp), intent(inout) :: a(lda,*)
            complex(sp), intent(out) :: tau(*), work(*)
      end subroutine stdlib${ii}$_clatrz
 
      pure module subroutine stdlib${ii}$_zlatrz( m, n, l, a, lda, tau, work )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(in) :: l, lda, m, n
            complex(dp), intent(inout) :: a(lda,*)
            complex(dp), intent(out) :: tau(*), work(*)
@@ -507,7 +466,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$latrz( m, n, l, a, lda, tau, work )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(in) :: l, lda, m, n
            complex(${ck}$), intent(inout) :: a(lda,*)
            complex(${ck}$), intent(out) :: tau(*), work(*)
@@ -523,7 +481,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgeqr( m, n, a, lda, t, tsize, work, lwork,info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
            real(sp), intent(inout) :: a(lda,*)
@@ -531,7 +488,6 @@ interface
      end subroutine stdlib${ii}$_sgeqr
 
      pure module subroutine stdlib${ii}$_dgeqr( m, n, a, lda, t, tsize, work, lwork,info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
            real(dp), intent(inout) :: a(lda,*)
@@ -541,7 +497,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$geqr( m, n, a, lda, t, tsize, work, lwork,info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -552,7 +507,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_cgeqr( m, n, a, lda, t, tsize, work, lwork,info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
            complex(sp), intent(inout) :: a(lda,*)
@@ -560,7 +514,6 @@ interface
      end subroutine stdlib${ii}$_cgeqr
 
      pure module subroutine stdlib${ii}$_zgeqr( m, n, a, lda, t, tsize, work, lwork,info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
            complex(dp), intent(inout) :: a(lda,*)
@@ -570,7 +523,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$geqr( m, n, a, lda, t, tsize, work, lwork,info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -588,7 +540,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgemqr( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
                info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
@@ -599,7 +550,6 @@ interface
 
      pure module subroutine stdlib${ii}$_dgemqr( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
                info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
@@ -612,7 +562,6 @@ interface
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$gemqr( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
                info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
@@ -626,7 +575,6 @@ interface
 
      pure module subroutine stdlib${ii}$_cgemqr( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
                info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
@@ -637,7 +585,6 @@ interface
 
      pure module subroutine stdlib${ii}$_zgemqr( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
                info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
@@ -650,7 +597,6 @@ interface
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$gemqr( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
                info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
@@ -669,7 +615,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgeqrf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            real(sp), intent(inout) :: a(lda,*)
@@ -677,7 +622,6 @@ interface
      end subroutine stdlib${ii}$_sgeqrf
 
      pure module subroutine stdlib${ii}$_dgeqrf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            real(dp), intent(inout) :: a(lda,*)
@@ -687,7 +631,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$geqrf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -698,7 +641,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_cgeqrf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            complex(sp), intent(inout) :: a(lda,*)
@@ -706,7 +648,6 @@ interface
      end subroutine stdlib${ii}$_cgeqrf
 
      pure module subroutine stdlib${ii}$_zgeqrf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            complex(dp), intent(inout) :: a(lda,*)
@@ -716,7 +657,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$geqrf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -733,7 +673,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgeqr2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            real(sp), intent(inout) :: a(lda,*)
@@ -741,7 +680,6 @@ interface
      end subroutine stdlib${ii}$_sgeqr2
 
      pure module subroutine stdlib${ii}$_dgeqr2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            real(dp), intent(inout) :: a(lda,*)
@@ -751,7 +689,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$geqr2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -762,7 +699,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_cgeqr2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            complex(sp), intent(inout) :: a(lda,*)
@@ -770,7 +706,6 @@ interface
      end subroutine stdlib${ii}$_cgeqr2
 
      pure module subroutine stdlib${ii}$_zgeqr2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            complex(dp), intent(inout) :: a(lda,*)
@@ -780,7 +715,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$geqr2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -797,7 +731,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_cungqr( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            complex(sp), intent(inout) :: a(lda,*)
@@ -806,7 +739,6 @@ interface
      end subroutine stdlib${ii}$_cungqr
 
      pure module subroutine stdlib${ii}$_zungqr( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            complex(dp), intent(inout) :: a(lda,*)
@@ -817,7 +749,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$ungqr( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -835,7 +766,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_cung2r( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            complex(sp), intent(inout) :: a(lda,*)
@@ -844,7 +774,6 @@ interface
      end subroutine stdlib${ii}$_cung2r
 
      pure module subroutine stdlib${ii}$_zung2r( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            complex(dp), intent(inout) :: a(lda,*)
@@ -855,7 +784,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$ung2r( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -874,7 +802,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_cunmqr( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -885,7 +812,6 @@ interface
 
      pure module subroutine stdlib${ii}$_zunmqr( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -898,7 +824,6 @@ interface
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$unmqr( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -917,7 +842,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_cunm2r( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -927,7 +851,6 @@ interface
      end subroutine stdlib${ii}$_cunm2r
 
      pure module subroutine stdlib${ii}$_zunm2r( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -939,7 +862,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$unm2r( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -958,7 +880,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sorgqr( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            real(sp), intent(inout) :: a(lda,*)
@@ -967,7 +888,6 @@ interface
      end subroutine stdlib${ii}$_sorgqr
 
      pure module subroutine stdlib${ii}$_dorgqr( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            real(dp), intent(inout) :: a(lda,*)
@@ -978,7 +898,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$orgqr( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -996,7 +915,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sorg2r( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            real(sp), intent(inout) :: a(lda,*)
@@ -1005,7 +923,6 @@ interface
      end subroutine stdlib${ii}$_sorg2r
 
      pure module subroutine stdlib${ii}$_dorg2r( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            real(dp), intent(inout) :: a(lda,*)
@@ -1016,7 +933,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$org2r( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -1035,7 +951,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sormqr( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -1046,7 +961,6 @@ interface
 
      pure module subroutine stdlib${ii}$_dormqr( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -1059,7 +973,6 @@ interface
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$ormqr( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -1078,7 +991,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sorm2r( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -1088,7 +1000,6 @@ interface
      end subroutine stdlib${ii}$_sorm2r
 
      pure module subroutine stdlib${ii}$_dorm2r( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -1100,7 +1011,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$orm2r( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -1119,7 +1029,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgeqrt( m, n, nb, a, lda, t, ldt, work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
            real(sp), intent(inout) :: a(lda,*)
@@ -1127,7 +1036,6 @@ interface
      end subroutine stdlib${ii}$_sgeqrt
 
      pure module subroutine stdlib${ii}$_dgeqrt( m, n, nb, a, lda, t, ldt, work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
            real(dp), intent(inout) :: a(lda,*)
@@ -1137,7 +1045,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$geqrt( m, n, nb, a, lda, t, ldt, work, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -1148,7 +1055,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_cgeqrt( m, n, nb, a, lda, t, ldt, work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
            complex(sp), intent(inout) :: a(lda,*)
@@ -1156,7 +1062,6 @@ interface
      end subroutine stdlib${ii}$_cgeqrt
 
      pure module subroutine stdlib${ii}$_zgeqrt( m, n, nb, a, lda, t, ldt, work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
            complex(dp), intent(inout) :: a(lda,*)
@@ -1166,7 +1071,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$geqrt( m, n, nb, a, lda, t, ldt, work, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -1183,7 +1087,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgeqrt2( m, n, a, lda, t, ldt, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n
            real(sp), intent(inout) :: a(lda,*)
@@ -1191,7 +1094,6 @@ interface
      end subroutine stdlib${ii}$_sgeqrt2
 
      pure module subroutine stdlib${ii}$_dgeqrt2( m, n, a, lda, t, ldt, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n
            real(dp), intent(inout) :: a(lda,*)
@@ -1201,7 +1103,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$geqrt2( m, n, a, lda, t, ldt, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -1212,7 +1113,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_cgeqrt2( m, n, a, lda, t, ldt, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n
            complex(sp), intent(inout) :: a(lda,*)
@@ -1220,7 +1120,6 @@ interface
      end subroutine stdlib${ii}$_cgeqrt2
 
      pure module subroutine stdlib${ii}$_zgeqrt2( m, n, a, lda, t, ldt, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n
            complex(dp), intent(inout) :: a(lda,*)
@@ -1230,7 +1129,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$geqrt2( m, n, a, lda, t, ldt, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -1247,7 +1145,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure recursive module subroutine stdlib${ii}$_sgeqrt3( m, n, a, lda, t, ldt, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, ldt
            real(sp), intent(inout) :: a(lda,*)
@@ -1255,7 +1152,6 @@ interface
      end subroutine stdlib${ii}$_sgeqrt3
 
      pure recursive module subroutine stdlib${ii}$_dgeqrt3( m, n, a, lda, t, ldt, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, ldt
            real(dp), intent(inout) :: a(lda,*)
@@ -1265,7 +1161,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure recursive module subroutine stdlib${ii}$_${ri}$geqrt3( m, n, a, lda, t, ldt, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, ldt
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -1276,7 +1171,6 @@ interface
 #:endfor
 
      pure recursive module subroutine stdlib${ii}$_cgeqrt3( m, n, a, lda, t, ldt, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, ldt
            complex(sp), intent(inout) :: a(lda,*)
@@ -1284,7 +1178,6 @@ interface
      end subroutine stdlib${ii}$_cgeqrt3
 
      pure recursive module subroutine stdlib${ii}$_zgeqrt3( m, n, a, lda, t, ldt, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, ldt
            complex(dp), intent(inout) :: a(lda,*)
@@ -1294,7 +1187,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure recursive module subroutine stdlib${ii}$_${ci}$geqrt3( m, n, a, lda, t, ldt, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, ldt
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -1312,7 +1204,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgemqrt( side, trans, m, n, k, nb, v, ldv, t, ldt,c, ldc, work, info )
                
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, nb, ldt
@@ -1323,7 +1214,6 @@ interface
 
      pure module subroutine stdlib${ii}$_dgemqrt( side, trans, m, n, k, nb, v, ldv, t, ldt,c, ldc, work, info )
                
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, nb, ldt
@@ -1336,7 +1226,6 @@ interface
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$gemqrt( side, trans, m, n, k, nb, v, ldv, t, ldt,c, ldc, work, info )
                
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, nb, ldt
@@ -1350,7 +1239,6 @@ interface
 
      pure module subroutine stdlib${ii}$_cgemqrt( side, trans, m, n, k, nb, v, ldv, t, ldt,c, ldc, work, info )
                
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, nb, ldt
@@ -1361,7 +1249,6 @@ interface
 
      pure module subroutine stdlib${ii}$_zgemqrt( side, trans, m, n, k, nb, v, ldv, t, ldt,c, ldc, work, info )
                
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, nb, ldt
@@ -1374,7 +1261,6 @@ interface
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$gemqrt( side, trans, m, n, k, nb, v, ldv, t, ldt,c, ldc, work, info )
                
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, nb, ldt
@@ -1393,7 +1279,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      module subroutine stdlib${ii}$_sgeqrfp( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            real(sp), intent(inout) :: a(lda,*)
@@ -1401,7 +1286,6 @@ interface
      end subroutine stdlib${ii}$_sgeqrfp
 
      module subroutine stdlib${ii}$_dgeqrfp( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            real(dp), intent(inout) :: a(lda,*)
@@ -1411,7 +1295,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      module subroutine stdlib${ii}$_${ri}$geqrfp( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -1422,7 +1305,6 @@ interface
 #:endfor
 
      module subroutine stdlib${ii}$_cgeqrfp( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            complex(sp), intent(inout) :: a(lda,*)
@@ -1430,7 +1312,6 @@ interface
      end subroutine stdlib${ii}$_cgeqrfp
 
      module subroutine stdlib${ii}$_zgeqrfp( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            complex(dp), intent(inout) :: a(lda,*)
@@ -1440,7 +1321,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      module subroutine stdlib${ii}$_${ci}$geqrfp( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -1457,7 +1337,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      module subroutine stdlib${ii}$_sgeqr2p( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            real(sp), intent(inout) :: a(lda,*)
@@ -1465,7 +1344,6 @@ interface
      end subroutine stdlib${ii}$_sgeqr2p
 
      module subroutine stdlib${ii}$_dgeqr2p( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            real(dp), intent(inout) :: a(lda,*)
@@ -1475,7 +1353,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      module subroutine stdlib${ii}$_${ri}$geqr2p( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -1486,7 +1363,6 @@ interface
 #:endfor
 
      module subroutine stdlib${ii}$_cgeqr2p( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            complex(sp), intent(inout) :: a(lda,*)
@@ -1494,7 +1370,6 @@ interface
      end subroutine stdlib${ii}$_cgeqr2p
 
      module subroutine stdlib${ii}$_zgeqr2p( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            complex(dp), intent(inout) :: a(lda,*)
@@ -1504,7 +1379,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      module subroutine stdlib${ii}$_${ci}$geqr2p( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -1521,7 +1395,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgeqp3( m, n, a, lda, jpvt, tau, work, lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            integer(${ik}$), intent(inout) :: jpvt(*)
@@ -1530,7 +1403,6 @@ interface
      end subroutine stdlib${ii}$_sgeqp3
 
      pure module subroutine stdlib${ii}$_dgeqp3( m, n, a, lda, jpvt, tau, work, lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            integer(${ik}$), intent(inout) :: jpvt(*)
@@ -1541,7 +1413,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$geqp3( m, n, a, lda, jpvt, tau, work, lwork, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            integer(${ik}$), intent(inout) :: jpvt(*)
@@ -1553,7 +1424,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_cgeqp3( m, n, a, lda, jpvt, tau, work, lwork, rwork,info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            integer(${ik}$), intent(inout) :: jpvt(*)
@@ -1563,7 +1433,6 @@ interface
      end subroutine stdlib${ii}$_cgeqp3
 
      pure module subroutine stdlib${ii}$_zgeqp3( m, n, a, lda, jpvt, tau, work, lwork, rwork,info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            integer(${ik}$), intent(inout) :: jpvt(*)
@@ -1575,7 +1444,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$geqp3( m, n, a, lda, jpvt, tau, work, lwork, rwork,info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            integer(${ik}$), intent(inout) :: jpvt(*)
@@ -1594,7 +1462,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_slaqp2( m, n, offset, a, lda, jpvt, tau, vn1, vn2,work )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(in) :: lda, m, n, offset
            integer(${ik}$), intent(inout) :: jpvt(*)
            real(sp), intent(inout) :: a(lda,*), vn1(*), vn2(*)
@@ -1602,7 +1469,6 @@ interface
      end subroutine stdlib${ii}$_slaqp2
 
      pure module subroutine stdlib${ii}$_dlaqp2( m, n, offset, a, lda, jpvt, tau, vn1, vn2,work )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(in) :: lda, m, n, offset
            integer(${ik}$), intent(inout) :: jpvt(*)
            real(dp), intent(inout) :: a(lda,*), vn1(*), vn2(*)
@@ -1612,7 +1478,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$laqp2( m, n, offset, a, lda, jpvt, tau, vn1, vn2,work )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(in) :: lda, m, n, offset
            integer(${ik}$), intent(inout) :: jpvt(*)
            real(${rk}$), intent(inout) :: a(lda,*), vn1(*), vn2(*)
@@ -1623,7 +1488,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_claqp2( m, n, offset, a, lda, jpvt, tau, vn1, vn2,work )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(in) :: lda, m, n, offset
            integer(${ik}$), intent(inout) :: jpvt(*)
            real(sp), intent(inout) :: vn1(*), vn2(*)
@@ -1632,7 +1496,6 @@ interface
      end subroutine stdlib${ii}$_claqp2
 
      pure module subroutine stdlib${ii}$_zlaqp2( m, n, offset, a, lda, jpvt, tau, vn1, vn2,work )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(in) :: lda, m, n, offset
            integer(${ik}$), intent(inout) :: jpvt(*)
            real(dp), intent(inout) :: vn1(*), vn2(*)
@@ -1643,7 +1506,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$laqp2( m, n, offset, a, lda, jpvt, tau, vn1, vn2,work )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(in) :: lda, m, n, offset
            integer(${ik}$), intent(inout) :: jpvt(*)
            real(${ck}$), intent(inout) :: vn1(*), vn2(*)
@@ -1662,7 +1524,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_slaqps( m, n, offset, nb, kb, a, lda, jpvt, tau, vn1,vn2, auxv, f, &
                ldf )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: kb
            integer(${ik}$), intent(in) :: lda, ldf, m, n, nb, offset
            integer(${ik}$), intent(inout) :: jpvt(*)
@@ -1672,7 +1533,6 @@ interface
 
      pure module subroutine stdlib${ii}$_dlaqps( m, n, offset, nb, kb, a, lda, jpvt, tau, vn1,vn2, auxv, f, &
                ldf )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: kb
            integer(${ik}$), intent(in) :: lda, ldf, m, n, nb, offset
            integer(${ik}$), intent(inout) :: jpvt(*)
@@ -1684,7 +1544,6 @@ interface
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$laqps( m, n, offset, nb, kb, a, lda, jpvt, tau, vn1,vn2, auxv, f, &
                ldf )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: kb
            integer(${ik}$), intent(in) :: lda, ldf, m, n, nb, offset
            integer(${ik}$), intent(inout) :: jpvt(*)
@@ -1697,7 +1556,6 @@ interface
 
      pure module subroutine stdlib${ii}$_claqps( m, n, offset, nb, kb, a, lda, jpvt, tau, vn1,vn2, auxv, f, &
                ldf )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: kb
            integer(${ik}$), intent(in) :: lda, ldf, m, n, nb, offset
            integer(${ik}$), intent(inout) :: jpvt(*)
@@ -1708,7 +1566,6 @@ interface
 
      pure module subroutine stdlib${ii}$_zlaqps( m, n, offset, nb, kb, a, lda, jpvt, tau, vn1,vn2, auxv, f, &
                ldf )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: kb
            integer(${ik}$), intent(in) :: lda, ldf, m, n, nb, offset
            integer(${ik}$), intent(inout) :: jpvt(*)
@@ -1721,7 +1578,6 @@ interface
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$laqps( m, n, offset, nb, kb, a, lda, jpvt, tau, vn1,vn2, auxv, f, &
                ldf )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: kb
            integer(${ik}$), intent(in) :: lda, ldf, m, n, nb, offset
            integer(${ik}$), intent(inout) :: jpvt(*)
@@ -1740,7 +1596,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_slatsqr( m, n, mb, nb, a, lda, t, ldt, work,lwork, info)
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, mb, nb, ldt, lwork
            real(sp), intent(inout) :: a(lda,*)
@@ -1748,7 +1603,6 @@ interface
      end subroutine stdlib${ii}$_slatsqr
 
      pure module subroutine stdlib${ii}$_dlatsqr( m, n, mb, nb, a, lda, t, ldt, work,lwork, info)
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, mb, nb, ldt, lwork
            real(dp), intent(inout) :: a(lda,*)
@@ -1758,7 +1612,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$latsqr( m, n, mb, nb, a, lda, t, ldt, work,lwork, info)
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, mb, nb, ldt, lwork
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -1769,7 +1622,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_clatsqr( m, n, mb, nb, a, lda, t, ldt, work,lwork, info)
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, mb, nb, ldt, lwork
            complex(sp), intent(inout) :: a(lda,*)
@@ -1777,7 +1629,6 @@ interface
      end subroutine stdlib${ii}$_clatsqr
 
      pure module subroutine stdlib${ii}$_zlatsqr( m, n, mb, nb, a, lda, t, ldt, work,lwork, info)
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, mb, nb, ldt, lwork
            complex(dp), intent(inout) :: a(lda,*)
@@ -1787,7 +1638,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$latsqr( m, n, mb, nb, a, lda, t, ldt, work,lwork, info)
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, mb, nb, ldt, lwork
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -1804,7 +1654,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_cungtsqr( m, n, mb, nb, a, lda, t, ldt, work, lwork,info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
            complex(sp), intent(inout) :: a(lda,*)
@@ -1813,7 +1662,6 @@ interface
      end subroutine stdlib${ii}$_cungtsqr
 
      pure module subroutine stdlib${ii}$_zungtsqr( m, n, mb, nb, a, lda, t, ldt, work, lwork,info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
            complex(dp), intent(inout) :: a(lda,*)
@@ -1824,7 +1672,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$ungtsqr( m, n, mb, nb, a, lda, t, ldt, work, lwork,info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -1842,7 +1689,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_cungtsqr_row( m, n, mb, nb, a, lda, t, ldt, work,lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
            complex(sp), intent(inout) :: a(lda,*)
@@ -1851,7 +1697,6 @@ interface
      end subroutine stdlib${ii}$_cungtsqr_row
 
      pure module subroutine stdlib${ii}$_zungtsqr_row( m, n, mb, nb, a, lda, t, ldt, work,lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
            complex(dp), intent(inout) :: a(lda,*)
@@ -1862,7 +1707,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$ungtsqr_row( m, n, mb, nb, a, lda, t, ldt, work,lwork, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -1880,7 +1724,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sorgtsqr( m, n, mb, nb, a, lda, t, ldt, work, lwork,info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
            real(sp), intent(inout) :: a(lda,*)
@@ -1889,7 +1732,6 @@ interface
      end subroutine stdlib${ii}$_sorgtsqr
 
      pure module subroutine stdlib${ii}$_dorgtsqr( m, n, mb, nb, a, lda, t, ldt, work, lwork,info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
            real(dp), intent(inout) :: a(lda,*)
@@ -1900,7 +1742,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$orgtsqr( m, n, mb, nb, a, lda, t, ldt, work, lwork,info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -1918,7 +1759,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sorgtsqr_row( m, n, mb, nb, a, lda, t, ldt, work,lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
            real(sp), intent(inout) :: a(lda,*)
@@ -1927,7 +1767,6 @@ interface
      end subroutine stdlib${ii}$_sorgtsqr_row
 
      pure module subroutine stdlib${ii}$_dorgtsqr_row( m, n, mb, nb, a, lda, t, ldt, work,lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
            real(dp), intent(inout) :: a(lda,*)
@@ -1938,7 +1777,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$orgtsqr_row( m, n, mb, nb, a, lda, t, ldt, work,lwork, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -1957,7 +1795,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_slarfb_gett( ident, m, n, k, t, ldt, a, lda, b, ldb,work, ldwork )
                
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: ident
            integer(${ik}$), intent(in) :: k, lda, ldb, ldt, ldwork, m, n
            real(sp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -1967,7 +1804,6 @@ interface
 
      pure module subroutine stdlib${ii}$_dlarfb_gett( ident, m, n, k, t, ldt, a, lda, b, ldb,work, ldwork )
                
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: ident
            integer(${ik}$), intent(in) :: k, lda, ldb, ldt, ldwork, m, n
            real(dp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -1979,7 +1815,6 @@ interface
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$larfb_gett( ident, m, n, k, t, ldt, a, lda, b, ldb,work, ldwork )
                
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: ident
            integer(${ik}$), intent(in) :: k, lda, ldb, ldt, ldwork, m, n
            real(${rk}$), intent(inout) :: a(lda,*), b(ldb,*)
@@ -1992,7 +1827,6 @@ interface
 
      pure module subroutine stdlib${ii}$_clarfb_gett( ident, m, n, k, t, ldt, a, lda, b, ldb,work, ldwork )
                
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: ident
            integer(${ik}$), intent(in) :: k, lda, ldb, ldt, ldwork, m, n
            complex(sp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2002,7 +1836,6 @@ interface
 
      pure module subroutine stdlib${ii}$_zlarfb_gett( ident, m, n, k, t, ldt, a, lda, b, ldb,work, ldwork )
                
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: ident
            integer(${ik}$), intent(in) :: k, lda, ldb, ldt, ldwork, m, n
            complex(dp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2014,7 +1847,6 @@ interface
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$larfb_gett( ident, m, n, k, t, ldt, a, lda, b, ldb,work, ldwork )
                
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: ident
            integer(${ik}$), intent(in) :: k, lda, ldb, ldt, ldwork, m, n
            complex(${ck}$), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2033,7 +1865,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_slamtsqr( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
                lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
@@ -2044,7 +1875,6 @@ interface
 
      pure module subroutine stdlib${ii}$_dlamtsqr( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
                lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
@@ -2057,7 +1887,6 @@ interface
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$lamtsqr( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
                lwork, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
@@ -2071,7 +1900,6 @@ interface
 
      pure module subroutine stdlib${ii}$_clamtsqr( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
                lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
@@ -2082,7 +1910,6 @@ interface
 
      pure module subroutine stdlib${ii}$_zlamtsqr( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
                lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
@@ -2095,7 +1922,6 @@ interface
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$lamtsqr( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
                lwork, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
@@ -2115,7 +1941,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgetsqrhrt( m, n, mb1, nb1, nb2, a, lda, t, ldt, work,lwork, info )
                
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, nb1, nb2, mb1
            real(sp), intent(inout) :: a(lda,*)
@@ -2124,7 +1949,6 @@ interface
 
      pure module subroutine stdlib${ii}$_dgetsqrhrt( m, n, mb1, nb1, nb2, a, lda, t, ldt, work,lwork, info )
                
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, nb1, nb2, mb1
            real(dp), intent(inout) :: a(lda,*)
@@ -2135,7 +1959,6 @@ interface
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$getsqrhrt( m, n, mb1, nb1, nb2, a, lda, t, ldt, work,lwork, info )
                
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, nb1, nb2, mb1
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -2147,7 +1970,6 @@ interface
 
      pure module subroutine stdlib${ii}$_cgetsqrhrt( m, n, mb1, nb1, nb2, a, lda, t, ldt, work,lwork, info )
                
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, nb1, nb2, mb1
            complex(sp), intent(inout) :: a(lda,*)
@@ -2156,7 +1978,6 @@ interface
 
      pure module subroutine stdlib${ii}$_zgetsqrhrt( m, n, mb1, nb1, nb2, a, lda, t, ldt, work,lwork, info )
                
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, nb1, nb2, mb1
            complex(dp), intent(inout) :: a(lda,*)
@@ -2167,7 +1988,6 @@ interface
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$getsqrhrt( m, n, mb1, nb1, nb2, a, lda, t, ldt, work,lwork, info )
                
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, nb1, nb2, mb1
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -2184,7 +2004,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_cunhr_col( m, n, nb, a, lda, t, ldt, d, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
            complex(sp), intent(inout) :: a(lda,*)
@@ -2192,7 +2011,6 @@ interface
      end subroutine stdlib${ii}$_cunhr_col
 
      pure module subroutine stdlib${ii}$_zunhr_col( m, n, nb, a, lda, t, ldt, d, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
            complex(dp), intent(inout) :: a(lda,*)
@@ -2202,7 +2020,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$unhr_col( m, n, nb, a, lda, t, ldt, d, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -2219,7 +2036,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sorhr_col( m, n, nb, a, lda, t, ldt, d, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
            real(sp), intent(inout) :: a(lda,*)
@@ -2227,7 +2043,6 @@ interface
      end subroutine stdlib${ii}$_sorhr_col
 
      pure module subroutine stdlib${ii}$_dorhr_col( m, n, nb, a, lda, t, ldt, d, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
            real(dp), intent(inout) :: a(lda,*)
@@ -2237,7 +2052,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$orhr_col( m, n, nb, a, lda, t, ldt, d, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -2254,7 +2068,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_claunhr_col_getrfnp( m, n, a, lda, d, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            complex(sp), intent(inout) :: a(lda,*)
@@ -2262,7 +2075,6 @@ interface
      end subroutine stdlib${ii}$_claunhr_col_getrfnp
 
      pure module subroutine stdlib${ii}$_zlaunhr_col_getrfnp( m, n, a, lda, d, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            complex(dp), intent(inout) :: a(lda,*)
@@ -2272,7 +2084,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$launhr_col_getrfnp( m, n, a, lda, d, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -2289,7 +2100,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_slaorhr_col_getrfnp( m, n, a, lda, d, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            real(sp), intent(inout) :: a(lda,*)
@@ -2297,7 +2107,6 @@ interface
      end subroutine stdlib${ii}$_slaorhr_col_getrfnp
 
      pure module subroutine stdlib${ii}$_dlaorhr_col_getrfnp( m, n, a, lda, d, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            real(dp), intent(inout) :: a(lda,*)
@@ -2307,7 +2116,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$laorhr_col_getrfnp( m, n, a, lda, d, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -2324,7 +2132,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure recursive module subroutine stdlib${ii}$_claunhr_col_getrfnp2( m, n, a, lda, d, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            complex(sp), intent(inout) :: a(lda,*)
@@ -2332,7 +2139,6 @@ interface
      end subroutine stdlib${ii}$_claunhr_col_getrfnp2
 
      pure recursive module subroutine stdlib${ii}$_zlaunhr_col_getrfnp2( m, n, a, lda, d, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            complex(dp), intent(inout) :: a(lda,*)
@@ -2342,7 +2148,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure recursive module subroutine stdlib${ii}$_${ci}$launhr_col_getrfnp2( m, n, a, lda, d, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -2359,7 +2164,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure recursive module subroutine stdlib${ii}$_slaorhr_col_getrfnp2( m, n, a, lda, d, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            real(sp), intent(inout) :: a(lda,*)
@@ -2367,7 +2171,6 @@ interface
      end subroutine stdlib${ii}$_slaorhr_col_getrfnp2
 
      pure recursive module subroutine stdlib${ii}$_dlaorhr_col_getrfnp2( m, n, a, lda, d, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            real(dp), intent(inout) :: a(lda,*)
@@ -2377,7 +2180,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure recursive module subroutine stdlib${ii}$_${ri}$laorhr_col_getrfnp2( m, n, a, lda, d, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -2394,7 +2196,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_stpqrt( m, n, l, nb, a, lda, b, ldb, t, ldt, work,info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, nb
            real(sp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2402,7 +2203,6 @@ interface
      end subroutine stdlib${ii}$_stpqrt
 
      pure module subroutine stdlib${ii}$_dtpqrt( m, n, l, nb, a, lda, b, ldb, t, ldt, work,info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, nb
            real(dp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2412,7 +2212,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$tpqrt( m, n, l, nb, a, lda, b, ldb, t, ldt, work,info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, nb
            real(${rk}$), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2423,7 +2222,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_ctpqrt( m, n, l, nb, a, lda, b, ldb, t, ldt, work,info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, nb
            complex(sp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2431,7 +2229,6 @@ interface
      end subroutine stdlib${ii}$_ctpqrt
 
      pure module subroutine stdlib${ii}$_ztpqrt( m, n, l, nb, a, lda, b, ldb, t, ldt, work,info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, nb
            complex(dp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2441,7 +2238,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$tpqrt( m, n, l, nb, a, lda, b, ldb, t, ldt, work,info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, nb
            complex(${ck}$), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2458,7 +2254,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_stpqrt2( m, n, l, a, lda, b, ldb, t, ldt, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
            real(sp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2466,7 +2261,6 @@ interface
      end subroutine stdlib${ii}$_stpqrt2
 
      pure module subroutine stdlib${ii}$_dtpqrt2( m, n, l, a, lda, b, ldb, t, ldt, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
            real(dp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2476,7 +2270,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$tpqrt2( m, n, l, a, lda, b, ldb, t, ldt, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
            real(${rk}$), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2487,7 +2280,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_ctpqrt2( m, n, l, a, lda, b, ldb, t, ldt, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
            complex(sp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2495,7 +2287,6 @@ interface
      end subroutine stdlib${ii}$_ctpqrt2
 
      pure module subroutine stdlib${ii}$_ztpqrt2( m, n, l, a, lda, b, ldb, t, ldt, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
            complex(dp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2505,7 +2296,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$tpqrt2( m, n, l, a, lda, b, ldb, t, ldt, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
            complex(${ck}$), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2523,7 +2313,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_stpmqrt( side, trans, m, n, k, l, nb, v, ldv, t, ldt,a, lda, b, ldb, &
                work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, nb, ldt
@@ -2534,7 +2323,6 @@ interface
 
      pure module subroutine stdlib${ii}$_dtpmqrt( side, trans, m, n, k, l, nb, v, ldv, t, ldt,a, lda, b, ldb, &
                work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, nb, ldt
@@ -2547,7 +2335,6 @@ interface
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$tpmqrt( side, trans, m, n, k, l, nb, v, ldv, t, ldt,a, lda, b, ldb, &
                work, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, nb, ldt
@@ -2561,7 +2348,6 @@ interface
 
      pure module subroutine stdlib${ii}$_ctpmqrt( side, trans, m, n, k, l, nb, v, ldv, t, ldt,a, lda, b, ldb, &
                work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, nb, ldt
@@ -2572,7 +2358,6 @@ interface
 
      pure module subroutine stdlib${ii}$_ztpmqrt( side, trans, m, n, k, l, nb, v, ldv, t, ldt,a, lda, b, ldb, &
                work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, nb, ldt
@@ -2585,7 +2370,6 @@ interface
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$tpmqrt( side, trans, m, n, k, l, nb, v, ldv, t, ldt,a, lda, b, ldb, &
                work, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, nb, ldt
@@ -2605,7 +2389,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_stprfb( side, trans, direct, storev, m, n, k, l,v, ldv, t, ldt, a, &
                lda, b, ldb, work, ldwork )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: direct, side, storev, trans
            integer(${ik}$), intent(in) :: k, l, lda, ldb, ldt, ldv, ldwork, m, n
            real(sp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2615,7 +2398,6 @@ interface
 
      pure module subroutine stdlib${ii}$_dtprfb( side, trans, direct, storev, m, n, k, l,v, ldv, t, ldt, a, &
                lda, b, ldb, work, ldwork )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: direct, side, storev, trans
            integer(${ik}$), intent(in) :: k, l, lda, ldb, ldt, ldv, ldwork, m, n
            real(dp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2627,7 +2409,6 @@ interface
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$tprfb( side, trans, direct, storev, m, n, k, l,v, ldv, t, ldt, a, &
                lda, b, ldb, work, ldwork )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: direct, side, storev, trans
            integer(${ik}$), intent(in) :: k, l, lda, ldb, ldt, ldv, ldwork, m, n
            real(${rk}$), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2640,7 +2421,6 @@ interface
 
      pure module subroutine stdlib${ii}$_ctprfb( side, trans, direct, storev, m, n, k, l,v, ldv, t, ldt, a, &
                lda, b, ldb, work, ldwork )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: direct, side, storev, trans
            integer(${ik}$), intent(in) :: k, l, lda, ldb, ldt, ldv, ldwork, m, n
            complex(sp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2650,7 +2430,6 @@ interface
 
      pure module subroutine stdlib${ii}$_ztprfb( side, trans, direct, storev, m, n, k, l,v, ldv, t, ldt, a, &
                lda, b, ldb, work, ldwork )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: direct, side, storev, trans
            integer(${ik}$), intent(in) :: k, l, lda, ldb, ldt, ldv, ldwork, m, n
            complex(dp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2662,7 +2441,6 @@ interface
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$tprfb( side, trans, direct, storev, m, n, k, l,v, ldv, t, ldt, a, &
                lda, b, ldb, work, ldwork )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: direct, side, storev, trans
            integer(${ik}$), intent(in) :: k, l, lda, ldb, ldt, ldv, ldwork, m, n
            complex(${ck}$), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2681,7 +2459,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sggqrf( n, m, p, a, lda, taua, b, ldb, taub, work,lwork, info )
                
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
            real(sp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2690,7 +2467,6 @@ interface
 
      pure module subroutine stdlib${ii}$_dggqrf( n, m, p, a, lda, taua, b, ldb, taub, work,lwork, info )
                
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
            real(dp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2701,7 +2477,6 @@ interface
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$ggqrf( n, m, p, a, lda, taua, b, ldb, taub, work,lwork, info )
                
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
            real(${rk}$), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2713,7 +2488,6 @@ interface
 
      pure module subroutine stdlib${ii}$_cggqrf( n, m, p, a, lda, taua, b, ldb, taub, work,lwork, info )
                
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
            complex(sp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2722,7 +2496,6 @@ interface
 
      pure module subroutine stdlib${ii}$_zggqrf( n, m, p, a, lda, taua, b, ldb, taub, work,lwork, info )
                
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
            complex(dp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2733,7 +2506,6 @@ interface
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$ggqrf( n, m, p, a, lda, taua, b, ldb, taub, work,lwork, info )
                
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
            complex(${ck}$), intent(inout) :: a(lda,*), b(ldb,*)
@@ -2750,7 +2522,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgerqf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            real(sp), intent(inout) :: a(lda,*)
@@ -2758,7 +2529,6 @@ interface
      end subroutine stdlib${ii}$_sgerqf
 
      pure module subroutine stdlib${ii}$_dgerqf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            real(dp), intent(inout) :: a(lda,*)
@@ -2768,7 +2538,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$gerqf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -2779,7 +2548,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_cgerqf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            complex(sp), intent(inout) :: a(lda,*)
@@ -2787,7 +2555,6 @@ interface
      end subroutine stdlib${ii}$_cgerqf
 
      pure module subroutine stdlib${ii}$_zgerqf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            complex(dp), intent(inout) :: a(lda,*)
@@ -2797,7 +2564,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$gerqf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -2814,7 +2580,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgerq2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            real(sp), intent(inout) :: a(lda,*)
@@ -2822,7 +2587,6 @@ interface
      end subroutine stdlib${ii}$_sgerq2
 
      pure module subroutine stdlib${ii}$_dgerq2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            real(dp), intent(inout) :: a(lda,*)
@@ -2832,7 +2596,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$gerq2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -2843,7 +2606,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_cgerq2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            complex(sp), intent(inout) :: a(lda,*)
@@ -2851,7 +2613,6 @@ interface
      end subroutine stdlib${ii}$_cgerq2
 
      pure module subroutine stdlib${ii}$_zgerq2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            complex(dp), intent(inout) :: a(lda,*)
@@ -2861,7 +2622,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$gerq2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -2878,7 +2638,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_cungrq( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            complex(sp), intent(inout) :: a(lda,*)
@@ -2887,7 +2646,6 @@ interface
      end subroutine stdlib${ii}$_cungrq
 
      pure module subroutine stdlib${ii}$_zungrq( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            complex(dp), intent(inout) :: a(lda,*)
@@ -2898,7 +2656,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$ungrq( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -2917,7 +2674,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_cunmrq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -2928,7 +2684,6 @@ interface
 
      pure module subroutine stdlib${ii}$_zunmrq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -2941,7 +2696,6 @@ interface
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$unmrq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -2960,7 +2714,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_cunmr2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -2970,7 +2723,6 @@ interface
      end subroutine stdlib${ii}$_cunmr2
 
      pure module subroutine stdlib${ii}$_zunmr2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -2982,7 +2734,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$unmr2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -3001,7 +2752,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_cungr2( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            complex(sp), intent(inout) :: a(lda,*)
@@ -3010,7 +2760,6 @@ interface
      end subroutine stdlib${ii}$_cungr2
 
      pure module subroutine stdlib${ii}$_zungr2( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            complex(dp), intent(inout) :: a(lda,*)
@@ -3021,7 +2770,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$ungr2( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -3039,7 +2787,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sorgrq( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            real(sp), intent(inout) :: a(lda,*)
@@ -3048,7 +2795,6 @@ interface
      end subroutine stdlib${ii}$_sorgrq
 
      pure module subroutine stdlib${ii}$_dorgrq( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            real(dp), intent(inout) :: a(lda,*)
@@ -3059,7 +2805,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$orgrq( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -3078,7 +2823,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sormrq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -3089,7 +2833,6 @@ interface
 
      pure module subroutine stdlib${ii}$_dormrq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -3102,7 +2845,6 @@ interface
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$ormrq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -3121,7 +2863,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sormr2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -3131,7 +2872,6 @@ interface
      end subroutine stdlib${ii}$_sormr2
 
      pure module subroutine stdlib${ii}$_dormr2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -3143,7 +2883,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$ormr2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -3162,7 +2901,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sorgr2( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            real(sp), intent(inout) :: a(lda,*)
@@ -3171,7 +2909,6 @@ interface
      end subroutine stdlib${ii}$_sorgr2
 
      pure module subroutine stdlib${ii}$_dorgr2( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            real(dp), intent(inout) :: a(lda,*)
@@ -3182,7 +2919,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$orgr2( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -3201,7 +2937,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sggrqf( m, p, n, a, lda, taua, b, ldb, taub, work,lwork, info )
                
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
            real(sp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -3210,7 +2945,6 @@ interface
 
      pure module subroutine stdlib${ii}$_dggrqf( m, p, n, a, lda, taua, b, ldb, taub, work,lwork, info )
                
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
            real(dp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -3221,7 +2955,6 @@ interface
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$ggrqf( m, p, n, a, lda, taua, b, ldb, taub, work,lwork, info )
                
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
            real(${rk}$), intent(inout) :: a(lda,*), b(ldb,*)
@@ -3233,7 +2966,6 @@ interface
 
      pure module subroutine stdlib${ii}$_cggrqf( m, p, n, a, lda, taua, b, ldb, taub, work,lwork, info )
                
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
            complex(sp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -3242,7 +2974,6 @@ interface
 
      pure module subroutine stdlib${ii}$_zggrqf( m, p, n, a, lda, taua, b, ldb, taub, work,lwork, info )
                
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
            complex(dp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -3253,7 +2984,6 @@ interface
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$ggrqf( m, p, n, a, lda, taua, b, ldb, taub, work,lwork, info )
                
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
            complex(${ck}$), intent(inout) :: a(lda,*), b(ldb,*)
@@ -3270,7 +3000,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgelq( m, n, a, lda, t, tsize, work, lwork,info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
            real(sp), intent(inout) :: a(lda,*)
@@ -3278,7 +3007,6 @@ interface
      end subroutine stdlib${ii}$_sgelq
 
      pure module subroutine stdlib${ii}$_dgelq( m, n, a, lda, t, tsize, work, lwork,info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
            real(dp), intent(inout) :: a(lda,*)
@@ -3288,7 +3016,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$gelq( m, n, a, lda, t, tsize, work, lwork,info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -3299,7 +3026,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_cgelq( m, n, a, lda, t, tsize, work, lwork,info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
            complex(sp), intent(inout) :: a(lda,*)
@@ -3307,7 +3033,6 @@ interface
      end subroutine stdlib${ii}$_cgelq
 
      pure module subroutine stdlib${ii}$_zgelq( m, n, a, lda, t, tsize, work, lwork,info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
            complex(dp), intent(inout) :: a(lda,*)
@@ -3317,7 +3042,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$gelq( m, n, a, lda, t, tsize, work, lwork,info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -3335,7 +3059,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgemlq( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
                info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
@@ -3346,7 +3069,6 @@ interface
 
      pure module subroutine stdlib${ii}$_dgemlq( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
                info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
@@ -3359,7 +3081,6 @@ interface
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$gemlq( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
                info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
@@ -3373,7 +3094,6 @@ interface
 
      pure module subroutine stdlib${ii}$_cgemlq( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
                info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
@@ -3384,7 +3104,6 @@ interface
 
      pure module subroutine stdlib${ii}$_zgemlq( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
                info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
@@ -3397,7 +3116,6 @@ interface
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$gemlq( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
                info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
@@ -3416,7 +3134,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgelqf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            real(sp), intent(inout) :: a(lda,*)
@@ -3424,7 +3141,6 @@ interface
      end subroutine stdlib${ii}$_sgelqf
 
      pure module subroutine stdlib${ii}$_dgelqf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            real(dp), intent(inout) :: a(lda,*)
@@ -3434,7 +3150,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$gelqf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -3445,7 +3160,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_cgelqf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            complex(sp), intent(inout) :: a(lda,*)
@@ -3453,7 +3167,6 @@ interface
      end subroutine stdlib${ii}$_cgelqf
 
      pure module subroutine stdlib${ii}$_zgelqf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            complex(dp), intent(inout) :: a(lda,*)
@@ -3463,7 +3176,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$gelqf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -3480,7 +3192,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgelq2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            real(sp), intent(inout) :: a(lda,*)
@@ -3488,7 +3199,6 @@ interface
      end subroutine stdlib${ii}$_sgelq2
 
      pure module subroutine stdlib${ii}$_dgelq2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            real(dp), intent(inout) :: a(lda,*)
@@ -3498,7 +3208,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$gelq2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -3509,7 +3218,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_cgelq2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            complex(sp), intent(inout) :: a(lda,*)
@@ -3517,7 +3225,6 @@ interface
      end subroutine stdlib${ii}$_cgelq2
 
      pure module subroutine stdlib${ii}$_zgelq2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            complex(dp), intent(inout) :: a(lda,*)
@@ -3527,7 +3234,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$gelq2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -3544,7 +3250,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_cunglq( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            complex(sp), intent(inout) :: a(lda,*)
@@ -3553,7 +3258,6 @@ interface
      end subroutine stdlib${ii}$_cunglq
 
      pure module subroutine stdlib${ii}$_zunglq( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            complex(dp), intent(inout) :: a(lda,*)
@@ -3564,7 +3268,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$unglq( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -3582,7 +3285,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_cungl2( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            complex(sp), intent(inout) :: a(lda,*)
@@ -3591,7 +3293,6 @@ interface
      end subroutine stdlib${ii}$_cungl2
 
      pure module subroutine stdlib${ii}$_zungl2( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            complex(dp), intent(inout) :: a(lda,*)
@@ -3602,7 +3303,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$ungl2( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -3621,7 +3321,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_cunmlq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -3632,7 +3331,6 @@ interface
 
      pure module subroutine stdlib${ii}$_zunmlq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -3645,7 +3343,6 @@ interface
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$unmlq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -3664,7 +3361,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_cunml2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -3674,7 +3370,6 @@ interface
      end subroutine stdlib${ii}$_cunml2
 
      pure module subroutine stdlib${ii}$_zunml2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -3686,7 +3381,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$unml2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -3705,7 +3399,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sorglq( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            real(sp), intent(inout) :: a(lda,*)
@@ -3714,7 +3407,6 @@ interface
      end subroutine stdlib${ii}$_sorglq
 
      pure module subroutine stdlib${ii}$_dorglq( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            real(dp), intent(inout) :: a(lda,*)
@@ -3725,7 +3417,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$orglq( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -3743,7 +3434,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sorgl2( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            real(sp), intent(inout) :: a(lda,*)
@@ -3752,7 +3442,6 @@ interface
      end subroutine stdlib${ii}$_sorgl2
 
      pure module subroutine stdlib${ii}$_dorgl2( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            real(dp), intent(inout) :: a(lda,*)
@@ -3763,7 +3452,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$orgl2( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -3782,7 +3470,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sormlq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -3793,7 +3480,6 @@ interface
 
      pure module subroutine stdlib${ii}$_dormlq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -3806,7 +3492,6 @@ interface
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$ormlq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -3825,7 +3510,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sorml2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -3835,7 +3519,6 @@ interface
      end subroutine stdlib${ii}$_sorml2
 
      pure module subroutine stdlib${ii}$_dorml2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -3847,7 +3530,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$orml2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -3866,7 +3548,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgelqt( m, n, mb, a, lda, t, ldt, work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n, mb
            real(sp), intent(inout) :: a(lda,*)
@@ -3874,7 +3555,6 @@ interface
      end subroutine stdlib${ii}$_sgelqt
 
      pure module subroutine stdlib${ii}$_dgelqt( m, n, mb, a, lda, t, ldt, work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n, mb
            real(dp), intent(inout) :: a(lda,*)
@@ -3884,7 +3564,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$gelqt( m, n, mb, a, lda, t, ldt, work, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n, mb
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -3895,7 +3574,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_cgelqt( m, n, mb, a, lda, t, ldt, work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n, mb
            complex(sp), intent(inout) :: a(lda,*)
@@ -3903,7 +3581,6 @@ interface
      end subroutine stdlib${ii}$_cgelqt
 
      pure module subroutine stdlib${ii}$_zgelqt( m, n, mb, a, lda, t, ldt, work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n, mb
            complex(dp), intent(inout) :: a(lda,*)
@@ -3913,7 +3590,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$gelqt( m, n, mb, a, lda, t, ldt, work, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldt, m, n, mb
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -3930,7 +3606,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure recursive module subroutine stdlib${ii}$_sgelqt3( m, n, a, lda, t, ldt, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, ldt
            real(sp), intent(inout) :: a(lda,*)
@@ -3938,7 +3613,6 @@ interface
      end subroutine stdlib${ii}$_sgelqt3
 
      pure recursive module subroutine stdlib${ii}$_dgelqt3( m, n, a, lda, t, ldt, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, ldt
            real(dp), intent(inout) :: a(lda,*)
@@ -3948,7 +3622,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure recursive module subroutine stdlib${ii}$_${ri}$gelqt3( m, n, a, lda, t, ldt, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, ldt
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -3959,7 +3632,6 @@ interface
 #:endfor
 
      pure recursive module subroutine stdlib${ii}$_cgelqt3( m, n, a, lda, t, ldt, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, ldt
            complex(sp), intent(inout) :: a(lda,*)
@@ -3967,7 +3639,6 @@ interface
      end subroutine stdlib${ii}$_cgelqt3
 
      pure recursive module subroutine stdlib${ii}$_zgelqt3( m, n, a, lda, t, ldt, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, ldt
            complex(dp), intent(inout) :: a(lda,*)
@@ -3977,7 +3648,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure recursive module subroutine stdlib${ii}$_${ci}$gelqt3( m, n, a, lda, t, ldt, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, ldt
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -3995,7 +3665,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgemlqt( side, trans, m, n, k, mb, v, ldv, t, ldt,c, ldc, work, info )
                
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, mb, ldt
@@ -4006,7 +3675,6 @@ interface
 
      pure module subroutine stdlib${ii}$_dgemlqt( side, trans, m, n, k, mb, v, ldv, t, ldt,c, ldc, work, info )
                
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, mb, ldt
@@ -4019,7 +3687,6 @@ interface
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$gemlqt( side, trans, m, n, k, mb, v, ldv, t, ldt,c, ldc, work, info )
                
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, mb, ldt
@@ -4033,7 +3700,6 @@ interface
 
      pure module subroutine stdlib${ii}$_cgemlqt( side, trans, m, n, k, mb, v, ldv, t, ldt,c, ldc, work, info )
                
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, mb, ldt
@@ -4044,7 +3710,6 @@ interface
 
      pure module subroutine stdlib${ii}$_zgemlqt( side, trans, m, n, k, mb, v, ldv, t, ldt,c, ldc, work, info )
                
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, mb, ldt
@@ -4057,7 +3722,6 @@ interface
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$gemlqt( side, trans, m, n, k, mb, v, ldv, t, ldt,c, ldc, work, info )
                
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, mb, ldt
@@ -4076,7 +3740,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_slaswlq( m, n, mb, nb, a, lda, t, ldt, work, lwork,info)
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, mb, nb, lwork, ldt
            real(sp), intent(inout) :: a(lda,*)
@@ -4084,7 +3747,6 @@ interface
      end subroutine stdlib${ii}$_slaswlq
 
      pure module subroutine stdlib${ii}$_dlaswlq( m, n, mb, nb, a, lda, t, ldt, work, lwork,info)
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, mb, nb, lwork, ldt
            real(dp), intent(inout) :: a(lda,*)
@@ -4094,7 +3756,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$laswlq( m, n, mb, nb, a, lda, t, ldt, work, lwork,info)
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, mb, nb, lwork, ldt
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -4105,7 +3766,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_claswlq( m, n, mb, nb, a, lda, t, ldt, work, lwork,info)
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, mb, nb, lwork, ldt
            complex(sp), intent(inout) :: a(lda,*)
@@ -4113,7 +3773,6 @@ interface
      end subroutine stdlib${ii}$_claswlq
 
      pure module subroutine stdlib${ii}$_zlaswlq( m, n, mb, nb, a, lda, t, ldt, work, lwork,info)
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, mb, nb, lwork, ldt
            complex(dp), intent(inout) :: a(lda,*)
@@ -4123,7 +3782,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$laswlq( m, n, mb, nb, a, lda, t, ldt, work, lwork,info)
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, mb, nb, lwork, ldt
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -4141,7 +3799,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_slamswlq( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
                lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
@@ -4152,7 +3809,6 @@ interface
 
      pure module subroutine stdlib${ii}$_dlamswlq( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
                lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
@@ -4165,7 +3821,6 @@ interface
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$lamswlq( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
                lwork, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
@@ -4179,7 +3834,6 @@ interface
 
      pure module subroutine stdlib${ii}$_clamswlq( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
                lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
@@ -4190,7 +3844,6 @@ interface
 
      pure module subroutine stdlib${ii}$_zlamswlq( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
                lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
@@ -4203,7 +3856,6 @@ interface
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$lamswlq( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
                lwork, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
@@ -4222,7 +3874,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_stplqt( m, n, l, mb, a, lda, b, ldb, t, ldt, work,info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, mb
            real(sp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -4230,7 +3881,6 @@ interface
      end subroutine stdlib${ii}$_stplqt
 
      pure module subroutine stdlib${ii}$_dtplqt( m, n, l, mb, a, lda, b, ldb, t, ldt, work,info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, mb
            real(dp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -4240,7 +3890,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$tplqt( m, n, l, mb, a, lda, b, ldb, t, ldt, work,info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, mb
            real(${rk}$), intent(inout) :: a(lda,*), b(ldb,*)
@@ -4251,7 +3900,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_ctplqt( m, n, l, mb, a, lda, b, ldb, t, ldt, work,info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, mb
            complex(sp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -4259,7 +3907,6 @@ interface
      end subroutine stdlib${ii}$_ctplqt
 
      pure module subroutine stdlib${ii}$_ztplqt( m, n, l, mb, a, lda, b, ldb, t, ldt, work,info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, mb
            complex(dp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -4269,7 +3916,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$tplqt( m, n, l, mb, a, lda, b, ldb, t, ldt, work,info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, mb
            complex(${ck}$), intent(inout) :: a(lda,*), b(ldb,*)
@@ -4286,7 +3932,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_stplqt2( m, n, l, a, lda, b, ldb, t, ldt, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
            real(sp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -4294,7 +3939,6 @@ interface
      end subroutine stdlib${ii}$_stplqt2
 
      pure module subroutine stdlib${ii}$_dtplqt2( m, n, l, a, lda, b, ldb, t, ldt, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
            real(dp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -4304,7 +3948,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$tplqt2( m, n, l, a, lda, b, ldb, t, ldt, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
            real(${rk}$), intent(inout) :: a(lda,*), b(ldb,*)
@@ -4315,7 +3958,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_ctplqt2( m, n, l, a, lda, b, ldb, t, ldt, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
            complex(sp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -4323,7 +3965,6 @@ interface
      end subroutine stdlib${ii}$_ctplqt2
 
      pure module subroutine stdlib${ii}$_ztplqt2( m, n, l, a, lda, b, ldb, t, ldt, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
            complex(dp), intent(inout) :: a(lda,*), b(ldb,*)
@@ -4333,7 +3974,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$tplqt2( m, n, l, a, lda, b, ldb, t, ldt, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
            complex(${ck}$), intent(inout) :: a(lda,*), b(ldb,*)
@@ -4351,7 +3991,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_stpmlqt( side, trans, m, n, k, l, mb, v, ldv, t, ldt,a, lda, b, ldb, &
                work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, mb, ldt
@@ -4362,7 +4001,6 @@ interface
 
      pure module subroutine stdlib${ii}$_dtpmlqt( side, trans, m, n, k, l, mb, v, ldv, t, ldt,a, lda, b, ldb, &
                work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, mb, ldt
@@ -4375,7 +4013,6 @@ interface
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$tpmlqt( side, trans, m, n, k, l, mb, v, ldv, t, ldt,a, lda, b, ldb, &
                work, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, mb, ldt
@@ -4389,7 +4026,6 @@ interface
 
      pure module subroutine stdlib${ii}$_ctpmlqt( side, trans, m, n, k, l, mb, v, ldv, t, ldt,a, lda, b, ldb, &
                work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, mb, ldt
@@ -4400,7 +4036,6 @@ interface
 
      pure module subroutine stdlib${ii}$_ztpmlqt( side, trans, m, n, k, l, mb, v, ldv, t, ldt,a, lda, b, ldb, &
                work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, mb, ldt
@@ -4413,7 +4048,6 @@ interface
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$tpmlqt( side, trans, m, n, k, l, mb, v, ldv, t, ldt,a, lda, b, ldb, &
                work, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, mb, ldt
@@ -4432,7 +4066,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgeqlf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            real(sp), intent(inout) :: a(lda,*)
@@ -4440,7 +4073,6 @@ interface
      end subroutine stdlib${ii}$_sgeqlf
 
      pure module subroutine stdlib${ii}$_dgeqlf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            real(dp), intent(inout) :: a(lda,*)
@@ -4450,7 +4082,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$geqlf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -4461,7 +4092,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_cgeqlf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            complex(sp), intent(inout) :: a(lda,*)
@@ -4469,7 +4099,6 @@ interface
      end subroutine stdlib${ii}$_cgeqlf
 
      pure module subroutine stdlib${ii}$_zgeqlf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            complex(dp), intent(inout) :: a(lda,*)
@@ -4479,7 +4108,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$geqlf( m, n, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, lwork, m, n
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -4496,7 +4124,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sgeql2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            real(sp), intent(inout) :: a(lda,*)
@@ -4504,7 +4131,6 @@ interface
      end subroutine stdlib${ii}$_sgeql2
 
      pure module subroutine stdlib${ii}$_dgeql2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            real(dp), intent(inout) :: a(lda,*)
@@ -4514,7 +4140,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$geql2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -4525,7 +4150,6 @@ interface
 #:endfor
 
      pure module subroutine stdlib${ii}$_cgeql2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            complex(sp), intent(inout) :: a(lda,*)
@@ -4533,7 +4157,6 @@ interface
      end subroutine stdlib${ii}$_cgeql2
 
      pure module subroutine stdlib${ii}$_zgeql2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            complex(dp), intent(inout) :: a(lda,*)
@@ -4543,7 +4166,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$geql2( m, n, a, lda, tau, work, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: lda, m, n
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -4560,7 +4182,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_cungql( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            complex(sp), intent(inout) :: a(lda,*)
@@ -4569,7 +4190,6 @@ interface
      end subroutine stdlib${ii}$_cungql
 
      pure module subroutine stdlib${ii}$_zungql( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            complex(dp), intent(inout) :: a(lda,*)
@@ -4580,7 +4200,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$ungql( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -4599,7 +4218,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_cunmql( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -4610,7 +4228,6 @@ interface
 
      pure module subroutine stdlib${ii}$_zunmql( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -4623,7 +4240,6 @@ interface
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$unmql( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -4642,7 +4258,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_cung2l( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            complex(sp), intent(inout) :: a(lda,*)
@@ -4651,7 +4266,6 @@ interface
      end subroutine stdlib${ii}$_cung2l
 
      pure module subroutine stdlib${ii}$_zung2l( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            complex(dp), intent(inout) :: a(lda,*)
@@ -4662,7 +4276,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$ung2l( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            complex(${ck}$), intent(inout) :: a(lda,*)
@@ -4680,7 +4293,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_cunm2l( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -4690,7 +4302,6 @@ interface
      end subroutine stdlib${ii}$_cunm2l
 
      pure module subroutine stdlib${ii}$_zunm2l( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -4702,7 +4313,6 @@ interface
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$unm2l( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -4721,7 +4331,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sorgql( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            real(sp), intent(inout) :: a(lda,*)
@@ -4730,7 +4339,6 @@ interface
      end subroutine stdlib${ii}$_sorgql
 
      pure module subroutine stdlib${ii}$_dorgql( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            real(dp), intent(inout) :: a(lda,*)
@@ -4741,7 +4349,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$orgql( m, n, k, a, lda, tau, work, lwork, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, lwork, m, n
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -4760,7 +4367,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sormql( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -4771,7 +4377,6 @@ interface
 
      pure module subroutine stdlib${ii}$_dormql( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -4784,7 +4389,6 @@ interface
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$ormql( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
@@ -4803,7 +4407,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sorg2l( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            real(sp), intent(inout) :: a(lda,*)
@@ -4812,7 +4415,6 @@ interface
      end subroutine stdlib${ii}$_sorg2l
 
      pure module subroutine stdlib${ii}$_dorg2l( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            real(dp), intent(inout) :: a(lda,*)
@@ -4823,7 +4425,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$org2l( m, n, k, a, lda, tau, work, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, m, n
            real(${rk}$), intent(inout) :: a(lda,*)
@@ -4841,7 +4442,6 @@ end interface
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_sorm2l( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -4851,7 +4451,6 @@ interface
      end subroutine stdlib${ii}$_sorm2l
 
      pure module subroutine stdlib${ii}$_dorm2l( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -4863,7 +4462,6 @@ interface
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ri}$orm2l( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
-           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(out) :: info
            integer(${ik}$), intent(in) :: k, lda, ldc, m, n
@@ -4883,7 +4481,6 @@ interface
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
      pure module subroutine stdlib${ii}$_cunm22( side, trans, m, n, n1, n2, q, ldq, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(in) :: m, n, n1, n2, ldq, ldc, lwork
            integer(${ik}$), intent(out) :: info
@@ -4894,7 +4491,6 @@ interface
 
      pure module subroutine stdlib${ii}$_zunm22( side, trans, m, n, n1, n2, q, ldq, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(in) :: m, n, n1, n2, ldq, ldc, lwork
            integer(${ik}$), intent(out) :: info
@@ -4907,7 +4503,6 @@ interface
 #:if not ck in ["sp","dp"]
      pure module subroutine stdlib${ii}$_${ci}$unm22( side, trans, m, n, n1, n2, q, ldq, c, ldc,work, lwork, info )
                
-           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            character, intent(in) :: side, trans
            integer(${ik}$), intent(in) :: m, n, n1, n2, ldq, ldc, lwork
            integer(${ik}$), intent(out) :: info

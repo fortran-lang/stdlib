@@ -341,7 +341,7 @@ for filename in ['stdlib_linalg_blas_s.fypp','stdlib_linalg_blas_d.fypp','stdlib
                 
             elif inside_subroutine:
                 subroutine_buffer.append(line)
-                if line.strip().lower().startswith("end subroutine stdlib_") or line.strip().lower().startswith("end function stdlib_") or line.strip().lower().startswith(r"end subroutine stdlib${ii}$_") or line.strip().lower().startswith(r"end function stdlib${ii}$_"):
+                if line.strip().lower().startswith(("end subroutine stdlib_","end function stdlib_",r"end subroutine stdlib${ii}$_",r"end function stdlib${ii}$_")):
                     # End of the current subroutine
                     if filename in ['stdlib_linalg_blas_q.fypp','stdlib_linalg_blas_w.fypp'] :
                         subroutine_buffer.append('\n#:endif\n#:endfor\n')
@@ -363,7 +363,7 @@ with open(blas_include, 'w') as file:
     file.write(f"module stdlib_blas\n")
     file.write("  use stdlib_linalg_constants\n")
     file.write("  use stdlib_linalg_blas_aux\n")
-    file.write("  implicit none(type,external)\n")
+    file.write("  implicit none\n")
     for group, group_list in blas_groups.items():
         for name in group_list:
             procedures = subroutines[name]
@@ -376,10 +376,10 @@ with open(blas_include, 'w') as file:
                 if '! =====================================================================' in line:
                     wr = False
                 # Switch on again
-                if line.strip().lower().startswith("end subroutine stdlib_") or line.strip().lower().startswith("end function stdlib_") or line.strip().lower().startswith(r"end subroutine stdlib${ii}$_") or line.strip().lower().startswith(r"end function stdlib${ii}$_"):
+                if line.strip().lower().startswith(("end subroutine stdlib_","end function stdlib_",r"end subroutine stdlib${ii}$_",r"end function stdlib${ii}$_")):
                     wr = True
                 if wr: 
-                    if not line.strip().startswith("!"):
+                    if not line.strip().startswith(("!","use")):
                         file.write(line)
             file.write(f"#:endfor\n")
             file.write("end interface \n")
@@ -393,7 +393,7 @@ for group, group_list in blas_groups.items():
         # Write module header
         file.write("#:include \"common.fypp\" \n")
         file.write(f"submodule(stdlib_blas) stdlib_blas_{group}\n")
-        file.write("  implicit none(type,external)\n")
+        file.write("  implicit none\n")
         file.write("\n\n")
         file.write("  contains\n")
         file.write("#:for ik,it,ii in LINALG_INT_KINDS_TYPES\n")
@@ -462,7 +462,7 @@ for filename in ['stdlib_linalg_lapack_s.fypp','stdlib_linalg_lapack_d.fypp','st
                         subroutine_buffer.append("           use stdlib_blas_constants_${ck}$"+aaa+"\n")
 
                 subroutine_buffer.append(line)
-                if line.strip().lower().startswith("end subroutine stdlib_") or line.strip().lower().startswith("end function stdlib_") or line.strip().lower().startswith(r"end subroutine stdlib${ii}$_") or line.strip().lower().startswith(r"end function stdlib${ii}$_"):
+                if line.strip().lower().startswith(("end subroutine stdlib_","end function stdlib_",r"end subroutine stdlib${ii}$_",r"end function stdlib${ii}$_")):
                     # End of the current subroutine
                     if filename in ['stdlib_linalg_lapack_q.fypp','stdlib_linalg_lapack_w.fypp'] :
                         subroutine_buffer.append('\n#:endif\n#:endfor\n')
@@ -488,7 +488,7 @@ for subgroup_name, subgroup_data in lapack_subgroups.items():
         if dependencies:
             for depen in dependencies:
                 file.write(f"  use stdlib_lapack_{depen}\n")
-        file.write("  implicit none(type,external)\n")
+        file.write("  implicit none\n")
         for mbr in members:
             for name in lapack_groups[mbr]:
                 procedures = subroutines[name]
@@ -501,10 +501,10 @@ for subgroup_name, subgroup_data in lapack_subgroups.items():
                     if '! ==============' in line:
                         wr = False
                     # Switch on again
-                    if line.strip().lower().startswith("end subroutine stdlib_") or line.strip().lower().startswith("end function stdlib_") or line.strip().lower().startswith(r"end subroutine stdlib${ii}$_") or line.strip().lower().startswith(r"end function stdlib${ii}$_"):
+                    if line.strip().lower().startswith(("end subroutine stdlib_","end function stdlib_",r"end subroutine stdlib${ii}$_",r"end function stdlib${ii}$_")):
                         wr = True
                     if wr: 
-                        if not line.strip().startswith("!"):
+                        if not line.strip().startswith(("!","use")):
                             file.write(line)
                 file.write(f"#:endfor\n")
                 file.write("end interface \n")
@@ -519,7 +519,7 @@ for subgroup_name, subgroup_data in lapack_subgroups.items():
             # Write module header
             file.write("#:include \"common.fypp\" \n")
             file.write(f"submodule(stdlib_lapack_{subgroup_name}) stdlib_lapack_{group}\n")
-            file.write("  implicit none(type,external)\n")
+            file.write("  implicit none\n")
             file.write("\n\n")
             file.write("  contains\n")
             file.write("#:for ik,it,ii in LINALG_INT_KINDS_TYPES\n")
