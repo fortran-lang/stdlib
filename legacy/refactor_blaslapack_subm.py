@@ -27,11 +27,9 @@ blas_groups = {
 
 # Define the LAPACK routine groups
 lapack_groups = {
-    "auxiliary_parameters": [
+    "auxiliary": [
         "lamch", "lamc3", "labad", "csum1", "zsum1",
-        "laqsb"
-    ],
-    "auxiliary_others": [
+        "laqsb",
         "ladiv1","ladiv2", "rot"
     ],
 
@@ -252,7 +250,7 @@ lapack_groups = {
 lapack_subgroups = {
     "base" : {
         "dependencies" : [],
-        "members" : ["auxiliary_parameters","auxiliary_others","blas_like_base",
+        "members" : ["auxiliary","blas_like_base",
               "blas_like_scalar","blas_like_l1","blas_like_l2","blas_like_l3","blas_like_mnorm",
               "givens_jacobi_rot","householder_reflectors"],
     },

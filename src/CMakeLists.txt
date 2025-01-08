@@ -105,8 +105,7 @@ set(cppFiles
     lapack/stdlib_lapack_eig_svd_lsq.fypp
 
     lapack/stdlib_linalg_lapack_aux.fypp
-    lapack/stdlib_lapack_auxiliary_others.fypp
-    lapack/stdlib_lapack_auxiliary_parameters.fypp
+    lapack/stdlib_lapack_auxiliary.fypp
     lapack/stdlib_lapack_blas_like_base.fypp
     lapack/stdlib_lapack_blas_like_l1.fypp
     lapack/stdlib_lapack_blas_like_l2.fypp
