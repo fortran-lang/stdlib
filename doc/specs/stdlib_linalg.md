@@ -91,7 +91,7 @@ for example:
 interface axpy
     pure subroutine caxpy(n,ca,cx,incx,cy,incy)
         import sp,dp,qp,ilp,lk 
-        implicit none(type,external) 
+        implicit none 
         complex(sp), intent(in) :: ca,cx(*)
         integer(ilp), intent(in) :: incx,incy,n
         complex(sp), intent(inout) :: cy(*)

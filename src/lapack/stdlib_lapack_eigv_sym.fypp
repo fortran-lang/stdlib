@@ -9651,8 +9651,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
            complex(sp), intent(out) :: ab(ldab,*), tau(*), work(*)
         ! =====================================================================
            ! Parameters 
-           real(sp), parameter :: rone = 1.0e+0_sp
-           
            
            ! Local Scalars 
            logical(lk) :: lquery, upper
@@ -9753,7 +9751,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                   ! update the unreduced submatrix a(i+kd:n,i+kd:n), using
                   ! an update of the form:  a := a - v'*w - w'*v
                   call stdlib${ii}$_cher2k( uplo, 'CONJUGATE', pn, pk,-cone, a( i, i+kd ), lda,work( &
-                            wpos ), ldw,rone, a( i+kd, i+kd ), lda )
+                            wpos ), ldw,one, a( i+kd, i+kd ), lda )
                end do
               ! copy the upper band to ab which is the band storage matrix
               do j = n-kd+1, n
@@ -9789,7 +9787,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                   ! update the unreduced submatrix a(i+kd:n,i+kd:n), using
                   ! an update of the form:  a := a - v*w' - w*v'
                   call stdlib${ii}$_cher2k( uplo, 'NO TRANSPOSE', pn, pk,-cone, a( i+kd, i ), lda,work( &
-                            wpos ), ldw,rone, a( i+kd, i+kd ), lda )
+                            wpos ), ldw,one, a( i+kd, i+kd ), lda )
                   ! ==================================================================
                   ! restore a for comparison and checking to be removed
                    ! do 45 j = i, i+pk-1
@@ -9826,8 +9824,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
            complex(dp), intent(out) :: ab(ldab,*), tau(*), work(*)
         ! =====================================================================
            ! Parameters 
-           real(dp), parameter :: rone = 1.0e+0_dp
-           
            
            ! Local Scalars 
            logical(lk) :: lquery, upper
@@ -9928,7 +9924,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                   ! update the unreduced submatrix a(i+kd:n,i+kd:n), using
                   ! an update of the form:  a := a - v'*w - w'*v
                   call stdlib${ii}$_zher2k( uplo, 'CONJUGATE', pn, pk,-cone, a( i, i+kd ), lda,work( &
-                            wpos ), ldw,rone, a( i+kd, i+kd ), lda )
+                            wpos ), ldw,one, a( i+kd, i+kd ), lda )
                end do
               ! copy the upper band to ab which is the band storage matrix
               do j = n-kd+1, n
@@ -9964,7 +9960,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                   ! update the unreduced submatrix a(i+kd:n,i+kd:n), using
                   ! an update of the form:  a := a - v*w' - w*v'
                   call stdlib${ii}$_zher2k( uplo, 'NO TRANSPOSE', pn, pk,-cone, a( i+kd, i ), lda,work( &
-                            wpos ), ldw,rone, a( i+kd, i+kd ), lda )
+                            wpos ), ldw,one, a( i+kd, i+kd ), lda )
                   ! ==================================================================
                   ! restore a for comparison and checking to be removed
                    ! do 45 j = i, i+pk-1
@@ -10003,8 +9999,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
            complex(${ck}$), intent(out) :: ab(ldab,*), tau(*), work(*)
         ! =====================================================================
            ! Parameters 
-           real(${ck}$), parameter :: rone = 1.0e+0_${ck}$
-           
            
            ! Local Scalars 
            logical(lk) :: lquery, upper
@@ -10105,7 +10099,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                   ! update the unreduced submatrix a(i+kd:n,i+kd:n), using
                   ! an update of the form:  a := a - v'*w - w'*v
                   call stdlib${ii}$_${ci}$her2k( uplo, 'CONJUGATE', pn, pk,-cone, a( i, i+kd ), lda,work( &
-                            wpos ), ldw,rone, a( i+kd, i+kd ), lda )
+                            wpos ), ldw,one, a( i+kd, i+kd ), lda )
                end do
               ! copy the upper band to ab which is the band storage matrix
               do j = n-kd+1, n
@@ -10141,7 +10135,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                   ! update the unreduced submatrix a(i+kd:n,i+kd:n), using
                   ! an update of the form:  a := a - v*w' - w*v'
                   call stdlib${ii}$_${ci}$her2k( uplo, 'NO TRANSPOSE', pn, pk,-cone, a( i+kd, i ), lda,work( &
-                            wpos ), ldw,rone, a( i+kd, i+kd ), lda )
+                            wpos ), ldw,one, a( i+kd, i+kd ), lda )
                   ! ==================================================================
                   ! restore a for comparison and checking to be removed
                    ! do 45 j = i, i+pk-1
@@ -10184,8 +10178,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
            complex(sp), intent(out) :: hous(*), work(*)
         ! =====================================================================
            ! Parameters 
-           real(sp), parameter :: rzero = 0.0e+0_sp
-           
            
            ! Local Scalars 
            logical(lk) :: lquery, wantq, upper, afters1
@@ -10279,7 +10271,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                    d( i ) = real( ab( abdpos, i ),KIND=sp)
                end do
                do i = 1, n-1
-                   e( i ) = rzero
+                   e( i ) = zero
                end do
                hous( 1_${ik}$ ) = 1_${ik}$
                work( 1_${ik}$ ) = 1_${ik}$
@@ -10305,7 +10297,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                        abstmp = abs( tmp )
                        ab( abofdpos, i+1 ) = abstmp
                        e( i ) = abstmp
-                       if( abstmp/=rzero ) then
+                       if( abstmp/=zero ) then
                           tmp = tmp / abstmp
                        else
                           tmp = cone
@@ -10321,7 +10313,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                       abstmp = abs( tmp )
                       ab( abofdpos, i ) = abstmp
                       e( i ) = abstmp
-                      if( abstmp/=rzero ) then
+                      if( abstmp/=zero ) then
                          tmp = tmp / abstmp
                       else
                          tmp = cone
@@ -10456,8 +10448,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
            complex(dp), intent(out) :: hous(*), work(*)
         ! =====================================================================
            ! Parameters 
-           real(dp), parameter :: rzero = 0.0e+0_dp
-           
            
            ! Local Scalars 
            logical(lk) :: lquery, wantq, upper, afters1
@@ -10551,7 +10541,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                    d( i ) = real( ab( abdpos, i ),KIND=dp)
                end do
                do i = 1, n-1
-                   e( i ) = rzero
+                   e( i ) = zero
                end do
                hous( 1_${ik}$ ) = 1_${ik}$
                work( 1_${ik}$ ) = 1_${ik}$
@@ -10577,7 +10567,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                        abstmp = abs( tmp )
                        ab( abofdpos, i+1 ) = abstmp
                        e( i ) = abstmp
-                       if( abstmp/=rzero ) then
+                       if( abstmp/=zero ) then
                           tmp = tmp / abstmp
                        else
                           tmp = cone
@@ -10593,7 +10583,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                       abstmp = abs( tmp )
                       ab( abofdpos, i ) = abstmp
                       e( i ) = abstmp
-                      if( abstmp/=rzero ) then
+                      if( abstmp/=zero ) then
                          tmp = tmp / abstmp
                       else
                          tmp = cone
@@ -10730,8 +10720,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
            complex(${ck}$), intent(out) :: hous(*), work(*)
         ! =====================================================================
            ! Parameters 
-           real(${ck}$), parameter :: rzero = 0.0e+0_${ck}$
-           
            
            ! Local Scalars 
            logical(lk) :: lquery, wantq, upper, afters1
@@ -10825,7 +10813,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                    d( i ) = real( ab( abdpos, i ),KIND=${ck}$)
                end do
                do i = 1, n-1
-                   e( i ) = rzero
+                   e( i ) = zero
                end do
                hous( 1_${ik}$ ) = 1_${ik}$
                work( 1_${ik}$ ) = 1_${ik}$
@@ -10851,7 +10839,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                        abstmp = abs( tmp )
                        ab( abofdpos, i+1 ) = abstmp
                        e( i ) = abstmp
-                       if( abstmp/=rzero ) then
+                       if( abstmp/=zero ) then
                           tmp = tmp / abstmp
                        else
                           tmp = cone
@@ -10867,7 +10855,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                       abstmp = abs( tmp )
                       ab( abofdpos, i ) = abstmp
                       e( i ) = abstmp
-                      if( abstmp/=rzero ) then
+                      if( abstmp/=zero ) then
                          tmp = tmp / abstmp
                       else
                          tmp = cone
@@ -11446,8 +11434,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
            real(sp), intent(out) :: hous(*), work(*)
         ! =====================================================================
            ! Parameters 
-           real(sp), parameter :: rzero = 0.0e+0_sp
-           
            
            ! Local Scalars 
            logical(lk) :: lquery, wantq, upper, afters1
@@ -11539,7 +11525,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                    d( i ) = ( ab( abdpos, i ) )
                end do
                do i = 1, n-1
-                   e( i ) = rzero
+                   e( i ) = zero
                end do
                hous( 1_${ik}$ ) = 1_${ik}$
                work( 1_${ik}$ ) = 1_${ik}$
@@ -11691,8 +11677,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
            real(dp), intent(out) :: hous(*), work(*)
         ! =====================================================================
            ! Parameters 
-           real(dp), parameter :: rzero = 0.0e+0_dp
-           
            
            ! Local Scalars 
            logical(lk) :: lquery, wantq, upper, afters1
@@ -11784,7 +11768,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                    d( i ) = ( ab( abdpos, i ) )
                end do
                do i = 1, n-1
-                   e( i ) = rzero
+                   e( i ) = zero
                end do
                hous( 1_${ik}$ ) = 1_${ik}$
                work( 1_${ik}$ ) = 1_${ik}$
@@ -11938,8 +11922,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
            real(${rk}$), intent(out) :: hous(*), work(*)
         ! =====================================================================
            ! Parameters 
-           real(${rk}$), parameter :: rzero = 0.0e+0_${rk}$
-           
            
            ! Local Scalars 
            logical(lk) :: lquery, wantq, upper, afters1
@@ -12031,7 +12013,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                    d( i ) = ( ab( abdpos, i ) )
                end do
                do i = 1, n-1
-                   e( i ) = rzero
+                   e( i ) = zero
                end do
                hous( 1_${ik}$ ) = 1_${ik}$
                work( 1_${ik}$ ) = 1_${ik}$
@@ -12187,8 +12169,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
            real(sp), intent(out) :: ab(ldab,*), tau(*), work(*)
         ! =====================================================================
            ! Parameters 
-           real(sp), parameter :: rone = 1.0e+0_sp
-           
            
            ! Local Scalars 
            logical(lk) :: lquery, upper
@@ -12289,7 +12269,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                   ! update the unreduced submatrix a(i+kd:n,i+kd:n), using
                   ! an update of the form:  a := a - v'*w - w'*v
                   call stdlib${ii}$_ssyr2k( uplo, 'CONJUGATE', pn, pk,-one, a( i, i+kd ), lda,work( &
-                            wpos ), ldw,rone, a( i+kd, i+kd ), lda )
+                            wpos ), ldw,one, a( i+kd, i+kd ), lda )
                end do
               ! copy the upper band to ab which is the band storage matrix
               do j = n-kd+1, n
@@ -12325,7 +12305,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                   ! update the unreduced submatrix a(i+kd:n,i+kd:n), using
                   ! an update of the form:  a := a - v*w' - w*v'
                   call stdlib${ii}$_ssyr2k( uplo, 'NO TRANSPOSE', pn, pk,-one, a( i+kd, i ), lda,work( &
-                            wpos ), ldw,rone, a( i+kd, i+kd ), lda )
+                            wpos ), ldw,one, a( i+kd, i+kd ), lda )
                   ! ==================================================================
                   ! restore a for comparison and checking to be removed
                    ! do 45 j = i, i+pk-1
@@ -12362,8 +12342,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
            real(dp), intent(out) :: ab(ldab,*), tau(*), work(*)
         ! =====================================================================
            ! Parameters 
-           real(dp), parameter :: rone = 1.0e+0_dp
-           
            
            ! Local Scalars 
            logical(lk) :: lquery, upper
@@ -12464,7 +12442,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                   ! update the unreduced submatrix a(i+kd:n,i+kd:n), using
                   ! an update of the form:  a := a - v'*w - w'*v
                   call stdlib${ii}$_dsyr2k( uplo, 'CONJUGATE', pn, pk,-one, a( i, i+kd ), lda,work( &
-                            wpos ), ldw,rone, a( i+kd, i+kd ), lda )
+                            wpos ), ldw,one, a( i+kd, i+kd ), lda )
                end do
               ! copy the upper band to ab which is the band storage matrix
               do j = n-kd+1, n
@@ -12500,7 +12478,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                   ! update the unreduced submatrix a(i+kd:n,i+kd:n), using
                   ! an update of the form:  a := a - v*w' - w*v'
                   call stdlib${ii}$_dsyr2k( uplo, 'NO TRANSPOSE', pn, pk,-one, a( i+kd, i ), lda,work( &
-                            wpos ), ldw,rone, a( i+kd, i+kd ), lda )
+                            wpos ), ldw,one, a( i+kd, i+kd ), lda )
                   ! ==================================================================
                   ! restore a for comparison and checking to be removed
                    ! do 45 j = i, i+pk-1
@@ -12539,8 +12517,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
            real(${rk}$), intent(out) :: ab(ldab,*), tau(*), work(*)
         ! =====================================================================
            ! Parameters 
-           real(${rk}$), parameter :: rone = 1.0e+0_${rk}$
-           
            
            ! Local Scalars 
            logical(lk) :: lquery, upper
@@ -12641,7 +12617,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                   ! update the unreduced submatrix a(i+kd:n,i+kd:n), using
                   ! an update of the form:  a := a - v'*w - w'*v
                   call stdlib${ii}$_${ri}$syr2k( uplo, 'CONJUGATE', pn, pk,-one, a( i, i+kd ), lda,work( &
-                            wpos ), ldw,rone, a( i+kd, i+kd ), lda )
+                            wpos ), ldw,one, a( i+kd, i+kd ), lda )
                end do
               ! copy the upper band to ab which is the band storage matrix
               do j = n-kd+1, n
@@ -12677,7 +12653,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
                   ! update the unreduced submatrix a(i+kd:n,i+kd:n), using
                   ! an update of the form:  a := a - v*w' - w*v'
                   call stdlib${ii}$_${ri}$syr2k( uplo, 'NO TRANSPOSE', pn, pk,-one, a( i+kd, i ), lda,work( &
-                            wpos ), ldw,rone, a( i+kd, i+kd ), lda )
+                            wpos ), ldw,one, a( i+kd, i+kd ), lda )
                   ! ==================================================================
                   ! restore a for comparison and checking to be removed
                    ! do 45 j = i, i+pk-1

@@ -2296,8 +2296,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            complex(sp), intent(out) :: w(*)
         ! =========================================================
            ! Parameters 
-           real(sp), parameter :: rzero = 0.0_sp
-           real(sp), parameter :: rone = 1.0_sp
            real(sp), parameter :: dat1 = 3.0_sp/4.0_sp
            integer(${ik}$), parameter :: kexsh = 10_${ik}$
            
@@ -2339,7 +2337,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
               jhi = ihi
            end if
            do i = ilo + 1, ihi
-              if( aimag( h( i, i-1 ) )/=rzero ) then
+              if( aimag( h( i, i-1 ) )/=zero ) then
                  ! ==== the following redundant normalization
                  ! .    avoids problems with both gradual and
                  ! .    sudden underflow in abs(h(i,i-1)) ====
@@ -2355,7 +2353,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            nz = ihiz - iloz + 1_${ik}$
            ! set machine-dependent constants for the stopping criterion.
            safmin = stdlib${ii}$_slamch( 'SAFE MINIMUM' )
-           safmax = rone / safmin
+           safmax = one / safmin
            call stdlib${ii}$_slabad( safmin, safmax )
            ulp = stdlib${ii}$_slamch( 'PRECISION' )
            smlnum = safmin*( real( nh,KIND=sp) / ulp )
@@ -2433,14 +2431,14 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
                  t = h( i, i )
                  u = sqrt( h( i-1, i ) )*sqrt( h( i, i-1 ) )
                  s = cabs1( u )
-                 if( s/=rzero ) then
+                 if( s/=zero ) then
                     x = half*( h( i-1, i-1 )-t )
                     sx = cabs1( x )
                     s = max( s, cabs1( x ) )
                     y = s*sqrt( ( x / s )**2_${ik}$+( u / s )**2_${ik}$ )
-                    if( sx>rzero ) then
+                    if( sx>zero ) then
                        if( real( x / sx,KIND=sp)*real( y,KIND=sp)+aimag( x / sx )*aimag( y )&
-                                 <rzero )y = -y
+                                 <zero )y = -y
                     end if
                     t = t - u*stdlib${ii}$_cladiv( u, ( x+y ) )
                  end if
@@ -2536,7 +2534,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
               end do loop_120
               ! ensure that h(i,i-1) is real.
               temp = h( i, i-1 )
-              if( aimag( temp )/=rzero ) then
+              if( aimag( temp )/=zero ) then
                  rtemp = abs( temp )
                  h( i, i-1 ) = rtemp
                  temp = temp / rtemp
@@ -2581,8 +2579,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            complex(dp), intent(out) :: w(*)
         ! =========================================================
            ! Parameters 
-           real(dp), parameter :: rzero = 0.0_dp
-           real(dp), parameter :: rone = 1.0_dp
            real(dp), parameter :: dat1 = 3.0_dp/4.0_dp
            integer(${ik}$), parameter :: kexsh = 10_${ik}$
            
@@ -2624,7 +2620,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
               jhi = ihi
            end if
            do i = ilo + 1, ihi
-              if( aimag( h( i, i-1 ) )/=rzero ) then
+              if( aimag( h( i, i-1 ) )/=zero ) then
                  ! ==== the following redundant normalization
                  ! .    avoids problems with both gradual and
                  ! .    sudden underflow in abs(h(i,i-1)) ====
@@ -2640,7 +2636,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            nz = ihiz - iloz + 1_${ik}$
            ! set machine-dependent constants for the stopping criterion.
            safmin = stdlib${ii}$_dlamch( 'SAFE MINIMUM' )
-           safmax = rone / safmin
+           safmax = one / safmin
            call stdlib${ii}$_dlabad( safmin, safmax )
            ulp = stdlib${ii}$_dlamch( 'PRECISION' )
            smlnum = safmin*( real( nh,KIND=dp) / ulp )
@@ -2718,14 +2714,14 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
                  t = h( i, i )
                  u = sqrt( h( i-1, i ) )*sqrt( h( i, i-1 ) )
                  s = cabs1( u )
-                 if( s/=rzero ) then
+                 if( s/=zero ) then
                     x = half*( h( i-1, i-1 )-t )
                     sx = cabs1( x )
                     s = max( s, cabs1( x ) )
                     y = s*sqrt( ( x / s )**2_${ik}$+( u / s )**2_${ik}$ )
-                    if( sx>rzero ) then
+                    if( sx>zero ) then
                        if( real( x / sx,KIND=dp)*real( y,KIND=dp)+aimag( x / sx )*aimag( y )&
-                                 <rzero )y = -y
+                                 <zero )y = -y
                     end if
                     t = t - u*stdlib${ii}$_zladiv( u, ( x+y ) )
                  end if
@@ -2821,7 +2817,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
               end do loop_120
               ! ensure that h(i,i-1) is real.
               temp = h( i, i-1 )
-              if( aimag( temp )/=rzero ) then
+              if( aimag( temp )/=zero ) then
                  rtemp = abs( temp )
                  h( i, i-1 ) = rtemp
                  temp = temp / rtemp
@@ -2868,13 +2864,8 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            complex(${ck}$), intent(out) :: w(*)
         ! =========================================================
            ! Parameters 
-           real(${ck}$), parameter :: rzero = 0.0_${ck}$
-           real(${ck}$), parameter :: rone = 1.0_${ck}$
            real(${ck}$), parameter :: dat1 = 3.0_${ck}$/4.0_${ck}$
            integer(${ik}$), parameter :: kexsh = 10_${ik}$
-           
-           
-           
            
            ! Local Scalars 
            complex(${ck}$) :: cdum, h11, h11s, h22, sc, sum, t, t1, temp, u, v2, x, y
@@ -2911,7 +2902,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
               jhi = ihi
            end if
            do i = ilo + 1, ihi
-              if( aimag( h( i, i-1 ) )/=rzero ) then
+              if( aimag( h( i, i-1 ) )/=zero ) then
                  ! ==== the following redundant normalization
                  ! .    avoids problems with both gradual and
                  ! .    sudden underflow in abs(h(i,i-1)) ====
@@ -2927,7 +2918,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            nz = ihiz - iloz + 1_${ik}$
            ! set machine-dependent constants for the stopping criterion.
            safmin = stdlib${ii}$_${c2ri(ci)}$lamch( 'SAFE MINIMUM' )
-           safmax = rone / safmin
+           safmax = one / safmin
            call stdlib${ii}$_${c2ri(ci)}$labad( safmin, safmax )
            ulp = stdlib${ii}$_${c2ri(ci)}$lamch( 'PRECISION' )
            smlnum = safmin*( real( nh,KIND=${ck}$) / ulp )
@@ -3005,14 +2996,14 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
                  t = h( i, i )
                  u = sqrt( h( i-1, i ) )*sqrt( h( i, i-1 ) )
                  s = cabs1( u )
-                 if( s/=rzero ) then
+                 if( s/=zero ) then
                     x = half*( h( i-1, i-1 )-t )
                     sx = cabs1( x )
                     s = max( s, cabs1( x ) )
                     y = s*sqrt( ( x / s )**2_${ik}$+( u / s )**2_${ik}$ )
-                    if( sx>rzero ) then
+                    if( sx>zero ) then
                        if( real( x / sx,KIND=${ck}$)*real( y,KIND=${ck}$)+aimag( x / sx )*aimag( y )&
-                                 <rzero )y = -y
+                                 <zero )y = -y
                     end if
                     t = t - u*stdlib${ii}$_${ci}$ladiv( u, ( x+y ) )
                  end if
@@ -3108,7 +3099,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
               end do loop_120
               ! ensure that h(i,i-1) is real.
               temp = h( i, i-1 )
-              if( aimag( temp )/=rzero ) then
+              if( aimag( temp )/=zero ) then
                  rtemp = abs( temp )
                  h( i, i-1 ) = rtemp
                  temp = temp / rtemp
@@ -5497,8 +5488,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            complex(sp), intent(out) :: v(*)
         ! ================================================================
            ! Parameters 
-           real(sp), parameter :: rzero = 0.0_sp
-           
            
            ! Local Scalars 
            complex(sp) :: cdum, h21s, h31s
@@ -5515,7 +5504,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            end if
            if( n==2_${ik}$ ) then
               s = cabs1( h( 1_${ik}$, 1_${ik}$ )-s2 ) + cabs1( h( 2_${ik}$, 1_${ik}$ ) )
-              if( s==rzero ) then
+              if( s==zero ) then
                  v( 1_${ik}$ ) = czero
                  v( 2_${ik}$ ) = czero
               else
@@ -5559,8 +5548,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            complex(dp), intent(out) :: v(*)
         ! ================================================================
            ! Parameters 
-           real(dp), parameter :: rzero = 0.0_dp
-           
            
            ! Local Scalars 
            complex(dp) :: cdum, h21s, h31s
@@ -5577,7 +5564,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            end if
            if( n==2_${ik}$ ) then
               s = cabs1( h( 1_${ik}$, 1_${ik}$ )-s2 ) + cabs1( h( 2_${ik}$, 1_${ik}$ ) )
-              if( s==rzero ) then
+              if( s==zero ) then
                  v( 1_${ik}$ ) = czero
                  v( 2_${ik}$ ) = czero
               else
@@ -5623,8 +5610,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            complex(${ck}$), intent(out) :: v(*)
         ! ================================================================
            ! Parameters 
-           real(${ck}$), parameter :: rzero = 0.0_${ck}$
-           
            
            ! Local Scalars 
            complex(${ck}$) :: cdum, h21s, h31s
@@ -5641,7 +5626,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            end if
            if( n==2_${ik}$ ) then
               s = cabs1( h( 1_${ik}$, 1_${ik}$ )-s2 ) + cabs1( h( 2_${ik}$, 1_${ik}$ ) )
-              if( s==rzero ) then
+              if( s==zero ) then
                  v( 1_${ik}$ ) = czero
                  v( 2_${ik}$ ) = czero
               else
@@ -6609,9 +6594,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            complex(sp), intent(out) :: sh(*), t(ldt,*), v(ldv,*), work(*), wv(ldwv,*)
         ! ================================================================
            ! Parameters 
-           real(sp), parameter :: rzero = 0.0_sp
-           real(sp), parameter :: rone = 1.0_sp
-           
            
            ! Local Scalars 
            complex(sp) :: beta, cdum, s, tau
@@ -6654,7 +6636,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            if( nw<1 )return
            ! ==== machine constants ====
            safmin = stdlib${ii}$_slamch( 'SAFE MINIMUM' )
-           safmax = rone / safmin
+           safmax = one / safmin
            call stdlib${ii}$_slabad( safmin, safmax )
            ulp = stdlib${ii}$_slamch( 'PRECISION' )
            smlnum = safmin*( real( n,KIND=sp) / ulp )
@@ -6695,7 +6677,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            do knt = infqr + 1, jw
               ! ==== small spike tip deflation test ====
               foo = cabs1( t( ns, ns ) )
-              if( foo==rzero )foo = cabs1( s )
+              if( foo==zero )foo = cabs1( s )
               if( cabs1( s )*cabs1( v( 1_${ik}$, ns ) )<=max( smlnum, ulp*foo ) )then
                  ! ==== cone more converged eigenvalue ====
                  ns = ns - 1_${ik}$
@@ -6822,9 +6804,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            complex(dp), intent(out) :: sh(*), t(ldt,*), v(ldv,*), work(*), wv(ldwv,*)
         ! ================================================================
            ! Parameters 
-           real(dp), parameter :: rzero = 0.0_dp
-           real(dp), parameter :: rone = 1.0_dp
-           
            
            ! Local Scalars 
            complex(dp) :: beta, cdum, s, tau
@@ -6867,7 +6846,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            if( nw<1 )return
            ! ==== machine constants ====
            safmin = stdlib${ii}$_dlamch( 'SAFE MINIMUM' )
-           safmax = rone / safmin
+           safmax = one / safmin
            call stdlib${ii}$_dlabad( safmin, safmax )
            ulp = stdlib${ii}$_dlamch( 'PRECISION' )
            smlnum = safmin*( real( n,KIND=dp) / ulp )
@@ -6908,7 +6887,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            do knt = infqr + 1, jw
               ! ==== small spike tip deflation test ====
               foo = cabs1( t( ns, ns ) )
-              if( foo==rzero )foo = cabs1( s )
+              if( foo==zero )foo = cabs1( s )
               if( cabs1( s )*cabs1( v( 1_${ik}$, ns ) )<=max( smlnum, ulp*foo ) )then
                  ! ==== cone more converged eigenvalue ====
                  ns = ns - 1_${ik}$
@@ -7037,9 +7016,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            complex(${ck}$), intent(out) :: sh(*), t(ldt,*), v(ldv,*), work(*), wv(ldwv,*)
         ! ================================================================
            ! Parameters 
-           real(${ck}$), parameter :: rzero = 0.0_${ck}$
-           real(${ck}$), parameter :: rone = 1.0_${ck}$
-           
            
            ! Local Scalars 
            complex(${ck}$) :: beta, cdum, s, tau
@@ -7082,7 +7058,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            if( nw<1 )return
            ! ==== machine constants ====
            safmin = stdlib${ii}$_${c2ri(ci)}$lamch( 'SAFE MINIMUM' )
-           safmax = rone / safmin
+           safmax = one / safmin
            call stdlib${ii}$_${c2ri(ci)}$labad( safmin, safmax )
            ulp = stdlib${ii}$_${c2ri(ci)}$lamch( 'PRECISION' )
            smlnum = safmin*( real( n,KIND=${ck}$) / ulp )
@@ -7123,7 +7099,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            do knt = infqr + 1, jw
               ! ==== small spike tip deflation test ====
               foo = cabs1( t( ns, ns ) )
-              if( foo==rzero )foo = cabs1( s )
+              if( foo==zero )foo = cabs1( s )
               if( cabs1( s )*cabs1( v( 1_${ik}$, ns ) )<=max( smlnum, ulp*foo ) )then
                  ! ==== cone more converged eigenvalue ====
                  ns = ns - 1_${ik}$
@@ -8188,9 +8164,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            complex(sp), intent(out) :: sh(*), t(ldt,*), v(ldv,*), work(*), wv(ldwv,*)
         ! ================================================================
            ! Parameters 
-           real(sp), parameter :: rzero = 0.0_sp
-           real(sp), parameter :: rone = 1.0_sp
-           
            
            ! Local Scalars 
            complex(sp) :: beta, cdum, s, tau
@@ -8237,7 +8210,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            if( nw<1 )return
            ! ==== machine constants ====
            safmin = stdlib${ii}$_slamch( 'SAFE MINIMUM' )
-           safmax = rone / safmin
+           safmax = one / safmin
            call stdlib${ii}$_slabad( safmin, safmax )
            ulp = stdlib${ii}$_slamch( 'PRECISION' )
            smlnum = safmin*( real( n,KIND=sp) / ulp )
@@ -8284,7 +8257,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            do knt = infqr + 1, jw
               ! ==== small spike tip deflation test ====
               foo = cabs1( t( ns, ns ) )
-              if( foo==rzero )foo = cabs1( s )
+              if( foo==zero )foo = cabs1( s )
               if( cabs1( s )*cabs1( v( 1_${ik}$, ns ) )<=max( smlnum, ulp*foo ) )then
                  ! ==== cone more converged eigenvalue ====
                  ns = ns - 1_${ik}$
@@ -8409,9 +8382,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            complex(dp), intent(out) :: sh(*), t(ldt,*), v(ldv,*), work(*), wv(ldwv,*)
         ! ================================================================
            ! Parameters 
-           real(dp), parameter :: rzero = 0.0_dp
-           real(dp), parameter :: rone = 1.0_dp
-           
            
            ! Local Scalars 
            complex(dp) :: beta, cdum, s, tau
@@ -8458,7 +8428,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            if( nw<1 )return
            ! ==== machine constants ====
            safmin = stdlib${ii}$_dlamch( 'SAFE MINIMUM' )
-           safmax = rone / safmin
+           safmax = one / safmin
            call stdlib${ii}$_dlabad( safmin, safmax )
            ulp = stdlib${ii}$_dlamch( 'PRECISION' )
            smlnum = safmin*( real( n,KIND=dp) / ulp )
@@ -8505,7 +8475,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            do knt = infqr + 1, jw
               ! ==== small spike tip deflation test ====
               foo = cabs1( t( ns, ns ) )
-              if( foo==rzero )foo = cabs1( s )
+              if( foo==zero )foo = cabs1( s )
               if( cabs1( s )*cabs1( v( 1_${ik}$, ns ) )<=max( smlnum, ulp*foo ) )then
                  ! ==== cone more converged eigenvalue ====
                  ns = ns - 1_${ik}$
@@ -8632,9 +8602,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            complex(${ck}$), intent(out) :: sh(*), t(ldt,*), v(ldv,*), work(*), wv(ldwv,*)
         ! ================================================================
            ! Parameters 
-           real(${ck}$), parameter :: rzero = 0.0_${ck}$
-           real(${ck}$), parameter :: rone = 1.0_${ck}$
-           
            
            ! Local Scalars 
            complex(${ck}$) :: beta, cdum, s, tau
@@ -8681,7 +8648,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            if( nw<1 )return
            ! ==== machine constants ====
            safmin = stdlib${ii}$_${c2ri(ci)}$lamch( 'SAFE MINIMUM' )
-           safmax = rone / safmin
+           safmax = one / safmin
            call stdlib${ii}$_${c2ri(ci)}$labad( safmin, safmax )
            ulp = stdlib${ii}$_${c2ri(ci)}$lamch( 'PRECISION' )
            smlnum = safmin*( real( n,KIND=${ck}$) / ulp )
@@ -8728,7 +8695,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            do knt = infqr + 1, jw
               ! ==== small spike tip deflation test ====
               foo = cabs1( t( ns, ns ) )
-              if( foo==rzero )foo = cabs1( s )
+              if( foo==zero )foo = cabs1( s )
               if( cabs1( s )*cabs1( v( 1_${ik}$, ns ) )<=max( smlnum, ulp*foo ) )then
                  ! ==== cone more converged eigenvalue ====
                  ns = ns - 1_${ik}$
@@ -12236,9 +12203,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            complex(sp), intent(out) :: u(ldu,*), v(ldv,*), wh(ldwh,*), wv(ldwv,*)
         ! ================================================================
            ! Parameters 
-           real(sp), parameter :: rzero = 0.0_sp
-           real(sp), parameter :: rone = 1.0_sp
-           
            
            ! Local Scalars 
            complex(sp) :: alpha, beta, cdum, refsum
@@ -12264,7 +12228,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            ns = nshfts - mod( nshfts, 2_${ik}$ )
            ! ==== machine constants for deflation ====
            safmin = stdlib${ii}$_slamch( 'SAFE MINIMUM' )
-           safmax = rone / safmin
+           safmax = one / safmin
            call stdlib${ii}$_slabad( safmin, safmax )
            ulp = stdlib${ii}$_slamch( 'PRECISION' )
            smlnum = safmin*( real( n,KIND=sp) / ulp )
@@ -12362,7 +12326,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
                     if( k>=ktop) then
                        if( h( k+1, k )/=czero ) then
                           tst1 = cabs1( h( k, k ) ) + cabs1( h( k+1, k+1 ) )
-                          if( tst1==rzero ) then
+                          if( tst1==zero ) then
                              if( k>=ktop+1 )tst1 = tst1 + cabs1( h( k, k-1 ) )
                              if( k>=ktop+2 )tst1 = tst1 + cabs1( h( k, k-2 ) )
                              if( k>=ktop+3 )tst1 = tst1 + cabs1( h( k, k-3 ) )
@@ -12379,7 +12343,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
                                        
                              scl = h11 + h12
                              tst2 = h22*( h11 / scl )
-                             if( tst2==rzero .or. h21*( h12 / scl )<=max( smlnum, ulp*tst2 ) )h( &
+                             if( tst2==zero .or. h21*( h12 / scl )<=max( smlnum, ulp*tst2 ) )h( &
                                        k+1, k ) = czero
                           end if
                        end if
@@ -12497,7 +12461,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
                     if( k<ktop)cycle
                     if( h( k+1, k )/=czero ) then
                        tst1 = cabs1( h( k, k ) ) + cabs1( h( k+1, k+1 ) )
-                       if( tst1==rzero ) then
+                       if( tst1==zero ) then
                           if( k>=ktop+1 )tst1 = tst1 + cabs1( h( k, k-1 ) )
                           if( k>=ktop+2 )tst1 = tst1 + cabs1( h( k, k-2 ) )
                           if( k>=ktop+3 )tst1 = tst1 + cabs1( h( k, k-3 ) )
@@ -12514,7 +12478,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
                                     
                           scl = h11 + h12
                           tst2 = h22*( h11 / scl )
-                          if( tst2==rzero .or. h21*( h12 / scl )<=max( smlnum, ulp*tst2 ) )h( k+1,&
+                          if( tst2==zero .or. h21*( h12 / scl )<=max( smlnum, ulp*tst2 ) )h( k+1,&
                                      k ) = czero
                        end if
                     end if
@@ -12633,9 +12597,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            complex(dp), intent(out) :: u(ldu,*), v(ldv,*), wh(ldwh,*), wv(ldwv,*)
         ! ================================================================
            ! Parameters 
-           real(dp), parameter :: rzero = 0.0_dp
-           real(dp), parameter :: rone = 1.0_dp
-           
            
            ! Local Scalars 
            complex(dp) :: alpha, beta, cdum, refsum
@@ -12661,7 +12622,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            ns = nshfts - mod( nshfts, 2_${ik}$ )
            ! ==== machine constants for deflation ====
            safmin = stdlib${ii}$_dlamch( 'SAFE MINIMUM' )
-           safmax = rone / safmin
+           safmax = one / safmin
            call stdlib${ii}$_dlabad( safmin, safmax )
            ulp = stdlib${ii}$_dlamch( 'PRECISION' )
            smlnum = safmin*( real( n,KIND=dp) / ulp )
@@ -12759,7 +12720,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
                     if( k>=ktop ) then
                        if( h( k+1, k )/=czero ) then
                           tst1 = cabs1( h( k, k ) ) + cabs1( h( k+1, k+1 ) )
-                          if( tst1==rzero ) then
+                          if( tst1==zero ) then
                              if( k>=ktop+1 )tst1 = tst1 + cabs1( h( k, k-1 ) )
                              if( k>=ktop+2 )tst1 = tst1 + cabs1( h( k, k-2 ) )
                              if( k>=ktop+3 )tst1 = tst1 + cabs1( h( k, k-3 ) )
@@ -12776,7 +12737,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
                                        
                              scl = h11 + h12
                              tst2 = h22*( h11 / scl )
-                             if( tst2==rzero .or. h21*( h12 / scl )<=max( smlnum, ulp*tst2 ) )h( &
+                             if( tst2==zero .or. h21*( h12 / scl )<=max( smlnum, ulp*tst2 ) )h( &
                                        k+1, k ) = czero
                           end if
                        end if
@@ -12894,7 +12855,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
                     if( k<ktop)cycle
                     if( h( k+1, k )/=czero ) then
                        tst1 = cabs1( h( k, k ) ) + cabs1( h( k+1, k+1 ) )
-                       if( tst1==rzero ) then
+                       if( tst1==zero ) then
                           if( k>=ktop+1 )tst1 = tst1 + cabs1( h( k, k-1 ) )
                           if( k>=ktop+2 )tst1 = tst1 + cabs1( h( k, k-2 ) )
                           if( k>=ktop+3 )tst1 = tst1 + cabs1( h( k, k-3 ) )
@@ -12911,7 +12872,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
                                     
                           scl = h11 + h12
                           tst2 = h22*( h11 / scl )
-                          if( tst2==rzero .or. h21*( h12 / scl )<=max( smlnum, ulp*tst2 ) )h( k+1,&
+                          if( tst2==zero .or. h21*( h12 / scl )<=max( smlnum, ulp*tst2 ) )h( k+1,&
                                      k ) = czero
                        end if
                     end if
@@ -13032,9 +12993,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            complex(${ck}$), intent(out) :: u(ldu,*), v(ldv,*), wh(ldwh,*), wv(ldwv,*)
         ! ================================================================
            ! Parameters 
-           real(${ck}$), parameter :: rzero = 0.0_${ck}$
-           real(${ck}$), parameter :: rone = 1.0_${ck}$
-           
            
            ! Local Scalars 
            complex(${ck}$) :: alpha, beta, cdum, refsum
@@ -13060,7 +13018,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
            ns = nshfts - mod( nshfts, 2_${ik}$ )
            ! ==== machine constants for deflation ====
            safmin = stdlib${ii}$_${c2ri(ci)}$lamch( 'SAFE MINIMUM' )
-           safmax = rone / safmin
+           safmax = one / safmin
            call stdlib${ii}$_${c2ri(ci)}$labad( safmin, safmax )
            ulp = stdlib${ii}$_${c2ri(ci)}$lamch( 'PRECISION' )
            smlnum = safmin*( real( n,KIND=${ck}$) / ulp )
@@ -13158,7 +13116,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
                     if( k>=ktop ) then
                        if( h( k+1, k )/=czero ) then
                           tst1 = cabs1( h( k, k ) ) + cabs1( h( k+1, k+1 ) )
-                          if( tst1==rzero ) then
+                          if( tst1==zero ) then
                              if( k>=ktop+1 )tst1 = tst1 + cabs1( h( k, k-1 ) )
                              if( k>=ktop+2 )tst1 = tst1 + cabs1( h( k, k-2 ) )
                              if( k>=ktop+3 )tst1 = tst1 + cabs1( h( k, k-3 ) )
@@ -13175,7 +13133,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
                                        
                              scl = h11 + h12
                              tst2 = h22*( h11 / scl )
-                             if( tst2==rzero .or. h21*( h12 / scl )<=max( smlnum, ulp*tst2 ) )h( &
+                             if( tst2==zero .or. h21*( h12 / scl )<=max( smlnum, ulp*tst2 ) )h( &
                                        k+1, k ) = czero
                           end if
                        end if
@@ -13293,7 +13251,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
                     if( k<ktop)cycle
                     if( h( k+1, k )/=czero ) then
                        tst1 = cabs1( h( k, k ) ) + cabs1( h( k+1, k+1 ) )
-                       if( tst1==rzero ) then
+                       if( tst1==zero ) then
                           if( k>=ktop+1 )tst1 = tst1 + cabs1( h( k, k-1 ) )
                           if( k>=ktop+2 )tst1 = tst1 + cabs1( h( k, k-2 ) )
                           if( k>=ktop+3 )tst1 = tst1 + cabs1( h( k, k-3 ) )
@@ -13310,7 +13268,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen3
                                     
                           scl = h11 + h12
                           tst2 = h22*( h11 / scl )
-                          if( tst2==rzero .or. h21*( h12 / scl )<=max( smlnum, ulp*tst2 ) )h( k+1,&
+                          if( tst2==zero .or. h21*( h12 / scl )<=max( smlnum, ulp*tst2 ) )h( k+1,&
                                      k ) = czero
                        end if
                     end if

@@ -474,7 +474,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen2
            ! Parameters 
            integer(${ik}$), parameter :: ntiny = 15_${ik}$
            integer(${ik}$), parameter :: nl = 49_${ik}$
-           real(sp), parameter :: rzero = 0.0_sp
            ! ==== matrices of order ntiny or smaller must be processed by
            ! .    stdlib${ii}$_clahqr because of insufficient subdiagonal scratch space.
            ! .    (this is a hard limit.) ====
@@ -499,7 +498,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen2
            wantt = stdlib_lsame( job, 'S' )
            initz = stdlib_lsame( compz, 'I' )
            wantz = initz .or. stdlib_lsame( compz, 'V' )
-           work( 1_${ik}$ ) = cmplx( real( max( 1_${ik}$, n ),KIND=sp), rzero,KIND=sp)
+           work( 1_${ik}$ ) = cmplx( real( max( 1_${ik}$, n ),KIND=sp), zero,KIND=sp)
            lquery = lwork==-1_${ik}$
            info = 0_${ik}$
            if( .not.stdlib_lsame( job, 'E' ) .and. .not.wantt ) then
@@ -533,7 +532,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen2
               ! ==== ensure reported workspace size is backward-compatible with
               ! .    previous lapack versions. ====
               work( 1_${ik}$ ) = cmplx( max( real( work( 1_${ik}$ ),KIND=sp), real( max( 1_${ik}$,n ),KIND=sp) ), &
-                        rzero,KIND=sp)
+                        zero,KIND=sp)
               return
            else
               ! ==== copy eigenvalues isolated by stdlib${ii}$_cgebal ====
@@ -589,7 +588,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen2
               ! ==== ensure reported workspace size is backward-compatible with
               ! .    previous lapack versions. ====
               work( 1_${ik}$ ) = cmplx( max( real( max( 1_${ik}$, n ),KIND=sp),real( work( 1_${ik}$ ),KIND=sp) ), &
-                        rzero,KIND=sp)
+                        zero,KIND=sp)
            end if
      end subroutine stdlib${ii}$_chseqr
 
@@ -618,7 +617,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen2
            ! Parameters 
            integer(${ik}$), parameter :: ntiny = 15_${ik}$
            integer(${ik}$), parameter :: nl = 49_${ik}$
-           real(dp), parameter :: rzero = 0.0_dp
            ! ==== matrices of order ntiny or smaller must be processed by
            ! .    stdlib${ii}$_zlahqr because of insufficient subdiagonal scratch space.
            ! .    (this is a hard limit.) ====
@@ -643,7 +641,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen2
            wantt = stdlib_lsame( job, 'S' )
            initz = stdlib_lsame( compz, 'I' )
            wantz = initz .or. stdlib_lsame( compz, 'V' )
-           work( 1_${ik}$ ) = cmplx( real( max( 1_${ik}$, n ),KIND=dp), rzero,KIND=dp)
+           work( 1_${ik}$ ) = cmplx( real( max( 1_${ik}$, n ),KIND=dp), zero,KIND=dp)
            lquery = lwork==-1_${ik}$
            info = 0_${ik}$
            if( .not.stdlib_lsame( job, 'E' ) .and. .not.wantt ) then
@@ -677,7 +675,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen2
               ! ==== ensure reported workspace size is backward-compatible with
               ! .    previous lapack versions. ====
               work( 1_${ik}$ ) = cmplx( max( real( work( 1_${ik}$ ),KIND=dp), real( max( 1_${ik}$,n ),KIND=dp) ), &
-                        rzero,KIND=dp)
+                        zero,KIND=dp)
               return
            else
               ! ==== copy eigenvalues isolated by stdlib${ii}$_zgebal ====
@@ -733,7 +731,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen2
               ! ==== ensure reported workspace size is backward-compatible with
               ! .    previous lapack versions. ====
               work( 1_${ik}$ ) = cmplx( max( real( max( 1_${ik}$, n ),KIND=dp),real( work( 1_${ik}$ ),KIND=dp) ), &
-                        rzero,KIND=dp)
+                        zero,KIND=dp)
            end if
      end subroutine stdlib${ii}$_zhseqr
 
@@ -764,7 +762,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen2
            ! Parameters 
            integer(${ik}$), parameter :: ntiny = 15_${ik}$
            integer(${ik}$), parameter :: nl = 49_${ik}$
-           real(${ck}$), parameter :: rzero = 0.0_${ck}$
            ! ==== matrices of order ntiny or smaller must be processed by
            ! .    stdlib${ii}$_${ci}$lahqr because of insufficient subdiagonal scratch space.
            ! .    (this is a hard limit.) ====
@@ -789,7 +786,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen2
            wantt = stdlib_lsame( job, 'S' )
            initz = stdlib_lsame( compz, 'I' )
            wantz = initz .or. stdlib_lsame( compz, 'V' )
-           work( 1_${ik}$ ) = cmplx( real( max( 1_${ik}$, n ),KIND=${ck}$), rzero,KIND=${ck}$)
+           work( 1_${ik}$ ) = cmplx( real( max( 1_${ik}$, n ),KIND=${ck}$), zero,KIND=${ck}$)
            lquery = lwork==-1_${ik}$
            info = 0_${ik}$
            if( .not.stdlib_lsame( job, 'E' ) .and. .not.wantt ) then
@@ -823,7 +820,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen2
               ! ==== ensure reported workspace size is backward-compatible with
               ! .    previous lapack versions. ====
               work( 1_${ik}$ ) = cmplx( max( real( work( 1_${ik}$ ),KIND=${ck}$), real( max( 1_${ik}$,n ),KIND=${ck}$) ), &
-                        rzero,KIND=${ck}$)
+                        zero,KIND=${ck}$)
               return
            else
               ! ==== copy eigenvalues isolated by stdlib${ii}$_${ci}$gebal ====
@@ -879,7 +876,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen2
               ! ==== ensure reported workspace size is backward-compatible with
               ! .    previous lapack versions. ====
               work( 1_${ik}$ ) = cmplx( max( real( max( 1_${ik}$, n ),KIND=${ck}$),real( work( 1_${ik}$ ),KIND=${ck}$) ), &
-                        rzero,KIND=${ck}$)
+                        zero,KIND=${ck}$)
            end if
      end subroutine stdlib${ii}$_${ci}$hseqr
 
@@ -1560,8 +1557,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen2
            complex(sp), intent(out) :: work(*)
         ! =====================================================================
            ! Parameters 
-           real(sp), parameter :: rzero = 0.0e+0_sp
-           
            
            ! Local Scalars 
            logical(lk) :: bothv, fromqr, leftv, noinit, rightv
@@ -1656,7 +1651,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen2
                     if( stdlib${ii}$_sisnan( hnorm ) ) then
                        info = -6_${ik}$
                        return
-                    else if( (hnorm>rzero) ) then
+                    else if( (hnorm>zero) ) then
                        eps3 = hnorm*ulp
                     else
                        eps3 = smlnum
@@ -1733,8 +1728,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen2
            complex(dp), intent(out) :: work(*)
         ! =====================================================================
            ! Parameters 
-           real(dp), parameter :: rzero = 0.0e+0_dp
-           
            
            ! Local Scalars 
            logical(lk) :: bothv, fromqr, leftv, noinit, rightv
@@ -1829,7 +1822,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen2
                     if( stdlib${ii}$_disnan( hnorm ) ) then
                        info = -6_${ik}$
                        return
-                    else if( hnorm>rzero ) then
+                    else if( hnorm>zero ) then
                        eps3 = hnorm*ulp
                     else
                        eps3 = smlnum
@@ -1908,8 +1901,6 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen2
            complex(${ck}$), intent(out) :: work(*)
         ! =====================================================================
            ! Parameters 
-           real(${ck}$), parameter :: rzero = 0.0e+0_${ck}$
-           
            
            ! Local Scalars 
            logical(lk) :: bothv, fromqr, leftv, noinit, rightv
@@ -2004,7 +1995,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_gen2
                     if( stdlib${ii}$_${c2ri(ci)}$isnan( hnorm ) ) then
                        info = -6_${ik}$
                        return
-                    else if( hnorm>rzero ) then
+                    else if( hnorm>zero ) then
                        eps3 = hnorm*ulp
                     else
                        eps3 = smlnum

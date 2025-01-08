@@ -876,13 +876,13 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_base
               ! convert 48-bit integer to a realnumber in the interval (0,1,KIND=sp)
               x( i ) = r*( real( it1,KIND=sp)+r*( real( it2,KIND=sp)+r*( real( it3,KIND=sp)+&
                         r*real( it4,KIND=sp) ) ) )
-              if (x( i )==1.0_sp) then
+              if (x( i )==one) then
                  ! if a real number has n bits of precision, and the first
                  ! n bits of the 48-bit integer above happen to be all 1 (which
                  ! will occur about once every 2**n calls), then x( i ) will
                  ! be rounded to exactly one. in ieee single precision arithmetic,
                  ! this will happen relatively often since n = 24.
-                 ! since x( i ) is not supposed to return exactly 0.0_sp or 1.0_sp,
+                 ! since x( i ) is not supposed to return exactly 0.0_sp or one,
                  ! the statistically correct thing to do in this situation is
                  ! simply to iterate again.
                  ! n.b. the case x( i ) = 0.0_sp should not be possible.
@@ -1078,12 +1078,12 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_base
               ! convert 48-bit integer to a realnumber in the interval (0,1,KIND=dp)
               x( i ) = r*( real( it1,KIND=dp)+r*( real( it2,KIND=dp)+r*( real( it3,KIND=dp)+&
                         r*real( it4,KIND=dp) ) ) )
-              if (x( i )==1.0_dp) then
+              if (x( i )==one) then
                  ! if a real number has n bits of precision, and the first
                  ! n bits of the 48-bit integer above happen to be all 1 (which
                  ! will occur about once every 2**n calls), then x( i ) will
                  ! be rounded to exactly one.
-                 ! since x( i ) is not supposed to return exactly 0.0_dp or 1.0_dp,
+                 ! since x( i ) is not supposed to return exactly 0.0_dp or one,
                  ! the statistically correct thing to do in this situation is
                  ! simply to iterate again.
                  ! n.b. the case x( i ) = 0.0_dp should not be possible.
@@ -1281,12 +1281,12 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_base
               ! convert 48-bit integer to a realnumber in the interval (0,1,KIND=${rk}$)
               x( i ) = r*( real( it1,KIND=${rk}$)+r*( real( it2,KIND=${rk}$)+r*( real( it3,KIND=${rk}$)+&
                         r*real( it4,KIND=${rk}$) ) ) )
-              if (x( i )==1.0_${rk}$) then
+              if (x( i )==one) then
                  ! if a real number has n bits of precision, and the first
                  ! n bits of the 48-bit integer above happen to be all 1 (which
                  ! will occur about once every 2**n calls), then x( i ) will
                  ! be rounded to exactly one.
-                 ! since x( i ) is not supposed to return exactly 0.0_${rk}$ or 1.0_${rk}$,
+                 ! since x( i ) is not supposed to return exactly 0.0_${rk}$ or one,
                  ! the statistically correct thing to do in this situation is
                  ! simply to iterate again.
                  ! n.b. the case x( i ) = 0.0_${rk}$ should not be possible.

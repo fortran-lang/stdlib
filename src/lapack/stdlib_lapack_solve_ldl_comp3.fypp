@@ -5210,9 +5210,9 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl_comp3
               end do
            end if
            do j = 1, n
-              s( j ) = 1.0_sp / s( j )
+              s( j ) = one / s( j )
            end do
-           tol = one / sqrt( 2.0_sp * n )
+           tol = one / sqrt( two * n )
            do iter = 1, max_iter
               scale = zero
               sumsq = zero
@@ -5391,9 +5391,9 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl_comp3
               end do
            end if
            do j = 1, n
-              s( j ) = 1.0_dp / s( j )
+              s( j ) = one / s( j )
            end do
-           tol = one / sqrt( 2.0_dp * n )
+           tol = one / sqrt( two * n )
            do iter = 1, max_iter
               scale = zero
               sumsq = zero
@@ -5574,9 +5574,9 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_ldl_comp3
               end do
            end if
            do j = 1, n
-              s( j ) = 1.0_${ck}$ / s( j )
+              s( j ) = one / s( j )
            end do
-           tol = one / sqrt( 2.0_${ck}$ * n )
+           tol = one / sqrt( two * n )
            do iter = 1, max_iter
               scale = zero
               sumsq = zero

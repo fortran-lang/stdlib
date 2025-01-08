@@ -2117,7 +2117,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_cosine_sine2
                      
         ! ====================================================================
            ! Parameters 
-           real(sp), parameter :: realone = 1.0_sp
+           
            
            
            ! Local Scalars 
@@ -2130,15 +2130,15 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_cosine_sine2
            info = 0_${ik}$
            colmajor = .not. stdlib_lsame( trans, 'T' )
            if( .not. stdlib_lsame( signs, 'O' ) ) then
-              z1 = realone
-              z2 = realone
-              z3 = realone
-              z4 = realone
+              z1 = one
+              z2 = one
+              z3 = one
+              z4 = one
            else
-              z1 = realone
-              z2 = -realone
-              z3 = realone
-              z4 = -realone
+              z1 = one
+              z2 = -one
+              z3 = one
+              z4 = -one
            end if
            lquery = lwork == -1_${ik}$
            if( m < 0_${ik}$ ) then
@@ -2445,7 +2445,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_cosine_sine2
                      
         ! ====================================================================
            ! Parameters 
-           real(dp), parameter :: realone = 1.0_dp
+           
            
            
            ! Local Scalars 
@@ -2458,15 +2458,15 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_cosine_sine2
            info = 0_${ik}$
            colmajor = .not. stdlib_lsame( trans, 'T' )
            if( .not. stdlib_lsame( signs, 'O' ) ) then
-              z1 = realone
-              z2 = realone
-              z3 = realone
-              z4 = realone
+              z1 = one
+              z2 = one
+              z3 = one
+              z4 = one
            else
-              z1 = realone
-              z2 = -realone
-              z3 = realone
-              z4 = -realone
+              z1 = one
+              z2 = -one
+              z3 = one
+              z4 = -one
            end if
            lquery = lwork == -1_${ik}$
            if( m < 0_${ik}$ ) then
@@ -2774,7 +2774,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_cosine_sine2
                      
         ! ====================================================================
            ! Parameters 
-           real(${rk}$), parameter :: realone = 1.0_${rk}$
+           
            
            
            ! Local Scalars 
@@ -2787,15 +2787,15 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_cosine_sine2
            info = 0_${ik}$
            colmajor = .not. stdlib_lsame( trans, 'T' )
            if( .not. stdlib_lsame( signs, 'O' ) ) then
-              z1 = realone
-              z2 = realone
-              z3 = realone
-              z4 = realone
+              z1 = one
+              z2 = one
+              z3 = one
+              z4 = one
            else
-              z1 = realone
-              z2 = -realone
-              z3 = realone
-              z4 = -realone
+              z1 = one
+              z2 = -one
+              z3 = one
+              z4 = -one
            end if
            lquery = lwork == -1_${ik}$
            if( m < 0_${ik}$ ) then
@@ -4825,8 +4825,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_cosine_sine2
         ! =====================================================================
            ! Parameters 
            real(sp), parameter :: alphasq = 0.01_sp
-           real(sp), parameter :: realone = 1.0_sp
-           real(sp), parameter :: realzero = 0.0_sp
+           
            
            
            ! Local Scalars 
@@ -4859,11 +4858,11 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_cosine_sine2
            end if
            ! first, project x onto the orthogonal complement of q's column
            ! space
-           scl1 = realzero
-           ssq1 = realone
+           scl1 = zero
+           ssq1 = one
            call stdlib${ii}$_slassq( m1, x1, incx1, scl1, ssq1 )
-           scl2 = realzero
-           ssq2 = realone
+           scl2 = zero
+           ssq2 = one
            call stdlib${ii}$_slassq( m2, x2, incx2, scl2, ssq2 )
            normsq1 = scl1**2_${ik}$*ssq1 + scl2**2_${ik}$*ssq2
            if( m1 == 0_${ik}$ ) then
@@ -4876,11 +4875,11 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_cosine_sine2
            call stdlib${ii}$_sgemv( 'C', m2, n, one, q2, ldq2, x2, incx2, one, work, 1_${ik}$ )
            call stdlib${ii}$_sgemv( 'N', m1, n, negone, q1, ldq1, work, 1_${ik}$, one, x1,incx1 )
            call stdlib${ii}$_sgemv( 'N', m2, n, negone, q2, ldq2, work, 1_${ik}$, one, x2,incx2 )
-           scl1 = realzero
-           ssq1 = realone
+           scl1 = zero
+           ssq1 = one
            call stdlib${ii}$_slassq( m1, x1, incx1, scl1, ssq1 )
-           scl2 = realzero
-           ssq2 = realone
+           scl2 = zero
+           ssq2 = one
            call stdlib${ii}$_slassq( m2, x2, incx2, scl2, ssq2 )
            normsq2 = scl1**2_${ik}$*ssq1 + scl2**2_${ik}$*ssq2
            ! if projection is sufficiently large in norm, then stop.
@@ -4906,11 +4905,11 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_cosine_sine2
            call stdlib${ii}$_sgemv( 'C', m2, n, one, q2, ldq2, x2, incx2, one, work, 1_${ik}$ )
            call stdlib${ii}$_sgemv( 'N', m1, n, negone, q1, ldq1, work, 1_${ik}$, one, x1,incx1 )
            call stdlib${ii}$_sgemv( 'N', m2, n, negone, q2, ldq2, work, 1_${ik}$, one, x2,incx2 )
-           scl1 = realzero
-           ssq1 = realone
+           scl1 = zero
+           ssq1 = one
            call stdlib${ii}$_slassq( m1, x1, incx1, scl1, ssq1 )
-           scl2 = realzero
-           ssq2 = realone
+           scl2 = zero
+           ssq2 = one
            call stdlib${ii}$_slassq( m1, x1, incx1, scl1, ssq1 )
            normsq2 = scl1**2_${ik}$*ssq1 + scl2**2_${ik}$*ssq2
            ! if second projection is sufficiently large in norm, then do
@@ -4952,8 +4951,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_cosine_sine2
         ! =====================================================================
            ! Parameters 
            real(dp), parameter :: alphasq = 0.01_dp
-           real(dp), parameter :: realone = 1.0_dp
-           real(dp), parameter :: realzero = 0.0_dp
+           
            
            
            ! Local Scalars 
@@ -4986,11 +4984,11 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_cosine_sine2
            end if
            ! first, project x onto the orthogonal complement of q's column
            ! space
-           scl1 = realzero
-           ssq1 = realone
+           scl1 = zero
+           ssq1 = one
            call stdlib${ii}$_dlassq( m1, x1, incx1, scl1, ssq1 )
-           scl2 = realzero
-           ssq2 = realone
+           scl2 = zero
+           ssq2 = one
            call stdlib${ii}$_dlassq( m2, x2, incx2, scl2, ssq2 )
            normsq1 = scl1**2_${ik}$*ssq1 + scl2**2_${ik}$*ssq2
            if( m1 == 0_${ik}$ ) then
@@ -5003,11 +5001,11 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_cosine_sine2
            call stdlib${ii}$_dgemv( 'C', m2, n, one, q2, ldq2, x2, incx2, one, work, 1_${ik}$ )
            call stdlib${ii}$_dgemv( 'N', m1, n, negone, q1, ldq1, work, 1_${ik}$, one, x1,incx1 )
            call stdlib${ii}$_dgemv( 'N', m2, n, negone, q2, ldq2, work, 1_${ik}$, one, x2,incx2 )
-           scl1 = realzero
-           ssq1 = realone
+           scl1 = zero
+           ssq1 = one
            call stdlib${ii}$_dlassq( m1, x1, incx1, scl1, ssq1 )
-           scl2 = realzero
-           ssq2 = realone
+           scl2 = zero
+           ssq2 = one
            call stdlib${ii}$_dlassq( m2, x2, incx2, scl2, ssq2 )
            normsq2 = scl1**2_${ik}$*ssq1 + scl2**2_${ik}$*ssq2
            ! if projection is sufficiently large in norm, then stop.
@@ -5033,11 +5031,11 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_cosine_sine2
            call stdlib${ii}$_dgemv( 'C', m2, n, one, q2, ldq2, x2, incx2, one, work, 1_${ik}$ )
            call stdlib${ii}$_dgemv( 'N', m1, n, negone, q1, ldq1, work, 1_${ik}$, one, x1,incx1 )
            call stdlib${ii}$_dgemv( 'N', m2, n, negone, q2, ldq2, work, 1_${ik}$, one, x2,incx2 )
-           scl1 = realzero
-           ssq1 = realone
+           scl1 = zero
+           ssq1 = one
            call stdlib${ii}$_dlassq( m1, x1, incx1, scl1, ssq1 )
-           scl2 = realzero
-           ssq2 = realone
+           scl2 = zero
+           ssq2 = one
            call stdlib${ii}$_dlassq( m1, x1, incx1, scl1, ssq1 )
            normsq2 = scl1**2_${ik}$*ssq1 + scl2**2_${ik}$*ssq2
            ! if second projection is sufficiently large in norm, then do
@@ -5081,8 +5079,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_cosine_sine2
         ! =====================================================================
            ! Parameters 
            real(${rk}$), parameter :: alphasq = 0.01_${rk}$
-           real(${rk}$), parameter :: realone = 1.0_${rk}$
-           real(${rk}$), parameter :: realzero = 0.0_${rk}$
+           
            
            
            ! Local Scalars 
@@ -5115,11 +5112,11 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_cosine_sine2
            end if
            ! first, project x onto the orthogonal complement of q's column
            ! space
-           scl1 = realzero
-           ssq1 = realone
+           scl1 = zero
+           ssq1 = one
            call stdlib${ii}$_${ri}$lassq( m1, x1, incx1, scl1, ssq1 )
-           scl2 = realzero
-           ssq2 = realone
+           scl2 = zero
+           ssq2 = one
            call stdlib${ii}$_${ri}$lassq( m2, x2, incx2, scl2, ssq2 )
            normsq1 = scl1**2_${ik}$*ssq1 + scl2**2_${ik}$*ssq2
            if( m1 == 0_${ik}$ ) then
@@ -5132,11 +5129,11 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_cosine_sine2
            call stdlib${ii}$_${ri}$gemv( 'C', m2, n, one, q2, ldq2, x2, incx2, one, work, 1_${ik}$ )
            call stdlib${ii}$_${ri}$gemv( 'N', m1, n, negone, q1, ldq1, work, 1_${ik}$, one, x1,incx1 )
            call stdlib${ii}$_${ri}$gemv( 'N', m2, n, negone, q2, ldq2, work, 1_${ik}$, one, x2,incx2 )
-           scl1 = realzero
-           ssq1 = realone
+           scl1 = zero
+           ssq1 = one
            call stdlib${ii}$_${ri}$lassq( m1, x1, incx1, scl1, ssq1 )
-           scl2 = realzero
-           ssq2 = realone
+           scl2 = zero
+           ssq2 = one
            call stdlib${ii}$_${ri}$lassq( m2, x2, incx2, scl2, ssq2 )
            normsq2 = scl1**2_${ik}$*ssq1 + scl2**2_${ik}$*ssq2
            ! if projection is sufficiently large in norm, then stop.
@@ -5162,11 +5159,11 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_cosine_sine2
            call stdlib${ii}$_${ri}$gemv( 'C', m2, n, one, q2, ldq2, x2, incx2, one, work, 1_${ik}$ )
            call stdlib${ii}$_${ri}$gemv( 'N', m1, n, negone, q1, ldq1, work, 1_${ik}$, one, x1,incx1 )
            call stdlib${ii}$_${ri}$gemv( 'N', m2, n, negone, q2, ldq2, work, 1_${ik}$, one, x2,incx2 )
-           scl1 = realzero
-           ssq1 = realone
+           scl1 = zero
+           ssq1 = one
            call stdlib${ii}$_${ri}$lassq( m1, x1, incx1, scl1, ssq1 )
-           scl2 = realzero
-           ssq2 = realone
+           scl2 = zero
+           ssq2 = one
            call stdlib${ii}$_${ri}$lassq( m1, x1, incx1, scl1, ssq1 )
            normsq2 = scl1**2_${ik}$*ssq1 + scl2**2_${ik}$*ssq2
            ! if second projection is sufficiently large in norm, then do

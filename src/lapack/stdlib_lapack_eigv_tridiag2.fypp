@@ -2965,7 +2965,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_tridiag2
            real(sp), parameter :: fourth = one/four
            real(sp), parameter :: fac = half
            real(sp), parameter :: maxgrowth = 64.0_sp
-           real(sp), parameter :: fudge = 2.0_sp
+           real(sp), parameter :: fudge = two
            integer(${ik}$), parameter :: maxtry = 6_${ik}$
            integer(${ik}$), parameter :: allrng = 1_${ik}$
            integer(${ik}$), parameter :: indrng = 2_${ik}$
@@ -3493,7 +3493,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_tridiag2
            real(dp), parameter :: fourth = one/four
            real(dp), parameter :: fac = half
            real(dp), parameter :: maxgrowth = 64.0_dp
-           real(dp), parameter :: fudge = 2.0_dp
+           real(dp), parameter :: fudge = two
            integer(${ik}$), parameter :: maxtry = 6_${ik}$
            integer(${ik}$), parameter :: allrng = 1_${ik}$
            integer(${ik}$), parameter :: indrng = 2_${ik}$
@@ -4019,7 +4019,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_tridiag2
            real(${rk}$), parameter :: fourth = one/four
            real(${rk}$), parameter :: fac = half
            real(${rk}$), parameter :: maxgrowth = 64.0_${rk}$
-           real(${rk}$), parameter :: fudge = 2.0_${rk}$
+           real(${rk}$), parameter :: fudge = two
            integer(${ik}$), parameter :: maxtry = 6_${ik}$
            integer(${ik}$), parameter :: allrng = 1_${ik}$
            integer(${ik}$), parameter :: indrng = 2_${ik}$

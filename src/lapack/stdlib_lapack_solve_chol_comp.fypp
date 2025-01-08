@@ -7838,7 +7838,7 @@ submodule(stdlib_lapack_solve) stdlib_lapack_solve_chol_comp
               go to 10
            end if
            ! compute the estimate of the reciprocal condition number.
-           if( ainvnm /= 0.0_sp )stdlib${ii}$_sla_porcond = ( 1.0_sp / ainvnm )
+           if( ainvnm /= 0.0_sp )stdlib${ii}$_sla_porcond = ( one / ainvnm )
            return
      end function stdlib${ii}$_sla_porcond
 

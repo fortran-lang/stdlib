@@ -160,7 +160,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_scalar
            real(sp), intent(out) :: p, q
         ! =====================================================================
            ! Parameters 
-           real(sp), parameter :: bs = 2.0_sp
+           real(sp), parameter :: bs = two
            
            
            
@@ -227,7 +227,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_scalar
            real(dp), intent(out) :: p, q
         ! =====================================================================
            ! Parameters 
-           real(dp), parameter :: bs = 2.0_dp
+           real(dp), parameter :: bs = two
            
            
            
@@ -296,7 +296,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_scalar
            real(${rk}$), intent(out) :: p, q
         ! =====================================================================
            ! Parameters 
-           real(${rk}$), parameter :: bs = 2.0_${rk}$
+           real(${rk}$), parameter :: bs = two
            
            
            

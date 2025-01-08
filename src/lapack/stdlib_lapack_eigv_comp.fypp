@@ -30,7 +30,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_comp
            real(sp), intent(out) :: lscale(*), rscale(*), work(*)
         ! =====================================================================
            ! Parameters 
-           real(sp), parameter :: sclfac = 1.0e+1_sp
+           real(sp), parameter :: sclfac = ten
            
            
            ! Local Scalars 
@@ -323,7 +323,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_comp
            real(dp), intent(out) :: lscale(*), rscale(*), work(*)
         ! =====================================================================
            ! Parameters 
-           real(dp), parameter :: sclfac = 1.0e+1_dp
+           real(dp), parameter :: sclfac = ten
            
            
            ! Local Scalars 
@@ -618,7 +618,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_comp
            real(${rk}$), intent(out) :: lscale(*), rscale(*), work(*)
         ! =====================================================================
            ! Parameters 
-           real(${rk}$), parameter :: sclfac = 1.0e+1_${rk}$
+           real(${rk}$), parameter :: sclfac = ten
            
            
            ! Local Scalars 
@@ -914,7 +914,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_comp
            complex(sp), intent(inout) :: a(lda,*), b(ldb,*)
         ! =====================================================================
            ! Parameters 
-           real(sp), parameter :: sclfac = 1.0e+1_sp
+           real(sp), parameter :: sclfac = ten
            
            
            
@@ -1217,7 +1217,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_comp
            complex(dp), intent(inout) :: a(lda,*), b(ldb,*)
         ! =====================================================================
            ! Parameters 
-           real(dp), parameter :: sclfac = 1.0e+1_dp
+           real(dp), parameter :: sclfac = ten
            
            
            
@@ -1522,7 +1522,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_comp
            complex(${ck}$), intent(inout) :: a(lda,*), b(ldb,*)
         ! =====================================================================
            ! Parameters 
-           real(${ck}$), parameter :: sclfac = 1.0e+1_${ck}$
+           real(${ck}$), parameter :: sclfac = ten
            
            
            

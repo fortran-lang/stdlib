@@ -2516,7 +2516,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_tridiag3
         ! =====================================================================
            ! Parameters 
            real(sp), parameter :: fudge = 2.1_sp
-           real(sp), parameter :: relfac = 2.0_sp
+           real(sp), parameter :: relfac = two
            
            
            ! Local Scalars 
@@ -2908,7 +2908,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_tridiag3
         ! =====================================================================
            ! Parameters 
            real(dp), parameter :: fudge = 2.1_dp
-           real(dp), parameter :: relfac = 2.0_dp
+           real(dp), parameter :: relfac = two
            
            
            ! Local Scalars 
@@ -3302,7 +3302,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_tridiag3
         ! =====================================================================
            ! Parameters 
            real(${rk}$), parameter :: fudge = 2.1_${rk}$
-           real(${rk}$), parameter :: relfac = 2.0_${rk}$
+           real(${rk}$), parameter :: relfac = two
            
            
            ! Local Scalars 

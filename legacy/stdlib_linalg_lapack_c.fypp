@@ -4,7 +4,7 @@ module stdlib_linalg_lapack_c
      use stdlib_linalg_blas
      use stdlib_linalg_lapack_aux
      use stdlib_linalg_lapack_s
-     implicit none(type,external)
+     implicit none
      private
 
 
@@ -1703,7 +1703,7 @@ module stdlib_linalg_lapack_c
            complex(sp), intent(inout) :: a(lda,*), b(ldb,*)
         ! =====================================================================
            ! Parameters 
-           real(sp), parameter :: sclfac = 1.0e+1_sp
+           real(sp), parameter :: sclfac = ten
            
            
            
@@ -9899,8 +9899,6 @@ module stdlib_linalg_lapack_c
            complex(sp), intent(out) :: v(*)
         ! ================================================================
            ! Parameters 
-           real(sp), parameter :: rzero = 0.0_sp
-           
            
            ! Local Scalars 
            complex(sp) :: cdum, h21s, h31s
@@ -9918,7 +9916,7 @@ module stdlib_linalg_lapack_c
            end if
            if( n==2_${ik}$ ) then
               s = cabs1( h( 1_${ik}$, 1_${ik}$ )-s2 ) + cabs1( h( 2_${ik}$, 1_${ik}$ ) )
-              if( s==rzero ) then
+              if( s==zero ) then
                  v( 1_${ik}$ ) = czero
                  v( 2_${ik}$ ) = czero
               else
@@ -20652,9 +20650,9 @@ module stdlib_linalg_lapack_c
               end do
            end if
            do j = 1, n
-              s( j ) = 1.0_sp / s( j )
+              s( j ) = one / s( j )
            end do
-           tol = one / sqrt( 2.0_sp * n )
+           tol = one / sqrt( two * n )
            do iter = 1, max_iter
               scale = zero
               sumsq = zero
@@ -28917,7 +28915,7 @@ module stdlib_linalg_lapack_c
                      
         ! ====================================================================
            ! Parameters 
-           real(sp), parameter :: realone = 1.0_sp
+           
            
            
            ! Local Scalars 
@@ -28932,15 +28930,15 @@ module stdlib_linalg_lapack_c
            info = 0_${ik}$
            colmajor = .not. stdlib_lsame( trans, 'T' )
            if( .not. stdlib_lsame( signs, 'O' ) ) then
-              z1 = realone
-              z2 = realone
-              z3 = realone
-              z4 = realone
+              z1 = one
+              z2 = one
+              z3 = one
+              z4 = one
            else
-              z1 = realone
-              z2 = -realone
-              z3 = realone
-              z4 = -realone
+              z1 = one
+              z2 = -one
+              z3 = one
+              z4 = -one
            end if
            lquery = lwork == -1_${ik}$
            if( m < 0_${ik}$ ) then
@@ -29232,8 +29230,7 @@ module stdlib_linalg_lapack_c
         ! =====================================================================
            ! Parameters 
            real(sp), parameter :: alphasq = 0.01_sp
-           real(sp), parameter :: realone = 1.0_sp
-           real(sp), parameter :: realzero = 0.0_sp
+           
            
            
            ! Local Scalars 
@@ -29267,11 +29264,11 @@ module stdlib_linalg_lapack_c
            end if
            ! first, project x onto the orthogonal complement of q's column
            ! space
-           scl1 = realzero
-           ssq1 = realone
+           scl1 = zero
+           ssq1 = one
            call stdlib${ii}$_classq( m1, x1, incx1, scl1, ssq1 )
-           scl2 = realzero
-           ssq2 = realone
+           scl2 = zero
+           ssq2 = one
            call stdlib${ii}$_classq( m2, x2, incx2, scl2, ssq2 )
            normsq1 = scl1**2_${ik}$*ssq1 + scl2**2_${ik}$*ssq2
            if( m1 == 0_${ik}$ ) then
@@ -29284,11 +29281,11 @@ module stdlib_linalg_lapack_c
            call stdlib${ii}$_cgemv( 'C', m2, n, cone, q2, ldq2, x2, incx2, cone, work, 1_${ik}$ )
            call stdlib${ii}$_cgemv( 'N', m1, n, cnegone, q1, ldq1, work, 1_${ik}$, cone, x1,incx1 )
            call stdlib${ii}$_cgemv( 'N', m2, n, cnegone, q2, ldq2, work, 1_${ik}$, cone, x2,incx2 )
-           scl1 = realzero
-           ssq1 = realone
+           scl1 = zero
+           ssq1 = one
            call stdlib${ii}$_classq( m1, x1, incx1, scl1, ssq1 )
-           scl2 = realzero
-           ssq2 = realone
+           scl2 = zero
+           ssq2 = one
            call stdlib${ii}$_classq( m2, x2, incx2, scl2, ssq2 )
            normsq2 = scl1**2_${ik}$*ssq1 + scl2**2_${ik}$*ssq2
            ! if projection is sufficiently large in norm, then stop.
@@ -29314,11 +29311,11 @@ module stdlib_linalg_lapack_c
            call stdlib${ii}$_cgemv( 'C', m2, n, cone, q2, ldq2, x2, incx2, cone, work, 1_${ik}$ )
            call stdlib${ii}$_cgemv( 'N', m1, n, cnegone, q1, ldq1, work, 1_${ik}$, cone, x1,incx1 )
            call stdlib${ii}$_cgemv( 'N', m2, n, cnegone, q2, ldq2, work, 1_${ik}$, cone, x2,incx2 )
-           scl1 = realzero
-           ssq1 = realone
+           scl1 = zero
+           ssq1 = one
            call stdlib${ii}$_classq( m1, x1, incx1, scl1, ssq1 )
-           scl2 = realzero
-           ssq2 = realone
+           scl2 = zero
+           ssq2 = one
            call stdlib${ii}$_classq( m1, x1, incx1, scl1, ssq1 )
            normsq2 = scl1**2_${ik}$*ssq1 + scl2**2_${ik}$*ssq2
            ! if second projection is sufficiently large in norm, then do
@@ -31847,7 +31844,7 @@ module stdlib_linalg_lapack_c
                     end if
                  else
                     nu = sigma21
-                    mu = sqrt( 1.0_sp - nu**2_${ik}$ )
+                    mu = sqrt( one - nu**2_${ik}$ )
                     if( nu < thresh ) then
                        mu = one
                        nu = zero
@@ -35616,9 +35613,9 @@ module stdlib_linalg_lapack_c
               end do
            end if
            do j = 1, n
-              s( j ) = 1.0_sp / s( j )
+              s( j ) = one / s( j )
            end do
-           tol = one / sqrt( 2.0_sp * n )
+           tol = one / sqrt( two * n )
            do iter = 1, max_iter
               scale = zero
               sumsq = zero
@@ -36236,8 +36233,6 @@ module stdlib_linalg_lapack_c
            complex(sp), intent(out) :: hous(*), work(*)
         ! =====================================================================
            ! Parameters 
-           real(sp), parameter :: rzero = 0.0e+0_sp
-           
            
            ! Local Scalars 
            logical(lk) :: lquery, wantq, upper, afters1
@@ -36332,7 +36327,7 @@ module stdlib_linalg_lapack_c
                    d( i ) = real( ab( abdpos, i ),KIND=sp)
                end do
                do i = 1, n-1
-                   e( i ) = rzero
+                   e( i ) = zero
                end do
                hous( 1_${ik}$ ) = 1_${ik}$
                work( 1_${ik}$ ) = 1_${ik}$
@@ -36358,7 +36353,7 @@ module stdlib_linalg_lapack_c
                        abstmp = abs( tmp )
                        ab( abofdpos, i+1 ) = abstmp
                        e( i ) = abstmp
-                       if( abstmp/=rzero ) then
+                       if( abstmp/=zero ) then
                           tmp = tmp / abstmp
                        else
                           tmp = cone
@@ -36374,7 +36369,7 @@ module stdlib_linalg_lapack_c
                       abstmp = abs( tmp )
                       ab( abofdpos, i ) = abstmp
                       e( i ) = abstmp
-                      if( abstmp/=rzero ) then
+                      if( abstmp/=zero ) then
                          tmp = tmp / abstmp
                       else
                          tmp = cone
@@ -36508,8 +36503,6 @@ module stdlib_linalg_lapack_c
            complex(sp), intent(out) :: ab(ldab,*), tau(*), work(*)
         ! =====================================================================
            ! Parameters 
-           real(sp), parameter :: rone = 1.0e+0_sp
-           
            
            ! Local Scalars 
            logical(lk) :: lquery, upper
@@ -36611,7 +36604,7 @@ module stdlib_linalg_lapack_c
                   ! update the unreduced submatrix a(i+kd:n,i+kd:n), using
                   ! an update of the form:  a := a - v'*w - w'*v
                   call stdlib${ii}$_cher2k( uplo, 'CONJUGATE', pn, pk,-cone, a( i, i+kd ), lda,work( &
-                            wpos ), ldw,rone, a( i+kd, i+kd ), lda )
+                            wpos ), ldw,one, a( i+kd, i+kd ), lda )
                end do
               ! copy the upper band to ab which is the band storage matrix
               do j = n-kd+1, n
@@ -36647,7 +36640,7 @@ module stdlib_linalg_lapack_c
                   ! update the unreduced submatrix a(i+kd:n,i+kd:n), using
                   ! an update of the form:  a := a - v*w' - w*v'
                   call stdlib${ii}$_cher2k( uplo, 'NO TRANSPOSE', pn, pk,-cone, a( i+kd, i ), lda,work( &
-                            wpos ), ldw,rone, a( i+kd, i+kd ), lda )
+                            wpos ), ldw,one, a( i+kd, i+kd ), lda )
                   ! ==================================================================
                   ! restore a for comparison and checking to be removed
                    ! do 45 j = i, i+pk-1
@@ -39956,8 +39949,6 @@ module stdlib_linalg_lapack_c
            complex(sp), intent(out) :: w(*)
         ! =========================================================
            ! Parameters 
-           real(sp), parameter :: rzero = 0.0_sp
-           real(sp), parameter :: rone = 1.0_sp
            real(sp), parameter :: dat1 = 3.0_sp/4.0_sp
            integer(${ik}$), parameter :: kexsh = 10_${ik}$
            
@@ -40000,7 +39991,7 @@ module stdlib_linalg_lapack_c
               jhi = ihi
            end if
            do i = ilo + 1, ihi
-              if( aimag( h( i, i-1 ) )/=rzero ) then
+              if( aimag( h( i, i-1 ) )/=zero ) then
                  ! ==== the following redundant normalization
                  ! .    avoids problems with both gradual and
                  ! .    sudden underflow in abs(h(i,i-1)) ====
@@ -40016,7 +40007,7 @@ module stdlib_linalg_lapack_c
            nz = ihiz - iloz + 1_${ik}$
            ! set machine-dependent constants for the stopping criterion.
            safmin = stdlib${ii}$_slamch( 'SAFE MINIMUM' )
-           safmax = rone / safmin
+           safmax = one / safmin
            call stdlib${ii}$_slabad( safmin, safmax )
            ulp = stdlib${ii}$_slamch( 'PRECISION' )
            smlnum = safmin*( real( nh,KIND=sp) / ulp )
@@ -40094,14 +40085,14 @@ module stdlib_linalg_lapack_c
                  t = h( i, i )
                  u = sqrt( h( i-1, i ) )*sqrt( h( i, i-1 ) )
                  s = cabs1( u )
-                 if( s/=rzero ) then
+                 if( s/=zero ) then
                     x = half*( h( i-1, i-1 )-t )
                     sx = cabs1( x )
                     s = max( s, cabs1( x ) )
                     y = s*sqrt( ( x / s )**2_${ik}$+( u / s )**2_${ik}$ )
-                    if( sx>rzero ) then
+                    if( sx>zero ) then
                        if( real( x / sx,KIND=sp)*real( y,KIND=sp)+aimag( x / sx )*aimag( y )&
-                                 <rzero )y = -y
+                                 <zero )y = -y
                     end if
                     t = t - u*stdlib${ii}$_cladiv( u, ( x+y ) )
                  end if
@@ -40197,7 +40188,7 @@ module stdlib_linalg_lapack_c
               end do loop_120
               ! ensure that h(i,i-1) is real.
               temp = h( i, i-1 )
-              if( aimag( temp )/=rzero ) then
+              if( aimag( temp )/=zero ) then
                  rtemp = abs( temp )
                  h( i, i-1 ) = rtemp
                  temp = temp / rtemp
@@ -44410,9 +44401,6 @@ module stdlib_linalg_lapack_c
            complex(sp), intent(out) :: u(ldu,*), v(ldv,*), wh(ldwh,*), wv(ldwv,*)
         ! ================================================================
            ! Parameters 
-           real(sp), parameter :: rzero = 0.0_sp
-           real(sp), parameter :: rone = 1.0_sp
-           
            
            ! Local Scalars 
            complex(sp) :: alpha, beta, cdum, refsum
@@ -44439,7 +44427,7 @@ module stdlib_linalg_lapack_c
            ns = nshfts - mod( nshfts, 2_${ik}$ )
            ! ==== machine constants for deflation ====
            safmin = stdlib${ii}$_slamch( 'SAFE MINIMUM' )
-           safmax = rone / safmin
+           safmax = one / safmin
            call stdlib${ii}$_slabad( safmin, safmax )
            ulp = stdlib${ii}$_slamch( 'PRECISION' )
            smlnum = safmin*( real( n,KIND=sp) / ulp )
@@ -44537,7 +44525,7 @@ module stdlib_linalg_lapack_c
                     if( k>=ktop) then
                        if( h( k+1, k )/=czero ) then
                           tst1 = cabs1( h( k, k ) ) + cabs1( h( k+1, k+1 ) )
-                          if( tst1==rzero ) then
+                          if( tst1==zero ) then
                              if( k>=ktop+1 )tst1 = tst1 + cabs1( h( k, k-1 ) )
                              if( k>=ktop+2 )tst1 = tst1 + cabs1( h( k, k-2 ) )
                              if( k>=ktop+3 )tst1 = tst1 + cabs1( h( k, k-3 ) )
@@ -44554,7 +44542,7 @@ module stdlib_linalg_lapack_c
                                        
                              scl = h11 + h12
                              tst2 = h22*( h11 / scl )
-                             if( tst2==rzero .or. h21*( h12 / scl )<=max( smlnum, ulp*tst2 ) )h( &
+                             if( tst2==zero .or. h21*( h12 / scl )<=max( smlnum, ulp*tst2 ) )h( &
                                        k+1, k ) = czero
                           end if
                        end if
@@ -44672,7 +44660,7 @@ module stdlib_linalg_lapack_c
                     if( k<ktop)cycle
                     if( h( k+1, k )/=czero ) then
                        tst1 = cabs1( h( k, k ) ) + cabs1( h( k+1, k+1 ) )
-                       if( tst1==rzero ) then
+                       if( tst1==zero ) then
                           if( k>=ktop+1 )tst1 = tst1 + cabs1( h( k, k-1 ) )
                           if( k>=ktop+2 )tst1 = tst1 + cabs1( h( k, k-2 ) )
                           if( k>=ktop+3 )tst1 = tst1 + cabs1( h( k, k-3 ) )
@@ -44689,7 +44677,7 @@ module stdlib_linalg_lapack_c
                                     
                           scl = h11 + h12
                           tst2 = h22*( h11 / scl )
-                          if( tst2==rzero .or. h21*( h12 / scl )<=max( smlnum, ulp*tst2 ) )h( k+1,&
+                          if( tst2==zero .or. h21*( h12 / scl )<=max( smlnum, ulp*tst2 ) )h( k+1,&
                                      k ) = czero
                        end if
                     end if
@@ -59653,8 +59641,6 @@ module stdlib_linalg_lapack_c
            complex(sp), intent(out) :: work(*)
         ! =====================================================================
            ! Parameters 
-           real(sp), parameter :: rzero = 0.0e+0_sp
-           
            
            ! Local Scalars 
            logical(lk) :: bothv, fromqr, leftv, noinit, rightv
@@ -59750,7 +59736,7 @@ module stdlib_linalg_lapack_c
                     if( stdlib${ii}$_sisnan( hnorm ) ) then
                        info = -6_${ik}$
                        return
-                    else if( (hnorm>rzero) ) then
+                    else if( (hnorm>zero) ) then
                        eps3 = hnorm*ulp
                     else
                        eps3 = smlnum
@@ -60327,9 +60313,6 @@ module stdlib_linalg_lapack_c
            complex(sp), intent(out) :: sh(*), t(ldt,*), v(ldv,*), work(*), wv(ldwv,*)
         ! ================================================================
            ! Parameters 
-           real(sp), parameter :: rzero = 0.0_sp
-           real(sp), parameter :: rone = 1.0_sp
-           
            
            ! Local Scalars 
            complex(sp) :: beta, cdum, s, tau
@@ -60373,7 +60356,7 @@ module stdlib_linalg_lapack_c
            if( nw<1 )return
            ! ==== machine constants ====
            safmin = stdlib${ii}$_slamch( 'SAFE MINIMUM' )
-           safmax = rone / safmin
+           safmax = one / safmin
            call stdlib${ii}$_slabad( safmin, safmax )
            ulp = stdlib${ii}$_slamch( 'PRECISION' )
            smlnum = safmin*( real( n,KIND=sp) / ulp )
@@ -60414,7 +60397,7 @@ module stdlib_linalg_lapack_c
            do knt = infqr + 1, jw
               ! ==== small spike tip deflation test ====
               foo = cabs1( t( ns, ns ) )
-              if( foo==rzero )foo = cabs1( s )
+              if( foo==zero )foo = cabs1( s )
               if( cabs1( s )*cabs1( v( 1_${ik}$, ns ) )<=max( smlnum, ulp*foo ) )then
                  ! ==== cone more converged eigenvalue ====
                  ns = ns - 1_${ik}$
@@ -78376,7 +78359,6 @@ module stdlib_linalg_lapack_c
            ! Parameters 
            integer(${ik}$), parameter :: ntiny = 15_${ik}$
            integer(${ik}$), parameter :: nl = 49_${ik}$
-           real(sp), parameter :: rzero = 0.0_sp
            ! ==== matrices of order ntiny or smaller must be processed by
            ! .    stdlib${ii}$_clahqr because of insufficient subdiagonal scratch space.
            ! .    (this is a hard limit.) ====
@@ -78402,7 +78384,7 @@ module stdlib_linalg_lapack_c
            wantt = stdlib_lsame( job, 'S' )
            initz = stdlib_lsame( compz, 'I' )
            wantz = initz .or. stdlib_lsame( compz, 'V' )
-           work( 1_${ik}$ ) = cmplx( real( max( 1_${ik}$, n ),KIND=sp), rzero,KIND=sp)
+           work( 1_${ik}$ ) = cmplx( real( max( 1_${ik}$, n ),KIND=sp), zero,KIND=sp)
            lquery = lwork==-1_${ik}$
            info = 0_${ik}$
            if( .not.stdlib_lsame( job, 'E' ) .and. .not.wantt ) then
@@ -78436,7 +78418,7 @@ module stdlib_linalg_lapack_c
               ! ==== ensure reported workspace size is backward-compatible with
               ! .    previous lapack versions. ====
               work( 1_${ik}$ ) = cmplx( max( real( work( 1_${ik}$ ),KIND=sp), real( max( 1_${ik}$,n ),KIND=sp) ), &
-                        rzero,KIND=sp)
+                        zero,KIND=sp)
               return
            else
               ! ==== copy eigenvalues isolated by stdlib${ii}$_cgebal ====
@@ -78492,7 +78474,7 @@ module stdlib_linalg_lapack_c
               ! ==== ensure reported workspace size is backward-compatible with
               ! .    previous lapack versions. ====
               work( 1_${ik}$ ) = cmplx( max( real( max( 1_${ik}$, n ),KIND=sp),real( work( 1_${ik}$ ),KIND=sp) ), &
-                        rzero,KIND=sp)
+                        zero,KIND=sp)
            end if
      end subroutine stdlib${ii}$_chseqr
 
@@ -79112,9 +79094,6 @@ module stdlib_linalg_lapack_c
            complex(sp), intent(out) :: sh(*), t(ldt,*), v(ldv,*), work(*), wv(ldwv,*)
         ! ================================================================
            ! Parameters 
-           real(sp), parameter :: rzero = 0.0_sp
-           real(sp), parameter :: rone = 1.0_sp
-           
            
            ! Local Scalars 
            complex(sp) :: beta, cdum, s, tau
@@ -79162,7 +79141,7 @@ module stdlib_linalg_lapack_c
            if( nw<1 )return
            ! ==== machine constants ====
            safmin = stdlib${ii}$_slamch( 'SAFE MINIMUM' )
-           safmax = rone / safmin
+           safmax = one / safmin
            call stdlib${ii}$_slabad( safmin, safmax )
            ulp = stdlib${ii}$_slamch( 'PRECISION' )
            smlnum = safmin*( real( n,KIND=sp) / ulp )
@@ -79209,7 +79188,7 @@ module stdlib_linalg_lapack_c
            do knt = infqr + 1, jw
               ! ==== small spike tip deflation test ====
               foo = cabs1( t( ns, ns ) )
-              if( foo==rzero )foo = cabs1( s )
+              if( foo==zero )foo = cabs1( s )
               if( cabs1( s )*cabs1( v( 1_${ik}$, ns ) )<=max( smlnum, ulp*foo ) )then
                  ! ==== cone more converged eigenvalue ====
                  ns = ns - 1_${ik}$

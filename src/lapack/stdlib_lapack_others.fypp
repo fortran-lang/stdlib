@@ -4035,7 +4035,7 @@ submodule(stdlib_lapack_other) stdlib_lapack_others
               go to 10
            end if
            ! compute the estimate of the reciprocal condition number.
-           if( ainvnm /= 0.0_sp )stdlib${ii}$_sla_syrcond = ( 1.0_sp / ainvnm )
+           if( ainvnm /= 0.0_sp )stdlib${ii}$_sla_syrcond = ( one / ainvnm )
            return
      end function stdlib${ii}$_sla_syrcond
 

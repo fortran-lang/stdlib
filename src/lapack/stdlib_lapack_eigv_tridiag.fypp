@@ -8398,7 +8398,7 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_tridiag
            complex(${ck}$), intent(out) :: q2(ldq2,*)
         ! =====================================================================
            ! Parameters 
-           real(${ck}$), parameter :: mone = -1.0_${ck}$
+           real(${ck}$), parameter :: mone = -one
            
            ! Local Scalars 
            integer(${ik}$) :: i, imax, j, jlam, jmax, jp, k2, n1, n1p1, n2

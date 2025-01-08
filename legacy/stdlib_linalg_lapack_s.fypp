@@ -3,7 +3,7 @@ module stdlib_linalg_lapack_s
      use stdlib_linalg_constants
      use stdlib_linalg_blas
      use stdlib_linalg_lapack_aux
-     implicit none(type,external)
+     implicit none
      private
 
 
@@ -6224,13 +6224,13 @@ module stdlib_linalg_lapack_s
               ! convert 48-bit integer to a realnumber in the interval (0,1,KIND=sp)
               x( i ) = r*( real( it1,KIND=sp)+r*( real( it2,KIND=sp)+r*( real( it3,KIND=sp)+&
                         r*real( it4,KIND=sp) ) ) )
-              if (x( i )==1.0_sp) then
+              if (x( i )==one) then
                  ! if a real number has n bits of precision, and the first
                  ! n bits of the 48-bit integer above happen to be all 1 (which
                  ! will occur about once every 2**n calls), then x( i ) will
                  ! be rounded to exactly one. in ieee single precision arithmetic,
                  ! this will happen relatively often since n = 24.
-                 ! since x( i ) is not supposed to return exactly 0.0_sp or 1.0_sp,
+                 ! since x( i ) is not supposed to return exactly 0.0_sp or one,
                  ! the statistically correct thing to do in this situation is
                  ! simply to iterate again.
                  ! n.b. the case x( i ) = 0.0_sp should not be possible.
@@ -11040,8 +11040,7 @@ module stdlib_linalg_lapack_s
         ! =====================================================================
            ! Parameters 
            real(sp), parameter :: alphasq = 0.01_sp
-           real(sp), parameter :: realone = 1.0_sp
-           real(sp), parameter :: realzero = 0.0_sp
+           
            
            
            ! Local Scalars 
@@ -11075,11 +11074,11 @@ module stdlib_linalg_lapack_s
            end if
            ! first, project x onto the orthogonal complement of q's column
            ! space
-           scl1 = realzero
-           ssq1 = realone
+           scl1 = zero
+           ssq1 = one
            call stdlib${ii}$_slassq( m1, x1, incx1, scl1, ssq1 )
-           scl2 = realzero
-           ssq2 = realone
+           scl2 = zero
+           ssq2 = one
            call stdlib${ii}$_slassq( m2, x2, incx2, scl2, ssq2 )
            normsq1 = scl1**2_${ik}$*ssq1 + scl2**2_${ik}$*ssq2
            if( m1 == 0_${ik}$ ) then
@@ -11092,11 +11091,11 @@ module stdlib_linalg_lapack_s
            call stdlib${ii}$_sgemv( 'C', m2, n, one, q2, ldq2, x2, incx2, one, work, 1_${ik}$ )
            call stdlib${ii}$_sgemv( 'N', m1, n, negone, q1, ldq1, work, 1_${ik}$, one, x1,incx1 )
            call stdlib${ii}$_sgemv( 'N', m2, n, negone, q2, ldq2, work, 1_${ik}$, one, x2,incx2 )
-           scl1 = realzero
-           ssq1 = realone
+           scl1 = zero
+           ssq1 = one
            call stdlib${ii}$_slassq( m1, x1, incx1, scl1, ssq1 )
-           scl2 = realzero
-           ssq2 = realone
+           scl2 = zero
+           ssq2 = one
            call stdlib${ii}$_slassq( m2, x2, incx2, scl2, ssq2 )
            normsq2 = scl1**2_${ik}$*ssq1 + scl2**2_${ik}$*ssq2
            ! if projection is sufficiently large in norm, then stop.
@@ -11122,11 +11121,11 @@ module stdlib_linalg_lapack_s
            call stdlib${ii}$_sgemv( 'C', m2, n, one, q2, ldq2, x2, incx2, one, work, 1_${ik}$ )
            call stdlib${ii}$_sgemv( 'N', m1, n, negone, q1, ldq1, work, 1_${ik}$, one, x1,incx1 )
            call stdlib${ii}$_sgemv( 'N', m2, n, negone, q2, ldq2, work, 1_${ik}$, one, x2,incx2 )
-           scl1 = realzero
-           ssq1 = realone
+           scl1 = zero
+           ssq1 = one
            call stdlib${ii}$_slassq( m1, x1, incx1, scl1, ssq1 )
-           scl2 = realzero
-           ssq2 = realone
+           scl2 = zero
+           ssq2 = one
            call stdlib${ii}$_slassq( m1, x1, incx1, scl1, ssq1 )
            normsq2 = scl1**2_${ik}$*ssq1 + scl2**2_${ik}$*ssq2
            ! if second projection is sufficiently large in norm, then do
@@ -16876,7 +16875,7 @@ module stdlib_linalg_lapack_s
         ! =====================================================================
            ! Parameters 
            real(sp), parameter :: fudge = 2.1_sp
-           real(sp), parameter :: relfac = 2.0_sp
+           real(sp), parameter :: relfac = two
            
            
            ! Local Scalars 
@@ -18033,9 +18032,9 @@ module stdlib_linalg_lapack_s
               end do
            end if
            do j = 1, n
-              s( j ) = 1.0_sp / s( j )
+              s( j ) = one / s( j )
            end do
-           tol = one / sqrt( 2.0_sp * n )
+           tol = one / sqrt( two * n )
            do iter = 1, max_iter
               scale = zero
               sumsq = zero
@@ -24293,7 +24292,7 @@ module stdlib_linalg_lapack_s
                     end if
                  else
                     nu = sigma21
-                    mu = sqrt( 1.0_sp - nu**2_${ik}$ )
+                    mu = sqrt( one - nu**2_${ik}$ )
                     if( nu < thresh ) then
                        mu = one
                        nu = zero
@@ -26994,7 +26993,7 @@ module stdlib_linalg_lapack_s
            real(sp), intent(out) :: lscale(*), rscale(*), work(*)
         ! =====================================================================
            ! Parameters 
-           real(sp), parameter :: sclfac = 1.0e+1_sp
+           real(sp), parameter :: sclfac = ten
            
            
            ! Local Scalars 
@@ -27814,7 +27813,7 @@ module stdlib_linalg_lapack_s
               go to 10
            end if
            ! compute the estimate of the reciprocal condition number.
-           if( ainvnm /= 0.0_sp )stdlib${ii}$_sla_gbrcond = ( 1.0_sp / ainvnm )
+           if( ainvnm /= 0.0_sp )stdlib${ii}$_sla_gbrcond = ( one / ainvnm )
            return
      end function stdlib${ii}$_sla_gbrcond
 
@@ -28143,7 +28142,7 @@ module stdlib_linalg_lapack_s
               go to 10
            end if
            ! compute the estimate of the reciprocal condition number.
-           if( ainvnm /= 0.0_sp )stdlib${ii}$_sla_gercond = ( 1.0_sp / ainvnm )
+           if( ainvnm /= 0.0_sp )stdlib${ii}$_sla_gercond = ( one / ainvnm )
            return
      end function stdlib${ii}$_sla_gercond
 
@@ -28343,7 +28342,7 @@ module stdlib_linalg_lapack_s
               go to 10
            end if
            ! compute the estimate of the reciprocal condition number.
-           if( ainvnm /= 0.0_sp )stdlib${ii}$_sla_porcond = ( 1.0_sp / ainvnm )
+           if( ainvnm /= 0.0_sp )stdlib${ii}$_sla_porcond = ( one / ainvnm )
            return
      end function stdlib${ii}$_sla_porcond
 
@@ -28699,7 +28698,7 @@ module stdlib_linalg_lapack_s
               go to 10
            end if
            ! compute the estimate of the reciprocal condition number.
-           if( ainvnm /= 0.0_sp )stdlib${ii}$_sla_syrcond = ( 1.0_sp / ainvnm )
+           if( ainvnm /= 0.0_sp )stdlib${ii}$_sla_syrcond = ( one / ainvnm )
            return
      end function stdlib${ii}$_sla_syrcond
 
@@ -35671,7 +35670,7 @@ module stdlib_linalg_lapack_s
                      
         ! ====================================================================
            ! Parameters 
-           real(sp), parameter :: realone = 1.0_sp
+           
            
            
            ! Local Scalars 
@@ -35685,15 +35684,15 @@ module stdlib_linalg_lapack_s
            info = 0_${ik}$
            colmajor = .not. stdlib_lsame( trans, 'T' )
            if( .not. stdlib_lsame( signs, 'O' ) ) then
-              z1 = realone
-              z2 = realone
-              z3 = realone
-              z4 = realone
+              z1 = one
+              z2 = one
+              z3 = one
+              z4 = one
            else
-              z1 = realone
-              z2 = -realone
-              z3 = realone
-              z4 = -realone
+              z1 = one
+              z2 = -one
+              z3 = one
+              z4 = -one
            end if
            lquery = lwork == -1_${ik}$
            if( m < 0_${ik}$ ) then
@@ -41211,8 +41210,6 @@ module stdlib_linalg_lapack_s
            real(sp), intent(out) :: hous(*), work(*)
         ! =====================================================================
            ! Parameters 
-           real(sp), parameter :: rzero = 0.0e+0_sp
-           
            
            ! Local Scalars 
            logical(lk) :: lquery, wantq, upper, afters1
@@ -41305,7 +41302,7 @@ module stdlib_linalg_lapack_s
                    d( i ) = ( ab( abdpos, i ) )
                end do
                do i = 1, n-1
-                   e( i ) = rzero
+                   e( i ) = zero
                end do
                hous( 1_${ik}$ ) = 1_${ik}$
                work( 1_${ik}$ ) = 1_${ik}$
@@ -47515,7 +47512,7 @@ module stdlib_linalg_lapack_s
            real(sp), intent(out) :: p, q
         ! =====================================================================
            ! Parameters 
-           real(sp), parameter :: bs = 2.0_sp
+           real(sp), parameter :: bs = two
            
            
            
@@ -55560,8 +55557,6 @@ module stdlib_linalg_lapack_s
            real(sp), intent(out) :: ab(ldab,*), tau(*), work(*)
         ! =====================================================================
            ! Parameters 
-           real(sp), parameter :: rone = 1.0e+0_sp
-           
            
            ! Local Scalars 
            logical(lk) :: lquery, upper
@@ -55663,7 +55658,7 @@ module stdlib_linalg_lapack_s
                   ! update the unreduced submatrix a(i+kd:n,i+kd:n), using
                   ! an update of the form:  a := a - v'*w - w'*v
                   call stdlib${ii}$_ssyr2k( uplo, 'CONJUGATE', pn, pk,-one, a( i, i+kd ), lda,work( &
-                            wpos ), ldw,rone, a( i+kd, i+kd ), lda )
+                            wpos ), ldw,one, a( i+kd, i+kd ), lda )
                end do
               ! copy the upper band to ab which is the band storage matrix
               do j = n-kd+1, n
@@ -55699,7 +55694,7 @@ module stdlib_linalg_lapack_s
                   ! update the unreduced submatrix a(i+kd:n,i+kd:n), using
                   ! an update of the form:  a := a - v*w' - w*v'
                   call stdlib${ii}$_ssyr2k( uplo, 'NO TRANSPOSE', pn, pk,-one, a( i+kd, i ), lda,work( &
-                            wpos ), ldw,rone, a( i+kd, i+kd ), lda )
+                            wpos ), ldw,one, a( i+kd, i+kd ), lda )
                   ! ==================================================================
                   ! restore a for comparison and checking to be removed
                    ! do 45 j = i, i+pk-1
@@ -81682,7 +81677,7 @@ module stdlib_linalg_lapack_s
            real(sp), parameter :: fourth = one/four
            real(sp), parameter :: fac = half
            real(sp), parameter :: maxgrowth = 64.0_sp
-           real(sp), parameter :: fudge = 2.0_sp
+           real(sp), parameter :: fudge = two
            integer(${ik}$), parameter :: maxtry = 6_${ik}$
            integer(${ik}$), parameter :: allrng = 1_${ik}$
            integer(${ik}$), parameter :: indrng = 2_${ik}$
