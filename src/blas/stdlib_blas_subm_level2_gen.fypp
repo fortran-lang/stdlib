@@ -2907,4 +2907,4 @@ submodule(stdlib_blas) stdlib_blas_subm_level2_gen
 
 
 #:endfor
-end submodule stdlib_blas_level2_gen
+end submodule stdlib_blas_subm_level2_gen

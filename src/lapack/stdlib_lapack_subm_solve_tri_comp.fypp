@@ -19761,4 +19761,4 @@ submodule(stdlib_lapack_solve) stdlib_lapack_subm_solve_tri_comp
 
 
 #:endfor
-end submodule stdlib_lapack_solve_tri_comp
+end submodule stdlib_lapack_subm_solve_tri_comp

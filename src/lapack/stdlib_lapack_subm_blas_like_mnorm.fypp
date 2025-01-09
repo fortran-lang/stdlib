@@ -14569,4 +14569,4 @@ submodule(stdlib_lapack_base) stdlib_lapack_subm_blas_like_mnorm
 
 
 #:endfor
-end submodule stdlib_lapack_blas_like_mnorm
+end submodule stdlib_lapack_subm_blas_like_mnorm

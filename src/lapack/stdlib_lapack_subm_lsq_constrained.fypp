@@ -1626,4 +1626,4 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_subm_lsq_constrained
 
 
 #:endfor
-end submodule stdlib_lapack_lsq_constrained
+end submodule stdlib_lapack_subm_lsq_constrained

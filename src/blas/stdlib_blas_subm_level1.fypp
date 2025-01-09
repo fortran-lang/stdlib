@@ -4214,4 +4214,4 @@ submodule(stdlib_blas) stdlib_blas_subm_level1
 
 
 #:endfor
-end submodule stdlib_blas_level1
+end submodule stdlib_blas_subm_level1

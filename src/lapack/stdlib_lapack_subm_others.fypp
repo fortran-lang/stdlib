@@ -5289,4 +5289,4 @@ submodule(stdlib_lapack_others) stdlib_lapack_subm_others
 
 
 #:endfor
-end submodule stdlib_lapack_others
+end submodule stdlib_lapack_subm_others

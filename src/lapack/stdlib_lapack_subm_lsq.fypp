@@ -8817,4 +8817,4 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_subm_lsq
 
 
 #:endfor
-end submodule stdlib_lapack_lsq
+end submodule stdlib_lapack_subm_lsq

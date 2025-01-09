@@ -4317,4 +4317,4 @@ submodule(stdlib_lapack_solve) stdlib_lapack_subm_solve_chol
 
 
 #:endfor
-end submodule stdlib_lapack_solve_chol
+end submodule stdlib_lapack_subm_solve_chol

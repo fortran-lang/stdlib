@@ -10590,4 +10590,4 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_subm_eigv_comp
 
 
 #:endfor
-end submodule stdlib_lapack_eigv_comp
+end submodule stdlib_lapack_subm_eigv_comp

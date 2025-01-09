@@ -3621,4 +3621,4 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_subm_svd_bidiag_qr
 
 
 #:endfor
-end submodule stdlib_lapack_svd_bidiag_qr
+end submodule stdlib_lapack_subm_svd_bidiag_qr

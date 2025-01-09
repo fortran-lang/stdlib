@@ -26024,4 +26024,4 @@ submodule(stdlib_lapack_solve) stdlib_lapack_subm_solve_ldl_comp2
 
 
 #:endfor
-end submodule stdlib_lapack_solve_ldl_comp2
+end submodule stdlib_lapack_subm_solve_ldl_comp2

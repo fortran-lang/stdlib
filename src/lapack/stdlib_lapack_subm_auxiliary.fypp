@@ -1083,4 +1083,4 @@ submodule(stdlib_lapack_base) stdlib_lapack_subm_auxiliary
 
 
 #:endfor
-end submodule stdlib_lapack_auxiliary
+end submodule stdlib_lapack_subm_auxiliary

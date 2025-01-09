@@ -21661,4 +21661,4 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_subm_eigv_gen
 
 
 #:endfor
-end submodule stdlib_lapack_eigv_gen
+end submodule stdlib_lapack_subm_eigv_gen

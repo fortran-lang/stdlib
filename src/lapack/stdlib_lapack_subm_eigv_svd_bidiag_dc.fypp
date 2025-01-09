@@ -7515,4 +7515,4 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_subm_eigv_svd_bidiag_dc
 
 
 #:endfor
-end submodule stdlib_lapack_eigv_svd_bidiag_dc
+end submodule stdlib_lapack_subm_eigv_svd_bidiag_dc

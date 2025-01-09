@@ -2862,4 +2862,4 @@ submodule(stdlib_blas) stdlib_blas_subm_level3_tri
 
 
 #:endfor
-end submodule stdlib_blas_level3_tri
+end submodule stdlib_blas_subm_level3_tri

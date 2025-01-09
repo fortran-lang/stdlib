@@ -1495,4 +1495,4 @@ submodule(stdlib_blas) stdlib_blas_subm_level2_ban
 
 
 #:endfor
-end submodule stdlib_blas_level2_ban
+end submodule stdlib_blas_subm_level2_ban

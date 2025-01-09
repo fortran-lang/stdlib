@@ -20003,4 +20003,4 @@ submodule(stdlib_lapack_solve) stdlib_lapack_subm_solve_lu_comp
 
 
 #:endfor
-end submodule stdlib_lapack_solve_lu_comp
+end submodule stdlib_lapack_subm_solve_lu_comp

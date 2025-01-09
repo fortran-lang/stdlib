@@ -19346,4 +19346,4 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_subm_eigv_svd_drivers
 
 
 #:endfor
-end submodule stdlib_lapack_eigv_svd_drivers
+end submodule stdlib_lapack_subm_eigv_svd_drivers

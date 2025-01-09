@@ -1809,4 +1809,4 @@ submodule(stdlib_lapack_solve) stdlib_lapack_subm_solve_aux
 
 
 #:endfor
-end submodule stdlib_lapack_solve_aux
+end submodule stdlib_lapack_subm_solve_aux

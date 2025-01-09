@@ -2970,4 +2970,4 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_subm_svd_comp2
 
 
 #:endfor
-end submodule stdlib_lapack_svd_comp2
+end submodule stdlib_lapack_subm_svd_comp2

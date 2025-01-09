@@ -1701,4 +1701,4 @@ submodule(stdlib_lapack_base) stdlib_lapack_subm_blas_like_l1
 
 
 #:endfor
-end submodule stdlib_lapack_blas_like_l1
+end submodule stdlib_lapack_subm_blas_like_l1

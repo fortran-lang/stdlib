@@ -8902,4 +8902,4 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_subm_eigv_tridiag
 
 
 #:endfor
-end submodule stdlib_lapack_eigv_tridiag
+end submodule stdlib_lapack_subm_eigv_tridiag

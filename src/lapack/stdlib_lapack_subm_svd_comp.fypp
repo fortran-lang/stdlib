@@ -12166,4 +12166,4 @@ submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_subm_svd_comp
 
 
 #:endfor
-end submodule stdlib_lapack_svd_comp
+end submodule stdlib_lapack_subm_svd_comp

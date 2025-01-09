@@ -7074,4 +7074,4 @@ submodule(stdlib_blas) stdlib_blas_subm_level2_tri
 
 
 #:endfor
-end submodule stdlib_blas_level2_tri
+end submodule stdlib_blas_subm_level2_tri

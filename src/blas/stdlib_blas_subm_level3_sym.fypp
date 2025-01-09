@@ -2985,4 +2985,4 @@ submodule(stdlib_blas) stdlib_blas_subm_level3_sym
 
 
 #:endfor
-end submodule stdlib_blas_level3_sym
+end submodule stdlib_blas_subm_level3_sym
