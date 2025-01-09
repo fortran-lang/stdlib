@@ -260,7 +260,7 @@ lapack_subgroups = {
         "members" : ["solve_aux","solve_tri_comp" ,"solve_lu_comp","solve_lu","solve_chol_comp","solve_ldl_comp","solve_ldl_comp2","solve_ldl_comp3","solve_ldl_comp4","solve_chol","solve_ldl"],
     },
 
-    "other" : {
+    "others" : {
         "dependencies" : ["solve"],
         "members" : ["others"],
     },
@@ -339,7 +339,10 @@ for filename in ['stdlib_linalg_blas_s.fypp','stdlib_linalg_blas_d.fypp','stdlib
                 
             elif inside_subroutine:
                 subroutine_buffer.append(line)
-                if line.strip().lower().startswith(("end subroutine stdlib_","end function stdlib_",r"end subroutine stdlib${ii}$_",r"end function stdlib${ii}$_")):
+                if line.strip().lower().startswith(("end subroutine stdlib_",
+                                                    "end function stdlib_",
+                                                   r"end subroutine stdlib${ii}$_",
+                                                   r"end function stdlib${ii}$_")):
                     # End of the current subroutine
                     if filename in ['stdlib_linalg_blas_q.fypp','stdlib_linalg_blas_w.fypp'] :
                         subroutine_buffer.append('\n#:endif\n#:endfor\n')
@@ -374,7 +377,10 @@ with open(blas_include, 'w') as file:
                 if '! =====================================================================' in line:
                     wr = False
                 # Switch on again
-                if line.strip().lower().startswith(("end subroutine stdlib_","end function stdlib_",r"end subroutine stdlib${ii}$_",r"end function stdlib${ii}$_")):
+                if line.strip().lower().startswith(("end subroutine stdlib_",
+                                                    "end function stdlib_",
+                                                    r"end subroutine stdlib${ii}$_",
+                                                    r"end function stdlib${ii}$_")):
                     wr = True
                 if wr: 
                     if not line.strip().startswith(("!","use")):
@@ -386,7 +392,7 @@ with open(blas_include, 'w') as file:
 
 # Step 3: Write grouped subroutines to a new submodule file
 for group, group_list in blas_groups.items():
-    output_file = os.path.join(output_dir_blas, f"stdlib_blas_{group}.fypp")
+    output_file = os.path.join(output_dir_blas, f"stdlib_blas_subm_{group}.fypp")
     with open(output_file, 'w') as file:
         # Write module header
         file.write("#:include \"common.fypp\" \n")
@@ -512,7 +518,7 @@ for subgroup_name, subgroup_data in lapack_subgroups.items():
 # Step 5: Write grouped subroutines to a new submodule file
 for subgroup_name, subgroup_data in lapack_subgroups.items():
     for group in subgroup_data["members"]:
-        output_file = os.path.join(output_dir_lapack, f"stdlib_lapack_{group}.fypp")
+        output_file = os.path.join(output_dir_lapack, f"stdlib_lapack_subm_{group}.fypp")
         with open(output_file, 'w') as file:
             # Write module header
             file.write("#:include \"common.fypp\" \n")

@@ -88,70 +88,70 @@ set(cppFiles
     stdlib_linalg_constants.fypp
     blas/stdlib_blas.fypp
     blas/stdlib_linalg_blas_aux.fypp
-    blas/stdlib_blas_level1.fypp
-    blas/stdlib_blas_level2_gen.fypp
-    blas/stdlib_blas_level2_ban.fypp
-    blas/stdlib_blas_level2_pac.fypp
-    blas/stdlib_blas_level2_sym.fypp
-    blas/stdlib_blas_level2_tri.fypp
-    blas/stdlib_blas_level3_gen.fypp
-    blas/stdlib_blas_level3_sym.fypp
-    blas/stdlib_blas_level3_tri.fypp
+    blas/stdlib_blas_subm_level1.fypp
+    blas/stdlib_blas_subm_level2_gen.fypp
+    blas/stdlib_blas_subm_level2_ban.fypp
+    blas/stdlib_blas_subm_level2_pac.fypp
+    blas/stdlib_blas_subm_level2_sym.fypp
+    blas/stdlib_blas_subm_level2_tri.fypp
+    blas/stdlib_blas_subm_level3_gen.fypp
+    blas/stdlib_blas_subm_level3_sym.fypp
+    blas/stdlib_blas_subm_level3_tri.fypp
 
     lapack/stdlib_lapack_base.fypp
     lapack/stdlib_lapack_solve.fypp
-    lapack/stdlib_lapack_other.fypp
+    lapack/stdlib_lapack_others.fypp
     lapack/stdlib_lapack_orthogonal_factors.fypp
     lapack/stdlib_lapack_eig_svd_lsq.fypp
-
     lapack/stdlib_linalg_lapack_aux.fypp
-    lapack/stdlib_lapack_auxiliary.fypp
-    lapack/stdlib_lapack_blas_like_base.fypp
-    lapack/stdlib_lapack_blas_like_l1.fypp
-    lapack/stdlib_lapack_blas_like_l2.fypp
-    lapack/stdlib_lapack_blas_like_l3.fypp
-    lapack/stdlib_lapack_blas_like_mnorm.fypp
-    lapack/stdlib_lapack_blas_like_scalar.fypp
-    lapack/stdlib_lapack_cosine_sine.fypp
-    lapack/stdlib_lapack_cosine_sine2.fypp
-    lapack/stdlib_lapack_eigv_comp.fypp
-    lapack/stdlib_lapack_eigv_comp2.fypp
-    lapack/stdlib_lapack_eigv_gen.fypp
-    lapack/stdlib_lapack_eigv_gen2.fypp
-    lapack/stdlib_lapack_eigv_gen3.fypp
-    lapack/stdlib_lapack_eigv_std_driver.fypp
-    lapack/stdlib_lapack_eigv_svd_bidiag_dc.fypp
-    lapack/stdlib_lapack_eigv_svd_drivers.fypp
-    lapack/stdlib_lapack_eigv_svd_drivers2.fypp
-    lapack/stdlib_lapack_eigv_svd_drivers3.fypp
-    lapack/stdlib_lapack_eigv_sym_comp.fypp
-    lapack/stdlib_lapack_eigv_sym.fypp
-    lapack/stdlib_lapack_eigv_tridiag.fypp
-    lapack/stdlib_lapack_eigv_tridiag2.fypp
-    lapack/stdlib_lapack_eigv_tridiag3.fypp
-    lapack/stdlib_lapack_givens_jacobi_rot.fypp
-    lapack/stdlib_lapack_householder_reflectors.fypp
-    lapack/stdlib_lapack_lsq.fypp
-    lapack/stdlib_lapack_lsq_aux.fypp
-    lapack/stdlib_lapack_lsq_constrained.fypp
-    lapack/stdlib_lapack_orthogonal_factors_ql.fypp
-    lapack/stdlib_lapack_orthogonal_factors_qr.fypp
-    lapack/stdlib_lapack_orthogonal_factors_rz.fypp
-    lapack/stdlib_lapack_others.fypp
-    lapack/stdlib_lapack_solve_aux.fypp
-    lapack/stdlib_lapack_solve_chol_comp.fypp
-    lapack/stdlib_lapack_solve_chol.fypp
-    lapack/stdlib_lapack_solve_ldl_comp.fypp
-    lapack/stdlib_lapack_solve_ldl_comp2.fypp
-    lapack/stdlib_lapack_solve_ldl_comp3.fypp
-    lapack/stdlib_lapack_solve_ldl_comp4.fypp
-    lapack/stdlib_lapack_solve_ldl.fypp
-    lapack/stdlib_lapack_solve_lu_comp.fypp
-    lapack/stdlib_lapack_solve_lu.fypp
-    lapack/stdlib_lapack_solve_tri_comp.fypp
-    lapack/stdlib_lapack_svd_bidiag_qr.fypp
-    lapack/stdlib_lapack_svd_comp.fypp
-    lapack/stdlib_lapack_svd_comp2.fypp
+
+    lapack/stdlib_lapack_subm_auxiliary.fypp
+    lapack/stdlib_lapack_subm_blas_like_base.fypp
+    lapack/stdlib_lapack_subm_blas_like_l1.fypp
+    lapack/stdlib_lapack_subm_blas_like_l2.fypp
+    lapack/stdlib_lapack_subm_blas_like_l3.fypp
+    lapack/stdlib_lapack_subm_blas_like_mnorm.fypp
+    lapack/stdlib_lapack_subm_blas_like_scalar.fypp
+    lapack/stdlib_lapack_subm_cosine_sine.fypp
+    lapack/stdlib_lapack_subm_cosine_sine2.fypp
+    lapack/stdlib_lapack_subm_eigv_comp.fypp
+    lapack/stdlib_lapack_subm_eigv_comp2.fypp
+    lapack/stdlib_lapack_subm_eigv_gen.fypp
+    lapack/stdlib_lapack_subm_eigv_gen2.fypp
+    lapack/stdlib_lapack_subm_eigv_gen3.fypp
+    lapack/stdlib_lapack_subm_eigv_std_driver.fypp
+    lapack/stdlib_lapack_subm_eigv_svd_bidiag_dc.fypp
+    lapack/stdlib_lapack_subm_eigv_svd_drivers.fypp
+    lapack/stdlib_lapack_subm_eigv_svd_drivers2.fypp
+    lapack/stdlib_lapack_subm_eigv_svd_drivers3.fypp
+    lapack/stdlib_lapack_subm_eigv_sym_comp.fypp
+    lapack/stdlib_lapack_subm_eigv_sym.fypp
+    lapack/stdlib_lapack_subm_eigv_tridiag.fypp
+    lapack/stdlib_lapack_subm_eigv_tridiag2.fypp
+    lapack/stdlib_lapack_subm_eigv_tridiag3.fypp
+    lapack/stdlib_lapack_subm_givens_jacobi_rot.fypp
+    lapack/stdlib_lapack_subm_householder_reflectors.fypp
+    lapack/stdlib_lapack_subm_lsq.fypp
+    lapack/stdlib_lapack_subm_lsq_aux.fypp
+    lapack/stdlib_lapack_subm_lsq_constrained.fypp
+    lapack/stdlib_lapack_subm_orthogonal_factors_ql.fypp
+    lapack/stdlib_lapack_subm_orthogonal_factors_qr.fypp
+    lapack/stdlib_lapack_subm_orthogonal_factors_rz.fypp
+    lapack/stdlib_lapack_subm_others.fypp
+    lapack/stdlib_lapack_subm_solve_aux.fypp
+    lapack/stdlib_lapack_subm_solve_chol_comp.fypp
+    lapack/stdlib_lapack_subm_solve_chol.fypp
+    lapack/stdlib_lapack_subm_solve_ldl_comp.fypp
+    lapack/stdlib_lapack_subm_solve_ldl_comp2.fypp
+    lapack/stdlib_lapack_subm_solve_ldl_comp3.fypp
+    lapack/stdlib_lapack_subm_solve_ldl_comp4.fypp
+    lapack/stdlib_lapack_subm_solve_ldl.fypp
+    lapack/stdlib_lapack_subm_solve_lu_comp.fypp
+    lapack/stdlib_lapack_subm_solve_lu.fypp
+    lapack/stdlib_lapack_subm_solve_tri_comp.fypp
+    lapack/stdlib_lapack_subm_svd_bidiag_qr.fypp
+    lapack/stdlib_lapack_subm_svd_comp.fypp
+    lapack/stdlib_lapack_subm_svd_comp2.fypp
 
     stdlib_linalg_blas.fypp
     stdlib_linalg_lapack.fypp
