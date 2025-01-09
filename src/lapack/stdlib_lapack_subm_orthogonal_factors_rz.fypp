@@ -1,5 +1,5 @@
 #:include "common.fypp" 
-submodule(stdlib_lapack_orthogonal_factors) stdlib_lapack_orthogonal_factors_rz
+submodule(stdlib_lapack_orthogonal_factors) stdlib_lapack_subm_orthogonal_factors_rz
   implicit none
 
 

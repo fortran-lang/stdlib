@@ -1,5 +1,5 @@
 #:include "common.fypp" 
-submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_lsq_aux
+submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_subm_lsq_aux
   implicit none
 
 

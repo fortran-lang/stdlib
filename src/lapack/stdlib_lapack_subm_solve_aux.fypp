@@ -1,5 +1,5 @@
 #:include "common.fypp" 
-submodule(stdlib_lapack_solve) stdlib_lapack_solve_aux
+submodule(stdlib_lapack_solve) stdlib_lapack_subm_solve_aux
   implicit none
 
 

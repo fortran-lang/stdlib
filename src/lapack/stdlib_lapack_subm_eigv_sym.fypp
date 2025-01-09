@@ -1,5 +1,5 @@
 #:include "common.fypp" 
-submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_sym
+submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_subm_eigv_sym
   implicit none
 
 

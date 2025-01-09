@@ -1,5 +1,5 @@
 #:include "common.fypp" 
-submodule(stdlib_blas) stdlib_blas_level2_pac
+submodule(stdlib_blas) stdlib_blas_subm_level2_pac
   implicit none
 
 

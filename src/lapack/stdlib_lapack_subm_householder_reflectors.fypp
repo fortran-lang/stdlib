@@ -1,5 +1,5 @@
 #:include "common.fypp" 
-submodule(stdlib_lapack_base) stdlib_lapack_householder_reflectors
+submodule(stdlib_lapack_base) stdlib_lapack_subm_householder_reflectors
   implicit none
 
 

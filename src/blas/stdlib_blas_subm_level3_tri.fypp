@@ -1,5 +1,5 @@
 #:include "common.fypp" 
-submodule(stdlib_blas) stdlib_blas_level3_tri
+submodule(stdlib_blas) stdlib_blas_subm_level3_tri
   implicit none
 
 
