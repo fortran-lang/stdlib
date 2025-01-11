@@ -24,7 +24,7 @@ submodule(stdlib_intrinsics) stdlib_intrinsics_dot_product
 contains
 
 #:for k1, t1, s1 in RC_KINDS_TYPES
-pure module function fprod_${s1}$(a,b) result(p)
+pure module function stdlib_dot_product_${s1}$(a,b) result(p)
     ${t1}$, intent(in) :: a(:)
     ${t1}$, intent(in) :: b(:)
     ${t1}$ :: p
@@ -48,7 +48,7 @@ end function
 #:endfor
 
 #:for k1, t1, s1 in RC_KINDS_TYPES
-pure module function fprod_kahan_${s1}$(a,b) result(p)
+pure module function stdlib_dot_product_kahan_${s1}$(a,b) result(p)
     ${t1}$, intent(in) :: a(:)
     ${t1}$, intent(in) :: b(:)
     ${t1}$ :: p

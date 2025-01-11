@@ -11,17 +11,17 @@ title: intrinsics
 The `stdlib_intrinsics` module provides replacements for some of the well known intrinsic functions found in Fortran compilers for which either a faster and/or more accurate implementation is found which has also proven of interest to the Fortran community.
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### `fsum` function
+### `stdlib_sum` function
 
 #### Description
 
-The `fsum` function can replace the intrinsic `sum` for `real` or `complex` arrays. It follows a chunked implementation which maximizes vectorization potential as well as reducing the round-off error. This procedure is recommended when summing large arrays, for repetitive summation of smaller arrays consider the classical `sum`.
+The `stdlib_sum` function can replace the intrinsic `sum` for `real` or `complex` arrays. It follows a chunked implementation which maximizes vectorization potential as well as reducing the round-off error. This procedure is recommended when summing large arrays, for repetitive summation of smaller arrays consider the classical `sum`.
 
 #### Syntax
 
-`res = ` [[stdlib_intrinsics(module):fsum(interface)]] ` (x [,mask] )`
+`res = ` [[stdlib_intrinsics(module):stdlib_sum(interface)]] ` (x [,mask] )`
 
-`res = ` [[stdlib_intrinsics(module):fsum(interface)]] ` (x, dim [,mask] )`
+`res = ` [[stdlib_intrinsics(module):stdlib_sum(interface)]] ` (x, dim [,mask] )`
 
 #### Status
 
@@ -44,11 +44,11 @@ Pure function.
 If `dim` is absent, the output is a scalar of the same `type` and `kind` as to that of `x`. Otherwise, an array of rank n-1, where n equals the rank of `x`, and a shape similar to that of `x` with dimension `dim` dropped is returned.
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### `fsum_kahan` function
+### `stdlib_sum_kahan` function
 
 #### Description
 
-The `fsum_kahan` function can replace the intrinsic `sum` for 1D `real` or `complex` arrays. It follows a chunked implementation which maximizes vectorization potential, complemented by an `elemental` kernel based on the [kahan summation](https://en.wikipedia.org/wiki/Kahan_summation_algorithm) strategy to reduce the round-off error:
+The `stdlib_sum_kahan` function can replace the intrinsic `sum` for 1D `real` or `complex` arrays. It follows a chunked implementation which maximizes vectorization potential, complemented by an `elemental` kernel based on the [kahan summation](https://en.wikipedia.org/wiki/Kahan_summation_algorithm) strategy to reduce the round-off error:
 
 ```fortran
 elemental subroutine kahan_kernel_<kind>(a,s,c)
@@ -65,7 +65,7 @@ end subroutine
 
 #### Syntax
 
-`res = ` [[stdlib_intrinsics(module):fsum_kahan(interface)]] ` (x [,mask] )`
+`res = ` [[stdlib_intrinsics(module):stdlib_sum_kahan(interface)]] ` (x [,mask] )`
 
 #### Status
 
@@ -92,15 +92,15 @@ The output is a scalar of `type` and `kind` same as to that of `x`.
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### `fprod` function
+### `stdlib_dot_product` function
 
 #### Description
 
-The `fprod` function can replace the intrinsic `dot_product` for 1D `real` or `complex` arrays. It follows a chunked implementation which maximizes vectorization potential as well as reducing the round-off error. This procedure is recommended when crunching large arrays, for repetitive products of smaller arrays consider the classical `dot_product`.
+The `stdlib_dot_product` function can replace the intrinsic `dot_product` for 1D `real` or `complex` arrays. It follows a chunked implementation which maximizes vectorization potential as well as reducing the round-off error. This procedure is recommended when crunching large arrays, for repetitive products of smaller arrays consider the classical `dot_product`.
 
 #### Syntax
 
-`res = ` [[stdlib_intrinsics(module):fprod(interface)]] ` (x, y)`
+`res = ` [[stdlib_intrinsics(module):stdlib_dot_product(interface)]] ` (x, y)`
 
 #### Status
 
@@ -121,15 +121,15 @@ Pure function.
 The output is a scalar of `type` and `kind` same as to that of `x` and `y`.
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### `fprod_kahan` function
+### `stdlib_dot_product_kahan` function
 
 #### Description
 
-The `fprod_kahan` function can replace the intrinsic `dot_product` for 1D `real` or `complex` arrays. It follows a chunked implementation which maximizes vectorization potential , complemented by the same `elemental` kernel based on the [kahan summation](https://en.wikipedia.org/wiki/Kahan_summation_algorithm) used for `fsum` to reduce the round-off error.
+The `stdlib_dot_product_kahan` function can replace the intrinsic `dot_product` for 1D `real` or `complex` arrays. It follows a chunked implementation which maximizes vectorization potential , complemented by the same `elemental` kernel based on the [kahan summation](https://en.wikipedia.org/wiki/Kahan_summation_algorithm) used for `stdlib_sum` to reduce the round-off error.
 
 #### Syntax
 
-`res = ` [[stdlib_intrinsics(module):fprod_kahan(interface)]] ` (x, y)`
+`res = ` [[stdlib_intrinsics(module):stdlib_dot_product_kahan(interface)]] ` (x, y)`
 
 #### Status
 
