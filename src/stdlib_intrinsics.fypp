@@ -4,7 +4,6 @@
 #:set RC_KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES
 #:set RANKS = range(2, MAXRANK + 1)
 
-! This module is based on https://github.com/jalvesz/fast_math
 module stdlib_intrinsics
     !!Replacement for certain Fortran intrinsic functions offering either faster and/or more accurate implementations.
     !! ([Specification](../page/specs/stdlib_intrinsics.html))
@@ -12,7 +11,20 @@ module stdlib_intrinsics
     implicit none
     private
 
-    interface stdlib_sum 
+    interface stdlib_sum
+        !! version: experimental 
+        !!
+        !!### Summary 
+        !! Sum elements of rank N arrays. 
+        !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_sum))
+        !!
+        !!### Description
+        !! 
+        !! This interface provides standard conforming call for sum of elements of any rank.
+        !! The 1-D base implementation follows a chunked approach for optimizing performance and increasing accuracy.
+        !! The `N-D` interfaces calls upon the `(N-1)-D` implementation. 
+        !! Supported data types include `real` and `complex`.
+        !!
         #:for rk, rt, rs in RC_KINDS_TYPES
         pure module function stdlib_sum_1d_${rs}$(a) result(s)
             ${rt}$, intent(in) :: a(:)
@@ -41,6 +53,18 @@ module stdlib_intrinsics
     public :: stdlib_sum
 
     interface stdlib_sum_kahan
+        !! version: experimental 
+        !!
+        !!### Summary 
+        !! Sum elements of rank 1 arrays. 
+        !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_sum_kahan))
+        !!
+        !!### Description
+        !! 
+        !! This interface provides standard conforming call for sum of elements of rank 1.
+        !! The 1-D base implementation follows a chunked approach combined with a kahan kernel for optimizing performance and increasing accuracy.
+        !! Supported data types include `real` and `complex`.
+        !!
         #:for rk, rt, rs in RC_KINDS_TYPES
         pure module function stdlib_sum_kahan_1d_${rs}$(a) result(s)
             ${rt}$, intent(in) :: a(:)
@@ -56,6 +80,18 @@ module stdlib_intrinsics
     public :: stdlib_sum_kahan
 
     interface stdlib_dot_product
+        !! version: experimental 
+        !!
+        !!### Summary 
+        !! dot_product of rank 1 arrays. 
+        !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_dot_product))
+        !!
+        !!### Description
+        !! 
+        !! compute the dot_product of rank 1 arrays.
+        !! The 1-D base implementation follows a chunked approach for optimizing performance and increasing accuracy.
+        !! Supported data types include `real` and `complex`.
+        !!
         #:for rk, rt, rs in RC_KINDS_TYPES
         pure module function stdlib_dot_product_${rs}$(a,b) result(p)
             ${rt}$, intent(in) :: a(:)
@@ -67,6 +103,18 @@ module stdlib_intrinsics
     public :: stdlib_dot_product
 
     interface stdlib_dot_product_kahan
+        !! version: experimental 
+        !!
+        !!### Summary 
+        !! dot_product of rank 1 arrays. 
+        !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_dot_product_kahan))
+        !!
+        !!### Description
+        !! 
+        !! compute the dot_product of rank 1 arrays.
+        !! The implementation follows a chunked approach combined with a kahan kernel for optimizing performance and increasing accuracy.
+        !! Supported data types include `real` and `complex`.
+        !!
         #:for rk, rt, rs in RC_KINDS_TYPES
         pure module function stdlib_dot_product_kahan_${rs}$(a,b) result(p)
             ${rt}$, intent(in) :: a(:)

@@ -11,7 +11,6 @@ ${expression}$
 #:endif
 #:enddef
 
-! This module is based on https://github.com/jalvesz/fast_math
 submodule(stdlib_intrinsics) stdlib_intrinsics_dot_product
     !!Replacement for certain Fortran intrinsic functions offering either faster and/or more accurate implementations.
     !! ([Specification](../page/specs/stdlib_intrinsics.html))
@@ -22,7 +21,7 @@ submodule(stdlib_intrinsics) stdlib_intrinsics_dot_product
     integer, parameter :: chunk = 64
     
 contains
-
+! This implementation is based on https://github.com/jalvesz/fast_math
 #:for k1, t1, s1 in RC_KINDS_TYPES
 pure module function stdlib_dot_product_${s1}$(a,b) result(p)
     ${t1}$, intent(in) :: a(:)

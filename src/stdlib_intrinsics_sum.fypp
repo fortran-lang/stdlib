@@ -4,9 +4,7 @@
 #:set RC_KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES
 #:set RANKS = range(2, MAXRANK + 1)
 
-! This module is based on https://github.com/jalvesz/fast_math
 submodule(stdlib_intrinsics) stdlib_intrinsics_sum
-    !!Replacement for certain Fortran intrinsic functions offering either faster and/or more accurate implementations.
     !! ([Specification](../page/specs/stdlib_intrinsics.html))
     use stdlib_kinds
     use stdlib_constants
@@ -17,6 +15,7 @@ submodule(stdlib_intrinsics) stdlib_intrinsics_sum
 contains
 
 !================= 1D Base implementations ============
+! This implementation is based on https://github.com/jalvesz/fast_math
 #:for rk, rt, rs in RC_KINDS_TYPES
 pure module function stdlib_sum_1d_${rs}$(a) result(s)
     ${rt}$, intent(in) :: a(:)
