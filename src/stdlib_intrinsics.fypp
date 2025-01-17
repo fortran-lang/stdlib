@@ -56,13 +56,14 @@ module stdlib_intrinsics
         !! version: experimental 
         !!
         !!### Summary 
-        !! Sum elements of rank 1 arrays. 
+        !! Sum elements of rank N arrays. 
         !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_sum_kahan))
         !!
         !!### Description
         !! 
-        !! This interface provides standard conforming call for sum of elements of rank 1.
+        !! This interface provides standard conforming call for sum of elements of any rank.
         !! The 1-D base implementation follows a chunked approach combined with a kahan kernel for optimizing performance and increasing accuracy.
+        !! The `N-D` interfaces calls upon the `(N-1)-D` implementation. 
         !! Supported data types include `real` and `complex`.
         !!
         #:for rk, rt, rs in RC_KINDS_TYPES
@@ -75,6 +76,19 @@ module stdlib_intrinsics
             logical, intent(in) :: mask(:)
             ${rt}$ :: s
         end function
+        #:for rank in RANKS
+        pure module function stdlib_sum_kahan_${rank}$d_${rs}$( x, mask ) result( s )
+            ${rt}$, intent(in) :: x${ranksuffix(rank)}$
+            logical, intent(in), optional :: mask${ranksuffix(rank)}$
+            ${rt}$ :: s
+        end function
+        pure module function stdlib_sum_kahan_${rank}$d_dim_${rs}$( x , dim, mask ) result( s )
+            ${rt}$, intent(in) :: x${ranksuffix(rank)}$
+            integer, intent(in):: dim
+            logical, intent(in), optional :: mask${ranksuffix(rank)}$
+            ${rt}$ :: s${reduced_shape('x', rank, 'dim')}$
+        end function
+        #:endfor
         #:endfor
     end interface
     public :: stdlib_sum_kahan

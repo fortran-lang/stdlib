@@ -127,10 +127,17 @@ subroutine test_sum(error)
         call check(error, abs( sum(x) - stdlib_sum(x) )<tolerance*size(x) , "KO: full ndarray stdlib_sum" )
         if (allocated(error)) return
 
+        call check(error, abs( sum(x) - stdlib_sum_kahan(x) )<tolerance*size(x) , "KO: full ndarray stdlib_sum_kahan" )
+        if (allocated(error)) return
+
         !> sum over specific rank dim
         do i = 1, rank(x)
             call check(error, norm2( sum(x,dim=i) - stdlib_sum(x,dim=i) )<tolerance*size(x) ,&
                         "KO: ndarray stdlib_sum over dim "//to_string(i) )
+            if (allocated(error)) return
+
+            call check(error, norm2( sum(x,dim=i) - stdlib_sum_kahan(x,dim=i) )<tolerance*size(x) ,&
+                        "KO: ndarray stdlib_sum_kahan over dim "//to_string(i) )
             if (allocated(error)) return
         end do
     end block ndarray
