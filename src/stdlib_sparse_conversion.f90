@@ -1250,7 +1250,6 @@ contains
 
 
     recursive subroutine quicksort_i_sp(a, b, first, last)
-        integer, parameter :: wp = sp
         integer(ilp), intent(inout) :: a(*) !! reference table to sort
         real(sp), intent(inout)  :: b(*) !! secondary real data to sort w.r.t. a
         integer(ilp), intent(in)     :: first, last
@@ -1278,7 +1277,6 @@ contains
     end subroutine 
 
     recursive subroutine quicksort_i_dp(a, b, first, last)
-        integer, parameter :: wp = sp
         integer(ilp), intent(inout) :: a(*) !! reference table to sort
         real(dp), intent(inout)  :: b(*) !! secondary real data to sort w.r.t. a
         integer(ilp), intent(in)     :: first, last
@@ -1306,7 +1304,6 @@ contains
     end subroutine 
 
     recursive subroutine quicksort_i_csp(a, b, first, last)
-        integer, parameter :: wp = sp
         integer(ilp), intent(inout) :: a(*) !! reference table to sort
         complex(sp), intent(inout)  :: b(*) !! secondary real data to sort w.r.t. a
         integer(ilp), intent(in)     :: first, last
@@ -1334,7 +1331,6 @@ contains
     end subroutine 
 
     recursive subroutine quicksort_i_cdp(a, b, first, last)
-        integer, parameter :: wp = sp
         integer(ilp), intent(inout) :: a(*) !! reference table to sort
         complex(dp), intent(inout)  :: b(*) !! secondary real data to sort w.r.t. a
         integer(ilp), intent(in)     :: first, last
