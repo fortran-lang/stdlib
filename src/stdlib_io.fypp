@@ -66,6 +66,7 @@ module stdlib_io
     #:for k1, t1 in KINDS_TYPES
       module procedure loadtxt_${t1[0]}$${k1}$
     #:endfor
+    module procedure :: loadtxt_char
   end interface loadtxt
 
   interface savetxt
@@ -191,6 +192,119 @@ contains
 
     end subroutine loadtxt_${t1[0]}$${k1}$
   #:endfor
+
+    subroutine loadtxt_char(filename, d, skiprows, max_rows, skip_blank_lines)
+        !!
+        !! Loads a text file into a 1D character array.
+        !!
+        character(len=*), intent(in) :: filename
+        character(len=:), intent(out), allocatable :: d(:)
+        integer, intent(in), optional :: skiprows, max_rows
+        logical, intent(in), optional :: skip_blank_lines
+
+        logical :: skip_blank_lines_, read_line
+
+        integer :: i, u, len_text, max_line_length, line_length, start_pos, end_pos, &
+                    current_line, next_line_pos, step, max_rows_, skiprows_
+
+        character(len=:), allocatable :: text
+
+        ! Set default optional values
+        skiprows_ = optval(skiprows, 0)
+        max_rows_ = optval(max_rows, -1)
+        skip_blank_lines_ = optval(skip_blank_lines, .false.)
+        
+        !! Open and store all of file contents.  
+        open (newunit=u, file=filename, action='read', form='unformatted', access='stream')
+            inquire(unit=u, size=len_text) ! Get total character count of file.
+            allocate(character(len=len_text) :: text)
+            read(u) text
+        close(u)
+
+        ! Loop through file twice.  
+        ! step = 1 loop will get line count, max line size and allocate character array.
+        ! step = 2 will fill the array.  
+        do step = 1, 2
+            max_line_length = 0
+            ! Will skip skiprow lines if specified, since will only read line if current_line is positive.   
+            current_line = -skiprows_
+            next_line_pos = 1
+            do while (next_line_pos > 0)
+
+                start_pos = next_line_pos
+
+                ! Search text starting at start_pos for end of line.  end_pos will exclude CRLR or LR characters.
+                ! next line idx is the start of the next line.  Will be 0 if last line in text.
+                call get_line(text, start_pos, end_pos, next_line_pos)
+
+                ! Check for and skip blank lines if requested.  
+                read_line = .true.
+                if (skip_blank_lines_) then
+                    if (len_trim(text(start_pos:end_pos)) == 0) read_line = .false.
+                endif
+                
+                if (read_line) then
+                    current_line = current_line + 1
+                    if (step == 1) then
+                        line_length = end_pos - start_pos + 1
+                        if ((line_length > max_line_length) .and. (current_line > 0)) max_line_length = line_length
+                    else
+                        if (current_line > 0) d(current_line) = text(start_pos:end_pos)
+                    endif
+                endif
+
+                if ((max_rows_ >= 0) .and. (current_line == max_rows_)) exit ! Check max_row input if user has specified that.
+            enddo
+
+            if (step == 1) then
+                ! Allocate character array with max line size and line count.
+                ! If skip rows higher than lines found, allocate to size 0 array.
+                allocate( character(max_line_length) :: d(max(0,current_line)))
+            endif
+        enddo
+
+        contains
+
+            pure subroutine get_line(text, start_idx, end_idx, next_line_idx)
+                ! Search ftext for line returns. Start_idx:end_idx will be the character variables of the line.
+                ! next_line_idx is the start of the next line.  Will be 0 if last line in text.
+                character(len=*), intent(in) :: text
+                integer, intent(in) :: start_idx
+                integer, intent(out) :: end_idx, next_line_idx
+
+                integer :: idx, ascii_idx
+
+                idx = start_idx
+
+                !If no line ending found, will return end pos of text and next_line_idx = 0.
+                next_line_idx = 0
+                end_idx = len(text)
+
+                do while (idx <= len(text))
+                    !! Find line end
+                    ! Look for either CR or LR
+                    ascii_idx = iachar(text(idx:idx))
+                    
+                    if (ascii_idx == 13) then
+                        ! Found CR return.  Check for LR
+                        if (iachar(text(idx+1:idx+1)) == 10) then
+                            end_idx = idx - 1
+                            next_line_idx = idx + 2
+                            return
+                        endif
+
+                    ! Check for standalone LR
+                    elseif (ascii_idx == 10) then
+                        end_idx = idx - 1
+                        next_line_idx = idx + 1
+                        return
+                    endif
+
+                    ! Go to next line
+                    idx = idx + 1
+                enddo
+            end subroutine get_line
+    end subroutine loadtxt_char
 
 
   #:for k1, t1 in KINDS_TYPES

@@ -22,7 +22,8 @@ contains
             new_unittest("loadtxt_dp_max_skip", test_loadtxt_dp_max_skip), &
             new_unittest("loadtxt_dp_huge", test_loadtxt_dp_huge), &
             new_unittest("loadtxt_dp_tiny", test_loadtxt_dp_tiny), &
-            new_unittest("loadtxt_complex", test_loadtxt_complex) &
+            new_unittest("loadtxt_complex", test_loadtxt_complex), &
+            new_unittest("loadtxt_char", test_loadtxt_char) &
         ]
 
     end subroutine collect_loadtxt
@@ -275,6 +276,31 @@ contains
         end do
 
     end subroutine test_loadtxt_complex
+    
+    subroutine test_loadtxt_char(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        character(len=5) :: input(3)
+        character(len=:), allocatable :: expected(:)
+        integer :: u, n
+
+        open(newunit=u, file="test_char.txt")
+            write(u,'(A)') 'skipped'
+            write(u,'(A)') 'skipped'
+            write(u,'(A)') '  '
+            write(u,'(A)') 'line'
+            write(u,'(A)') 'line'
+            write(u,'(A)') 'char length should be 23'
+            write(u,'(A)') 'skipped'
+            write(u,'(A)') 'skipped'
+        close(u)
+        
+        call loadtxt('test_char.txt', expected, skip_blank_lines=.true., skiprows=2, max_rows=3)
+              
+        call check(error, size(expected) == 3,'loadtxt_char returns incorrect line count.')
+        call check(error, len(expected) == 24,'loadtxt_char returns incorrect line size.')
+
+    end subroutine test_loadtxt_char
 
 end module test_loadtxt
 
