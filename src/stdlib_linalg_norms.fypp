@@ -210,7 +210,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         integer(ilp) :: i
         real(${rk}$) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         ! Initialize norm to zero
         nrm = 0.0_${rk}$
@@ -286,8 +285,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(${rk}$) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -371,11 +368,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,${loop_variables('j',rank-1,1)}$
         logical :: contiguous_data
-        real(${rk}$) :: rorder
         integer(ilp), dimension(${rank}$) :: spe,spack,perm,iperm
         integer(ilp), dimension(${rank}$), parameter :: dim_range = [(lda,lda=1_ilp,${rank}$_ilp)]
         ${rt}$, allocatable :: apack${ranksuffix(rank)}$
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -512,7 +507,7 @@ ${loop_variables_end(rank-1," "*12)}$
         type(linalg_state_type), intent(out), optional :: err  
         
         type(linalg_state_type) :: err_
-        integer(ilp) :: j,m,n,lda,dims(2),norm_request,svd_errors
+        integer(ilp) :: m,n,lda,dims(2),svd_errors
         integer(ilp), dimension(${rank}$) :: s,spack,perm,iperm
         integer(ilp), dimension(${rank}$), parameter :: dim_range = [(m,m=1_ilp,${rank}$_ilp)]
         integer(ilp) :: ${loop_variables('j',rank-2,2)}$
