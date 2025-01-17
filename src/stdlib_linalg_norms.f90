@@ -204,7 +204,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         integer(ilp) :: i
         real(sp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         ! Initialize norm to zero
         nrm = 0.0_sp
@@ -273,8 +272,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(sp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -343,8 +340,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(sp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -413,8 +408,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(sp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -483,8 +476,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(sp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -566,11 +557,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2
         logical :: contiguous_data
-        real(sp) :: rorder
         integer(ilp), dimension(2) :: spe,spack,perm,iperm
         integer(ilp), dimension(2), parameter :: dim_range = [(lda,lda=1_ilp,2_ilp)]
         real(sp), allocatable :: apack(:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -681,11 +670,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2, j3
         logical :: contiguous_data
-        real(sp) :: rorder
         integer(ilp), dimension(3) :: spe,spack,perm,iperm
         integer(ilp), dimension(3), parameter :: dim_range = [(lda,lda=1_ilp,3_ilp)]
         real(sp), allocatable :: apack(:,:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -801,11 +788,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2, j3, j4
         logical :: contiguous_data
-        real(sp) :: rorder
         integer(ilp), dimension(4) :: spe,spack,perm,iperm
         integer(ilp), dimension(4), parameter :: dim_range = [(lda,lda=1_ilp,4_ilp)]
         real(sp), allocatable :: apack(:,:,:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -944,7 +929,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type), intent(out), optional :: err  
         
         type(linalg_state_type) :: err_
-        integer(ilp) :: j,m,n,lda,dims(2),norm_request,svd_errors
+        integer(ilp) :: m,n,lda,dims(2),svd_errors
         integer(ilp), dimension(3) :: s,spack,perm,iperm
         integer(ilp), dimension(3), parameter :: dim_range = [(m,m=1_ilp,3_ilp)]
         integer(ilp) :: j3
@@ -1063,7 +1048,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type), intent(out), optional :: err  
         
         type(linalg_state_type) :: err_
-        integer(ilp) :: j,m,n,lda,dims(2),norm_request,svd_errors
+        integer(ilp) :: m,n,lda,dims(2),svd_errors
         integer(ilp), dimension(4) :: s,spack,perm,iperm
         integer(ilp), dimension(4), parameter :: dim_range = [(m,m=1_ilp,4_ilp)]
         integer(ilp) :: j3, j4
@@ -1216,8 +1201,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(sp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -1286,8 +1269,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(sp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -1356,8 +1337,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(sp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -1426,8 +1405,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(sp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -1509,11 +1486,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2
         logical :: contiguous_data
-        real(sp) :: rorder
         integer(ilp), dimension(2) :: spe,spack,perm,iperm
         integer(ilp), dimension(2), parameter :: dim_range = [(lda,lda=1_ilp,2_ilp)]
         real(sp), allocatable :: apack(:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -1624,11 +1599,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2, j3
         logical :: contiguous_data
-        real(sp) :: rorder
         integer(ilp), dimension(3) :: spe,spack,perm,iperm
         integer(ilp), dimension(3), parameter :: dim_range = [(lda,lda=1_ilp,3_ilp)]
         real(sp), allocatable :: apack(:,:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -1744,11 +1717,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2, j3, j4
         logical :: contiguous_data
-        real(sp) :: rorder
         integer(ilp), dimension(4) :: spe,spack,perm,iperm
         integer(ilp), dimension(4), parameter :: dim_range = [(lda,lda=1_ilp,4_ilp)]
         real(sp), allocatable :: apack(:,:,:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -1887,7 +1858,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type), intent(out), optional :: err  
         
         type(linalg_state_type) :: err_
-        integer(ilp) :: j,m,n,lda,dims(2),norm_request,svd_errors
+        integer(ilp) :: m,n,lda,dims(2),svd_errors
         integer(ilp), dimension(3) :: s,spack,perm,iperm
         integer(ilp), dimension(3), parameter :: dim_range = [(m,m=1_ilp,3_ilp)]
         integer(ilp) :: j3
@@ -2006,7 +1977,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type), intent(out), optional :: err  
         
         type(linalg_state_type) :: err_
-        integer(ilp) :: j,m,n,lda,dims(2),norm_request,svd_errors
+        integer(ilp) :: m,n,lda,dims(2),svd_errors
         integer(ilp), dimension(4) :: s,spack,perm,iperm
         integer(ilp), dimension(4), parameter :: dim_range = [(m,m=1_ilp,4_ilp)]
         integer(ilp) :: j3, j4
@@ -2144,7 +2115,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         integer(ilp) :: i
         real(dp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         ! Initialize norm to zero
         nrm = 0.0_dp
@@ -2213,8 +2183,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(dp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -2283,8 +2251,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(dp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -2353,8 +2319,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(dp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -2423,8 +2387,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(dp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -2506,11 +2468,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2
         logical :: contiguous_data
-        real(dp) :: rorder
         integer(ilp), dimension(2) :: spe,spack,perm,iperm
         integer(ilp), dimension(2), parameter :: dim_range = [(lda,lda=1_ilp,2_ilp)]
         real(dp), allocatable :: apack(:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -2621,11 +2581,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2, j3
         logical :: contiguous_data
-        real(dp) :: rorder
         integer(ilp), dimension(3) :: spe,spack,perm,iperm
         integer(ilp), dimension(3), parameter :: dim_range = [(lda,lda=1_ilp,3_ilp)]
         real(dp), allocatable :: apack(:,:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -2741,11 +2699,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2, j3, j4
         logical :: contiguous_data
-        real(dp) :: rorder
         integer(ilp), dimension(4) :: spe,spack,perm,iperm
         integer(ilp), dimension(4), parameter :: dim_range = [(lda,lda=1_ilp,4_ilp)]
         real(dp), allocatable :: apack(:,:,:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -2884,7 +2840,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type), intent(out), optional :: err  
         
         type(linalg_state_type) :: err_
-        integer(ilp) :: j,m,n,lda,dims(2),norm_request,svd_errors
+        integer(ilp) :: m,n,lda,dims(2),svd_errors
         integer(ilp), dimension(3) :: s,spack,perm,iperm
         integer(ilp), dimension(3), parameter :: dim_range = [(m,m=1_ilp,3_ilp)]
         integer(ilp) :: j3
@@ -3003,7 +2959,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type), intent(out), optional :: err  
         
         type(linalg_state_type) :: err_
-        integer(ilp) :: j,m,n,lda,dims(2),norm_request,svd_errors
+        integer(ilp) :: m,n,lda,dims(2),svd_errors
         integer(ilp), dimension(4) :: s,spack,perm,iperm
         integer(ilp), dimension(4), parameter :: dim_range = [(m,m=1_ilp,4_ilp)]
         integer(ilp) :: j3, j4
@@ -3156,8 +3112,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(dp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -3226,8 +3180,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(dp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -3296,8 +3248,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(dp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -3366,8 +3316,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(dp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -3449,11 +3397,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2
         logical :: contiguous_data
-        real(dp) :: rorder
         integer(ilp), dimension(2) :: spe,spack,perm,iperm
         integer(ilp), dimension(2), parameter :: dim_range = [(lda,lda=1_ilp,2_ilp)]
         real(dp), allocatable :: apack(:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -3564,11 +3510,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2, j3
         logical :: contiguous_data
-        real(dp) :: rorder
         integer(ilp), dimension(3) :: spe,spack,perm,iperm
         integer(ilp), dimension(3), parameter :: dim_range = [(lda,lda=1_ilp,3_ilp)]
         real(dp), allocatable :: apack(:,:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -3684,11 +3628,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2, j3, j4
         logical :: contiguous_data
-        real(dp) :: rorder
         integer(ilp), dimension(4) :: spe,spack,perm,iperm
         integer(ilp), dimension(4), parameter :: dim_range = [(lda,lda=1_ilp,4_ilp)]
         real(dp), allocatable :: apack(:,:,:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -3827,7 +3769,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type), intent(out), optional :: err  
         
         type(linalg_state_type) :: err_
-        integer(ilp) :: j,m,n,lda,dims(2),norm_request,svd_errors
+        integer(ilp) :: m,n,lda,dims(2),svd_errors
         integer(ilp), dimension(3) :: s,spack,perm,iperm
         integer(ilp), dimension(3), parameter :: dim_range = [(m,m=1_ilp,3_ilp)]
         integer(ilp) :: j3
@@ -3946,7 +3888,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type), intent(out), optional :: err  
         
         type(linalg_state_type) :: err_
-        integer(ilp) :: j,m,n,lda,dims(2),norm_request,svd_errors
+        integer(ilp) :: m,n,lda,dims(2),svd_errors
         integer(ilp), dimension(4) :: s,spack,perm,iperm
         integer(ilp), dimension(4), parameter :: dim_range = [(m,m=1_ilp,4_ilp)]
         integer(ilp) :: j3, j4
@@ -4084,7 +4026,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         integer(ilp) :: i
         real(sp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         ! Initialize norm to zero
         nrm = 0.0_sp
@@ -4154,8 +4095,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(sp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -4224,8 +4163,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(sp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -4294,8 +4231,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(sp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -4364,8 +4299,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(sp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -4447,11 +4380,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2
         logical :: contiguous_data
-        real(sp) :: rorder
         integer(ilp), dimension(2) :: spe,spack,perm,iperm
         integer(ilp), dimension(2), parameter :: dim_range = [(lda,lda=1_ilp,2_ilp)]
         complex(sp), allocatable :: apack(:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -4562,11 +4493,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2, j3
         logical :: contiguous_data
-        real(sp) :: rorder
         integer(ilp), dimension(3) :: spe,spack,perm,iperm
         integer(ilp), dimension(3), parameter :: dim_range = [(lda,lda=1_ilp,3_ilp)]
         complex(sp), allocatable :: apack(:,:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -4682,11 +4611,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2, j3, j4
         logical :: contiguous_data
-        real(sp) :: rorder
         integer(ilp), dimension(4) :: spe,spack,perm,iperm
         integer(ilp), dimension(4), parameter :: dim_range = [(lda,lda=1_ilp,4_ilp)]
         complex(sp), allocatable :: apack(:,:,:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -4825,7 +4752,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type), intent(out), optional :: err  
         
         type(linalg_state_type) :: err_
-        integer(ilp) :: j,m,n,lda,dims(2),norm_request,svd_errors
+        integer(ilp) :: m,n,lda,dims(2),svd_errors
         integer(ilp), dimension(3) :: s,spack,perm,iperm
         integer(ilp), dimension(3), parameter :: dim_range = [(m,m=1_ilp,3_ilp)]
         integer(ilp) :: j3
@@ -4944,7 +4871,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type), intent(out), optional :: err  
         
         type(linalg_state_type) :: err_
-        integer(ilp) :: j,m,n,lda,dims(2),norm_request,svd_errors
+        integer(ilp) :: m,n,lda,dims(2),svd_errors
         integer(ilp), dimension(4) :: s,spack,perm,iperm
         integer(ilp), dimension(4), parameter :: dim_range = [(m,m=1_ilp,4_ilp)]
         integer(ilp) :: j3, j4
@@ -5097,8 +5024,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(sp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -5167,8 +5092,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(sp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -5237,8 +5160,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(sp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -5307,8 +5228,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(sp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -5390,11 +5309,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2
         logical :: contiguous_data
-        real(sp) :: rorder
         integer(ilp), dimension(2) :: spe,spack,perm,iperm
         integer(ilp), dimension(2), parameter :: dim_range = [(lda,lda=1_ilp,2_ilp)]
         complex(sp), allocatable :: apack(:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -5505,11 +5422,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2, j3
         logical :: contiguous_data
-        real(sp) :: rorder
         integer(ilp), dimension(3) :: spe,spack,perm,iperm
         integer(ilp), dimension(3), parameter :: dim_range = [(lda,lda=1_ilp,3_ilp)]
         complex(sp), allocatable :: apack(:,:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -5625,11 +5540,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2, j3, j4
         logical :: contiguous_data
-        real(sp) :: rorder
         integer(ilp), dimension(4) :: spe,spack,perm,iperm
         integer(ilp), dimension(4), parameter :: dim_range = [(lda,lda=1_ilp,4_ilp)]
         complex(sp), allocatable :: apack(:,:,:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -5768,7 +5681,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type), intent(out), optional :: err  
         
         type(linalg_state_type) :: err_
-        integer(ilp) :: j,m,n,lda,dims(2),norm_request,svd_errors
+        integer(ilp) :: m,n,lda,dims(2),svd_errors
         integer(ilp), dimension(3) :: s,spack,perm,iperm
         integer(ilp), dimension(3), parameter :: dim_range = [(m,m=1_ilp,3_ilp)]
         integer(ilp) :: j3
@@ -5887,7 +5800,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type), intent(out), optional :: err  
         
         type(linalg_state_type) :: err_
-        integer(ilp) :: j,m,n,lda,dims(2),norm_request,svd_errors
+        integer(ilp) :: m,n,lda,dims(2),svd_errors
         integer(ilp), dimension(4) :: s,spack,perm,iperm
         integer(ilp), dimension(4), parameter :: dim_range = [(m,m=1_ilp,4_ilp)]
         integer(ilp) :: j3, j4
@@ -6025,7 +5938,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         integer(ilp) :: i
         real(dp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         ! Initialize norm to zero
         nrm = 0.0_dp
@@ -6095,8 +6007,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(dp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -6165,8 +6075,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(dp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -6235,8 +6143,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(dp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -6305,8 +6211,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(dp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -6388,11 +6292,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2
         logical :: contiguous_data
-        real(dp) :: rorder
         integer(ilp), dimension(2) :: spe,spack,perm,iperm
         integer(ilp), dimension(2), parameter :: dim_range = [(lda,lda=1_ilp,2_ilp)]
         complex(dp), allocatable :: apack(:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -6503,11 +6405,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2, j3
         logical :: contiguous_data
-        real(dp) :: rorder
         integer(ilp), dimension(3) :: spe,spack,perm,iperm
         integer(ilp), dimension(3), parameter :: dim_range = [(lda,lda=1_ilp,3_ilp)]
         complex(dp), allocatable :: apack(:,:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -6623,11 +6523,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2, j3, j4
         logical :: contiguous_data
-        real(dp) :: rorder
         integer(ilp), dimension(4) :: spe,spack,perm,iperm
         integer(ilp), dimension(4), parameter :: dim_range = [(lda,lda=1_ilp,4_ilp)]
         complex(dp), allocatable :: apack(:,:,:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -6766,7 +6664,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type), intent(out), optional :: err  
         
         type(linalg_state_type) :: err_
-        integer(ilp) :: j,m,n,lda,dims(2),norm_request,svd_errors
+        integer(ilp) :: m,n,lda,dims(2),svd_errors
         integer(ilp), dimension(3) :: s,spack,perm,iperm
         integer(ilp), dimension(3), parameter :: dim_range = [(m,m=1_ilp,3_ilp)]
         integer(ilp) :: j3
@@ -6885,7 +6783,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type), intent(out), optional :: err  
         
         type(linalg_state_type) :: err_
-        integer(ilp) :: j,m,n,lda,dims(2),norm_request,svd_errors
+        integer(ilp) :: m,n,lda,dims(2),svd_errors
         integer(ilp), dimension(4) :: s,spack,perm,iperm
         integer(ilp), dimension(4), parameter :: dim_range = [(m,m=1_ilp,4_ilp)]
         integer(ilp) :: j3, j4
@@ -7038,8 +6936,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(dp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -7108,8 +7004,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(dp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -7178,8 +7072,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(dp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -7248,8 +7140,6 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,norm_request
-        real(dp) :: rorder
-        intrinsic :: abs, sum, sqrt, maxval, minval, conjg
         
         sze = size(a,kind=ilp)
         
@@ -7331,11 +7221,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2
         logical :: contiguous_data
-        real(dp) :: rorder
         integer(ilp), dimension(2) :: spe,spack,perm,iperm
         integer(ilp), dimension(2), parameter :: dim_range = [(lda,lda=1_ilp,2_ilp)]
         complex(dp), allocatable :: apack(:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -7446,11 +7334,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2, j3
         logical :: contiguous_data
-        real(dp) :: rorder
         integer(ilp), dimension(3) :: spe,spack,perm,iperm
         integer(ilp), dimension(3), parameter :: dim_range = [(lda,lda=1_ilp,3_ilp)]
         complex(dp), allocatable :: apack(:,:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -7566,11 +7452,9 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type) :: err_
         integer(ilp) :: sze,lda,norm_request,j2, j3, j4
         logical :: contiguous_data
-        real(dp) :: rorder
         integer(ilp), dimension(4) :: spe,spack,perm,iperm
         integer(ilp), dimension(4), parameter :: dim_range = [(lda,lda=1_ilp,4_ilp)]
         complex(dp), allocatable :: apack(:,:,:,:)
-        intrinsic :: abs, sum, sqrt, norm2, maxval, minval, conjg
         
         ! Input matrix properties
         sze = size (a,kind=ilp)
@@ -7709,7 +7593,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type), intent(out), optional :: err  
         
         type(linalg_state_type) :: err_
-        integer(ilp) :: j,m,n,lda,dims(2),norm_request,svd_errors
+        integer(ilp) :: m,n,lda,dims(2),svd_errors
         integer(ilp), dimension(3) :: s,spack,perm,iperm
         integer(ilp), dimension(3), parameter :: dim_range = [(m,m=1_ilp,3_ilp)]
         integer(ilp) :: j3
@@ -7828,7 +7712,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
         type(linalg_state_type), intent(out), optional :: err  
         
         type(linalg_state_type) :: err_
-        integer(ilp) :: j,m,n,lda,dims(2),norm_request,svd_errors
+        integer(ilp) :: m,n,lda,dims(2),svd_errors
         integer(ilp), dimension(4) :: s,spack,perm,iperm
         integer(ilp), dimension(4), parameter :: dim_range = [(m,m=1_ilp,4_ilp)]
         integer(ilp) :: j3, j4
