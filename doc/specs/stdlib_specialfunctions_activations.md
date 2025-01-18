@@ -203,6 +203,79 @@ Elemental function
 
 The function returns a value with the same type and kind as input argument.
 
+## `Leaky_relu` - Leaky Rectified Linear Unit function
+
+### Status
+
+Experimental
+
+### Description
+
+Computes the gaussian function:
+$$
+\text{f}(x) =
+\begin{cases} 
+x, & \text{if } x \geq 0 \\
+a * x, & \text{otherwise}
+\end{cases}
+$$
+
+### Syntax
+
+`result = ` [[stdlib_specialfunctions(module):leaky_relu(interface)]] ` (x,a)`
+
+### Class
+
+Elemental function
+
+### Arguments
+
+`x`: Shall be a scalar or array of any `real` kind. 
+`a`: Shall be a scalar or array of any `real` kind. 
+
+### Return value
+
+The function returns a value with the same type and kind as input argument.
+
+### Example
+```fortran
+{!example/specialfunctions_activations/example_leaky_relu.f90!}
+```
+
+## `Leaky_relu_grad` - Gradient of the Leaky Rectified Linear Unit function
+
+### Status
+
+Experimental
+
+### Description
+
+Computes the gradient of the leaky_relu function:
+$$
+\text{f}(x) =
+\begin{cases} 
+1, & \text{if } x \geq 0 \\
+a , & \text{otherwise}
+\end{cases}
+$$
+
+### Syntax
+
+`result = ` [[stdlib_specialfunctions(module):leaky_relu_grad(interface)]] ` (x,a)`
+
+### Class
+
+Elemental function
+
+### Arguments
+
+`x`: Shall be a scalar or array of any `real` kind.
+`a`: Shall be a scalar or array of any `real` kind.  
+
+### Return value
+
+The function returns a value with the same type and kind as the input argument.
+
 ## `Gelu` - Gaussian Error Linear Unit function
 
 ### Status

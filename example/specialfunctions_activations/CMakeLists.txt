@@ -1,6 +1,7 @@
 ADD_EXAMPLE(elu)
 ADD_EXAMPLE(gaussian)
 ADD_EXAMPLE(gelu)
+ADD_EXAMPLE(leaky_relu)
 ADD_EXAMPLE(relu)
 ADD_EXAMPLE(selu)
 ADD_EXAMPLE(silu)

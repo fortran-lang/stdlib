@@ -117,6 +117,36 @@ module stdlib_specialfunctions
     end interface
     public :: relu_grad
 
+    interface leaky_relu
+        !! Version: experimental
+        !!
+        !! Leaky Rectified linear unit function
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#leaky_relu))
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental module function leaky_relu_${rk}$( x , a ) result( y )
+            ${rt}$, intent(in) :: x
+            ${rt}$, intent(in) :: a
+            ${rt}$ :: y
+        end function
+        #:endfor
+    end interface
+    public :: leaky_relu
+
+    interface leaky_relu_grad
+        !! Version: experimental
+        !!
+        !! Gradient of the Leaky Rectified linear unit function
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#leaky_relu_grad))
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental module function leaky_relu_grad_${rk}$( x , a ) result( y )
+            ${rt}$, intent(in) :: x
+            ${rt}$, intent(in) :: a
+            ${rt}$ :: y
+        end function
+        #:endfor
+    end interface
+    public :: leaky_relu_grad
+
     interface gelu
         !! Version: experimental
         !!

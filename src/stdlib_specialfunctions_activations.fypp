@@ -66,6 +66,26 @@ end function
 #:endfor
 
 !==================================================
+! Leaky Rectified Linear Unit
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+elemental module function Leaky_relu_${rk}$( x , a ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$, intent(in) :: a
+    ${rt}$ :: y
+    y = merge( x, a * x , x >= 0._${rk}$)
+end function
+
+elemental module function Leaky_relu_grad_${rk}$( x , a ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$, intent(in) :: a
+    ${rt}$ :: y
+    y = merge( 1._${rk}$ , a , x >= 0._${rk}$)
+end function
+
+#:endfor
+
+!==================================================
 ! GELU: Gaussian Error Linear Units function
 !==================================================
 #:for rk, rt in REAL_KINDS_TYPES

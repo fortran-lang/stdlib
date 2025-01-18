@@ -24,6 +24,7 @@ contains
             new_unittest("gaussian", test_gaussian),        &
             new_unittest("elu", test_elu),                  &
             new_unittest("relu", test_relu),                &
+            new_unittest("leaky_relu", test_leaky_relu),    &
             new_unittest("gelu"   , test_gelu),             &
             new_unittest("selu"   , test_selu),             &
             new_unittest("sigmoid", test_sigmoid),          &
@@ -143,6 +144,24 @@ contains
         if (allocated(error)) return
 
         y = gelu_approx( x )
+        call check(error, norm2(y-y_ref) < n*tol_sp )
+        if (allocated(error)) return
+    end subroutine
+
+    subroutine test_leaky_relu(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 10
+        real(sp) :: x(n), y(n), y_ref(n), a
+
+        call random_number(x)
+        a = 0.1_sp
+        where(x>=0._sp)
+            y_ref = x
+        elsewhere
+            y_ref = a * x
+        end where
+        y = Leaky_relu( x , a )
+
         call check(error, norm2(y-y_ref) < n*tol_sp )
         if (allocated(error)) return
     end subroutine
