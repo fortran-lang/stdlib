@@ -1,0 +1,637 @@
+#:include "common.fypp" 
+submodule(stdlib_lapack_base) stdlib_lapack_blas_like_scalar
+  implicit none
+
+
+  contains
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+
+     pure logical(lk) module function stdlib${ii}$_sisnan( sin )
+     !! SISNAN returns .TRUE. if its argument is NaN, and .FALSE.
+     !! otherwise.  To be replaced by the Fortran 2003 intrinsic in the
+     !! future.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           real(sp), intent(in) :: sin
+        ! =====================================================================
+        ! Executable Statements 
+           stdlib${ii}$_sisnan = stdlib${ii}$_slaisnan(sin,sin)
+           return
+     end function stdlib${ii}$_sisnan
+
+     pure logical(lk) module function stdlib${ii}$_disnan( din )
+     !! DISNAN returns .TRUE. if its argument is NaN, and .FALSE.
+     !! otherwise.  To be replaced by the Fortran 2003 intrinsic in the
+     !! future.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           real(dp), intent(in) :: din
+        ! =====================================================================
+        ! Executable Statements 
+           stdlib${ii}$_disnan = stdlib${ii}$_dlaisnan(din,din)
+           return
+     end function stdlib${ii}$_disnan
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure logical(lk) module function stdlib${ii}$_${ri}$isnan( din )
+     !! DISNAN: returns .TRUE. if its argument is NaN, and .FALSE.
+     !! otherwise.  To be replaced by the Fortran 2003 intrinsic in the
+     !! future.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           real(${rk}$), intent(in) :: din
+        ! =====================================================================
+        ! Executable Statements 
+           stdlib${ii}$_${ri}$isnan = stdlib${ii}$_${ri}$laisnan(din,din)
+           return
+     end function stdlib${ii}$_${ri}$isnan
+
+#:endif
+#:endfor
+
+
+
+     pure logical(lk) module function stdlib${ii}$_slaisnan( sin1, sin2 )
+     !! This routine is not for general use.  It exists solely to avoid
+     !! over-optimization in SISNAN.
+     !! SLAISNAN checks for NaNs by comparing its two arguments for
+     !! inequality.  NaN is the only floating-point value where NaN != NaN
+     !! returns .TRUE.  To check for NaNs, pass the same variable as both
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+     !! arguments.
+     !! A compiler must assume that the two arguments are
+     !! not the same variable, and the test will not be optimized away.
+     !! Interprocedural or whole-program optimization may delete this
+     !! test.  The ISNAN functions will be replaced by the correct
+     !! Fortran 03 intrinsic once the intrinsic is widely available.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           real(sp), intent(in) :: sin1, sin2
+        ! =====================================================================
+        ! Executable Statements 
+           stdlib${ii}$_slaisnan = (sin1/=sin2)
+           return
+     end function stdlib${ii}$_slaisnan
+
+     pure logical(lk) module function stdlib${ii}$_dlaisnan( din1, din2 )
+     !! This routine is not for general use.  It exists solely to avoid
+     !! over-optimization in DISNAN.
+     !! DLAISNAN checks for NaNs by comparing its two arguments for
+     !! inequality.  NaN is the only floating-point value where NaN != NaN
+     !! returns .TRUE.  To check for NaNs, pass the same variable as both
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+     !! arguments.
+     !! A compiler must assume that the two arguments are
+     !! not the same variable, and the test will not be optimized away.
+     !! Interprocedural or whole-program optimization may delete this
+     !! test.  The ISNAN functions will be replaced by the correct
+     !! Fortran 03 intrinsic once the intrinsic is widely available.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           real(dp), intent(in) :: din1, din2
+        ! =====================================================================
+        ! Executable Statements 
+           stdlib${ii}$_dlaisnan = (din1/=din2)
+           return
+     end function stdlib${ii}$_dlaisnan
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure logical(lk) module function stdlib${ii}$_${ri}$laisnan( din1, din2 )
+     !! This routine is not for general use.  It exists solely to avoid
+     !! over-optimization in DISNAN.
+     !! DLAISNAN: checks for NaNs by comparing its two arguments for
+     !! inequality.  NaN is the only floating-point value where NaN != NaN
+     !! returns .TRUE.  To check for NaNs, pass the same variable as both
+           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+     !! arguments.
+     !! A compiler must assume that the two arguments are
+     !! not the same variable, and the test will not be optimized away.
+     !! Interprocedural or whole-program optimization may delete this
+     !! test.  The ISNAN functions will be replaced by the correct
+     !! Fortran 03 intrinsic once the intrinsic is widely available.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           real(${rk}$), intent(in) :: din1, din2
+        ! =====================================================================
+        ! Executable Statements 
+           stdlib${ii}$_${ri}$laisnan = (din1/=din2)
+           return
+     end function stdlib${ii}$_${ri}$laisnan
+
+#:endif
+#:endfor
+
+
+
+     pure module subroutine stdlib${ii}$_sladiv( a, b, c, d, p, q )
+     !! SLADIV performs complex division in  real arithmetic
+     !! a + i*b
+     !! p + i*q = ---------
+     !! c + i*d
+     !! The algorithm is due to Michael Baudin and Robert L. Smith
+     !! and can be found in the paper
+     !! "A Robust Complex Division in Scilab"
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           real(sp), intent(in) :: a, b, c, d
+           real(sp), intent(out) :: p, q
+        ! =====================================================================
+           ! Parameters 
+           real(sp), parameter :: bs = two
+           
+           
+           
+           ! Local Scalars 
+           real(sp) :: aa, bb, cc, dd, ab, cd, s, ov, un, be, eps
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           aa = a
+           bb = b
+           cc = c
+           dd = d
+           ab = max( abs(a), abs(b) )
+           cd = max( abs(c), abs(d) )
+           s = one
+           ov = stdlib${ii}$_slamch( 'OVERFLOW THRESHOLD' )
+           un = stdlib${ii}$_slamch( 'SAFE MINIMUM' )
+           eps = stdlib${ii}$_slamch( 'EPSILON' )
+           be = bs / (eps*eps)
+           if( ab >= half*ov ) then
+              aa = half * aa
+              bb = half * bb
+              s  = two * s
+           end if
+           if( cd >= half*ov ) then
+              cc = half * cc
+              dd = half * dd
+              s  = half * s
+           end if
+           if( ab <= un*bs/eps ) then
+              aa = aa * be
+              bb = bb * be
+              s  = s / be
+           end if
+           if( cd <= un*bs/eps ) then
+              cc = cc * be
+              dd = dd * be
+              s  = s * be
+           end if
+           if( abs( d )<=abs( c ) ) then
+              call stdlib${ii}$_sladiv1(aa, bb, cc, dd, p, q)
+           else
+              call stdlib${ii}$_sladiv1(bb, aa, dd, cc, p, q)
+              q = -q
+           end if
+           p = p * s
+           q = q * s
+           return
+     end subroutine stdlib${ii}$_sladiv
+
+     pure module subroutine stdlib${ii}$_dladiv( a, b, c, d, p, q )
+     !! DLADIV performs complex division in  real arithmetic
+     !! a + i*b
+     !! p + i*q = ---------
+     !! c + i*d
+     !! The algorithm is due to Michael Baudin and Robert L. Smith
+     !! and can be found in the paper
+     !! "A Robust Complex Division in Scilab"
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           real(dp), intent(in) :: a, b, c, d
+           real(dp), intent(out) :: p, q
+        ! =====================================================================
+           ! Parameters 
+           real(dp), parameter :: bs = two
+           
+           
+           
+           ! Local Scalars 
+           real(dp) :: aa, bb, cc, dd, ab, cd, s, ov, un, be, eps
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           aa = a
+           bb = b
+           cc = c
+           dd = d
+           ab = max( abs(a), abs(b) )
+           cd = max( abs(c), abs(d) )
+           s = one
+           ov = stdlib${ii}$_dlamch( 'OVERFLOW THRESHOLD' )
+           un = stdlib${ii}$_dlamch( 'SAFE MINIMUM' )
+           eps = stdlib${ii}$_dlamch( 'EPSILON' )
+           be = bs / (eps*eps)
+           if( ab >= half*ov ) then
+              aa = half * aa
+              bb = half * bb
+              s  = two * s
+           end if
+           if( cd >= half*ov ) then
+              cc = half * cc
+              dd = half * dd
+              s  = half * s
+           end if
+           if( ab <= un*bs/eps ) then
+              aa = aa * be
+              bb = bb * be
+              s  = s / be
+           end if
+           if( cd <= un*bs/eps ) then
+              cc = cc * be
+              dd = dd * be
+              s  = s * be
+           end if
+           if( abs( d )<=abs( c ) ) then
+              call stdlib${ii}$_dladiv1(aa, bb, cc, dd, p, q)
+           else
+              call stdlib${ii}$_dladiv1(bb, aa, dd, cc, p, q)
+              q = -q
+           end if
+           p = p * s
+           q = q * s
+           return
+     end subroutine stdlib${ii}$_dladiv
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$ladiv( a, b, c, d, p, q )
+     !! DLADIV: performs complex division in  real arithmetic
+     !! a + i*b
+     !! p + i*q = ---------
+     !! c + i*d
+     !! The algorithm is due to Michael Baudin and Robert L. Smith
+     !! and can be found in the paper
+     !! "A Robust Complex Division in Scilab"
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           real(${rk}$), intent(in) :: a, b, c, d
+           real(${rk}$), intent(out) :: p, q
+        ! =====================================================================
+           ! Parameters 
+           real(${rk}$), parameter :: bs = two
+           
+           
+           
+           ! Local Scalars 
+           real(${rk}$) :: aa, bb, cc, dd, ab, cd, s, ov, un, be, eps
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           aa = a
+           bb = b
+           cc = c
+           dd = d
+           ab = max( abs(a), abs(b) )
+           cd = max( abs(c), abs(d) )
+           s = one
+           ov = stdlib${ii}$_${ri}$lamch( 'OVERFLOW THRESHOLD' )
+           un = stdlib${ii}$_${ri}$lamch( 'SAFE MINIMUM' )
+           eps = stdlib${ii}$_${ri}$lamch( 'EPSILON' )
+           be = bs / (eps*eps)
+           if( ab >= half*ov ) then
+              aa = half * aa
+              bb = half * bb
+              s  = two * s
+           end if
+           if( cd >= half*ov ) then
+              cc = half * cc
+              dd = half * dd
+              s  = half * s
+           end if
+           if( ab <= un*bs/eps ) then
+              aa = aa * be
+              bb = bb * be
+              s  = s / be
+           end if
+           if( cd <= un*bs/eps ) then
+              cc = cc * be
+              dd = dd * be
+              s  = s * be
+           end if
+           if( abs( d )<=abs( c ) ) then
+              call stdlib${ii}$_${ri}$ladiv1(aa, bb, cc, dd, p, q)
+           else
+              call stdlib${ii}$_${ri}$ladiv1(bb, aa, dd, cc, p, q)
+              q = -q
+           end if
+           p = p * s
+           q = q * s
+           return
+     end subroutine stdlib${ii}$_${ri}$ladiv
+
+#:endif
+#:endfor
+
+     pure complex(sp) module function stdlib${ii}$_cladiv( x, y )
+     !! CLADIV := X / Y, where X and Y are complex.  The computation of X / Y
+     !! will not overflow on an intermediary step unless the results
+     !! overflows.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           complex(sp), intent(in) :: x, y
+        ! =====================================================================
+           ! Local Scalars 
+           real(sp) :: zi, zr
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           call stdlib${ii}$_sladiv( real( x,KIND=sp), aimag( x ), real( y,KIND=sp), aimag( y ), zr,zi )
+                     
+           stdlib${ii}$_cladiv = cmplx( zr, zi,KIND=sp)
+           return
+     end function stdlib${ii}$_cladiv
+
+     pure complex(dp)     module function stdlib${ii}$_zladiv( x, y )
+     !! ZLADIV := X / Y, where X and Y are complex.  The computation of X / Y
+     !! will not overflow on an intermediary step unless the results
+     !! overflows.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           complex(dp), intent(in) :: x, y
+        ! =====================================================================
+           ! Local Scalars 
+           real(dp) :: zi, zr
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           call stdlib${ii}$_dladiv( real( x,KIND=dp), aimag( x ), real( y,KIND=dp), aimag( y ), zr,zi )
+                     
+           stdlib${ii}$_zladiv = cmplx( zr, zi,KIND=dp)
+           return
+     end function stdlib${ii}$_zladiv
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure complex(${ck}$)     module function stdlib${ii}$_${ci}$ladiv( x, y )
+     !! ZLADIV: := X / Y, where X and Y are complex.  The computation of X / Y
+     !! will not overflow on an intermediary step unless the results
+     !! overflows.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           complex(${ck}$), intent(in) :: x, y
+        ! =====================================================================
+           ! Local Scalars 
+           real(${ck}$) :: zi, zr
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           call stdlib${ii}$_${c2ri(ci)}$ladiv( real( x,KIND=${ck}$), aimag( x ), real( y,KIND=${ck}$), aimag( y ), zr,zi )
+                     
+           stdlib${ii}$_${ci}$ladiv = cmplx( zr, zi,KIND=${ck}$)
+           return
+     end function stdlib${ii}$_${ci}$ladiv
+
+#:endif
+#:endfor
+
+
+
+     pure real(sp) module function stdlib${ii}$_slapy2( x, y )
+     !! SLAPY2 returns sqrt(x**2+y**2), taking care not to cause unnecessary
+     !! overflow and unnecessary underflow.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           real(sp), intent(in) :: x, y
+        ! =====================================================================
+           
+           
+           ! Local Scalars 
+           real(sp) :: w, xabs, yabs, z, hugeval
+           logical(lk) :: x_is_nan, y_is_nan
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           x_is_nan = stdlib${ii}$_sisnan( x )
+           y_is_nan = stdlib${ii}$_sisnan( y )
+           if ( x_is_nan ) stdlib${ii}$_slapy2 = x
+           if ( y_is_nan ) stdlib${ii}$_slapy2 = y
+           hugeval = stdlib${ii}$_slamch( 'OVERFLOW' )
+           if ( .not.( x_is_nan.or.y_is_nan ) ) then
+              xabs = abs( x )
+              yabs = abs( y )
+              w = max( xabs, yabs )
+              z = min( xabs, yabs )
+              if( z==zero .or. w>hugeval ) then
+                 stdlib${ii}$_slapy2 = w
+              else
+                 stdlib${ii}$_slapy2 = w*sqrt( one+( z / w )**2_${ik}$ )
+              end if
+           end if
+           return
+     end function stdlib${ii}$_slapy2
+
+     pure real(dp) module function stdlib${ii}$_dlapy2( x, y )
+     !! DLAPY2 returns sqrt(x**2+y**2), taking care not to cause unnecessary
+     !! overflow and unnecessary underflow.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           real(dp), intent(in) :: x, y
+        ! =====================================================================
+           
+           
+           ! Local Scalars 
+           real(dp) :: w, xabs, yabs, z, hugeval
+           logical(lk) :: x_is_nan, y_is_nan
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           x_is_nan = stdlib${ii}$_disnan( x )
+           y_is_nan = stdlib${ii}$_disnan( y )
+           if ( x_is_nan ) stdlib${ii}$_dlapy2 = x
+           if ( y_is_nan ) stdlib${ii}$_dlapy2 = y
+           hugeval = stdlib${ii}$_dlamch( 'OVERFLOW' )
+           if ( .not.( x_is_nan.or.y_is_nan ) ) then
+              xabs = abs( x )
+              yabs = abs( y )
+              w = max( xabs, yabs )
+              z = min( xabs, yabs )
+              if( z==zero .or. w>hugeval ) then
+                 stdlib${ii}$_dlapy2 = w
+              else
+                 stdlib${ii}$_dlapy2 = w*sqrt( one+( z / w )**2_${ik}$ )
+              end if
+           end if
+           return
+     end function stdlib${ii}$_dlapy2
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure real(${rk}$) module function stdlib${ii}$_${ri}$lapy2( x, y )
+     !! DLAPY2: returns sqrt(x**2+y**2), taking care not to cause unnecessary
+     !! overflow and unnecessary underflow.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           real(${rk}$), intent(in) :: x, y
+        ! =====================================================================
+           
+           
+           ! Local Scalars 
+           real(${rk}$) :: w, xabs, yabs, z, hugeval
+           logical(lk) :: x_is_nan, y_is_nan
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           x_is_nan = stdlib${ii}$_${ri}$isnan( x )
+           y_is_nan = stdlib${ii}$_${ri}$isnan( y )
+           if ( x_is_nan ) stdlib${ii}$_${ri}$lapy2 = x
+           if ( y_is_nan ) stdlib${ii}$_${ri}$lapy2 = y
+           hugeval = stdlib${ii}$_${ri}$lamch( 'OVERFLOW' )
+           if ( .not.( x_is_nan.or.y_is_nan ) ) then
+              xabs = abs( x )
+              yabs = abs( y )
+              w = max( xabs, yabs )
+              z = min( xabs, yabs )
+              if( z==zero .or. w>hugeval ) then
+                 stdlib${ii}$_${ri}$lapy2 = w
+              else
+                 stdlib${ii}$_${ri}$lapy2 = w*sqrt( one+( z / w )**2_${ik}$ )
+              end if
+           end if
+           return
+     end function stdlib${ii}$_${ri}$lapy2
+
+#:endif
+#:endfor
+
+
+
+     pure real(sp) module function stdlib${ii}$_slapy3( x, y, z )
+     !! SLAPY3 returns sqrt(x**2+y**2+z**2), taking care not to cause
+     !! unnecessary overflow and unnecessary underflow.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           real(sp), intent(in) :: x, y, z
+        ! =====================================================================
+           
+           ! Local Scalars 
+           real(sp) :: w, xabs, yabs, zabs, hugeval
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           hugeval = stdlib${ii}$_slamch( 'OVERFLOW' )
+           xabs = abs( x )
+           yabs = abs( y )
+           zabs = abs( z )
+           w = max( xabs, yabs, zabs )
+           if( w==zero .or. w>hugeval ) then
+           ! w can be zero for max(0,nan,0)
+           ! adding all three entries together will make sure
+           ! nan will not disappear.
+              stdlib${ii}$_slapy3 =  xabs + yabs + zabs
+           else
+              stdlib${ii}$_slapy3 = w*sqrt( ( xabs / w )**2_${ik}$+( yabs / w )**2_${ik}$+( zabs / w )**2_${ik}$ )
+           end if
+           return
+     end function stdlib${ii}$_slapy3
+
+     pure real(dp) module function stdlib${ii}$_dlapy3( x, y, z )
+     !! DLAPY3 returns sqrt(x**2+y**2+z**2), taking care not to cause
+     !! unnecessary overflow and unnecessary underflow.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           real(dp), intent(in) :: x, y, z
+        ! =====================================================================
+           
+           ! Local Scalars 
+           real(dp) :: w, xabs, yabs, zabs, hugeval
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           hugeval = stdlib${ii}$_dlamch( 'OVERFLOW' )
+           xabs = abs( x )
+           yabs = abs( y )
+           zabs = abs( z )
+           w = max( xabs, yabs, zabs )
+           if( w==zero .or. w>hugeval ) then
+           ! w can be zero for max(0,nan,0)
+           ! adding all three entries together will make sure
+           ! nan will not disappear.
+              stdlib${ii}$_dlapy3 =  xabs + yabs + zabs
+           else
+              stdlib${ii}$_dlapy3 = w*sqrt( ( xabs / w )**2_${ik}$+( yabs / w )**2_${ik}$+( zabs / w )**2_${ik}$ )
+           end if
+           return
+     end function stdlib${ii}$_dlapy3
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure real(${rk}$) module function stdlib${ii}$_${ri}$lapy3( x, y, z )
+     !! DLAPY3: returns sqrt(x**2+y**2+z**2), taking care not to cause
+     !! unnecessary overflow and unnecessary underflow.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           real(${rk}$), intent(in) :: x, y, z
+        ! =====================================================================
+           
+           ! Local Scalars 
+           real(${rk}$) :: w, xabs, yabs, zabs, hugeval
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           hugeval = stdlib${ii}$_${ri}$lamch( 'OVERFLOW' )
+           xabs = abs( x )
+           yabs = abs( y )
+           zabs = abs( z )
+           w = max( xabs, yabs, zabs )
+           if( w==zero .or. w>hugeval ) then
+           ! w can be zero for max(0,nan,0)
+           ! adding all three entries together will make sure
+           ! nan will not disappear.
+              stdlib${ii}$_${ri}$lapy3 =  xabs + yabs + zabs
+           else
+              stdlib${ii}$_${ri}$lapy3 = w*sqrt( ( xabs / w )**2_${ik}$+( yabs / w )**2_${ik}$+( zabs / w )**2_${ik}$ )
+           end if
+           return
+     end function stdlib${ii}$_${ri}$lapy3
+
+#:endif
+#:endfor
+
+
+#:endfor
+end submodule stdlib_lapack_blas_like_scalar
