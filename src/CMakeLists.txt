@@ -1,6 +1,5 @@
 #### Pre-process: .fpp -> .f90 via Fypp
 
-
 # Create a list of the files to be preprocessed
 set(fppFiles
     stdlib_ascii.fypp
@@ -120,7 +119,6 @@ set(SRC
     ${outPreprocFiles}
 )
 
-message(${outPreprocFiles})
 add_library(${PROJECT_NAME} ${SRC})
 
 set_target_properties(
