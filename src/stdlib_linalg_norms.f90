@@ -7,7 +7,7 @@ submodule(stdlib_linalg) stdlib_linalg_norms
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR     
      use iso_c_binding, only: c_intptr_t,c_char,c_loc
-     implicit none(type,external)
+     implicit none
      
      character(*), parameter :: this = 'norm'
      

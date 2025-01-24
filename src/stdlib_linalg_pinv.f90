@@ -5,7 +5,7 @@ submodule(stdlib_linalg) stdlib_linalg_pseudoinverse
      use stdlib_linalg_lapack
      use stdlib_linalg_state
      use ieee_arithmetic, only: ieee_value, ieee_quiet_nan
-     implicit none(type,external)
+     implicit none
      
      character(*), parameter :: this = 'pseudo-inverse'
 

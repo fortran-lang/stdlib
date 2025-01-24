@@ -5,7 +5,7 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
      use ieee_arithmetic, only: ieee_value, ieee_quiet_nan
-     implicit none(type,external)
+     implicit none
 
      character(*), parameter :: this = 'inverse'  
 

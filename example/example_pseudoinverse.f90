@@ -1,7 +1,7 @@
 ! Matrix pseudo-inversion example: function, subroutine, and operator interfaces
 program example_pseudoinverse
   use stdlib_linalg, only: pinv, pseudoinvert, operator(.pinv.), linalg_state_type
-  implicit none(type,external)
+  implicit none
 
   real :: A(15,5), Am1(5,15)
   type(linalg_state_type) :: state

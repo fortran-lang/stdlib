@@ -1,7 +1,7 @@
 module stdlib_linalg_lapack_aux
      use stdlib_linalg_constants
      use stdlib_linalg_blas
-     implicit none(type,external)
+     implicit none
      private
 
 

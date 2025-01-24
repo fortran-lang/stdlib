@@ -4,7 +4,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
      use stdlib_linalg_lapack, only: gelsd, stdlib_ilaenv
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
-     implicit none(type,external)
+     implicit none
      
      character(*), parameter :: this = 'lstsq'
 
