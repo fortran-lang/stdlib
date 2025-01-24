@@ -92,6 +92,7 @@ set(cppFiles
 )
 
 add_subdirectory(blas)
+add_subdirectory(lapack)
 
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 fypp_f90pp("${fyppFlags}" "${cppFiles}" outPreprocFiles)
