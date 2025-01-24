@@ -1,11 +1,9 @@
 module stdlib_linalg_blas
      use stdlib_linalg_constants
      use stdlib_linalg_blas_aux
-     use stdlib_linalg_blas_s
-     use stdlib_linalg_blas_d
-     use stdlib_linalg_blas_c
-     use stdlib_linalg_blas_z
-     implicit none(type,external)
+     use stdlib_blas
+     
+     implicit none
      public     
          
           interface asum
@@ -13,7 +11,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure real(dp) function dasum( n, x, incx )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     real(dp), intent(in) :: x(*)
                end function dasum
@@ -23,7 +21,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure real(dp) function dzasum( n, x, incx )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     complex(dp), intent(in) :: x(*)
                end function dzasum
@@ -33,7 +31,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure real(sp) function sasum( n, x, incx )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     real(sp), intent(in) :: x(*)
                end function sasum
@@ -43,7 +41,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure real(sp) function scasum( n, x, incx )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     complex(sp), intent(in) :: x(*)
                end function scasum
@@ -57,7 +55,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine caxpy(n,ca,cx,incx,cy,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(sp), intent(in) :: ca,cx(*)
                     integer(ilp), intent(in) :: incx,incy,n
                     complex(sp), intent(inout) :: cy(*)
@@ -68,7 +66,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine daxpy(n,da,dx,incx,dy,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: da,dx(*)
                     integer(ilp), intent(in) :: incx,incy,n
                     real(dp), intent(inout) :: dy(*)
@@ -79,7 +77,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine saxpy(n,sa,sx,incx,sy,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: sa,sx(*)
                     integer(ilp), intent(in) :: incx,incy,n
                     real(sp), intent(inout) :: sy(*)
@@ -90,7 +88,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine zaxpy(n,za,zx,incx,zy,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(dp), intent(in) :: za,zx(*)
                     integer(ilp), intent(in) :: incx,incy,n
                     complex(dp), intent(inout) :: zy(*)
@@ -105,7 +103,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ccopy(n,cx,incx,cy,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     complex(sp), intent(in) :: cx(*)
                     complex(sp), intent(out) :: cy(*)
@@ -116,7 +114,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dcopy(n,dx,incx,dy,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     real(dp), intent(in) :: dx(*)
                     real(dp), intent(out) :: dy(*)
@@ -127,7 +125,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine scopy(n,sx,incx,sy,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     real(sp), intent(in) :: sx(*)
                     real(sp), intent(out) :: sy(*)
@@ -138,7 +136,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine zcopy(n,zx,incx,zy,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     complex(dp), intent(in) :: zx(*)
                     complex(dp), intent(out) :: zy(*)
@@ -154,7 +152,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure real(dp) function ddot(n,dx,incx,dy,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     real(dp), intent(in) :: dx(*),dy(*)
                end function ddot
@@ -164,7 +162,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure real(sp) function sdot(n,sx,incx,sy,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     real(sp), intent(in) :: sx(*),sy(*)
                end function sdot
@@ -179,7 +177,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure complex(sp) function cdotc(n,cx,incx,cy,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     complex(sp), intent(in) :: cx(*),cy(*)
                end function cdotc
@@ -189,7 +187,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure complex(dp) function zdotc(n,zx,incx,zy,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     complex(dp), intent(in) :: zx(*),zy(*)
                end function zdotc
@@ -204,7 +202,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure complex(sp) function cdotu(n,cx,incx,cy,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     complex(sp), intent(in) :: cx(*),cy(*)
                end function cdotu
@@ -214,7 +212,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure complex(dp) function zdotu(n,zx,incx,zy,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     complex(dp), intent(in) :: zx(*),zy(*)
                end function zdotu
@@ -232,7 +230,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine cgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,kl,ku,lda,m,n
                     character, intent(in) :: trans
@@ -244,7 +242,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,kl,ku,lda,m,n
                     character, intent(in) :: trans
@@ -256,7 +254,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine sgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,kl,ku,lda,m,n
                     character, intent(in) :: trans
@@ -268,7 +266,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine zgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,kl,ku,lda,m,n
                     character, intent(in) :: trans
@@ -289,7 +287,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine cgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: k,lda,ldb,ldc,m,n
                     character, intent(in) :: transa,transb
@@ -301,7 +299,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: k,lda,ldb,ldc,m,n
                     character, intent(in) :: transa,transb
@@ -313,7 +311,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine sgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: k,lda,ldb,ldc,m,n
                     character, intent(in) :: transa,transb
@@ -325,7 +323,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine zgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: k,lda,ldb,ldc,m,n
                     character, intent(in) :: transa,transb
@@ -345,7 +343,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine cgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,m,n
                     character, intent(in) :: trans
@@ -357,7 +355,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,m,n
                     character, intent(in) :: trans
@@ -369,7 +367,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine sgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,m,n
                     character, intent(in) :: trans
@@ -381,7 +379,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine zgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,m,n
                     character, intent(in) :: trans
@@ -400,7 +398,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dger(m,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,x(*),y(*)
                     integer(ilp), intent(in) :: incx,incy,lda,m,n
                     real(dp), intent(inout) :: a(lda,*)
@@ -411,7 +409,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine sger(m,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,x(*),y(*)
                     integer(ilp), intent(in) :: incx,incy,lda,m,n
                     real(sp), intent(inout) :: a(lda,*)
@@ -429,7 +427,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine cgerc(m,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(sp), intent(in) :: alpha,x(*),y(*)
                     integer(ilp), intent(in) :: incx,incy,lda,m,n
                     complex(sp), intent(inout) :: a(lda,*)
@@ -440,7 +438,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine zgerc(m,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(dp), intent(in) :: alpha,x(*),y(*)
                     integer(ilp), intent(in) :: incx,incy,lda,m,n
                     complex(dp), intent(inout) :: a(lda,*)
@@ -458,7 +456,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine cgeru(m,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(sp), intent(in) :: alpha,x(*),y(*)
                     integer(ilp), intent(in) :: incx,incy,lda,m,n
                     complex(sp), intent(inout) :: a(lda,*)
@@ -469,7 +467,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine zgeru(m,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(dp), intent(in) :: alpha,x(*),y(*)
                     integer(ilp), intent(in) :: incx,incy,lda,m,n
                     complex(dp), intent(inout) :: a(lda,*)
@@ -487,7 +485,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine chbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,k,lda,n
                     character, intent(in) :: uplo
@@ -499,7 +497,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine zhbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,k,lda,n
                     character, intent(in) :: uplo
@@ -520,7 +518,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine chemm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: lda,ldb,ldc,m,n
                     character, intent(in) :: side,uplo
@@ -532,7 +530,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine zhemm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: lda,ldb,ldc,m,n
                     character, intent(in) :: side,uplo
@@ -551,7 +549,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine chemv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,n
                     character, intent(in) :: uplo
@@ -563,7 +561,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine zhemv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,n
                     character, intent(in) :: uplo
@@ -582,7 +580,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine cher(uplo,n,alpha,x,incx,a,lda)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha
                     integer(ilp), intent(in) :: incx,lda,n
                     character, intent(in) :: uplo
@@ -595,7 +593,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine zher(uplo,n,alpha,x,incx,a,lda)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha
                     integer(ilp), intent(in) :: incx,lda,n
                     character, intent(in) :: uplo
@@ -615,7 +613,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine cher2(uplo,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(sp), intent(in) :: alpha,x(*),y(*)
                     integer(ilp), intent(in) :: incx,incy,lda,n
                     character, intent(in) :: uplo
@@ -627,7 +625,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine zher2(uplo,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(dp), intent(in) :: alpha,x(*),y(*)
                     integer(ilp), intent(in) :: incx,incy,lda,n
                     character, intent(in) :: uplo
@@ -649,7 +647,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine cher2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(sp), intent(in) :: alpha,a(lda,*),b(ldb,*)
                     real(sp), intent(in) :: beta
                     integer(ilp), intent(in) :: k,lda,ldb,ldc,n
@@ -662,7 +660,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine zher2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(dp), intent(in) :: alpha,a(lda,*),b(ldb,*)
                     real(dp), intent(in) :: beta
                     integer(ilp), intent(in) :: k,lda,ldb,ldc,n
@@ -685,7 +683,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine cherk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,beta
                     integer(ilp), intent(in) :: k,lda,ldc,n
                     character, intent(in) :: trans,uplo
@@ -698,7 +696,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine zherk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,beta
                     integer(ilp), intent(in) :: k,lda,ldc,n
                     character, intent(in) :: trans,uplo
@@ -718,7 +716,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine chpmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(sp), intent(in) :: alpha,beta,ap(*),x(*)
                     integer(ilp), intent(in) :: incx,incy,n
                     character, intent(in) :: uplo
@@ -730,7 +728,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine zhpmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(dp), intent(in) :: alpha,beta,ap(*),x(*)
                     integer(ilp), intent(in) :: incx,incy,n
                     character, intent(in) :: uplo
@@ -749,7 +747,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine chpr(uplo,n,alpha,x,incx,ap)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha
                     integer(ilp), intent(in) :: incx,n
                     character, intent(in) :: uplo
@@ -762,7 +760,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine zhpr(uplo,n,alpha,x,incx,ap)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha
                     integer(ilp), intent(in) :: incx,n
                     character, intent(in) :: uplo
@@ -782,7 +780,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine chpr2(uplo,n,alpha,x,incx,y,incy,ap)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(sp), intent(in) :: alpha,x(*),y(*)
                     integer(ilp), intent(in) :: incx,incy,n
                     character, intent(in) :: uplo
@@ -794,7 +792,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine zhpr2(uplo,n,alpha,x,incx,y,incy,ap)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(dp), intent(in) :: alpha,x(*),y(*)
                     integer(ilp), intent(in) :: incx,incy,n
                     character, intent(in) :: uplo
@@ -812,7 +810,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure real(dp) function dnrm2( n, x, incx )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     real(dp), intent(in) :: x(*)
                end function dnrm2
@@ -822,7 +820,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure real(dp) function dznrm2( n, x, incx )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     complex(dp), intent(in) :: x(*)
                end function dznrm2
@@ -832,7 +830,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure real(sp) function snrm2( n, x, incx )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     real(sp), intent(in) :: x(*)
                end function snrm2
@@ -842,7 +840,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure real(sp) function scnrm2( n, x, incx )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     complex(sp), intent(in) :: x(*)
                end function scnrm2
@@ -856,7 +854,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine drot(n,dx,incx,dy,incy,c,s)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: c,s
                     integer(ilp), intent(in) :: incx,incy,n
                     real(dp), intent(inout) :: dx(*),dy(*)
@@ -867,7 +865,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine srot(n,sx,incx,sy,incy,c,s)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: c,s
                     integer(ilp), intent(in) :: incx,incy,n
                     real(sp), intent(inout) :: sx(*),sy(*)
@@ -894,7 +892,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine crotg( a, b, c, s )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(out) :: c
                     complex(sp), intent(inout) :: a
                     complex(sp), intent(in) :: b
@@ -906,7 +904,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine drotg( a, b, c, s )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(inout) :: a,b
                     real(dp), intent(out) :: c,s
                end subroutine drotg
@@ -916,7 +914,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine srotg( a, b, c, s )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(inout) :: a,b
                     real(sp), intent(out) :: c,s
                end subroutine srotg
@@ -926,7 +924,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine zrotg( a, b, c, s )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(out) :: c
                     complex(dp), intent(inout) :: a
                     complex(dp), intent(in) :: b
@@ -952,7 +950,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine drotm(n,dx,incx,dy,incy,dparam)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     real(dp), intent(in) :: dparam(5)
                     real(dp), intent(inout) :: dx(*),dy(*)
@@ -963,7 +961,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine srotm(n,sx,incx,sy,incy,sparam)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     real(sp), intent(in) :: sparam(5)
                     real(sp), intent(inout) :: sx(*),sy(*)
@@ -989,7 +987,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine drotmg(dd1,dd2,dx1,dy1,dparam)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(inout) :: dd1,dd2,dx1
                     real(dp), intent(in) :: dy1
                     real(dp), intent(out) :: dparam(5)
@@ -1000,7 +998,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine srotmg(sd1,sd2,sx1,sy1,sparam)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(inout) :: sd1,sd2,sx1
                     real(sp), intent(in) :: sy1
                     real(sp), intent(out) :: sparam(5)
@@ -1018,7 +1016,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dsbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,k,lda,n
                     character, intent(in) :: uplo
@@ -1030,7 +1028,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ssbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,k,lda,n
                     character, intent(in) :: uplo
@@ -1046,7 +1044,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine cscal(n,ca,cx,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(sp), intent(in) :: ca
                     integer(ilp), intent(in) :: incx,n
                     complex(sp), intent(inout) :: cx(*)
@@ -1057,7 +1055,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dscal(n,da,dx,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: da
                     integer(ilp), intent(in) :: incx,n
                     real(dp), intent(inout) :: dx(*)
@@ -1068,7 +1066,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine sscal(n,sa,sx,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: sa
                     integer(ilp), intent(in) :: incx,n
                     real(sp), intent(inout) :: sx(*)
@@ -1079,7 +1077,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine zscal(n,za,zx,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(dp), intent(in) :: za
                     integer(ilp), intent(in) :: incx,n
                     complex(dp), intent(inout) :: zx(*)
@@ -1099,7 +1097,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure real(dp) function dsdot(n,sx,incx,sy,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     real(sp), intent(in) :: sx(*),sy(*)
                end function dsdot
@@ -1116,7 +1114,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dspmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,beta,ap(*),x(*)
                     integer(ilp), intent(in) :: incx,incy,n
                     character, intent(in) :: uplo
@@ -1128,7 +1126,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine sspmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,beta,ap(*),x(*)
                     integer(ilp), intent(in) :: incx,incy,n
                     character, intent(in) :: uplo
@@ -1147,7 +1145,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dspr(uplo,n,alpha,x,incx,ap)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,x(*)
                     integer(ilp), intent(in) :: incx,n
                     character, intent(in) :: uplo
@@ -1159,7 +1157,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine sspr(uplo,n,alpha,x,incx,ap)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,x(*)
                     integer(ilp), intent(in) :: incx,n
                     character, intent(in) :: uplo
@@ -1178,7 +1176,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dspr2(uplo,n,alpha,x,incx,y,incy,ap)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,x(*),y(*)
                     integer(ilp), intent(in) :: incx,incy,n
                     character, intent(in) :: uplo
@@ -1190,7 +1188,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine sspr2(uplo,n,alpha,x,incx,y,incy,ap)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,x(*),y(*)
                     integer(ilp), intent(in) :: incx,incy,n
                     character, intent(in) :: uplo
@@ -1208,7 +1206,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine csrot( n, cx, incx, cy, incy, c, s )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     real(sp), intent(in) :: c,s
                     complex(sp), intent(inout) :: cx(*),cy(*)
@@ -1223,7 +1221,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine csscal(n,sa,cx,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: sa
                     integer(ilp), intent(in) :: incx,n
                     complex(sp), intent(inout) :: cx(*)
@@ -1238,7 +1236,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine cswap(n,cx,incx,cy,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     complex(sp), intent(inout) :: cx(*),cy(*)
                end subroutine cswap
@@ -1248,7 +1246,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dswap(n,dx,incx,dy,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     real(dp), intent(inout) :: dx(*),dy(*)
                end subroutine dswap
@@ -1258,7 +1256,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine sswap(n,sx,incx,sy,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     real(sp), intent(inout) :: sx(*),sy(*)
                end subroutine sswap
@@ -1268,7 +1266,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine zswap(n,zx,incx,zy,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     complex(dp), intent(inout) :: zx(*),zy(*)
                end subroutine zswap
@@ -1287,7 +1285,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine csymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: lda,ldb,ldc,m,n
                     character, intent(in) :: side,uplo
@@ -1299,7 +1297,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dsymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: lda,ldb,ldc,m,n
                     character, intent(in) :: side,uplo
@@ -1311,7 +1309,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ssymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: lda,ldb,ldc,m,n
                     character, intent(in) :: side,uplo
@@ -1323,7 +1321,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine zsymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: lda,ldb,ldc,m,n
                     character, intent(in) :: side,uplo
@@ -1342,7 +1340,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dsymv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,n
                     character, intent(in) :: uplo
@@ -1354,7 +1352,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ssymv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,n
                     character, intent(in) :: uplo
@@ -1373,7 +1371,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dsyr(uplo,n,alpha,x,incx,a,lda)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,x(*)
                     integer(ilp), intent(in) :: incx,lda,n
                     character, intent(in) :: uplo
@@ -1385,7 +1383,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ssyr(uplo,n,alpha,x,incx,a,lda)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,x(*)
                     integer(ilp), intent(in) :: incx,lda,n
                     character, intent(in) :: uplo
@@ -1404,7 +1402,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dsyr2(uplo,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,x(*),y(*)
                     integer(ilp), intent(in) :: incx,incy,lda,n
                     character, intent(in) :: uplo
@@ -1416,7 +1414,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ssyr2(uplo,n,alpha,x,incx,y,incy,a,lda)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,x(*),y(*)
                     integer(ilp), intent(in) :: incx,incy,lda,n
                     character, intent(in) :: uplo
@@ -1438,7 +1436,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine csyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: k,lda,ldb,ldc,n
                     character, intent(in) :: trans,uplo
@@ -1450,7 +1448,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dsyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: k,lda,ldb,ldc,n
                     character, intent(in) :: trans,uplo
@@ -1462,7 +1460,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ssyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: k,lda,ldb,ldc,n
                     character, intent(in) :: trans,uplo
@@ -1474,7 +1472,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine zsyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: k,lda,ldb,ldc,n
                     character, intent(in) :: trans,uplo
@@ -1496,7 +1494,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine csyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(sp), intent(in) :: alpha,beta,a(lda,*)
                     integer(ilp), intent(in) :: k,lda,ldc,n
                     character, intent(in) :: trans,uplo
@@ -1508,7 +1506,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dsyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,beta,a(lda,*)
                     integer(ilp), intent(in) :: k,lda,ldc,n
                     character, intent(in) :: trans,uplo
@@ -1520,7 +1518,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ssyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,beta,a(lda,*)
                     integer(ilp), intent(in) :: k,lda,ldc,n
                     character, intent(in) :: trans,uplo
@@ -1532,7 +1530,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine zsyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(dp), intent(in) :: alpha,beta,a(lda,*)
                     integer(ilp), intent(in) :: k,lda,ldc,n
                     character, intent(in) :: trans,uplo
@@ -1551,7 +1549,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ctbmv(uplo,trans,diag,n,k,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,k,lda,n
                     character, intent(in) :: diag,trans,uplo
                     complex(sp), intent(in) :: a(lda,*)
@@ -1563,7 +1561,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dtbmv(uplo,trans,diag,n,k,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,k,lda,n
                     character, intent(in) :: diag,trans,uplo
                     real(dp), intent(in) :: a(lda,*)
@@ -1575,7 +1573,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine stbmv(uplo,trans,diag,n,k,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,k,lda,n
                     character, intent(in) :: diag,trans,uplo
                     real(sp), intent(in) :: a(lda,*)
@@ -1587,7 +1585,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ztbmv(uplo,trans,diag,n,k,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,k,lda,n
                     character, intent(in) :: diag,trans,uplo
                     complex(dp), intent(in) :: a(lda,*)
@@ -1609,7 +1607,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ctbsv(uplo,trans,diag,n,k,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,k,lda,n
                     character, intent(in) :: diag,trans,uplo
                     complex(sp), intent(in) :: a(lda,*)
@@ -1621,7 +1619,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dtbsv(uplo,trans,diag,n,k,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,k,lda,n
                     character, intent(in) :: diag,trans,uplo
                     real(dp), intent(in) :: a(lda,*)
@@ -1633,7 +1631,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine stbsv(uplo,trans,diag,n,k,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,k,lda,n
                     character, intent(in) :: diag,trans,uplo
                     real(sp), intent(in) :: a(lda,*)
@@ -1645,7 +1643,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ztbsv(uplo,trans,diag,n,k,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,k,lda,n
                     character, intent(in) :: diag,trans,uplo
                     complex(dp), intent(in) :: a(lda,*)
@@ -1664,7 +1662,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ctpmv(uplo,trans,diag,n,ap,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     character, intent(in) :: diag,trans,uplo
                     complex(sp), intent(in) :: ap(*)
@@ -1676,7 +1674,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dtpmv(uplo,trans,diag,n,ap,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     character, intent(in) :: diag,trans,uplo
                     real(dp), intent(in) :: ap(*)
@@ -1688,7 +1686,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine stpmv(uplo,trans,diag,n,ap,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     character, intent(in) :: diag,trans,uplo
                     real(sp), intent(in) :: ap(*)
@@ -1700,7 +1698,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ztpmv(uplo,trans,diag,n,ap,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     character, intent(in) :: diag,trans,uplo
                     complex(dp), intent(in) :: ap(*)
@@ -1721,7 +1719,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ctpsv(uplo,trans,diag,n,ap,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     character, intent(in) :: diag,trans,uplo
                     complex(sp), intent(in) :: ap(*)
@@ -1733,7 +1731,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dtpsv(uplo,trans,diag,n,ap,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     character, intent(in) :: diag,trans,uplo
                     real(dp), intent(in) :: ap(*)
@@ -1745,7 +1743,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine stpsv(uplo,trans,diag,n,ap,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     character, intent(in) :: diag,trans,uplo
                     real(sp), intent(in) :: ap(*)
@@ -1757,7 +1755,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ztpsv(uplo,trans,diag,n,ap,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     character, intent(in) :: diag,trans,uplo
                     complex(dp), intent(in) :: ap(*)
@@ -1777,7 +1775,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ctrmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(sp), intent(in) :: alpha,a(lda,*)
                     integer(ilp), intent(in) :: lda,ldb,m,n
                     character, intent(in) :: diag,side,transa,uplo
@@ -1789,7 +1787,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dtrmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,a(lda,*)
                     integer(ilp), intent(in) :: lda,ldb,m,n
                     character, intent(in) :: diag,side,transa,uplo
@@ -1801,7 +1799,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine strmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,a(lda,*)
                     integer(ilp), intent(in) :: lda,ldb,m,n
                     character, intent(in) :: diag,side,transa,uplo
@@ -1813,7 +1811,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ztrmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(dp), intent(in) :: alpha,a(lda,*)
                     integer(ilp), intent(in) :: lda,ldb,m,n
                     character, intent(in) :: diag,side,transa,uplo
@@ -1832,7 +1830,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ctrmv(uplo,trans,diag,n,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,lda,n
                     character, intent(in) :: diag,trans,uplo
                     complex(sp), intent(in) :: a(lda,*)
@@ -1844,7 +1842,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dtrmv(uplo,trans,diag,n,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,lda,n
                     character, intent(in) :: diag,trans,uplo
                     real(dp), intent(in) :: a(lda,*)
@@ -1856,7 +1854,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine strmv(uplo,trans,diag,n,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,lda,n
                     character, intent(in) :: diag,trans,uplo
                     real(sp), intent(in) :: a(lda,*)
@@ -1868,7 +1866,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ztrmv(uplo,trans,diag,n,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,lda,n
                     character, intent(in) :: diag,trans,uplo
                     complex(dp), intent(in) :: a(lda,*)
@@ -1889,7 +1887,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ctrsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(sp), intent(in) :: alpha,a(lda,*)
                     integer(ilp), intent(in) :: lda,ldb,m,n
                     character, intent(in) :: diag,side,transa,uplo
@@ -1901,7 +1899,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dtrsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,a(lda,*)
                     integer(ilp), intent(in) :: lda,ldb,m,n
                     character, intent(in) :: diag,side,transa,uplo
@@ -1913,7 +1911,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine strsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,a(lda,*)
                     integer(ilp), intent(in) :: lda,ldb,m,n
                     character, intent(in) :: diag,side,transa,uplo
@@ -1925,7 +1923,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ztrsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(dp), intent(in) :: alpha,a(lda,*)
                     integer(ilp), intent(in) :: lda,ldb,m,n
                     character, intent(in) :: diag,side,transa,uplo
@@ -1946,7 +1944,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ctrsv(uplo,trans,diag,n,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,lda,n
                     character, intent(in) :: diag,trans,uplo
                     complex(sp), intent(in) :: a(lda,*)
@@ -1958,7 +1956,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine dtrsv(uplo,trans,diag,n,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,lda,n
                     character, intent(in) :: diag,trans,uplo
                     real(dp), intent(in) :: a(lda,*)
@@ -1970,7 +1968,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine strsv(uplo,trans,diag,n,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,lda,n
                     character, intent(in) :: diag,trans,uplo
                     real(sp), intent(in) :: a(lda,*)
@@ -1982,7 +1980,7 @@ module stdlib_linalg_blas
 #ifdef STDLIB_EXTERNAL_BLAS
                pure subroutine ztrsv(uplo,trans,diag,n,a,lda,x,incx)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,lda,n
                     character, intent(in) :: diag,trans,uplo
                     complex(dp), intent(in) :: a(lda,*)

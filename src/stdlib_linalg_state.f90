@@ -8,7 +8,7 @@ module stdlib_linalg_state
      use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp, lk
      use stdlib_io, only: FMT_REAL_SP, FMT_REAL_DP, FMT_REAL_QP, FMT_COMPLEX_SP, FMT_COMPLEX_DP, &
          FMT_COMPLEX_QP, FMT_REAL_XDP, FMT_COMPLEX_XDP
-     implicit none(type,external)
+     implicit none
      private
 
      !> Version: experimental

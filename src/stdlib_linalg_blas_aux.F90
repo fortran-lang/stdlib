@@ -1,6 +1,6 @@
 module stdlib_linalg_blas_aux
      use stdlib_linalg_constants
-     implicit none(type,external)
+     implicit none
      private
 
 

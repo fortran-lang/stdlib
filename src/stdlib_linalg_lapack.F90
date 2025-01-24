@@ -2,11 +2,14 @@ module stdlib_linalg_lapack
      use stdlib_linalg_constants
      use stdlib_linalg_blas
      use stdlib_linalg_lapack_aux
-     use stdlib_linalg_lapack_s
-     use stdlib_linalg_lapack_d
-     use stdlib_linalg_lapack_c
-     use stdlib_linalg_lapack_z
-     implicit none(type,external)
+
+     use stdlib_lapack_base
+     use stdlib_lapack_solve
+     use stdlib_lapack_others
+     use stdlib_lapack_orthogonal_factors
+     use stdlib_lapack_eig_svd_lsq
+     
+     implicit none
      public
          
           interface bbcsd
@@ -37,7 +40,7 @@ module stdlib_linalg_lapack
                u1, ldu1, u2, ldu2, v1t, ldv1t,v2t, ldv2t, b11d, b11e, b12d, b12e, b21d, b21e,b22d,&
                           b22e, rwork, lrwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobu1,jobu2,jobv1t,jobv2t,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldu1,ldu2,ldv1t,ldv2t,lrwork,m,p,q
@@ -55,7 +58,7 @@ module stdlib_linalg_lapack
                u1, ldu1, u2, ldu2, v1t, ldv1t,v2t, ldv2t, b11d, b11e, b12d, b12e, b21d, b21e,b22d,&
                           b22e, rwork, lrwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobu1,jobu2,jobv1t,jobv2t,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldu1,ldu2,ldv1t,ldv2t,lrwork,m,p,q
@@ -73,7 +76,7 @@ module stdlib_linalg_lapack
                u1, ldu1, u2, ldu2, v1t, ldv1t,v2t, ldv2t, b11d, b11e, b12d, b12e, b21d, b21e,b22d,&
                           b22e, rwork, lrwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobu1,jobu2,jobv1t,jobv2t,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldu1,ldu2,ldv1t,ldv2t,lrwork,m,p,q
@@ -91,7 +94,7 @@ module stdlib_linalg_lapack
                u1, ldu1, u2, ldu2, v1t, ldv1t,v2t, ldv2t, b11d, b11e, b12d, b12e, b21d, b21e,b22d,&
                           b22e, rwork, lrwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobu1,jobu2,jobv1t,jobv2t,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldu1,ldu2,ldv1t,ldv2t,lrwork,m,p,q
@@ -127,7 +130,7 @@ module stdlib_linalg_lapack
                pure subroutine dbdsdc( uplo, compq, n, d, e, u, ldu, vt, ldvt, q, iq,work, iwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compq,uplo
                     integer(ilp), intent(out) :: info,iq(*),iwork(*)
                     integer(ilp), intent(in) :: ldu,ldvt,n
@@ -141,7 +144,7 @@ module stdlib_linalg_lapack
                pure subroutine sbdsdc( uplo, compq, n, d, e, u, ldu, vt, ldvt, q, iq,work, iwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compq,uplo
                     integer(ilp), intent(out) :: info,iq(*),iwork(*)
                     integer(ilp), intent(in) :: ldu,ldvt,n
@@ -182,7 +185,7 @@ module stdlib_linalg_lapack
                pure subroutine cbdsqr( uplo, n, ncvt, nru, ncc, d, e, vt, ldvt, u,ldu, c, ldc, &
                          rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldc,ldu,ldvt,n,ncc,ncvt,nru
@@ -197,7 +200,7 @@ module stdlib_linalg_lapack
                pure subroutine dbdsqr( uplo, n, ncvt, nru, ncc, d, e, vt, ldvt, u,ldu, c, ldc, &
                          work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldc,ldu,ldvt,n,ncc,ncvt,nru
@@ -211,7 +214,7 @@ module stdlib_linalg_lapack
                pure subroutine sbdsqr( uplo, n, ncvt, nru, ncc, d, e, vt, ldvt, u,ldu, c, ldc, &
                          work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldc,ldu,ldvt,n,ncc,ncvt,nru
@@ -225,7 +228,7 @@ module stdlib_linalg_lapack
                pure subroutine zbdsqr( uplo, n, ncvt, nru, ncc, d, e, vt, ldvt, u,ldu, c, ldc, &
                          rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldc,ldu,ldvt,n,ncc,ncvt,nru
@@ -255,7 +258,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ddisna( job, m, n, d, sep, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: job
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: m,n
@@ -268,7 +271,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sdisna( job, m, n, d, sep, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: job
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: m,n
@@ -289,7 +292,7 @@ module stdlib_linalg_lapack
                pure subroutine cgbbrd( vect, m, n, ncc, kl, ku, ab, ldab, d, e, q,ldq, pt, ldpt, &
                          c, ldc, work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: vect
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,ldab,ldc,ldpt,ldq,m,n,ncc
@@ -304,7 +307,7 @@ module stdlib_linalg_lapack
                pure subroutine dgbbrd( vect, m, n, ncc, kl, ku, ab, ldab, d, e, q,ldq, pt, ldpt, &
                          c, ldc, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: vect
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,ldab,ldc,ldpt,ldq,m,n,ncc
@@ -318,7 +321,7 @@ module stdlib_linalg_lapack
                pure subroutine sgbbrd( vect, m, n, ncc, kl, ku, ab, ldab, d, e, q,ldq, pt, ldpt, &
                          c, ldc, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: vect
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,ldab,ldc,ldpt,ldq,m,n,ncc
@@ -332,7 +335,7 @@ module stdlib_linalg_lapack
                pure subroutine zgbbrd( vect, m, n, ncc, kl, ku, ab, ldab, d, e, q,ldq, pt, ldpt, &
                          c, ldc, work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: vect
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,ldab,ldc,ldpt,ldq,m,n,ncc
@@ -356,7 +359,7 @@ module stdlib_linalg_lapack
                pure subroutine cgbcon( norm, n, kl, ku, ab, ldab, ipiv, anorm, rcond,work, rwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,ldab,n,ipiv(*)
@@ -372,7 +375,7 @@ module stdlib_linalg_lapack
                pure subroutine dgbcon( norm, n, kl, ku, ab, ldab, ipiv, anorm, rcond,work, iwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: kl,ku,ldab,n,ipiv(*)
@@ -386,7 +389,7 @@ module stdlib_linalg_lapack
                pure subroutine sgbcon( norm, n, kl, ku, ab, ldab, ipiv, anorm, rcond,work, iwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: kl,ku,ldab,n,ipiv(*)
@@ -400,7 +403,7 @@ module stdlib_linalg_lapack
                pure subroutine zgbcon( norm, n, kl, ku, ab, ldab, ipiv, anorm, rcond,work, rwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,ldab,n,ipiv(*)
@@ -428,7 +431,7 @@ module stdlib_linalg_lapack
                pure subroutine cgbequ( m, n, kl, ku, ab, ldab, r, c, rowcnd, colcnd,amax, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,ldab,m,n
                     real(sp), intent(out) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -441,7 +444,7 @@ module stdlib_linalg_lapack
                pure subroutine dgbequ( m, n, kl, ku, ab, ldab, r, c, rowcnd, colcnd,amax, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,ldab,m,n
                     real(dp), intent(out) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -454,7 +457,7 @@ module stdlib_linalg_lapack
                pure subroutine sgbequ( m, n, kl, ku, ab, ldab, r, c, rowcnd, colcnd,amax, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,ldab,m,n
                     real(sp), intent(out) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -467,7 +470,7 @@ module stdlib_linalg_lapack
                pure subroutine zgbequ( m, n, kl, ku, ab, ldab, r, c, rowcnd, colcnd,amax, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,ldab,m,n
                     real(dp), intent(out) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -498,7 +501,7 @@ module stdlib_linalg_lapack
                pure subroutine cgbequb( m, n, kl, ku, ab, ldab, r, c, rowcnd, colcnd,amax, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,ldab,m,n
                     real(sp), intent(out) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -511,7 +514,7 @@ module stdlib_linalg_lapack
                pure subroutine dgbequb( m, n, kl, ku, ab, ldab, r, c, rowcnd, colcnd,amax, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,ldab,m,n
                     real(dp), intent(out) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -524,7 +527,7 @@ module stdlib_linalg_lapack
                pure subroutine sgbequb( m, n, kl, ku, ab, ldab, r, c, rowcnd, colcnd,amax, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,ldab,m,n
                     real(sp), intent(out) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -537,7 +540,7 @@ module stdlib_linalg_lapack
                pure subroutine zgbequb( m, n, kl, ku, ab, ldab, r, c, rowcnd, colcnd,amax, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,ldab,m,n
                     real(dp), intent(out) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -556,7 +559,7 @@ module stdlib_linalg_lapack
                pure subroutine cgbrfs( trans, n, kl, ku, nrhs, ab, ldab, afb, ldafb,ipiv, b, ldb, &
                          x, ldx, ferr, berr, work, rwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,ldab,ldafb,ldb,ldx,n,nrhs,ipiv(*)
@@ -572,7 +575,7 @@ module stdlib_linalg_lapack
                pure subroutine dgbrfs( trans, n, kl, ku, nrhs, ab, ldab, afb, ldafb,ipiv, b, ldb, &
                          x, ldx, ferr, berr, work, iwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: kl,ku,ldab,ldafb,ldb,ldx,n,nrhs,ipiv(*)
@@ -587,7 +590,7 @@ module stdlib_linalg_lapack
                pure subroutine sgbrfs( trans, n, kl, ku, nrhs, ab, ldab, afb, ldafb,ipiv, b, ldb, &
                          x, ldx, ferr, berr, work, iwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: kl,ku,ldab,ldafb,ldb,ldx,n,nrhs,ipiv(*)
@@ -602,7 +605,7 @@ module stdlib_linalg_lapack
                pure subroutine zgbrfs( trans, n, kl, ku, nrhs, ab, ldab, afb, ldafb,ipiv, b, ldb, &
                          x, ldx, ferr, berr, work, rwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,ldab,ldafb,ldb,ldx,n,nrhs,ipiv(*)
@@ -628,7 +631,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgbsv( n, kl, ku, nrhs, ab, ldab, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: kl,ku,ldab,ldb,n,nrhs
                     complex(sp), intent(inout) :: ab(ldab,*),b(ldb,*)
@@ -639,7 +642,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgbsv( n, kl, ku, nrhs, ab, ldab, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: kl,ku,ldab,ldb,n,nrhs
                     real(dp), intent(inout) :: ab(ldab,*),b(ldb,*)
@@ -650,7 +653,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgbsv( n, kl, ku, nrhs, ab, ldab, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: kl,ku,ldab,ldb,n,nrhs
                     real(sp), intent(inout) :: ab(ldab,*),b(ldb,*)
@@ -661,7 +664,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgbsv( n, kl, ku, nrhs, ab, ldab, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: kl,ku,ldab,ldb,n,nrhs
                     complex(dp), intent(inout) :: ab(ldab,*),b(ldb,*)
@@ -678,7 +681,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgbtrf( m, n, kl, ku, ab, ldab, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: kl,ku,ldab,m,n
                     complex(sp), intent(inout) :: ab(ldab,*)
@@ -689,7 +692,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgbtrf( m, n, kl, ku, ab, ldab, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: kl,ku,ldab,m,n
                     real(dp), intent(inout) :: ab(ldab,*)
@@ -700,7 +703,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgbtrf( m, n, kl, ku, ab, ldab, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: kl,ku,ldab,m,n
                     real(sp), intent(inout) :: ab(ldab,*)
@@ -711,7 +714,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgbtrf( m, n, kl, ku, ab, ldab, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: kl,ku,ldab,m,n
                     complex(dp), intent(inout) :: ab(ldab,*)
@@ -730,7 +733,7 @@ module stdlib_linalg_lapack
                pure subroutine cgbtrs( trans, n, kl, ku, nrhs, ab, ldab, ipiv, b, ldb,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,ldab,ldb,n,nrhs,ipiv(*)
@@ -744,7 +747,7 @@ module stdlib_linalg_lapack
                pure subroutine dgbtrs( trans, n, kl, ku, nrhs, ab, ldab, ipiv, b, ldb,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,ldab,ldb,n,nrhs,ipiv(*)
@@ -758,7 +761,7 @@ module stdlib_linalg_lapack
                pure subroutine sgbtrs( trans, n, kl, ku, nrhs, ab, ldab, ipiv, b, ldb,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,ldab,ldb,n,nrhs,ipiv(*)
@@ -772,7 +775,7 @@ module stdlib_linalg_lapack
                pure subroutine zgbtrs( trans, n, kl, ku, nrhs, ab, ldab, ipiv, b, ldb,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,ldab,ldb,n,nrhs,ipiv(*)
@@ -791,7 +794,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgebak( job, side, n, ilo, ihi, scale, m, v, ldv,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: job,side
                     integer(ilp), intent(in) :: ihi,ilo,ldv,m,n
                     integer(ilp), intent(out) :: info
@@ -804,7 +807,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgebak( job, side, n, ilo, ihi, scale, m, v, ldv,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: job,side
                     integer(ilp), intent(in) :: ihi,ilo,ldv,m,n
                     integer(ilp), intent(out) :: info
@@ -817,7 +820,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgebak( job, side, n, ilo, ihi, scale, m, v, ldv,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: job,side
                     integer(ilp), intent(in) :: ihi,ilo,ldv,m,n
                     integer(ilp), intent(out) :: info
@@ -830,7 +833,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgebak( job, side, n, ilo, ihi, scale, m, v, ldv,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: job,side
                     integer(ilp), intent(in) :: ihi,ilo,ldv,m,n
                     integer(ilp), intent(out) :: info
@@ -854,7 +857,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgebal( job, n, a, lda, ilo, ihi, scale, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: job
                     integer(ilp), intent(out) :: ihi,ilo,info
                     integer(ilp), intent(in) :: lda,n
@@ -867,7 +870,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgebal( job, n, a, lda, ilo, ihi, scale, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: job
                     integer(ilp), intent(out) :: ihi,ilo,info
                     integer(ilp), intent(in) :: lda,n
@@ -880,7 +883,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgebal( job, n, a, lda, ilo, ihi, scale, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: job
                     integer(ilp), intent(out) :: ihi,ilo,info
                     integer(ilp), intent(in) :: lda,n
@@ -893,7 +896,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgebal( job, n, a, lda, ilo, ihi, scale, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: job
                     integer(ilp), intent(out) :: ihi,ilo,info
                     integer(ilp), intent(in) :: lda,n
@@ -912,7 +915,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgebrd( m, n, a, lda, d, e, tauq, taup, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     real(sp), intent(out) :: d(*),e(*)
@@ -925,7 +928,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgebrd( m, n, a, lda, d, e, tauq, taup, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     real(dp), intent(inout) :: a(lda,*)
@@ -937,7 +940,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgebrd( m, n, a, lda, d, e, tauq, taup, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     real(sp), intent(inout) :: a(lda,*)
@@ -949,7 +952,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgebrd( m, n, a, lda, d, e, tauq, taup, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     real(dp), intent(out) :: d(*),e(*)
@@ -971,7 +974,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgecon( norm, n, a, lda, anorm, rcond, work, rwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -986,7 +989,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgecon( norm, n, a, lda, anorm, rcond, work, iwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,n
@@ -1000,7 +1003,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgecon( norm, n, a, lda, anorm, rcond, work, iwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,n
@@ -1014,7 +1017,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgecon( norm, n, a, lda, anorm, rcond, work, rwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -1041,7 +1044,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgeequ( m, n, a, lda, r, c, rowcnd, colcnd, amax,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n
                     real(sp), intent(out) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -1053,7 +1056,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgeequ( m, n, a, lda, r, c, rowcnd, colcnd, amax,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n
                     real(dp), intent(out) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -1065,7 +1068,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgeequ( m, n, a, lda, r, c, rowcnd, colcnd, amax,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n
                     real(sp), intent(out) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -1077,7 +1080,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgeequ( m, n, a, lda, r, c, rowcnd, colcnd, amax,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n
                     real(dp), intent(out) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -1107,7 +1110,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgeequb( m, n, a, lda, r, c, rowcnd, colcnd, amax,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n
                     real(sp), intent(out) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -1119,7 +1122,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgeequb( m, n, a, lda, r, c, rowcnd, colcnd, amax,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n
                     real(dp), intent(out) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -1131,7 +1134,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgeequb( m, n, a, lda, r, c, rowcnd, colcnd, amax,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n
                     real(sp), intent(out) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -1143,7 +1146,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgeequb( m, n, a, lda, r, c, rowcnd, colcnd, amax,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n
                     real(dp), intent(out) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -1167,7 +1170,7 @@ module stdlib_linalg_lapack
                subroutine cgees( jobvs, sort, select, n, a, lda, sdim, w, vs,ldvs, work, lwork, &
                          rwork, bwork, info )
                     import sp,dp,qp,ilp,lk,stdlib_select_c
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobvs,sort
                     integer(ilp), intent(out) :: info,sdim
                     integer(ilp), intent(in) :: lda,ldvs,lwork,n
@@ -1184,7 +1187,7 @@ module stdlib_linalg_lapack
                subroutine dgees( jobvs, sort, select, n, a, lda, sdim, wr, wi,vs, ldvs, work, &
                          lwork, bwork, info )
                     import sp,dp,qp,ilp,lk,stdlib_select_d
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobvs,sort
                     integer(ilp), intent(out) :: info,sdim
                     integer(ilp), intent(in) :: lda,ldvs,lwork,n
@@ -1200,7 +1203,7 @@ module stdlib_linalg_lapack
                subroutine sgees( jobvs, sort, select, n, a, lda, sdim, wr, wi,vs, ldvs, work, &
                          lwork, bwork, info )
                     import sp,dp,qp,ilp,lk,stdlib_select_s
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobvs,sort
                     integer(ilp), intent(out) :: info,sdim
                     integer(ilp), intent(in) :: lda,ldvs,lwork,n
@@ -1216,7 +1219,7 @@ module stdlib_linalg_lapack
                subroutine zgees( jobvs, sort, select, n, a, lda, sdim, w, vs,ldvs, work, lwork, &
                          rwork, bwork, info )
                     import sp,dp,qp,ilp,lk,stdlib_select_z
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobvs,sort
                     integer(ilp), intent(out) :: info,sdim
                     integer(ilp), intent(in) :: lda,ldvs,lwork,n
@@ -1246,7 +1249,7 @@ module stdlib_linalg_lapack
                subroutine cgeev( jobvl, jobvr, n, a, lda, w, vl, ldvl, vr, ldvr,work, lwork, &
                          rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobvl,jobvr
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldvl,ldvr,lwork,n
@@ -1261,7 +1264,7 @@ module stdlib_linalg_lapack
                subroutine dgeev( jobvl, jobvr, n, a, lda, wr, wi, vl, ldvl, vr,ldvr, work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobvl,jobvr
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldvl,ldvr,lwork,n
@@ -1275,7 +1278,7 @@ module stdlib_linalg_lapack
                subroutine sgeev( jobvl, jobvr, n, a, lda, wr, wi, vl, ldvl, vr,ldvr, work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobvl,jobvr
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldvl,ldvr,lwork,n
@@ -1289,7 +1292,7 @@ module stdlib_linalg_lapack
                subroutine zgeev( jobvl, jobvr, n, a, lda, w, vl, ldvl, vr, ldvr,work, lwork, &
                          rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobvl,jobvr
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldvl,ldvr,lwork,n
@@ -1308,7 +1311,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgehrd( n, ilo, ihi, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ilo,lda,lwork,n
                     integer(ilp), intent(out) :: info
                     complex(sp), intent(inout) :: a(lda,*)
@@ -1320,7 +1323,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgehrd( n, ilo, ihi, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ilo,lda,lwork,n
                     integer(ilp), intent(out) :: info
                     real(dp), intent(inout) :: a(lda,*)
@@ -1332,7 +1335,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgehrd( n, ilo, ihi, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ilo,lda,lwork,n
                     integer(ilp), intent(out) :: info
                     real(sp), intent(inout) :: a(lda,*)
@@ -1344,7 +1347,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgehrd( n, ilo, ihi, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ilo,lda,lwork,n
                     integer(ilp), intent(out) :: info
                     complex(dp), intent(inout) :: a(lda,*)
@@ -1370,7 +1373,7 @@ module stdlib_linalg_lapack
                pure subroutine cgejsv( joba, jobu, jobv, jobr, jobt, jobp,m, n, a, lda, sva, u, &
                          ldu, v, ldv,cwork, lwork, rwork, lrwork, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,ldu,ldv,lwork,lrwork,m,n
                     complex(sp), intent(inout) :: a(lda,*)
@@ -1385,7 +1388,7 @@ module stdlib_linalg_lapack
                pure subroutine dgejsv( joba, jobu, jobv, jobr, jobt, jobp,m, n, a, lda, sva, u, &
                          ldu, v, ldv,work, lwork, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,ldu,ldv,lwork,m,n
                     real(dp), intent(inout) :: a(lda,*)
@@ -1399,7 +1402,7 @@ module stdlib_linalg_lapack
                pure subroutine sgejsv( joba, jobu, jobv, jobr, jobt, jobp,m, n, a, lda, sva, u, &
                          ldu, v, ldv,work, lwork, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,ldu,ldv,lwork,m,n
                     real(sp), intent(inout) :: a(lda,*)
@@ -1413,7 +1416,7 @@ module stdlib_linalg_lapack
                pure subroutine zgejsv( joba, jobu, jobv, jobr, jobt, jobp,m, n, a, lda, sva, u, &
                          ldu, v, ldv,cwork, lwork, rwork, lrwork, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,ldu,ldv,lwork,lrwork,m,n
                     complex(dp), intent(inout) :: a(lda,*)
@@ -1436,7 +1439,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgelq( m, n, a, lda, t, tsize, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,tsize,lwork
                     complex(sp), intent(inout) :: a(lda,*)
@@ -1448,7 +1451,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgelq( m, n, a, lda, t, tsize, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,tsize,lwork
                     real(dp), intent(inout) :: a(lda,*)
@@ -1460,7 +1463,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgelq( m, n, a, lda, t, tsize, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,tsize,lwork
                     real(sp), intent(inout) :: a(lda,*)
@@ -1472,7 +1475,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgelq( m, n, a, lda, t, tsize, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,tsize,lwork
                     complex(dp), intent(inout) :: a(lda,*)
@@ -1493,7 +1496,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgelqf( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     complex(sp), intent(inout) :: a(lda,*)
@@ -1505,7 +1508,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgelqf( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     real(dp), intent(inout) :: a(lda,*)
@@ -1517,7 +1520,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgelqf( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     real(sp), intent(inout) :: a(lda,*)
@@ -1529,7 +1532,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgelqf( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     complex(dp), intent(inout) :: a(lda,*)
@@ -1546,7 +1549,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgelqt( m, n, mb, a, lda, t, ldt, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,m,n,mb
                     complex(sp), intent(inout) :: a(lda,*)
@@ -1558,7 +1561,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgelqt( m, n, mb, a, lda, t, ldt, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,m,n,mb
                     real(dp), intent(inout) :: a(lda,*)
@@ -1570,7 +1573,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgelqt( m, n, mb, a, lda, t, ldt, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,m,n,mb
                     real(sp), intent(inout) :: a(lda,*)
@@ -1582,7 +1585,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgelqt( m, n, mb, a, lda, t, ldt, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,m,n,mb
                     complex(dp), intent(inout) :: a(lda,*)
@@ -1601,7 +1604,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure recursive subroutine cgelqt3( m, n, a, lda, t, ldt, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,ldt
                     complex(sp), intent(inout) :: a(lda,*)
@@ -1613,7 +1616,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure recursive subroutine dgelqt3( m, n, a, lda, t, ldt, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,ldt
                     real(dp), intent(inout) :: a(lda,*)
@@ -1625,7 +1628,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure recursive subroutine sgelqt3( m, n, a, lda, t, ldt, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,ldt
                     real(sp), intent(inout) :: a(lda,*)
@@ -1637,7 +1640,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure recursive subroutine zgelqt3( m, n, a, lda, t, ldt, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,ldt
                     complex(dp), intent(inout) :: a(lda,*)
@@ -1670,7 +1673,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine cgels( trans, m, n, nrhs, a, lda, b, ldb, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,nrhs
@@ -1683,7 +1686,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine dgels( trans, m, n, nrhs, a, lda, b, ldb, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,nrhs
@@ -1696,7 +1699,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine sgels( trans, m, n, nrhs, a, lda, b, ldb, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,nrhs
@@ -1709,7 +1712,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine zgels( trans, m, n, nrhs, a, lda, b, ldb, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,nrhs
@@ -1751,7 +1754,7 @@ module stdlib_linalg_lapack
                subroutine cgelsd( m, n, nrhs, a, lda, b, ldb, s, rcond, rank,work, lwork, rwork, &
                          iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,rank,iwork(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,nrhs
                     real(sp), intent(in) :: rcond
@@ -1766,7 +1769,7 @@ module stdlib_linalg_lapack
                subroutine dgelsd( m, n, nrhs, a, lda, b, ldb, s, rcond, rank,work, lwork, iwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,rank,iwork(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,nrhs
                     real(dp), intent(in) :: rcond
@@ -1780,7 +1783,7 @@ module stdlib_linalg_lapack
                subroutine sgelsd( m, n, nrhs, a, lda, b, ldb, s, rcond,rank, work, lwork, iwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,rank,iwork(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,nrhs
                     real(sp), intent(in) :: rcond
@@ -1794,7 +1797,7 @@ module stdlib_linalg_lapack
                subroutine zgelsd( m, n, nrhs, a, lda, b, ldb, s, rcond, rank,work, lwork, rwork, &
                          iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,rank,iwork(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,nrhs
                     real(dp), intent(in) :: rcond
@@ -1824,7 +1827,7 @@ module stdlib_linalg_lapack
                subroutine cgelss( m, n, nrhs, a, lda, b, ldb, s, rcond, rank,work, lwork, rwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,rank
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,nrhs
                     real(sp), intent(in) :: rcond
@@ -1839,7 +1842,7 @@ module stdlib_linalg_lapack
                subroutine dgelss( m, n, nrhs, a, lda, b, ldb, s, rcond, rank,work, lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,rank
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,nrhs
                     real(dp), intent(in) :: rcond
@@ -1853,7 +1856,7 @@ module stdlib_linalg_lapack
                subroutine sgelss( m, n, nrhs, a, lda, b, ldb, s, rcond, rank,work, lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,rank
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,nrhs
                     real(sp), intent(in) :: rcond
@@ -1867,7 +1870,7 @@ module stdlib_linalg_lapack
                subroutine zgelss( m, n, nrhs, a, lda, b, ldb, s, rcond, rank,work, lwork, rwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,rank
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,nrhs
                     real(dp), intent(in) :: rcond
@@ -1917,7 +1920,7 @@ module stdlib_linalg_lapack
                subroutine cgelsy( m, n, nrhs, a, lda, b, ldb, jpvt, rcond, rank,work, lwork, &
                          rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,rank
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,nrhs
                     real(sp), intent(in) :: rcond
@@ -1933,7 +1936,7 @@ module stdlib_linalg_lapack
                subroutine dgelsy( m, n, nrhs, a, lda, b, ldb, jpvt, rcond, rank,work, lwork, info &
                          )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,rank
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,nrhs
                     real(dp), intent(in) :: rcond
@@ -1948,7 +1951,7 @@ module stdlib_linalg_lapack
                subroutine sgelsy( m, n, nrhs, a, lda, b, ldb, jpvt, rcond, rank,work, lwork, info &
                          )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,rank
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,nrhs
                     real(sp), intent(in) :: rcond
@@ -1963,7 +1966,7 @@ module stdlib_linalg_lapack
                subroutine zgelsy( m, n, nrhs, a, lda, b, ldb, jpvt, rcond, rank,work, lwork, &
                          rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,rank
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,nrhs
                     real(dp), intent(in) :: rcond
@@ -1989,7 +1992,7 @@ module stdlib_linalg_lapack
                pure subroutine cgemlq( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork,&
                           info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,k,tsize,lwork,ldc
@@ -2004,7 +2007,7 @@ module stdlib_linalg_lapack
                pure subroutine dgemlq( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork,&
                           info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,k,tsize,lwork,ldc
@@ -2019,7 +2022,7 @@ module stdlib_linalg_lapack
                pure subroutine sgemlq( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork,&
                           info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,k,tsize,lwork,ldc
@@ -2034,7 +2037,7 @@ module stdlib_linalg_lapack
                pure subroutine zgemlq( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork,&
                           info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,k,tsize,lwork,ldc
@@ -2061,7 +2064,7 @@ module stdlib_linalg_lapack
                pure subroutine cgemlqt( side, trans, m, n, k, mb, v, ldv, t, ldt,c, ldc, work, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,ldv,ldc,m,n,mb,ldt
@@ -2076,7 +2079,7 @@ module stdlib_linalg_lapack
                pure subroutine dgemlqt( side, trans, m, n, k, mb, v, ldv, t, ldt,c, ldc, work, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,ldv,ldc,m,n,mb,ldt
@@ -2091,7 +2094,7 @@ module stdlib_linalg_lapack
                pure subroutine sgemlqt( side, trans, m, n, k, mb, v, ldv, t, ldt,c, ldc, work, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,ldv,ldc,m,n,mb,ldt
@@ -2106,7 +2109,7 @@ module stdlib_linalg_lapack
                pure subroutine zgemlqt( side, trans, m, n, k, mb, v, ldv, t, ldt,c, ldc, work, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,ldv,ldc,m,n,mb,ldt
@@ -2131,7 +2134,7 @@ module stdlib_linalg_lapack
                pure subroutine cgemqr( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork,&
                           info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,k,tsize,lwork,ldc
@@ -2146,7 +2149,7 @@ module stdlib_linalg_lapack
                pure subroutine dgemqr( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork,&
                           info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,k,tsize,lwork,ldc
@@ -2161,7 +2164,7 @@ module stdlib_linalg_lapack
                pure subroutine sgemqr( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork,&
                           info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,k,tsize,lwork,ldc
@@ -2176,7 +2179,7 @@ module stdlib_linalg_lapack
                pure subroutine zgemqr( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork,&
                           info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,k,tsize,lwork,ldc
@@ -2203,7 +2206,7 @@ module stdlib_linalg_lapack
                pure subroutine cgemqrt( side, trans, m, n, k, nb, v, ldv, t, ldt,c, ldc, work, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,ldv,ldc,m,n,nb,ldt
@@ -2218,7 +2221,7 @@ module stdlib_linalg_lapack
                pure subroutine dgemqrt( side, trans, m, n, k, nb, v, ldv, t, ldt,c, ldc, work, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,ldv,ldc,m,n,nb,ldt
@@ -2233,7 +2236,7 @@ module stdlib_linalg_lapack
                pure subroutine sgemqrt( side, trans, m, n, k, nb, v, ldv, t, ldt,c, ldc, work, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,ldv,ldc,m,n,nb,ldt
@@ -2248,7 +2251,7 @@ module stdlib_linalg_lapack
                pure subroutine zgemqrt( side, trans, m, n, k, nb, v, ldv, t, ldt,c, ldc, work, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,ldv,ldc,m,n,nb,ldt
@@ -2267,7 +2270,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgeqlf( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     complex(sp), intent(inout) :: a(lda,*)
@@ -2279,7 +2282,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgeqlf( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     real(dp), intent(inout) :: a(lda,*)
@@ -2291,7 +2294,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgeqlf( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     real(sp), intent(inout) :: a(lda,*)
@@ -2303,7 +2306,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgeqlf( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     complex(dp), intent(inout) :: a(lda,*)
@@ -2325,7 +2328,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgeqr( m, n, a, lda, t, tsize, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,tsize,lwork
                     complex(sp), intent(inout) :: a(lda,*)
@@ -2337,7 +2340,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgeqr( m, n, a, lda, t, tsize, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,tsize,lwork
                     real(dp), intent(inout) :: a(lda,*)
@@ -2349,7 +2352,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgeqr( m, n, a, lda, t, tsize, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,tsize,lwork
                     real(sp), intent(inout) :: a(lda,*)
@@ -2361,7 +2364,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgeqr( m, n, a, lda, t, tsize, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,tsize,lwork
                     complex(dp), intent(inout) :: a(lda,*)
@@ -2384,7 +2387,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine cgeqr2p( m, n, a, lda, tau, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n
                     complex(sp), intent(inout) :: a(lda,*)
@@ -2396,7 +2399,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine dgeqr2p( m, n, a, lda, tau, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n
                     real(dp), intent(inout) :: a(lda,*)
@@ -2408,7 +2411,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine sgeqr2p( m, n, a, lda, tau, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n
                     real(sp), intent(inout) :: a(lda,*)
@@ -2420,7 +2423,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine zgeqr2p( m, n, a, lda, tau, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n
                     complex(dp), intent(inout) :: a(lda,*)
@@ -2442,7 +2445,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgeqrf( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     complex(sp), intent(inout) :: a(lda,*)
@@ -2454,7 +2457,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgeqrf( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     real(dp), intent(inout) :: a(lda,*)
@@ -2466,7 +2469,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgeqrf( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     real(sp), intent(inout) :: a(lda,*)
@@ -2478,7 +2481,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgeqrf( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     complex(dp), intent(inout) :: a(lda,*)
@@ -2501,7 +2504,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine cgeqrfp( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     complex(sp), intent(inout) :: a(lda,*)
@@ -2513,7 +2516,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine dgeqrfp( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     real(dp), intent(inout) :: a(lda,*)
@@ -2525,7 +2528,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine sgeqrfp( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     real(sp), intent(inout) :: a(lda,*)
@@ -2537,7 +2540,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine zgeqrfp( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     complex(dp), intent(inout) :: a(lda,*)
@@ -2554,7 +2557,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgeqrt( m, n, nb, a, lda, t, ldt, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,m,n,nb
                     complex(sp), intent(inout) :: a(lda,*)
@@ -2566,7 +2569,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgeqrt( m, n, nb, a, lda, t, ldt, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,m,n,nb
                     real(dp), intent(inout) :: a(lda,*)
@@ -2578,7 +2581,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgeqrt( m, n, nb, a, lda, t, ldt, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,m,n,nb
                     real(sp), intent(inout) :: a(lda,*)
@@ -2590,7 +2593,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgeqrt( m, n, nb, a, lda, t, ldt, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,m,n,nb
                     complex(dp), intent(inout) :: a(lda,*)
@@ -2607,7 +2610,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgeqrt2( m, n, a, lda, t, ldt, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,m,n
                     complex(sp), intent(inout) :: a(lda,*)
@@ -2619,7 +2622,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgeqrt2( m, n, a, lda, t, ldt, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,m,n
                     real(dp), intent(inout) :: a(lda,*)
@@ -2631,7 +2634,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgeqrt2( m, n, a, lda, t, ldt, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,m,n
                     real(sp), intent(inout) :: a(lda,*)
@@ -2643,7 +2646,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgeqrt2( m, n, a, lda, t, ldt, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,m,n
                     complex(dp), intent(inout) :: a(lda,*)
@@ -2662,7 +2665,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure recursive subroutine cgeqrt3( m, n, a, lda, t, ldt, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,ldt
                     complex(sp), intent(inout) :: a(lda,*)
@@ -2674,7 +2677,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure recursive subroutine dgeqrt3( m, n, a, lda, t, ldt, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,ldt
                     real(dp), intent(inout) :: a(lda,*)
@@ -2686,7 +2689,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure recursive subroutine sgeqrt3( m, n, a, lda, t, ldt, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,ldt
                     real(sp), intent(inout) :: a(lda,*)
@@ -2698,7 +2701,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure recursive subroutine zgeqrt3( m, n, a, lda, t, ldt, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,ldt
                     complex(dp), intent(inout) :: a(lda,*)
@@ -2717,7 +2720,7 @@ module stdlib_linalg_lapack
                pure subroutine cgerfs( trans, n, nrhs, a, lda, af, ldaf, ipiv, b, ldb,x, ldx, &
                          ferr, berr, work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldaf,ldb,ldx,n,nrhs,ipiv(*)
@@ -2733,7 +2736,7 @@ module stdlib_linalg_lapack
                pure subroutine dgerfs( trans, n, nrhs, a, lda, af, ldaf, ipiv, b, ldb,x, ldx, &
                          ferr, berr, work, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,ldaf,ldb,ldx,n,nrhs,ipiv(*)
@@ -2748,7 +2751,7 @@ module stdlib_linalg_lapack
                pure subroutine sgerfs( trans, n, nrhs, a, lda, af, ldaf, ipiv, b, ldb,x, ldx, &
                          ferr, berr, work, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,ldaf,ldb,ldx,n,nrhs,ipiv(*)
@@ -2763,7 +2766,7 @@ module stdlib_linalg_lapack
                pure subroutine zgerfs( trans, n, nrhs, a, lda, af, ldaf, ipiv, b, ldb,x, ldx, &
                          ferr, berr, work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldaf,ldb,ldx,n,nrhs,ipiv(*)
@@ -2783,7 +2786,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgerqf( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     complex(sp), intent(inout) :: a(lda,*)
@@ -2795,7 +2798,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgerqf( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     real(dp), intent(inout) :: a(lda,*)
@@ -2807,7 +2810,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgerqf( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     real(sp), intent(inout) :: a(lda,*)
@@ -2819,7 +2822,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgerqf( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     complex(dp), intent(inout) :: a(lda,*)
@@ -2852,7 +2855,7 @@ module stdlib_linalg_lapack
                subroutine cgesdd( jobz, m, n, a, lda, s, u, ldu, vt, ldvt,work, lwork, rwork, &
                          iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,ldu,ldvt,lwork,m,n
@@ -2867,7 +2870,7 @@ module stdlib_linalg_lapack
                subroutine dgesdd( jobz, m, n, a, lda, s, u, ldu, vt, ldvt,work, lwork, iwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,ldu,ldvt,lwork,m,n
@@ -2881,7 +2884,7 @@ module stdlib_linalg_lapack
                subroutine sgesdd( jobz, m, n, a, lda, s, u, ldu, vt, ldvt,work, lwork, iwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,ldu,ldvt,lwork,m,n
@@ -2895,7 +2898,7 @@ module stdlib_linalg_lapack
                subroutine zgesdd( jobz, m, n, a, lda, s, u, ldu, vt, ldvt,work, lwork, rwork, &
                          iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,ldu,ldvt,lwork,m,n
@@ -2921,7 +2924,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgesv( n, nrhs, a, lda, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs
                     complex(sp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -2932,7 +2935,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgesv( n, nrhs, a, lda, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs
                     real(dp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -2943,7 +2946,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgesv( n, nrhs, a, lda, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs
                     real(sp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -2954,7 +2957,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgesv( n, nrhs, a, lda, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs
                     complex(dp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -2980,7 +2983,7 @@ module stdlib_linalg_lapack
                subroutine cgesvd( jobu, jobvt, m, n, a, lda, s, u, ldu, vt, ldvt,work, lwork, &
                          rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobu,jobvt
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldu,ldvt,lwork,m,n
@@ -2995,7 +2998,7 @@ module stdlib_linalg_lapack
                subroutine dgesvd( jobu, jobvt, m, n, a, lda, s, u, ldu,vt, ldvt, work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobu,jobvt
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldu,ldvt,lwork,m,n
@@ -3009,7 +3012,7 @@ module stdlib_linalg_lapack
                subroutine sgesvd( jobu, jobvt, m, n, a, lda, s, u, ldu, vt, ldvt,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobu,jobvt
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldu,ldvt,lwork,m,n
@@ -3023,7 +3026,7 @@ module stdlib_linalg_lapack
                subroutine zgesvd( jobu, jobvt, m, n, a, lda, s, u, ldu,vt, ldvt, work, lwork, &
                          rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobu,jobvt
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldu,ldvt,lwork,m,n
@@ -3050,7 +3053,7 @@ module stdlib_linalg_lapack
                subroutine cgesvdq( joba, jobp, jobr, jobu, jobv, m, n, a, lda,s, u, ldu, v, ldv, &
                          numrank, iwork, liwork,cwork, lcwork, rwork, lrwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: joba,jobp,jobr,jobu,jobv
                     integer(ilp), intent(in) :: m,n,lda,ldu,ldv,liwork,lrwork
                     integer(ilp), intent(out) :: numrank,info,iwork(*)
@@ -3066,7 +3069,7 @@ module stdlib_linalg_lapack
                subroutine dgesvdq( joba, jobp, jobr, jobu, jobv, m, n, a, lda,s, u, ldu, v, ldv, &
                          numrank, iwork, liwork,work, lwork, rwork, lrwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: joba,jobp,jobr,jobu,jobv
                     integer(ilp), intent(in) :: m,n,lda,ldu,ldv,liwork,lrwork
                     integer(ilp), intent(out) :: numrank,info,iwork(*)
@@ -3081,7 +3084,7 @@ module stdlib_linalg_lapack
                subroutine sgesvdq( joba, jobp, jobr, jobu, jobv, m, n, a, lda,s, u, ldu, v, ldv, &
                          numrank, iwork, liwork,work, lwork, rwork, lrwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: joba,jobp,jobr,jobu,jobv
                     integer(ilp), intent(in) :: m,n,lda,ldu,ldv,liwork,lrwork
                     integer(ilp), intent(out) :: numrank,info,iwork(*)
@@ -3096,7 +3099,7 @@ module stdlib_linalg_lapack
                subroutine zgesvdq( joba, jobp, jobr, jobu, jobv, m, n, a, lda,s, u, ldu, v, ldv, &
                          numrank, iwork, liwork,cwork, lcwork, rwork, lrwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: joba,jobp,jobr,jobu,jobv
                     integer(ilp), intent(in) :: m,n,lda,ldu,ldv,liwork,lrwork
                     integer(ilp), intent(out) :: numrank,info,iwork(*)
@@ -3124,7 +3127,7 @@ module stdlib_linalg_lapack
                pure subroutine cgesvj( joba, jobu, jobv, m, n, a, lda, sva, mv, v,ldv, cwork, &
                          lwork, rwork, lrwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldv,lwork,lrwork,m,mv,n
                     character, intent(in) :: joba,jobu,jobv
@@ -3139,7 +3142,7 @@ module stdlib_linalg_lapack
                pure subroutine dgesvj( joba, jobu, jobv, m, n, a, lda, sva, mv, v,ldv, work, &
                          lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldv,lwork,m,mv,n
                     character, intent(in) :: joba,jobu,jobv
@@ -3153,7 +3156,7 @@ module stdlib_linalg_lapack
                pure subroutine sgesvj( joba, jobu, jobv, m, n, a, lda, sva, mv, v,ldv, work, &
                          lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldv,lwork,m,mv,n
                     character, intent(in) :: joba,jobu,jobv
@@ -3167,7 +3170,7 @@ module stdlib_linalg_lapack
                pure subroutine zgesvj( joba, jobu, jobv, m, n, a, lda, sva, mv, v,ldv, cwork, &
                          lwork, rwork, lrwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldv,lwork,lrwork,m,mv,n
                     character, intent(in) :: joba,jobu,jobv
@@ -3192,7 +3195,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgetrf( m, n, a, lda, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,m,n
                     complex(sp), intent(inout) :: a(lda,*)
@@ -3203,7 +3206,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgetrf( m, n, a, lda, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,m,n
                     real(dp), intent(inout) :: a(lda,*)
@@ -3214,7 +3217,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgetrf( m, n, a, lda, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,m,n
                     real(sp), intent(inout) :: a(lda,*)
@@ -3225,7 +3228,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgetrf( m, n, a, lda, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,m,n
                     complex(dp), intent(inout) :: a(lda,*)
@@ -3258,7 +3261,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure recursive subroutine cgetrf2( m, n, a, lda, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,m,n
                     complex(sp), intent(inout) :: a(lda,*)
@@ -3269,7 +3272,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure recursive subroutine dgetrf2( m, n, a, lda, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,m,n
                     real(dp), intent(inout) :: a(lda,*)
@@ -3280,7 +3283,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure recursive subroutine sgetrf2( m, n, a, lda, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,m,n
                     real(sp), intent(inout) :: a(lda,*)
@@ -3291,7 +3294,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure recursive subroutine zgetrf2( m, n, a, lda, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,m,n
                     complex(dp), intent(inout) :: a(lda,*)
@@ -3309,7 +3312,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgetri( n, a, lda, ipiv, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,n,ipiv(*)
                     complex(sp), intent(inout) :: a(lda,*)
@@ -3321,7 +3324,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgetri( n, a, lda, ipiv, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,n,ipiv(*)
                     real(dp), intent(inout) :: a(lda,*)
@@ -3333,7 +3336,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgetri( n, a, lda, ipiv, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,n,ipiv(*)
                     real(sp), intent(inout) :: a(lda,*)
@@ -3345,7 +3348,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgetri( n, a, lda, ipiv, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,n,ipiv(*)
                     complex(dp), intent(inout) :: a(lda,*)
@@ -3364,7 +3367,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgetrs( trans, n, nrhs, a, lda, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -3377,7 +3380,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgetrs( trans, n, nrhs, a, lda, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -3390,7 +3393,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgetrs( trans, n, nrhs, a, lda, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -3403,7 +3406,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgetrs( trans, n, nrhs, a, lda, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -3437,7 +3440,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine cgetsls( trans, m, n, nrhs, a, lda, b, ldb,work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,nrhs
@@ -3450,7 +3453,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine dgetsls( trans, m, n, nrhs, a, lda, b, ldb,work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,nrhs
@@ -3463,7 +3466,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine sgetsls( trans, m, n, nrhs, a, lda, b, ldb,work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,nrhs
@@ -3476,7 +3479,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine zgetsls( trans, m, n, nrhs, a, lda, b, ldb,work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,nrhs
@@ -3505,7 +3508,7 @@ module stdlib_linalg_lapack
                pure subroutine cgetsqrhrt( m, n, mb1, nb1, nb2, a, lda, t, ldt, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,lwork,m,n,nb1,nb2,mb1
                     complex(sp), intent(inout) :: a(lda,*)
@@ -3518,7 +3521,7 @@ module stdlib_linalg_lapack
                pure subroutine dgetsqrhrt( m, n, mb1, nb1, nb2, a, lda, t, ldt, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,lwork,m,n,nb1,nb2,mb1
                     real(dp), intent(inout) :: a(lda,*)
@@ -3531,7 +3534,7 @@ module stdlib_linalg_lapack
                pure subroutine sgetsqrhrt( m, n, mb1, nb1, nb2, a, lda, t, ldt, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,lwork,m,n,nb1,nb2,mb1
                     real(sp), intent(inout) :: a(lda,*)
@@ -3544,7 +3547,7 @@ module stdlib_linalg_lapack
                pure subroutine zgetsqrhrt( m, n, mb1, nb1, nb2, a, lda, t, ldt, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,lwork,m,n,nb1,nb2,mb1
                     complex(dp), intent(inout) :: a(lda,*)
@@ -3564,7 +3567,7 @@ module stdlib_linalg_lapack
                pure subroutine cggbak( job, side, n, ilo, ihi, lscale, rscale, m, v,ldv, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: job,side
                     integer(ilp), intent(in) :: ihi,ilo,ldv,m,n
                     integer(ilp), intent(out) :: info
@@ -3578,7 +3581,7 @@ module stdlib_linalg_lapack
                pure subroutine dggbak( job, side, n, ilo, ihi, lscale, rscale, m, v,ldv, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: job,side
                     integer(ilp), intent(in) :: ihi,ilo,ldv,m,n
                     integer(ilp), intent(out) :: info
@@ -3592,7 +3595,7 @@ module stdlib_linalg_lapack
                pure subroutine sggbak( job, side, n, ilo, ihi, lscale, rscale, m, v,ldv, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: job,side
                     integer(ilp), intent(in) :: ihi,ilo,ldv,m,n
                     integer(ilp), intent(out) :: info
@@ -3606,7 +3609,7 @@ module stdlib_linalg_lapack
                pure subroutine zggbak( job, side, n, ilo, ihi, lscale, rscale, m, v,ldv, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: job,side
                     integer(ilp), intent(in) :: ihi,ilo,ldv,m,n
                     integer(ilp), intent(out) :: info
@@ -3632,7 +3635,7 @@ module stdlib_linalg_lapack
                pure subroutine cggbal( job, n, a, lda, b, ldb, ilo, ihi, lscale,rscale, work, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: job
                     integer(ilp), intent(out) :: ihi,ilo,info
                     integer(ilp), intent(in) :: lda,ldb,n
@@ -3646,7 +3649,7 @@ module stdlib_linalg_lapack
                pure subroutine dggbal( job, n, a, lda, b, ldb, ilo, ihi, lscale,rscale, work, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: job
                     integer(ilp), intent(out) :: ihi,ilo,info
                     integer(ilp), intent(in) :: lda,ldb,n
@@ -3660,7 +3663,7 @@ module stdlib_linalg_lapack
                pure subroutine sggbal( job, n, a, lda, b, ldb, ilo, ihi, lscale,rscale, work, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: job
                     integer(ilp), intent(out) :: ihi,ilo,info
                     integer(ilp), intent(in) :: lda,ldb,n
@@ -3674,7 +3677,7 @@ module stdlib_linalg_lapack
                pure subroutine zggbal( job, n, a, lda, b, ldb, ilo, ihi, lscale,rscale, work, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: job
                     integer(ilp), intent(out) :: ihi,ilo,info
                     integer(ilp), intent(in) :: lda,ldb,n
@@ -3711,7 +3714,7 @@ module stdlib_linalg_lapack
                subroutine cgges( jobvsl, jobvsr, sort, selctg, n, a, lda, b, ldb,sdim, alpha, &
                          beta, vsl, ldvsl, vsr, ldvsr, work,lwork, rwork, bwork, info )
                     import sp,dp,qp,ilp,lk,stdlib_selctg_c
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobvsl,jobvsr,sort
                     integer(ilp), intent(out) :: info,sdim
                     integer(ilp), intent(in) :: lda,ldb,ldvsl,ldvsr,lwork,n
@@ -3729,7 +3732,7 @@ module stdlib_linalg_lapack
                subroutine dgges( jobvsl, jobvsr, sort, selctg, n, a, lda, b, ldb,sdim, alphar, &
                          alphai, beta, vsl, ldvsl, vsr,ldvsr, work, lwork, bwork, info )
                     import sp,dp,qp,ilp,lk,stdlib_selctg_d
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobvsl,jobvsr,sort
                     integer(ilp), intent(out) :: info,sdim
                     integer(ilp), intent(in) :: lda,ldb,ldvsl,ldvsr,lwork,n
@@ -3746,7 +3749,7 @@ module stdlib_linalg_lapack
                subroutine sgges( jobvsl, jobvsr, sort, selctg, n, a, lda, b, ldb,sdim, alphar, &
                          alphai, beta, vsl, ldvsl, vsr,ldvsr, work, lwork, bwork, info )
                     import sp,dp,qp,ilp,lk,stdlib_selctg_s
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobvsl,jobvsr,sort
                     integer(ilp), intent(out) :: info,sdim
                     integer(ilp), intent(in) :: lda,ldb,ldvsl,ldvsr,lwork,n
@@ -3763,7 +3766,7 @@ module stdlib_linalg_lapack
                subroutine zgges( jobvsl, jobvsr, sort, selctg, n, a, lda, b, ldb,sdim, alpha, &
                          beta, vsl, ldvsl, vsr, ldvsr, work,lwork, rwork, bwork, info )
                     import sp,dp,qp,ilp,lk,stdlib_selctg_z
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobvsl,jobvsr,sort
                     integer(ilp), intent(out) :: info,sdim
                     integer(ilp), intent(in) :: lda,ldb,ldvsl,ldvsr,lwork,n
@@ -3799,7 +3802,7 @@ module stdlib_linalg_lapack
                subroutine cggev( jobvl, jobvr, n, a, lda, b, ldb, alpha, beta,vl, ldvl, vr, ldvr, &
                          work, lwork, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobvl,jobvr
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,ldvl,ldvr,lwork,n
@@ -3815,7 +3818,7 @@ module stdlib_linalg_lapack
                subroutine dggev( jobvl, jobvr, n, a, lda, b, ldb, alphar, alphai,beta, vl, ldvl, &
                          vr, ldvr, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobvl,jobvr
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,ldvl,ldvr,lwork,n
@@ -3830,7 +3833,7 @@ module stdlib_linalg_lapack
                subroutine sggev( jobvl, jobvr, n, a, lda, b, ldb, alphar, alphai,beta, vl, ldvl, &
                          vr, ldvr, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobvl,jobvr
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,ldvl,ldvr,lwork,n
@@ -3845,7 +3848,7 @@ module stdlib_linalg_lapack
                subroutine zggev( jobvl, jobvr, n, a, lda, b, ldb, alpha, beta,vl, ldvl, vr, ldvr, &
                          work, lwork, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobvl,jobvr
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,ldvl,ldvr,lwork,n
@@ -3882,7 +3885,7 @@ module stdlib_linalg_lapack
                pure subroutine cggglm( n, m, p, a, lda, b, ldb, d, x, y, work, lwork,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,p
                     complex(sp), intent(inout) :: a(lda,*),b(ldb,*),d(*)
@@ -3895,7 +3898,7 @@ module stdlib_linalg_lapack
                pure subroutine dggglm( n, m, p, a, lda, b, ldb, d, x, y, work, lwork,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,p
                     real(dp), intent(inout) :: a(lda,*),b(ldb,*),d(*)
@@ -3908,7 +3911,7 @@ module stdlib_linalg_lapack
                pure subroutine sggglm( n, m, p, a, lda, b, ldb, d, x, y, work, lwork,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,p
                     real(sp), intent(inout) :: a(lda,*),b(ldb,*),d(*)
@@ -3921,7 +3924,7 @@ module stdlib_linalg_lapack
                pure subroutine zggglm( n, m, p, a, lda, b, ldb, d, x, y, work, lwork,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,p
                     complex(dp), intent(inout) :: a(lda,*),b(ldb,*),d(*)
@@ -3960,7 +3963,7 @@ module stdlib_linalg_lapack
                pure subroutine cgghrd( compq, compz, n, ilo, ihi, a, lda, b, ldb, q,ldq, z, ldz, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compq,compz
                     integer(ilp), intent(in) :: ihi,ilo,lda,ldb,ldq,ldz,n
                     integer(ilp), intent(out) :: info
@@ -3973,7 +3976,7 @@ module stdlib_linalg_lapack
                pure subroutine dgghrd( compq, compz, n, ilo, ihi, a, lda, b, ldb, q,ldq, z, ldz, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compq,compz
                     integer(ilp), intent(in) :: ihi,ilo,lda,ldb,ldq,ldz,n
                     integer(ilp), intent(out) :: info
@@ -3986,7 +3989,7 @@ module stdlib_linalg_lapack
                pure subroutine sgghrd( compq, compz, n, ilo, ihi, a, lda, b, ldb, q,ldq, z, ldz, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compq,compz
                     integer(ilp), intent(in) :: ihi,ilo,lda,ldb,ldq,ldz,n
                     integer(ilp), intent(out) :: info
@@ -3999,7 +4002,7 @@ module stdlib_linalg_lapack
                pure subroutine zgghrd( compq, compz, n, ilo, ihi, a, lda, b, ldb, q,ldq, z, ldz, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compq,compz
                     integer(ilp), intent(in) :: ihi,ilo,lda,ldb,ldq,ldz,n
                     integer(ilp), intent(out) :: info
@@ -4027,7 +4030,7 @@ module stdlib_linalg_lapack
                pure subroutine cgglse( m, n, p, a, lda, b, ldb, c, d, x, work, lwork,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,p
                     complex(sp), intent(inout) :: a(lda,*),b(ldb,*),c(*),d(*)
@@ -4040,7 +4043,7 @@ module stdlib_linalg_lapack
                pure subroutine dgglse( m, n, p, a, lda, b, ldb, c, d, x, work, lwork,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,p
                     real(dp), intent(inout) :: a(lda,*),b(ldb,*),c(*),d(*)
@@ -4053,7 +4056,7 @@ module stdlib_linalg_lapack
                pure subroutine sgglse( m, n, p, a, lda, b, ldb, c, d, x, work, lwork,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,p
                     real(sp), intent(inout) :: a(lda,*),b(ldb,*),c(*),d(*)
@@ -4066,7 +4069,7 @@ module stdlib_linalg_lapack
                pure subroutine zgglse( m, n, p, a, lda, b, ldb, c, d, x, work, lwork,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,p
                     complex(dp), intent(inout) :: a(lda,*),b(ldb,*),c(*),d(*)
@@ -4100,7 +4103,7 @@ module stdlib_linalg_lapack
                pure subroutine cggqrf( n, m, p, a, lda, taua, b, ldb, taub, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,p
                     complex(sp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -4113,7 +4116,7 @@ module stdlib_linalg_lapack
                pure subroutine dggqrf( n, m, p, a, lda, taua, b, ldb, taub, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,p
                     real(dp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -4126,7 +4129,7 @@ module stdlib_linalg_lapack
                pure subroutine sggqrf( n, m, p, a, lda, taua, b, ldb, taub, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,p
                     real(sp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -4139,7 +4142,7 @@ module stdlib_linalg_lapack
                pure subroutine zggqrf( n, m, p, a, lda, taua, b, ldb, taub, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,p
                     complex(dp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -4173,7 +4176,7 @@ module stdlib_linalg_lapack
                pure subroutine cggrqf( m, p, n, a, lda, taua, b, ldb, taub, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,p
                     complex(sp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -4186,7 +4189,7 @@ module stdlib_linalg_lapack
                pure subroutine dggrqf( m, p, n, a, lda, taua, b, ldb, taub, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,p
                     real(dp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -4199,7 +4202,7 @@ module stdlib_linalg_lapack
                pure subroutine sggrqf( m, p, n, a, lda, taua, b, ldb, taub, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,p
                     real(sp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -4212,7 +4215,7 @@ module stdlib_linalg_lapack
                pure subroutine zggrqf( m, p, n, a, lda, taua, b, ldb, taub, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,lwork,m,n,p
                     complex(dp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -4232,7 +4235,7 @@ module stdlib_linalg_lapack
                pure subroutine cgsvj0( jobv, m, n, a, lda, d, sva, mv, v, ldv, eps,sfmin, tol, &
                          nsweep, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldv,lwork,m,mv,n,nsweep
                     real(sp), intent(in) :: eps,sfmin,tol
@@ -4248,7 +4251,7 @@ module stdlib_linalg_lapack
                pure subroutine dgsvj0( jobv, m, n, a, lda, d, sva, mv, v, ldv, eps,sfmin, tol, &
                          nsweep, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldv,lwork,m,mv,n,nsweep
                     real(dp), intent(in) :: eps,sfmin,tol
@@ -4263,7 +4266,7 @@ module stdlib_linalg_lapack
                pure subroutine sgsvj0( jobv, m, n, a, lda, d, sva, mv, v, ldv, eps,sfmin, tol, &
                          nsweep, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldv,lwork,m,mv,n,nsweep
                     real(sp), intent(in) :: eps,sfmin,tol
@@ -4278,7 +4281,7 @@ module stdlib_linalg_lapack
                pure subroutine zgsvj0( jobv, m, n, a, lda, d, sva, mv, v, ldv, eps,sfmin, tol, &
                          nsweep, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldv,lwork,m,mv,n,nsweep
                     real(dp), intent(in) :: eps,sfmin,tol
@@ -4321,7 +4324,7 @@ module stdlib_linalg_lapack
                pure subroutine cgsvj1( jobv, m, n, n1, a, lda, d, sva, mv, v, ldv,eps, sfmin, tol,&
                           nsweep, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: eps,sfmin,tol
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldv,lwork,m,mv,n,n1,nsweep
@@ -4337,7 +4340,7 @@ module stdlib_linalg_lapack
                pure subroutine dgsvj1( jobv, m, n, n1, a, lda, d, sva, mv, v, ldv,eps, sfmin, tol,&
                           nsweep, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: eps,sfmin,tol
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldv,lwork,m,mv,n,n1,nsweep
@@ -4352,7 +4355,7 @@ module stdlib_linalg_lapack
                pure subroutine sgsvj1( jobv, m, n, n1, a, lda, d, sva, mv, v, ldv,eps, sfmin, tol,&
                           nsweep, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: eps,sfmin,tol
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldv,lwork,m,mv,n,n1,nsweep
@@ -4367,7 +4370,7 @@ module stdlib_linalg_lapack
                pure subroutine zgsvj1( jobv, m, n, n1, a, lda, d, sva, mv, v, ldv,eps, sfmin, tol,&
                           nsweep, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: eps,sfmin,tol
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldv,lwork,m,mv,n,n1,nsweep
@@ -4391,7 +4394,7 @@ module stdlib_linalg_lapack
                pure subroutine cgtcon( norm, n, dl, d, du, du2, ipiv, anorm, rcond,work, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,ipiv(*)
@@ -4407,7 +4410,7 @@ module stdlib_linalg_lapack
                pure subroutine dgtcon( norm, n, dl, d, du, du2, ipiv, anorm, rcond,work, iwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: n,ipiv(*)
@@ -4421,7 +4424,7 @@ module stdlib_linalg_lapack
                pure subroutine sgtcon( norm, n, dl, d, du, du2, ipiv, anorm, rcond,work, iwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: n,ipiv(*)
@@ -4435,7 +4438,7 @@ module stdlib_linalg_lapack
                pure subroutine zgtcon( norm, n, dl, d, du, du2, ipiv, anorm, rcond,work, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,ipiv(*)
@@ -4457,7 +4460,7 @@ module stdlib_linalg_lapack
                pure subroutine cgtrfs( trans, n, nrhs, dl, d, du, dlf, df, duf, du2,ipiv, b, ldb, &
                          x, ldx, ferr, berr, work, rwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs,ipiv(*)
@@ -4474,7 +4477,7 @@ module stdlib_linalg_lapack
                pure subroutine dgtrfs( trans, n, nrhs, dl, d, du, dlf, df, duf, du2,ipiv, b, ldb, &
                          x, ldx, ferr, berr, work, iwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs,ipiv(*)
@@ -4490,7 +4493,7 @@ module stdlib_linalg_lapack
                pure subroutine sgtrfs( trans, n, nrhs, dl, d, du, dlf, df, duf, du2,ipiv, b, ldb, &
                          x, ldx, ferr, berr, work, iwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs,ipiv(*)
@@ -4506,7 +4509,7 @@ module stdlib_linalg_lapack
                pure subroutine zgtrfs( trans, n, nrhs, dl, d, du, dlf, df, duf, du2,ipiv, b, ldb, &
                          x, ldx, ferr, berr, work, rwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs,ipiv(*)
@@ -4531,7 +4534,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgtsv( n, nrhs, dl, d, du, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
                     complex(sp), intent(inout) :: b(ldb,*),d(*),dl(*),du(*)
@@ -4542,7 +4545,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgtsv( n, nrhs, dl, d, du, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
                     real(dp), intent(inout) :: b(ldb,*),d(*),dl(*),du(*)
@@ -4553,7 +4556,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgtsv( n, nrhs, dl, d, du, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
                     real(sp), intent(inout) :: b(ldb,*),d(*),dl(*),du(*)
@@ -4564,7 +4567,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgtsv( n, nrhs, dl, d, du, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
                     complex(dp), intent(inout) :: b(ldb,*),d(*),dl(*),du(*)
@@ -4585,7 +4588,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgttrf( n, dl, d, du, du2, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: n
                     complex(sp), intent(inout) :: d(*),dl(*),du(*)
@@ -4597,7 +4600,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgttrf( n, dl, d, du, du2, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: n
                     real(dp), intent(inout) :: d(*),dl(*),du(*)
@@ -4609,7 +4612,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgttrf( n, dl, d, du, du2, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: n
                     real(sp), intent(inout) :: d(*),dl(*),du(*)
@@ -4621,7 +4624,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgttrf( n, dl, d, du, du2, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: n
                     complex(dp), intent(inout) :: d(*),dl(*),du(*)
@@ -4640,7 +4643,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cgttrs( trans, n, nrhs, dl, d, du, du2, ipiv, b, ldb,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs,ipiv(*)
@@ -4653,7 +4656,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dgttrs( trans, n, nrhs, dl, d, du, du2, ipiv, b, ldb,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs,ipiv(*)
@@ -4666,7 +4669,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sgttrs( trans, n, nrhs, dl, d, du, du2, ipiv, b, ldb,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs,ipiv(*)
@@ -4679,7 +4682,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zgttrs( trans, n, nrhs, dl, d, du, du2, ipiv, b, ldb,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs,ipiv(*)
@@ -4698,7 +4701,7 @@ module stdlib_linalg_lapack
                pure subroutine chb2st_kernels( uplo, wantz, ttype,st, ed, sweep, n, nb, ib,a, &
                          lda, v, tau, ldvt, work)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     logical(lk), intent(in) :: wantz
                     integer(ilp), intent(in) :: ttype,st,ed,sweep,n,nb,ib,lda,ldvt
@@ -4712,7 +4715,7 @@ module stdlib_linalg_lapack
                pure subroutine  zhb2st_kernels( uplo, wantz, ttype,st, ed, sweep, n, nb, ib,a, &
                          lda, v, tau, ldvt, work)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     logical(lk), intent(in) :: wantz
                     integer(ilp), intent(in) :: ttype,st,ed,sweep,n,nb,ib,lda,ldvt
@@ -4731,7 +4734,7 @@ module stdlib_linalg_lapack
                subroutine chbev( jobz, uplo, n, kd, ab, ldab, w, z, ldz, work,rwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldz,n
@@ -4746,7 +4749,7 @@ module stdlib_linalg_lapack
                subroutine zhbev( jobz, uplo, n, kd, ab, ldab, w, z, ldz, work,rwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldz,n
@@ -4773,7 +4776,7 @@ module stdlib_linalg_lapack
                subroutine chbevd( jobz, uplo, n, kd, ab, ldab, w, z, ldz, work,lwork, rwork, &
                          lrwork, iwork, liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: kd,ldab,ldz,liwork,lrwork,lwork,n
@@ -4788,7 +4791,7 @@ module stdlib_linalg_lapack
                subroutine zhbevd( jobz, uplo, n, kd, ab, ldab, w, z, ldz, work,lwork, rwork, &
                          lrwork, iwork, liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: kd,ldab,ldz,liwork,lrwork,lwork,n
@@ -4813,7 +4816,7 @@ module stdlib_linalg_lapack
                pure subroutine chbgst( vect, uplo, n, ka, kb, ab, ldab, bb, ldbb, x,ldx, work, &
                          rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo,vect
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ka,kb,ldab,ldbb,ldx,n
@@ -4829,7 +4832,7 @@ module stdlib_linalg_lapack
                pure subroutine zhbgst( vect, uplo, n, ka, kb, ab, ldab, bb, ldbb, x,ldx, work, &
                          rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo,vect
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ka,kb,ldab,ldbb,ldx,n
@@ -4852,7 +4855,7 @@ module stdlib_linalg_lapack
                pure subroutine chbgv( jobz, uplo, n, ka, kb, ab, ldab, bb, ldbb, w, z,ldz, work, &
                          rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ka,kb,ldab,ldbb,ldz,n
@@ -4867,7 +4870,7 @@ module stdlib_linalg_lapack
                pure subroutine zhbgv( jobz, uplo, n, ka, kb, ab, ldab, bb, ldbb, w, z,ldz, work, &
                          rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ka,kb,ldab,ldbb,ldz,n
@@ -4896,7 +4899,7 @@ module stdlib_linalg_lapack
                pure subroutine chbgvd( jobz, uplo, n, ka, kb, ab, ldab, bb, ldbb, w,z, ldz, work, &
                          lwork, rwork, lrwork, iwork,liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ka,kb,ldab,ldbb,ldz,liwork,lrwork,lwork,n
@@ -4911,7 +4914,7 @@ module stdlib_linalg_lapack
                pure subroutine zhbgvd( jobz, uplo, n, ka, kb, ab, ldab, bb, ldbb, w,z, ldz, work, &
                          lwork, rwork, lrwork, iwork,liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ka,kb,ldab,ldbb,ldz,liwork,lrwork,lwork,n
@@ -4932,7 +4935,7 @@ module stdlib_linalg_lapack
                pure subroutine chbtrd( vect, uplo, n, kd, ab, ldab, d, e, q, ldq,work, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo,vect
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldq,n
@@ -4947,7 +4950,7 @@ module stdlib_linalg_lapack
                pure subroutine zhbtrd( vect, uplo, n, kd, ab, ldab, d, e, q, ldq,work, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo,vect
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldq,n
@@ -4969,7 +4972,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine checon( uplo, n, a, lda, ipiv, anorm, rcond, work,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -4984,7 +4987,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zhecon( uplo, n, a, lda, ipiv, anorm, rcond, work,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -5008,7 +5011,7 @@ module stdlib_linalg_lapack
                pure subroutine checon_rook( uplo, n, a, lda, ipiv, anorm, rcond, work,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -5024,7 +5027,7 @@ module stdlib_linalg_lapack
                pure subroutine zhecon_rook( uplo, n, a, lda, ipiv, anorm, rcond, work,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -5049,7 +5052,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cheequb( uplo, n, a, lda, s, scond, amax, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
                     real(sp), intent(out) :: amax,scond,s(*)
@@ -5063,7 +5066,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zheequb( uplo, n, a, lda, s, scond, amax, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
                     real(dp), intent(out) :: amax,scond,s(*)
@@ -5082,7 +5085,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine cheev( jobz, uplo, n, a, lda, w, work, lwork, rwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -5096,7 +5099,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine zheev( jobz, uplo, n, a, lda, w, work, lwork, rwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -5123,7 +5126,7 @@ module stdlib_linalg_lapack
                subroutine cheevd( jobz, uplo, n, a, lda, w, work, lwork, rwork,lrwork, iwork, &
                          liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,liwork,lrwork,lwork,n
@@ -5138,7 +5141,7 @@ module stdlib_linalg_lapack
                subroutine zheevd( jobz, uplo, n, a, lda, w, work, lwork, rwork,lrwork, iwork, &
                          liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,liwork,lrwork,lwork,n
@@ -5206,7 +5209,7 @@ module stdlib_linalg_lapack
                subroutine cheevr( jobz, range, uplo, n, a, lda, vl, vu, il, iu,abstol, m, w, z, &
                          ldz, isuppz, work, lwork,rwork, lrwork, iwork, liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,range,uplo
                     integer(ilp), intent(in) :: il,iu,lda,ldz,liwork,lrwork,lwork,n
                     integer(ilp), intent(out) :: info,m,isuppz(*),iwork(*)
@@ -5222,7 +5225,7 @@ module stdlib_linalg_lapack
                subroutine zheevr( jobz, range, uplo, n, a, lda, vl, vu, il, iu,abstol, m, w, z, &
                          ldz, isuppz, work, lwork,rwork, lrwork, iwork, liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,range,uplo
                     integer(ilp), intent(in) :: il,iu,lda,ldz,liwork,lrwork,lwork,n
                     integer(ilp), intent(out) :: info,m,isuppz(*),iwork(*)
@@ -5247,7 +5250,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine chegst( itype, uplo, n, a, lda, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: itype,lda,ldb,n
@@ -5259,7 +5262,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zhegst( itype, uplo, n, a, lda, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: itype,lda,ldb,n
@@ -5280,7 +5283,7 @@ module stdlib_linalg_lapack
                subroutine chegv( itype, jobz, uplo, n, a, lda, b, ldb, w, work,lwork, rwork, info &
                          )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: itype,lda,ldb,lwork,n
@@ -5295,7 +5298,7 @@ module stdlib_linalg_lapack
                subroutine zhegv( itype, jobz, uplo, n, a, lda, b, ldb, w, work,lwork, rwork, info &
                          )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: itype,lda,ldb,lwork,n
@@ -5324,7 +5327,7 @@ module stdlib_linalg_lapack
                subroutine chegvd( itype, jobz, uplo, n, a, lda, b, ldb, w, work,lwork, rwork, &
                          lrwork, iwork, liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: itype,lda,ldb,liwork,lrwork,lwork,n
@@ -5339,7 +5342,7 @@ module stdlib_linalg_lapack
                subroutine zhegvd( itype, jobz, uplo, n, a, lda, b, ldb, w, work,lwork, rwork, &
                          lrwork, iwork, liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: itype,lda,ldb,liwork,lrwork,lwork,n
@@ -5360,7 +5363,7 @@ module stdlib_linalg_lapack
                pure subroutine cherfs( uplo, n, nrhs, a, lda, af, ldaf, ipiv, b, ldb,x, ldx, ferr,&
                           berr, work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldaf,ldb,ldx,n,nrhs,ipiv(*)
@@ -5376,7 +5379,7 @@ module stdlib_linalg_lapack
                pure subroutine zherfs( uplo, n, nrhs, a, lda, af, ldaf, ipiv, b, ldb,x, ldx, ferr,&
                           berr, work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldaf,ldb,ldx,n,nrhs,ipiv(*)
@@ -5406,7 +5409,7 @@ module stdlib_linalg_lapack
                pure subroutine chesv( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -5420,7 +5423,7 @@ module stdlib_linalg_lapack
                pure subroutine zhesv( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -5447,7 +5450,7 @@ module stdlib_linalg_lapack
                pure subroutine chesv_aa( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -5461,7 +5464,7 @@ module stdlib_linalg_lapack
                pure subroutine zhesv_aa( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -5492,7 +5495,7 @@ module stdlib_linalg_lapack
                pure subroutine chesv_rk( uplo, n, nrhs, a, lda, e, ipiv, b, ldb, work,lwork, info &
                          )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -5506,7 +5509,7 @@ module stdlib_linalg_lapack
                pure subroutine zhesv_rk( uplo, n, nrhs, a, lda, e, ipiv, b, ldb, work,lwork, info &
                          )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -5539,7 +5542,7 @@ module stdlib_linalg_lapack
                pure subroutine chesv_rook( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -5553,7 +5556,7 @@ module stdlib_linalg_lapack
                pure subroutine zhesv_rook( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -5571,7 +5574,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cheswapr( uplo, n, a, lda, i1, i2)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: i1,i2,lda,n
                     complex(sp), intent(inout) :: a(lda,n)
@@ -5582,7 +5585,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zheswapr( uplo, n, a, lda, i1, i2)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: i1,i2,lda,n
                     complex(dp), intent(inout) :: a(lda,n)
@@ -5605,7 +5608,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine chetf2_rk( uplo, n, a, lda, e, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,n
@@ -5618,7 +5621,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zhetf2_rk( uplo, n, a, lda, e, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,n
@@ -5641,7 +5644,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine chetf2_rook( uplo, n, a, lda, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,n
@@ -5653,7 +5656,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zhetf2_rook( uplo, n, a, lda, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,n
@@ -5671,7 +5674,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine chetrd( uplo, n, a, lda, d, e, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -5685,7 +5688,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zhetrd( uplo, n, a, lda, d, e, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -5706,7 +5709,7 @@ module stdlib_linalg_lapack
                subroutine chetrd_hb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, &
                          lhous, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: stage1,uplo,vect
                     integer(ilp), intent(in) :: n,kd,ldab,lhous,lwork
                     integer(ilp), intent(out) :: info
@@ -5721,7 +5724,7 @@ module stdlib_linalg_lapack
                subroutine zhetrd_hb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, &
                          lhous, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: stage1,uplo,vect
                     integer(ilp), intent(in) :: n,kd,ldab,lhous,lwork
                     integer(ilp), intent(out) :: info
@@ -5742,7 +5745,7 @@ module stdlib_linalg_lapack
                subroutine chetrd_he2hb( uplo, n, kd, a, lda, ab, ldab, tau,work, lwork, info &
                          )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldab,lwork,n,kd
@@ -5756,7 +5759,7 @@ module stdlib_linalg_lapack
                subroutine zhetrd_he2hb( uplo, n, kd, a, lda, ab, ldab, tau,work, lwork, info &
                          )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldab,lwork,n,kd
@@ -5780,7 +5783,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine chetrf( uplo, n, a, lda, ipiv, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -5793,7 +5796,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zhetrf( uplo, n, a, lda, ipiv, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -5815,7 +5818,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine chetrf_aa( uplo, n, a, lda, ipiv, work, lwork, info)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n,lda,lwork
                     integer(ilp), intent(out) :: info,ipiv(*)
@@ -5828,7 +5831,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zhetrf_aa( uplo, n, a, lda, ipiv, work, lwork, info)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n,lda,lwork
                     integer(ilp), intent(out) :: info,ipiv(*)
@@ -5853,7 +5856,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine chetrf_rk( uplo, n, a, lda, e, ipiv, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -5866,7 +5869,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zhetrf_rk( uplo, n, a, lda, e, ipiv, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -5890,7 +5893,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine chetrf_rook( uplo, n, a, lda, ipiv, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -5903,7 +5906,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zhetrf_rook( uplo, n, a, lda, ipiv, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -5922,7 +5925,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine chetri( uplo, n, a, lda, ipiv, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -5935,7 +5938,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zhetri( uplo, n, a, lda, ipiv, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -5954,7 +5957,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine chetri_rook( uplo, n, a, lda, ipiv, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -5967,7 +5970,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zhetri_rook( uplo, n, a, lda, ipiv, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -5986,7 +5989,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine chetrs( uplo, n, nrhs, a, lda, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -5999,7 +6002,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zhetrs( uplo, n, nrhs, a, lda, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -6018,7 +6021,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine chetrs2( uplo, n, nrhs, a, lda, ipiv, b, ldb,work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -6031,7 +6034,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zhetrs2( uplo, n, nrhs, a, lda, ipiv, b, ldb,work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -6056,7 +6059,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine chetrs_3( uplo, n, nrhs, a, lda, e, ipiv, b, ldb,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -6069,7 +6072,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zhetrs_3( uplo, n, nrhs, a, lda, e, ipiv, b, ldb,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -6089,7 +6092,7 @@ module stdlib_linalg_lapack
                pure subroutine chetrs_aa( uplo, n, nrhs, a, lda, ipiv, b, ldb,work, lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n,nrhs,lda,ldb,lwork,ipiv(*)
                     integer(ilp), intent(out) :: info
@@ -6104,7 +6107,7 @@ module stdlib_linalg_lapack
                pure subroutine zhetrs_aa( uplo, n, nrhs, a, lda, ipiv, b, ldb,work, lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n,nrhs,lda,ldb,lwork,ipiv(*)
                     integer(ilp), intent(out) :: info
@@ -6124,7 +6127,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine chetrs_rook( uplo, n, nrhs, a, lda, ipiv, b, ldb,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -6137,7 +6140,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zhetrs_rook( uplo, n, nrhs, a, lda, ipiv, b, ldb,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -6161,7 +6164,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine chfrk( transr, uplo, trans, n, k, alpha, a, lda, beta,c )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,beta
                     integer(ilp), intent(in) :: k,lda,n
                     character, intent(in) :: trans,transr,uplo
@@ -6174,7 +6177,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zhfrk( transr, uplo, trans, n, k, alpha, a, lda, beta,c )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,beta
                     integer(ilp), intent(in) :: k,lda,n
                     character, intent(in) :: trans,transr,uplo
@@ -6224,7 +6227,7 @@ module stdlib_linalg_lapack
                subroutine chgeqz( job, compq, compz, n, ilo, ihi, h, ldh, t, ldt,alpha, beta, q, &
                          ldq, z, ldz, work, lwork,rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compq,compz,job
                     integer(ilp), intent(in) :: ihi,ilo,ldh,ldq,ldt,ldz,lwork,n
                     integer(ilp), intent(out) :: info
@@ -6239,7 +6242,7 @@ module stdlib_linalg_lapack
                subroutine dhgeqz( job, compq, compz, n, ilo, ihi, h, ldh, t, ldt,alphar, alphai, &
                          beta, q, ldq, z, ldz, work,lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compq,compz,job
                     integer(ilp), intent(in) :: ihi,ilo,ldh,ldq,ldt,ldz,lwork,n
                     integer(ilp), intent(out) :: info
@@ -6253,7 +6256,7 @@ module stdlib_linalg_lapack
                subroutine shgeqz( job, compq, compz, n, ilo, ihi, h, ldh, t, ldt,alphar, alphai, &
                          beta, q, ldq, z, ldz, work,lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compq,compz,job
                     integer(ilp), intent(in) :: ihi,ilo,ldh,ldq,ldt,ldz,lwork,n
                     integer(ilp), intent(out) :: info
@@ -6267,7 +6270,7 @@ module stdlib_linalg_lapack
                subroutine zhgeqz( job, compq, compz, n, ilo, ihi, h, ldh, t, ldt,alpha, beta, q, &
                          ldq, z, ldz, work, lwork,rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compq,compz,job
                     integer(ilp), intent(in) :: ihi,ilo,ldh,ldq,ldt,ldz,lwork,n
                     integer(ilp), intent(out) :: info
@@ -6289,7 +6292,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine chpcon( uplo, n, ap, ipiv, anorm, rcond, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,ipiv(*)
@@ -6304,7 +6307,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zhpcon( uplo, n, ap, ipiv, anorm, rcond, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,ipiv(*)
@@ -6324,7 +6327,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine chpev( jobz, uplo, n, ap, w, z, ldz, work, rwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldz,n
@@ -6338,7 +6341,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine zhpev( jobz, uplo, n, ap, w, z, ldz, work, rwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldz,n
@@ -6365,7 +6368,7 @@ module stdlib_linalg_lapack
                subroutine chpevd( jobz, uplo, n, ap, w, z, ldz, work, lwork,rwork, lrwork, iwork, &
                          liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldz,liwork,lrwork,lwork,n
@@ -6380,7 +6383,7 @@ module stdlib_linalg_lapack
                subroutine zhpevd( jobz, uplo, n, ap, w, z, ldz, work, lwork,rwork, lrwork, iwork, &
                          liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldz,liwork,lrwork,lwork,n
@@ -6404,7 +6407,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine chpgst( itype, uplo, n, ap, bp, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: itype,n
@@ -6417,7 +6420,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zhpgst( itype, uplo, n, ap, bp, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: itype,n
@@ -6439,7 +6442,7 @@ module stdlib_linalg_lapack
                subroutine chpgv( itype, jobz, uplo, n, ap, bp, w, z, ldz, work,rwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: itype,ldz,n
@@ -6454,7 +6457,7 @@ module stdlib_linalg_lapack
                subroutine zhpgv( itype, jobz, uplo, n, ap, bp, w, z, ldz, work,rwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: itype,ldz,n
@@ -6484,7 +6487,7 @@ module stdlib_linalg_lapack
                subroutine chpgvd( itype, jobz, uplo, n, ap, bp, w, z, ldz, work,lwork, rwork, &
                          lrwork, iwork, liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: itype,ldz,liwork,lrwork,lwork,n
@@ -6499,7 +6502,7 @@ module stdlib_linalg_lapack
                subroutine zhpgvd( itype, jobz, uplo, n, ap, bp, w, z, ldz, work,lwork, rwork, &
                          lrwork, iwork, liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: itype,ldz,liwork,lrwork,lwork,n
@@ -6521,7 +6524,7 @@ module stdlib_linalg_lapack
                pure subroutine chprfs( uplo, n, nrhs, ap, afp, ipiv, b, ldb, x, ldx,ferr, berr, &
                          work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs,ipiv(*)
@@ -6537,7 +6540,7 @@ module stdlib_linalg_lapack
                pure subroutine zhprfs( uplo, n, nrhs, ap, afp, ipiv, b, ldb, x, ldx,ferr, berr, &
                          work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs,ipiv(*)
@@ -6566,7 +6569,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine chpsv( uplo, n, nrhs, ap, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -6578,7 +6581,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zhpsv( uplo, n, nrhs, ap, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -6596,7 +6599,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine chptrd( uplo, n, ap, d, e, tau, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -6610,7 +6613,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zhptrd( uplo, n, ap, d, e, tau, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -6633,7 +6636,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine chptrf( uplo, n, ap, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: n
@@ -6645,7 +6648,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zhptrf( uplo, n, ap, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: n
@@ -6663,7 +6666,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine chptri( uplo, n, ap, ipiv, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,ipiv(*)
@@ -6676,7 +6679,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zhptri( uplo, n, ap, ipiv, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,ipiv(*)
@@ -6695,7 +6698,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine chptrs( uplo, n, nrhs, ap, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs,ipiv(*)
@@ -6708,7 +6711,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zhptrs( uplo, n, nrhs, ap, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs,ipiv(*)
@@ -6731,7 +6734,7 @@ module stdlib_linalg_lapack
                subroutine chsein( side, eigsrc, initv, select, n, h, ldh, w, vl,ldvl, vr, ldvr, &
                          mm, m, work, rwork, ifaill,ifailr, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: eigsrc,initv,side
                     integer(ilp), intent(out) :: info,m,ifaill(*),ifailr(*)
                     integer(ilp), intent(in) :: ldh,ldvl,ldvr,mm,n
@@ -6748,7 +6751,7 @@ module stdlib_linalg_lapack
                subroutine dhsein( side, eigsrc, initv, select, n, h, ldh, wr, wi,vl, ldvl, vr, &
                          ldvr, mm, m, work, ifaill,ifailr, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: eigsrc,initv,side
                     integer(ilp), intent(out) :: info,m,ifaill(*),ifailr(*)
                     integer(ilp), intent(in) :: ldh,ldvl,ldvr,mm,n
@@ -6764,7 +6767,7 @@ module stdlib_linalg_lapack
                subroutine shsein( side, eigsrc, initv, select, n, h, ldh, wr, wi,vl, ldvl, vr, &
                          ldvr, mm, m, work, ifaill,ifailr, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: eigsrc,initv,side
                     integer(ilp), intent(out) :: info,m,ifaill(*),ifailr(*)
                     integer(ilp), intent(in) :: ldh,ldvl,ldvr,mm,n
@@ -6780,7 +6783,7 @@ module stdlib_linalg_lapack
                subroutine zhsein( side, eigsrc, initv, select, n, h, ldh, w, vl,ldvl, vr, ldvr, &
                          mm, m, work, rwork, ifaill,ifailr, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: eigsrc,initv,side
                     integer(ilp), intent(out) :: info,m,ifaill(*),ifailr(*)
                     integer(ilp), intent(in) :: ldh,ldvl,ldvr,mm,n
@@ -6808,7 +6811,7 @@ module stdlib_linalg_lapack
                pure subroutine chseqr( job, compz, n, ilo, ihi, h, ldh, w, z, ldz,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ilo,ldh,ldz,lwork,n
                     integer(ilp), intent(out) :: info
                     character, intent(in) :: compz,job
@@ -6822,7 +6825,7 @@ module stdlib_linalg_lapack
                subroutine dhseqr( job, compz, n, ilo, ihi, h, ldh, wr, wi, z,ldz, work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ilo,ldh,ldz,lwork,n
                     integer(ilp), intent(out) :: info
                     character, intent(in) :: compz,job
@@ -6836,7 +6839,7 @@ module stdlib_linalg_lapack
                subroutine shseqr( job, compz, n, ilo, ihi, h, ldh, wr, wi, z,ldz, work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ilo,ldh,ldz,lwork,n
                     integer(ilp), intent(out) :: info
                     character, intent(in) :: compz,job
@@ -6850,7 +6853,7 @@ module stdlib_linalg_lapack
                pure subroutine zhseqr( job, compz, n, ilo, ihi, h, ldh, w, z, ldz,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ilo,ldh,ldz,lwork,n
                     integer(ilp), intent(out) :: info
                     character, intent(in) :: compz,job
@@ -6869,7 +6872,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure logical(lk) function disnan( din )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: din
                end function disnan
 #else
@@ -6878,7 +6881,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure logical(lk) function sisnan( sin )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: sin
                end function sisnan
 #else
@@ -6904,7 +6907,7 @@ module stdlib_linalg_lapack
                subroutine cla_gbamv( trans, m, n, kl, ku, alpha, ab, ldab, x,incx, beta, y, incy )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,beta
                     integer(ilp), intent(in) :: incx,incy,ldab,m,n,kl,ku,trans
                     complex(sp), intent(in) :: ab(ldab,*),x(*)
@@ -6917,7 +6920,7 @@ module stdlib_linalg_lapack
                subroutine dla_gbamv( trans, m, n, kl, ku, alpha, ab, ldab, x,incx, beta, y, incy )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,beta,ab(ldab,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,ldab,m,n,kl,ku,trans
                     real(dp), intent(inout) :: y(*)
@@ -6929,7 +6932,7 @@ module stdlib_linalg_lapack
                subroutine sla_gbamv( trans, m, n, kl, ku, alpha, ab, ldab, x,incx, beta, y, incy )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,beta,ab(ldab,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,ldab,m,n,kl,ku,trans
                     real(sp), intent(inout) :: y(*)
@@ -6941,7 +6944,7 @@ module stdlib_linalg_lapack
                subroutine zla_gbamv( trans, m, n, kl, ku, alpha, ab, ldab, x,incx, beta, y, incy )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,beta
                     integer(ilp), intent(in) :: incx,incy,ldab,m,n,kl,ku,trans
                     complex(dp), intent(in) :: ab(ldab,*),x(*)
@@ -6966,7 +6969,7 @@ module stdlib_linalg_lapack
                real(dp) function dla_gbrcond( trans, n, kl, ku, ab, ldab,afb, ldafb, ipiv, cmode, &
                          c,info, work, iwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(in) :: n,ldab,ldafb,kl,ku,cmode,ipiv(*)
                     integer(ilp), intent(out) :: info,iwork(*)
@@ -6980,7 +6983,7 @@ module stdlib_linalg_lapack
                real(sp) function sla_gbrcond( trans, n, kl, ku, ab, ldab, afb, ldafb,ipiv, cmode, &
                          c, info, work, iwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(in) :: n,ldab,ldafb,kl,ku,cmode,ipiv(*)
                     integer(ilp), intent(out) :: info,iwork(*)
@@ -6999,7 +7002,7 @@ module stdlib_linalg_lapack
                real(sp) function cla_gbrcond_c( trans, n, kl, ku, ab, ldab, afb,ldafb, ipiv, c, &
                          capply, info, work,rwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     logical(lk), intent(in) :: capply
                     integer(ilp), intent(in) :: n,kl,ku,ldab,ldafb,ipiv(*)
@@ -7016,7 +7019,7 @@ module stdlib_linalg_lapack
                real(dp) function zla_gbrcond_c( trans, n, kl, ku, ab,ldab, afb, ldafb, ipiv,c, &
                          capply, info, work,rwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     logical(lk), intent(in) :: capply
                     integer(ilp), intent(in) :: n,kl,ku,ldab,ldafb,ipiv(*)
@@ -7042,7 +7045,7 @@ module stdlib_linalg_lapack
                pure real(sp) function cla_gbrpvgrw( n, kl, ku, ncols, ab, ldab, afb,ldafb )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: n,kl,ku,ncols,ldab,ldafb
                     complex(sp), intent(in) :: ab(ldab,*),afb(ldafb,*)
                end function cla_gbrpvgrw
@@ -7053,7 +7056,7 @@ module stdlib_linalg_lapack
                pure real(dp) function dla_gbrpvgrw( n, kl, ku, ncols, ab,ldab, afb, ldafb )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: n,kl,ku,ncols,ldab,ldafb
                     real(dp), intent(in) :: ab(ldab,*),afb(ldafb,*)
                end function dla_gbrpvgrw
@@ -7064,7 +7067,7 @@ module stdlib_linalg_lapack
                pure real(sp) function sla_gbrpvgrw( n, kl, ku, ncols, ab, ldab, afb,ldafb )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: n,kl,ku,ncols,ldab,ldafb
                     real(sp), intent(in) :: ab(ldab,*),afb(ldafb,*)
                end function sla_gbrpvgrw
@@ -7075,7 +7078,7 @@ module stdlib_linalg_lapack
                pure real(dp) function zla_gbrpvgrw( n, kl, ku, ncols, ab,ldab, afb, ldafb )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: n,kl,ku,ncols,ldab,ldafb
                     complex(dp), intent(in) :: ab(ldab,*),afb(ldafb,*)
                end function zla_gbrpvgrw
@@ -7101,7 +7104,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine cla_geamv( trans, m, n, alpha, a, lda, x, incx, beta,y, incy )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,beta
                     integer(ilp), intent(in) :: incx,incy,lda,m,n,trans
                     complex(sp), intent(in) :: a(lda,*),x(*)
@@ -7113,7 +7116,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine dla_geamv ( trans, m, n, alpha, a, lda, x, incx, beta,y, incy )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,m,n,trans
                     real(dp), intent(inout) :: y(*)
@@ -7124,7 +7127,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine sla_geamv( trans, m, n, alpha, a, lda, x, incx, beta,y, incy )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,m,n,trans
                     real(sp), intent(inout) :: y(*)
@@ -7135,7 +7138,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine zla_geamv( trans, m, n, alpha, a, lda, x, incx, beta,y, incy )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,beta
                     integer(ilp), intent(in) :: incx,incy,lda,m,n,trans
                     complex(dp), intent(in) :: a(lda,*),x(*)
@@ -7160,7 +7163,7 @@ module stdlib_linalg_lapack
                real(dp) function dla_gercond( trans, n, a, lda, af,ldaf, ipiv, cmode, c,info, &
                          work, iwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(in) :: n,lda,ldaf,cmode,ipiv(*)
                     integer(ilp), intent(out) :: info,iwork(*)
@@ -7174,7 +7177,7 @@ module stdlib_linalg_lapack
                real(sp) function sla_gercond( trans, n, a, lda, af, ldaf, ipiv,cmode, c, info, &
                          work, iwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(in) :: n,lda,ldaf,cmode,ipiv(*)
                     integer(ilp), intent(out) :: info,iwork(*)
@@ -7193,7 +7196,7 @@ module stdlib_linalg_lapack
                real(sp) function cla_gercond_c( trans, n, a, lda, af, ldaf, ipiv, c,capply, info, &
                          work, rwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     logical(lk), intent(in) :: capply
                     integer(ilp), intent(in) :: n,lda,ldaf,ipiv(*)
@@ -7210,7 +7213,7 @@ module stdlib_linalg_lapack
                real(dp) function zla_gercond_c( trans, n, a, lda, af,ldaf, ipiv, c, capply,info, &
                          work, rwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     logical(lk), intent(in) :: capply
                     integer(ilp), intent(in) :: n,lda,ldaf,ipiv(*)
@@ -7235,7 +7238,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure real(sp) function cla_gerpvgrw( n, ncols, a, lda, af, ldaf )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: n,ncols,lda,ldaf
                     complex(sp), intent(in) :: a(lda,*),af(ldaf,*)
                end function cla_gerpvgrw
@@ -7245,7 +7248,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure real(dp) function dla_gerpvgrw( n, ncols, a, lda, af,ldaf )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: n,ncols,lda,ldaf
                     real(dp), intent(in) :: a(lda,*),af(ldaf,*)
                end function dla_gerpvgrw
@@ -7255,7 +7258,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure real(sp) function sla_gerpvgrw( n, ncols, a, lda, af, ldaf )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: n,ncols,lda,ldaf
                     real(sp), intent(in) :: a(lda,*),af(ldaf,*)
                end function sla_gerpvgrw
@@ -7265,7 +7268,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure real(dp) function zla_gerpvgrw( n, ncols, a, lda, af,ldaf )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: n,ncols,lda,ldaf
                     complex(dp), intent(in) :: a(lda,*),af(ldaf,*)
                end function zla_gerpvgrw
@@ -7290,7 +7293,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine cla_heamv( uplo, n, alpha, a, lda, x, incx, beta, y,incy )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,beta
                     integer(ilp), intent(in) :: incx,incy,lda,n,uplo
                     complex(sp), intent(in) :: a(lda,*),x(*)
@@ -7302,7 +7305,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine zla_heamv( uplo, n, alpha, a, lda, x, incx, beta, y,incy )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,beta
                     integer(ilp), intent(in) :: incx,incy,lda,n,uplo
                     complex(dp), intent(in) :: a(lda,*),x(*)
@@ -7320,7 +7323,7 @@ module stdlib_linalg_lapack
                real(sp) function cla_hercond_c( uplo, n, a, lda, af, ldaf, ipiv, c,capply, info, &
                          work, rwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     logical(lk), intent(in) :: capply
                     integer(ilp), intent(in) :: n,lda,ldaf,ipiv(*)
@@ -7337,7 +7340,7 @@ module stdlib_linalg_lapack
                real(dp) function zla_hercond_c( uplo, n, a, lda, af,ldaf, ipiv, c, capply,info, &
                          work, rwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     logical(lk), intent(in) :: capply
                     integer(ilp), intent(in) :: n,lda,ldaf,ipiv(*)
@@ -7363,7 +7366,7 @@ module stdlib_linalg_lapack
                real(sp) function cla_herpvgrw( uplo, n, info, a, lda, af, ldaf, ipiv,work )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n,info,lda,ldaf,ipiv(*)
                     complex(sp), intent(in) :: a(lda,*),af(ldaf,*)
@@ -7376,7 +7379,7 @@ module stdlib_linalg_lapack
                real(dp) function zla_herpvgrw( uplo, n, info, a, lda, af,ldaf, ipiv, work )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n,info,lda,ldaf,ipiv(*)
                     complex(dp), intent(in) :: a(lda,*),af(ldaf,*)
@@ -7396,7 +7399,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cla_lin_berr( n, nz, nrhs, res, ayb, berr )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: n,nz,nrhs
                     real(sp), intent(in) :: ayb(n,nrhs)
                     real(sp), intent(out) :: berr(nrhs)
@@ -7408,7 +7411,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dla_lin_berr ( n, nz, nrhs, res, ayb, berr )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: n,nz,nrhs
                     real(dp), intent(in) :: ayb(n,nrhs),res(n,nrhs)
                     real(dp), intent(out) :: berr(nrhs)
@@ -7419,7 +7422,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sla_lin_berr( n, nz, nrhs, res, ayb, berr )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: n,nz,nrhs
                     real(sp), intent(in) :: ayb(n,nrhs),res(n,nrhs)
                     real(sp), intent(out) :: berr(nrhs)
@@ -7430,7 +7433,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zla_lin_berr( n, nz, nrhs, res, ayb, berr )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: n,nz,nrhs
                     real(dp), intent(in) :: ayb(n,nrhs)
                     real(dp), intent(out) :: berr(nrhs)
@@ -7455,7 +7458,7 @@ module stdlib_linalg_lapack
                real(dp) function dla_porcond( uplo, n, a, lda, af, ldaf,cmode, c, info, work,&
                          iwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n,lda,ldaf,cmode
                     integer(ilp), intent(out) :: info,iwork(*)
@@ -7469,7 +7472,7 @@ module stdlib_linalg_lapack
                real(sp) function sla_porcond( uplo, n, a, lda, af, ldaf, cmode, c,info, work, &
                          iwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n,lda,ldaf,cmode
                     integer(ilp), intent(out) :: info,iwork(*)
@@ -7488,7 +7491,7 @@ module stdlib_linalg_lapack
                real(sp) function cla_porcond_c( uplo, n, a, lda, af, ldaf, c, capply,info, work, &
                          rwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     logical(lk), intent(in) :: capply
                     integer(ilp), intent(in) :: n,lda,ldaf
@@ -7505,7 +7508,7 @@ module stdlib_linalg_lapack
                real(dp) function zla_porcond_c( uplo, n, a, lda, af,ldaf, c, capply, info,work, &
                          rwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     logical(lk), intent(in) :: capply
                     integer(ilp), intent(in) :: n,lda,ldaf
@@ -7530,7 +7533,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(sp) function cla_porpvgrw( uplo, ncols, a, lda, af, ldaf, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: ncols,lda,ldaf
                     complex(sp), intent(in) :: a(lda,*),af(ldaf,*)
@@ -7542,7 +7545,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function dla_porpvgrw( uplo, ncols, a, lda, af,ldaf, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: ncols,lda,ldaf
                     real(dp), intent(in) :: a(lda,*),af(ldaf,*)
@@ -7554,7 +7557,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(sp) function sla_porpvgrw( uplo, ncols, a, lda, af, ldaf, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: ncols,lda,ldaf
                     real(sp), intent(in) :: a(lda,*),af(ldaf,*)
@@ -7566,7 +7569,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function zla_porpvgrw( uplo, ncols, a, lda, af,ldaf, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: ncols,lda,ldaf
                     complex(dp), intent(in) :: a(lda,*),af(ldaf,*)
@@ -7593,7 +7596,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine cla_syamv( uplo, n, alpha, a, lda, x, incx, beta, y,incy )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,beta
                     integer(ilp), intent(in) :: incx,incy,lda,n,uplo
                     complex(sp), intent(in) :: a(lda,*),x(*)
@@ -7605,7 +7608,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine dla_syamv( uplo, n, alpha, a, lda, x, incx, beta, y,incy )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,n,uplo
                     real(dp), intent(inout) :: y(*)
@@ -7616,7 +7619,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine sla_syamv( uplo, n, alpha, a, lda, x, incx, beta, y,incy )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,n,uplo
                     real(sp), intent(inout) :: y(*)
@@ -7627,7 +7630,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine zla_syamv( uplo, n, alpha, a, lda, x, incx, beta, y,incy )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,beta
                     integer(ilp), intent(in) :: incx,incy,lda,n,uplo
                     complex(dp), intent(in) :: a(lda,*),x(*)
@@ -7652,7 +7655,7 @@ module stdlib_linalg_lapack
                real(dp) function dla_syrcond( uplo, n, a, lda, af, ldaf,ipiv, cmode, c, info, &
                          work,iwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n,lda,ldaf,cmode,ipiv(*)
                     integer(ilp), intent(out) :: info,iwork(*)
@@ -7666,7 +7669,7 @@ module stdlib_linalg_lapack
                real(sp) function sla_syrcond( uplo, n, a, lda, af, ldaf, ipiv, cmode,c, info, &
                          work, iwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n,lda,ldaf,cmode,ipiv(*)
                     integer(ilp), intent(out) :: info,iwork(*)
@@ -7685,7 +7688,7 @@ module stdlib_linalg_lapack
                real(sp) function cla_syrcond_c( uplo, n, a, lda, af, ldaf, ipiv, c,capply, info, &
                          work, rwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     logical(lk), intent(in) :: capply
                     integer(ilp), intent(in) :: n,lda,ldaf,ipiv(*)
@@ -7702,7 +7705,7 @@ module stdlib_linalg_lapack
                real(dp) function zla_syrcond_c( uplo, n, a, lda, af,ldaf, ipiv, c, capply,info, &
                          work, rwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     logical(lk), intent(in) :: capply
                     integer(ilp), intent(in) :: n,lda,ldaf,ipiv(*)
@@ -7728,7 +7731,7 @@ module stdlib_linalg_lapack
                real(sp) function cla_syrpvgrw( uplo, n, info, a, lda, af, ldaf, ipiv,work )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n,info,lda,ldaf,ipiv(*)
                     complex(sp), intent(in) :: a(lda,*),af(ldaf,*)
@@ -7741,7 +7744,7 @@ module stdlib_linalg_lapack
                real(dp) function dla_syrpvgrw( uplo, n, info, a, lda, af,ldaf, ipiv, work )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n,info,lda,ldaf,ipiv(*)
                     real(dp), intent(in) :: a(lda,*),af(ldaf,*)
@@ -7754,7 +7757,7 @@ module stdlib_linalg_lapack
                real(sp) function sla_syrpvgrw( uplo, n, info, a, lda, af, ldaf, ipiv,work )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n,info,lda,ldaf,ipiv(*)
                     real(sp), intent(in) :: a(lda,*),af(ldaf,*)
@@ -7767,7 +7770,7 @@ module stdlib_linalg_lapack
                real(dp) function zla_syrpvgrw( uplo, n, info, a, lda, af,ldaf, ipiv, work )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n,info,lda,ldaf,ipiv(*)
                     complex(dp), intent(in) :: a(lda,*),af(ldaf,*)
@@ -7785,7 +7788,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cla_wwaddw( n, x, y, w )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: n
                     complex(sp), intent(inout) :: x(*),y(*)
                     complex(sp), intent(in) :: w(*)
@@ -7796,7 +7799,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dla_wwaddw( n, x, y, w )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: n
                     real(dp), intent(inout) :: x(*),y(*)
                     real(dp), intent(in) :: w(*)
@@ -7807,7 +7810,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sla_wwaddw( n, x, y, w )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: n
                     real(sp), intent(inout) :: x(*),y(*)
                     real(sp), intent(in) :: w(*)
@@ -7818,7 +7821,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zla_wwaddw( n, x, y, w )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: n
                     complex(dp), intent(inout) :: x(*),y(*)
                     complex(dp), intent(in) :: w(*)
@@ -7840,7 +7843,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlabad( small, large )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(inout) :: large,small
                end subroutine dlabad
 #else
@@ -7849,7 +7852,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slabad( small, large )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(inout) :: large,small
                end subroutine slabad
 #else
@@ -7868,7 +7871,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clabrd( m, n, nb, a, lda, d, e, tauq, taup, x, ldx, y,ldy )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: lda,ldx,ldy,m,n,nb
                     real(sp), intent(out) :: d(*),e(*)
                     complex(sp), intent(inout) :: a(lda,*)
@@ -7880,7 +7883,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlabrd( m, n, nb, a, lda, d, e, tauq, taup, x, ldx, y,ldy )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: lda,ldx,ldy,m,n,nb
                     real(dp), intent(inout) :: a(lda,*)
                     real(dp), intent(out) :: d(*),e(*),taup(*),tauq(*),x(ldx,*),y(ldy,*)
@@ -7891,7 +7894,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slabrd( m, n, nb, a, lda, d, e, tauq, taup, x, ldx, y,ldy )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: lda,ldx,ldy,m,n,nb
                     real(sp), intent(inout) :: a(lda,*)
                     real(sp), intent(out) :: d(*),e(*),taup(*),tauq(*),x(ldx,*),y(ldy,*)
@@ -7902,7 +7905,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlabrd( m, n, nb, a, lda, d, e, tauq, taup, x, ldx, y,ldy )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: lda,ldx,ldy,m,n,nb
                     real(dp), intent(out) :: d(*),e(*)
                     complex(dp), intent(inout) :: a(lda,*)
@@ -7918,7 +7921,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clacgv( n, x, incx )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     complex(sp), intent(inout) :: x(*)
                end subroutine clacgv
@@ -7928,7 +7931,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlacgv( n, x, incx )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     complex(dp), intent(inout) :: x(*)
                end subroutine zlacgv
@@ -7943,7 +7946,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine clacon( n, v, x, est, kase )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(inout) :: kase
                     integer(ilp), intent(in) :: n
                     real(sp), intent(inout) :: est
@@ -7956,7 +7959,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine dlacon( n, v, x, isgn, est, kase )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(inout) :: kase
                     integer(ilp), intent(in) :: n
                     real(dp), intent(inout) :: est,x(*)
@@ -7969,7 +7972,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine slacon( n, v, x, isgn, est, kase )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(inout) :: kase
                     integer(ilp), intent(in) :: n
                     real(sp), intent(inout) :: est,x(*)
@@ -7982,7 +7985,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine zlacon( n, v, x, est, kase )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(inout) :: kase
                     integer(ilp), intent(in) :: n
                     real(dp), intent(inout) :: est
@@ -8000,7 +8003,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clacpy( uplo, m, n, a, lda, b, ldb )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: lda,ldb,m,n
                     complex(sp), intent(in) :: a(lda,*)
@@ -8012,7 +8015,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlacpy( uplo, m, n, a, lda, b, ldb )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: lda,ldb,m,n
                     real(dp), intent(in) :: a(lda,*)
@@ -8024,7 +8027,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slacpy( uplo, m, n, a, lda, b, ldb )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: lda,ldb,m,n
                     real(sp), intent(in) :: a(lda,*)
@@ -8036,7 +8039,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlacpy( uplo, m, n, a, lda, b, ldb )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: lda,ldb,m,n
                     complex(dp), intent(in) :: a(lda,*)
@@ -8055,7 +8058,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clacrm( m, n, a, lda, b, ldb, c, ldc, rwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: lda,ldb,ldc,m,n
                     real(sp), intent(in) :: b(ldb,*)
                     real(sp), intent(out) :: rwork(*)
@@ -8068,7 +8071,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlacrm( m, n, a, lda, b, ldb, c, ldc, rwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: lda,ldb,ldc,m,n
                     real(dp), intent(in) :: b(ldb,*)
                     real(dp), intent(out) :: rwork(*)
@@ -8088,7 +8091,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clacrt( n, cx, incx, cy, incy, c, s )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     complex(sp), intent(in) :: c,s
                     complex(sp), intent(inout) :: cx(*),cy(*)
@@ -8099,7 +8102,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlacrt( n, cx, incx, cy, incy, c, s )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     complex(dp), intent(in) :: c,s
                     complex(dp), intent(inout) :: cx(*),cy(*)
@@ -8116,7 +8119,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure complex(sp) function cladiv( x, y )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(sp), intent(in) :: x,y
                end function cladiv
 #else
@@ -8125,7 +8128,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure complex(dp)     function zladiv( x, y )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(dp), intent(in) :: x,y
                end function zladiv
 #else
@@ -8144,7 +8147,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dladiv( a, b, c, d, p, q )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: a,b,c,d
                     real(dp), intent(out) :: p,q
                end subroutine dladiv
@@ -8154,7 +8157,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sladiv( a, b, c, d, p, q )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: a,b,c,d
                     real(sp), intent(out) :: p,q
                end subroutine sladiv
@@ -8167,7 +8170,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dladiv1( a, b, c, d, p, q )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(inout) :: a
                     real(dp), intent(in) :: b,c,d
                     real(dp), intent(out) :: p,q
@@ -8178,7 +8181,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sladiv1( a, b, c, d, p, q )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(inout) :: a
                     real(sp), intent(in) :: b,c,d
                     real(sp), intent(out) :: p,q
@@ -8192,7 +8195,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure real(dp) function dladiv2( a, b, c, d, r, t )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: a,b,c,d,r,t
                end function dladiv2
 #else
@@ -8201,7 +8204,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure real(sp) function sladiv2( a, b, c, d, r, t )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: a,b,c,d,r,t
                end function sladiv2
 #else
@@ -8245,7 +8248,7 @@ module stdlib_linalg_lapack
                pure subroutine dlaebz( ijob, nitmax, n, mmax, minp, nbmin, abstol,reltol, pivmin, &
                          d, e, e2, nval, ab, c, mout,nab, work, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ijob,minp,mmax,n,nbmin,nitmax
                     integer(ilp), intent(out) :: info,mout,iwork(*)
                     real(dp), intent(in) :: abstol,pivmin,reltol,d(*),e(*),e2(*)
@@ -8260,7 +8263,7 @@ module stdlib_linalg_lapack
                pure subroutine slaebz( ijob, nitmax, n, mmax, minp, nbmin, abstol,reltol, pivmin, &
                          d, e, e2, nval, ab, c, mout,nab, work, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ijob,minp,mmax,n,nbmin,nitmax
                     integer(ilp), intent(out) :: info,mout,iwork(*)
                     real(sp), intent(in) :: abstol,pivmin,reltol,d(*),e(*),e2(*)
@@ -8282,7 +8285,7 @@ module stdlib_linalg_lapack
                pure subroutine claed0( qsiz, n, d, e, q, ldq, qstore, ldqs, rwork,iwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldq,ldqs,n,qsiz
                     real(sp), intent(inout) :: d(*),e(*)
@@ -8297,7 +8300,7 @@ module stdlib_linalg_lapack
                pure subroutine dlaed0( icompq, qsiz, n, d, e, q, ldq, qstore, ldqs,work, iwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: icompq,ldq,ldqs,n,qsiz
                     integer(ilp), intent(out) :: info,iwork(*)
                     real(dp), intent(inout) :: d(*),e(*),q(ldq,*)
@@ -8310,7 +8313,7 @@ module stdlib_linalg_lapack
                pure subroutine slaed0( icompq, qsiz, n, d, e, q, ldq, qstore, ldqs,work, iwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: icompq,ldq,ldqs,n,qsiz
                     integer(ilp), intent(out) :: info,iwork(*)
                     real(sp), intent(inout) :: d(*),e(*),q(ldq,*)
@@ -8323,7 +8326,7 @@ module stdlib_linalg_lapack
                pure subroutine zlaed0( qsiz, n, d, e, q, ldq, qstore, ldqs, rwork,iwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldq,ldqs,n,qsiz
                     real(dp), intent(inout) :: d(*),e(*)
@@ -8367,7 +8370,7 @@ module stdlib_linalg_lapack
                pure subroutine dlaed1( n, d, q, ldq, indxq, rho, cutpnt, work, iwork,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: cutpnt,ldq,n
                     integer(ilp), intent(out) :: info,iwork(*)
                     real(dp), intent(inout) :: rho,d(*),q(ldq,*)
@@ -8381,7 +8384,7 @@ module stdlib_linalg_lapack
                pure subroutine slaed1( n, d, q, ldq, indxq, rho, cutpnt, work, iwork,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: cutpnt,ldq,n
                     integer(ilp), intent(out) :: info,iwork(*)
                     real(sp), intent(inout) :: rho,d(*),q(ldq,*)
@@ -8407,7 +8410,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlaed4( n, i, d, z, delta, rho, dlam, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: i,n
                     integer(ilp), intent(out) :: info
                     real(dp), intent(out) :: dlam,delta(*)
@@ -8419,7 +8422,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slaed4( n, i, d, z, delta, rho, dlam, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: i,n
                     integer(ilp), intent(out) :: info
                     real(sp), intent(out) :: dlam,delta(*)
@@ -8441,7 +8444,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlaed5( i, d, z, delta, rho, dlam )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: i
                     real(dp), intent(out) :: dlam,delta(2)
                     real(dp), intent(in) :: rho,d(2),z(2)
@@ -8452,7 +8455,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slaed5( i, d, z, delta, rho, dlam )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: i
                     real(sp), intent(out) :: dlam,delta(2)
                     real(sp), intent(in) :: rho,d(2),z(2)
@@ -8477,7 +8480,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlaed6( kniter, orgati, rho, d, z, finit, tau, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: orgati
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kniter
@@ -8490,7 +8493,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slaed6( kniter, orgati, rho, d, z, finit, tau, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: orgati
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kniter
@@ -8532,7 +8535,7 @@ module stdlib_linalg_lapack
                indxq, qstore, qptr, prmptr, perm,givptr, givcol, givnum, work, rwork, iwork,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: curlvl,curpbm,cutpnt,ldq,n,qsiz,tlvls
                     integer(ilp), intent(out) :: info,indxq(*),iwork(*)
                     real(sp), intent(inout) :: rho,d(*),givnum(2,*),qstore(*)
@@ -8550,7 +8553,7 @@ module stdlib_linalg_lapack
                rho, cutpnt, qstore, qptr, prmptr,perm, givptr, givcol, givnum, work, iwork,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: curlvl,curpbm,cutpnt,icompq,ldq,n,qsiz,&
                               tlvls
                     integer(ilp), intent(out) :: info,indxq(*),iwork(*)
@@ -8567,7 +8570,7 @@ module stdlib_linalg_lapack
                rho, cutpnt, qstore, qptr, prmptr,perm, givptr, givcol, givnum, work, iwork,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: curlvl,curpbm,cutpnt,icompq,ldq,n,qsiz,&
                               tlvls
                     integer(ilp), intent(out) :: info,indxq(*),iwork(*)
@@ -8584,7 +8587,7 @@ module stdlib_linalg_lapack
                indxq, qstore, qptr, prmptr, perm,givptr, givcol, givnum, work, rwork, iwork,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: curlvl,curpbm,cutpnt,ldq,n,qsiz,tlvls
                     integer(ilp), intent(out) :: info,indxq(*),iwork(*)
                     real(dp), intent(inout) :: rho,d(*),givnum(2,*),qstore(*)
@@ -8610,7 +8613,7 @@ module stdlib_linalg_lapack
                pure subroutine claed8( k, n, qsiz, q, ldq, d, rho, cutpnt, z, dlamda,q2, ldq2, w, &
                          indxp, indx, indxq, perm, givptr,givcol, givnum, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: cutpnt,ldq,ldq2,n,qsiz
                     integer(ilp), intent(out) :: givptr,info,k,givcol(2,*),indx(*),indxp(*),perm(&
                               *)
@@ -8627,7 +8630,7 @@ module stdlib_linalg_lapack
                pure subroutine dlaed8( icompq, k, n, qsiz, d, q, ldq, indxq, rho,cutpnt, z, &
                          dlamda, q2, ldq2, w, perm, givptr,givcol, givnum, indxp, indx, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: cutpnt,icompq,ldq,ldq2,n,qsiz
                     integer(ilp), intent(out) :: givptr,info,k,givcol(2,*),indx(*),indxp(*),perm(&
                               *)
@@ -8642,7 +8645,7 @@ module stdlib_linalg_lapack
                pure subroutine slaed8( icompq, k, n, qsiz, d, q, ldq, indxq, rho,cutpnt, z, &
                          dlamda, q2, ldq2, w, perm, givptr,givcol, givnum, indxp, indx, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: cutpnt,icompq,ldq,ldq2,n,qsiz
                     integer(ilp), intent(out) :: givptr,info,k,givcol(2,*),indx(*),indxp(*),perm(&
                               *)
@@ -8657,7 +8660,7 @@ module stdlib_linalg_lapack
                pure subroutine zlaed8( k, n, qsiz, q, ldq, d, rho, cutpnt, z, dlamda,q2, ldq2, w, &
                          indxp, indx, indxq, perm, givptr,givcol, givnum, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: cutpnt,ldq,ldq2,n,qsiz
                     integer(ilp), intent(out) :: givptr,info,k,givcol(2,*),indx(*),indxp(*),perm(&
                               *)
@@ -8681,7 +8684,7 @@ module stdlib_linalg_lapack
                pure subroutine dlaed9( k, kstart, kstop, n, d, q, ldq, rho, dlamda, w,s, lds, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,kstart,kstop,ldq,lds,n
                     real(dp), intent(in) :: rho
@@ -8695,7 +8698,7 @@ module stdlib_linalg_lapack
                pure subroutine slaed9( k, kstart, kstop, n, d, q, ldq, rho, dlamda, w,s, lds, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,kstart,kstop,ldq,lds,n
                     real(sp), intent(in) :: rho
@@ -8715,7 +8718,7 @@ module stdlib_linalg_lapack
                pure subroutine dlaeda( n, tlvls, curlvl, curpbm, prmptr, perm, givptr,givcol, &
                          givnum, q, qptr, z, ztemp, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: curlvl,curpbm,n,tlvls,givcol(2,*),givptr(*),perm(&
                               *),prmptr(*),qptr(*)
                     integer(ilp), intent(out) :: info
@@ -8729,7 +8732,7 @@ module stdlib_linalg_lapack
                pure subroutine slaeda( n, tlvls, curlvl, curpbm, prmptr, perm, givptr,givcol, &
                          givnum, q, qptr, z, ztemp, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: curlvl,curpbm,n,tlvls,givcol(2,*),givptr(*),perm(&
                               *),prmptr(*),qptr(*)
                     integer(ilp), intent(out) :: info
@@ -8749,7 +8752,7 @@ module stdlib_linalg_lapack
                pure subroutine claein( rightv, noinit, n, h, ldh, w, v, b, ldb, rwork,eps3, &
                          smlnum, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: noinit,rightv
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,ldh,n
@@ -8766,7 +8769,7 @@ module stdlib_linalg_lapack
                pure subroutine dlaein( rightv, noinit, n, h, ldh, wr, wi, vr, vi, b,ldb, work, &
                          eps3, smlnum, bignum, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: noinit,rightv
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,ldh,n
@@ -8781,7 +8784,7 @@ module stdlib_linalg_lapack
                pure subroutine slaein( rightv, noinit, n, h, ldh, wr, wi, vr, vi, b,ldb, work, &
                          eps3, smlnum, bignum, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: noinit,rightv
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,ldh,n
@@ -8796,7 +8799,7 @@ module stdlib_linalg_lapack
                pure subroutine zlaein( rightv, noinit, n, h, ldh, w, v, b, ldb, rwork,eps3, &
                          smlnum, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: noinit,rightv
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,ldh,n
@@ -8824,7 +8827,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine claesy( a, b, c, rt1, rt2, evscal, cs1, sn1 )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(sp), intent(in) :: a,b,c
                     complex(sp), intent(out) :: cs1,evscal,rt1,rt2,sn1
                end subroutine claesy
@@ -8834,7 +8837,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlaesy( a, b, c, rt1, rt2, evscal, cs1, sn1 )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(dp), intent(in) :: a,b,c
                     complex(dp), intent(out) :: cs1,evscal,rt1,rt2,sn1
                end subroutine zlaesy
@@ -8854,7 +8857,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine dlaexc( wantq, n, t, ldt, q, ldq, j1, n1, n2, work,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: wantq
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: j1,ldq,ldt,n,n1,n2
@@ -8867,7 +8870,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine slaexc( wantq, n, t, ldt, q, ldq, j1, n1, n2, work,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: wantq
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: j1,ldq,ldt,n,n1,n2
@@ -8895,7 +8898,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlagtf( n, a, lambda, b, c, tol, d, in, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,in(*)
                     integer(ilp), intent(in) :: n
                     real(dp), intent(in) :: lambda,tol
@@ -8908,7 +8911,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slagtf( n, a, lambda, b, c, tol, d, in, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,in(*)
                     integer(ilp), intent(in) :: n
                     real(sp), intent(in) :: lambda,tol
@@ -8930,7 +8933,7 @@ module stdlib_linalg_lapack
                pure subroutine clagtm( trans, n, nrhs, alpha, dl, d, du, x, ldx, beta,b, ldb )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs
                     real(sp), intent(in) :: alpha,beta
@@ -8944,7 +8947,7 @@ module stdlib_linalg_lapack
                pure subroutine dlagtm( trans, n, nrhs, alpha, dl, d, du, x, ldx, beta,b, ldb )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs
                     real(dp), intent(in) :: alpha,beta,d(*),dl(*),du(*),x(ldx,*)
@@ -8957,7 +8960,7 @@ module stdlib_linalg_lapack
                pure subroutine slagtm( trans, n, nrhs, alpha, dl, d, du, x, ldx, beta,b, ldb )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs
                     real(sp), intent(in) :: alpha,beta,d(*),dl(*),du(*),x(ldx,*)
@@ -8970,7 +8973,7 @@ module stdlib_linalg_lapack
                pure subroutine zlagtm( trans, n, nrhs, alpha, dl, d, du, x, ldx, beta,b, ldb )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs
                     real(dp), intent(in) :: alpha,beta
@@ -8995,7 +8998,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlagts( job, n, a, b, c, d, in, y, tol, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: job,n,in(*)
                     real(dp), intent(inout) :: tol,y(*)
@@ -9007,7 +9010,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slagts( job, n, a, b, c, d, in, y, tol, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: job,n,in(*)
                     real(sp), intent(inout) :: tol,y(*)
@@ -9035,7 +9038,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clahef( uplo, n, nb, kb, a, lda, ipiv, w, ldw, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,kb,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldw,n,nb
@@ -9048,7 +9051,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlahef( uplo, n, nb, kb, a, lda, ipiv, w, ldw, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,kb,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldw,n,nb
@@ -9074,7 +9077,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clahef_aa( uplo, j1, m, nb, a, lda, ipiv,h, ldh, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: m,nb,j1,lda,ldh
                     integer(ilp), intent(out) :: ipiv(*)
@@ -9087,7 +9090,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlahef_aa( uplo, j1, m, nb, a, lda, ipiv,h, ldh, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: m,nb,j1,lda,ldh
                     integer(ilp), intent(out) :: ipiv(*)
@@ -9115,7 +9118,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clahef_rk( uplo, n, nb, kb, a, lda, e, ipiv, w, ldw,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,kb,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldw,n,nb
@@ -9128,7 +9131,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlahef_rk( uplo, n, nb, kb, a, lda, e, ipiv, w, ldw,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,kb,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldw,n,nb
@@ -9157,7 +9160,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clahef_rook( uplo, n, nb, kb, a, lda, ipiv, w, ldw,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,kb,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldw,n,nb
@@ -9170,7 +9173,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlahef_rook( uplo, n, nb, kb, a, lda, ipiv, w, ldw,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,kb,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldw,n,nb
@@ -9191,7 +9194,7 @@ module stdlib_linalg_lapack
                pure subroutine clahqr( wantt, wantz, n, ilo, ihi, h, ldh, w, iloz,ihiz, z, ldz, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ihiz,ilo,iloz,ldh,ldz,n
                     integer(ilp), intent(out) :: info
                     logical(lk), intent(in) :: wantt,wantz
@@ -9205,7 +9208,7 @@ module stdlib_linalg_lapack
                pure subroutine dlahqr( wantt, wantz, n, ilo, ihi, h, ldh, wr, wi,iloz, ihiz, z, &
                          ldz, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ihiz,ilo,iloz,ldh,ldz,n
                     integer(ilp), intent(out) :: info
                     logical(lk), intent(in) :: wantt,wantz
@@ -9219,7 +9222,7 @@ module stdlib_linalg_lapack
                pure subroutine slahqr( wantt, wantz, n, ilo, ihi, h, ldh, wr, wi,iloz, ihiz, z, &
                          ldz, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ihiz,ilo,iloz,ldh,ldz,n
                     integer(ilp), intent(out) :: info
                     logical(lk), intent(in) :: wantt,wantz
@@ -9233,7 +9236,7 @@ module stdlib_linalg_lapack
                pure subroutine zlahqr( wantt, wantz, n, ilo, ihi, h, ldh, w, iloz,ihiz, z, ldz, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ihiz,ilo,iloz,ldh,ldz,n
                     integer(ilp), intent(out) :: info
                     logical(lk), intent(in) :: wantt,wantz
@@ -9269,7 +9272,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine claic1( job, j, x, sest, w, gamma, sestpr, s, c )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: j,job
                     real(sp), intent(in) :: sest
                     real(sp), intent(out) :: sestpr
@@ -9282,7 +9285,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlaic1( job, j, x, sest, w, gamma, sestpr, s, c )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: j,job
                     real(dp), intent(out) :: c,s,sestpr
                     real(dp), intent(in) :: gamma,sest,w(j),x(j)
@@ -9293,7 +9296,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slaic1( job, j, x, sest, w, gamma, sestpr, s, c )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: j,job
                     real(sp), intent(out) :: c,s,sestpr
                     real(sp), intent(in) :: gamma,sest,w(j),x(j)
@@ -9304,7 +9307,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlaic1( job, j, x, sest, w, gamma, sestpr, s, c )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: j,job
                     real(dp), intent(in) :: sest
                     real(dp), intent(out) :: sestpr
@@ -9331,7 +9334,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure logical(lk) function dlaisnan( din1, din2 )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: din1,din2
                end function dlaisnan
 #else
@@ -9340,7 +9343,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure logical(lk) function slaisnan( sin1, sin2 )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: sin1,sin2
                end function slaisnan
 #else
@@ -9373,7 +9376,7 @@ module stdlib_linalg_lapack
                pure subroutine clals0( icompq, nl, nr, sqre, nrhs, b, ldb, bx, ldbx,perm, givptr, &
                          givcol, ldgcol, givnum, ldgnum,poles, difl, difr, z, k, c, s, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: givptr,icompq,k,ldb,ldbx,ldgcol,ldgnum,nl,nr,nrhs,&
                               sqre,givcol(ldgcol,*),perm(*)
                     integer(ilp), intent(out) :: info
@@ -9390,7 +9393,7 @@ module stdlib_linalg_lapack
                pure subroutine dlals0( icompq, nl, nr, sqre, nrhs, b, ldb, bx, ldbx,perm, givptr, &
                          givcol, ldgcol, givnum, ldgnum,poles, difl, difr, z, k, c, s, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: givptr,icompq,k,ldb,ldbx,ldgcol,ldgnum,nl,nr,nrhs,&
                               sqre,givcol(ldgcol,*),perm(*)
                     integer(ilp), intent(out) :: info
@@ -9406,7 +9409,7 @@ module stdlib_linalg_lapack
                pure subroutine slals0( icompq, nl, nr, sqre, nrhs, b, ldb, bx, ldbx,perm, givptr, &
                          givcol, ldgcol, givnum, ldgnum,poles, difl, difr, z, k, c, s, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: givptr,icompq,k,ldb,ldbx,ldgcol,ldgnum,nl,nr,nrhs,&
                               sqre,givcol(ldgcol,*),perm(*)
                     integer(ilp), intent(out) :: info
@@ -9422,7 +9425,7 @@ module stdlib_linalg_lapack
                pure subroutine zlals0( icompq, nl, nr, sqre, nrhs, b, ldb, bx, ldbx,perm, givptr, &
                          givcol, ldgcol, givnum, ldgnum,poles, difl, difr, z, k, c, s, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: givptr,icompq,k,ldb,ldbx,ldgcol,ldgnum,nl,nr,nrhs,&
                               sqre,givcol(ldgcol,*),perm(*)
                     integer(ilp), intent(out) :: info
@@ -9452,7 +9455,7 @@ module stdlib_linalg_lapack
                difl, difr, z, poles, givptr,givcol, ldgcol, perm, givnum, c, s, rwork,iwork, info &
                          )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: icompq,ldb,ldbx,ldgcol,ldu,n,nrhs,smlsiz,givcol(&
                               ldgcol,*),givptr(*),k(*),perm(ldgcol,*)
                     integer(ilp), intent(out) :: info,iwork(*)
@@ -9470,7 +9473,7 @@ module stdlib_linalg_lapack
                difl, difr, z, poles, givptr,givcol, ldgcol, perm, givnum, c, s, work,iwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: icompq,ldb,ldbx,ldgcol,ldu,n,nrhs,smlsiz,givcol(&
                               ldgcol,*),givptr(*),k(*),perm(ldgcol,*)
                     integer(ilp), intent(out) :: info,iwork(*)
@@ -9487,7 +9490,7 @@ module stdlib_linalg_lapack
                difl, difr, z, poles, givptr,givcol, ldgcol, perm, givnum, c, s, work,iwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: icompq,ldb,ldbx,ldgcol,ldu,n,nrhs,smlsiz,givcol(&
                               ldgcol,*),givptr(*),k(*),perm(ldgcol,*)
                     integer(ilp), intent(out) :: info,iwork(*)
@@ -9504,7 +9507,7 @@ module stdlib_linalg_lapack
                difl, difr, z, poles, givptr,givcol, ldgcol, perm, givnum, c, s, rwork,iwork, info &
                          )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: icompq,ldb,ldbx,ldgcol,ldu,n,nrhs,smlsiz,givcol(&
                               ldgcol,*),givptr(*),k(*),perm(ldgcol,*)
                     integer(ilp), intent(out) :: info,iwork(*)
@@ -9538,7 +9541,7 @@ module stdlib_linalg_lapack
                pure subroutine clalsd( uplo, smlsiz, n, nrhs, d, e, b, ldb, rcond,rank, work, &
                          rwork, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,rank,iwork(*)
                     integer(ilp), intent(in) :: ldb,n,nrhs,smlsiz
@@ -9555,7 +9558,7 @@ module stdlib_linalg_lapack
                pure subroutine dlalsd( uplo, smlsiz, n, nrhs, d, e, b, ldb, rcond,rank, work, &
                          iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,rank,iwork(*)
                     integer(ilp), intent(in) :: ldb,n,nrhs,smlsiz
@@ -9570,7 +9573,7 @@ module stdlib_linalg_lapack
                pure subroutine slalsd( uplo, smlsiz, n, nrhs, d, e, b, ldb, rcond,rank, work, &
                          iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,rank,iwork(*)
                     integer(ilp), intent(in) :: ldb,n,nrhs,smlsiz
@@ -9585,7 +9588,7 @@ module stdlib_linalg_lapack
                pure subroutine zlalsd( uplo, smlsiz, n, nrhs, d, e, b, ldb, rcond,rank, work, &
                          rwork, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,rank,iwork(*)
                     integer(ilp), intent(in) :: ldb,n,nrhs,smlsiz
@@ -9607,7 +9610,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlamrg( n1, n2, a, dtrd1, dtrd2, index )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: dtrd1,dtrd2,n1,n2
                     integer(ilp), intent(out) :: index(*)
                     real(dp), intent(in) :: a(*)
@@ -9618,7 +9621,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slamrg( n1, n2, a, strd1, strd2, index )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: n1,n2,strd1,strd2
                     integer(ilp), intent(out) :: index(*)
                     real(sp), intent(in) :: a(*)
@@ -9640,7 +9643,7 @@ module stdlib_linalg_lapack
                pure subroutine clamswlq( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, &
                          work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,k,mb,nb,ldt,lwork,ldc
@@ -9655,7 +9658,7 @@ module stdlib_linalg_lapack
                pure subroutine dlamswlq( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, &
                          work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,k,mb,nb,ldt,lwork,ldc
@@ -9670,7 +9673,7 @@ module stdlib_linalg_lapack
                pure subroutine slamswlq( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, &
                          work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,k,mb,nb,ldt,lwork,ldc
@@ -9685,7 +9688,7 @@ module stdlib_linalg_lapack
                pure subroutine zlamswlq( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, &
                          work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,k,mb,nb,ldt,lwork,ldc
@@ -9710,7 +9713,7 @@ module stdlib_linalg_lapack
                pure subroutine clamtsqr( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, &
                          work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,k,mb,nb,ldt,lwork,ldc
@@ -9725,7 +9728,7 @@ module stdlib_linalg_lapack
                pure subroutine dlamtsqr( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, &
                          work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,k,mb,nb,ldt,lwork,ldc
@@ -9740,7 +9743,7 @@ module stdlib_linalg_lapack
                pure subroutine slamtsqr( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, &
                          work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,k,mb,nb,ldt,lwork,ldc
@@ -9755,7 +9758,7 @@ module stdlib_linalg_lapack
                pure subroutine zlamtsqr( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, &
                          work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,k,mb,nb,ldt,lwork,ldc
@@ -9787,7 +9790,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure integer(ilp) function dlaneg( n, d, lld, sigma, pivmin, r )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: n,r
                     real(dp), intent(in) :: pivmin,sigma,d(*),lld(*)
                end function dlaneg
@@ -9797,7 +9800,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure integer(ilp) function slaneg( n, d, lld, sigma, pivmin, r )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: n,r
                     real(sp), intent(in) :: pivmin,sigma,d(*),lld(*)
                end function slaneg
@@ -9813,7 +9816,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(sp)             function clangb( norm, n, kl, ku, ab, ldab,work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(in) :: kl,ku,ldab,n
                     real(sp), intent(out) :: work(*)
@@ -9825,7 +9828,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function dlangb( norm, n, kl, ku, ab, ldab,work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(in) :: kl,ku,ldab,n
                     real(dp), intent(in) :: ab(ldab,*)
@@ -9837,7 +9840,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(sp)             function slangb( norm, n, kl, ku, ab, ldab,work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(in) :: kl,ku,ldab,n
                     real(sp), intent(in) :: ab(ldab,*)
@@ -9849,7 +9852,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function zlangb( norm, n, kl, ku, ab, ldab,work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(in) :: kl,ku,ldab,n
                     real(dp), intent(out) :: work(*)
@@ -9867,7 +9870,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(sp)             function clange( norm, m, n, a, lda, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(in) :: lda,m,n
                     real(sp), intent(out) :: work(*)
@@ -9879,7 +9882,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function dlange( norm, m, n, a, lda, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(in) :: lda,m,n
                     real(dp), intent(in) :: a(lda,*)
@@ -9891,7 +9894,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(sp)             function slange( norm, m, n, a, lda, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(in) :: lda,m,n
                     real(sp), intent(in) :: a(lda,*)
@@ -9903,7 +9906,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function zlange( norm, m, n, a, lda, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(in) :: lda,m,n
                     real(dp), intent(out) :: work(*)
@@ -9921,7 +9924,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure real(sp)             function clangt( norm, n, dl, d, du )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(in) :: n
                     complex(sp), intent(in) :: d(*),dl(*),du(*)
@@ -9932,7 +9935,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure real(dp) function dlangt( norm, n, dl, d, du )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(in) :: n
                     real(dp), intent(in) :: d(*),dl(*),du(*)
@@ -9943,7 +9946,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure real(sp)             function slangt( norm, n, dl, d, du )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(in) :: n
                     real(sp), intent(in) :: d(*),dl(*),du(*)
@@ -9954,7 +9957,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure real(dp) function zlangt( norm, n, dl, d, du )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(in) :: n
                     complex(dp), intent(in) :: d(*),dl(*),du(*)
@@ -9971,7 +9974,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(sp)             function clanhb( norm, uplo, n, k, ab, ldab,work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm,uplo
                     integer(ilp), intent(in) :: k,ldab,n
                     real(sp), intent(out) :: work(*)
@@ -9983,7 +9986,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function zlanhb( norm, uplo, n, k, ab, ldab,work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm,uplo
                     integer(ilp), intent(in) :: k,ldab,n
                     real(dp), intent(out) :: work(*)
@@ -10001,7 +10004,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(sp)             function clanhe( norm, uplo, n, a, lda, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm,uplo
                     integer(ilp), intent(in) :: lda,n
                     real(sp), intent(out) :: work(*)
@@ -10013,7 +10016,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function zlanhe( norm, uplo, n, a, lda, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm,uplo
                     integer(ilp), intent(in) :: lda,n
                     real(dp), intent(out) :: work(*)
@@ -10031,7 +10034,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(sp) function clanhf( norm, transr, uplo, n, a, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm,transr,uplo
                     integer(ilp), intent(in) :: n
                     real(sp), intent(out) :: work(0:*)
@@ -10043,7 +10046,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function zlanhf( norm, transr, uplo, n, a, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm,transr,uplo
                     integer(ilp), intent(in) :: n
                     real(dp), intent(out) :: work(0:*)
@@ -10061,7 +10064,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(sp)             function clanhp( norm, uplo, n, ap, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm,uplo
                     integer(ilp), intent(in) :: n
                     real(sp), intent(out) :: work(*)
@@ -10073,7 +10076,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function zlanhp( norm, uplo, n, ap, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm,uplo
                     integer(ilp), intent(in) :: n
                     real(dp), intent(out) :: work(*)
@@ -10091,7 +10094,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(sp)             function clanhs( norm, n, a, lda, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(in) :: lda,n
                     real(sp), intent(out) :: work(*)
@@ -10103,7 +10106,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function dlanhs( norm, n, a, lda, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(in) :: lda,n
                     real(dp), intent(in) :: a(lda,*)
@@ -10115,7 +10118,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(sp)             function slanhs( norm, n, a, lda, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(in) :: lda,n
                     real(sp), intent(in) :: a(lda,*)
@@ -10127,7 +10130,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function zlanhs( norm, n, a, lda, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(in) :: lda,n
                     real(dp), intent(out) :: work(*)
@@ -10145,7 +10148,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure real(sp)             function clanht( norm, n, d, e )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(in) :: n
                     real(sp), intent(in) :: d(*)
@@ -10157,7 +10160,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure real(dp) function zlanht( norm, n, d, e )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(in) :: n
                     real(dp), intent(in) :: d(*)
@@ -10175,7 +10178,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(sp)             function clansb( norm, uplo, n, k, ab, ldab,work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm,uplo
                     integer(ilp), intent(in) :: k,ldab,n
                     real(sp), intent(out) :: work(*)
@@ -10187,7 +10190,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function dlansb( norm, uplo, n, k, ab, ldab,work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm,uplo
                     integer(ilp), intent(in) :: k,ldab,n
                     real(dp), intent(in) :: ab(ldab,*)
@@ -10199,7 +10202,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(sp)             function slansb( norm, uplo, n, k, ab, ldab,work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm,uplo
                     integer(ilp), intent(in) :: k,ldab,n
                     real(sp), intent(in) :: ab(ldab,*)
@@ -10211,7 +10214,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function zlansb( norm, uplo, n, k, ab, ldab,work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm,uplo
                     integer(ilp), intent(in) :: k,ldab,n
                     real(dp), intent(out) :: work(*)
@@ -10229,7 +10232,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function dlansf( norm, transr, uplo, n, a, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm,transr,uplo
                     integer(ilp), intent(in) :: n
                     real(dp), intent(in) :: a(0:*)
@@ -10241,7 +10244,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(sp) function slansf( norm, transr, uplo, n, a, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm,transr,uplo
                     integer(ilp), intent(in) :: n
                     real(sp), intent(in) :: a(0:*)
@@ -10259,7 +10262,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(sp)             function clansp( norm, uplo, n, ap, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm,uplo
                     integer(ilp), intent(in) :: n
                     real(sp), intent(out) :: work(*)
@@ -10271,7 +10274,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function dlansp( norm, uplo, n, ap, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm,uplo
                     integer(ilp), intent(in) :: n
                     real(dp), intent(in) :: ap(*)
@@ -10283,7 +10286,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(sp)             function slansp( norm, uplo, n, ap, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm,uplo
                     integer(ilp), intent(in) :: n
                     real(sp), intent(in) :: ap(*)
@@ -10295,7 +10298,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function zlansp( norm, uplo, n, ap, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm,uplo
                     integer(ilp), intent(in) :: n
                     real(dp), intent(out) :: work(*)
@@ -10313,7 +10316,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure real(dp) function dlanst( norm, n, d, e )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(in) :: n
                     real(dp), intent(in) :: d(*),e(*)
@@ -10324,7 +10327,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure real(sp)             function slanst( norm, n, d, e )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm
                     integer(ilp), intent(in) :: n
                     real(sp), intent(in) :: d(*),e(*)
@@ -10341,7 +10344,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(sp)             function clansy( norm, uplo, n, a, lda, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm,uplo
                     integer(ilp), intent(in) :: lda,n
                     real(sp), intent(out) :: work(*)
@@ -10353,7 +10356,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function dlansy( norm, uplo, n, a, lda, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm,uplo
                     integer(ilp), intent(in) :: lda,n
                     real(dp), intent(in) :: a(lda,*)
@@ -10365,7 +10368,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(sp)             function slansy( norm, uplo, n, a, lda, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm,uplo
                     integer(ilp), intent(in) :: lda,n
                     real(sp), intent(in) :: a(lda,*)
@@ -10377,7 +10380,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function zlansy( norm, uplo, n, a, lda, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: norm,uplo
                     integer(ilp), intent(in) :: lda,n
                     real(dp), intent(out) :: work(*)
@@ -10396,7 +10399,7 @@ module stdlib_linalg_lapack
                real(sp)             function clantb( norm, uplo, diag, n, k, ab,ldab, work )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(in) :: k,ldab,n
                     real(sp), intent(out) :: work(*)
@@ -10408,7 +10411,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function dlantb( norm, uplo, diag, n, k, ab,ldab, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(in) :: k,ldab,n
                     real(dp), intent(in) :: ab(ldab,*)
@@ -10421,7 +10424,7 @@ module stdlib_linalg_lapack
                real(sp)             function slantb( norm, uplo, diag, n, k, ab,ldab, work )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(in) :: k,ldab,n
                     real(sp), intent(in) :: ab(ldab,*)
@@ -10433,7 +10436,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function zlantb( norm, uplo, diag, n, k, ab,ldab, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(in) :: k,ldab,n
                     real(dp), intent(out) :: work(*)
@@ -10451,7 +10454,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(sp)             function clantp( norm, uplo, diag, n, ap, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(in) :: n
                     real(sp), intent(out) :: work(*)
@@ -10463,7 +10466,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function dlantp( norm, uplo, diag, n, ap, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(in) :: n
                     real(dp), intent(in) :: ap(*)
@@ -10475,7 +10478,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(sp)             function slantp( norm, uplo, diag, n, ap, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(in) :: n
                     real(sp), intent(in) :: ap(*)
@@ -10487,7 +10490,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function zlantp( norm, uplo, diag, n, ap, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(in) :: n
                     real(dp), intent(out) :: work(*)
@@ -10505,7 +10508,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(sp)             function clantr( norm, uplo, diag, m, n, a, lda,work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(in) :: lda,m,n
                     real(sp), intent(out) :: work(*)
@@ -10517,7 +10520,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function dlantr( norm, uplo, diag, m, n, a, lda,work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(in) :: lda,m,n
                     real(dp), intent(in) :: a(lda,*)
@@ -10529,7 +10532,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(sp)             function slantr( norm, uplo, diag, m, n, a, lda,work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(in) :: lda,m,n
                     real(sp), intent(in) :: a(lda,*)
@@ -10541,7 +10544,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                real(dp) function zlantr( norm, uplo, diag, m, n, a, lda,work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(in) :: lda,m,n
                     real(dp), intent(out) :: work(*)
@@ -10589,7 +10592,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlaorhr_col_getrfnp( m, n, a, lda, d, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n
                     real(dp), intent(inout) :: a(lda,*)
@@ -10601,7 +10604,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slaorhr_col_getrfnp( m, n, a, lda, d, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n
                     real(sp), intent(inout) :: a(lda,*)
@@ -10664,7 +10667,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure recursive subroutine dlaorhr_col_getrfnp2( m, n, a, lda, d, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n
                     real(dp), intent(inout) :: a(lda,*)
@@ -10676,7 +10679,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure recursive subroutine slaorhr_col_getrfnp2( m, n, a, lda, d, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n
                     real(sp), intent(inout) :: a(lda,*)
@@ -10697,7 +10700,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clapll( n, x, incx, y, incy, ssmin )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     real(sp), intent(out) :: ssmin
                     complex(sp), intent(inout) :: x(*),y(*)
@@ -10708,7 +10711,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlapll( n, x, incx, y, incy, ssmin )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     real(dp), intent(out) :: ssmin
                     real(dp), intent(inout) :: x(*),y(*)
@@ -10719,7 +10722,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slapll( n, x, incx, y, incy, ssmin )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     real(sp), intent(out) :: ssmin
                     real(sp), intent(inout) :: x(*),y(*)
@@ -10730,7 +10733,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlapll( n, x, incx, y, incy, ssmin )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     real(dp), intent(out) :: ssmin
                     complex(dp), intent(inout) :: x(*),y(*)
@@ -10750,7 +10753,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clapmr( forwrd, m, n, x, ldx, k )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: forwrd
                     integer(ilp), intent(in) :: ldx,m,n
                     integer(ilp), intent(inout) :: k(*)
@@ -10762,7 +10765,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlapmr( forwrd, m, n, x, ldx, k )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: forwrd
                     integer(ilp), intent(in) :: ldx,m,n
                     integer(ilp), intent(inout) :: k(*)
@@ -10774,7 +10777,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slapmr( forwrd, m, n, x, ldx, k )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: forwrd
                     integer(ilp), intent(in) :: ldx,m,n
                     integer(ilp), intent(inout) :: k(*)
@@ -10786,7 +10789,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlapmr( forwrd, m, n, x, ldx, k )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: forwrd
                     integer(ilp), intent(in) :: ldx,m,n
                     integer(ilp), intent(inout) :: k(*)
@@ -10807,7 +10810,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clapmt( forwrd, m, n, x, ldx, k )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: forwrd
                     integer(ilp), intent(in) :: ldx,m,n
                     integer(ilp), intent(inout) :: k(*)
@@ -10819,7 +10822,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlapmt( forwrd, m, n, x, ldx, k )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: forwrd
                     integer(ilp), intent(in) :: ldx,m,n
                     integer(ilp), intent(inout) :: k(*)
@@ -10831,7 +10834,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slapmt( forwrd, m, n, x, ldx, k )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: forwrd
                     integer(ilp), intent(in) :: ldx,m,n
                     integer(ilp), intent(inout) :: k(*)
@@ -10843,7 +10846,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlapmt( forwrd, m, n, x, ldx, k )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: forwrd
                     integer(ilp), intent(in) :: ldx,m,n
                     integer(ilp), intent(inout) :: k(*)
@@ -10862,7 +10865,7 @@ module stdlib_linalg_lapack
                pure subroutine claqgb( m, n, kl, ku, ab, ldab, r, c, rowcnd, colcnd,amax, equed )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     integer(ilp), intent(in) :: kl,ku,ldab,m,n
                     real(sp), intent(in) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -10875,7 +10878,7 @@ module stdlib_linalg_lapack
                pure subroutine dlaqgb( m, n, kl, ku, ab, ldab, r, c, rowcnd, colcnd,amax, equed )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     integer(ilp), intent(in) :: kl,ku,ldab,m,n
                     real(dp), intent(in) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -10888,7 +10891,7 @@ module stdlib_linalg_lapack
                pure subroutine slaqgb( m, n, kl, ku, ab, ldab, r, c, rowcnd, colcnd,amax, equed )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     integer(ilp), intent(in) :: kl,ku,ldab,m,n
                     real(sp), intent(in) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -10901,7 +10904,7 @@ module stdlib_linalg_lapack
                pure subroutine zlaqgb( m, n, kl, ku, ab, ldab, r, c, rowcnd, colcnd,amax, equed )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     integer(ilp), intent(in) :: kl,ku,ldab,m,n
                     real(dp), intent(in) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -10918,7 +10921,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine claqge( m, n, a, lda, r, c, rowcnd, colcnd, amax,equed )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     integer(ilp), intent(in) :: lda,m,n
                     real(sp), intent(in) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -10930,7 +10933,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlaqge( m, n, a, lda, r, c, rowcnd, colcnd, amax,equed )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     integer(ilp), intent(in) :: lda,m,n
                     real(dp), intent(in) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -10942,7 +10945,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slaqge( m, n, a, lda, r, c, rowcnd, colcnd, amax,equed )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     integer(ilp), intent(in) :: lda,m,n
                     real(sp), intent(in) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -10954,7 +10957,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlaqge( m, n, a, lda, r, c, rowcnd, colcnd, amax,equed )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     integer(ilp), intent(in) :: lda,m,n
                     real(dp), intent(in) :: amax,colcnd,rowcnd,c(*),r(*)
@@ -10971,7 +10974,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine claqhb( uplo, n, kd, ab, ldab, s, scond, amax, equed )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -10985,7 +10988,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlaqhb( uplo, n, kd, ab, ldab, s, scond, amax, equed )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -11004,7 +11007,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine claqhe( uplo, n, a, lda, s, scond, amax, equed )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: lda,n
@@ -11017,7 +11020,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlaqhe( uplo, n, a, lda, s, scond, amax, equed )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: lda,n
@@ -11035,7 +11038,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine claqhp( uplo, n, ap, s, scond, amax, equed )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n
@@ -11048,7 +11051,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlaqhp( uplo, n, ap, s, scond, amax, equed )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n
@@ -11073,7 +11076,7 @@ module stdlib_linalg_lapack
                pure subroutine claqps( m, n, offset, nb, kb, a, lda, jpvt, tau, vn1,vn2, auxv, f, &
                          ldf )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: kb
                     integer(ilp), intent(in) :: lda,ldf,m,n,nb,offset
                     integer(ilp), intent(inout) :: jpvt(*)
@@ -11088,7 +11091,7 @@ module stdlib_linalg_lapack
                pure subroutine dlaqps( m, n, offset, nb, kb, a, lda, jpvt, tau, vn1,vn2, auxv, f, &
                          ldf )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: kb
                     integer(ilp), intent(in) :: lda,ldf,m,n,nb,offset
                     integer(ilp), intent(inout) :: jpvt(*)
@@ -11102,7 +11105,7 @@ module stdlib_linalg_lapack
                pure subroutine slaqps( m, n, offset, nb, kb, a, lda, jpvt, tau, vn1,vn2, auxv, f, &
                          ldf )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: kb
                     integer(ilp), intent(in) :: lda,ldf,m,n,nb,offset
                     integer(ilp), intent(inout) :: jpvt(*)
@@ -11116,7 +11119,7 @@ module stdlib_linalg_lapack
                pure subroutine zlaqps( m, n, offset, nb, kb, a, lda, jpvt, tau, vn1,vn2, auxv, f, &
                          ldf )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: kb
                     integer(ilp), intent(in) :: lda,ldf,m,n,nb,offset
                     integer(ilp), intent(inout) :: jpvt(*)
@@ -11142,7 +11145,7 @@ module stdlib_linalg_lapack
                pure subroutine claqr0( wantt, wantz, n, ilo, ihi, h, ldh, w, iloz,ihiz, z, ldz, &
                          work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ihiz,ilo,iloz,ldh,ldz,lwork,n
                     integer(ilp), intent(out) :: info
                     logical(lk), intent(in) :: wantt,wantz
@@ -11156,7 +11159,7 @@ module stdlib_linalg_lapack
                subroutine dlaqr0( wantt, wantz, n, ilo, ihi, h, ldh, wr, wi,iloz, ihiz, z, ldz, &
                          work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ihiz,ilo,iloz,ldh,ldz,lwork,n
                     integer(ilp), intent(out) :: info
                     logical(lk), intent(in) :: wantt,wantz
@@ -11170,7 +11173,7 @@ module stdlib_linalg_lapack
                subroutine slaqr0( wantt, wantz, n, ilo, ihi, h, ldh, wr, wi,iloz, ihiz, z, ldz, &
                          work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ihiz,ilo,iloz,ldh,ldz,lwork,n
                     integer(ilp), intent(out) :: info
                     logical(lk), intent(in) :: wantt,wantz
@@ -11184,7 +11187,7 @@ module stdlib_linalg_lapack
                pure subroutine zlaqr0( wantt, wantz, n, ilo, ihi, h, ldh, w, iloz,ihiz, z, ldz, &
                          work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ihiz,ilo,iloz,ldh,ldz,lwork,n
                     integer(ilp), intent(out) :: info
                     logical(lk), intent(in) :: wantt,wantz
@@ -11206,7 +11209,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine claqr1( n, h, ldh, s1, s2, v )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(sp), intent(in) :: s1,s2,h(ldh,*)
                     integer(ilp), intent(in) :: ldh,n
                     complex(sp), intent(out) :: v(*)
@@ -11217,7 +11220,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlaqr1( n, h, ldh, sr1, si1, sr2, si2, v )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: si1,si2,sr1,sr2,h(ldh,*)
                     integer(ilp), intent(in) :: ldh,n
                     real(dp), intent(out) :: v(*)
@@ -11228,7 +11231,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slaqr1( n, h, ldh, sr1, si1, sr2, si2, v )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: si1,si2,sr1,sr2,h(ldh,*)
                     integer(ilp), intent(in) :: ldh,n
                     real(sp), intent(out) :: v(*)
@@ -11239,7 +11242,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlaqr1( n, h, ldh, s1, s2, v )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     complex(dp), intent(in) :: s1,s2,h(ldh,*)
                     integer(ilp), intent(in) :: ldh,n
                     complex(dp), intent(out) :: v(*)
@@ -11268,7 +11271,7 @@ module stdlib_linalg_lapack
                pure subroutine claqr4( wantt, wantz, n, ilo, ihi, h, ldh, w, iloz,ihiz, z, ldz, &
                          work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ihiz,ilo,iloz,ldh,ldz,lwork,n
                     integer(ilp), intent(out) :: info
                     logical(lk), intent(in) :: wantt,wantz
@@ -11282,7 +11285,7 @@ module stdlib_linalg_lapack
                subroutine dlaqr4( wantt, wantz, n, ilo, ihi, h, ldh, wr, wi,iloz, ihiz, z, ldz, &
                          work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ihiz,ilo,iloz,ldh,ldz,lwork,n
                     integer(ilp), intent(out) :: info
                     logical(lk), intent(in) :: wantt,wantz
@@ -11296,7 +11299,7 @@ module stdlib_linalg_lapack
                subroutine slaqr4( wantt, wantz, n, ilo, ihi, h, ldh, wr, wi,iloz, ihiz, z, ldz, &
                          work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ihiz,ilo,iloz,ldh,ldz,lwork,n
                     integer(ilp), intent(out) :: info
                     logical(lk), intent(in) :: wantt,wantz
@@ -11310,7 +11313,7 @@ module stdlib_linalg_lapack
                pure subroutine zlaqr4( wantt, wantz, n, ilo, ihi, h, ldh, w, iloz,ihiz, z, ldz, &
                          work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ihiz,ilo,iloz,ldh,ldz,lwork,n
                     integer(ilp), intent(out) :: info
                     logical(lk), intent(in) :: wantt,wantz
@@ -11329,7 +11332,7 @@ module stdlib_linalg_lapack
                pure subroutine claqr5( wantt, wantz, kacc22, n, ktop, kbot, nshfts, s,h, ldh, &
                          iloz, ihiz, z, ldz, v, ldv, u, ldu, nv,wv, ldwv, nh, wh, ldwh )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihiz,iloz,kacc22,kbot,ktop,ldh,ldu,ldv,ldwh,ldwv,&
                               ldz,n,nh,nshfts,nv
                     logical(lk), intent(in) :: wantt,wantz
@@ -11343,7 +11346,7 @@ module stdlib_linalg_lapack
                pure subroutine dlaqr5( wantt, wantz, kacc22, n, ktop, kbot, nshfts,sr, si, h, ldh,&
                           iloz, ihiz, z, ldz, v, ldv, u,ldu, nv, wv, ldwv, nh, wh, ldwh )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihiz,iloz,kacc22,kbot,ktop,ldh,ldu,ldv,ldwh,ldwv,&
                               ldz,n,nh,nshfts,nv
                     logical(lk), intent(in) :: wantt,wantz
@@ -11357,7 +11360,7 @@ module stdlib_linalg_lapack
                pure subroutine slaqr5( wantt, wantz, kacc22, n, ktop, kbot, nshfts,sr, si, h, ldh,&
                           iloz, ihiz, z, ldz, v, ldv, u,ldu, nv, wv, ldwv, nh, wh, ldwh )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihiz,iloz,kacc22,kbot,ktop,ldh,ldu,ldv,ldwh,ldwv,&
                               ldz,n,nh,nshfts,nv
                     logical(lk), intent(in) :: wantt,wantz
@@ -11371,7 +11374,7 @@ module stdlib_linalg_lapack
                pure subroutine zlaqr5( wantt, wantz, kacc22, n, ktop, kbot, nshfts, s,h, ldh, &
                          iloz, ihiz, z, ldz, v, ldv, u, ldu, nv,wv, ldwv, nh, wh, ldwh )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihiz,iloz,kacc22,kbot,ktop,ldh,ldu,ldv,ldwh,ldwv,&
                               ldz,n,nh,nshfts,nv
                     logical(lk), intent(in) :: wantt,wantz
@@ -11389,7 +11392,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine claqsb( uplo, n, kd, ab, ldab, s, scond, amax, equed )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -11402,7 +11405,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlaqsb( uplo, n, kd, ab, ldab, s, scond, amax, equed )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -11415,7 +11418,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slaqsb( uplo, n, kd, ab, ldab, s, scond, amax, equed )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -11428,7 +11431,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlaqsb( uplo, n, kd, ab, ldab, s, scond, amax, equed )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -11446,7 +11449,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine claqsp( uplo, n, ap, s, scond, amax, equed )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n
@@ -11459,7 +11462,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlaqsp( uplo, n, ap, s, scond, amax, equed )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n
@@ -11472,7 +11475,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slaqsp( uplo, n, ap, s, scond, amax, equed )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n
@@ -11485,7 +11488,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlaqsp( uplo, n, ap, s, scond, amax, equed )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n
@@ -11503,7 +11506,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine claqsy( uplo, n, a, lda, s, scond, amax, equed )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: lda,n
@@ -11516,7 +11519,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlaqsy( uplo, n, a, lda, s, scond, amax, equed )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: lda,n
@@ -11529,7 +11532,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slaqsy( uplo, n, a, lda, s, scond, amax, equed )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: lda,n
@@ -11542,7 +11545,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlaqsy( uplo, n, a, lda, s, scond, amax, equed )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(out) :: equed
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: lda,n
@@ -11576,7 +11579,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine dlaqtr( ltran, lreal, n, t, ldt, b, w, scale, x, work,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: lreal,ltran
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldt,n
@@ -11590,7 +11593,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine slaqtr( ltran, lreal, n, t, ldt, b, w, scale, x, work,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: lreal,ltran
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldt,n
@@ -11648,7 +11651,7 @@ module stdlib_linalg_lapack
                recursive subroutine claqz0( wants, wantq, wantz, n, ilo, ihi, a,lda, b, ldb, &
                          alpha, beta, q, ldq, z,ldz, work, lwork, rwork, rec,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: wants,wantq,wantz
                     integer(ilp), intent(in) :: n,ilo,ihi,lda,ldb,ldq,ldz,lwork,rec
                     integer(ilp), intent(out) :: info
@@ -11663,7 +11666,7 @@ module stdlib_linalg_lapack
                recursive subroutine dlaqz0( wants, wantq, wantz, n, ilo, ihi, a,lda, b, ldb, &
                          alphar, alphai, beta,q, ldq, z, ldz, work, lwork, rec,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: wants,wantq,wantz
                     integer(ilp), intent(in) :: n,ilo,ihi,lda,ldb,ldq,ldz,lwork,rec
                     integer(ilp), intent(out) :: info
@@ -11677,7 +11680,7 @@ module stdlib_linalg_lapack
                recursive subroutine slaqz0( wants, wantq, wantz, n, ilo, ihi, a,lda, b, ldb, &
                          alphar, alphai, beta,q, ldq, z, ldz, work, lwork, rec,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: wants,wantq,wantz
                     integer(ilp), intent(in) :: n,ilo,ihi,lda,ldb,ldq,ldz,lwork,rec
                     integer(ilp), intent(out) :: info
@@ -11691,7 +11694,7 @@ module stdlib_linalg_lapack
                recursive subroutine zlaqz0( wants, wantq, wantz, n, ilo, ihi, a,lda, b, ldb, &
                          alpha, beta, q, ldq, z,ldz, work, lwork, rwork, rec,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: wants,wantq,wantz
                     integer(ilp), intent(in) :: n,ilo,ihi,lda,ldb,ldq,ldz,lwork,rec
                     integer(ilp), intent(out) :: info
@@ -11710,7 +11713,7 @@ module stdlib_linalg_lapack
                pure subroutine claqz1( ilq, ilz, k, istartm, istopm, ihi, a, lda, b,ldb, nq, &
                          qstart, q, ldq, nz, zstart, z, ldz )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: ilq,ilz
                     integer(ilp), intent(in) :: k,lda,ldb,ldq,ldz,istartm,istopm,nq,nz,qstart,&
                               zstart,ihi
@@ -11722,7 +11725,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlaqz1( a, lda, b, ldb, sr1, sr2, si, beta1, beta2,v )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: lda,ldb
                     real(dp), intent(in) :: a(lda,*),b(ldb,*),sr1,sr2,si,beta1,beta2
                     real(dp), intent(out) :: v(*)
@@ -11733,7 +11736,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slaqz1( a, lda, b, ldb, sr1, sr2, si, beta1, beta2,v )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: lda,ldb
                     real(sp), intent(in) :: a(lda,*),b(ldb,*),sr1,sr2,si,beta1,beta2
                     real(sp), intent(out) :: v(*)
@@ -11745,7 +11748,7 @@ module stdlib_linalg_lapack
                pure subroutine zlaqz1( ilq, ilz, k, istartm, istopm, ihi, a, lda, b,ldb, nq, &
                          qstart, q, ldq, nz, zstart, z, ldz )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: ilq,ilz
                     integer(ilp), intent(in) :: k,lda,ldb,ldq,ldz,istartm,istopm,nq,nz,qstart,&
                               zstart,ihi
@@ -11763,7 +11766,7 @@ module stdlib_linalg_lapack
                 si, ss, a, lda, b, ldb, q,ldq, z, ldz, qc, ldqc, zc, ldzc, work, lwork,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: ilschur,ilq,ilz
                     integer(ilp), intent(in) :: n,ilo,ihi,lda,ldb,ldq,ldz,lwork,nshifts,&
                               nblock_desired,ldqc,ldzc
@@ -11781,7 +11784,7 @@ module stdlib_linalg_lapack
                 si, ss, a, lda, b, ldb, q,ldq, z, ldz, qc, ldqc, zc, ldzc, work, lwork,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: ilschur,ilq,ilz
                     integer(ilp), intent(in) :: n,ilo,ihi,lda,ldb,ldq,ldz,lwork,nshifts,&
                               nblock_desired,ldqc,ldzc
@@ -11816,7 +11819,7 @@ module stdlib_linalg_lapack
                pure subroutine clar1v( n, b1, bn, lambda, d, l, ld, lld,pivmin, gaptol, z, wantnc,&
                           negcnt, ztz, mingma,r, isuppz, nrminv, resid, rqcorr, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: wantnc
                     integer(ilp), intent(in) :: b1,bn,n
                     integer(ilp), intent(out) :: negcnt,isuppz(*)
@@ -11832,7 +11835,7 @@ module stdlib_linalg_lapack
                pure subroutine dlar1v( n, b1, bn, lambda, d, l, ld, lld,pivmin, gaptol, z, wantnc,&
                           negcnt, ztz, mingma,r, isuppz, nrminv, resid, rqcorr, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: wantnc
                     integer(ilp), intent(in) :: b1,bn,n
                     integer(ilp), intent(out) :: negcnt,isuppz(*)
@@ -11848,7 +11851,7 @@ module stdlib_linalg_lapack
                pure subroutine slar1v( n, b1, bn, lambda, d, l, ld, lld,pivmin, gaptol, z, wantnc,&
                           negcnt, ztz, mingma,r, isuppz, nrminv, resid, rqcorr, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: wantnc
                     integer(ilp), intent(in) :: b1,bn,n
                     integer(ilp), intent(out) :: negcnt,isuppz(*)
@@ -11864,7 +11867,7 @@ module stdlib_linalg_lapack
                pure subroutine zlar1v( n, b1, bn, lambda, d, l, ld, lld,pivmin, gaptol, z, wantnc,&
                           negcnt, ztz, mingma,r, isuppz, nrminv, resid, rqcorr, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: wantnc
                     integer(ilp), intent(in) :: b1,bn,n
                     integer(ilp), intent(out) :: negcnt,isuppz(*)
@@ -11889,7 +11892,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clar2v( n, x, y, z, incx, c, s, incc )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incc,incx,n
                     real(sp), intent(in) :: c(*)
                     complex(sp), intent(in) :: s(*)
@@ -11901,7 +11904,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlar2v( n, x, y, z, incx, c, s, incc )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incc,incx,n
                     real(dp), intent(in) :: c(*),s(*)
                     real(dp), intent(inout) :: x(*),y(*),z(*)
@@ -11912,7 +11915,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slar2v( n, x, y, z, incx, c, s, incc )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incc,incx,n
                     real(sp), intent(in) :: c(*),s(*)
                     real(sp), intent(inout) :: x(*),y(*),z(*)
@@ -11923,7 +11926,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlar2v( n, x, y, z, incx, c, s, incc )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incc,incx,n
                     real(dp), intent(in) :: c(*)
                     complex(dp), intent(in) :: s(*)
@@ -11942,7 +11945,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clarcm( m, n, a, lda, b, ldb, c, ldc, rwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: lda,ldb,ldc,m,n
                     real(sp), intent(in) :: a(lda,*)
                     real(sp), intent(out) :: rwork(*)
@@ -11955,7 +11958,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlarcm( m, n, a, lda, b, ldb, c, ldc, rwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: lda,ldb,ldc,m,n
                     real(dp), intent(in) :: a(lda,*)
                     real(dp), intent(out) :: rwork(*)
@@ -11979,7 +11982,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clarf( side, m, n, v, incv, tau, c, ldc, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side
                     integer(ilp), intent(in) :: incv,ldc,m,n
                     complex(sp), intent(in) :: tau,v(*)
@@ -11992,7 +11995,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlarf( side, m, n, v, incv, tau, c, ldc, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side
                     integer(ilp), intent(in) :: incv,ldc,m,n
                     real(dp), intent(in) :: tau,v(*)
@@ -12005,7 +12008,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slarf( side, m, n, v, incv, tau, c, ldc, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side
                     integer(ilp), intent(in) :: incv,ldc,m,n
                     real(sp), intent(in) :: tau,v(*)
@@ -12018,7 +12021,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlarf( side, m, n, v, incv, tau, c, ldc, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side
                     integer(ilp), intent(in) :: incv,ldc,m,n
                     complex(dp), intent(in) :: tau,v(*)
@@ -12037,7 +12040,7 @@ module stdlib_linalg_lapack
                pure subroutine clarfb( side, trans, direct, storev, m, n, k, v, ldv,t, ldt, c, &
                          ldc, work, ldwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,side,storev,trans
                     integer(ilp), intent(in) :: k,ldc,ldt,ldv,ldwork,m,n
                     complex(sp), intent(inout) :: c(ldc,*)
@@ -12051,7 +12054,7 @@ module stdlib_linalg_lapack
                pure subroutine dlarfb( side, trans, direct, storev, m, n, k, v, ldv,t, ldt, c, &
                          ldc, work, ldwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,side,storev,trans
                     integer(ilp), intent(in) :: k,ldc,ldt,ldv,ldwork,m,n
                     real(dp), intent(inout) :: c(ldc,*)
@@ -12065,7 +12068,7 @@ module stdlib_linalg_lapack
                pure subroutine slarfb( side, trans, direct, storev, m, n, k, v, ldv,t, ldt, c, &
                          ldc, work, ldwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,side,storev,trans
                     integer(ilp), intent(in) :: k,ldc,ldt,ldv,ldwork,m,n
                     real(sp), intent(inout) :: c(ldc,*)
@@ -12079,7 +12082,7 @@ module stdlib_linalg_lapack
                pure subroutine zlarfb( side, trans, direct, storev, m, n, k, v, ldv,t, ldt, c, &
                          ldc, work, ldwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,side,storev,trans
                     integer(ilp), intent(in) :: k,ldc,ldt,ldv,ldwork,m,n
                     complex(dp), intent(inout) :: c(ldc,*)
@@ -12103,7 +12106,7 @@ module stdlib_linalg_lapack
                pure subroutine clarfb_gett( ident, m, n, k, t, ldt, a, lda, b, ldb,work, ldwork )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: ident
                     integer(ilp), intent(in) :: k,lda,ldb,ldt,ldwork,m,n
                     complex(sp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -12117,7 +12120,7 @@ module stdlib_linalg_lapack
                pure subroutine dlarfb_gett( ident, m, n, k, t, ldt, a, lda, b, ldb,work, ldwork )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: ident
                     integer(ilp), intent(in) :: k,lda,ldb,ldt,ldwork,m,n
                     real(dp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -12131,7 +12134,7 @@ module stdlib_linalg_lapack
                pure subroutine slarfb_gett( ident, m, n, k, t, ldt, a, lda, b, ldb,work, ldwork )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: ident
                     integer(ilp), intent(in) :: k,lda,ldb,ldt,ldwork,m,n
                     real(sp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -12145,7 +12148,7 @@ module stdlib_linalg_lapack
                pure subroutine zlarfb_gett( ident, m, n, k, t, ldt, a, lda, b, ldb,work, ldwork )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: ident
                     integer(ilp), intent(in) :: k,lda,ldb,ldt,ldwork,m,n
                     complex(dp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -12174,7 +12177,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clarfg( n, alpha, x, incx, tau )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     complex(sp), intent(inout) :: alpha,x(*)
                     complex(sp), intent(out) :: tau
@@ -12185,7 +12188,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlarfg( n, alpha, x, incx, tau )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     real(dp), intent(inout) :: alpha,x(*)
                     real(dp), intent(out) :: tau
@@ -12196,7 +12199,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slarfg( n, alpha, x, incx, tau )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     real(sp), intent(inout) :: alpha,x(*)
                     real(sp), intent(out) :: tau
@@ -12207,7 +12210,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlarfg( n, alpha, x, incx, tau )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     complex(dp), intent(inout) :: alpha,x(*)
                     complex(dp), intent(out) :: tau
@@ -12233,7 +12236,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine clarfgp( n, alpha, x, incx, tau )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     complex(sp), intent(inout) :: alpha,x(*)
                     complex(sp), intent(out) :: tau
@@ -12244,7 +12247,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine dlarfgp( n, alpha, x, incx, tau )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     real(dp), intent(inout) :: alpha,x(*)
                     real(dp), intent(out) :: tau
@@ -12255,7 +12258,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine slarfgp( n, alpha, x, incx, tau )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     real(sp), intent(inout) :: alpha,x(*)
                     real(sp), intent(out) :: tau
@@ -12266,7 +12269,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine zlarfgp( n, alpha, x, incx, tau )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     complex(dp), intent(inout) :: alpha,x(*)
                     complex(dp), intent(out) :: tau
@@ -12290,7 +12293,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clarft( direct, storev, n, k, v, ldv, tau, t, ldt )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,storev
                     integer(ilp), intent(in) :: k,ldt,ldv,n
                     complex(sp), intent(out) :: t(ldt,*)
@@ -12302,7 +12305,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlarft( direct, storev, n, k, v, ldv, tau, t, ldt )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,storev
                     integer(ilp), intent(in) :: k,ldt,ldv,n
                     real(dp), intent(out) :: t(ldt,*)
@@ -12314,7 +12317,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slarft( direct, storev, n, k, v, ldv, tau, t, ldt )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,storev
                     integer(ilp), intent(in) :: k,ldt,ldv,n
                     real(sp), intent(out) :: t(ldt,*)
@@ -12326,7 +12329,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlarft( direct, storev, n, k, v, ldv, tau, t, ldt )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,storev
                     integer(ilp), intent(in) :: k,ldt,ldv,n
                     complex(dp), intent(out) :: t(ldt,*)
@@ -12347,7 +12350,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clarfy( uplo, n, v, incv, tau, c, ldc, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: incv,ldc,n
                     complex(sp), intent(in) :: tau,v(*)
@@ -12360,7 +12363,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlarfy( uplo, n, v, incv, tau, c, ldc, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: incv,ldc,n
                     real(dp), intent(in) :: tau,v(*)
@@ -12373,7 +12376,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slarfy( uplo, n, v, incv, tau, c, ldc, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: incv,ldc,n
                     real(sp), intent(in) :: tau,v(*)
@@ -12386,7 +12389,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlarfy( uplo, n, v, incv, tau, c, ldc, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: incv,ldc,n
                     complex(dp), intent(in) :: tau,v(*)
@@ -12412,7 +12415,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clargv( n, x, incx, y, incy, c, incc )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incc,incx,incy,n
                     real(sp), intent(out) :: c(*)
                     complex(sp), intent(inout) :: x(*),y(*)
@@ -12423,7 +12426,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlargv( n, x, incx, y, incy, c, incc )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incc,incx,incy,n
                     real(dp), intent(out) :: c(*)
                     real(dp), intent(inout) :: x(*),y(*)
@@ -12434,7 +12437,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slargv( n, x, incx, y, incy, c, incc )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incc,incx,incy,n
                     real(sp), intent(out) :: c(*)
                     real(sp), intent(inout) :: x(*),y(*)
@@ -12445,7 +12448,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlargv( n, x, incx, y, incy, c, incc )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incc,incx,incy,n
                     real(dp), intent(out) :: c(*)
                     complex(dp), intent(inout) :: x(*),y(*)
@@ -12461,7 +12464,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clarnv( idist, iseed, n, x )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: idist,n
                     integer(ilp), intent(inout) :: iseed(4)
                     complex(sp), intent(out) :: x(*)
@@ -12472,7 +12475,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlarnv( idist, iseed, n, x )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: idist,n
                     integer(ilp), intent(inout) :: iseed(4)
                     real(dp), intent(out) :: x(*)
@@ -12483,7 +12486,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slarnv( idist, iseed, n, x )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: idist,n
                     integer(ilp), intent(inout) :: iseed(4)
                     real(sp), intent(out) :: x(*)
@@ -12494,7 +12497,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlarnv( idist, iseed, n, x )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: idist,n
                     integer(ilp), intent(inout) :: iseed(4)
                     complex(dp), intent(out) :: x(*)
@@ -12510,7 +12513,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlarra( n, d, e, e2, spltol, tnrm,nsplit, isplit, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,nsplit,isplit(*)
                     integer(ilp), intent(in) :: n
                     real(dp), intent(in) :: spltol,tnrm,d(*)
@@ -12522,7 +12525,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slarra( n, d, e, e2, spltol, tnrm,nsplit, isplit, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,nsplit,isplit(*)
                     integer(ilp), intent(in) :: n
                     real(sp), intent(in) :: spltol,tnrm,d(*)
@@ -12546,7 +12549,7 @@ module stdlib_linalg_lapack
                pure subroutine dlarrb( n, d, lld, ifirst, ilast, rtol1,rtol2, offset, w, wgap, &
                          werr, work, iwork,pivmin, spdiam, twist, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ifirst,ilast,n,offset,twist
                     integer(ilp), intent(out) :: info,iwork(*)
                     real(dp), intent(in) :: pivmin,rtol1,rtol2,spdiam,d(*),lld(*)
@@ -12560,7 +12563,7 @@ module stdlib_linalg_lapack
                pure subroutine slarrb( n, d, lld, ifirst, ilast, rtol1,rtol2, offset, w, wgap, &
                          werr, work, iwork,pivmin, spdiam, twist, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ifirst,ilast,n,offset,twist
                     integer(ilp), intent(out) :: info,iwork(*)
                     real(sp), intent(in) :: pivmin,rtol1,rtol2,spdiam,d(*),lld(*)
@@ -12580,7 +12583,7 @@ module stdlib_linalg_lapack
                pure subroutine dlarrc( jobt, n, vl, vu, d, e, pivmin,eigcnt, lcnt, rcnt, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobt
                     integer(ilp), intent(out) :: eigcnt,info,lcnt,rcnt
                     integer(ilp), intent(in) :: n
@@ -12593,7 +12596,7 @@ module stdlib_linalg_lapack
                pure subroutine slarrc( jobt, n, vl, vu, d, e, pivmin,eigcnt, lcnt, rcnt, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobt
                     integer(ilp), intent(out) :: eigcnt,info,lcnt,rcnt
                     integer(ilp), intent(in) :: n
@@ -12622,7 +12625,7 @@ module stdlib_linalg_lapack
                pivmin, nsplit, isplit,m, w, werr, wl, wu, iblock, indexw,work, iwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: order,range
                     integer(ilp), intent(in) :: il,iu,n,nsplit,isplit(*)
                     integer(ilp), intent(out) :: info,m,iblock(*),indexw(*),iwork(*)
@@ -12637,7 +12640,7 @@ module stdlib_linalg_lapack
                pivmin, nsplit, isplit,m, w, werr, wl, wu, iblock, indexw,work, iwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: order,range
                     integer(ilp), intent(in) :: il,iu,n,nsplit,isplit(*)
                     integer(ilp), intent(out) :: info,m,iblock(*),indexw(*),iwork(*)
@@ -12668,7 +12671,7 @@ module stdlib_linalg_lapack
                nsplit, isplit, m,w, werr, wgap, iblock, indexw, gers, pivmin,work, iwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: range
                     integer(ilp), intent(in) :: il,iu,n
                     integer(ilp), intent(out) :: info,m,nsplit,iblock(*),isplit(*),iwork(*),&
@@ -12685,7 +12688,7 @@ module stdlib_linalg_lapack
                nsplit, isplit, m,w, werr, wgap, iblock, indexw, gers, pivmin,work, iwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: range
                     integer(ilp), intent(in) :: il,iu,n
                     integer(ilp), intent(out) :: info,m,nsplit,iblock(*),isplit(*),iwork(*),&
@@ -12709,7 +12712,7 @@ module stdlib_linalg_lapack
                pure subroutine dlarrf( n, d, l, ld, clstrt, clend,w, wgap, werr,spdiam, clgapl, &
                          clgapr, pivmin, sigma,dplus, lplus, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: clstrt,clend,n
                     integer(ilp), intent(out) :: info
                     real(dp), intent(in) :: clgapl,clgapr,pivmin,spdiam,d(*),l(*),ld(*),w(*),werr(&
@@ -12724,7 +12727,7 @@ module stdlib_linalg_lapack
                pure subroutine slarrf( n, d, l, ld, clstrt, clend,w, wgap, werr,spdiam, clgapl, &
                          clgapr, pivmin, sigma,dplus, lplus, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: clstrt,clend,n
                     integer(ilp), intent(out) :: info
                     real(sp), intent(in) :: clgapl,clgapr,pivmin,spdiam,d(*),l(*),ld(*),w(*),werr(&
@@ -12749,7 +12752,7 @@ module stdlib_linalg_lapack
                pure subroutine dlarrj( n, d, e2, ifirst, ilast,rtol, offset, w, werr, work, iwork,&
                          pivmin, spdiam, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ifirst,ilast,n,offset
                     integer(ilp), intent(out) :: info,iwork(*)
                     real(dp), intent(in) :: pivmin,rtol,spdiam,d(*),e2(*)
@@ -12763,7 +12766,7 @@ module stdlib_linalg_lapack
                pure subroutine slarrj( n, d, e2, ifirst, ilast,rtol, offset, w, werr, work, iwork,&
                          pivmin, spdiam, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ifirst,ilast,n,offset
                     integer(ilp), intent(out) :: info,iwork(*)
                     real(sp), intent(in) :: pivmin,rtol,spdiam,d(*),e2(*)
@@ -12788,7 +12791,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlarrk( n, iw, gl, gu,d, e2, pivmin, reltol, w, werr, info)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: iw,n
                     real(dp), intent(in) :: pivmin,reltol,gl,gu,d(*),e2(*)
@@ -12800,7 +12803,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slarrk( n, iw, gl, gu,d, e2, pivmin, reltol, w, werr, info)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: iw,n
                     real(sp), intent(in) :: pivmin,reltol,gl,gu,d(*),e2(*)
@@ -12818,7 +12821,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlarrr( n, d, e, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: n
                     integer(ilp), intent(out) :: info
                     real(dp), intent(in) :: d(*)
@@ -12830,7 +12833,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slarrr( n, d, e, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: n
                     integer(ilp), intent(out) :: info
                     real(sp), intent(in) :: d(*)
@@ -12850,7 +12853,7 @@ module stdlib_linalg_lapack
                rtol2, w, werr, wgap,iblock, indexw, gers, z, ldz, isuppz,work, iwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: dol,dou,ldz,m,n,iblock(*),indexw(*),isplit(*)
 
                     integer(ilp), intent(out) :: info,isuppz(*),iwork(*)
@@ -12867,7 +12870,7 @@ module stdlib_linalg_lapack
                rtol2, w, werr, wgap,iblock, indexw, gers, z, ldz, isuppz,work, iwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: dol,dou,ldz,m,n,iblock(*),indexw(*),isplit(*)
 
                     integer(ilp), intent(out) :: info,isuppz(*),iwork(*)
@@ -12883,7 +12886,7 @@ module stdlib_linalg_lapack
                rtol2, w, werr, wgap,iblock, indexw, gers, z, ldz, isuppz,work, iwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: dol,dou,ldz,m,n,iblock(*),indexw(*),isplit(*)
 
                     integer(ilp), intent(out) :: info,isuppz(*),iwork(*)
@@ -12899,7 +12902,7 @@ module stdlib_linalg_lapack
                rtol2, w, werr, wgap,iblock, indexw, gers, z, ldz, isuppz,work, iwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: dol,dou,ldz,m,n,iblock(*),indexw(*),isplit(*)
 
                     integer(ilp), intent(out) :: info,isuppz(*),iwork(*)
@@ -12939,7 +12942,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slartg( f, g, c, s, r )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(out) :: c
                     real(sp), intent(in) :: f,g
                     real(sp), intent(out) :: r,s
@@ -12950,7 +12953,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlartg( f, g, c, s, r )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(out) :: c
                     real(dp), intent(in) :: f,g
                     real(dp), intent(out) :: r,s
@@ -12961,7 +12964,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clartg( f, g, c, s, r )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(out) :: c
                     complex(sp), intent(in) :: f,g
                     complex(sp), intent(out) :: r,s
@@ -12972,7 +12975,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlartg( f, g, c, s, r )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(out) :: c
                     complex(dp), intent(in) :: f,g
                     complex(dp), intent(out) :: r,s
@@ -12995,7 +12998,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slartgp( f, g, cs, sn, r )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(out) :: cs,r,sn
                     real(sp), intent(in) :: f,g
                end subroutine slartgp
@@ -13005,7 +13008,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlartgp( f, g, cs, sn, r )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(out) :: cs,r,sn
                     real(dp), intent(in) :: f,g
                end subroutine dlartgp
@@ -13026,7 +13029,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slartgs( x, y, sigma, cs, sn )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(out) :: cs,sn
                     real(sp), intent(in) :: sigma,x,y
                end subroutine slartgs
@@ -13036,7 +13039,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlartgs( x, y, sigma, cs, sn )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(out) :: cs,sn
                     real(dp), intent(in) :: sigma,x,y
                end subroutine dlartgs
@@ -13053,7 +13056,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clartv( n, x, incx, y, incy, c, s, incc )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incc,incx,incy,n
                     real(sp), intent(in) :: c(*)
                     complex(sp), intent(in) :: s(*)
@@ -13065,7 +13068,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlartv( n, x, incx, y, incy, c, s, incc )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incc,incx,incy,n
                     real(dp), intent(in) :: c(*),s(*)
                     real(dp), intent(inout) :: x(*),y(*)
@@ -13076,7 +13079,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slartv( n, x, incx, y, incy, c, s, incc )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incc,incx,incy,n
                     real(sp), intent(in) :: c(*),s(*)
                     real(sp), intent(inout) :: x(*),y(*)
@@ -13087,7 +13090,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlartv( n, x, incx, y, incy, c, s, incc )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incc,incx,incy,n
                     real(dp), intent(in) :: c(*)
                     complex(dp), intent(in) :: s(*)
@@ -13105,7 +13108,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlaruv( iseed, n, x )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: n
                     integer(ilp), intent(inout) :: iseed(4)
                     real(dp), intent(out) :: x(n)
@@ -13116,7 +13119,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slaruv( iseed, n, x )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: n
                     integer(ilp), intent(inout) :: iseed(4)
                     real(sp), intent(out) :: x(n)
@@ -13139,7 +13142,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clarz( side, m, n, l, v, incv, tau, c, ldc, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side
                     integer(ilp), intent(in) :: incv,l,ldc,m,n
                     complex(sp), intent(in) :: tau,v(*)
@@ -13152,7 +13155,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlarz( side, m, n, l, v, incv, tau, c, ldc, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side
                     integer(ilp), intent(in) :: incv,l,ldc,m,n
                     real(dp), intent(in) :: tau,v(*)
@@ -13165,7 +13168,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slarz( side, m, n, l, v, incv, tau, c, ldc, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side
                     integer(ilp), intent(in) :: incv,l,ldc,m,n
                     real(sp), intent(in) :: tau,v(*)
@@ -13178,7 +13181,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlarz( side, m, n, l, v, incv, tau, c, ldc, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side
                     integer(ilp), intent(in) :: incv,l,ldc,m,n
                     complex(dp), intent(in) :: tau,v(*)
@@ -13198,7 +13201,7 @@ module stdlib_linalg_lapack
                pure subroutine clarzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
                          ldc, work, ldwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,side,storev,trans
                     integer(ilp), intent(in) :: k,l,ldc,ldt,ldv,ldwork,m,n
                     complex(sp), intent(inout) :: c(ldc,*),t(ldt,*),v(ldv,*)
@@ -13211,7 +13214,7 @@ module stdlib_linalg_lapack
                pure subroutine dlarzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
                          ldc, work, ldwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,side,storev,trans
                     integer(ilp), intent(in) :: k,l,ldc,ldt,ldv,ldwork,m,n
                     real(dp), intent(inout) :: c(ldc,*),t(ldt,*),v(ldv,*)
@@ -13224,7 +13227,7 @@ module stdlib_linalg_lapack
                pure subroutine slarzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
                          ldc, work, ldwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,side,storev,trans
                     integer(ilp), intent(in) :: k,l,ldc,ldt,ldv,ldwork,m,n
                     real(sp), intent(inout) :: c(ldc,*),t(ldt,*),v(ldv,*)
@@ -13237,7 +13240,7 @@ module stdlib_linalg_lapack
                pure subroutine zlarzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
                          ldc, work, ldwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,side,storev,trans
                     integer(ilp), intent(in) :: k,l,ldc,ldt,ldv,ldwork,m,n
                     complex(dp), intent(inout) :: c(ldc,*),t(ldt,*),v(ldv,*)
@@ -13264,7 +13267,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clarzt( direct, storev, n, k, v, ldv, tau, t, ldt )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,storev
                     integer(ilp), intent(in) :: k,ldt,ldv,n
                     complex(sp), intent(out) :: t(ldt,*)
@@ -13277,7 +13280,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlarzt( direct, storev, n, k, v, ldv, tau, t, ldt )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,storev
                     integer(ilp), intent(in) :: k,ldt,ldv,n
                     real(dp), intent(out) :: t(ldt,*)
@@ -13290,7 +13293,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slarzt( direct, storev, n, k, v, ldv, tau, t, ldt )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,storev
                     integer(ilp), intent(in) :: k,ldt,ldv,n
                     real(sp), intent(out) :: t(ldt,*)
@@ -13303,7 +13306,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlarzt( direct, storev, n, k, v, ldv, tau, t, ldt )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,storev
                     integer(ilp), intent(in) :: k,ldt,ldv,n
                     complex(dp), intent(out) :: t(ldt,*)
@@ -13324,7 +13327,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clascl( type, kl, ku, cfrom, cto, m, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: type
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,lda,m,n
@@ -13337,7 +13340,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlascl( type, kl, ku, cfrom, cto, m, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: type
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,lda,m,n
@@ -13350,7 +13353,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slascl( type, kl, ku, cfrom, cto, m, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: type
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,lda,m,n
@@ -13363,7 +13366,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlascl( type, kl, ku, cfrom, cto, m, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: type
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kl,ku,lda,m,n
@@ -13387,7 +13390,7 @@ module stdlib_linalg_lapack
                pure subroutine dlasd0( n, sqre, d, e, u, ldu, vt, ldvt, smlsiz, iwork,work, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldu,ldvt,n,smlsiz,sqre
                     real(dp), intent(inout) :: d(*),e(*)
@@ -13400,7 +13403,7 @@ module stdlib_linalg_lapack
                pure subroutine slasd0( n, sqre, d, e, u, ldu, vt, ldvt, smlsiz, iwork,work, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldu,ldvt,n,smlsiz,sqre
                     real(sp), intent(inout) :: d(*),e(*)
@@ -13445,7 +13448,7 @@ module stdlib_linalg_lapack
                pure subroutine dlasd1( nl, nr, sqre, d, alpha, beta, u, ldu, vt, ldvt,idxq, iwork,&
                           work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldu,ldvt,nl,nr,sqre
                     real(dp), intent(inout) :: alpha,beta,d(*),u(ldu,*),vt(ldvt,*)
@@ -13459,7 +13462,7 @@ module stdlib_linalg_lapack
                pure subroutine slasd1( nl, nr, sqre, d, alpha, beta, u, ldu, vt, ldvt,idxq, iwork,&
                           work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldu,ldvt,nl,nr,sqre
                     real(sp), intent(inout) :: alpha,beta,d(*),u(ldu,*),vt(ldvt,*)
@@ -13486,7 +13489,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlasd4( n, i, d, z, delta, rho, sigma, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: i,n
                     integer(ilp), intent(out) :: info
                     real(dp), intent(in) :: rho,d(*),z(*)
@@ -13498,7 +13501,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slasd4( n, i, d, z, delta, rho, sigma, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: i,n
                     integer(ilp), intent(out) :: info
                     real(sp), intent(in) :: rho,d(*),z(*)
@@ -13521,7 +13524,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlasd5( i, d, z, delta, rho, dsigma, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: i
                     real(dp), intent(out) :: dsigma,delta(2),work(2)
                     real(dp), intent(in) :: rho,d(2),z(2)
@@ -13532,7 +13535,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slasd5( i, d, z, delta, rho, dsigma, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: i
                     real(sp), intent(out) :: dsigma,delta(2),work(2)
                     real(sp), intent(in) :: rho,d(2),z(2)
@@ -13583,7 +13586,7 @@ module stdlib_linalg_lapack
                givptr, givcol, ldgcol, givnum,ldgnum, poles, difl, difr, z, k, c, s, work,iwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: givptr,info,k,givcol(ldgcol,*),iwork(*),perm(*)
 
                     integer(ilp), intent(in) :: icompq,ldgcol,ldgnum,nl,nr,sqre
@@ -13600,7 +13603,7 @@ module stdlib_linalg_lapack
                givptr, givcol, ldgcol, givnum,ldgnum, poles, difl, difr, z, k, c, s, work,iwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: givptr,info,k,givcol(ldgcol,*),iwork(*),perm(*)
 
                     integer(ilp), intent(in) :: icompq,ldgcol,ldgnum,nl,nr,sqre
@@ -13627,7 +13630,7 @@ module stdlib_linalg_lapack
                beta, dsigma, idx, idxp, idxq,perm, givptr, givcol, ldgcol, givnum, ldgnum,c, s, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: givptr,info,k,givcol(ldgcol,*),idx(*),idxp(*),&
                               perm(*)
                     integer(ilp), intent(in) :: icompq,ldgcol,ldgnum,nl,nr,sqre
@@ -13645,7 +13648,7 @@ module stdlib_linalg_lapack
                beta, dsigma, idx, idxp, idxq,perm, givptr, givcol, ldgcol, givnum, ldgnum,c, s, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: givptr,info,k,givcol(ldgcol,*),idx(*),idxp(*),&
                               perm(*)
                     integer(ilp), intent(in) :: icompq,ldgcol,ldgnum,nl,nr,sqre
@@ -13672,7 +13675,7 @@ module stdlib_linalg_lapack
                pure subroutine dlasd8( icompq, k, d, z, vf, vl, difl, difr, lddifr,dsigma, work, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: icompq,k,lddifr
                     integer(ilp), intent(out) :: info
                     real(dp), intent(out) :: d(*),difl(*),difr(lddifr,*),work(*)
@@ -13685,7 +13688,7 @@ module stdlib_linalg_lapack
                pure subroutine slasd8( icompq, k, d, z, vf, vl, difl, difr, lddifr,dsigma, work, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: icompq,k,lddifr
                     integer(ilp), intent(out) :: info
                     real(sp), intent(out) :: d(*),difl(*),difr(lddifr,*),work(*)
@@ -13709,7 +13712,7 @@ module stdlib_linalg_lapack
                pure subroutine dlasda( icompq, smlsiz, n, sqre, d, e, u, ldu, vt, k,difl, difr, z,&
                           poles, givptr, givcol, ldgcol,perm, givnum, c, s, work, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: icompq,ldgcol,ldu,n,smlsiz,sqre
                     integer(ilp), intent(out) :: info,givcol(ldgcol,*),givptr(*),iwork(*),k(*),&
                               perm(ldgcol,*)
@@ -13724,7 +13727,7 @@ module stdlib_linalg_lapack
                pure subroutine slasda( icompq, smlsiz, n, sqre, d, e, u, ldu, vt, k,difl, difr, z,&
                           poles, givptr, givcol, ldgcol,perm, givnum, c, s, work, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: icompq,ldgcol,ldu,n,smlsiz,sqre
                     integer(ilp), intent(out) :: info,givcol(ldgcol,*),givptr(*),iwork(*),k(*),&
                               perm(ldgcol,*)
@@ -13754,7 +13757,7 @@ module stdlib_linalg_lapack
                pure subroutine dlasdq( uplo, sqre, n, ncvt, nru, ncc, d, e, vt, ldvt,u, ldu, c, &
                          ldc, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldc,ldu,ldvt,n,ncc,ncvt,nru,sqre
@@ -13768,7 +13771,7 @@ module stdlib_linalg_lapack
                pure subroutine slasdq( uplo, sqre, n, ncvt, nru, ncc, d, e, vt, ldvt,u, ldu, c, &
                          ldc, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldc,ldu,ldvt,n,ncc,ncvt,nru,sqre
@@ -13786,7 +13789,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine claset( uplo, m, n, alpha, beta, a, lda )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: lda,m,n
                     complex(sp), intent(in) :: alpha,beta
@@ -13798,7 +13801,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlaset( uplo, m, n, alpha, beta, a, lda )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: lda,m,n
                     real(dp), intent(in) :: alpha,beta
@@ -13810,7 +13813,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slaset( uplo, m, n, alpha, beta, a, lda )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: lda,m,n
                     real(sp), intent(in) :: alpha,beta
@@ -13822,7 +13825,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlaset( uplo, m, n, alpha, beta, a, lda )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: lda,m,n
                     complex(dp), intent(in) :: alpha,beta
@@ -13847,7 +13850,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlasq1( n, d, e, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
                     real(dp), intent(inout) :: d(*),e(*)
@@ -13859,7 +13862,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slasq1( n, d, e, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
                     real(sp), intent(inout) :: d(*),e(*)
@@ -13877,7 +13880,7 @@ module stdlib_linalg_lapack
                pure subroutine dlasq4( i0, n0, z, pp, n0in, dmin, dmin1, dmin2, dn,dn1, dn2, tau, &
                          ttype, g )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: i0,n0,n0in,pp
                     integer(ilp), intent(out) :: ttype
                     real(dp), intent(in) :: dmin,dmin1,dmin2,dn,dn1,dn2,z(*)
@@ -13891,7 +13894,7 @@ module stdlib_linalg_lapack
                pure subroutine slasq4( i0, n0, z, pp, n0in, dmin, dmin1, dmin2, dn,dn1, dn2, tau, &
                          ttype, g )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: i0,n0,n0in,pp
                     integer(ilp), intent(out) :: ttype
                     real(sp), intent(in) :: dmin,dmin1,dmin2,dn,dn1,dn2,z(*)
@@ -13910,7 +13913,7 @@ module stdlib_linalg_lapack
                pure subroutine dlasq5( i0, n0, z, pp, tau, sigma, dmin, dmin1, dmin2,dn, dnm1, &
                          dnm2, ieee, eps )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: ieee
                     integer(ilp), intent(in) :: i0,n0,pp
                     real(dp), intent(out) :: dmin,dmin1,dmin2,dn,dnm1,dnm2
@@ -13924,7 +13927,7 @@ module stdlib_linalg_lapack
                pure subroutine slasq5( i0, n0, z, pp, tau, sigma, dmin, dmin1, dmin2,dn, dnm1, &
                          dnm2, ieee, eps )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: ieee
                     integer(ilp), intent(in) :: i0,n0,pp
                     real(sp), intent(out) :: dmin,dmin1,dmin2,dn,dnm1,dnm2
@@ -13942,7 +13945,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlasq6( i0, n0, z, pp, dmin, dmin1, dmin2, dn,dnm1, dnm2 )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: i0,n0,pp
                     real(dp), intent(out) :: dmin,dmin1,dmin2,dn,dnm1,dnm2
                     real(dp), intent(inout) :: z(*)
@@ -13953,7 +13956,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slasq6( i0, n0, z, pp, dmin, dmin1, dmin2, dn,dnm1, dnm2 )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: i0,n0,pp
                     real(sp), intent(out) :: dmin,dmin1,dmin2,dn,dnm1,dnm2
                     real(sp), intent(inout) :: z(*)
@@ -14018,7 +14021,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clasr( side, pivot, direct, m, n, c, s, a, lda )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,pivot,side
                     integer(ilp), intent(in) :: lda,m,n
                     real(sp), intent(in) :: c(*),s(*)
@@ -14030,7 +14033,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlasr( side, pivot, direct, m, n, c, s, a, lda )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,pivot,side
                     integer(ilp), intent(in) :: lda,m,n
                     real(dp), intent(inout) :: a(lda,*)
@@ -14042,7 +14045,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slasr( side, pivot, direct, m, n, c, s, a, lda )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,pivot,side
                     integer(ilp), intent(in) :: lda,m,n
                     real(sp), intent(inout) :: a(lda,*)
@@ -14054,7 +14057,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlasr( side, pivot, direct, m, n, c, s, a, lda )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,pivot,side
                     integer(ilp), intent(in) :: lda,m,n
                     real(dp), intent(in) :: c(*),s(*)
@@ -14073,7 +14076,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlasrt( id, n, d, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: id
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -14085,7 +14088,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slasrt( id, n, d, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: id
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -14118,7 +14121,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine classq( n, x, incx, scl, sumsq )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     real(sp), intent(inout) :: scl,sumsq
                     complex(sp), intent(in) :: x(*)
@@ -14129,7 +14132,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlassq( n, x, incx, scl, sumsq )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     real(dp), intent(inout) :: scl,sumsq
                     real(dp), intent(in) :: x(*)
@@ -14140,7 +14143,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slassq( n, x, incx, scl, sumsq )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     real(sp), intent(inout) :: scl,sumsq
                     real(sp), intent(in) :: x(*)
@@ -14151,7 +14154,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlassq( n, x, incx, scl, sumsq )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     real(dp), intent(inout) :: scl,sumsq
                     complex(dp), intent(in) :: x(*)
@@ -14175,7 +14178,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine claswlq( m, n, mb, nb, a, lda, t, ldt, work, lwork,info)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,mb,nb,lwork,ldt
                     complex(sp), intent(inout) :: a(lda,*)
@@ -14187,7 +14190,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlaswlq( m, n, mb, nb, a, lda, t, ldt, work, lwork,info)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,mb,nb,lwork,ldt
                     real(dp), intent(inout) :: a(lda,*)
@@ -14199,7 +14202,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slaswlq( m, n, mb, nb, a, lda, t, ldt, work, lwork,info)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,mb,nb,lwork,ldt
                     real(sp), intent(inout) :: a(lda,*)
@@ -14211,7 +14214,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlaswlq( m, n, mb, nb, a, lda, t, ldt, work, lwork,info)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,mb,nb,lwork,ldt
                     complex(dp), intent(inout) :: a(lda,*)
@@ -14228,7 +14231,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine claswp( n, a, lda, k1, k2, ipiv, incx )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,k1,k2,lda,n,ipiv(*)
                     complex(sp), intent(inout) :: a(lda,*)
                end subroutine claswp
@@ -14238,7 +14241,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlaswp( n, a, lda, k1, k2, ipiv, incx )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,k1,k2,lda,n,ipiv(*)
                     real(dp), intent(inout) :: a(lda,*)
                end subroutine dlaswp
@@ -14248,7 +14251,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slaswp( n, a, lda, k1, k2, ipiv, incx )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,k1,k2,lda,n,ipiv(*)
                     real(sp), intent(inout) :: a(lda,*)
                end subroutine slaswp
@@ -14258,7 +14261,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlaswp( n, a, lda, k1, k2, ipiv, incx )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,k1,k2,lda,n,ipiv(*)
                     complex(dp), intent(inout) :: a(lda,*)
                end subroutine zlaswp
@@ -14284,7 +14287,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clasyf( uplo, n, nb, kb, a, lda, ipiv, w, ldw, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,kb,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldw,n,nb
@@ -14297,7 +14300,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlasyf( uplo, n, nb, kb, a, lda, ipiv, w, ldw, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,kb,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldw,n,nb
@@ -14310,7 +14313,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slasyf( uplo, n, nb, kb, a, lda, ipiv, w, ldw, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,kb,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldw,n,nb
@@ -14323,7 +14326,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlasyf( uplo, n, nb, kb, a, lda, ipiv, w, ldw, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,kb,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldw,n,nb
@@ -14349,7 +14352,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clasyf_aa( uplo, j1, m, nb, a, lda, ipiv,h, ldh, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: m,nb,j1,lda,ldh
                     integer(ilp), intent(out) :: ipiv(*)
@@ -14362,7 +14365,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlasyf_aa( uplo, j1, m, nb, a, lda, ipiv,h, ldh, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: m,nb,j1,lda,ldh
                     integer(ilp), intent(out) :: ipiv(*)
@@ -14375,7 +14378,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slasyf_aa( uplo, j1, m, nb, a, lda, ipiv,h, ldh, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: m,nb,j1,lda,ldh
                     integer(ilp), intent(out) :: ipiv(*)
@@ -14388,7 +14391,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlasyf_aa( uplo, j1, m, nb, a, lda, ipiv,h, ldh, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: m,nb,j1,lda,ldh
                     integer(ilp), intent(out) :: ipiv(*)
@@ -14416,7 +14419,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clasyf_rk( uplo, n, nb, kb, a, lda, e, ipiv, w, ldw,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,kb,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldw,n,nb
@@ -14429,7 +14432,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlasyf_rk( uplo, n, nb, kb, a, lda, e, ipiv, w, ldw,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,kb,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldw,n,nb
@@ -14442,7 +14445,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slasyf_rk( uplo, n, nb, kb, a, lda, e, ipiv, w, ldw,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,kb,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldw,n,nb
@@ -14455,7 +14458,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlasyf_rk( uplo, n, nb, kb, a, lda, e, ipiv, w, ldw,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,kb,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldw,n,nb
@@ -14483,7 +14486,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clasyf_rook( uplo, n, nb, kb, a, lda, ipiv, w, ldw,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,kb,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldw,n,nb
@@ -14496,7 +14499,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlasyf_rook( uplo, n, nb, kb, a, lda, ipiv, w, ldw,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,kb,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldw,n,nb
@@ -14509,7 +14512,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slasyf_rook( uplo, n, nb, kb, a, lda, ipiv, w, ldw,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,kb,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldw,n,nb
@@ -14522,7 +14525,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlasyf_rook( uplo, n, nb, kb, a, lda, ipiv, w, ldw,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,kb,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldw,n,nb
@@ -14549,7 +14552,7 @@ module stdlib_linalg_lapack
                pure subroutine clatbs( uplo, trans, diag, normin, n, kd, ab, ldab, x,scale, cnorm,&
                           info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,normin,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -14565,7 +14568,7 @@ module stdlib_linalg_lapack
                pure subroutine dlatbs( uplo, trans, diag, normin, n, kd, ab, ldab, x,scale, cnorm,&
                           info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,normin,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -14580,7 +14583,7 @@ module stdlib_linalg_lapack
                pure subroutine slatbs( uplo, trans, diag, normin, n, kd, ab, ldab, x,scale, cnorm,&
                           info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,normin,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -14595,7 +14598,7 @@ module stdlib_linalg_lapack
                pure subroutine zlatbs( uplo, trans, diag, normin, n, kd, ab, ldab, x,scale, cnorm,&
                           info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,normin,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -14621,7 +14624,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clatdf( ijob, n, z, ldz, rhs, rdsum, rdscal, ipiv,jpiv )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ijob,ldz,n,ipiv(*),jpiv(*)
                     real(sp), intent(inout) :: rdscal,rdsum
                     complex(sp), intent(inout) :: rhs(*),z(ldz,*)
@@ -14632,7 +14635,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlatdf( ijob, n, z, ldz, rhs, rdsum, rdscal, ipiv,jpiv )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ijob,ldz,n,ipiv(*),jpiv(*)
                     real(dp), intent(inout) :: rdscal,rdsum,rhs(*),z(ldz,*)
                end subroutine dlatdf
@@ -14642,7 +14645,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slatdf( ijob, n, z, ldz, rhs, rdsum, rdscal, ipiv,jpiv )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ijob,ldz,n,ipiv(*),jpiv(*)
                     real(sp), intent(inout) :: rdscal,rdsum,rhs(*),z(ldz,*)
                end subroutine slatdf
@@ -14652,7 +14655,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlatdf( ijob, n, z, ldz, rhs, rdsum, rdscal, ipiv,jpiv )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ijob,ldz,n,ipiv(*),jpiv(*)
                     real(dp), intent(inout) :: rdscal,rdsum
                     complex(dp), intent(inout) :: rhs(*),z(ldz,*)
@@ -14678,7 +14681,7 @@ module stdlib_linalg_lapack
                pure subroutine clatps( uplo, trans, diag, normin, n, ap, x, scale,cnorm, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,normin,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -14694,7 +14697,7 @@ module stdlib_linalg_lapack
                pure subroutine dlatps( uplo, trans, diag, normin, n, ap, x, scale,cnorm, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,normin,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -14709,7 +14712,7 @@ module stdlib_linalg_lapack
                pure subroutine slatps( uplo, trans, diag, normin, n, ap, x, scale,cnorm, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,normin,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -14724,7 +14727,7 @@ module stdlib_linalg_lapack
                pure subroutine zlatps( uplo, trans, diag, normin, n, ap, x, scale,cnorm, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,normin,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -14751,7 +14754,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clatrd( uplo, n, nb, a, lda, e, tau, w, ldw )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: lda,ldw,n,nb
                     real(sp), intent(out) :: e(*)
@@ -14764,7 +14767,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlatrd( uplo, n, nb, a, lda, e, tau, w, ldw )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: lda,ldw,n,nb
                     real(dp), intent(inout) :: a(lda,*)
@@ -14776,7 +14779,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slatrd( uplo, n, nb, a, lda, e, tau, w, ldw )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: lda,ldw,n,nb
                     real(sp), intent(inout) :: a(lda,*)
@@ -14788,7 +14791,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlatrd( uplo, n, nb, a, lda, e, tau, w, ldw )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: lda,ldw,n,nb
                     real(dp), intent(out) :: e(*)
@@ -14815,7 +14818,7 @@ module stdlib_linalg_lapack
                pure subroutine clatrs( uplo, trans, diag, normin, n, a, lda, x, scale,cnorm, info &
                          )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,normin,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -14831,7 +14834,7 @@ module stdlib_linalg_lapack
                pure subroutine dlatrs( uplo, trans, diag, normin, n, a, lda, x, scale,cnorm, info &
                          )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,normin,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -14846,7 +14849,7 @@ module stdlib_linalg_lapack
                pure subroutine slatrs( uplo, trans, diag, normin, n, a, lda, x, scale,cnorm, info &
                          )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,normin,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -14861,7 +14864,7 @@ module stdlib_linalg_lapack
                pure subroutine zlatrs( uplo, trans, diag, normin, n, a, lda, x, scale,cnorm, info &
                          )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,normin,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -14883,7 +14886,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clatrz( m, n, l, a, lda, tau, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: l,lda,m,n
                     complex(sp), intent(inout) :: a(lda,*)
                     complex(sp), intent(out) :: tau(*),work(*)
@@ -14894,7 +14897,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlatrz( m, n, l, a, lda, tau, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: l,lda,m,n
                     real(dp), intent(inout) :: a(lda,*)
                     real(dp), intent(out) :: tau(*),work(*)
@@ -14905,7 +14908,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slatrz( m, n, l, a, lda, tau, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: l,lda,m,n
                     real(sp), intent(inout) :: a(lda,*)
                     real(sp), intent(out) :: tau(*),work(*)
@@ -14916,7 +14919,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlatrz( m, n, l, a, lda, tau, work )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: l,lda,m,n
                     complex(dp), intent(inout) :: a(lda,*)
                     complex(dp), intent(out) :: tau(*),work(*)
@@ -14941,7 +14944,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clatsqr( m, n, mb, nb, a, lda, t, ldt, work,lwork, info)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,mb,nb,ldt,lwork
                     complex(sp), intent(inout) :: a(lda,*)
@@ -14953,7 +14956,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlatsqr( m, n, mb, nb, a, lda, t, ldt, work,lwork, info)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,mb,nb,ldt,lwork
                     real(dp), intent(inout) :: a(lda,*)
@@ -14965,7 +14968,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slatsqr( m, n, mb, nb, a, lda, t, ldt, work,lwork, info)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,mb,nb,ldt,lwork
                     real(sp), intent(inout) :: a(lda,*)
@@ -14977,7 +14980,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlatsqr( m, n, mb, nb, a, lda, t, ldt, work,lwork, info)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n,mb,nb,ldt,lwork
                     complex(dp), intent(inout) :: a(lda,*)
@@ -15025,7 +15028,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine claunhr_col_getrfnp( m, n, a, lda, d, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n
                     complex(sp), intent(inout) :: a(lda,*)
@@ -15037,7 +15040,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlaunhr_col_getrfnp( m, n, a, lda, d, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n
                     complex(dp), intent(inout) :: a(lda,*)
@@ -15100,7 +15103,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure recursive subroutine claunhr_col_getrfnp2( m, n, a, lda, d, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n
                     complex(sp), intent(inout) :: a(lda,*)
@@ -15112,7 +15115,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure recursive subroutine zlaunhr_col_getrfnp2( m, n, a, lda, d, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,m,n
                     complex(dp), intent(inout) :: a(lda,*)
@@ -15135,7 +15138,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine clauum( uplo, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -15147,7 +15150,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dlauum( uplo, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -15159,7 +15162,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine slauum( uplo, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -15171,7 +15174,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zlauum( uplo, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -15191,7 +15194,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dopgtr( uplo, n, ap, tau, q, ldq, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldq,n
@@ -15204,7 +15207,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sopgtr( uplo, n, ap, tau, q, ldq, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldq,n
@@ -15231,7 +15234,7 @@ module stdlib_linalg_lapack
                pure subroutine dopmtr( side, uplo, trans, m, n, ap, tau, c, ldc, work,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldc,m,n
@@ -15246,7 +15249,7 @@ module stdlib_linalg_lapack
                pure subroutine sopmtr( side, uplo, trans, m, n, ap, tau, c, ldc, work,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldc,m,n
@@ -15280,7 +15283,7 @@ module stdlib_linalg_lapack
                subroutine dorbdb( trans, signs, m, p, q, x11, ldx11, x12, ldx12,x21, ldx21, x22, &
                          ldx22, theta, phi, taup1,taup2, tauq1, tauq2, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: signs,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldx11,ldx12,ldx21,ldx22,lwork,m,p,q
@@ -15296,7 +15299,7 @@ module stdlib_linalg_lapack
                subroutine sorbdb( trans, signs, m, p, q, x11, ldx11, x12, ldx12,x21, ldx21, x22, &
                          ldx22, theta, phi, taup1,taup2, tauq1, tauq2, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: signs,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldx11,ldx12,ldx21,ldx22,lwork,m,p,q
@@ -15330,7 +15333,7 @@ module stdlib_linalg_lapack
                subroutine dorbdb1( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, &
                          tauq1, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lwork,m,p,q,ldx11,ldx21
                     real(dp), intent(out) :: phi(*),theta(*),taup1(*),taup2(*),tauq1(*),work(*)
@@ -15344,7 +15347,7 @@ module stdlib_linalg_lapack
                subroutine sorbdb1( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, &
                          tauq1, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lwork,m,p,q,ldx11,ldx21
                     real(sp), intent(out) :: phi(*),theta(*),taup1(*),taup2(*),tauq1(*),work(*)
@@ -15376,7 +15379,7 @@ module stdlib_linalg_lapack
                subroutine dorbdb2( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, &
                          tauq1, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lwork,m,p,q,ldx11,ldx21
                     real(dp), intent(out) :: phi(*),theta(*),taup1(*),taup2(*),tauq1(*),work(*)
@@ -15390,7 +15393,7 @@ module stdlib_linalg_lapack
                subroutine sorbdb2( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, &
                          tauq1, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lwork,m,p,q,ldx11,ldx21
                     real(sp), intent(out) :: phi(*),theta(*),taup1(*),taup2(*),tauq1(*),work(*)
@@ -15422,7 +15425,7 @@ module stdlib_linalg_lapack
                subroutine dorbdb3( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, &
                          tauq1, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lwork,m,p,q,ldx11,ldx21
                     real(dp), intent(out) :: phi(*),theta(*),taup1(*),taup2(*),tauq1(*),work(*)
@@ -15436,7 +15439,7 @@ module stdlib_linalg_lapack
                subroutine sorbdb3( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, &
                          tauq1, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lwork,m,p,q,ldx11,ldx21
                     real(sp), intent(out) :: phi(*),theta(*),taup1(*),taup2(*),tauq1(*),work(*)
@@ -15468,7 +15471,7 @@ module stdlib_linalg_lapack
                subroutine dorbdb4( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, &
                          tauq1, phantom, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lwork,m,p,q,ldx11,ldx21
                     real(dp), intent(out) :: phi(*),theta(*),phantom(*),taup1(*),taup2(*),tauq1(*)&
@@ -15482,7 +15485,7 @@ module stdlib_linalg_lapack
                subroutine sorbdb4( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, &
                          tauq1, phantom, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lwork,m,p,q,ldx11,ldx21
                     real(sp), intent(out) :: phi(*),theta(*),phantom(*),taup1(*),taup2(*),tauq1(*)&
@@ -15510,7 +15513,7 @@ module stdlib_linalg_lapack
                pure subroutine dorbdb5( m1, m2, n, x1, incx1, x2, incx2, q1, ldq1, q2,ldq2, work, &
                          lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx1,incx2,ldq1,ldq2,lwork,m1,m2,n
                     integer(ilp), intent(out) :: info
                     real(dp), intent(in) :: q1(ldq1,*),q2(ldq2,*)
@@ -15524,7 +15527,7 @@ module stdlib_linalg_lapack
                pure subroutine sorbdb5( m1, m2, n, x1, incx1, x2, incx2, q1, ldq1, q2,ldq2, work, &
                          lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx1,incx2,ldq1,ldq2,lwork,m1,m2,n
                     integer(ilp), intent(out) :: info
                     real(sp), intent(in) :: q1(ldq1,*),q2(ldq2,*)
@@ -15550,7 +15553,7 @@ module stdlib_linalg_lapack
                pure subroutine dorbdb6( m1, m2, n, x1, incx1, x2, incx2, q1, ldq1, q2,ldq2, work, &
                          lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx1,incx2,ldq1,ldq2,lwork,m1,m2,n
                     integer(ilp), intent(out) :: info
                     real(dp), intent(in) :: q1(ldq1,*),q2(ldq2,*)
@@ -15564,7 +15567,7 @@ module stdlib_linalg_lapack
                pure subroutine sorbdb6( m1, m2, n, x1, incx1, x2, incx2, q1, ldq1, q2,ldq2, work, &
                          lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx1,incx2,ldq1,ldq2,lwork,m1,m2,n
                     integer(ilp), intent(out) :: info
                     real(sp), intent(in) :: q1(ldq1,*),q2(ldq2,*)
@@ -15595,7 +15598,7 @@ module stdlib_linalg_lapack
                x11, ldx11, x12,ldx12, x21, ldx21, x22, ldx22, theta,u1, ldu1, u2, ldu2, v1t, &
                          ldv1t, v2t,ldv2t, work, lwork, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobu1,jobu2,jobv1t,jobv2t,signs,trans
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldu1,ldu2,ldv1t,ldv2t,ldx11,ldx12,ldx21,ldx22,&
@@ -15613,7 +15616,7 @@ module stdlib_linalg_lapack
                x11, ldx11, x12,ldx12, x21, ldx21, x22, ldx22, theta,u1, ldu1, u2, ldu2, v1t, &
                          ldv1t, v2t,ldv2t, work, lwork, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobu1,jobu2,jobv1t,jobv2t,signs,trans
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldu1,ldu2,ldv1t,ldv2t,ldx11,ldx12,ldx21,ldx22,&
@@ -15648,7 +15651,7 @@ module stdlib_linalg_lapack
                subroutine dorcsd2by1( jobu1, jobu2, jobv1t, m, p, q, x11, ldx11,x21, ldx21, theta,&
                           u1, ldu1, u2, ldu2, v1t,ldv1t, work, lwork, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobu1,jobu2,jobv1t
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldu1,ldu2,ldv1t,lwork,ldx11,ldx21,m,p,q
@@ -15663,7 +15666,7 @@ module stdlib_linalg_lapack
                subroutine sorcsd2by1( jobu1, jobu2, jobv1t, m, p, q, x11, ldx11,x21, ldx21, theta,&
                           u1, ldu1, u2, ldu2, v1t,ldv1t, work, lwork, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobu1,jobu2,jobv1t
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldu1,ldu2,ldv1t,lwork,ldx11,ldx21,m,p,q
@@ -15685,7 +15688,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dorg2l( m, n, k, a, lda, tau, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,m,n
                     real(dp), intent(inout) :: a(lda,*)
@@ -15698,7 +15701,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sorg2l( m, n, k, a, lda, tau, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,m,n
                     real(sp), intent(inout) :: a(lda,*)
@@ -15719,7 +15722,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dorg2r( m, n, k, a, lda, tau, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,m,n
                     real(dp), intent(inout) :: a(lda,*)
@@ -15732,7 +15735,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sorg2r( m, n, k, a, lda, tau, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,m,n
                     real(sp), intent(inout) :: a(lda,*)
@@ -15764,7 +15767,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dorgbr( vect, m, n, k, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: vect
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,lwork,m,n
@@ -15778,7 +15781,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sorgbr( vect, m, n, k, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: vect
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,lwork,m,n
@@ -15799,7 +15802,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dorghr( n, ilo, ihi, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ilo,lda,lwork,n
                     integer(ilp), intent(out) :: info
                     real(dp), intent(inout) :: a(lda,*)
@@ -15812,7 +15815,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sorghr( n, ilo, ihi, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ilo,lda,lwork,n
                     integer(ilp), intent(out) :: info
                     real(sp), intent(inout) :: a(lda,*)
@@ -15833,7 +15836,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dorglq( m, n, k, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,lwork,m,n
                     real(dp), intent(inout) :: a(lda,*)
@@ -15846,7 +15849,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sorglq( m, n, k, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,lwork,m,n
                     real(sp), intent(inout) :: a(lda,*)
@@ -15867,7 +15870,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dorgql( m, n, k, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,lwork,m,n
                     real(dp), intent(inout) :: a(lda,*)
@@ -15880,7 +15883,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sorgql( m, n, k, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,lwork,m,n
                     real(sp), intent(inout) :: a(lda,*)
@@ -15901,7 +15904,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dorgqr( m, n, k, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,lwork,m,n
                     real(dp), intent(inout) :: a(lda,*)
@@ -15914,7 +15917,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sorgqr( m, n, k, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,lwork,m,n
                     real(sp), intent(inout) :: a(lda,*)
@@ -15935,7 +15938,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dorgrq( m, n, k, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,lwork,m,n
                     real(dp), intent(inout) :: a(lda,*)
@@ -15948,7 +15951,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sorgrq( m, n, k, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,lwork,m,n
                     real(sp), intent(inout) :: a(lda,*)
@@ -15969,7 +15972,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dorgtr( uplo, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -15983,7 +15986,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sorgtr( uplo, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -16005,7 +16008,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dorgtsqr( m, n, mb, nb, a, lda, t, ldt, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,lwork,m,n,mb,nb
                     real(dp), intent(inout) :: a(lda,*)
@@ -16018,7 +16021,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sorgtsqr( m, n, mb, nb, a, lda, t, ldt, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,lwork,m,n,mb,nb
                     real(sp), intent(inout) :: a(lda,*)
@@ -16050,7 +16053,7 @@ module stdlib_linalg_lapack
                pure subroutine dorgtsqr_row( m, n, mb, nb, a, lda, t, ldt, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,lwork,m,n,mb,nb
                     real(dp), intent(inout) :: a(lda,*)
@@ -16064,7 +16067,7 @@ module stdlib_linalg_lapack
                pure subroutine sorgtsqr_row( m, n, mb, nb, a, lda, t, ldt, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,lwork,m,n,mb,nb
                     real(sp), intent(inout) :: a(lda,*)
@@ -16089,7 +16092,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dorhr_col( m, n, nb, a, lda, t, ldt, d, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,m,n,nb
                     real(dp), intent(inout) :: a(lda,*)
@@ -16101,7 +16104,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sorhr_col( m, n, nb, a, lda, t, ldt, d, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,m,n,nb
                     real(sp), intent(inout) :: a(lda,*)
@@ -16127,7 +16130,7 @@ module stdlib_linalg_lapack
                pure subroutine dorm2l( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,m,n
@@ -16142,7 +16145,7 @@ module stdlib_linalg_lapack
                pure subroutine sorm2l( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,m,n
@@ -16170,7 +16173,7 @@ module stdlib_linalg_lapack
                pure subroutine dorm2r( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,m,n
@@ -16185,7 +16188,7 @@ module stdlib_linalg_lapack
                pure subroutine sorm2r( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,m,n
@@ -16225,7 +16228,7 @@ module stdlib_linalg_lapack
                pure subroutine dormbr( vect, side, trans, m, n, k, a, lda, tau, c,ldc, work, &
                          lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans,vect
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,lwork,m,n
@@ -16240,7 +16243,7 @@ module stdlib_linalg_lapack
                pure subroutine sormbr( vect, side, trans, m, n, k, a, lda, tau, c,ldc, work, &
                          lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans,vect
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,lwork,m,n
@@ -16266,7 +16269,7 @@ module stdlib_linalg_lapack
                pure subroutine dormhr( side, trans, m, n, ilo, ihi, a, lda, tau, c,ldc, work, &
                          lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(in) :: ihi,ilo,lda,ldc,lwork,m,n
                     integer(ilp), intent(out) :: info
@@ -16281,7 +16284,7 @@ module stdlib_linalg_lapack
                pure subroutine sormhr( side, trans, m, n, ilo, ihi, a, lda, tau, c,ldc, work, &
                          lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(in) :: ihi,ilo,lda,ldc,lwork,m,n
                     integer(ilp), intent(out) :: info
@@ -16308,7 +16311,7 @@ module stdlib_linalg_lapack
                pure subroutine dormlq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,lwork,m,n
@@ -16323,7 +16326,7 @@ module stdlib_linalg_lapack
                pure subroutine sormlq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,lwork,m,n
@@ -16350,7 +16353,7 @@ module stdlib_linalg_lapack
                pure subroutine dormql( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,lwork,m,n
@@ -16365,7 +16368,7 @@ module stdlib_linalg_lapack
                pure subroutine sormql( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,lwork,m,n
@@ -16392,7 +16395,7 @@ module stdlib_linalg_lapack
                pure subroutine dormqr( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,lwork,m,n
@@ -16407,7 +16410,7 @@ module stdlib_linalg_lapack
                pure subroutine sormqr( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,lwork,m,n
@@ -16434,7 +16437,7 @@ module stdlib_linalg_lapack
                pure subroutine dormrq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,lwork,m,n
@@ -16449,7 +16452,7 @@ module stdlib_linalg_lapack
                pure subroutine sormrq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,lwork,m,n
@@ -16476,7 +16479,7 @@ module stdlib_linalg_lapack
                pure subroutine dormrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,l,lda,ldc,lwork,m,n
@@ -16491,7 +16494,7 @@ module stdlib_linalg_lapack
                pure subroutine sormrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,l,lda,ldc,lwork,m,n
@@ -16518,7 +16521,7 @@ module stdlib_linalg_lapack
                pure subroutine dormtr( side, uplo, trans, m, n, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldc,lwork,m,n
@@ -16533,7 +16536,7 @@ module stdlib_linalg_lapack
                pure subroutine sormtr( side, uplo, trans, m, n, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldc,lwork,m,n
@@ -16557,7 +16560,7 @@ module stdlib_linalg_lapack
                pure subroutine cpbcon( uplo, n, kd, ab, ldab, anorm, rcond, work,rwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -16573,7 +16576,7 @@ module stdlib_linalg_lapack
                pure subroutine dpbcon( uplo, n, kd, ab, ldab, anorm, rcond, work,iwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -16587,7 +16590,7 @@ module stdlib_linalg_lapack
                pure subroutine spbcon( uplo, n, kd, ab, ldab, anorm, rcond, work,iwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -16601,7 +16604,7 @@ module stdlib_linalg_lapack
                pure subroutine zpbcon( uplo, n, kd, ab, ldab, anorm, rcond, work,rwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -16627,7 +16630,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cpbequ( uplo, n, kd, ab, ldab, s, scond, amax, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -16640,7 +16643,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dpbequ( uplo, n, kd, ab, ldab, s, scond, amax, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -16653,7 +16656,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine spbequ( uplo, n, kd, ab, ldab, s, scond, amax, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -16666,7 +16669,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zpbequ( uplo, n, kd, ab, ldab, s, scond, amax, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -16687,7 +16690,7 @@ module stdlib_linalg_lapack
                pure subroutine cpbrfs( uplo, n, kd, nrhs, ab, ldab, afb, ldafb, b,ldb, x, ldx, &
                          ferr, berr, work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldafb,ldb,ldx,n,nrhs
@@ -16703,7 +16706,7 @@ module stdlib_linalg_lapack
                pure subroutine dpbrfs( uplo, n, kd, nrhs, ab, ldab, afb, ldafb, b,ldb, x, ldx, &
                          ferr, berr, work, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: kd,ldab,ldafb,ldb,ldx,n,nrhs
@@ -16718,7 +16721,7 @@ module stdlib_linalg_lapack
                pure subroutine spbrfs( uplo, n, kd, nrhs, ab, ldab, afb, ldafb, b,ldb, x, ldx, &
                          ferr, berr, work, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: kd,ldab,ldafb,ldb,ldx,n,nrhs
@@ -16733,7 +16736,7 @@ module stdlib_linalg_lapack
                pure subroutine zpbrfs( uplo, n, kd, nrhs, ab, ldab, afb, ldafb, b,ldb, x, ldx, &
                          ferr, berr, work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldafb,ldb,ldx,n,nrhs
@@ -16760,7 +16763,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cpbstf( uplo, n, kd, ab, ldab, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -16772,7 +16775,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dpbstf( uplo, n, kd, ab, ldab, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -16784,7 +16787,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine spbstf( uplo, n, kd, ab, ldab, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -16796,7 +16799,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zpbstf( uplo, n, kd, ab, ldab, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -16822,7 +16825,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cpbsv( uplo, n, kd, nrhs, ab, ldab, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldb,n,nrhs
@@ -16834,7 +16837,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dpbsv( uplo, n, kd, nrhs, ab, ldab, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldb,n,nrhs
@@ -16846,7 +16849,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine spbsv( uplo, n, kd, nrhs, ab, ldab, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldb,n,nrhs
@@ -16858,7 +16861,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zpbsv( uplo, n, kd, nrhs, ab, ldab, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldb,n,nrhs
@@ -16879,7 +16882,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cpbtrf( uplo, n, kd, ab, ldab, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -16891,7 +16894,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dpbtrf( uplo, n, kd, ab, ldab, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -16903,7 +16906,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine spbtrf( uplo, n, kd, ab, ldab, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -16915,7 +16918,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zpbtrf( uplo, n, kd, ab, ldab, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -16933,7 +16936,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cpbtrs( uplo, n, kd, nrhs, ab, ldab, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldb,n,nrhs
@@ -16946,7 +16949,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dpbtrs( uplo, n, kd, nrhs, ab, ldab, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldb,n,nrhs
@@ -16959,7 +16962,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine spbtrs( uplo, n, kd, nrhs, ab, ldab, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldb,n,nrhs
@@ -16972,7 +16975,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zpbtrs( uplo, n, kd, nrhs, ab, ldab, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldb,n,nrhs
@@ -16995,7 +16998,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cpftrf( transr, uplo, n, a, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(in) :: n
                     integer(ilp), intent(out) :: info
@@ -17007,7 +17010,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dpftrf( transr, uplo, n, a, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(in) :: n
                     integer(ilp), intent(out) :: info
@@ -17019,7 +17022,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine spftrf( transr, uplo, n, a, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(in) :: n
                     integer(ilp), intent(out) :: info
@@ -17031,7 +17034,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zpftrf( transr, uplo, n, a, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(in) :: n
                     integer(ilp), intent(out) :: info
@@ -17049,7 +17052,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cpftri( transr, uplo, n, a, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -17061,7 +17064,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dpftri( transr, uplo, n, a, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -17073,7 +17076,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine spftri( transr, uplo, n, a, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -17085,7 +17088,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zpftri( transr, uplo, n, a, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -17103,7 +17106,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cpftrs( transr, uplo, n, nrhs, a, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -17116,7 +17119,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dpftrs( transr, uplo, n, nrhs, a, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -17129,7 +17132,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine spftrs( transr, uplo, n, nrhs, a, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -17142,7 +17145,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zpftrs( transr, uplo, n, nrhs, a, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -17163,7 +17166,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cpocon( uplo, n, a, lda, anorm, rcond, work, rwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -17178,7 +17181,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dpocon( uplo, n, a, lda, anorm, rcond, work, iwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,n
@@ -17192,7 +17195,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine spocon( uplo, n, a, lda, anorm, rcond, work, iwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,n
@@ -17206,7 +17209,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zpocon( uplo, n, a, lda, anorm, rcond, work, rwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -17232,7 +17235,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cpoequ( n, a, lda, s, scond, amax, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
                     real(sp), intent(out) :: amax,scond,s(*)
@@ -17244,7 +17247,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dpoequ( n, a, lda, s, scond, amax, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
                     real(dp), intent(out) :: amax,scond,s(*)
@@ -17256,7 +17259,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine spoequ( n, a, lda, s, scond, amax, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
                     real(sp), intent(out) :: amax,scond,s(*)
@@ -17268,7 +17271,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zpoequ( n, a, lda, s, scond, amax, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
                     real(dp), intent(out) :: amax,scond,s(*)
@@ -17296,7 +17299,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cpoequb( n, a, lda, s, scond, amax, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
                     real(sp), intent(out) :: amax,scond,s(*)
@@ -17308,7 +17311,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dpoequb( n, a, lda, s, scond, amax, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
                     real(dp), intent(out) :: amax,scond,s(*)
@@ -17320,7 +17323,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine spoequb( n, a, lda, s, scond, amax, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
                     real(sp), intent(out) :: amax,scond,s(*)
@@ -17332,7 +17335,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zpoequb( n, a, lda, s, scond, amax, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
                     real(dp), intent(out) :: amax,scond,s(*)
@@ -17352,7 +17355,7 @@ module stdlib_linalg_lapack
                pure subroutine cporfs( uplo, n, nrhs, a, lda, af, ldaf, b, ldb, x,ldx, ferr, berr,&
                           work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldaf,ldb,ldx,n,nrhs
@@ -17368,7 +17371,7 @@ module stdlib_linalg_lapack
                pure subroutine dporfs( uplo, n, nrhs, a, lda, af, ldaf, b, ldb, x,ldx, ferr, berr,&
                           work, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,ldaf,ldb,ldx,n,nrhs
@@ -17383,7 +17386,7 @@ module stdlib_linalg_lapack
                pure subroutine sporfs( uplo, n, nrhs, a, lda, af, ldaf, b, ldb, x,ldx, ferr, berr,&
                           work, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,ldaf,ldb,ldx,n,nrhs
@@ -17398,7 +17401,7 @@ module stdlib_linalg_lapack
                pure subroutine zporfs( uplo, n, nrhs, a, lda, af, ldaf, b, ldb, x,ldx, ferr, berr,&
                           work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldaf,ldb,ldx,n,nrhs
@@ -17426,7 +17429,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cposv( uplo, n, nrhs, a, lda, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs
@@ -17438,7 +17441,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dposv( uplo, n, nrhs, a, lda, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs
@@ -17450,7 +17453,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sposv( uplo, n, nrhs, a, lda, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs
@@ -17462,7 +17465,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zposv( uplo, n, nrhs, a, lda, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs
@@ -17484,7 +17487,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cpotrf( uplo, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -17496,7 +17499,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dpotrf( uplo, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -17508,7 +17511,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine spotrf( uplo, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -17520,7 +17523,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zpotrf( uplo, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -17548,7 +17551,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure recursive subroutine cpotrf2( uplo, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -17560,7 +17563,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure recursive subroutine dpotrf2( uplo, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -17572,7 +17575,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure recursive subroutine spotrf2( uplo, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -17584,7 +17587,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure recursive subroutine zpotrf2( uplo, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -17602,7 +17605,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cpotri( uplo, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -17614,7 +17617,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dpotri( uplo, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -17626,7 +17629,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine spotri( uplo, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -17638,7 +17641,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zpotri( uplo, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -17656,7 +17659,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cpotrs( uplo, n, nrhs, a, lda, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs
@@ -17669,7 +17672,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dpotrs( uplo, n, nrhs, a, lda, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs
@@ -17682,7 +17685,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine spotrs( uplo, n, nrhs, a, lda, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs
@@ -17695,7 +17698,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zpotrs( uplo, n, nrhs, a, lda, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs
@@ -17717,7 +17720,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cppcon( uplo, n, ap, anorm, rcond, work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -17732,7 +17735,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dppcon( uplo, n, ap, anorm, rcond, work, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: n
@@ -17745,7 +17748,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sppcon( uplo, n, ap, anorm, rcond, work, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: n
@@ -17758,7 +17761,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zppcon( uplo, n, ap, anorm, rcond, work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -17784,7 +17787,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cppequ( uplo, n, ap, s, scond, amax, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -17797,7 +17800,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dppequ( uplo, n, ap, s, scond, amax, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -17810,7 +17813,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sppequ( uplo, n, ap, s, scond, amax, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -17823,7 +17826,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zppequ( uplo, n, ap, s, scond, amax, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -17844,7 +17847,7 @@ module stdlib_linalg_lapack
                pure subroutine cpprfs( uplo, n, nrhs, ap, afp, b, ldb, x, ldx, ferr,berr, work, &
                          rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs
@@ -17860,7 +17863,7 @@ module stdlib_linalg_lapack
                pure subroutine dpprfs( uplo, n, nrhs, ap, afp, b, ldb, x, ldx, ferr,berr, work, &
                          iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs
@@ -17875,7 +17878,7 @@ module stdlib_linalg_lapack
                pure subroutine spprfs( uplo, n, nrhs, ap, afp, b, ldb, x, ldx, ferr,berr, work, &
                          iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs
@@ -17890,7 +17893,7 @@ module stdlib_linalg_lapack
                pure subroutine zpprfs( uplo, n, nrhs, ap, afp, b, ldb, x, ldx, ferr,berr, work, &
                          rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs
@@ -17918,7 +17921,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cppsv( uplo, n, nrhs, ap, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -17930,7 +17933,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dppsv( uplo, n, nrhs, ap, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -17942,7 +17945,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sppsv( uplo, n, nrhs, ap, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -17954,7 +17957,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zppsv( uplo, n, nrhs, ap, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -17975,7 +17978,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cpptrf( uplo, n, ap, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -17987,7 +17990,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dpptrf( uplo, n, ap, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -17999,7 +18002,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine spptrf( uplo, n, ap, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -18011,7 +18014,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zpptrf( uplo, n, ap, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -18029,7 +18032,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cpptri( uplo, n, ap, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -18041,7 +18044,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dpptri( uplo, n, ap, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -18053,7 +18056,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine spptri( uplo, n, ap, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -18065,7 +18068,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zpptri( uplo, n, ap, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -18083,7 +18086,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cpptrs( uplo, n, nrhs, ap, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -18096,7 +18099,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dpptrs( uplo, n, nrhs, ap, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -18109,7 +18112,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine spptrs( uplo, n, nrhs, ap, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -18122,7 +18125,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zpptrs( uplo, n, nrhs, ap, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -18147,7 +18150,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cpstrf( uplo, n, a, lda, piv, rank, tol, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: tol
                     integer(ilp), intent(out) :: info,rank,piv(n)
                     integer(ilp), intent(in) :: lda,n
@@ -18161,7 +18164,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dpstrf( uplo, n, a, lda, piv, rank, tol, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: tol
                     integer(ilp), intent(out) :: info,rank,piv(n)
                     integer(ilp), intent(in) :: lda,n
@@ -18175,7 +18178,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine spstrf( uplo, n, a, lda, piv, rank, tol, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: tol
                     integer(ilp), intent(out) :: info,rank,piv(n)
                     integer(ilp), intent(in) :: lda,n
@@ -18189,7 +18192,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zpstrf( uplo, n, a, lda, piv, rank, tol, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: tol
                     integer(ilp), intent(out) :: info,rank,piv(n)
                     integer(ilp), intent(in) :: lda,n
@@ -18213,7 +18216,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cptcon( n, d, e, anorm, rcond, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
                     real(sp), intent(in) :: anorm,d(*)
@@ -18226,7 +18229,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dptcon( n, d, e, anorm, rcond, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
                     real(dp), intent(in) :: anorm,d(*),e(*)
@@ -18238,7 +18241,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sptcon( n, d, e, anorm, rcond, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
                     real(sp), intent(in) :: anorm,d(*),e(*)
@@ -18250,7 +18253,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zptcon( n, d, e, anorm, rcond, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
                     real(dp), intent(in) :: anorm,d(*)
@@ -18281,7 +18284,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cpteqr( compz, n, d, e, z, ldz, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compz
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldz,n
@@ -18295,7 +18298,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dpteqr( compz, n, d, e, z, ldz, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compz
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldz,n
@@ -18308,7 +18311,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine spteqr( compz, n, d, e, z, ldz, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compz
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldz,n
@@ -18321,7 +18324,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zpteqr( compz, n, d, e, z, ldz, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compz
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldz,n
@@ -18343,7 +18346,7 @@ module stdlib_linalg_lapack
                pure subroutine cptrfs( uplo, n, nrhs, d, e, df, ef, b, ldb, x, ldx,ferr, berr, &
                          work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs
@@ -18360,7 +18363,7 @@ module stdlib_linalg_lapack
                pure subroutine dptrfs( n, nrhs, d, e, df, ef, b, ldb, x, ldx, ferr,berr, work, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs
                     real(dp), intent(in) :: b(ldb,*),d(*),df(*),e(*),ef(*)
@@ -18374,7 +18377,7 @@ module stdlib_linalg_lapack
                pure subroutine sptrfs( n, nrhs, d, e, df, ef, b, ldb, x, ldx, ferr,berr, work, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs
                     real(sp), intent(in) :: b(ldb,*),d(*),df(*),e(*),ef(*)
@@ -18388,7 +18391,7 @@ module stdlib_linalg_lapack
                pure subroutine zptrfs( uplo, n, nrhs, d, e, df, ef, b, ldb, x, ldx,ferr, berr, &
                          work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs
@@ -18412,7 +18415,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cptsv( n, nrhs, d, e, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
                     real(sp), intent(inout) :: d(*)
@@ -18424,7 +18427,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dptsv( n, nrhs, d, e, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
                     real(dp), intent(inout) :: b(ldb,*),d(*),e(*)
@@ -18435,7 +18438,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sptsv( n, nrhs, d, e, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
                     real(sp), intent(inout) :: b(ldb,*),d(*),e(*)
@@ -18446,7 +18449,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zptsv( n, nrhs, d, e, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
                     real(dp), intent(inout) :: d(*)
@@ -18464,7 +18467,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cpttrf( n, d, e, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
                     real(sp), intent(inout) :: d(*)
@@ -18476,7 +18479,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dpttrf( n, d, e, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
                     real(dp), intent(inout) :: d(*),e(*)
@@ -18487,7 +18490,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine spttrf( n, d, e, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
                     real(sp), intent(inout) :: d(*),e(*)
@@ -18498,7 +18501,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zpttrf( n, d, e, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
                     real(dp), intent(inout) :: d(*)
@@ -18519,7 +18522,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cpttrs( uplo, n, nrhs, d, e, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -18533,7 +18536,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dpttrs( n, nrhs, d, e, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
                     real(dp), intent(inout) :: b(ldb,*)
@@ -18545,7 +18548,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine spttrs( n, nrhs, d, e, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
                     real(sp), intent(inout) :: b(ldb,*)
@@ -18557,7 +18560,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zpttrs( uplo, n, nrhs, d, e, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -18576,7 +18579,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine crot( n, cx, incx, cy, incy, c, s )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     real(sp), intent(in) :: c
                     complex(sp), intent(in) :: s
@@ -18588,7 +18591,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zrot( n, cx, incx, cy, incy, c, s )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,incy,n
                     real(dp), intent(in) :: c
                     complex(dp), intent(in) :: s
@@ -18606,7 +18609,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine drscl( n, sa, sx, incx )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     real(dp), intent(in) :: sa
                     real(dp), intent(inout) :: sx(*)
@@ -18617,7 +18620,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine srscl( n, sa, sx, incx )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx,n
                     real(sp), intent(in) :: sa
                     real(sp), intent(inout) :: sx(*)
@@ -18634,7 +18637,7 @@ module stdlib_linalg_lapack
                pure subroutine  dsb2st_kernels( uplo, wantz, ttype,st, ed, sweep, n, nb, ib,a, &
                          lda, v, tau, ldvt, work)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     logical(lk), intent(in) :: wantz
                     integer(ilp), intent(in) :: ttype,st,ed,sweep,n,nb,ib,lda,ldvt
@@ -18648,7 +18651,7 @@ module stdlib_linalg_lapack
                pure subroutine  ssb2st_kernels( uplo, wantz, ttype,st, ed, sweep, n, nb, ib,a, &
                          lda, v, tau, ldvt, work)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     logical(lk), intent(in) :: wantz
                     integer(ilp), intent(in) :: ttype,st,ed,sweep,n,nb,ib,lda,ldvt
@@ -18666,7 +18669,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine dsbev( jobz, uplo, n, kd, ab, ldab, w, z, ldz, work,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldz,n
@@ -18679,7 +18682,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine ssbev( jobz, uplo, n, kd, ab, ldab, w, z, ldz, work,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldz,n
@@ -18705,7 +18708,7 @@ module stdlib_linalg_lapack
                subroutine dsbevd( jobz, uplo, n, kd, ab, ldab, w, z, ldz, work,lwork, iwork, &
                          liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: kd,ldab,ldz,liwork,lwork,n
@@ -18719,7 +18722,7 @@ module stdlib_linalg_lapack
                subroutine ssbevd( jobz, uplo, n, kd, ab, ldab, w, z, ldz, work,lwork, iwork, &
                          liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: kd,ldab,ldz,liwork,lwork,n
@@ -18743,7 +18746,7 @@ module stdlib_linalg_lapack
                pure subroutine dsbgst( vect, uplo, n, ka, kb, ab, ldab, bb, ldbb, x,ldx, work, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo,vect
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ka,kb,ldab,ldbb,ldx,n
@@ -18758,7 +18761,7 @@ module stdlib_linalg_lapack
                pure subroutine ssbgst( vect, uplo, n, ka, kb, ab, ldab, bb, ldbb, x,ldx, work, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo,vect
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ka,kb,ldab,ldbb,ldx,n
@@ -18780,7 +18783,7 @@ module stdlib_linalg_lapack
                pure subroutine dsbgv( jobz, uplo, n, ka, kb, ab, ldab, bb, ldbb, w, z,ldz, work, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ka,kb,ldab,ldbb,ldz,n
@@ -18794,7 +18797,7 @@ module stdlib_linalg_lapack
                pure subroutine ssbgv( jobz, uplo, n, ka, kb, ab, ldab, bb, ldbb, w, z,ldz, work, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ka,kb,ldab,ldbb,ldz,n
@@ -18822,7 +18825,7 @@ module stdlib_linalg_lapack
                pure subroutine dsbgvd( jobz, uplo, n, ka, kb, ab, ldab, bb, ldbb, w,z, ldz, work, &
                          lwork, iwork, liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ka,kb,ldab,ldbb,ldz,liwork,lwork,n
@@ -18836,7 +18839,7 @@ module stdlib_linalg_lapack
                pure subroutine ssbgvd( jobz, uplo, n, ka, kb, ab, ldab, bb, ldbb, w,z, ldz, work, &
                          lwork, iwork, liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ka,kb,ldab,ldbb,ldz,liwork,lwork,n
@@ -18856,7 +18859,7 @@ module stdlib_linalg_lapack
                pure subroutine dsbtrd( vect, uplo, n, kd, ab, ldab, d, e, q, ldq,work, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo,vect
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldq,n
@@ -18870,7 +18873,7 @@ module stdlib_linalg_lapack
                pure subroutine ssbtrd( vect, uplo, n, kd, ab, ldab, d, e, q, ldq,work, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo,vect
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldq,n
@@ -18894,7 +18897,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsfrk( transr, uplo, trans, n, k, alpha, a, lda, beta,c )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(dp), intent(in) :: alpha,beta,a(lda,*)
                     integer(ilp), intent(in) :: k,lda,n
                     character, intent(in) :: trans,transr,uplo
@@ -18906,7 +18909,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssfrk( transr, uplo, trans, n, k, alpha, a, lda, beta,c )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     real(sp), intent(in) :: alpha,beta,a(lda,*)
                     integer(ilp), intent(in) :: k,lda,n
                     character, intent(in) :: trans,transr,uplo
@@ -18926,7 +18929,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cspcon( uplo, n, ap, ipiv, anorm, rcond, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,ipiv(*)
@@ -18941,7 +18944,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dspcon( uplo, n, ap, ipiv, anorm, rcond, work, iwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: n,ipiv(*)
@@ -18954,7 +18957,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sspcon( uplo, n, ap, ipiv, anorm, rcond, work, iwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: n,ipiv(*)
@@ -18967,7 +18970,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zspcon( uplo, n, ap, ipiv, anorm, rcond, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,ipiv(*)
@@ -18987,7 +18990,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine dspev( jobz, uplo, n, ap, w, z, ldz, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldz,n
@@ -19000,7 +19003,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine sspev( jobz, uplo, n, ap, w, z, ldz, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldz,n
@@ -19026,7 +19029,7 @@ module stdlib_linalg_lapack
                subroutine dspevd( jobz, uplo, n, ap, w, z, ldz, work, lwork,iwork, liwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldz,liwork,lwork,n
@@ -19040,7 +19043,7 @@ module stdlib_linalg_lapack
                subroutine sspevd( jobz, uplo, n, ap, w, z, ldz, work, lwork,iwork, liwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldz,liwork,lwork,n
@@ -19063,7 +19066,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dspgst( itype, uplo, n, ap, bp, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: itype,n
@@ -19076,7 +19079,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sspgst( itype, uplo, n, ap, bp, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: itype,n
@@ -19097,7 +19100,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine dspgv( itype, jobz, uplo, n, ap, bp, w, z, ldz, work,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: itype,ldz,n
@@ -19110,7 +19113,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine sspgv( itype, jobz, uplo, n, ap, bp, w, z, ldz, work,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: itype,ldz,n
@@ -19139,7 +19142,7 @@ module stdlib_linalg_lapack
                subroutine dspgvd( itype, jobz, uplo, n, ap, bp, w, z, ldz, work,lwork, iwork, &
                          liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: itype,ldz,liwork,lwork,n
@@ -19153,7 +19156,7 @@ module stdlib_linalg_lapack
                subroutine sspgvd( itype, jobz, uplo, n, ap, bp, w, z, ldz, work,lwork, iwork, &
                          liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: itype,ldz,liwork,lwork,n
@@ -19173,7 +19176,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cspmv( uplo, n, alpha, ap, x, incx, beta, y, incy )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: incx,incy,n
                     complex(sp), intent(in) :: alpha,beta,ap(*),x(*)
@@ -19185,7 +19188,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zspmv( uplo, n, alpha, ap, x, incx, beta, y, incy )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: incx,incy,n
                     complex(dp), intent(in) :: alpha,beta,ap(*),x(*)
@@ -19204,7 +19207,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cspr( uplo, n, alpha, x, incx, ap )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: incx,n
                     complex(sp), intent(in) :: alpha,x(*)
@@ -19216,7 +19219,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zspr( uplo, n, alpha, x, incx, ap )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: incx,n
                     complex(dp), intent(in) :: alpha,x(*)
@@ -19236,7 +19239,7 @@ module stdlib_linalg_lapack
                pure subroutine csprfs( uplo, n, nrhs, ap, afp, ipiv, b, ldb, x, ldx,ferr, berr, &
                          work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs,ipiv(*)
@@ -19252,7 +19255,7 @@ module stdlib_linalg_lapack
                pure subroutine dsprfs( uplo, n, nrhs, ap, afp, ipiv, b, ldb, x, ldx,ferr, berr, &
                          work, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs,ipiv(*)
@@ -19267,7 +19270,7 @@ module stdlib_linalg_lapack
                pure subroutine ssprfs( uplo, n, nrhs, ap, afp, ipiv, b, ldb, x, ldx,ferr, berr, &
                          work, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs,ipiv(*)
@@ -19282,7 +19285,7 @@ module stdlib_linalg_lapack
                pure subroutine zsprfs( uplo, n, nrhs, ap, afp, ipiv, b, ldb, x, ldx,ferr, berr, &
                          work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs,ipiv(*)
@@ -19311,7 +19314,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cspsv( uplo, n, nrhs, ap, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -19323,7 +19326,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dspsv( uplo, n, nrhs, ap, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -19335,7 +19338,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sspsv( uplo, n, nrhs, ap, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -19347,7 +19350,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zspsv( uplo, n, nrhs, ap, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -19365,7 +19368,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsptrd( uplo, n, ap, d, e, tau, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -19378,7 +19381,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssptrd( uplo, n, ap, d, e, tau, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -19401,7 +19404,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csptrf( uplo, n, ap, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: n
@@ -19413,7 +19416,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsptrf( uplo, n, ap, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: n
@@ -19425,7 +19428,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssptrf( uplo, n, ap, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: n
@@ -19437,7 +19440,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsptrf( uplo, n, ap, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: n
@@ -19455,7 +19458,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csptri( uplo, n, ap, ipiv, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,ipiv(*)
@@ -19468,7 +19471,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsptri( uplo, n, ap, ipiv, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,ipiv(*)
@@ -19481,7 +19484,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssptri( uplo, n, ap, ipiv, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,ipiv(*)
@@ -19494,7 +19497,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsptri( uplo, n, ap, ipiv, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,ipiv(*)
@@ -19513,7 +19516,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csptrs( uplo, n, nrhs, ap, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs,ipiv(*)
@@ -19526,7 +19529,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsptrs( uplo, n, nrhs, ap, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs,ipiv(*)
@@ -19539,7 +19542,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssptrs( uplo, n, nrhs, ap, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs,ipiv(*)
@@ -19552,7 +19555,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsptrs( uplo, n, nrhs, ap, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs,ipiv(*)
@@ -19579,7 +19582,7 @@ module stdlib_linalg_lapack
                pure subroutine dstebz( range, order, n, vl, vu, il, iu, abstol, d, e,m, nsplit, w,&
                           iblock, isplit, work, iwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: order,range
                     integer(ilp), intent(in) :: il,iu,n
                     integer(ilp), intent(out) :: info,m,nsplit,iblock(*),isplit(*),iwork(*)
@@ -19594,7 +19597,7 @@ module stdlib_linalg_lapack
                pure subroutine sstebz( range, order, n, vl, vu, il, iu, abstol, d, e,m, nsplit, w,&
                           iblock, isplit, work, iwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: order,range
                     integer(ilp), intent(in) :: il,iu,n
                     integer(ilp), intent(out) :: info,m,nsplit,iblock(*),isplit(*),iwork(*)
@@ -19623,7 +19626,7 @@ module stdlib_linalg_lapack
                pure subroutine cstedc( compz, n, d, e, z, ldz, work, lwork, rwork,lrwork, iwork, &
                          liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compz
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldz,liwork,lrwork,lwork,n
@@ -19639,7 +19642,7 @@ module stdlib_linalg_lapack
                pure subroutine dstedc( compz, n, d, e, z, ldz, work, lwork, iwork,liwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compz
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldz,liwork,lwork,n
@@ -19653,7 +19656,7 @@ module stdlib_linalg_lapack
                pure subroutine sstedc( compz, n, d, e, z, ldz, work, lwork, iwork,liwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compz
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldz,liwork,lwork,n
@@ -19667,7 +19670,7 @@ module stdlib_linalg_lapack
                pure subroutine zstedc( compz, n, d, e, z, ldz, work, lwork, rwork,lrwork, iwork, &
                          liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compz
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldz,liwork,lrwork,lwork,n
@@ -19702,7 +19705,7 @@ module stdlib_linalg_lapack
                pure subroutine cstegr( jobz, range, n, d, e, vl, vu, il, iu,abstol, m, w, z, ldz, &
                          isuppz, work, lwork, iwork,liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,range
                     integer(ilp), intent(in) :: il,iu,ldz,liwork,lwork,n
                     integer(ilp), intent(out) :: info,m,isuppz(*),iwork(*)
@@ -19718,7 +19721,7 @@ module stdlib_linalg_lapack
                pure subroutine dstegr( jobz, range, n, d, e, vl, vu, il, iu,abstol, m, w, z, ldz, &
                          isuppz, work, lwork, iwork,liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,range
                     integer(ilp), intent(in) :: il,iu,ldz,liwork,lwork,n
                     integer(ilp), intent(out) :: info,m,isuppz(*),iwork(*)
@@ -19733,7 +19736,7 @@ module stdlib_linalg_lapack
                pure subroutine sstegr( jobz, range, n, d, e, vl, vu, il, iu,abstol, m, w, z, ldz, &
                          isuppz, work, lwork, iwork,liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,range
                     integer(ilp), intent(in) :: il,iu,ldz,liwork,lwork,n
                     integer(ilp), intent(out) :: info,m,isuppz(*),iwork(*)
@@ -19748,7 +19751,7 @@ module stdlib_linalg_lapack
                pure subroutine zstegr( jobz, range, n, d, e, vl, vu, il, iu,abstol, m, w, z, ldz, &
                          isuppz, work, lwork, iwork,liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,range
                     integer(ilp), intent(in) :: il,iu,ldz,liwork,lwork,n
                     integer(ilp), intent(out) :: info,m,isuppz(*),iwork(*)
@@ -19776,7 +19779,7 @@ module stdlib_linalg_lapack
                pure subroutine cstein( n, d, e, m, w, iblock, isplit, z, ldz, work,iwork, ifail, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ifail(*),iwork(*)
                     integer(ilp), intent(in) :: ldz,m,n,iblock(*),isplit(*)
                     real(sp), intent(in) :: d(*),e(*),w(*)
@@ -19790,7 +19793,7 @@ module stdlib_linalg_lapack
                pure subroutine dstein( n, d, e, m, w, iblock, isplit, z, ldz, work,iwork, ifail, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ifail(*),iwork(*)
                     integer(ilp), intent(in) :: ldz,m,n,iblock(*),isplit(*)
                     real(dp), intent(in) :: d(*),e(*),w(*)
@@ -19803,7 +19806,7 @@ module stdlib_linalg_lapack
                pure subroutine sstein( n, d, e, m, w, iblock, isplit, z, ldz, work,iwork, ifail, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ifail(*),iwork(*)
                     integer(ilp), intent(in) :: ldz,m,n,iblock(*),isplit(*)
                     real(sp), intent(in) :: d(*),e(*),w(*)
@@ -19816,7 +19819,7 @@ module stdlib_linalg_lapack
                pure subroutine zstein( n, d, e, m, w, iblock, isplit, z, ldz, work,iwork, ifail, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info,ifail(*),iwork(*)
                     integer(ilp), intent(in) :: ldz,m,n,iblock(*),isplit(*)
                     real(dp), intent(in) :: d(*),e(*),w(*)
@@ -19892,7 +19895,7 @@ module stdlib_linalg_lapack
                pure subroutine cstemr( jobz, range, n, d, e, vl, vu, il, iu,m, w, z, ldz, nzc, &
                          isuppz, tryrac, work, lwork,iwork, liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,range
                     logical(lk), intent(inout) :: tryrac
                     integer(ilp), intent(in) :: il,iu,ldz,nzc,liwork,lwork,n
@@ -19909,7 +19912,7 @@ module stdlib_linalg_lapack
                pure subroutine dstemr( jobz, range, n, d, e, vl, vu, il, iu,m, w, z, ldz, nzc, &
                          isuppz, tryrac, work, lwork,iwork, liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,range
                     logical(lk), intent(inout) :: tryrac
                     integer(ilp), intent(in) :: il,iu,ldz,nzc,liwork,lwork,n
@@ -19925,7 +19928,7 @@ module stdlib_linalg_lapack
                pure subroutine sstemr( jobz, range, n, d, e, vl, vu, il, iu,m, w, z, ldz, nzc, &
                          isuppz, tryrac, work, lwork,iwork, liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,range
                     logical(lk), intent(inout) :: tryrac
                     integer(ilp), intent(in) :: il,iu,ldz,nzc,liwork,lwork,n
@@ -19941,7 +19944,7 @@ module stdlib_linalg_lapack
                pure subroutine zstemr( jobz, range, n, d, e, vl, vu, il, iu,m, w, z, ldz, nzc, &
                          isuppz, tryrac, work, lwork,iwork, liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,range
                     logical(lk), intent(inout) :: tryrac
                     integer(ilp), intent(in) :: il,iu,ldz,nzc,liwork,lwork,n
@@ -19965,7 +19968,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csteqr( compz, n, d, e, z, ldz, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compz
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldz,n
@@ -19979,7 +19982,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsteqr( compz, n, d, e, z, ldz, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compz
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldz,n
@@ -19992,7 +19995,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssteqr( compz, n, d, e, z, ldz, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compz
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldz,n
@@ -20005,7 +20008,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsteqr( compz, n, d, e, z, ldz, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compz
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldz,n
@@ -20024,7 +20027,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsterf( n, d, e, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
                     real(dp), intent(inout) :: d(*),e(*)
@@ -20035,7 +20038,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssterf( n, d, e, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
                     real(sp), intent(inout) :: d(*),e(*)
@@ -20051,7 +20054,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dstev( jobz, n, d, e, z, ldz, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldz,n
@@ -20064,7 +20067,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine sstev( jobz, n, d, e, z, ldz, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldz,n
@@ -20090,7 +20093,7 @@ module stdlib_linalg_lapack
                pure subroutine dstevd( jobz, n, d, e, z, ldz, work, lwork, iwork,liwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldz,liwork,lwork,n
@@ -20104,7 +20107,7 @@ module stdlib_linalg_lapack
                pure subroutine sstevd( jobz, n, d, e, z, ldz, work, lwork, iwork,liwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldz,liwork,lwork,n
@@ -20156,7 +20159,7 @@ module stdlib_linalg_lapack
                pure subroutine dstevr( jobz, range, n, d, e, vl, vu, il, iu, abstol,m, w, z, ldz, &
                          isuppz, work, lwork, iwork,liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,range
                     integer(ilp), intent(in) :: il,iu,ldz,liwork,lwork,n
                     integer(ilp), intent(out) :: info,m,isuppz(*),iwork(*)
@@ -20171,7 +20174,7 @@ module stdlib_linalg_lapack
                pure subroutine sstevr( jobz, range, n, d, e, vl, vu, il, iu, abstol,m, w, z, ldz, &
                          isuppz, work, lwork, iwork,liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,range
                     integer(ilp), intent(in) :: il,iu,ldz,liwork,lwork,n
                     integer(ilp), intent(out) :: info,m,isuppz(*),iwork(*)
@@ -20193,7 +20196,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csycon( uplo, n, a, lda, ipiv, anorm, rcond, work,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -20209,7 +20212,7 @@ module stdlib_linalg_lapack
                pure subroutine dsycon( uplo, n, a, lda, ipiv, anorm, rcond, work,iwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -20223,7 +20226,7 @@ module stdlib_linalg_lapack
                pure subroutine ssycon( uplo, n, a, lda, ipiv, anorm, rcond, work,iwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -20236,7 +20239,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsycon( uplo, n, a, lda, ipiv, anorm, rcond, work,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -20260,7 +20263,7 @@ module stdlib_linalg_lapack
                pure subroutine csycon_rook( uplo, n, a, lda, ipiv, anorm, rcond, work,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -20276,7 +20279,7 @@ module stdlib_linalg_lapack
                pure subroutine dsycon_rook( uplo, n, a, lda, ipiv, anorm, rcond, work,iwork, info &
                          )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -20290,7 +20293,7 @@ module stdlib_linalg_lapack
                pure subroutine ssycon_rook( uplo, n, a, lda, ipiv, anorm, rcond, work,iwork, info &
                          )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -20304,7 +20307,7 @@ module stdlib_linalg_lapack
                pure subroutine zsycon_rook( uplo, n, a, lda, ipiv, anorm, rcond, work,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -20325,7 +20328,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csyconv( uplo, way, n, a, lda, ipiv, e, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo,way
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -20338,7 +20341,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsyconv( uplo, way, n, a, lda, ipiv, e, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo,way
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -20351,7 +20354,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssyconv( uplo, way, n, a, lda, ipiv, e, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo,way
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -20364,7 +20367,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsyconv( uplo, way, n, a, lda, ipiv, e, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo,way
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -20397,7 +20400,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csyconvf( uplo, way, n, a, lda, e, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo,way
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -20410,7 +20413,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsyconvf( uplo, way, n, a, lda, e, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo,way
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -20423,7 +20426,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssyconvf( uplo, way, n, a, lda, e, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo,way
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -20436,7 +20439,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsyconvf( uplo, way, n, a, lda, e, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo,way
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -20467,7 +20470,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csyconvf_rook( uplo, way, n, a, lda, e, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo,way
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -20479,7 +20482,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsyconvf_rook( uplo, way, n, a, lda, e, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo,way
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -20491,7 +20494,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssyconvf_rook( uplo, way, n, a, lda, e, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo,way
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -20503,7 +20506,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsyconvf_rook( uplo, way, n, a, lda, e, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo,way
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -20525,7 +20528,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csyequb( uplo, n, a, lda, s, scond, amax, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
                     real(sp), intent(out) :: amax,scond,s(*)
@@ -20539,7 +20542,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsyequb( uplo, n, a, lda, s, scond, amax, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
                     real(dp), intent(out) :: amax,scond,s(*),work(*)
@@ -20552,7 +20555,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssyequb( uplo, n, a, lda, s, scond, amax, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
                     real(sp), intent(out) :: amax,scond,s(*),work(*)
@@ -20565,7 +20568,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsyequb( uplo, n, a, lda, s, scond, amax, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
                     real(dp), intent(out) :: amax,scond,s(*)
@@ -20584,7 +20587,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine dsyev( jobz, uplo, n, a, lda, w, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -20597,7 +20600,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine ssyev( jobz, uplo, n, a, lda, w, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -20625,7 +20628,7 @@ module stdlib_linalg_lapack
                subroutine dsyevd( jobz, uplo, n, a, lda, w, work, lwork, iwork,liwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,liwork,lwork,n
@@ -20639,7 +20642,7 @@ module stdlib_linalg_lapack
                subroutine ssyevd( jobz, uplo, n, a, lda, w, work, lwork, iwork,liwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,liwork,lwork,n
@@ -20706,7 +20709,7 @@ module stdlib_linalg_lapack
                subroutine dsyevr( jobz, range, uplo, n, a, lda, vl, vu, il, iu,abstol, m, w, z, &
                          ldz, isuppz, work, lwork,iwork, liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,range,uplo
                     integer(ilp), intent(in) :: il,iu,lda,ldz,liwork,lwork,n
                     integer(ilp), intent(out) :: info,m,isuppz(*),iwork(*)
@@ -20721,7 +20724,7 @@ module stdlib_linalg_lapack
                subroutine ssyevr( jobz, range, uplo, n, a, lda, vl, vu, il, iu,abstol, m, w, z, &
                          ldz, isuppz, work, lwork,iwork, liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,range,uplo
                     integer(ilp), intent(in) :: il,iu,lda,ldz,liwork,lwork,n
                     integer(ilp), intent(out) :: info,m,isuppz(*),iwork(*)
@@ -20745,7 +20748,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsygst( itype, uplo, n, a, lda, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: itype,lda,ldb,n
@@ -20758,7 +20761,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssygst( itype, uplo, n, a, lda, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: itype,lda,ldb,n
@@ -20780,7 +20783,7 @@ module stdlib_linalg_lapack
                subroutine dsygv( itype, jobz, uplo, n, a, lda, b, ldb, w, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: itype,lda,ldb,lwork,n
@@ -20794,7 +20797,7 @@ module stdlib_linalg_lapack
                subroutine ssygv( itype, jobz, uplo, n, a, lda, b, ldb, w, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: itype,lda,ldb,lwork,n
@@ -20822,7 +20825,7 @@ module stdlib_linalg_lapack
                subroutine dsygvd( itype, jobz, uplo, n, a, lda, b, ldb, w, work,lwork, iwork, &
                          liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: itype,lda,ldb,liwork,lwork,n
@@ -20836,7 +20839,7 @@ module stdlib_linalg_lapack
                subroutine ssygvd( itype, jobz, uplo, n, a, lda, b, ldb, w, work,lwork, iwork, &
                          liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobz,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: itype,lda,ldb,liwork,lwork,n
@@ -20856,7 +20859,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csymv( uplo, n, alpha, a, lda, x, incx, beta, y, incy )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: incx,incy,lda,n
                     complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
@@ -20868,7 +20871,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsymv( uplo, n, alpha, a, lda, x, incx, beta, y, incy )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: incx,incy,lda,n
                     complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
@@ -20887,7 +20890,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csyr( uplo, n, alpha, x, incx, a, lda )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: incx,lda,n
                     complex(sp), intent(in) :: alpha,x(*)
@@ -20899,7 +20902,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsyr( uplo, n, alpha, x, incx, a, lda )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: incx,lda,n
                     complex(dp), intent(in) :: alpha,x(*)
@@ -20918,7 +20921,7 @@ module stdlib_linalg_lapack
                pure subroutine csyrfs( uplo, n, nrhs, a, lda, af, ldaf, ipiv, b, ldb,x, ldx, ferr,&
                           berr, work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldaf,ldb,ldx,n,nrhs,ipiv(*)
@@ -20934,7 +20937,7 @@ module stdlib_linalg_lapack
                pure subroutine dsyrfs( uplo, n, nrhs, a, lda, af, ldaf, ipiv, b, ldb,x, ldx, ferr,&
                           berr, work, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,ldaf,ldb,ldx,n,nrhs,ipiv(*)
@@ -20949,7 +20952,7 @@ module stdlib_linalg_lapack
                pure subroutine ssyrfs( uplo, n, nrhs, a, lda, af, ldaf, ipiv, b, ldb,x, ldx, ferr,&
                           berr, work, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,ldaf,ldb,ldx,n,nrhs,ipiv(*)
@@ -20964,7 +20967,7 @@ module stdlib_linalg_lapack
                pure subroutine zsyrfs( uplo, n, nrhs, a, lda, af, ldaf, ipiv, b, ldb,x, ldx, ferr,&
                           berr, work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldaf,ldb,ldx,n,nrhs,ipiv(*)
@@ -20994,7 +20997,7 @@ module stdlib_linalg_lapack
                pure subroutine csysv( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -21008,7 +21011,7 @@ module stdlib_linalg_lapack
                pure subroutine dsysv( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -21022,7 +21025,7 @@ module stdlib_linalg_lapack
                pure subroutine ssysv( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -21036,7 +21039,7 @@ module stdlib_linalg_lapack
                pure subroutine zsysv( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -21063,7 +21066,7 @@ module stdlib_linalg_lapack
                pure subroutine csysv_aa( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -21077,7 +21080,7 @@ module stdlib_linalg_lapack
                pure subroutine dsysv_aa( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -21091,7 +21094,7 @@ module stdlib_linalg_lapack
                pure subroutine ssysv_aa( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -21105,7 +21108,7 @@ module stdlib_linalg_lapack
                pure subroutine zsysv_aa( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -21136,7 +21139,7 @@ module stdlib_linalg_lapack
                pure subroutine csysv_rk( uplo, n, nrhs, a, lda, e, ipiv, b, ldb, work,lwork, info &
                          )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -21150,7 +21153,7 @@ module stdlib_linalg_lapack
                pure subroutine dsysv_rk( uplo, n, nrhs, a, lda, e, ipiv, b, ldb,work, lwork, info &
                          )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -21164,7 +21167,7 @@ module stdlib_linalg_lapack
                pure subroutine ssysv_rk( uplo, n, nrhs, a, lda, e, ipiv, b, ldb,work, lwork, info &
                          )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -21178,7 +21181,7 @@ module stdlib_linalg_lapack
                pure subroutine zsysv_rk( uplo, n, nrhs, a, lda, e, ipiv, b, ldb, work,lwork, info &
                          )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -21211,7 +21214,7 @@ module stdlib_linalg_lapack
                pure subroutine csysv_rook( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -21225,7 +21228,7 @@ module stdlib_linalg_lapack
                pure subroutine dsysv_rook( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -21239,7 +21242,7 @@ module stdlib_linalg_lapack
                pure subroutine ssysv_rook( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -21253,7 +21256,7 @@ module stdlib_linalg_lapack
                pure subroutine zsysv_rook( uplo, n, nrhs, a, lda, ipiv, b, ldb, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,ldb,lwork,n,nrhs
@@ -21271,7 +21274,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csyswapr( uplo, n, a, lda, i1, i2)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: i1,i2,lda,n
                     complex(sp), intent(inout) :: a(lda,n)
@@ -21282,7 +21285,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsyswapr( uplo, n, a, lda, i1, i2)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: i1,i2,lda,n
                     real(dp), intent(inout) :: a(lda,n)
@@ -21293,7 +21296,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssyswapr( uplo, n, a, lda, i1, i2)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: i1,i2,lda,n
                     real(sp), intent(inout) :: a(lda,n)
@@ -21304,7 +21307,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsyswapr( uplo, n, a, lda, i1, i2)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: i1,i2,lda,n
                     complex(dp), intent(inout) :: a(lda,n)
@@ -21327,7 +21330,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csytf2_rk( uplo, n, a, lda, e, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,n
@@ -21340,7 +21343,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsytf2_rk( uplo, n, a, lda, e, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,n
@@ -21353,7 +21356,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssytf2_rk( uplo, n, a, lda, e, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,n
@@ -21366,7 +21369,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsytf2_rk( uplo, n, a, lda, e, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,n
@@ -21389,7 +21392,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csytf2_rook( uplo, n, a, lda, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,n
@@ -21401,7 +21404,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsytf2_rook( uplo, n, a, lda, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,n
@@ -21413,7 +21416,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssytf2_rook( uplo, n, a, lda, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,n
@@ -21425,7 +21428,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsytf2_rook( uplo, n, a, lda, ipiv, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,n
@@ -21443,7 +21446,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsytrd( uplo, n, a, lda, d, e, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -21456,7 +21459,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssytrd( uplo, n, a, lda, d, e, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -21476,7 +21479,7 @@ module stdlib_linalg_lapack
                subroutine dsytrd_sb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, &
                          lhous, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: stage1,uplo,vect
                     integer(ilp), intent(in) :: n,kd,ldab,lhous,lwork
                     integer(ilp), intent(out) :: info
@@ -21490,7 +21493,7 @@ module stdlib_linalg_lapack
                subroutine ssytrd_sb2st( stage1, vect, uplo, n, kd, ab, ldab,d, e, hous, &
                          lhous, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: stage1,uplo,vect
                     integer(ilp), intent(in) :: n,kd,ldab,lhous,lwork
                     integer(ilp), intent(out) :: info
@@ -21510,7 +21513,7 @@ module stdlib_linalg_lapack
                subroutine dsytrd_sy2sb( uplo, n, kd, a, lda, ab, ldab, tau,work, lwork, info &
                          )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldab,lwork,n,kd
@@ -21524,7 +21527,7 @@ module stdlib_linalg_lapack
                subroutine ssytrd_sy2sb( uplo, n, kd, a, lda, ab, ldab, tau,work, lwork, info &
                          )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldab,lwork,n,kd
@@ -21548,7 +21551,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csytrf( uplo, n, a, lda, ipiv, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -21561,7 +21564,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsytrf( uplo, n, a, lda, ipiv, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -21574,7 +21577,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssytrf( uplo, n, a, lda, ipiv, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -21587,7 +21590,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsytrf( uplo, n, a, lda, ipiv, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -21609,7 +21612,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csytrf_aa( uplo, n, a, lda, ipiv, work, lwork, info)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n,lda,lwork
                     integer(ilp), intent(out) :: info,ipiv(*)
@@ -21622,7 +21625,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsytrf_aa( uplo, n, a, lda, ipiv, work, lwork, info)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n,lda,lwork
                     integer(ilp), intent(out) :: info,ipiv(*)
@@ -21635,7 +21638,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssytrf_aa( uplo, n, a, lda, ipiv, work, lwork, info)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n,lda,lwork
                     integer(ilp), intent(out) :: info,ipiv(*)
@@ -21648,7 +21651,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsytrf_aa( uplo, n, a, lda, ipiv, work, lwork, info)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n,lda,lwork
                     integer(ilp), intent(out) :: info,ipiv(*)
@@ -21673,7 +21676,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csytrf_rk( uplo, n, a, lda, e, ipiv, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -21686,7 +21689,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsytrf_rk( uplo, n, a, lda, e, ipiv, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -21699,7 +21702,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssytrf_rk( uplo, n, a, lda, e, ipiv, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -21712,7 +21715,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsytrf_rk( uplo, n, a, lda, e, ipiv, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -21736,7 +21739,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csytrf_rook( uplo, n, a, lda, ipiv, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -21749,7 +21752,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsytrf_rook( uplo, n, a, lda, ipiv, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -21762,7 +21765,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssytrf_rook( uplo, n, a, lda, ipiv, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -21775,7 +21778,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsytrf_rook( uplo, n, a, lda, ipiv, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info,ipiv(*)
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -21794,7 +21797,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csytri( uplo, n, a, lda, ipiv, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -21807,7 +21810,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsytri( uplo, n, a, lda, ipiv, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -21820,7 +21823,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssytri( uplo, n, a, lda, ipiv, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -21833,7 +21836,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsytri( uplo, n, a, lda, ipiv, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -21852,7 +21855,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csytri_rook( uplo, n, a, lda, ipiv, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -21865,7 +21868,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsytri_rook( uplo, n, a, lda, ipiv, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -21878,7 +21881,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssytri_rook( uplo, n, a, lda, ipiv, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -21891,7 +21894,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsytri_rook( uplo, n, a, lda, ipiv, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n,ipiv(*)
@@ -21910,7 +21913,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csytrs( uplo, n, nrhs, a, lda, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -21923,7 +21926,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsytrs( uplo, n, nrhs, a, lda, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -21936,7 +21939,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssytrs( uplo, n, nrhs, a, lda, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -21949,7 +21952,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsytrs( uplo, n, nrhs, a, lda, ipiv, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -21968,7 +21971,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csytrs2( uplo, n, nrhs, a, lda, ipiv, b, ldb,work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -21981,7 +21984,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsytrs2( uplo, n, nrhs, a, lda, ipiv, b, ldb,work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -21994,7 +21997,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssytrs2( uplo, n, nrhs, a, lda, ipiv, b, ldb,work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -22007,7 +22010,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsytrs2( uplo, n, nrhs, a, lda, ipiv, b, ldb,work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -22032,7 +22035,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csytrs_3( uplo, n, nrhs, a, lda, e, ipiv, b, ldb,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -22045,7 +22048,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsytrs_3( uplo, n, nrhs, a, lda, e, ipiv, b, ldb,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -22058,7 +22061,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssytrs_3( uplo, n, nrhs, a, lda, e, ipiv, b, ldb,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -22071,7 +22074,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsytrs_3( uplo, n, nrhs, a, lda, e, ipiv, b, ldb,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -22091,7 +22094,7 @@ module stdlib_linalg_lapack
                pure subroutine csytrs_aa( uplo, n, nrhs, a, lda, ipiv, b, ldb,work, lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n,nrhs,lda,ldb,lwork,ipiv(*)
                     integer(ilp), intent(out) :: info
@@ -22106,7 +22109,7 @@ module stdlib_linalg_lapack
                pure subroutine dsytrs_aa( uplo, n, nrhs, a, lda, ipiv, b, ldb,work, lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n,nrhs,lda,ldb,lwork,ipiv(*)
                     integer(ilp), intent(out) :: info
@@ -22121,7 +22124,7 @@ module stdlib_linalg_lapack
                pure subroutine ssytrs_aa( uplo, n, nrhs, a, lda, ipiv, b, ldb,work, lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n,nrhs,lda,ldb,lwork,ipiv(*)
                     integer(ilp), intent(out) :: info
@@ -22136,7 +22139,7 @@ module stdlib_linalg_lapack
                pure subroutine zsytrs_aa( uplo, n, nrhs, a, lda, ipiv, b, ldb,work, lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(in) :: n,nrhs,lda,ldb,lwork,ipiv(*)
                     integer(ilp), intent(out) :: info
@@ -22156,7 +22159,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine csytrs_rook( uplo, n, nrhs, a, lda, ipiv, b, ldb,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -22169,7 +22172,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dsytrs_rook( uplo, n, nrhs, a, lda, ipiv, b, ldb,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -22182,7 +22185,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ssytrs_rook( uplo, n, nrhs, a, lda, ipiv, b, ldb,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -22195,7 +22198,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zsytrs_rook( uplo, n, nrhs, a, lda, ipiv, b, ldb,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs,ipiv(*)
@@ -22218,7 +22221,7 @@ module stdlib_linalg_lapack
                subroutine ctbcon( norm, uplo, diag, n, kd, ab, ldab, rcond, work,rwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -22233,7 +22236,7 @@ module stdlib_linalg_lapack
                subroutine dtbcon( norm, uplo, diag, n, kd, ab, ldab, rcond, work,iwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -22247,7 +22250,7 @@ module stdlib_linalg_lapack
                subroutine stbcon( norm, uplo, diag, n, kd, ab, ldab, rcond, work,iwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -22261,7 +22264,7 @@ module stdlib_linalg_lapack
                subroutine ztbcon( norm, uplo, diag, n, kd, ab, ldab, rcond, work,rwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,n
@@ -22285,7 +22288,7 @@ module stdlib_linalg_lapack
                pure subroutine ctbrfs( uplo, trans, diag, n, kd, nrhs, ab, ldab, b,ldb, x, ldx, &
                          ferr, berr, work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldb,ldx,n,nrhs
@@ -22300,7 +22303,7 @@ module stdlib_linalg_lapack
                pure subroutine dtbrfs( uplo, trans, diag, n, kd, nrhs, ab, ldab, b,ldb, x, ldx, &
                          ferr, berr, work, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: kd,ldab,ldb,ldx,n,nrhs
@@ -22314,7 +22317,7 @@ module stdlib_linalg_lapack
                pure subroutine stbrfs( uplo, trans, diag, n, kd, nrhs, ab, ldab, b,ldb, x, ldx, &
                          ferr, berr, work, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: kd,ldab,ldb,ldx,n,nrhs
@@ -22328,7 +22331,7 @@ module stdlib_linalg_lapack
                pure subroutine ztbrfs( uplo, trans, diag, n, kd, nrhs, ab, ldab, b,ldb, x, ldx, &
                          ferr, berr, work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldb,ldx,n,nrhs
@@ -22350,7 +22353,7 @@ module stdlib_linalg_lapack
                pure subroutine ctbtrs( uplo, trans, diag, n, kd, nrhs, ab, ldab, b,ldb, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldb,n,nrhs
@@ -22364,7 +22367,7 @@ module stdlib_linalg_lapack
                pure subroutine dtbtrs( uplo, trans, diag, n, kd, nrhs, ab, ldab, b,ldb, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldb,n,nrhs
@@ -22378,7 +22381,7 @@ module stdlib_linalg_lapack
                pure subroutine stbtrs( uplo, trans, diag, n, kd, nrhs, ab, ldab, b,ldb, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldb,n,nrhs
@@ -22392,7 +22395,7 @@ module stdlib_linalg_lapack
                pure subroutine ztbtrs( uplo, trans, diag, n, kd, nrhs, ab, ldab, b,ldb, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: kd,ldab,ldb,n,nrhs
@@ -22417,7 +22420,7 @@ module stdlib_linalg_lapack
                pure subroutine ctfsm( transr, side, uplo, trans, diag, m, n, alpha, a,b, ldb )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,diag,side,trans,uplo
                     integer(ilp), intent(in) :: ldb,m,n
                     complex(sp), intent(in) :: alpha,a(0:*)
@@ -22430,7 +22433,7 @@ module stdlib_linalg_lapack
                pure subroutine dtfsm( transr, side, uplo, trans, diag, m, n, alpha, a,b, ldb )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,diag,side,trans,uplo
                     integer(ilp), intent(in) :: ldb,m,n
                     real(dp), intent(in) :: alpha,a(0:*)
@@ -22443,7 +22446,7 @@ module stdlib_linalg_lapack
                pure subroutine stfsm( transr, side, uplo, trans, diag, m, n, alpha, a,b, ldb )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,diag,side,trans,uplo
                     integer(ilp), intent(in) :: ldb,m,n
                     real(sp), intent(in) :: alpha,a(0:*)
@@ -22456,7 +22459,7 @@ module stdlib_linalg_lapack
                pure subroutine ztfsm( transr, side, uplo, trans, diag, m, n, alpha, a,b, ldb )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,diag,side,trans,uplo
                     integer(ilp), intent(in) :: ldb,m,n
                     complex(dp), intent(in) :: alpha,a(0:*)
@@ -22474,7 +22477,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ctftri( transr, uplo, diag, n, a, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo,diag
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -22486,7 +22489,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dtftri( transr, uplo, diag, n, a, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo,diag
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -22498,7 +22501,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine stftri( transr, uplo, diag, n, a, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo,diag
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -22510,7 +22513,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ztftri( transr, uplo, diag, n, a, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo,diag
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -22527,7 +22530,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ctfttp( transr, uplo, n, arf, ap, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -22540,7 +22543,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dtfttp( transr, uplo, n, arf, ap, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -22553,7 +22556,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine stfttp( transr, uplo, n, arf, ap, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -22566,7 +22569,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ztfttp( transr, uplo, n, arf, ap, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -22584,7 +22587,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ctfttr( transr, uplo, n, arf, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,lda
@@ -22597,7 +22600,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dtfttr( transr, uplo, n, arf, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,lda
@@ -22610,7 +22613,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine stfttr( transr, uplo, n, arf, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,lda
@@ -22623,7 +22626,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ztfttr( transr, uplo, n, arf, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,lda
@@ -22658,7 +22661,7 @@ module stdlib_linalg_lapack
                pure subroutine ctgevc( side, howmny, select, n, s, lds, p, ldp, vl,ldvl, vr, ldvr,&
                           mm, m, work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: howmny,side
                     integer(ilp), intent(out) :: info,m
                     integer(ilp), intent(in) :: ldp,lds,ldvl,ldvr,mm,n
@@ -22675,7 +22678,7 @@ module stdlib_linalg_lapack
                pure subroutine dtgevc( side, howmny, select, n, s, lds, p, ldp, vl,ldvl, vr, ldvr,&
                           mm, m, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: howmny,side
                     integer(ilp), intent(out) :: info,m
                     integer(ilp), intent(in) :: ldp,lds,ldvl,ldvr,mm,n
@@ -22691,7 +22694,7 @@ module stdlib_linalg_lapack
                pure subroutine stgevc( side, howmny, select, n, s, lds, p, ldp, vl,ldvl, vr, ldvr,&
                           mm, m, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: howmny,side
                     integer(ilp), intent(out) :: info,m
                     integer(ilp), intent(in) :: ldp,lds,ldvl,ldvr,mm,n
@@ -22707,7 +22710,7 @@ module stdlib_linalg_lapack
                pure subroutine ztgevc( side, howmny, select, n, s, lds, p, ldp, vl,ldvl, vr, ldvr,&
                           mm, m, work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: howmny,side
                     integer(ilp), intent(out) :: info,m
                     integer(ilp), intent(in) :: ldp,lds,ldvl,ldvr,mm,n
@@ -22737,7 +22740,7 @@ module stdlib_linalg_lapack
                pure subroutine ctgexc( wantq, wantz, n, a, lda, b, ldb, q, ldq, z,ldz, ifst, ilst,&
                           info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: wantq,wantz
                     integer(ilp), intent(in) :: ifst,lda,ldb,ldq,ldz,n
                     integer(ilp), intent(inout) :: ilst
@@ -22751,7 +22754,7 @@ module stdlib_linalg_lapack
                pure subroutine dtgexc( wantq, wantz, n, a, lda, b, ldb, q, ldq, z,ldz, ifst, ilst,&
                           work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: wantq,wantz
                     integer(ilp), intent(inout) :: ifst,ilst
                     integer(ilp), intent(out) :: info
@@ -22766,7 +22769,7 @@ module stdlib_linalg_lapack
                pure subroutine stgexc( wantq, wantz, n, a, lda, b, ldb, q, ldq, z,ldz, ifst, ilst,&
                           work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: wantq,wantz
                     integer(ilp), intent(inout) :: ifst,ilst
                     integer(ilp), intent(out) :: info
@@ -22781,7 +22784,7 @@ module stdlib_linalg_lapack
                pure subroutine ztgexc( wantq, wantz, n, a, lda, b, ldb, q, ldq, z,ldz, ifst, ilst,&
                           info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: wantq,wantz
                     integer(ilp), intent(in) :: ifst,lda,ldb,ldq,ldz,n
                     integer(ilp), intent(inout) :: ilst
@@ -22816,7 +22819,7 @@ module stdlib_linalg_lapack
                pure subroutine ctgsen( ijob, wantq, wantz, select, n, a, lda, b, ldb,alpha, beta, &
                          q, ldq, z, ldz, m, pl, pr, dif,work, lwork, iwork, liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: wantq,wantz,select(*)
                     integer(ilp), intent(in) :: ijob,lda,ldb,ldq,ldz,liwork,lwork,n
                     integer(ilp), intent(out) :: info,m,iwork(*)
@@ -22832,7 +22835,7 @@ module stdlib_linalg_lapack
                alphai, beta, q, ldq, z, ldz, m, pl,pr, dif, work, lwork, iwork, liwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: wantq,wantz,select(*)
                     integer(ilp), intent(in) :: ijob,lda,ldb,ldq,ldz,liwork,lwork,n
                     integer(ilp), intent(out) :: info,m,iwork(*)
@@ -22848,7 +22851,7 @@ module stdlib_linalg_lapack
                alphai, beta, q, ldq, z, ldz, m, pl,pr, dif, work, lwork, iwork, liwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: wantq,wantz,select(*)
                     integer(ilp), intent(in) :: ijob,lda,ldb,ldq,ldz,liwork,lwork,n
                     integer(ilp), intent(out) :: info,m,iwork(*)
@@ -22863,7 +22866,7 @@ module stdlib_linalg_lapack
                pure subroutine ztgsen( ijob, wantq, wantz, select, n, a, lda, b, ldb,alpha, beta, &
                          q, ldq, z, ldz, m, pl, pr, dif,work, lwork, iwork, liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     logical(lk), intent(in) :: wantq,wantz,select(*)
                     integer(ilp), intent(in) :: ijob,lda,ldb,ldq,ldz,liwork,lwork,n
                     integer(ilp), intent(out) :: info,m,iwork(*)
@@ -22943,7 +22946,7 @@ module stdlib_linalg_lapack
                pure subroutine ctgsja( jobu, jobv, jobq, m, p, n, k, l, a, lda, b,ldb, tola, tolb,&
                           alpha, beta, u, ldu, v, ldv,q, ldq, work, ncycle, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobq,jobu,jobv
                     integer(ilp), intent(out) :: info,ncycle
                     integer(ilp), intent(in) :: k,l,lda,ldb,ldq,ldu,ldv,m,n,p
@@ -22960,7 +22963,7 @@ module stdlib_linalg_lapack
                pure subroutine dtgsja( jobu, jobv, jobq, m, p, n, k, l, a, lda, b,ldb, tola, tolb,&
                           alpha, beta, u, ldu, v, ldv,q, ldq, work, ncycle, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobq,jobu,jobv
                     integer(ilp), intent(out) :: info,ncycle
                     integer(ilp), intent(in) :: k,l,lda,ldb,ldq,ldu,ldv,m,n,p
@@ -22976,7 +22979,7 @@ module stdlib_linalg_lapack
                pure subroutine stgsja( jobu, jobv, jobq, m, p, n, k, l, a, lda, b,ldb, tola, tolb,&
                           alpha, beta, u, ldu, v, ldv,q, ldq, work, ncycle, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobq,jobu,jobv
                     integer(ilp), intent(out) :: info,ncycle
                     integer(ilp), intent(in) :: k,l,lda,ldb,ldq,ldu,ldv,m,n,p
@@ -22992,7 +22995,7 @@ module stdlib_linalg_lapack
                pure subroutine ztgsja( jobu, jobv, jobq, m, p, n, k, l, a, lda, b,ldb, tola, tolb,&
                           alpha, beta, u, ldu, v, ldv,q, ldq, work, ncycle, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobq,jobu,jobv
                     integer(ilp), intent(out) :: info,ncycle
                     integer(ilp), intent(in) :: k,l,lda,ldb,ldq,ldu,ldv,m,n,p
@@ -23016,7 +23019,7 @@ module stdlib_linalg_lapack
                pure subroutine ctgsna( job, howmny, select, n, a, lda, b, ldb, vl,ldvl, vr, ldvr, &
                          s, dif, mm, m, work, lwork,iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: howmny,job
                     integer(ilp), intent(out) :: info,m,iwork(*)
                     integer(ilp), intent(in) :: lda,ldb,ldvl,ldvr,lwork,mm,n
@@ -23032,7 +23035,7 @@ module stdlib_linalg_lapack
                pure subroutine dtgsna( job, howmny, select, n, a, lda, b, ldb, vl,ldvl, vr, ldvr, &
                          s, dif, mm, m, work, lwork,iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: howmny,job
                     integer(ilp), intent(out) :: info,m,iwork(*)
                     integer(ilp), intent(in) :: lda,ldb,ldvl,ldvr,lwork,mm,n
@@ -23047,7 +23050,7 @@ module stdlib_linalg_lapack
                pure subroutine stgsna( job, howmny, select, n, a, lda, b, ldb, vl,ldvl, vr, ldvr, &
                          s, dif, mm, m, work, lwork,iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: howmny,job
                     integer(ilp), intent(out) :: info,m,iwork(*)
                     integer(ilp), intent(in) :: lda,ldb,ldvl,ldvr,lwork,mm,n
@@ -23062,7 +23065,7 @@ module stdlib_linalg_lapack
                pure subroutine ztgsna( job, howmny, select, n, a, lda, b, ldb, vl,ldvl, vr, ldvr, &
                          s, dif, mm, m, work, lwork,iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: howmny,job
                     integer(ilp), intent(out) :: info,m,iwork(*)
                     integer(ilp), intent(in) :: lda,ldb,ldvl,ldvr,lwork,mm,n
@@ -23108,7 +23111,7 @@ module stdlib_linalg_lapack
                pure subroutine ctgsyl( trans, ijob, m, n, a, lda, b, ldb, c, ldc, d,ldd, e, lde, &
                          f, ldf, scale, dif, work, lwork,iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(in) :: ijob,lda,ldb,ldc,ldd,lde,ldf,lwork,m,n
                     integer(ilp), intent(out) :: info,iwork(*)
@@ -23124,7 +23127,7 @@ module stdlib_linalg_lapack
                pure subroutine dtgsyl( trans, ijob, m, n, a, lda, b, ldb, c, ldc, d,ldd, e, lde, &
                          f, ldf, scale, dif, work, lwork,iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(in) :: ijob,lda,ldb,ldc,ldd,lde,ldf,lwork,m,n
                     integer(ilp), intent(out) :: info,iwork(*)
@@ -23139,7 +23142,7 @@ module stdlib_linalg_lapack
                pure subroutine stgsyl( trans, ijob, m, n, a, lda, b, ldb, c, ldc, d,ldd, e, lde, &
                          f, ldf, scale, dif, work, lwork,iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(in) :: ijob,lda,ldb,ldc,ldd,lde,ldf,lwork,m,n
                     integer(ilp), intent(out) :: info,iwork(*)
@@ -23154,7 +23157,7 @@ module stdlib_linalg_lapack
                pure subroutine ztgsyl( trans, ijob, m, n, a, lda, b, ldb, c, ldc, d,ldd, e, lde, &
                          f, ldf, scale, dif, work, lwork,iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trans
                     integer(ilp), intent(in) :: ijob,lda,ldb,ldc,ldd,lde,ldf,lwork,m,n
                     integer(ilp), intent(out) :: info,iwork(*)
@@ -23178,7 +23181,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine ctpcon( norm, uplo, diag, n, ap, rcond, work, rwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -23192,7 +23195,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine dtpcon( norm, uplo, diag, n, ap, rcond, work, iwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: n
@@ -23205,7 +23208,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine stpcon( norm, uplo, diag, n, ap, rcond, work, iwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: n
@@ -23218,7 +23221,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine ztpcon( norm, uplo, diag, n, ap, rcond, work, rwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -23239,7 +23242,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ctplqt( m, n, l, mb, a, lda, b, ldb, t, ldt, work,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,ldt,n,m,l,mb
                     complex(sp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -23251,7 +23254,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dtplqt( m, n, l, mb, a, lda, b, ldb, t, ldt, work,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,ldt,n,m,l,mb
                     real(dp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -23263,7 +23266,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine stplqt( m, n, l, mb, a, lda, b, ldb, t, ldt, work,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,ldt,n,m,l,mb
                     real(sp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -23275,7 +23278,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ztplqt( m, n, l, mb, a, lda, b, ldb, t, ldt, work,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,ldt,n,m,l,mb
                     complex(dp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -23293,7 +23296,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ctplqt2( m, n, l, a, lda, b, ldb, t, ldt, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,ldt,n,m,l
                     complex(sp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -23305,7 +23308,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dtplqt2( m, n, l, a, lda, b, ldb, t, ldt, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,ldt,n,m,l
                     real(dp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -23317,7 +23320,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine stplqt2( m, n, l, a, lda, b, ldb, t, ldt, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,ldt,n,m,l
                     real(sp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -23329,7 +23332,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ztplqt2( m, n, l, a, lda, b, ldb, t, ldt, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,ldt,n,m,l
                     complex(dp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -23348,7 +23351,7 @@ module stdlib_linalg_lapack
                pure subroutine ctpmlqt( side, trans, m, n, k, l, mb, v, ldv, t, ldt,a, lda, b, &
                          ldb, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,ldv,lda,ldb,m,n,l,mb,ldt
@@ -23363,7 +23366,7 @@ module stdlib_linalg_lapack
                pure subroutine dtpmlqt( side, trans, m, n, k, l, mb, v, ldv, t, ldt,a, lda, b, &
                          ldb, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,ldv,lda,ldb,m,n,l,mb,ldt
@@ -23378,7 +23381,7 @@ module stdlib_linalg_lapack
                pure subroutine stpmlqt( side, trans, m, n, k, l, mb, v, ldv, t, ldt,a, lda, b, &
                          ldb, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,ldv,lda,ldb,m,n,l,mb,ldt
@@ -23393,7 +23396,7 @@ module stdlib_linalg_lapack
                pure subroutine ztpmlqt( side, trans, m, n, k, l, mb, v, ldv, t, ldt,a, lda, b, &
                          ldb, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,ldv,lda,ldb,m,n,l,mb,ldt
@@ -23414,7 +23417,7 @@ module stdlib_linalg_lapack
                pure subroutine ctpmqrt( side, trans, m, n, k, l, nb, v, ldv, t, ldt,a, lda, b, &
                          ldb, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,ldv,lda,ldb,m,n,l,nb,ldt
@@ -23429,7 +23432,7 @@ module stdlib_linalg_lapack
                pure subroutine dtpmqrt( side, trans, m, n, k, l, nb, v, ldv, t, ldt,a, lda, b, &
                          ldb, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,ldv,lda,ldb,m,n,l,nb,ldt
@@ -23444,7 +23447,7 @@ module stdlib_linalg_lapack
                pure subroutine stpmqrt( side, trans, m, n, k, l, nb, v, ldv, t, ldt,a, lda, b, &
                          ldb, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,ldv,lda,ldb,m,n,l,nb,ldt
@@ -23459,7 +23462,7 @@ module stdlib_linalg_lapack
                pure subroutine ztpmqrt( side, trans, m, n, k, l, nb, v, ldv, t, ldt,a, lda, b, &
                          ldb, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,ldv,lda,ldb,m,n,l,nb,ldt
@@ -23480,7 +23483,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ctpqrt( m, n, l, nb, a, lda, b, ldb, t, ldt, work,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,ldt,n,m,l,nb
                     complex(sp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -23492,7 +23495,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dtpqrt( m, n, l, nb, a, lda, b, ldb, t, ldt, work,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,ldt,n,m,l,nb
                     real(dp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -23504,7 +23507,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine stpqrt( m, n, l, nb, a, lda, b, ldb, t, ldt, work,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,ldt,n,m,l,nb
                     real(sp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -23516,7 +23519,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ztpqrt( m, n, l, nb, a, lda, b, ldb, t, ldt, work,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,ldt,n,m,l,nb
                     complex(dp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -23534,7 +23537,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ctpqrt2( m, n, l, a, lda, b, ldb, t, ldt, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,ldt,n,m,l
                     complex(sp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -23546,7 +23549,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dtpqrt2( m, n, l, a, lda, b, ldb, t, ldt, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,ldt,n,m,l
                     real(dp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -23558,7 +23561,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine stpqrt2( m, n, l, a, lda, b, ldb, t, ldt, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,ldt,n,m,l
                     real(sp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -23570,7 +23573,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ztpqrt2( m, n, l, a, lda, b, ldb, t, ldt, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,ldt,n,m,l
                     complex(dp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -23589,7 +23592,7 @@ module stdlib_linalg_lapack
                pure subroutine ctprfb( side, trans, direct, storev, m, n, k, l,v, ldv, t, ldt, a, &
                          lda, b, ldb, work, ldwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,side,storev,trans
                     integer(ilp), intent(in) :: k,l,lda,ldb,ldt,ldv,ldwork,m,n
                     complex(sp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -23603,7 +23606,7 @@ module stdlib_linalg_lapack
                pure subroutine dtprfb( side, trans, direct, storev, m, n, k, l,v, ldv, t, ldt, a, &
                          lda, b, ldb, work, ldwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,side,storev,trans
                     integer(ilp), intent(in) :: k,l,lda,ldb,ldt,ldv,ldwork,m,n
                     real(dp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -23617,7 +23620,7 @@ module stdlib_linalg_lapack
                pure subroutine stprfb( side, trans, direct, storev, m, n, k, l,v, ldv, t, ldt, a, &
                          lda, b, ldb, work, ldwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,side,storev,trans
                     integer(ilp), intent(in) :: k,l,lda,ldb,ldt,ldv,ldwork,m,n
                     real(sp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -23631,7 +23634,7 @@ module stdlib_linalg_lapack
                pure subroutine ztprfb( side, trans, direct, storev, m, n, k, l,v, ldv, t, ldt, a, &
                          lda, b, ldb, work, ldwork )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: direct,side,storev,trans
                     integer(ilp), intent(in) :: k,l,lda,ldb,ldt,ldv,ldwork,m,n
                     complex(dp), intent(inout) :: a(lda,*),b(ldb,*)
@@ -23654,7 +23657,7 @@ module stdlib_linalg_lapack
                pure subroutine ctprfs( uplo, trans, diag, n, nrhs, ap, b, ldb, x, ldx,ferr, berr, &
                          work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs
@@ -23669,7 +23672,7 @@ module stdlib_linalg_lapack
                pure subroutine dtprfs( uplo, trans, diag, n, nrhs, ap, b, ldb, x, ldx,ferr, berr, &
                          work, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs
@@ -23683,7 +23686,7 @@ module stdlib_linalg_lapack
                pure subroutine stprfs( uplo, trans, diag, n, nrhs, ap, b, ldb, x, ldx,ferr, berr, &
                          work, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs
@@ -23697,7 +23700,7 @@ module stdlib_linalg_lapack
                pure subroutine ztprfs( uplo, trans, diag, n, nrhs, ap, b, ldb, x, ldx,ferr, berr, &
                          work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,ldx,n,nrhs
@@ -23716,7 +23719,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ctptri( uplo, diag, n, ap, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -23728,7 +23731,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dtptri( uplo, diag, n, ap, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -23740,7 +23743,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine stptri( uplo, diag, n, ap, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -23752,7 +23755,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ztptri( uplo, diag, n, ap, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -23772,7 +23775,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ctptrs( uplo, trans, diag, n, nrhs, ap, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -23785,7 +23788,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dtptrs( uplo, trans, diag, n, nrhs, ap, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -23798,7 +23801,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine stptrs( uplo, trans, diag, n, nrhs, ap, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -23811,7 +23814,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ztptrs( uplo, trans, diag, n, nrhs, ap, b, ldb, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldb,n,nrhs
@@ -23829,7 +23832,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ctpttf( transr, uplo, n, ap, arf, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -23842,7 +23845,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dtpttf( transr, uplo, n, ap, arf, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -23855,7 +23858,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine stpttf( transr, uplo, n, ap, arf, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -23868,7 +23871,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ztpttf( transr, uplo, n, ap, arf, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n
@@ -23886,7 +23889,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ctpttr( uplo, n, ap, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,lda
@@ -23899,7 +23902,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dtpttr( uplo, n, ap, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,lda
@@ -23912,7 +23915,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine stpttr( uplo, n, ap, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,lda
@@ -23925,7 +23928,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ztpttr( uplo, n, ap, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,lda
@@ -23947,7 +23950,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine ctrcon( norm, uplo, diag, n, a, lda, rcond, work,rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -23961,7 +23964,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine dtrcon( norm, uplo, diag, n, a, lda, rcond, work,iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,n
@@ -23974,7 +23977,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine strcon( norm, uplo, diag, n, a, lda, rcond, work,iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,n
@@ -23987,7 +23990,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine ztrcon( norm, uplo, diag, n, a, lda, rcond, work,rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,norm,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -24020,7 +24023,7 @@ module stdlib_linalg_lapack
                pure subroutine ctrevc( side, howmny, select, n, t, ldt, vl, ldvl, vr,ldvr, mm, m, &
                          work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: howmny,side
                     integer(ilp), intent(out) :: info,m
                     integer(ilp), intent(in) :: ldt,ldvl,ldvr,mm,n
@@ -24036,7 +24039,7 @@ module stdlib_linalg_lapack
                pure subroutine dtrevc( side, howmny, select, n, t, ldt, vl, ldvl, vr,ldvr, mm, m, &
                          work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: howmny,side
                     integer(ilp), intent(out) :: info,m
                     integer(ilp), intent(in) :: ldt,ldvl,ldvr,mm,n
@@ -24052,7 +24055,7 @@ module stdlib_linalg_lapack
                pure subroutine strevc( side, howmny, select, n, t, ldt, vl, ldvl, vr,ldvr, mm, m, &
                          work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: howmny,side
                     integer(ilp), intent(out) :: info,m
                     integer(ilp), intent(in) :: ldt,ldvl,ldvr,mm,n
@@ -24068,7 +24071,7 @@ module stdlib_linalg_lapack
                pure subroutine ztrevc( side, howmny, select, n, t, ldt, vl, ldvl, vr,ldvr, mm, m, &
                          work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: howmny,side
                     integer(ilp), intent(out) :: info,m
                     integer(ilp), intent(in) :: ldt,ldvl,ldvr,mm,n
@@ -24103,7 +24106,7 @@ module stdlib_linalg_lapack
                pure subroutine ctrevc3( side, howmny, select, n, t, ldt, vl, ldvl, vr,ldvr, mm, m,&
                           work, lwork, rwork, lrwork, info)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: howmny,side
                     integer(ilp), intent(out) :: info,m
                     integer(ilp), intent(in) :: ldt,ldvl,ldvr,lwork,lrwork,mm,n
@@ -24119,7 +24122,7 @@ module stdlib_linalg_lapack
                pure subroutine dtrevc3( side, howmny, select, n, t, ldt, vl, ldvl,vr, ldvr, mm, m,&
                           work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: howmny,side
                     integer(ilp), intent(out) :: info,m
                     integer(ilp), intent(in) :: ldt,ldvl,ldvr,lwork,mm,n
@@ -24135,7 +24138,7 @@ module stdlib_linalg_lapack
                pure subroutine strevc3( side, howmny, select, n, t, ldt, vl, ldvl,vr, ldvr, mm, m,&
                           work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: howmny,side
                     integer(ilp), intent(out) :: info,m
                     integer(ilp), intent(in) :: ldt,ldvl,ldvr,lwork,mm,n
@@ -24151,7 +24154,7 @@ module stdlib_linalg_lapack
                pure subroutine ztrevc3( side, howmny, select, n, t, ldt, vl, ldvl, vr,ldvr, mm, m,&
                           work, lwork, rwork, lrwork, info)
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: howmny,side
                     integer(ilp), intent(out) :: info,m
                     integer(ilp), intent(in) :: ldt,ldvl,ldvr,lwork,lrwork,mm,n
@@ -24175,7 +24178,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ctrexc( compq, n, t, ldt, q, ldq, ifst, ilst, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compq
                     integer(ilp), intent(in) :: ifst,ilst,ldq,ldt,n
                     integer(ilp), intent(out) :: info
@@ -24187,7 +24190,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine dtrexc( compq, n, t, ldt, q, ldq, ifst, ilst, work,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compq
                     integer(ilp), intent(inout) :: ifst,ilst
                     integer(ilp), intent(out) :: info
@@ -24201,7 +24204,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                subroutine strexc( compq, n, t, ldt, q, ldq, ifst, ilst, work,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compq
                     integer(ilp), intent(inout) :: ifst,ilst
                     integer(ilp), intent(out) :: info
@@ -24215,7 +24218,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ztrexc( compq, n, t, ldt, q, ldq, ifst, ilst, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compq
                     integer(ilp), intent(in) :: ifst,ilst,ldq,ldt,n
                     integer(ilp), intent(out) :: info
@@ -24237,7 +24240,7 @@ module stdlib_linalg_lapack
                pure subroutine ctrrfs( uplo, trans, diag, n, nrhs, a, lda, b, ldb, x,ldx, ferr, &
                          berr, work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,ldx,n,nrhs
@@ -24252,7 +24255,7 @@ module stdlib_linalg_lapack
                pure subroutine dtrrfs( uplo, trans, diag, n, nrhs, a, lda, b, ldb, x,ldx, ferr, &
                          berr, work, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,ldb,ldx,n,nrhs
@@ -24266,7 +24269,7 @@ module stdlib_linalg_lapack
                pure subroutine strrfs( uplo, trans, diag, n, nrhs, a, lda, b, ldb, x,ldx, ferr, &
                          berr, work, iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: lda,ldb,ldx,n,nrhs
@@ -24280,7 +24283,7 @@ module stdlib_linalg_lapack
                pure subroutine ztrrfs( uplo, trans, diag, n, nrhs, a, lda, b, ldb, x,ldx, ferr, &
                          berr, work, rwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,ldx,n,nrhs
@@ -24305,7 +24308,7 @@ module stdlib_linalg_lapack
                subroutine ctrsen( job, compq, select, n, t, ldt, q, ldq, w, m, s,sep, work, lwork,&
                           info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compq,job
                     integer(ilp), intent(out) :: info,m
                     integer(ilp), intent(in) :: ldq,ldt,lwork,n
@@ -24321,7 +24324,7 @@ module stdlib_linalg_lapack
                subroutine dtrsen( job, compq, select, n, t, ldt, q, ldq, wr, wi,m, s, sep, work, &
                          lwork, iwork, liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compq,job
                     integer(ilp), intent(out) :: info,m,iwork(*)
                     integer(ilp), intent(in) :: ldq,ldt,liwork,lwork,n
@@ -24336,7 +24339,7 @@ module stdlib_linalg_lapack
                subroutine strsen( job, compq, select, n, t, ldt, q, ldq, wr, wi,m, s, sep, work, &
                          lwork, iwork, liwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compq,job
                     integer(ilp), intent(out) :: info,m,iwork(*)
                     integer(ilp), intent(in) :: ldq,ldt,liwork,lwork,n
@@ -24351,7 +24354,7 @@ module stdlib_linalg_lapack
                subroutine ztrsen( job, compq, select, n, t, ldt, q, ldq, w, m, s,sep, work, lwork,&
                           info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: compq,job
                     integer(ilp), intent(out) :: info,m
                     integer(ilp), intent(in) :: ldq,ldt,lwork,n
@@ -24373,7 +24376,7 @@ module stdlib_linalg_lapack
                pure subroutine ctrsna( job, howmny, select, n, t, ldt, vl, ldvl, vr,ldvr, s, sep, &
                          mm, m, work, ldwork, rwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: howmny,job
                     integer(ilp), intent(out) :: info,m
                     integer(ilp), intent(in) :: ldt,ldvl,ldvr,ldwork,mm,n
@@ -24389,7 +24392,7 @@ module stdlib_linalg_lapack
                subroutine dtrsna( job, howmny, select, n, t, ldt, vl, ldvl, vr,ldvr, s, sep, mm, &
                          m, work, ldwork, iwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: howmny,job
                     integer(ilp), intent(out) :: info,m,iwork(*)
                     integer(ilp), intent(in) :: ldt,ldvl,ldvr,ldwork,mm,n
@@ -24404,7 +24407,7 @@ module stdlib_linalg_lapack
                subroutine strsna( job, howmny, select, n, t, ldt, vl, ldvl, vr,ldvr, s, sep, mm, &
                          m, work, ldwork, iwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: howmny,job
                     integer(ilp), intent(out) :: info,m,iwork(*)
                     integer(ilp), intent(in) :: ldt,ldvl,ldvr,ldwork,mm,n
@@ -24419,7 +24422,7 @@ module stdlib_linalg_lapack
                pure subroutine ztrsna( job, howmny, select, n, t, ldt, vl, ldvl, vr,ldvr, s, sep, &
                          mm, m, work, ldwork, rwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: howmny,job
                     integer(ilp), intent(out) :: info,m
                     integer(ilp), intent(in) :: ldt,ldvl,ldvr,ldwork,mm,n
@@ -24445,7 +24448,7 @@ module stdlib_linalg_lapack
                subroutine ctrsyl( trana, tranb, isgn, m, n, a, lda, b, ldb, c,ldc, scale, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trana,tranb
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: isgn,lda,ldb,ldc,m,n
@@ -24460,7 +24463,7 @@ module stdlib_linalg_lapack
                subroutine dtrsyl( trana, tranb, isgn, m, n, a, lda, b, ldb, c,ldc, scale, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trana,tranb
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: isgn,lda,ldb,ldc,m,n
@@ -24475,7 +24478,7 @@ module stdlib_linalg_lapack
                subroutine strsyl( trana, tranb, isgn, m, n, a, lda, b, ldb, c,ldc, scale, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trana,tranb
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: isgn,lda,ldb,ldc,m,n
@@ -24490,7 +24493,7 @@ module stdlib_linalg_lapack
                subroutine ztrsyl( trana, tranb, isgn, m, n, a, lda, b, ldb, c,ldc, scale, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: trana,tranb
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: isgn,lda,ldb,ldc,m,n
@@ -24510,7 +24513,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ctrtri( uplo, diag, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -24522,7 +24525,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dtrtri( uplo, diag, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -24534,7 +24537,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine strtri( uplo, diag, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -24546,7 +24549,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ztrtri( uplo, diag, n, a, lda, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,n
@@ -24565,7 +24568,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ctrtrs( uplo, trans, diag, n, nrhs, a, lda, b, ldb,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs
@@ -24578,7 +24581,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dtrtrs( uplo, trans, diag, n, nrhs, a, lda, b, ldb,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs
@@ -24591,7 +24594,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine strtrs( uplo, trans, diag, n, nrhs, a, lda, b, ldb,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs
@@ -24604,7 +24607,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ztrtrs( uplo, trans, diag, n, nrhs, a, lda, b, ldb,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: diag,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldb,n,nrhs
@@ -24622,7 +24625,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ctrttf( transr, uplo, n, a, lda, arf, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,lda
@@ -24635,7 +24638,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dtrttf( transr, uplo, n, a, lda, arf, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,lda
@@ -24648,7 +24651,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine strttf( transr, uplo, n, a, lda, arf, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,lda
@@ -24661,7 +24664,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ztrttf( transr, uplo, n, a, lda, arf, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: transr,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,lda
@@ -24679,7 +24682,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ctrttp( uplo, n, a, lda, ap, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,lda
@@ -24692,7 +24695,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dtrttp( uplo, n, a, lda, ap, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,lda
@@ -24705,7 +24708,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine strttp( uplo, n, a, lda, ap, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,lda
@@ -24718,7 +24721,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ztrttp( uplo, n, a, lda, ap, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: n,lda
@@ -24740,7 +24743,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ctzrzf( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     complex(sp), intent(inout) :: a(lda,*)
@@ -24752,7 +24755,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine dtzrzf( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     real(dp), intent(inout) :: a(lda,*)
@@ -24764,7 +24767,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine stzrzf( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     real(sp), intent(inout) :: a(lda,*)
@@ -24776,7 +24779,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine ztzrzf( m, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,m,n
                     complex(dp), intent(inout) :: a(lda,*)
@@ -24808,7 +24811,7 @@ module stdlib_linalg_lapack
                subroutine cunbdb( trans, signs, m, p, q, x11, ldx11, x12, ldx12,x21, ldx21, x22, &
                          ldx22, theta, phi, taup1,taup2, tauq1, tauq2, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: signs,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldx11,ldx12,ldx21,ldx22,lwork,m,p,q
@@ -24825,7 +24828,7 @@ module stdlib_linalg_lapack
                subroutine zunbdb( trans, signs, m, p, q, x11, ldx11, x12, ldx12,x21, ldx21, x22, &
                          ldx22, theta, phi, taup1,taup2, tauq1, tauq2, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: signs,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldx11,ldx12,ldx21,ldx22,lwork,m,p,q
@@ -24860,7 +24863,7 @@ module stdlib_linalg_lapack
                subroutine cunbdb1( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, &
                          tauq1, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lwork,m,p,q,ldx11,ldx21
                     real(sp), intent(out) :: phi(*),theta(*)
@@ -24874,7 +24877,7 @@ module stdlib_linalg_lapack
                subroutine zunbdb1( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, &
                          tauq1, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lwork,m,p,q,ldx11,ldx21
                     real(dp), intent(out) :: phi(*),theta(*)
@@ -24906,7 +24909,7 @@ module stdlib_linalg_lapack
                subroutine cunbdb2( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, &
                          tauq1, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lwork,m,p,q,ldx11,ldx21
                     real(sp), intent(out) :: phi(*),theta(*)
@@ -24920,7 +24923,7 @@ module stdlib_linalg_lapack
                subroutine zunbdb2( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, &
                          tauq1, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lwork,m,p,q,ldx11,ldx21
                     real(dp), intent(out) :: phi(*),theta(*)
@@ -24952,7 +24955,7 @@ module stdlib_linalg_lapack
                subroutine cunbdb3( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, &
                          tauq1, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lwork,m,p,q,ldx11,ldx21
                     real(sp), intent(out) :: phi(*),theta(*)
@@ -24966,7 +24969,7 @@ module stdlib_linalg_lapack
                subroutine zunbdb3( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, &
                          tauq1, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lwork,m,p,q,ldx11,ldx21
                     real(dp), intent(out) :: phi(*),theta(*)
@@ -24998,7 +25001,7 @@ module stdlib_linalg_lapack
                subroutine cunbdb4( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, &
                          tauq1, phantom, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lwork,m,p,q,ldx11,ldx21
                     real(sp), intent(out) :: phi(*),theta(*)
@@ -25013,7 +25016,7 @@ module stdlib_linalg_lapack
                subroutine zunbdb4( m, p, q, x11, ldx11, x21, ldx21, theta, phi,taup1, taup2, &
                          tauq1, phantom, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lwork,m,p,q,ldx11,ldx21
                     real(dp), intent(out) :: phi(*),theta(*)
@@ -25042,7 +25045,7 @@ module stdlib_linalg_lapack
                pure subroutine cunbdb5( m1, m2, n, x1, incx1, x2, incx2, q1, ldq1, q2,ldq2, work, &
                          lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx1,incx2,ldq1,ldq2,lwork,m1,m2,n
                     integer(ilp), intent(out) :: info
                     complex(sp), intent(in) :: q1(ldq1,*),q2(ldq2,*)
@@ -25056,7 +25059,7 @@ module stdlib_linalg_lapack
                pure subroutine zunbdb5( m1, m2, n, x1, incx1, x2, incx2, q1, ldq1, q2,ldq2, work, &
                          lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx1,incx2,ldq1,ldq2,lwork,m1,m2,n
                     integer(ilp), intent(out) :: info
                     complex(dp), intent(in) :: q1(ldq1,*),q2(ldq2,*)
@@ -25082,7 +25085,7 @@ module stdlib_linalg_lapack
                pure subroutine cunbdb6( m1, m2, n, x1, incx1, x2, incx2, q1, ldq1, q2,ldq2, work, &
                          lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx1,incx2,ldq1,ldq2,lwork,m1,m2,n
                     integer(ilp), intent(out) :: info
                     complex(sp), intent(in) :: q1(ldq1,*),q2(ldq2,*)
@@ -25096,7 +25099,7 @@ module stdlib_linalg_lapack
                pure subroutine zunbdb6( m1, m2, n, x1, incx1, x2, incx2, q1, ldq1, q2,ldq2, work, &
                          lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: incx1,incx2,ldq1,ldq2,lwork,m1,m2,n
                     integer(ilp), intent(out) :: info
                     complex(dp), intent(in) :: q1(ldq1,*),q2(ldq2,*)
@@ -25127,7 +25130,7 @@ module stdlib_linalg_lapack
                x11, ldx11, x12,ldx12, x21, ldx21, x22, ldx22, theta,u1, ldu1, u2, ldu2, v1t, &
                          ldv1t, v2t,ldv2t, work, lwork, rwork, lrwork,iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobu1,jobu2,jobv1t,jobv2t,signs,trans
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldu1,ldu2,ldv1t,ldv2t,ldx11,ldx12,ldx21,ldx22,&
@@ -25146,7 +25149,7 @@ module stdlib_linalg_lapack
                x11, ldx11, x12,ldx12, x21, ldx21, x22, ldx22, theta,u1, ldu1, u2, ldu2, v1t, &
                          ldv1t, v2t,ldv2t, work, lwork, rwork, lrwork,iwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobu1,jobu2,jobv1t,jobv2t,signs,trans
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldu1,ldu2,ldv1t,ldv2t,ldx11,ldx12,ldx21,ldx22,&
@@ -25182,7 +25185,7 @@ module stdlib_linalg_lapack
                subroutine cuncsd2by1( jobu1, jobu2, jobv1t, m, p, q, x11, ldx11,x21, ldx21, theta,&
                           u1, ldu1, u2, ldu2, v1t,ldv1t, work, lwork, rwork, lrwork, iwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobu1,jobu2,jobv1t
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldu1,ldu2,ldv1t,lwork,ldx11,ldx21,m,p,q,&
@@ -25198,7 +25201,7 @@ module stdlib_linalg_lapack
                subroutine zuncsd2by1( jobu1, jobu2, jobv1t, m, p, q, x11, ldx11,x21, ldx21, theta,&
                           u1, ldu1, u2, ldu2, v1t,ldv1t, work, lwork, rwork, lrwork, iwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: jobu1,jobu2,jobv1t
                     integer(ilp), intent(out) :: info,iwork(*)
                     integer(ilp), intent(in) :: ldu1,ldu2,ldv1t,lwork,ldx11,ldx21,m,p,q,&
@@ -25221,7 +25224,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cung2l( m, n, k, a, lda, tau, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,m,n
                     complex(sp), intent(inout) :: a(lda,*)
@@ -25234,7 +25237,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zung2l( m, n, k, a, lda, tau, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,m,n
                     complex(dp), intent(inout) :: a(lda,*)
@@ -25255,7 +25258,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cung2r( m, n, k, a, lda, tau, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,m,n
                     complex(sp), intent(inout) :: a(lda,*)
@@ -25268,7 +25271,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zung2r( m, n, k, a, lda, tau, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,m,n
                     complex(dp), intent(inout) :: a(lda,*)
@@ -25300,7 +25303,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cungbr( vect, m, n, k, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: vect
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,lwork,m,n
@@ -25314,7 +25317,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zungbr( vect, m, n, k, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: vect
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,lwork,m,n
@@ -25335,7 +25338,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cunghr( n, ilo, ihi, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ilo,lda,lwork,n
                     integer(ilp), intent(out) :: info
                     complex(sp), intent(inout) :: a(lda,*)
@@ -25348,7 +25351,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zunghr( n, ilo, ihi, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(in) :: ihi,ilo,lda,lwork,n
                     integer(ilp), intent(out) :: info
                     complex(dp), intent(inout) :: a(lda,*)
@@ -25369,7 +25372,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cunglq( m, n, k, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,lwork,m,n
                     complex(sp), intent(inout) :: a(lda,*)
@@ -25382,7 +25385,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zunglq( m, n, k, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,lwork,m,n
                     complex(dp), intent(inout) :: a(lda,*)
@@ -25403,7 +25406,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cungql( m, n, k, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,lwork,m,n
                     complex(sp), intent(inout) :: a(lda,*)
@@ -25416,7 +25419,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zungql( m, n, k, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,lwork,m,n
                     complex(dp), intent(inout) :: a(lda,*)
@@ -25437,7 +25440,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cungqr( m, n, k, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,lwork,m,n
                     complex(sp), intent(inout) :: a(lda,*)
@@ -25450,7 +25453,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zungqr( m, n, k, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,lwork,m,n
                     complex(dp), intent(inout) :: a(lda,*)
@@ -25471,7 +25474,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cungrq( m, n, k, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,lwork,m,n
                     complex(sp), intent(inout) :: a(lda,*)
@@ -25484,7 +25487,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zungrq( m, n, k, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,lwork,m,n
                     complex(dp), intent(inout) :: a(lda,*)
@@ -25505,7 +25508,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cungtr( uplo, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -25519,7 +25522,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zungtr( uplo, n, a, lda, tau, work, lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,lwork,n
@@ -25541,7 +25544,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cungtsqr( m, n, mb, nb, a, lda, t, ldt, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,lwork,m,n,mb,nb
                     complex(sp), intent(inout) :: a(lda,*)
@@ -25554,7 +25557,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zungtsqr( m, n, mb, nb, a, lda, t, ldt, work, lwork,info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,lwork,m,n,mb,nb
                     complex(dp), intent(inout) :: a(lda,*)
@@ -25586,7 +25589,7 @@ module stdlib_linalg_lapack
                pure subroutine cungtsqr_row( m, n, mb, nb, a, lda, t, ldt, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,lwork,m,n,mb,nb
                     complex(sp), intent(inout) :: a(lda,*)
@@ -25600,7 +25603,7 @@ module stdlib_linalg_lapack
                pure subroutine zungtsqr_row( m, n, mb, nb, a, lda, t, ldt, work,lwork, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,lwork,m,n,mb,nb
                     complex(dp), intent(inout) :: a(lda,*)
@@ -25625,7 +25628,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cunhr_col( m, n, nb, a, lda, t, ldt, d, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,m,n,nb
                     complex(sp), intent(inout) :: a(lda,*)
@@ -25637,7 +25640,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zunhr_col( m, n, nb, a, lda, t, ldt, d, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldt,m,n,nb
                     complex(dp), intent(inout) :: a(lda,*)
@@ -25663,7 +25666,7 @@ module stdlib_linalg_lapack
                pure subroutine cunm2l( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,m,n
@@ -25678,7 +25681,7 @@ module stdlib_linalg_lapack
                pure subroutine zunm2l( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,m,n
@@ -25706,7 +25709,7 @@ module stdlib_linalg_lapack
                pure subroutine cunm2r( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,m,n
@@ -25721,7 +25724,7 @@ module stdlib_linalg_lapack
                pure subroutine zunm2r( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,m,n
@@ -25761,7 +25764,7 @@ module stdlib_linalg_lapack
                pure subroutine cunmbr( vect, side, trans, m, n, k, a, lda, tau, c,ldc, work, &
                          lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans,vect
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,lwork,m,n
@@ -25776,7 +25779,7 @@ module stdlib_linalg_lapack
                pure subroutine zunmbr( vect, side, trans, m, n, k, a, lda, tau, c,ldc, work, &
                          lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans,vect
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,lwork,m,n
@@ -25802,7 +25805,7 @@ module stdlib_linalg_lapack
                pure subroutine cunmhr( side, trans, m, n, ilo, ihi, a, lda, tau, c,ldc, work, &
                          lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(in) :: ihi,ilo,lda,ldc,lwork,m,n
                     integer(ilp), intent(out) :: info
@@ -25817,7 +25820,7 @@ module stdlib_linalg_lapack
                pure subroutine zunmhr( side, trans, m, n, ilo, ihi, a, lda, tau, c,ldc, work, &
                          lwork, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(in) :: ihi,ilo,lda,ldc,lwork,m,n
                     integer(ilp), intent(out) :: info
@@ -25844,7 +25847,7 @@ module stdlib_linalg_lapack
                pure subroutine cunmlq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,lwork,m,n
@@ -25859,7 +25862,7 @@ module stdlib_linalg_lapack
                pure subroutine zunmlq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,lwork,m,n
@@ -25886,7 +25889,7 @@ module stdlib_linalg_lapack
                pure subroutine cunmql( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,lwork,m,n
@@ -25901,7 +25904,7 @@ module stdlib_linalg_lapack
                pure subroutine zunmql( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,lwork,m,n
@@ -25928,7 +25931,7 @@ module stdlib_linalg_lapack
                pure subroutine cunmqr( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,lwork,m,n
@@ -25943,7 +25946,7 @@ module stdlib_linalg_lapack
                pure subroutine zunmqr( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,lwork,m,n
@@ -25970,7 +25973,7 @@ module stdlib_linalg_lapack
                pure subroutine cunmrq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,lwork,m,n
@@ -25985,7 +25988,7 @@ module stdlib_linalg_lapack
                pure subroutine zunmrq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,lda,ldc,lwork,m,n
@@ -26012,7 +26015,7 @@ module stdlib_linalg_lapack
                pure subroutine cunmrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,l,lda,ldc,lwork,m,n
@@ -26027,7 +26030,7 @@ module stdlib_linalg_lapack
                pure subroutine zunmrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: k,l,lda,ldc,lwork,m,n
@@ -26054,7 +26057,7 @@ module stdlib_linalg_lapack
                pure subroutine cunmtr( side, uplo, trans, m, n, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldc,lwork,m,n
@@ -26069,7 +26072,7 @@ module stdlib_linalg_lapack
                pure subroutine zunmtr( side, uplo, trans, m, n, a, lda, tau, c, ldc,work, lwork, &
                          info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: lda,ldc,lwork,m,n
@@ -26091,7 +26094,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine cupgtr( uplo, n, ap, tau, q, ldq, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldq,n
@@ -26104,7 +26107,7 @@ module stdlib_linalg_lapack
 #ifdef STDLIB_EXTERNAL_LAPACK
                pure subroutine zupgtr( uplo, n, ap, tau, q, ldq, work, info )
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldq,n
@@ -26131,7 +26134,7 @@ module stdlib_linalg_lapack
                pure subroutine cupmtr( side, uplo, trans, m, n, ap, tau, c, ldc, work,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldc,m,n
@@ -26146,7 +26149,7 @@ module stdlib_linalg_lapack
                pure subroutine zupmtr( side, uplo, trans, m, n, ap, tau, c, ldc, work,info )
 
                     import sp,dp,qp,ilp,lk
-                    implicit none(type,external)
+                    implicit none
                     character, intent(in) :: side,trans,uplo
                     integer(ilp), intent(out) :: info
                     integer(ilp), intent(in) :: ldc,m,n

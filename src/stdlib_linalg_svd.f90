@@ -4,7 +4,7 @@ submodule(stdlib_linalg) stdlib_linalg_svd
      use stdlib_linalg_lapack, only: gesdd
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR, LINALG_SUCCESS
-     implicit none(type,external)
+     implicit none
      
      character(*), parameter :: this = 'svd'
      
