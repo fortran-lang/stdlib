@@ -1,0 +1,3580 @@
+#:include "common.fypp" 
+submodule(stdlib_lapack_eig_svd_lsq) stdlib_lapack_eigv_svd_drivers3
+  implicit none
+
+
+  contains
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+
+     pure module subroutine stdlib${ii}$_sbdsqr( uplo, n, ncvt, nru, ncc, d, e, vt, ldvt, u,ldu, c, ldc, work, &
+     !! SBDSQR computes the singular values and, optionally, the right and/or
+     !! left singular vectors from the singular value decomposition (SVD) of
+     !! a real N-by-N (upper or lower) bidiagonal matrix B using the implicit
+     !! zero-shift QR algorithm.  The SVD of B has the form
+     !! B = Q * S * P**T
+     !! where S is the diagonal matrix of singular values, Q is an orthogonal
+     !! matrix of left singular vectors, and P is an orthogonal matrix of
+     !! right singular vectors.  If left singular vectors are requested, this
+     !! subroutine actually returns U*Q instead of Q, and, if right singular
+     !! vectors are requested, this subroutine returns P**T*VT instead of
+     !! P**T, for given real input matrices U and VT.  When U and VT are the
+     !! orthogonal matrices that reduce a general matrix A to bidiagonal
+     !! form:  A = U*B*VT, as computed by SGEBRD, then
+     !! A = (U*Q) * S * (P**T*VT)
+     !! is the SVD of A.  Optionally, the subroutine may also compute Q**T*C
+     !! for a given real input matrix C.
+     !! See "Computing  Small Singular Values of Bidiagonal Matrices With
+     !! Guaranteed High Relative Accuracy," by J. Demmel and W. Kahan,
+     !! LAPACK Working Note #3 (or SIAM J. Sci. Statist. Comput. vol. 11,
+     !! no. 5, pp. 873-912, Sept 1990) and
+     !! "Accurate singular values and differential qd algorithms," by
+     !! B. Parlett and V. Fernando, Technical Report CPAM-554, Mathematics
+     !! Department, University of California at Berkeley, July 1992
+     !! for a detailed description of the algorithm.
+               info )
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: uplo
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: ldc, ldu, ldvt, n, ncc, ncvt, nru
+           ! Array Arguments 
+           real(sp), intent(inout) :: c(ldc,*), d(*), e(*), u(ldu,*), vt(ldvt,*)
+           real(sp), intent(out) :: work(*)
+        ! =====================================================================
+           ! Parameters 
+           real(sp), parameter :: hndrth = 0.01_sp
+           real(sp), parameter :: hndrd = 100.0_sp
+           real(sp), parameter :: meigth = -0.125_sp
+           integer(${ik}$), parameter :: maxitr = 6_${ik}$
+           
+           
+           
+           
+           
+           
+           
+           
+           ! Local Scalars 
+           logical(lk) :: lower, rotate
+           integer(${ik}$) :: i, idir, isub, iter, iterdivn, j, ll, lll, m, maxitdivn, nm1, nm12, &
+                     nm13, oldll, oldm
+           real(sp) :: abse, abss, cosl, cosr, cs, eps, f, g, h, mu, oldcs, oldsn, r, shift, &
+           sigmn, sigmx, sinl, sinr, sll, smax, smin, sminl, sminoa, sn, thresh, tol, tolmul, &
+                     unfl
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input parameters.
+           info = 0_${ik}$
+           lower = stdlib_lsame( uplo, 'L' )
+           if( .not.stdlib_lsame( uplo, 'U' ) .and. .not.lower ) then
+              info = -1_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -2_${ik}$
+           else if( ncvt<0_${ik}$ ) then
+              info = -3_${ik}$
+           else if( nru<0_${ik}$ ) then
+              info = -4_${ik}$
+           else if( ncc<0_${ik}$ ) then
+              info = -5_${ik}$
+           else if( ( ncvt==0_${ik}$ .and. ldvt<1_${ik}$ ) .or.( ncvt>0_${ik}$ .and. ldvt<max( 1_${ik}$, n ) ) ) then
+              info = -9_${ik}$
+           else if( ldu<max( 1_${ik}$, nru ) ) then
+              info = -11_${ik}$
+           else if( ( ncc==0_${ik}$ .and. ldc<1_${ik}$ ) .or.( ncc>0_${ik}$ .and. ldc<max( 1_${ik}$, n ) ) ) then
+              info = -13_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'SBDSQR', -info )
+              return
+           end if
+           if( n==0 )return
+           if( n==1 )go to 160
+           ! rotate is true if any singular vectors desired, false otherwise
+           rotate = ( ncvt>0_${ik}$ ) .or. ( nru>0_${ik}$ ) .or. ( ncc>0_${ik}$ )
+           ! if no singular vectors desired, use qd algorithm
+           if( .not.rotate ) then
+              call stdlib${ii}$_slasq1( n, d, e, work, info )
+           ! if info equals 2, dqds didn't finish, try to finish
+              if( info /= 2 ) return
+              info = 0_${ik}$
+           end if
+           nm1 = n - 1_${ik}$
+           nm12 = nm1 + nm1
+           nm13 = nm12 + nm1
+           idir = 0_${ik}$
+           ! get machine constants
+           eps = stdlib${ii}$_slamch( 'EPSILON' )
+           unfl = stdlib${ii}$_slamch( 'SAFE MINIMUM' )
+           ! if matrix lower bidiagonal, rotate to be upper bidiagonal
+           ! by applying givens rotations on the left
+           if( lower ) then
+              do i = 1, n - 1
+                 call stdlib${ii}$_slartg( d( i ), e( i ), cs, sn, r )
+                 d( i ) = r
+                 e( i ) = sn*d( i+1 )
+                 d( i+1 ) = cs*d( i+1 )
+                 work( i ) = cs
+                 work( nm1+i ) = sn
+              end do
+              ! update singular vectors if desired
+              if( nru>0_${ik}$ )call stdlib${ii}$_slasr( 'R', 'V', 'F', nru, n, work( 1_${ik}$ ), work( n ), u,ldu )
+                        
+              if( ncc>0_${ik}$ )call stdlib${ii}$_slasr( 'L', 'V', 'F', n, ncc, work( 1_${ik}$ ), work( n ), c,ldc )
+                        
+           end if
+           ! compute singular values to relative accuracy tol
+           ! (by setting tol to be negative, algorithm will compute
+           ! singular values to absolute accuracy abs(tol)*norm(input matrix))
+           tolmul = max( ten, min( hndrd, eps**meigth ) )
+           tol = tolmul*eps
+           ! compute approximate maximum, minimum singular values
+           smax = zero
+           do i = 1, n
+              smax = max( smax, abs( d( i ) ) )
+           end do
+           do i = 1, n - 1
+              smax = max( smax, abs( e( i ) ) )
+           end do
+           sminl = zero
+           if( tol>=zero ) then
+              ! relative accuracy desired
+              sminoa = abs( d( 1_${ik}$ ) )
+              if( sminoa==zero )go to 50
+              mu = sminoa
+              do i = 2, n
+                 mu = abs( d( i ) )*( mu / ( mu+abs( e( i-1 ) ) ) )
+                 sminoa = min( sminoa, mu )
+                 if( sminoa==zero )go to 50
+              end do
+              50 continue
+              sminoa = sminoa / sqrt( real( n,KIND=sp) )
+              thresh = max( tol*sminoa, maxitr*(n*(n*unfl)) )
+           else
+              ! absolute accuracy desired
+              thresh = max( abs( tol )*smax, maxitr*(n*(n*unfl)) )
+           end if
+           ! prepare for main iteration loop for the singular values
+           ! (maxit is the maximum number of passes through the inner
+           ! loop permitted before nonconvergence signalled.)
+           maxitdivn = maxitr*n
+           iterdivn = 0_${ik}$
+           iter = -1_${ik}$
+           oldll = -1_${ik}$
+           oldm = -1_${ik}$
+           ! m points to last element of unconverged part of matrix
+           m = n
+           ! begin main iteration loop
+           60 continue
+           ! check for convergence or exceeding iteration count
+           if( m<=1 )go to 160
+           if( iter>=n ) then
+              iter = iter - n
+              iterdivn = iterdivn + 1_${ik}$
+              if( iterdivn>=maxitdivn )go to 200
+           end if
+           ! find diagonal block of matrix to work on
+           if( tol<zero .and. abs( d( m ) )<=thresh )d( m ) = zero
+           smax = abs( d( m ) )
+           smin = smax
+           do lll = 1, m - 1
+              ll = m - lll
+              abss = abs( d( ll ) )
+              abse = abs( e( ll ) )
+              if( tol<zero .and. abss<=thresh )d( ll ) = zero
+              if( abse<=thresh )go to 80
+              smin = min( smin, abss )
+              smax = max( smax, abss, abse )
+           end do
+           ll = 0_${ik}$
+           go to 90
+           80 continue
+           e( ll ) = zero
+           ! matrix splits since e(ll) = 0
+           if( ll==m-1 ) then
+              ! convergence of bottom singular value, return to top of loop
+              m = m - 1_${ik}$
+              go to 60
+           end if
+           90 continue
+           ll = ll + 1_${ik}$
+           ! e(ll) through e(m-1) are nonzero, e(ll-1) is zero
+           if( ll==m-1 ) then
+              ! 2 by 2 block, handle separately
+              call stdlib${ii}$_slasv2( d( m-1 ), e( m-1 ), d( m ), sigmn, sigmx, sinr,cosr, sinl, cosl &
+                        )
+              d( m-1 ) = sigmx
+              e( m-1 ) = zero
+              d( m ) = sigmn
+              ! compute singular vectors, if desired
+              if( ncvt>0_${ik}$ )call stdlib${ii}$_srot( ncvt, vt( m-1, 1_${ik}$ ), ldvt, vt( m, 1_${ik}$ ), ldvt, cosr,sinr &
+                        )
+              if( nru>0_${ik}$ )call stdlib${ii}$_srot( nru, u( 1_${ik}$, m-1 ), 1_${ik}$, u( 1_${ik}$, m ), 1_${ik}$, cosl, sinl )
+              if( ncc>0_${ik}$ )call stdlib${ii}$_srot( ncc, c( m-1, 1_${ik}$ ), ldc, c( m, 1_${ik}$ ), ldc, cosl,sinl )
+                        
+              m = m - 2_${ik}$
+              go to 60
+           end if
+           ! if working on new submatrix, choose shift direction
+           ! (from larger end diagonal element towards smaller)
+           if( ll>oldm .or. m<oldll ) then
+              if( abs( d( ll ) )>=abs( d( m ) ) ) then
+                 ! chase bulge from top (big end) to bottom (small end)
+                 idir = 1_${ik}$
+              else
+                 ! chase bulge from bottom (big end) to top (small end)
+                 idir = 2_${ik}$
+              end if
+           end if
+           ! apply convergence tests
+           if( idir==1_${ik}$ ) then
+              ! run convergence test in forward direction
+              ! first apply standard test to bottom of matrix
+              if( abs( e( m-1 ) )<=abs( tol )*abs( d( m ) ) .or.( tol<zero .and. abs( e( m-1 ) )&
+                        <=thresh ) ) then
+                 e( m-1 ) = zero
+                 go to 60
+              end if
+              if( tol>=zero ) then
+                 ! if relative accuracy desired,
+                 ! apply convergence criterion forward
+                 mu = abs( d( ll ) )
+                 sminl = mu
+                 do lll = ll, m - 1
+                    if( abs( e( lll ) )<=tol*mu ) then
+                       e( lll ) = zero
+                       go to 60
+                    end if
+                    mu = abs( d( lll+1 ) )*( mu / ( mu+abs( e( lll ) ) ) )
+                    sminl = min( sminl, mu )
+                 end do
+              end if
+           else
+              ! run convergence test in backward direction
+              ! first apply standard test to top of matrix
+              if( abs( e( ll ) )<=abs( tol )*abs( d( ll ) ) .or.( tol<zero .and. abs( e( ll ) )&
+                        <=thresh ) ) then
+                 e( ll ) = zero
+                 go to 60
+              end if
+              if( tol>=zero ) then
+                 ! if relative accuracy desired,
+                 ! apply convergence criterion backward
+                 mu = abs( d( m ) )
+                 sminl = mu
+                 do lll = m - 1, ll, -1
+                    if( abs( e( lll ) )<=tol*mu ) then
+                       e( lll ) = zero
+                       go to 60
+                    end if
+                    mu = abs( d( lll ) )*( mu / ( mu+abs( e( lll ) ) ) )
+                    sminl = min( sminl, mu )
+                 end do
+              end if
+           end if
+           oldll = ll
+           oldm = m
+           ! compute shift.  first, test if shifting would ruin relative
+           ! accuracy, and if so set the shift to zero.
+           if( tol>=zero .and. n*tol*( sminl / smax )<=max( eps, hndrth*tol ) ) then
+              ! use a zero shift to avoid loss of relative accuracy
+              shift = zero
+           else
+              ! compute the shift from 2-by-2 block at end of matrix
+              if( idir==1_${ik}$ ) then
+                 sll = abs( d( ll ) )
+                 call stdlib${ii}$_slas2( d( m-1 ), e( m-1 ), d( m ), shift, r )
+              else
+                 sll = abs( d( m ) )
+                 call stdlib${ii}$_slas2( d( ll ), e( ll ), d( ll+1 ), shift, r )
+              end if
+              ! test if shift negligible, and if so set to zero
+              if( sll>zero ) then
+                 if( ( shift / sll )**2_${ik}$<eps )shift = zero
+              end if
+           end if
+           ! increment iteration count
+           iter = iter + m - ll
+           ! if shift = 0, do simplified qr iteration
+           if( shift==zero ) then
+              if( idir==1_${ik}$ ) then
+                 ! chase bulge from top to bottom
+                 ! save cosines and sines for later singular vector updates
+                 cs = one
+                 oldcs = one
+                 do i = ll, m - 1
+                    call stdlib${ii}$_slartg( d( i )*cs, e( i ), cs, sn, r )
+                    if( i>ll )e( i-1 ) = oldsn*r
+                    call stdlib${ii}$_slartg( oldcs*r, d( i+1 )*sn, oldcs, oldsn, d( i ) )
+                    work( i-ll+1 ) = cs
+                    work( i-ll+1+nm1 ) = sn
+                    work( i-ll+1+nm12 ) = oldcs
+                    work( i-ll+1+nm13 ) = oldsn
+                 end do
+                 h = d( m )*cs
+                 d( m ) = h*oldcs
+                 e( m-1 ) = h*oldsn
+                 ! update singular vectors
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_slasr( 'L', 'V', 'F', m-ll+1, ncvt, work( 1_${ik}$ ),work( n ), &
+                           vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_slasr( 'R', 'V', 'F', nru, m-ll+1, work( nm12+1 ),work( &
+                           nm13+1 ), u( 1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_slasr( 'L', 'V', 'F', m-ll+1, ncc, work( nm12+1 ),work( &
+                           nm13+1 ), c( ll, 1_${ik}$ ), ldc )
+                 ! test convergence
+                 if( abs( e( m-1 ) )<=thresh )e( m-1 ) = zero
+              else
+                 ! chase bulge from bottom to top
+                 ! save cosines and sines for later singular vector updates
+                 cs = one
+                 oldcs = one
+                 do i = m, ll + 1, -1
+                    call stdlib${ii}$_slartg( d( i )*cs, e( i-1 ), cs, sn, r )
+                    if( i<m )e( i ) = oldsn*r
+                    call stdlib${ii}$_slartg( oldcs*r, d( i-1 )*sn, oldcs, oldsn, d( i ) )
+                    work( i-ll ) = cs
+                    work( i-ll+nm1 ) = -sn
+                    work( i-ll+nm12 ) = oldcs
+                    work( i-ll+nm13 ) = -oldsn
+                 end do
+                 h = d( ll )*cs
+                 d( ll ) = h*oldcs
+                 e( ll ) = h*oldsn
+                 ! update singular vectors
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_slasr( 'L', 'V', 'B', m-ll+1, ncvt, work( nm12+1 ),work( &
+                           nm13+1 ), vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_slasr( 'R', 'V', 'B', nru, m-ll+1, work( 1_${ik}$ ),work( n ), u(&
+                            1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_slasr( 'L', 'V', 'B', m-ll+1, ncc, work( 1_${ik}$ ),work( n ), c(&
+                            ll, 1_${ik}$ ), ldc )
+                 ! test convergence
+                 if( abs( e( ll ) )<=thresh )e( ll ) = zero
+              end if
+           else
+              ! use nonzero shift
+              if( idir==1_${ik}$ ) then
+                 ! chase bulge from top to bottom
+                 ! save cosines and sines for later singular vector updates
+                 f = ( abs( d( ll ) )-shift )*( sign( one, d( ll ) )+shift / d( ll ) )
+                 g = e( ll )
+                 do i = ll, m - 1
+                    call stdlib${ii}$_slartg( f, g, cosr, sinr, r )
+                    if( i>ll )e( i-1 ) = r
+                    f = cosr*d( i ) + sinr*e( i )
+                    e( i ) = cosr*e( i ) - sinr*d( i )
+                    g = sinr*d( i+1 )
+                    d( i+1 ) = cosr*d( i+1 )
+                    call stdlib${ii}$_slartg( f, g, cosl, sinl, r )
+                    d( i ) = r
+                    f = cosl*e( i ) + sinl*d( i+1 )
+                    d( i+1 ) = cosl*d( i+1 ) - sinl*e( i )
+                    if( i<m-1 ) then
+                       g = sinl*e( i+1 )
+                       e( i+1 ) = cosl*e( i+1 )
+                    end if
+                    work( i-ll+1 ) = cosr
+                    work( i-ll+1+nm1 ) = sinr
+                    work( i-ll+1+nm12 ) = cosl
+                    work( i-ll+1+nm13 ) = sinl
+                 end do
+                 e( m-1 ) = f
+                 ! update singular vectors
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_slasr( 'L', 'V', 'F', m-ll+1, ncvt, work( 1_${ik}$ ),work( n ), &
+                           vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_slasr( 'R', 'V', 'F', nru, m-ll+1, work( nm12+1 ),work( &
+                           nm13+1 ), u( 1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_slasr( 'L', 'V', 'F', m-ll+1, ncc, work( nm12+1 ),work( &
+                           nm13+1 ), c( ll, 1_${ik}$ ), ldc )
+                 ! test convergence
+                 if( abs( e( m-1 ) )<=thresh )e( m-1 ) = zero
+              else
+                 ! chase bulge from bottom to top
+                 ! save cosines and sines for later singular vector updates
+                 f = ( abs( d( m ) )-shift )*( sign( one, d( m ) )+shift /d( m ) )
+                 g = e( m-1 )
+                 do i = m, ll + 1, -1
+                    call stdlib${ii}$_slartg( f, g, cosr, sinr, r )
+                    if( i<m )e( i ) = r
+                    f = cosr*d( i ) + sinr*e( i-1 )
+                    e( i-1 ) = cosr*e( i-1 ) - sinr*d( i )
+                    g = sinr*d( i-1 )
+                    d( i-1 ) = cosr*d( i-1 )
+                    call stdlib${ii}$_slartg( f, g, cosl, sinl, r )
+                    d( i ) = r
+                    f = cosl*e( i-1 ) + sinl*d( i-1 )
+                    d( i-1 ) = cosl*d( i-1 ) - sinl*e( i-1 )
+                    if( i>ll+1 ) then
+                       g = sinl*e( i-2 )
+                       e( i-2 ) = cosl*e( i-2 )
+                    end if
+                    work( i-ll ) = cosr
+                    work( i-ll+nm1 ) = -sinr
+                    work( i-ll+nm12 ) = cosl
+                    work( i-ll+nm13 ) = -sinl
+                 end do
+                 e( ll ) = f
+                 ! test convergence
+                 if( abs( e( ll ) )<=thresh )e( ll ) = zero
+                 ! update singular vectors if desired
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_slasr( 'L', 'V', 'B', m-ll+1, ncvt, work( nm12+1 ),work( &
+                           nm13+1 ), vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_slasr( 'R', 'V', 'B', nru, m-ll+1, work( 1_${ik}$ ),work( n ), u(&
+                            1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_slasr( 'L', 'V', 'B', m-ll+1, ncc, work( 1_${ik}$ ),work( n ), c(&
+                            ll, 1_${ik}$ ), ldc )
+              end if
+           end if
+           ! qr iteration finished, go back and check convergence
+           go to 60
+           ! all singular values converged, so make them positive
+           160 continue
+           do i = 1, n
+              if( d( i )<zero ) then
+                 d( i ) = -d( i )
+                 ! change sign of singular vectors, if desired
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_sscal( ncvt, negone, vt( i, 1_${ik}$ ), ldvt )
+              end if
+           end do
+           ! sort the singular values into decreasing order (insertion sort on
+           ! singular values, but only one transposition per singular vector)
+           do i = 1, n - 1
+              ! scan for smallest d(i)
+              isub = 1_${ik}$
+              smin = d( 1_${ik}$ )
+              do j = 2, n + 1 - i
+                 if( d( j )<=smin ) then
+                    isub = j
+                    smin = d( j )
+                 end if
+              end do
+              if( isub/=n+1-i ) then
+                 ! swap singular values and vectors
+                 d( isub ) = d( n+1-i )
+                 d( n+1-i ) = smin
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_sswap( ncvt, vt( isub, 1_${ik}$ ), ldvt, vt( n+1-i, 1_${ik}$ ),ldvt )
+                           
+                 if( nru>0_${ik}$ )call stdlib${ii}$_sswap( nru, u( 1_${ik}$, isub ), 1_${ik}$, u( 1_${ik}$, n+1-i ), 1_${ik}$ )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_sswap( ncc, c( isub, 1_${ik}$ ), ldc, c( n+1-i, 1_${ik}$ ), ldc )
+                           
+              end if
+           end do
+           go to 220
+           ! maximum number of iterations exceeded, failure to converge
+           200 continue
+           info = 0_${ik}$
+           do i = 1, n - 1
+              if( e( i )/=zero )info = info + 1_${ik}$
+           end do
+           220 continue
+           return
+     end subroutine stdlib${ii}$_sbdsqr
+
+     pure module subroutine stdlib${ii}$_dbdsqr( uplo, n, ncvt, nru, ncc, d, e, vt, ldvt, u,ldu, c, ldc, work, &
+     !! DBDSQR computes the singular values and, optionally, the right and/or
+     !! left singular vectors from the singular value decomposition (SVD) of
+     !! a real N-by-N (upper or lower) bidiagonal matrix B using the implicit
+     !! zero-shift QR algorithm.  The SVD of B has the form
+     !! B = Q * S * P**T
+     !! where S is the diagonal matrix of singular values, Q is an orthogonal
+     !! matrix of left singular vectors, and P is an orthogonal matrix of
+     !! right singular vectors.  If left singular vectors are requested, this
+     !! subroutine actually returns U*Q instead of Q, and, if right singular
+     !! vectors are requested, this subroutine returns P**T*VT instead of
+     !! P**T, for given real input matrices U and VT.  When U and VT are the
+     !! orthogonal matrices that reduce a general matrix A to bidiagonal
+     !! form:  A = U*B*VT, as computed by DGEBRD, then
+     !! A = (U*Q) * S * (P**T*VT)
+     !! is the SVD of A.  Optionally, the subroutine may also compute Q**T*C
+     !! for a given real input matrix C.
+     !! See "Computing  Small Singular Values of Bidiagonal Matrices With
+     !! Guaranteed High Relative Accuracy," by J. Demmel and W. Kahan,
+     !! LAPACK Working Note #3 (or SIAM J. Sci. Statist. Comput. vol. 11,
+     !! no. 5, pp. 873-912, Sept 1990) and
+     !! "Accurate singular values and differential qd algorithms," by
+     !! B. Parlett and V. Fernando, Technical Report CPAM-554, Mathematics
+     !! Department, University of California at Berkeley, July 1992
+     !! for a detailed description of the algorithm.
+               info )
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: uplo
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: ldc, ldu, ldvt, n, ncc, ncvt, nru
+           ! Array Arguments 
+           real(dp), intent(inout) :: c(ldc,*), d(*), e(*), u(ldu,*), vt(ldvt,*)
+           real(dp), intent(out) :: work(*)
+        ! =====================================================================
+           ! Parameters 
+           real(dp), parameter :: hndrth = 0.01_dp
+           real(dp), parameter :: hndrd = 100.0_dp
+           real(dp), parameter :: meigth = -0.125_dp
+           integer(${ik}$), parameter :: maxitr = 6_${ik}$
+           
+           
+           
+           
+           
+           
+           
+           
+           ! Local Scalars 
+           logical(lk) :: lower, rotate
+           integer(${ik}$) :: i, idir, isub, iter, iterdivn, j, ll, lll, m, maxitdivn, nm1, nm12, &
+                     nm13, oldll, oldm
+           real(dp) :: abse, abss, cosl, cosr, cs, eps, f, g, h, mu, oldcs, oldsn, r, shift, &
+           sigmn, sigmx, sinl, sinr, sll, smax, smin, sminl, sminoa, sn, thresh, tol, tolmul, &
+                     unfl
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input parameters.
+           info = 0_${ik}$
+           lower = stdlib_lsame( uplo, 'L' )
+           if( .not.stdlib_lsame( uplo, 'U' ) .and. .not.lower ) then
+              info = -1_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -2_${ik}$
+           else if( ncvt<0_${ik}$ ) then
+              info = -3_${ik}$
+           else if( nru<0_${ik}$ ) then
+              info = -4_${ik}$
+           else if( ncc<0_${ik}$ ) then
+              info = -5_${ik}$
+           else if( ( ncvt==0_${ik}$ .and. ldvt<1_${ik}$ ) .or.( ncvt>0_${ik}$ .and. ldvt<max( 1_${ik}$, n ) ) ) then
+              info = -9_${ik}$
+           else if( ldu<max( 1_${ik}$, nru ) ) then
+              info = -11_${ik}$
+           else if( ( ncc==0_${ik}$ .and. ldc<1_${ik}$ ) .or.( ncc>0_${ik}$ .and. ldc<max( 1_${ik}$, n ) ) ) then
+              info = -13_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'DBDSQR', -info )
+              return
+           end if
+           if( n==0 )return
+           if( n==1 )go to 160
+           ! rotate is true if any singular vectors desired, false otherwise
+           rotate = ( ncvt>0_${ik}$ ) .or. ( nru>0_${ik}$ ) .or. ( ncc>0_${ik}$ )
+           ! if no singular vectors desired, use qd algorithm
+           if( .not.rotate ) then
+              call stdlib${ii}$_dlasq1( n, d, e, work, info )
+           ! if info equals 2, dqds didn't finish, try to finish
+              if( info /= 2 ) return
+              info = 0_${ik}$
+           end if
+           nm1 = n - 1_${ik}$
+           nm12 = nm1 + nm1
+           nm13 = nm12 + nm1
+           idir = 0_${ik}$
+           ! get machine constants
+           eps = stdlib${ii}$_dlamch( 'EPSILON' )
+           unfl = stdlib${ii}$_dlamch( 'SAFE MINIMUM' )
+           ! if matrix lower bidiagonal, rotate to be upper bidiagonal
+           ! by applying givens rotations on the left
+           if( lower ) then
+              do i = 1, n - 1
+                 call stdlib${ii}$_dlartg( d( i ), e( i ), cs, sn, r )
+                 d( i ) = r
+                 e( i ) = sn*d( i+1 )
+                 d( i+1 ) = cs*d( i+1 )
+                 work( i ) = cs
+                 work( nm1+i ) = sn
+              end do
+              ! update singular vectors if desired
+              if( nru>0_${ik}$ )call stdlib${ii}$_dlasr( 'R', 'V', 'F', nru, n, work( 1_${ik}$ ), work( n ), u,ldu )
+                        
+              if( ncc>0_${ik}$ )call stdlib${ii}$_dlasr( 'L', 'V', 'F', n, ncc, work( 1_${ik}$ ), work( n ), c,ldc )
+                        
+           end if
+           ! compute singular values to relative accuracy tol
+           ! (by setting tol to be negative, algorithm will compute
+           ! singular values to absolute accuracy abs(tol)*norm(input matrix))
+           tolmul = max( ten, min( hndrd, eps**meigth ) )
+           tol = tolmul*eps
+           ! compute approximate maximum, minimum singular values
+           smax = zero
+           do i = 1, n
+              smax = max( smax, abs( d( i ) ) )
+           end do
+           do i = 1, n - 1
+              smax = max( smax, abs( e( i ) ) )
+           end do
+           sminl = zero
+           if( tol>=zero ) then
+              ! relative accuracy desired
+              sminoa = abs( d( 1_${ik}$ ) )
+              if( sminoa==zero )go to 50
+              mu = sminoa
+              do i = 2, n
+                 mu = abs( d( i ) )*( mu / ( mu+abs( e( i-1 ) ) ) )
+                 sminoa = min( sminoa, mu )
+                 if( sminoa==zero )go to 50
+              end do
+              50 continue
+              sminoa = sminoa / sqrt( real( n,KIND=dp) )
+              thresh = max( tol*sminoa, maxitr*(n*(n*unfl)) )
+           else
+              ! absolute accuracy desired
+              thresh = max( abs( tol )*smax, maxitr*(n*(n*unfl)) )
+           end if
+           ! prepare for main iteration loop for the singular values
+           ! (maxit is the maximum number of passes through the inner
+           ! loop permitted before nonconvergence signalled.)
+           maxitdivn = maxitr*n
+           iterdivn = 0_${ik}$
+           iter = -1_${ik}$
+           oldll = -1_${ik}$
+           oldm = -1_${ik}$
+           ! m points to last element of unconverged part of matrix
+           m = n
+           ! begin main iteration loop
+           60 continue
+           ! check for convergence or exceeding iteration count
+           if( m<=1 )go to 160
+           if( iter>=n ) then
+              iter = iter - n
+              iterdivn = iterdivn + 1_${ik}$
+              if( iterdivn>=maxitdivn )go to 200
+           end if
+           ! find diagonal block of matrix to work on
+           if( tol<zero .and. abs( d( m ) )<=thresh )d( m ) = zero
+           smax = abs( d( m ) )
+           smin = smax
+           do lll = 1, m - 1
+              ll = m - lll
+              abss = abs( d( ll ) )
+              abse = abs( e( ll ) )
+              if( tol<zero .and. abss<=thresh )d( ll ) = zero
+              if( abse<=thresh )go to 80
+              smin = min( smin, abss )
+              smax = max( smax, abss, abse )
+           end do
+           ll = 0_${ik}$
+           go to 90
+           80 continue
+           e( ll ) = zero
+           ! matrix splits since e(ll) = 0
+           if( ll==m-1 ) then
+              ! convergence of bottom singular value, return to top of loop
+              m = m - 1_${ik}$
+              go to 60
+           end if
+           90 continue
+           ll = ll + 1_${ik}$
+           ! e(ll) through e(m-1) are nonzero, e(ll-1) is zero
+           if( ll==m-1 ) then
+              ! 2 by 2 block, handle separately
+              call stdlib${ii}$_dlasv2( d( m-1 ), e( m-1 ), d( m ), sigmn, sigmx, sinr,cosr, sinl, cosl &
+                        )
+              d( m-1 ) = sigmx
+              e( m-1 ) = zero
+              d( m ) = sigmn
+              ! compute singular vectors, if desired
+              if( ncvt>0_${ik}$ )call stdlib${ii}$_drot( ncvt, vt( m-1, 1_${ik}$ ), ldvt, vt( m, 1_${ik}$ ), ldvt, cosr,sinr &
+                        )
+              if( nru>0_${ik}$ )call stdlib${ii}$_drot( nru, u( 1_${ik}$, m-1 ), 1_${ik}$, u( 1_${ik}$, m ), 1_${ik}$, cosl, sinl )
+              if( ncc>0_${ik}$ )call stdlib${ii}$_drot( ncc, c( m-1, 1_${ik}$ ), ldc, c( m, 1_${ik}$ ), ldc, cosl,sinl )
+                        
+              m = m - 2_${ik}$
+              go to 60
+           end if
+           ! if working on new submatrix, choose shift direction
+           ! (from larger end diagonal element towards smaller)
+           if( ll>oldm .or. m<oldll ) then
+              if( abs( d( ll ) )>=abs( d( m ) ) ) then
+                 ! chase bulge from top (big end) to bottom (small end)
+                 idir = 1_${ik}$
+              else
+                 ! chase bulge from bottom (big end) to top (small end)
+                 idir = 2_${ik}$
+              end if
+           end if
+           ! apply convergence tests
+           if( idir==1_${ik}$ ) then
+              ! run convergence test in forward direction
+              ! first apply standard test to bottom of matrix
+              if( abs( e( m-1 ) )<=abs( tol )*abs( d( m ) ) .or.( tol<zero .and. abs( e( m-1 ) )&
+                        <=thresh ) ) then
+                 e( m-1 ) = zero
+                 go to 60
+              end if
+              if( tol>=zero ) then
+                 ! if relative accuracy desired,
+                 ! apply convergence criterion forward
+                 mu = abs( d( ll ) )
+                 sminl = mu
+                 do lll = ll, m - 1
+                    if( abs( e( lll ) )<=tol*mu ) then
+                       e( lll ) = zero
+                       go to 60
+                    end if
+                    mu = abs( d( lll+1 ) )*( mu / ( mu+abs( e( lll ) ) ) )
+                    sminl = min( sminl, mu )
+                 end do
+              end if
+           else
+              ! run convergence test in backward direction
+              ! first apply standard test to top of matrix
+              if( abs( e( ll ) )<=abs( tol )*abs( d( ll ) ) .or.( tol<zero .and. abs( e( ll ) )&
+                        <=thresh ) ) then
+                 e( ll ) = zero
+                 go to 60
+              end if
+              if( tol>=zero ) then
+                 ! if relative accuracy desired,
+                 ! apply convergence criterion backward
+                 mu = abs( d( m ) )
+                 sminl = mu
+                 do lll = m - 1, ll, -1
+                    if( abs( e( lll ) )<=tol*mu ) then
+                       e( lll ) = zero
+                       go to 60
+                    end if
+                    mu = abs( d( lll ) )*( mu / ( mu+abs( e( lll ) ) ) )
+                    sminl = min( sminl, mu )
+                 end do
+              end if
+           end if
+           oldll = ll
+           oldm = m
+           ! compute shift.  first, test if shifting would ruin relative
+           ! accuracy, and if so set the shift to zero.
+           if( tol>=zero .and. n*tol*( sminl / smax )<=max( eps, hndrth*tol ) ) then
+              ! use a zero shift to avoid loss of relative accuracy
+              shift = zero
+           else
+              ! compute the shift from 2-by-2 block at end of matrix
+              if( idir==1_${ik}$ ) then
+                 sll = abs( d( ll ) )
+                 call stdlib${ii}$_dlas2( d( m-1 ), e( m-1 ), d( m ), shift, r )
+              else
+                 sll = abs( d( m ) )
+                 call stdlib${ii}$_dlas2( d( ll ), e( ll ), d( ll+1 ), shift, r )
+              end if
+              ! test if shift negligible, and if so set to zero
+              if( sll>zero ) then
+                 if( ( shift / sll )**2_${ik}$<eps )shift = zero
+              end if
+           end if
+           ! increment iteration count
+           iter = iter + m - ll
+           ! if shift = 0, do simplified qr iteration
+           if( shift==zero ) then
+              if( idir==1_${ik}$ ) then
+                 ! chase bulge from top to bottom
+                 ! save cosines and sines for later singular vector updates
+                 cs = one
+                 oldcs = one
+                 do i = ll, m - 1
+                    call stdlib${ii}$_dlartg( d( i )*cs, e( i ), cs, sn, r )
+                    if( i>ll )e( i-1 ) = oldsn*r
+                    call stdlib${ii}$_dlartg( oldcs*r, d( i+1 )*sn, oldcs, oldsn, d( i ) )
+                    work( i-ll+1 ) = cs
+                    work( i-ll+1+nm1 ) = sn
+                    work( i-ll+1+nm12 ) = oldcs
+                    work( i-ll+1+nm13 ) = oldsn
+                 end do
+                 h = d( m )*cs
+                 d( m ) = h*oldcs
+                 e( m-1 ) = h*oldsn
+                 ! update singular vectors
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_dlasr( 'L', 'V', 'F', m-ll+1, ncvt, work( 1_${ik}$ ),work( n ), &
+                           vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_dlasr( 'R', 'V', 'F', nru, m-ll+1, work( nm12+1 ),work( &
+                           nm13+1 ), u( 1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_dlasr( 'L', 'V', 'F', m-ll+1, ncc, work( nm12+1 ),work( &
+                           nm13+1 ), c( ll, 1_${ik}$ ), ldc )
+                 ! test convergence
+                 if( abs( e( m-1 ) )<=thresh )e( m-1 ) = zero
+              else
+                 ! chase bulge from bottom to top
+                 ! save cosines and sines for later singular vector updates
+                 cs = one
+                 oldcs = one
+                 do i = m, ll + 1, -1
+                    call stdlib${ii}$_dlartg( d( i )*cs, e( i-1 ), cs, sn, r )
+                    if( i<m )e( i ) = oldsn*r
+                    call stdlib${ii}$_dlartg( oldcs*r, d( i-1 )*sn, oldcs, oldsn, d( i ) )
+                    work( i-ll ) = cs
+                    work( i-ll+nm1 ) = -sn
+                    work( i-ll+nm12 ) = oldcs
+                    work( i-ll+nm13 ) = -oldsn
+                 end do
+                 h = d( ll )*cs
+                 d( ll ) = h*oldcs
+                 e( ll ) = h*oldsn
+                 ! update singular vectors
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_dlasr( 'L', 'V', 'B', m-ll+1, ncvt, work( nm12+1 ),work( &
+                           nm13+1 ), vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_dlasr( 'R', 'V', 'B', nru, m-ll+1, work( 1_${ik}$ ),work( n ), u(&
+                            1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_dlasr( 'L', 'V', 'B', m-ll+1, ncc, work( 1_${ik}$ ),work( n ), c(&
+                            ll, 1_${ik}$ ), ldc )
+                 ! test convergence
+                 if( abs( e( ll ) )<=thresh )e( ll ) = zero
+              end if
+           else
+              ! use nonzero shift
+              if( idir==1_${ik}$ ) then
+                 ! chase bulge from top to bottom
+                 ! save cosines and sines for later singular vector updates
+                 f = ( abs( d( ll ) )-shift )*( sign( one, d( ll ) )+shift / d( ll ) )
+                 g = e( ll )
+                 do i = ll, m - 1
+                    call stdlib${ii}$_dlartg( f, g, cosr, sinr, r )
+                    if( i>ll )e( i-1 ) = r
+                    f = cosr*d( i ) + sinr*e( i )
+                    e( i ) = cosr*e( i ) - sinr*d( i )
+                    g = sinr*d( i+1 )
+                    d( i+1 ) = cosr*d( i+1 )
+                    call stdlib${ii}$_dlartg( f, g, cosl, sinl, r )
+                    d( i ) = r
+                    f = cosl*e( i ) + sinl*d( i+1 )
+                    d( i+1 ) = cosl*d( i+1 ) - sinl*e( i )
+                    if( i<m-1 ) then
+                       g = sinl*e( i+1 )
+                       e( i+1 ) = cosl*e( i+1 )
+                    end if
+                    work( i-ll+1 ) = cosr
+                    work( i-ll+1+nm1 ) = sinr
+                    work( i-ll+1+nm12 ) = cosl
+                    work( i-ll+1+nm13 ) = sinl
+                 end do
+                 e( m-1 ) = f
+                 ! update singular vectors
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_dlasr( 'L', 'V', 'F', m-ll+1, ncvt, work( 1_${ik}$ ),work( n ), &
+                           vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_dlasr( 'R', 'V', 'F', nru, m-ll+1, work( nm12+1 ),work( &
+                           nm13+1 ), u( 1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_dlasr( 'L', 'V', 'F', m-ll+1, ncc, work( nm12+1 ),work( &
+                           nm13+1 ), c( ll, 1_${ik}$ ), ldc )
+                 ! test convergence
+                 if( abs( e( m-1 ) )<=thresh )e( m-1 ) = zero
+              else
+                 ! chase bulge from bottom to top
+                 ! save cosines and sines for later singular vector updates
+                 f = ( abs( d( m ) )-shift )*( sign( one, d( m ) )+shift /d( m ) )
+                 g = e( m-1 )
+                 do i = m, ll + 1, -1
+                    call stdlib${ii}$_dlartg( f, g, cosr, sinr, r )
+                    if( i<m )e( i ) = r
+                    f = cosr*d( i ) + sinr*e( i-1 )
+                    e( i-1 ) = cosr*e( i-1 ) - sinr*d( i )
+                    g = sinr*d( i-1 )
+                    d( i-1 ) = cosr*d( i-1 )
+                    call stdlib${ii}$_dlartg( f, g, cosl, sinl, r )
+                    d( i ) = r
+                    f = cosl*e( i-1 ) + sinl*d( i-1 )
+                    d( i-1 ) = cosl*d( i-1 ) - sinl*e( i-1 )
+                    if( i>ll+1 ) then
+                       g = sinl*e( i-2 )
+                       e( i-2 ) = cosl*e( i-2 )
+                    end if
+                    work( i-ll ) = cosr
+                    work( i-ll+nm1 ) = -sinr
+                    work( i-ll+nm12 ) = cosl
+                    work( i-ll+nm13 ) = -sinl
+                 end do
+                 e( ll ) = f
+                 ! test convergence
+                 if( abs( e( ll ) )<=thresh )e( ll ) = zero
+                 ! update singular vectors if desired
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_dlasr( 'L', 'V', 'B', m-ll+1, ncvt, work( nm12+1 ),work( &
+                           nm13+1 ), vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_dlasr( 'R', 'V', 'B', nru, m-ll+1, work( 1_${ik}$ ),work( n ), u(&
+                            1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_dlasr( 'L', 'V', 'B', m-ll+1, ncc, work( 1_${ik}$ ),work( n ), c(&
+                            ll, 1_${ik}$ ), ldc )
+              end if
+           end if
+           ! qr iteration finished, go back and check convergence
+           go to 60
+           ! all singular values converged, so make them positive
+           160 continue
+           do i = 1, n
+              if( d( i )<zero ) then
+                 d( i ) = -d( i )
+                 ! change sign of singular vectors, if desired
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_dscal( ncvt, negone, vt( i, 1_${ik}$ ), ldvt )
+              end if
+           end do
+           ! sort the singular values into decreasing order (insertion sort on
+           ! singular values, but only one transposition per singular vector)
+           do i = 1, n - 1
+              ! scan for smallest d(i)
+              isub = 1_${ik}$
+              smin = d( 1_${ik}$ )
+              do j = 2, n + 1 - i
+                 if( d( j )<=smin ) then
+                    isub = j
+                    smin = d( j )
+                 end if
+              end do
+              if( isub/=n+1-i ) then
+                 ! swap singular values and vectors
+                 d( isub ) = d( n+1-i )
+                 d( n+1-i ) = smin
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_dswap( ncvt, vt( isub, 1_${ik}$ ), ldvt, vt( n+1-i, 1_${ik}$ ),ldvt )
+                           
+                 if( nru>0_${ik}$ )call stdlib${ii}$_dswap( nru, u( 1_${ik}$, isub ), 1_${ik}$, u( 1_${ik}$, n+1-i ), 1_${ik}$ )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_dswap( ncc, c( isub, 1_${ik}$ ), ldc, c( n+1-i, 1_${ik}$ ), ldc )
+                           
+              end if
+           end do
+           go to 220
+           ! maximum number of iterations exceeded, failure to converge
+           200 continue
+           info = 0_${ik}$
+           do i = 1, n - 1
+              if( e( i )/=zero )info = info + 1_${ik}$
+           end do
+           220 continue
+           return
+     end subroutine stdlib${ii}$_dbdsqr
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$bdsqr( uplo, n, ncvt, nru, ncc, d, e, vt, ldvt, u,ldu, c, ldc, work, &
+     !! DBDSQR: computes the singular values and, optionally, the right and/or
+     !! left singular vectors from the singular value decomposition (SVD) of
+     !! a real N-by-N (upper or lower) bidiagonal matrix B using the implicit
+     !! zero-shift QR algorithm.  The SVD of B has the form
+     !! B = Q * S * P**T
+     !! where S is the diagonal matrix of singular values, Q is an orthogonal
+     !! matrix of left singular vectors, and P is an orthogonal matrix of
+     !! right singular vectors.  If left singular vectors are requested, this
+     !! subroutine actually returns U*Q instead of Q, and, if right singular
+     !! vectors are requested, this subroutine returns P**T*VT instead of
+     !! P**T, for given real input matrices U and VT.  When U and VT are the
+     !! orthogonal matrices that reduce a general matrix A to bidiagonal
+     !! form:  A = U*B*VT, as computed by DGEBRD, then
+     !! A = (U*Q) * S * (P**T*VT)
+     !! is the SVD of A.  Optionally, the subroutine may also compute Q**T*C
+     !! for a given real input matrix C.
+     !! See "Computing  Small Singular Values of Bidiagonal Matrices With
+     !! Guaranteed High Relative Accuracy," by J. Demmel and W. Kahan,
+     !! LAPACK Working Note #3 (or SIAM J. Sci. Statist. Comput. vol. 11,
+     !! no. 5, pp. 873-912, Sept 1990) and
+     !! "Accurate singular values and differential qd algorithms," by
+     !! B. Parlett and V. Fernando, Technical Report CPAM-554, Mathematics
+     !! Department, University of California at Berkeley, July 1992
+     !! for a detailed description of the algorithm.
+               info )
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: uplo
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: ldc, ldu, ldvt, n, ncc, ncvt, nru
+           ! Array Arguments 
+           real(${rk}$), intent(inout) :: c(ldc,*), d(*), e(*), u(ldu,*), vt(ldvt,*)
+           real(${rk}$), intent(out) :: work(*)
+        ! =====================================================================
+           ! Parameters 
+           real(${rk}$), parameter :: hndrth = 0.01_${rk}$
+           real(${rk}$), parameter :: hndrd = 100.0_${rk}$
+           real(${rk}$), parameter :: meigth = -0.125_${rk}$
+           integer(${ik}$), parameter :: maxitr = 6_${ik}$
+           
+           
+           
+           
+           
+           
+           
+           
+           ! Local Scalars 
+           logical(lk) :: lower, rotate
+           integer(${ik}$) :: i, idir, isub, iter, iterdivn, j, ll, lll, m, maxitdivn, nm1, nm12, &
+                     nm13, oldll, oldm
+           real(${rk}$) :: abse, abss, cosl, cosr, cs, eps, f, g, h, mu, oldcs, oldsn, r, shift, &
+           sigmn, sigmx, sinl, sinr, sll, smax, smin, sminl, sminoa, sn, thresh, tol, tolmul, &
+                     unfl
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input parameters.
+           info = 0_${ik}$
+           lower = stdlib_lsame( uplo, 'L' )
+           if( .not.stdlib_lsame( uplo, 'U' ) .and. .not.lower ) then
+              info = -1_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -2_${ik}$
+           else if( ncvt<0_${ik}$ ) then
+              info = -3_${ik}$
+           else if( nru<0_${ik}$ ) then
+              info = -4_${ik}$
+           else if( ncc<0_${ik}$ ) then
+              info = -5_${ik}$
+           else if( ( ncvt==0_${ik}$ .and. ldvt<1_${ik}$ ) .or.( ncvt>0_${ik}$ .and. ldvt<max( 1_${ik}$, n ) ) ) then
+              info = -9_${ik}$
+           else if( ldu<max( 1_${ik}$, nru ) ) then
+              info = -11_${ik}$
+           else if( ( ncc==0_${ik}$ .and. ldc<1_${ik}$ ) .or.( ncc>0_${ik}$ .and. ldc<max( 1_${ik}$, n ) ) ) then
+              info = -13_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'DBDSQR', -info )
+              return
+           end if
+           if( n==0 )return
+           if( n==1 )go to 160
+           ! rotate is true if any singular vectors desired, false otherwise
+           rotate = ( ncvt>0_${ik}$ ) .or. ( nru>0_${ik}$ ) .or. ( ncc>0_${ik}$ )
+           ! if no singular vectors desired, use qd algorithm
+           if( .not.rotate ) then
+              call stdlib${ii}$_${ri}$lasq1( n, d, e, work, info )
+           ! if info equals 2, dqds didn't finish, try to finish
+              if( info /= 2 ) return
+              info = 0_${ik}$
+           end if
+           nm1 = n - 1_${ik}$
+           nm12 = nm1 + nm1
+           nm13 = nm12 + nm1
+           idir = 0_${ik}$
+           ! get machine constants
+           eps = stdlib${ii}$_${ri}$lamch( 'EPSILON' )
+           unfl = stdlib${ii}$_${ri}$lamch( 'SAFE MINIMUM' )
+           ! if matrix lower bidiagonal, rotate to be upper bidiagonal
+           ! by applying givens rotations on the left
+           if( lower ) then
+              do i = 1, n - 1
+                 call stdlib${ii}$_${ri}$lartg( d( i ), e( i ), cs, sn, r )
+                 d( i ) = r
+                 e( i ) = sn*d( i+1 )
+                 d( i+1 ) = cs*d( i+1 )
+                 work( i ) = cs
+                 work( nm1+i ) = sn
+              end do
+              ! update singular vectors if desired
+              if( nru>0_${ik}$ )call stdlib${ii}$_${ri}$lasr( 'R', 'V', 'F', nru, n, work( 1_${ik}$ ), work( n ), u,ldu )
+                        
+              if( ncc>0_${ik}$ )call stdlib${ii}$_${ri}$lasr( 'L', 'V', 'F', n, ncc, work( 1_${ik}$ ), work( n ), c,ldc )
+                        
+           end if
+           ! compute singular values to relative accuracy tol
+           ! (by setting tol to be negative, algorithm will compute
+           ! singular values to absolute accuracy abs(tol)*norm(input matrix))
+           tolmul = max( ten, min( hndrd, eps**meigth ) )
+           tol = tolmul*eps
+           ! compute approximate maximum, minimum singular values
+           smax = zero
+           do i = 1, n
+              smax = max( smax, abs( d( i ) ) )
+           end do
+           do i = 1, n - 1
+              smax = max( smax, abs( e( i ) ) )
+           end do
+           sminl = zero
+           if( tol>=zero ) then
+              ! relative accuracy desired
+              sminoa = abs( d( 1_${ik}$ ) )
+              if( sminoa==zero )go to 50
+              mu = sminoa
+              do i = 2, n
+                 mu = abs( d( i ) )*( mu / ( mu+abs( e( i-1 ) ) ) )
+                 sminoa = min( sminoa, mu )
+                 if( sminoa==zero )go to 50
+              end do
+              50 continue
+              sminoa = sminoa / sqrt( real( n,KIND=${rk}$) )
+              thresh = max( tol*sminoa, maxitr*(n*(n*unfl)) )
+           else
+              ! absolute accuracy desired
+              thresh = max( abs( tol )*smax, maxitr*(n*(n*unfl)) )
+           end if
+           ! prepare for main iteration loop for the singular values
+           ! (maxit is the maximum number of passes through the inner
+           ! loop permitted before nonconvergence signalled.)
+           maxitdivn = maxitr*n
+           iterdivn = 0_${ik}$
+           iter = -1_${ik}$
+           oldll = -1_${ik}$
+           oldm = -1_${ik}$
+           ! m points to last element of unconverged part of matrix
+           m = n
+           ! begin main iteration loop
+           60 continue
+           ! check for convergence or exceeding iteration count
+           if( m<=1 )go to 160
+           if( iter>=n ) then
+              iter = iter - n
+              iterdivn = iterdivn + 1_${ik}$
+              if( iterdivn>=maxitdivn )go to 200
+           end if
+           ! find diagonal block of matrix to work on
+           if( tol<zero .and. abs( d( m ) )<=thresh )d( m ) = zero
+           smax = abs( d( m ) )
+           smin = smax
+           do lll = 1, m - 1
+              ll = m - lll
+              abss = abs( d( ll ) )
+              abse = abs( e( ll ) )
+              if( tol<zero .and. abss<=thresh )d( ll ) = zero
+              if( abse<=thresh )go to 80
+              smin = min( smin, abss )
+              smax = max( smax, abss, abse )
+           end do
+           ll = 0_${ik}$
+           go to 90
+           80 continue
+           e( ll ) = zero
+           ! matrix splits since e(ll) = 0
+           if( ll==m-1 ) then
+              ! convergence of bottom singular value, return to top of loop
+              m = m - 1_${ik}$
+              go to 60
+           end if
+           90 continue
+           ll = ll + 1_${ik}$
+           ! e(ll) through e(m-1) are nonzero, e(ll-1) is zero
+           if( ll==m-1 ) then
+              ! 2 by 2 block, handle separately
+              call stdlib${ii}$_${ri}$lasv2( d( m-1 ), e( m-1 ), d( m ), sigmn, sigmx, sinr,cosr, sinl, cosl &
+                        )
+              d( m-1 ) = sigmx
+              e( m-1 ) = zero
+              d( m ) = sigmn
+              ! compute singular vectors, if desired
+              if( ncvt>0_${ik}$ )call stdlib${ii}$_${ri}$rot( ncvt, vt( m-1, 1_${ik}$ ), ldvt, vt( m, 1_${ik}$ ), ldvt, cosr,sinr &
+                        )
+              if( nru>0_${ik}$ )call stdlib${ii}$_${ri}$rot( nru, u( 1_${ik}$, m-1 ), 1_${ik}$, u( 1_${ik}$, m ), 1_${ik}$, cosl, sinl )
+              if( ncc>0_${ik}$ )call stdlib${ii}$_${ri}$rot( ncc, c( m-1, 1_${ik}$ ), ldc, c( m, 1_${ik}$ ), ldc, cosl,sinl )
+                        
+              m = m - 2_${ik}$
+              go to 60
+           end if
+           ! if working on new submatrix, choose shift direction
+           ! (from larger end diagonal element towards smaller)
+           if( ll>oldm .or. m<oldll ) then
+              if( abs( d( ll ) )>=abs( d( m ) ) ) then
+                 ! chase bulge from top (big end) to bottom (small end)
+                 idir = 1_${ik}$
+              else
+                 ! chase bulge from bottom (big end) to top (small end)
+                 idir = 2_${ik}$
+              end if
+           end if
+           ! apply convergence tests
+           if( idir==1_${ik}$ ) then
+              ! run convergence test in forward direction
+              ! first apply standard test to bottom of matrix
+              if( abs( e( m-1 ) )<=abs( tol )*abs( d( m ) ) .or.( tol<zero .and. abs( e( m-1 ) )&
+                        <=thresh ) ) then
+                 e( m-1 ) = zero
+                 go to 60
+              end if
+              if( tol>=zero ) then
+                 ! if relative accuracy desired,
+                 ! apply convergence criterion forward
+                 mu = abs( d( ll ) )
+                 sminl = mu
+                 do lll = ll, m - 1
+                    if( abs( e( lll ) )<=tol*mu ) then
+                       e( lll ) = zero
+                       go to 60
+                    end if
+                    mu = abs( d( lll+1 ) )*( mu / ( mu+abs( e( lll ) ) ) )
+                    sminl = min( sminl, mu )
+                 end do
+              end if
+           else
+              ! run convergence test in backward direction
+              ! first apply standard test to top of matrix
+              if( abs( e( ll ) )<=abs( tol )*abs( d( ll ) ) .or.( tol<zero .and. abs( e( ll ) )&
+                        <=thresh ) ) then
+                 e( ll ) = zero
+                 go to 60
+              end if
+              if( tol>=zero ) then
+                 ! if relative accuracy desired,
+                 ! apply convergence criterion backward
+                 mu = abs( d( m ) )
+                 sminl = mu
+                 do lll = m - 1, ll, -1
+                    if( abs( e( lll ) )<=tol*mu ) then
+                       e( lll ) = zero
+                       go to 60
+                    end if
+                    mu = abs( d( lll ) )*( mu / ( mu+abs( e( lll ) ) ) )
+                    sminl = min( sminl, mu )
+                 end do
+              end if
+           end if
+           oldll = ll
+           oldm = m
+           ! compute shift.  first, test if shifting would ruin relative
+           ! accuracy, and if so set the shift to zero.
+           if( tol>=zero .and. n*tol*( sminl / smax )<=max( eps, hndrth*tol ) ) then
+              ! use a zero shift to avoid loss of relative accuracy
+              shift = zero
+           else
+              ! compute the shift from 2-by-2 block at end of matrix
+              if( idir==1_${ik}$ ) then
+                 sll = abs( d( ll ) )
+                 call stdlib${ii}$_${ri}$las2( d( m-1 ), e( m-1 ), d( m ), shift, r )
+              else
+                 sll = abs( d( m ) )
+                 call stdlib${ii}$_${ri}$las2( d( ll ), e( ll ), d( ll+1 ), shift, r )
+              end if
+              ! test if shift negligible, and if so set to zero
+              if( sll>zero ) then
+                 if( ( shift / sll )**2_${ik}$<eps )shift = zero
+              end if
+           end if
+           ! increment iteration count
+           iter = iter + m - ll
+           ! if shift = 0, do simplified qr iteration
+           if( shift==zero ) then
+              if( idir==1_${ik}$ ) then
+                 ! chase bulge from top to bottom
+                 ! save cosines and sines for later singular vector updates
+                 cs = one
+                 oldcs = one
+                 do i = ll, m - 1
+                    call stdlib${ii}$_${ri}$lartg( d( i )*cs, e( i ), cs, sn, r )
+                    if( i>ll )e( i-1 ) = oldsn*r
+                    call stdlib${ii}$_${ri}$lartg( oldcs*r, d( i+1 )*sn, oldcs, oldsn, d( i ) )
+                    work( i-ll+1 ) = cs
+                    work( i-ll+1+nm1 ) = sn
+                    work( i-ll+1+nm12 ) = oldcs
+                    work( i-ll+1+nm13 ) = oldsn
+                 end do
+                 h = d( m )*cs
+                 d( m ) = h*oldcs
+                 e( m-1 ) = h*oldsn
+                 ! update singular vectors
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_${ri}$lasr( 'L', 'V', 'F', m-ll+1, ncvt, work( 1_${ik}$ ),work( n ), &
+                           vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_${ri}$lasr( 'R', 'V', 'F', nru, m-ll+1, work( nm12+1 ),work( &
+                           nm13+1 ), u( 1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_${ri}$lasr( 'L', 'V', 'F', m-ll+1, ncc, work( nm12+1 ),work( &
+                           nm13+1 ), c( ll, 1_${ik}$ ), ldc )
+                 ! test convergence
+                 if( abs( e( m-1 ) )<=thresh )e( m-1 ) = zero
+              else
+                 ! chase bulge from bottom to top
+                 ! save cosines and sines for later singular vector updates
+                 cs = one
+                 oldcs = one
+                 do i = m, ll + 1, -1
+                    call stdlib${ii}$_${ri}$lartg( d( i )*cs, e( i-1 ), cs, sn, r )
+                    if( i<m )e( i ) = oldsn*r
+                    call stdlib${ii}$_${ri}$lartg( oldcs*r, d( i-1 )*sn, oldcs, oldsn, d( i ) )
+                    work( i-ll ) = cs
+                    work( i-ll+nm1 ) = -sn
+                    work( i-ll+nm12 ) = oldcs
+                    work( i-ll+nm13 ) = -oldsn
+                 end do
+                 h = d( ll )*cs
+                 d( ll ) = h*oldcs
+                 e( ll ) = h*oldsn
+                 ! update singular vectors
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_${ri}$lasr( 'L', 'V', 'B', m-ll+1, ncvt, work( nm12+1 ),work( &
+                           nm13+1 ), vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_${ri}$lasr( 'R', 'V', 'B', nru, m-ll+1, work( 1_${ik}$ ),work( n ), u(&
+                            1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_${ri}$lasr( 'L', 'V', 'B', m-ll+1, ncc, work( 1_${ik}$ ),work( n ), c(&
+                            ll, 1_${ik}$ ), ldc )
+                 ! test convergence
+                 if( abs( e( ll ) )<=thresh )e( ll ) = zero
+              end if
+           else
+              ! use nonzero shift
+              if( idir==1_${ik}$ ) then
+                 ! chase bulge from top to bottom
+                 ! save cosines and sines for later singular vector updates
+                 f = ( abs( d( ll ) )-shift )*( sign( one, d( ll ) )+shift / d( ll ) )
+                 g = e( ll )
+                 do i = ll, m - 1
+                    call stdlib${ii}$_${ri}$lartg( f, g, cosr, sinr, r )
+                    if( i>ll )e( i-1 ) = r
+                    f = cosr*d( i ) + sinr*e( i )
+                    e( i ) = cosr*e( i ) - sinr*d( i )
+                    g = sinr*d( i+1 )
+                    d( i+1 ) = cosr*d( i+1 )
+                    call stdlib${ii}$_${ri}$lartg( f, g, cosl, sinl, r )
+                    d( i ) = r
+                    f = cosl*e( i ) + sinl*d( i+1 )
+                    d( i+1 ) = cosl*d( i+1 ) - sinl*e( i )
+                    if( i<m-1 ) then
+                       g = sinl*e( i+1 )
+                       e( i+1 ) = cosl*e( i+1 )
+                    end if
+                    work( i-ll+1 ) = cosr
+                    work( i-ll+1+nm1 ) = sinr
+                    work( i-ll+1+nm12 ) = cosl
+                    work( i-ll+1+nm13 ) = sinl
+                 end do
+                 e( m-1 ) = f
+                 ! update singular vectors
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_${ri}$lasr( 'L', 'V', 'F', m-ll+1, ncvt, work( 1_${ik}$ ),work( n ), &
+                           vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_${ri}$lasr( 'R', 'V', 'F', nru, m-ll+1, work( nm12+1 ),work( &
+                           nm13+1 ), u( 1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_${ri}$lasr( 'L', 'V', 'F', m-ll+1, ncc, work( nm12+1 ),work( &
+                           nm13+1 ), c( ll, 1_${ik}$ ), ldc )
+                 ! test convergence
+                 if( abs( e( m-1 ) )<=thresh )e( m-1 ) = zero
+              else
+                 ! chase bulge from bottom to top
+                 ! save cosines and sines for later singular vector updates
+                 f = ( abs( d( m ) )-shift )*( sign( one, d( m ) )+shift /d( m ) )
+                 g = e( m-1 )
+                 do i = m, ll + 1, -1
+                    call stdlib${ii}$_${ri}$lartg( f, g, cosr, sinr, r )
+                    if( i<m )e( i ) = r
+                    f = cosr*d( i ) + sinr*e( i-1 )
+                    e( i-1 ) = cosr*e( i-1 ) - sinr*d( i )
+                    g = sinr*d( i-1 )
+                    d( i-1 ) = cosr*d( i-1 )
+                    call stdlib${ii}$_${ri}$lartg( f, g, cosl, sinl, r )
+                    d( i ) = r
+                    f = cosl*e( i-1 ) + sinl*d( i-1 )
+                    d( i-1 ) = cosl*d( i-1 ) - sinl*e( i-1 )
+                    if( i>ll+1 ) then
+                       g = sinl*e( i-2 )
+                       e( i-2 ) = cosl*e( i-2 )
+                    end if
+                    work( i-ll ) = cosr
+                    work( i-ll+nm1 ) = -sinr
+                    work( i-ll+nm12 ) = cosl
+                    work( i-ll+nm13 ) = -sinl
+                 end do
+                 e( ll ) = f
+                 ! test convergence
+                 if( abs( e( ll ) )<=thresh )e( ll ) = zero
+                 ! update singular vectors if desired
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_${ri}$lasr( 'L', 'V', 'B', m-ll+1, ncvt, work( nm12+1 ),work( &
+                           nm13+1 ), vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_${ri}$lasr( 'R', 'V', 'B', nru, m-ll+1, work( 1_${ik}$ ),work( n ), u(&
+                            1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_${ri}$lasr( 'L', 'V', 'B', m-ll+1, ncc, work( 1_${ik}$ ),work( n ), c(&
+                            ll, 1_${ik}$ ), ldc )
+              end if
+           end if
+           ! qr iteration finished, go back and check convergence
+           go to 60
+           ! all singular values converged, so make them positive
+           160 continue
+           do i = 1, n
+              if( d( i )<zero ) then
+                 d( i ) = -d( i )
+                 ! change sign of singular vectors, if desired
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_${ri}$scal( ncvt, negone, vt( i, 1_${ik}$ ), ldvt )
+              end if
+           end do
+           ! sort the singular values into decreasing order (insertion sort on
+           ! singular values, but only one transposition per singular vector)
+           do i = 1, n - 1
+              ! scan for smallest d(i)
+              isub = 1_${ik}$
+              smin = d( 1_${ik}$ )
+              do j = 2, n + 1 - i
+                 if( d( j )<=smin ) then
+                    isub = j
+                    smin = d( j )
+                 end if
+              end do
+              if( isub/=n+1-i ) then
+                 ! swap singular values and vectors
+                 d( isub ) = d( n+1-i )
+                 d( n+1-i ) = smin
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_${ri}$swap( ncvt, vt( isub, 1_${ik}$ ), ldvt, vt( n+1-i, 1_${ik}$ ),ldvt )
+                           
+                 if( nru>0_${ik}$ )call stdlib${ii}$_${ri}$swap( nru, u( 1_${ik}$, isub ), 1_${ik}$, u( 1_${ik}$, n+1-i ), 1_${ik}$ )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_${ri}$swap( ncc, c( isub, 1_${ik}$ ), ldc, c( n+1-i, 1_${ik}$ ), ldc )
+                           
+              end if
+           end do
+           go to 220
+           ! maximum number of iterations exceeded, failure to converge
+           200 continue
+           info = 0_${ik}$
+           do i = 1, n - 1
+              if( e( i )/=zero )info = info + 1_${ik}$
+           end do
+           220 continue
+           return
+     end subroutine stdlib${ii}$_${ri}$bdsqr
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cbdsqr( uplo, n, ncvt, nru, ncc, d, e, vt, ldvt, u,ldu, c, ldc, rwork,&
+     !! CBDSQR computes the singular values and, optionally, the right and/or
+     !! left singular vectors from the singular value decomposition (SVD) of
+     !! a real N-by-N (upper or lower) bidiagonal matrix B using the implicit
+     !! zero-shift QR algorithm.  The SVD of B has the form
+     !! B = Q * S * P**H
+     !! where S is the diagonal matrix of singular values, Q is an orthogonal
+     !! matrix of left singular vectors, and P is an orthogonal matrix of
+     !! right singular vectors.  If left singular vectors are requested, this
+     !! subroutine actually returns U*Q instead of Q, and, if right singular
+     !! vectors are requested, this subroutine returns P**H*VT instead of
+     !! P**H, for given complex input matrices U and VT.  When U and VT are
+     !! the unitary matrices that reduce a general matrix A to bidiagonal
+     !! form: A = U*B*VT, as computed by CGEBRD, then
+     !! A = (U*Q) * S * (P**H*VT)
+     !! is the SVD of A.  Optionally, the subroutine may also compute Q**H*C
+     !! for a given complex input matrix C.
+     !! See "Computing  Small Singular Values of Bidiagonal Matrices With
+     !! Guaranteed High Relative Accuracy," by J. Demmel and W. Kahan,
+     !! LAPACK Working Note #3 (or SIAM J. Sci. Statist. Comput. vol. 11,
+     !! no. 5, pp. 873-912, Sept 1990) and
+     !! "Accurate singular values and differential qd algorithms," by
+     !! B. Parlett and V. Fernando, Technical Report CPAM-554, Mathematics
+     !! Department, University of California at Berkeley, July 1992
+     !! for a detailed description of the algorithm.
+                info )
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: uplo
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: ldc, ldu, ldvt, n, ncc, ncvt, nru
+           ! Array Arguments 
+           real(sp), intent(inout) :: d(*), e(*)
+           real(sp), intent(out) :: rwork(*)
+           complex(sp), intent(inout) :: c(ldc,*), u(ldu,*), vt(ldvt,*)
+        ! =====================================================================
+           ! Parameters 
+           real(sp), parameter :: hndrth = 0.01_sp
+           real(sp), parameter :: hndrd = 100.0_sp
+           real(sp), parameter :: meigth = -0.125_sp
+           integer(${ik}$), parameter :: maxitr = 6_${ik}$
+           
+           
+           
+           
+           
+           
+           
+           
+           ! Local Scalars 
+           logical(lk) :: lower, rotate
+           integer(${ik}$) :: i, idir, isub, iter, j, ll, lll, m, maxit, nm1, nm12, nm13, oldll, &
+                     oldm
+           real(sp) :: abse, abss, cosl, cosr, cs, eps, f, g, h, mu, oldcs, oldsn, r, shift, &
+           sigmn, sigmx, sinl, sinr, sll, smax, smin, sminl, sminoa, sn, thresh, tol, tolmul, &
+                     unfl
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input parameters.
+           info = 0_${ik}$
+           lower = stdlib_lsame( uplo, 'L' )
+           if( .not.stdlib_lsame( uplo, 'U' ) .and. .not.lower ) then
+              info = -1_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -2_${ik}$
+           else if( ncvt<0_${ik}$ ) then
+              info = -3_${ik}$
+           else if( nru<0_${ik}$ ) then
+              info = -4_${ik}$
+           else if( ncc<0_${ik}$ ) then
+              info = -5_${ik}$
+           else if( ( ncvt==0_${ik}$ .and. ldvt<1_${ik}$ ) .or.( ncvt>0_${ik}$ .and. ldvt<max( 1_${ik}$, n ) ) ) then
+              info = -9_${ik}$
+           else if( ldu<max( 1_${ik}$, nru ) ) then
+              info = -11_${ik}$
+           else if( ( ncc==0_${ik}$ .and. ldc<1_${ik}$ ) .or.( ncc>0_${ik}$ .and. ldc<max( 1_${ik}$, n ) ) ) then
+              info = -13_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'CBDSQR', -info )
+              return
+           end if
+           if( n==0 )return
+           if( n==1 )go to 160
+           ! rotate is true if any singular vectors desired, false otherwise
+           rotate = ( ncvt>0_${ik}$ ) .or. ( nru>0_${ik}$ ) .or. ( ncc>0_${ik}$ )
+           ! if no singular vectors desired, use qd algorithm
+           if( .not.rotate ) then
+              call stdlib${ii}$_slasq1( n, d, e, rwork, info )
+           ! if info equals 2, dqds didn't finish, try to finish
+              if( info /= 2 ) return
+              info = 0_${ik}$
+           end if
+           nm1 = n - 1_${ik}$
+           nm12 = nm1 + nm1
+           nm13 = nm12 + nm1
+           idir = 0_${ik}$
+           ! get machine constants
+           eps = stdlib${ii}$_slamch( 'EPSILON' )
+           unfl = stdlib${ii}$_slamch( 'SAFE MINIMUM' )
+           ! if matrix lower bidiagonal, rotate to be upper bidiagonal
+           ! by applying givens rotations on the left
+           if( lower ) then
+              do i = 1, n - 1
+                 call stdlib${ii}$_slartg( d( i ), e( i ), cs, sn, r )
+                 d( i ) = r
+                 e( i ) = sn*d( i+1 )
+                 d( i+1 ) = cs*d( i+1 )
+                 rwork( i ) = cs
+                 rwork( nm1+i ) = sn
+              end do
+              ! update singular vectors if desired
+              if( nru>0_${ik}$ )call stdlib${ii}$_clasr( 'R', 'V', 'F', nru, n, rwork( 1_${ik}$ ), rwork( n ),u, ldu )
+                        
+              if( ncc>0_${ik}$ )call stdlib${ii}$_clasr( 'L', 'V', 'F', n, ncc, rwork( 1_${ik}$ ), rwork( n ),c, ldc )
+                        
+           end if
+           ! compute singular values to relative accuracy tol
+           ! (by setting tol to be negative, algorithm will compute
+           ! singular values to absolute accuracy abs(tol)*norm(input matrix))
+           tolmul = max( ten, min( hndrd, eps**meigth ) )
+           tol = tolmul*eps
+           ! compute approximate maximum, minimum singular values
+           smax = zero
+           do i = 1, n
+              smax = max( smax, abs( d( i ) ) )
+           end do
+           do i = 1, n - 1
+              smax = max( smax, abs( e( i ) ) )
+           end do
+           sminl = zero
+           if( tol>=zero ) then
+              ! relative accuracy desired
+              sminoa = abs( d( 1_${ik}$ ) )
+              if( sminoa==zero )go to 50
+              mu = sminoa
+              do i = 2, n
+                 mu = abs( d( i ) )*( mu / ( mu+abs( e( i-1 ) ) ) )
+                 sminoa = min( sminoa, mu )
+                 if( sminoa==zero )go to 50
+              end do
+              50 continue
+              sminoa = sminoa / sqrt( real( n,KIND=sp) )
+              thresh = max( tol*sminoa, maxitr*n*n*unfl )
+           else
+              ! absolute accuracy desired
+              thresh = max( abs( tol )*smax, maxitr*n*n*unfl )
+           end if
+           ! prepare for main iteration loop for the singular values
+           ! (maxit is the maximum number of passes through the inner
+           ! loop permitted before nonconvergence signalled.)
+           maxit = maxitr*n*n
+           iter = 0_${ik}$
+           oldll = -1_${ik}$
+           oldm = -1_${ik}$
+           ! m points to last element of unconverged part of matrix
+           m = n
+           ! begin main iteration loop
+           60 continue
+           ! check for convergence or exceeding iteration count
+           if( m<=1 )go to 160
+           if( iter>maxit )go to 200
+           ! find diagonal block of matrix to work on
+           if( tol<zero .and. abs( d( m ) )<=thresh )d( m ) = zero
+           smax = abs( d( m ) )
+           smin = smax
+           do lll = 1, m - 1
+              ll = m - lll
+              abss = abs( d( ll ) )
+              abse = abs( e( ll ) )
+              if( tol<zero .and. abss<=thresh )d( ll ) = zero
+              if( abse<=thresh )go to 80
+              smin = min( smin, abss )
+              smax = max( smax, abss, abse )
+           end do
+           ll = 0_${ik}$
+           go to 90
+           80 continue
+           e( ll ) = zero
+           ! matrix splits since e(ll) = 0
+           if( ll==m-1 ) then
+              ! convergence of bottom singular value, return to top of loop
+              m = m - 1_${ik}$
+              go to 60
+           end if
+           90 continue
+           ll = ll + 1_${ik}$
+           ! e(ll) through e(m-1) are nonzero, e(ll-1) is zero
+           if( ll==m-1 ) then
+              ! 2 by 2 block, handle separately
+              call stdlib${ii}$_slasv2( d( m-1 ), e( m-1 ), d( m ), sigmn, sigmx, sinr,cosr, sinl, cosl &
+                        )
+              d( m-1 ) = sigmx
+              e( m-1 ) = zero
+              d( m ) = sigmn
+              ! compute singular vectors, if desired
+              if( ncvt>0_${ik}$ )call stdlib${ii}$_csrot( ncvt, vt( m-1, 1_${ik}$ ), ldvt, vt( m, 1_${ik}$ ), ldvt,cosr, &
+                        sinr )
+              if( nru>0_${ik}$ )call stdlib${ii}$_csrot( nru, u( 1_${ik}$, m-1 ), 1_${ik}$, u( 1_${ik}$, m ), 1_${ik}$, cosl, sinl )
+                        
+              if( ncc>0_${ik}$ )call stdlib${ii}$_csrot( ncc, c( m-1, 1_${ik}$ ), ldc, c( m, 1_${ik}$ ), ldc, cosl,sinl )
+                        
+              m = m - 2_${ik}$
+              go to 60
+           end if
+           ! if working on new submatrix, choose shift direction
+           ! (from larger end diagonal element towards smaller)
+           if( ll>oldm .or. m<oldll ) then
+              if( abs( d( ll ) )>=abs( d( m ) ) ) then
+                 ! chase bulge from top (big end) to bottom (small end)
+                 idir = 1_${ik}$
+              else
+                 ! chase bulge from bottom (big end) to top (small end)
+                 idir = 2_${ik}$
+              end if
+           end if
+           ! apply convergence tests
+           if( idir==1_${ik}$ ) then
+              ! run convergence test in forward direction
+              ! first apply standard test to bottom of matrix
+              if( abs( e( m-1 ) )<=abs( tol )*abs( d( m ) ) .or.( tol<zero .and. abs( e( m-1 ) )&
+                        <=thresh ) ) then
+                 e( m-1 ) = zero
+                 go to 60
+              end if
+              if( tol>=zero ) then
+                 ! if relative accuracy desired,
+                 ! apply convergence criterion forward
+                 mu = abs( d( ll ) )
+                 sminl = mu
+                 do lll = ll, m - 1
+                    if( abs( e( lll ) )<=tol*mu ) then
+                       e( lll ) = zero
+                       go to 60
+                    end if
+                    mu = abs( d( lll+1 ) )*( mu / ( mu+abs( e( lll ) ) ) )
+                    sminl = min( sminl, mu )
+                 end do
+              end if
+           else
+              ! run convergence test in backward direction
+              ! first apply standard test to top of matrix
+              if( abs( e( ll ) )<=abs( tol )*abs( d( ll ) ) .or.( tol<zero .and. abs( e( ll ) )&
+                        <=thresh ) ) then
+                 e( ll ) = zero
+                 go to 60
+              end if
+              if( tol>=zero ) then
+                 ! if relative accuracy desired,
+                 ! apply convergence criterion backward
+                 mu = abs( d( m ) )
+                 sminl = mu
+                 do lll = m - 1, ll, -1
+                    if( abs( e( lll ) )<=tol*mu ) then
+                       e( lll ) = zero
+                       go to 60
+                    end if
+                    mu = abs( d( lll ) )*( mu / ( mu+abs( e( lll ) ) ) )
+                    sminl = min( sminl, mu )
+                 end do
+              end if
+           end if
+           oldll = ll
+           oldm = m
+           ! compute shift.  first, test if shifting would ruin relative
+           ! accuracy, and if so set the shift to zero.
+           if( tol>=zero .and. n*tol*( sminl / smax )<=max( eps, hndrth*tol ) ) then
+              ! use a zero shift to avoid loss of relative accuracy
+              shift = zero
+           else
+              ! compute the shift from 2-by-2 block at end of matrix
+              if( idir==1_${ik}$ ) then
+                 sll = abs( d( ll ) )
+                 call stdlib${ii}$_slas2( d( m-1 ), e( m-1 ), d( m ), shift, r )
+              else
+                 sll = abs( d( m ) )
+                 call stdlib${ii}$_slas2( d( ll ), e( ll ), d( ll+1 ), shift, r )
+              end if
+              ! test if shift negligible, and if so set to zero
+              if( sll>zero ) then
+                 if( ( shift / sll )**2_${ik}$<eps )shift = zero
+              end if
+           end if
+           ! increment iteration count
+           iter = iter + m - ll
+           ! if shift = 0, do simplified qr iteration
+           if( shift==zero ) then
+              if( idir==1_${ik}$ ) then
+                 ! chase bulge from top to bottom
+                 ! save cosines and sines for later singular vector updates
+                 cs = one
+                 oldcs = one
+                 do i = ll, m - 1
+                    call stdlib${ii}$_slartg( d( i )*cs, e( i ), cs, sn, r )
+                    if( i>ll )e( i-1 ) = oldsn*r
+                    call stdlib${ii}$_slartg( oldcs*r, d( i+1 )*sn, oldcs, oldsn, d( i ) )
+                    rwork( i-ll+1 ) = cs
+                    rwork( i-ll+1+nm1 ) = sn
+                    rwork( i-ll+1+nm12 ) = oldcs
+                    rwork( i-ll+1+nm13 ) = oldsn
+                 end do
+                 h = d( m )*cs
+                 d( m ) = h*oldcs
+                 e( m-1 ) = h*oldsn
+                 ! update singular vectors
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_clasr( 'L', 'V', 'F', m-ll+1, ncvt, rwork( 1_${ik}$ ),rwork( n )&
+                           , vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_clasr( 'R', 'V', 'F', nru, m-ll+1, rwork( nm12+1 ),rwork( &
+                           nm13+1 ), u( 1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_clasr( 'L', 'V', 'F', m-ll+1, ncc, rwork( nm12+1 ),rwork( &
+                           nm13+1 ), c( ll, 1_${ik}$ ), ldc )
+                 ! test convergence
+                 if( abs( e( m-1 ) )<=thresh )e( m-1 ) = zero
+              else
+                 ! chase bulge from bottom to top
+                 ! save cosines and sines for later singular vector updates
+                 cs = one
+                 oldcs = one
+                 do i = m, ll + 1, -1
+                    call stdlib${ii}$_slartg( d( i )*cs, e( i-1 ), cs, sn, r )
+                    if( i<m )e( i ) = oldsn*r
+                    call stdlib${ii}$_slartg( oldcs*r, d( i-1 )*sn, oldcs, oldsn, d( i ) )
+                    rwork( i-ll ) = cs
+                    rwork( i-ll+nm1 ) = -sn
+                    rwork( i-ll+nm12 ) = oldcs
+                    rwork( i-ll+nm13 ) = -oldsn
+                 end do
+                 h = d( ll )*cs
+                 d( ll ) = h*oldcs
+                 e( ll ) = h*oldsn
+                 ! update singular vectors
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_clasr( 'L', 'V', 'B', m-ll+1, ncvt, rwork( nm12+1 ),&
+                           rwork( nm13+1 ), vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_clasr( 'R', 'V', 'B', nru, m-ll+1, rwork( 1_${ik}$ ),rwork( n ), &
+                           u( 1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_clasr( 'L', 'V', 'B', m-ll+1, ncc, rwork( 1_${ik}$ ),rwork( n ), &
+                           c( ll, 1_${ik}$ ), ldc )
+                 ! test convergence
+                 if( abs( e( ll ) )<=thresh )e( ll ) = zero
+              end if
+           else
+              ! use nonzero shift
+              if( idir==1_${ik}$ ) then
+                 ! chase bulge from top to bottom
+                 ! save cosines and sines for later singular vector updates
+                 f = ( abs( d( ll ) )-shift )*( sign( one, d( ll ) )+shift / d( ll ) )
+                 g = e( ll )
+                 do i = ll, m - 1
+                    call stdlib${ii}$_slartg( f, g, cosr, sinr, r )
+                    if( i>ll )e( i-1 ) = r
+                    f = cosr*d( i ) + sinr*e( i )
+                    e( i ) = cosr*e( i ) - sinr*d( i )
+                    g = sinr*d( i+1 )
+                    d( i+1 ) = cosr*d( i+1 )
+                    call stdlib${ii}$_slartg( f, g, cosl, sinl, r )
+                    d( i ) = r
+                    f = cosl*e( i ) + sinl*d( i+1 )
+                    d( i+1 ) = cosl*d( i+1 ) - sinl*e( i )
+                    if( i<m-1 ) then
+                       g = sinl*e( i+1 )
+                       e( i+1 ) = cosl*e( i+1 )
+                    end if
+                    rwork( i-ll+1 ) = cosr
+                    rwork( i-ll+1+nm1 ) = sinr
+                    rwork( i-ll+1+nm12 ) = cosl
+                    rwork( i-ll+1+nm13 ) = sinl
+                 end do
+                 e( m-1 ) = f
+                 ! update singular vectors
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_clasr( 'L', 'V', 'F', m-ll+1, ncvt, rwork( 1_${ik}$ ),rwork( n )&
+                           , vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_clasr( 'R', 'V', 'F', nru, m-ll+1, rwork( nm12+1 ),rwork( &
+                           nm13+1 ), u( 1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_clasr( 'L', 'V', 'F', m-ll+1, ncc, rwork( nm12+1 ),rwork( &
+                           nm13+1 ), c( ll, 1_${ik}$ ), ldc )
+                 ! test convergence
+                 if( abs( e( m-1 ) )<=thresh )e( m-1 ) = zero
+              else
+                 ! chase bulge from bottom to top
+                 ! save cosines and sines for later singular vector updates
+                 f = ( abs( d( m ) )-shift )*( sign( one, d( m ) )+shift /d( m ) )
+                 g = e( m-1 )
+                 do i = m, ll + 1, -1
+                    call stdlib${ii}$_slartg( f, g, cosr, sinr, r )
+                    if( i<m )e( i ) = r
+                    f = cosr*d( i ) + sinr*e( i-1 )
+                    e( i-1 ) = cosr*e( i-1 ) - sinr*d( i )
+                    g = sinr*d( i-1 )
+                    d( i-1 ) = cosr*d( i-1 )
+                    call stdlib${ii}$_slartg( f, g, cosl, sinl, r )
+                    d( i ) = r
+                    f = cosl*e( i-1 ) + sinl*d( i-1 )
+                    d( i-1 ) = cosl*d( i-1 ) - sinl*e( i-1 )
+                    if( i>ll+1 ) then
+                       g = sinl*e( i-2 )
+                       e( i-2 ) = cosl*e( i-2 )
+                    end if
+                    rwork( i-ll ) = cosr
+                    rwork( i-ll+nm1 ) = -sinr
+                    rwork( i-ll+nm12 ) = cosl
+                    rwork( i-ll+nm13 ) = -sinl
+                 end do
+                 e( ll ) = f
+                 ! test convergence
+                 if( abs( e( ll ) )<=thresh )e( ll ) = zero
+                 ! update singular vectors if desired
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_clasr( 'L', 'V', 'B', m-ll+1, ncvt, rwork( nm12+1 ),&
+                           rwork( nm13+1 ), vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_clasr( 'R', 'V', 'B', nru, m-ll+1, rwork( 1_${ik}$ ),rwork( n ), &
+                           u( 1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_clasr( 'L', 'V', 'B', m-ll+1, ncc, rwork( 1_${ik}$ ),rwork( n ), &
+                           c( ll, 1_${ik}$ ), ldc )
+              end if
+           end if
+           ! qr iteration finished, go back and check convergence
+           go to 60
+           ! all singular values converged, so make them positive
+           160 continue
+           do i = 1, n
+              if( d( i )<zero ) then
+                 d( i ) = -d( i )
+                 ! change sign of singular vectors, if desired
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_csscal( ncvt, negone, vt( i, 1_${ik}$ ), ldvt )
+              end if
+           end do
+           ! sort the singular values into decreasing order (insertion sort on
+           ! singular values, but only one transposition per singular vector)
+           do i = 1, n - 1
+              ! scan for smallest d(i)
+              isub = 1_${ik}$
+              smin = d( 1_${ik}$ )
+              do j = 2, n + 1 - i
+                 if( d( j )<=smin ) then
+                    isub = j
+                    smin = d( j )
+                 end if
+              end do
+              if( isub/=n+1-i ) then
+                 ! swap singular values and vectors
+                 d( isub ) = d( n+1-i )
+                 d( n+1-i ) = smin
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_cswap( ncvt, vt( isub, 1_${ik}$ ), ldvt, vt( n+1-i, 1_${ik}$ ),ldvt )
+                           
+                 if( nru>0_${ik}$ )call stdlib${ii}$_cswap( nru, u( 1_${ik}$, isub ), 1_${ik}$, u( 1_${ik}$, n+1-i ), 1_${ik}$ )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_cswap( ncc, c( isub, 1_${ik}$ ), ldc, c( n+1-i, 1_${ik}$ ), ldc )
+                           
+              end if
+           end do
+           go to 220
+           ! maximum number of iterations exceeded, failure to converge
+           200 continue
+           info = 0_${ik}$
+           do i = 1, n - 1
+              if( e( i )/=zero )info = info + 1_${ik}$
+           end do
+           220 continue
+           return
+     end subroutine stdlib${ii}$_cbdsqr
+
+     pure module subroutine stdlib${ii}$_zbdsqr( uplo, n, ncvt, nru, ncc, d, e, vt, ldvt, u,ldu, c, ldc, rwork,&
+     !! ZBDSQR computes the singular values and, optionally, the right and/or
+     !! left singular vectors from the singular value decomposition (SVD) of
+     !! a real N-by-N (upper or lower) bidiagonal matrix B using the implicit
+     !! zero-shift QR algorithm.  The SVD of B has the form
+     !! B = Q * S * P**H
+     !! where S is the diagonal matrix of singular values, Q is an orthogonal
+     !! matrix of left singular vectors, and P is an orthogonal matrix of
+     !! right singular vectors.  If left singular vectors are requested, this
+     !! subroutine actually returns U*Q instead of Q, and, if right singular
+     !! vectors are requested, this subroutine returns P**H*VT instead of
+     !! P**H, for given complex input matrices U and VT.  When U and VT are
+     !! the unitary matrices that reduce a general matrix A to bidiagonal
+     !! form: A = U*B*VT, as computed by ZGEBRD, then
+     !! A = (U*Q) * S * (P**H*VT)
+     !! is the SVD of A.  Optionally, the subroutine may also compute Q**H*C
+     !! for a given complex input matrix C.
+     !! See "Computing  Small Singular Values of Bidiagonal Matrices With
+     !! Guaranteed High Relative Accuracy," by J. Demmel and W. Kahan,
+     !! LAPACK Working Note #3 (or SIAM J. Sci. Statist. Comput. vol. 11,
+     !! no. 5, pp. 873-912, Sept 1990) and
+     !! "Accurate singular values and differential qd algorithms," by
+     !! B. Parlett and V. Fernando, Technical Report CPAM-554, Mathematics
+     !! Department, University of California at Berkeley, July 1992
+     !! for a detailed description of the algorithm.
+                info )
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: uplo
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: ldc, ldu, ldvt, n, ncc, ncvt, nru
+           ! Array Arguments 
+           real(dp), intent(inout) :: d(*), e(*)
+           real(dp), intent(out) :: rwork(*)
+           complex(dp), intent(inout) :: c(ldc,*), u(ldu,*), vt(ldvt,*)
+        ! =====================================================================
+           ! Parameters 
+           real(dp), parameter :: hndrth = 0.01_dp
+           real(dp), parameter :: hndrd = 100.0_dp
+           real(dp), parameter :: meigth = -0.125_dp
+           integer(${ik}$), parameter :: maxitr = 6_${ik}$
+           
+           
+           
+           
+           
+           
+           
+           
+           ! Local Scalars 
+           logical(lk) :: lower, rotate
+           integer(${ik}$) :: i, idir, isub, iter, j, ll, lll, m, maxit, nm1, nm12, nm13, oldll, &
+                     oldm
+           real(dp) :: abse, abss, cosl, cosr, cs, eps, f, g, h, mu, oldcs, oldsn, r, shift, &
+           sigmn, sigmx, sinl, sinr, sll, smax, smin, sminl, sminoa, sn, thresh, tol, tolmul, &
+                     unfl
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input parameters.
+           info = 0_${ik}$
+           lower = stdlib_lsame( uplo, 'L' )
+           if( .not.stdlib_lsame( uplo, 'U' ) .and. .not.lower ) then
+              info = -1_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -2_${ik}$
+           else if( ncvt<0_${ik}$ ) then
+              info = -3_${ik}$
+           else if( nru<0_${ik}$ ) then
+              info = -4_${ik}$
+           else if( ncc<0_${ik}$ ) then
+              info = -5_${ik}$
+           else if( ( ncvt==0_${ik}$ .and. ldvt<1_${ik}$ ) .or.( ncvt>0_${ik}$ .and. ldvt<max( 1_${ik}$, n ) ) ) then
+              info = -9_${ik}$
+           else if( ldu<max( 1_${ik}$, nru ) ) then
+              info = -11_${ik}$
+           else if( ( ncc==0_${ik}$ .and. ldc<1_${ik}$ ) .or.( ncc>0_${ik}$ .and. ldc<max( 1_${ik}$, n ) ) ) then
+              info = -13_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'ZBDSQR', -info )
+              return
+           end if
+           if( n==0 )return
+           if( n==1 )go to 160
+           ! rotate is true if any singular vectors desired, false otherwise
+           rotate = ( ncvt>0_${ik}$ ) .or. ( nru>0_${ik}$ ) .or. ( ncc>0_${ik}$ )
+           ! if no singular vectors desired, use qd algorithm
+           if( .not.rotate ) then
+              call stdlib${ii}$_dlasq1( n, d, e, rwork, info )
+           ! if info equals 2, dqds didn't finish, try to finish
+              if( info /= 2 ) return
+              info = 0_${ik}$
+           end if
+           nm1 = n - 1_${ik}$
+           nm12 = nm1 + nm1
+           nm13 = nm12 + nm1
+           idir = 0_${ik}$
+           ! get machine constants
+           eps = stdlib${ii}$_dlamch( 'EPSILON' )
+           unfl = stdlib${ii}$_dlamch( 'SAFE MINIMUM' )
+           ! if matrix lower bidiagonal, rotate to be upper bidiagonal
+           ! by applying givens rotations on the left
+           if( lower ) then
+              do i = 1, n - 1
+                 call stdlib${ii}$_dlartg( d( i ), e( i ), cs, sn, r )
+                 d( i ) = r
+                 e( i ) = sn*d( i+1 )
+                 d( i+1 ) = cs*d( i+1 )
+                 rwork( i ) = cs
+                 rwork( nm1+i ) = sn
+              end do
+              ! update singular vectors if desired
+              if( nru>0_${ik}$ )call stdlib${ii}$_zlasr( 'R', 'V', 'F', nru, n, rwork( 1_${ik}$ ), rwork( n ),u, ldu )
+                        
+              if( ncc>0_${ik}$ )call stdlib${ii}$_zlasr( 'L', 'V', 'F', n, ncc, rwork( 1_${ik}$ ), rwork( n ),c, ldc )
+                        
+           end if
+           ! compute singular values to relative accuracy tol
+           ! (by setting tol to be negative, algorithm will compute
+           ! singular values to absolute accuracy abs(tol)*norm(input matrix))
+           tolmul = max( ten, min( hndrd, eps**meigth ) )
+           tol = tolmul*eps
+           ! compute approximate maximum, minimum singular values
+           smax = zero
+           do i = 1, n
+              smax = max( smax, abs( d( i ) ) )
+           end do
+           do i = 1, n - 1
+              smax = max( smax, abs( e( i ) ) )
+           end do
+           sminl = zero
+           if( tol>=zero ) then
+              ! relative accuracy desired
+              sminoa = abs( d( 1_${ik}$ ) )
+              if( sminoa==zero )go to 50
+              mu = sminoa
+              do i = 2, n
+                 mu = abs( d( i ) )*( mu / ( mu+abs( e( i-1 ) ) ) )
+                 sminoa = min( sminoa, mu )
+                 if( sminoa==zero )go to 50
+              end do
+              50 continue
+              sminoa = sminoa / sqrt( real( n,KIND=dp) )
+              thresh = max( tol*sminoa, maxitr*n*n*unfl )
+           else
+              ! absolute accuracy desired
+              thresh = max( abs( tol )*smax, maxitr*n*n*unfl )
+           end if
+           ! prepare for main iteration loop for the singular values
+           ! (maxit is the maximum number of passes through the inner
+           ! loop permitted before nonconvergence signalled.)
+           maxit = maxitr*n*n
+           iter = 0_${ik}$
+           oldll = -1_${ik}$
+           oldm = -1_${ik}$
+           ! m points to last element of unconverged part of matrix
+           m = n
+           ! begin main iteration loop
+           60 continue
+           ! check for convergence or exceeding iteration count
+           if( m<=1 )go to 160
+           if( iter>maxit )go to 200
+           ! find diagonal block of matrix to work on
+           if( tol<zero .and. abs( d( m ) )<=thresh )d( m ) = zero
+           smax = abs( d( m ) )
+           smin = smax
+           do lll = 1, m - 1
+              ll = m - lll
+              abss = abs( d( ll ) )
+              abse = abs( e( ll ) )
+              if( tol<zero .and. abss<=thresh )d( ll ) = zero
+              if( abse<=thresh )go to 80
+              smin = min( smin, abss )
+              smax = max( smax, abss, abse )
+           end do
+           ll = 0_${ik}$
+           go to 90
+           80 continue
+           e( ll ) = zero
+           ! matrix splits since e(ll) = 0
+           if( ll==m-1 ) then
+              ! convergence of bottom singular value, return to top of loop
+              m = m - 1_${ik}$
+              go to 60
+           end if
+           90 continue
+           ll = ll + 1_${ik}$
+           ! e(ll) through e(m-1) are nonzero, e(ll-1) is zero
+           if( ll==m-1 ) then
+              ! 2 by 2 block, handle separately
+              call stdlib${ii}$_dlasv2( d( m-1 ), e( m-1 ), d( m ), sigmn, sigmx, sinr,cosr, sinl, cosl &
+                        )
+              d( m-1 ) = sigmx
+              e( m-1 ) = zero
+              d( m ) = sigmn
+              ! compute singular vectors, if desired
+              if( ncvt>0_${ik}$ )call stdlib${ii}$_zdrot( ncvt, vt( m-1, 1_${ik}$ ), ldvt, vt( m, 1_${ik}$ ), ldvt,cosr, &
+                        sinr )
+              if( nru>0_${ik}$ )call stdlib${ii}$_zdrot( nru, u( 1_${ik}$, m-1 ), 1_${ik}$, u( 1_${ik}$, m ), 1_${ik}$, cosl, sinl )
+                        
+              if( ncc>0_${ik}$ )call stdlib${ii}$_zdrot( ncc, c( m-1, 1_${ik}$ ), ldc, c( m, 1_${ik}$ ), ldc, cosl,sinl )
+                        
+              m = m - 2_${ik}$
+              go to 60
+           end if
+           ! if working on new submatrix, choose shift direction
+           ! (from larger end diagonal element towards smaller)
+           if( ll>oldm .or. m<oldll ) then
+              if( abs( d( ll ) )>=abs( d( m ) ) ) then
+                 ! chase bulge from top (big end) to bottom (small end)
+                 idir = 1_${ik}$
+              else
+                 ! chase bulge from bottom (big end) to top (small end)
+                 idir = 2_${ik}$
+              end if
+           end if
+           ! apply convergence tests
+           if( idir==1_${ik}$ ) then
+              ! run convergence test in forward direction
+              ! first apply standard test to bottom of matrix
+              if( abs( e( m-1 ) )<=abs( tol )*abs( d( m ) ) .or.( tol<zero .and. abs( e( m-1 ) )&
+                        <=thresh ) ) then
+                 e( m-1 ) = zero
+                 go to 60
+              end if
+              if( tol>=zero ) then
+                 ! if relative accuracy desired,
+                 ! apply convergence criterion forward
+                 mu = abs( d( ll ) )
+                 sminl = mu
+                 do lll = ll, m - 1
+                    if( abs( e( lll ) )<=tol*mu ) then
+                       e( lll ) = zero
+                       go to 60
+                    end if
+                    mu = abs( d( lll+1 ) )*( mu / ( mu+abs( e( lll ) ) ) )
+                    sminl = min( sminl, mu )
+                 end do
+              end if
+           else
+              ! run convergence test in backward direction
+              ! first apply standard test to top of matrix
+              if( abs( e( ll ) )<=abs( tol )*abs( d( ll ) ) .or.( tol<zero .and. abs( e( ll ) )&
+                        <=thresh ) ) then
+                 e( ll ) = zero
+                 go to 60
+              end if
+              if( tol>=zero ) then
+                 ! if relative accuracy desired,
+                 ! apply convergence criterion backward
+                 mu = abs( d( m ) )
+                 sminl = mu
+                 do lll = m - 1, ll, -1
+                    if( abs( e( lll ) )<=tol*mu ) then
+                       e( lll ) = zero
+                       go to 60
+                    end if
+                    mu = abs( d( lll ) )*( mu / ( mu+abs( e( lll ) ) ) )
+                    sminl = min( sminl, mu )
+                 end do
+              end if
+           end if
+           oldll = ll
+           oldm = m
+           ! compute shift.  first, test if shifting would ruin relative
+           ! accuracy, and if so set the shift to zero.
+           if( tol>=zero .and. n*tol*( sminl / smax )<=max( eps, hndrth*tol ) ) then
+              ! use a zero shift to avoid loss of relative accuracy
+              shift = zero
+           else
+              ! compute the shift from 2-by-2 block at end of matrix
+              if( idir==1_${ik}$ ) then
+                 sll = abs( d( ll ) )
+                 call stdlib${ii}$_dlas2( d( m-1 ), e( m-1 ), d( m ), shift, r )
+              else
+                 sll = abs( d( m ) )
+                 call stdlib${ii}$_dlas2( d( ll ), e( ll ), d( ll+1 ), shift, r )
+              end if
+              ! test if shift negligible, and if so set to zero
+              if( sll>zero ) then
+                 if( ( shift / sll )**2_${ik}$<eps )shift = zero
+              end if
+           end if
+           ! increment iteration count
+           iter = iter + m - ll
+           ! if shift = 0, do simplified qr iteration
+           if( shift==zero ) then
+              if( idir==1_${ik}$ ) then
+                 ! chase bulge from top to bottom
+                 ! save cosines and sines for later singular vector updates
+                 cs = one
+                 oldcs = one
+                 do i = ll, m - 1
+                    call stdlib${ii}$_dlartg( d( i )*cs, e( i ), cs, sn, r )
+                    if( i>ll )e( i-1 ) = oldsn*r
+                    call stdlib${ii}$_dlartg( oldcs*r, d( i+1 )*sn, oldcs, oldsn, d( i ) )
+                    rwork( i-ll+1 ) = cs
+                    rwork( i-ll+1+nm1 ) = sn
+                    rwork( i-ll+1+nm12 ) = oldcs
+                    rwork( i-ll+1+nm13 ) = oldsn
+                 end do
+                 h = d( m )*cs
+                 d( m ) = h*oldcs
+                 e( m-1 ) = h*oldsn
+                 ! update singular vectors
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_zlasr( 'L', 'V', 'F', m-ll+1, ncvt, rwork( 1_${ik}$ ),rwork( n )&
+                           , vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_zlasr( 'R', 'V', 'F', nru, m-ll+1, rwork( nm12+1 ),rwork( &
+                           nm13+1 ), u( 1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_zlasr( 'L', 'V', 'F', m-ll+1, ncc, rwork( nm12+1 ),rwork( &
+                           nm13+1 ), c( ll, 1_${ik}$ ), ldc )
+                 ! test convergence
+                 if( abs( e( m-1 ) )<=thresh )e( m-1 ) = zero
+              else
+                 ! chase bulge from bottom to top
+                 ! save cosines and sines for later singular vector updates
+                 cs = one
+                 oldcs = one
+                 do i = m, ll + 1, -1
+                    call stdlib${ii}$_dlartg( d( i )*cs, e( i-1 ), cs, sn, r )
+                    if( i<m )e( i ) = oldsn*r
+                    call stdlib${ii}$_dlartg( oldcs*r, d( i-1 )*sn, oldcs, oldsn, d( i ) )
+                    rwork( i-ll ) = cs
+                    rwork( i-ll+nm1 ) = -sn
+                    rwork( i-ll+nm12 ) = oldcs
+                    rwork( i-ll+nm13 ) = -oldsn
+                 end do
+                 h = d( ll )*cs
+                 d( ll ) = h*oldcs
+                 e( ll ) = h*oldsn
+                 ! update singular vectors
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_zlasr( 'L', 'V', 'B', m-ll+1, ncvt, rwork( nm12+1 ),&
+                           rwork( nm13+1 ), vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_zlasr( 'R', 'V', 'B', nru, m-ll+1, rwork( 1_${ik}$ ),rwork( n ), &
+                           u( 1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_zlasr( 'L', 'V', 'B', m-ll+1, ncc, rwork( 1_${ik}$ ),rwork( n ), &
+                           c( ll, 1_${ik}$ ), ldc )
+                 ! test convergence
+                 if( abs( e( ll ) )<=thresh )e( ll ) = zero
+              end if
+           else
+              ! use nonzero shift
+              if( idir==1_${ik}$ ) then
+                 ! chase bulge from top to bottom
+                 ! save cosines and sines for later singular vector updates
+                 f = ( abs( d( ll ) )-shift )*( sign( one, d( ll ) )+shift / d( ll ) )
+                 g = e( ll )
+                 do i = ll, m - 1
+                    call stdlib${ii}$_dlartg( f, g, cosr, sinr, r )
+                    if( i>ll )e( i-1 ) = r
+                    f = cosr*d( i ) + sinr*e( i )
+                    e( i ) = cosr*e( i ) - sinr*d( i )
+                    g = sinr*d( i+1 )
+                    d( i+1 ) = cosr*d( i+1 )
+                    call stdlib${ii}$_dlartg( f, g, cosl, sinl, r )
+                    d( i ) = r
+                    f = cosl*e( i ) + sinl*d( i+1 )
+                    d( i+1 ) = cosl*d( i+1 ) - sinl*e( i )
+                    if( i<m-1 ) then
+                       g = sinl*e( i+1 )
+                       e( i+1 ) = cosl*e( i+1 )
+                    end if
+                    rwork( i-ll+1 ) = cosr
+                    rwork( i-ll+1+nm1 ) = sinr
+                    rwork( i-ll+1+nm12 ) = cosl
+                    rwork( i-ll+1+nm13 ) = sinl
+                 end do
+                 e( m-1 ) = f
+                 ! update singular vectors
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_zlasr( 'L', 'V', 'F', m-ll+1, ncvt, rwork( 1_${ik}$ ),rwork( n )&
+                           , vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_zlasr( 'R', 'V', 'F', nru, m-ll+1, rwork( nm12+1 ),rwork( &
+                           nm13+1 ), u( 1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_zlasr( 'L', 'V', 'F', m-ll+1, ncc, rwork( nm12+1 ),rwork( &
+                           nm13+1 ), c( ll, 1_${ik}$ ), ldc )
+                 ! test convergence
+                 if( abs( e( m-1 ) )<=thresh )e( m-1 ) = zero
+              else
+                 ! chase bulge from bottom to top
+                 ! save cosines and sines for later singular vector updates
+                 f = ( abs( d( m ) )-shift )*( sign( one, d( m ) )+shift /d( m ) )
+                 g = e( m-1 )
+                 do i = m, ll + 1, -1
+                    call stdlib${ii}$_dlartg( f, g, cosr, sinr, r )
+                    if( i<m )e( i ) = r
+                    f = cosr*d( i ) + sinr*e( i-1 )
+                    e( i-1 ) = cosr*e( i-1 ) - sinr*d( i )
+                    g = sinr*d( i-1 )
+                    d( i-1 ) = cosr*d( i-1 )
+                    call stdlib${ii}$_dlartg( f, g, cosl, sinl, r )
+                    d( i ) = r
+                    f = cosl*e( i-1 ) + sinl*d( i-1 )
+                    d( i-1 ) = cosl*d( i-1 ) - sinl*e( i-1 )
+                    if( i>ll+1 ) then
+                       g = sinl*e( i-2 )
+                       e( i-2 ) = cosl*e( i-2 )
+                    end if
+                    rwork( i-ll ) = cosr
+                    rwork( i-ll+nm1 ) = -sinr
+                    rwork( i-ll+nm12 ) = cosl
+                    rwork( i-ll+nm13 ) = -sinl
+                 end do
+                 e( ll ) = f
+                 ! test convergence
+                 if( abs( e( ll ) )<=thresh )e( ll ) = zero
+                 ! update singular vectors if desired
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_zlasr( 'L', 'V', 'B', m-ll+1, ncvt, rwork( nm12+1 ),&
+                           rwork( nm13+1 ), vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_zlasr( 'R', 'V', 'B', nru, m-ll+1, rwork( 1_${ik}$ ),rwork( n ), &
+                           u( 1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_zlasr( 'L', 'V', 'B', m-ll+1, ncc, rwork( 1_${ik}$ ),rwork( n ), &
+                           c( ll, 1_${ik}$ ), ldc )
+              end if
+           end if
+           ! qr iteration finished, go back and check convergence
+           go to 60
+           ! all singular values converged, so make them positive
+           160 continue
+           do i = 1, n
+              if( d( i )<zero ) then
+                 d( i ) = -d( i )
+                 ! change sign of singular vectors, if desired
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_zdscal( ncvt, negone, vt( i, 1_${ik}$ ), ldvt )
+              end if
+           end do
+           ! sort the singular values into decreasing order (insertion sort on
+           ! singular values, but only one transposition per singular vector)
+           do i = 1, n - 1
+              ! scan for smallest d(i)
+              isub = 1_${ik}$
+              smin = d( 1_${ik}$ )
+              do j = 2, n + 1 - i
+                 if( d( j )<=smin ) then
+                    isub = j
+                    smin = d( j )
+                 end if
+              end do
+              if( isub/=n+1-i ) then
+                 ! swap singular values and vectors
+                 d( isub ) = d( n+1-i )
+                 d( n+1-i ) = smin
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_zswap( ncvt, vt( isub, 1_${ik}$ ), ldvt, vt( n+1-i, 1_${ik}$ ),ldvt )
+                           
+                 if( nru>0_${ik}$ )call stdlib${ii}$_zswap( nru, u( 1_${ik}$, isub ), 1_${ik}$, u( 1_${ik}$, n+1-i ), 1_${ik}$ )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_zswap( ncc, c( isub, 1_${ik}$ ), ldc, c( n+1-i, 1_${ik}$ ), ldc )
+                           
+              end if
+           end do
+           go to 220
+           ! maximum number of iterations exceeded, failure to converge
+           200 continue
+           info = 0_${ik}$
+           do i = 1, n - 1
+              if( e( i )/=zero )info = info + 1_${ik}$
+           end do
+           220 continue
+           return
+     end subroutine stdlib${ii}$_zbdsqr
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$bdsqr( uplo, n, ncvt, nru, ncc, d, e, vt, ldvt, u,ldu, c, ldc, rwork,&
+     !! ZBDSQR: computes the singular values and, optionally, the right and/or
+     !! left singular vectors from the singular value decomposition (SVD) of
+     !! a real N-by-N (upper or lower) bidiagonal matrix B using the implicit
+     !! zero-shift QR algorithm.  The SVD of B has the form
+     !! B = Q * S * P**H
+     !! where S is the diagonal matrix of singular values, Q is an orthogonal
+     !! matrix of left singular vectors, and P is an orthogonal matrix of
+     !! right singular vectors.  If left singular vectors are requested, this
+     !! subroutine actually returns U*Q instead of Q, and, if right singular
+     !! vectors are requested, this subroutine returns P**H*VT instead of
+     !! P**H, for given complex input matrices U and VT.  When U and VT are
+     !! the unitary matrices that reduce a general matrix A to bidiagonal
+     !! form: A = U*B*VT, as computed by ZGEBRD, then
+     !! A = (U*Q) * S * (P**H*VT)
+     !! is the SVD of A.  Optionally, the subroutine may also compute Q**H*C
+     !! for a given complex input matrix C.
+     !! See "Computing  Small Singular Values of Bidiagonal Matrices With
+     !! Guaranteed High Relative Accuracy," by J. Demmel and W. Kahan,
+     !! LAPACK Working Note #3 (or SIAM J. Sci. Statist. Comput. vol. 11,
+     !! no. 5, pp. 873-912, Sept 1990) and
+     !! "Accurate singular values and differential qd algorithms," by
+     !! B. Parlett and V. Fernando, Technical Report CPAM-554, Mathematics
+     !! Department, University of California at Berkeley, July 1992
+     !! for a detailed description of the algorithm.
+                info )
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: uplo
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: ldc, ldu, ldvt, n, ncc, ncvt, nru
+           ! Array Arguments 
+           real(${ck}$), intent(inout) :: d(*), e(*)
+           real(${ck}$), intent(out) :: rwork(*)
+           complex(${ck}$), intent(inout) :: c(ldc,*), u(ldu,*), vt(ldvt,*)
+        ! =====================================================================
+           ! Parameters 
+           real(${ck}$), parameter :: hndrth = 0.01_${ck}$
+           real(${ck}$), parameter :: hndrd = 100.0_${ck}$
+           real(${ck}$), parameter :: meigth = -0.125_${ck}$
+           integer(${ik}$), parameter :: maxitr = 6_${ik}$
+           
+           
+           
+           
+           
+           
+           
+           
+           ! Local Scalars 
+           logical(lk) :: lower, rotate
+           integer(${ik}$) :: i, idir, isub, iter, j, ll, lll, m, maxit, nm1, nm12, nm13, oldll, &
+                     oldm
+           real(${ck}$) :: abse, abss, cosl, cosr, cs, eps, f, g, h, mu, oldcs, oldsn, r, shift, &
+           sigmn, sigmx, sinl, sinr, sll, smax, smin, sminl, sminoa, sn, thresh, tol, tolmul, &
+                     unfl
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input parameters.
+           info = 0_${ik}$
+           lower = stdlib_lsame( uplo, 'L' )
+           if( .not.stdlib_lsame( uplo, 'U' ) .and. .not.lower ) then
+              info = -1_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -2_${ik}$
+           else if( ncvt<0_${ik}$ ) then
+              info = -3_${ik}$
+           else if( nru<0_${ik}$ ) then
+              info = -4_${ik}$
+           else if( ncc<0_${ik}$ ) then
+              info = -5_${ik}$
+           else if( ( ncvt==0_${ik}$ .and. ldvt<1_${ik}$ ) .or.( ncvt>0_${ik}$ .and. ldvt<max( 1_${ik}$, n ) ) ) then
+              info = -9_${ik}$
+           else if( ldu<max( 1_${ik}$, nru ) ) then
+              info = -11_${ik}$
+           else if( ( ncc==0_${ik}$ .and. ldc<1_${ik}$ ) .or.( ncc>0_${ik}$ .and. ldc<max( 1_${ik}$, n ) ) ) then
+              info = -13_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'ZBDSQR', -info )
+              return
+           end if
+           if( n==0 )return
+           if( n==1 )go to 160
+           ! rotate is true if any singular vectors desired, false otherwise
+           rotate = ( ncvt>0_${ik}$ ) .or. ( nru>0_${ik}$ ) .or. ( ncc>0_${ik}$ )
+           ! if no singular vectors desired, use qd algorithm
+           if( .not.rotate ) then
+              call stdlib${ii}$_${c2ri(ci)}$lasq1( n, d, e, rwork, info )
+           ! if info equals 2, dqds didn't finish, try to finish
+              if( info /= 2 ) return
+              info = 0_${ik}$
+           end if
+           nm1 = n - 1_${ik}$
+           nm12 = nm1 + nm1
+           nm13 = nm12 + nm1
+           idir = 0_${ik}$
+           ! get machine constants
+           eps = stdlib${ii}$_${c2ri(ci)}$lamch( 'EPSILON' )
+           unfl = stdlib${ii}$_${c2ri(ci)}$lamch( 'SAFE MINIMUM' )
+           ! if matrix lower bidiagonal, rotate to be upper bidiagonal
+           ! by applying givens rotations on the left
+           if( lower ) then
+              do i = 1, n - 1
+                 call stdlib${ii}$_${c2ri(ci)}$lartg( d( i ), e( i ), cs, sn, r )
+                 d( i ) = r
+                 e( i ) = sn*d( i+1 )
+                 d( i+1 ) = cs*d( i+1 )
+                 rwork( i ) = cs
+                 rwork( nm1+i ) = sn
+              end do
+              ! update singular vectors if desired
+              if( nru>0_${ik}$ )call stdlib${ii}$_${ci}$lasr( 'R', 'V', 'F', nru, n, rwork( 1_${ik}$ ), rwork( n ),u, ldu )
+                        
+              if( ncc>0_${ik}$ )call stdlib${ii}$_${ci}$lasr( 'L', 'V', 'F', n, ncc, rwork( 1_${ik}$ ), rwork( n ),c, ldc )
+                        
+           end if
+           ! compute singular values to relative accuracy tol
+           ! (by setting tol to be negative, algorithm will compute
+           ! singular values to absolute accuracy abs(tol)*norm(input matrix))
+           tolmul = max( ten, min( hndrd, eps**meigth ) )
+           tol = tolmul*eps
+           ! compute approximate maximum, minimum singular values
+           smax = zero
+           do i = 1, n
+              smax = max( smax, abs( d( i ) ) )
+           end do
+           do i = 1, n - 1
+              smax = max( smax, abs( e( i ) ) )
+           end do
+           sminl = zero
+           if( tol>=zero ) then
+              ! relative accuracy desired
+              sminoa = abs( d( 1_${ik}$ ) )
+              if( sminoa==zero )go to 50
+              mu = sminoa
+              do i = 2, n
+                 mu = abs( d( i ) )*( mu / ( mu+abs( e( i-1 ) ) ) )
+                 sminoa = min( sminoa, mu )
+                 if( sminoa==zero )go to 50
+              end do
+              50 continue
+              sminoa = sminoa / sqrt( real( n,KIND=${ck}$) )
+              thresh = max( tol*sminoa, maxitr*n*n*unfl )
+           else
+              ! absolute accuracy desired
+              thresh = max( abs( tol )*smax, maxitr*n*n*unfl )
+           end if
+           ! prepare for main iteration loop for the singular values
+           ! (maxit is the maximum number of passes through the inner
+           ! loop permitted before nonconvergence signalled.)
+           maxit = maxitr*n*n
+           iter = 0_${ik}$
+           oldll = -1_${ik}$
+           oldm = -1_${ik}$
+           ! m points to last element of unconverged part of matrix
+           m = n
+           ! begin main iteration loop
+           60 continue
+           ! check for convergence or exceeding iteration count
+           if( m<=1 )go to 160
+           if( iter>maxit )go to 200
+           ! find diagonal block of matrix to work on
+           if( tol<zero .and. abs( d( m ) )<=thresh )d( m ) = zero
+           smax = abs( d( m ) )
+           smin = smax
+           do lll = 1, m - 1
+              ll = m - lll
+              abss = abs( d( ll ) )
+              abse = abs( e( ll ) )
+              if( tol<zero .and. abss<=thresh )d( ll ) = zero
+              if( abse<=thresh )go to 80
+              smin = min( smin, abss )
+              smax = max( smax, abss, abse )
+           end do
+           ll = 0_${ik}$
+           go to 90
+           80 continue
+           e( ll ) = zero
+           ! matrix splits since e(ll) = 0
+           if( ll==m-1 ) then
+              ! convergence of bottom singular value, return to top of loop
+              m = m - 1_${ik}$
+              go to 60
+           end if
+           90 continue
+           ll = ll + 1_${ik}$
+           ! e(ll) through e(m-1) are nonzero, e(ll-1) is zero
+           if( ll==m-1 ) then
+              ! 2 by 2 block, handle separately
+              call stdlib${ii}$_${c2ri(ci)}$lasv2( d( m-1 ), e( m-1 ), d( m ), sigmn, sigmx, sinr,cosr, sinl, cosl &
+                        )
+              d( m-1 ) = sigmx
+              e( m-1 ) = zero
+              d( m ) = sigmn
+              ! compute singular vectors, if desired
+              if( ncvt>0_${ik}$ )call stdlib${ii}$_${ci}$drot( ncvt, vt( m-1, 1_${ik}$ ), ldvt, vt( m, 1_${ik}$ ), ldvt,cosr, &
+                        sinr )
+              if( nru>0_${ik}$ )call stdlib${ii}$_${ci}$drot( nru, u( 1_${ik}$, m-1 ), 1_${ik}$, u( 1_${ik}$, m ), 1_${ik}$, cosl, sinl )
+                        
+              if( ncc>0_${ik}$ )call stdlib${ii}$_${ci}$drot( ncc, c( m-1, 1_${ik}$ ), ldc, c( m, 1_${ik}$ ), ldc, cosl,sinl )
+                        
+              m = m - 2_${ik}$
+              go to 60
+           end if
+           ! if working on new submatrix, choose shift direction
+           ! (from larger end diagonal element towards smaller)
+           if( ll>oldm .or. m<oldll ) then
+              if( abs( d( ll ) )>=abs( d( m ) ) ) then
+                 ! chase bulge from top (big end) to bottom (small end)
+                 idir = 1_${ik}$
+              else
+                 ! chase bulge from bottom (big end) to top (small end)
+                 idir = 2_${ik}$
+              end if
+           end if
+           ! apply convergence tests
+           if( idir==1_${ik}$ ) then
+              ! run convergence test in forward direction
+              ! first apply standard test to bottom of matrix
+              if( abs( e( m-1 ) )<=abs( tol )*abs( d( m ) ) .or.( tol<zero .and. abs( e( m-1 ) )&
+                        <=thresh ) ) then
+                 e( m-1 ) = zero
+                 go to 60
+              end if
+              if( tol>=zero ) then
+                 ! if relative accuracy desired,
+                 ! apply convergence criterion forward
+                 mu = abs( d( ll ) )
+                 sminl = mu
+                 do lll = ll, m - 1
+                    if( abs( e( lll ) )<=tol*mu ) then
+                       e( lll ) = zero
+                       go to 60
+                    end if
+                    mu = abs( d( lll+1 ) )*( mu / ( mu+abs( e( lll ) ) ) )
+                    sminl = min( sminl, mu )
+                 end do
+              end if
+           else
+              ! run convergence test in backward direction
+              ! first apply standard test to top of matrix
+              if( abs( e( ll ) )<=abs( tol )*abs( d( ll ) ) .or.( tol<zero .and. abs( e( ll ) )&
+                        <=thresh ) ) then
+                 e( ll ) = zero
+                 go to 60
+              end if
+              if( tol>=zero ) then
+                 ! if relative accuracy desired,
+                 ! apply convergence criterion backward
+                 mu = abs( d( m ) )
+                 sminl = mu
+                 do lll = m - 1, ll, -1
+                    if( abs( e( lll ) )<=tol*mu ) then
+                       e( lll ) = zero
+                       go to 60
+                    end if
+                    mu = abs( d( lll ) )*( mu / ( mu+abs( e( lll ) ) ) )
+                    sminl = min( sminl, mu )
+                 end do
+              end if
+           end if
+           oldll = ll
+           oldm = m
+           ! compute shift.  first, test if shifting would ruin relative
+           ! accuracy, and if so set the shift to zero.
+           if( tol>=zero .and. n*tol*( sminl / smax )<=max( eps, hndrth*tol ) ) then
+              ! use a zero shift to avoid loss of relative accuracy
+              shift = zero
+           else
+              ! compute the shift from 2-by-2 block at end of matrix
+              if( idir==1_${ik}$ ) then
+                 sll = abs( d( ll ) )
+                 call stdlib${ii}$_${c2ri(ci)}$las2( d( m-1 ), e( m-1 ), d( m ), shift, r )
+              else
+                 sll = abs( d( m ) )
+                 call stdlib${ii}$_${c2ri(ci)}$las2( d( ll ), e( ll ), d( ll+1 ), shift, r )
+              end if
+              ! test if shift negligible, and if so set to zero
+              if( sll>zero ) then
+                 if( ( shift / sll )**2_${ik}$<eps )shift = zero
+              end if
+           end if
+           ! increment iteration count
+           iter = iter + m - ll
+           ! if shift = 0, do simplified qr iteration
+           if( shift==zero ) then
+              if( idir==1_${ik}$ ) then
+                 ! chase bulge from top to bottom
+                 ! save cosines and sines for later singular vector updates
+                 cs = one
+                 oldcs = one
+                 do i = ll, m - 1
+                    call stdlib${ii}$_${c2ri(ci)}$lartg( d( i )*cs, e( i ), cs, sn, r )
+                    if( i>ll )e( i-1 ) = oldsn*r
+                    call stdlib${ii}$_${c2ri(ci)}$lartg( oldcs*r, d( i+1 )*sn, oldcs, oldsn, d( i ) )
+                    rwork( i-ll+1 ) = cs
+                    rwork( i-ll+1+nm1 ) = sn
+                    rwork( i-ll+1+nm12 ) = oldcs
+                    rwork( i-ll+1+nm13 ) = oldsn
+                 end do
+                 h = d( m )*cs
+                 d( m ) = h*oldcs
+                 e( m-1 ) = h*oldsn
+                 ! update singular vectors
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_${ci}$lasr( 'L', 'V', 'F', m-ll+1, ncvt, rwork( 1_${ik}$ ),rwork( n )&
+                           , vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_${ci}$lasr( 'R', 'V', 'F', nru, m-ll+1, rwork( nm12+1 ),rwork( &
+                           nm13+1 ), u( 1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_${ci}$lasr( 'L', 'V', 'F', m-ll+1, ncc, rwork( nm12+1 ),rwork( &
+                           nm13+1 ), c( ll, 1_${ik}$ ), ldc )
+                 ! test convergence
+                 if( abs( e( m-1 ) )<=thresh )e( m-1 ) = zero
+              else
+                 ! chase bulge from bottom to top
+                 ! save cosines and sines for later singular vector updates
+                 cs = one
+                 oldcs = one
+                 do i = m, ll + 1, -1
+                    call stdlib${ii}$_${c2ri(ci)}$lartg( d( i )*cs, e( i-1 ), cs, sn, r )
+                    if( i<m )e( i ) = oldsn*r
+                    call stdlib${ii}$_${c2ri(ci)}$lartg( oldcs*r, d( i-1 )*sn, oldcs, oldsn, d( i ) )
+                    rwork( i-ll ) = cs
+                    rwork( i-ll+nm1 ) = -sn
+                    rwork( i-ll+nm12 ) = oldcs
+                    rwork( i-ll+nm13 ) = -oldsn
+                 end do
+                 h = d( ll )*cs
+                 d( ll ) = h*oldcs
+                 e( ll ) = h*oldsn
+                 ! update singular vectors
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_${ci}$lasr( 'L', 'V', 'B', m-ll+1, ncvt, rwork( nm12+1 ),&
+                           rwork( nm13+1 ), vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_${ci}$lasr( 'R', 'V', 'B', nru, m-ll+1, rwork( 1_${ik}$ ),rwork( n ), &
+                           u( 1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_${ci}$lasr( 'L', 'V', 'B', m-ll+1, ncc, rwork( 1_${ik}$ ),rwork( n ), &
+                           c( ll, 1_${ik}$ ), ldc )
+                 ! test convergence
+                 if( abs( e( ll ) )<=thresh )e( ll ) = zero
+              end if
+           else
+              ! use nonzero shift
+              if( idir==1_${ik}$ ) then
+                 ! chase bulge from top to bottom
+                 ! save cosines and sines for later singular vector updates
+                 f = ( abs( d( ll ) )-shift )*( sign( one, d( ll ) )+shift / d( ll ) )
+                 g = e( ll )
+                 do i = ll, m - 1
+                    call stdlib${ii}$_${c2ri(ci)}$lartg( f, g, cosr, sinr, r )
+                    if( i>ll )e( i-1 ) = r
+                    f = cosr*d( i ) + sinr*e( i )
+                    e( i ) = cosr*e( i ) - sinr*d( i )
+                    g = sinr*d( i+1 )
+                    d( i+1 ) = cosr*d( i+1 )
+                    call stdlib${ii}$_${c2ri(ci)}$lartg( f, g, cosl, sinl, r )
+                    d( i ) = r
+                    f = cosl*e( i ) + sinl*d( i+1 )
+                    d( i+1 ) = cosl*d( i+1 ) - sinl*e( i )
+                    if( i<m-1 ) then
+                       g = sinl*e( i+1 )
+                       e( i+1 ) = cosl*e( i+1 )
+                    end if
+                    rwork( i-ll+1 ) = cosr
+                    rwork( i-ll+1+nm1 ) = sinr
+                    rwork( i-ll+1+nm12 ) = cosl
+                    rwork( i-ll+1+nm13 ) = sinl
+                 end do
+                 e( m-1 ) = f
+                 ! update singular vectors
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_${ci}$lasr( 'L', 'V', 'F', m-ll+1, ncvt, rwork( 1_${ik}$ ),rwork( n )&
+                           , vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_${ci}$lasr( 'R', 'V', 'F', nru, m-ll+1, rwork( nm12+1 ),rwork( &
+                           nm13+1 ), u( 1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_${ci}$lasr( 'L', 'V', 'F', m-ll+1, ncc, rwork( nm12+1 ),rwork( &
+                           nm13+1 ), c( ll, 1_${ik}$ ), ldc )
+                 ! test convergence
+                 if( abs( e( m-1 ) )<=thresh )e( m-1 ) = zero
+              else
+                 ! chase bulge from bottom to top
+                 ! save cosines and sines for later singular vector updates
+                 f = ( abs( d( m ) )-shift )*( sign( one, d( m ) )+shift /d( m ) )
+                 g = e( m-1 )
+                 do i = m, ll + 1, -1
+                    call stdlib${ii}$_${c2ri(ci)}$lartg( f, g, cosr, sinr, r )
+                    if( i<m )e( i ) = r
+                    f = cosr*d( i ) + sinr*e( i-1 )
+                    e( i-1 ) = cosr*e( i-1 ) - sinr*d( i )
+                    g = sinr*d( i-1 )
+                    d( i-1 ) = cosr*d( i-1 )
+                    call stdlib${ii}$_${c2ri(ci)}$lartg( f, g, cosl, sinl, r )
+                    d( i ) = r
+                    f = cosl*e( i-1 ) + sinl*d( i-1 )
+                    d( i-1 ) = cosl*d( i-1 ) - sinl*e( i-1 )
+                    if( i>ll+1 ) then
+                       g = sinl*e( i-2 )
+                       e( i-2 ) = cosl*e( i-2 )
+                    end if
+                    rwork( i-ll ) = cosr
+                    rwork( i-ll+nm1 ) = -sinr
+                    rwork( i-ll+nm12 ) = cosl
+                    rwork( i-ll+nm13 ) = -sinl
+                 end do
+                 e( ll ) = f
+                 ! test convergence
+                 if( abs( e( ll ) )<=thresh )e( ll ) = zero
+                 ! update singular vectors if desired
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_${ci}$lasr( 'L', 'V', 'B', m-ll+1, ncvt, rwork( nm12+1 ),&
+                           rwork( nm13+1 ), vt( ll, 1_${ik}$ ), ldvt )
+                 if( nru>0_${ik}$ )call stdlib${ii}$_${ci}$lasr( 'R', 'V', 'B', nru, m-ll+1, rwork( 1_${ik}$ ),rwork( n ), &
+                           u( 1_${ik}$, ll ), ldu )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_${ci}$lasr( 'L', 'V', 'B', m-ll+1, ncc, rwork( 1_${ik}$ ),rwork( n ), &
+                           c( ll, 1_${ik}$ ), ldc )
+              end if
+           end if
+           ! qr iteration finished, go back and check convergence
+           go to 60
+           ! all singular values converged, so make them positive
+           160 continue
+           do i = 1, n
+              if( d( i )<zero ) then
+                 d( i ) = -d( i )
+                 ! change sign of singular vectors, if desired
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_${ci}$dscal( ncvt, negone, vt( i, 1_${ik}$ ), ldvt )
+              end if
+           end do
+           ! sort the singular values into decreasing order (insertion sort on
+           ! singular values, but only one transposition per singular vector)
+           do i = 1, n - 1
+              ! scan for smallest d(i)
+              isub = 1_${ik}$
+              smin = d( 1_${ik}$ )
+              do j = 2, n + 1 - i
+                 if( d( j )<=smin ) then
+                    isub = j
+                    smin = d( j )
+                 end if
+              end do
+              if( isub/=n+1-i ) then
+                 ! swap singular values and vectors
+                 d( isub ) = d( n+1-i )
+                 d( n+1-i ) = smin
+                 if( ncvt>0_${ik}$ )call stdlib${ii}$_${ci}$swap( ncvt, vt( isub, 1_${ik}$ ), ldvt, vt( n+1-i, 1_${ik}$ ),ldvt )
+                           
+                 if( nru>0_${ik}$ )call stdlib${ii}$_${ci}$swap( nru, u( 1_${ik}$, isub ), 1_${ik}$, u( 1_${ik}$, n+1-i ), 1_${ik}$ )
+                 if( ncc>0_${ik}$ )call stdlib${ii}$_${ci}$swap( ncc, c( isub, 1_${ik}$ ), ldc, c( n+1-i, 1_${ik}$ ), ldc )
+                           
+              end if
+           end do
+           go to 220
+           ! maximum number of iterations exceeded, failure to converge
+           200 continue
+           info = 0_${ik}$
+           do i = 1, n - 1
+              if( e( i )/=zero )info = info + 1_${ik}$
+           end do
+           220 continue
+           return
+     end subroutine stdlib${ii}$_${ci}$bdsqr
+
+#:endif
+#:endfor
+
+
+
+     pure module subroutine stdlib${ii}$_sbdsdc( uplo, compq, n, d, e, u, ldu, vt, ldvt, q, iq,work, iwork, &
+     !! SBDSDC computes the singular value decomposition (SVD) of a real
+     !! N-by-N (upper or lower) bidiagonal matrix B:  B = U * S * VT,
+     !! using a divide and conquer method, where S is a diagonal matrix
+     !! with non-negative diagonal elements (the singular values of B), and
+     !! U and VT are orthogonal matrices of left and right singular vectors,
+     !! respectively. SBDSDC can be used to compute all singular values,
+     !! and optionally, singular vectors or singular vectors in compact form.
+     !! This code makes very mild assumptions about floating point
+     !! arithmetic. It will work on machines with a guard digit in
+     !! add/subtract, or on those binary machines without guard digits
+     !! which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or Cray-2.
+     !! It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.  See SLASD3 for details.
+     !! The code currently calls SLASDQ if singular values only are desired.
+     !! However, it can be slightly modified to compute singular values
+     !! using the divide and conquer method.
+               info )
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: compq, uplo
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: ldu, ldvt, n
+           ! Array Arguments 
+           integer(${ik}$), intent(out) :: iq(*), iwork(*)
+           real(sp), intent(inout) :: d(*), e(*)
+           real(sp), intent(out) :: q(*), u(ldu,*), vt(ldvt,*), work(*)
+        ! =====================================================================
+        ! changed dimension statement in comment describing e from (n) to
+        ! (n-1).  sven, 17 feb 05.
+        ! =====================================================================
+           
+           ! Local Scalars 
+           integer(${ik}$) :: difl, difr, givcol, givnum, givptr, i, ic, icompq, ierr, ii, is, iu, &
+           iuplo, ivt, j, k, kk, mlvl, nm1, nsize, perm, poles, qstart, smlsiz, smlszp, sqre, &
+                     start, wstart, z
+           real(sp) :: cs, eps, orgnrm, p, r, sn
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input parameters.
+           info = 0_${ik}$
+           iuplo = 0_${ik}$
+           if( stdlib_lsame( uplo, 'U' ) )iuplo = 1_${ik}$
+           if( stdlib_lsame( uplo, 'L' ) )iuplo = 2_${ik}$
+           if( stdlib_lsame( compq, 'N' ) ) then
+              icompq = 0_${ik}$
+           else if( stdlib_lsame( compq, 'P' ) ) then
+              icompq = 1_${ik}$
+           else if( stdlib_lsame( compq, 'I' ) ) then
+              icompq = 2_${ik}$
+           else
+              icompq = -1_${ik}$
+           end if
+           if( iuplo==0_${ik}$ ) then
+              info = -1_${ik}$
+           else if( icompq<0_${ik}$ ) then
+              info = -2_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -3_${ik}$
+           else if( ( ldu<1_${ik}$ ) .or. ( ( icompq==2_${ik}$ ) .and. ( ldu<n ) ) ) then
+              info = -7_${ik}$
+           else if( ( ldvt<1_${ik}$ ) .or. ( ( icompq==2_${ik}$ ) .and. ( ldvt<n ) ) ) then
+              info = -9_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'SBDSDC', -info )
+              return
+           end if
+           ! quick return if possible
+           if( n==0 )return
+           smlsiz = stdlib${ii}$_ilaenv( 9_${ik}$, 'SBDSDC', ' ', 0_${ik}$, 0_${ik}$, 0_${ik}$, 0_${ik}$ )
+           if( n==1_${ik}$ ) then
+              if( icompq==1_${ik}$ ) then
+                 q( 1_${ik}$ ) = sign( one, d( 1_${ik}$ ) )
+                 q( 1_${ik}$+smlsiz*n ) = one
+              else if( icompq==2_${ik}$ ) then
+                 u( 1_${ik}$, 1_${ik}$ ) = sign( one, d( 1_${ik}$ ) )
+                 vt( 1_${ik}$, 1_${ik}$ ) = one
+              end if
+              d( 1_${ik}$ ) = abs( d( 1_${ik}$ ) )
+              return
+           end if
+           nm1 = n - 1_${ik}$
+           ! if matrix lower bidiagonal, rotate to be upper bidiagonal
+           ! by applying givens rotations on the left
+           wstart = 1_${ik}$
+           qstart = 3_${ik}$
+           if( icompq==1_${ik}$ ) then
+              call stdlib${ii}$_scopy( n, d, 1_${ik}$, q( 1_${ik}$ ), 1_${ik}$ )
+              call stdlib${ii}$_scopy( n-1, e, 1_${ik}$, q( n+1 ), 1_${ik}$ )
+           end if
+           if( iuplo==2_${ik}$ ) then
+              qstart = 5_${ik}$
+              if( icompq == 2_${ik}$ ) wstart = 2_${ik}$*n - 1_${ik}$
+              do i = 1, n - 1
+                 call stdlib${ii}$_slartg( d( i ), e( i ), cs, sn, r )
+                 d( i ) = r
+                 e( i ) = sn*d( i+1 )
+                 d( i+1 ) = cs*d( i+1 )
+                 if( icompq==1_${ik}$ ) then
+                    q( i+2*n ) = cs
+                    q( i+3*n ) = sn
+                 else if( icompq==2_${ik}$ ) then
+                    work( i ) = cs
+                    work( nm1+i ) = -sn
+                 end if
+              end do
+           end if
+           ! if icompq = 0, use stdlib_slasdq to compute the singular values.
+           if( icompq==0_${ik}$ ) then
+              ! ignore wstart, instead using work( 1 ), since the two vectors
+              ! for cs and -sn above are added only if icompq == 2,
+              ! and adding them exceeds documented work size of 4*n.
+              call stdlib${ii}$_slasdq( 'U', 0_${ik}$, n, 0_${ik}$, 0_${ik}$, 0_${ik}$, d, e, vt, ldvt, u, ldu, u,ldu, work( 1_${ik}$ ), &
+                        info )
+              go to 40
+           end if
+           ! if n is smaller than the minimum divide size smlsiz, then solve
+           ! the problem with another solver.
+           if( n<=smlsiz ) then
+              if( icompq==2_${ik}$ ) then
+                 call stdlib${ii}$_slaset( 'A', n, n, zero, one, u, ldu )
+                 call stdlib${ii}$_slaset( 'A', n, n, zero, one, vt, ldvt )
+                 call stdlib${ii}$_slasdq( 'U', 0_${ik}$, n, n, n, 0_${ik}$, d, e, vt, ldvt, u, ldu, u,ldu, work( &
+                           wstart ), info )
+              else if( icompq==1_${ik}$ ) then
+                 iu = 1_${ik}$
+                 ivt = iu + n
+                 call stdlib${ii}$_slaset( 'A', n, n, zero, one, q( iu+( qstart-1 )*n ),n )
+                 call stdlib${ii}$_slaset( 'A', n, n, zero, one, q( ivt+( qstart-1 )*n ),n )
+                 call stdlib${ii}$_slasdq( 'U', 0_${ik}$, n, n, n, 0_${ik}$, d, e,q( ivt+( qstart-1 )*n ), n,q( iu+( &
+                           qstart-1 )*n ), n,q( iu+( qstart-1 )*n ), n, work( wstart ),info )
+              end if
+              go to 40
+           end if
+           if( icompq==2_${ik}$ ) then
+              call stdlib${ii}$_slaset( 'A', n, n, zero, one, u, ldu )
+              call stdlib${ii}$_slaset( 'A', n, n, zero, one, vt, ldvt )
+           end if
+           ! scale.
+           orgnrm = stdlib${ii}$_slanst( 'M', n, d, e )
+           if( orgnrm==zero )return
+           call stdlib${ii}$_slascl( 'G', 0_${ik}$, 0_${ik}$, orgnrm, one, n, 1_${ik}$, d, n, ierr )
+           call stdlib${ii}$_slascl( 'G', 0_${ik}$, 0_${ik}$, orgnrm, one, nm1, 1_${ik}$, e, nm1, ierr )
+           eps = stdlib${ii}$_slamch( 'EPSILON' )
+           mlvl = int( log( real( n,KIND=sp) / real( smlsiz+1,KIND=sp) ) / log( two ),KIND=${ik}$) + &
+                     1_${ik}$
+           smlszp = smlsiz + 1_${ik}$
+           if( icompq==1_${ik}$ ) then
+              iu = 1_${ik}$
+              ivt = 1_${ik}$ + smlsiz
+              difl = ivt + smlszp
+              difr = difl + mlvl
+              z = difr + mlvl*2_${ik}$
+              ic = z + mlvl
+              is = ic + 1_${ik}$
+              poles = is + 1_${ik}$
+              givnum = poles + 2_${ik}$*mlvl
+              k = 1_${ik}$
+              givptr = 2_${ik}$
+              perm = 3_${ik}$
+              givcol = perm + mlvl
+           end if
+           do i = 1, n
+              if( abs( d( i ) )<eps ) then
+                 d( i ) = sign( eps, d( i ) )
+              end if
+           end do
+           start = 1_${ik}$
+           sqre = 0_${ik}$
+           loop_30: do i = 1, nm1
+              if( ( abs( e( i ) )<eps ) .or. ( i==nm1 ) ) then
+              ! subproblem found. first determine its size and then
+              ! apply divide and conquer on it.
+                 if( i<nm1 ) then
+              ! a subproblem with e(i) small for i < nm1.
+                    nsize = i - start + 1_${ik}$
+                 else if( abs( e( i ) )>=eps ) then
+              ! a subproblem with e(nm1) not too small but i = nm1.
+                    nsize = n - start + 1_${ik}$
+                 else
+              ! a subproblem with e(nm1) small. this implies an
+              ! 1-by-1 subproblem at d(n). solve this 1-by-1 problem
+              ! first.
+                    nsize = i - start + 1_${ik}$
+                    if( icompq==2_${ik}$ ) then
+                       u( n, n ) = sign( one, d( n ) )
+                       vt( n, n ) = one
+                    else if( icompq==1_${ik}$ ) then
+                       q( n+( qstart-1 )*n ) = sign( one, d( n ) )
+                       q( n+( smlsiz+qstart-1 )*n ) = one
+                    end if
+                    d( n ) = abs( d( n ) )
+                 end if
+                 if( icompq==2_${ik}$ ) then
+                    call stdlib${ii}$_slasd0( nsize, sqre, d( start ), e( start ),u( start, start ), &
+                              ldu, vt( start, start ),ldvt, smlsiz, iwork, work( wstart ), info )
+                 else
+                    call stdlib${ii}$_slasda( icompq, smlsiz, nsize, sqre, d( start ),e( start ), q( &
+                    start+( iu+qstart-2 )*n ), n,q( start+( ivt+qstart-2 )*n ),iq( start+k*n ), q(&
+                     start+( difl+qstart-2 )*n ), q( start+( difr+qstart-2 )*n ),q( start+( z+&
+                     qstart-2 )*n ),q( start+( poles+qstart-2 )*n ),iq( start+givptr*n ), iq( &
+                     start+givcol*n ),n, iq( start+perm*n ),q( start+( givnum+qstart-2 )*n ),q( &
+                     start+( ic+qstart-2 )*n ),q( start+( is+qstart-2 )*n ),work( wstart ), iwork,&
+                                info )
+                 end if
+                 if( info/=0_${ik}$ ) then
+                    return
+                 end if
+                 start = i + 1_${ik}$
+              end if
+           end do loop_30
+           ! unscale
+           call stdlib${ii}$_slascl( 'G', 0_${ik}$, 0_${ik}$, one, orgnrm, n, 1_${ik}$, d, n, ierr )
+           40 continue
+           ! use selection sort to minimize swaps of singular vectors
+           do ii = 2, n
+              i = ii - 1_${ik}$
+              kk = i
+              p = d( i )
+              do j = ii, n
+                 if( d( j )>p ) then
+                    kk = j
+                    p = d( j )
+                 end if
+              end do
+              if( kk/=i ) then
+                 d( kk ) = d( i )
+                 d( i ) = p
+                 if( icompq==1_${ik}$ ) then
+                    iq( i ) = kk
+                 else if( icompq==2_${ik}$ ) then
+                    call stdlib${ii}$_sswap( n, u( 1_${ik}$, i ), 1_${ik}$, u( 1_${ik}$, kk ), 1_${ik}$ )
+                    call stdlib${ii}$_sswap( n, vt( i, 1_${ik}$ ), ldvt, vt( kk, 1_${ik}$ ), ldvt )
+                 end if
+              else if( icompq==1_${ik}$ ) then
+                 iq( i ) = i
+              end if
+           end do
+           ! if icompq = 1, use iq(n,1) as the indicator for uplo
+           if( icompq==1_${ik}$ ) then
+              if( iuplo==1_${ik}$ ) then
+                 iq( n ) = 1_${ik}$
+              else
+                 iq( n ) = 0_${ik}$
+              end if
+           end if
+           ! if b is lower bidiagonal, update u by those givens rotations
+           ! which rotated b to be upper bidiagonal
+           if( ( iuplo==2_${ik}$ ) .and. ( icompq==2_${ik}$ ) )call stdlib${ii}$_slasr( 'L', 'V', 'B', n, n, work( 1_${ik}$ )&
+                     , work( n ), u, ldu )
+           return
+     end subroutine stdlib${ii}$_sbdsdc
+
+     pure module subroutine stdlib${ii}$_dbdsdc( uplo, compq, n, d, e, u, ldu, vt, ldvt, q, iq,work, iwork, &
+     !! DBDSDC computes the singular value decomposition (SVD) of a real
+     !! N-by-N (upper or lower) bidiagonal matrix B:  B = U * S * VT,
+     !! using a divide and conquer method, where S is a diagonal matrix
+     !! with non-negative diagonal elements (the singular values of B), and
+     !! U and VT are orthogonal matrices of left and right singular vectors,
+     !! respectively. DBDSDC can be used to compute all singular values,
+     !! and optionally, singular vectors or singular vectors in compact form.
+     !! This code makes very mild assumptions about floating point
+     !! arithmetic. It will work on machines with a guard digit in
+     !! add/subtract, or on those binary machines without guard digits
+     !! which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or Cray-2.
+     !! It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.  See DLASD3 for details.
+     !! The code currently calls DLASDQ if singular values only are desired.
+     !! However, it can be slightly modified to compute singular values
+     !! using the divide and conquer method.
+               info )
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: compq, uplo
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: ldu, ldvt, n
+           ! Array Arguments 
+           integer(${ik}$), intent(out) :: iq(*), iwork(*)
+           real(dp), intent(inout) :: d(*), e(*)
+           real(dp), intent(out) :: q(*), u(ldu,*), vt(ldvt,*), work(*)
+        ! =====================================================================
+        ! changed dimension statement in comment describing e from (n) to
+        ! (n-1).  sven, 17 feb 05.
+        ! =====================================================================
+           
+           ! Local Scalars 
+           integer(${ik}$) :: difl, difr, givcol, givnum, givptr, i, ic, icompq, ierr, ii, is, iu, &
+           iuplo, ivt, j, k, kk, mlvl, nm1, nsize, perm, poles, qstart, smlsiz, smlszp, sqre, &
+                     start, wstart, z
+           real(dp) :: cs, eps, orgnrm, p, r, sn
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input parameters.
+           info = 0_${ik}$
+           iuplo = 0_${ik}$
+           if( stdlib_lsame( uplo, 'U' ) )iuplo = 1_${ik}$
+           if( stdlib_lsame( uplo, 'L' ) )iuplo = 2_${ik}$
+           if( stdlib_lsame( compq, 'N' ) ) then
+              icompq = 0_${ik}$
+           else if( stdlib_lsame( compq, 'P' ) ) then
+              icompq = 1_${ik}$
+           else if( stdlib_lsame( compq, 'I' ) ) then
+              icompq = 2_${ik}$
+           else
+              icompq = -1_${ik}$
+           end if
+           if( iuplo==0_${ik}$ ) then
+              info = -1_${ik}$
+           else if( icompq<0_${ik}$ ) then
+              info = -2_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -3_${ik}$
+           else if( ( ldu<1_${ik}$ ) .or. ( ( icompq==2_${ik}$ ) .and. ( ldu<n ) ) ) then
+              info = -7_${ik}$
+           else if( ( ldvt<1_${ik}$ ) .or. ( ( icompq==2_${ik}$ ) .and. ( ldvt<n ) ) ) then
+              info = -9_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'DBDSDC', -info )
+              return
+           end if
+           ! quick return if possible
+           if( n==0 )return
+           smlsiz = stdlib${ii}$_ilaenv( 9_${ik}$, 'DBDSDC', ' ', 0_${ik}$, 0_${ik}$, 0_${ik}$, 0_${ik}$ )
+           if( n==1_${ik}$ ) then
+              if( icompq==1_${ik}$ ) then
+                 q( 1_${ik}$ ) = sign( one, d( 1_${ik}$ ) )
+                 q( 1_${ik}$+smlsiz*n ) = one
+              else if( icompq==2_${ik}$ ) then
+                 u( 1_${ik}$, 1_${ik}$ ) = sign( one, d( 1_${ik}$ ) )
+                 vt( 1_${ik}$, 1_${ik}$ ) = one
+              end if
+              d( 1_${ik}$ ) = abs( d( 1_${ik}$ ) )
+              return
+           end if
+           nm1 = n - 1_${ik}$
+           ! if matrix lower bidiagonal, rotate to be upper bidiagonal
+           ! by applying givens rotations on the left
+           wstart = 1_${ik}$
+           qstart = 3_${ik}$
+           if( icompq==1_${ik}$ ) then
+              call stdlib${ii}$_dcopy( n, d, 1_${ik}$, q( 1_${ik}$ ), 1_${ik}$ )
+              call stdlib${ii}$_dcopy( n-1, e, 1_${ik}$, q( n+1 ), 1_${ik}$ )
+           end if
+           if( iuplo==2_${ik}$ ) then
+              qstart = 5_${ik}$
+              if( icompq == 2_${ik}$ ) wstart = 2_${ik}$*n - 1_${ik}$
+              do i = 1, n - 1
+                 call stdlib${ii}$_dlartg( d( i ), e( i ), cs, sn, r )
+                 d( i ) = r
+                 e( i ) = sn*d( i+1 )
+                 d( i+1 ) = cs*d( i+1 )
+                 if( icompq==1_${ik}$ ) then
+                    q( i+2*n ) = cs
+                    q( i+3*n ) = sn
+                 else if( icompq==2_${ik}$ ) then
+                    work( i ) = cs
+                    work( nm1+i ) = -sn
+                 end if
+              end do
+           end if
+           ! if icompq = 0, use stdlib_dlasdq to compute the singular values.
+           if( icompq==0_${ik}$ ) then
+              ! ignore wstart, instead using work( 1 ), since the two vectors
+              ! for cs and -sn above are added only if icompq == 2,
+              ! and adding them exceeds documented work size of 4*n.
+              call stdlib${ii}$_dlasdq( 'U', 0_${ik}$, n, 0_${ik}$, 0_${ik}$, 0_${ik}$, d, e, vt, ldvt, u, ldu, u,ldu, work( 1_${ik}$ ), &
+                        info )
+              go to 40
+           end if
+           ! if n is smaller than the minimum divide size smlsiz, then solve
+           ! the problem with another solver.
+           if( n<=smlsiz ) then
+              if( icompq==2_${ik}$ ) then
+                 call stdlib${ii}$_dlaset( 'A', n, n, zero, one, u, ldu )
+                 call stdlib${ii}$_dlaset( 'A', n, n, zero, one, vt, ldvt )
+                 call stdlib${ii}$_dlasdq( 'U', 0_${ik}$, n, n, n, 0_${ik}$, d, e, vt, ldvt, u, ldu, u,ldu, work( &
+                           wstart ), info )
+              else if( icompq==1_${ik}$ ) then
+                 iu = 1_${ik}$
+                 ivt = iu + n
+                 call stdlib${ii}$_dlaset( 'A', n, n, zero, one, q( iu+( qstart-1 )*n ),n )
+                 call stdlib${ii}$_dlaset( 'A', n, n, zero, one, q( ivt+( qstart-1 )*n ),n )
+                 call stdlib${ii}$_dlasdq( 'U', 0_${ik}$, n, n, n, 0_${ik}$, d, e,q( ivt+( qstart-1 )*n ), n,q( iu+( &
+                           qstart-1 )*n ), n,q( iu+( qstart-1 )*n ), n, work( wstart ),info )
+              end if
+              go to 40
+           end if
+           if( icompq==2_${ik}$ ) then
+              call stdlib${ii}$_dlaset( 'A', n, n, zero, one, u, ldu )
+              call stdlib${ii}$_dlaset( 'A', n, n, zero, one, vt, ldvt )
+           end if
+           ! scale.
+           orgnrm = stdlib${ii}$_dlanst( 'M', n, d, e )
+           if( orgnrm==zero )return
+           call stdlib${ii}$_dlascl( 'G', 0_${ik}$, 0_${ik}$, orgnrm, one, n, 1_${ik}$, d, n, ierr )
+           call stdlib${ii}$_dlascl( 'G', 0_${ik}$, 0_${ik}$, orgnrm, one, nm1, 1_${ik}$, e, nm1, ierr )
+           eps = (0.9e+0_dp)*stdlib${ii}$_dlamch( 'EPSILON' )
+           mlvl = int( log( real( n,KIND=dp) / real( smlsiz+1,KIND=dp) ) / log( two ),KIND=${ik}$) + &
+                     1_${ik}$
+           smlszp = smlsiz + 1_${ik}$
+           if( icompq==1_${ik}$ ) then
+              iu = 1_${ik}$
+              ivt = 1_${ik}$ + smlsiz
+              difl = ivt + smlszp
+              difr = difl + mlvl
+              z = difr + mlvl*2_${ik}$
+              ic = z + mlvl
+              is = ic + 1_${ik}$
+              poles = is + 1_${ik}$
+              givnum = poles + 2_${ik}$*mlvl
+              k = 1_${ik}$
+              givptr = 2_${ik}$
+              perm = 3_${ik}$
+              givcol = perm + mlvl
+           end if
+           do i = 1, n
+              if( abs( d( i ) )<eps ) then
+                 d( i ) = sign( eps, d( i ) )
+              end if
+           end do
+           start = 1_${ik}$
+           sqre = 0_${ik}$
+           loop_30: do i = 1, nm1
+              if( ( abs( e( i ) )<eps ) .or. ( i==nm1 ) ) then
+                 ! subproblem found. first determine its size and then
+                 ! apply divide and conquer on it.
+                 if( i<nm1 ) then
+                    ! a subproblem with e(i) small for i < nm1.
+                    nsize = i - start + 1_${ik}$
+                 else if( abs( e( i ) )>=eps ) then
+                    ! a subproblem with e(nm1) not too small but i = nm1.
+                    nsize = n - start + 1_${ik}$
+                 else
+                    ! a subproblem with e(nm1) small. this implies an
+                    ! 1-by-1 subproblem at d(n). solve this 1-by-1 problem
+                    ! first.
+                    nsize = i - start + 1_${ik}$
+                    if( icompq==2_${ik}$ ) then
+                       u( n, n ) = sign( one, d( n ) )
+                       vt( n, n ) = one
+                    else if( icompq==1_${ik}$ ) then
+                       q( n+( qstart-1 )*n ) = sign( one, d( n ) )
+                       q( n+( smlsiz+qstart-1 )*n ) = one
+                    end if
+                    d( n ) = abs( d( n ) )
+                 end if
+                 if( icompq==2_${ik}$ ) then
+                    call stdlib${ii}$_dlasd0( nsize, sqre, d( start ), e( start ),u( start, start ), &
+                              ldu, vt( start, start ),ldvt, smlsiz, iwork, work( wstart ), info )
+                 else
+                    call stdlib${ii}$_dlasda( icompq, smlsiz, nsize, sqre, d( start ),e( start ), q( &
+                    start+( iu+qstart-2 )*n ), n,q( start+( ivt+qstart-2 )*n ),iq( start+k*n ), q(&
+                     start+( difl+qstart-2 )*n ), q( start+( difr+qstart-2 )*n ),q( start+( z+&
+                     qstart-2 )*n ),q( start+( poles+qstart-2 )*n ),iq( start+givptr*n ), iq( &
+                     start+givcol*n ),n, iq( start+perm*n ),q( start+( givnum+qstart-2 )*n ),q( &
+                     start+( ic+qstart-2 )*n ),q( start+( is+qstart-2 )*n ),work( wstart ), iwork,&
+                                info )
+                 end if
+                 if( info/=0_${ik}$ ) then
+                    return
+                 end if
+                 start = i + 1_${ik}$
+              end if
+           end do loop_30
+           ! unscale
+           call stdlib${ii}$_dlascl( 'G', 0_${ik}$, 0_${ik}$, one, orgnrm, n, 1_${ik}$, d, n, ierr )
+           40 continue
+           ! use selection sort to minimize swaps of singular vectors
+           do ii = 2, n
+              i = ii - 1_${ik}$
+              kk = i
+              p = d( i )
+              do j = ii, n
+                 if( d( j )>p ) then
+                    kk = j
+                    p = d( j )
+                 end if
+              end do
+              if( kk/=i ) then
+                 d( kk ) = d( i )
+                 d( i ) = p
+                 if( icompq==1_${ik}$ ) then
+                    iq( i ) = kk
+                 else if( icompq==2_${ik}$ ) then
+                    call stdlib${ii}$_dswap( n, u( 1_${ik}$, i ), 1_${ik}$, u( 1_${ik}$, kk ), 1_${ik}$ )
+                    call stdlib${ii}$_dswap( n, vt( i, 1_${ik}$ ), ldvt, vt( kk, 1_${ik}$ ), ldvt )
+                 end if
+              else if( icompq==1_${ik}$ ) then
+                 iq( i ) = i
+              end if
+           end do
+           ! if icompq = 1, use iq(n,1) as the indicator for uplo
+           if( icompq==1_${ik}$ ) then
+              if( iuplo==1_${ik}$ ) then
+                 iq( n ) = 1_${ik}$
+              else
+                 iq( n ) = 0_${ik}$
+              end if
+           end if
+           ! if b is lower bidiagonal, update u by those givens rotations
+           ! which rotated b to be upper bidiagonal
+           if( ( iuplo==2_${ik}$ ) .and. ( icompq==2_${ik}$ ) )call stdlib${ii}$_dlasr( 'L', 'V', 'B', n, n, work( 1_${ik}$ )&
+                     , work( n ), u, ldu )
+           return
+     end subroutine stdlib${ii}$_dbdsdc
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$bdsdc( uplo, compq, n, d, e, u, ldu, vt, ldvt, q, iq,work, iwork, &
+     !! DBDSDC: computes the singular value decomposition (SVD) of a real
+     !! N-by-N (upper or lower) bidiagonal matrix B:  B = U * S * VT,
+     !! using a divide and conquer method, where S is a diagonal matrix
+     !! with non-negative diagonal elements (the singular values of B), and
+     !! U and VT are orthogonal matrices of left and right singular vectors,
+     !! respectively. DBDSDC can be used to compute all singular values,
+     !! and optionally, singular vectors or singular vectors in compact form.
+     !! This code makes very mild assumptions about floating point
+     !! arithmetic. It will work on machines with a guard digit in
+     !! add/subtract, or on those binary machines without guard digits
+     !! which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or Cray-2.
+     !! It could conceivably fail on hexadecimal or decimal machines
+     !! without guard digits, but we know of none.  See DLASD3 for details.
+     !! The code currently calls DLASDQ if singular values only are desired.
+     !! However, it can be slightly modified to compute singular values
+     !! using the divide and conquer method.
+               info )
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: compq, uplo
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: ldu, ldvt, n
+           ! Array Arguments 
+           integer(${ik}$), intent(out) :: iq(*), iwork(*)
+           real(${rk}$), intent(inout) :: d(*), e(*)
+           real(${rk}$), intent(out) :: q(*), u(ldu,*), vt(ldvt,*), work(*)
+        ! =====================================================================
+        ! changed dimension statement in comment describing e from (n) to
+        ! (n-1).  sven, 17 feb 05.
+        ! =====================================================================
+           
+           ! Local Scalars 
+           integer(${ik}$) :: difl, difr, givcol, givnum, givptr, i, ic, icompq, ierr, ii, is, iu, &
+           iuplo, ivt, j, k, kk, mlvl, nm1, nsize, perm, poles, qstart, smlsiz, smlszp, sqre, &
+                     start, wstart, z
+           real(${rk}$) :: cs, eps, orgnrm, p, r, sn
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input parameters.
+           info = 0_${ik}$
+           iuplo = 0_${ik}$
+           if( stdlib_lsame( uplo, 'U' ) )iuplo = 1_${ik}$
+           if( stdlib_lsame( uplo, 'L' ) )iuplo = 2_${ik}$
+           if( stdlib_lsame( compq, 'N' ) ) then
+              icompq = 0_${ik}$
+           else if( stdlib_lsame( compq, 'P' ) ) then
+              icompq = 1_${ik}$
+           else if( stdlib_lsame( compq, 'I' ) ) then
+              icompq = 2_${ik}$
+           else
+              icompq = -1_${ik}$
+           end if
+           if( iuplo==0_${ik}$ ) then
+              info = -1_${ik}$
+           else if( icompq<0_${ik}$ ) then
+              info = -2_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -3_${ik}$
+           else if( ( ldu<1_${ik}$ ) .or. ( ( icompq==2_${ik}$ ) .and. ( ldu<n ) ) ) then
+              info = -7_${ik}$
+           else if( ( ldvt<1_${ik}$ ) .or. ( ( icompq==2_${ik}$ ) .and. ( ldvt<n ) ) ) then
+              info = -9_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'DBDSDC', -info )
+              return
+           end if
+           ! quick return if possible
+           if( n==0 )return
+           smlsiz = stdlib${ii}$_ilaenv( 9_${ik}$, 'DBDSDC', ' ', 0_${ik}$, 0_${ik}$, 0_${ik}$, 0_${ik}$ )
+           if( n==1_${ik}$ ) then
+              if( icompq==1_${ik}$ ) then
+                 q( 1_${ik}$ ) = sign( one, d( 1_${ik}$ ) )
+                 q( 1_${ik}$+smlsiz*n ) = one
+              else if( icompq==2_${ik}$ ) then
+                 u( 1_${ik}$, 1_${ik}$ ) = sign( one, d( 1_${ik}$ ) )
+                 vt( 1_${ik}$, 1_${ik}$ ) = one
+              end if
+              d( 1_${ik}$ ) = abs( d( 1_${ik}$ ) )
+              return
+           end if
+           nm1 = n - 1_${ik}$
+           ! if matrix lower bidiagonal, rotate to be upper bidiagonal
+           ! by applying givens rotations on the left
+           wstart = 1_${ik}$
+           qstart = 3_${ik}$
+           if( icompq==1_${ik}$ ) then
+              call stdlib${ii}$_${ri}$copy( n, d, 1_${ik}$, q( 1_${ik}$ ), 1_${ik}$ )
+              call stdlib${ii}$_${ri}$copy( n-1, e, 1_${ik}$, q( n+1 ), 1_${ik}$ )
+           end if
+           if( iuplo==2_${ik}$ ) then
+              qstart = 5_${ik}$
+              if( icompq == 2_${ik}$ ) wstart = 2_${ik}$*n - 1_${ik}$
+              do i = 1, n - 1
+                 call stdlib${ii}$_${ri}$lartg( d( i ), e( i ), cs, sn, r )
+                 d( i ) = r
+                 e( i ) = sn*d( i+1 )
+                 d( i+1 ) = cs*d( i+1 )
+                 if( icompq==1_${ik}$ ) then
+                    q( i+2*n ) = cs
+                    q( i+3*n ) = sn
+                 else if( icompq==2_${ik}$ ) then
+                    work( i ) = cs
+                    work( nm1+i ) = -sn
+                 end if
+              end do
+           end if
+           ! if icompq = 0, use stdlib_${ri}$lasdq to compute the singular values.
+           if( icompq==0_${ik}$ ) then
+              ! ignore wstart, instead using work( 1 ), since the two vectors
+              ! for cs and -sn above are added only if icompq == 2,
+              ! and adding them exceeds documented work size of 4*n.
+              call stdlib${ii}$_${ri}$lasdq( 'U', 0_${ik}$, n, 0_${ik}$, 0_${ik}$, 0_${ik}$, d, e, vt, ldvt, u, ldu, u,ldu, work( 1_${ik}$ ), &
+                        info )
+              go to 40
+           end if
+           ! if n is smaller than the minimum divide size smlsiz, then solve
+           ! the problem with another solver.
+           if( n<=smlsiz ) then
+              if( icompq==2_${ik}$ ) then
+                 call stdlib${ii}$_${ri}$laset( 'A', n, n, zero, one, u, ldu )
+                 call stdlib${ii}$_${ri}$laset( 'A', n, n, zero, one, vt, ldvt )
+                 call stdlib${ii}$_${ri}$lasdq( 'U', 0_${ik}$, n, n, n, 0_${ik}$, d, e, vt, ldvt, u, ldu, u,ldu, work( &
+                           wstart ), info )
+              else if( icompq==1_${ik}$ ) then
+                 iu = 1_${ik}$
+                 ivt = iu + n
+                 call stdlib${ii}$_${ri}$laset( 'A', n, n, zero, one, q( iu+( qstart-1 )*n ),n )
+                 call stdlib${ii}$_${ri}$laset( 'A', n, n, zero, one, q( ivt+( qstart-1 )*n ),n )
+                 call stdlib${ii}$_${ri}$lasdq( 'U', 0_${ik}$, n, n, n, 0_${ik}$, d, e,q( ivt+( qstart-1 )*n ), n,q( iu+( &
+                           qstart-1 )*n ), n,q( iu+( qstart-1 )*n ), n, work( wstart ),info )
+              end if
+              go to 40
+           end if
+           if( icompq==2_${ik}$ ) then
+              call stdlib${ii}$_${ri}$laset( 'A', n, n, zero, one, u, ldu )
+              call stdlib${ii}$_${ri}$laset( 'A', n, n, zero, one, vt, ldvt )
+           end if
+           ! scale.
+           orgnrm = stdlib${ii}$_${ri}$lanst( 'M', n, d, e )
+           if( orgnrm==zero )return
+           call stdlib${ii}$_${ri}$lascl( 'G', 0_${ik}$, 0_${ik}$, orgnrm, one, n, 1_${ik}$, d, n, ierr )
+           call stdlib${ii}$_${ri}$lascl( 'G', 0_${ik}$, 0_${ik}$, orgnrm, one, nm1, 1_${ik}$, e, nm1, ierr )
+           eps = (0.9e+0_${rk}$)*stdlib${ii}$_${ri}$lamch( 'EPSILON' )
+           mlvl = int( log( real( n,KIND=${rk}$) / real( smlsiz+1,KIND=${rk}$) ) / log( two ),KIND=${ik}$) + &
+                     1_${ik}$
+           smlszp = smlsiz + 1_${ik}$
+           if( icompq==1_${ik}$ ) then
+              iu = 1_${ik}$
+              ivt = 1_${ik}$ + smlsiz
+              difl = ivt + smlszp
+              difr = difl + mlvl
+              z = difr + mlvl*2_${ik}$
+              ic = z + mlvl
+              is = ic + 1_${ik}$
+              poles = is + 1_${ik}$
+              givnum = poles + 2_${ik}$*mlvl
+              k = 1_${ik}$
+              givptr = 2_${ik}$
+              perm = 3_${ik}$
+              givcol = perm + mlvl
+           end if
+           do i = 1, n
+              if( abs( d( i ) )<eps ) then
+                 d( i ) = sign( eps, d( i ) )
+              end if
+           end do
+           start = 1_${ik}$
+           sqre = 0_${ik}$
+           loop_30: do i = 1, nm1
+              if( ( abs( e( i ) )<eps ) .or. ( i==nm1 ) ) then
+                 ! subproblem found. first determine its size and then
+                 ! apply divide and conquer on it.
+                 if( i<nm1 ) then
+                    ! a subproblem with e(i) small for i < nm1.
+                    nsize = i - start + 1_${ik}$
+                 else if( abs( e( i ) )>=eps ) then
+                    ! a subproblem with e(nm1) not too small but i = nm1.
+                    nsize = n - start + 1_${ik}$
+                 else
+                    ! a subproblem with e(nm1) small. this implies an
+                    ! 1-by-1 subproblem at d(n). solve this 1-by-1 problem
+                    ! first.
+                    nsize = i - start + 1_${ik}$
+                    if( icompq==2_${ik}$ ) then
+                       u( n, n ) = sign( one, d( n ) )
+                       vt( n, n ) = one
+                    else if( icompq==1_${ik}$ ) then
+                       q( n+( qstart-1 )*n ) = sign( one, d( n ) )
+                       q( n+( smlsiz+qstart-1 )*n ) = one
+                    end if
+                    d( n ) = abs( d( n ) )
+                 end if
+                 if( icompq==2_${ik}$ ) then
+                    call stdlib${ii}$_${ri}$lasd0( nsize, sqre, d( start ), e( start ),u( start, start ), &
+                              ldu, vt( start, start ),ldvt, smlsiz, iwork, work( wstart ), info )
+                 else
+                    call stdlib${ii}$_${ri}$lasda( icompq, smlsiz, nsize, sqre, d( start ),e( start ), q( &
+                    start+( iu+qstart-2 )*n ), n,q( start+( ivt+qstart-2 )*n ),iq( start+k*n ), q(&
+                     start+( difl+qstart-2 )*n ), q( start+( difr+qstart-2 )*n ),q( start+( z+&
+                     qstart-2 )*n ),q( start+( poles+qstart-2 )*n ),iq( start+givptr*n ), iq( &
+                     start+givcol*n ),n, iq( start+perm*n ),q( start+( givnum+qstart-2 )*n ),q( &
+                     start+( ic+qstart-2 )*n ),q( start+( is+qstart-2 )*n ),work( wstart ), iwork,&
+                                info )
+                 end if
+                 if( info/=0_${ik}$ ) then
+                    return
+                 end if
+                 start = i + 1_${ik}$
+              end if
+           end do loop_30
+           ! unscale
+           call stdlib${ii}$_${ri}$lascl( 'G', 0_${ik}$, 0_${ik}$, one, orgnrm, n, 1_${ik}$, d, n, ierr )
+           40 continue
+           ! use selection sort to minimize swaps of singular vectors
+           do ii = 2, n
+              i = ii - 1_${ik}$
+              kk = i
+              p = d( i )
+              do j = ii, n
+                 if( d( j )>p ) then
+                    kk = j
+                    p = d( j )
+                 end if
+              end do
+              if( kk/=i ) then
+                 d( kk ) = d( i )
+                 d( i ) = p
+                 if( icompq==1_${ik}$ ) then
+                    iq( i ) = kk
+                 else if( icompq==2_${ik}$ ) then
+                    call stdlib${ii}$_${ri}$swap( n, u( 1_${ik}$, i ), 1_${ik}$, u( 1_${ik}$, kk ), 1_${ik}$ )
+                    call stdlib${ii}$_${ri}$swap( n, vt( i, 1_${ik}$ ), ldvt, vt( kk, 1_${ik}$ ), ldvt )
+                 end if
+              else if( icompq==1_${ik}$ ) then
+                 iq( i ) = i
+              end if
+           end do
+           ! if icompq = 1, use iq(n,1) as the indicator for uplo
+           if( icompq==1_${ik}$ ) then
+              if( iuplo==1_${ik}$ ) then
+                 iq( n ) = 1_${ik}$
+              else
+                 iq( n ) = 0_${ik}$
+              end if
+           end if
+           ! if b is lower bidiagonal, update u by those givens rotations
+           ! which rotated b to be upper bidiagonal
+           if( ( iuplo==2_${ik}$ ) .and. ( icompq==2_${ik}$ ) )call stdlib${ii}$_${ri}$lasr( 'L', 'V', 'B', n, n, work( 1_${ik}$ )&
+                     , work( n ), u, ldu )
+           return
+     end subroutine stdlib${ii}$_${ri}$bdsdc
+
+#:endif
+#:endfor
+
+
+#:endfor
+end submodule stdlib_lapack_eigv_svd_drivers3

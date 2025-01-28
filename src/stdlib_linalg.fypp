@@ -5,6 +5,9 @@
 #:set RHS_SYMBOL = [ranksuffix(r) for r in [1,2]]
 #:set RHS_EMPTY  = [emptyranksuffix(r) for r in [1,2]]
 #:set ALL_RHS    = list(zip(RHS_SYMBOL,RHS_SUFFIX,RHS_EMPTY))
+#:set EIG_PROBLEM  = ["standard", "generalized"]
+#:set EIG_FUNCTION = ["geev","ggev"]
+#:set EIG_PROBLEM_LIST = list(zip(EIG_PROBLEM, EIG_FUNCTION))
 module stdlib_linalg
   !!Provides a support for various linear algebra procedures
   !! ([Specification](../page/specs/stdlib_linalg.html))
@@ -29,6 +32,9 @@ module stdlib_linalg
   public :: inv
   public :: invert
   public :: operator(.inv.)
+  public :: pinv
+  public :: pseudoinvert
+  public :: operator(.pinv.)
   public :: lstsq
   public :: lstsq_space
   public :: norm
@@ -45,6 +51,8 @@ module stdlib_linalg
   public :: cross_product
   public :: qr
   public :: qr_space
+  public :: schur
+  public :: schur_space
   public :: is_square
   public :: is_diagonal
   public :: is_symmetric
@@ -635,6 +643,92 @@ module stdlib_linalg
     #:endfor
   end interface qr_space
  
+  ! Schur decomposition of rank-2 array A
+  interface schur
+    !! version: experimental
+    !!
+    !! Computes the Schur decomposition of matrix \( A = Z T Z^H \).
+    !! ([Specification](../page/specs/stdlib_linalg.html#schur-compute-the-schur-decomposition-of-a-matrix))
+    !!
+    !!### Summary
+    !! Compute the Schur decomposition of a `real` or `complex` matrix: \( A = Z T Z^H \), where \( Z \) is
+    !! orthonormal/unitary and \( T \) is upper-triangular or quasi-upper-triangular. Matrix \( A \) has size `[m,m]`.
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the Schur decomposition of a matrix.
+    !! Supported data types include `real` and `complex`. If a pre-allocated workspace is provided, no internal 
+    !! memory allocations take place when using this interface.
+    !!
+    !! The output matrix \( T \) is upper-triangular for `complex` input matrices and quasi-upper-triangular
+    !! for `real` input matrices (with possible \( 2 \times 2 \) blocks on the diagonal).
+    !!
+    !!@note The solution is based on LAPACK's Schur decomposition routines (`*GEES`). 
+    !! 
+    #:for rk,rt,ri in RC_KINDS_TYPES
+      module subroutine stdlib_linalg_${ri}$_schur(a, t, z, eigvals, overwrite_a, storage, err)
+         !> Input matrix a[m,m]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Schur form of A: upper-triangular or quasi-upper-triangular matrix T
+         ${rt}$, intent(out), contiguous, target :: t(:,:)
+         !> Unitary/orthonormal transformation matrix Z
+         ${rt}$, optional, intent(out), contiguous, target :: z(:,:)
+         !> [optional] Output eigenvalues that appear on the diagonal of T
+         complex(${rk}$), optional, intent(out), contiguous, target :: eigvals(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a                 
+         !> [optional] Provide pre-allocated workspace, size to be checked with schur_space         
+         ${rt}$, optional, intent(inout), target :: storage(:)
+         !> [optional] State return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_${ri}$_schur
+      
+      ! Schur decomposition subroutine: real eigenvalue interface
+      module subroutine stdlib_linalg_real_eig_${ri}$_schur(a,t,z,eigvals,overwrite_a,storage,err)
+         !> Input matrix a[m,m]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Schur form of A: upper-triangular or quasi-upper-triangular matrix T
+         ${rt}$, intent(out), contiguous, target :: t(:,:)
+         !> Unitary/orthonormal transformation matrix Z
+         ${rt}$, optional, intent(out), contiguous, target :: z(:,:)
+         !> Output real eigenvalues that appear on the diagonal of T
+         real(${rk}$), intent(out), contiguous, target :: eigvals(:)
+         !> [optional] Provide pre-allocated workspace, size to be checked with schur_space
+         ${rt}$, optional, intent(inout), target :: storage(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a        
+         !> [optional] State return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err        
+      end subroutine stdlib_linalg_real_eig_${ri}$_schur 
+    #:endfor
+  end interface schur
+
+  ! Return the working array space required by the Schur decomposition solver
+  interface schur_space
+    !! version: experimental
+    !!
+    !! Computes the working array space required by the Schur decomposition solver
+    !! ([Specification](../page/specs/stdlib_linalg.html#schur-space-compute-internal-working-space-requirements-for-the-schur-decomposition))
+    !!
+    !!### Description
+    !! 
+    !! This interface returns the size of the `real` or `complex` working storage required by the 
+    !! Schur decomposition solver. The working size only depends on the kind (`real` or `complex`) and size of
+    !! the matrix being decomposed. Storage size can be used to pre-allocate a working array in case several 
+    !! repeated Schur decompositions of same-size matrices are sought. If pre-allocated working arrays 
+    !! are provided, no internal allocations will take place during the decomposition.
+    !!     
+    #:for rk,rt,ri in RC_KINDS_TYPES
+      module subroutine get_schur_${ri}$_workspace(a,lwork,err)
+         !> Input matrix a[m,m]
+         ${rt}$, intent(in), target :: a(:,:)
+         !> Minimum workspace size for the decomposition operation
+         integer(ilp), intent(out) :: lwork
+         !> State return flag. Returns an error if the query failed
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine get_schur_${ri}$_workspace
+    #:endfor
+  end interface schur_space
 
   interface det
     !! version: experimental 
@@ -846,6 +940,131 @@ module stdlib_linalg
   end interface operator(.inv.)
 
 
+  ! Moore-Penrose Pseudo-Inverse: Function interface
+  interface pinv
+    !! version: experimental 
+    !!
+    !! Pseudo-inverse of a matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#pinv-moore-penrose-pseudo-inverse-of-a-matrix))
+    !!
+    !!### Summary
+    !! This interface provides methods for computing the Moore-Penrose pseudo-inverse of a matrix.
+    !! The pseudo-inverse \( A^{+} \) is a generalization of the matrix inverse, computed for square, singular, 
+    !! or rectangular matrices. It is defined such that it satisfies the conditions:
+    !! - \( A \cdot A^{+} \cdot A = A \)
+    !! - \( A^{+} \cdot A \cdot A^{+} = A^{+} \)
+    !! - \( (A \cdot A^{+})^T = A \cdot A^{+} \)
+    !! - \( (A^{+} \cdot A)^T = A^{+} \cdot A \)
+    !!
+    !!### Description
+    !!     
+    !! This function interface provides methods that return the Moore-Penrose pseudo-inverse of a matrix.    
+    !! Supported data types include `real` and `complex`. 
+    !! The pseudo-inverse \( A^{+} \) is returned as a function result. The computation is based on the 
+    !! singular value decomposition (SVD). An optional relative tolerance `rtol` is provided to control the 
+    !! inclusion of singular values during inversion. Singular values below \( \text{rtol} \cdot \sigma_{\max} \) 
+    !! are treated as zero, where \( \sigma_{\max} \) is the largest singular value. If `rtol` is not provided, 
+    !! a default threshold is applied.
+    !! 
+    !! Exceptions are raised in case of computational errors or invalid input, and trigger an `error stop` 
+    !! if the state flag `err` is not provided. 
+    !!
+    !!@note The provided functions are intended for both rectangular and square matrices.
+    !!       
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    module function stdlib_linalg_pseudoinverse_${ri}$(a,rtol,err) result(pinva)
+        !> Input matrix a[m,n]
+        ${rt}$, intent(in), target :: a(:,:)
+        !> [optional] Relative tolerance for singular value cutoff
+        real(${rk}$), optional, intent(in) :: rtol         
+        !> [optional] State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+        !> Output matrix pseudo-inverse [n,m]
+        ${rt}$ :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))         
+     end function stdlib_linalg_pseudoinverse_${ri}$
+    #:endfor
+  end interface pinv
+
+  ! Moore-Penrose Pseudo-Inverse: Subroutine interface 
+  interface pseudoinvert
+    !! version: experimental 
+    !!
+    !! Computation of the Moore-Penrose pseudo-inverse
+    !! ([Specification](../page/specs/stdlib_linalg.html#pseudoinvert-moore-penrose-pseudo-inverse-of-a-matrix))
+    !!
+    !!### Summary
+    !! This interface provides methods for computing the Moore-Penrose pseudo-inverse of a rectangular 
+    !! or square `real` or `complex` matrix.
+    !! The pseudo-inverse \( A^{+} \) generalizes the matrix inverse and satisfies the properties:
+    !! - \( A \cdot A^{+} \cdot A = A \)
+    !! - \( A^{+} \cdot A \cdot A^{+} = A^{+} \)
+    !! - \( (A \cdot A^{+})^T = A \cdot A^{+} \)
+    !! - \( (A^{+} \cdot A)^T = A^{+} \cdot A \)
+    !!
+    !!### Description
+    !!     
+    !! This subroutine interface provides a way to compute the Moore-Penrose pseudo-inverse of a matrix.    
+    !! Supported data types include `real` and `complex`. 
+    !! Users must provide two matrices: the input matrix `a` [m,n] and the output pseudo-inverse `pinva` [n,m]. 
+    !! The input matrix `a` is used to compute the pseudo-inverse and is not modified. The computed 
+    !! pseudo-inverse is stored in `pinva`. The computation is based on the singular value decomposition (SVD).
+    !! 
+    !! An optional relative tolerance `rtol` is used to control the inclusion of singular values in the 
+    !! computation. Singular values below \( \text{rtol} \cdot \sigma_{\max} \) are treated as zero, 
+    !! where \( \sigma_{\max} \) is the largest singular value. If `rtol` is not provided, a default 
+    !! threshold is applied. 
+    !! 
+    !! Exceptions are raised in case of computational errors or invalid input, and trigger an `error stop` 
+    !! if the state flag `err` is not provided.
+    !!
+    !!@note The provided subroutines are intended for both rectangular and square matrices.
+    !!       
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    module subroutine stdlib_linalg_pseudoinvert_${ri}$(a,pinva,rtol,err)
+        !> Input matrix a[m,n]
+        ${rt}$, intent(inout) :: a(:,:)
+        !> Output pseudo-inverse matrix [n,m]
+        ${rt}$, intent(out) :: pinva(:,:)
+        !> [optional] Relative tolerance for singular value cutoff
+        real(${rk}$), optional, intent(in) :: rtol
+        !> [optional] State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_pseudoinvert_${ri}$
+    #:endfor
+  end interface pseudoinvert
+
+  ! Moore-Penrose Pseudo-Inverse: Operator interface
+  interface operator(.pinv.)
+    !! version: experimental 
+    !!
+    !! Pseudo-inverse operator of a matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#pinv-moore-penrose-pseudo-inverse-operator))
+    !!
+    !!### Summary
+    !! Operator interface for computing the Moore-Penrose pseudo-inverse of a `real` or `complex` matrix.
+    !!
+    !!### Description
+    !! 
+    !! This operator interface provides a convenient way to compute the Moore-Penrose pseudo-inverse 
+    !! of a matrix. Supported data types include `real` and `complex`. The pseudo-inverse \( A^{+} \) 
+    !! is computed using singular value decomposition (SVD), with singular values below an internal 
+    !! threshold treated as zero.
+    !! 
+    !! For computational errors or invalid input, the function may return a matrix filled with NaNs.
+    !!
+    !!@note The provided functions are intended for both rectangular and square matrices.
+    !!
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    module function stdlib_linalg_pinv_${ri}$_operator(a) result(pinva)
+         !> Input matrix a[m,n]
+         ${rt}$, intent(in), target :: a(:,:)
+         !> Result pseudo-inverse matrix
+         ${rt}$ :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))
+    end function stdlib_linalg_pinv_${ri}$_operator
+    #:endfor
+  end interface operator(.pinv.)
+
+
   ! Eigendecomposition of a square matrix: eigenvalues, and optionally eigenvectors
   interface eig    
      !! version: experimental 
@@ -868,12 +1087,17 @@ module stdlib_linalg
      !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
      !!       
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp"
-    module subroutine stdlib_linalg_eig_${ri}$(a,lambda,right,left,overwrite_a,err)
+    #:for ep,ei in EIG_PROBLEM_LIST
+    module subroutine stdlib_linalg_eig_${ep}$_${ri}$(a#{if ei=='ggev'}#,b#{endif}#,lambda,right,left, &
+                                                      overwrite_a#{if ei=='ggev'}#,overwrite_b#{endif}#,err)
      !! Eigendecomposition of matrix A returning an array `lambda` of eigenvalues, 
      !! and optionally right or left eigenvectors.        
          !> Input matrix A[m,n]
          ${rt}$, intent(inout), target :: a(:,:)
+         #:if ei=='ggev'
+         !> Generalized problem matrix B[n,n]
+         ${rt}$, intent(inout), target :: b(:,:)
+         #:endif         
          !> Array of eigenvalues
          complex(${rk}$), intent(out) :: lambda(:)
          !> The columns of RIGHT contain the right eigenvectors of A
@@ -882,19 +1106,25 @@ module stdlib_linalg
          complex(${rk}$), optional, intent(out), target :: left(:,:)
          !> [optional] Can A data be overwritten and destroyed?
          logical(lk), optional, intent(in) :: overwrite_a
+         #:if ei=='ggev'
+         !> [optional] Can B data be overwritten and destroyed? (default: no)
+         logical(lk), optional, intent(in) :: overwrite_b
+         #:endif         
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err
-    end subroutine stdlib_linalg_eig_${ri}$
-    #:endif
-    #:endfor
-    #:for rk,rt,ri in REAL_KINDS_TYPES
-    #:if rk!="xdp"
-    module subroutine stdlib_linalg_real_eig_${ri}$(a,lambda,right,left,overwrite_a,err)
+    end subroutine stdlib_linalg_eig_${ep}$_${ri}$
+
+    module subroutine stdlib_linalg_real_eig_${ep}$_${ri}$(a#{if ei=='ggev'}#,b#{endif}#,lambda,right,left, &
+                                                           overwrite_a#{if ei=='ggev'}#,overwrite_b#{endif}#,err)
      !! Eigendecomposition of matrix A returning an array `lambda` of real eigenvalues, 
      !! and optionally right or left eigenvectors. Returns an error if the eigenvalues had
      !! non-trivial imaginary parts.
          !> Input matrix A[m,n]
          ${rt}$, intent(inout), target :: a(:,:)
+         #:if ei=='ggev'
+         !> Generalized problem matrix B[n,n]
+         ${rt}$, intent(inout), target :: b(:,:)  
+         #:endif
          !> Array of real eigenvalues
          real(${rk}$), intent(out) :: lambda(:)
          !> The columns of RIGHT contain the right eigenvectors of A
@@ -903,11 +1133,15 @@ module stdlib_linalg
          complex(${rk}$), optional, intent(out), target :: left(:,:)
          !> [optional] Can A data be overwritten and destroyed?
          logical(lk), optional, intent(in) :: overwrite_a
+         #:if ei=='ggev'
+         !> [optional] Can B data be overwritten and destroyed? (default: no)
+         logical(lk), optional, intent(in) :: overwrite_b
+         #:endif         
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err
-    end subroutine stdlib_linalg_real_eig_${ri}$
-    #:endif
+    end subroutine stdlib_linalg_real_eig_${ep}$_${ri}$
     #:endfor    
+    #:endfor
   end interface eig
 
   ! Eigenvalues of a square matrix
@@ -931,25 +1165,33 @@ module stdlib_linalg
      !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
      !!       
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp"
-    module function stdlib_linalg_eigvals_${ri}$(a,err) result(lambda)
+    #:for ep,ei in EIG_PROBLEM_LIST
+    module function stdlib_linalg_eigvals_${ep}$_${ri}$(a#{if ei=='ggev'}#,b#{endif}#,err) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         ${rt}$, intent(in), target :: a(:,:)
+         ${rt}$, intent(in), dimension(:,:), target :: a 
+         #:if ei=='ggev'
+         !> Generalized problem matrix B[n,n]
+         ${rt}$, intent(inout), dimension(:,:), target :: b         
+         #:endif                  
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), intent(out) :: err
          !> Array of singular values
          complex(${rk}$), allocatable :: lambda(:)        
-    end function stdlib_linalg_eigvals_${ri}$
+    end function stdlib_linalg_eigvals_${ep}$_${ri}$
     
-    module function stdlib_linalg_eigvals_noerr_${ri}$(a) result(lambda)
+    module function stdlib_linalg_eigvals_noerr_${ep}$_${ri}$(a#{if ei=='ggev'}#,b#{endif}#) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         ${rt}$, intent(in), target :: a(:,:)
+         ${rt}$, intent(in), dimension(:,:), target :: a 
+         #:if ei=='ggev'
+         !> Generalized problem matrix B[n,n]
+         ${rt}$, intent(inout), dimension(:,:), target :: b         
+         #:endif                  
          !> Array of singular values
          complex(${rk}$), allocatable :: lambda(:)
-    end function stdlib_linalg_eigvals_noerr_${ri}$
-    #:endif
+    end function stdlib_linalg_eigvals_noerr_${ep}$_${ri}$
+    #:endfor
     #:endfor
   end interface eigvals
      
@@ -978,7 +1220,6 @@ module stdlib_linalg
      !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
      !!      
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp"
     module subroutine stdlib_linalg_eigh_${ri}$(a,lambda,vectors,upper_a,overwrite_a,err)
      !! Eigendecomposition of a real symmetric or complex Hermitian matrix A returning an array `lambda` 
      !! of eigenvalues, and optionally right or left eigenvectors.        
@@ -995,7 +1236,6 @@ module stdlib_linalg
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err
     end subroutine stdlib_linalg_eigh_${ri}$
-    #:endif
     #:endfor        
   end interface eigh
      
@@ -1023,7 +1263,6 @@ module stdlib_linalg
      !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
      !!         
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp"
     module function stdlib_linalg_eigvalsh_${ri}$(a,upper_a,err) result(lambda)
      !! Return an array of eigenvalues of real symmetric / complex hermitian A
          !> Input matrix A[m,n]
@@ -1045,7 +1284,6 @@ module stdlib_linalg
          !> Array of singular values
          real(${rk}$), allocatable :: lambda(:)
     end function stdlib_linalg_eigvalsh_noerr_${ri}$
-    #:endif
     #:endfor                
   end interface eigvalsh
 
