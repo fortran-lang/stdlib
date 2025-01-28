@@ -1,0 +1,46 @@
+#:include "common.fypp" 
+#:for ck,ct,ci in REAL_KINDS_TYPES
+module stdlib_blas_constants_${ck}$
+    use stdlib_linalg_constants
+    implicit none
+    
+    
+    real(${ck}$),    parameter ::     negone = -1.00_${ck}$
+    real(${ck}$),    parameter ::       zero = 0.00_${ck}$
+    real(${ck}$),    parameter ::       half = 0.50_${ck}$
+    real(${ck}$),    parameter ::        one = 1.00_${ck}$
+    real(${ck}$),    parameter ::        two = 2.00_${ck}$
+    real(${ck}$),    parameter ::      three = 3.00_${ck}$
+    real(${ck}$),    parameter ::       four = 4.00_${ck}$
+    real(${ck}$),    parameter ::      eight = 8.00_${ck}$
+    real(${ck}$),    parameter ::        ten = 10.00_${ck}$
+    
+    complex(${ck}$), parameter :: czero   = ( 0.0_${ck}$,0.0_${ck}$)
+    complex(${ck}$), parameter :: chalf   = ( 0.5_${ck}$,0.0_${ck}$)
+    complex(${ck}$), parameter :: cone    = ( 1.0_${ck}$,0.0_${ck}$)
+    complex(${ck}$), parameter :: cnegone = (-1.0_${ck}$,0.0_${ck}$)
+
+    ! scaling constants 
+    integer,     parameter :: maxexp = maxexponent(zero) 
+    integer,     parameter :: minexp = minexponent(zero) 
+    
+    real(${ck}$),    parameter :: rradix = real(radix(zero),${ck}$) 
+    real(${ck}$),    parameter :: ulp    = epsilon(zero) 
+    real(${ck}$),    parameter :: eps    = ulp*half
+    real(${ck}$),    parameter :: safmin = rradix**max(minexp-1,1-maxexp) 
+    real(${ck}$),    parameter :: safmax = one/safmin 
+    real(${ck}$),    parameter :: smlnum = safmin/ulp
+    real(${ck}$),    parameter :: bignum = safmax*ulp 
+    real(${ck}$),    parameter :: rtmin = sqrt(smlnum) 
+    real(${ck}$),    parameter :: rtmax = sqrt(bignum) 
+
+    ! Blue's scaling constants 
+    ! ssml>=1/s and sbig==1/S with s,S as defined in https://doi.org/10.1145/355769.355771 
+    real(${ck}$),    parameter :: tsml = rradix**ceiling((minexp-1)*half) 
+    real(${ck}$),    parameter :: tbig = rradix**floor((maxexp-digits(zero)+1)*half) 
+    real(${ck}$),    parameter :: ssml = rradix**(-floor((minexp-digits(zero))*half)) 
+    real(${ck}$),    parameter :: sbig = rradix**(-ceiling((maxexp+digits(zero)-1)*half))
+    
+end module
+
+#:endfor

@@ -90,7 +90,7 @@ Name | Version | Platform | Architecture
 GCC Fortran | 10, 11, 12, 13 | Ubuntu 22.04.2 LTS | x86_64
 GCC Fortran | 10, 11, 12, 13 | macOS 12.6.3 (21G419) | x86_64
 GCC Fortran (MSYS) | 13 | Windows Server 2022 (10.0.20348 Build 1547) | x86_64
-GCC Fortran (MinGW) | 13 | Windows Server 2022 (10.0.20348 Build 1547) | x86_64, i686
+GCC Fortran (MinGW) | 13 | Windows Server 2022 (10.0.20348 Build 1547) | x86_64
 Intel oneAPI LLVM | 2024.0 | Ubuntu 22.04.2 LTS | x86_64
 Intel oneAPI classic | 2023.1 | macOS 12.6.3 (21G419) | x86_64
 
@@ -98,7 +98,7 @@ The following combinations are known to work, but they are not tested in the CI:
 
 Name | Version | Platform | Architecture
 --- | --- | --- | ---
-GCC Fortran (MinGW) | 9.3.0, 10.2.0, 11.2.0 | Windows 10 | x86_64, i686
+GCC Fortran (MinGW) | 9.3.0, 10.2.0, 11.2.0 | Windows 10 | x86_64
 
 We try to test as many available compilers and platforms as possible.
 A list of tested compilers which are currently not working and the respective issue are listed below.
@@ -344,6 +344,34 @@ as well as a specification document or ["spec"](https://stdlib.fortran-lang.org/
 
 Some discussions and prototypes of proposed APIs along with a list of popular open source Fortran projects are available on the
 [wiki](https://github.com/fortran-lang/stdlib/wiki).
+
+## BLAS and LAPACK
+
+`stdlib` ships full versions of BLAS and LAPACK, for all `real` and `complex` kinds, through generalized interface modules `stdlib_linalg_blas` and `stdlib_linalg_lapack`.
+The 32- and 64-bit implementations may be replaced by external optimized libraries if available, which may allow for faster code.
+When linking against external BLAS/LAPACK libraries, the user should define macros `STDLIB_EXTERNAL_BLAS` and `STDLIB_EXTERNAL_LAPACK`, 
+to ensure that the external library version is used instead of the internal implementation. 
+
+- In case of a CMake build, the necessary configuration can be added by ensuring both macros are defined:
+  ```
+  add_compile_definitions(STDLIB_EXTERNAL_BLAS STDLIB_EXTERNAL_LAPACK)
+  ```
+- In case of an `fpm` build, the stdlib dependency should be set as follows:
+  ```toml
+  [dependencies]
+  stdlib = { git="https://github.com/fortran-lang/stdlib", branch="stdlib-fpm", preprocess.cpp.macros=["STDLIB_EXTERNAL_BLAS", "STDLIB_EXTERNAL_LAPACK"] }
+  ```
+
+Support for 64-bit integer size interfaces of all BLAS and LAPACK procedures may also be enabled 
+by setting the CMake flag `-DWITH_ILP64=True`. The 64-bit integer version is always built in addition to 
+the 32-bit integer version, that is always available. Additional macros `STDLIB_EXTERNAL_BLAS_I64` and `STDLIB_EXTERNAL_LAPACK_I64`  
+may be defined to link against an external 64-bit integer library, such as Intel MKL. 
+
+- In case of an `fpm` build, 64-bit integer linear algebra support is given via branch `stdlib-fpm-ilp64`:
+  ```toml
+  [dependencies]
+  stdlib = { git="https://github.com/fortran-lang/stdlib", branch="stdlib-fpm-ilp64", preprocess.cpp.macros=["STDLIB_EXTERNAL_BLAS_I64", "STDLIB_EXTERNAL_LAPACK"] }
+  ```
 
 ## Contributing
 

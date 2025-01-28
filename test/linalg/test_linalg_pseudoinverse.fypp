@@ -1,0 +1,248 @@
+#:include "common.fypp"
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+! Test Moore-Penrose pseudo matrix inverse
+module test_linalg_pseudoinverse
+    use testdrive, only: error_type, check, new_unittest, unittest_type
+    use stdlib_linalg
+    use stdlib_linalg_constants
+
+    implicit none (type,external)
+    private
+    
+    public :: test_pseudoinverse_matrix
+
+    contains
+
+    !> Matrix pseudo-inversion tests
+    subroutine test_pseudoinverse_matrix(tests)
+        !> Collertion of tests
+        type(unittest_type), allocatable, intent(out) :: tests(:)
+        
+        allocate(tests(0))
+
+        #:for rk,rt,ri in REAL_KINDS_TYPES
+        tests = [tests,new_unittest("${ri}$_eye_pseudoinverse",test_${ri}$_eye_pseudoinverse)]        
+        #:endfor
+        #:for rk,rt,ri in RC_KINDS_TYPES
+        tests = [tests,new_unittest("${ri}$_square_pseudoinverse",test_${ri}$_square_pseudoinverse), &
+                       new_unittest("${ri}$_tall_pseudoinverse",test_${ri}$_tall_pseudoinverse), &
+                       new_unittest("${ri}$_wide_pseudoinverse",test_${ri}$_wide_pseudoinverse), &
+                       new_unittest("${ri}$_singular_pseudoinverse",test_${ri}$_singular_pseudoinverse)]
+        #:endfor
+
+    end subroutine test_pseudoinverse_matrix
+
+    !> Invert identity matrix
+    #:for rk,rt,ri in REAL_KINDS_TYPES
+    subroutine test_${ri}$_eye_pseudoinverse(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+
+        integer(ilp) :: i,j
+        integer(ilp), parameter :: n = 15_ilp
+        real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
+
+        ${rt}$ :: a(n,n),inva(n,n)
+
+        do concurrent (i=1:n,j=1:n)
+          a(i,j) = merge(1.0_${rk}$,0.0_${rk}$,i==j)
+        end do
+
+        !> Invert funrtion
+        inva = pinv(a,err=state)
+        
+        call check(error,state%ok(),'${ri}$ pseudoinverse (eye, function): '//state%print())
+        if (allocated(error)) return        
+        call check(error,all(abs(a-inva)<tol),'${ri}$ pseudoinverse (eye, function): data convergence')
+        if (allocated(error)) return          
+        
+        !> Inverse subroutine
+        call pseudoinvert(a,inva,err=state)
+        
+        call check(error,state%ok(),'${ri}$ pseudoinverse (eye, subroutine): '//state%print())
+        if (allocated(error)) return        
+        call check(error,all(abs(a-inva)<tol),'${ri}$ pseudoinverse (eye, subroutine): data convergence')
+        if (allocated(error)) return                  
+        
+        !> Operator 
+        inva = .pinv.a
+        
+        call check(error,all(abs(a-inva)<tol),'${ri}$ pseudoinverse (eye, operator): data convergence')
+        if (allocated(error)) return                  
+
+    end subroutine test_${ri}$_eye_pseudoinverse
+
+    #:endfor
+
+    #:for rk,rt,ri in RC_KINDS_TYPES
+
+    !> Test edge case: square matrix
+    subroutine test_${ri}$_square_pseudoinverse(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+
+        integer(ilp) :: failed
+        integer(ilp), parameter :: n = 10
+        real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$ :: a(n, n), inva(n, n)
+        #:if rt.startswith('complex')
+        real(${rk}$) :: rea(n, n, 2)
+        
+        call random_number(rea)
+        a = cmplx(rea(:, :, 1), rea(:, :, 2), kind=${rk}$)
+        #:else
+        
+        call random_number(a)
+        #:endif
+        
+        inva = pinv(a, err=state)
+        call check(error,state%ok(),'${ri}$ pseudoinverse (square): '//state%print())
+        if (allocated(error)) return       
+        
+        failed = count(abs(a - matmul(a, matmul(inva, a))) > tol)
+        call check(error,failed==0,'${ri}$ pseudoinverse (square, convergence): '//state%print())
+        if (allocated(error)) return               
+        
+        failed = count(abs(inva - matmul(inva, matmul(a, inva))) > tol)
+        call check(error,failed==0,'${ri}$ pseudoinverse (square, convergence): '//state%print())
+        if (allocated(error)) return               
+
+    end subroutine test_${ri}$_square_pseudoinverse
+
+    !> Test edge case: tall matrix
+    subroutine test_${ri}$_tall_pseudoinverse(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+
+        integer(ilp) :: failed
+        integer(ilp), parameter :: m = 20, n = 10
+        real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$ :: a(m, n), inva(n, m)
+        #:if rt.startswith('complex')
+        real(${rk}$) :: rea(m, n, 2)
+        
+        call random_number(rea)
+        a = cmplx(rea(:, :, 1), rea(:, :, 2), kind=${rk}$)
+        #:else
+        
+        call random_number(a)
+        #:endif
+        
+        inva = pinv(a, err=state)
+        call check(error,state%ok(),'${ri}$ pseudoinverse (tall): '//state%print())
+        if (allocated(error)) return       
+        
+        failed = count(abs(a - matmul(a, matmul(inva, a))) > tol)
+        call check(error,failed==0,'${ri}$ pseudoinverse (tall, convergence): '//state%print())
+        if (allocated(error)) return               
+        
+        failed = count(abs(inva - matmul(inva, matmul(a, inva))) > tol)
+        call check(error,failed==0,'${ri}$ pseudoinverse (tall, convergence): '//state%print())
+        if (allocated(error)) return  
+
+    end subroutine test_${ri}$_tall_pseudoinverse
+
+    !> Test edge case: wide matrix
+    subroutine test_${ri}$_wide_pseudoinverse(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+
+        integer(ilp) :: failed
+        integer(ilp), parameter :: m = 10, n = 20
+        real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$ :: a(m, n), inva(n, m)
+        #:if rt.startswith('complex')
+        real(${rk}$) :: rea(m, n, 2)
+        
+        call random_number(rea)
+        a = cmplx(rea(:, :, 1), rea(:, :, 2), kind=${rk}$)
+        #:else
+        
+        call random_number(a)
+        #:endif
+        
+        inva = pinv(a, err=state)
+        call check(error,state%ok(),'${ri}$ pseudoinverse (wide): '//state%print())
+        if (allocated(error)) return       
+        
+        failed = count(abs(a - matmul(a, matmul(inva, a))) > tol)
+        call check(error,failed==0,'${ri}$ pseudoinverse (wide, convergence): '//state%print())
+        if (allocated(error)) return               
+        
+        failed = count(abs(inva - matmul(inva, matmul(a, inva))) > tol)
+        call check(error,failed==0,'${ri}$ pseudoinverse (wide, convergence): '//state%print())
+        if (allocated(error)) return  
+
+    end subroutine test_${ri}$_wide_pseudoinverse
+
+    !> Test edge case: singular matrix
+    subroutine test_${ri}$_singular_pseudoinverse(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+
+        integer(ilp) :: failed
+        integer(ilp), parameter :: n = 10
+        real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$ :: a(n, n), inva(n, n)
+        #:if rt.startswith('complex')
+        real(${rk}$) :: rea(n, n, 2)
+        
+        call random_number(rea)
+        a = cmplx(rea(:, :, 1), rea(:, :, 2), kind=${rk}$)
+        #:else
+        
+        call random_number(a)
+        #:endif
+        
+        ! Make the matrix singular
+        a(:, 1) = a(:, 2)
+        
+        inva = pinv(a, err=state)
+        call check(error,state%ok(),'${ri}$ pseudoinverse (singular): '//state%print())
+        if (allocated(error)) return       
+        
+        failed = count(abs(a - matmul(a, matmul(inva, a))) > tol)
+        call check(error,failed==0,'${ri}$ pseudoinverse (singular, convergence): '//state%print())
+        if (allocated(error)) return               
+        
+        failed = count(abs(inva - matmul(inva, matmul(a, inva))) > tol)
+        call check(error,failed==0,'${ri}$ pseudoinverse (singular, convergence): '//state%print())
+        if (allocated(error)) return  
+
+    end subroutine test_${ri}$_singular_pseudoinverse
+
+    #:endfor
+
+end module test_linalg_pseudoinverse
+
+program test_inv
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_linalg_pseudoinverse, only : test_pseudoinverse_matrix
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("linalg_pseudoinverse", test_pseudoinverse_matrix) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program test_inv
+
