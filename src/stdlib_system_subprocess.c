@@ -388,7 +388,7 @@ const char* process_null_device(int* len)
 }
 
 // Returns a boolean flag if macro _WIN32 is defined
-bool process_has_win32()
+bool process_is_windows()
 {
 #ifdef _WIN32
    return true;

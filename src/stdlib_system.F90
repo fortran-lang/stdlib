@@ -15,7 +15,7 @@ public :: update
 public :: wait
 public :: kill
 public :: elapsed
-public :: has_win32
+public :: is_windows
      
 ! CPU clock ticks storage
 integer, parameter, private :: TICKS = int64
@@ -326,7 +326,7 @@ interface
     !! version: experimental
     !!
     !! Returns a `logical` flag indicating if the system is Windows.
-    !! ([Specification](../page/specs/stdlib_system.html#has_win32-check-if-the-system-is-running-on-windows))
+    !! ([Specification](../page/specs/stdlib_system.html#is_windows-check-if-the-system-is-running-on-windows))
     !!
     !! ### Summary
     !! A fast, compile-time check to determine if the system is running Windows, based on the `_WIN32` macro.
@@ -337,13 +337,13 @@ interface
     !! wrapping a C function that tests if the `_WIN32` macro is defined. This check is fast and occurs at
     !! compile-time, making it a more efficient alternative to platform-specific runtime checks.
     !!
-    !! The `has_win32` function is particularly useful for conditional compilation or system-specific code paths
+    !! The `is_windows` function is particularly useful for conditional compilation or system-specific code paths
     !! that are dependent on whether the code is running on Windows.
     !!
     !! @note This function relies on the `_WIN32` macro, which is defined in C compilers when targeting Windows.
     !!
-    module logical function has_win32()
-    end function has_win32
+    module logical function is_windows()
+    end function is_windows
     
 end interface 
 

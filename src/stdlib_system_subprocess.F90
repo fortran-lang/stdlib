@@ -60,10 +60,10 @@ submodule (stdlib_system) stdlib_system_subprocess
         end function process_null_device
         
         ! Utility: check if _WIN32 is defined in the C compiler
-        logical(c_bool) function process_has_win32() bind(C,name='process_has_win32')
+        logical(c_bool) function process_is_windows() bind(C,name='process_is_windows')
             import c_bool
             implicit none
-        end function process_has_win32
+        end function process_is_windows
   
     end interface
 
@@ -584,9 +584,9 @@ contains
     !> Returns the file path of the null device for the current operating system.
     !>
     !> Version: Helper function.
-    module logical function has_win32()
-       has_win32 = logical(process_has_win32())
-    end function has_win32
+    module logical function is_windows()
+       is_windows = logical(process_is_windows())
+    end function is_windows
     
     !> Reads a whole ASCII file and loads its contents into an allocatable character string..
     !> The function handles error states and optionally deletes the file after reading.
