@@ -11,8 +11,8 @@ program run_with_args
     args(1) = "echo"
     args(2) = "Hello, Fortran!"
 
-    ! Run the command with arguments
-    p = run(args, wait=.true.)
+    ! Run the command with arguments (synchronous)
+    p = run(args)
 
     ! Print the runtime of the process
     print *, "Process runtime:", elapsed(p), "seconds."

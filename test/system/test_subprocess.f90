@@ -1,6 +1,6 @@
 module test_subprocess
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
-    use stdlib_system, only: process_type, run, is_running, wait, update, elapsed, has_win32, kill
+    use stdlib_system, only: process_type, run, runasync, is_running, wait, update, elapsed, has_win32, kill
 
     implicit none
 
@@ -25,7 +25,7 @@ contains
         type(process_type) :: process
         character(len=*), parameter :: command = "echo Hello"
 
-        process = run(command, wait=.true., want_stdout=.true.)
+        process = run(command, want_stdout=.true.)
         call check(error, process%completed)
         if (allocated(error)) return
         
@@ -40,9 +40,9 @@ contains
 
         ! The closest possible to a cross-platform command that waits
         if (has_win32()) then 
-            process = run("ping -n 2 127.0.0.1", wait=.false.)
+            process = runasync("ping -n 2 127.0.0.1")
         else
-            process = run("ping -c 2 127.0.0.1", wait=.false.)
+            process = runasync("ping -c 2 127.0.0.1")
         endif
         ! Should not be immediately completed
         call check(error, .not. process%completed, "ping process should not complete immediately")
@@ -68,9 +68,9 @@ contains
 
         ! Start a long-running process asynchronously
         if (has_win32()) then
-            process = run("ping -n 10 127.0.0.1", wait=.false.)
+            process = runasync("ping -n 10 127.0.0.1")
         else
-            process = run("ping -c 10 127.0.0.1", wait=.false.)
+            process = runasync("ping -c 10 127.0.0.1")
         endif
 
         ! Ensure the process starts running
@@ -100,7 +100,7 @@ contains
         type(process_type) :: process
         character(len=*), parameter :: command = "echo Testing"
 
-        process = run(command, wait=.true., want_stdout=.true., want_stderr=.true.)
+        process = run(command, want_stdout=.true., want_stderr=.true.)
 
         call update(process)
         call check(error, process%completed)

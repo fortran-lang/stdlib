@@ -85,31 +85,95 @@ contains
         
     end subroutine sleep
 
-    !> Open a new process
-    module function process_open_cmd(cmd,wait,stdin,want_stdout,want_stderr) result(process)
+    module function run_async_cmd(cmd, stdin, want_stdout, want_stderr) result(process)
+        !> The command line string to execute.
+        character(*), intent(in) :: cmd
+        !> Optional input sent to the process via standard input (stdin).
+        character(*), optional, intent(in) :: stdin
+        !> Whether to collect standard output.
+        logical, optional, intent(in) :: want_stdout
+        !> Whether to collect standard error output.
+        logical, optional, intent(in) :: want_stderr
+        !> The output process handler.
+        type(process_type) :: process
+        
+        process = process_open([cmd],.false.,stdin,want_stdout,want_stderr)
+        
+    end function run_async_cmd
+
+    module function run_async_args(args, stdin, want_stdout, want_stderr) result(process)
+        !> List of arguments for the process to execute.
+        character(*), intent(in) :: args(:)
+        !> Optional input sent to the process via standard input (stdin).
+        character(*), optional, intent(in) :: stdin
+        !> Whether to collect standard output.
+        logical, optional, intent(in) :: want_stdout
+        !> Whether to collect standard error output.
+        logical, optional, intent(in) :: want_stderr
+        !> The output process handler.
+        type(process_type) :: process  
+        
+        process = process_open(args,.false.,stdin,want_stdout,want_stderr)
+              
+    end function run_async_args
+
+    module function run_sync_cmd(cmd, stdin, want_stdout, want_stderr) result(process)
+        !> The command line string to execute.
+        character(*), intent(in) :: cmd
+        !> Optional input sent to the process via standard input (stdin).
+        character(*), optional, intent(in) :: stdin
+        !> Whether to collect standard output.
+        logical, optional, intent(in) :: want_stdout
+        !> Whether to collect standard error output.
+        logical, optional, intent(in) :: want_stderr
+        !> The output process handler.
+        type(process_type) :: process
+        
+        process = process_open([cmd],.true.,stdin,want_stdout,want_stderr)
+        
+    end function run_sync_cmd
+
+    module function run_sync_args(args, stdin, want_stdout, want_stderr) result(process)
+        !> List of arguments for the process to execute.
+        character(*), intent(in) :: args(:)
+        !> Optional input sent to the process via standard input (stdin).
+        character(*), optional, intent(in) :: stdin
+        !> Whether to collect standard output.
+        logical, optional, intent(in) :: want_stdout
+        !> Whether to collect standard error output.
+        logical, optional, intent(in) :: want_stderr
+        !> The output process handler.
+        type(process_type) :: process  
+        
+        process = process_open(args,.true.,stdin,want_stdout,want_stderr)
+              
+    end function run_sync_args
+
+    !> Internal function: open a new process from a command line
+    function process_open_cmd(cmd,wait,stdin,want_stdout,want_stderr) result(process)
         !> The command and arguments
         character(*), intent(in) :: cmd
         !> Optional character input to be sent to the process via pipe
         character(*), optional, intent(in) :: stdin
         !> Define if the process should be synchronous (wait=.true.), or asynchronous(wait=.false.)
-        logical, optional, intent(in) :: wait
+        logical, intent(in) :: wait
         !> Require collecting output
         logical, optional, intent(in) :: want_stdout, want_stderr
         !> The output process handler
         type(process_type) :: process        
         
-        process = process_open_args([cmd],wait,stdin,want_stdout,want_stderr)
+        process = process_open([cmd],wait,stdin,want_stdout,want_stderr)
         
     end function process_open_cmd
 
-    !> Open a new process
-    module function process_open_args(args,wait,stdin,want_stdout,want_stderr) result(process)
+    !> Internal function: open a new process from arguments
+    function process_open(args,wait,stdin,want_stdout,want_stderr) result(process)
         !> The command and arguments
         character(*), intent(in) :: args(:)
         !> Optional character input to be sent to the process via pipe
         character(*), optional, intent(in) :: stdin
         !> Define if the process should be synchronous (wait=.true.), or asynchronous(wait=.false.)
-        logical, optional, intent(in) :: wait
+        logical, intent(in) :: wait
         !> Require collecting output
         logical, optional, intent(in) :: want_stdout, want_stderr
         !> The output process handler
@@ -121,11 +185,10 @@ contains
         integer(TICKS) :: count_max
         
         ! Process user requests
-        asynchronous   = .false.
+        asynchronous   = .not.wait
         collect_stdout = .false.
         collect_stderr = .false.
         has_stdin      = present(stdin)
-        if (present(wait))        asynchronous   = .not.wait
         if (present(want_stdout)) collect_stdout = want_stdout
         if (present(want_stderr)) collect_stderr = want_stderr
         
@@ -173,7 +236,7 @@ contains
         ! Run a first update
         call update_process_state(process)   
            
-    end function process_open_args
+    end function process_open
     
     subroutine launch_asynchronous(process, args, stdin)
         class(process_type), intent(inout) :: process

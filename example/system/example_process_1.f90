@@ -7,7 +7,7 @@ program run_sync
     logical :: completed
 
     ! Run a synchronous process to list directory contents
-    p = run("ls -l", wait=.true., want_stdout=.true.)
+    p = run("ls -l", want_stdout=.true.)
 
     ! Check if the process is completed (should be true since wait=.true.)
     if (is_completed(p)) then

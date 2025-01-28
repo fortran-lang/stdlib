@@ -1,12 +1,12 @@
 ! Process example 2: Run an Asynchronous Command and check its status
 program run_async
-    use stdlib_system, only: process_type, run, is_running, wait
+    use stdlib_system, only: process_type, runasync, is_running, wait
     implicit none
 
     type(process_type) :: p
 
     ! Run an asynchronous process to sleep for 1 second
-    p = run("sleep 1", wait=.false.)
+    p = runasync("sleep 1")
 
     ! Check if the process is running
     if (is_running(p)) then
