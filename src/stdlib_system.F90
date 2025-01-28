@@ -57,19 +57,18 @@ end type process_type
 interface runasync
     !! version: experimental
     !!
-    !! Executes an external process, either synchronously or asynchronously.
-    !! ([Specification](../page/specs/stdlib_system.html#run-execute-an-external-process))
+    !! Executes an external process asynchronously.
+    !! ([Specification](../page/specs/stdlib_system.html#run-execute-an-external-process-asynchronously))
     !!
     !! ### Summary
-    !! Provides methods for executing external processes via a single command string or an argument list, 
-    !! with options for synchronous or asynchronous execution and output collection.
+    !! Provides methods for executing external processes asynchronously, using either a single command string 
+    !! or an argument list, with options for output collection and standard input.
     !!
     !! ### Description
     !! 
-    !! This interface allows the user to spawn external processes using either a single command string 
-    !! or a list of arguments. Processes can be executed synchronously (blocking) or asynchronously 
-    !! (non-blocking), with optional request to collect standard output and error streams, or to provide
-    !! a standard input stream via a `character` string.
+    !! This interface allows the user to spawn external processes asynchronously (non-blocking). 
+    !! Processes can be executed via a single command string or a list of arguments, with options to collect 
+    !! standard output and error streams, or to provide a standard input stream via a `character` string.
     !!
     !! @note The implementation depends on system-level process management capabilities.
     !!
@@ -103,19 +102,18 @@ end interface runasync
 interface run
     !! version: experimental
     !!
-    !! Executes an external process, either synchronously or asynchronously.
-    !! ([Specification](../page/specs/stdlib_system.html#run-execute-an-external-process))
+    !! Executes an external process synchronously.
+    !! ([Specification](../page/specs/stdlib_system.html#runasync-execute-an-external-process-synchronously))
     !!
     !! ### Summary
-    !! Provides methods for executing external processes via a single command string or an argument list, 
-    !! with options for synchronous or asynchronous execution and output collection.
+    !! Provides methods for executing external processes synchronously, using either a single command string 
+    !! or an argument list, with options for output collection and standard input.
     !!
     !! ### Description
     !! 
-    !! This interface allows the user to spawn external processes using either a single command string 
-    !! or a list of arguments. Processes can be executed synchronously (blocking) or asynchronously 
-    !! (non-blocking), with optional request to collect standard output and error streams, or to provide
-    !! a standard input stream via a `character` string.
+    !! This interface allows the user to spawn external processes synchronously (blocking), 
+    !! via either a single command string or a list of arguments. It also includes options to collect 
+    !! standard output and error streams, or to provide a standard input stream via a `character` string.
     !!
     !! @note The implementation depends on system-level process management capabilities.
     !!
