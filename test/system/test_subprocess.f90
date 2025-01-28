@@ -1,6 +1,6 @@
 module test_subprocess
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
-    use stdlib_system, only: process_type, run, runasync, is_running, wait, update, elapsed, has_win32, kill
+    use stdlib_system, only: process_type, run, runasync, is_running, wait, update, elapsed, is_windows, kill
 
     implicit none
 
@@ -39,7 +39,7 @@ contains
         logical :: running
 
         ! The closest possible to a cross-platform command that waits
-        if (has_win32()) then 
+        if (is_windows()) then 
             process = runasync("ping -n 2 127.0.0.1")
         else
             process = runasync("ping -c 2 127.0.0.1")
@@ -67,7 +67,7 @@ contains
         logical :: running, success
 
         ! Start a long-running process asynchronously
-        if (has_win32()) then
+        if (is_windows()) then
             process = runasync("ping -n 10 127.0.0.1")
         else
             process = runasync("ping -c 10 127.0.0.1")
