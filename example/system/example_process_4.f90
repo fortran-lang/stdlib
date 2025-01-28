@@ -1,12 +1,12 @@
 ! Process example 4: Kill a running process
 program example_process_kill
-    use stdlib_system, only: process_type, runasync, is_running, kill, elapsed, has_win32, sleep
+    use stdlib_system, only: process_type, runasync, is_running, kill, elapsed, is_windows, sleep
     implicit none
     type(process_type) :: process
     logical :: running, success
 
     print *, "Starting a long-running process..."
-    if (has_win32()) then
+    if (is_windows()) then
         process = runasync("ping -n 10 127.0.0.1")
     else
         process = runasync("ping -c 10 127.0.0.1")
