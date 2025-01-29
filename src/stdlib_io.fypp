@@ -262,7 +262,6 @@ contains
     do i = 1, skiprows_
       read(s, *)
     end do
-    
     number_of_columns = 0
     
     ! Read first non-skipped line as a whole
