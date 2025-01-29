@@ -29,7 +29,8 @@ jobs:
         build: [cmake]        
         include:
           - os: ubuntu-22.04
-            toolchain: {compiler: intel-classic, version: '2021.10'}
+            build: cmake
+            toolchain: {compiler: intel-classic, version: '2021.10'}            
           - os: ubuntu-latest
             build: cmake-inline
             toolchain: {compiler: gcc, version: 10}
