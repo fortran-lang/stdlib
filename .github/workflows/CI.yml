@@ -25,17 +25,15 @@ jobs:
           - {compiler: gcc, version: 11}
           - {compiler: gcc, version: 12}
           - {compiler: gcc, version: 13}
-          - {compiler: intel, version: '2024.1'}
-          - {compiler: intel-classic, version: '2021.10'}
-        build: [cmake]
+          - {compiler: intel, version: '2024.1'}          
+        build: [cmake]        
         include:
+          - os: ubuntu-22.04
+            toolchain: {compiler: intel-classic, version: '2021.10'}
           - os: ubuntu-latest
             build: cmake-inline
-            toolchain:
-              - {compiler: gcc, version: 10}
+            toolchain: {compiler: gcc, version: 10}
         exclude:
-          - os: macos-13
-            toolchain: {compiler: intel-classic, version: '2021.10'}
           - os: macos-13
             toolchain: {compiler: intel, version: '2024.1'}
           - os: macos-13
