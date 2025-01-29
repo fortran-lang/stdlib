@@ -1,0 +1,473 @@
+#:include "common.fypp" 
+module stdlib_lapack_others
+  use stdlib_linalg_constants
+  use stdlib_linalg_lapack_aux
+  use stdlib_linalg_blas
+  use stdlib_lapack_solve
+  implicit none
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     real(sp) module function stdlib${ii}$_sla_syrpvgrw( uplo, n, info, a, lda, af, ldaf, ipiv,work )
+           character, intent(in) :: uplo
+           integer(${ik}$), intent(in) :: n, info, lda, ldaf
+           integer(${ik}$), intent(in) :: ipiv(*)
+           real(sp), intent(in) :: a(lda,*), af(ldaf,*)
+           real(sp), intent(out) :: work(*)
+     end function stdlib${ii}$_sla_syrpvgrw
+
+     real(dp) module function stdlib${ii}$_dla_syrpvgrw( uplo, n, info, a, lda, af,ldaf, ipiv, work )
+           character, intent(in) :: uplo
+           integer(${ik}$), intent(in) :: n, info, lda, ldaf
+           integer(${ik}$), intent(in) :: ipiv(*)
+           real(dp), intent(in) :: a(lda,*), af(ldaf,*)
+           real(dp), intent(out) :: work(*)
+     end function stdlib${ii}$_dla_syrpvgrw
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     real(${rk}$) module function stdlib${ii}$_${ri}$la_syrpvgrw( uplo, n, info, a, lda, af,ldaf, ipiv, work )
+           character, intent(in) :: uplo
+           integer(${ik}$), intent(in) :: n, info, lda, ldaf
+           integer(${ik}$), intent(in) :: ipiv(*)
+           real(${rk}$), intent(in) :: a(lda,*), af(ldaf,*)
+           real(${rk}$), intent(out) :: work(*)
+     end function stdlib${ii}$_${ri}$la_syrpvgrw
+
+#:endif
+#:endfor
+
+     real(sp) module function stdlib${ii}$_cla_syrpvgrw( uplo, n, info, a, lda, af, ldaf, ipiv,work )
+           character, intent(in) :: uplo
+           integer(${ik}$), intent(in) :: n, info, lda, ldaf
+           complex(sp), intent(in) :: a(lda,*), af(ldaf,*)
+           real(sp), intent(out) :: work(*)
+           integer(${ik}$), intent(in) :: ipiv(*)
+     end function stdlib${ii}$_cla_syrpvgrw
+
+     real(dp) module function stdlib${ii}$_zla_syrpvgrw( uplo, n, info, a, lda, af,ldaf, ipiv, work )
+           character, intent(in) :: uplo
+           integer(${ik}$), intent(in) :: n, info, lda, ldaf
+           complex(dp), intent(in) :: a(lda,*), af(ldaf,*)
+           real(dp), intent(out) :: work(*)
+           integer(${ik}$), intent(in) :: ipiv(*)
+     end function stdlib${ii}$_zla_syrpvgrw
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     real(${ck}$) module function stdlib${ii}$_${ci}$la_syrpvgrw( uplo, n, info, a, lda, af,ldaf, ipiv, work )
+           character, intent(in) :: uplo
+           integer(${ik}$), intent(in) :: n, info, lda, ldaf
+           complex(${ck}$), intent(in) :: a(lda,*), af(ldaf,*)
+           real(${ck}$), intent(out) :: work(*)
+           integer(${ik}$), intent(in) :: ipiv(*)
+     end function stdlib${ii}$_${ci}$la_syrpvgrw
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure real(sp) module function stdlib${ii}$_sla_gerpvgrw( n, ncols, a, lda, af, ldaf )
+           integer(${ik}$), intent(in) :: n, ncols, lda, ldaf
+           real(sp), intent(in) :: a(lda,*), af(ldaf,*)
+     end function stdlib${ii}$_sla_gerpvgrw
+
+     pure real(dp) module function stdlib${ii}$_dla_gerpvgrw( n, ncols, a, lda, af,ldaf )
+           integer(${ik}$), intent(in) :: n, ncols, lda, ldaf
+           real(dp), intent(in) :: a(lda,*), af(ldaf,*)
+     end function stdlib${ii}$_dla_gerpvgrw
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure real(${rk}$) module function stdlib${ii}$_${ri}$la_gerpvgrw( n, ncols, a, lda, af,ldaf )
+           integer(${ik}$), intent(in) :: n, ncols, lda, ldaf
+           real(${rk}$), intent(in) :: a(lda,*), af(ldaf,*)
+     end function stdlib${ii}$_${ri}$la_gerpvgrw
+
+#:endif
+#:endfor
+
+     pure real(sp) module function stdlib${ii}$_cla_gerpvgrw( n, ncols, a, lda, af, ldaf )
+           integer(${ik}$), intent(in) :: n, ncols, lda, ldaf
+           complex(sp), intent(in) :: a(lda,*), af(ldaf,*)
+     end function stdlib${ii}$_cla_gerpvgrw
+
+     pure real(dp) module function stdlib${ii}$_zla_gerpvgrw( n, ncols, a, lda, af,ldaf )
+           integer(${ik}$), intent(in) :: n, ncols, lda, ldaf
+           complex(dp), intent(in) :: a(lda,*), af(ldaf,*)
+     end function stdlib${ii}$_zla_gerpvgrw
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure real(${ck}$) module function stdlib${ii}$_${ci}$la_gerpvgrw( n, ncols, a, lda, af,ldaf )
+           integer(${ik}$), intent(in) :: n, ncols, lda, ldaf
+           complex(${ck}$), intent(in) :: a(lda,*), af(ldaf,*)
+     end function stdlib${ii}$_${ci}$la_gerpvgrw
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     real(sp) module function stdlib${ii}$_cla_gbrcond_c( trans, n, kl, ku, ab, ldab, afb,ldafb, ipiv, c, &
+               capply, info, work,rwork )
+           character, intent(in) :: trans
+           logical(lk), intent(in) :: capply
+           integer(${ik}$), intent(in) :: n, kl, ku, ldab, ldafb
+           integer(${ik}$) :: kd, ke
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: ipiv(*)
+           complex(sp), intent(in) :: ab(ldab,*), afb(ldafb,*)
+           complex(sp), intent(out) :: work(*)
+           real(sp), intent(in) :: c(*)
+           real(sp), intent(out) :: rwork(*)
+     end function stdlib${ii}$_cla_gbrcond_c
+
+     real(dp) module function stdlib${ii}$_zla_gbrcond_c( trans, n, kl, ku, ab,ldab, afb, ldafb, ipiv,c, &
+               capply, info, work,rwork )
+           character, intent(in) :: trans
+           logical(lk), intent(in) :: capply
+           integer(${ik}$), intent(in) :: n, kl, ku, ldab, ldafb
+           integer(${ik}$) :: kd, ke
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: ipiv(*)
+           complex(dp), intent(in) :: ab(ldab,*), afb(ldafb,*)
+           complex(dp), intent(out) :: work(*)
+           real(dp), intent(in) :: c(*)
+           real(dp), intent(out) :: rwork(*)
+     end function stdlib${ii}$_zla_gbrcond_c
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     real(${ck}$) module function stdlib${ii}$_${ci}$la_gbrcond_c( trans, n, kl, ku, ab,ldab, afb, ldafb, ipiv,c, &
+               capply, info, work,rwork )
+           character, intent(in) :: trans
+           logical(lk), intent(in) :: capply
+           integer(${ik}$), intent(in) :: n, kl, ku, ldab, ldafb
+           integer(${ik}$) :: kd, ke
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: ipiv(*)
+           complex(${ck}$), intent(in) :: ab(ldab,*), afb(ldafb,*)
+           complex(${ck}$), intent(out) :: work(*)
+           real(${ck}$), intent(in) :: c(*)
+           real(${ck}$), intent(out) :: rwork(*)
+     end function stdlib${ii}$_${ci}$la_gbrcond_c
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     real(sp) module function stdlib${ii}$_cla_gercond_c( trans, n, a, lda, af, ldaf, ipiv, c,capply, info, &
+               work, rwork )
+           character, intent(in) :: trans
+           logical(lk), intent(in) :: capply
+           integer(${ik}$), intent(in) :: n, lda, ldaf
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: ipiv(*)
+           complex(sp), intent(in) :: a(lda,*), af(ldaf,*)
+           complex(sp), intent(out) :: work(*)
+           real(sp), intent(in) :: c(*)
+           real(sp), intent(out) :: rwork(*)
+     end function stdlib${ii}$_cla_gercond_c
+
+     real(dp) module function stdlib${ii}$_zla_gercond_c( trans, n, a, lda, af,ldaf, ipiv, c, capply,info, &
+               work, rwork )
+           character, intent(in) :: trans
+           logical(lk), intent(in) :: capply
+           integer(${ik}$), intent(in) :: n, lda, ldaf
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: ipiv(*)
+           complex(dp), intent(in) :: a(lda,*), af(ldaf,*)
+           complex(dp), intent(out) :: work(*)
+           real(dp), intent(in) :: c(*)
+           real(dp), intent(out) :: rwork(*)
+     end function stdlib${ii}$_zla_gercond_c
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     real(${ck}$) module function stdlib${ii}$_${ci}$la_gercond_c( trans, n, a, lda, af,ldaf, ipiv, c, capply,info, &
+               work, rwork )
+           character, intent(in) :: trans
+           logical(lk), intent(in) :: capply
+           integer(${ik}$), intent(in) :: n, lda, ldaf
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: ipiv(*)
+           complex(${ck}$), intent(in) :: a(lda,*), af(ldaf,*)
+           complex(${ck}$), intent(out) :: work(*)
+           real(${ck}$), intent(in) :: c(*)
+           real(${ck}$), intent(out) :: rwork(*)
+     end function stdlib${ii}$_${ci}$la_gercond_c
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     real(sp) module function stdlib${ii}$_cla_hercond_c( uplo, n, a, lda, af, ldaf, ipiv, c,capply, info, &
+               work, rwork )
+           character, intent(in) :: uplo
+           logical(lk), intent(in) :: capply
+           integer(${ik}$), intent(in) :: n, lda, ldaf
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: ipiv(*)
+           complex(sp), intent(in) :: a(lda,*), af(ldaf,*)
+           complex(sp), intent(out) :: work(*)
+           real(sp), intent(in) :: c(*)
+           real(sp), intent(out) :: rwork(*)
+     end function stdlib${ii}$_cla_hercond_c
+
+     real(dp) module function stdlib${ii}$_zla_hercond_c( uplo, n, a, lda, af,ldaf, ipiv, c, capply,info, work,&
+                rwork )
+           character, intent(in) :: uplo
+           logical(lk), intent(in) :: capply
+           integer(${ik}$), intent(in) :: n, lda, ldaf
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: ipiv(*)
+           complex(dp), intent(in) :: a(lda,*), af(ldaf,*)
+           complex(dp), intent(out) :: work(*)
+           real(dp), intent(in) :: c(*)
+           real(dp), intent(out) :: rwork(*)
+     end function stdlib${ii}$_zla_hercond_c
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     real(${ck}$) module function stdlib${ii}$_${ci}$la_hercond_c( uplo, n, a, lda, af,ldaf, ipiv, c, capply,info, work,&
+                rwork )
+           character, intent(in) :: uplo
+           logical(lk), intent(in) :: capply
+           integer(${ik}$), intent(in) :: n, lda, ldaf
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: ipiv(*)
+           complex(${ck}$), intent(in) :: a(lda,*), af(ldaf,*)
+           complex(${ck}$), intent(out) :: work(*)
+           real(${ck}$), intent(in) :: c(*)
+           real(${ck}$), intent(out) :: rwork(*)
+     end function stdlib${ii}$_${ci}$la_hercond_c
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     module subroutine stdlib${ii}$_sla_syamv( uplo, n, alpha, a, lda, x, incx, beta, y,incy )
+           real(sp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, lda, n, uplo
+           real(sp), intent(in) :: a(lda,*), x(*)
+           real(sp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_sla_syamv
+
+     module subroutine stdlib${ii}$_dla_syamv( uplo, n, alpha, a, lda, x, incx, beta, y,incy )
+           real(dp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, lda, n, uplo
+           real(dp), intent(in) :: a(lda,*), x(*)
+           real(dp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_dla_syamv
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     module subroutine stdlib${ii}$_${ri}$la_syamv( uplo, n, alpha, a, lda, x, incx, beta, y,incy )
+           real(${rk}$), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, lda, n, uplo
+           real(${rk}$), intent(in) :: a(lda,*), x(*)
+           real(${rk}$), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_${ri}$la_syamv
+
+#:endif
+#:endfor
+
+     module subroutine stdlib${ii}$_cla_syamv( uplo, n, alpha, a, lda, x, incx, beta, y,incy )
+           real(sp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, lda, n
+           integer(${ik}$), intent(in) :: uplo
+           complex(sp), intent(in) :: a(lda,*), x(*)
+           real(sp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_cla_syamv
+
+     module subroutine stdlib${ii}$_zla_syamv( uplo, n, alpha, a, lda, x, incx, beta, y,incy )
+           real(dp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, lda, n
+           integer(${ik}$), intent(in) :: uplo
+           complex(dp), intent(in) :: a(lda,*), x(*)
+           real(dp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_zla_syamv
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     module subroutine stdlib${ii}$_${ci}$la_syamv( uplo, n, alpha, a, lda, x, incx, beta, y,incy )
+           real(${ck}$), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, lda, n
+           integer(${ik}$), intent(in) :: uplo
+           complex(${ck}$), intent(in) :: a(lda,*), x(*)
+           real(${ck}$), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_${ci}$la_syamv
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     real(sp) module function stdlib${ii}$_sla_syrcond( uplo, n, a, lda, af, ldaf, ipiv, cmode,c, info, work, &
+               iwork )
+           character, intent(in) :: uplo
+           integer(${ik}$), intent(in) :: n, lda, ldaf, cmode
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(out) :: iwork(*)
+           integer(${ik}$), intent(in) :: ipiv(*)
+           real(sp), intent(in) :: a(lda,*), af(ldaf,*), c(*)
+           real(sp), intent(out) :: work(*)
+     end function stdlib${ii}$_sla_syrcond
+
+     real(dp) module function stdlib${ii}$_dla_syrcond( uplo, n, a, lda, af, ldaf,ipiv, cmode, c, info, work,&
+               iwork )
+           character, intent(in) :: uplo
+           integer(${ik}$), intent(in) :: n, lda, ldaf, cmode
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(out) :: iwork(*)
+           integer(${ik}$), intent(in) :: ipiv(*)
+           real(dp), intent(in) :: a(lda,*), af(ldaf,*), c(*)
+           real(dp), intent(out) :: work(*)
+     end function stdlib${ii}$_dla_syrcond
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     real(${rk}$) module function stdlib${ii}$_${ri}$la_syrcond( uplo, n, a, lda, af, ldaf,ipiv, cmode, c, info, work,&
+               iwork )
+           character, intent(in) :: uplo
+           integer(${ik}$), intent(in) :: n, lda, ldaf, cmode
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(out) :: iwork(*)
+           integer(${ik}$), intent(in) :: ipiv(*)
+           real(${rk}$), intent(in) :: a(lda,*), af(ldaf,*), c(*)
+           real(${rk}$), intent(out) :: work(*)
+     end function stdlib${ii}$_${ri}$la_syrcond
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     real(sp) module function stdlib${ii}$_cla_syrcond_c( uplo, n, a, lda, af, ldaf, ipiv, c,capply, info, &
+               work, rwork )
+           character, intent(in) :: uplo
+           logical(lk), intent(in) :: capply
+           integer(${ik}$), intent(in) :: n, lda, ldaf
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: ipiv(*)
+           complex(sp), intent(in) :: a(lda,*), af(ldaf,*)
+           complex(sp), intent(out) :: work(*)
+           real(sp), intent(in) :: c(*)
+           real(sp), intent(out) :: rwork(*)
+     end function stdlib${ii}$_cla_syrcond_c
+
+     real(dp) module function stdlib${ii}$_zla_syrcond_c( uplo, n, a, lda, af,ldaf, ipiv, c, capply,info, work,&
+                rwork )
+           character, intent(in) :: uplo
+           logical(lk), intent(in) :: capply
+           integer(${ik}$), intent(in) :: n, lda, ldaf
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: ipiv(*)
+           complex(dp), intent(in) :: a(lda,*), af(ldaf,*)
+           complex(dp), intent(out) :: work(*)
+           real(dp), intent(in) :: c(*)
+           real(dp), intent(out) :: rwork(*)
+     end function stdlib${ii}$_zla_syrcond_c
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     real(${ck}$) module function stdlib${ii}$_${ci}$la_syrcond_c( uplo, n, a, lda, af,ldaf, ipiv, c, capply,info, work,&
+                rwork )
+           character, intent(in) :: uplo
+           logical(lk), intent(in) :: capply
+           integer(${ik}$), intent(in) :: n, lda, ldaf
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: ipiv(*)
+           complex(${ck}$), intent(in) :: a(lda,*), af(ldaf,*)
+           complex(${ck}$), intent(out) :: work(*)
+           real(${ck}$), intent(in) :: c(*)
+           real(${ck}$), intent(out) :: rwork(*)
+     end function stdlib${ii}$_${ci}$la_syrcond_c
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     real(sp) module function stdlib${ii}$_cla_porcond_c( uplo, n, a, lda, af, ldaf, c, capply,info, work, &
+               rwork )
+           character, intent(in) :: uplo
+           logical(lk), intent(in) :: capply
+           integer(${ik}$), intent(in) :: n, lda, ldaf
+           integer(${ik}$), intent(out) :: info
+           complex(sp), intent(in) :: a(lda,*), af(ldaf,*)
+           complex(sp), intent(out) :: work(*)
+           real(sp), intent(in) :: c(*)
+           real(sp), intent(out) :: rwork(*)
+     end function stdlib${ii}$_cla_porcond_c
+
+     real(dp) module function stdlib${ii}$_zla_porcond_c( uplo, n, a, lda, af,ldaf, c, capply, info,work, &
+               rwork )
+           character, intent(in) :: uplo
+           logical(lk), intent(in) :: capply
+           integer(${ik}$), intent(in) :: n, lda, ldaf
+           integer(${ik}$), intent(out) :: info
+           complex(dp), intent(in) :: a(lda,*), af(ldaf,*)
+           complex(dp), intent(out) :: work(*)
+           real(dp), intent(in) :: c(*)
+           real(dp), intent(out) :: rwork(*)
+     end function stdlib${ii}$_zla_porcond_c
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     real(${ck}$) module function stdlib${ii}$_${ci}$la_porcond_c( uplo, n, a, lda, af,ldaf, c, capply, info,work, &
+               rwork )
+           character, intent(in) :: uplo
+           logical(lk), intent(in) :: capply
+           integer(${ik}$), intent(in) :: n, lda, ldaf
+           integer(${ik}$), intent(out) :: info
+           complex(${ck}$), intent(in) :: a(lda,*), af(ldaf,*)
+           complex(${ck}$), intent(out) :: work(*)
+           real(${ck}$), intent(in) :: c(*)
+           real(${ck}$), intent(out) :: rwork(*)
+     end function stdlib${ii}$_${ci}$la_porcond_c
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+end module stdlib_lapack_others

@@ -2,7 +2,7 @@
 program example_qr_space
   use stdlib_linalg_constants, only: ilp
   use stdlib_linalg, only: qr, qr_space, linalg_state_type
-  implicit none(type,external)
+  implicit none
   real :: A(104, 32), Q(104,32), R(32,32)
   real, allocatable :: work(:)
   integer(ilp) :: lwork
