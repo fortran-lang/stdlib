@@ -2,7 +2,7 @@
 module test_linalg_eigenvalues
     use stdlib_linalg_constants
     use stdlib_linalg_state
-    use stdlib_linalg, only: eig, eigh, eigvals, eigvalsh, diag
+    use stdlib_linalg, only: eig, eigh, eigvals, eigvalsh, diag, eye
     use testdrive, only: error_type, check, new_unittest, unittest_type    
 
     implicit none (type,external)
@@ -31,9 +31,11 @@ module test_linalg_eigenvalues
                        new_unittest("test_eigh_real_d",test_eigh_real_d)]        
         
         tests = [tests,new_unittest("test_eig_complex_c",test_eig_complex_c), &
-                       new_unittest("test_eig_generalized_complex_c",test_eigvals_generalized_complex_c)]                
+                       new_unittest("test_eig_generalized_complex_c",test_eigvals_generalized_complex_c), &
+                       new_unittest("test_eig_issue_927_c",test_issue_927_c)]                
         tests = [tests,new_unittest("test_eig_complex_z",test_eig_complex_z), &
-                       new_unittest("test_eig_generalized_complex_z",test_eigvals_generalized_complex_z)]                
+                       new_unittest("test_eig_generalized_complex_z",test_eigvals_generalized_complex_z), &
+                       new_unittest("test_eig_issue_927_z",test_issue_927_z)]                
 
     end subroutine test_eig_eigh
 
@@ -498,8 +500,6 @@ module test_linalg_eigenvalues
         
         lambda = eigvals(A, B, err=state)
         
-        print *, 'lambda = ',lambda
-
         !> Expected eigenvalues
         lres(1) = czero
         lres(2) = 2*cone
@@ -512,6 +512,35 @@ module test_linalg_eigenvalues
         if (allocated(error)) return        
         
     end subroutine test_eigvals_generalized_complex_c
+
+    ! Generalized eigenvalues should not crash
+    subroutine test_issue_927_c(error)
+      type(error_type), allocatable, intent(out) :: error 
+
+      complex(sp) :: A_Z(3,3),S_Z(3,3),vecs_r(3,3),eigs(3)
+      real(sp) :: A_D(3,3),S_D(3,3)
+      type(linalg_state_type) :: state
+      integer :: i
+
+      ! Set matrix
+      A_Z = reshape( [ [1, 6, 3], &
+                        [9, 2, 1], &
+                        [8, 3, 4] ], [3,3] )
+
+      S_Z = eye(3, mold=0.0_sp)
+
+      A_D = real(A_Z)
+      S_D = real(S_Z)
+
+      call eig(A_D,S_D,eigs,right=vecs_r,err=state) 
+      call check(error, state%ok(), 'test issue 927 (complex(sp)): '//state%print())
+      if (allocated(error)) return      
+
+      call eig(A_Z,S_Z,eigs,right=vecs_r,err=state) !Fails
+      call check(error, state%ok(), 'test issue 927 (complex(sp)): '//state%print())
+      if (allocated(error)) return      
+
+    end subroutine test_issue_927_c
 
     subroutine test_eig_complex_z(error)
         type(error_type), allocatable, intent(out) :: error
@@ -577,8 +606,6 @@ module test_linalg_eigenvalues
         
         lambda = eigvals(A, B, err=state)
         
-        print *, 'lambda = ',lambda
-
         !> Expected eigenvalues
         lres(1) = czero
         lres(2) = 2*cone
@@ -591,6 +618,37 @@ module test_linalg_eigenvalues
         if (allocated(error)) return        
         
     end subroutine test_eigvals_generalized_complex_z
+
+    ! Generalized eigenvalues should not crash
+    subroutine test_issue_927_z(error)
+      type(error_type), allocatable, intent(out) :: error 
+
+      complex(dp) :: A_Z(3,3),S_Z(3,3),vecs_r(3,3),eigs(3)
+      real(dp) :: A_D(3,3),S_D(3,3)
+      type(linalg_state_type) :: state
+      integer :: i
+
+      ! Set matrix
+      A_Z = reshape( [ [1, 6, 3], &
+                        [9, 2, 1], &
+                        [8, 3, 4] ], [3,3] )
+
+      S_Z = eye(3, mold=0.0_dp)
+
+      A_D = real(A_Z)
+      S_D = real(S_Z)
+
+      call eig(A_D,S_D,eigs,right=vecs_r,err=state) 
+      call check(error, state%ok(), 'test issue 927 (complex(dp)): '//state%print())
+      if (allocated(error)) return      
+
+      call eig(A_Z,S_Z,eigs,right=vecs_r,err=state) !Fails
+      call check(error, state%ok(), 'test issue 927 (complex(dp)): '//state%print())
+      if (allocated(error)) return      
+
+    end subroutine test_issue_927_z
+
+
 
 
 
