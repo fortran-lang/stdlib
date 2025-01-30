@@ -320,9 +320,8 @@ module test_linalg_eigenvalues
     subroutine test_issue_927_${ci}$(error)
       type(error_type), allocatable, intent(out) :: error 
 
-      ${ct}$, dimension(3,3) :: A_Z,S_Z,vecs_r
-      ${ct}$,dimension(3) :: eigs
-      real(${ck}$), dimension(3,3) :: A_D,S_D
+      ${ct}$ :: A_Z(3,3),S_Z(3,3),vecs_r(3,3),eigs(3)
+      real(${ck}$) :: A_D(3,3),S_D(3,3)
       type(linalg_state_type) :: state
       integer :: i
 
