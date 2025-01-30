@@ -1,0 +1,224 @@
+! SPDX-Identifier: MIT
+
+#:include "common.fypp"
+#:set RANKS = range(1, MAXRANK + 1)
+#:set KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES + CMPLX_KINDS_TYPES
+
+!> Module for general array handling and index manipulation.
+!>
+!> The specification of this module is available [here](../page/specs/stdlib_array.html).
+module stdlib_array
+    use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
+    use stdlib_strings, only: to_string
+    implicit none
+    private
+
+    public :: add_array, trueloc, falseloc
+
+    !> Version: experimental
+    !>
+    !> Wrapper class that helps with the allocation of `array_type`.
+    !> [Specification](../page/specs/stdlib_array.html#array_wrapper_type)
+    type, public :: array_wrapper_type
+        !> Polymorphic array.
+        class(array_type), allocatable :: array
+    contains
+#:for k1, t1 in KINDS_TYPES
+#:for rank in RANKS
+        generic :: get_values => get_values_${t1[0]}$${k1}$_${rank}$
+        procedure :: get_values_${t1[0]}$${k1}$_${rank}$
+#:endfor
+#:endfor
+    end type
+
+    !> Version: experimental
+    !>
+    !> Abstract type that is extended according to the type and rank of the stored array.
+    !> [Specification](../page/specs/stdlib_array.html#array_type)
+    type, abstract, public :: array_type
+        !> Name of the array.
+        character(:), allocatable :: name
+    end type
+
+#:for k1, t1 in KINDS_TYPES
+#:for rank in RANKS
+    !> Version: experimental
+    !>
+    !> Array type for ${t1}$ arrays of ${k1} precision and rank ${rank}.
+    !> Extends `array_type` and contains the values of the array.
+    type, extends(array_type), public :: array_type_${t1[0]}$${k1}$_${rank}$
+        ${t1}$, allocatable :: values${ranksuffix(rank)}$
+    end type
+#:endfor
+#:endfor
+
+    !> Version: experimental
+    !>
+    !> Add an array of defined type and rank to an array of array wrappers.
+    !> [Specification](../page/specs/stdlib_array.html#add_array)
+    interface add_array
+#:for k1, t1 in KINDS_TYPES
+#:for rank in RANKS
+        pure module subroutine add_array_${t1[0]}$${k1}$_${rank}$(arrays, array, stat, msg, name)
+            !> Array of arrays to which the array is to be added.
+            type(array_wrapper_type), allocatable, intent(inout) :: arrays(:)
+            !> Array to be added.
+            ${t1}$, intent(in) :: array${ranksuffix(rank)}$
+            !> Status of addition.
+            integer, intent(out), optional :: stat
+            !> Error message.
+            character(len=:), allocatable, intent(out), optional :: msg
+            !> Name of the array to be added. A default name will be used if not provided.
+            character(len=*), intent(in), optional :: name
+        end
+#:endfor
+#:endfor
+    end interface
+
+contains
+
+#:for k1, t1 in KINDS_TYPES
+#:for rank in RANKS
+    !> Version: experimental
+    !>
+    !> Extract array values from an array wrapper.
+    !> [Specification](../page/specs/stdlib_array.html#get_values)
+    pure subroutine get_values_${t1[0]}$${k1}$_${rank}$(wrapper, values, stat, msg)
+        !> Array wrapper to extract the values from.
+        class(array_wrapper_type), intent(in) :: wrapper
+        !> Extracted values.
+        ${t1}$, allocatable, intent(out) :: values${ranksuffix(rank)}$
+        !> Optional status of the extraction.
+        integer, intent(out), optional :: stat
+        !> Optional error message.
+        character(len=:), allocatable, intent(out), optional :: msg
+
+        if (present(stat)) stat = 0
+
+        select type (array_ => wrapper%array)
+          class is (array_type_${t1[0]}$${k1}$_${rank}$)
+            values = array_%values
+          class default
+            if (present(stat)) stat = 1
+            if (present(msg)) msg = "Array is of unexpected type."
+        end select
+    end
+#:endfor
+#:endfor
+
+#:for k1, t1 in KINDS_TYPES
+#:for rank in RANKS
+    !> Version: experimental
+    !>
+    !> Add an array to an array of array wrappers.
+    pure module subroutine add_array_${t1[0]}$${k1}$_${rank}$(arrays, array, stat, msg, name)
+        !> Array of wrapper arrays to which the array is to be added.
+        type(array_wrapper_type), allocatable, intent(inout) :: arrays(:)
+        !> Array to be added.
+        ${t1}$, intent(in) :: array${ranksuffix(rank)}$
+        !> Status of addition.
+        integer, intent(out), optional :: stat
+        !> Error message.
+        character(len=:), allocatable, intent(out), optional :: msg
+        !> Name of the array to be added. A default name will be used if not provided.
+        character(len=*), intent(in), optional :: name
+
+        integer :: i, arr_size
+        type(array_type_${t1[0]}$${k1}$_${rank}$) :: t_arr
+        type(array_wrapper_type), allocatable :: tmp_arrays(:)
+
+        if (present(stat)) stat = 0
+
+        if (present(name)) then
+            if (trim(name) == '') then
+                if (present(stat)) stat = 1
+                if (present(msg)) msg = "Array name cannot be empty."
+                return
+            end if
+            t_arr%name = name
+        else
+            if (allocated(arrays)) then
+                t_arr%name = "arr_"//to_string(size(arrays))//".npy"
+            else
+                t_arr%name = "arr_0.npy"
+            end if
+        end if
+
+        allocate(t_arr%values, source=array)
+        if (.not. allocated(arrays)) then
+            allocate(arrays(1))
+            allocate(arrays(1)%array, source=t_arr)
+            return
+        end if
+
+        arr_size = size(arrays)
+        do i = 1, arr_size
+            if (arrays(i)%array%name == t_arr%name) then
+                if (present(stat)) stat = 1
+                if (present(msg)) msg = "Array with the same name '"//t_arr%name//"' already exists."
+                return
+            end if
+        end do
+
+        allocate(tmp_arrays(arr_size + 1))
+        tmp_arrays(:arr_size) = arrays
+        allocate(tmp_arrays(arr_size + 1)%array, source=t_arr)
+        call move_alloc(tmp_arrays, arrays)
+    end
+#:endfor
+#:endfor
+
+    !> Version: experimental
+    !>
+    !> Return the positions of the true elements in array.
+    !> [Specification](../page/specs/stdlib_array.html#trueloc)
+    pure function trueloc(array, lbound) result(loc)
+        !> Mask of logicals
+        logical, intent(in) :: array(:)
+        !> Lower bound of array to index
+        integer, intent(in), optional :: lbound
+        !> Locations of true elements
+        integer :: loc(count(array))
+
+        call logicalloc(loc, array, .true., lbound)
+    end
+
+    !> Version: experimental
+    !>
+    !> Return the positions of the false elements in array.
+    !> [Specification](../page/specs/stdlib_array.html#falseloc)
+    pure function falseloc(array, lbound) result(loc)
+        !> Mask of logicals
+        logical, intent(in) :: array(:)
+        !> Lower bound of array to index
+        integer, intent(in), optional :: lbound
+        !> Locations of false elements
+        integer :: loc(count(.not. array))
+
+        call logicalloc(loc, array, .false., lbound)
+    end
+
+    !> Return the positions of the truthy elements in array
+    pure subroutine logicalloc(loc, array, truth, lbound)
+        !> Locations of truthy elements
+        integer, intent(out) :: loc(:)
+        !> Mask of logicals
+        logical, intent(in) :: array(:)
+        !> Truthy value
+        logical, intent(in) :: truth
+        !> Lower bound of array to index
+        integer, intent(in), optional :: lbound
+        integer :: i, pos, offset
+
+        offset = 0
+        if (present(lbound)) offset = lbound - 1
+
+        i = 0
+        do pos = 1, size(array)
+            if (array(pos) .eqv. truth) then
+                i = i + 1
+                loc(i) = pos + offset
+            end if
+        end do
+    end
+end
