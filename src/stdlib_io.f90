@@ -1207,6 +1207,7 @@ contains
 
     integer :: ios, skiprows_, i
     character :: c
+    character(len=:), allocatable :: line
     logical :: lastblank
 
     skiprows_ = optval(skiprows, 0)
@@ -1216,12 +1217,15 @@ contains
     do i = 1, skiprows_
       read(s, *)
     end do
-
     number_of_columns = 0
+    
+    ! Read first non-skipped line as a whole
+    call getline(s, line, ios)
+    if (ios/=0 .or. .not.allocated(line)) return
+
     lastblank = .true.
-    do
-      read(s, '(a)', advance='no', iostat=ios) c
-      if (ios /= 0) exit
+    do i = 1,len(line)
+      c = line(i:i)
       if (lastblank .and. .not. is_blank(c)) number_of_columns = number_of_columns + 1
       lastblank = is_blank(c)
     end do
