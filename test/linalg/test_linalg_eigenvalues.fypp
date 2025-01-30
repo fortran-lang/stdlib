@@ -3,7 +3,7 @@
 module test_linalg_eigenvalues
     use stdlib_linalg_constants
     use stdlib_linalg_state
-    use stdlib_linalg, only: eig, eigh, eigvals, eigvalsh, diag
+    use stdlib_linalg, only: eig, eigh, eigvals, eigvalsh, diag, eye
     use testdrive, only: error_type, check, new_unittest, unittest_type    
 
     implicit none (type,external)
@@ -21,27 +21,23 @@ module test_linalg_eigenvalues
         allocate(tests(0))
 
         #:for rk,rt,ri in REAL_KINDS_TYPES
-        #:if rk!="xdp"    
         tests = [tests,new_unittest("test_eig_real_${ri}$",test_eig_real_${ri}$), &
                        new_unittest("test_eigvals_identity_${ri}$",test_eigvals_identity_${ri}$), &    
                        new_unittest("test_eigvals_diagonal_B_${ri}$",test_eigvals_diagonal_B_${ri}$), &
                        new_unittest("test_eigvals_nondiagonal_B_${ri}$",test_eigvals_nondiagonal_B_${ri}$), &
                        new_unittest("test_eigh_real_${ri}$",test_eigh_real_${ri}$)]        
-        #:endif
         #: endfor
         
         #:for ck,ct,ci in CMPLX_KINDS_TYPES
-        #:if ck!="xdp"    
         tests = [tests,new_unittest("test_eig_complex_${ci}$",test_eig_complex_${ci}$), &
-                       new_unittest("test_eig_generalized_complex_${ci}$",test_eigvals_generalized_complex_${ci}$)]                
-        #:endif
+                       new_unittest("test_eig_generalized_complex_${ci}$",test_eigvals_generalized_complex_${ci}$), &
+                       new_unittest("test_eig_issue_927_${ci}$",test_issue_927_${ci}$)]                
         #: endfor 
 
     end subroutine test_eig_eigh
 
     !> Simple real matrix eigenvalues
     #:for rk,rt,ri in REAL_KINDS_TYPES
-    #:if rk!="xdp"    
     subroutine test_eig_real_${ri}$(error)
         type(error_type), allocatable, intent(out) :: error
 
@@ -239,12 +235,10 @@ module test_linalg_eigenvalues
         if (allocated(error)) return
     end subroutine test_eigvals_nondiagonal_B_${ri}$
 
-    #:endif
     #:endfor
 
     !> Simple complex matrix eigenvalues
     #:for ck,ct,ci in CMPLX_KINDS_TYPES
-    #:if ck!="xdp"    
     subroutine test_eig_complex_${ci}$(error)
         type(error_type), allocatable, intent(out) :: error
 
@@ -309,8 +303,6 @@ module test_linalg_eigenvalues
         
         lambda = eigvals(A, B, err=state)
         
-        print *, 'lambda = ',lambda
-
         !> Expected eigenvalues
         lres(1) = czero
         lres(2) = 2*cone
@@ -324,8 +316,38 @@ module test_linalg_eigenvalues
         
     end subroutine test_eigvals_generalized_complex_${ci}$
 
-    #:endif
+    ! Generalized eigenvalues should not crash
+    subroutine test_issue_927_${ci}$(error)
+      type(error_type), allocatable, intent(out) :: error 
+
+      ${ct}$ :: A_Z(3,3),S_Z(3,3),vecs_r(3,3),eigs(3)
+      real(${ck}$) :: A_D(3,3),S_D(3,3)
+      type(linalg_state_type) :: state
+      integer :: i
+
+      ! Set matrix
+      A_Z = reshape( [ [1, 6, 3], &
+                        [9, 2, 1], &
+                        [8, 3, 4] ], [3,3] )
+
+      S_Z = eye(3, mold=0.0_${ck}$)
+
+      A_D = real(A_Z)
+      S_D = real(S_Z)
+
+      call eig(A_D,S_D,eigs,right=vecs_r,err=state) 
+      call check(error, state%ok(), 'test issue 927 (${ct}$): '//state%print())
+      if (allocated(error)) return      
+
+      call eig(A_Z,S_Z,eigs,right=vecs_r,err=state) !Fails
+      call check(error, state%ok(), 'test issue 927 (${ct}$): '//state%print())
+      if (allocated(error)) return      
+
+    end subroutine test_issue_927_${ci}$
+
     #:endfor
+
+
 
 
 end module test_linalg_eigenvalues
