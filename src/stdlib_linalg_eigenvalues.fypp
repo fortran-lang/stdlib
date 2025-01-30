@@ -353,7 +353,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
 
              ! Compute workspace size
              #:if rt.startswith('complex')
-             allocate(rwork(2*n))
+             allocate(rwork( #{if ei=='ggev'}# 8*n #{else}# 2*n #{endif}# ))
              #:else
              allocate(lreal(n),limag(n))
              #:endif
