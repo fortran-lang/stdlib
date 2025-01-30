@@ -133,14 +133,14 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      module function stdlib_linalg_eigvals_standard_s(a,err) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         real(sp), intent(in), dimension(:,:), target :: a 
+         real(sp), intent(in), target :: a(:,:) 
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), intent(out) :: err
          !> Array of eigenvalues
          complex(sp), allocatable :: lambda(:)
 
          !> Create
-         real(sp), pointer, dimension(:,:) :: amat
+         real(sp), pointer :: amat(:,:)
          integer(ilp) :: m,n,k
 
          !> Create an internal pointer so the intent of A won't affect the next call
@@ -162,12 +162,12 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      module function stdlib_linalg_eigvals_noerr_standard_s(a) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         real(sp), intent(in), dimension(:,:), target :: a
+         real(sp), intent(in), target :: a(:,:)
          !> Array of eigenvalues
          complex(sp), allocatable :: lambda(:)
 
          !> Create
-         real(sp), pointer, dimension(:,:) :: amat
+         real(sp), pointer :: amat(:,:)
          integer(ilp) :: m,n,k
 
          !> Create an internal pointer so the intent of A won't affect the next call
@@ -191,7 +191,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      !! Eigendecomposition of matrix A returning an array `lambda` of eigenvalues, 
      !! and optionally right or left eigenvectors.        
          !> Input matrix A[m,n]
-         real(sp), intent(inout), dimension(:,:), target :: a 
+         real(sp), intent(inout), target :: a(:,:) 
          !> Array of eigenvalues
          complex(sp), intent(out) :: lambda(:)
          !> [optional] RIGHT eigenvectors of A (as columns)
@@ -210,7 +210,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          character :: task_u,task_v
          real(sp), target :: work_dummy(1),u_dummy(1,1),v_dummy(1,1)
          real(sp), allocatable :: work(:)
-         real(sp), dimension(:,:), pointer :: amat,umat,vmat
+         real(sp), pointer :: amat(:,:),umat(:,:),vmat(:,:)
          real(sp), pointer :: lreal(:),limag(:)
          
          !> Matrix size
@@ -339,16 +339,16 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      module function stdlib_linalg_eigvals_generalized_s(a,b,err) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         real(sp), intent(in), dimension(:,:), target :: a 
+         real(sp), intent(in), target :: a(:,:) 
          !> Generalized problem matrix B[n,n]
-         real(sp), intent(inout), dimension(:,:), target :: b         
+         real(sp), intent(inout), target :: b(:,:)         
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), intent(out) :: err
          !> Array of eigenvalues
          complex(sp), allocatable :: lambda(:)
 
          !> Create
-         real(sp), pointer, dimension(:,:) :: amat, bmat 
+         real(sp), pointer :: amat(:,:), bmat(:,:) 
          integer(ilp) :: m,n,k
 
          !> Create an internal pointer so the intent of A won't affect the next call
@@ -370,14 +370,14 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      module function stdlib_linalg_eigvals_noerr_generalized_s(a,b) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         real(sp), intent(in), dimension(:,:), target :: a
+         real(sp), intent(in), target :: a(:,:)
          !> Generalized problem matrix B[n,n]
-         real(sp), intent(inout), dimension(:,:), target :: b         
+         real(sp), intent(inout), target :: b(:,:)         
          !> Array of eigenvalues
          complex(sp), allocatable :: lambda(:)
 
          !> Create
-         real(sp), pointer, dimension(:,:) :: amat, bmat 
+         real(sp), pointer :: amat(:,:), bmat(:,:) 
          integer(ilp) :: m,n,k
 
          !> Create an internal pointer so the intent of A won't affect the next call
@@ -401,9 +401,9 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      !! Eigendecomposition of matrix A returning an array `lambda` of eigenvalues, 
      !! and optionally right or left eigenvectors.        
          !> Input matrix A[m,n]
-         real(sp), intent(inout), dimension(:,:), target :: a 
+         real(sp), intent(inout), target :: a(:,:) 
          !> Generalized problem matrix B[n,n]
-         real(sp), intent(inout), dimension(:,:), target :: b         
+         real(sp), intent(inout), target :: b(:,:)         
          !> Array of eigenvalues
          complex(sp), intent(out) :: lambda(:)
          !> [optional] RIGHT eigenvectors of A (as columns)
@@ -424,7 +424,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          character :: task_u,task_v
          real(sp), target :: work_dummy(1),u_dummy(1,1),v_dummy(1,1)
          real(sp), allocatable :: work(:)
-         real(sp), dimension(:,:), pointer :: amat,umat,vmat,bmat
+         real(sp), pointer :: amat(:,:),umat(:,:),vmat(:,:),bmat(:,:)
          real(sp), pointer :: lreal(:),limag(:)
          real(sp), allocatable :: beta(:)
          
@@ -748,14 +748,14 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      module function stdlib_linalg_eigvals_standard_d(a,err) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         real(dp), intent(in), dimension(:,:), target :: a 
+         real(dp), intent(in), target :: a(:,:) 
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), intent(out) :: err
          !> Array of eigenvalues
          complex(dp), allocatable :: lambda(:)
 
          !> Create
-         real(dp), pointer, dimension(:,:) :: amat
+         real(dp), pointer :: amat(:,:)
          integer(ilp) :: m,n,k
 
          !> Create an internal pointer so the intent of A won't affect the next call
@@ -777,12 +777,12 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      module function stdlib_linalg_eigvals_noerr_standard_d(a) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         real(dp), intent(in), dimension(:,:), target :: a
+         real(dp), intent(in), target :: a(:,:)
          !> Array of eigenvalues
          complex(dp), allocatable :: lambda(:)
 
          !> Create
-         real(dp), pointer, dimension(:,:) :: amat
+         real(dp), pointer :: amat(:,:)
          integer(ilp) :: m,n,k
 
          !> Create an internal pointer so the intent of A won't affect the next call
@@ -806,7 +806,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      !! Eigendecomposition of matrix A returning an array `lambda` of eigenvalues, 
      !! and optionally right or left eigenvectors.        
          !> Input matrix A[m,n]
-         real(dp), intent(inout), dimension(:,:), target :: a 
+         real(dp), intent(inout), target :: a(:,:) 
          !> Array of eigenvalues
          complex(dp), intent(out) :: lambda(:)
          !> [optional] RIGHT eigenvectors of A (as columns)
@@ -825,7 +825,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          character :: task_u,task_v
          real(dp), target :: work_dummy(1),u_dummy(1,1),v_dummy(1,1)
          real(dp), allocatable :: work(:)
-         real(dp), dimension(:,:), pointer :: amat,umat,vmat
+         real(dp), pointer :: amat(:,:),umat(:,:),vmat(:,:)
          real(dp), pointer :: lreal(:),limag(:)
          
          !> Matrix size
@@ -954,16 +954,16 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      module function stdlib_linalg_eigvals_generalized_d(a,b,err) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         real(dp), intent(in), dimension(:,:), target :: a 
+         real(dp), intent(in), target :: a(:,:) 
          !> Generalized problem matrix B[n,n]
-         real(dp), intent(inout), dimension(:,:), target :: b         
+         real(dp), intent(inout), target :: b(:,:)         
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), intent(out) :: err
          !> Array of eigenvalues
          complex(dp), allocatable :: lambda(:)
 
          !> Create
-         real(dp), pointer, dimension(:,:) :: amat, bmat 
+         real(dp), pointer :: amat(:,:), bmat(:,:) 
          integer(ilp) :: m,n,k
 
          !> Create an internal pointer so the intent of A won't affect the next call
@@ -985,14 +985,14 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      module function stdlib_linalg_eigvals_noerr_generalized_d(a,b) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         real(dp), intent(in), dimension(:,:), target :: a
+         real(dp), intent(in), target :: a(:,:)
          !> Generalized problem matrix B[n,n]
-         real(dp), intent(inout), dimension(:,:), target :: b         
+         real(dp), intent(inout), target :: b(:,:)         
          !> Array of eigenvalues
          complex(dp), allocatable :: lambda(:)
 
          !> Create
-         real(dp), pointer, dimension(:,:) :: amat, bmat 
+         real(dp), pointer :: amat(:,:), bmat(:,:) 
          integer(ilp) :: m,n,k
 
          !> Create an internal pointer so the intent of A won't affect the next call
@@ -1016,9 +1016,9 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      !! Eigendecomposition of matrix A returning an array `lambda` of eigenvalues, 
      !! and optionally right or left eigenvectors.        
          !> Input matrix A[m,n]
-         real(dp), intent(inout), dimension(:,:), target :: a 
+         real(dp), intent(inout), target :: a(:,:) 
          !> Generalized problem matrix B[n,n]
-         real(dp), intent(inout), dimension(:,:), target :: b         
+         real(dp), intent(inout), target :: b(:,:)         
          !> Array of eigenvalues
          complex(dp), intent(out) :: lambda(:)
          !> [optional] RIGHT eigenvectors of A (as columns)
@@ -1039,7 +1039,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          character :: task_u,task_v
          real(dp), target :: work_dummy(1),u_dummy(1,1),v_dummy(1,1)
          real(dp), allocatable :: work(:)
-         real(dp), dimension(:,:), pointer :: amat,umat,vmat,bmat
+         real(dp), pointer :: amat(:,:),umat(:,:),vmat(:,:),bmat(:,:)
          real(dp), pointer :: lreal(:),limag(:)
          real(dp), allocatable :: beta(:)
          
@@ -1363,14 +1363,14 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      module function stdlib_linalg_eigvals_standard_c(a,err) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         complex(sp), intent(in), dimension(:,:), target :: a 
+         complex(sp), intent(in), target :: a(:,:) 
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), intent(out) :: err
          !> Array of eigenvalues
          complex(sp), allocatable :: lambda(:)
 
          !> Create
-         complex(sp), pointer, dimension(:,:) :: amat
+         complex(sp), pointer :: amat(:,:)
          integer(ilp) :: m,n,k
 
          !> Create an internal pointer so the intent of A won't affect the next call
@@ -1392,12 +1392,12 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      module function stdlib_linalg_eigvals_noerr_standard_c(a) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         complex(sp), intent(in), dimension(:,:), target :: a
+         complex(sp), intent(in), target :: a(:,:)
          !> Array of eigenvalues
          complex(sp), allocatable :: lambda(:)
 
          !> Create
-         complex(sp), pointer, dimension(:,:) :: amat
+         complex(sp), pointer :: amat(:,:)
          integer(ilp) :: m,n,k
 
          !> Create an internal pointer so the intent of A won't affect the next call
@@ -1421,7 +1421,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      !! Eigendecomposition of matrix A returning an array `lambda` of eigenvalues, 
      !! and optionally right or left eigenvectors.        
          !> Input matrix A[m,n]
-         complex(sp), intent(inout), dimension(:,:), target :: a 
+         complex(sp), intent(inout), target :: a(:,:) 
          !> Array of eigenvalues
          complex(sp), intent(out) :: lambda(:)
          !> [optional] RIGHT eigenvectors of A (as columns)
@@ -1440,7 +1440,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          character :: task_u,task_v
          complex(sp), target :: work_dummy(1),u_dummy(1,1),v_dummy(1,1)
          complex(sp), allocatable :: work(:)
-         complex(sp), dimension(:,:), pointer :: amat,umat,vmat
+         complex(sp), pointer :: amat(:,:),umat(:,:),vmat(:,:)
          real(sp), allocatable :: rwork(:)
          
          !> Matrix size
@@ -1518,7 +1518,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
              ldv = size(vmat,1,kind=ilp)
 
              ! Compute workspace size
-             allocate(rwork(2*n))
+             allocate(rwork(  2*n  ))
 
              lwork = -1_ilp
             
@@ -1559,16 +1559,16 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      module function stdlib_linalg_eigvals_generalized_c(a,b,err) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         complex(sp), intent(in), dimension(:,:), target :: a 
+         complex(sp), intent(in), target :: a(:,:) 
          !> Generalized problem matrix B[n,n]
-         complex(sp), intent(inout), dimension(:,:), target :: b         
+         complex(sp), intent(inout), target :: b(:,:)         
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), intent(out) :: err
          !> Array of eigenvalues
          complex(sp), allocatable :: lambda(:)
 
          !> Create
-         complex(sp), pointer, dimension(:,:) :: amat, bmat 
+         complex(sp), pointer :: amat(:,:), bmat(:,:) 
          integer(ilp) :: m,n,k
 
          !> Create an internal pointer so the intent of A won't affect the next call
@@ -1590,14 +1590,14 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      module function stdlib_linalg_eigvals_noerr_generalized_c(a,b) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         complex(sp), intent(in), dimension(:,:), target :: a
+         complex(sp), intent(in), target :: a(:,:)
          !> Generalized problem matrix B[n,n]
-         complex(sp), intent(inout), dimension(:,:), target :: b         
+         complex(sp), intent(inout), target :: b(:,:)         
          !> Array of eigenvalues
          complex(sp), allocatable :: lambda(:)
 
          !> Create
-         complex(sp), pointer, dimension(:,:) :: amat, bmat 
+         complex(sp), pointer :: amat(:,:), bmat(:,:) 
          integer(ilp) :: m,n,k
 
          !> Create an internal pointer so the intent of A won't affect the next call
@@ -1621,9 +1621,9 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      !! Eigendecomposition of matrix A returning an array `lambda` of eigenvalues, 
      !! and optionally right or left eigenvectors.        
          !> Input matrix A[m,n]
-         complex(sp), intent(inout), dimension(:,:), target :: a 
+         complex(sp), intent(inout), target :: a(:,:) 
          !> Generalized problem matrix B[n,n]
-         complex(sp), intent(inout), dimension(:,:), target :: b         
+         complex(sp), intent(inout), target :: b(:,:)         
          !> Array of eigenvalues
          complex(sp), intent(out) :: lambda(:)
          !> [optional] RIGHT eigenvectors of A (as columns)
@@ -1644,7 +1644,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          character :: task_u,task_v
          complex(sp), target :: work_dummy(1),u_dummy(1,1),v_dummy(1,1)
          complex(sp), allocatable :: work(:)
-         complex(sp), dimension(:,:), pointer :: amat,umat,vmat,bmat
+         complex(sp), pointer :: amat(:,:),umat(:,:),vmat(:,:),bmat(:,:)
          real(sp), allocatable :: rwork(:)
          complex(sp), allocatable :: beta(:)
          
@@ -1742,7 +1742,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
              ldv = size(vmat,1,kind=ilp)
 
              ! Compute workspace size
-             allocate(rwork(2*n))
+             allocate(rwork(  8*n  ))
 
              lwork = -1_ilp
             
@@ -1960,14 +1960,14 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      module function stdlib_linalg_eigvals_standard_z(a,err) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         complex(dp), intent(in), dimension(:,:), target :: a 
+         complex(dp), intent(in), target :: a(:,:) 
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), intent(out) :: err
          !> Array of eigenvalues
          complex(dp), allocatable :: lambda(:)
 
          !> Create
-         complex(dp), pointer, dimension(:,:) :: amat
+         complex(dp), pointer :: amat(:,:)
          integer(ilp) :: m,n,k
 
          !> Create an internal pointer so the intent of A won't affect the next call
@@ -1989,12 +1989,12 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      module function stdlib_linalg_eigvals_noerr_standard_z(a) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         complex(dp), intent(in), dimension(:,:), target :: a
+         complex(dp), intent(in), target :: a(:,:)
          !> Array of eigenvalues
          complex(dp), allocatable :: lambda(:)
 
          !> Create
-         complex(dp), pointer, dimension(:,:) :: amat
+         complex(dp), pointer :: amat(:,:)
          integer(ilp) :: m,n,k
 
          !> Create an internal pointer so the intent of A won't affect the next call
@@ -2018,7 +2018,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      !! Eigendecomposition of matrix A returning an array `lambda` of eigenvalues, 
      !! and optionally right or left eigenvectors.        
          !> Input matrix A[m,n]
-         complex(dp), intent(inout), dimension(:,:), target :: a 
+         complex(dp), intent(inout), target :: a(:,:) 
          !> Array of eigenvalues
          complex(dp), intent(out) :: lambda(:)
          !> [optional] RIGHT eigenvectors of A (as columns)
@@ -2037,7 +2037,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          character :: task_u,task_v
          complex(dp), target :: work_dummy(1),u_dummy(1,1),v_dummy(1,1)
          complex(dp), allocatable :: work(:)
-         complex(dp), dimension(:,:), pointer :: amat,umat,vmat
+         complex(dp), pointer :: amat(:,:),umat(:,:),vmat(:,:)
          real(dp), allocatable :: rwork(:)
          
          !> Matrix size
@@ -2115,7 +2115,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
              ldv = size(vmat,1,kind=ilp)
 
              ! Compute workspace size
-             allocate(rwork(2*n))
+             allocate(rwork(  2*n  ))
 
              lwork = -1_ilp
             
@@ -2156,16 +2156,16 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      module function stdlib_linalg_eigvals_generalized_z(a,b,err) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         complex(dp), intent(in), dimension(:,:), target :: a 
+         complex(dp), intent(in), target :: a(:,:) 
          !> Generalized problem matrix B[n,n]
-         complex(dp), intent(inout), dimension(:,:), target :: b         
+         complex(dp), intent(inout), target :: b(:,:)         
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), intent(out) :: err
          !> Array of eigenvalues
          complex(dp), allocatable :: lambda(:)
 
          !> Create
-         complex(dp), pointer, dimension(:,:) :: amat, bmat 
+         complex(dp), pointer :: amat(:,:), bmat(:,:) 
          integer(ilp) :: m,n,k
 
          !> Create an internal pointer so the intent of A won't affect the next call
@@ -2187,14 +2187,14 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      module function stdlib_linalg_eigvals_noerr_generalized_z(a,b) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         complex(dp), intent(in), dimension(:,:), target :: a
+         complex(dp), intent(in), target :: a(:,:)
          !> Generalized problem matrix B[n,n]
-         complex(dp), intent(inout), dimension(:,:), target :: b         
+         complex(dp), intent(inout), target :: b(:,:)         
          !> Array of eigenvalues
          complex(dp), allocatable :: lambda(:)
 
          !> Create
-         complex(dp), pointer, dimension(:,:) :: amat, bmat 
+         complex(dp), pointer :: amat(:,:), bmat(:,:) 
          integer(ilp) :: m,n,k
 
          !> Create an internal pointer so the intent of A won't affect the next call
@@ -2218,9 +2218,9 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      !! Eigendecomposition of matrix A returning an array `lambda` of eigenvalues, 
      !! and optionally right or left eigenvectors.        
          !> Input matrix A[m,n]
-         complex(dp), intent(inout), dimension(:,:), target :: a 
+         complex(dp), intent(inout), target :: a(:,:) 
          !> Generalized problem matrix B[n,n]
-         complex(dp), intent(inout), dimension(:,:), target :: b         
+         complex(dp), intent(inout), target :: b(:,:)         
          !> Array of eigenvalues
          complex(dp), intent(out) :: lambda(:)
          !> [optional] RIGHT eigenvectors of A (as columns)
@@ -2241,7 +2241,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          character :: task_u,task_v
          complex(dp), target :: work_dummy(1),u_dummy(1,1),v_dummy(1,1)
          complex(dp), allocatable :: work(:)
-         complex(dp), dimension(:,:), pointer :: amat,umat,vmat,bmat
+         complex(dp), pointer :: amat(:,:),umat(:,:),vmat(:,:),bmat(:,:)
          real(dp), allocatable :: rwork(:)
          complex(dp), allocatable :: beta(:)
          
@@ -2339,7 +2339,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
              ldv = size(vmat,1,kind=ilp)
 
              ! Compute workspace size
-             allocate(rwork(2*n))
+             allocate(rwork(  8*n  ))
 
              lwork = -1_ilp
             
