@@ -405,8 +405,10 @@ interface
     module logical function is_windows()
     end function is_windows
     
-    module integer(process_ID) function process_get_ID(process) result(ID)
+    module function process_get_ID(process) result(ID)
         class(process_type), intent(in) :: process
+        !> Return a process ID
+        integer(process_ID) :: ID
     end function process_get_ID
     
 end interface 

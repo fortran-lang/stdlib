@@ -753,8 +753,10 @@ contains
     end function getfile
 
     !> Return process ID
-    module integer(procesS_ID) function process_get_ID(process) result(ID)
+    module function process_get_ID(process) result(ID)
         class(process_type), intent(in) :: process
+        !> Return a process ID
+        integer(process_ID) :: ID        
         ID = process%id
     end function process_get_ID
 
