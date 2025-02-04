@@ -85,7 +85,7 @@ interface runasync
     !! version: experimental
     !!
     !! Executes an external process asynchronously.
-    !! ([Specification](../page/specs/stdlib_system.html#run-execute-an-external-process-asynchronously))
+    !! ([Specification](../page/specs/stdlib_system.html#runasync-execute-an-external-process-asynchronously))
     !!
     !! ### Summary
     !! Provides methods for executing external processes asynchronously, using either a single command string 
@@ -96,8 +96,10 @@ interface runasync
     !! This interface allows the user to spawn external processes asynchronously (non-blocking). 
     !! Processes can be executed via a single command string or a list of arguments, with options to collect 
     !! standard output and error streams, or to provide a standard input stream via a `character` string.
+    !! Additionally, a callback function can be provided, which will be called upon process completion.
+    !! A user-defined payload can be attached and passed to the callback for handling process-specific data.
     !!
-    !! @note The implementation depends on system-level process management capabilitiesa
+    !! @note The implementation depends on system-level process management capabilities.
     !!
     module function run_async_cmd(cmd, stdin, want_stdout, want_stderr, callback, payload) result(process)
         !> The command line string to execute.
@@ -139,7 +141,7 @@ interface run
     !! version: experimental
     !!
     !! Executes an external process synchronously.
-    !! ([Specification](../page/specs/stdlib_system.html#runasync-execute-an-external-process-synchronously))
+    !! ([Specification](../page/specs/stdlib_system.html#run-execute-an-external-process-synchronously))
     !!
     !! ### Summary
     !! Provides methods for executing external processes synchronously, using either a single command string 
@@ -150,6 +152,9 @@ interface run
     !! This interface allows the user to spawn external processes synchronously (blocking), 
     !! via either a single command string or a list of arguments. It also includes options to collect 
     !! standard output and error streams, or to provide a standard input stream via a `character` string.
+    !! Additionally, it supports an optional callback function that is invoked upon process completion, 
+    !! allowing users to process results dynamically. A user-defined payload can also be provided, 
+    !! which is passed to the callback function to facilitate contextual processing.
     !!
     !! @note The implementation depends on system-level process management capabilities.
     !!
@@ -367,6 +372,18 @@ interface sleep
 end interface sleep
       
 abstract interface
+
+    !! version: experimental
+    !!
+    !! Process callback interface
+    !! 
+    !! ### Summary 
+    !!
+    !! The `process_callback` interface defines a user-provided subroutine that will be called 
+    !! upon process completion. It provides access to process metadata, including the process ID, 
+    !! exit state, and optional input/output streams. If passed on creation, a generic payload can be 
+    !! accessed by the callback function. This variable must be a valid `target` in the calling scope.
+    !!  
     subroutine process_callback(pid,exit_state,stdin,stdout,stderr,payload)
         import process_ID
         implicit none

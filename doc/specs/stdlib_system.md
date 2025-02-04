@@ -19,11 +19,12 @@ Experimental
 
 The `run` interface allows execution of external processes using a single command string or a list of arguments.  
 Processes run synchronously, meaning execution is blocked until the process finishes.  
-Optional arguments enable the collection of standard output and error streams, as well as sending input via standard input.
+Optional arguments enable the collection of standard output and error streams, as well as sending input via standard input. 
+Additionally, a callback function can be specified to execute upon process completion, optionally receiving a user-defined payload.
 
 ### Syntax
 
-`process = ` [[stdlib_subprocess(module):run(interface)]] `(args [, stdin] [, want_stdout] [, want_stderr])`
+`process = ` [[stdlib_subprocess(module):run(interface)]] `(args [, stdin] [, want_stdout] [, want_stderr] [, callback] [, payload])`
 
 ### Arguments
 
@@ -34,6 +35,10 @@ Optional arguments enable the collection of standard output and error streams, a
 `want_stdout` (optional): Shall be a `logical` flag. If `.true.`, the standard output of the process will be captured; if `.false.` (default), it will be lost. This is an `intent(in)` argument.
 
 `want_stderr` (optional): Shall be a logical flag. If `.true.`, the standard error output of the process will be captured. Default: `.false.`. This is an `intent(in)` argument.
+
+`callback` (optional): Shall be a procedure conforming to the `process_callback` interface. If present, this function will be called upon process completion with the process ID, exit state, and optionally collected standard input, output, and error streams. This is an `intent(in)` argument.
+
+`payload` (optional): Shall be a generic (`class(*)`) scalar that will be passed to the callback function upon process completion. It allows users to associate custom data with the process execution. This is an `intent(inout), target` argument.
 
 ### Return Value
 
@@ -49,7 +54,6 @@ type(process_type) :: p
 p = run("echo 'Hello, world!'", want_stdout=.true.)
 ```
 
-
 ## `runasync` - Execute an external process asynchronously
 
 ### Status
@@ -61,10 +65,11 @@ Experimental
 The `runasync` interface allows execution of external processes using a single command string or a list of arguments.  
 Processes are run asynchronously (non-blocking), meaning execution does not wait for the process to finish.  
 Optional arguments enable the collection of standard output and error streams, as well as sending input via standard input.
+Additionally, a callback function can be specified to execute upon process completion, optionally receiving a user-defined payload.
 
 ### Syntax
 
-`process = ` [[stdlib_subprocess(module):runasync(interface)]] `(args [, stdin] [, want_stdout] [, want_stderr])`
+`process = ` [[stdlib_subprocess(module):runasync(interface)]] `(args [, stdin] [, want_stdout] [, want_stderr] [, callback] [, payload])`
 
 ### Arguments
 
@@ -75,6 +80,10 @@ Optional arguments enable the collection of standard output and error streams, a
 `want_stdout` (optional): Shall be a `logical` flag. If `.true.`, the standard output of the process will be captured; if `.false.` (default), it will be lost. This is an `intent(in)` argument.
 
 `want_stderr` (optional): Shall be a logical flag. If `.true.`, the standard error output of the process will be captured. Default: `.false.`. This is an `intent(in)` argument.
+
+`callback` (optional): Shall be a procedure conforming to the `process_callback` interface. If present, this function will be called upon process completion with the process ID, exit state, and optionally collected standard input, output, and error streams. This is an `intent(in)` argument.
+
+`payload` (optional): Shall be a generic (`class(*)`) scalar that will be passed to the callback function upon process completion. It allows users to associate custom data with the process execution. This is an `intent(inout), target` argument.
 
 ### Return Value
 
