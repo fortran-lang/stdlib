@@ -706,4 +706,10 @@ contains
 
     end function getfile
 
+    !> Return process ID
+    integer(procesS_ID) function process_get_ID(process) result(ID)
+        class(process_type), intent(in) :: process
+        ID = process%id
+    end function process_get_ID
+
 end submodule stdlib_system_subprocess

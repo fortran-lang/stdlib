@@ -20,6 +20,6 @@ program example_process_5
 
     end do
     
-    print *, "Process ",process%id," completed in ",process%elapsed()," seconds."
+    print *, "Process ",process%pid()," completed in ",process%elapsed()," seconds."
     
 end program example_process_5

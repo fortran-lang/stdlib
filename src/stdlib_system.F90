@@ -69,6 +69,9 @@ contains
     !! Kill a process
     procedure :: kill         => process_kill
     
+    !! Get process ID
+    procedure :: pid          => process_get_ID
+    
 end type process_type
 
 interface runasync
@@ -362,6 +365,10 @@ interface
     !!
     module logical function is_windows()
     end function is_windows
+    
+    module integer(process_ID) function process_get_ID(process) result(ID)
+        class(process_type), intent(in) :: process
+    end function process_get_ID
     
 end interface 
 
