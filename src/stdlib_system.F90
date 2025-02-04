@@ -52,6 +52,23 @@ type :: process_type
     !> Store time at the last update
     integer(TICKS) :: last_update = 0
     
+contains
+
+    !! Check if process is still running
+    procedure :: is_running   => process_is_running
+    
+    !! Check if process is completed
+    procedure :: is_completed => process_is_completed
+    
+    !! Return elapsed time since inception
+    procedure :: elapsed      => process_lifetime
+    
+    !! Update process state internals
+    procedure :: update       => update_process_state
+    
+    !! Kill a process
+    procedure :: kill         => process_kill
+    
 end type process_type
 
 interface runasync
@@ -142,6 +159,7 @@ interface run
         !> The output process handler.
         type(process_type) :: process        
     end function run_sync_args
+    
 end interface run
 
 interface is_running
@@ -264,7 +282,7 @@ interface update
     !!
     module subroutine update_process_state(process)
         !> The process object whose state needs to be updated.
-        type(process_type), intent(inout) :: process
+        class(process_type), intent(inout) :: process
     end subroutine update_process_state
 end interface update
 
@@ -290,7 +308,7 @@ interface kill
     !!
     module subroutine process_kill(process, success)
         !> The process object to be terminated.
-        type(process_type), intent(inout) :: process
+        class(process_type), intent(inout) :: process
         !> Boolean flag indicating whether the termination was successful.
         logical, intent(out) :: success
     end subroutine process_kill

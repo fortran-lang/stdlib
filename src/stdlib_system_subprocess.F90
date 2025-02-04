@@ -369,7 +369,7 @@ contains
 
     !> Update a process's state, and save it to the process variable
     module subroutine update_process_state(process)
-        type(process_type), intent(inout) :: process
+        class(process_type), intent(inout) :: process
         
         real(RTICKS) :: count_rate        
         integer(TICKS) :: count_max,current_time
@@ -407,7 +407,7 @@ contains
     
     ! Kill a process 
     module subroutine process_kill(process, success)
-        type(process_type), intent(inout) :: process
+        class(process_type), intent(inout) :: process
         ! Return a boolean flag for successful operation
         logical, intent(out) :: success
         
@@ -439,7 +439,7 @@ contains
     end subroutine process_kill
     
     subroutine save_completed_state(process,delete_files)
-        type(process_type), intent(inout) :: process
+        class(process_type), intent(inout) :: process
         logical, intent(in) :: delete_files
         
         logical(c_bool) :: running        
