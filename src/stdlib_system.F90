@@ -37,8 +37,9 @@ type :: process_type
     logical :: completed = .false.        
     integer(TICKS) :: start_time = 0
     
-    !> Stdin file name
+    !> Standard input
     character(:), allocatable :: stdin_file
+    character(:), allocatable :: stdin
     
     !> Standard output
     character(:), allocatable :: stdout_file
@@ -48,6 +49,12 @@ type :: process_type
     integer :: exit_code = 0    
     character(:), allocatable :: stderr_file
     character(:), allocatable :: stderr
+    
+    !> Callback function 
+    procedure(process_callback), nopass, pointer :: oncomplete => null()
+    
+    !> Optional payload for the callback function
+    class(*), pointer :: payload => null()
     
     !> Store time at the last update
     integer(TICKS) :: last_update = 0
@@ -90,9 +97,9 @@ interface runasync
     !! Processes can be executed via a single command string or a list of arguments, with options to collect 
     !! standard output and error streams, or to provide a standard input stream via a `character` string.
     !!
-    !! @note The implementation depends on system-level process management capabilities.
+    !! @note The implementation depends on system-level process management capabilitiesa
     !!
-    module function run_async_cmd(cmd, stdin, want_stdout, want_stderr) result(process)
+    module function run_async_cmd(cmd, stdin, want_stdout, want_stderr, callback, payload) result(process)
         !> The command line string to execute.
         character(*), intent(in) :: cmd
         !> Optional input sent to the process via standard input (stdin).
@@ -101,11 +108,16 @@ interface runasync
         logical, optional, intent(in) :: want_stdout
         !> Whether to collect standard error output.
         logical, optional, intent(in) :: want_stderr
+        !> Optional callback function to be called on process completion
+        procedure(process_callback), optional :: callback
+        !> Optional payload to pass to the callback on completion
+        class(*), optional, intent(inout), target :: payload
         !> The output process handler.
         type(process_type) :: process
+        
     end function run_async_cmd
 
-    module function run_async_args(args, stdin, want_stdout, want_stderr) result(process)
+    module function run_async_args(args, stdin, want_stdout, want_stderr, callback, payload) result(process)
         !> List of arguments for the process to execute.
         character(*), intent(in) :: args(:)
         !> Optional input sent to the process via standard input (stdin).
@@ -114,6 +126,10 @@ interface runasync
         logical, optional, intent(in) :: want_stdout
         !> Whether to collect standard error output.
         logical, optional, intent(in) :: want_stderr
+        !> Optional callback function to be called on process completion
+        procedure(process_callback), optional :: callback
+        !> Optional payload to pass to the callback on completion
+        class(*), optional, intent(inout), target :: payload        
         !> The output process handler.
         type(process_type) :: process        
     end function run_async_args
@@ -137,7 +153,7 @@ interface run
     !!
     !! @note The implementation depends on system-level process management capabilities.
     !!
-    module function run_sync_cmd(cmd, stdin, want_stdout, want_stderr) result(process)
+    module function run_sync_cmd(cmd, stdin, want_stdout, want_stderr, callback, payload) result(process)
         !> The command line string to execute.
         character(*), intent(in) :: cmd
         !> Optional input sent to the process via standard input (stdin).
@@ -146,11 +162,15 @@ interface run
         logical, optional, intent(in) :: want_stdout
         !> Whether to collect standard error output.
         logical, optional, intent(in) :: want_stderr
+        !> Optional callback function to be called on process completion
+        procedure(process_callback), optional :: callback
+        !> Optional payload to pass to the callback on completion
+        class(*), optional, intent(inout), target :: payload            
         !> The output process handler.
         type(process_type) :: process
     end function run_sync_cmd
 
-    module function run_sync_args(args, stdin, want_stdout, want_stderr) result(process)
+    module function run_sync_args(args, stdin, want_stdout, want_stderr, callback, payload) result(process)
         !> List of arguments for the process to execute.
         character(*), intent(in) :: args(:)
         !> Optional input sent to the process via standard input (stdin).
@@ -159,6 +179,10 @@ interface run
         logical, optional, intent(in) :: want_stdout
         !> Whether to collect standard error output.
         logical, optional, intent(in) :: want_stderr
+        !> Optional callback function to be called on process completion
+        procedure(process_callback), optional :: callback
+        !> Optional payload to pass to the callback on completion
+        class(*), optional, intent(inout), target :: payload            
         !> The output process handler.
         type(process_type) :: process        
     end function run_sync_args
@@ -341,6 +365,21 @@ interface sleep
         integer, intent(in) :: millisec
     end subroutine sleep
 end interface sleep
+      
+abstract interface
+    subroutine process_callback(pid,exit_state,stdin,stdout,stderr,payload)
+        import process_ID
+        implicit none
+        !> Process ID
+        integer(process_ID), intent(in) :: pid
+        !> Process return state
+        integer, intent(in) :: exit_state
+        !> Process input/output: presence of these arguments depends on how process was created
+        character(len=*), optional, intent(in) :: stdin,stdout,stderr
+        !> Optional payload passed by the user on process creation
+        class(*), optional, intent(inout) :: payload        
+    end subroutine process_callback
+end interface          
       
 interface 
     

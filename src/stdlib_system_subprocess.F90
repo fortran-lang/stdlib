@@ -1,7 +1,6 @@
 submodule (stdlib_system) stdlib_system_subprocess
     use iso_c_binding  
     use iso_fortran_env, only: int64, real64
-    use stdlib_system
     use stdlib_strings, only: to_c_string, join
     use stdlib_linalg_state, only: linalg_state_type, LINALG_ERROR, linalg_error_handling
     implicit none(type, external)
@@ -85,7 +84,7 @@ contains
         
     end subroutine sleep
 
-    module function run_async_cmd(cmd, stdin, want_stdout, want_stderr) result(process)
+    module function run_async_cmd(cmd, stdin, want_stdout, want_stderr, callback, payload) result(process)
         !> The command line string to execute.
         character(*), intent(in) :: cmd
         !> Optional input sent to the process via standard input (stdin).
@@ -94,14 +93,18 @@ contains
         logical, optional, intent(in) :: want_stdout
         !> Whether to collect standard error output.
         logical, optional, intent(in) :: want_stderr
+        !> Optional callback function to be called on process completion
+        procedure(process_callback), optional :: callback
+        !> Optional payload to pass to the callback on completion
+        class(*), optional, intent(inout), target :: payload        
         !> The output process handler.
         type(process_type) :: process
         
-        process = process_open([cmd],.false.,stdin,want_stdout,want_stderr)
+        process = process_open([cmd],.false.,stdin,want_stdout,want_stderr,callback,payload)
         
     end function run_async_cmd
 
-    module function run_async_args(args, stdin, want_stdout, want_stderr) result(process)
+    module function run_async_args(args, stdin, want_stdout, want_stderr, callback, payload) result(process)
         !> List of arguments for the process to execute.
         character(*), intent(in) :: args(:)
         !> Optional input sent to the process via standard input (stdin).
@@ -110,14 +113,18 @@ contains
         logical, optional, intent(in) :: want_stdout
         !> Whether to collect standard error output.
         logical, optional, intent(in) :: want_stderr
+        !> Optional callback function to be called on process completion
+        procedure(process_callback), optional :: callback
+        !> Optional payload to pass to the callback on completion
+        class(*), optional, intent(inout), target :: payload        
         !> The output process handler.
         type(process_type) :: process  
         
-        process = process_open(args,.false.,stdin,want_stdout,want_stderr)
+        process = process_open(args,.false.,stdin,want_stdout,want_stderr,callback,payload)
               
     end function run_async_args
 
-    module function run_sync_cmd(cmd, stdin, want_stdout, want_stderr) result(process)
+    module function run_sync_cmd(cmd, stdin, want_stdout, want_stderr, callback, payload) result(process)
         !> The command line string to execute.
         character(*), intent(in) :: cmd
         !> Optional input sent to the process via standard input (stdin).
@@ -126,14 +133,18 @@ contains
         logical, optional, intent(in) :: want_stdout
         !> Whether to collect standard error output.
         logical, optional, intent(in) :: want_stderr
+        !> Optional callback function to be called on process completion
+        procedure(process_callback), optional :: callback
+        !> Optional payload to pass to the callback on completion
+        class(*), optional, intent(inout), target :: payload                
         !> The output process handler.
         type(process_type) :: process
         
-        process = process_open([cmd],.true.,stdin,want_stdout,want_stderr)
+        process = process_open([cmd],.true.,stdin,want_stdout,want_stderr,callback,payload)
         
     end function run_sync_cmd
 
-    module function run_sync_args(args, stdin, want_stdout, want_stderr) result(process)
+    module function run_sync_args(args, stdin, want_stdout, want_stderr, callback, payload) result(process)
         !> List of arguments for the process to execute.
         character(*), intent(in) :: args(:)
         !> Optional input sent to the process via standard input (stdin).
@@ -142,15 +153,19 @@ contains
         logical, optional, intent(in) :: want_stdout
         !> Whether to collect standard error output.
         logical, optional, intent(in) :: want_stderr
+        !> Optional callback function to be called on process completion
+        procedure(process_callback), optional :: callback
+        !> Optional payload to pass to the callback on completion
+        class(*), optional, intent(inout), target :: payload        
         !> The output process handler.
         type(process_type) :: process  
         
-        process = process_open(args,.true.,stdin,want_stdout,want_stderr)
+        process = process_open(args,.true.,stdin,want_stdout,want_stderr,callback,payload)
               
     end function run_sync_args
 
     !> Internal function: open a new process from a command line
-    function process_open_cmd(cmd,wait,stdin,want_stdout,want_stderr) result(process)
+    function process_open_cmd(cmd,wait,stdin,want_stdout,want_stderr,callback,payload) result(process)
         !> The command and arguments
         character(*), intent(in) :: cmd
         !> Optional character input to be sent to the process via pipe
@@ -159,15 +174,19 @@ contains
         logical, intent(in) :: wait
         !> Require collecting output
         logical, optional, intent(in) :: want_stdout, want_stderr
+        !> Optional callback function to be called on process completion
+        procedure(process_callback), optional :: callback
+        !> Optional payload to pass to the callback on completion
+        class(*), optional, intent(inout), target :: payload        
         !> The output process handler
         type(process_type) :: process        
         
-        process = process_open([cmd],wait,stdin,want_stdout,want_stderr)
+        process = process_open([cmd],wait,stdin,want_stdout,want_stderr,callback,payload)
         
     end function process_open_cmd
 
     !> Internal function: open a new process from arguments
-    function process_open(args,wait,stdin,want_stdout,want_stderr) result(process)
+    function process_open(args,wait,stdin,want_stdout,want_stderr,callback,payload) result(process)
         !> The command and arguments
         character(*), intent(in) :: args(:)
         !> Optional character input to be sent to the process via pipe
@@ -176,6 +195,10 @@ contains
         logical, intent(in) :: wait
         !> Require collecting output
         logical, optional, intent(in) :: want_stdout, want_stderr
+        !> Optional callback function to be called on process completion
+        procedure(process_callback), optional :: callback
+        !> Optional payload to pass to the callback on completion
+        class(*), optional, intent(inout), target :: payload        
         !> The output process handler
         type(process_type) :: process
         
@@ -196,6 +219,19 @@ contains
         if (has_stdin)      process%stdin_file  = scratch_name('inp')
         if (collect_stdout) process%stdout_file = scratch_name('out')            
         if (collect_stderr) process%stderr_file = scratch_name('err')
+        
+        ! Attach callback function and payload
+        if (present(callback)) then 
+            process%oncomplete => callback
+        else
+            nullify(process%oncomplete)
+        end if
+        
+        if (present(payload)) then 
+            process%payload => payload
+        else
+            nullify(process%payload)            
+        end if
         
         ! Save the process's generation time
         call system_clock(process%start_time,count_rate,count_max)
@@ -452,22 +488,32 @@ contains
         ! Clean up process state using waitpid
         if (process%id/=FORKED_PROCESS) call process_query_status(process%id, C_TRUE, running, exit_code)
        
-        ! Process is over: load stdout/stderr if requested
+        ! Process is over: load stderr if requested
         if (allocated(process%stderr_file)) then 
            process%stderr = getfile(process%stderr_file,delete=delete_files)
            deallocate(process%stderr_file)
         endif
     
+        ! Process is over: load stdout if requested
         if (allocated(process%stdout_file)) then 
            process%stdout = getfile(process%stdout_file,delete=delete_files)
            deallocate(process%stdout_file)
         endif         
         
+        ! Process is over: delete stdin file if it was provided
         if (allocated(process%stdin_file)) then 
-            open(newunit=delete,file=process%stdin_file,access='stream',action='write')
-            close(delete,status='delete')
+            process%stdin = getfile(process%stdin_file,delete=delete_files)
             deallocate(process%stdin_file)
         end if
+        
+        ! Process is over: invoke callback if requested
+        if (associated(process%oncomplete)) &
+            call process%oncomplete(process%id,        &
+                                    process%exit_code, &
+                                    process%stderr,    &
+                                    process%stdout,    &
+                                    process%stderr,    &
+                                    process%payload)
         
     end subroutine save_completed_state
 
