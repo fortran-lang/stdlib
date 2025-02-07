@@ -5,7 +5,7 @@
 #:set RANKS = range(2, MAXRANK + 1)
 
 module stdlib_intrinsics
-    !!Replacement for certain Fortran intrinsic functions offering either faster and/or more accurate implementations.
+    !!Replacement of some Fortran intrinsic functions offering either faster and/or more accurate implementations.
     !! ([Specification](../page/specs/stdlib_intrinsics.html))
     use stdlib_kinds
     implicit none
