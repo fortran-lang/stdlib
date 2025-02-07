@@ -44,7 +44,7 @@ subroutine test_sum(error)
             x(i) = 8*atan(1._${k1}$)*(real(i,kind=${k1}$)-0.5_${k1}$)/real(n,kind=${k1}$)**2
         end do
         allocate(mask(n),source=.false.); mask(1:n:2) = .true.
-        allocate(nmask(n), source = .not.mask)
+        allocate(nmask(n), source = .not.mask(1:n))
         ! scramble array
         do i = 1, n
             call random_number(u) 
@@ -86,7 +86,7 @@ subroutine test_sum(error)
         end do
         
         allocate(mask(n),source=.false.); mask(1:n:2) = .true.
-        allocate(nmask(n), source = .not.mask)
+        allocate(nmask(n), source = .not.mask(1:n))
         ! scramble array
         do i = 1, n
             call random_number(u) 
