@@ -86,7 +86,7 @@ subroutine test_sum(error)
         end do
         
         allocate(mask(n),source=.false.); mask(1:n:2) = .true.
-        allocate(nmask(n)); nmask = .not.mask
+        allocate(nmask, source = .not.mask)
         ! scramble array
         do i = 1, n
             call random_number(u) 
