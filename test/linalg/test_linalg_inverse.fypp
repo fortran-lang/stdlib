@@ -95,7 +95,6 @@ module test_linalg_inverse
         integer(ilp), intent(in) :: n
         ${rt}$ :: A(n,n)
         
-        ${rt}$, parameter :: one  = 1.0_${rk}$
         ${rt}$, parameter :: half = 0.5_${rk}$
         
         !> Initialize with randoms
