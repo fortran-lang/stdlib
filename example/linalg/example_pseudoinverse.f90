@@ -5,8 +5,6 @@ program example_pseudoinverse
 
   real :: A(15,5), Am1(5,15)
   type(linalg_state_type) :: state
-  integer :: i, j
-  real, parameter :: tol = sqrt(epsilon(0.0))
   
   ! Generate random matrix A (15x15)
   call random_number(A)
