@@ -76,7 +76,7 @@ contains
     subroutine test_nor_rvs_${t1[0]}$${k1}$
         ${t1}$ :: res(10), loc, scale
         integer, parameter :: k = 5
-        integer :: i, n
+        integer :: i
         integer :: seed, get
         #:if t1[0] == "r"
             #! for real type
@@ -145,7 +145,7 @@ contains
 
         ${t1}$ :: x1, x2(3,4), loc, scale
         integer, parameter :: k = 5
-        integer :: i, n, seed, get
+        integer :: seed, get
         real(${k1}$) :: res(3,5)
         #:if t1[0] == "r"
             #! for real type
@@ -213,7 +213,6 @@ contains
     subroutine test_nor_cdf_${t1[0]}$${k1}$
 
         ${t1}$ :: x1, x2(3,4), loc, scale
-        integer :: i, n
         integer :: seed, get
         real(${k1}$) :: res(3,5)
         #:if t1[0] == "r"
