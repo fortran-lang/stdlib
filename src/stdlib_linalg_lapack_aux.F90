@@ -1,6 +1,7 @@
 module stdlib_linalg_lapack_aux
      use stdlib_linalg_constants
      use stdlib_linalg_blas
+     use ieee_arithmetic, only: ieee_support_inf, ieee_support_nan
      implicit none
      private
 
@@ -153,83 +154,25 @@ module stdlib_linalg_lapack_aux
            ! Scalar Arguments 
            integer(ilp), intent(in) :: ispec
            real(sp), intent(in) :: one, zero
+           
         ! =====================================================================
-           ! Local Scalars 
-           real(sp) :: nan1, nan2, nan3, nan4, nan5, nan6, neginf, negzro, newzro, posinf
-           ! Executable Statements 
+           ! Executable Statements
            stdlib_ieeeck = 1
-           posinf = one / zero
-           if( posinf<=one ) then
+           
+           ! Test support for infinity values
+           if (.not.ieee_support_inf(one)) then 
               stdlib_ieeeck = 0
               return
            end if
-           neginf = -one / zero
-           if( neginf>=zero ) then
-              stdlib_ieeeck = 0
-              return
-           end if
-           negzro = one / ( neginf+one )
-           if( negzro/=zero ) then
-              stdlib_ieeeck = 0
-              return
-           end if
-           neginf = one / negzro
-           if( neginf>=zero ) then
-              stdlib_ieeeck = 0
-              return
-           end if
-           newzro = negzro + zero
-           if( newzro/=zero ) then
-              stdlib_ieeeck = 0
-              return
-           end if
-           posinf = one / newzro
-           if( posinf<=one ) then
-              stdlib_ieeeck = 0
-              return
-           end if
-           neginf = neginf*posinf
-           if( neginf>=zero ) then
-              stdlib_ieeeck = 0
-              return
-           end if
-           posinf = posinf*posinf
-           if( posinf<=one ) then
-              stdlib_ieeeck = 0
-              return
-           end if
+           
            ! return if we were only asked to check infinity arithmetic
-           if( ispec==0 )return
-           nan1 = posinf + neginf
-           nan2 = posinf / neginf
-           nan3 = posinf / posinf
-           nan4 = posinf*zero
-           nan5 = neginf*negzro
-           nan6 = nan5*zero
-           if( nan1==nan1 ) then
+           if (ispec == 0) return
+           
+           if (.not.ieee_support_nan(one)) then
               stdlib_ieeeck = 0
               return
            end if
-           if( nan2==nan2 ) then
-              stdlib_ieeeck = 0
-              return
-           end if
-           if( nan3==nan3 ) then
-              stdlib_ieeeck = 0
-              return
-           end if
-           if( nan4==nan4 ) then
-              stdlib_ieeeck = 0
-              return
-           end if
-           if( nan5==nan5 ) then
-              stdlib_ieeeck = 0
-              return
-           end if
-           if( nan6==nan6 ) then
-              stdlib_ieeeck = 0
-              return
-           end if
+           
            return
      end function stdlib_ieeeck
 
@@ -1673,83 +1616,25 @@ module stdlib_linalg_lapack_aux
            ! Scalar Arguments 
            integer(ilp64), intent(in) :: ispec
            real(sp), intent(in) :: one, zero
+           
         ! =====================================================================
-           ! Local Scalars 
-           real(sp) :: nan1, nan2, nan3, nan4, nan5, nan6, neginf, negzro, newzro, posinf
-           ! Executable Statements 
+           ! Executable Statements
            stdlib_I64_ieeeck = 1
-           posinf = one / zero
-           if( posinf<=one ) then
+           
+           ! Test support for infinity values
+           if (.not.ieee_support_inf(one)) then 
               stdlib_I64_ieeeck = 0
               return
            end if
-           neginf = -one / zero
-           if( neginf>=zero ) then
-              stdlib_I64_ieeeck = 0
-              return
-           end if
-           negzro = one / ( neginf+one )
-           if( negzro/=zero ) then
-              stdlib_I64_ieeeck = 0
-              return
-           end if
-           neginf = one / negzro
-           if( neginf>=zero ) then
-              stdlib_I64_ieeeck = 0
-              return
-           end if
-           newzro = negzro + zero
-           if( newzro/=zero ) then
-              stdlib_I64_ieeeck = 0
-              return
-           end if
-           posinf = one / newzro
-           if( posinf<=one ) then
-              stdlib_I64_ieeeck = 0
-              return
-           end if
-           neginf = neginf*posinf
-           if( neginf>=zero ) then
-              stdlib_I64_ieeeck = 0
-              return
-           end if
-           posinf = posinf*posinf
-           if( posinf<=one ) then
-              stdlib_I64_ieeeck = 0
-              return
-           end if
+           
            ! return if we were only asked to check infinity arithmetic
-           if( ispec==0 )return
-           nan1 = posinf + neginf
-           nan2 = posinf / neginf
-           nan3 = posinf / posinf
-           nan4 = posinf*zero
-           nan5 = neginf*negzro
-           nan6 = nan5*zero
-           if( nan1==nan1 ) then
+           if (ispec == 0) return
+           
+           if (.not.ieee_support_nan(one)) then
               stdlib_I64_ieeeck = 0
               return
            end if
-           if( nan2==nan2 ) then
-              stdlib_I64_ieeeck = 0
-              return
-           end if
-           if( nan3==nan3 ) then
-              stdlib_I64_ieeeck = 0
-              return
-           end if
-           if( nan4==nan4 ) then
-              stdlib_I64_ieeeck = 0
-              return
-           end if
-           if( nan5==nan5 ) then
-              stdlib_I64_ieeeck = 0
-              return
-           end if
-           if( nan6==nan6 ) then
-              stdlib_I64_ieeeck = 0
-              return
-           end if
+           
            return
      end function stdlib_I64_ieeeck
 
