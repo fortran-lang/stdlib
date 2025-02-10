@@ -73,7 +73,7 @@ contains
     subroutine test_expon_rvs_rsp
         real(sp) :: res(10), scale
         integer, parameter :: k = 5
-        integer :: i, n
+        integer :: i
         integer :: seed, get
         real(sp), parameter :: ans(10) =                                         &
                             [0.609680481289574416337018192280083895_sp,    &
@@ -104,7 +104,7 @@ contains
     subroutine test_expon_rvs_rdp
         real(dp) :: res(10), scale
         integer, parameter :: k = 5
-        integer :: i, n
+        integer :: i
         integer :: seed, get
         real(dp), parameter :: ans(10) =                                         &
                             [0.609680481289574416337018192280083895_dp,    &
@@ -135,7 +135,7 @@ contains
     subroutine test_expon_rvs_csp
         complex(sp) :: res(10), scale
         integer, parameter :: k = 5
-        integer :: i, n
+        integer :: i
         integer :: seed, get
         complex(sp), parameter :: ans(10) =                                         &
                             [(1.30645817419194517786503898345732266_sp,    &
@@ -176,7 +176,7 @@ contains
     subroutine test_expon_rvs_cdp
         complex(dp) :: res(10), scale
         integer, parameter :: k = 5
-        integer :: i, n
+        integer :: i
         integer :: seed, get
         complex(dp), parameter :: ans(10) =                                         &
                             [(1.30645817419194517786503898345732266_dp,    &
@@ -221,7 +221,6 @@ contains
     subroutine test_expon_pdf_rsp
 
         real(sp) :: x1, x2(3,4), scale
-        integer :: i, n
         integer :: seed, get
         real(sp) :: res(3,5)
         real(sp), parameter :: ans(15) =                                   &
@@ -257,7 +256,6 @@ contains
     subroutine test_expon_pdf_rdp
 
         real(dp) :: x1, x2(3,4), scale
-        integer :: i, n
         integer :: seed, get
         real(dp) :: res(3,5)
         real(dp), parameter :: ans(15) =                                   &
@@ -293,7 +291,6 @@ contains
     subroutine test_expon_pdf_csp
 
         complex(sp) :: x1, x2(3,4), scale
-        integer :: i, n
         integer :: seed, get
         real(sp) :: res(3,5)
         real(sp), parameter :: ans(15) =                                   &
@@ -329,7 +326,6 @@ contains
     subroutine test_expon_pdf_cdp
 
         complex(dp) :: x1, x2(3,4), scale
-        integer :: i, n
         integer :: seed, get
         real(dp) :: res(3,5)
         real(dp), parameter :: ans(15) =                                   &
@@ -369,7 +365,6 @@ contains
     subroutine test_expon_cdf_rsp
 
         real(sp) :: x1, x2(3,4), scale
-        integer :: i, n
         integer :: seed, get
         real(sp) :: res(3,5)
         real(sp), parameter :: ans(15) =                                   &
@@ -406,7 +401,6 @@ contains
     subroutine test_expon_cdf_rdp
 
         real(dp) :: x1, x2(3,4), scale
-        integer :: i, n
         integer :: seed, get
         real(dp) :: res(3,5)
         real(dp), parameter :: ans(15) =                                   &
@@ -443,7 +437,6 @@ contains
     subroutine test_expon_cdf_csp
 
         complex(sp) :: x1, x2(3,4), scale
-        integer :: i, n
         integer :: seed, get
         real(sp) :: res(3,5)
         real(sp), parameter :: ans(15) =                                   &
@@ -480,7 +473,6 @@ contains
     subroutine test_expon_cdf_cdp
 
         complex(dp) :: x1, x2(3,4), scale
-        integer :: i, n
         integer :: seed, get
         real(dp) :: res(3,5)
         real(dp), parameter :: ans(15) =                                   &

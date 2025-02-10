@@ -108,7 +108,6 @@ submodule(stdlib_lapack_base) stdlib_lapack_auxiliary
      pure real(sp) module function stdlib_slamc3( a, b )
         ! -- lapack auxiliary routine --
            ! univ. of tennessee, univ. of california berkeley and nag ltd..
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            ! Scalar Arguments 
            real(sp), intent(in) :: a, b
        ! =====================================================================
@@ -120,7 +119,6 @@ submodule(stdlib_lapack_base) stdlib_lapack_auxiliary
      pure real(dp) module function stdlib_dlamc3( a, b )
         ! -- lapack auxiliary routine --
            ! univ. of tennessee, univ. of california berkeley and nag ltd..
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            ! Scalar Arguments 
            real(dp), intent(in) :: a, b
        ! =====================================================================
@@ -144,7 +142,6 @@ submodule(stdlib_lapack_base) stdlib_lapack_auxiliary
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            ! Scalar Arguments 
            real(sp), intent(inout) :: large, small
         ! =====================================================================
@@ -171,7 +168,6 @@ submodule(stdlib_lapack_base) stdlib_lapack_auxiliary
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            ! Scalar Arguments 
            real(dp), intent(inout) :: large, small
         ! =====================================================================
@@ -197,7 +193,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_auxiliary
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           use stdlib_blas_constants_sp, only: zero
            ! Scalar Arguments 
            integer(ilp), intent(in) :: incx, n
            ! Array Arguments 
@@ -240,7 +236,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_auxiliary
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           use stdlib_blas_constants_dp, only: zero
            ! Scalar Arguments 
            integer(ilp), intent(in) :: incx, n
            ! Array Arguments 
@@ -282,7 +278,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_auxiliary
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           use stdlib_blas_constants_sp, only: one
            ! Scalar Arguments 
            character, intent(out) :: equed
            character, intent(in) :: uplo
@@ -341,7 +337,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_auxiliary
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           use stdlib_blas_constants_dp, only: one
            ! Scalar Arguments 
            character, intent(out) :: equed
            character, intent(in) :: uplo
@@ -401,7 +397,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_auxiliary
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           use stdlib_blas_constants_sp, only: one
            ! Scalar Arguments 
            character, intent(out) :: equed
            character, intent(in) :: uplo
@@ -460,7 +456,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_auxiliary
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           use stdlib_blas_constants_dp, only: one
            ! Scalar Arguments 
            character, intent(out) :: equed
            character, intent(in) :: uplo
@@ -520,7 +516,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_auxiliary
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           use stdlib_blas_constants_sp, only: one
            ! Scalar Arguments 
            real(sp), intent(inout) :: a
            real(sp), intent(in) :: b, c, d
@@ -542,7 +538,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_auxiliary
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           use stdlib_blas_constants_dp, only: one
            ! Scalar Arguments 
            real(dp), intent(inout) :: a
            real(dp), intent(in) :: b, c, d
@@ -567,7 +563,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_auxiliary
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           use stdlib_blas_constants_sp, only: zero
            ! Scalar Arguments 
            real(sp), intent(in) :: a, b, c, d, r, t
         ! =====================================================================
@@ -592,7 +588,7 @@ submodule(stdlib_lapack_base) stdlib_lapack_auxiliary
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           use stdlib_blas_constants_dp, only: zero
            ! Scalar Arguments 
            real(dp), intent(in) :: a, b, c, d, r, t
         ! =====================================================================
@@ -622,7 +618,6 @@ submodule(stdlib_lapack_base) stdlib_lapack_auxiliary
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            ! Scalar Arguments 
            integer(ilp), intent(in) :: incx, incy, n
            real(sp), intent(in) :: c
@@ -666,7 +661,6 @@ submodule(stdlib_lapack_base) stdlib_lapack_auxiliary
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
-           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
            ! Scalar Arguments 
            integer(ilp), intent(in) :: incx, incy, n
            real(dp), intent(in) :: c

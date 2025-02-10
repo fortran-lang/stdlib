@@ -99,7 +99,6 @@ module test_linalg_inverse
         integer(ilp), intent(in) :: n
         real(sp) :: A(n,n)
         
-        real(sp), parameter :: one  = 1.0_sp
         real(sp), parameter :: half = 0.5_sp
         
         !> Initialize with randoms
@@ -205,7 +204,6 @@ module test_linalg_inverse
         integer(ilp), intent(in) :: n
         real(dp) :: A(n,n)
         
-        real(dp), parameter :: one  = 1.0_dp
         real(dp), parameter :: half = 0.5_dp
         
         !> Initialize with randoms
