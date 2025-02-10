@@ -30,12 +30,11 @@ module test_linalg_mnorm
     subroutine test_matrix_norms_s(error)
         type(error_type), allocatable, intent(out) :: error
         
-        integer(ilp) :: i,j,m,n
+        integer(ilp) :: i
         integer(ilp), parameter :: mtx_dim = 5
         real(sp), parameter :: tol = 10*sqrt(epsilon(0.0_sp))
         real(sp), allocatable :: A(:,:)
         type(linalg_state_type) :: err
-        character(64) :: msg
 
         allocate(A(mtx_dim,mtx_dim))
 
@@ -135,12 +134,11 @@ module test_linalg_mnorm
     subroutine test_matrix_norms_d(error)
         type(error_type), allocatable, intent(out) :: error
         
-        integer(ilp) :: i,j,m,n
+        integer(ilp) :: i
         integer(ilp), parameter :: mtx_dim = 5
         real(dp), parameter :: tol = 10*sqrt(epsilon(0.0_dp))
         real(dp), allocatable :: A(:,:)
         type(linalg_state_type) :: err
-        character(64) :: msg
 
         allocate(A(mtx_dim,mtx_dim))
 
@@ -240,12 +238,11 @@ module test_linalg_mnorm
     subroutine test_matrix_norms_c(error)
         type(error_type), allocatable, intent(out) :: error
         
-        integer(ilp) :: i,j,m,n
+        integer(ilp) :: i
         integer(ilp), parameter :: mtx_dim = 5
         real(sp), parameter :: tol = 10*sqrt(epsilon(0.0_sp))
         complex(sp), allocatable :: A(:,:)
         type(linalg_state_type) :: err
-        character(64) :: msg
 
         allocate(A(mtx_dim,mtx_dim))
 
@@ -345,12 +342,11 @@ module test_linalg_mnorm
     subroutine test_matrix_norms_z(error)
         type(error_type), allocatable, intent(out) :: error
         
-        integer(ilp) :: i,j,m,n
+        integer(ilp) :: i
         integer(ilp), parameter :: mtx_dim = 5
         real(dp), parameter :: tol = 10*sqrt(epsilon(0.0_dp))
         complex(dp), allocatable :: A(:,:)
         type(linalg_state_type) :: err
-        character(64) :: msg
 
         allocate(A(mtx_dim,mtx_dim))
 

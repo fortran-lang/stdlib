@@ -139,7 +139,6 @@ module test_linalg_solve
         type(linalg_state_type) :: state
 
         complex(sp) :: A(5,5), b(5), res(5), x(5)
-        integer(ilp) :: i
 
         ! Fill in linear system
         A = (0.0_sp,0.0_sp)
@@ -203,7 +202,6 @@ module test_linalg_solve
         type(linalg_state_type) :: state
 
         complex(dp) :: A(5,5), b(5), res(5), x(5)
-        integer(ilp) :: i
 
         ! Fill in linear system
         A = (0.0_dp,0.0_dp)

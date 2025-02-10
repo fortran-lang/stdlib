@@ -75,7 +75,7 @@ contains
     subroutine test_nor_rvs_rsp
         real(sp) :: res(10), loc, scale
         integer, parameter :: k = 5
-        integer :: i, n
+        integer :: i
         integer :: seed, get
         real(sp), parameter :: ans(10) =                                         &
                             [2.66708039318040679432897377409972250_sp,     &
@@ -105,7 +105,7 @@ contains
     subroutine test_nor_rvs_rdp
         real(dp) :: res(10), loc, scale
         integer, parameter :: k = 5
-        integer :: i, n
+        integer :: i
         integer :: seed, get
         real(dp), parameter :: ans(10) =                                         &
                             [2.66708039318040679432897377409972250_dp,     &
@@ -135,7 +135,7 @@ contains
     subroutine test_nor_rvs_csp
         complex(sp) :: res(10), loc, scale
         integer, parameter :: k = 5
-        integer :: i, n
+        integer :: i
         integer :: seed, get
         complex(sp), parameter :: ans(10) =                                         &
                             [(2.12531029488530509574673033057479188_sp,    &
@@ -175,7 +175,7 @@ contains
     subroutine test_nor_rvs_cdp
         complex(dp) :: res(10), loc, scale
         integer, parameter :: k = 5
-        integer :: i, n
+        integer :: i
         integer :: seed, get
         complex(dp), parameter :: ans(10) =                                         &
                             [(2.12531029488530509574673033057479188_dp,    &
@@ -220,7 +220,7 @@ contains
 
         real(sp) :: x1, x2(3,4), loc, scale
         integer, parameter :: k = 5
-        integer :: i, n, seed, get
+        integer :: seed, get
         real(sp) :: res(3,5)
         real(sp), parameter :: ans(15) =                                   &
                          [0.215050766989949083210785218076278553_sp,       &
@@ -256,7 +256,7 @@ contains
 
         real(dp) :: x1, x2(3,4), loc, scale
         integer, parameter :: k = 5
-        integer :: i, n, seed, get
+        integer :: seed, get
         real(dp) :: res(3,5)
         real(dp), parameter :: ans(15) =                                   &
                          [0.215050766989949083210785218076278553_dp,       &
@@ -292,7 +292,7 @@ contains
 
         complex(sp) :: x1, x2(3,4), loc, scale
         integer, parameter :: k = 5
-        integer :: i, n, seed, get
+        integer :: seed, get
         real(sp) :: res(3,5)
         real(sp), parameter :: ans(15) =                                   &
                          [0.129377311291944176372137325120411497_sp,       &
@@ -328,7 +328,7 @@ contains
 
         complex(dp) :: x1, x2(3,4), loc, scale
         integer, parameter :: k = 5
-        integer :: i, n, seed, get
+        integer :: seed, get
         real(dp) :: res(3,5)
         real(dp), parameter :: ans(15) =                                   &
                          [0.129377311291944176372137325120411497_dp,       &
@@ -367,7 +367,6 @@ contains
     subroutine test_nor_cdf_rsp
 
         real(sp) :: x1, x2(3,4), loc, scale
-        integer :: i, n
         integer :: seed, get
         real(sp) :: res(3,5)
         real(sp), parameter :: ans(15) =                                   &
@@ -403,7 +402,6 @@ contains
     subroutine test_nor_cdf_rdp
 
         real(dp) :: x1, x2(3,4), loc, scale
-        integer :: i, n
         integer :: seed, get
         real(dp) :: res(3,5)
         real(dp), parameter :: ans(15) =                                   &
@@ -439,7 +437,6 @@ contains
     subroutine test_nor_cdf_csp
 
         complex(sp) :: x1, x2(3,4), loc, scale
-        integer :: i, n
         integer :: seed, get
         real(sp) :: res(3,5)
         real(sp), parameter :: ans(15) =                                   &
@@ -475,7 +472,6 @@ contains
     subroutine test_nor_cdf_cdp
 
         complex(dp) :: x1, x2(3,4), loc, scale
-        integer :: i, n
         integer :: seed, get
         real(dp) :: res(3,5)
         real(dp), parameter :: ans(15) =                                   &

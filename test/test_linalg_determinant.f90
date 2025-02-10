@@ -38,7 +38,6 @@ module test_linalg_determinant
 
         type(linalg_state_type) :: state
 
-        integer(ilp) :: i
         integer(ilp), parameter :: n = 128_ilp
 
         real(sp) :: a(n,n),deta
@@ -74,7 +73,7 @@ module test_linalg_determinant
 
         integer(ilp), parameter :: n = 4_ilp
         real(sp), parameter :: coef = 0.01_sp
-        integer(ilp) :: i,j
+        integer(ilp) :: i
         real(sp) :: a(n,n),deta
 
         !> Multiply eye by a very small number
@@ -98,7 +97,6 @@ module test_linalg_determinant
 
         type(linalg_state_type) :: state
 
-        integer(ilp) :: i
         integer(ilp), parameter :: n = 128_ilp
 
         real(dp) :: a(n,n),deta
@@ -134,7 +132,7 @@ module test_linalg_determinant
 
         integer(ilp), parameter :: n = 4_ilp
         real(dp), parameter :: coef = 0.01_dp
-        integer(ilp) :: i,j
+        integer(ilp) :: i
         real(dp) :: a(n,n),deta
 
         !> Multiply eye by a very small number
@@ -158,7 +156,6 @@ module test_linalg_determinant
 
         type(linalg_state_type) :: state
 
-        integer(ilp) :: i
         integer(ilp), parameter :: n = 128_ilp
 
         complex(sp) :: a(n,n),deta
@@ -194,7 +191,7 @@ module test_linalg_determinant
 
         integer(ilp), parameter :: n = 4_ilp
         real(sp), parameter :: coef = 0.01_sp
-        integer(ilp) :: i,j
+        integer(ilp) :: i
         complex(sp) :: a(n,n),deta
 
         !> Multiply eye by a very small number
@@ -218,7 +215,6 @@ module test_linalg_determinant
 
         type(linalg_state_type) :: state
 
-        integer(ilp) :: i
         integer(ilp), parameter :: n = 128_ilp
 
         complex(dp) :: a(n,n),deta
@@ -254,7 +250,7 @@ module test_linalg_determinant
 
         integer(ilp), parameter :: n = 4_ilp
         real(dp), parameter :: coef = 0.01_dp
-        integer(ilp) :: i,j
+        integer(ilp) :: i
         complex(dp) :: a(n,n),deta
 
         !> Multiply eye by a very small number
@@ -279,7 +275,7 @@ module test_linalg_determinant
 
         type(linalg_state_type) :: state
 
-        integer(ilp) :: i,j,n
+        integer(ilp) :: i,n
         integer(ilp), parameter :: nmax = 10_ilp
 
         complex(sp), parameter :: res(nmax) = [complex(sp)::(1,1),(0,2),(-2,2),(-4,0),(-4,-4), &
@@ -318,7 +314,7 @@ module test_linalg_determinant
 
         type(linalg_state_type) :: state
 
-        integer(ilp) :: i,j,n
+        integer(ilp) :: i,n
         integer(ilp), parameter :: nmax = 10_ilp
 
         complex(dp), parameter :: res(nmax) = [complex(dp)::(1,1),(0,2),(-2,2),(-4,0),(-4,-4), &

@@ -484,7 +484,6 @@ contains
             type(COO_sp_type) :: COO
             type(CSR_sp_type) :: CSR
             type(CSC_sp_type) :: CSC
-            type(ELL_sp_type) :: ELL
             real(sp), allocatable :: diagonal(:)
 
             allocate( dense(4,4) , source = &
@@ -521,7 +520,6 @@ contains
             type(COO_dp_type) :: COO
             type(CSR_dp_type) :: CSR
             type(CSC_dp_type) :: CSC
-            type(ELL_dp_type) :: ELL
             real(dp), allocatable :: diagonal(:)
 
             allocate( dense(4,4) , source = &

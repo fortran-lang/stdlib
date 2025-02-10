@@ -40,7 +40,6 @@ module test_linalg_schur
 
         integer(ilp), parameter :: n   = 15_ilp
         integer(ilp) :: lwork
-        real(sp), parameter :: tol = 10*sqrt(epsilon(0.0_sp))
         complex(sp) :: eigs(n)
         real(sp), dimension(n,n) :: a,t,z
         real(sp), allocatable :: storage(:)
@@ -190,7 +189,6 @@ module test_linalg_schur
 
         integer(ilp), parameter :: n   = 15_ilp
         integer(ilp) :: lwork
-        real(dp), parameter :: tol = 10*sqrt(epsilon(0.0_dp))
         complex(dp) :: eigs(n)
         real(dp), dimension(n,n) :: a,t,z
         real(dp), allocatable :: storage(:)
@@ -340,7 +338,6 @@ module test_linalg_schur
 
         integer(ilp), parameter :: n   = 15_ilp
         integer(ilp) :: lwork
-        real(sp), parameter :: tol = 10*sqrt(epsilon(0.0_sp))
         complex(sp) :: eigs(n)
         complex(sp), dimension(n,n) :: a,t,z
         complex(sp), allocatable :: storage(:)
@@ -496,7 +493,6 @@ module test_linalg_schur
 
         integer(ilp), parameter :: n   = 15_ilp
         integer(ilp) :: lwork
-        real(dp), parameter :: tol = 10*sqrt(epsilon(0.0_dp))
         complex(dp) :: eigs(n)
         complex(dp), dimension(n,n) :: a,t,z
         complex(dp), allocatable :: storage(:)

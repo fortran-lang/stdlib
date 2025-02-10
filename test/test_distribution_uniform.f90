@@ -10,7 +10,7 @@ program test_distribution_uniform
     logical ::  warn = .true.
     real(sp), parameter :: sptol = 1000 * epsilon(1.0_sp)
     real(dp), parameter :: dptol = 1000 * epsilon(1.0_dp)
-    integer :: put, get
+    integer :: put
 
     put = 135792468
 
@@ -112,7 +112,7 @@ contains
 
       subroutine test_uni_rvs_iint8
           integer(int8) :: res(15), scale, loc
-          integer :: i, n, seed, get, k
+          integer :: i, seed, get, k
 
           integer(int8), parameter :: ans(15) = [47, 99, 43, 37, 48, 30, 27, 100, 30, &
                                           33, 21, 103, 55, 54, 110]
@@ -134,7 +134,7 @@ contains
 
       subroutine test_uni_rvs_iint16
           integer(int16) :: res(15), scale, loc
-          integer :: i, n, seed, get, k
+          integer :: i, seed, get, k
 
           integer(int16), parameter :: ans(15) = [25, 4, 81, 98, 49, 34, 32, 62, 115,  &
                                           112, 26, 20, 37, 100, 82]
@@ -156,7 +156,7 @@ contains
 
       subroutine test_uni_rvs_iint32
           integer(int32) :: res(15), scale, loc
-          integer :: i, n, seed, get, k
+          integer :: i, seed, get, k
 
           integer(int32), parameter :: ans(15) = [19, 52, 56, 20, 59, 44, 34, 102, 19, &
                                           39, 60, 50, 97, 56, 67]
@@ -178,7 +178,7 @@ contains
 
       subroutine test_uni_rvs_iint64
           integer(int64) :: res(15), scale, loc
-          integer :: i, n, seed, get, k
+          integer :: i, seed, get, k
 
           integer(int64), parameter :: ans(15) = [76, 45, 43, 75, 76, 15, 25, 24, 114, &
                                           113, 94, 29, 109, 93, 89]
@@ -200,7 +200,7 @@ contains
 
       subroutine test_uni_rvs_rsp
           real(sp) :: res(15), scale, loc
-          integer :: i, n, seed, get, k
+          integer :: i, seed, get, k
 
           real(sp), parameter :: ans(15) =                                       &
                           [0.914826628538749186958511927514337003_sp,      &
@@ -236,7 +236,7 @@ contains
 
       subroutine test_uni_rvs_rdp
           real(dp) :: res(15), scale, loc
-          integer :: i, n, seed, get, k
+          integer :: i, seed, get, k
 
           real(dp), parameter :: ans(15) =                                       &
                           [0.914826628538749186958511927514337003_dp,      &
@@ -272,7 +272,7 @@ contains
 
       subroutine test_uni_rvs_csp
           complex(sp) :: res(15), scale, loc
-          integer :: i, n, seed, get, k
+          integer :: i, seed, get, k
 
           complex(sp), parameter :: ans(15) =                                       &
                              [(0.457413314269374593479255963757168502_sp,  &
@@ -323,7 +323,7 @@ contains
 
       subroutine test_uni_rvs_cdp
           complex(dp) :: res(15), scale, loc
-          integer :: i, n, seed, get, k
+          integer :: i, seed, get, k
 
           complex(dp), parameter :: ans(15) =                                       &
                              [(0.457413314269374593479255963757168502_dp,  &
