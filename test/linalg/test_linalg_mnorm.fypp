@@ -31,12 +31,11 @@ module test_linalg_mnorm
     subroutine test_matrix_norms_${ri}$(error)
         type(error_type), allocatable, intent(out) :: error
         
-        integer(ilp) :: i,j,m,n
+        integer(ilp) :: i
         integer(ilp), parameter :: mtx_dim = 5
         real(${rk}$), parameter :: tol = 10*sqrt(epsilon(0.0_${rk}$))
         ${rt}$, allocatable :: A(:,:)
         type(linalg_state_type) :: err
-        character(64) :: msg
 
         allocate(A(mtx_dim,mtx_dim))
 

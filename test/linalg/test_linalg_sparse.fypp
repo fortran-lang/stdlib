@@ -305,7 +305,6 @@ contains
             type(COO_${s1}$_type) :: COO
             type(CSR_${s1}$_type) :: CSR
             type(CSC_${s1}$_type) :: CSC
-            type(ELL_${s1}$_type) :: ELL
             ${t1}$, allocatable :: diagonal(:)
 
             allocate( dense(4,4) , source = &

@@ -95,7 +95,6 @@ module test_linalg_solve
         type(linalg_state_type) :: state
 
         ${rt}$ :: A(5,5), b(5), res(5), x(5)
-        integer(ilp) :: i
 
         ! Fill in linear system
         A = (0.0_${rk}$,0.0_${rk}$)
