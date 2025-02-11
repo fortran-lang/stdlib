@@ -494,13 +494,7 @@ The result is of the same type as the elements of `strings` (`type(string_type)`
 #### Example
 
 ```fortran
-! Example usage:
-program test_join
-    type(string_type) :: result
-    type(string_type), dimension(3) :: words = [string_type('hello'), string_type('world'), string_type('fortran')]
-    result = join_string(words, ', ')  ! Joins with comma and space
-    print *, result  ! Output: "hello, world, fortran"
-end program test_join
+{!example/strings/example_join.f90!}
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -570,3 +564,9 @@ Pure function.
 #### Result value
 
 The result is a `character(kind=c_char)` array with a dimension of `len(value) + 1` to accommodate the null terminator.
+
+#### Example
+
+```fortran
+{!example/strings/example_to_c_string.f90!}
+```
