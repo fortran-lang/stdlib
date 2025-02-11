@@ -17,5 +17,4 @@ program example_join
   line = join(words, ", ")
   print *, "'" // line // "'"  !! 'Hello, World, Fortran'
 
-  stop 0
 end program example_join
