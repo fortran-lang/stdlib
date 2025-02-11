@@ -559,7 +559,7 @@ Pure function.
 #### Argument
 
 - `value`: Shall be a `character(len=*)` string or a `type(string_type)` variable. It is an `intent(in)` argument.  
-  The Fortran string that will be converted to a C character array.
+  This Fortran variable will be converted to a C character array.
 
 #### Result value
 
