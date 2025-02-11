@@ -484,7 +484,7 @@ Pure function
 
 - `strings`: Array of strings (either `type(string_type)` or `character(len=*)`).
   This argument is `intent(in)`. It is an array of strings that will be concatenated together.
-- `separator`: Character scalar (optional).
+- `separator`: `character(len=*)` scalar (optional).
   This argument is `intent(in)`. It specifies the separator to be used between the strings. If not provided, the default separator (a space) is used.
 
 #### Result value
