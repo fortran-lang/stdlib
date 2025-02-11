@@ -995,12 +995,11 @@ contains
     
     !> Joins a list of strings with a separator (default: space).
     !> Returns a new string
-    pure function join_string(strings, separator) result(cmd)
+    pure type(string_type) function join_string(strings, separator) 
         type(string_type), intent(in) :: strings(:)
         character(len=*), intent(in), optional :: separator
-        type(string_type) :: cmd
         integer :: ltot, i, lt, pos
-        character(len=:), allocatable :: sep,cmd_char
+        character(len=:), allocatable :: sep,joined
         ! Determine separator: use user-provided separator or default space
         if (present(separator)) then
             sep = separator
@@ -1009,30 +1008,30 @@ contains
         end if
         ! Calculate the total length required, including separators
         ltot = sum(len_trim(strings)) + (size(strings) - 1) * len(sep)
-        allocate(character(len=ltot) :: cmd_char)
+        allocate(character(len=ltot) :: joined)
         
         ! Concatenate strings with separator
         pos = 0
         do i = 1, size(strings)
             lt = len_trim(strings(i))
-            cmd_char(pos+1:pos+lt) = char(strings(i),1,lt)
+            joined(pos+1:pos+lt) = char(strings(i),1,lt)
             pos = pos + lt
             if (i < size(strings)) then
-                cmd_char(pos+1:pos+len(sep)) = sep
+                joined(pos+1:pos+len(sep)) = sep
                 pos = pos + len(sep)
             end if
         end do
         
-        call move(from=cmd_char,to=cmd)
+        call move(from=joined,to=join_string)
         
     end function join_string    
 
     !> Joins a list of strings with a separator (default: space).
     !> Returns a new string
-    pure function join_char(strings, separator) result(cmd)
+    pure function join_char(strings, separator) result(joined)
         character(*), intent(in) :: strings(:)
         character(len=*), intent(in), optional :: separator
-        character(len=:), allocatable :: cmd
+        character(len=:), allocatable :: joined
         integer :: ltot, i, lt, pos
         character(len=:), allocatable :: sep
         ! Determine separator: use user-provided separator or default space
@@ -1043,17 +1042,17 @@ contains
         end if
         ! Calculate the total length required, including separators
         ltot = sum(len_trim(strings)) + (size(strings) - 1) * len(sep)
-        allocate(character(len=ltot) :: cmd)
+        allocate(character(len=ltot) :: joined)
         
-        cmd = repeat(' ',ltot)
+        joined = repeat(' ',ltot)
         ! Concatenate strings with separator
         pos = 0
         do i = 1, size(strings)
             lt = len_trim(strings(i))
-            cmd(pos+1:pos+lt) = strings(i)(1:lt)
+            joined(pos+1:pos+lt) = strings(i)(1:lt)
             pos = pos + lt
             if (i < size(strings)) then
-                cmd(pos+1:pos+len(sep)) = sep
+                joined(pos+1:pos+len(sep)) = sep
                 pos = pos + len(sep)
             end if
         end do
