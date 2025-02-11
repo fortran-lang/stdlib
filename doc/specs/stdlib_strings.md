@@ -537,7 +537,7 @@ The result is an `allocatable` length `character` scalar with up to `128` cached
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### `to_c_string`
+### `to_c_char`
 
 #### Description
 
@@ -546,7 +546,7 @@ This function converts a Fortran string into a C-style array of characters, ensu
 
 #### Syntax
 
-`cstr = ` [[stdlib_strings(module):to_c_string(function)]] ` (value)`
+`cstr = ` [[stdlib_strings(module):to_c_char(function)]] ` (value)`
 
 #### Status
 
@@ -568,5 +568,5 @@ The result is a `character(kind=c_char)` array with a dimension of `len(value) +
 #### Example
 
 ```fortran
-{!example/strings/example_to_c_string.f90!}
+{!example/strings/example_to_c_char.f90!}
 ```
