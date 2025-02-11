@@ -13,9 +13,7 @@ program example_to_c_char
   ! Convert string type  
   cstr2 = to_c_char(string_type(hello))
     
-  if (size(cstr)==size(cstr2) .and. all(cstr==cstr2)) then 
-     stop 0
-  else
+  if (size(cstr)/=size(cstr2) .or. .not.all(cstr==cstr2)) then 
      error stop 'String conversion error'
   end if
   
