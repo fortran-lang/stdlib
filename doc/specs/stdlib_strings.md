@@ -547,8 +547,8 @@ The result is an `allocatable` length `character` scalar with up to `128` cached
 
 #### Description
 
-Convert a Fortran character string to a C character array.  
-This function converts a Fortran string into a C-style string, ensuring proper null-termination for use in C functions or libraries.  
+Convert a Fortran `character` string or a `type(string_type)` variable to a C character array.  
+This function converts a Fortran string into a C-style array of characters, ensuring proper null-termination for use in C functions or libraries.  
 
 #### Syntax
 
@@ -564,8 +564,7 @@ Pure function.
 
 #### Argument
 
-- `value`: Shall be a `character(len=*)` string.  
-  This is an `intent(in)` argument.  
+- `value`: Shall be a `character(len=*)` string or a `type(string_type)` variable. It is an `intent(in)` argument.  
   The Fortran string that will be converted to a C character array.
 
 #### Result value
