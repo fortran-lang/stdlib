@@ -470,7 +470,7 @@ inserting a separator between each string (default: space). A user-defined separ
 
 #### Syntax
 
-`cmd = ` [[stdlib_strings(module):join(interface)]] ` (strings, separator)`
+`joined = ` [[stdlib_strings(module):join(interface)]] ` (strings, separator)`
 
 #### Status
 
