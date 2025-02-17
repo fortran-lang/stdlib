@@ -92,14 +92,7 @@ Returns an object of type `process_type` that contains information about the sta
 ### Example
 
 ```fortran
-! Example usage with command line or list of arguments
-type(process_type) :: p(2)
-
-! Run a simple command line asynchronously
-p(1) = runasync("echo 'Hello, world!'", want_stdout=.true.)
-
-! Run a command using an argument list asynchronously
-p(2) = runasync(["/usr/bin/ls", "-l"], want_stdout=.true.)
+{!example/system/example_process_1.f90!}
 ```
 
 ## `is_running` - Check if a process is still running
@@ -130,21 +123,7 @@ After a call to `is_running`, the `type(process_type)` structure is also updated
 ### Example
 
 ```fortran
-! Example usage of is_running
-type(process_type) :: proc
-logical :: status
-
-! Start an asynchronous process
-proc = run("sleep 10", wait=.false.)
-
-! Check if the process is running
-status = is_running(proc)
-
-if (status) then
-    print *, "Process is still running."
-else
-    print *, "Process has terminated."
-end if
+{!example/system/example_process_2.f90!}
 ```
 
 ## `is_completed` - Check if a process has completed execution
@@ -177,21 +156,7 @@ After a call to `is_completed`, the `type(process_type)` structure is updated to
 ### Example
 
 ```fortran
-! Example usage of is_completed
-type(process_type) :: proc
-logical :: status
-
-! Start an asynchronous process
-proc = run("sleep 5", wait=.false.)
-
-! Check if the process has completed
-status = is_completed(proc)
-
-if (status) then
-    print *, "Process has completed."
-else
-    print *, "Process is still running."
-end if
+{!example/system/example_process_1.f90!}
 ```
 
 ## `elapsed` - Return process lifetime in seconds
@@ -224,17 +189,7 @@ Otherwise, the total process duration from creation until completion is returned
 ### Example
 
 ```fortran
-! Example usage of elapsed
-type(process_type) :: p
-real(RTICKS) :: delta_t
-
-! Create a process
-p = run("sleep 5", wait=.false.)
-
-! Check elapsed time after 2 seconds
-call sleep(2)
-delta_t = elapsed(p)
-print *, "Elapsed time (s): ", delta_t
+{!example/system/example_process_3.f90!}
 ```
 
 ## `wait` - Wait until a running process is completed
@@ -270,15 +225,7 @@ If not provided, the subroutine will wait indefinitely until the process complet
 ### Example
 
 ```fortran
-! Example usage of wait
-type(process_type) :: p
-
-! Start an asynchronous process
-p = run("sleep 5", wait=.false.)
-
-! Wait for process to complete with a 10-second timeout
-call wait(p, max_wait_time=10.0)
-print *, "Process completed or timed out."
+{!example/system/example_process_2.f90!}
 ```
 
 ## `update` - Update the internal state of a process
@@ -306,20 +253,7 @@ This is an `intent(inout)` argument, and its internal state is updated on comple
 ### Example
 
 ```fortran
-! Example usage of update
-type(process_type) :: p
-
-! Start an asynchronous process
-p = run("sleep 5", wait=.false., want_stdout=.true., want_stderr=.true.)
-
-! Periodically update the process state
-call update(p)
-
-! After completion, print the captured stdout and stderr
-if (p%completed) then 
-    print *, "Standard Output: ", p%stdout
-    print *, "Standard Error: ", p%stderr
-endif
+{!example/system/example_process_5.f90!}
 ```
 
 ## `kill` - Terminate a running process
@@ -347,21 +281,7 @@ This is an `intent(inout)` argument, and on return is updated with the terminate
 ### Example
 
 ```fortran
-! Example usage of kill
-type(process_type) :: p
-logical :: success
-
-! Start a process asynchronously
-p = run("sleep 10", wait=.false.)
-
-! Attempt to kill the process
-call kill(p, success)
-
-if (success) then
-    print *, "Process successfully killed."
-else
-    print *, "Failed to kill the process."
-end if
+{!example/system/example_process_4.f90!}
 ```
 
 ## `sleep` - Pause execution for a specified time in milliseconds
@@ -387,13 +307,7 @@ It ensures that the requested sleep duration is honored on both Windows and Unix
 ### Example
 
 ```fortran
-! Example usage of sleep
-print *, "Starting sleep..."
-
-! Sleep for 500 milliseconds
-call sleep(500)
-
-print *, "Finished sleeping!"
+{!example/system/example_sleep.f90!}
 ```
 
 ## `is_windows` - Check if the system is running on Windows
@@ -419,9 +333,5 @@ Returns a `logical` flag: `.true.` if the system is Windows, or `.false.` otherw
 ### Example
 
 ```fortran
-if (is_windows()) then
-    print *, "Running on Windows!"
-else
-    print *, "Not running on Windows."
-end if
+{!example/system/example_process_1.f90!}
 ```

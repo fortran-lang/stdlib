@@ -1,6 +1,6 @@
 ! Process example 5: Object-oriented interface
 program example_process_5
-    use stdlib_system, only: process_type, runasync, is_windows, sleep
+    use stdlib_system, only: process_type, runasync, is_windows, sleep, update
     implicit none
     type(process_type) :: process
 
@@ -12,6 +12,9 @@ program example_process_5
 
     ! Verify the process is running
     do while (process%is_running())
+        
+        ! Update process state
+        call update(process)
         
         ! Wait a bit before killing the process
         call sleep(millisec=1500)
