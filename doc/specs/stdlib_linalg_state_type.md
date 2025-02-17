@@ -45,7 +45,7 @@ Experimental
 The module provides the following state flags, mapped to the general `state_type` error flags: 
 - `LINALG_SUCCESS`: Successful execution (equivalent to `STDLIB_SUCCESS`)
 - `LINALG_VALUE_ERROR`: Numerical errors (such as infinity, not-a-number, range bounds) are encountered (equivalent to `STDLIB_VALUE_ERROR`).
-- `LINALG_ERROR`: Linear Algebra errors are encountered, such as non-converging iterations, impossible operations, etc. (equivalent to `STDLIB_LINALG_ERROR`).
+- `LINALG_ERROR`: Linear Algebra errors are encountered, such as non-converging iterations, and impossible operations (equivalent to `STDLIB_LINALG_ERROR`).
 - `LINALG_INTERNAL_ERROR`: Provided as a developer safeguard for internal errors that should never occur (equivalent to `STDLIB_INTERNAL_ERROR`).
 
 ## Comparison operators provided
