@@ -1,7 +1,7 @@
 submodule (stdlib_system) stdlib_system_subprocess
     use iso_c_binding  
     use iso_fortran_env, only: int64, real64
-    use stdlib_strings, only: to_c_string, join
+    use stdlib_strings, only: to_c_char, join
     use stdlib_linalg_state, only: linalg_state_type, LINALG_ERROR, linalg_error_handling
     implicit none(type, external)
     
@@ -284,11 +284,11 @@ contains
         character(c_char), dimension(:), allocatable, target :: c_cmd,c_stdin,c_stdin_file,c_stdout_file,c_stderr_file
         
         ! Assemble C strings 
-                                            c_cmd   = to_c_string(join(args))
-        if (present(stdin))                 c_stdin = to_c_string(stdin)
-        if (allocated(process%stdin_file))  c_stdin_file  = to_c_string(process%stdin_file)
-        if (allocated(process%stdout_file)) c_stdout_file = to_c_string(process%stdout_file)
-        if (allocated(process%stderr_file)) c_stderr_file = to_c_string(process%stderr_file)
+                                            c_cmd   = to_c_char(join(args))
+        if (present(stdin))                 c_stdin = to_c_char(stdin)
+        if (allocated(process%stdin_file))  c_stdin_file  = to_c_char(process%stdin_file)
+        if (allocated(process%stdout_file)) c_stdout_file = to_c_char(process%stdout_file)
+        if (allocated(process%stderr_file)) c_stderr_file = to_c_char(process%stderr_file)
             
         ! On Windows, this 1) creates 2) launches an external process from C.
         ! On unix, this 1) forks an external process
