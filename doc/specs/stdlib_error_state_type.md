@@ -40,7 +40,7 @@ Experimental
 #### Example
 
 ```fortran
-{!example/error/example_state1.f90!}
+{!example/error/example_error_state1.f90!}
 ```
 
 ## Error flags provided
