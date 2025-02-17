@@ -79,7 +79,7 @@ Additionally, a callback function can be specified to execute upon process compl
 
 `want_stdout` (optional): Shall be a `logical` flag. If `.true.`, the standard output of the process will be captured; if `.false.` (default), it will be lost. This is an `intent(in)` argument.
 
-`want_stderr` (optional): Shall be a logical flag. If `.true.`, the standard error output of the process will be captured. Default: `.false.`. This is an `intent(in)` argument.
+`want_stderr` (optional): Shall be a `logical` flag. If `.true.`, the standard error output of the process will be captured. Default: `.false.`. This is an `intent(in)` argument.
 
 `callback` (optional): Shall be a procedure conforming to the `process_callback` interface. If present, this function will be called upon process completion with the process ID, exit state, and optionally collected standard input, output, and error streams. This is an `intent(in)` argument.
 
