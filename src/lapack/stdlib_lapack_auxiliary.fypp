@@ -1,0 +1,1077 @@
+#:include "common.fypp" 
+submodule(stdlib_lapack_base) stdlib_lapack_auxiliary
+  implicit none
+
+
+  contains
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+
+     pure real(sp) module function stdlib${ii}$_slamch( cmach )
+     !! SLAMCH determines single precision machine parameters.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: zero, one, eps
+           ! Scalar Arguments 
+           character, intent(in) :: cmach
+       ! =====================================================================
+           
+           ! Local Scalars 
+           real(sp) :: sfmin, small, rmach
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! assume rounding, not chopping. always.
+           if( stdlib_lsame( cmach, 'E' ) ) then
+              rmach = eps
+           else if( stdlib_lsame( cmach, 'S' ) ) then
+              sfmin = tiny(zero)
+              small = one / huge(zero)
+              if( small>=sfmin ) then
+                 ! use small plus a bit, to avoid the possibility of rounding
+                 ! causing overflow when computing  1/sfmin.
+                 sfmin = small*( one+eps )
+              end if
+              rmach = sfmin
+           else if( stdlib_lsame( cmach, 'B' ) ) then
+              rmach = radix(zero)
+           else if( stdlib_lsame( cmach, 'P' ) ) then
+              rmach = eps * radix(zero)
+           else if( stdlib_lsame( cmach, 'N' ) ) then
+              rmach = digits(zero)
+           else if( stdlib_lsame( cmach, 'R' ) ) then
+              rmach = one
+           else if( stdlib_lsame( cmach, 'M' ) ) then
+              rmach = minexponent(zero)
+           else if( stdlib_lsame( cmach, 'U' ) ) then
+              rmach = tiny(zero)
+           else if( stdlib_lsame( cmach, 'L' ) ) then
+              rmach = maxexponent(zero)
+           else if( stdlib_lsame( cmach, 'O' ) ) then
+              rmach = huge(zero)
+           else
+              rmach = zero
+           end if
+           stdlib${ii}$_slamch = rmach
+           return
+     end function stdlib${ii}$_slamch
+
+     pure real(dp) module function stdlib${ii}$_dlamch( cmach )
+     !! DLAMCH determines double precision machine parameters.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: zero, one, eps
+           ! Scalar Arguments 
+           character, intent(in) :: cmach
+       ! =====================================================================
+           
+           ! Local Scalars 
+           real(dp) :: sfmin, small, rmach
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! assume rounding, not chopping. always.
+           if( stdlib_lsame( cmach, 'E' ) ) then
+              rmach = eps
+           else if( stdlib_lsame( cmach, 'S' ) ) then
+              sfmin = tiny(zero)
+              small = one / huge(zero)
+              if( small>=sfmin ) then
+                 ! use small plus a bit, to avoid the possibility of rounding
+                 ! causing overflow when computing  1/sfmin.
+                 sfmin = small*( one+eps )
+              end if
+              rmach = sfmin
+           else if( stdlib_lsame( cmach, 'B' ) ) then
+              rmach = radix(zero)
+           else if( stdlib_lsame( cmach, 'P' ) ) then
+              rmach = eps * radix(zero)
+           else if( stdlib_lsame( cmach, 'N' ) ) then
+              rmach = digits(zero)
+           else if( stdlib_lsame( cmach, 'R' ) ) then
+              rmach = one
+           else if( stdlib_lsame( cmach, 'M' ) ) then
+              rmach = minexponent(zero)
+           else if( stdlib_lsame( cmach, 'U' ) ) then
+              rmach = tiny(zero)
+           else if( stdlib_lsame( cmach, 'L' ) ) then
+              rmach = maxexponent(zero)
+           else if( stdlib_lsame( cmach, 'O' ) ) then
+              rmach = huge(zero)
+           else
+              rmach = zero
+           end if
+           stdlib${ii}$_dlamch = rmach
+           return
+     end function stdlib${ii}$_dlamch
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure real(${rk}$) module function stdlib${ii}$_${ri}$lamch( cmach )
+     !! DLAMCH: determines quad precision machine parameters.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${rk}$, only: zero, one, eps
+           ! Scalar Arguments 
+           character, intent(in) :: cmach
+       ! =====================================================================
+           
+           ! Local Scalars 
+           real(${rk}$) :: sfmin, small, rmach
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! assume rounding, not chopping. always.
+           if( stdlib_lsame( cmach, 'E' ) ) then
+              rmach = eps
+           else if( stdlib_lsame( cmach, 'S' ) ) then
+              sfmin = tiny(zero)
+              small = one / huge(zero)
+              if( small>=sfmin ) then
+                 ! use small plus a bit, to avoid the possibility of rounding
+                 ! causing overflow when computing  1/sfmin.
+                 sfmin = small*( one+eps )
+              end if
+              rmach = sfmin
+           else if( stdlib_lsame( cmach, 'B' ) ) then
+              rmach = radix(zero)
+           else if( stdlib_lsame( cmach, 'P' ) ) then
+              rmach = eps * radix(zero)
+           else if( stdlib_lsame( cmach, 'N' ) ) then
+              rmach = digits(zero)
+           else if( stdlib_lsame( cmach, 'R' ) ) then
+              rmach = one
+           else if( stdlib_lsame( cmach, 'M' ) ) then
+              rmach = minexponent(zero)
+           else if( stdlib_lsame( cmach, 'U' ) ) then
+              rmach = tiny(zero)
+           else if( stdlib_lsame( cmach, 'L' ) ) then
+              rmach = maxexponent(zero)
+           else if( stdlib_lsame( cmach, 'O' ) ) then
+              rmach = huge(zero)
+           else
+              rmach = zero
+           end if
+           stdlib${ii}$_${ri}$lamch = rmach
+           return
+     end function stdlib${ii}$_${ri}$lamch
+
+#:endif
+#:endfor
+
+
+
+     pure real(sp) module function stdlib${ii}$_slamc3( a, b )
+        ! -- lapack auxiliary routine --
+           ! univ. of tennessee, univ. of california berkeley and nag ltd..
+           ! Scalar Arguments 
+           real(sp), intent(in) :: a, b
+       ! =====================================================================
+           ! Executable Statements 
+           stdlib${ii}$_slamc3 = a + b
+           return
+     end function stdlib${ii}$_slamc3
+
+     pure real(dp) module function stdlib${ii}$_dlamc3( a, b )
+        ! -- lapack auxiliary routine --
+           ! univ. of tennessee, univ. of california berkeley and nag ltd..
+           ! Scalar Arguments 
+           real(dp), intent(in) :: a, b
+       ! =====================================================================
+           ! Executable Statements 
+           stdlib${ii}$_dlamc3 = a + b
+           return
+     end function stdlib${ii}$_dlamc3
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure real(${rk}$) module function stdlib${ii}$_${ri}$lamc3( a, b )
+        ! -- lapack auxiliary routine --
+           ! univ. of tennessee, univ. of california berkeley and nag ltd..
+           ! Scalar Arguments 
+           real(${rk}$), intent(in) :: a, b
+       ! =====================================================================
+           ! Executable Statements 
+           stdlib${ii}$_${ri}$lamc3 = a + b
+           return
+     end function stdlib${ii}$_${ri}$lamc3
+
+#:endif
+#:endfor
+
+
+
+     pure module subroutine stdlib${ii}$_slabad( small, large )
+     !! SLABAD takes as input the values computed by SLAMCH for underflow and
+     !! overflow, and returns the square root of each of these values if the
+     !! log of LARGE is sufficiently large.  This subroutine is intended to
+     !! identify machines with a large exponent range, such as the Crays, and
+     !! redefine the underflow and overflow limits to be the square roots of
+     !! the values computed by SLAMCH.  This subroutine is needed because
+     !! SLAMCH does not compensate for poor arithmetic in the upper half of
+     !! the exponent range, as is found on a Cray.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           ! Scalar Arguments 
+           real(sp), intent(inout) :: large, small
+        ! =====================================================================
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! if it looks like we're on a cray, take the square root of
+           ! small and large to avoid overflow and underflow problems.
+           if( log10( large )>2000. ) then
+              small = sqrt( small )
+              large = sqrt( large )
+           end if
+           return
+     end subroutine stdlib${ii}$_slabad
+
+     pure module subroutine stdlib${ii}$_dlabad( small, large )
+     !! DLABAD takes as input the values computed by DLAMCH for underflow and
+     !! overflow, and returns the square root of each of these values if the
+     !! log of LARGE is sufficiently large.  This subroutine is intended to
+     !! identify machines with a large exponent range, such as the Crays, and
+     !! redefine the underflow and overflow limits to be the square roots of
+     !! the values computed by DLAMCH.  This subroutine is needed because
+     !! DLAMCH does not compensate for poor arithmetic in the upper half of
+     !! the exponent range, as is found on a Cray.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           ! Scalar Arguments 
+           real(dp), intent(inout) :: large, small
+        ! =====================================================================
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! if it looks like we're on a cray, take the square root of
+           ! small and large to avoid overflow and underflow problems.
+           if( log10( large )>2000._dp ) then
+              small = sqrt( small )
+              large = sqrt( large )
+           end if
+           return
+     end subroutine stdlib${ii}$_dlabad
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$labad( small, large )
+     !! DLABAD: takes as input the values computed by DLAMCH for underflow and
+     !! overflow, and returns the square root of each of these values if the
+     !! log of LARGE is sufficiently large.  This subroutine is intended to
+     !! identify machines with a large exponent range, such as the Crays, and
+     !! redefine the underflow and overflow limits to be the square roots of
+     !! the values computed by DLAMCH.  This subroutine is needed because
+     !! DLAMCH does not compensate for poor arithmetic in the upper half of
+     !! the exponent range, as is found on a Cray.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           ! Scalar Arguments 
+           real(${rk}$), intent(inout) :: large, small
+        ! =====================================================================
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! if it looks like we're on a cray, take the square root of
+           ! small and large to avoid overflow and underflow problems.
+           if( log10( large )>2000._${rk}$ ) then
+              small = sqrt( small )
+              large = sqrt( large )
+           end if
+           return
+     end subroutine stdlib${ii}$_${ri}$labad
+
+#:endif
+#:endfor
+
+
+
+     pure real(sp) module function stdlib${ii}$_scsum1( n, cx, incx )
+     !! SCSUM1 takes the sum of the absolute values of a complex
+     !! vector and returns a single precision result.
+     !! Based on SCASUM from the Level 1 BLAS.
+     !! The change is to use the 'genuine' absolute value.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: zero
+           ! Scalar Arguments 
+           integer(${ik}$), intent(in) :: incx, n
+           ! Array Arguments 
+           complex(sp), intent(in) :: cx(*)
+        ! =====================================================================
+           ! Local Scalars 
+           integer(${ik}$) :: i, nincx
+           real(sp) :: stemp
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           stdlib${ii}$_scsum1 = zero
+           stemp = zero
+           if( n<=0 )return
+           if( incx==1 )go to 20
+           ! code for increment not equal to 1
+           nincx = n*incx
+           do i = 1, nincx, incx
+              ! next line modified.
+              stemp = stemp + abs( cx( i ) )
+           end do
+           stdlib${ii}$_scsum1 = stemp
+           return
+           ! code for increment equal to 1
+           20 continue
+           do i = 1, n
+              ! next line modified.
+              stemp = stemp + abs( cx( i ) )
+           end do
+           stdlib${ii}$_scsum1 = stemp
+           return
+     end function stdlib${ii}$_scsum1
+
+
+
+     pure real(dp) module function stdlib${ii}$_dzsum1( n, cx, incx )
+     !! DZSUM1 takes the sum of the absolute values of a complex
+     !! vector and returns a double precision result.
+     !! Based on DZASUM from the Level 1 BLAS.
+     !! The change is to use the 'genuine' absolute value.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: zero
+           ! Scalar Arguments 
+           integer(${ik}$), intent(in) :: incx, n
+           ! Array Arguments 
+           complex(dp), intent(in) :: cx(*)
+        ! =====================================================================
+           ! Local Scalars 
+           integer(${ik}$) :: i, nincx
+           real(dp) :: stemp
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           stdlib${ii}$_dzsum1 = zero
+           stemp = zero
+           if( n<=0 )return
+           if( incx==1 )go to 20
+           ! code for increment not equal to 1
+           nincx = n*incx
+           do i = 1, nincx, incx
+              ! next line modified.
+              stemp = stemp + abs( cx( i ) )
+           end do
+           stdlib${ii}$_dzsum1 = stemp
+           return
+           ! code for increment equal to 1
+           20 continue
+           do i = 1, n
+              ! next line modified.
+              stemp = stemp + abs( cx( i ) )
+           end do
+           stdlib${ii}$_dzsum1 = stemp
+           return
+     end function stdlib${ii}$_dzsum1
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure real(${rk}$) module function stdlib${ii}$_${ri}$zsum1( n, cx, incx )
+     !! DZSUM1: takes the sum of the absolute values of a complex
+     !! vector and returns a quad precision result.
+     !! Based on DZASUM from the Level 1 BLAS.
+     !! The change is to use the 'genuine' absolute value.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${rk}$, only: zero
+           ! Scalar Arguments 
+           integer(${ik}$), intent(in) :: incx, n
+           ! Array Arguments 
+           complex(${rk}$), intent(in) :: cx(*)
+        ! =====================================================================
+           ! Local Scalars 
+           integer(${ik}$) :: i, nincx
+           real(${rk}$) :: stemp
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           stdlib${ii}$_${ri}$zsum1 = zero
+           stemp = zero
+           if( n<=0 )return
+           if( incx==1 )go to 20
+           ! code for increment not equal to 1
+           nincx = n*incx
+           do i = 1, nincx, incx
+              ! next line modified.
+              stemp = stemp + abs( cx( i ) )
+           end do
+           stdlib${ii}$_${ri}$zsum1 = stemp
+           return
+           ! code for increment equal to 1
+           20 continue
+           do i = 1, n
+              ! next line modified.
+              stemp = stemp + abs( cx( i ) )
+           end do
+           stdlib${ii}$_${ri}$zsum1 = stemp
+           return
+     end function stdlib${ii}$_${ri}$zsum1
+
+#:endif
+#:endfor
+
+
+
+     pure module subroutine stdlib${ii}$_slaqsb( uplo, n, kd, ab, ldab, s, scond, amax, equed )
+     !! SLAQSB equilibrates a symmetric band matrix A using the scaling
+     !! factors in the vector S.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: one
+           ! Scalar Arguments 
+           character, intent(out) :: equed
+           character, intent(in) :: uplo
+           integer(${ik}$), intent(in) :: kd, ldab, n
+           real(sp), intent(in) :: amax, scond
+           ! Array Arguments 
+           real(sp), intent(inout) :: ab(ldab,*)
+           real(sp), intent(in) :: s(*)
+        ! =====================================================================
+           ! Parameters 
+           real(sp), parameter :: thresh = 0.1e+0_sp
+           
+           ! Local Scalars 
+           integer(${ik}$) :: i, j
+           real(sp) :: cj, large, small
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! quick return if possible
+           if( n<=0_${ik}$ ) then
+              equed = 'N'
+              return
+           end if
+           ! initialize large and small.
+           small = stdlib${ii}$_slamch( 'SAFE MINIMUM' ) / stdlib${ii}$_slamch( 'PRECISION' )
+           large = one / small
+           if( scond>=thresh .and. amax>=small .and. amax<=large ) then
+              ! no equilibration
+              equed = 'N'
+           else
+              ! replace a by diag(s) * a * diag(s).
+              if( stdlib_lsame( uplo, 'U' ) ) then
+                 ! upper triangle of a is stored in band format.
+                 do j = 1, n
+                    cj = s( j )
+                    do i = max( 1, j-kd ), j
+                       ab( kd+1+i-j, j ) = cj*s( i )*ab( kd+1+i-j, j )
+                    end do
+                 end do
+              else
+                 ! lower triangle of a is stored.
+                 do j = 1, n
+                    cj = s( j )
+                    do i = j, min( n, j+kd )
+                       ab( 1_${ik}$+i-j, j ) = cj*s( i )*ab( 1_${ik}$+i-j, j )
+                    end do
+                 end do
+              end if
+              equed = 'Y'
+           end if
+           return
+     end subroutine stdlib${ii}$_slaqsb
+
+     pure module subroutine stdlib${ii}$_dlaqsb( uplo, n, kd, ab, ldab, s, scond, amax, equed )
+     !! DLAQSB equilibrates a symmetric band matrix A using the scaling
+     !! factors in the vector S.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: one
+           ! Scalar Arguments 
+           character, intent(out) :: equed
+           character, intent(in) :: uplo
+           integer(${ik}$), intent(in) :: kd, ldab, n
+           real(dp), intent(in) :: amax, scond
+           ! Array Arguments 
+           real(dp), intent(inout) :: ab(ldab,*)
+           real(dp), intent(in) :: s(*)
+        ! =====================================================================
+           ! Parameters 
+           real(dp), parameter :: thresh = 0.1e+0_dp
+           
+           ! Local Scalars 
+           integer(${ik}$) :: i, j
+           real(dp) :: cj, large, small
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! quick return if possible
+           if( n<=0_${ik}$ ) then
+              equed = 'N'
+              return
+           end if
+           ! initialize large and small.
+           small = stdlib${ii}$_dlamch( 'SAFE MINIMUM' ) / stdlib${ii}$_dlamch( 'PRECISION' )
+           large = one / small
+           if( scond>=thresh .and. amax>=small .and. amax<=large ) then
+              ! no equilibration
+              equed = 'N'
+           else
+              ! replace a by diag(s) * a * diag(s).
+              if( stdlib_lsame( uplo, 'U' ) ) then
+                 ! upper triangle of a is stored in band format.
+                 do j = 1, n
+                    cj = s( j )
+                    do i = max( 1, j-kd ), j
+                       ab( kd+1+i-j, j ) = cj*s( i )*ab( kd+1+i-j, j )
+                    end do
+                 end do
+              else
+                 ! lower triangle of a is stored.
+                 do j = 1, n
+                    cj = s( j )
+                    do i = j, min( n, j+kd )
+                       ab( 1_${ik}$+i-j, j ) = cj*s( i )*ab( 1_${ik}$+i-j, j )
+                    end do
+                 end do
+              end if
+              equed = 'Y'
+           end if
+           return
+     end subroutine stdlib${ii}$_dlaqsb
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$laqsb( uplo, n, kd, ab, ldab, s, scond, amax, equed )
+     !! DLAQSB: equilibrates a symmetric band matrix A using the scaling
+     !! factors in the vector S.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${rk}$, only: one
+           ! Scalar Arguments 
+           character, intent(out) :: equed
+           character, intent(in) :: uplo
+           integer(${ik}$), intent(in) :: kd, ldab, n
+           real(${rk}$), intent(in) :: amax, scond
+           ! Array Arguments 
+           real(${rk}$), intent(inout) :: ab(ldab,*)
+           real(${rk}$), intent(in) :: s(*)
+        ! =====================================================================
+           ! Parameters 
+           real(${rk}$), parameter :: thresh = 0.1e+0_${rk}$
+           
+           ! Local Scalars 
+           integer(${ik}$) :: i, j
+           real(${rk}$) :: cj, large, small
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! quick return if possible
+           if( n<=0_${ik}$ ) then
+              equed = 'N'
+              return
+           end if
+           ! initialize large and small.
+           small = stdlib${ii}$_${ri}$lamch( 'SAFE MINIMUM' ) / stdlib${ii}$_${ri}$lamch( 'PRECISION' )
+           large = one / small
+           if( scond>=thresh .and. amax>=small .and. amax<=large ) then
+              ! no equilibration
+              equed = 'N'
+           else
+              ! replace a by diag(s) * a * diag(s).
+              if( stdlib_lsame( uplo, 'U' ) ) then
+                 ! upper triangle of a is stored in band format.
+                 do j = 1, n
+                    cj = s( j )
+                    do i = max( 1, j-kd ), j
+                       ab( kd+1+i-j, j ) = cj*s( i )*ab( kd+1+i-j, j )
+                    end do
+                 end do
+              else
+                 ! lower triangle of a is stored.
+                 do j = 1, n
+                    cj = s( j )
+                    do i = j, min( n, j+kd )
+                       ab( 1_${ik}$+i-j, j ) = cj*s( i )*ab( 1_${ik}$+i-j, j )
+                    end do
+                 end do
+              end if
+              equed = 'Y'
+           end if
+           return
+     end subroutine stdlib${ii}$_${ri}$laqsb
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_claqsb( uplo, n, kd, ab, ldab, s, scond, amax, equed )
+     !! CLAQSB equilibrates a symmetric band matrix A using the scaling
+     !! factors in the vector S.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: one
+           ! Scalar Arguments 
+           character, intent(out) :: equed
+           character, intent(in) :: uplo
+           integer(${ik}$), intent(in) :: kd, ldab, n
+           real(sp), intent(in) :: amax, scond
+           ! Array Arguments 
+           real(sp), intent(in) :: s(*)
+           complex(sp), intent(inout) :: ab(ldab,*)
+        ! =====================================================================
+           ! Parameters 
+           real(sp), parameter :: thresh = 0.1e+0_sp
+           
+           ! Local Scalars 
+           integer(${ik}$) :: i, j
+           real(sp) :: cj, large, small
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! quick return if possible
+           if( n<=0_${ik}$ ) then
+              equed = 'N'
+              return
+           end if
+           ! initialize large and small.
+           small = stdlib${ii}$_slamch( 'SAFE MINIMUM' ) / stdlib${ii}$_slamch( 'PRECISION' )
+           large = one / small
+           if( scond>=thresh .and. amax>=small .and. amax<=large ) then
+              ! no equilibration
+              equed = 'N'
+           else
+              ! replace a by diag(s) * a * diag(s).
+              if( stdlib_lsame( uplo, 'U' ) ) then
+                 ! upper triangle of a is stored in band format.
+                 do j = 1, n
+                    cj = s( j )
+                    do i = max( 1, j-kd ), j
+                       ab( kd+1+i-j, j ) = cj*s( i )*ab( kd+1+i-j, j )
+                    end do
+                 end do
+              else
+                 ! lower triangle of a is stored.
+                 do j = 1, n
+                    cj = s( j )
+                    do i = j, min( n, j+kd )
+                       ab( 1_${ik}$+i-j, j ) = cj*s( i )*ab( 1_${ik}$+i-j, j )
+                    end do
+                 end do
+              end if
+              equed = 'Y'
+           end if
+           return
+     end subroutine stdlib${ii}$_claqsb
+
+     pure module subroutine stdlib${ii}$_zlaqsb( uplo, n, kd, ab, ldab, s, scond, amax, equed )
+     !! ZLAQSB equilibrates a symmetric band matrix A using the scaling
+     !! factors in the vector S.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: one
+           ! Scalar Arguments 
+           character, intent(out) :: equed
+           character, intent(in) :: uplo
+           integer(${ik}$), intent(in) :: kd, ldab, n
+           real(dp), intent(in) :: amax, scond
+           ! Array Arguments 
+           real(dp), intent(in) :: s(*)
+           complex(dp), intent(inout) :: ab(ldab,*)
+        ! =====================================================================
+           ! Parameters 
+           real(dp), parameter :: thresh = 0.1e+0_dp
+           
+           ! Local Scalars 
+           integer(${ik}$) :: i, j
+           real(dp) :: cj, large, small
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! quick return if possible
+           if( n<=0_${ik}$ ) then
+              equed = 'N'
+              return
+           end if
+           ! initialize large and small.
+           small = stdlib${ii}$_dlamch( 'SAFE MINIMUM' ) / stdlib${ii}$_dlamch( 'PRECISION' )
+           large = one / small
+           if( scond>=thresh .and. amax>=small .and. amax<=large ) then
+              ! no equilibration
+              equed = 'N'
+           else
+              ! replace a by diag(s) * a * diag(s).
+              if( stdlib_lsame( uplo, 'U' ) ) then
+                 ! upper triangle of a is stored in band format.
+                 do j = 1, n
+                    cj = s( j )
+                    do i = max( 1, j-kd ), j
+                       ab( kd+1+i-j, j ) = cj*s( i )*ab( kd+1+i-j, j )
+                    end do
+                 end do
+              else
+                 ! lower triangle of a is stored.
+                 do j = 1, n
+                    cj = s( j )
+                    do i = j, min( n, j+kd )
+                       ab( 1_${ik}$+i-j, j ) = cj*s( i )*ab( 1_${ik}$+i-j, j )
+                    end do
+                 end do
+              end if
+              equed = 'Y'
+           end if
+           return
+     end subroutine stdlib${ii}$_zlaqsb
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$laqsb( uplo, n, kd, ab, ldab, s, scond, amax, equed )
+     !! ZLAQSB: equilibrates a symmetric band matrix A using the scaling
+     !! factors in the vector S.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${ck}$, only: one
+           ! Scalar Arguments 
+           character, intent(out) :: equed
+           character, intent(in) :: uplo
+           integer(${ik}$), intent(in) :: kd, ldab, n
+           real(${ck}$), intent(in) :: amax, scond
+           ! Array Arguments 
+           real(${ck}$), intent(in) :: s(*)
+           complex(${ck}$), intent(inout) :: ab(ldab,*)
+        ! =====================================================================
+           ! Parameters 
+           real(${ck}$), parameter :: thresh = 0.1e+0_${ck}$
+           
+           ! Local Scalars 
+           integer(${ik}$) :: i, j
+           real(${ck}$) :: cj, large, small
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! quick return if possible
+           if( n<=0_${ik}$ ) then
+              equed = 'N'
+              return
+           end if
+           ! initialize large and small.
+           small = stdlib${ii}$_${c2ri(ci)}$lamch( 'SAFE MINIMUM' ) / stdlib${ii}$_${c2ri(ci)}$lamch( 'PRECISION' )
+           large = one / small
+           if( scond>=thresh .and. amax>=small .and. amax<=large ) then
+              ! no equilibration
+              equed = 'N'
+           else
+              ! replace a by diag(s) * a * diag(s).
+              if( stdlib_lsame( uplo, 'U' ) ) then
+                 ! upper triangle of a is stored in band format.
+                 do j = 1, n
+                    cj = s( j )
+                    do i = max( 1, j-kd ), j
+                       ab( kd+1+i-j, j ) = cj*s( i )*ab( kd+1+i-j, j )
+                    end do
+                 end do
+              else
+                 ! lower triangle of a is stored.
+                 do j = 1, n
+                    cj = s( j )
+                    do i = j, min( n, j+kd )
+                       ab( 1_${ik}$+i-j, j ) = cj*s( i )*ab( 1_${ik}$+i-j, j )
+                    end do
+                 end do
+              end if
+              equed = 'Y'
+           end if
+           return
+     end subroutine stdlib${ii}$_${ci}$laqsb
+
+#:endif
+#:endfor
+
+
+
+     pure module subroutine stdlib${ii}$_sladiv1( a, b, c, d, p, q )
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: one
+           ! Scalar Arguments 
+           real(sp), intent(inout) :: a
+           real(sp), intent(in) :: b, c, d
+           real(sp), intent(out) :: p, q
+        ! =====================================================================
+           
+           ! Local Scalars 
+           real(sp) :: r, t
+           ! Executable Statements 
+           r = d / c
+           t = one / (c + d * r)
+           p = stdlib${ii}$_sladiv2(a, b, c, d, r, t)
+           a = -a
+           q = stdlib${ii}$_sladiv2(b, a, c, d, r, t)
+           return
+     end subroutine stdlib${ii}$_sladiv1
+
+     pure module subroutine stdlib${ii}$_dladiv1( a, b, c, d, p, q )
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: one
+           ! Scalar Arguments 
+           real(dp), intent(inout) :: a
+           real(dp), intent(in) :: b, c, d
+           real(dp), intent(out) :: p, q
+        ! =====================================================================
+           
+           ! Local Scalars 
+           real(dp) :: r, t
+           ! Executable Statements 
+           r = d / c
+           t = one / (c + d * r)
+           p = stdlib${ii}$_dladiv2(a, b, c, d, r, t)
+           a = -a
+           q = stdlib${ii}$_dladiv2(b, a, c, d, r, t)
+           return
+     end subroutine stdlib${ii}$_dladiv1
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$ladiv1( a, b, c, d, p, q )
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${rk}$, only: one
+           ! Scalar Arguments 
+           real(${rk}$), intent(inout) :: a
+           real(${rk}$), intent(in) :: b, c, d
+           real(${rk}$), intent(out) :: p, q
+        ! =====================================================================
+           
+           ! Local Scalars 
+           real(${rk}$) :: r, t
+           ! Executable Statements 
+           r = d / c
+           t = one / (c + d * r)
+           p = stdlib${ii}$_${ri}$ladiv2(a, b, c, d, r, t)
+           a = -a
+           q = stdlib${ii}$_${ri}$ladiv2(b, a, c, d, r, t)
+           return
+     end subroutine stdlib${ii}$_${ri}$ladiv1
+
+#:endif
+#:endfor
+
+
+
+     pure real(sp) module function stdlib${ii}$_sladiv2( a, b, c, d, r, t )
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: zero
+           ! Scalar Arguments 
+           real(sp), intent(in) :: a, b, c, d, r, t
+        ! =====================================================================
+           
+           ! Local Scalars 
+           real(sp) :: br
+           ! Executable Statements 
+           if( r/=zero ) then
+              br = b * r
+              if( br/=zero ) then
+                 stdlib${ii}$_sladiv2 = (a + br) * t
+              else
+                 stdlib${ii}$_sladiv2 = a * t + (b * t) * r
+              end if
+           else
+              stdlib${ii}$_sladiv2 = (a + d * (b / c)) * t
+           end if
+           return
+     end function stdlib${ii}$_sladiv2
+
+     pure real(dp) module function stdlib${ii}$_dladiv2( a, b, c, d, r, t )
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: zero
+           ! Scalar Arguments 
+           real(dp), intent(in) :: a, b, c, d, r, t
+        ! =====================================================================
+           
+           ! Local Scalars 
+           real(dp) :: br
+           ! Executable Statements 
+           if( r/=zero ) then
+              br = b * r
+              if( br/=zero ) then
+                 stdlib${ii}$_dladiv2 = (a + br) * t
+              else
+                 stdlib${ii}$_dladiv2 = a * t + (b * t) * r
+              end if
+           else
+              stdlib${ii}$_dladiv2 = (a + d * (b / c)) * t
+           end if
+           return
+     end function stdlib${ii}$_dladiv2
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure real(${rk}$) module function stdlib${ii}$_${ri}$ladiv2( a, b, c, d, r, t )
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${rk}$, only: zero
+           ! Scalar Arguments 
+           real(${rk}$), intent(in) :: a, b, c, d, r, t
+        ! =====================================================================
+           
+           ! Local Scalars 
+           real(${rk}$) :: br
+           ! Executable Statements 
+           if( r/=zero ) then
+              br = b * r
+              if( br/=zero ) then
+                 stdlib${ii}$_${ri}$ladiv2 = (a + br) * t
+              else
+                 stdlib${ii}$_${ri}$ladiv2 = a * t + (b * t) * r
+              end if
+           else
+              stdlib${ii}$_${ri}$ladiv2 = (a + d * (b / c)) * t
+           end if
+           return
+     end function stdlib${ii}$_${ri}$ladiv2
+
+#:endif
+#:endfor
+
+
+
+     pure module subroutine stdlib${ii}$_crot( n, cx, incx, cy, incy, c, s )
+     !! CROT applies a plane rotation, where the cos (C) is real and the
+     !! sin (S) is complex, and the vectors CX and CY are complex.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           ! Scalar Arguments 
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(sp), intent(in) :: c
+           complex(sp), intent(in) :: s
+           ! Array Arguments 
+           complex(sp), intent(inout) :: cx(*), cy(*)
+       ! =====================================================================
+           ! Local Scalars 
+           integer(${ik}$) :: i, ix, iy
+           complex(sp) :: stemp
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           if( n<=0 )return
+           if( incx==1 .and. incy==1 )go to 20
+           ! code for unequal increments or equal increments not equal to 1
+           ix = 1_${ik}$
+           iy = 1_${ik}$
+           if( incx<0_${ik}$ )ix = ( -n+1 )*incx + 1_${ik}$
+           if( incy<0_${ik}$ )iy = ( -n+1 )*incy + 1_${ik}$
+           do i = 1, n
+              stemp = c*cx( ix ) + s*cy( iy )
+              cy( iy ) = c*cy( iy ) - conjg( s )*cx( ix )
+              cx( ix ) = stemp
+              ix = ix + incx
+              iy = iy + incy
+           end do
+           return
+           ! code for both increments equal to 1
+           20 continue
+           do i = 1, n
+              stemp = c*cx( i ) + s*cy( i )
+              cy( i ) = c*cy( i ) - conjg( s )*cx( i )
+              cx( i ) = stemp
+           end do
+           return
+     end subroutine stdlib${ii}$_crot
+
+     pure module subroutine stdlib${ii}$_zrot( n, cx, incx, cy, incy, c, s )
+     !! ZROT applies a plane rotation, where the cos (C) is real and the
+     !! sin (S) is complex, and the vectors CX and CY are complex.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           ! Scalar Arguments 
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(dp), intent(in) :: c
+           complex(dp), intent(in) :: s
+           ! Array Arguments 
+           complex(dp), intent(inout) :: cx(*), cy(*)
+       ! =====================================================================
+           ! Local Scalars 
+           integer(${ik}$) :: i, ix, iy
+           complex(dp) :: stemp
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           if( n<=0 )return
+           if( incx==1 .and. incy==1 )go to 20
+           ! code for unequal increments or equal increments not equal to 1
+           ix = 1_${ik}$
+           iy = 1_${ik}$
+           if( incx<0_${ik}$ )ix = ( -n+1 )*incx + 1_${ik}$
+           if( incy<0_${ik}$ )iy = ( -n+1 )*incy + 1_${ik}$
+           do i = 1, n
+              stemp = c*cx( ix ) + s*cy( iy )
+              cy( iy ) = c*cy( iy ) - conjg( s )*cx( ix )
+              cx( ix ) = stemp
+              ix = ix + incx
+              iy = iy + incy
+           end do
+           return
+           ! code for both increments equal to 1
+           20 continue
+           do i = 1, n
+              stemp = c*cx( i ) + s*cy( i )
+              cy( i ) = c*cy( i ) - conjg( s )*cx( i )
+              cx( i ) = stemp
+           end do
+           return
+     end subroutine stdlib${ii}$_zrot
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$rot( n, cx, incx, cy, incy, c, s )
+     !! ZROT:   applies a plane rotation, where the cos (C) is real and the
+     !! sin (S) is complex, and the vectors CX and CY are complex.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           ! Scalar Arguments 
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(${ck}$), intent(in) :: c
+           complex(${ck}$), intent(in) :: s
+           ! Array Arguments 
+           complex(${ck}$), intent(inout) :: cx(*), cy(*)
+       ! =====================================================================
+           ! Local Scalars 
+           integer(${ik}$) :: i, ix, iy
+           complex(${ck}$) :: stemp
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           if( n<=0 )return
+           if( incx==1 .and. incy==1 )go to 20
+           ! code for unequal increments or equal increments not equal to 1
+           ix = 1_${ik}$
+           iy = 1_${ik}$
+           if( incx<0_${ik}$ )ix = ( -n+1 )*incx + 1_${ik}$
+           if( incy<0_${ik}$ )iy = ( -n+1 )*incy + 1_${ik}$
+           do i = 1, n
+              stemp = c*cx( ix ) + s*cy( iy )
+              cy( iy ) = c*cy( iy ) - conjg( s )*cx( ix )
+              cx( ix ) = stemp
+              ix = ix + incx
+              iy = iy + incy
+           end do
+           return
+           ! code for both increments equal to 1
+           20 continue
+           do i = 1, n
+              stemp = c*cx( i ) + s*cy( i )
+              cy( i ) = c*cy( i ) - conjg( s )*cx( i )
+              cx( i ) = stemp
+           end do
+           return
+     end subroutine stdlib${ii}$_${ci}$rot
+
+#:endif
+#:endfor
+
+
+#:endfor
+end submodule stdlib_lapack_auxiliary

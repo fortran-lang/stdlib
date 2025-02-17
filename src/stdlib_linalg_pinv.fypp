@@ -1,0 +1,132 @@
+#:include "common.fypp"
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+submodule(stdlib_linalg) stdlib_linalg_pseudoinverse
+!! Compute the (Moore-Penrose) pseudo-inverse of a matrix.    
+     use stdlib_linalg_constants
+     use stdlib_linalg_blas
+     use stdlib_linalg_lapack
+     use stdlib_linalg_state
+     use ieee_arithmetic, only: ieee_value, ieee_quiet_nan
+     implicit none
+     
+     character(*), parameter :: this = 'pseudo-inverse'
+
+     contains
+
+     #:for rk,rt,ri in RC_KINDS_TYPES
+
+     ! Compute the in-place pseudo-inverse of matrix a
+     module subroutine stdlib_linalg_pseudoinvert_${ri}$(a,pinva,rtol,err)
+         !> Input matrix a[m,n]
+         ${rt}$, intent(inout) :: a(:,:)
+         !> Output pseudo-inverse matrix
+         ${rt}$, intent(out) :: pinva(:,:)
+         !> [optional] Relative tolerance for singular value cutoff
+         real(${rk}$), optional, intent(in) :: rtol
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+
+         ! Local variables
+         real(${rk}$) :: tolerance,cutoff
+         real(${rk}$), allocatable :: s(:)
+         ${rt}$, allocatable :: u(:,:),vt(:,:)
+         type(linalg_state_type) :: err0
+         integer(ilp) :: m,n,k,i,j
+         ${rt}$, parameter :: alpha = 1.0_${rk}$, beta = 0.0_${rk}$         
+         character, parameter :: H = #{if rt.startswith('complex')}# 'C' #{else}# 'T' #{endif}#
+         
+         ! Problem size
+         m = size(a,1,kind=ilp)
+         n = size(a,2,kind=ilp)
+         k = min(m,n)
+         if (m<1 .or. n<1) then
+            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size: a=',[m,n])
+            call linalg_error_handling(err0,err)
+            return
+         end if         
+         
+         if (any(shape(pinva,kind=ilp)/=[n,m])) then
+            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid pinv size:',shape(pinva),'should be',[n,m])
+            call linalg_error_handling(err0,err)
+            return
+         end if                  
+         
+         ! Singular value threshold
+         tolerance = max(m,n)*epsilon(0.0_${rk}$)
+         
+         ! User threshold: fallback to default if <=0
+         if (present(rtol)) then 
+            if (rtol>0.0_${rk}$) tolerance = rtol                
+         end if
+         
+         allocate(s(k),u(m,k),vt(k,n))
+         call svd(a,s,u,vt,overwrite_a=.false.,full_matrices=.false.,err=err0)
+         if (err0%error()) then 
+            err0 = linalg_state_type(this,LINALG_ERROR,'svd failure -',err0%message)
+            call linalg_error_handling(err0,err)
+            return
+         endif
+         
+         !> Discard singular values
+         cutoff = tolerance*maxval(s)
+         s = merge(1.0_${rk}$/s,0.0_${rk}$,s>cutoff)
+
+         ! Get pseudo-inverse: A_pinv = V * (diag(1/s) * U^H) = V * (U * diag(1/s))^H
+         
+         ! 1) compute (U * diag(1/s)) in-place
+         do concurrent (i=1:m,j=1:k); u(i,j) = s(j)*u(i,j); end do
+            
+         ! 2) commutate matmul: A_pinv = V * (U * diag(1/s))^H = ((U * diag(1/s)) * V^H)^H. 
+         !    This avoids one matrix transpose
+         call gemm(H, H, n, m, k, alpha, vt, k, u, m, beta, pinva, size(pinva,1,kind=ilp))
+
+     end subroutine stdlib_linalg_pseudoinvert_${ri}$
+
+     ! Function interface
+     module function stdlib_linalg_pseudoinverse_${ri}$(a,rtol,err) result(pinva)
+         !> Input matrix a[m,n]
+         ${rt}$, intent(in), target :: a(:,:)
+         !> [optional] Relative tolerance for singular value cutoff
+         real(${rk}$), optional, intent(in) :: rtol         
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+         !> Matrix pseudo-inverse
+         ${rt}$ :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))         
+         
+         ! Use pointer to circumvent svd intent(inout) restriction
+         ${rt}$, pointer :: ap(:,:)
+         ap => a
+         
+         call stdlib_linalg_pseudoinvert_${ri}$(ap,pinva,rtol,err)
+
+     end function stdlib_linalg_pseudoinverse_${ri}$
+
+     ! Inverse matrix operator
+     module function stdlib_linalg_pinv_${ri}$_operator(a) result(pinva)
+         !> Input matrix a[m,n]
+         ${rt}$, intent(in), target :: a(:,:)
+         !> Result pseudo-inverse matrix
+         ${rt}$ :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))
+         
+         type(linalg_state_type) :: err
+
+         ! Use pointer to circumvent svd intent(inout) restriction
+         ${rt}$, pointer :: ap(:,:)
+         ap => a
+
+         call stdlib_linalg_pseudoinvert_${ri}$(ap,pinva,err=err)
+
+         if (err%error()) then 
+         #:if rt.startswith('real')
+         pinva = ieee_value(1.0_${rk}$,ieee_quiet_nan)
+         #:else
+         pinva = cmplx(ieee_value(1.0_${rk}$,ieee_quiet_nan), &
+                       ieee_value(1.0_${rk}$,ieee_quiet_nan), kind=${rk}$)
+         #:endif
+         endif
+
+     end function stdlib_linalg_pinv_${ri}$_operator
+
+     #:endfor
+
+end submodule stdlib_linalg_pseudoinverse
