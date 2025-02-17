@@ -36,7 +36,6 @@ module test_linalg_schur
 
         integer(ilp), parameter :: n   = 15_ilp
         integer(ilp) :: lwork
-        real(${rk}$), parameter :: tol = 10*sqrt(epsilon(0.0_${rk}$))
         complex(${rk}$) :: eigs(n)
         ${rt}$, dimension(n,n) :: a,t,z
         ${rt}$, allocatable :: storage(:)
