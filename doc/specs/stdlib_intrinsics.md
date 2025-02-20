@@ -116,7 +116,7 @@ Pure function.
 
 #### Argument(s)
 
-`x`: 1D array of either `real` or `complex` type. This argument is `intent(in)`.
+`x`: 1D array of either `real`, `complex` or `integer` type. This argument is `intent(in)`.
 
 `y`: 1D array of the same type and kind as `x`. This argument is `intent(in)`.
 
