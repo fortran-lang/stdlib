@@ -33,7 +33,7 @@ Pure function.
 
 #### Argument(s)
 
-`x`: N-D array of either `real` or `complex` type. This argument is `intent(in)`.
+`x`: N-D array of either `real`, `complex` or `integer` type. This argument is `intent(in)`.
 
 `dim` (optional): scalar of type `integer` with a value in the range from 1 to n, where n equals the rank of `x`.
 
