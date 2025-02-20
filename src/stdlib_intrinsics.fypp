@@ -5,7 +5,7 @@
 #:set RANKS = range(2, MAXRANK + 1)
 
 module stdlib_intrinsics
-    !!Replacement of some Fortran intrinsic functions offering either faster and/or more accurate implementations.
+    !!Alternative implementations of some Fortran intrinsic functions offering either faster and/or more accurate evaluation.
     !! ([Specification](../page/specs/stdlib_intrinsics.html))
     use stdlib_kinds
     implicit none
@@ -23,7 +23,7 @@ module stdlib_intrinsics
         !! This interface provides standard conforming call for sum of elements of any rank.
         !! The 1-D base implementation follows a chunked approach for optimizing performance and increasing accuracy.
         !! The `N-D` interfaces calls upon the `(N-1)-D` implementation. 
-        !! Supported data types include `real` and `complex`.
+        !! Supported data types include `real`, `complex` and `integer`.
         !!
         #:for k, t, s in I_KINDS_TYPES + R_KINDS_TYPES + C_KINDS_TYPES
         pure module function stdlib_sum_1d_${s}$(a) result(s)
@@ -64,7 +64,7 @@ module stdlib_intrinsics
         !! This interface provides standard conforming call for sum of elements of any rank.
         !! The 1-D base implementation follows a chunked approach combined with a kahan kernel for optimizing performance and increasing accuracy.
         !! The `N-D` interfaces calls upon the `(N-1)-D` implementation. 
-        !! Supported data types include `real` and `complex`.
+        !! Supported data types include `real`, `complex` and `integer`.
         !!
         #:for k, t, s in R_KINDS_TYPES + C_KINDS_TYPES
         pure module function stdlib_sum_kahan_1d_${s}$(a) result(s)
@@ -104,7 +104,7 @@ module stdlib_intrinsics
         !! 
         !! compute the dot_product of rank 1 arrays.
         !! The 1-D base implementation follows a chunked approach for optimizing performance and increasing accuracy.
-        !! Supported data types include `real` and `complex`.
+        !! Supported data types include `real`, `complex` and `integer`.
         !!
         #:for k, t, s in I_KINDS_TYPES + R_KINDS_TYPES + C_KINDS_TYPES
         pure module function stdlib_dot_product_${s}$(a,b) result(p)
@@ -127,7 +127,7 @@ module stdlib_intrinsics
         !! 
         !! compute the dot_product of rank 1 arrays.
         !! The implementation follows a chunked approach combined with a kahan kernel for optimizing performance and increasing accuracy.
-        !! Supported data types include `real` and `complex`.
+        !! Supported data types include `real`, `complex` and `integer`.
         !!
         #:for k, t, s in R_KINDS_TYPES + C_KINDS_TYPES
         pure module function stdlib_dot_product_kahan_${s}$(a,b) result(p)

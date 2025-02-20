@@ -33,7 +33,7 @@ Pure function.
 
 #### Argument(s)
 
-`x`: N-D array of either `real` or `complex` type. This argument is `intent(in)`.
+`x`: N-D array of either `real`, `complex` or `integer` type. This argument is `intent(in)`.
 
 `dim` (optional): scalar of type `integer` with a value in the range from 1 to n, where n equals the rank of `x`.
 
@@ -48,7 +48,7 @@ If `dim` is absent, the output is a scalar of the same `type` and `kind` as to t
 
 #### Description
 
-The `stdlib_sum_kahan` function can replace the intrinsic `sum` for `real` or `complex` arrays. It follows a chunked implementation which maximizes vectorization potential complemented by an `elemental` kernel based on the [kahan summation](https://doi.org/10.1145%2F363707.363723) strategy to reduce the round-off error:
+The `stdlib_sum_kahan` function can replace the intrinsic `sum` for `real`, `complex` or `integer` arrays. It follows a chunked implementation which maximizes vectorization potential complemented by an `elemental` kernel based on the [kahan summation](https://doi.org/10.1145%2F363707.363723) strategy to reduce the round-off error:
 
 ```fortran
 elemental subroutine kahan_kernel_<kind>(a,s,c)
@@ -79,7 +79,7 @@ Pure function.
 
 #### Argument(s)
 
-`x`: 1D array of either `real` or `complex` type. This argument is `intent(in)`.
+`x`: 1D array of either `real`, `complex` or `integer` type. This argument is `intent(in)`.
 
 `dim` (optional): scalar of type `integer` with a value in the range from 1 to n, where n equals the rank of `x`.
 
@@ -116,7 +116,7 @@ Pure function.
 
 #### Argument(s)
 
-`x`: 1D array of either `real` or `complex` type. This argument is `intent(in)`.
+`x`: 1D array of either `real`, `complex` or `integer` type. This argument is `intent(in)`.
 
 `y`: 1D array of the same type and kind as `x`. This argument is `intent(in)`.
 
