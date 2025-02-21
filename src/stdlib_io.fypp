@@ -9,7 +9,7 @@ module stdlib_io
   use, intrinsic :: iso_fortran_env, only : input_unit
   use stdlib_kinds, only: sp, dp, xdp, qp, &
       int8, int16, int32, int64
-  use stdlib_error, only: error_stop
+  use stdlib_error, only: error_stop, state_type, STDLIB_IO_ERROR
   use stdlib_optval, only: optval
   use stdlib_ascii, only: is_blank
   use stdlib_string_type, only : string_type
@@ -17,6 +17,25 @@ module stdlib_io
   private
   ! Public API
   public :: loadtxt, savetxt, open, getline
+
+  !! version: experimental 
+  !!
+  !! Reads a whole ASCII file and loads its contents into a string variable. 
+  !! ([Specification](../page/specs/stdlib_io.html#getfile-read-a-whole-ascii-file-into-a-string-variable))
+  !! 
+  !!### Summary 
+  !! Function interface for reading the content of a file into a string.
+  !!
+  !!### Description
+  !! 
+  !! This function reads the entirety of a specified ASCII file and returns it as a string. The optional 
+  !! `err` argument allows for handling errors through the library's `state_type` class. 
+  !! An optional `logical` flag can be passed to delete the file after reading.  
+  !! 
+  !!@note Handles errors using the library's `state_type` error-handling class. If not provided, 
+  !! exceptions will trigger an `error stop`. 
+  !!         
+  public :: getfile
 
   ! Private API that is exposed so that we can test it in tests
   public :: parse_mode
@@ -527,5 +546,97 @@ contains
 
     call getline(input_unit, line, iostat, iomsg)
   end subroutine getline_input_string
+
+  !> Version: experimental
+  !> 
+  !> Reads a whole ASCII file and loads its contents into a string variable.
+  !> The function handles error states and optionally deletes the file after reading.
+  type(string_type) function getfile(fileName,err,delete) result(file)
+      !> Input file name
+      character(*), intent(in) :: fileName
+      !> [optional] State return flag. On error, if not requested, the code will stop.
+      type(state_type), optional, intent(out) :: err
+      !> [optional] Delete file after reading? Default: do not delete
+      logical, optional, intent(in) :: delete
+        
+      ! Local variables
+      type(state_type) :: err0
+      character(len=:), allocatable :: fileString
+      character(len=512) :: iomsg
+      integer :: lun,iostat
+      integer(int64) :: errpos,fileSize
+      logical :: is_present,want_deleted
+
+      ! Initializations
+      file = ""
+      
+      !> Check if the file should be deleted after reading
+      if (present(delete)) then 
+         want_deleted = delete
+      else
+         want_deleted = .false.   
+      end if
+
+      !> Check file existing
+      inquire(file=fileName, exist=is_present)
+      if (.not.is_present) then
+         err0 = state_type('getfile',STDLIB_IO_ERROR,'File not present:',fileName)
+         call err0%handle(err)
+         return
+      end if
+      
+      !> Retrieve file size
+      inquire(file=fileName,size=fileSize)
+      
+      invalid_size: if (fileSize<0) then 
+
+          err0 = state_type('getfile',STDLIB_IO_ERROR,fileName,'has invalid size=',fileSize)
+          call err0%handle(err)
+          return            
+            
+      endif invalid_size  
+            
+      ! Read file
+      open(newunit=lun,file=fileName, &
+           form='unformatted',action='read',access='stream',status='old', &
+           iostat=iostat,iomsg=iomsg)
+             
+      if (iostat/=0) then 
+         err0 = state_type('getfile',STDLIB_IO_ERROR,'Cannot open',fileName,'for read:',iomsg)
+         call err0%handle(err)
+         return
+      end if     
+        
+      allocate(character(len=fileSize) :: fileString)
+        
+      read_data: if (fileSize>0) then 
+            
+          read(lun, pos=1, iostat=iostat, iomsg=iomsg) fileString
+            
+          ! Read error
+          if (iostat/=0) then 
+                
+              inquire(unit=lun,pos=errpos)                    
+              err0 = state_type('getfile',STDLIB_IO_ERROR,iomsg,'(',fileName,'at byte',errpos,')')
+              call err0%handle(err)
+              return
+
+          endif
+            
+      end if read_data
+                   
+      if (want_deleted) then 
+         close(lun,iostat=iostat,status='delete')
+         if (iostat/=0) err0 = state_type('getfile',STDLIB_IO_ERROR,'Cannot delete',fileName,'after reading')
+      else
+         close(lun,iostat=iostat)
+         if (iostat/=0) err0 = state_type('getfile',STDLIB_IO_ERROR,'Cannot close',fileName,'after reading')
+      endif 
+      
+      ! Process output
+      call move(from=fileString,to=file)
+      call err0%handle(err)
+
+  end function getfile
 
 end module stdlib_io
