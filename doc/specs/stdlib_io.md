@@ -273,7 +273,7 @@ This function reads the entirety of a specified ASCII file and returns its conte
 
 ### Syntax
 
-`call [[stdlib_io(module):getfile(function)]] (fileName [, err] [, delete=.false.])`
+`call [[stdlib_io(module):getfile(function)]] (filename [, err] [, delete=.false.])`
 
 ### Class
 Function
