@@ -12,7 +12,7 @@ module stdlib_io
   use stdlib_error, only: error_stop, state_type, STDLIB_IO_ERROR
   use stdlib_optval, only: optval
   use stdlib_ascii, only: is_blank
-  use stdlib_string_type, only : string_type
+  use stdlib_string_type, only : string_type, assignment(=), move
   implicit none
   private
   ! Public API
