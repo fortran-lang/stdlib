@@ -296,20 +296,5 @@ Exceptions trigger an `error stop` unless the optional `err` argument is provide
 ### Example
 
 ```fortran
-program example_getfile
-  use stdlib_io
-  implicit none
-
-  type(string_type) :: fileContent
-  type(state_type) :: err
-
-  ! Read a file into a string
-  fileContent = getfile("example.txt", err=err)
-
-  if (err%error()) then
-    print *, "Error reading file:", err%print()
-  else
-    print *, "File content:", fileContent
-  end if
-end program example_getfile
+{!example/io/example_getfile.f90!}
 ```
