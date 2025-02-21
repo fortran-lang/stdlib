@@ -38,6 +38,7 @@ This is an index/directory of the specifications (specs) for each new module/fea
  - [string\_type](./stdlib_string_type.html) - Basic string support
  - [stringlist_type](./stdlib_stringlist_type.html) - 1-Dimensional list of strings
  - [strings](./stdlib_strings.html) - String handling and manipulation routines
+ - [system](./stdlib_system.html) - OS and sub-processing routines
  - [version](./stdlib_version.html) - Version information
 
 ## Released/Stable Features & Modules
