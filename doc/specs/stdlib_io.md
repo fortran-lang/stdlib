@@ -280,7 +280,7 @@ Function
 
 ### Arguments
 
-`fileName`: Shall be a character input containing the path to the ASCII file to read. It is an `intent(in)` argument.
+`filename`: Shall be a character input containing the path to the ASCII file to read. It is an `intent(in)` argument.
 
 `err` (optional): Shall be a `type(state_type)` variable. It is an `intent(out)` argument used for error handling.
 
