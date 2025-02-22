@@ -16,7 +16,7 @@ module stdlib_io
   implicit none
   private
   ! Public API
-  public :: loadtxt, savetxt, open, getline
+  public :: loadtxt, savetxt, open, getline, getfile
 
   !! version: experimental 
   !!
@@ -35,7 +35,10 @@ module stdlib_io
   !!@note Handles errors using the library's `state_type` error-handling class. If not provided, 
   !! exceptions will trigger an `error stop`. 
   !!         
-  public :: getfile
+  interface getfile
+    module procedure :: getfile_char
+    module procedure :: getfile_string
+  end interface getfile
 
   ! Private API that is exposed so that we can test it in tests
   public :: parse_mode
@@ -551,7 +554,7 @@ contains
   !> 
   !> Reads a whole ASCII file and loads its contents into a string variable.
   !> The function handles error states and optionally deletes the file after reading.
-  subroutine getfile(fileName,file,err,delete) 
+  subroutine getfile_string(fileName,file,err,delete) 
       !> Input file name
       character(*), intent(in) :: fileName
       !> Output string variable
@@ -562,16 +565,35 @@ contains
       logical, optional, intent(in) :: delete
         
       ! Local variables
-      type(state_type) :: err0
       character(len=:), allocatable :: fileString
+      
+      ! Process output
+      call getfile_char(fileName,fileString,err,delete)
+      call move(from=fileString,to=file)
+
+  end subroutine getfile_string
+
+  !> Version: experimental
+  !> 
+  !> Reads a whole ASCII file and loads its contents into an allocatable `character` variable.
+  !> The function handles error states and optionally deletes the file after reading.
+  subroutine getfile_char(fileName,file,err,delete) 
+      !> Input file name
+      character(*), intent(in) :: fileName
+      !> Output string variable
+      character(len=:), allocatable, intent(out) :: file
+      !> [optional] State return flag. On error, if not requested, the code will stop.
+      type(state_type), optional, intent(out) :: err
+      !> [optional] Delete file after reading? Default: do not delete
+      logical, optional, intent(in) :: delete
+        
+      ! Local variables
+      type(state_type) :: err0
       character(len=512) :: iomsg
       integer :: lun,iostat
       integer(int64) :: errpos,fileSize
       logical :: is_present,want_deleted
 
-      ! Initializations
-      file = ""
-      
       !> Check if the file should be deleted after reading
       if (present(delete)) then 
          want_deleted = delete
@@ -582,6 +604,7 @@ contains
       !> Check file existing
       inquire(file=fileName, exist=is_present)
       if (.not.is_present) then
+         allocate(character(len=0) :: file)
          err0 = state_type('getfile',STDLIB_IO_ERROR,'File not present:',fileName)
          call err0%handle(err)
          return
@@ -592,6 +615,7 @@ contains
       
       invalid_size: if (fileSize<0) then 
 
+          allocate(character(len=0) :: file)
           err0 = state_type('getfile',STDLIB_IO_ERROR,fileName,'has invalid size=',fileSize)
           call err0%handle(err)
           return            
@@ -604,16 +628,17 @@ contains
            iostat=iostat,iomsg=iomsg)
              
       if (iostat/=0) then 
+         allocate(character(len=0) :: file)
          err0 = state_type('getfile',STDLIB_IO_ERROR,'Cannot open',fileName,'for read:',iomsg)
          call err0%handle(err)
          return
       end if     
         
-      allocate(character(len=fileSize) :: fileString)
+      allocate(character(len=fileSize) :: file)
         
       read_data: if (fileSize>0) then 
             
-          read(lun, pos=1, iostat=iostat, iomsg=iomsg) fileString
+          read(lun, pos=1, iostat=iostat, iomsg=iomsg) file
             
           ! Read error
           if (iostat/=0) then 
@@ -636,9 +661,8 @@ contains
       endif 
       
       ! Process output
-      call move(from=fileString,to=file)
       call err0%handle(err)
 
-  end subroutine getfile
+  end subroutine getfile_char
 
 end module stdlib_io

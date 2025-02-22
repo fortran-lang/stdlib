@@ -261,7 +261,7 @@ Provides formats for all kinds as defined in the `stdlib_kinds` module.
 {!example/io/example_fmt_constants.f90!}
 ```
 
-## `getfile` - Read a whole ASCII file into a string variable
+## `getfile` - Read a whole ASCII file into a `character` or a `string` variable
 
 ### Status
 
@@ -269,7 +269,8 @@ Experimental
 
 ### Description
 
-This subroutine reads the entirety of a specified ASCII file and returns its content as a string. The function provides an optional error-handling mechanism via the `state_type` class. If the `err` argument is not provided, exceptions will trigger an `error stop`. The function also supports an optional flag to delete the file after reading.
+This subroutine interface reads the entirety of a specified ASCII file and returns its content as a string or an allocatable `character` variable. 
+The function provides an optional error-handling mechanism via the `state_type` class. If the `err` argument is not provided, exceptions will trigger an `error stop`. The function also supports an optional flag to delete the file after reading.
 
 ### Syntax
 
@@ -282,7 +283,7 @@ Function
 
 `filename`: Shall be a character input containing the path to the ASCII file to read. It is an `intent(in)` argument.
 
-`file`: Shall be a `type(string_type)` variable containing the full content of the specified file. It is an `intent(out)` argument.
+`file`: Shall be a `type(string_type)` or an allocatable `character` variable containing the full content of the specified file. It is an `intent(out)` argument.
  
 `err` (optional): Shall be a `type(state_type)` variable. It is an `intent(out)` argument used for error handling.
 
