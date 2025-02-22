@@ -269,11 +269,11 @@ Experimental
 
 ### Description
 
-This function reads the entirety of a specified ASCII file and returns its content as a string. The function provides an optional error-handling mechanism via the `state_type` class. If the `err` argument is not provided, exceptions will trigger an `error stop`. The function also supports an optional flag to delete the file after reading.
+This subroutine reads the entirety of a specified ASCII file and returns its content as a string. The function provides an optional error-handling mechanism via the `state_type` class. If the `err` argument is not provided, exceptions will trigger an `error stop`. The function also supports an optional flag to delete the file after reading.
 
 ### Syntax
 
-`call [[stdlib_io(module):getfile(function)]] (fileName [, err] [, delete=.false.])`
+`call [[stdlib_io(module):getfile(function)]] (fileName, fileContents [, err] [, delete=.false.])`
 
 ### Class
 Function
@@ -282,13 +282,15 @@ Function
 
 `fileName`: Shall be a character input containing the path to the ASCII file to read. It is an `intent(in)` argument.
 
+`fileContents`: Shall be a `type(string_type)` variable containing the full content of the specified file. It is an `intent(out)` argument.
+ 
 `err` (optional): Shall be a `type(state_type)` variable. It is an `intent(out)` argument used for error handling.
 
 `delete` (optional): Shall be a `logical` flag. If `.true.`, the file is deleted after reading. Default is `.false.`. It is an `intent(in)` argument.
 
 ### Return values
 
-The function returns a `string_type` variable containing the full content of the specified file.
+Output variable `fileContents` will contain the full content of the specified file.
 
 Raises `STDLIB_IO_ERROR` if the file is not found, cannot be opened, read, or deleted. 
 Exceptions trigger an `error stop` unless the optional `err` argument is provided.

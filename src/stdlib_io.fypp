@@ -24,11 +24,11 @@ module stdlib_io
   !! ([Specification](../page/specs/stdlib_io.html#getfile-read-a-whole-ascii-file-into-a-string-variable))
   !! 
   !!### Summary 
-  !! Function interface for reading the content of a file into a string.
+  !! Subroutine interface for reading the content of a file into a string.
   !!
   !!### Description
   !! 
-  !! This function reads the entirety of a specified ASCII file and returns it as a string. The optional 
+  !! This subroutine reads the entirety of a specified ASCII file and returns it as a string. The optional 
   !! `err` argument allows for handling errors through the library's `state_type` class. 
   !! An optional `logical` flag can be passed to delete the file after reading.  
   !! 
@@ -551,9 +551,11 @@ contains
   !> 
   !> Reads a whole ASCII file and loads its contents into a string variable.
   !> The function handles error states and optionally deletes the file after reading.
-  type(string_type) function getfile(fileName,err,delete) result(file)
+  subroutine getfile(fileName,file,err,delete) 
       !> Input file name
       character(*), intent(in) :: fileName
+      !> Output string variable
+      type(string_type), intent(out) :: file
       !> [optional] State return flag. On error, if not requested, the code will stop.
       type(state_type), optional, intent(out) :: err
       !> [optional] Delete file after reading? Default: do not delete
@@ -637,6 +639,6 @@ contains
       call move(from=fileString,to=file)
       call err0%handle(err)
 
-  end function getfile
+  end subroutine getfile
 
 end module stdlib_io

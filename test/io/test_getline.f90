@@ -150,7 +150,7 @@ contains
         type(string_type) :: fileContents
         type(state_type) :: err
 
-        fileContents = getfile("nonexistent_file.txt", err)
+        call getfile("nonexistent_file.txt", fileContents, err)
         
         ! Check that an error was returned
         call check(error, err%error(), "Error not returned on a missing file")
@@ -175,7 +175,7 @@ contains
         close(ios)
 
         ! Read and delete it
-        fileContents = getfile(filename, err, delete=.true.)
+        call getfile(filename, fileContents, err, delete=.true.)
 
         call check(error, err%ok(), "Should not return error reading an empty file")
         if (allocated(error)) return
@@ -203,7 +203,7 @@ contains
         close(ios)
 
         ! Read and delete it
-        fileContents = getfile(filename, err, delete=.true.)
+        call getfile(filename, fileContents, err, delete=.true.)
 
         call check(error, err%ok(), "Should not return error reading a non-empty file")
         if (allocated(error)) return

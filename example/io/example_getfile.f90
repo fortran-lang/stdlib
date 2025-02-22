@@ -10,7 +10,7 @@ program example_getfile
   type(state_type) :: err
 
   ! Read a file into a string
-  fileContent = getfile(fileName, err=err)
+  call getfile(fileName, fileContent, err=err)
 
   if (err%error()) then
     print *, err%print()
