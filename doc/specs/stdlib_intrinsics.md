@@ -15,7 +15,7 @@ The `stdlib_intrinsics` module provides replacements for some of the well known 
 
 #### Description
 
-The `stdlib_sum` function can replace the intrinsic `sum` for `real` or `complex` arrays. It follows a chunked implementation which maximizes vectorization potential as well as reducing the round-off error. This procedure is recommended when summing large arrays, for repetitive summation of smaller arrays consider the classical `sum`.
+The `stdlib_sum` function can replace the intrinsic `sum` for `real`, `complex` or `integer` arrays. It follows a chunked implementation which maximizes vectorization potential as well as reducing the round-off error. This procedure is recommended when summing large arrays, for repetitive summation of smaller arrays consider the classical `sum`.
 
 #### Syntax
 
@@ -48,7 +48,7 @@ If `dim` is absent, the output is a scalar of the same `type` and `kind` as to t
 
 #### Description
 
-The `stdlib_sum_kahan` function can replace the intrinsic `sum` for `real`, `complex` or `integer` arrays. It follows a chunked implementation which maximizes vectorization potential complemented by an `elemental` kernel based on the [kahan summation](https://doi.org/10.1145%2F363707.363723) strategy to reduce the round-off error:
+The `stdlib_sum_kahan` function can replace the intrinsic `sum` for `real` or `complex` arrays. It follows a chunked implementation which maximizes vectorization potential complemented by an `elemental` kernel based on the [kahan summation](https://doi.org/10.1145%2F363707.363723) strategy to reduce the round-off error:
 
 ```fortran
 elemental subroutine kahan_kernel_<kind>(a,s,c)
@@ -79,7 +79,7 @@ Pure function.
 
 #### Argument(s)
 
-`x`: 1D array of either `real`, `complex` or `integer` type. This argument is `intent(in)`.
+`x`: 1D array of either `real` or `complex` type. This argument is `intent(in)`.
 
 `dim` (optional): scalar of type `integer` with a value in the range from 1 to n, where n equals the rank of `x`.
 
@@ -100,7 +100,7 @@ If `dim` is absent, the output is a scalar of the same `type` and `kind` as to t
 
 #### Description
 
-The `stdlib_dot_product` function can replace the intrinsic `dot_product` for 1D `real` or `complex` arrays. It follows a chunked implementation which maximizes vectorization potential as well as reducing the round-off error. This procedure is recommended when crunching large arrays, for repetitive products of smaller arrays consider the classical `dot_product`.
+The `stdlib_dot_product` function can replace the intrinsic `dot_product` for 1D `real`, `complex` or `integer` arrays. It follows a chunked implementation which maximizes vectorization potential as well as reducing the round-off error. This procedure is recommended when crunching large arrays, for repetitive products of smaller arrays consider the classical `dot_product`.
 
 #### Syntax
 
