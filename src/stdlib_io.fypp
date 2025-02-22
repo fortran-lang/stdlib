@@ -21,7 +21,7 @@ module stdlib_io
   !! version: experimental 
   !!
   !! Reads a whole ASCII file and loads its contents into a string variable. 
-  !! ([Specification](../page/specs/stdlib_io.html#getfile-read-a-whole-ascii-file-into-a-string-variable))
+  !! ([Specification](../page/specs/stdlib_io.html#getfile-read-a-whole-ascii-file-into-a-character-or-a-string-variable))
   !! 
   !!### Summary 
   !! Subroutine interface for reading the content of a file into a string.
