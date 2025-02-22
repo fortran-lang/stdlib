@@ -273,7 +273,7 @@ This subroutine reads the entirety of a specified ASCII file and returns its con
 
 ### Syntax
 
-`call [[stdlib_io(module):getfile(function)]] (fileName, fileContents [, err] [, delete=.false.])`
+`call [[stdlib_io(module):getfile(subroutine)]] (filename, file [, err] [, delete=.false.])`
 
 ### Class
 Function
@@ -282,7 +282,7 @@ Function
 
 `filename`: Shall be a character input containing the path to the ASCII file to read. It is an `intent(in)` argument.
 
-`fileContents`: Shall be a `type(string_type)` variable containing the full content of the specified file. It is an `intent(out)` argument.
+`file`: Shall be a `type(string_type)` variable containing the full content of the specified file. It is an `intent(out)` argument.
  
 `err` (optional): Shall be a `type(state_type)` variable. It is an `intent(out)` argument used for error handling.
 
@@ -290,7 +290,7 @@ Function
 
 ### Return values
 
-Output variable `fileContents` will contain the full content of the specified file.
+Output variable `file` will contain the full content of the specified file.
 
 Raises `STDLIB_IO_ERROR` if the file is not found, cannot be opened, read, or deleted. 
 Exceptions trigger an `error stop` unless the optional `err` argument is provided.
