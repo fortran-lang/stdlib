@@ -15,7 +15,7 @@ The `stdlib_intrinsics` module provides replacements for some of the well known 
 
 #### Description
 
-The `stdlib_sum` function can replace the intrinsic `sum` for `real`, `complex` or `integer` arrays. It follows a chunked implementation which maximizes vectorization potential as well as reducing the round-off error. This procedure is recommended when summing large arrays, for repetitive summation of smaller arrays consider the classical `sum`.
+The `stdlib_sum` function can replace the intrinsic `sum` for `real`, `complex` or `integer` arrays. It follows a chunked implementation which maximizes vectorization potential as well as reducing the round-off error. This procedure is recommended when summing large (e..g, >2**10 elements) arrays, for repetitive summation of smaller arrays consider the classical `sum`.
 
 #### Syntax
 
