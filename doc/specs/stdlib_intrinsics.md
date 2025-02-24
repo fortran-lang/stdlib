@@ -151,7 +151,7 @@ Pure function.
 
 #### Output value or Result value
 
-The output is a scalar of `type` and `kind` same as to that of `x` and `y`.
+The output is a scalar of the same type and kind as to that of `x` and `y`.
 
 ```fortran
 {!example/intrinsics/example_dot_product.f90!}
