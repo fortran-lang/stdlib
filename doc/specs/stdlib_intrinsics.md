@@ -129,7 +129,7 @@ The output is a scalar of `type` and `kind` same as to that of `x` and `y`.
 
 #### Description
 
-The `stdlib_dot_product_kahan` function can replace the intrinsic `dot_product` for 1D `real` or `complex` arrays. It follows a chunked implementation which maximizes vectorization potential , complemented by the same `elemental` kernel based on the [kahan summation](https://doi.org/10.1145%2F363707.363723) used for `stdlib_sum` to reduce the round-off error.
+The `stdlib_dot_product_kahan` function can replace the intrinsic `dot_product` for 1D `real` or `complex` arrays. It follows a chunked implementation which maximizes vectorization potential, complemented by the same `elemental` kernel based on the [kahan summation](https://doi.org/10.1145%2F363707.363723) used for `stdlib_sum` to reduce the round-off error.
 
 #### Syntax
 
