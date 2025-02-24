@@ -87,7 +87,7 @@ Pure function.
 
 #### Output value or Result value
 
-If `dim` is absent, the output is a scalar of the same `type` and `kind` as to that of `x`. Otherwise, an array of rank n-1, where n equals the rank of `x`, and a shape similar to that of `x` with dimension `dim` dropped is returned.
+If `dim` is absent, the output is a scalar of the same type and kind as to that of `x`. Otherwise, an array of rank n-1, where n equals the rank of `x`, and a shape similar to that of `x` with dimension `dim` dropped is returned.
 
 #### Example
 
