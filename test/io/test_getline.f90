@@ -208,7 +208,7 @@ contains
         call check(error, err%ok(), "Should not return error reading a non-empty file")
         if (allocated(error)) return
         
-        call check(error, len_trim(fileContents) == 5, "Wrong string size returned")
+        call check(error, len_trim(filecontents) == 5, "Wrong string size returned")
         if (allocated(error)) return
 
     end subroutine test_getfile_non_empty
