@@ -164,7 +164,7 @@ contains
 
         integer :: ios
         character(len=:), allocatable :: filename
-        type(string_type) :: fileContents
+        type(string_type) :: filecontents
         type(state_type) :: err
         
         ! Get a temporary file name
