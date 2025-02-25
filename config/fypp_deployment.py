@@ -105,7 +105,7 @@ def deploy_stdlib_fpm(with_ilp64):
         for root, _, files in os.walk(folder):
             for file in files:
                 if file not in prune:
-                    if file.endswith(".f90") or file.endswith(".F90") or file.endswith(".dat") or file.endswith(".npy"):
+                    if file.endswith((".f90", ".F90", ".dat", ".npy", ".c")):
                         shutil.copy2(os.path.join(root, file), base_folder+os.sep+folder+os.sep+file)
     recursive_copy('src')
     recursive_copy('test')

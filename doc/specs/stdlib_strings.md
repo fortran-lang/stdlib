@@ -498,6 +498,7 @@ The result is of the same type as the elements of `strings` (`type(string_type)`
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+
 ### `to_string`
 
 #### Description
