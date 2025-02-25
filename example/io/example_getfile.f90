@@ -15,6 +15,6 @@ program example_getfile
   if (err%error()) then
     print *, err%print()
   else
-    print *, "Success! File "//fileName//" imported."
+    print *, "Success! File "//filename//" imported."
   end if
 end program example_getfile
