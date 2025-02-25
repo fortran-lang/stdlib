@@ -229,7 +229,6 @@ module stdlib_strings
         module procedure :: join_char
     end interface join
 
-
 contains
 
 
