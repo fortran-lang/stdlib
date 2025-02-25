@@ -6,7 +6,7 @@ program example_getfile
   implicit none
 
   character(*), parameter :: filename = "example.txt"
-  type(string_type) :: fileContent
+  type(string_type) :: filecontent
   type(state_type) :: err
 
   ! Read a file into a string
