@@ -554,9 +554,9 @@ contains
   !> 
   !> Reads a whole ASCII file and loads its contents into a string variable.
   !> The function handles error states and optionally deletes the file after reading.
-  subroutine getfile_string(fileName,file,err,delete) 
+  subroutine getfile_string(filename,file,err,delete) 
       !> Input file name
-      character(*), intent(in) :: fileName
+      character(*), intent(in) :: filename
       !> Output string variable
       type(string_type), intent(out) :: file
       !> [optional] State return flag. On error, if not requested, the code will stop.
@@ -565,10 +565,10 @@ contains
       logical, optional, intent(in) :: delete
         
       ! Local variables
-      character(len=:), allocatable :: fileString
+      character(len=:), allocatable :: filestring
       
       ! Process output
-      call getfile_char(fileName,fileString,err,delete)
+      call getfile_char(filename,filestring,err,delete)
       call move(from=fileString,to=file)
 
   end subroutine getfile_string
