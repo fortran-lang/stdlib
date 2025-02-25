@@ -577,9 +577,9 @@ contains
   !> 
   !> Reads a whole ASCII file and loads its contents into an allocatable `character` variable.
   !> The function handles error states and optionally deletes the file after reading.
-  subroutine getfile_char(fileName,file,err,delete) 
+  subroutine getfile_char(filename,file,err,delete) 
       !> Input file name
-      character(*), intent(in) :: fileName
+      character(*), intent(in) :: filename
       !> Output string variable
       character(len=:), allocatable, intent(out) :: file
       !> [optional] State return flag. On error, if not requested, the code will stop.
@@ -591,7 +591,7 @@ contains
       type(state_type) :: err0
       character(len=512) :: iomsg
       integer :: lun,iostat
-      integer(int64) :: errpos,fileSize
+      integer(int64) :: errpos,file_size
       logical :: is_present,want_deleted
 
       !> Check if the file should be deleted after reading
@@ -602,41 +602,41 @@ contains
       end if
 
       !> Check file existing
-      inquire(file=fileName, exist=is_present)
+      inquire(file=filename, exist=is_present)
       if (.not.is_present) then
          allocate(character(len=0) :: file)
-         err0 = state_type('getfile',STDLIB_IO_ERROR,'File not present:',fileName)
+         err0 = state_type('getfile',STDLIB_IO_ERROR,'File not present:',filename)
          call err0%handle(err)
          return
       end if
       
       !> Retrieve file size
-      inquire(file=fileName,size=fileSize)
+      inquire(file=filename,size=file_size)
       
-      invalid_size: if (fileSize<0) then 
+      invalid_size: if (file_size<0) then 
 
           allocate(character(len=0) :: file)
-          err0 = state_type('getfile',STDLIB_IO_ERROR,fileName,'has invalid size=',fileSize)
+          err0 = state_type('getfile',STDLIB_IO_ERROR,filename,'has invalid size=',file_size)
           call err0%handle(err)
           return            
             
       endif invalid_size  
             
       ! Read file
-      open(newunit=lun,file=fileName, &
+      open(newunit=lun,file=filename, &
            form='unformatted',action='read',access='stream',status='old', &
            iostat=iostat,iomsg=iomsg)
              
       if (iostat/=0) then 
          allocate(character(len=0) :: file)
-         err0 = state_type('getfile',STDLIB_IO_ERROR,'Cannot open',fileName,'for read:',iomsg)
+         err0 = state_type('getfile',STDLIB_IO_ERROR,'Cannot open',filename,'for read:',iomsg)
          call err0%handle(err)
          return
       end if     
         
-      allocate(character(len=fileSize) :: file)
+      allocate(character(len=file_size) :: file)
         
-      read_data: if (fileSize>0) then 
+      read_data: if (file_size>0) then 
             
           read(lun, pos=1, iostat=iostat, iomsg=iomsg) file
             
@@ -644,7 +644,7 @@ contains
           if (iostat/=0) then 
                 
               inquire(unit=lun,pos=errpos)                    
-              err0 = state_type('getfile',STDLIB_IO_ERROR,iomsg,'(',fileName,'at byte',errpos,')')
+              err0 = state_type('getfile',STDLIB_IO_ERROR,iomsg,'(',filename,'at byte',errpos,')')
               call err0%handle(err)
               return
 
@@ -654,10 +654,10 @@ contains
                    
       if (want_deleted) then 
          close(lun,iostat=iostat,status='delete')
-         if (iostat/=0) err0 = state_type('getfile',STDLIB_IO_ERROR,'Cannot delete',fileName,'after reading')
+         if (iostat/=0) err0 = state_type('getfile',STDLIB_IO_ERROR,'Cannot delete',filename,'after reading')
       else
          close(lun,iostat=iostat)
-         if (iostat/=0) err0 = state_type('getfile',STDLIB_IO_ERROR,'Cannot close',fileName,'after reading')
+         if (iostat/=0) err0 = state_type('getfile',STDLIB_IO_ERROR,'Cannot close',filename,'after reading')
       endif 
       
       ! Process output
