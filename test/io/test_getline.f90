@@ -203,7 +203,7 @@ contains
         close(ios)
 
         ! Read and delete it
-        call getfile(filename, fileContents, err, delete=.true.)
+        call getfile(filename, filecontents, err, delete=.true.)
 
         call check(error, err%ok(), "Should not return error reading a non-empty file")
         if (allocated(error)) return
