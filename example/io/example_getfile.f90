@@ -5,7 +5,7 @@ program example_getfile
   use stdlib_error, only: state_type
   implicit none
 
-  character(*), parameter :: fileName = "example.txt"
+  character(*), parameter :: filename = "example.txt"
   type(string_type) :: fileContent
   type(state_type) :: err
 
