@@ -180,7 +180,7 @@ contains
         call check(error, err%ok(), "Should not return error reading an empty file")
         if (allocated(error)) return
         
-        call check(error, len_trim(fileContents) == 0, "String from empty file should be empty")
+        call check(error, len_trim(filecontents) == 0, "String from empty file should be empty")
         if (allocated(error)) return
         
     end subroutine test_getfile_empty
