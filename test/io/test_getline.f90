@@ -147,7 +147,7 @@ contains
         !> Test for a missing file.
         type(error_type), allocatable, intent(out) :: error
 
-        type(string_type) :: fileContents
+        type(string_type) :: filecontents
         type(state_type) :: err
 
         call getfile("nonexistent_file.txt", fileContents, err)
