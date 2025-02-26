@@ -205,7 +205,7 @@ Provides a npy file called `filename` that contains the rank-2 `array`.
 {!example/io/example_savenpy.f90!}
 ```
 
-## `getline`
+## `get_line`
 
 ### Status
 
@@ -217,9 +217,9 @@ Read a whole line from a formatted unit into a string variable
 
 ### Syntax
 
-`call ` [[stdlib_io(module):getline(interface)]] ` (unit, line[, iostat][, iomsg])`
+`call ` [[stdlib_io(module):get_line(interface)]] ` (unit, line[, iostat][, iomsg])`
 
-`call ` [[stdlib_io(module):getline(interface)]] ` (line[, iostat][, iomsg])`
+`call ` [[stdlib_io(module):get_line(interface)]] ` (line[, iostat][, iomsg])`
 
 ### Arguments
 
@@ -241,7 +241,7 @@ Read a whole line from a formatted unit into a string variable
 ### Example
 
 ```fortran
-{!example/io/example_getline.f90!}
+{!example/io/example_get_line.f90!}
 ```
 
 ## Formatting constants
@@ -261,7 +261,7 @@ Provides formats for all kinds as defined in the `stdlib_kinds` module.
 {!example/io/example_fmt_constants.f90!}
 ```
 
-## `getfile` - Read a whole ASCII file into a `character` or a `string` variable
+## `get_file` - Read a whole ASCII file into a `character` or a `string` variable
 
 ### Status
 
@@ -274,7 +274,7 @@ The function provides an optional error-handling mechanism via the `state_type` 
 
 ### Syntax
 
-`call [[stdlib_io(module):getfile(subroutine)]] (filename, file [, err] [, delete=.false.])`
+`call [[stdlib_io(module):get_file(subroutine)]] (filename, file [, err] [, delete=.false.])`
 
 ### Class
 Function
@@ -299,5 +299,5 @@ Exceptions trigger an `error stop` unless the optional `err` argument is provide
 ### Example
 
 ```fortran
-{!example/io/example_getfile.f90!}
+{!example/io/example_get_file.f90!}
 ```

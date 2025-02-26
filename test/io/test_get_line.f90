@@ -1,17 +1,17 @@
-module test_getline
-    use stdlib_io, only : getline, getfile
+module test_get_line
+    use stdlib_io, only : get_line, get_file
     use stdlib_error, only: state_type
     use stdlib_string_type, only : string_type, len, len_trim
     use testdrive, only : new_unittest, unittest_type, error_type, check
     implicit none
     private
 
-    public :: collect_getline
+    public :: collect_get_line
 
 contains
 
     !> Collect all exported unit tests
-    subroutine collect_getline(testsuite)
+    subroutine collect_get_line(testsuite)
         !> Collection of tests
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
@@ -22,11 +22,11 @@ contains
             new_unittest("iostat-end", test_iostat_end), &
             new_unittest("closed-unit", test_closed_unit, should_fail=.true.), &
             new_unittest("no-unit", test_no_unit, should_fail=.true.), &
-            new_unittest("getfile-no", test_getfile_missing), &
-            new_unittest("getfile-empty", test_getfile_empty), &
-            new_unittest("getfile-non-empty", test_getfile_non_empty) &
+            new_unittest("get_file-no", test_get_file_missing), &
+            new_unittest("get_file-empty", test_get_file_empty), &
+            new_unittest("get_file-non-empty", test_get_file_non_empty) &
             ]
-    end subroutine collect_getline
+    end subroutine collect_get_line
 
     subroutine test_read_char(error)
         !> Error handling
@@ -40,7 +40,7 @@ contains
         rewind(io)
 
         do i = 1, 3
-          call getline(io, line, stat)
+          call get_line(io, line, stat)
           call check(error, stat)
           if (allocated(error)) exit
           call check(error, len(line), 3*10**i)
@@ -61,7 +61,7 @@ contains
         rewind(io)
 
         do i = 1, 3
-          call getline(io, line, stat)
+          call get_line(io, line, stat)
           call check(error, stat)
           if (allocated(error)) exit
           call check(error, len(line), 3*10**i)
@@ -82,7 +82,7 @@ contains
         rewind(io)
 
         do i = 1, 3
-          call getline(io, line, stat)
+          call get_line(io, line, stat)
           call check(error, stat)
           if (allocated(error)) exit
           call check(error, len(line), 3*10**i)
@@ -104,14 +104,14 @@ contains
         rewind(io)
 
         do i = 1, 3
-          call getline(io, line, stat)
+          call get_line(io, line, stat)
           call check(error, stat)
           if (allocated(error)) exit
           call check(error, len(line), 3*10**i)
           if (allocated(error)) exit
         end do
         if (.not.allocated(error)) then
-          call getline(io, line, stat)
+          call get_line(io, line, stat)
           call check(error, stat, iostat_end)
         end if
         close(io)
@@ -127,7 +127,7 @@ contains
         open(newunit=io, status="scratch")
         close(io)
 
-        call getline(io, line, stat, msg)
+        call get_line(io, line, stat, msg)
         call check(error, stat, msg)
     end subroutine test_closed_unit
 
@@ -139,26 +139,26 @@ contains
         character(len=:), allocatable :: line, msg
 
         io = -1
-        call getline(io, line, stat, msg)
+        call get_line(io, line, stat, msg)
         call check(error, stat, msg)
     end subroutine test_no_unit
 
-    subroutine test_getfile_missing(error)
+    subroutine test_get_file_missing(error)
         !> Test for a missing file.
         type(error_type), allocatable, intent(out) :: error
 
         type(string_type) :: filecontents
         type(state_type) :: err
 
-        call getfile("nonexistent_file.txt", fileContents, err)
+        call get_file("nonexistent_file.txt", fileContents, err)
         
         ! Check that an error was returned
         call check(error, err%error(), "Error not returned on a missing file")
         if (allocated(error)) return
         
-    end subroutine test_getfile_missing
+    end subroutine test_get_file_missing
 
-    subroutine test_getfile_empty(error)
+    subroutine test_get_file_empty(error)
         !> Test for an empty file.
         type(error_type), allocatable, intent(out) :: error
 
@@ -168,14 +168,14 @@ contains
         type(state_type) :: err
         
         ! Get a temporary file name
-        filename = "test_getfile_empty.txt"
+        filename = "test_get_file_empty.txt"
 
         ! Create an empty file        
         open(newunit=ios, file=filename, action="write", form="formatted", access="sequential")        
         close(ios)
 
         ! Read and delete it
-        call getfile(filename, filecontents, err, delete=.true.)
+        call get_file(filename, filecontents, err, delete=.true.)
 
         call check(error, err%ok(), "Should not return error reading an empty file")
         if (allocated(error)) return
@@ -183,9 +183,9 @@ contains
         call check(error, len_trim(filecontents) == 0, "String from empty file should be empty")
         if (allocated(error)) return
         
-    end subroutine test_getfile_empty
+    end subroutine test_get_file_empty
 
-    subroutine test_getfile_non_empty(error)
+    subroutine test_get_file_non_empty(error)
         !> Test for a non-empty file.
         type(error_type), allocatable, intent(out) :: error
 
@@ -195,7 +195,7 @@ contains
         type(state_type) :: err
         
         ! Get a temporary file name
-        filename = "test_getfile_size5.txt"
+        filename = "test_get_file_size5.txt"
 
         ! Create a fixed-size file
         open(newunit=ios, file=filename, action="write", form="unformatted", access="stream")        
@@ -203,7 +203,7 @@ contains
         close(ios)
 
         ! Read and delete it
-        call getfile(filename, filecontents, err, delete=.true.)
+        call get_file(filename, filecontents, err, delete=.true.)
 
         call check(error, err%ok(), "Should not return error reading a non-empty file")
         if (allocated(error)) return
@@ -211,16 +211,16 @@ contains
         call check(error, len_trim(filecontents) == 5, "Wrong string size returned")
         if (allocated(error)) return
 
-    end subroutine test_getfile_non_empty
+    end subroutine test_get_file_non_empty
 
 
-end module test_getline
+end module test_get_line
 
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
     use testdrive, only : run_testsuite, new_testsuite, testsuite_type
-    use test_getline, only : collect_getline
+    use test_get_line, only : collect_get_line
     implicit none
     integer :: stat, is
     type(testsuite_type), allocatable :: testsuites(:)
@@ -229,7 +229,7 @@ program tester
     stat = 0
 
     testsuites = [ &
-        new_testsuite("getline", collect_getline) &
+        new_testsuite("get_line", collect_get_line) &
         ]
 
     do is = 1, size(testsuites)
