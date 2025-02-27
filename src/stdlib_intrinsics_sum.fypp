@@ -1,0 +1,266 @@
+#:include "common.fypp"
+#:set I_KINDS_TYPES = list(zip(INT_KINDS, INT_TYPES, INT_KINDS))
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set RANKS = range(2, MAXRANK + 1)
+
+submodule(stdlib_intrinsics) stdlib_intrinsics_sum
+    !! ([Specification](../page/specs/stdlib_intrinsics.html))
+    use stdlib_kinds
+    use stdlib_constants
+    implicit none
+
+    integer, parameter :: ilp = int64
+    
+contains
+
+!================= 1D Base implementations ============
+! This implementation is based on https://github.com/jalvesz/fast_math
+#:for k, t, s in I_KINDS_TYPES + R_KINDS_TYPES + C_KINDS_TYPES
+pure module function stdlib_sum_1d_${s}$(a) result(s)
+    integer(ilp), parameter :: chunk = 64
+    ${t}$, intent(in) :: a(:)
+    ${t}$ :: s
+    ${t}$ :: abatch(chunk)
+    integer(ilp) :: i, n, r
+    ! -----------------------------
+    n = size(a,kind=ilp)
+    r = mod(n,chunk)
+    
+    abatch(1:r)       = a(1:r)
+    abatch(r+1:chunk) = zero_${s}$
+    do i = r+1, n-r, chunk
+     abatch(1:chunk) = abatch(1:chunk) + a(i:i+chunk-1)
+    end do
+
+    s = zero_${s}$
+    do i = 1, chunk/2
+      s = s + abatch(i)+abatch(chunk/2+i)
+    end do
+end function
+
+pure module function stdlib_sum_1d_${s}$_mask(a,mask) result(s)
+    integer(ilp), parameter :: chunk = 64
+    ${t}$, intent(in) :: a(:)
+    logical, intent(in) :: mask(:)
+    ${t}$ :: s
+    ${t}$ :: abatch(chunk)
+    integer(ilp) :: i, n, r
+    ! -----------------------------
+    n = size(a,kind=ilp)
+    r = mod(n,chunk)
+
+    abatch(1:r)       = merge( zero_${s}$ , a(1:r) , mask(1:r) )
+    abatch(r+1:chunk) = zero_${s}$
+    do i = r+1, n-r, chunk
+        abatch(1:chunk) = abatch(1:chunk) + merge( zero_${s}$ , a(i:i+chunk-1), mask(i:i+chunk-1) )
+    end do
+    
+    s = zero_${s}$
+    do i = 1, chunk/2
+        s = s + abatch(i)+abatch(chunk/2+i)
+    end do
+end function
+#:endfor
+
+#:for k, t, s in R_KINDS_TYPES + C_KINDS_TYPES
+pure module function stdlib_sum_kahan_1d_${s}$(a) result(s)
+    integer(ilp), parameter :: chunk = 64
+    ${t}$, intent(in) :: a(:)
+    ${t}$ :: s
+    ${t}$ :: sbatch(chunk)
+    ${t}$ :: cbatch(chunk)
+    integer(ilp) :: i, n, r
+    ! -----------------------------
+    n = size(a,kind=ilp)
+    r = mod(n,chunk)
+
+    sbatch(1:r) = a(1:r)
+    sbatch(r+1:chunk)  = zero_${s}$
+    cbatch = zero_${s}$
+    do i = r+1, n-r, chunk
+      call kahan_kernel( a(i:i+chunk-1) , sbatch(1:chunk) , cbatch(1:chunk) )
+    end do 
+
+    s = zero_${s}$
+    do i = 1,chunk
+        call kahan_kernel( sbatch(i) , s , cbatch(i) )
+    end do
+end function
+
+pure module function stdlib_sum_kahan_1d_${s}$_mask(a,mask) result(s)
+    integer(ilp), parameter :: chunk = 64
+    ${t}$, intent(in) :: a(:)
+    logical, intent(in) :: mask(:)
+    ${t}$ :: s
+    ${t}$ :: sbatch(chunk)
+    ${t}$ :: cbatch(chunk)
+    integer(ilp) :: i, n, r
+    ! -----------------------------
+    n = size(a,kind=ilp)
+    r = mod(n,chunk)
+    
+    sbatch(1:r) = merge( zero_${s}$ , a(1:r) , mask(1:r) )
+    sbatch(r+1:chunk)  = zero_${s}$
+    cbatch = zero_${s}$
+    do i = r+1, n-r, chunk
+      call kahan_kernel( a(i:i+chunk-1) , sbatch(1:chunk) , cbatch(1:chunk), mask(i:i+chunk-1) )
+    end do 
+
+    s = zero_${s}$
+    do i = 1,chunk
+        call kahan_kernel( sbatch(i) , s , cbatch(i) )
+    end do
+end function
+#:endfor
+
+!================= N-D implementations ============
+#:for k, t, s in I_KINDS_TYPES + R_KINDS_TYPES + C_KINDS_TYPES
+#:for rank in RANKS
+pure module function stdlib_sum_${rank}$d_${s}$( x , mask ) result( s )
+    ${t}$, intent(in) :: x${ranksuffix(rank)}$
+    logical, intent(in), optional :: mask${ranksuffix(rank)}$
+    ${t}$ :: s
+    if(.not.present(mask)) then
+        s = sum_recast(x,size(x,kind=ilp))
+    else
+        s = sum_recast_mask(x,mask,size(x,kind=ilp))
+    end if
+contains
+    pure ${t}$ function sum_recast(b,n)
+      integer(ilp), intent(in) :: n
+      ${t}$, intent(in) :: b(n)
+      sum_recast = stdlib_sum(b)
+    end function
+    pure ${t}$ function sum_recast_mask(b,m,n)
+      integer(ilp), intent(in) :: n
+      ${t}$, intent(in) :: b(n)
+      logical, intent(in) :: m(n)
+      sum_recast_mask = stdlib_sum(b,m)
+    end function
+end function
+
+pure module function stdlib_sum_${rank}$d_dim_${s}$( x , dim, mask ) result( s )
+    ${t}$, intent(in) :: x${ranksuffix(rank)}$
+    integer, intent(in):: dim
+    logical, intent(in), optional :: mask${ranksuffix(rank)}$
+    ${t}$ :: s${reduced_shape('x', rank, 'dim')}$
+    integer :: j 
+
+    if(.not.present(mask)) then
+        if(dim<${rank}$)then
+            do j = 1, size(x,dim=${rank}$)
+                #:if rank == 2
+                s${select_subarray(rank-1, [(rank-1, 'j')])}$ = stdlib_sum( x${select_subarray(rank, [(rank, 'j')])}$ )
+                #:else
+                s${select_subarray(rank-1, [(rank-1, 'j')])}$ = stdlib_sum( x${select_subarray(rank, [(rank, 'j')])}$, dim=dim )
+                #:endif
+            end do
+        else
+            do j = 1, size(x,dim=1)
+                #:if rank == 2
+                s${select_subarray(rank-1, [(1, 'j')])}$ = stdlib_sum( x${select_subarray(rank, [(1, 'j')])}$ )
+                #:else
+                s${select_subarray(rank-1, [(1, 'j')])}$ = stdlib_sum( x${select_subarray(rank, [(1, 'j')])}$, dim=${rank-1}$ )
+                #:endif
+            end do
+        end if
+    else 
+        if(dim<${rank}$)then
+            do j = 1, size(x,dim=${rank}$)
+                #:if rank == 2
+                s${select_subarray(rank-1, [(rank-1, 'j')])}$ = stdlib_sum( x${select_subarray(rank, [(rank, 'j')])}$, mask=mask${select_subarray(rank, [(rank, 'j')])}$ )
+                #:else
+                s${select_subarray(rank-1, [(rank-1, 'j')])}$ = stdlib_sum( x${select_subarray(rank, [(rank, 'j')])}$, dim=dim, mask=mask${select_subarray(rank, [(rank, 'j')])}$ )
+                #:endif
+            end do
+        else
+            do j = 1, size(x,dim=1)
+                #:if rank == 2
+                s${select_subarray(rank-1, [(1, 'j')])}$ = stdlib_sum( x${select_subarray(rank, [(1, 'j')])}$, mask=mask${select_subarray(rank, [(1, 'j')])}$ )
+                #:else
+                s${select_subarray(rank-1, [(1, 'j')])}$ = stdlib_sum( x${select_subarray(rank, [(1, 'j')])}$, dim=${rank-1}$, mask=mask${select_subarray(rank, [(1, 'j')])}$ )
+                #:endif
+            end do
+        end if
+    end if
+
+end function
+#:endfor
+#:endfor
+
+#:for k, t, s in R_KINDS_TYPES + C_KINDS_TYPES
+#:for rank in RANKS
+pure module function stdlib_sum_kahan_${rank}$d_${s}$( x , mask ) result( s )
+    ${t}$, intent(in) :: x${ranksuffix(rank)}$
+    logical, intent(in), optional :: mask${ranksuffix(rank)}$
+    ${t}$ :: s
+    if(.not.present(mask)) then
+        s = sum_recast(x,size(x,kind=ilp))
+    else
+        s = sum_recast_mask(x,mask,size(x,kind=ilp))
+    end if
+contains
+    pure ${t}$ function sum_recast(b,n)
+      integer(ilp), intent(in) :: n
+      ${t}$, intent(in) :: b(n)
+      sum_recast = stdlib_sum_kahan(b)
+    end function
+    pure ${t}$ function sum_recast_mask(b,m,n)
+      integer(ilp), intent(in) :: n
+      ${t}$, intent(in) :: b(n)
+      logical, intent(in) :: m(n)
+      sum_recast_mask = stdlib_sum_kahan(b,m)
+    end function
+end function
+
+pure module function stdlib_sum_kahan_${rank}$d_dim_${s}$( x , dim, mask ) result( s )
+    ${t}$, intent(in) :: x${ranksuffix(rank)}$
+    integer, intent(in):: dim
+    logical, intent(in), optional :: mask${ranksuffix(rank)}$
+    ${t}$ :: s${reduced_shape('x', rank, 'dim')}$
+    integer :: j 
+
+    if(.not.present(mask)) then
+        if(dim<${rank}$)then
+            do j = 1, size(x,dim=${rank}$)
+                #:if rank == 2
+                s${select_subarray(rank-1, [(rank-1, 'j')])}$ = stdlib_sum_kahan( x${select_subarray(rank, [(rank, 'j')])}$ )
+                #:else
+                s${select_subarray(rank-1, [(rank-1, 'j')])}$ = stdlib_sum_kahan( x${select_subarray(rank, [(rank, 'j')])}$, dim=dim )
+                #:endif
+            end do
+        else
+            do j = 1, size(x,dim=1)
+                #:if rank == 2
+                s${select_subarray(rank-1, [(1, 'j')])}$ = stdlib_sum_kahan( x${select_subarray(rank, [(1, 'j')])}$ )
+                #:else
+                s${select_subarray(rank-1, [(1, 'j')])}$ = stdlib_sum_kahan( x${select_subarray(rank, [(1, 'j')])}$, dim=${rank-1}$ )
+                #:endif
+            end do
+        end if
+    else 
+        if(dim<${rank}$)then
+            do j = 1, size(x,dim=${rank}$)
+                #:if rank == 2
+                s${select_subarray(rank-1, [(rank-1, 'j')])}$ = stdlib_sum_kahan( x${select_subarray(rank, [(rank, 'j')])}$, mask=mask${select_subarray(rank, [(rank, 'j')])}$ )
+                #:else
+                s${select_subarray(rank-1, [(rank-1, 'j')])}$ = stdlib_sum_kahan( x${select_subarray(rank, [(rank, 'j')])}$, dim=dim, mask=mask${select_subarray(rank, [(rank, 'j')])}$ )
+                #:endif
+            end do
+        else
+            do j = 1, size(x,dim=1)
+                #:if rank == 2
+                s${select_subarray(rank-1, [(1, 'j')])}$ = stdlib_sum_kahan( x${select_subarray(rank, [(1, 'j')])}$, mask=mask${select_subarray(rank, [(1, 'j')])}$ )
+                #:else
+                s${select_subarray(rank-1, [(1, 'j')])}$ = stdlib_sum_kahan( x${select_subarray(rank, [(1, 'j')])}$, dim=${rank-1}$, mask=mask${select_subarray(rank, [(1, 'j')])}$ )
+                #:endif
+            end do
+        end if
+    end if
+
+end function
+#:endfor
+#:endfor
+
+end submodule stdlib_intrinsics_sum
