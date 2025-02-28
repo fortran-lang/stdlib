@@ -8,6 +8,7 @@ set(fppFiles
     stdlib_bitsets_large.fypp
     stdlib_codata_type.fypp
     stdlib_constants.fypp
+    stdlib_error.fypp
     stdlib_hash_32bit.fypp
     stdlib_hash_32bit_fnv.fypp
     stdlib_hash_32bit_nm.fypp
@@ -16,6 +17,9 @@ set(fppFiles
     stdlib_hash_64bit_fnv.fypp
     stdlib_hash_64bit_pengy.fypp
     stdlib_hash_64bit_spookyv2.fypp
+    stdlib_intrinsics_dot_product.fypp
+    stdlib_intrinsics_sum.fypp
+    stdlib_intrinsics.fypp
     stdlib_io.fypp
     stdlib_io_npy.fypp
     stdlib_io_npy_load.fypp
@@ -104,13 +108,14 @@ set(SRC
     stdlib_ansi_to_string.f90
     stdlib_array.f90
     stdlib_codata.f90
-    stdlib_error.f90
     stdlib_hashmap_wrappers.f90
     stdlib_hashmaps.f90
     stdlib_hashmap_chaining.f90
     stdlib_hashmap_open.f90
     stdlib_logger.f90
     stdlib_sorting_radix_sort.f90
+    stdlib_system_subprocess.c
+    stdlib_system_subprocess.F90
     stdlib_system.F90
     stdlib_sparse.f90
     stdlib_specialfunctions_legendre.f90

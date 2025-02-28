@@ -1,1 +1,2 @@
 ADDTEST(sleep)
+ADDTEST(subprocess)
