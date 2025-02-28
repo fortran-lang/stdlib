@@ -205,7 +205,7 @@ Provides a npy file called `filename` that contains the rank-2 `array`.
 {!example/io/example_savenpy.f90!}
 ```
 
-## `getline`
+## `get_line`
 
 ### Status
 
@@ -217,9 +217,9 @@ Read a whole line from a formatted unit into a string variable
 
 ### Syntax
 
-`call ` [[stdlib_io(module):getline(interface)]] ` (unit, line[, iostat][, iomsg])`
+`call ` [[stdlib_io(module):get_line(interface)]] ` (unit, line[, iostat][, iomsg])`
 
-`call ` [[stdlib_io(module):getline(interface)]] ` (line[, iostat][, iomsg])`
+`call ` [[stdlib_io(module):get_line(interface)]] ` (line[, iostat][, iomsg])`
 
 ### Arguments
 
@@ -241,7 +241,7 @@ Read a whole line from a formatted unit into a string variable
 ### Example
 
 ```fortran
-{!example/io/example_getline.f90!}
+{!example/io/example_get_line.f90!}
 ```
 
 ## Formatting constants
@@ -259,4 +259,45 @@ Provides formats for all kinds as defined in the `stdlib_kinds` module.
 
 ```fortran
 {!example/io/example_fmt_constants.f90!}
+```
+
+## `get_file` - Read a whole ASCII file into a `character` or a `string` variable
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine interface reads the entirety of a specified ASCII file and returns its content as a string or an allocatable `character` variable. 
+The function provides an optional error-handling mechanism via the `state_type` class. If the `err` argument is not provided, exceptions will trigger an `error stop`. The function also supports an optional flag to delete the file after reading.
+
+### Syntax
+
+`call [[stdlib_io(module):get_file(subroutine)]] (filename, file [, err] [, delete=.false.])`
+
+### Class
+Function
+
+### Arguments
+
+`filename`: Shall be a character input containing the path to the ASCII file to read. It is an `intent(in)` argument.
+
+`file`: Shall be a `type(string_type)` or an allocatable `character` variable containing the full content of the specified file. It is an `intent(out)` argument.
+ 
+`err` (optional): Shall be a `type(state_type)` variable. It is an `intent(out)` argument used for error handling.
+
+`delete` (optional): Shall be a `logical` flag. If `.true.`, the file is deleted after reading. Default is `.false.`. It is an `intent(in)` argument.
+
+### Return values
+
+Output variable `file` will contain the full content of the specified file.
+
+Raises `STDLIB_IO_ERROR` if the file is not found, cannot be opened, read, or deleted. 
+Exceptions trigger an `error stop` unless the optional `err` argument is provided.
+
+### Example
+
+```fortran
+{!example/io/example_get_file.f90!}
 ```
