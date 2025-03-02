@@ -3,7 +3,7 @@
 #:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
 module stdlib_sparse_constants
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
-
+    use stdlib_constants
     implicit none
     public
 
@@ -19,14 +19,5 @@ module stdlib_sparse_constants
     
     ! Integer size support for ILP64 builds should be done here
     integer, parameter :: ilp = int32
-
-    #:for k1, t1, s1 in (R_KINDS_TYPES)
-    ${t1}$, parameter :: zero_${s1}$ = 0._${k1}$
-    ${t1}$, parameter :: one_${s1}$ = 1._${k1}$
-    #:endfor
-    #:for k1, t1, s1 in (C_KINDS_TYPES)
-    ${t1}$, parameter :: zero_${s1}$ = (0._${k1}$,0._${k1}$)
-    ${t1}$, parameter :: one_${s1}$ = (1._${k1}$,1._${k1}$)
-    #:endfor
 
 end module stdlib_sparse_constants
