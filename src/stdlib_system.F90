@@ -523,40 +523,34 @@ integer function get_runtime_os() result(os)
         if (index(val, 'linux') > 0) then
             os = OS_LINUX
             return
-        end if
 
         ! macOS
-        if (index(val, 'darwin') > 0) then
+        elseif (index(val, 'darwin') > 0) then
             os = OS_MACOS
             return
-        end if
 
         ! Windows, MSYS, MinGW, Git Bash
-        if (index(val, 'win') > 0 .or. index(val, 'msys') > 0) then
+        elseif (index(val, 'win') > 0 .or. index(val, 'msys') > 0) then
             os = OS_WINDOWS
             return
-        end if
 
         ! Cygwin
-        if (index(val, 'cygwin') > 0) then
+        elseif (index(val, 'cygwin') > 0) then
             os = OS_CYGWIN
             return
-        end if
 
         ! Solaris, OpenIndiana, ...
-        if (index(val, 'SunOS') > 0 .or. index(val, 'solaris') > 0) then
+        elseif (index(val, 'SunOS') > 0 .or. index(val, 'solaris') > 0) then
             os = OS_SOLARIS
             return
-        end if
 
         ! FreeBSD
-        if (index(val, 'FreeBSD') > 0 .or. index(val, 'freebsd') > 0) then
+        elseif (index(val, 'FreeBSD') > 0 .or. index(val, 'freebsd') > 0) then
             os = OS_FREEBSD
             return
-        end if
 
         ! OpenBSD
-        if (index(val, 'OpenBSD') > 0 .or. index(val, 'openbsd') > 0) then
+        elseif (index(val, 'OpenBSD') > 0 .or. index(val, 'openbsd') > 0) then
             os = OS_OPENBSD
             return
         end if
@@ -593,6 +587,7 @@ integer function get_runtime_os() result(os)
         os = OS_FREEBSD
         return
     end if
+    
 end function get_runtime_os
 
 !> Retrieves the cached OS type for minimal runtime overhead.
