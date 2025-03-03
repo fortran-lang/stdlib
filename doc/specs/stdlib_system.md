@@ -335,3 +335,109 @@ Returns a `logical` flag: `.true.` if the system is Windows, or `.false.` otherw
 ```fortran
 {!example/system/example_process_1.f90!}
 ```
+
+## `get_runtime_os` - Determine the OS type at runtime
+
+### Status
+
+Experimental
+
+### Description
+
+`get_runtime_os` inspects the runtime environment to identify the current OS type. It evaluates environment variables (`OSTYPE`, `OS`) and checks for specific files associated with known operating systems.
+The supported OS types are `integer, parameter` variables stored in the `stdlib_system` module:
+
+- **Linux** (`OS_LINUX`)
+- **macOS** (`OS_MACOS`)
+- **Windows** (`OS_WINDOWS`)
+- **Cygwin** (`OS_CYGWIN`)
+- **Solaris** (`OS_SOLARIS`)
+- **FreeBSD** (`OS_FREEBSD`)
+- **OpenBSD** (`OS_OPENBSD`)
+
+If the OS cannot be identified, the function returns `OS_UNKNOWN`.
+
+### Syntax
+
+`os = [[stdlib_system(module):get_runtime_os(function)]]()`
+
+### Class
+
+Function
+
+### Arguments
+
+None.
+
+### Return Value
+
+Returns one of the `integer` `OS_*` parameters representing the OS type, from the `stdlib_system` module, or `OS_UNKNOWN` if undetermined.
+
+### Example
+
+```fortran
+program example_os_detection
+    use stdlib_system, only: OS_TYPE, get_runtime_os
+    implicit none
+    integer :: os_type_cached, os_type_runtime
+
+    ! Cached OS detection
+    os_type_cached = OS_TYPE()
+    print *, "Cached OS Type: ", os_type_cached
+
+    ! Runtime OS detection (full inspection)
+    os_type_runtime = get_runtime_os()
+    print *, "Runtime OS Type: ", os_type_runtime
+end program example_os_detection
+```
+
+---
+
+## `OS_TYPE` - Cached OS type retrieval
+
+### Status
+
+Experimental
+
+### Description
+
+`OS_TYPE` provides a cached result of the `get_runtime_os` function. The OS type is determined during the first invocation and stored in a static variable. 
+Subsequent calls reuse the cached value, making this function highly efficient.
+
+This caching mechanism ensures negligible overhead for repeated calls, unlike `get_runtime_os`, which performs a full runtime inspection.
+
+### Syntax
+
+`os = [[stdlib_system(module):OS_TYPE(function)]]()`
+
+### Class
+
+Function
+
+### Arguments
+
+None.
+
+### Return Value
+
+Returns one of the `integer` `OS_*` parameters representing the OS type, from the `stdlib_system` module, or `OS_UNKNOWN` if undetermined.
+
+---
+
+### Example
+
+```fortran
+program example_os_detection
+    use stdlib_system, only: OS_TYPE, get_runtime_os
+    implicit none
+    integer :: os_type_cached, os_type_runtime
+
+    ! Cached OS detection
+    os_type_cached = OS_TYPE()
+    print *, "Cached OS Type: ", os_type_cached
+
+    ! Runtime OS detection (full inspection)
+    os_type_runtime = get_runtime_os()
+    print *, "Runtime OS Type: ", os_type_runtime
+end program example_os_detection
+```
