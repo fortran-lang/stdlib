@@ -19,10 +19,8 @@ module stdlib_linalg_iterative_solvers
     #:endfor
 
     #:for k, t, s in R_KINDS_TYPES
-    type, abstract, public :: solver_workspace_${s}$
-    end type
-    type, public, extends(solver_workspace_${s}$) :: cg_workspace_${s}$
-        ${t}$, allocatable :: r(:), p(:), Ap(:)
+    type, public :: solver_workspace_${s}$
+        ${t}$, allocatable :: tmp(:,:)
     end type 
 
     #:endfor
@@ -49,7 +47,7 @@ module stdlib_linalg_iterative_solvers
             ${t}$, intent(in) :: b(:), tol
             ${t}$, intent(inout) :: x(:)
             integer, intent(in) :: maxiter
-            type(cg_workspace_${s}$), intent(inout) :: workspace
+            type(solver_workspace_${s}$), intent(inout) :: workspace
         end subroutine
         #:endfor
     end interface
@@ -67,7 +65,7 @@ module stdlib_linalg_iterative_solvers
             ${t}$, intent(in) :: b(:), tol
             ${t}$, intent(inout) :: x(:)
             integer, intent(in), optional :: maxiter
-            type(cg_workspace_${s}$), optional, intent(inout), target :: workspace
+            type(solver_workspace_${s}$), optional, intent(inout), target :: workspace
         end subroutine
         #:endfor
         #:endfor

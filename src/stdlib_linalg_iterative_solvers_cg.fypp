@@ -20,14 +20,14 @@ contains
         ${t}$, intent(in) :: b(:), tol
         ${t}$, intent(inout) :: x(:)
         integer, intent(in) :: maxiter
-        type(cg_workspace_${s}$), intent(inout) :: workspace
+        type(solver_workspace_${s}$), intent(inout) :: workspace
         !-------------------------
         integer :: iter
         ${t}$ :: rtr, rtrold, alpha, beta, norm0_sq
         !-------------------------
-        associate(  p => workspace%p, &
-                    r => workspace%r, &
-                    Ap => workspace%Ap)
+        associate(  p  => workspace%tmp(:,1), &
+                    r  => workspace%tmp(:,2), &
+                    Ap => workspace%tmp(:,3))
             x = zero_${s}$
             rtr = A%inner_product(r, r)
             norm0_sq = A%inner_product(b, b)
@@ -60,10 +60,10 @@ contains
         ${t}$, intent(in) :: b(:), tol
         ${t}$, intent(inout) :: x(:)
         integer, intent(in), optional :: maxiter
-        type(cg_workspace_${s}$), optional, intent(inout), target :: workspace
+        type(solver_workspace_${s}$), optional, intent(inout), target :: workspace
         !-------------------------
         type(linop_${s}$) :: op
-        type(cg_workspace_${s}$), pointer :: workspace_
+        type(solver_workspace_${s}$), pointer :: workspace_
         integer :: n, maxiter_
         !-------------------------
         n = size(b)
@@ -75,10 +75,7 @@ contains
         if(present(workspace)) then
             workspace_ => workspace
         else
-            allocate( workspace_%r(n), &
-                      workspace_%p(n), &
-                      workspace_%Ap(n))
-            
+            allocate( workspace_%tmp(n,3) )
         end if
         call solve_cg_generic(op,b,x,tol,maxiter_,workspace_)
         contains
