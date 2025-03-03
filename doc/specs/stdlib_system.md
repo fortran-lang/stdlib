@@ -376,19 +376,7 @@ Returns one of the `integer` `OS_*` parameters representing the OS type, from th
 ### Example
 
 ```fortran
-program example_os_detection
-    use stdlib_system, only: OS_TYPE, get_runtime_os
-    implicit none
-    integer :: os_type_cached, os_type_runtime
-
-    ! Cached OS detection
-    os_type_cached = OS_TYPE()
-    print *, "Cached OS Type: ", os_type_cached
-
-    ! Runtime OS detection (full inspection)
-    os_type_runtime = get_runtime_os()
-    print *, "Runtime OS Type: ", os_type_runtime
-end program example_os_detection
+{!example/system/example_get_runtime_os.f90!}
 ```
 
 ---
@@ -427,17 +415,5 @@ Returns one of the `integer` `OS_*` parameters representing the OS type, from th
 ### Example
 
 ```fortran
-program example_os_detection
-    use stdlib_system, only: OS_TYPE, get_runtime_os
-    implicit none
-    integer :: os_type_cached, os_type_runtime
-
-    ! Cached OS detection
-    os_type_cached = OS_TYPE()
-    print *, "Cached OS Type: ", os_type_cached
-
-    ! Runtime OS detection (full inspection)
-    os_type_runtime = get_runtime_os()
-    print *, "Runtime OS Type: ", os_type_runtime
-end program example_os_detection
+{!example/system/example_os_type.f90!}
 ```
