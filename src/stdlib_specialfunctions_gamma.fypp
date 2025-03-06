@@ -671,29 +671,6 @@ contains
 
             end do
 
-        else                            !Algorithm 2 in the reference
-
-            a = - x
-            c = one / a
-            d = p - one
-            b = c * (a - d)
-            n = 1
-
-            do
-
-                c = d * (d - one) / (a * a)
-                d = d - 2
-                y = c * (a - d)
-                b = b + y
-                n = n + 1
-
-                if(n > int((p - 2) / 2) .or. y < b * tol_${k2}$) exit
-
-            end do
-
-            if(y >= b * tol_${k2}$ .and. mod(int(p), 2) /= 0) b = b + d * c / a
-
-            g = ((-1) ** p * exp(-a + log_gamma(p) - (p - 1) * log(a)) + b) / a
         end if
 
         res = g
