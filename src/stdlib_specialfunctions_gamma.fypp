@@ -4,6 +4,7 @@
 #:set CI_KINDS_TYPES = INT_KINDS_TYPES + C_KINDS_TYPES
 module stdlib_specialfunctions_gamma
     use iso_fortran_env, only : qp => real128
+    use ieee_arithmetic, only: ieee_value, ieee_quiet_nan
     use stdlib_kinds, only :  sp, dp, int8, int16, int32, int64
     use stdlib_error, only : error_stop
 
@@ -670,6 +671,9 @@ contains
                 if(abs(y - one) < tol_${k2}$) exit
 
             end do
+
+        else
+            g = ieee_value(1._${k1}$, ieee_quiet_nan)
 
         end if
 
