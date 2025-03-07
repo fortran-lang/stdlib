@@ -1,6 +1,7 @@
 module stdlib_system
-use, intrinsic :: iso_c_binding, only : c_int, c_long, c_null_ptr, c_int64_t
-use stdlib_kinds, only: int64, dp
+use, intrinsic :: iso_c_binding, only : c_int, c_long, c_ptr, c_null_ptr, c_int64_t, c_size_t, &
+    c_f_pointer
+use stdlib_kinds, only: int64, dp, c_char
 implicit none
 private
 public :: sleep
@@ -635,17 +636,39 @@ pure function OS_NAME(os)
     end select
 end function OS_NAME
 
-!> Return the file path of the null device for the current operating system.
+!> Returns the file path of the null device for the current operating system.
+!>
+!> Version: Helper function.
 function null_device() result(path)
     !> File path of the null device
     character(:), allocatable :: path
     
-    if (OS_TYPE()==OS_WINDOWS) then 
-        path = 'NUL'
-    else
-        path = '/dev/null'
-    end if
+    interface
     
+        ! No-overhead return path to the null device
+        type(c_ptr) function process_null_device(len) bind(C,name='process_null_device')
+            import c_ptr, c_size_t    
+            implicit none
+            integer(c_size_t), intent(out) :: len
+        end function process_null_device    
+        
+    end interface
+    
+    integer(c_size_t) :: i, len
+    type(c_ptr) :: c_path_ptr
+    character(kind=c_char), pointer :: c_path(:)    
+
+    ! Call the C function to get the null device path and its length
+    c_path_ptr = process_null_device(len)
+    call c_f_pointer(c_path_ptr,c_path,[len])
+
+    ! Allocate the Fortran string with the length returned from C
+    allocate(character(len=len) :: path)
+        
+    do concurrent (i=1:len)
+        path(i:i) = c_path(i)
+    end do
+        
 end function null_device
 
 end module stdlib_system

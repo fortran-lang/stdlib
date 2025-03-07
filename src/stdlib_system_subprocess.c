@@ -376,7 +376,7 @@ void process_wait(float seconds)
 }
 
 // Returns the cross-platform file path of the null device for the current operating system.
-const char* process_null_device(int* len) 
+const char* process_null_device(size_t* len) 
 {
 #ifdef _WIN32    
         (*len) = strlen("NUL");
