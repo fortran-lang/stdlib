@@ -1,5 +1,6 @@
 module stdlib_specialfunctions_gamma
     use iso_fortran_env, only : qp => real128
+    use ieee_arithmetic, only: ieee_value, ieee_quiet_nan
     use stdlib_kinds, only :  sp, dp, int8, int16, int32, int64
     use stdlib_error, only : error_stop
 
@@ -1192,9 +1193,9 @@ contains
     ! Fortran 90 program by Jim-215-Fisher
     !
         real(sp), intent(in) :: p, x
-        integer :: n, m
+        integer :: n
 
-        real(dp) :: res, p_lim, a, b, g, c, d, y, ss
+        real(dp) :: res, p_lim, a, b, g, c, d, y
         real(dp), parameter :: zero = 0.0_dp, one = 1.0_dp
         real(dp), parameter :: dm = tiny(1.0_dp) * 10 ** 6
         real(sp), parameter :: zero_k1 = 0.0_sp
@@ -1220,6 +1221,9 @@ contains
             call error_stop("Error(gpx): Incomplete gamma function with "      &
             //"negative x must come with a whole number p not too small")
 
+        if(x < zero_k1) call error_stop("Error(gpx): Incomplete gamma"         &
+            // " function with negative x must have an integer parameter p")
+
         if(p >= p_lim) then     !use modified Lentz method of continued fraction
                                 !for eq. (15) in the above reference.
             a = one
@@ -1285,30 +1289,9 @@ contains
 
             end do
 
-        else                            !Algorithm 2 in the reference
+        else
+            g = ieee_value(1._sp, ieee_quiet_nan)
 
-            m = nint(ss)
-            a = - x
-            c = one / a
-            d = p - one
-            b = c * (a - d)
-            n = 1
-
-            do
-
-                c = d * (d - one) / (a * a)
-                d = d - 2
-                y = c * (a - d)
-                b = b + y
-                n = n + 1
-
-                if(n > int((p - 2) / 2) .or. y < b * tol_dp) exit
-
-            end do
-
-            if(y >= b * tol_dp .and. mod(m , 2) /= 0) b = b + d * c / a
-
-            g = ((-1) ** m * exp(-a + log_gamma(p) - (p - 1) * log(a)) + b) / a
         end if
 
         res = g
@@ -1326,9 +1309,9 @@ contains
     ! Fortran 90 program by Jim-215-Fisher
     !
         real(dp), intent(in) :: p, x
-        integer :: n, m
+        integer :: n
 
-        real(qp) :: res, p_lim, a, b, g, c, d, y, ss
+        real(qp) :: res, p_lim, a, b, g, c, d, y
         real(qp), parameter :: zero = 0.0_qp, one = 1.0_qp
         real(qp), parameter :: dm = tiny(1.0_qp) * 10 ** 6
         real(dp), parameter :: zero_k1 = 0.0_dp
@@ -1354,6 +1337,9 @@ contains
             call error_stop("Error(gpx): Incomplete gamma function with "      &
             //"negative x must come with a whole number p not too small")
 
+        if(x < zero_k1) call error_stop("Error(gpx): Incomplete gamma"         &
+            // " function with negative x must have an integer parameter p")
+
         if(p >= p_lim) then     !use modified Lentz method of continued fraction
                                 !for eq. (15) in the above reference.
             a = one
@@ -1419,30 +1405,9 @@ contains
 
             end do
 
-        else                            !Algorithm 2 in the reference
+        else
+            g = ieee_value(1._dp, ieee_quiet_nan)
 
-            m = nint(ss)
-            a = - x
-            c = one / a
-            d = p - one
-            b = c * (a - d)
-            n = 1
-
-            do
-
-                c = d * (d - one) / (a * a)
-                d = d - 2
-                y = c * (a - d)
-                b = b + y
-                n = n + 1
-
-                if(n > int((p - 2) / 2) .or. y < b * tol_qp) exit
-
-            end do
-
-            if(y >= b * tol_qp .and. mod(m , 2) /= 0) b = b + d * c / a
-
-            g = ((-1) ** m * exp(-a + log_gamma(p) - (p - 1) * log(a)) + b) / a
         end if
 
         res = g
