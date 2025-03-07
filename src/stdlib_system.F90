@@ -81,6 +81,23 @@ public :: kill
 public :: elapsed
 public :: is_windows
      
+!! version: experimental
+!!
+!! Returns the file path of the null device, which discards all data written to it.
+!! ([Specification](../page/specs/stdlib_system.html#null_device-return-the-null-device-file-path))
+!!
+!! ### Summary
+!! Function that provides the file path of the null device appropriate for the current operating system.
+!!
+!! ### Description
+!!
+!! The null device is a special file that discards all data written to it and always reads as 
+!! an empty file. This function returns the null device path, adapted for the operating system in use.
+!! 
+!! On Windows, this is `NUL`. On UNIX-like systems, this is `/dev/null`.
+!!
+public :: null_device
+     
 ! CPU clock ticks storage
 integer, parameter, private :: TICKS = int64
 integer, parameter, private :: RTICKS = dp
@@ -617,5 +634,18 @@ pure function OS_NAME(os)
         case default     ; OS_NAME =  "Unknown"
     end select
 end function OS_NAME
+
+!> Return the file path of the null device for the current operating system.
+function null_device() result(path)
+    !> File path of the null device
+    character(:), allocatable :: path
+    
+    if (OS_TYPE()==OS_WINDOWS) then 
+        path = 'NUL'
+    else
+        path = '/dev/null'
+    end if
+    
+end function null_device
 
 end module stdlib_system
