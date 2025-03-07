@@ -650,7 +650,7 @@ logical function is_directory(path)
 
     end interface        
     
-    is_directory = logical(stdlib_is_directory(to_c_char(path)))
+    is_directory = logical(stdlib_is_directory(to_c_char(trim(path))))
     
 end function is_directory
 
