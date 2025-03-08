@@ -43,6 +43,13 @@ submodule (stdlib_system) stdlib_system_subprocess
             implicit none
             integer(process_ID), intent(in), value :: pid
         end function process_system_kill
+
+        logical(c_bool) function process_system_send_signal(pid, signal) bind(C, name='process_send_signal')
+            import c_bool, process_ID
+            implicit none
+            integer(process_ID), intent(in), value :: pid
+            integer, intent(in), value :: signal
+        end function process_system_send_signal
         
         ! System implementation of a wait function
         subroutine process_wait(seconds) bind(C,name='process_wait')
@@ -473,6 +480,40 @@ contains
         end if
         
     end subroutine process_kill
+
+    ! Send POSIX signal to a process
+    module subroutine process_send_signal(process, signal, success)
+        class(process_type), intent(inout) :: process
+        ! Signal number
+        integer, intent(in) :: signal
+        ! Return a boolean flag for successful operation
+        logical, intent(out) :: success
+
+        integer(c_int) :: exit_code
+        logical(c_bool) :: running
+
+        success = .true.
+
+        ! No need to
+        if (process%completed) return
+        if (process%id == FORKED_PROCESS) return
+
+        success = logical(process_system_send_signal(process%id, signal))
+
+        if (success) then
+
+            call process_query_status(process%id, wait=C_FALSE, is_running=running, exit_code=exit_code)
+            process%completed = .not.running
+
+            if (process%completed) then
+               ! Process completed, may have returned an error code
+               process%exit_code = exit_code
+               call save_completed_state(process,delete_files=.true.)
+            end if
+
+        end if
+
+    end subroutine process_send_signal
     
     subroutine save_completed_state(process,delete_files)
         class(process_type), intent(inout) :: process
