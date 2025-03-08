@@ -57,14 +57,16 @@ contains
         #:else 
         type(${matrix}$_${s}$_type), intent(in) :: A
         #:endif
-        ${t}$, intent(in) :: b(:), tol
+        ${t}$, intent(in) :: b(:)
         ${t}$, intent(inout) :: x(:)
+        ${t}$, intent(in), optional :: tol
         integer, intent(in), optional :: maxiter
         type(solver_workspace_${s}$), optional, intent(inout), target :: workspace
         !-------------------------
         type(linop_${s}$) :: op
         type(solver_workspace_${s}$), pointer :: workspace_
         integer :: n, maxiter_
+        ${t}$ :: tol_
         !-------------------------
         n = size(b)
         op%matvec => default_matvec
@@ -72,7 +74,11 @@ contains
 
         maxiter_ = n
         if(present(maxiter)) maxiter_ = maxiter
+        tol_ = 1.e-4_${s}$
+        if(present(tol)) tol_ = tol
+        
         if(present(workspace)) then
+            if(.not.allocated(workspace_%tmp)) allocate( workspace_%tmp(n,3) )
             workspace_ => workspace
         else
             allocate( workspace_%tmp(n,3) )

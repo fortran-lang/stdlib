@@ -1,0 +1,161 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set MATRIX_TYPES = ["dense", "CSR"]
+#:set RANKS = range(1, 2+1)
+
+submodule(stdlib_linalg_iterative_solvers) stdlib_linalg_iterative_pccg
+    use stdlib_kinds
+    use stdlib_sparse
+    use stdlib_constants
+    use stdlib_intrinsics, only: dot_product => stdlib_dot_product
+    use stdlib_linalg_iterative_solvers
+    implicit none
+
+contains
+
+    #:for k, t, s in R_KINDS_TYPES
+    module subroutine solve_pccg_generic_${s}$(A,b,x,di,tol,maxiter,restart,workspace)
+        class(linop_${s}$), intent(in) :: A
+        ${t}$, intent(in) :: b(:), tol
+        ${t}$, intent(inout) :: x(:)
+        logical(1), intent(in) :: di(:)
+        integer, intent(in) :: maxiter
+        logical, intent(in) :: restart 
+        type(solver_workspace_${s}$), intent(inout) :: workspace
+        !-------------------------
+        integer :: iter
+        ${t}$ :: norm_sq, norm_sq0, norm_sq_old, residual0
+        ${t}$ :: zr1, zr2, zv2, alpha, beta, tolsq
+        !-------------------------
+        associate(  R => workspace%tmp(:,1), &
+                    S => workspace%tmp(:,2), &
+                    P => workspace%tmp(:,3), &
+                    Q => workspace%tmp(:,4))
+        norm_sq = A%inner_product( b, b )
+        norm_sq0 = norm_sq
+        residual0 = sqrt(norm_sq0)
+        if ( norm_sq0 > zero_${s}$ ) then
+            if(restart) X = zero_${s}$
+            where( di ) X = B
+            
+            call A%matvec(X, R)
+            R = B - R
+            where( di ) R = zero_${s}$
+            
+            call A%preconditionner(R,P)
+            where( di ) P = zero_${s}$
+            
+            tolsq = tol*tol
+            iter = 0
+            zr1 = zero_${s}$
+            zr2 = one_${s}$
+            do while ( (iter < maxiter) .AND. (norm_sq > tolsq * norm_sq0) )
+                
+                call A%preconditionner(R,S)
+                where ( di ) S = zero_${s}$
+                zr2 = A%inner_product( R, S )
+            
+                if (iter>0) then
+                    beta = zr2 / zr1
+                    P = S + beta * P
+                end if
+                
+                call A%matvec(P, Q)
+                where( di ) Q = zero_${s}$
+                zv2 = A%inner_product( P, Q )
+            
+                alpha = zr2 / zv2
+            
+                X = X + alpha * P
+                R = R - alpha * Q
+                norm_sq = A%inner_product( R, R )
+                norm_sq_old = norm_sq
+                zr1 = zr2
+                iter = iter + 1
+            end do
+        end if
+        end associate
+    end subroutine
+    #:endfor
+
+    #:for matrix in MATRIX_TYPES
+    #:for k, t, s in R_KINDS_TYPES
+    module subroutine solve_pccg_${matrix}$_${s}$(A,b,x,di,tol,maxiter,restart,workspace)
+        #:if matrix == "dense"
+        ${t}$, intent(in) :: A(:,:)
+        #:else 
+        type(${matrix}$_${s}$_type), intent(in) :: A
+        #:endif
+        ${t}$, intent(in) :: b(:)
+        ${t}$, intent(inout) :: x(:)
+        ${t}$, intent(in), optional :: tol
+        logical(1), intent(in), optional, target  :: di(:)
+        integer, intent(in), optional  :: maxiter
+        logical, intent(in), optional  :: restart
+        type(solver_workspace_${s}$), optional, intent(inout), target :: workspace
+        !-------------------------
+        type(linop_${s}$) :: op
+        type(solver_workspace_${s}$), pointer :: workspace_
+        integer :: n, maxiter_
+        ${t}$ :: tol_
+        logical :: restart_
+        logical(1), pointer :: di_(:)
+        !-------------------------
+        n = size(b)
+
+        op%matvec => default_matvec
+        op%inner_product => default_dot
+        op%preconditionner => default_preconditionner
+
+        maxiter_ = n
+        if(present(maxiter)) maxiter_ = maxiter
+        restart_ = .true. 
+        if(present(restart)) restart_ = restart
+        tol_ = 1.e-4_${s}$
+        if(present(tol)) tol_ = tol
+
+        if(present(di))then
+            di_ => di
+        else 
+            allocate(di_(n),source=.false._1)
+        end if
+        
+        if(present(workspace)) then
+            if(.not.allocated(workspace_%tmp)) allocate( workspace_%tmp(n,4) )
+            workspace_ => workspace
+        else
+            allocate( workspace_ )
+            allocate( workspace_%tmp(n,4) )
+        end if
+        
+        call solve_pccg_generic(op,b,x,di_,tol,maxiter_,restart_,workspace_)
+
+        if(.not.present(di)) deallocate(di_)
+        contains
+        
+        subroutine default_matvec(x,y)
+            ${t}$, intent(in)  :: x(:)
+            ${t}$, intent(inout) :: y(:)
+            #:if matrix == "dense"
+            y = matmul(A,x)
+            #:else 
+            call spmv( A , x, y )
+            #:endif
+        end subroutine
+        subroutine default_preconditionner(x,y)
+            ${t}$, intent(in)  :: x(:)
+            ${t}$, intent(inout) :: y(:)
+            y = x
+        end subroutine
+        pure ${t}$ function default_dot(x,y) result(r)
+            ${t}$, intent(in) :: x(:)
+            ${t}$, intent(in) :: y(:)
+            r = dot_product(x,y)
+        end function
+    end subroutine
+
+    #:endfor
+    #:endfor
+
+end submodule stdlib_linalg_iterative_pccg
