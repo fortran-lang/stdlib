@@ -284,6 +284,14 @@ bool process_kill_unix(stdlib_pid pid) {
     return false;
 }
 
+// send signal to a process. returns true if success, else false.
+bool process_send_signal_unix(stdlib_pid pid, int signal) {
+    if (kill(pid, signal) == 0) {
+        return true;
+    }
+
+    return false; // errors occurred
+}
 
 // On UNIX systems: just fork a new process. The command line will be executed from Fortran.
 void process_create_posix(stdlib_pid* pid) 
@@ -327,6 +335,17 @@ bool process_kill(stdlib_pid pid)
 #else
    return process_kill_unix(pid);
 #endif // _WIN32
+}
+
+// Cross-platform interface: send signal to a process by ID
+// no-op on Windows
+bool process_send_signal(stdlib_pid pid, int signal)
+{
+#ifndef _WIN32
+    return process_send_signal_unix(pid, signal);
+#else
+    return false;
+#endif
 }
 
 // Cross-platform interface: sleep(seconds)
