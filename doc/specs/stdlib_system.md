@@ -284,6 +284,31 @@ This is an `intent(inout)` argument, and on return is updated with the terminate
 {!example/system/example_process_4.f90!}
 ```
 
+## `send_signal`- send (POSIX) signal to a process
+
+### Status
+
+Experimental
+
+### Description
+
+The `send_signal` interface is used to send POSIX signal to a running external process.
+It attempts to send the signal and returns a boolean flag indicating whether the operation was successful.
+It does not do anything on Windows (no-op).
+
+### Syntax
+
+`call ` [[stdlib_subprocess(module):send_signal(subroutine)]] `(process, signal, success)`
+
+### Arguments
+
+`process`: Shall be a `type(process_type)` object representing the external process to be terminated.
+This is an `intent(inout)` argument, and on return is updated with the terminated process state.
+
+`signal`: Shall be a `integer` variable representing the signal number to be sent.
+
+`success`: Shall be a `logical` variable. It is set to `.true.` if the signal was sent successfully, or `.false.` otherwise.
+
 ## `sleep` - Pause execution for a specified time in milliseconds
 
 ### Status

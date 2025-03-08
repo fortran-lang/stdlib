@@ -1,6 +1,7 @@
 module test_subprocess
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
-    use stdlib_system, only: process_type, run, runasync, is_running, wait, update, elapsed, is_windows, kill
+    use stdlib_system, only: process_type, run, runasync, is_running, wait, update, elapsed, is_windows, &
+        kill, send_signal
 
     implicit none
 
@@ -15,6 +16,7 @@ contains
             new_unittest('test_run_synchronous', test_run_synchronous), &
             new_unittest('test_run_asynchronous', test_run_asynchronous), &
             new_unittest('test_process_kill', test_process_kill), &
+            new_unittest('test_process_send_signal', test_process_send_signal), &
             new_unittest('test_process_state', test_process_state) &
         ]
     end subroutine collect_suite
@@ -93,6 +95,44 @@ contains
         ! Ensure process state updates correctly after killing
         call check(error, process%completed, "Process should be marked as completed after being killed")
     end subroutine test_process_kill
+
+    subroutine test_process_send_signal(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(process_type) :: process
+        logical :: success
+
+        ! As the function does nothing on windows
+        if (is_windows()) return
+
+        ! Start a long-running process asynchronously
+        process = runasync("ping -c 10 127.0.0.1")
+
+        ! Ensure the process starts running
+        call check(error, .not. process%completed, "Process should not be completed immediately after starting")
+        if (allocated(error)) return
+
+        call check(error, is_running(process), "Process should be running immediately after starting")
+        if (allocated(error)) return
+
+        ! send SIGWINCH(28) to process, this should not cause the process to exit
+        call send_signal(process, 28, success)
+        call check(error, success, "Failed to send signal SIGWINCH to the process")
+        if (allocated(error)) return
+
+        ! Verify the process is still running
+        call check(error, .not. process%completed, "Process should not exit after SIGWINCH signal")
+        if (allocated(error)) return
+
+        ! send SIGKILL to process
+        call send_signal(process, 9, success)
+        call check(error, success, "Failed to send signal SIGKILL to the process")
+        if (allocated(error)) return
+
+        ! Verify the process is no longer running
+        call check(error, .not. process%completed, "Process should be completed after being killed")
+        if (allocated(error)) return
+
+    end subroutine test_process_send_signal
 
     !> Test updating and checking process state
     subroutine test_process_state(error)
