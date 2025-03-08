@@ -78,6 +78,7 @@ public :: is_running
 public :: update
 public :: wait
 public :: kill
+public :: send_signal
 public :: elapsed
 public :: is_windows
      
@@ -139,6 +140,10 @@ contains
     
     !! Kill a process
     procedure :: kill         => process_kill
+
+    !! Send (POSIX) signal to a process
+    !! no-op on Windows
+    procedure :: send_signal  => process_send_signal
     
     !! Get process ID
     procedure :: pid          => process_get_ID
@@ -408,6 +413,36 @@ interface kill
         logical, intent(out) :: success
     end subroutine process_kill
 end interface kill
+
+interface send_signal
+    !! version: experimental
+    !!
+    !! sends (POSIX) signal to a running process.
+    !! ([Specification](../page/specs/stdlib_system.html#send_signal))
+    !!
+    !! ### Summary
+    !! Provides a method to send POSIX signals to a running process.
+    !! Returns a boolean flag indicating whether the operation was successful.
+    !!
+    !! ### Description
+    !!
+    !! This interface allows for the sending of signal to an external process.
+    !! If the signal is sent successfully, the `success` output flag is set to `.true.`, otherwise `.false.`.
+    !! This function is useful for controlling and managing processes
+    !!
+    !! @note This operation may be system-dependent and could fail if the underlying user does not have
+    !! the necessary rights to kill a process. It is a no-op on Windows
+    !!
+    module subroutine process_send_signal(process, signal, success)
+        !> The process object to send a signal to
+        class(process_type), intent(inout) :: process
+        !> The integer representation of the signal
+        !> Example: 9 for SIGKILL
+        integer, intent(in) :: signal
+        !> Boolean flag indicating whether the operation was successful
+        logical, intent(out) :: success
+    end subroutine process_send_signal
+end interface send_signal
  
 interface sleep
     !! version: experimental
