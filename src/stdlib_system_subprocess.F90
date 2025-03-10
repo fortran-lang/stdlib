@@ -1,7 +1,7 @@
 submodule (stdlib_system) stdlib_system_subprocess
     use iso_c_binding  
     use iso_fortran_env, only: int64, real64
-    use stdlib_strings, only: to_c_char, join
+    use stdlib_strings, only: join
     use stdlib_linalg_state, only: linalg_state_type, LINALG_ERROR, linalg_error_handling
     implicit none(type, external)
     
