@@ -1,5 +1,6 @@
 module stdlib_system
-use, intrinsic :: iso_c_binding, only : c_int, c_long, c_null_ptr, c_int64_t
+use, intrinsic :: iso_c_binding, only : c_int, c_long, c_ptr, c_null_ptr, c_int64_t, c_size_t, &
+    c_f_pointer
 use stdlib_kinds, only: int64, dp, c_bool, c_char
 use stdlib_strings, only: to_c_char
 implicit none
@@ -97,6 +98,23 @@ public :: is_windows
 !! Windows, and various UNIX-like environments. On unsupported operating systems, the function will return `.false.`.
 !!
 public :: is_directory
+  
+!! version: experimental
+!!
+!! Returns the file path of the null device, which discards all data written to it.
+!! ([Specification](../page/specs/stdlib_system.html#null_device-return-the-null-device-file-path))
+!!
+!! ### Summary
+!! Function that provides the file path of the null device appropriate for the current operating system.
+!!
+!! ### Description
+!!
+!! The null device is a special file that discards all data written to it and always reads as 
+!! an empty file. This function returns the null device path, adapted for the operating system in use.
+!! 
+!! On Windows, this is `NUL`. On UNIX-like systems, this is `/dev/null`.
+!!
+public :: null_device
      
 ! CPU clock ticks storage
 integer, parameter, private :: TICKS = int64
@@ -653,5 +671,40 @@ logical function is_directory(path)
     is_directory = logical(stdlib_is_directory(to_c_char(trim(path))))
     
 end function is_directory
+
+!> Returns the file path of the null device for the current operating system.
+!>
+!> Version: Helper function.
+function null_device() result(path)
+    !> File path of the null device
+    character(:), allocatable :: path
+    
+    interface
+    
+        ! No-overhead return path to the null device
+        type(c_ptr) function process_null_device(len) bind(C,name='process_null_device')
+            import c_ptr, c_size_t    
+            implicit none
+            integer(c_size_t), intent(out) :: len
+        end function process_null_device    
+        
+    end interface
+    
+    integer(c_size_t) :: i, len
+    type(c_ptr) :: c_path_ptr
+    character(kind=c_char), pointer :: c_path(:)    
+
+    ! Call the C function to get the null device path and its length
+    c_path_ptr = process_null_device(len)
+    call c_f_pointer(c_path_ptr,c_path,[len])
+
+    ! Allocate the Fortran string with the length returned from C
+    allocate(character(len=len) :: path)
+        
+    do concurrent (i=1:len)
+        path(i:i) = c_path(i)
+    end do
+        
+end function null_device
 
 end module stdlib_system
