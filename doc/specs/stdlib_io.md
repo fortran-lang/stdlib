@@ -6,36 +6,37 @@ title: io
 
 [TOC]
 
-## `loadtxt` - load a 2D array from a text file
+## `loadtxt` - load a 2D array or 1D character array from a text file
 
 ### Status
 
 Experimental
 
 ### Description
-Loads a rank-2 `array` from a text file.
+Loads a rank-2 `array` or rank-1 `character array` from a text file.
 
 ### Syntax
 
-`call ` [[stdlib_io(module):loadtxt(interface)]] `(filename, array [, skiprows] [, max_rows] [, fmt])`
+`call ` [[stdlib_io(module):loadtxt(interface)]] `(filename, array [, skiprows] [, max_rows] [, fmt], [,skip_blank_lines])`
 
 ### Arguments
 
 `filename`: Shall be  a character expression containing the file name from which to load the rank-2 `array`.
 
-`array`: Shall be an allocatable rank-2 array of type `real`, `complex` or `integer`.
+`array`: Shall be an allocatable rank-2 array of type `real`, `complex` or `integer` or a allocatable rank-1 `character` array.
 
 `skiprows` (optional): Skip the first `skiprows` lines. If skipping more rows than present, a 0-sized array will be returned. The default is 0.
 
 `max_rows` (optional): Read `max_rows` lines of content after `skiprows` lines. A negative value results in reading all lines. A value of zero results in no lines to be read. The default value is -1.
 
-`fmt` (optional): Fortran format specifier for the text read.  Defaults to the write format for the data type.  Setting fmt='*' will specify list directed read.   
+`fmt` (optional): Fortran format specifier for the text read.  Defaults to the write format for the data type.  Setting fmt='*' will specify list directed read.  Valid only for `real`, `complex` and `integer`.    
 
+`skip_blank_lines` (optional): Will ignore blank lines in the text file.  Valid only for `character` array.  
 
 
 ### Return value
 
-Returns an allocated rank-2 `array` with the content of `filename`.
+Returns an allocated rank-2 `array` with the content of `filename`, or a rank-1 `character` array where the length is the longest line of the file.
 
 ### Example
 
