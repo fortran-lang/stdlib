@@ -173,6 +173,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
+           1 format('loadtxt: error <',a,'> skipping line ',i0,' of ',a,'.')
            call error_stop(msg=trim(msgout))
         end if
         
@@ -187,7 +188,7 @@ contains
           read (s,*,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
+             write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
              call error_stop(msg=trim(msgout))
           end if          
           
@@ -198,7 +199,7 @@ contains
           read (s,fmt_,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
+             write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
              call error_stop(msg=trim(msgout))
           end if             
           
@@ -207,7 +208,7 @@ contains
 
       close(s)
       
-      1 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
+      2 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
 
     end subroutine loadtxt_rsp
     subroutine  loadtxt_rdp(filename, d, skiprows, max_rows, fmt)
@@ -273,6 +274,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
+           1 format('loadtxt: error <',a,'> skipping line ',i0,' of ',a,'.')
            call error_stop(msg=trim(msgout))
         end if
         
@@ -287,7 +289,7 @@ contains
           read (s,*,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
+             write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
              call error_stop(msg=trim(msgout))
           end if          
           
@@ -298,7 +300,7 @@ contains
           read (s,fmt_,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
+             write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
              call error_stop(msg=trim(msgout))
           end if             
           
@@ -307,7 +309,7 @@ contains
 
       close(s)
       
-      1 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
+      2 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
 
     end subroutine loadtxt_rdp
     subroutine  loadtxt_iint8(filename, d, skiprows, max_rows, fmt)
@@ -373,6 +375,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
+           1 format('loadtxt: error <',a,'> skipping line ',i0,' of ',a,'.')
            call error_stop(msg=trim(msgout))
         end if
         
@@ -387,7 +390,7 @@ contains
           read (s,*,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
+             write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
              call error_stop(msg=trim(msgout))
           end if          
           
@@ -398,7 +401,7 @@ contains
           read (s,fmt_,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
+             write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
              call error_stop(msg=trim(msgout))
           end if             
           
@@ -407,7 +410,7 @@ contains
 
       close(s)
       
-      1 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
+      2 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
 
     end subroutine loadtxt_iint8
     subroutine  loadtxt_iint16(filename, d, skiprows, max_rows, fmt)
@@ -473,6 +476,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
+           1 format('loadtxt: error <',a,'> skipping line ',i0,' of ',a,'.')
            call error_stop(msg=trim(msgout))
         end if
         
@@ -487,7 +491,7 @@ contains
           read (s,*,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
+             write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
              call error_stop(msg=trim(msgout))
           end if          
           
@@ -498,7 +502,7 @@ contains
           read (s,fmt_,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
+             write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
              call error_stop(msg=trim(msgout))
           end if             
           
@@ -507,7 +511,7 @@ contains
 
       close(s)
       
-      1 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
+      2 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
 
     end subroutine loadtxt_iint16
     subroutine  loadtxt_iint32(filename, d, skiprows, max_rows, fmt)
@@ -573,6 +577,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
+           1 format('loadtxt: error <',a,'> skipping line ',i0,' of ',a,'.')
            call error_stop(msg=trim(msgout))
         end if
         
@@ -587,7 +592,7 @@ contains
           read (s,*,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
+             write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
              call error_stop(msg=trim(msgout))
           end if          
           
@@ -598,7 +603,7 @@ contains
           read (s,fmt_,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
+             write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
              call error_stop(msg=trim(msgout))
           end if             
           
@@ -607,7 +612,7 @@ contains
 
       close(s)
       
-      1 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
+      2 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
 
     end subroutine loadtxt_iint32
     subroutine  loadtxt_iint64(filename, d, skiprows, max_rows, fmt)
@@ -673,6 +678,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
+           1 format('loadtxt: error <',a,'> skipping line ',i0,' of ',a,'.')
            call error_stop(msg=trim(msgout))
         end if
         
@@ -687,7 +693,7 @@ contains
           read (s,*,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
+             write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
              call error_stop(msg=trim(msgout))
           end if          
           
@@ -698,7 +704,7 @@ contains
           read (s,fmt_,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
+             write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
              call error_stop(msg=trim(msgout))
           end if             
           
@@ -707,7 +713,7 @@ contains
 
       close(s)
       
-      1 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
+      2 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
 
     end subroutine loadtxt_iint64
     subroutine  loadtxt_csp(filename, d, skiprows, max_rows, fmt)
@@ -774,6 +780,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
+           1 format('loadtxt: error <',a,'> skipping line ',i0,' of ',a,'.')
            call error_stop(msg=trim(msgout))
         end if
         
@@ -788,7 +795,7 @@ contains
           read (s,*,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
+             write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
              call error_stop(msg=trim(msgout))
           end if          
           
@@ -799,7 +806,7 @@ contains
           read (s,fmt_,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
+             write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
              call error_stop(msg=trim(msgout))
           end if             
           
@@ -808,7 +815,7 @@ contains
 
       close(s)
       
-      1 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
+      2 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
 
     end subroutine loadtxt_csp
     subroutine  loadtxt_cdp(filename, d, skiprows, max_rows, fmt)
@@ -875,6 +882,7 @@ contains
         
         if (ios/=0) then 
            write(msgout,1) trim(iomsg),i,trim(filename) 
+           1 format('loadtxt: error <',a,'> skipping line ',i0,' of ',a,'.')
            call error_stop(msg=trim(msgout))
         end if
         
@@ -889,7 +897,7 @@ contains
           read (s,*,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
+             write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
              call error_stop(msg=trim(msgout))
           end if          
           
@@ -900,7 +908,7 @@ contains
           read (s,fmt_,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
-             write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
+             write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
              call error_stop(msg=trim(msgout))
           end if             
           
@@ -909,7 +917,7 @@ contains
 
       close(s)
       
-      1 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
+      2 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
 
     end subroutine loadtxt_cdp
 
