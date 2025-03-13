@@ -1,0 +1,119 @@
+#:include "common.fypp"
+#:set I_KINDS_TYPES = list(zip(INT_KINDS, INT_TYPES, INT_KINDS))
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+
+submodule (stdlib_intrinsics) stdlib_intrinsics_matmul
+    implicit none
+
+contains
+
+    ! Algorithm for the optimal bracketization of matrices
+    ! Reference: Cormen, "Introduction to Algorithms", 4ed, ch-14, section-2
+    ! Internal use only!
+    pure function matmul_chain_order(n, p) result(s)
+        integer, intent(in) :: n, p(:)
+        integer :: s(1:n-1, 2:n), m(1:n, 1:n), l, i, j, k, q
+        m(:,:) = 0
+        s(:,:) = 0
+
+        do l = 2, n
+            do i = 1, n - l + 1
+                j = i + l - 1
+                m(i,j) = huge(1)
+                
+                do k = i, j - 1
+                    q = m(i,k) + m(k+1,j) + p(i)*p(k+1)*p(j+1)
+
+                    if (q < m(i, j)) then
+                        m(i,j) = q
+                        s(i,j) = k
+                    end if
+                end do
+            end do
+        end do
+    end function matmul_chain_order
+
+#:for k, t, s in I_KINDS_TYPES + R_KINDS_TYPES + C_KINDS_TYPES
+
+    pure module function stdlib_matmul_${s}$_3 (a, b, c) result(d)
+        ${t}$, intent(in) :: a(:,:), b(:,:), c(:,:)
+        ${t}$, allocatable :: d(:,:)
+        integer :: sa(2), sb(2), sc(2), cost1, cost2
+        sa = shape(a)
+        sb = shape(b)
+        sc = shape(c)
+
+        if ((sa(2) /= sb(1)) .or. (sb(2) /= sc(1))) then
+            error stop "stdlib_matmul: Incompatible array shapes"
+        end if
+
+        ! computes the cost (number of scalar multiplications required)
+        ! cost(A, B) = shape(A)(1) * shape(A)(2) * shape(B)(2)
+        cost1 = sa(1) * sa(2) * sb(2) + sa(1) * sb(2) * sc(2) ! ((AB)C)
+        cost2 = sb(1) * sb(2) * sc(2) + sa(1) * sa(2) * sc(2) ! (A(BC))
+
+        if (cost1 < cost2) then
+            d = matmul(matmul(a, b), c)
+        else
+            d = matmul(a, matmul(b, c))
+        end if
+    end function stdlib_matmul_${s}$_3
+
+    pure module function stdlib_matmul_${s}$_4 (a, b, c, d) result(e)
+        ${t}$, intent(in) :: a(:,:), b(:,:), c(:,:), d(:,:)
+        ${t}$, allocatable :: e(:,:)
+        integer :: p(5), i
+        integer :: s(3,2:4)
+
+        p(1) = size(a, 1)
+        p(2) = size(b, 1)
+        p(3) = size(c, 1)
+        p(4) = size(d, 1)
+        p(5) = size(d, 2)
+
+        s = matmul_chain_order(4, p)
+
+        select case (s(1,4))
+            case (1)
+                e = matmul(a, stdlib_matmul(b, c, d))
+            case (2)
+                e = matmul(matmul(a, b), matmul(c, d))
+            case (3)
+                e = matmul(stdlib_matmul(a, b ,c), d)
+            case default
+                error stop "stdlib_matmul: unexpected error unexpected s(i,j)"
+        end select
+    end function stdlib_matmul_${s}$_4
+
+    pure module function stdlib_matmul_${s}$_5 (a, b, c, d, e) result(f)
+        ${t}$, intent(in) :: a(:,:), b(:,:), c(:,:), d(:,:), e(:,:)
+        ${t}$, allocatable :: f(:,:)
+        integer :: p(6), i
+        integer :: s(4,2:5)
+
+        p(1) = size(a, 1)
+        p(2) = size(b, 1)
+        p(3) = size(c, 1)
+        p(4) = size(d, 1)
+        p(5) = size(e, 1)
+        p(6) = size(e, 2)
+
+        s = matmul_chain_order(5, p)
+
+        select case (s(1,5))
+            case (1)
+                f = matmul(a, stdlib_matmul(b, c, d, e))
+            case (2)
+                f = matmul(matmul(a, b), stdlib_matmul(c, d, e))
+            case (3)
+                f = matmul(stdlib_matmul(a, b ,c), matmul(d, e))
+            case (4)
+                f = matmul(stdlib_matmul(a, b, c, d), e)
+            case default
+                error stop "stdlib_matmul: unexpected error unexpected s(i,j)"
+        end select
+    end function stdlib_matmul_${s}$_5
+
+#:endfor
+end submodule stdlib_intrinsics_matmul
