@@ -157,9 +157,10 @@ module stdlib_intrinsics
         !!### Description
         !!
         !! matrix multiply more than two matrices with a single function call
-        !! the multiplication with the optimal bracketization is done automatically
+        !! the multiplication with the optimal parenthesization for efficiency of computation is done automatically
         !! Supported data types are `real`, `integer` and `complex`.
         !!
+        !! Note: The matrices must be of compatible shapes to be multiplied
         #:for k, t, s in I_KINDS_TYPES + R_KINDS_TYPES + C_KINDS_TYPES
             pure module function stdlib_matmul_${s}$_3 (a, b, c) result(d)
                 ${t}$, intent(in) :: a(:,:), b(:,:), c(:,:)

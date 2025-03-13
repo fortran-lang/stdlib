@@ -8,7 +8,7 @@ submodule (stdlib_intrinsics) stdlib_intrinsics_matmul
 
 contains
 
-    ! Algorithm for the optimal bracketization of matrices
+    ! Algorithm for the optimal parenthesization of matrices
     ! Reference: Cormen, "Introduction to Algorithms", 4ed, ch-14, section-2
     ! Internal use only!
     pure function matmul_chain_order(n, p) result(s)
