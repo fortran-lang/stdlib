@@ -146,6 +146,38 @@ module stdlib_intrinsics
         #:endfor
     end interface
     public :: kahan_kernel
+
+    interface stdlib_matmul
+        !! version: experimental
+        !!
+        !!### Summary
+        !! compute the matrix multiplication of more than two matrices with a single function call.
+        !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_matmul))
+        !!
+        !!### Description
+        !!
+        !! matrix multiply more than two matrices with a single function call
+        !! the multiplication with the optimal bracketization is done automatically
+        !! Supported data types are `real`, `integer` and `complex`.
+        !!
+        #:for k, t, s in I_KINDS_TYPES + R_KINDS_TYPES + C_KINDS_TYPES
+            pure module function stdlib_matmul_${s}$_3 (a, b, c) result(d)
+                ${t}$, intent(in) :: a(:,:), b(:,:), c(:,:)
+                ${t}$, allocatable :: d(:,:)
+            end function stdlib_matmul_${s}$_3
+
+            pure module function stdlib_matmul_${s}$_4 (a, b, c, d) result(e)
+                ${t}$, intent(in) :: a(:,:), b(:,:), c(:,:), d(:,:)
+                ${t}$, allocatable :: e(:,:)
+            end function stdlib_matmul_${s}$_4
+
+            pure module function stdlib_matmul_${s}$_5 (a, b, c, d, e) result(f)
+                ${t}$, intent(in) :: a(:,:), b(:,:), c(:,:), d(:,:), e(:,:)
+                ${t}$, allocatable :: f(:,:)
+            end function stdlib_matmul_${s}$_5
+        #:endfor
+    end interface stdlib_matmul
+    public :: stdlib_matmul
     
 contains
 
