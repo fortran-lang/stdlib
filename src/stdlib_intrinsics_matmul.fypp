@@ -11,9 +11,11 @@ contains
     ! Algorithm for the optimal parenthesization of matrices
     ! Reference: Cormen, "Introduction to Algorithms", 4ed, ch-14, section-2
     ! Internal use only!
-    pure function matmul_chain_order(n, p) result(s)
-        integer, intent(in) :: n, p(:)
-        integer :: s(1:n-1, 2:n), m(1:n, 1:n), l, i, j, k, q
+    pure function matmul_chain_order(p) result(s)
+        integer, intent(in) :: p(:)
+        integer :: s(1:size(p) - 2, 2: size(p) - 1), m(1: size(p) - 1, 1: size(p) - 1)
+        integer :: n, l, i, j, k, q
+        n = size(p) - 1
         m(:,:) = 0
         s(:,:) = 0
 
@@ -72,7 +74,7 @@ contains
         p(4) = size(d, 1)
         p(5) = size(d, 2)
 
-        s = matmul_chain_order(4, p)
+        s = matmul_chain_order(p)
 
         select case (s(1,4))
             case (1)
@@ -113,7 +115,7 @@ contains
         p(5) = size(e, 1)
         p(6) = size(e, 2)
 
-        s = matmul_chain_order(5, p)
+        s = matmul_chain_order(p)
 
         select case (s(1,5))
             case (1)
