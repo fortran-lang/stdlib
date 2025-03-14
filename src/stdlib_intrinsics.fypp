@@ -162,20 +162,11 @@ module stdlib_intrinsics
         !!
         !! Note: The matrices must be of compatible shapes to be multiplied
         #:for k, t, s in I_KINDS_TYPES + R_KINDS_TYPES + C_KINDS_TYPES
-            pure module function stdlib_matmul_${s}$_3 (a, b, c) result(d)
-                ${t}$, intent(in) :: a(:,:), b(:,:), c(:,:)
-                ${t}$, allocatable :: d(:,:)
-            end function stdlib_matmul_${s}$_3
-
-            pure module function stdlib_matmul_${s}$_4 (a, b, c, d) result(e)
-                ${t}$, intent(in) :: a(:,:), b(:,:), c(:,:), d(:,:)
-                ${t}$, allocatable :: e(:,:)
-            end function stdlib_matmul_${s}$_4
-
-            pure module function stdlib_matmul_${s}$_5 (a, b, c, d, e) result(f)
-                ${t}$, intent(in) :: a(:,:), b(:,:), c(:,:), d(:,:), e(:,:)
-                ${t}$, allocatable :: f(:,:)
-            end function stdlib_matmul_${s}$_5
+            pure module function stdlib_matmul_${s}$ (m1, m2, m3, m4, m5) result(r)
+                ${t}$, intent(in) :: m1(:,:), m2(:,:)
+                ${t}$, intent(in), optional :: m3(:,:), m4(:,:), m5(:,:)
+                ${t}$, allocatable :: r(:,:)
+            end function stdlib_matmul_${s}$
         #:endfor
     end interface stdlib_matmul
     public :: stdlib_matmul
