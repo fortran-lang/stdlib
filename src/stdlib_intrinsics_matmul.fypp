@@ -37,99 +37,38 @@ contains
     end function matmul_chain_order
 
 #:for k, t, s in I_KINDS_TYPES + R_KINDS_TYPES + C_KINDS_TYPES
+    
+    pure function matmul_chain_mult_${s}$_3 (m1, m2, m3, start, s) result(r)
+        ${t}$, intent(in) :: m1(:,:), m2(:,:), m3(:,:)
+        integer, intent(in) :: start, s(:,:)
+        ${t}$, allocatable :: r(:,:)
 
-    pure module function stdlib_matmul_${s}$_3 (a, b, c) result(d)
-        ${t}$, intent(in) :: a(:,:), b(:,:), c(:,:)
-        ${t}$, allocatable :: d(:,:)
-        integer :: sa(2), sb(2), sc(2), cost1, cost2
-        sa = shape(a)
-        sb = shape(b)
-        sc = shape(c)
-
-        if ((sa(2) /= sb(1)) .or. (sb(2) /= sc(1))) then
-            error stop "stdlib_matmul: Incompatible array shapes"
-        end if
-
-        ! computes the cost (number of scalar multiplications required)
-        ! cost(A, B) = shape(A)(1) * shape(A)(2) * shape(B)(2)
-        cost1 = sa(1) * sa(2) * sb(2) + sa(1) * sb(2) * sc(2) ! ((AB)C)
-        cost2 = sb(1) * sb(2) * sc(2) + sa(1) * sa(2) * sc(2) ! (A(BC))
-
-        if (cost1 < cost2) then
-            d = matmul(matmul(a, b), c)
-        else
-            d = matmul(a, matmul(b, c))
-        end if
-    end function stdlib_matmul_${s}$_3
-
-    pure module function stdlib_matmul_${s}$_4 (a, b, c, d) result(e)
-        ${t}$, intent(in) :: a(:,:), b(:,:), c(:,:), d(:,:)
-        ${t}$, allocatable :: e(:,:)
-        integer :: p(5), i
-        integer :: s(3,2:4)
-
-        p(1) = size(a, 1)
-        p(2) = size(b, 1)
-        p(3) = size(c, 1)
-        p(4) = size(d, 1)
-        p(5) = size(d, 2)
-
-        s = matmul_chain_order(p)
-
-        select case (s(1,4))
+        select case (s(start, start + 2))
             case (1)
-                select case (s(2, 4))
-                    case (2)
-                        e = matmul(a, matmul(b, matmul(c, d)))
-                    case (3)
-                        e = matmul(a, matmul(matmul(b, c), d))
-                    case default
-                        error stop "stdlib_matmul: unexpected error unexpected s(i,j)"
-                end select
+                r = matmul(m1, matmul(m2, m3)) 
             case (2)
-                e = matmul(matmul(a, b), matmul(c, d))
-            case (3)
-                select case (s(1, 3))
-                    case (1)
-                        e = matmul(matmul(a, matmul(b, c)), d)
-                    case (2)
-                        e = matmul(matmul(matmul(a, b), c), d)
-                    case default
-                        error stop "stdlib_matmul: unexpected error unexpected s(i,j)"
-                end select
+                r = matmul(matmul(m1, m2), m3)
             case default
                 error stop "stdlib_matmul: unexpected error unexpected s(i,j)"
         end select
-    end function stdlib_matmul_${s}$_4
+    end function matmul_chain_mult_${s}$_3
 
-    pure module function stdlib_matmul_${s}$_5 (a, b, c, d, e) result(f)
-        ${t}$, intent(in) :: a(:,:), b(:,:), c(:,:), d(:,:), e(:,:)
-        ${t}$, allocatable :: f(:,:)
-        integer :: p(6), i
-        integer :: s(4,2:5)
+    pure function matmul_chain_mult_${s}$_4 (m1, m2, m3, m4, start, s) result(r)
+        ${t}$, intent(in) :: m1(:,:), m2(:,:), m3(:,:), m4(:,:)
+        integer, intent(in) :: start, s(:,:)
+        ${t}$, allocatable :: r(:,:)
 
-        p(1) = size(a, 1)
-        p(2) = size(b, 1)
-        p(3) = size(c, 1)
-        p(4) = size(d, 1)
-        p(5) = size(e, 1)
-        p(6) = size(e, 2)
-
-        s = matmul_chain_order(p)
-
-        select case (s(1,5))
+        select case (s(start, start + 3))
             case (1)
-                f = matmul(a, stdlib_matmul(b, c, d, e))
+                r = matmul(m1, matmul_chain_mult_${s}$_3(m2, m3, m4, start + 1, s))
             case (2)
-                f = matmul(matmul(a, b), stdlib_matmul(c, d, e))
+                r = matmul(matmul(m1, m2), matmul(m3, m4))
             case (3)
-                f = matmul(stdlib_matmul(a, b ,c), matmul(d, e))
-            case (4)
-                f = matmul(stdlib_matmul(a, b, c, d), e)
+                r = matmul(matmul_chain_mult_${s}$_3(m1, m2, m3, start, s), m4)
             case default
                 error stop "stdlib_matmul: unexpected error unexpected s(i,j)"
         end select
-    end function stdlib_matmul_${s}$_5
+    end function matmul_chain_mult_${s}$_4
 
 #:endfor
 end submodule stdlib_intrinsics_matmul
