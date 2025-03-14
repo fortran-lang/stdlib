@@ -76,11 +76,25 @@ contains
 
         select case (s(1,4))
             case (1)
-                e = matmul(a, stdlib_matmul(b, c, d))
+                select case (s(2, 4))
+                    case (2)
+                        e = matmul(a, matmul(b, matmul(c, d)))
+                    case (3)
+                        e = matmul(a, matmul(matmul(b, c), d))
+                    case default
+                        error stop "stdlib_matmul: unexpected error unexpected s(i,j)"
+                end select
             case (2)
                 e = matmul(matmul(a, b), matmul(c, d))
             case (3)
-                e = matmul(stdlib_matmul(a, b ,c), d)
+                select case (s(1, 3))
+                    case (1)
+                        e = matmul(matmul(a, matmul(b, c)), d)
+                    case (2)
+                        e = matmul(matmul(matmul(a, b), c), d)
+                    case default
+                        error stop "stdlib_matmul: unexpected error unexpected s(i,j)"
+                end select
             case default
                 error stop "stdlib_matmul: unexpected error unexpected s(i,j)"
         end select
