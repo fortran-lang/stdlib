@@ -45,21 +45,33 @@ contains
     module procedure ${RName}$
       ${t1}$ :: exponents(max(n, 0))
       exponents = linspace(start, end, n)
-      res = base ** exponents
+      #: if t1[0] == 'r'
+        res = base ** exponents
+      #: else
+        res = cmplx(base, kind=${k1}$) ** cmplx(exponents, kind=${k1}$)
+      #: endif
     end procedure
 
     #:set RName = rname("logspace", 1, t1, k1, "n_cbase")
     module procedure ${RName}$
       ${t1}$ :: exponents(max(n, 0))
       exponents = linspace(start, end, n)
-      res = base ** exponents
+      #: if t1[0] == 'r'
+        res = real(base ** cmplx(exponents, kind=${k1}$))
+      #: else
+        res = base ** cmplx(exponents, kind=${k1}$)
+      #: endif
     end procedure
 
     #:set RName = rname("logspace", 1, t1, k1, "n_ibase")
     module procedure ${RName}$
       ${t1}$ :: exponents(max(n, 0))
       exponents = linspace(start, end, n)
-      res = base ** exponents
+      #: if t1[0] == 'r'
+        res = base ** exponents
+      #: else
+        res = cmplx(base, kind=${k1}$) ** cmplx(exponents, kind=${k1}$)
+      #: endif
     end procedure
   #:endfor
   #! Integer support:
