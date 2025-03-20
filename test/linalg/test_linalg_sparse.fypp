@@ -25,7 +25,8 @@ contains
             new_unittest('sellc', test_sellc),  &
             new_unittest('symmetries', test_symmetries), &
             new_unittest('diagonal', test_diagonal), &
-            new_unittest('add_get_values', test_add_get_values) &
+            new_unittest('add_get_values', test_add_get_values), & 
+            new_unittest('tridiagonal', test_tridiagonal) &
         ]
     end subroutine
 
@@ -380,6 +381,43 @@ contains
             call check(error, err <= epsilon(0._wp) )
             if (allocated(error)) return
         end block
+        #:endfor
+    end subroutine
+
+    subroutine test_tridiagonal(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        #:if k1 != "qp" and k1 != "xdp"
+        block
+            integer, parameter :: wp = ${k1}$
+            integer, parameter :: n = 5
+            type(Tridiagonal_${s1}$_type) :: A
+            ${t1}$, allocatable :: Amat(:,:), dl(:), dv(:), du(:)
+            ${t1}$, allocatable :: x(:)
+            ${t1}$, allocatable :: y1(:), y2(:)
+
+            ! Initialize matrix.
+            allocate(dl(n-1), dv(n), du(n-1))
+            call random_number(dl) ; call random_number(dv) ; call random_number(du)
+            A = Tridiagonal(dl, dv, du) ; Amat = dense(A)
+
+            ! Random vectors.
+            allocate(x(n), source = 0.0_wp)   ; call random_number(x)
+            allocate(y1(n), source = 0.0_wp)  ; allocate(y2(n), source=0.0_wp)
+
+            ! Test y = A @ x
+            y1 = matmul(Amat, x) ; call spmv(A, x, y2)
+            call check(error, all(y1 == y2))
+            if (allocated(error)) return
+
+            ! Test y = A.T @ x
+            y1 = 0.0_wp ; y2 = 0.0_wp
+            y1 = matmul(transpose(Amat), x) ; call spmv(A, x, y2, op="T")
+            call check(error, all(y1 == y2))
+            if (allocated(error)) return
+        end block
+        #:endif
         #:endfor
     end subroutine
 
