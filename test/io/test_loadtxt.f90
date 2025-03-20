@@ -47,6 +47,10 @@ contains
             call loadtxt('test_int32.txt', expected, fmt='*')
             call check(error, all(input == expected),'User specified list directed read faile')
             if (allocated(error)) return
+            call savetxt('test_int32.txt', input, delimiter=',')
+            call loadtxt('test_int32.txt', expected, delimiter=',')
+            call check(error, all(input == expected),'User specified delimiter read failed')
+            if (allocated(error)) return
         end do
 
     end subroutine test_loadtxt_int32
@@ -73,6 +77,10 @@ contains
             if (allocated(error)) return
             call loadtxt('test_sp.txt', expected, fmt="(*"//FMT_REAL_sp(1:len(FMT_REAL_sp)-1)//",1x))")
             call check(error, all(input == expected),'User specified format failed')
+            if (allocated(error)) return
+            call savetxt('test_sp.txt', input, delimiter=',')
+            call loadtxt('test_sp.txt', expected, delimiter=',')
+            call check(error, all(input == expected),'User specified delimiter read failed')
             if (allocated(error)) return
         end do
 
@@ -157,6 +165,10 @@ contains
             if (allocated(error)) return
             call loadtxt('test_dp.txt', expected, fmt="(*"//FMT_REAL_dp(1:len(FMT_REAL_dp)-1)//",1x))")
             call check(error, all(input == expected),'User specified format failed')
+            if (allocated(error)) return
+            call savetxt('test_dp.txt', input, delimiter=',')
+            call loadtxt('test_dp.txt', expected, delimiter=',')
+            call check(error, all(input == expected),'User specified delimiter read failed')
             if (allocated(error)) return
         end do
 
@@ -270,6 +282,10 @@ contains
             call loadtxt('test_complex.txt', expected)
             call check(error, all(input == expected))
             call loadtxt('test_complex.txt', expected, fmt="(*"//FMT_COMPLEX_dp(1:len(FMT_COMPLEX_dp)-1)//",1x))")
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+            call savetxt('test_complex.txt', input, delimiter=',')
+            call loadtxt('test_complex.txt', expected, delimiter=',')
             call check(error, all(input == expected))
             if (allocated(error)) return
         end do

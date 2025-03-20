@@ -17,7 +17,7 @@ Loads a rank-2 `array` from a text file.
 
 ### Syntax
 
-`call ` [[stdlib_io(module):loadtxt(interface)]] `(filename, array [, skiprows] [, max_rows] [, fmt])`
+`call ` [[stdlib_io(module):loadtxt(interface)]] `(filename, array [, skiprows] [, max_rows] [, fmt] [, delimiter])`
 
 ### Arguments
 
@@ -31,7 +31,7 @@ Loads a rank-2 `array` from a text file.
 
 `fmt` (optional): Fortran format specifier for the text read.  Defaults to the write format for the data type.  Setting fmt='*' will specify list directed read.   
 
-
+`delimiter` (optional): Shall be a character expression of length 1 that contains the delimiter used to separate the columns. The default is `' '`.
 
 ### Return value
 
@@ -105,13 +105,15 @@ Saves a rank-2 `array` into a text file.
 
 ### Syntax
 
-`call ` [[stdlib_io(module):savetxt(interface)]] `(filename, array)`
+`call ` [[stdlib_io(module):savetxt(interface)]] `(filename, array [, delimiter])`
 
 ### Arguments
 
 `filename`: Shall be  a character expression containing the name of the file that will contain the 2D `array`.
 
 `array`: Shall be a rank-2 array of type `real`, `complex` or `integer`.
+
+`delimiter` (optional): Shall be a character expression of length 1 that contains the delimiter used to separate the columns. The default is `' '`.
 
 ### Output
 

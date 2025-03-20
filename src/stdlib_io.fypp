@@ -103,7 +103,7 @@ module stdlib_io
 contains
 
   #:for k1, t1 in KINDS_TYPES
-    subroutine  loadtxt_${t1[0]}$${k1}$(filename, d, skiprows, max_rows, fmt)
+    subroutine  loadtxt_${t1[0]}$${k1}$(filename, d, skiprows, max_rows, fmt, delimiter)
       !! version: experimental
       !!
       !! Loads a 2D array from a text file.
@@ -123,6 +123,7 @@ contains
       !! The default value is -1.
       integer, intent(in), optional :: max_rows
       character(len=*), intent(in), optional :: fmt
+      character(len=1), intent(in), optional :: delimiter
       character(len=:), allocatable :: fmt_
       !!
       !! Example
@@ -157,9 +158,11 @@ contains
 
       ! determine number of columns
       ncol = 0
-      if ( skiprows_ < nrow ) ncol = number_of_columns(s, skiprows=skiprows_)
+      if ( skiprows_ < nrow ) ncol = number_of_columns(s, skiprows=skiprows_, delimiter=delimiter)
       #:if 'complex' in t1
-      ncol = ncol / 2
+      if (present(delimiter)) then
+        if (is_blank(delimiter)) ncol = ncol / 2
+      end if
       #:endif
 
       allocate(d(max_rows_, ncol))
@@ -217,7 +220,7 @@ contains
 
 
   #:for k1, t1 in KINDS_TYPES
-    subroutine savetxt_${t1[0]}$${k1}$(filename, d)
+    subroutine savetxt_${t1[0]}$${k1}$(filename, d, delimiter)
       !! version: experimental
       !!
       !! Saves a 2D array into a text file.
@@ -227,6 +230,7 @@ contains
       !!
       character(len=*), intent(in) :: filename  ! File to save the array to
       ${t1}$, intent(in) :: d(:,:)           ! The 2D array to save
+      character(len=1), intent(in), optional :: delimiter  ! Column delimiter. Default is a space.
       !!
       !! Example
       !! -------
@@ -236,17 +240,27 @@ contains
       !! call savetxt("log.txt", data)
       !!```
       !!
-
+      
       integer :: s, i, ios
+      character(len=1) :: delimiter_
+      character(len=3) :: delim_str
+      character(len=:), allocatable :: fmt_
       character(len=1024) :: iomsg, msgout
+
+      delimiter_ = optval(delimiter, " ")
+      delim_str = "'"//delimiter_//"'"
+      #:if 'real' in t1
+        fmt_ = "(*"//FMT_REAL_${k1}$(1:len(FMT_REAL_${k1}$)-1)//",:,"//delim_str//"))"
+      #:elif 'complex' in t1
+        fmt_ = "(*"//FMT_COMPLEX_${k1}$(1:len(FMT_COMPLEX_${k1}$)-1)//",:,"//delim_str//"))"
+      #:elif 'integer' in t1
+        fmt_ = "(*"//FMT_INT(1:len(FMT_INT)-1)//",:,"//delim_str//"))"
+      #:endif
+
       s = open(filename, "w")
       do i = 1, size(d, 1)
-        #:if 'real' in t1
-          write(s, "(*"//FMT_REAL_${k1}$(1:len(FMT_REAL_${k1}$)-1)//",:,1x))", &
-        #:elif 'complex' in t1
-          write(s, "(*"//FMT_COMPLEX_${k1}$(1:len(FMT_COMPLEX_${k1}$)-1)//",:,1x))", &
-        #:elif 'integer' in t1
-          write(s, "(*"//FMT_INT(1:len(FMT_INT)-1)//",:,1x))", &
+        #:if 'real' in t1 or 'complex' in t1 or 'integer' in t1
+          write(s, fmt_, &
         #:else
           write(s, *, &
         #:endif
@@ -266,19 +280,22 @@ contains
   #:endfor
 
 
-  integer function number_of_columns(s, skiprows)
+  integer function number_of_columns(s, skiprows, delimiter)
     !! version: experimental
     !!
     !! determine number of columns
     integer,intent(in) :: s
     integer, intent(in), optional :: skiprows
+    character(len=1), intent(in), optional :: delimiter
 
     integer :: ios, skiprows_, i
     character :: c
     character(len=:), allocatable :: line
-    logical :: lastblank
+    character(len=1) :: delimiter_
+    logical :: last_delim
 
     skiprows_ = optval(skiprows, 0)
+    delimiter_ = optval(delimiter, " ")
 
     rewind(s)
 
@@ -291,12 +308,23 @@ contains
     call get_line(s, line, ios)
     if (ios/=0 .or. .not.allocated(line)) return
 
-    lastblank = .true.
-    do i = 1,len(line)
-      c = line(i:i)
-      if (lastblank .and. .not. is_blank(c)) number_of_columns = number_of_columns + 1
-      lastblank = is_blank(c)
-    end do
+    last_delim = .true.
+    if (delimiter_ == " ") then
+      do i = 1,len(line)
+        c = line(i:i)
+        if (last_delim .and. .not. is_blank(c)) number_of_columns = number_of_columns + 1
+        last_delim = is_blank(c)
+      end do
+    else
+      do i = 1,len(line)
+        if (line(i:i) == delimiter_) number_of_columns = number_of_columns + 1
+      end do
+      if (number_of_columns == 0) then
+        if (len_trim(line) /= 0) number_of_columns = 1
+      else
+        number_of_columns = number_of_columns + 1
+      end if
+    end if
     rewind(s)
 
   end function number_of_columns
