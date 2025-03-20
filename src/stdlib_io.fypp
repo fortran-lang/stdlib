@@ -125,6 +125,7 @@ contains
       character(len=*), intent(in), optional :: fmt
       character(len=1), intent(in), optional :: delimiter
       character(len=:), allocatable :: fmt_
+      character(len=1) :: delimiter_
       !!
       !! Example
       !! -------
@@ -148,6 +149,7 @@ contains
 
       skiprows_ = max(optval(skiprows, 0), 0)
       max_rows_ = optval(max_rows, -1)
+      delimiter_ = optval(delimiter, " ")
 
       s = open(filename)
 
@@ -158,11 +160,9 @@ contains
 
       ! determine number of columns
       ncol = 0
-      if ( skiprows_ < nrow ) ncol = number_of_columns(s, skiprows=skiprows_, delimiter=delimiter)
+      if ( skiprows_ < nrow ) ncol = number_of_columns(s, skiprows=skiprows_, delimiter=delimiter_)
       #:if 'complex' in t1
-      if (present(delimiter)) then
-        if (is_blank(delimiter)) ncol = ncol / 2
-      end if
+      if (is_blank(delimiter_)) ncol = ncol / 2
       #:endif
 
       allocate(d(max_rows_, ncol))
