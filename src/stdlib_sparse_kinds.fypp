@@ -13,6 +13,7 @@ module stdlib_sparse_kinds
     private
     public :: sparse_full, sparse_lower, sparse_upper
     public :: sparse_op_none, sparse_op_transpose, sparse_op_hermitian
+    public :: Tridiagonal, dense
     !! version: experimental
     !!
     !! Base sparse type holding the meta data related to the storage capacity of a matrix.
@@ -127,6 +128,81 @@ module stdlib_sparse_kinds
         generic :: add => add_value, add_block
     end type
     #:endfor
+
+    !------------------------------------------------------
+    !-----                                            -----
+    !-----     Tridiagonal matrix implementations     -----
+    !-----                                            -----
+    !------------------------------------------------------
+
+    !! version: experimental
+    !!
+    !! Tridiagonal matrix
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    type, public, extends(sparse_type) :: Tridiagonal_${s1}$_type
+        ${t1}$, allocatable :: dl(:), dv(:), du(:)
+    end type
+    #:endfor
+
+    interface Tridiagonal
+        !! This interface provides different methods to construct a
+        !! `Tridiagonal` matrix. Only the non-zero elements of \( A \) are
+        !! stored, i.e.
+        !!
+        !! \[
+        !!    A
+        !!    =
+        !!    \begin{bmatrix}
+        !!       a_1   &  b_1  \\
+        !!       c_1  &  a_2      &  b_2  \\
+        !!             &  \ddots   &  \ddots   &  \ddots   \\
+        !!             &           &  c_{n-2} &  a_{n-1}  &  b_{n-1} \\
+        !!             &           &           &  c_{n-1} &  a_n
+        !!    \end{bmatrix}.
+        !! \]
+        !!
+        !! #### Syntax
+        !!
+        !! - Construct a real `Tridiagonal` matrix from rank-1 arrays:
+        !!
+        !! ```fortran
+        !!    integer, parameter :: n
+        !!    real(dp), allocatable :: dl(:), dv(:), du(:)
+        !!    type(Tridiagonal_rdp_type) :: A
+        !!    integer :: i
+        !!
+        !!    dl = [(i, i=1, n-1)]; dv = [(2*i, i=1, n)]; du = [(3*i, i=1, n)]
+        !!    A = Tridiagonal(dl, dv, du)
+        !! ```
+        !!
+        !! - Construct a real `Tridiagonal` matrix with constant diagonals:
+        !!
+        !! ```fortran
+        !!    integer, parameter :: n
+        !!    real(dp), parameter :: a = 1.0_dp, b = 1.0_dp, c = 2.0_dp
+        !!    type(Tridiagonal_rdp_type) :: A
+        !!
+        !!    A = Tridiagonal(a, b, c, n)
+        !! ```
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        module procedure initialize_tridiagonal_${s1}$
+        module procedure initialize_constant_tridiagonal_${s1}$
+        #:endfor
+    end interface
+
+    interface dense
+        !! This interface provides methods to convert a `Tridiagonal` matrix
+        !! to a regular rank-2 array.
+        !!
+        !! #### Syntax
+        !!
+        !! ```fortran
+        !!    B = dense(A)
+        !! ```
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        module procedure tridiagonal_to_dense_${s1}$
+        #:endfor
+    end interface
 
 contains
 
@@ -588,6 +664,78 @@ contains
         end do
     end subroutine
 
+    #:endfor
+
+    !------------------------------------------------------
+    !-----                                            -----
+    !-----     Tridiagonal matrix implementations     -----
+    !-----                                            -----
+    !------------------------------------------------------
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    pure function initialize_tridiagonal_${s1}$(dl, dv, du) result(A)
+        !! Construct a `Tridiagonal` matrix from the rank-1 arrays
+        !! `dl`, `dv` and `du`.
+        ${t1}$, intent(in) :: dl(:), dv(:), du(:)
+        !! Tridiagonal matrix elements.
+        type(Tridiagonal_${s1}$_type) :: A
+        !! Corresponding Tridiagonal matrix.
+
+        ! Internal variables.
+        integer(ilp) :: n
+
+        ! Sanity check.
+        n = size(dv)
+        if (size(dl) /= n-1) error stop "Vector dl does not have the correct length."
+        if (size(du) /= n-1) error stop "Vector du does not have the correct length."
+
+        ! Description of the matrix.
+        A%nrows = n ; A%ncols = n ; A%nnz = n + 2*(n-1)
+        ! Matrix elements.
+        A%dl = dl ; A%dv = dv ; A%du = du
+    end function
+
+    pure function initialize_constant_tridiagonal_${s1}$(dl, dv, du, n) result(A)
+        !! Construct a `Tridiagonal` matrix with constant elements.
+        ${t1}$, intent(in) :: dl, dv, du
+        !! Tridiagonal matrix elements.
+        integer(ilp), intent(in) :: n
+        !! Matrix dimension.
+        type(Tridiagonal_${s1}$_type) :: A
+        !! Corresponding Tridiagonal matrix.
+
+        ! Internal variables.
+        integer(ilp) :: i
+
+        ! Description of the matrix.
+        A%nrows = n ; A%ncols = n ; A%nnz = n + 2*(n-1)
+        ! Matrix elements.
+        A%dl = [(dl, i = 1, n-1)]
+        A%dv = [(dv, i = 1, n)]
+        A%du = [(du, i = 1, n-1)]
+    end function
+
+    pure function tridiagonal_to_dense_${s1}$(A) result(B)
+        !! Convert a `Tridiagonal` matrix to its dense representation.
+        type(Tridiagonal_${s1}$_type), intent(in) :: A
+        !! Input Tridiagonal matrix.
+        ${t1}$, allocatable :: B(:, :)
+        !! Corresponding dense matrix.
+
+        ! Internal variables.
+        integer(ilp) :: i
+
+        associate (n => A%nrows)
+        allocate(B(n, n)) ; B = 0.0_${k1}$
+        B(1, 1) = A%dv(1) ; B(1, 2) = A%du(1)
+        do concurrent (i=2:n-1)
+            B(i, i-1) = A%dl(i-1)
+            B(i, i) = A%dv(i)
+            B(i, i+1) = A%du(i)
+        enddo
+        B(n, n-1) = A%dl(n-1) ; B(n, n) = A%dv(n)
+        end associate
+    end function
     #:endfor
     
 end module stdlib_sparse_kinds
