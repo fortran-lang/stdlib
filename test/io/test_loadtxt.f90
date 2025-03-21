@@ -49,7 +49,11 @@ contains
             if (allocated(error)) return
             call savetxt('test_int32.txt', input, delimiter=',')
             call loadtxt('test_int32.txt', expected, delimiter=',')
-            call check(error, all(input == expected),'User specified delimiter read failed')
+            call check(error, all(input == expected),'User specified delimiter `,` read failed')
+            if (allocated(error)) return
+            call savetxt('test_int32.txt', input, delimiter='-')
+            call loadtxt('test_int32.txt', expected, delimiter='-')
+            call check(error, all(input == expected),'User specified delimiter `-` read failed')
             if (allocated(error)) return
         end do
 
@@ -80,7 +84,11 @@ contains
             if (allocated(error)) return
             call savetxt('test_sp.txt', input, delimiter=',')
             call loadtxt('test_sp.txt', expected, delimiter=',')
-            call check(error, all(input == expected),'User specified delimiter read failed')
+            call check(error, all(input == expected),'User specified delimiter `,` read failed')
+            if (allocated(error)) return
+            call savetxt('test_sp.txt', input, delimiter=';')
+            call loadtxt('test_sp.txt', expected, delimiter=';')
+            call check(error, all(input == expected),'User specified delimiter `;` read failed')
             if (allocated(error)) return
         end do
 
@@ -286,6 +294,10 @@ contains
             if (allocated(error)) return
             call savetxt('test_complex.txt', input, delimiter=',')
             call loadtxt('test_complex.txt', expected, delimiter=',')
+            call check(error, all(input == expected))
+            if (allocated(error)) return
+            call savetxt('test_complex.txt', input, delimiter=';')
+            call loadtxt('test_complex.txt', expected, delimiter=';')
             call check(error, all(input == expected))
             if (allocated(error)) return
         end do
