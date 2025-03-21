@@ -460,13 +460,13 @@ contains
     select case (mode_(3:3))
     case('t')
       form_='formatted'
+      access_='sequential'
     case('b')
       form_='unformatted'
+      access_ = 'stream'
     case default
       call error_stop("Unsupported mode: "//mode_(3:3))
     end select
-
-    access_ = 'stream'
 
     if (present(iostat)) then
       open(newunit=u, file=filename, &

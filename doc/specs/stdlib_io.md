@@ -52,7 +52,8 @@ Experimental
 
 ### Description
 
-Returns the unit number of a file opened to read, to write, or to read and write. The file might be a text file or a binary file. All files are opened using a streamed access.
+Returns the unit number of a file opened to read, to write, or to read and write. The file might be a text file or a binary file.
+Text files are opened using a sequential access, while binary files are opened using a streamed access.
 
 ### Syntax
 
