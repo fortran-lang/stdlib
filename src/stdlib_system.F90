@@ -93,8 +93,8 @@ public :: is_windows
 !!
 !!### Description
 !! 
-!! This function checks if a given file system path is a directory. It is cross-platform and avoids reliance 
-!! on external C libraries by utilizing system calls. It supports common operating systems such as Linux, macOS, 
+!! This function checks if a given file system path is a directory. It is cross-platform and utilizes
+!! native system calls. It supports common operating systems such as Linux, macOS, 
 !! Windows, and various UNIX-like environments. On unsupported operating systems, the function will return `.false.`.
 !!
 public :: is_directory
