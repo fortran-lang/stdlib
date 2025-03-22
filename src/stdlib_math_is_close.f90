@@ -19,7 +19,7 @@ contains
         equal_nan_ = optval(equal_nan, .false.)
         
         if (ieee_is_nan(a) .or. ieee_is_nan(b)) then
-            close = merge(.true., .false., equal_nan_ .and. ieee_is_nan(a) .and. ieee_is_nan(b))
+            close = equal_nan_ .and. ieee_is_nan(a) .and. ieee_is_nan(b)
         else
             close = abs(a - b) <= max( abs(optval(rel_tol, sqrt_eps_sp)*max(abs(a), abs(b))), &
                                        abs(optval(abs_tol, 0.0_sp)) )
@@ -35,7 +35,7 @@ contains
         equal_nan_ = optval(equal_nan, .false.)
         
         if (ieee_is_nan(a) .or. ieee_is_nan(b)) then
-            close = merge(.true., .false., equal_nan_ .and. ieee_is_nan(a) .and. ieee_is_nan(b))
+            close = equal_nan_ .and. ieee_is_nan(a) .and. ieee_is_nan(b)
         else
             close = abs(a - b) <= max( abs(optval(rel_tol, sqrt_eps_dp)*max(abs(a), abs(b))), &
                                        abs(optval(abs_tol, 0.0_dp)) )
