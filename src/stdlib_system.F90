@@ -1,7 +1,8 @@
 module stdlib_system
 use, intrinsic :: iso_c_binding, only : c_int, c_long, c_ptr, c_null_ptr, c_int64_t, c_size_t, &
     c_f_pointer
-use stdlib_kinds, only: int64, dp, c_char
+use stdlib_kinds, only: int64, dp, c_bool, c_char
+use stdlib_strings, only: to_c_char
 implicit none
 private
 public :: sleep
@@ -82,6 +83,22 @@ public :: kill
 public :: elapsed
 public :: is_windows
      
+!! version: experimental
+!!
+!! Tests if a given path matches an existing directory.
+!! ([Specification](../page/specs/stdlib_io.html#is_directory-test-if-a-path-is-a-directory))
+!!
+!!### Summary
+!! Function to evaluate whether a specified path corresponds to an existing directory.
+!!
+!!### Description
+!! 
+!! This function checks if a given file system path is a directory. It is cross-platform and utilizes
+!! native system calls. It supports common operating systems such as Linux, macOS, 
+!! Windows, and various UNIX-like environments. On unsupported operating systems, the function will return `.false.`.
+!!
+public :: is_directory
+  
 !! version: experimental
 !!
 !! Returns the file path of the null device, which discards all data written to it.
@@ -635,6 +652,25 @@ pure function OS_NAME(os)
         case default     ; OS_NAME =  "Unknown"
     end select
 end function OS_NAME
+
+!! Tests if a given path matches an existing directory.
+!! Cross-platform implementation without using external C libraries.
+logical function is_directory(path)
+    !> Input path to evaluate
+    character(*), intent(in) :: path
+
+    interface
+        
+        logical(c_bool) function stdlib_is_directory(path) bind(c, name="stdlib_is_directory")
+            import c_bool, c_char
+            character(kind=c_char), intent(in) :: path(*)
+        end function stdlib_is_directory
+
+    end interface        
+    
+    is_directory = logical(stdlib_is_directory(to_c_char(trim(path))))
+    
+end function is_directory
 
 !> Returns the file path of the null device for the current operating system.
 !>
