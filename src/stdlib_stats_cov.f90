@@ -516,7 +516,7 @@ contains
         case(1)
           do i = 1, size(res, 2)
             do j = 1, size(res, 1)
-             mask_ = merge(.true., .false., mask(:, i) .and. mask(:, j))
+             mask_ = mask(:, i) .and. mask(:, j)
              centeri_ = merge( x(:, i) - mean(x(:, i), mask = mask_),&
                 0._sp,&
                 mask_)
@@ -533,7 +533,7 @@ contains
         case(2)
           do i = 1, size(res, 2)
             do j = 1, size(res, 1)
-             mask_ = merge(.true., .false., mask(i, :) .and. mask(j, :))
+             mask_ = mask(i, :) .and. mask(j, :)
              centeri_ = merge( x(i, :) - mean(x(i, :), mask = mask_),&
                 0._sp,&
                 mask_)
@@ -569,7 +569,7 @@ contains
         case(1)
           do i = 1, size(res, 2)
             do j = 1, size(res, 1)
-             mask_ = merge(.true., .false., mask(:, i) .and. mask(:, j))
+             mask_ = mask(:, i) .and. mask(:, j)
              centeri_ = merge( x(:, i) - mean(x(:, i), mask = mask_),&
                 0._dp,&
                 mask_)
@@ -586,7 +586,7 @@ contains
         case(2)
           do i = 1, size(res, 2)
             do j = 1, size(res, 1)
-             mask_ = merge(.true., .false., mask(i, :) .and. mask(j, :))
+             mask_ = mask(i, :) .and. mask(j, :)
              centeri_ = merge( x(i, :) - mean(x(i, :), mask = mask_),&
                 0._dp,&
                 mask_)
@@ -622,7 +622,7 @@ contains
         case(1)
           do i = 1, size(res, 2)
             do j = 1, size(res, 1)
-             mask_ = merge(.true., .false., mask(:, i) .and. mask(:, j))
+             mask_ = mask(:, i) .and. mask(:, j)
              centeri_ = merge( x(:, i) - mean(x(:, i), mask = mask_),&
                 cmplx(0,0,kind=sp),&
                 mask_)
@@ -639,7 +639,7 @@ contains
         case(2)
           do i = 1, size(res, 2)
             do j = 1, size(res, 1)
-             mask_ = merge(.true., .false., mask(i, :) .and. mask(j, :))
+             mask_ = mask(i, :) .and. mask(j, :)
              centeri_ = merge( x(i, :) - mean(x(i, :), mask = mask_),&
                 cmplx(0,0,kind=sp),&
                 mask_)
@@ -675,7 +675,7 @@ contains
         case(1)
           do i = 1, size(res, 2)
             do j = 1, size(res, 1)
-             mask_ = merge(.true., .false., mask(:, i) .and. mask(:, j))
+             mask_ = mask(:, i) .and. mask(:, j)
              centeri_ = merge( x(:, i) - mean(x(:, i), mask = mask_),&
                 cmplx(0,0,kind=dp),&
                 mask_)
@@ -692,7 +692,7 @@ contains
         case(2)
           do i = 1, size(res, 2)
             do j = 1, size(res, 1)
-             mask_ = merge(.true., .false., mask(i, :) .and. mask(j, :))
+             mask_ = mask(i, :) .and. mask(j, :)
              centeri_ = merge( x(i, :) - mean(x(i, :), mask = mask_),&
                 cmplx(0,0,kind=dp),&
                 mask_)
@@ -730,11 +730,9 @@ contains
         case(1)
           do i = 1, size(res, 2)
             do j = 1, size(res, 1)
-              mask_ = merge(.true., .false., mask(:, i) .and. mask(:, j))
-              centeri_ = merge( x(:, i) - mean(x(:, i), mask = mask_),&
-                 0._dp, mask_)
-              centerj_ = merge( x(:, j) - mean(x(:, j), mask = mask_),&
-                 0._dp, mask_)
+              mask_ = mask(:, i) .and. mask(:, j)
+              centeri_ = merge( x(:, i) - mean(x(:, i), mask = mask_),0._dp, mask_)
+              centerj_ = merge( x(:, j) - mean(x(:, j), mask = mask_),0._dp, mask_)
 
               n = count(mask_)
               res(j, i) = dot_product( centerj_, centeri_)&
@@ -745,11 +743,9 @@ contains
         case(2)
           do i = 1, size(res, 2)
             do j = 1, size(res, 1)
-              mask_ = merge(.true., .false., mask(i, :) .and. mask(j, :))
-              centeri_ = merge( x(i, :) - mean(x(i, :), mask = mask_),&
-                 0._dp, mask_)
-              centerj_ = merge( x(j, :) - mean(x(j, :), mask = mask_),&
-                 0._dp, mask_)
+              mask_ = mask(i, :) .and. mask(j, :)
+              centeri_ = merge( x(i, :) - mean(x(i, :), mask = mask_),0._dp, mask_)
+              centerj_ = merge( x(j, :) - mean(x(j, :), mask = mask_),0._dp, mask_)
 
               n = count(mask_)
               res(j, i) = dot_product( centeri_, centerj_)&
@@ -779,11 +775,9 @@ contains
         case(1)
           do i = 1, size(res, 2)
             do j = 1, size(res, 1)
-              mask_ = merge(.true., .false., mask(:, i) .and. mask(:, j))
-              centeri_ = merge( x(:, i) - mean(x(:, i), mask = mask_),&
-                 0._dp, mask_)
-              centerj_ = merge( x(:, j) - mean(x(:, j), mask = mask_),&
-                 0._dp, mask_)
+              mask_ = mask(:, i) .and. mask(:, j)
+              centeri_ = merge( x(:, i) - mean(x(:, i), mask = mask_),0._dp, mask_)
+              centerj_ = merge( x(:, j) - mean(x(:, j), mask = mask_),0._dp, mask_)
 
               n = count(mask_)
               res(j, i) = dot_product( centerj_, centeri_)&
@@ -794,11 +788,9 @@ contains
         case(2)
           do i = 1, size(res, 2)
             do j = 1, size(res, 1)
-              mask_ = merge(.true., .false., mask(i, :) .and. mask(j, :))
-              centeri_ = merge( x(i, :) - mean(x(i, :), mask = mask_),&
-                 0._dp, mask_)
-              centerj_ = merge( x(j, :) - mean(x(j, :), mask = mask_),&
-                 0._dp, mask_)
+              mask_ = mask(i, :) .and. mask(j, :)
+              centeri_ = merge( x(i, :) - mean(x(i, :), mask = mask_),0._dp, mask_)
+              centerj_ = merge( x(j, :) - mean(x(j, :), mask = mask_),0._dp, mask_)
 
               n = count(mask_)
               res(j, i) = dot_product( centeri_, centerj_)&
@@ -828,11 +820,9 @@ contains
         case(1)
           do i = 1, size(res, 2)
             do j = 1, size(res, 1)
-              mask_ = merge(.true., .false., mask(:, i) .and. mask(:, j))
-              centeri_ = merge( x(:, i) - mean(x(:, i), mask = mask_),&
-                 0._dp, mask_)
-              centerj_ = merge( x(:, j) - mean(x(:, j), mask = mask_),&
-                 0._dp, mask_)
+              mask_ = mask(:, i) .and. mask(:, j)
+              centeri_ = merge( x(:, i) - mean(x(:, i), mask = mask_),0._dp, mask_)
+              centerj_ = merge( x(:, j) - mean(x(:, j), mask = mask_),0._dp, mask_)
 
               n = count(mask_)
               res(j, i) = dot_product( centerj_, centeri_)&
@@ -843,11 +833,9 @@ contains
         case(2)
           do i = 1, size(res, 2)
             do j = 1, size(res, 1)
-              mask_ = merge(.true., .false., mask(i, :) .and. mask(j, :))
-              centeri_ = merge( x(i, :) - mean(x(i, :), mask = mask_),&
-                 0._dp, mask_)
-              centerj_ = merge( x(j, :) - mean(x(j, :), mask = mask_),&
-                 0._dp, mask_)
+              mask_ = mask(i, :) .and. mask(j, :)
+              centeri_ = merge( x(i, :) - mean(x(i, :), mask = mask_),0._dp, mask_)
+              centerj_ = merge( x(j, :) - mean(x(j, :), mask = mask_),0._dp, mask_)
 
               n = count(mask_)
               res(j, i) = dot_product( centeri_, centerj_)&
@@ -877,11 +865,9 @@ contains
         case(1)
           do i = 1, size(res, 2)
             do j = 1, size(res, 1)
-              mask_ = merge(.true., .false., mask(:, i) .and. mask(:, j))
-              centeri_ = merge( x(:, i) - mean(x(:, i), mask = mask_),&
-                 0._dp, mask_)
-              centerj_ = merge( x(:, j) - mean(x(:, j), mask = mask_),&
-                 0._dp, mask_)
+              mask_ = mask(:, i) .and. mask(:, j)
+              centeri_ = merge( x(:, i) - mean(x(:, i), mask = mask_),0._dp, mask_)
+              centerj_ = merge( x(:, j) - mean(x(:, j), mask = mask_),0._dp, mask_)
 
               n = count(mask_)
               res(j, i) = dot_product( centerj_, centeri_)&
@@ -892,11 +878,9 @@ contains
         case(2)
           do i = 1, size(res, 2)
             do j = 1, size(res, 1)
-              mask_ = merge(.true., .false., mask(i, :) .and. mask(j, :))
-              centeri_ = merge( x(i, :) - mean(x(i, :), mask = mask_),&
-                 0._dp, mask_)
-              centerj_ = merge( x(j, :) - mean(x(j, :), mask = mask_),&
-                 0._dp, mask_)
+              mask_ = mask(i, :) .and. mask(j, :)
+              centeri_ = merge( x(i, :) - mean(x(i, :), mask = mask_),0._dp, mask_)
+              centerj_ = merge( x(j, :) - mean(x(j, :), mask = mask_),0._dp, mask_)
 
               n = count(mask_)
               res(j, i) = dot_product( centeri_, centerj_)&
