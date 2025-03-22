@@ -146,6 +146,30 @@ module stdlib_intrinsics
         #:endfor
     end interface
     public :: kahan_kernel
+
+    interface stdlib_matmul
+        !! version: experimental
+        !!
+        !!### Summary
+        !! compute the matrix multiplication of more than two matrices with a single function call.
+        !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_matmul))
+        !!
+        !!### Description
+        !!
+        !! matrix multiply more than two matrices with a single function call
+        !! the multiplication with the optimal parenthesization for efficiency of computation is done automatically
+        !! Supported data types are `real` and `complex`.
+        !!
+        !! Note: The matrices must be of compatible shapes to be multiplied
+        #:for k, t, s in R_KINDS_TYPES + C_KINDS_TYPES
+            pure module function stdlib_matmul_${s}$ (m1, m2, m3, m4, m5) result(r)
+                ${t}$, intent(in) :: m1(:,:), m2(:,:)
+                ${t}$, intent(in), optional :: m3(:,:), m4(:,:), m5(:,:)
+                ${t}$, allocatable :: r(:,:)
+            end function stdlib_matmul_${s}$
+        #:endfor
+    end interface stdlib_matmul
+    public :: stdlib_matmul
     
 contains
 
