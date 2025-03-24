@@ -32,14 +32,14 @@ set(fppFiles
     stdlib_linalg_kronecker.fypp
     stdlib_linalg_cross_product.fypp
     stdlib_linalg_eigenvalues.fypp
-    stdlib_linalg_solve.fypp    
+    stdlib_linalg_solve.fypp
     stdlib_linalg_determinant.fypp
     stdlib_linalg_qr.fypp
     stdlib_linalg_inverse.fypp
     stdlib_linalg_pinv.fypp
     stdlib_linalg_norms.fypp
     stdlib_linalg_state.fypp
-    stdlib_linalg_svd.fypp 
+    stdlib_linalg_svd.fypp
     stdlib_linalg_cholesky.fypp
     stdlib_linalg_schur.fypp
     stdlib_optval.fypp
@@ -52,6 +52,8 @@ set(fppFiles
     stdlib_sparse_conversion.fypp
     stdlib_sparse_kinds.fypp
     stdlib_sparse_spmv.fypp
+    stdlib_specialmatrices_tridiagonal.fypp
+    stdlib_specialmatrices.fypp
     stdlib_specialfunctions_gamma.fypp
     stdlib_stats.fypp
     stdlib_stats_corr.fypp
