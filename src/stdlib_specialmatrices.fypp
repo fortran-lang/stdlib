@@ -7,7 +7,7 @@ module stdlib_specialmatrices
     !! Provides derived-types and associated specialized linear algebra drivers
     !! for highly-structured matrices commonly encountered in the discretization
     !! of partial differential equations, as well as control and signal processing
-    !! applications. ([Specifications]](../page/specs/stdlib_specialmatrices.html))
+    !! applications. ([Specifications](../page/specs/stdlib_specialmatrices.html))
     use stdlib_linalg_constants
     implicit none
     private
