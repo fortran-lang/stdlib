@@ -1,0 +1,133 @@
+#:include "common.fypp"
+
+#:set INT_TYPES_ALT_NAME = list(zip(INT_TYPES, INT_TYPES, INT_KINDS))
+#:set REAL_TYPES_ALT_NAME = list(zip(REAL_TYPES, REAL_TYPES, REAL_KINDS))
+#:set STRING_TYPES_ALT_NAME = list(zip(STRING_TYPES, STRING_TYPES, STRING_KINDS))
+#:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"], ["character(len=len(array))"], ["char"]))
+#:set COMPLEX_TYPES_ALT_NAME = list(zip(CMPLX_TYPES, CMPLX_TYPES, CMPLX_KINDS))
+
+#! For better code reuse in fypp, make lists that contain the input types,
+#! with each having output types and a separate name prefix for subroutines
+#! This approach allows us to have the same code for all input types.
+#:set IRSC_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME + COMPLEX_TYPES_ALT_NAME
+
+!! Licensing:
+!!
+!! This file is subject to the Fortran Standard Library license.
+!!
+!! The Fortran Standard Library, including this file, is distributed under
+!! the MIT license that should be included with the library's distribution.
+!!
+!!   Copyright (c) 2024 Fortran stdlib developers
+!!
+!!   Permission is hereby granted, free of charge, to any person obtaining a
+!!   copy of this software and associated documentation files (the
+!!   "Software"),  to deal in the Software without restriction, including
+!!   without limitation the rights to use, copy, modify, merge, publish,
+!!   distribute, sublicense, and/or sellcopies of the Software, and to permit
+!!   persons to whom the Software is furnished to do so, subject to the
+!!   following conditions:
+!!
+!!   The above copyright notice and this permission notice shall be included
+!!   in all copies or substantial portions of the Software.
+!!
+!!   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+!!   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+!!   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+!!   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+!!   CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+!!   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+!!   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+module stdlib_sorting_unique
+!! This module implements overloaded unique functions that can be used to extract
+!! unique values from arrays of various types: integer, real, complex, character, 
+!! and string_type.
+!! ([Specification](../page/specs/stdlib_sorting_unique.html))
+!!
+!! By default, the output array is not sorted, but this can be changed
+!! with the optional parameter `sorted`. When sorted, the output will
+!! be in order of increasing value. All functions have worst case 
+!! run time performance of `O(N Ln(N))` due to the sorting step.
+
+    use stdlib_kinds, only: &
+        int8,               &
+        int16,              &
+        int32,              &
+        int64,              &
+        sp,                 &
+        dp,                 &
+        xdp,                &
+        qp,                 &
+        lk
+
+    use stdlib_sorting, only: sort
+
+    use stdlib_optval, only: optval
+
+    use stdlib_string_type, only: string_type, assignment(=), operator(==)
+
+    implicit none
+    private
+
+    public :: unique
+    
+    interface unique
+!! Version: experimental
+!!
+!! The generic function implementing the `unique` algorithm to return
+!! a new array containing only the unique values from the input array.
+!! Its use has the syntax:
+!!
+!!     result = unique(array[, sorted])
+!!
+!! with the arguments:
+!!
+!! * array: the rank 1 array from which to extract unique values. It is an `intent(in)`
+!!   argument of any of the types `integer(int8)`, `integer(int16)`,
+!!   `integer(int32)`, `integer(int64)`, `real(real32)`, `real(real64)`,
+!!   `real(real128)`, `complex(real32)`, `complex(real64)`, `complex(real128)`,
+!!   `character(*)`, or `type(string_type)`.
+!!
+!! * sorted (optional): shall be a scalar of type default logical. It
+!!   is an `intent(in)` argument. If present with a value of `.true.` then
+!!   the returned array will be sorted in order of non-decreasing values.
+!!   Otherwise the order is unspecified, but generally reflects the order of
+!!   first appearance of each unique value in the input array.
+!!
+!!#### Example
+!!
+!!```fortran
+!!    ...
+!!    ! Extract unique values from an array
+!!    integer :: x(5) = [1, 2, 3, 3, 4]
+!!    integer, allocatable :: y(:)
+!!    
+!!    y = unique(x)      ! y will be [1, 2, 3, 4]
+!!    
+!!    ! Use with optional sorted argument
+!!    real :: a(8) = [3.1, 2.5, 7.2, 3.1, 2.5, 8.0, 7.2, 9.5] 
+!!    real, allocatable :: b(:)
+!!    
+!!    b = unique(a, sorted=.true.)  ! b will be [2.5, 3.1, 7.2, 8.0, 9.5]
+!!    ...
+!!```
+
+#:for t1, t2, name1 in IRSC_TYPES_ALT_NAME
+        pure module function ${name1}$_unique(array, sorted) result(unique_values)
+!! Version: experimental
+!!
+!! `${name1}$_unique(array, sorted)` returns an array of unique values
+!! from the input `array` of type `${t1}$`. If the optional argument `sorted`
+!! is present with value `.true.`, the returned array will be sorted.
+            ${t1}$, intent(in) :: array(:)
+            logical(lk), intent(in), optional :: sorted
+            ${t2}$, allocatable :: unique_values(:)
+        end function ${name1}$_unique
+#:endfor
+
+    end interface unique
+
+contains
+
+end module stdlib_sorting_unique 
