@@ -1,11 +1,14 @@
 #:include "common.fypp"
 #:set R_KINDS_TYPES = [KT for KT in REAL_KINDS_TYPES if KT[0] in ["sp","dp"]]
-#:set C_KINDS_TYPES = [KT for KT in CMPLX_KINDS_TYPES if KT[0] in ["sp","dp"]]
-#:set CI_KINDS_TYPES = INT_KINDS_TYPES + C_KINDS_TYPES
+#:set CR_KINDS_TYPES = [KT + KT2 for KT in CMPLX_KINDS_TYPES if KT[0] == "sp" for KT2 in REAL_KINDS_TYPES if KT2[0] == "dp"]
+#:set RR_KINDS_TYPES = [KT + KT2 for KT in REAL_KINDS_TYPES if KT[0] == "sp" for KT2 in REAL_KINDS_TYPES if KT2[0] == "dp"]
+#:if WITH_QP
+  #:set CR_KINDS_TYPES = CR_KINDS_TYPES + [KT + KT2 for KT in CMPLX_KINDS_TYPES if KT[0] == "dp" for KT2 in REAL_KINDS_TYPES if KT2[0] == "qp"]
+  #:set RR_KINDS_TYPES = RR_KINDS_TYPES + [KT + KT2 for KT in REAL_KINDS_TYPES if KT[0] == "dp" for KT2 in REAL_KINDS_TYPES if KT2[0] == "qp"]
+#:endif
 module stdlib_specialfunctions_gamma
-    use iso_fortran_env, only : qp => real128
     use ieee_arithmetic, only: ieee_value, ieee_quiet_nan
-    use stdlib_kinds, only :  sp, dp, int8, int16, int32, int64
+    use stdlib_kinds, only :  sp, dp, qp, int8, int16, int32, int64
     use stdlib_error, only : error_stop
 
     implicit none
@@ -19,7 +22,9 @@ module stdlib_specialfunctions_gamma
     #:for k1, t1 in R_KINDS_TYPES
     ${t1}$, parameter :: tol_${k1}$ = epsilon(1.0_${k1}$)
     #:endfor
+    #:if WITH_QP
     real(qp), parameter :: tol_qp = epsilon(1.0_qp)
+    #:endif
 
 
 
@@ -33,7 +38,7 @@ module stdlib_specialfunctions_gamma
     interface gamma
     !! Gamma function for integer and complex numbers
     !!
-        #:for k1, t1 in CI_KINDS_TYPES
+        #:for k1, t1 in INT_KINDS_TYPES + CR_KINDS_TYPES
         module procedure gamma_${t1[0]}$${k1}$
         #:endfor
     end interface gamma
@@ -43,7 +48,7 @@ module stdlib_specialfunctions_gamma
     interface log_gamma
     !! Logarithm of gamma function
     !!
-        #:for k1, t1 in CI_KINDS_TYPES
+        #:for k1, t1 in INT_KINDS_TYPES + CR_KINDS_TYPES
         module procedure l_gamma_${t1[0]}$${k1}$
         #:endfor
     end interface log_gamma
@@ -69,7 +74,7 @@ module stdlib_specialfunctions_gamma
           #:endfor
         #:endfor
 
-        #:for k1, t1 in R_KINDS_TYPES
+        #:for k1, t1 in RR_KINDS_TYPES
         module procedure ingamma_low_${t1[0]}$${k1}$
         #:endfor
     end interface lower_incomplete_gamma
@@ -85,7 +90,7 @@ module stdlib_specialfunctions_gamma
           #:endfor
         #:endfor
 
-        #:for k1, t1 in R_KINDS_TYPES
+        #:for k1, t1 in RR_KINDS_TYPES
         module procedure l_ingamma_low_${t1[0]}$${k1}$
         #:endfor
     end interface log_lower_incomplete_gamma
@@ -101,7 +106,7 @@ module stdlib_specialfunctions_gamma
           #:endfor
         #:endfor
 
-        #:for k1, t1 in R_KINDS_TYPES
+        #:for k1, t1 in RR_KINDS_TYPES
         module procedure ingamma_up_${t1[0]}$${k1}$
         #:endfor
     end interface upper_incomplete_gamma
@@ -117,7 +122,7 @@ module stdlib_specialfunctions_gamma
           #:endfor
         #:endfor
 
-        #:for k1, t1 in R_KINDS_TYPES
+        #:for k1, t1 in RR_KINDS_TYPES
         module procedure l_ingamma_up_${t1[0]}$${k1}$
         #:endfor
     end interface log_upper_incomplete_gamma
@@ -133,7 +138,7 @@ module stdlib_specialfunctions_gamma
           #:endfor
         #:endfor
 
-        #:for k1, t1 in R_KINDS_TYPES
+        #:for k1, t1 in RR_KINDS_TYPES
         module procedure regamma_p_${t1[0]}$${k1}$
         #:endfor
     end interface regularized_gamma_p
@@ -149,7 +154,7 @@ module stdlib_specialfunctions_gamma
           #:endfor
         #:endfor
 
-        #:for k1, t1 in R_KINDS_TYPES
+        #:for k1, t1 in RR_KINDS_TYPES
         module procedure regamma_q_${t1[0]}$${k1}$
         #:endfor
     end interface regularized_gamma_q
@@ -160,7 +165,7 @@ module stdlib_specialfunctions_gamma
     ! Incomplete gamma G function.
     ! Internal use only
     !
-        #:for k1, t1 in R_KINDS_TYPES
+        #:for k1, t1 in RR_KINDS_TYPES
         module procedure gpx_${t1[0]}$${k1}$         !for real p and x
         #:endfor
 
@@ -219,13 +224,7 @@ contains
 
 
 
-    #:for k1, t1 in C_KINDS_TYPES
-      #:if k1 == "sp"
-          #:set k2 = "dp"
-      #:elif k1 == "dp"
-          #:set k2 = "qp"
-      #:endif
-      #:set t2 = "real({})".format(k2)
+    #:for k1, t1, _, k2, t2, _ in CR_KINDS_TYPES
 
     impure elemental function gamma_${t1[0]}$${k1}$(z) result(res)
         ${t1}$, intent(in) :: z
@@ -415,13 +414,7 @@ contains
 
 
 
-    #:for k1, t1 in C_KINDS_TYPES
-      #:if k1 == "sp"
-          #:set k2 = "dp"
-      #:elif k1 == "dp"
-          #:set k2 = "qp"
-      #:endif
-      #:set t2 = "real({})".format(k2)
+    #:for k1, t1, _, k2, t2, _ in CR_KINDS_TYPES
     impure elemental function l_gamma_${t1[0]}$${k1}$(z) result (res)
     !
     ! log_gamma function for any complex number, excluding negative whole number
@@ -557,13 +550,7 @@ contains
 
 
 
-    #:for k1, t1 in R_KINDS_TYPES
-      #:if k1 == "sp"
-          #:set k2 = "dp"
-      #:elif k1 == "dp"
-          #:set k2 = "qp"
-      #:endif
-      #:set t2 = "real({})".format(k2)
+    #:for k1, t1, _, k2, t2, _ in RR_KINDS_TYPES
 
     impure elemental function gpx_${t1[0]}$${k1}$(p, x) result(res)
     !
@@ -824,7 +811,7 @@ contains
 
 
 
-    #:for k1, t1 in R_KINDS_TYPES
+    #:for k1, t1 in RR_KINDS_TYPES
     impure elemental function ingamma_low_${t1[0]}$${k1}$(p, x) result(res)
     !
     ! Approximation of lower incomplete gamma function with real p.
@@ -901,7 +888,7 @@ contains
 
 
 
-    #:for k1, t1 in R_KINDS_TYPES
+    #:for k1, t1 in RR_KINDS_TYPES
     impure elemental function l_ingamma_low_${t1[0]}$${k1}$(p, x) result(res)
 
         ${t1}$, intent(in) :: p, x
@@ -970,7 +957,7 @@ contains
 
 
 
-    #:for k1, t1 in R_KINDS_TYPES
+    #:for k1, t1 in RR_KINDS_TYPES
     impure elemental function ingamma_up_${t1[0]}$${k1}$(p, x) result(res)
     !
     ! Approximation of upper incomplete gamma function with real p.
@@ -1050,7 +1037,7 @@ contains
 
 
 
-    #:for k1, t1 in R_KINDS_TYPES
+    #:for k1, t1 in RR_KINDS_TYPES
     impure elemental function l_ingamma_up_${t1[0]}$${k1}$(p, x) result(res)
 
         ${t1}$, intent(in) :: p, x
@@ -1129,7 +1116,7 @@ contains
 
 
 
-    #:for k1, t1 in R_KINDS_TYPES
+    #:for k1, t1 in RR_KINDS_TYPES
     impure elemental function regamma_p_${t1[0]}$${k1}$(p, x) result(res)
     !
     ! Approximation of regularized incomplete gamma function P(p,x) for real p
@@ -1200,7 +1187,7 @@ contains
 
 
 
-    #:for k1, t1 in R_KINDS_TYPES
+    #:for k1, t1 in RR_KINDS_TYPES
     impure elemental function regamma_q_${t1[0]}$${k1}$(p, x) result(res)
     !
     ! Approximation of regularized incomplete gamma function Q(p,x) for real p
