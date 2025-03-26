@@ -492,3 +492,57 @@ None.
 {!example/system/example_null_device.f90!}
 ```
 
+## `delete_file` - Delete a file
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine deletes a specified file from the filesystem. It ensures that the file exists and is not a directory before attempting deletion.
+If the file cannot be deleted due to permissions, being a directory, or other issues, an error is raised. 
+The function provides an optional error-handling mechanism via the `state_type` class. If the `err` argument is not provided, exceptions will trigger an `error stop`.
+
+### Syntax
+
+`call [[stdlib_fs(module):delete_file(subroutine)]] (path [, err])`
+
+### Class
+Subroutine
+
+### Arguments
+
+`path`: Shall be a character string containing the path to the file to be deleted. It is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(state_type)` variable for error handling. If provided, errors are returned as a state object. If not provided, the program stops execution on error.
+
+### Behavior
+
+- Checks if the file exists. If not, an error is raised.
+- Ensures the path is not a directory before deletion.
+- Attempts to delete the file, raising an error if unsuccessful.
+
+### Return values
+
+The file is removed from the filesystem if the operation is successful. If the operation fails, an error is raised.
+
+### Example
+
+```fortran
+program example_delete_file
+  use stdlib_fs
+  implicit none
+
+  type(state_type) :: err
+
+  ! Delete a file with error handling
+  call delete_file("example.txt", err)
+
+  if (err%error()) then
+    print *, "Failed to delete file:", err%print()
+  else
+    print *, "File deleted successfully."
+  end if
+end program example_delete_file
+```
