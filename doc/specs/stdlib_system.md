@@ -530,19 +530,5 @@ The file is removed from the filesystem if the operation is successful. If the o
 ### Example
 
 ```fortran
-program example_delete_file
-  use stdlib_fs
-  implicit none
-
-  type(state_type) :: err
-
-  ! Delete a file with error handling
-  call delete_file("example.txt", err)
-
-  if (err%error()) then
-    print *, "Failed to delete file:", err%print()
-  else
-    print *, "File deleted successfully."
-  end if
-end program example_delete_file
+{!example/system/example_delete_file.f90!}
 ```
