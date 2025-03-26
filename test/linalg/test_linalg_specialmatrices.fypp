@@ -27,7 +27,6 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
         #:for k1, t1, s1 in (KINDS_TYPES)
-        #:if k1 != "qp" and k1 != "xdp"
         block
             integer, parameter :: wp = ${k1}$
             integer, parameter :: n = 5
@@ -64,7 +63,6 @@ contains
             if (allocated(error)) return
             #:endif
         end block
-        #:endif
         #:endfor
     end subroutine
 

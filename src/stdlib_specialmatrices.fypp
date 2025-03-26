@@ -115,7 +115,6 @@ module stdlib_specialmatrices
         !! for the different matrix types defined by `stdlib_specialmatrices`.
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
-        #:if k1 != "qp" and k1 != "xdp"
         module subroutine spmv_tridiag_${rank}$d_${s1}$(A, x, y, alpha, beta, op)
          type(Tridiagonal_${s1}$_type), intent(in) :: A
             ${t1}$, intent(in), contiguous, target :: x${ranksuffix(rank)}$
@@ -124,7 +123,6 @@ module stdlib_specialmatrices
             real(${k1}$), intent(in), optional :: beta
             character(1), intent(in), optional :: op
         end subroutine
-        #:endif
         #:endfor
         #:endfor
     end interface

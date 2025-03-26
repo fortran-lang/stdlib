@@ -66,7 +66,6 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
     !! spmv_tridiag
     #:for k1, t1, s1 in (KINDS_TYPES)
     #:for rank in RANKS
-    #:if k1 != "qp" and k1 != "xdp"
     module subroutine spmv_tridiag_${rank}$d_${s1}$(A, x, y, alpha, beta, op)
         type(Tridiagonal_${s1}$_type), intent(in) :: A
         ${t1}$, intent(in), contiguous, target :: x${ranksuffix(rank)}$
@@ -100,7 +99,6 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         call lagtm(op_, n, nrhs, alpha_, A%dl, A%dv, A%du, x, ldx, beta_, y, ldy)
         #:endif
     end subroutine
-    #:endif
     #:endfor
     #:endfor
 
