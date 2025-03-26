@@ -1,9 +1,75 @@
 module stdlib_system
-use, intrinsic :: iso_c_binding, only : c_int, c_long, c_null_ptr, c_int64_t
-use stdlib_kinds, only: int64, dp
+use, intrinsic :: iso_c_binding, only : c_int, c_long, c_ptr, c_null_ptr, c_int64_t, c_size_t, &
+    c_f_pointer
+use stdlib_kinds, only: int64, dp, c_bool, c_char
+use stdlib_strings, only: to_c_char
 implicit none
 private
 public :: sleep
+
+!! version: experimental
+!!
+!! Cached OS type retrieval with negligible runtime overhead.
+!! ([Specification](../page/specs/stdlib_system.html#os_type-cached-os-type-retrieval))
+!!
+!! ### Summary
+!! Provides a cached value for the runtime OS type. 
+!!
+!! ### Description
+!! 
+!! This function caches the result of `get_runtime_os` after the first invocation. 
+!! Subsequent calls return the cached value, ensuring minimal overhead.
+!!
+public :: OS_TYPE
+
+!! version: experimental
+!!
+!! Determine the current operating system (OS) type at runtime.
+!! ([Specification](../page/specs/stdlib_system.html#get_runtime_os-determine-the-os-type-at-runtime))
+!!
+!! ### Summary
+!! This function inspects the runtime environment to identify the OS type. 
+!!
+!! ### Description
+!! 
+!! The function evaluates environment variables (`OSTYPE` or `OS`) and filesystem attributes
+!! to identify the OS. It distinguishes between several common operating systems:
+!! - Linux
+!! - macOS
+!! - Windows
+!! - Cygwin
+!! - Solaris
+!! - FreeBSD
+!! - OpenBSD
+!!
+!! Returns a constant representing the OS type or `OS_UNKNOWN` if the OS cannot be determined.
+!!                    
+public :: get_runtime_os
+
+!> Version: experimental
+!>
+!> Integer constants representing known operating system (OS) types
+!> ([Specification](../page/specs/stdlib_system.html))
+integer, parameter, public :: &
+    !> Represents an unknown operating system
+    OS_UNKNOWN = 0, &
+    !> Represents a Linux operating system
+    OS_LINUX = 1, &
+    !> Represents a macOS operating system
+    OS_MACOS = 2, &
+    !> Represents a Windows operating system
+    OS_WINDOWS = 3, &
+    !> Represents a Cygwin environment
+    OS_CYGWIN = 4, &
+    !> Represents a Solaris operating system
+    OS_SOLARIS = 5, &
+    !> Represents a FreeBSD operating system
+    OS_FREEBSD = 6, &
+    !> Represents an OpenBSD operating system
+    OS_OPENBSD = 7
+
+!! Helper function returning the name of an OS parameter
+public :: OS_NAME 
 
 !> Public sub-processing interface
 public :: run
@@ -16,6 +82,39 @@ public :: wait
 public :: kill
 public :: elapsed
 public :: is_windows
+     
+!! version: experimental
+!!
+!! Tests if a given path matches an existing directory.
+!! ([Specification](../page/specs/stdlib_io.html#is_directory-test-if-a-path-is-a-directory))
+!!
+!!### Summary
+!! Function to evaluate whether a specified path corresponds to an existing directory.
+!!
+!!### Description
+!! 
+!! This function checks if a given file system path is a directory. It is cross-platform and utilizes
+!! native system calls. It supports common operating systems such as Linux, macOS, 
+!! Windows, and various UNIX-like environments. On unsupported operating systems, the function will return `.false.`.
+!!
+public :: is_directory
+  
+!! version: experimental
+!!
+!! Returns the file path of the null device, which discards all data written to it.
+!! ([Specification](../page/specs/stdlib_system.html#null_device-return-the-null-device-file-path))
+!!
+!! ### Summary
+!! Function that provides the file path of the null device appropriate for the current operating system.
+!!
+!! ### Description
+!!
+!! The null device is a special file that discards all data written to it and always reads as 
+!! an empty file. This function returns the null device path, adapted for the operating system in use.
+!! 
+!! On Windows, this is `NUL`. On UNIX-like systems, this is `/dev/null`.
+!!
+public :: null_device
      
 ! CPU clock ticks storage
 integer, parameter, private :: TICKS = int64
@@ -218,7 +317,6 @@ interface is_running
     end function process_is_running
 end interface is_running
 
-
 interface is_completed
     !! version: experimental
     !!
@@ -397,7 +495,11 @@ abstract interface
         class(*), optional, intent(inout) :: payload        
     end subroutine process_callback
 end interface          
-      
+    
+!! Static storage for the current OS
+logical :: have_os    = .false.
+integer :: OS_CURRENT = OS_UNKNOWN
+
 interface 
     
     !! version: experimental
@@ -429,5 +531,180 @@ interface
     end function process_get_ID
     
 end interface 
+
+contains
+
+integer function get_runtime_os() result(os)
+    !! The function identifies the OS by inspecting environment variables and filesystem attributes.
+    !!
+    !! ### Returns:
+    !! - **OS_UNKNOWN**: If the OS cannot be determined.
+    !! - **OS_LINUX**, **OS_MACOS**, **OS_WINDOWS**, **OS_CYGWIN**, **OS_SOLARIS**, **OS_FREEBSD**, or **OS_OPENBSD**.
+    !!
+    !! Note: This function performs a detailed runtime inspection, so it has non-negligible overhead.
+    
+    ! Local variables
+    character(len=255) :: val
+    integer            :: length, rc
+    logical            :: file_exists
+
+    os = OS_UNKNOWN
+
+    ! Check environment variable `OSTYPE`.
+    call get_environment_variable('OSTYPE', val, length, rc)
+
+    if (rc == 0 .and. length > 0) then
+        ! Linux
+        if (index(val, 'linux') > 0) then
+            os = OS_LINUX
+            return
+
+        ! macOS
+        elseif (index(val, 'darwin') > 0) then
+            os = OS_MACOS
+            return
+
+        ! Windows, MSYS, MinGW, Git Bash
+        elseif (index(val, 'win') > 0 .or. index(val, 'msys') > 0) then
+            os = OS_WINDOWS
+            return
+
+        ! Cygwin
+        elseif (index(val, 'cygwin') > 0) then
+            os = OS_CYGWIN
+            return
+
+        ! Solaris, OpenIndiana, ...
+        elseif (index(val, 'SunOS') > 0 .or. index(val, 'solaris') > 0) then
+            os = OS_SOLARIS
+            return
+
+        ! FreeBSD
+        elseif (index(val, 'FreeBSD') > 0 .or. index(val, 'freebsd') > 0) then
+            os = OS_FREEBSD
+            return
+
+        ! OpenBSD
+        elseif (index(val, 'OpenBSD') > 0 .or. index(val, 'openbsd') > 0) then
+            os = OS_OPENBSD
+            return
+        end if
+    end if
+
+    ! Check environment variable `OS`.
+    call get_environment_variable('OS', val, length, rc)
+
+    if (rc == 0 .and. length > 0 .and. index(val, 'Windows_NT') > 0) then
+        os = OS_WINDOWS
+        return
+    end if
+
+    ! Linux
+    inquire (file='/etc/os-release', exist=file_exists)
+
+    if (file_exists) then
+        os = OS_LINUX
+        return
+    end if
+
+    ! macOS
+    inquire (file='/usr/bin/sw_vers', exist=file_exists)
+
+    if (file_exists) then
+        os = OS_MACOS
+        return
+    end if
+
+    ! FreeBSD
+    inquire (file='/bin/freebsd-version', exist=file_exists)
+
+    if (file_exists) then
+        os = OS_FREEBSD
+        return
+    end if
+    
+end function get_runtime_os
+
+!> Retrieves the cached OS type for minimal runtime overhead.
+integer function OS_TYPE() result(os)
+    !! This function uses a static cache to avoid recalculating the OS type after the first call.
+    !! It is recommended for performance-sensitive use cases where the OS type is checked multiple times.
+    if (.not.have_os) then 
+        OS_CURRENT = get_runtime_os()
+        have_os = .true.        
+    end if
+    os = OS_CURRENT
+end function OS_TYPE
+
+!> Return string describing the OS type flag
+pure function OS_NAME(os)
+    integer, intent(in) :: os
+    character(len=:), allocatable :: OS_NAME
+
+    select case (os)
+        case (OS_LINUX);   OS_NAME =  "Linux"
+        case (OS_MACOS);   OS_NAME =  "macOS"
+        case (OS_WINDOWS); OS_NAME =  "Windows"
+        case (OS_CYGWIN);  OS_NAME =  "Cygwin"
+        case (OS_SOLARIS); OS_NAME =  "Solaris"
+        case (OS_FREEBSD); OS_NAME =  "FreeBSD"
+        case (OS_OPENBSD); OS_NAME =  "OpenBSD"
+        case default     ; OS_NAME =  "Unknown"
+    end select
+end function OS_NAME
+
+!! Tests if a given path matches an existing directory.
+!! Cross-platform implementation without using external C libraries.
+logical function is_directory(path)
+    !> Input path to evaluate
+    character(*), intent(in) :: path
+
+    interface
+        
+        logical(c_bool) function stdlib_is_directory(path) bind(c, name="stdlib_is_directory")
+            import c_bool, c_char
+            character(kind=c_char), intent(in) :: path(*)
+        end function stdlib_is_directory
+
+    end interface        
+    
+    is_directory = logical(stdlib_is_directory(to_c_char(trim(path))))
+    
+end function is_directory
+
+!> Returns the file path of the null device for the current operating system.
+!>
+!> Version: Helper function.
+function null_device() result(path)
+    !> File path of the null device
+    character(:), allocatable :: path
+    
+    interface
+    
+        ! No-overhead return path to the null device
+        type(c_ptr) function process_null_device(len) bind(C,name='process_null_device')
+            import c_ptr, c_size_t    
+            implicit none
+            integer(c_size_t), intent(out) :: len
+        end function process_null_device    
+        
+    end interface
+    
+    integer(c_size_t) :: i, len
+    type(c_ptr) :: c_path_ptr
+    character(kind=c_char), pointer :: c_path(:)    
+
+    ! Call the C function to get the null device path and its length
+    c_path_ptr = process_null_device(len)
+    call c_f_pointer(c_path_ptr,c_path,[len])
+
+    ! Allocate the Fortran string with the length returned from C
+    allocate(character(len=len) :: path)
+        
+    do concurrent (i=1:len)
+        path(i:i) = c_path(i)
+    end do
+        
+end function null_device
 
 end module stdlib_system

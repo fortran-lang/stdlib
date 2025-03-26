@@ -40,7 +40,7 @@ module stdlib_constants
     real(dp), parameter, public :: epsilon_0 = VACUUM_ELECTRIC_PERMITTIVITY%value !! vacuum mag. permeability
     real(dp), parameter, public :: h = PLANCK_CONSTANT%value !! Planck constant
     real(dp), parameter, public :: Planck = PLANCK_CONSTANT%value !! Planck constant
-    real(dp), parameter, public :: hbar = PLANCK_CONSTANT%value / PI_dp !! Reduced Planck constant
+    real(dp), parameter, public :: hbar = PLANCK_CONSTANT%value / (2.0_dp * PI_dp) !! Reduced Planck constant
     real(dp), parameter, public :: G = NEWTONIAN_CONSTANT_OF_GRAVITATION%value !! Newtonian constant of gravitation
     real(dp), parameter, public :: gravitation_constant = NEWTONIAN_CONSTANT_OF_GRAVITATION%value !! Newtonian constant of gravitation
     real(dp), parameter, public :: g2 = STANDARD_ACCELERATION_OF_GRAVITY%value !! Standard acceleration of gravity

@@ -10,6 +10,7 @@
 #else
 #define _POSIX_C_SOURCE 199309L
 #include <sys/wait.h>
+#include <sys/stat.h>  
 #include <unistd.h>
 #include <time.h>
 #include <errno.h>
@@ -220,6 +221,12 @@ bool process_kill_windows(stdlib_pid pid) {
     return true;
 }
 
+// Check if input path is a directory
+bool stdlib_is_directory_windows(const char *path) {
+    DWORD attrs = GetFileAttributesA(path);
+    return    (attrs != INVALID_FILE_ATTRIBUTES)  // Path exists
+           && (attrs & FILE_ATTRIBUTE_DIRECTORY); // Path is a directory
+}
 
 #else // _WIN32
 
@@ -292,11 +299,28 @@ void process_create_posix(stdlib_pid* pid)
     (*pid) = (stdlib_pid) fork();
 }
 
+// On UNIX systems: check if input path is a directory
+bool stdlib_is_directory_posix(const char *path) {
+    struct stat sb;
+    return stat(path, &sb) == 0 && S_ISDIR(sb.st_mode);
+}
+
 #endif // _WIN32
 
 /////////////////////////////////////////////////////////////////////////////////////
 // Cross-platform interface
 /////////////////////////////////////////////////////////////////////////////////////
+
+// Cross-platform interface: query directory state
+bool stdlib_is_directory(const char *path) {
+    // Invalid input
+    if (path == NULL || strlen(path) == 0) return false;  
+#ifdef _WIN32
+    return stdlib_is_directory_windows(path);
+#else
+    return stdlib_is_directory_posix(path);
+#endif // _WIN32
+}
 
 // Create or fork process
 void process_create(const char* cmd, const char* stdin_stream, const char* stdin_file, 
@@ -376,7 +400,7 @@ void process_wait(float seconds)
 }
 
 // Returns the cross-platform file path of the null device for the current operating system.
-const char* process_null_device(int* len) 
+const char* process_null_device(size_t* len) 
 {
 #ifdef _WIN32    
         (*len) = strlen("NUL");
