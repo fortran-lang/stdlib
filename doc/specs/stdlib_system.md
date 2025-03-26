@@ -24,7 +24,7 @@ Additionally, a callback function can be specified to execute upon process compl
 
 ### Syntax
 
-`process = ` [[stdlib_subprocess(module):run(interface)]] `(args [, stdin] [, want_stdout] [, want_stderr] [, callback] [, payload])`
+`process = ` [[stdlib_system(module):run(interface)]] `(args [, stdin] [, want_stdout] [, want_stderr] [, callback] [, payload])`
 
 ### Arguments
 
@@ -69,7 +69,7 @@ Additionally, a callback function can be specified to execute upon process compl
 
 ### Syntax
 
-`process = ` [[stdlib_subprocess(module):runasync(interface)]] `(args [, stdin] [, want_stdout] [, want_stderr] [, callback] [, payload])`
+`process = ` [[stdlib_system(module):runasync(interface)]] `(args [, stdin] [, want_stdout] [, want_stderr] [, callback] [, payload])`
 
 ### Arguments
 
@@ -108,7 +108,7 @@ This is useful for monitoring the status of asynchronous processes created with 
 
 ### Syntax
 
-`status = ` [[stdlib_subprocess(module):is_running(interface)]] `(process)`
+`status = ` [[stdlib_system(module):is_running(interface)]] `(process)`
 
 ### Arguments
 
@@ -139,7 +139,7 @@ This is useful for determining whether asynchronous processes created with the `
 
 ### Syntax
 
-`status = ` [[stdlib_subprocess(module):is_completed(interface)]] `(process)`
+`status = ` [[stdlib_system(module):is_completed(interface)]] `(process)`
 
 ### Arguments
 
@@ -174,7 +174,7 @@ The result is a real value representing the elapsed time in seconds, measured fr
 
 ### Syntax
 
-`delta_t = ` [[stdlib_subprocess(module):elapsed(subroutine)]] `(process)`
+`delta_t = ` [[stdlib_system(module):elapsed(subroutine)]] `(process)`
 
 ### Arguments
 
@@ -212,7 +212,7 @@ in case of process hang or delay.
 
 ### Syntax
 
-`call ` [[stdlib_subprocess(module):wait(subroutine)]] `(process [, max_wait_time])`
+`call ` [[stdlib_system(module):wait(subroutine)]] `(process [, max_wait_time])`
 
 ### Arguments
 
@@ -243,7 +243,7 @@ This is especially useful for monitoring asynchronous processes and retrieving t
 
 ### Syntax
 
-`call ` [[stdlib_subprocess(module):update(subroutine)]] `(process)`
+`call ` [[stdlib_system(module):update(subroutine)]] `(process)`
 
 ### Arguments
 
@@ -269,7 +269,7 @@ This interface is useful when a process needs to be forcefully stopped, for exam
 
 ### Syntax
 
-`call ` [[stdlib_subprocess(module):kill(subroutine)]] `(process, success)`
+`call ` [[stdlib_system(module):kill(subroutine)]] `(process, success)`
 
 ### Arguments
 
@@ -431,7 +431,7 @@ It is designed to work across multiple platforms. On Windows, paths with both fo
 
 ### Syntax
 
-`result = [[stdlib_io(module):is_directory(function)]] (path)`
+`result = [[stdlib_system(module):is_directory(function)]] (path)`
 
 ### Class
 
@@ -506,7 +506,7 @@ The function provides an optional error-handling mechanism via the `state_type` 
 
 ### Syntax
 
-`call [[stdlib_fs(module):delete_file(subroutine)]] (path [, err])`
+`call [[stdlib_system(module):delete_file(subroutine)]] (path [, err])`
 
 ### Class
 Subroutine
