@@ -86,7 +86,7 @@ public :: is_windows
 !! version: experimental
 !!
 !! Tests if a given path matches an existing directory.
-!! ([Specification](../page/specs/stdlib_io.html#is_directory-test-if-a-path-is-a-directory))
+!! ([Specification](../page/specs/stdlib_system.html#is_directory-test-if-a-path-is-a-directory))
 !!
 !!### Summary
 !! Function to evaluate whether a specified path corresponds to an existing directory.
