@@ -3,6 +3,7 @@ use, intrinsic :: iso_c_binding, only : c_int, c_long, c_ptr, c_null_ptr, c_int6
     c_f_pointer
 use stdlib_kinds, only: int64, dp, c_bool, c_char
 use stdlib_strings, only: to_c_char
+use stdlib_error, only: state_type, STDLIB_FS_ERROR
 implicit none
 private
 public :: sleep
