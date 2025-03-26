@@ -98,7 +98,23 @@ public :: is_windows
 !! Windows, and various UNIX-like environments. On unsupported operating systems, the function will return `.false.`.
 !!
 public :: is_directory
-  
+
+!! version: experimental
+!!
+!! Deletes a specified file from the filesystem.
+!! ([Specification](../page/specs/stdlib_system.html#delete_file-delete-a-file))
+!!
+!!### Summary
+!! Subroutine to safely delete a file from the filesystem. It handles errors gracefully using the library's `state_type`.
+!!
+!!### Description
+!! 
+!! This subroutine deletes a specified file. If the file does not exist, or if it is a directory or inaccessible, 
+!! an error is raised. Errors are handled using the library's `state_type` mechanism. If the optional `err` argument 
+!! is not provided, exceptions trigger an `error stop`.
+!!
+public :: delete_file
+
 !! version: experimental
 !!
 !! Returns the file path of the null device, which discards all data written to it.
@@ -706,5 +722,48 @@ function null_device() result(path)
     end do
         
 end function null_device
+
+!> Delete a file at the given path.
+subroutine delete_file(path, err)
+    character(*), intent(in) :: path
+    type(state_type), optional, intent(out) :: err
+
+    !> Local variables
+    integer :: file_unit, ios        
+    type(state_type) :: err0
+    character(len=512) :: msg
+    logical :: file_exists
+
+    ! Check if the path exists
+    inquire(file=path, exist=file_exists)
+    if (.not. file_exists) then
+        ! File does not exist, return error status
+        err0 = state_type(STDLIB_FS_ERROR,'Cannot delete',path,': file does not exist')
+        call err0%handle(err)
+        return
+    endif
+
+    ! Verify the file is not a directory
+    if (is_directory(path)) then 
+        ! If unable to open, assume it's a directory or inaccessible
+        err0 = state_type(STDLIB_FS_ERROR,'Cannot delete',path,'- is a directory')
+        call err0%handle(err)
+        return            
+    end if
+
+    ! Close and delete the file
+    open(newunit=file_unit, file=path, status='old', iostat=ios, iomsg=msg)
+    if (ios /= 0) then
+        err0 = state_type(STDLIB_FS_ERROR,'Cannot delete',path,'-',msg)
+        call err0%handle(err)
+        return              
+    end if        
+    close(unit=file_unit, status='delete', iostat=ios, iomsg=msg)
+    if (ios /= 0) then
+        err0 = state_type(STDLIB_FS_ERROR,'Cannot delete',path,'-',msg)
+        call err0%handle(err)
+        return              
+    end if
+end subroutine delete_file
 
 end module stdlib_system
