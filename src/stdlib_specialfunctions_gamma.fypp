@@ -424,7 +424,7 @@ contains
         real(${k1}$) :: d
         integer :: m, i
         complex(${k2}$) :: zr, zr2, sum, s
-        real(${k1}$), parameter :: z_limit = 10_${k1}$, zero_k1 = 0.0_${k1}$
+        real(${k1}$), parameter :: z_limit = 10.0_${k1}$, zero_k1 = 0.0_${k1}$
         integer, parameter :: n = 20
         ${t2}$, parameter :: zero = 0.0_${k2}$, one = 1.0_${k2}$,              &
                              pi = acos(-one), ln2pi = log(2 * pi)
