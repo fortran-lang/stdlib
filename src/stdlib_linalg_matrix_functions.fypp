@@ -1,0 +1,68 @@
+#:include "common.fypp"
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+submodule (stdlib_linalg) stdlib_linalg_matrix_functions
+     use stdlib_linalg_constants
+     use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
+         LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
+     implicit none
+
+    contains
+
+    #:for rk,rt,ri in RC_KINDS_TYPES 
+    module function expm_${ri}$(A, order) result(E)
+        ${rt}$, intent(in) :: A(:, :)
+        integer(ilp), optional, intent(in) :: order
+        ${rt}$, allocatable :: E(:, :)
+
+        ${rt}$, allocatable :: A2(:, :), Q(:, :), X(:, :)
+        real(${rk}$) :: a_norm, c
+        integer(ilp) :: n, ee, k, s
+        logical(lk) :: p
+        integer(ilp) :: p_order
+
+        ! Deal with optional args.
+        p_order = 10 ; if (present(order)) p_order = order
+
+        n = size(A, 1)
+
+        ! Compute the L-infinity norm.
+        a_norm = mnorm(A, "inf")
+
+        ! Determine scaling factor for the matrix.
+        ee = int(log(a_norm) / log(2.0_${rk}$)) + 1
+        s = max(0, ee+1)
+
+        ! Scale the input matrix & initialize polynomial.
+        A2 = A / 2.0_${rk}$**s
+        X = A2
+
+        ! Initialize P & Q and add first step.
+        c = 0.5_${rk}$
+        E = eye(n, mold=1.0_${rk}$) ; E = E + c*A2
+
+        Q = eye(n, mold=1.0_${rk}$) ; Q = Q - c*A2
+
+        ! Iteratively compute the Pade approximation.
+        p = .true.
+        do k = 2, p_order
+            c = c*(p_order - k + 1) / (k * (2*p_order - k + 1))
+            X = matmul(A2, X)
+            E = E + c*X
+            if (p) then
+                Q = Q + c*X
+            else
+                Q = Q - c*X
+            endif
+            p = .not. p
+        enddo
+
+        E = matmul(inv(Q), E)
+        do k = 1, s
+            E = matmul(E, E)
+        enddo
+
+        return
+    end function
+    #:endfor
+
+end submodule stdlib_linalg_matrix_functions

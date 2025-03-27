@@ -28,6 +28,7 @@ module stdlib_linalg
   public :: eigh
   public :: eigvals
   public :: eigvalsh
+  public :: expm
   public :: eye
   public :: inv
   public :: invert
@@ -1677,6 +1678,19 @@ module stdlib_linalg
       #:endfor
       #:endfor            
   end interface mnorm
+
+!> Matrix exponential: function interface
+  interface expm
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    module function expm_${ri}$(A, order) result(E)
+        ${rt}$, intent(in) :: A(:, :)
+        !! On entry, the original matrix. On exit, its exponential.
+        integer(ilp), optional, intent(in) :: order
+        !! Order of the rational approximation.
+        ${rt}$, allocatable :: E(:, :)
+    end function expm_${ri}$
+    #:endfor
+  end interface expm
 
 contains
 
