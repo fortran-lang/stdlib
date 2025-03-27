@@ -1684,6 +1684,7 @@ module stdlib_linalg
     !! version : experimental
     !!
     !! Computes the exponential of a matrix using a rational Pade approximation.
+    !! ([Specification](../page/specs/stdlib_linalg.html#expm))
     !!
     !! ### Description
     !!
