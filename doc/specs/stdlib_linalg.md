@@ -1880,3 +1880,37 @@ If `err` is not present, exceptions trigger an `error stop`.
 {!example/linalg/example_mnorm.f90!}
 ```
 
+## `expm` - Computes the matrix exponential {#expm}
+
+### Status
+
+Experimental
+
+### Description
+
+Given a matrix \(A\), this function compute its matrix exponential \(E = \exp(A)\) using a Pade approximation.
+
+### Syntax
+
+`E = ` [[stdlib_linalg(module):expm(interface)]] `(a [, order, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` array containing the data. It is an `intent(in)` argument.
+
+`order` (optional): Shall be a non-negative `integer` value specifying the order of the Pade approximation. By default `order=10`. It is an `intent(in)` argument. 
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument. 
+### Return value
+
+The returned array `E` contains the Pade approximation of \(\exp(A)\).
+
+If `A` is non-square or `order` is negative, it raise a `LINALG_VALUE_ERROR`.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_expm.f90!}
+```
+
