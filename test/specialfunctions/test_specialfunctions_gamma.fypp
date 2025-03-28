@@ -205,6 +205,7 @@ contains
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: n = 4
         integer :: i
+        type(state_type) :: err
 
         #:if k1 == "int8"
 
