@@ -410,10 +410,85 @@ None.
 
 Returns one of the `integer` `OS_*` parameters representing the OS type, from the `stdlib_system` module, or `OS_UNKNOWN` if undetermined.
 
----
-
 ### Example
 
 ```fortran
 {!example/system/example_os_type.f90!}
 ```
+
+---
+
+## `is_directory` - Test if a path is a directory
+
+### Status
+
+Experimental
+
+### Description
+
+This function checks if a specified file system path is a directory. 
+It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+
+### Syntax
+
+`result = [[stdlib_io(module):is_directory(function)]] (path)`
+
+### Class
+
+Function
+
+### Arguments
+
+`path`: Shall be a character string containing the file system path to evaluate. It is an `intent(in)` argument.
+
+### Return values
+
+The function returns a `logical` value:
+
+- `.true.` if the path matches an existing directory.
+- `.false.` otherwise, or if the operating system is unsupported.
+
+### Example
+
+```fortran
+{!example/system/example_is_directory.f90!}
+```
+
+---
+
+## `null_device` - Return the null device file path
+
+### Status
+
+Experimental
+
+### Description
+
+This function returns the file path of the null device, which is a special file used to discard any data written to it. 
+It reads as an empty file. The null device's path varies by operating system:
+- On Windows, the null device is represented as `NUL`.
+- On UNIX-like systems (Linux, macOS), the null device is represented as `/dev/null`.
+
+### Syntax
+
+`path = [[stdlib_system(module):null_device(function)]]()`
+
+### Class
+
+Function
+
+### Arguments
+
+None.
+
+### Return Value
+
+- **Type:** `character(:), allocatable`
+- Returns the null device file path as a character string, appropriate for the operating system.
+
+### Example
+
+```fortran
+{!example/system/example_null_device.f90!}
+```
+
