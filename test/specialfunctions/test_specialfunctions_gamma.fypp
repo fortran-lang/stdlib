@@ -5,6 +5,7 @@
 module test_specialfunctions_gamma
     use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
+    use stdlib_error, only: state_type, STDLIB_VALUE_ERROR
     use stdlib_specialfunctions_gamma, only: gamma, log_gamma, log_factorial,  &
                                              lower_incomplete_gamma,           &
                                              upper_incomplete_gamma,           &
@@ -113,7 +114,7 @@ contains
         #:endif
 
         do i = 1, n
-
+            
             call check(error, log_factorial(x(i)), ans(i), "Integer kind "     &
                        //"${k1}$ failed", thr = tol_dp, rel = .true.)
 
@@ -130,6 +131,7 @@ contains
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: n = 5
         integer :: i
+        type(state_type) :: err
 
         #:if k1 == "int8"
 
@@ -182,13 +184,20 @@ contains
         #:elif t1[0] == "c"
 
         do i = 1, n
+            
+            err = state_type(STDLIB_VALUE_ERROR,'Complex ${k1}$ failed: x=',x(i),' gamma=',gamma(x(i)), &
+                             'expected=',ans(i),' tol=',tol_${k1}$)
 
-            call check(error, gamma(x(i)), ans(i), "Complex kind ${k1}$ failed",&
+            call check(error, gamma(x(i)), ans(i), err%print(),&
                        thr = tol_${k1}$, rel = .true.)
 
-        end do
+            !call check(error, gamma(x(i)), ans(i), "Complex kind ${k1}$ failed",&
+            !           thr = tol_${k1}$, rel = .true.)
 
+        end do
+        
         #:endif
+        
     end subroutine test_gamma_${t1[0]}$${k1}$
 
 
