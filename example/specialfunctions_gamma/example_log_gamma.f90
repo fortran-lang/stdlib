@@ -7,13 +7,11 @@ program example_log_gamma
   real :: x
   real(dp) :: y
   complex :: z
-  complex(dp) :: z1
 
   i = 10
   x = 8.76
   y = x
   z = (5.345, -3.467)
-  z1 = z
   print *, log_gamma(i)     !default single precision output
 !12.8018274
 
@@ -29,7 +27,4 @@ program example_log_gamma
 
 !(2.56165648, -5.73382425)
 
-  print *, log_gamma(z1)
-
-!(2.5616575105114614, -5.7338247782852498)
 end program example_log_gamma
