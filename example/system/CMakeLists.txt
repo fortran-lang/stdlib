@@ -1,3 +1,7 @@
+ADD_EXAMPLE(get_runtime_os)
+ADD_EXAMPLE(is_directory)
+ADD_EXAMPLE(null_device)
+ADD_EXAMPLE(os_type)
 ADD_EXAMPLE(process_1)
 ADD_EXAMPLE(process_2)
 ADD_EXAMPLE(process_3)

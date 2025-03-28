@@ -1,7 +1,7 @@
 submodule (stdlib_system) stdlib_system_subprocess
     use iso_c_binding  
     use iso_fortran_env, only: int64, real64
-    use stdlib_strings, only: to_c_char, join
+    use stdlib_strings, only: join
     use stdlib_linalg_state, only: linalg_state_type, LINALG_ERROR, linalg_error_handling
     implicit none(type, external)
     
@@ -50,13 +50,6 @@ submodule (stdlib_system) stdlib_system_subprocess
             implicit none
             real(c_float), intent(in), value :: seconds
         end subroutine process_wait            
-        
-        ! Return path to the null device
-        type(c_ptr) function process_null_device(len) bind(C,name='process_null_device')
-            import c_ptr, c_int    
-            implicit none
-            integer(c_int), intent(out) :: len
-        end function process_null_device
         
         ! Utility: check if _WIN32 is defined in the C compiler
         logical(c_bool) function process_is_windows() bind(C,name='process_is_windows')
@@ -603,29 +596,6 @@ contains
         cmd = join(args)//" <"//input_file//" 1>"//stdout_file//" 2>"//stderr_file   
         
     end function assemble_cmd            
-    
-    !> Returns the file path of the null device for the current operating system.
-    !>
-    !> Version: Helper function.
-    function null_device() 
-        character(:), allocatable :: null_device
-        
-        integer(c_int) :: i, len
-        type(c_ptr) :: c_path_ptr
-        character(kind=c_char), pointer :: c_path(:)
-        
-        ! Call the C function to get the null device path and its length
-        c_path_ptr = process_null_device(len)
-        call c_f_pointer(c_path_ptr,c_path,[len])
-
-        ! Allocate the Fortran string with the length returned from C
-        allocate(character(len=len) :: null_device)
-        
-        do concurrent (i=1:len)
-            null_device(i:i) = c_path(i)
-        end do
-        
-    end function null_device
     
     !> Returns the file path of the null device for the current operating system.
     !>

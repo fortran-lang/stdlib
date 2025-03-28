@@ -335,3 +335,160 @@ Returns a `logical` flag: `.true.` if the system is Windows, or `.false.` otherw
 ```fortran
 {!example/system/example_process_1.f90!}
 ```
+
+## `get_runtime_os` - Determine the OS type at runtime
+
+### Status
+
+Experimental
+
+### Description
+
+`get_runtime_os` inspects the runtime environment to identify the current OS type. It evaluates environment variables (`OSTYPE`, `OS`) and checks for specific files associated with known operating systems.
+The supported OS types are `integer, parameter` variables stored in the `stdlib_system` module:
+
+- **Linux** (`OS_LINUX`)
+- **macOS** (`OS_MACOS`)
+- **Windows** (`OS_WINDOWS`)
+- **Cygwin** (`OS_CYGWIN`)
+- **Solaris** (`OS_SOLARIS`)
+- **FreeBSD** (`OS_FREEBSD`)
+- **OpenBSD** (`OS_OPENBSD`)
+
+If the OS cannot be identified, the function returns `OS_UNKNOWN`.
+
+### Syntax
+
+`os = [[stdlib_system(module):get_runtime_os(function)]]()`
+
+### Class
+
+Function
+
+### Arguments
+
+None.
+
+### Return Value
+
+Returns one of the `integer` `OS_*` parameters representing the OS type, from the `stdlib_system` module, or `OS_UNKNOWN` if undetermined.
+
+### Example
+
+```fortran
+{!example/system/example_get_runtime_os.f90!}
+```
+
+---
+
+## `OS_TYPE` - Cached OS type retrieval
+
+### Status
+
+Experimental
+
+### Description
+
+`OS_TYPE` provides a cached result of the `get_runtime_os` function. The OS type is determined during the first invocation and stored in a static variable. 
+Subsequent calls reuse the cached value, making this function highly efficient.
+
+This caching mechanism ensures negligible overhead for repeated calls, unlike `get_runtime_os`, which performs a full runtime inspection.
+
+### Syntax
+
+`os = [[stdlib_system(module):OS_TYPE(function)]]()`
+
+### Class
+
+Function
+
+### Arguments
+
+None.
+
+### Return Value
+
+Returns one of the `integer` `OS_*` parameters representing the OS type, from the `stdlib_system` module, or `OS_UNKNOWN` if undetermined.
+
+### Example
+
+```fortran
+{!example/system/example_os_type.f90!}
+```
+
+---
+
+## `is_directory` - Test if a path is a directory
+
+### Status
+
+Experimental
+
+### Description
+
+This function checks if a specified file system path is a directory. 
+It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+
+### Syntax
+
+`result = [[stdlib_io(module):is_directory(function)]] (path)`
+
+### Class
+
+Function
+
+### Arguments
+
+`path`: Shall be a character string containing the file system path to evaluate. It is an `intent(in)` argument.
+
+### Return values
+
+The function returns a `logical` value:
+
+- `.true.` if the path matches an existing directory.
+- `.false.` otherwise, or if the operating system is unsupported.
+
+### Example
+
+```fortran
+{!example/system/example_is_directory.f90!}
+```
+
+---
+
+## `null_device` - Return the null device file path
+
+### Status
+
+Experimental
+
+### Description
+
+This function returns the file path of the null device, which is a special file used to discard any data written to it. 
+It reads as an empty file. The null device's path varies by operating system:
+- On Windows, the null device is represented as `NUL`.
+- On UNIX-like systems (Linux, macOS), the null device is represented as `/dev/null`.
+
+### Syntax
+
+`path = [[stdlib_system(module):null_device(function)]]()`
+
+### Class
+
+Function
+
+### Arguments
+
+None.
+
+### Return Value
+
+- **Type:** `character(:), allocatable`
+- Returns the null device file path as a character string, appropriate for the operating system.
+
+### Example
+
+```fortran
+{!example/system/example_null_device.f90!}
+```
+

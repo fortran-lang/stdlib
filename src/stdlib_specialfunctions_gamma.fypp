@@ -4,6 +4,7 @@
 #:set CI_KINDS_TYPES = INT_KINDS_TYPES + C_KINDS_TYPES
 module stdlib_specialfunctions_gamma
     use iso_fortran_env, only : qp => real128
+    use ieee_arithmetic, only: ieee_value, ieee_quiet_nan
     use stdlib_kinds, only :  sp, dp, int8, int16, int32, int64
     use stdlib_error, only : error_stop
 
@@ -575,9 +576,9 @@ contains
     ! Fortran 90 program by Jim-215-Fisher
     !
         ${t1}$, intent(in) :: p, x
-        integer :: n, m
+        integer :: n
 
-        ${t2}$ :: res, p_lim, a, b, g, c, d, y, ss
+        ${t2}$ :: res, p_lim, a, b, g, c, d, y
         ${t2}$, parameter :: zero = 0.0_${k2}$, one = 1.0_${k2}$
         ${t2}$, parameter :: dm = tiny(1.0_${k2}$) * 10 ** 6
         ${t1}$, parameter :: zero_k1 = 0.0_${k1}$
@@ -602,6 +603,9 @@ contains
         if(x < zero_k1 .and. p < p_lim .and. abs(anint(p) - p) > tol_${k1}$)   &
             call error_stop("Error(gpx): Incomplete gamma function with "      &
             //"negative x must come with a whole number p not too small")
+
+        if(x < zero_k1) call error_stop("Error(gpx): Incomplete gamma"         &
+            // " function with negative x must have an integer parameter p")
 
         if(p >= p_lim) then     !use modified Lentz method of continued fraction
                                 !for eq. (15) in the above reference.
@@ -668,30 +672,9 @@ contains
 
             end do
 
-        else                            !Algorithm 2 in the reference
+        else
+            g = ieee_value(1._${k1}$, ieee_quiet_nan)
 
-            m = nint(ss)
-            a = - x
-            c = one / a
-            d = p - one
-            b = c * (a - d)
-            n = 1
-
-            do
-
-                c = d * (d - one) / (a * a)
-                d = d - 2
-                y = c * (a - d)
-                b = b + y
-                n = n + 1
-
-                if(n > int((p - 2) / 2) .or. y < b * tol_${k2}$) exit
-
-            end do
-
-            if(y >= b * tol_${k2}$ .and. mod(m , 2) /= 0) b = b + d * c / a
-
-            g = ((-1) ** m * exp(-a + log_gamma(p) - (p - 1) * log(a)) + b) / a
         end if
 
         res = g
