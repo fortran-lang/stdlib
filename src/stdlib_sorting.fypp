@@ -70,7 +70,7 @@
 !! in the Fortran Standard Library under the MIT license provided
 !! we cite:
 !!
-!!   Musser, D.R., “Introspective Sorting and Selection Algorithms,”
+!!   Musser, D.R., "Introspective Sorting and Selection Algorithms,"
 !!   Software—Practice and Experience, Vol. 27(8), 983–993 (August 1997).
 !!
 !! as the official source of the algorithm.
@@ -135,13 +135,16 @@ module stdlib_sorting
 
     use stdlib_bitsets, only: bitset_64, bitset_large, &
         assignment(=), operator(>), operator(>=), operator(<), operator(<=)
-
+        
+    use stdlib_sorting_unique, only: unique
+    
     implicit none
     private
 
     integer, parameter, public :: int_index = int64 !! Integer kind for indexing
     integer, parameter, public :: int_index_low = int32 !! Integer kind for indexing using less than `huge(1_int32)` values
-
+    
+    public :: unique
 
 ! Constants for use by tim_sort
     integer, parameter :: &

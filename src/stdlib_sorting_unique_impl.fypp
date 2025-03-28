@@ -1,0 +1,72 @@
+#:include "common.fypp"
+
+#:set INT_TYPES_ALT_NAME = list(zip(INT_TYPES, INT_TYPES, INT_KINDS))
+#:set REAL_TYPES_ALT_NAME = list(zip(REAL_TYPES, REAL_TYPES, REAL_KINDS))
+#:set STRING_TYPES_ALT_NAME = list(zip(STRING_TYPES, STRING_TYPES, STRING_KINDS))
+#:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"], ["character(len=len(array))"], ["char"]))
+#:set COMPLEX_TYPES_ALT_NAME = list(zip(CMPLX_TYPES, CMPLX_TYPES, CMPLX_KINDS))
+
+#! For better code reuse in fypp, make lists that contain the input types,
+#! with each having output types and a separate name prefix for subroutines
+#! This approach allows us to have the same code for all input types.
+#:set IRSC_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME + COMPLEX_TYPES_ALT_NAME
+
+submodule (stdlib_sorting_unique) stdlib_sorting_unique_impl
+    use stdlib_sorting, only: sort
+    implicit none
+
+contains
+
+#:for t1, t2, name1 in IRSC_TYPES_ALT_NAME
+    pure module function ${name1}$_unique(array, sorted) result(unique_values)
+        ${t1}$, intent(in) :: array(:)
+        logical(lk), intent(in), optional :: sorted
+        ${t2}$, allocatable :: unique_values(:)
+        
+        ${t2}$ :: temp_array(size(array))
+        logical :: mask(size(array))
+        integer :: i, j, n, unique_count
+        logical :: want_sorted
+        
+        want_sorted = optval(sorted, .false.)
+        
+        n = size(array)
+        if (n == 0) then
+            allocate(unique_values(0))
+            return
+        endif
+        
+        ! Create a temporary copy that may be sorted
+        if (want_sorted) then
+            temp_array = array
+            call sort(temp_array)
+        else
+            temp_array = array
+        endif
+        
+        ! Find unique elements using a mask
+        ! Start with first element always marked as unique
+        mask(1) = .true.
+        
+        ! Compare each element with previous to mark duplicates
+        do i = 2, n
+            mask(i) = temp_array(i) /= temp_array(i-1)
+        end do
+        
+        ! Count unique elements and allocate result array
+        unique_count = count(mask)
+        allocate(unique_values(unique_count))
+        
+        ! Extract unique elements to result array
+        j = 0
+        do i = 1, n
+            if (mask(i)) then
+                j = j + 1
+                unique_values(j) = temp_array(i)
+            endif
+        end do
+    end function ${name1}$_unique
+
+#:endfor
+
+end submodule stdlib_sorting_unique_impl 
