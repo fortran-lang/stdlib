@@ -185,14 +185,13 @@ contains
 
         do i = 1, n
             
-            err = state_type(STDLIB_VALUE_ERROR,'Complex ${k1}$ failed: x=',x(i),' gamma=',gamma(x(i)), &
-                             'expected=',ans(i),' tol=',tol_${k1}$)
+            err = state_type(STDLIB_VALUE_ERROR,'Complex ${k1}$ failed: x=',x(i), &
+                             ' gamma=',gamma(x(i)), &
+                             'expected=',ans(i), &
+                             ' tol=',tol_${k1}$)
 
             call check(error, gamma(x(i)), ans(i), err%print(),&
                        thr = tol_${k1}$, rel = .true.)
-
-            !call check(error, gamma(x(i)), ans(i), "Complex kind ${k1}$ failed",&
-            !           thr = tol_${k1}$, rel = .true.)
 
         end do
         
@@ -257,8 +256,13 @@ contains
 
         do i = 1, n
 
-            call check(error, log_gamma(x(i)), ans(i), "Complex kind ${k1}$ "  &
-              //"failed", thr = tol_${k1}$, rel = .true.)
+            err = state_type(STDLIB_VALUE_ERROR,'Complex ${k1}$ failed: x=',x(i), &
+                             ' log(gamma)=',log_gamma(x(i)), &
+                             'expected=',ans(i), &
+                             ' tol=',tol_${k1}$)
+
+            call check(error, log_gamma(x(i)), ans(i), err%print(),&
+                       thr = tol_${k1}$, rel = .true.)
 
         end do
 

@@ -219,7 +219,7 @@ contains
     #! gamma will use the next available more accurate KIND for the 
     #! internal more accurate solver.
     #:for i, k1, t1, i1 in IDX_CMPLX_KINDS_TYPES[:-1]
-    #:set k2 = CMPLX_KINDS[i + 1]
+    #:set k2 = CMPLX_KINDS[i + 1] if k1 == "sp" else CMPLX_KINDS[-1]
     #:set t2 = "real({})".format(k2)
     impure elemental function gamma_${t1[0]}$${k1}$(z) result(res)
         ${t1}$, intent(in) :: z
@@ -408,7 +408,7 @@ contains
     #! gamma will use the next available more accurate KIND for the 
     #! internal more accurate solver.
     #:for i, k1, t1, i1 in IDX_CMPLX_KINDS_TYPES[:-1]
-    #:set k2 = CMPLX_KINDS[i + 1]
+    #:set k2 = CMPLX_KINDS[i + 1] if k1 == "sp" else CMPLX_KINDS[-1]
     #:set t2 = "real({})".format(k2)
     impure elemental function l_gamma_${t1[0]}$${k1}$(z) result (res)
     !
@@ -549,7 +549,7 @@ contains
     #! gamma will use the next available more accurate KIND for the 
     #! internal more accurate solver.
     #:for i, k1, t1, i1 in IDX_REAL_KINDS_TYPES[:-1]
-    #:set k2 = REAL_KINDS[i + 1]
+    #:set k2 = REAL_KINDS[i + 1] if k1 == "sp" else REAL_KINDS[-1]
     #:set t2 = REAL_TYPES[i + 1]
     impure elemental function gpx_${t1[0]}$${k1}$(p, x) result(res)
     !
