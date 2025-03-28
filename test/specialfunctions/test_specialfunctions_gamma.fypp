@@ -20,7 +20,7 @@ module test_specialfunctions_gamma
     public :: collect_specialfunctions_gamma
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    ${t1}$, parameter :: tol_${k1}$ = 1000 * epsilon(1.0_${k1}$)
+    ${t1}$, parameter :: tol_${k1}$ = sqrt(epsilon(1.0_${k1}$))
     #:endfor
 
 contains
