@@ -1901,6 +1901,7 @@ Given a matrix \(A\), this function compute its matrix exponential \(E = \exp(A)
 `order` (optional): Shall be a non-negative `integer` value specifying the order of the Pade approximation. By default `order=10`. It is an `intent(in)` argument. 
 
 `err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument. 
+
 ### Return value
 
 The returned array `E` contains the Pade approximation of \(\exp(A)\).
