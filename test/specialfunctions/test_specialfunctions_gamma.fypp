@@ -193,7 +193,6 @@ contains
                        thr = tol_${k1}$, rel = .true.)
 
         end do
-        
         #:endif
         
     end subroutine test_gamma_${t1[0]}$${k1}$
