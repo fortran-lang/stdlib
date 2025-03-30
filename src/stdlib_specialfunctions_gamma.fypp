@@ -718,7 +718,7 @@ contains
 
                 if(mod(n, 2) == 0) then
 
-                    a = (1 - p - n / 2) * x
+                    a = (one - p - n / 2) * x
 
                 else
 
