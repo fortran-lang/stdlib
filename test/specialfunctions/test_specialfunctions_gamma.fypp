@@ -114,7 +114,6 @@ contains
         #:endif
 
         do i = 1, n
-            
             call check(error, log_factorial(x(i)), ans(i), "Integer kind "     &
                        //"${k1}$ failed", thr = tol_dp, rel = .true.)
 
@@ -194,7 +193,6 @@ contains
                        thr = tol_${k1}$, rel = .true.)
 
         end do
-        
         #:endif
         
     end subroutine test_gamma_${t1[0]}$${k1}$
