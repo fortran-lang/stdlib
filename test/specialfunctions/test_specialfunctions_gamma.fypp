@@ -80,42 +80,32 @@ contains
 
 
     #:for k1, t1 in INT_KINDS_TYPES
-
+    #:set k2, t2 = REAL_KINDS[-2], REAL_TYPES[-2]
     subroutine test_logfact_${t1[0]}$${k1}$(error)
-        type(error_type), allocatable, intent(out) :: error
-        integer, parameter :: n = 6
+        type(error_type), allocatable, intent(out) :: error        
         integer :: i
+        
+        integer, parameter :: xtest(*) = [0,1,2,4,5,7,12,20,100,500,7000,90000]
+        ${t2}$, parameter :: res(*) = [0.0_${k2}$, &
+                                       0.0_${k2}$, &
+                                       0.69314718055994_${k2}$, &
+                                       3.17805383034794_${k2}$, &
+                                       4.78749174278204_${k2}$, &
+                                       8.52516136106541_${k2}$, &
+                                       1.998721449566e1_${k2}$, &
+                                       4.233561646075e1_${k2}$, &
+                                       3.637393755555e2_${k2}$, &
+                                       2.611330458460e3_${k2}$, &
+                                       5.498100377941e4_${k2}$, &
+                                       9.366874681600e5_${k2}$]        
 
-        #:if k1 == "int8"
-
-        ${t1}$, parameter :: x(n) = [0_${k1}$, 1_${k1}$, 2_${k1}$, 4_${k1}$,   &
-                                     5_${k1}$, 100_${k1}$]
-        real(dp), parameter :: ans(n) = [0.0_dp, 0.0_dp, 0.69314718055994_dp, 3.17805383034794_dp,    &
-                                         4.78749174278204_dp, 3.637393755555e2_dp]
-
-        #:elif k1 == "int16"
-
-        ${t1}$, parameter :: x(n) = [0_${k1}$, 1_${k1}$, 2_${k1}$, 4_${k1}$,   &
-                                     7_${k1}$, 500_${k1}$]
-        real(dp), parameter :: ans(n) = [0.0_dp, 0.0_dp, 0.69314718055994_dp, 3.17805383034794_dp,    &
-                                         8.52516136106541_dp, 2.611330458460e3_dp]
-        #:elif k1 == "int32"
-
-        ${t1}$, parameter :: x(n) = [0_${k1}$, 1_${k1}$, 2_${k1}$, 4_${k1}$,   &
-                                     12_${k1}$, 7000_${k1}$]
-        real(dp), parameter :: ans(n) = [0.0_dp, 0.0_dp, 0.69314718055994_dp, 3.17805383034794_dp,    &
-                                         1.998721449566e1_dp, 5.498100377941e4_dp]
-        #:elif k1 == "int64"
-
-        ${t1}$, parameter :: x(n) = [0_${k1}$, 1_${k1}$, 2_${k1}$, 4_${k1}$,   &
-                                     20_${k1}$, 90000_${k1}$]
-        real(dp), parameter :: ans(n) = [0.0_dp, 0.0_dp, 0.69314718055994_dp, 3.17805383034794_dp,    &
-                                         4.233561646075e1_dp, 9.366874681600e5_dp]
-        #:endif
+        ${t1}$, parameter :: x(*)   = pack(xtest, xtest<huge(0_${k1}$))
+        ${t2}$, parameter :: ans(*) = pack(res  , xtest<huge(0_${k1}$))
+        integer, parameter :: n = size(x)
 
         do i = 1, n
             call check(error, log_factorial(x(i)), ans(i), "Integer kind "     &
-                       //"${k1}$ failed", thr = tol_dp, rel = .true.)
+                       //"${k1}$ failed", thr = tol_${k2}$, rel = .true.)
 
         end do
     end subroutine test_logfact_${t1[0]}$${k1}$
@@ -201,57 +191,46 @@ contains
 
     subroutine test_loggamma_${t1[0]}$${k1}$(error)
         type(error_type), allocatable, intent(out) :: error
-        integer, parameter :: n = 4
         integer :: i
         type(state_type) :: err
-
-        #:if k1 == "int8"
-
-        ${t1}$, parameter :: x(n) = [1_${k1}$, 2_${k1}$, 10_${k1}$, 47_${k1}$]
-        real(sp), parameter :: ans(n) = [0.0, 0.0, 1.28018274e1, 1.32952575e2]
-
-        #:elif k1 == "int16"
-
-        ${t1}$, parameter :: x(n) = [1_${k1}$, 2_${k1}$, 111_${k1}$, 541_${k1}$]
-        real(sp), parameter :: ans(n) = [0.0, 0.0, 4.10322777e2, 2.86151221e3]
-
-        #:elif k1 == "int32"
-
-        ${t1}$, parameter :: x(n) = [1_${k1}$, 2_${k1}$, 2021_${k1}$,          &
-                                     42031_${k1}$]
-        real(sp), parameter :: ans(n) = [0.0, 0.0, 1.33586470e4, 4.05433461e5]
-
-        #:elif k1 == "int64"
-
-        ${t1}$, parameter :: x(n) = [1_${k1}$, 2_${k1}$, 2021_${k1}$,          &
-                                     42031_${k1}$]
-        real(sp), parameter :: ans(n) = [0.0, 0.0, 1.33586470e4, 4.05433461e5]
-
-        #:elif t1[0] == "c"
-
-        ${t1}$, parameter :: x(n) = [(0.25_${k1}$, 0.25_${k1}$),               &
-                                     (0.5_${k1}$, -0.5_${k1}$),                &
-                                     (1.0_${k1}$, 1.0_${k1}$),                 &
-                                     (-1.254e1_${k1}$, -9.87_${k1}$)]
-
-        ${t1}$, parameter :: ans(n) =                                          &
-                    [(0.90447450949333889_${k1}$, -0.83887024394321282_${k1}$),&
-                     (0.11238724280962311_${k1}$, 0.75072920212205074_${k1}$), &
-                    (-0.65092319930185634_${k1}$, -0.30164032046753320_${k1}$),&
-                   (-4.7091788015763380e1_${k1}$, 1.4804627819235690e1_${k1}$)]
-        #:endif
-
-
+        
         #:if t1[0] == "i"
+        
+        integer, parameter :: xtest(*) = [1,2,10,47,111,541,2021,42031]
+        real(dp), parameter :: res(*) = [0.0_dp, &
+                                       0.0_dp, &
+                                       1.28018274e1_dp, &
+                                       1.32952575e2_dp, &
+                                       4.10322777e2_dp, &
+                                       2.86151221e3_dp, &
+                                       1.33586470e4_dp, &
+                                       4.05433461e5_dp]
+                                       
+        integer,  parameter :: x(*) = pack(xtest,xtest<huge(0_${k1}$))
+        real(dp), parameter :: ans(*) = pack(res,xtest<huge(0_${k1}$))
+        integer,  parameter :: n = size(x)
 
         do i = 1, n
-
+            print *, 'log ',log_gamma(x(i)),' ans=',ans(i),' tol=',tol_dp
             call check(error, log_gamma(x(i)), ans(i), "Integer kind ${k1}$ "  &
-              //"failed", thr = tol_sp, rel = .true.)
+              //"failed", thr = tol_dp, rel = .true.)
 
         end do
 
         #:elif t1[0] == "c"
+
+        ${t1}$, parameter :: x(*) = [(0.25_${k1}$, 0.25_${k1}$),               &
+                                     (0.5_${k1}$, -0.5_${k1}$),                &
+                                     (1.0_${k1}$, 1.0_${k1}$),                 &
+                                     (-1.254e1_${k1}$, -9.87_${k1}$)]
+
+        ${t1}$, parameter :: ans(*) =                                          &
+                    [(0.90447450949333889_${k1}$, -0.83887024394321282_${k1}$),&
+                     (0.11238724280962311_${k1}$, 0.75072920212205074_${k1}$), &
+                    (-0.65092319930185634_${k1}$, -0.30164032046753320_${k1}$),&
+                   (-4.7091788015763380e1_${k1}$, 1.4804627819235690e1_${k1}$)]
+        
+        integer, parameter :: n = size(x)
 
         do i = 1, n
 

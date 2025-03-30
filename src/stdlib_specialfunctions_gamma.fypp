@@ -331,7 +331,7 @@ contains
     ! Logarithm of gamma function for integer input
     !
         ${t1}$, intent(in) :: z
-        real :: res
+        real(dp) :: res
         ${t1}$ :: i
         ${t1}$, parameter :: zero = 0_${k1}$, one = 1_${k1}$, two = 2_${k1}$
 
@@ -350,7 +350,7 @@ contains
 
             do i = one, z - one
 
-               res = res + log(real(i))
+               res = res + log(real(i,dp))
 
             end do
 
@@ -512,14 +512,15 @@ contains
 
 
     #:for k1, t1 in INT_KINDS_TYPES
+    #:set k2, t2 = REAL_KINDS[-2], REAL_TYPES[-2]
     impure elemental function l_factorial_${t1[0]}$${k1}$(n) result(res)
     !
     ! Log(n!)
     !
         ${t1}$, intent(in) :: n
-        real(dp) :: res
+        ${t2}$ :: res
         ${t1}$, parameter :: zero = 0_${k1}$, one = 1_${k1}$, two = 2_${k1}$
-        real(dp), parameter :: zero_dp = 0.0_dp
+        ${t2}$, parameter :: zero_${k2}$ = 0.0_${k2}$, one_${k2}$ = 1.0_${k2}$
 
         if(n < zero) call error_stop("Error(l_factorial): Logarithm of"        &
             //" factorial function argument must be non-negative")
@@ -528,15 +529,15 @@ contains
 
         case (zero)
 
-            res = zero_dp
+            res = zero_${k2}$
 
         case (one)
 
-            res = zero_dp
+            res = zero_${k2}$
 
         case (two : )
 
-            res = l_gamma(n + 1, 1.0_dp)
+            res = l_gamma(n + 1, one_${k2}$)
 
         end select
     end function l_factorial_${t1[0]}$${k1}$
