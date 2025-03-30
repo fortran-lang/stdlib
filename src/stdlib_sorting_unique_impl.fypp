@@ -22,49 +22,44 @@ contains
         ${t1}$, intent(in) :: array(:)
         logical(lk), intent(in), optional :: sorted
         ${t2}$, allocatable :: unique_values(:)
-        
+
         ${t2}$ :: temp_array(size(array))
         logical :: mask(size(array))
-        integer :: i, j, n, unique_count
-        logical :: want_sorted
-        
-        want_sorted = optval(sorted, .false.)
-        
+        integer :: i, n
+        logical :: is_input_sorted
+
         n = size(array)
+        
+        ! Handle edge cases first
         if (n == 0) then
+            ! Return empty array for empty input
             allocate(unique_values(0))
             return
+        else if (n == 1) then
+            ! For single-element arrays, return that element directly
+            allocate(unique_values(1))
+            unique_values(1) = array(1)
+            return
         endif
-        
-        ! Create a temporary copy that may be sorted
-        if (want_sorted) then
-            temp_array = array
-            call sort(temp_array)
-        else
-            temp_array = array
-        endif
-        
+
+        ! Determine if the input is already sorted
+        is_input_sorted = optval(sorted, .false.)
+
+        ! Create a temporary copy and sort it if needed
+        temp_array = array
+        if (.not. is_input_sorted) call sort(temp_array)
+
         ! Find unique elements using a mask
         ! Start with first element always marked as unique
         mask(1) = .true.
-        
+
         ! Compare each element with previous to mark duplicates
-        do i = 2, n
+        do concurrent (i=2:n)
             mask(i) = temp_array(i) /= temp_array(i-1)
         end do
-        
-        ! Count unique elements and allocate result array
-        unique_count = count(mask)
-        allocate(unique_values(unique_count))
-        
-        ! Extract unique elements to result array
-        j = 0
-        do i = 1, n
-            if (mask(i)) then
-                j = j + 1
-                unique_values(j) = temp_array(i)
-            endif
-        end do
+
+        ! Extract unique elements to result array using pack
+        unique_values = pack(temp_array, mask)
     end function ${name1}$_unique
 
 #:endfor
