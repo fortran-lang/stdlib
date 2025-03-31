@@ -3,7 +3,7 @@ use, intrinsic :: iso_c_binding, only : c_int, c_long, c_ptr, c_null_ptr, c_int6
     c_f_pointer
 use stdlib_kinds, only: int64, dp, c_bool, c_char
 use stdlib_strings, only: to_c_char
-use stdlib_error, only: state_type, STDLIB_FS_ERROR
+use stdlib_error, only: state_type, STDLIB_SUCCESS, STDLIB_FS_ERROR
 implicit none
 private
 public :: sleep
@@ -110,9 +110,10 @@ public :: is_directory
 !!
 !!### Description
 !! 
-!! This subroutine deletes a specified file. If the file does not exist, or if it is a directory or inaccessible, 
-!! an error is raised. Errors are handled using the library's `state_type` mechanism. If the optional `err` argument 
-!! is not provided, exceptions trigger an `error stop`.
+!! This subroutine deletes a specified file. If the file is a directory or inaccessible, an error is raised.
+!! If the file does not exist, a warning is returned, but no error state. Errors are handled using the 
+!! library's `state_type` mechanism. If the optional `err` argument is not provided, exceptions trigger 
+!! an `error stop`.
 !!
 public :: delete_file
 
@@ -738,8 +739,8 @@ subroutine delete_file(path, err)
     ! Check if the path exists
     inquire(file=path, exist=file_exists)
     if (.not. file_exists) then
-        ! File does not exist, return error status
-        err0 = state_type(STDLIB_FS_ERROR,'Cannot delete',path,': file does not exist')
+        ! File does not exist, return non-error status
+        err0 = state_type(STDLIB_SUCCESS,path,' not deleted: file does not exist')
         call err0%handle(err)
         return
     endif

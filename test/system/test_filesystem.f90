@@ -79,7 +79,7 @@ contains
         ! Attempt to delete a file that doesn't exist
         call delete_file('non_existent_file.txt', state)
 
-        call check(error, state%error(), 'Error should be triggered for non-existent file')
+        call check(error, state%ok(), 'Error should not be triggered for non-existent file')
         if (allocated(error)) return
 
     end subroutine test_delete_file_non_existent
