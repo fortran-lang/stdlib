@@ -5,6 +5,8 @@ module test_linalg_expm
     use testdrive, only: error_type, check, new_unittest, unittest_type
     use stdlib_linalg_constants
     use stdlib_linalg, only: expm, eye, mnorm
+    use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
+         LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
 
     implicit none (type,external)
     
@@ -21,6 +23,7 @@ module test_linalg_expm
         
         #:for rk,rt,ri in RC_KINDS_TYPES
         tests = [tests, new_unittest("expm_${ri}$",test_expm_${ri}$)]
+        tests = [tests, new_unittest("Error-handling expm_${ri}$",test_error_handling_expm_${ri}$)]
         #:endfor
 
     end subroutine test_expm_computation
@@ -59,6 +62,39 @@ module test_linalg_expm
         if (allocated(error)) return
         return        
     end subroutine test_expm_${ri}$    
+    #:endfor    
+
+    !> Test error handler.
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    subroutine test_error_handling_expm_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        ! Problem dimension.
+        integer(ilp), parameter :: n = 5, m = 6
+        ! Test matrix.
+        ${rt}$ :: A(n, n), E(n, n)
+        type(linalg_state_type) :: err
+        integer(ilp) :: i
+
+        ! Initialize matrix.
+        A = 0.0_${rk}$
+        do i = 1, n-1
+            A(i, i+1) = m*1.0_${rk}$
+        enddo
+
+        ! Compute matrix exponential.
+        E = expm(A, order=-1, err=err)
+        ! Check result.
+        call check(error, err%error(), "Negative Pade order")
+        if (allocated(error)) return
+
+        ! Compute matrix exponential.
+        E = expm(A(:n, :n-1), err=err)
+        ! Check result.
+        call check(error, err%error(), "Invalid matrix size")
+        if (allocated(error)) return
+
+        return        
+    end subroutine test_error_handling_expm_${ri}$    
     #:endfor    
 
 end module test_linalg_expm

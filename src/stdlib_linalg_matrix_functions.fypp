@@ -40,17 +40,20 @@ contains
 
         ! Deal with optional args.
         order_ = 10 ; if (present(order)) order_ = order
+        print *, "inside expm :", order_
 
         ! Problem's dimension.
         m = size(A, 1) ; n = size(A, 2)
 
         if (m /= n) then
-            err = linalg_state_type(this,LINALG_VALUE_ERROR,'Invalid matrix size A=',[m, n])
+            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'Invalid matrix size A=',[m, n])
             call linalg_error_handling(err0, err)
+            return
         else if (order_ < 0) then
-            err = linalg_state_type(this, LINALG_VALUE_ERROR, 'Order of Pade approximation &
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'Order of Pade approximation &
                                     needs to be positive, order=', order_)
             call linalg_error_handling(err0, err)
+            return
         endif
 
         ! Compute the L-infinity norm.
@@ -100,11 +103,11 @@ contains
 
         ! Matrix squaring.
         block
-        ${rt}$ :: E_tmp(n, n)
-        do k = 1, s
-            E_tmp = E
-            call gemm("N", "N", n, n, n, one_${ri}$, E_tmp, n, E_tmp, n, zero_${ri}$, E, n)
-        enddo
+            ${rt}$ :: E_tmp(n, n)
+            do k = 1, s
+                E_tmp = E
+                call gemm("N", "N", n, n, n, one_${ri}$, E_tmp, n, E_tmp, n, zero_${ri}$, E, n)
+            enddo
         end block
         return
     contains
