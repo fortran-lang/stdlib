@@ -2,6 +2,7 @@
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 submodule (stdlib_linalg) stdlib_linalg_matrix_functions
     use stdlib_linalg_constants
+    use stdlib_linalg_blas, only: gemm
     use stdlib_linalg_lapack, only: gesv
     use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
@@ -97,10 +98,14 @@ contains
             call linalg_error_handling(err0, err)
         end block
 
-        ! This loop should eventually be replaced by a fast matrix_power function.
+        ! Matrix squaring.
+        block
+        ${rt}$ :: E_tmp(n, n)
         do k = 1, s
-            E = matmul(E, E)
+            E_tmp = E
+            call gemm("N", "N", n, n, n, one_${ri}$, E_tmp, n, E_tmp, n, zero_${ri}$, E, n)
         enddo
+        end block
         return
     contains
         elemental subroutine handle_gesv_info(info,lda,n,nrhs,err)
