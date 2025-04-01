@@ -5,6 +5,7 @@
 #:set STRING_TYPES_ALT_NAME = list(zip(STRING_TYPES, STRING_TYPES, STRING_KINDS))
 #:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"], ["character(len=len(array))"], ["char"]))
 #:set BITSET_TYPES_ALT_NAME = list(zip(BITSET_TYPES, BITSET_TYPES, BITSET_KINDS))
+#:set COMPLEX_TYPES_ALT_NAME = list(zip(CMPLX_TYPES, CMPLX_TYPES, CMPLX_KINDS))
 
 #:set INT_INDEX_TYPES_ALT_NAME = list(zip(["int_index", "int_index_low"], ["integer(int_index)", "integer(int_index_low)"], ["default", "low"]))
 
@@ -13,6 +14,7 @@
 #! This approach allows us to have the same code for all input types.
 #:set IRSCB_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME &
     & + BITSET_TYPES_ALT_NAME
+#:set IRSC_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME + COMPLEX_TYPES_ALT_NAME
 
 !! Licensing:
 !!
@@ -136,15 +138,12 @@ module stdlib_sorting
     use stdlib_bitsets, only: bitset_64, bitset_large, &
         assignment(=), operator(>), operator(>=), operator(<), operator(<=)
         
-    use stdlib_sorting_unique, only: unique
-    
     implicit none
     private
 
     integer, parameter, public :: int_index = int64 !! Integer kind for indexing
     integer, parameter, public :: int_index_low = int32 !! Integer kind for indexing using less than `huge(1_int32)` values
     
-    public :: unique
 
 ! Constants for use by tim_sort
     integer, parameter :: &
@@ -162,6 +161,52 @@ module stdlib_sorting
         integer(int_index) :: base = 0
         integer(int_index) :: len = 0
     end type run_type
+
+    interface unique
+!! Version: experimental
+!!
+!! The generic function implementing the `unique` algorithm to return
+!! a new array containing only the unique values from the input array.
+!! Its use has the syntax:
+!!
+!!     result = unique(array[, sorted])
+!!
+!! with the arguments:
+!!
+!! * array: the rank 1 array from which to extract unique values. It is an `intent(in)`
+!!   argument of any of the types `integer(int8)`, `integer(int16)`,
+!!   `integer(int32)`, `integer(int64)`, `real(real32)`, `real(real64)`,
+!!   `real(real128)`, `complex(real32)`, `complex(real64)`, `complex(real128)`,
+!!   `character(*)`, or `type(string_type)`.
+!!
+!! * sorted (optional): shall be a scalar of type default logical. It
+!!   is an `intent(in)` argument that indicates whether the input array
+!!   is already sorted. If present with value `.true.`, the function will
+!!   skip sorting the input, which can save computational time. Default is `.false.`.
+!!   The output will always have duplicate elements removed and will be in
+!!   the same order as the input (if sorted) or in sorted order (if not already sorted).
+!!
+!!#### Example
+!!
+!!```fortran
+!!    ...
+!!    ! Extract unique values from an array
+!!    integer :: x(5) = [1, 2, 3, 3, 4]
+!!    integer, allocatable :: y(:)
+!!    
+!!    y = unique(x)      ! y will be [1, 2, 3, 4]
+!!    
+!!    ! Use with optional sorted argument when input is already sorted
+!!    integer :: z(8) = [1, 2, 2, 3, 5, 5, 7, 8]
+!!    integer, allocatable :: u(:)
+!!    
+!!    u = unique(z, sorted=.true.)  ! Skip sorting, u will be [1, 2, 3, 5, 7, 8]
+!!    ...
+!!```
+#:for t1, t2, name1 in IRSC_TYPES_ALT_NAME
+        module procedure ${name1}$_unique
+#:endfor
+    end interface unique
 
     public ord_sort
 !! Version: experimental
