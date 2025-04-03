@@ -18,7 +18,7 @@ program example_init
   
   ! User can optional specify hasher type and slots_bits instead of using default values.  
   ! Number of slots in the hashmap will initially equal 2**slots_bits.   
-  ! The hashmap will autmoatically re-size as needed, however for better performance, a rule of thumb is to size so that number of slots is ~2X expected number of entries.
+  ! The hashmap will automatically re-size as needed; however for better performance, a rule of thumb is to size so that number of slots is ~2X expected number of entries.
   ! In this example with slots_bits=10, there will initially be 1024 slots in the map.  
   call map%init(hasher=fnv_1_hasher, slots_bits=10)
   call map%map_entry('key', 'value')
