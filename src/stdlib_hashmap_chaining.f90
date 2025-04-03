@@ -551,10 +551,7 @@ contains
         character(*), parameter :: procedure = 'MAP_ENTRY'
 
         ! Check that map is initialized.  
-        if (.not. map % initialized) then
-            call init_chaining_map( map )
-            map % initialized = .true.
-        endif
+        if (.not. map % initialized) init_chaining_map( map )
         
         hash_val = map % hasher( key )
 
