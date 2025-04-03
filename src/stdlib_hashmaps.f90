@@ -19,15 +19,9 @@ module stdlib_hashmaps
     use stdlib_hashmap_wrappers, only: &
         copy_key,                &
         fibonacci_hash,          &
-        fnv_1_hasher,            &
-        fnv_1a_hasher,           &
-        free_key,                &
-        get,                     &
+        default_hasher => fnv_1_hasher,            &
         hasher_fun,              &
         operator(==),            &
-        seeded_nmhash32_hasher,  &
-        seeded_nmhash32x_hasher, &
-        seeded_water_hasher,     &
         set,                     &
         key_type,                &
         int_hash
@@ -39,7 +33,6 @@ module stdlib_hashmaps
 !! Public data_types
     public ::                  &
         chaining_hashmap_type, &
-        hashmap_type,          &
         open_hashmap_type
 
 !! Values that parameterize David Chase's empirical SLOT expansion code
@@ -98,9 +91,10 @@ module stdlib_hashmaps
 !! Number of elements in the free_list
         integer(int32)     :: nbits = default_bits
 !! Number of bits used to address the slots
-        procedure(hasher_fun), pointer, nopass :: hasher => fnv_1_hasher
+        procedure(hasher_fun), pointer, nopass :: hasher => default_hasher
 !! Hash function
-
+        logical            :: initialized = .false. 
+        
     contains
         procedure, non_overridable, pass(map) :: calls
         procedure, non_overridable, pass(map) :: entries
@@ -209,7 +203,7 @@ module stdlib_hashmaps
 !
             import hashmap_type, hasher_fun, int32
             class(hashmap_type), intent(out)     :: map
-            procedure(hasher_fun)                 :: hasher
+            procedure(hasher_fun), optional      :: hasher
             integer, intent(in), optional         :: slots_bits
             integer(int32), intent(out), optional :: status
         end subroutine init_map
@@ -456,7 +450,7 @@ module stdlib_hashmaps
 !!             greater than max_bits
 !
             class(chaining_hashmap_type), intent(out)  :: map
-            procedure(hasher_fun)                      :: hasher
+            procedure(hasher_fun), optional            :: hasher
             integer, intent(in), optional              :: slots_bits
             integer(int32), intent(out), optional      :: status
         end subroutine init_chaining_map
@@ -706,7 +700,7 @@ module stdlib_hashmaps
 !!             greater than max_bits
 
             class(open_hashmap_type), intent(out)      :: map
-            procedure(hasher_fun)                      :: hasher
+            procedure(hasher_fun), optional            :: hasher
             integer, intent(in), optional              :: slots_bits
             integer(int32), intent(out), optional      :: status
         end subroutine init_open_map

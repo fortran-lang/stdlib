@@ -1,7 +1,7 @@
 program example_hashmaps_get_all_keys
   use stdlib_kinds, only: int32
   use stdlib_hashmaps, only: chaining_hashmap_type
-  use stdlib_hashmap_wrappers, only: fnv_1_hasher, get, &
+  use stdlib_hashmap_wrappers, only: get, &
                                      key_type, set
   implicit none
   type(chaining_hashmap_type) :: map
@@ -11,8 +11,6 @@ program example_hashmaps_get_all_keys
   integer(int32) :: i
   
   character(:), allocatable :: str
-
-  call map%init(fnv_1_hasher)
 
   ! adding key-value pairs to the map
   call set(key, "initial key")

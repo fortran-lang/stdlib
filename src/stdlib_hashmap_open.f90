@@ -410,7 +410,7 @@ contains
 !!             greater than max_bits
 
         class(open_hashmap_type), intent(out)      :: map
-        procedure(hasher_fun)                      :: hasher
+        procedure(hasher_fun), optional            :: hasher
         integer, intent(in), optional              :: slots_bits
         integer(int32), intent(out), optional      :: status
 
@@ -424,8 +424,11 @@ contains
         map % call_count = 0
         map % probe_count = 0
         map % total_probes = 0
-
-        map % hasher => hasher
+        
+        ! Check if user has specified a hasher other than the default hasher.
+        if (present(hasher)) then
+            map % hasher => hasher        
+        endif
 
         if ( present(slots_bits) ) then
             if ( slots_bits < default_bits .OR. &
@@ -533,7 +536,13 @@ contains
         integer(int_hash)  :: hash_val
         integer(int_index) :: inmap, offset, test_slot
         character(*), parameter :: procedure = 'MAP_ENTRY'
-
+        
+        ! Check that map is initialized.  
+        if (.not. map % initialized) then
+            call init_open_map( map )
+            map % initialized = .true.
+        endif
+        
         hash_val = map % hasher( key )
 
         if ( map % probe_count > map_probe_factor * map % call_count .or.   &
