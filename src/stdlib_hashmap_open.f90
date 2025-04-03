@@ -494,6 +494,8 @@ contains
         end do
 
         call extend_map_entry_pool(map % cache)
+        
+        map % initialized = .true.
 
         if (present(status) ) status = success
 

@@ -505,6 +505,8 @@ contains
 
         call extend_map_entry_pool(map)
 
+        map % initialized = .true.
+        
         if (present(status) ) status = success
 
     end subroutine init_chaining_map
