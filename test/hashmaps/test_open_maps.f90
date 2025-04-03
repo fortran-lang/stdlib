@@ -49,7 +49,7 @@ program test_open_maps
 
     test_8_bits(:) = transfer( rand_object, 0_int8, test_size )
 
-    ! Test implicit initalization by leaving skipping init call for first test.
+    ! Test implicit initalization by skipping init call for first test.
     call input_random_data( map, test_16, 'FNV-1', "16 byte words" )
     call test_inquire_data( map, test_16, 'FNV-1', "16 byte words" )
     call test_get_data( map, test_16, 'FNV-1', '16 byte words' )
