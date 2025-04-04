@@ -1,7 +1,7 @@
 program example_get_other_data
   use stdlib_kinds, only: int8, int64
   use stdlib_hashmaps, only: chaining_hashmap_type, int_index
-  use stdlib_hashmap_wrappers, only: fnv_1_hasher, key_type, set, get
+  use stdlib_hashmap_wrappers, only: key_type, set
   implicit none
   logical                     :: conflict
   type(key_type)              :: key
@@ -13,9 +13,6 @@ program example_get_other_data
   class(*), allocatable       :: data
   integer(int8), allocatable  :: key_array(:)
   integer                     :: int_scalar
-  
-  ! Initialize hashmap
-  call map%init(fnv_1_hasher)
   
   ! Hashmap functions are setup to store scalar value types (other).  Use a dervied
   ! type wrapper to store arrays.
