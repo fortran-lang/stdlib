@@ -449,9 +449,7 @@ contains
         map % total_probes = 0
 
         ! Check if user has specified a hasher other than the default hasher.
-        if (present(hasher)) then
-            map % hasher => hasher      
-        endif
+        if (present(hasher)) map % hasher => hasher      
             
         call free_chaining_map( map )
 
