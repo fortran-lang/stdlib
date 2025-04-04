@@ -331,7 +331,7 @@ module stdlib_specialfunctions
     interface tanh_grad
         !! Version: experimental
         !!
-        !! gradient of the gaussian function
+        !! gradient of the hyperbolic tangent function
         #:for rk, rt in REAL_KINDS_TYPES
         elemental module function tanh_grad_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
