@@ -5,8 +5,11 @@
 
 submodule (stdlib_intrinsics) stdlib_intrinsics_matmul
     use stdlib_linalg_blas, only: gemm
+    use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_VALUE_ERROR
     use stdlib_constants
     implicit none
+
+    character(len=*), parameter :: this = "stdlib_matmul"
 
 contains
 
@@ -122,41 +125,76 @@ contains
 
     end function matmul_chain_mult_${s}$_4
 
-    pure module function stdlib_matmul_${s}$ (m1, m2, m3, m4, m5) result(r)
+    pure module subroutine stdlib_matmul_sub_${s}$ (res, m1, m2, m3, m4, m5, err)
+        ${t}$, intent(out), allocatable :: res(:,:)
         ${t}$, intent(in) :: m1(:,:), m2(:,:)
         ${t}$, intent(in), optional :: m3(:,:), m4(:,:), m5(:,:)
-        ${t}$, allocatable :: r(:,:), temp(:,:), temp1(:,:)
+        type(linalg_state_type), intent(out), optional :: err
+        ${t}$, allocatable :: temp(:,:), temp1(:,:)
         integer :: p(6), num_present, m, n, k
         integer, allocatable :: s(:,:)
+
+        type(linalg_state_type) :: err0
 
         p(1) = size(m1, 1)
         p(2) = size(m2, 1)
         p(3) = size(m2, 2)
 
+        if (size(m1, 2) /= p(2)) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'matrices m1, m2 not of compatible sizes')
+            call linalg_error_handling(err0, err)
+            allocate(res(0, 0))
+            return
+        end if
+
         num_present = 2
         if (present(m3)) then
+
+            if (size(m3, 1) /= p(3)) then
+                err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'matrices m2, m3 not of compatible sizes')
+                call linalg_error_handling(err0, err)
+                allocate(res(0, 0))
+                return
+            end if
+
             p(3) = size(m3, 1)
             p(4) = size(m3, 2)
             num_present = num_present + 1
         end if
         if (present(m4)) then
+
+            if (size(m4, 1) /= p(4)) then
+                err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'matrices m3, m4 not of compatible sizes')
+                call linalg_error_handling(err0, err)
+                allocate(res(0, 0))
+                return
+            end if
+
             p(4) = size(m4, 1)
             p(5) = size(m4, 2)
             num_present = num_present + 1
         end if
         if (present(m5)) then
+
+            if (size(m5, 1) /= p(5)) then
+                err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'matrices m4, m5 not of compatible sizes')
+                call linalg_error_handling(err0, err)
+                allocate(res(0, 0))
+                return
+            end if
+
             p(5) = size(m5, 1)
             p(6) = size(m5, 2)
             num_present = num_present + 1
         end if
 
-        allocate(r(p(1), p(num_present + 1)))
+        allocate(res(p(1), p(num_present + 1)))
 
         if (num_present == 2) then
             m = p(1)
             n = p(3)
             k = p(2)
-            call gemm('N', 'N', m, n, k, one_${s}$, m1, m, m2, k, zero_${s}$, r, m)
+            call gemm('N', 'N', m, n, k, one_${s}$, m1, m, m2, k, zero_${s}$, res, m)
             return
         end if
 
@@ -166,10 +204,10 @@ contains
         s = matmul_chain_order(p(1: num_present + 1))
 
         if (num_present == 3) then
-            r = matmul_chain_mult_${s}$_3(m1, m2, m3, 1, s, p(1:4))
+            res = matmul_chain_mult_${s}$_3(m1, m2, m3, 1, s, p(1:4))
             return
         else if (num_present == 4) then
-            r = matmul_chain_mult_${s}$_4(m1, m2, m3, m4, 1, s, p(1:5))
+            res = matmul_chain_mult_${s}$_4(m1, m2, m3, m4, 1, s, p(1:5))
             return
         end if
 
@@ -182,7 +220,7 @@ contains
                 m = p(1)
                 n = p(6)
                 k = p(2)
-                call gemm('N', 'N', m, n, k, one_${s}$, m1, m, temp, k, zero_${s}$, r, m)
+                call gemm('N', 'N', m, n, k, one_${s}$, m1, m, temp, k, zero_${s}$, res, m)
             case (2)
                 ! (m1*m2)*(m3*m4*m5)
                 m = p(1)
@@ -195,7 +233,7 @@ contains
 
                 k = n
                 n = p(6)
-                call gemm('N', 'N', m, n, k, one_${s}$, temp, m, temp1, k, zero_${s}$, r, m)
+                call gemm('N', 'N', m, n, k, one_${s}$, temp, m, temp1, k, zero_${s}$, res, m)
             case (3)
                 ! (m1*m2*m3)*(m4*m5)
                 temp = matmul_chain_mult_${s}$_3(m1, m2, m3, 3, s, p)
@@ -208,18 +246,35 @@ contains
 
                 k = m
                 m = p(1)
-                call gemm('N', 'N', m, n, k, one_${s}$, temp, m, temp1, k, zero_${s}$, r, m)
+                call gemm('N', 'N', m, n, k, one_${s}$, temp, m, temp1, k, zero_${s}$, res, m)
             case (4)
                 ! (m1*m2*m3*m4)*m5
                 temp = matmul_chain_mult_${s}$_4(m1, m2, m3, m4, 1, s, p)
                 m = p(1)
                 n = p(6)
                 k = p(5)
-                call gemm('N', 'N', m, n, k, one_${s}$, temp, m, m5, k, zero_${s}$, r, m)
+                call gemm('N', 'N', m, n, k, one_${s}$, temp, m, m5, k, zero_${s}$, res, m)
             case default
-                error stop "stdlib_matmul: error: unexpected s(i,j)"
+                error stop "stdlib_matmul: internal error: unexpected s(i,j)"
         end select
 
+    end subroutine stdlib_matmul_sub_${s}$
+
+    pure module function stdlib_matmul_pure_${s}$ (m1, m2, m3, m4, m5) result(r)
+        ${t}$, intent(in) :: m1(:,:), m2(:,:)
+        ${t}$, intent(in), optional :: m3(:,:), m4(:,:), m5(:,:)
+        ${t}$, allocatable :: r(:,:) 
+
+        call stdlib_matmul_sub(r, m1, m2, m3, m4, m5)
+    end function stdlib_matmul_pure_${s}$
+
+    module function stdlib_matmul_${s}$ (m1, m2, m3, m4, m5, err) result(r)
+        ${t}$, intent(in) :: m1(:,:), m2(:,:)
+        ${t}$, intent(in), optional :: m3(:,:), m4(:,:), m5(:,:)
+        type(linalg_state_type), intent(out) :: err
+        ${t}$, allocatable :: r(:,:)
+
+        call stdlib_matmul_sub(r, m1, m2, m3, m4, m5, err=err)
     end function stdlib_matmul_${s}$
 
 #:endfor
