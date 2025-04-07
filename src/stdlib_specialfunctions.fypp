@@ -355,7 +355,7 @@ module stdlib_specialfunctions
         #:for rank in RANKS
         pure module function softmax_r${rank}$_${rk}$( x , dim ) result( y )
             ${rt}$, intent(in) :: x${ranksuffix(rank)}$
-            ${rt}$ :: y${shape('x', rank)}$
+            ${rt}$ :: y${shape_from_array_size('x', rank)}$
             integer, intent(in), optional :: dim
         end function
         #:endfor
@@ -377,7 +377,7 @@ module stdlib_specialfunctions
         #:for rank in RANKS
         pure module function softmax_grad_r${rank}$_${rk}$( x , dim ) result( y )
             ${rt}$, intent(in) :: x${ranksuffix(rank)}$
-            ${rt}$ :: y${shape('x', rank)}$
+            ${rt}$ :: y${shape_from_array_size('x', rank)}$
             integer, intent(in), optional :: dim
         end function
         #:endfor
@@ -399,7 +399,7 @@ module stdlib_specialfunctions
         #:for rank in RANKS
         pure module function logsoftmax_r${rank}$_${rk}$( x , dim ) result( y )
             ${rt}$, intent(in) :: x${ranksuffix(rank)}$
-            ${rt}$ :: y${shape('x', rank)}$
+            ${rt}$ :: y${shape_from_array_size('x', rank)}$
             integer, intent(in), optional :: dim
         end function
         #:endfor

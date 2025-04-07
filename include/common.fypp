@@ -230,29 +230,6 @@ ${prefix + joinstr.join([line.strip() for line in txt.split("\n")]) + suffix}$
   #:endif
 #:enddef
 
-#! Brace enclosed, comma separated Fortran expressions for a shape.
-#!
-#! It defines an output variable with the same shape as the input variable.
-#!
-#! Args:
-#!   varname (str): Name of the variable to be used as origin
-#!   origrank (int): Rank of the original variable
-#!
-#! Returns:
-#!   Shape expression enclosed in braces, so that it can be used as suffix to
-#!   define array shapes in declarations.
-#!
-#:def shape(varname, origrank)
-  #:assert origrank > 0
-  #:if origrank > 1
-    #:call join_lines(joinstr=", ", prefix="(", suffix=")")
-      #:for i in range(1, origrank+1)
-        size(${varname}$, ${i}$)
-      #:endfor
-    #:endcall
-  #:endif
-#:enddef
-
 
 #! Generates a routine name from a generic name, rank, type and kind
 #!
