@@ -160,7 +160,7 @@ contains
         elsewhere
             y_ref = a * x
         end where
-        y = Leaky_relu( x , a )
+        y = leaky_relu( x , a )
 
         call check(error, norm2(y-y_ref) < n*tol_sp )
         if (allocated(error)) return
@@ -217,8 +217,8 @@ contains
                        0.46070181, 0.02943479, 0.17557538,&
                        0.10541313, 0.33946349, 0.34804323 ] ,[3,3,3] )
 
-        !> Softmax on dim = 1
-        y = Softmax(x,dim=1)
+        !> softmax on dim = 1
+        y = softmax(x,dim=1)
 
         y_ref = reshape( [ 0.319712639, 0.303528070, 0.376759291,&
                            0.423455358, 0.343743294, 0.232801422,&
@@ -235,8 +235,8 @@ contains
         call check(error, norm2(y-y_ref) < tol_sp )
         if (allocated(error)) return
 
-        !> Softmax on dim = 2
-        y = Softmax(x,dim=2)
+        !> softmax on dim = 2
+        y = softmax(x,dim=2)
 
         y_ref = reshape( [ 0.393646270, 0.392350882, 0.510482967,&
                            0.409795105, 0.349239051, 0.247922391,&
@@ -253,8 +253,8 @@ contains
         call check(error, norm2(y-y_ref) < tol_sp )
         if (allocated(error)) return
 
-        !> Softmax on dim = 3
-        y = Softmax(x,dim=3)
+        !> softmax on dim = 3
+        y = softmax(x,dim=3)
 
         y_ref = reshape( [ 0.412202179, 0.347835541, 0.501081109,&
                            0.431399941, 0.418453932, 0.310344934,&
@@ -290,8 +290,8 @@ contains
                       -1.16956090927124 ,-0.845042765140533,-1.364316940307617,&
                       -1.679381608963013,-1.497506022453308,-1.194215059280396 ] ,[3,3,3] )
         
-        !> LogSoftmax on dim = 1
-        y = LogSoftmax(x,dim=1)
+        !> logsoftmax on dim = 1
+        y = logsoftmax(x,dim=1)
 
         y_ref = reshape( [ -0.856636286,-2.40192604,-0.723877013,&
                            -2.49238253,-0.534826934,-1.10407722 ,&
@@ -305,8 +305,8 @@ contains
                            -1.16514850,-0.840630412,-1.35990453 ,&
                            -1.34127355,-1.15939808,-0.856107056 ],[3,3,3] )
 
-        !> LogSoftmax on dim = 2
-        y = LogSoftmax(x,dim=2)
+        !> logsoftmax on dim = 2
+        y = logsoftmax(x,dim=2)
 
         y_ref = reshape( [ -0.666278005,-2.15167999, -0.581566215,&
                            -2.63222337 ,-0.614779949,-1.29196548 ,&
@@ -323,8 +323,8 @@ contains
         call check(error, norm2(y-y_ref) < tol_sp )
         if (allocated(error)) return
         
-        !> LogSoftmax on dim = 3
-        y = LogSoftmax(x,dim=3)
+        !> logsoftmax on dim = 3
+        y = logsoftmax(x,dim=3)
         
         y_ref = reshape( [ -1.50595474 , -2.22700500 ,-0.478398114,&
                            -2.09693313 , -1.01544499 ,-1.52940571 ,&

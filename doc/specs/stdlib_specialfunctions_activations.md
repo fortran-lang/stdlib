@@ -203,7 +203,7 @@ Elemental function
 
 The function returns a value with the same type and kind as input argument.
 
-## `Leaky_relu` - Leaky Rectified Linear Unit function
+## `leaky_relu` - leaky Rectified Linear Unit function
 
 ### Status
 
@@ -242,7 +242,7 @@ The function returns a value with the same type and kind as input argument.
 {!example/specialfunctions_activations/example_leaky_relu.f90!}
 ```
 
-## `Leaky_relu_grad` - Gradient of the Leaky Rectified Linear Unit function
+## `leaky_relu_grad` - Gradient of the leaky Rectified Linear Unit function
 
 ### Status
 
@@ -617,7 +617,7 @@ The function returns a value with the same type and kind as input argument.
 {!example/specialfunctions_activations/example_step.f90!}
 ```
 
-## `Step_grad` - Gradient of the Step function
+## `step_grad` - Gradient of the Step function
 
 ### Status
 
@@ -644,7 +644,7 @@ Elemental function
 
 The function returns a value with the same type and kind as input argument.
 
-## `Softmax` - Softmax function
+## `softmax` - softmax function
 
 ### Status
 
@@ -652,7 +652,7 @@ Experimental
 
 ### Description
 
-Computes the Softmax function:
+Computes the softmax function:
 $$f(x) = \frac{\exp(x)-\text{max}(x_j)}{\sum_j{\exp(x)-\text{max}(x_j)}}$$
 
 ### Syntax
@@ -677,7 +677,7 @@ The function returns an array with the same rank and kind as the input argument 
 {!example/specialfunctions_activations/example_softmax.f90!}
 ```
 
-## `Softmax_grad` - Gradient of the Softmax function
+## `softmax_grad` - Gradient of the softmax function
 
 ### Status
 
@@ -685,8 +685,8 @@ Experimental
 
 ### Description
 
-Computes the gradient of the Softmax function:
-$$f(x,dim) = \text{Softmax}(x,dim)*(1-\text{Softmax}(x,dim)) $$
+Computes the gradient of the softmax function:
+$$f(x,dim) = \text{softmax}(x,dim)*(1-\text{softmax}(x,dim)) $$
 
 ### Syntax
 
@@ -705,7 +705,7 @@ Pure function for ranks 1 to 4.
 
 The function returns a value with the same type and kind as input argument.
 
-## `Softplus` - Softplus function
+## `softplus` - softplus function
 
 ### Status
 
@@ -713,7 +713,7 @@ Experimental
 
 ### Description
 
-Computes the Softplus function:
+Computes the softplus function:
 $$f(x) = \log(\exp(x)+1)$$
 
 ### Syntax
@@ -737,7 +737,7 @@ The function returns a value with the same type and kind as input argument.
 {!example/specialfunctions_activations/example_softplus.f90!}
 ```
 
-## `Softplus_grad` - Gradient of the Softplus function
+## `softplus_grad` - Gradient of the softplus function
 
 ### Status
 
@@ -745,7 +745,7 @@ Experimental
 
 ### Description
 
-Computes the gradient of the Softplus function:
+Computes the gradient of the softplus function:
 $$f(x) = \frac{\exp(x)}{\exp(x)+1} $$
 
 ### Syntax

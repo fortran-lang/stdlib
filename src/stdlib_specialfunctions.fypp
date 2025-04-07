@@ -120,7 +120,7 @@ module stdlib_specialfunctions
     interface leaky_relu
         !! Version: experimental
         !!
-        !! Leaky Rectified linear unit function
+        !! leaky Rectified linear unit function
         !> ([Specification](../page/specs/stdlib_specialfunctions.html#leaky_relu))
         #:for rk, rt in REAL_KINDS_TYPES
         elemental module function leaky_relu_${rk}$( x , a ) result( y )
@@ -135,7 +135,7 @@ module stdlib_specialfunctions
     interface leaky_relu_grad
         !! Version: experimental
         !!
-        !! Gradient of the Leaky Rectified linear unit function
+        !! Gradient of the leaky Rectified linear unit function
         !> ([Specification](../page/specs/stdlib_specialfunctions.html#leaky_relu_grad))
         #:for rk, rt in REAL_KINDS_TYPES
         elemental module function leaky_relu_grad_${rk}$( x , a ) result( y )
@@ -341,19 +341,19 @@ module stdlib_specialfunctions
     end interface
     public :: tanh_grad
 
-    interface Softmax
+    interface softmax
         !! Version: experimental
         !!
-        !! Softmax function. Available for ranks 1 to 4
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#Softmax))
+        !! softmax function. Available for ranks 1 to 4
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#softmax))
         #:for rk, rt in REAL_KINDS_TYPES
-        pure module function Softmax_r1_${rk}$( x , dim ) result( y )
+        pure module function softmax_r1_${rk}$( x , dim ) result( y )
             ${rt}$, intent(in) :: x(:)
             ${rt}$ :: y(size(x))
             integer, intent(in), optional :: dim
         end function
         #:for rank in RANKS
-        pure module function Softmax_r${rank}$_${rk}$( x , dim ) result( y )
+        pure module function softmax_r${rank}$_${rk}$( x , dim ) result( y )
             ${rt}$, intent(in) :: x${ranksuffix(rank)}$
             ${rt}$ :: y${shape('x', rank)}$
             integer, intent(in), optional :: dim
@@ -363,19 +363,19 @@ module stdlib_specialfunctions
     end interface
     public :: softmax
 
-    interface Softmax_grad
+    interface softmax_grad
         !! Version: experimental
         !!
         !! Gradient of the softmax function. Available for ranks 1 to 4
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#Softmax_grad))
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#softmax_grad))
         #:for rk, rt in REAL_KINDS_TYPES
-        pure module function Softmax_grad_r1_${rk}$( x , dim ) result( y )
+        pure module function softmax_grad_r1_${rk}$( x , dim ) result( y )
             ${rt}$, intent(in) :: x(:)
             ${rt}$ :: y(size(x))
             integer, intent(in), optional :: dim
         end function
         #:for rank in RANKS
-        pure module function Softmax_grad_r${rank}$_${rk}$( x , dim ) result( y )
+        pure module function softmax_grad_r${rank}$_${rk}$( x , dim ) result( y )
             ${rt}$, intent(in) :: x${ranksuffix(rank)}$
             ${rt}$ :: y${shape('x', rank)}$
             integer, intent(in), optional :: dim
@@ -383,21 +383,21 @@ module stdlib_specialfunctions
         #:endfor
         #:endfor
     end interface
-    public :: Softmax_grad
+    public :: softmax_grad
 
-    interface LogSoftmax
+    interface logsoftmax
         !! Version: experimental
         !!
-        !! Softmax function. Available for ranks 1 to 4
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#LogSoftmax))
+        !! softmax function. Available for ranks 1 to 4
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#logsoftmax))
         #:for rk, rt in REAL_KINDS_TYPES
-        pure module function LogSoftmax_r1_${rk}$( x, dim ) result( y )
+        pure module function logsoftmax_r1_${rk}$( x, dim ) result( y )
             ${rt}$, intent(in) :: x(:)
             ${rt}$ :: y(size(x))
             integer, intent(in), optional :: dim
         end function
         #:for rank in RANKS
-        pure module function LogSoftmax_r${rank}$_${rk}$( x , dim ) result( y )
+        pure module function logsoftmax_r${rank}$_${rk}$( x , dim ) result( y )
             ${rt}$, intent(in) :: x${ranksuffix(rank)}$
             ${rt}$ :: y${shape('x', rank)}$
             integer, intent(in), optional :: dim
@@ -405,35 +405,35 @@ module stdlib_specialfunctions
         #:endfor
         #:endfor
     end interface
-    public :: LogSoftmax
+    public :: logsoftmax
 
-    interface Softplus
+    interface softplus
         !! Version: experimental
         !!
-        !! Softplus function
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#Softplus))
+        !! softplus function
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#softplus))
         #:for rk, rt in REAL_KINDS_TYPES
-        elemental module function Softplus_${rk}$( x ) result( y )
+        elemental module function softplus_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
             ${rt}$ :: y
         end function
         #:endfor
     end interface
-    public :: Softplus
+    public :: softplus
 
-    interface Softplus_grad
+    interface softplus_grad
         !! Version: experimental
         !!
         !! Gradient of the softplus function
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#Softplus_grad))
+        !> ([Specification](../page/specs/stdlib_specialfunctions.html#softplus_grad))
         #:for rk, rt in REAL_KINDS_TYPES
-        elemental module function Softplus_grad_${rk}$( x ) result( y )
+        elemental module function softplus_grad_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
             ${rt}$ :: y
         end function
         #:endfor
     end interface
-    public :: Softplus_grad
+    public :: softplus_grad
 
     interface ftanh 
         !! Version: experimental
