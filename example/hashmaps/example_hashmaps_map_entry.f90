@@ -1,7 +1,7 @@
 program example_map_entry
   use, intrinsic:: iso_fortran_env, only: int8, int64
   use stdlib_hashmaps, only: chaining_hashmap_type
-  use stdlib_hashmap_wrappers, only: fnv_1_hasher, key_type, set
+  use stdlib_hashmap_wrappers, only: key_type, set
   implicit none
   type(chaining_hashmap_type) :: map
   type(key_type)      :: key
@@ -16,7 +16,7 @@ program example_map_entry
   
   ! Initialize hashmap with 2^10 slots.
   ! Hashmap will dynamically increase size if needed.
-  call map%init(fnv_1_hasher, slots_bits=10)
+  call map%init(slots_bits=10)
   
   ! Explicitly set key using set function
   call set(key, [1, 2, 3])

@@ -48,7 +48,7 @@ program test_chaining_maps
 
     test_8_bits(:) = transfer( rand_object, 0_int8, test_size )
 
-    call map % init( fnv_1_hasher, slots_bits=10 )
+    ! Test implicit initalization by skipping init call for first test.
     call input_random_data( map, test_16, 'FNV-1', "16 byte words" )
     call test_inquire_data( map, test_16, 'FNV-1', "16 byte words" )
     call test_get_all_keys( map, test_16, 'FNV-1', '16 byte words' )
@@ -57,7 +57,7 @@ program test_chaining_maps
     call report_hash_statistics( map, 'FNV-1', '16 byte words' )
     call report_removal_times( map, test_16, 'FNV-1', '16 byte words' )
 
-    call map % init( fnv_1_hasher, slots_bits=10 )
+    call map % init()   ! Test default options
     call input_random_data( map, test_256, 'FNV-1', "256 byte words" )
     call test_inquire_data( map, test_256, 'FNV-1', "256 byte words" )
     call test_get_data( map, test_256, 'FNV-1', '256 byte words' )
