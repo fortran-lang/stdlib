@@ -304,3 +304,4 @@ Exceptions trigger an `error stop` unless the optional `err` argument is provide
 ```fortran
 {!example/io/example_get_file.f90!}
 ```
+
