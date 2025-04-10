@@ -721,6 +721,67 @@ contains
         end do
     end subroutine
 
+    !
+    !   This test reproduces the true/false table found at
+    !   https://en.cppreference.com/w/cpp/string/byte
+    !
+    subroutine test_ascii_table
+        integer :: i, j
+        logical :: table(15,12)
+
+        ! loop through functions
+        do i = 1, 12
+            table(1,i)  = all([(validate(j,i), j=0,8)])
+            table(2,i)  = validate(9,i)
+            table(3,i)  = all([(validate(j,i), j=10,13)])
+            table(4,i)  = all([(validate(j,i), j=14,31)])
+            table(5,i)  = validate(32,i)
+            table(6,i)  = all([(validate(j,i), j=33,47)])
+            table(7,i)  = all([(validate(j,i), j=48,57)])
+            table(8,i)  = all([(validate(j,i), j=58,64)])
+            table(9,i)  = all([(validate(j,i), j=65,70)])
+            table(10,i) = all([(validate(j,i), j=71,90)])
+            table(11,i) = all([(validate(j,i), j=91,96)])
+            table(12,i) = all([(validate(j,i), j=97,102)])
+            table(13,i) = all([(validate(j,i), j=103,122)])
+            table(14,i) = all([(validate(j,i), j=123,126)])
+            table(15,i) = validate(127,i)
+        end do
+
+        ! output table for verification
+        write(*,'(5X,12(I4))') (i,i=1,12)
+        do j = 1, 15
+            write(*,'(I3,2X,12(L4),2X,I3)') j, (table(j,i),i=1,12), count(table(j,:))
+        end do
+        write(*,'(5X,12(I4))') (count(table(:,i)),i=1,12)
+ 
+        contains
+
+            elemental logical function validate(ascii_code, func)
+                integer, intent(in) :: ascii_code, func
+                character(len=1) :: c
+            
+                c = achar(ascii_code)
+            
+                select case (func)
+                    case (1);     validate = is_control(c)
+                    case (2);     validate = is_printable(c)
+                    case (3);     validate = is_white(c)
+                    case (4);     validate = is_blank(c)
+                    case (5);     validate = is_graphical(c)
+                    case (6);     validate = is_punctuation(c)
+                    case (7);     validate = is_alphanum(c)
+                    case (8);     validate = is_alpha(c)
+                    case (9);     validate = is_upper(c)
+                    case (10);    validate = is_lower(c)
+                    case (11);    validate = is_digit(c)
+                    case (12);    validate = is_hex_digit(c)
+                    case default; validate = .false.
+                end select
+            end function validate
+    
+    end subroutine test_ascii_table
+
     subroutine test_to_lower_string(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
