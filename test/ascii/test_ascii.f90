@@ -52,6 +52,7 @@ contains
             new_unittest("to_lower_long", test_to_lower_long), &
             new_unittest("to_upper_short", test_to_upper_short), &
             new_unittest("to_upper_long", test_to_upper_long), &
+            new_unittest("ascii_table", test_ascii_table), &
             new_unittest("to_upper_string", test_to_upper_string), &
             new_unittest("to_lower_string", test_to_lower_string), &
             new_unittest("to_title_string", test_to_title_string), &
@@ -725,9 +726,9 @@ contains
     !   This test reproduces the true/false table found at
     !   https://en.cppreference.com/w/cpp/string/byte
     !
-    subroutine test_ascii_table
+    subroutine ascii_table(table)
+        logical, intent(out) :: table(15,12)
         integer :: i, j
-        logical :: table(15,12)
 
         ! loop through functions
         do i = 1, 12
@@ -780,6 +781,34 @@ contains
                 end select
             end function validate
     
+    end subroutine ascii_table
+
+    subroutine test_ascii_table(error)
+        type(error_type), allocatable, intent(out) :: error
+        logical :: arr(15, 12)
+        logical, parameter :: ascii_class_table(15,12) = transpose(reshape([ &
+        ! iscntrl  isprint  isspace  isblank  isgraph  ispunct  isalnum  isalpha  isupper  islower  isdigit  isxdigit
+        .true.,   .false., .false., .false., .false., .false., .false., .false., .false., .false., .false., .false., & ! 0–8
+        .true.,   .false., .true.,  .true.,  .false., .false., .false., .false., .false., .false., .false., .false., & ! 9
+        .true.,   .false., .true.,  .false., .false., .false., .false., .false., .false., .false., .false., .false., & ! 10–13
+        .true.,   .false., .false., .false., .false., .false., .false., .false., .false., .false., .false., .false., & ! 14–31
+        .false.,  .true.,  .true.,  .true.,  .false., .false., .false., .false., .false., .false., .false., .false., & ! 32 (space)
+        .false.,  .true.,  .false., .false., .true.,  .true.,  .false., .false., .false., .false., .false., .false., & ! 33–47
+        .false.,  .true.,  .false., .false., .true.,  .false., .true.,  .false., .false., .false., .true.,  .true.,  & ! 48–57
+        .false.,  .true.,  .false., .false., .true.,  .true.,  .false., .false., .false., .false., .false., .false., & ! 58–64
+        .false.,  .true.,  .false., .false., .true.,  .false., .true.,  .true.,  .true.,  .false., .false., .true.,  & ! 65–70
+        .false.,  .true.,  .false., .false., .true.,  .false., .true.,  .true.,  .true.,  .false., .false., .false., & ! 71–90
+        .false.,  .true.,  .false., .false., .true.,  .true.,  .false., .false., .false., .false., .false., .false., & ! 91–96
+        .false.,  .true.,  .false., .false., .true.,  .false., .true.,  .true.,  .false., .true.,  .false., .true.,  & ! 97–102
+        .false.,  .true.,  .false., .false., .true.,  .false., .true.,  .true.,  .false., .true.,  .false., .false., & ! 103–122
+        .false.,  .true.,  .false., .false., .true.,  .true.,  .false., .false., .false., .false., .false., .false., & ! 123–126
+        .true.,   .false., .false., .false., .false., .false., .false., .false., .false., .false., .false., .false.  & ! 127
+        ], shape=[12,15]))
+
+        call ascii_table(arr)
+        call check(error, all(arr .eqv. ascii_class_table), "ascii table was not accurately generated")
+
+        if (allocated(error)) return
     end subroutine test_ascii_table
 
     subroutine test_to_lower_string(error)
