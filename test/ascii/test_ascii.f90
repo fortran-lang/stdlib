@@ -808,7 +808,6 @@ contains
         call ascii_table(arr)
         call check(error, all(arr .eqv. ascii_class_table), "ascii table was not accurately generated")
 
-        if (allocated(error)) return
     end subroutine test_ascii_table
 
     subroutine test_to_lower_string(error)
