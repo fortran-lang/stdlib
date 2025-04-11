@@ -52,6 +52,7 @@ contains
             new_unittest("to_lower_long", test_to_lower_long), &
             new_unittest("to_upper_short", test_to_upper_short), &
             new_unittest("to_upper_long", test_to_upper_long), &
+            new_unittest("ascii_table", test_ascii_table), &
             new_unittest("to_upper_string", test_to_upper_string), &
             new_unittest("to_lower_string", test_to_lower_string), &
             new_unittest("to_title_string", test_to_title_string), &
@@ -725,52 +726,27 @@ contains
     !   This test reproduces the true/false table found at
     !   https://en.cppreference.com/w/cpp/string/byte
     !
-    subroutine test_ascii_table
+    subroutine ascii_table(table)
+        logical, intent(out) :: table(15,12)
         integer :: i, j
-        logical :: table(15,12)
-
-        abstract interface
-            pure logical function validation_func_interface(c)
-                character(len=1), intent(in) :: c
-            end function
-        end interface
-
-        type :: proc_pointer_array
-            procedure(validation_func_interface), pointer, nopass :: pcf
-        end type proc_pointer_array
-
-        type(proc_pointer_array) :: pcfs(12)
-
-        pcfs(1)%pcf => is_control
-        pcfs(2)%pcf => is_printable
-        pcfs(3)%pcf => is_white
-        pcfs(4)%pcf => is_blank
-        pcfs(5)%pcf => is_graphical
-        pcfs(6)%pcf => is_punctuation
-        pcfs(7)%pcf => is_alphanum
-        pcfs(8)%pcf => is_alpha
-        pcfs(9)%pcf => is_upper
-        pcfs(10)%pcf => is_lower
-        pcfs(11)%pcf => is_digit
-        pcfs(12)%pcf => is_hex_digit
 
         ! loop through functions
         do i = 1, 12
-            table(1,i)  = all([(pcfs(i)%pcf(achar(j)),j=0,8)])      ! control codes
-            table(2,i)  = pcfs(i)%pcf(achar(9))                     ! tab
-            table(3,i)  = all([(pcfs(i)%pcf(achar(j)),j=10,13)])    ! whitespaces
-            table(4,i)  = all([(pcfs(i)%pcf(achar(j)),j=14,31)])    ! control codes
-            table(5,i)  = pcfs(i)%pcf(achar(32))                    ! space
-            table(6,i)  = all([(pcfs(i)%pcf(achar(j)),j=33,47)])    ! !"#$%&'()*+,-./
-            table(7,i)  = all([(pcfs(i)%pcf(achar(j)),j=48,57)])    ! 0123456789
-            table(8,i)  = all([(pcfs(i)%pcf(achar(j)),j=58,64)])    ! :;<=>?@
-            table(9,i)  = all([(pcfs(i)%pcf(achar(j)),j=65,70)])    ! ABCDEF
-            table(10,i) = all([(pcfs(i)%pcf(achar(j)),j=71,90)])    ! GHIJKLMNOPQRSTUVWXYZ
-            table(11,i) = all([(pcfs(i)%pcf(achar(j)),j=91,96)])    ! [\]^_`
-            table(12,i) = all([(pcfs(i)%pcf(achar(j)),j=97,102)])   ! abcdef
-            table(13,i) = all([(pcfs(i)%pcf(achar(j)),j=103,122)])  ! ghijklmnopqrstuvwxyz
-            table(14,i) = all([(pcfs(i)%pcf(achar(j)),j=123,126)])  ! {|}~
-            table(15,i) = pcfs(i)%pcf(achar(127))                   ! backspace character
+            table(1,i)  = all([(validate(j,i), j=0,8)])
+            table(2,i)  = validate(9,i)
+            table(3,i)  = all([(validate(j,i), j=10,13)])
+            table(4,i)  = all([(validate(j,i), j=14,31)])
+            table(5,i)  = validate(32,i)
+            table(6,i)  = all([(validate(j,i), j=33,47)])
+            table(7,i)  = all([(validate(j,i), j=48,57)])
+            table(8,i)  = all([(validate(j,i), j=58,64)])
+            table(9,i)  = all([(validate(j,i), j=65,70)])
+            table(10,i) = all([(validate(j,i), j=71,90)])
+            table(11,i) = all([(validate(j,i), j=91,96)])
+            table(12,i) = all([(validate(j,i), j=97,102)])
+            table(13,i) = all([(validate(j,i), j=103,122)])
+            table(14,i) = all([(validate(j,i), j=123,126)])
+            table(15,i) = validate(127,i)
         end do
 
         ! output table for verification
@@ -779,6 +755,59 @@ contains
             write(*,'(I3,2X,12(L4),2X,I3)') j, (table(j,i),i=1,12), count(table(j,:))
         end do
         write(*,'(5X,12(I4))') (count(table(:,i)),i=1,12)
+ 
+        contains
+
+            elemental logical function validate(ascii_code, func)
+                integer, intent(in) :: ascii_code, func
+                character(len=1) :: c
+            
+                c = achar(ascii_code)
+            
+                select case (func)
+                    case (1);     validate = is_control(c)
+                    case (2);     validate = is_printable(c)
+                    case (3);     validate = is_white(c)
+                    case (4);     validate = is_blank(c)
+                    case (5);     validate = is_graphical(c)
+                    case (6);     validate = is_punctuation(c)
+                    case (7);     validate = is_alphanum(c)
+                    case (8);     validate = is_alpha(c)
+                    case (9);     validate = is_upper(c)
+                    case (10);    validate = is_lower(c)
+                    case (11);    validate = is_digit(c)
+                    case (12);    validate = is_hex_digit(c)
+                    case default; validate = .false.
+                end select
+            end function validate
+    
+    end subroutine ascii_table
+
+    subroutine test_ascii_table(error)
+        type(error_type), allocatable, intent(out) :: error
+        logical :: arr(15, 12)
+        logical, parameter :: ascii_class_table(15,12) = transpose(reshape([ &
+        ! iscntrl  isprint  isspace  isblank  isgraph  ispunct  isalnum  isalpha  isupper  islower  isdigit  isxdigit
+        .true.,   .false., .false., .false., .false., .false., .false., .false., .false., .false., .false., .false., & ! 0–8
+        .true.,   .false., .true.,  .true.,  .false., .false., .false., .false., .false., .false., .false., .false., & ! 9
+        .true.,   .false., .true.,  .false., .false., .false., .false., .false., .false., .false., .false., .false., & ! 10–13
+        .true.,   .false., .false., .false., .false., .false., .false., .false., .false., .false., .false., .false., & ! 14–31
+        .false.,  .true.,  .true.,  .true.,  .false., .false., .false., .false., .false., .false., .false., .false., & ! 32 (space)
+        .false.,  .true.,  .false., .false., .true.,  .true.,  .false., .false., .false., .false., .false., .false., & ! 33–47
+        .false.,  .true.,  .false., .false., .true.,  .false., .true.,  .false., .false., .false., .true.,  .true.,  & ! 48–57
+        .false.,  .true.,  .false., .false., .true.,  .true.,  .false., .false., .false., .false., .false., .false., & ! 58–64
+        .false.,  .true.,  .false., .false., .true.,  .false., .true.,  .true.,  .true.,  .false., .false., .true.,  & ! 65–70
+        .false.,  .true.,  .false., .false., .true.,  .false., .true.,  .true.,  .true.,  .false., .false., .false., & ! 71–90
+        .false.,  .true.,  .false., .false., .true.,  .true.,  .false., .false., .false., .false., .false., .false., & ! 91–96
+        .false.,  .true.,  .false., .false., .true.,  .false., .true.,  .true.,  .false., .true.,  .false., .true.,  & ! 97–102
+        .false.,  .true.,  .false., .false., .true.,  .false., .true.,  .true.,  .false., .true.,  .false., .false., & ! 103–122
+        .false.,  .true.,  .false., .false., .true.,  .true.,  .false., .false., .false., .false., .false., .false., & ! 123–126
+        .true.,   .false., .false., .false., .false., .false., .false., .false., .false., .false., .false., .false.  & ! 127
+        ], shape=[12,15]))
+
+        call ascii_table(arr)
+        call check(error, all(arr .eqv. ascii_class_table), "ascii table was not accurately generated")
+
     end subroutine test_ascii_table
 
     subroutine test_to_lower_string(error)
