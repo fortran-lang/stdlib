@@ -108,13 +108,13 @@ end function
 elemental module function gelu_approx_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
     ${rt}$ :: y
-    y = 0.5_${rk}$ * x * (1._${rk}$ + ferf(x * isqrt2_${rk}$))
+    y = 0.5_${rk}$ * x * (1._${rk}$ + fast_erf(x * isqrt2_${rk}$))
 end function
 
 elemental module function gelu_approx_grad_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
     ${rt}$ :: y
-    y = 0.5_${rk}$ * (1._${rk}$ + ferf(x * isqrt2_${rk}$) )
+    y = 0.5_${rk}$ * (1._${rk}$ + fast_erf(x * isqrt2_${rk}$) )
     y = y + x * isqrt2_${rk}$ * exp( - 0.5_${rk}$ * x**2 )
 end function
 
@@ -194,24 +194,6 @@ elemental module function step_grad_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
     ${rt}$ :: y
     y = 0._${rk}$
-end function
-
-#:endfor
-
-!==================================================
-! tanh
-!==================================================
-#:for rk, rt in REAL_KINDS_TYPES
-elemental module function tanh_${rk}$( x ) result( y )
-    ${rt}$, intent(in) :: x
-    ${rt}$ :: y
-    y = ftanh(x)
-end function
-
-elemental module function tanh_grad_${rk}$( x ) result( y )
-    ${rt}$, intent(in) :: x
-    ${rt}$ :: y
-    y = 1._${rk}$ - ftanh(x)**2
 end function
 
 #:endfor
@@ -352,7 +334,8 @@ end function
 !==================================================
 
 #:for rk, rt in REAL_KINDS_TYPES
-elemental module function ftanh_${rk}$( x ) result( y )
+! Source: https://fortran-lang.discourse.group/t/fastgpt-faster-than-pytorch-in-300-lines-of-fortran/5385/31
+elemental module function fast_tanh_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
     ${rt}$ :: y
     ${rt}$ :: x2, a, b
@@ -363,7 +346,14 @@ elemental module function ftanh_${rk}$( x ) result( y )
     y = merge( a / b , sign(1._${rk}$,x) , x2 <= 25._${rk}$ )
 end function
 
-elemental module function ferf_${rk}$( x ) result( y )
+elemental module function fast_tanh_grad_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    y = 1._${rk}$ - fast_tanh(x)**2
+end function
+
+! Source: https://fortran-lang.discourse.group/t/fastgpt-faster-than-pytorch-in-300-lines-of-fortran/5385/31
+elemental module function fast_erf_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
     ${rt}$ :: y
     ${rt}$ :: abs_x

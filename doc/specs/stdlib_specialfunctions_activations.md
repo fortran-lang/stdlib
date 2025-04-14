@@ -763,3 +763,84 @@ Elemental function
 ### Return value
 
 The function returns a value with the same type and kind as input argument.
+
+## `Fast tanh` - Approximation of the hyperbolic tangent function
+
+### Status
+
+Experimental
+
+### Description
+
+Computes an approximated but faster solution to:
+$$f(x)=\tanh(x)$$
+
+### Syntax
+
+`result = ` [[stdlib_specialfunctions(module):fast_tanh(interface)]] ` (x)`
+
+### Class
+
+Elemental function
+
+### Arguments
+
+`x`: Shall be a scalar or array of any `real` kind. 
+
+### Return value
+
+The function returns a value with the same type and kind as input argument.
+
+## `fast_tanh_grad` - Gradient of the approximation of the hyperbolic tangent function
+
+### Status
+
+Experimental
+
+### Description
+
+Computes the gradient of the `fast_tanh` function:
+$$f(x)=1 - \fast_tanh(x)^2$$
+
+### Syntax
+
+`result = ` [[stdlib_specialfunctions(module):fast_tanh_grad(interface)]] ` (x)`
+
+### Class
+
+Elemental function
+
+### Arguments
+
+`x`: Shall be a scalar or array of any `real` kind. 
+
+### Return value
+
+The function returns a value with the same type and kind as input argument.
+
+## `Fast erf` - Approximation of the error function
+
+### Status
+
+Experimental
+
+### Description
+
+Computes an approximated but faster solution to:
+$$f(x)=\erf(x)$$
+
+### Syntax
+
+`result = ` [[stdlib_specialfunctions(module):fast_erf(interface)]] ` (x)`
+
+### Class
+
+Elemental function
+
+### Arguments
+
+`x`: Shall be a scalar or array of any `real` kind. 
+
+### Return value
+
+The function returns a value with the same type and kind as input argument.

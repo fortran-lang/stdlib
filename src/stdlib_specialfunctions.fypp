@@ -315,32 +315,6 @@ module stdlib_specialfunctions
     end interface
     public :: step_grad
 
-    interface tanh
-        !! Version: experimental
-        !!
-        !! gaussian function
-        #:for rk, rt in REAL_KINDS_TYPES
-        elemental module function tanh_${rk}$( x ) result( y )
-            ${rt}$, intent(in) :: x
-            ${rt}$ :: y
-        end function
-        #:endfor
-    end interface
-    public :: tanh
-
-    interface tanh_grad
-        !! Version: experimental
-        !!
-        !! gradient of the hyperbolic tangent function
-        #:for rk, rt in REAL_KINDS_TYPES
-        elemental module function tanh_grad_${rk}$( x ) result( y )
-            ${rt}$, intent(in) :: x
-            ${rt}$ :: y
-        end function
-        #:endfor
-    end interface
-    public :: tanh_grad
-
     interface softmax
         !! Version: experimental
         !!
@@ -435,32 +409,43 @@ module stdlib_specialfunctions
     end interface
     public :: softplus_grad
 
-    interface ftanh 
+    interface fast_tanh 
         !! Version: experimental
         !!
         !! Fast approximation of the tanh function
-        !! Source: https://fortran-lang.discourse.group/t/fastgpt-faster-than-pytorch-in-300-lines-of-fortran/5385/31
         #:for rk, rt in REAL_KINDS_TYPES
-        elemental module function ftanh_${rk}$( x ) result( y )
+        elemental module function fast_tanh_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
             ${rt}$ :: y
         end function
         #:endfor
     end interface
-    public :: ftanh
+    public :: fast_tanh
 
-    interface ferf 
+    interface fast_tanh_grad
+        !! Version: experimental
+        !!
+        !! gradient of the hyperbolic tangent function
+        #:for rk, rt in REAL_KINDS_TYPES
+        elemental module function fast_tanh_grad_${rk}$( x ) result( y )
+            ${rt}$, intent(in) :: x
+            ${rt}$ :: y
+        end function
+        #:endfor
+    end interface
+    public :: fast_tanh_grad
+
+    interface fast_erf 
         !! Version: experimental
         !!
         !! Fast approximation of the erf function
-        !! Source: https://fortran-lang.discourse.group/t/fastgpt-faster-than-pytorch-in-300-lines-of-fortran/5385/31
         #:for rk, rt in REAL_KINDS_TYPES
-        elemental module function ferf_${rk}$( x ) result( y )
+        elemental module function fast_erf_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x
             ${rt}$ :: y
         end function
         #:endfor
     end interface
-    public :: ferf
+    public :: fast_erf
 
 end module stdlib_specialfunctions
