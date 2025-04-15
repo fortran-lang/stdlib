@@ -763,7 +763,7 @@ type. Each of these types are described below.
 
 The `hashmap_type` abstract type serves as the parent type for the two
 types `chaining_hashmap_type` and `open_hashmap_type`. It defines
-seven private components:
+eight private components:
 
 * `call_count` - the number of procedure calls on the map;
 
@@ -781,6 +781,8 @@ seven private components:
   resizing or initialization; and
 
 * `hasher` - a pointer to the hash function used by the map.
+
+* `initialized` - track if map has been initialized
 
 It also defines five non-overridable procedures:
 
@@ -1074,7 +1076,7 @@ are listed below.
 
 Procedure to initialize a chaining hash map:
 
-* `map % init( hasher[, slots_bits, status] )` - Routine
+* `map % init( [hasher, slots_bits, status] )` - Routine
   to initialize a chaining hash map.
 
 Procedure to modify the structure of a map:
@@ -1295,7 +1297,7 @@ Initializes a `hashmap_type` object.
 
 ##### Syntax
 
-`call map % ` [[hashmap_type(type):init(bound)]] `( hasher [, slots_bits, status ] )`
+`call map % ` [[hashmap_type(type):init(bound)]] `( [hasher, slots_bits, status ] )`
 
 ##### Class
 
@@ -1308,9 +1310,10 @@ Subroutine
   `intent(out)` argument. It will 
   be a hash map used to store and access the entries.
 
-`hasher`: shall be a procedure with interface `hash_fun`.
+`hasher`: (optional): shall be a procedure with interface `hash_fun`.
   It is an `intent(in)` argument. It is the procedure to be used to
-  generate the hashes for the table from the keys of the entries.
+  generate the hashes for the table from the keys of the entries. 
+  Defaults to fnv_1_hasher if not provided.
 
 `slots_bits` (optional): shall be a scalar default integer 
   expression. It is an `intent(in)` argument. The initial number of
