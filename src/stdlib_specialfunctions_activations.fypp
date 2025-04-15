@@ -1,6 +1,7 @@
 #:include "common.fypp"
 #:set RANKS = range(2, MAXRANK + 1)
 submodule(stdlib_specialfunctions) stdlib_specialfunctions_activations
+    use stdlib_intrinsics, only: sum => stdlib_sum
     implicit none
     
     #:for rk, rt in REAL_KINDS_TYPES
@@ -333,8 +334,8 @@ end function
 ! Fast intrinsics for accelerated activations
 !==================================================
 
-#:for rk, rt in REAL_KINDS_TYPES
 ! Source: https://fortran-lang.discourse.group/t/fastgpt-faster-than-pytorch-in-300-lines-of-fortran/5385/31
+#:for rk, rt in REAL_KINDS_TYPES
 elemental module function fast_tanh_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
     ${rt}$ :: y
@@ -352,7 +353,6 @@ elemental module function fast_tanh_grad_${rk}$( x ) result( y )
     y = 1._${rk}$ - fast_tanh(x)**2
 end function
 
-! Source: https://fortran-lang.discourse.group/t/fastgpt-faster-than-pytorch-in-300-lines-of-fortran/5385/31
 elemental module function fast_erf_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x
     ${rt}$ :: y
