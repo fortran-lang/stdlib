@@ -14,8 +14,173 @@ intrinsic character variables and constants.
 
 ## Constants provided by `stdlib_ascii`
 
-@note Specification of constants is currently incomplete.
+### `NUL`
 
+Null character
+
+### `SOH`
+
+Start Of Heading Character
+
+### `STX`
+
+Start Of Text character
+
+### `ETX`
+
+End Of Text character
+
+### `EOT`
+
+End Of Transmission character
+
+### `ENQ`
+
+Enquiry character
+
+### `ACK`
+
+Acknowledge character
+
+### `BEL`
+
+Bell character
+
+### `BS`
+
+Backspace character
+
+### `TAB`
+
+Horizontal Tab character
+
+### `LF`
+
+Line Feed character
+
+### `VT`
+
+Vertical Tab character
+
+### `FF`
+
+Form Feed character
+
+### `CR`
+
+Carriage Return character
+
+### `SO`
+
+Shift Out character
+
+### `SI`
+
+Shift In character
+
+### `DLE`
+
+Data Link Escape character
+
+### `DC1`
+
+Device Control 1 character
+
+### `DC2`
+
+Device Control 2 character
+
+### `DC3`
+
+Device Control 3 character
+
+### `DC4`
+
+Device Control 4 character
+
+### `NAK`
+
+Negative Acknowledge character
+
+### `SYN`
+
+Synchronous Idle character
+
+### `ETB`
+
+End of Transmission Block character
+
+### `CAN`
+
+Cancel character
+
+### `EM`
+
+End of Medium character
+
+### `SUB`
+
+Substitute character
+
+### `ESC`
+
+Escape character
+
+### `FS`
+
+File separator character
+
+### `GS`
+
+Group Separator character
+
+### `RS`
+
+Record Separator character
+
+### `US`
+
+Unit separator character
+
+### `DEL`
+
+Delete character
+
+### `fullhex_digits`
+
+All the hexadecimal digits (0-9, A-F, a-f)
+
+### `hex_digits`
+
+All the numerical and uppercase hexadecimal digits (0-9, A-F)
+
+### `lowerhex_digits`
+
+All the numerical and lowercase hexadecimal digits (0-9, a-f)
+
+### `digits`
+
+base 10 digits (0-9)
+
+### `octal_digits`
+
+base 8 digits (0-7)
+
+### `letters`
+
+Uppercase and lowercase letters of the english alphabet (A-Z, a-z)
+
+### `uppercase`
+
+Uppercase english albhabets (A-Z)
+
+### `lowercase`
+
+Lowercase english albhabets (a-z)
+
+### `whitespace`
+
+All the ascii whitespace characters (space, horizontal tab, vertical tab, carriage return, line feed, form feed)
 
 ## Specification of the `stdlib_ascii` procedures
 
