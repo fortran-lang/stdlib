@@ -16,7 +16,7 @@ module stdlib_io
   implicit none
   private
   ! Public API
-  public :: loadtxt, savetxt, open, get_line, get_file
+  public :: loadtxt, savetxt, open, get_line, get_file, print_array
 
   !! version: experimental 
   !!
@@ -99,6 +99,22 @@ module stdlib_io
     !! ([Specification](../page/specs/stdlib_io.html#description_2))
     #:for k1, t1 in KINDS_TYPES
       module procedure savetxt_${t1[0]}$${k1}$
+    #:endfor
+  end interface
+
+  interface print_array
+    !! version: experimental
+    !!
+    !! Prints a 2D array to an output unit
+    !! ([Specification](../page/specs/stdlib_io.html#print_array))
+    #:for k1, t1 in KINDS_TYPES
+      module subroutine print_array_${t1[0]}$${k1}$(array, unit, fmt, delimiter, brief)
+        ${t1}$, intent(in) :: array(:, :)
+        integer, intent(in), optional :: unit
+        character(len=*), intent(in), optional :: fmt
+        character(len=1), intent(in), optional :: delimiter
+        logical, intent(in), optional :: brief
+      end subroutine print_array_${t1[0]}$${k1}$
     #:endfor
   end interface
 

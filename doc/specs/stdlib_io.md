@@ -305,3 +305,38 @@ Exceptions trigger an `error stop` unless the optional `err` argument is provide
 {!example/io/example_get_file.f90!}
 ```
 
+## `print_array` - Print an array to an output unit
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine interface prints a 2D array to a specified output unit.
+
+### Syntax
+
+`call [[stdlib_io(module):print_array(subroutine)]] (array[, unit][, fmt][, delimiter][, brief])`
+
+### Class
+
+Subroutine
+
+### Arguments
+
+`array`: Shall be a 2D array of `integer`, `real`, or `complex` type. It is an `intent(in)` argument.
+
+`unit`: Shall be an integer containing the output unit. It is an `intent(in)` argument. The default is `6` (standard output).
+
+`fmt`: Shall be a character string containing the format for printing the array. It is an `intent(in)` argument. The default is based on [the Formatting constants](#formatting-constants).
+
+`delimiter`: Shall be a character string of length 1 containing the delimiter between array elements. It is an `intent(in)` argument. The default is a `" "` (space).
+
+`brief`: Shall be a logical flag. If `.true.`, the array is printed in a brief format. The default is `.true.`.
+
+### Example
+
+```fortran
+{!./example/io/example_print_array.f90}
+```
