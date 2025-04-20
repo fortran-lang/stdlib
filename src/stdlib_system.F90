@@ -84,7 +84,7 @@ public :: kill
 public :: elapsed
 public :: is_windows
 
-public :: get_console_width
+public :: get_terminal_size
 
 !! version: experimental
 !!
@@ -550,14 +550,16 @@ interface
         integer(process_ID) :: ID
     end function process_get_ID
 
-    !! Returns the width of the console window.
+    !! Returns the size of the terminal window.
     !!
     !! ### Returns:
-    !! - **integer**: The width of the console window.
+    !! - **columns**: The number of columns in the terminal window.
+    !! - **lines**: The number of lines in the terminal window.
     !!
     !! Note: This function performs a detailed runtime inspection, so it has non-negligible overhead.
-    integer function get_console_width() bind(C)
-    end function get_console_width
+    subroutine get_terminal_size(columns, lines) bind(C)
+        integer, intent(out) :: columns, lines
+    end subroutine get_terminal_size
 
 end interface
 

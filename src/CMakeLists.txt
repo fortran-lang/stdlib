@@ -112,7 +112,7 @@ set(SRC
     stdlib_hashmap_open.f90
     stdlib_logger.f90
     stdlib_sorting_radix_sort.f90
-    stdlib_system_get_console_width.c
+    stdlib_system_get_terminal_size.c
     stdlib_system_subprocess.c
     stdlib_system_subprocess.F90
     stdlib_system.F90

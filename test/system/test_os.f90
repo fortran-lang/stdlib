@@ -1,7 +1,7 @@
 module test_os
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_system, only: get_runtime_os, OS_WINDOWS, OS_UNKNOWN, OS_TYPE, is_windows, null_device, &
-                             get_console_width
+                             get_terminal_size
     implicit none
 
 contains
@@ -12,23 +12,26 @@ contains
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
-            new_unittest('test_get_console_width', test_get_console_width), &
+            new_unittest('test_get_terminal_size', test_get_terminal_size), &
             new_unittest('test_get_runtime_os', test_get_runtime_os), &
             new_unittest('test_is_windows', test_is_windows), &
             new_unittest('test_null_device', test_null_device) &
         ]
     end subroutine collect_suite
 
-    subroutine test_get_console_width(error)
+    subroutine test_get_terminal_size(error)
         type(error_type), allocatable, intent(out) :: error
-        integer :: width
+        integer :: columns, lines
 
-        !> Get console width
-        width = get_console_width()
+        !> Get terminal size
+        call get_terminal_size(columns, lines)
 
-        call check(error, width > 0, "Console width is not positive")
+        call check(error, columns > 0, "Terminal width is not positive")
+        if (allocated(error)) return
 
-    end subroutine test_get_console_width
+        call check(error, lines > 0, "Terminal height is not positive")
+
+    end subroutine test_get_terminal_size
 
     subroutine test_get_runtime_os(error)
         type(error_type), allocatable, intent(out) :: error

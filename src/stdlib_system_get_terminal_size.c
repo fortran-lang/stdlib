@@ -7,22 +7,25 @@
 #include <unistd.h>
 #endif
 
-int get_console_width()
+void get_terminal_size(int *columns, int *lines)
 {
-    int width = 80; // default value
+    *columns = -1;
+    *lines = -1;
+
 #ifdef _WIN32
-    CONSOLE_SCREEN_BUFFER_INFO csbi;
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
     if (GetConsoleScreenBufferInfo(hConsole, &csbi))
     {
-        width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+        *columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+        *lines = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
     }
 #else
     struct winsize w;
     if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == 0)
     {
-        width = w.ws_col;
+        *columns = w.ws_col;
+        *lines = w.ws_row;
     }
 #endif
-    return width;
 }

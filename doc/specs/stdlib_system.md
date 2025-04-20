@@ -533,7 +533,7 @@ The file is removed from the filesystem if the operation is successful. If the o
 {!example/system/example_delete_file.f90!}
 ```
 
-## `get_console_width` - Get the width of the console
+## `get_terminal_size` - Get the size of the terminal window
 
 ### Status
 
@@ -541,31 +541,28 @@ Experimental
 
 ### Description
 
-This function returns the width of the console window in characters. 
-It is designed to work across multiple platforms. On Windows, the width is determined by the console window's size. 
-On UNIX-like systems (Linux, macOS), the width is determined by the terminal's size.
+This subroutine returns the size of the terminal window in characters. 
 
 Note: This routine performs a detailed runtime inspection, so it has non-negligible overhead.
 
 ### Syntax
 
-`width = [[stdlib_system(module):get_console_width(function)]]()`
+`call [[stdlib_system(module):get_terminal_size(subroutine)]](columns, lines)`
 
 ### Class
 
-Function
+Subroutine
 
 ### Arguments
 
-None.
+`columns`: Shall be an `intent(out)` argument of type `integer` that will contain the number of columns in the terminal window.
 
-### Return Value
+`lines`: Shall be an `intent(out)` argument of type `integer` that will contain the number of lines in the terminal window.
 
-- **Type:** `integer`
-- Returns the width of the console window in characters.
+Note: If the query fails, the values of `columns` and `lines` will be set to `-1`.
 
 ### Example
 
 ```fortran
-{!./example/system/example_get_console_width.f90}!
+{!./example/system/example_get_terminal_size.f90}!
 ```

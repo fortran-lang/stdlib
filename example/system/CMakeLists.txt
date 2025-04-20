@@ -1,5 +1,5 @@
 ADD_EXAMPLE(get_runtime_os)
-ADD_EXAMPLE(get_console_width)
+ADD_EXAMPLE(get_terminal_size)
 ADD_EXAMPLE(delete_file)
 ADD_EXAMPLE(is_directory)
 ADD_EXAMPLE(null_device)
