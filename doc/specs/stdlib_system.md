@@ -532,3 +532,40 @@ The file is removed from the filesystem if the operation is successful. If the o
 ```fortran
 {!example/system/example_delete_file.f90!}
 ```
+
+## `get_console_width` - Get the width of the console
+
+### Status
+
+Experimental
+
+### Description
+
+This function returns the width of the console window in characters. 
+It is designed to work across multiple platforms. On Windows, the width is determined by the console window's size. 
+On UNIX-like systems (Linux, macOS), the width is determined by the terminal's size.
+
+Note: This routine performs a detailed runtime inspection, so it has non-negligible overhead.
+
+### Syntax
+
+`width = [[stdlib_system(module):get_console_width(function)]]()`
+
+### Class
+
+Function
+
+### Arguments
+
+None.
+
+### Return Value
+
+- **Type:** `integer`
+- Returns the width of the console window in characters.
+
+### Example
+
+```fortran
+{!./example/system/example_get_console_width.f90}!
+```

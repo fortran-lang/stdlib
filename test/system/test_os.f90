@@ -1,7 +1,7 @@
 module test_os
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
-    use stdlib_system, only: get_runtime_os, OS_WINDOWS, OS_UNKNOWN, OS_TYPE, is_windows, null_device
-
+    use stdlib_system, only: get_runtime_os, OS_WINDOWS, OS_UNKNOWN, OS_TYPE, is_windows, null_device, &
+                             get_console_width
     implicit none
 
 contains
@@ -12,11 +12,23 @@ contains
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
+            new_unittest('test_get_console_width', test_get_console_width), &
             new_unittest('test_get_runtime_os', test_get_runtime_os), &
             new_unittest('test_is_windows', test_is_windows), &
             new_unittest('test_null_device', test_null_device) &
         ]
     end subroutine collect_suite
+
+    subroutine test_get_console_width(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer :: width
+
+        !> Get console width
+        width = get_console_width()
+
+        call check(error, width > 0, "Console width is not positive")
+
+    end subroutine test_get_console_width
 
     subroutine test_get_runtime_os(error)
         type(error_type), allocatable, intent(out) :: error
