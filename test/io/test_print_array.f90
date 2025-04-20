@@ -60,7 +60,7 @@ contains
         line(5) = "0.00|0.00|0.00|0.00|1.00"
         line(6:) = "0.00|0.00|0.00|0.00|0.00"
         
-        call print_array(a(:, :5), fh, fmt="(g0.3)", brief=.false., delimiter="|")
+        call print_array(a(:, :5), fh, fmt="(f4.2)", brief=.false., delimiter="|")
 
         rewind (fh)
         do i = 1, 10
@@ -105,7 +105,7 @@ contains
         line(4) = "0.00|0.00|0.00|1.00|0.00"
         line(5) = "0.00|0.00|0.00|0.00|1.00"
         line(6:) = "0.00|0.00|0.00|0.00|0.00"
-        call print_array(a(:, :5), fh, fmt="(g0.3)", brief=.false., delimiter="|")
+        call print_array(a(:, :5), fh, fmt="(f4.2)", brief=.false., delimiter="|")
 
         rewind (fh)
         do i = 1, 10
@@ -242,7 +242,7 @@ contains
         line(4) = "0.00,0.00|0.00,0.00|0.00,0.00|1.00,0.00|0.00,0.00"
         line(5) = "0.00,0.00|0.00,0.00|0.00,0.00|0.00,0.00|1.00,0.00"
         line(6:) = "0.00,0.00|0.00,0.00|0.00,0.00|0.00,0.00|0.00,0.00"
-        call print_array(a(:, :5), fh, fmt="(g0.3,"","",g0.3)", brief=.false., delimiter="|")
+        call print_array(a(:, :5), fh, fmt="(f4.2,"","",f4.2)", brief=.false., delimiter="|")
         rewind (fh)
         do i = 1, 10
             call get_line(fh, buffer)
@@ -290,7 +290,7 @@ contains
         line(4) = " 0.00, 0.00; 0.00, 0.00; 0.00, 0.00; 1.00, 0.00; 0.00, 0.00"
         line(5) = " 0.00, 0.00; 0.00, 0.00; 0.00, 0.00; 0.00, 0.00; 1.00, 0.00"
         line(6:) = " 0.00, 0.00; 0.00, 0.00; 0.00, 0.00; 0.00, 0.00; 0.00, 0.00"
-        call print_array(a(:, :5), fh, fmt="(1x,g0.3,"","",1x,g0.3)", brief=.false., delimiter=";")
+        call print_array(a(:, :5), fh, fmt="(1x,f4.2,"","",1x,f4.2)", brief=.false., delimiter=";")
         rewind (fh)
         do i = 1, 10
             call get_line(fh, buffer)
