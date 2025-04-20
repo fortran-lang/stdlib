@@ -550,20 +550,37 @@ interface
         integer(process_ID) :: ID
     end function process_get_ID
 
-    !! Returns the size of the terminal window.
-    !!
-    !! ### Returns:
-    !! - **columns**: The number of columns in the terminal window.
-    !! - **lines**: The number of lines in the terminal window.
-    !!
-    !! Note: This function performs a detailed runtime inspection, so it has non-negligible overhead.
-    subroutine get_terminal_size(columns, lines) bind(C)
-        integer, intent(out) :: columns, lines
-    end subroutine get_terminal_size
-
 end interface
 
 contains
+
+!! Returns the size of the terminal window.
+!!
+!! ### Returns:
+!! - **columns**: The number of columns in the terminal window.
+!! - **lines**: The number of lines in the terminal window.
+!! - **err**: An optional error object.
+!!
+!! Note: This function performs a detailed runtime inspection, so it has non-negligible overhead.
+subroutine get_terminal_size(columns, lines, err)
+    integer, intent(out) :: columns, lines
+    type(state_type), intent(out), optional :: err
+    type(state_type) :: err0
+    integer :: stat
+    interface
+        subroutine c_get_terminal_size(columns, lines, stat) bind(C, name="get_terminal_size")
+            integer, intent(out) :: columns, lines, stat
+        end subroutine c_get_terminal_size
+    end interface
+
+    call c_get_terminal_size(columns, lines, stat)
+    if (stat /= 0) then
+        err0 = state_type('get_terminal_size',STDLIB_FS_ERROR,'Failed to get terminal size')
+        call err0%handle(err)
+    end if
+
+end subroutine get_terminal_size
+
 
 integer function get_runtime_os() result(os)
     !! The function identifies the OS by inspecting environment variables and filesystem attributes.

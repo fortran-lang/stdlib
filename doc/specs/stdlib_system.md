@@ -547,7 +547,7 @@ Note: This routine performs a detailed runtime inspection, so it has non-negligi
 
 ### Syntax
 
-`call [[stdlib_system(module):get_terminal_size(subroutine)]](columns, lines)`
+`call [[stdlib_system(module):get_terminal_size(subroutine)]](columns, lines[, err])`
 
 ### Class
 
@@ -558,6 +558,8 @@ Subroutine
 `columns`: Shall be an `intent(out)` argument of type `integer` that will contain the number of columns in the terminal window.
 
 `lines`: Shall be an `intent(out)` argument of type `integer` that will contain the number of lines in the terminal window.
+
+`err`: Shall be an `intent(out)` and `optional` argument of type `type(state_type)` that will contain the error state. If not provided, the program stops execution on error.
 
 Note: If the query fails, the values of `columns` and `lines` will be set to `-1`.
 
