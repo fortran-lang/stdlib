@@ -8,6 +8,12 @@
 #include <errno.h>
 #endif
 
+
+// Get terminal size
+// @param[out] columns  Pointer to store terminal width
+// @param[out] lines    Pointer to store terminal height
+// @param[out] stat     Pointer to store error code
+//                      (0: Success, otherwise: Error, Windows: GetLastError(), Unix: ENOTTY/errno)
 void get_terminal_size(int *columns, int *lines, int *stat)
 {
     /* Initialize outputs to error state */
@@ -37,6 +43,12 @@ void get_terminal_size(int *columns, int *lines, int *stat)
 
 #else
     /* Unix implementation using termios ioctl */
+    if (!isatty(STDOUT_FILENO))
+    {
+        *stat = ENOTTY;
+        return;
+    }
+
     struct winsize w;
     if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == -1)
     {
