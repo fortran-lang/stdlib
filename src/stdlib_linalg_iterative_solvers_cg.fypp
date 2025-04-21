@@ -15,43 +15,63 @@ submodule(stdlib_linalg_iterative_solvers) stdlib_linalg_iterative_cg
 contains
 
     #:for k, t, s in R_KINDS_TYPES
-    module subroutine solve_cg_generic_${s}$(A,b,x,tol,maxiter,workspace)
+    module subroutine solve_cg_generic_${s}$(A,b,x,di,tol,maxiter,restart,workspace)
         class(linop_${s}$), intent(in) :: A
         ${t}$, intent(in) :: b(:), tol
         ${t}$, intent(inout) :: x(:)
+        logical(1), intent(in) :: di(:)
         integer, intent(in) :: maxiter
+        logical, intent(in) :: restart 
         type(solver_workspace_${s}$), intent(inout) :: workspace
         !-------------------------
         integer :: iter
-        ${t}$ :: rtr, rtrold, alpha, beta, norm0_sq
+        ${t}$ :: norm_sq, norm_sq_old, norm_sq0, residual0, residual
+        ${t}$ :: alpha, beta, tolsq
         !-------------------------
-        associate(  p  => workspace%tmp(:,1), &
-                    r  => workspace%tmp(:,2), &
+        associate(  P  => workspace%tmp(:,1), &
+                    R  => workspace%tmp(:,2), &
                     Ap => workspace%tmp(:,3))
-            x = zero_${s}$
-            rtr = A%inner_product(r, r)
-            norm0_sq = A%inner_product(b, b)
-            p = b
+            
+            norm_sq0 = A%inner_product(B, B)
+            residual0 = sqrt(norm_sq0)
+
+            if(restart) X = zero_${s}$
+            X = merge( B, X, di ) !> copy dirichlet load conditions encoded in B and indicated by di
+
+            call A%matvec(X, R)
+            R = merge( zero_${s}$, B - R , di ) !> R = B - A*X
+            norm_sq = A%inner_product(R, R)
+   
+            P = R
+            
+            tolsq = tol*tol
             beta = zero_${s}$
-            iter = 1
-            do while( rtr > tol**2 * norm0_sq .and. iter < maxiter)
-                p = r + beta * p
-                call A%matvec(p,Ap) 
-                alpha = rtr / A%inner_product(p, Ap)
-                x = x + alpha * p
-                r = r - alpha * Ap
-                rtrold = rtr
-                rtr = A%inner_product(r, r)
-                beta = rtr / rtrold
+            iter = 0
+            do while( norm_sq > tolsq * norm_sq0 .and. iter < maxiter)
+                call A%matvec(P,Ap) 
+                Ap = merge( zero_${s}$, Ap, di )
+                
+                alpha = norm_sq / A%inner_product(P, Ap)
+                
+                X = X + alpha * P
+                R = R - alpha * Ap
+
+                norm_sq_old = norm_sq
+                norm_sq = A%inner_product(R, R)
+                beta = norm_sq / norm_sq_old
+                
+                P = R + beta * P
+
                 iter = iter + 1
             end do
+            residual = sqrt(norm_sq)
         end associate
     end subroutine
     #:endfor
 
     #:for matrix in MATRIX_TYPES
     #:for k, t, s in R_KINDS_TYPES
-    module subroutine solve_cg_${matrix}$_${s}$(A,b,x,tol,maxiter,workspace)
+    module subroutine solve_cg_${matrix}$_${s}$(A,b,x,di,tol,maxiter,restart,workspace)
         #:if matrix == "dense"
         ${t}$, intent(in) :: A(:,:)
         #:else 
@@ -60,30 +80,57 @@ contains
         ${t}$, intent(in) :: b(:)
         ${t}$, intent(inout) :: x(:)
         ${t}$, intent(in), optional :: tol
+        logical(1), intent(in), optional, target  :: di(:)
         integer, intent(in), optional :: maxiter
+        logical, intent(in), optional  :: restart
         type(solver_workspace_${s}$), optional, intent(inout), target :: workspace
         !-------------------------
         type(linop_${s}$) :: op
         type(solver_workspace_${s}$), pointer :: workspace_
         integer :: n, maxiter_
         ${t}$ :: tol_
+        logical :: restart_
+        logical(1), pointer :: di_(:)
         !-------------------------
         n = size(b)
+        maxiter_ = n;       if(present(maxiter)) maxiter_ = maxiter
+        restart_ = .true.;  if(present(restart)) restart_ = restart
+        tol_ = 1.e-4_${s}$; if(present(tol)) tol_ = tol
+
+        !-------------------------
+        ! internal memory setup
         op%matvec => default_matvec
         op%inner_product => default_dot
-
-        maxiter_ = n
-        if(present(maxiter)) maxiter_ = maxiter
-        tol_ = 1.e-4_${s}$
-        if(present(tol)) tol_ = tol
+        if(present(di))then
+            di_ => di
+        else 
+            allocate(di_(n),source=.false._1)
+        end if
         
         if(present(workspace)) then
             if(.not.allocated(workspace_%tmp)) allocate( workspace_%tmp(n,3) )
             workspace_ => workspace
         else
-            allocate( workspace_%tmp(n,3) )
+            allocate( workspace_ )
+            allocate( workspace_%tmp(n,3), source = zero_${s}$ )
         end if
-        call solve_cg_generic(op,b,x,tol,maxiter_,workspace_)
+        !-------------------------
+        ! main call to the solver
+        call solve_cg_generic(op,b,x,di_,tol_,maxiter_,restart_,workspace_)
+
+        !-------------------------
+        ! internal memory cleanup
+        if(present(di))then
+            di_ => null()
+        else 
+            deallocate(di_)
+        end if
+        if(present(workspace)) then
+            workspace_ => null()
+        else
+            deallocate( workspace_%tmp )
+            deallocate( workspace_ )
+        end if
         contains
         
         subroutine default_matvec(x,y)

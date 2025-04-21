@@ -25,7 +25,7 @@ contains
         type(solver_workspace_${s}$), intent(inout) :: workspace
         !-------------------------
         integer :: iter
-        ${t}$ :: norm_sq, norm_sq0, norm_sq_old, residual0
+        ${t}$ :: norm_sq, norm_sq0, norm_sq_old, residual0, residual
         ${t}$ :: zr1, zr2, zv2, alpha, beta, tolsq
         !-------------------------
         associate(  R => workspace%tmp(:,1), &
@@ -37,14 +37,13 @@ contains
         residual0 = sqrt(norm_sq0)
         if ( norm_sq0 > zero_${s}$ ) then
             if(restart) X = zero_${s}$
-            where( di ) X = B
+            X = merge( B, X, di ) !> copy dirichlet load conditions encoded in B and indicated by di
             
             call A%matvec(X, R)
-            R = B - R
-            where( di ) R = zero_${s}$
+            R = merge( zero_${s}$, B - R , di ) !> R = B - A*X
             
-            call A%preconditionner(R,P)
-            where( di ) P = zero_${s}$
+            call A%preconditionner(R,P) !> P = M^{-1}*R
+            P = merge( zero_${s}$, P, di )
             
             tolsq = tol*tol
             iter = 0
@@ -52,8 +51,8 @@ contains
             zr2 = one_${s}$
             do while ( (iter < maxiter) .AND. (norm_sq > tolsq * norm_sq0) )
                 
-                call A%preconditionner(R,S)
-                where ( di ) S = zero_${s}$
+                call A%preconditionner(R,S) !> S = M^{-1}*R
+                S = merge( zero_${s}$, S, di )
                 zr2 = A%inner_product( R, S )
             
                 if (iter>0) then
@@ -62,7 +61,7 @@ contains
                 end if
                 
                 call A%matvec(P, Q)
-                where( di ) Q = zero_${s}$
+                Q = merge( zero_${s}$, Q, di )
                 zv2 = A%inner_product( P, Q )
             
                 alpha = zr2 / zv2
@@ -75,6 +74,7 @@ contains
                 iter = iter + 1
             end do
         end if
+        residual = sqrt(norm_sq)
         end associate
     end subroutine
     #:endfor
@@ -103,18 +103,15 @@ contains
         logical(1), pointer :: di_(:)
         !-------------------------
         n = size(b)
+        maxiter_ = n;       if(present(maxiter)) maxiter_ = maxiter
+        restart_ = .true.;  if(present(restart)) restart_ = restart
+        tol_ = 1.e-4_${s}$; if(present(tol)) tol_ = tol
 
+        !-------------------------
+        ! internal memory setup
         op%matvec => default_matvec
         op%inner_product => default_dot
         op%preconditionner => default_preconditionner
-
-        maxiter_ = n
-        if(present(maxiter)) maxiter_ = maxiter
-        restart_ = .true. 
-        if(present(restart)) restart_ = restart
-        tol_ = 1.e-4_${s}$
-        if(present(tol)) tol_ = tol
-
         if(present(di))then
             di_ => di
         else 
@@ -126,12 +123,25 @@ contains
             workspace_ => workspace
         else
             allocate( workspace_ )
-            allocate( workspace_%tmp(n,4) )
+            allocate( workspace_%tmp(n,4) , source = zero_${s}$ )
         end if
-        
-        call solve_pccg_generic(op,b,x,di_,tol,maxiter_,restart_,workspace_)
+        !-------------------------
+        ! main call to the solver
+        call solve_pccg_generic(op,b,x,di_,tol_,maxiter_,restart_,workspace_)
 
-        if(.not.present(di)) deallocate(di_)
+        !-------------------------
+        ! internal memory cleanup
+        if(present(di))then
+            di_ => null()
+        else 
+            deallocate(di_)
+        end if
+        if(present(workspace)) then
+            workspace_ => null()
+        else
+            deallocate( workspace_%tmp )
+            deallocate( workspace_ )
+        end if
         contains
         
         subroutine default_matvec(x,y)

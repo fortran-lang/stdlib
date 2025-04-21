@@ -42,12 +42,14 @@ module stdlib_linalg_iterative_solvers
 
     interface solve_cg_generic
         #:for k, t, s in R_KINDS_TYPES
-        module subroutine solve_cg_generic_${s}$(A,b,x,tol,maxiter,workspace)
+        module subroutine solve_cg_generic_${s}$(A,b,x,di,tol,maxiter,restart,workspace)
             class(linop_${s}$), intent(in) :: A
             ${t}$, intent(in) :: b(:)
             ${t}$, intent(inout) :: x(:)
             ${t}$, intent(in) :: tol
+            logical(1), intent(in) :: di(:)
             integer, intent(in) :: maxiter
+            logical, intent(in) :: restart
             type(solver_workspace_${s}$), intent(inout) :: workspace
         end subroutine
         #:endfor
@@ -57,7 +59,7 @@ module stdlib_linalg_iterative_solvers
     interface solve_cg
         #:for matrix in MATRIX_TYPES
         #:for k, t, s in R_KINDS_TYPES
-        module subroutine solve_cg_${matrix}$_${s}$(A,b,x,tol,maxiter,workspace)
+        module subroutine solve_cg_${matrix}$_${s}$(A,b,x,di,tol,maxiter,restart,workspace)
             #:if matrix == "dense"
             ${t}$, intent(in) :: A(:,:)
             #:else 
@@ -66,7 +68,9 @@ module stdlib_linalg_iterative_solvers
             ${t}$, intent(in) :: b(:)
             ${t}$, intent(inout) :: x(:)
             ${t}$, intent(in), optional :: tol
+            logical(1), intent(in), optional, target  :: di(:)
             integer, intent(in), optional :: maxiter
+            logical, intent(in), optional :: restart
             type(solver_workspace_${s}$), optional, intent(inout), target :: workspace
         end subroutine
         #:endfor
