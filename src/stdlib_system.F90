@@ -554,7 +554,7 @@ end interface
 
 contains
 
-!! Returns the size of the terminal window.
+!! Returns terminal window size in characters.
 !!
 !! ### Returns:
 !! - **columns**: The number of columns in the terminal window.
@@ -575,7 +575,7 @@ subroutine get_terminal_size(columns, lines, err)
 
     call c_get_terminal_size(columns, lines, stat)
     if (stat /= 0) then
-        err0 = state_type('get_terminal_size',STDLIB_FS_ERROR,'Failed to get terminal size')
+        err0 = state_type('get_terminal_size',STDLIB_FS_ERROR,'Failed to get terminal size,','stat =',stat)
         call err0%handle(err)
     end if
 
