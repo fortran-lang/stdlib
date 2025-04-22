@@ -180,7 +180,8 @@ contains
         if (present(m5)) then
 
             if (size(m5, 1) /= p(5)) then
-                err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'matrices m4=',shape(m4),', m5=',shape(m5),' have incompatible sizes')
+                err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'matrices m4=',shape(m4), &
+                       ', m5=',shape(m5),' have incompatible sizes')
                 call linalg_error_handling(err0, err)
                 allocate(res(0, 0))
                 return
