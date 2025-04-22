@@ -5,7 +5,7 @@
 
 submodule (stdlib_intrinsics) stdlib_intrinsics_matmul
     use stdlib_linalg_blas, only: gemm
-    use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_VALUE_ERROR
+    use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_VALUE_ERROR, LINALG_INTERNAL_ERROR
     use stdlib_constants
     implicit none
 
