@@ -255,7 +255,8 @@ contains
                 k = p(5)
                 call gemm('N', 'N', m, n, k, one_${s}$, temp, m, m5, k, zero_${s}$, res, m)
             case default
-                error stop "stdlib_matmul: internal error: unexpected s(i,j)"
+                err0 = linalg_state_type(this,LINALG_INTERNAL_ERROR,"internal error: unexpected s(i,j)")
+                call linalg_error_handling(err0,err)
         end select
 
     end subroutine stdlib_matmul_sub_${s}$
