@@ -151,7 +151,7 @@ contains
         if (present(m3)) then
 
             if (size(m3, 1) /= p(3)) then
-                err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'matrices m2, m3 not of compatible sizes')
+                err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'matrices m2=',shape(m2),', m3=',shape(m3),'have incompatible sizes')
                 call linalg_error_handling(err0, err)
                 allocate(res(0, 0))
                 return
