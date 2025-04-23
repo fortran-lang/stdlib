@@ -109,3 +109,40 @@ The project is usable as CMake subproject. Explicit references to
 break subproject builds.
 An example project is available [here](https://github.com/fortran-lang/stdlib-cmake-example)
 to test the CMake subproject integration.
+
+## GitHub collaboration
+
+Contributing can be daunting, we know! Even more for a big project with many contributors, and if you are not expert on the whole github workflow then even more, we have been there at some point.
+
+In order to help lowering the barrier for collaborating on ongoing efforts (e.g. an open PR), we have crafted a simple script that might come in handy. To explain the process we'll use Alice (the person you want to help) and Bob (you):
+
+       ┌────────────────────────────┐
+       │    fortran-lang/stdlib     │
+       └────────────▲───────────────┘
+                    │
+                    │  [Pull Request]
+                    │
+            ┌───────┴────────┐
+            │  alice/stdlib  │ ←─────┐
+            └──────▲─────────┘       │
+                   │                 │
+   [PR Branch] ←───┘          ┌──────┴──────┐
+   feature-branch             │  bob/stdlib │
+   (hosted here)              │    (fork)   │
+                              └─────────────┘
+                                     ▲
+                                     │
+                       [Push access to Alice's repo]
+
+After having forked and downloaded locally `stdlib` on your local machine; on an unix compatible terminal with access to the `git` CLI, being at the root folder: 
+```sh
+./.github/collab.sh
+```
+You will be asked to enter the username and branch of the other person:
+```bash
+Enter the GitHub username of the fork owner (e.g., alice): alice
+Enter the PR branch name (e.g., feature-branch): feature-branch
+```
+This will fetch Alice's repository and switch your view to Alice's feature-branch. Now you can review, build, run, play around, propose your nice improvements.
+
+Remember, to announce your willingness to help 😉
