@@ -145,4 +145,4 @@ Enter the PR branch name (e.g., feature-branch): feature-branch
 ```
 This will fetch Alice's repository and switch your view to Alice's feature-branch. Now you can review, build, run, play around, propose your nice improvements.
 
-Remember, to announce your willingness to help 😉
+Remember, announce your willingness to help 😉
