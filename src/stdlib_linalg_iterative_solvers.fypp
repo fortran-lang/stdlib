@@ -10,11 +10,17 @@ module stdlib_linalg_iterative_solvers
     implicit none
     private 
 
+    enum, bind(c)
+        enumerator :: size_wksp_cg = 3
+        enumerator :: size_wksp_pccg = 4
+    end enum
+    public :: size_wksp_cg, size_wksp_pccg
+
     #:for k, t, s in R_KINDS_TYPES
     type, public :: linop_${s}$
         procedure(vector_sub_${s}$), nopass, pointer    :: matvec => null()
         procedure(vector_sub_${s}$), nopass, pointer    :: preconditionner => null()
-        procedure(reduction_sub_${s}$), nopass, pointer :: inner_product => null()
+        procedure(reduction_sub_${s}$), nopass, pointer :: inner_product => default_dot_${s}$
     end type
     #:endfor
 
@@ -114,6 +120,22 @@ module stdlib_linalg_iterative_solvers
         #:endfor
         #:endfor
     end interface
-    public :: solve_pccg
+    public :: solve_pccg 
+
+
+contains
+
+    !------------------------------------------------------------------
+    ! defaults
+    !------------------------------------------------------------------
+    #:for k, t, s in R_KINDS_TYPES
+    pure ${t}$ function default_dot_${s}$(x,y) result(r)
+        use stdlib_intrinsics, only: stdlib_dot_product
+        ${t}$, intent(in) :: x(:)
+        ${t}$, intent(in) :: y(:)
+        r = stdlib_dot_product(x,y)
+    end function
+
+    #:endfor
     
 end module stdlib_linalg_iterative_solvers

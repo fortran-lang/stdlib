@@ -8,7 +8,6 @@ submodule(stdlib_linalg_iterative_solvers) stdlib_linalg_iterative_cg
     use stdlib_kinds
     use stdlib_sparse
     use stdlib_constants
-    use stdlib_intrinsics, only: dot_product => stdlib_dot_product
     use stdlib_linalg_iterative_solvers
     implicit none
 
@@ -100,7 +99,7 @@ contains
         !-------------------------
         ! internal memory setup
         op%matvec => default_matvec
-        op%inner_product => default_dot
+        ! op%inner_product => default_dot
         if(present(di))then
             di_ => di
         else 
@@ -112,7 +111,7 @@ contains
         else
             allocate( workspace_ )
         end if
-        if(.not.allocated(workspace_%tmp)) allocate( workspace_%tmp(n,3), source = zero_${s}$ )
+        if(.not.allocated(workspace_%tmp)) allocate( workspace_%tmp(n,size_wksp_cg), source = zero_${s}$ )
         !-------------------------
         ! main call to the solver
         call solve_cg_generic(op,b,x,di_,tol_,maxiter_,restart_,workspace_)
@@ -138,11 +137,6 @@ contains
             call spmv( A , x, y )
             #:endif
         end subroutine
-        pure ${t}$ function default_dot(x,y) result(r)
-            ${t}$, intent(in) :: x(:)
-            ${t}$, intent(in) :: y(:)
-            r = dot_product(x,y)
-        end function
     end subroutine
 
     #:endfor
