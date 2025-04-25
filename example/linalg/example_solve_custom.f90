@@ -15,6 +15,7 @@ contains
         type(solver_workspace_dp), optional, intent(inout), target :: workspace
         !-------------------------
         type(linop_dp) :: op
+        type(linop_dp) :: M
         type(solver_workspace_dp), pointer :: workspace_
         integer :: n, maxiter_
         real(dp) :: tol_
@@ -31,7 +32,7 @@ contains
         ! internal memory setup
         op%matvec => my_matvec
         op%inner_product => my_dot
-        op%preconditionner => jacobi_preconditionner
+        M%matvec => jacobi_preconditionner
         if(present(di))then
             di_ => di
         else 
@@ -50,7 +51,7 @@ contains
         where(abs(diagonal)>epsilon(0.d0)) diagonal = 1._dp/diagonal
         !-------------------------
         ! main call to the solver
-        call solve_pccg_generic(op,b,x,di_,tol_,maxiter_,restart_,workspace_)
+        call solve_pccg_generic(op,M,b,x,di_,tol_,maxiter_,restart_,workspace_)
 
         !-------------------------
         ! internal memory cleanup

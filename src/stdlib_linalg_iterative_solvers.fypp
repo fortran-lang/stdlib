@@ -19,7 +19,6 @@ module stdlib_linalg_iterative_solvers
     #:for k, t, s in R_KINDS_TYPES
     type, public :: linop_${s}$
         procedure(vector_sub_${s}$), nopass, pointer    :: matvec => null()
-        procedure(vector_sub_${s}$), nopass, pointer    :: preconditionner => null()
         procedure(reduction_sub_${s}$), nopass, pointer :: inner_product => default_dot_${s}$
     end type
     #:endfor
@@ -86,8 +85,9 @@ module stdlib_linalg_iterative_solvers
 
     interface solve_pccg_generic
         #:for k, t, s in R_KINDS_TYPES
-        module subroutine solve_pccg_generic_${s}$(A,b,x,di,tol,maxiter,restart,workspace)
+        module subroutine solve_pccg_generic_${s}$(A,M,b,x,di,tol,maxiter,restart,workspace)
             class(linop_${s}$), intent(in) :: A
+            class(linop_${s}$), intent(in) :: M !> preconditionner
             ${t}$, intent(in) :: b(:)
             ${t}$, intent(inout) :: x(:)
             ${t}$, intent(in) :: tol
@@ -103,7 +103,7 @@ module stdlib_linalg_iterative_solvers
     interface solve_pccg
         #:for matrix in MATRIX_TYPES
         #:for k, t, s in R_KINDS_TYPES
-        module subroutine solve_pccg_${matrix}$_${s}$(A,b,x,di,tol,maxiter,restart,workspace)
+        module subroutine solve_pccg_${matrix}$_${s}$(A,b,x,di,tol,maxiter,restart,M,workspace)
             #:if matrix == "dense"
             ${t}$, intent(in) :: A(:,:)
             #:else 
@@ -115,6 +115,7 @@ module stdlib_linalg_iterative_solvers
             logical(1), intent(in), optional, target  :: di(:)
             integer, intent(in), optional  :: maxiter
             logical, intent(in), optional  :: restart
+            class(linop_${s}$), optional , intent(in), target :: M !> preconditionner
             type(solver_workspace_${s}$), optional, intent(inout), target :: workspace
         end subroutine
         #:endfor

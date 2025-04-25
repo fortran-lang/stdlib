@@ -14,8 +14,9 @@ submodule(stdlib_linalg_iterative_solvers) stdlib_linalg_iterative_pccg
 contains
 
     #:for k, t, s in R_KINDS_TYPES
-    module subroutine solve_pccg_generic_${s}$(A,b,x,di,tol,maxiter,restart,workspace)
+    module subroutine solve_pccg_generic_${s}$(A,M,b,x,di,tol,maxiter,restart,workspace)
         class(linop_${s}$), intent(in) :: A
+        class(linop_${s}$), intent(in) :: M !> preconditionner
         ${t}$, intent(in) :: b(:), tol
         ${t}$, intent(inout) :: x(:)
         logical(1), intent(in) :: di(:)
@@ -41,7 +42,7 @@ contains
             call A%matvec(X, R)
             R = merge( zero_${s}$, B - R , di ) !> R = B - A*X
             
-            call A%preconditionner(R,P) !> P = M^{-1}*R
+            call M%matvec(R,P) !> P = M^{-1}*R
             P = merge( zero_${s}$, P, di )
             
             tolsq = tol*tol
@@ -50,7 +51,7 @@ contains
             zr2 = one_${s}$
             do while ( (iter < maxiter) .AND. (norm_sq > tolsq * norm_sq0) )
                 
-                call A%preconditionner(R,S) !> S = M^{-1}*R
+                call M%matvec(R,S) !> S = M^{-1}*R
                 S = merge( zero_${s}$, S, di )
                 zr2 = A%inner_product( R, S )
             
@@ -80,7 +81,7 @@ contains
 
     #:for matrix in MATRIX_TYPES
     #:for k, t, s in R_KINDS_TYPES
-    module subroutine solve_pccg_${matrix}$_${s}$(A,b,x,di,tol,maxiter,restart,workspace)
+    module subroutine solve_pccg_${matrix}$_${s}$(A,b,x,di,tol,maxiter,restart,M,workspace)
         #:if matrix == "dense"
         ${t}$, intent(in) :: A(:,:)
         #:else 
@@ -92,9 +93,11 @@ contains
         logical(1), intent(in), optional, target  :: di(:)
         integer, intent(in), optional  :: maxiter
         logical, intent(in), optional  :: restart
+        class(linop_${s}$), optional , intent(in), target :: M !> preconditionner
         type(solver_workspace_${s}$), optional, intent(inout), target :: workspace
         !-------------------------
         type(linop_${s}$) :: op
+        type(linop_${s}$), pointer :: M_ => null()
         type(solver_workspace_${s}$), pointer :: workspace_
         integer :: n, maxiter_
         ${t}$ :: tol_
@@ -109,8 +112,12 @@ contains
         !-------------------------
         ! internal memory setup
         op%matvec => default_matvec
-        ! op%inner_product => default_dot
-        op%preconditionner => default_preconditionner
+        if(present(M)) then
+            M_ => M
+        else 
+            allocate( M_ )
+            M_%matvec => default_preconditionner
+        end if
         if(present(di))then
             di_ => di
         else 
@@ -125,7 +132,7 @@ contains
         if(.not.allocated(workspace_%tmp)) allocate( workspace_%tmp(n,size_wksp_pccg) , source = zero_${s}$ )
         !-------------------------
         ! main call to the solver
-        call solve_pccg_generic(op,b,x,di_,tol_,maxiter_,restart_,workspace_)
+        call solve_pccg_generic(op,M_,b,x,di_,tol_,maxiter_,restart_,workspace_)
 
         !-------------------------
         ! internal memory cleanup
@@ -136,6 +143,7 @@ contains
             deallocate( workspace_%tmp )
             deallocate( workspace_ )
         end if
+        M_ => null()
         workspace_ => null()
         contains
         
