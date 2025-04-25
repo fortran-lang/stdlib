@@ -344,5 +344,9 @@ that shows only the representative portions of large arrays, which is useful for
 ### Example
 
 ```fortran
+{!./example/io/example_print_array_brief.f90}
+```
+
+```fortran
 {!./example/io/example_print_array.f90}
 ```
