@@ -12,13 +12,13 @@ contains
         ${t1}$, intent(in) :: array(:, :)
         integer, intent(in), optional :: unit
         character(len=*), intent(in), optional :: fmt
-        character(len=1), intent(in), optional :: delimiter
+        character(len=*), intent(in), optional :: delimiter
         logical, intent(in), optional :: brief
 
         integer :: i, j, unit_, shape_(2)
         character(len=:), allocatable :: fmt_
-        character(len=1) :: delimiter_
-        character(len=3) :: delim_str
+        character(len=:), allocatable :: delimiter_
+        character(len=:), allocatable :: delim_str
         logical :: brief_
 
         shape_ = shape(array)
@@ -48,7 +48,7 @@ contains
                         write (unit_, fmt='(a)', advance='no') delimiter_//"..."//delimiter_
                         write (unit_, fmt=fmt_) array(i, shape_(2))
                     end do
-                    write (unit_, fmt='(a)') ":"
+                    write (unit_, fmt='(a)') "..."
                     write (unit_, fmt=fmt_, advance='no') array(shape_(1), :3)
                     write (unit_, fmt='(a)', advance='no') delimiter_//"..."//delimiter_
                     write (unit_, fmt=fmt_) array(shape_(1), shape_(2))
@@ -56,7 +56,7 @@ contains
                     do i = 1, 3
                         write (unit_, fmt=fmt_) array(i, :)
                     end do
-                    write (unit_, fmt='(a)') ":"
+                    write (unit_, fmt='(a)') "..."
                     write (unit_, fmt=fmt_) array(shape_(1), :)
 
                 end if

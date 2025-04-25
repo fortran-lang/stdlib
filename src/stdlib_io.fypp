@@ -112,7 +112,7 @@ module stdlib_io
         ${t1}$, intent(in) :: array(:, :)
         integer, intent(in), optional :: unit
         character(len=*), intent(in), optional :: fmt
-        character(len=1), intent(in), optional :: delimiter
+        character(len=*), intent(in), optional :: delimiter
         logical, intent(in), optional :: brief
       end subroutine print_array_${t1[0]}$${k1}$
     #:endfor

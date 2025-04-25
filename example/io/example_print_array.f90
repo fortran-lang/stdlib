@@ -11,6 +11,6 @@ program example_io_print_array
     call print_array(array, unit=6, fmt='(i3)', delimiter='|', brief=.true.)
 
     print "(a)", "=== print_array 2 ==="
-    call print_array(array(:1, :))
+    call print_array(array(:1, :), delimiter=", ")
 
 end program example_io_print_array
