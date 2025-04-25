@@ -18,6 +18,11 @@
 #:set WITH_XDP = False
 #:endif
 
+#! Support for linear algebra with 64-bit integer sizes
+#:if not defined("WITH_ILP64")
+#:set WITH_ILP64 = False
+#:endif
+
 #! Real kinds to be considered during templating
 #:set REAL_KINDS = ["sp", "dp"]
 #:if WITH_XDP
@@ -38,6 +43,7 @@
 
 #! Real types to be considered during templating
 #:set REAL_TYPES = ["real({})".format(k) for k in REAL_KINDS]
+#:set REAL_SUFFIX = REAL_KINDS
 
 #! Collected (kind, type) tuples for real types
 #:set REAL_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_INIT))
@@ -60,8 +66,32 @@
 #:set CMPLX_INIT = CMPLX_INIT + ["w"]
 #:endif
 
+#! BLAS/LAPACK complex->real kind initial conversion
+#! Converts a BLAS/LAPACK complex kind initial to a real kind initial
+#!
+#! Args:
+#!     ci (character): Complex kind initial in ["c","z","y","w"]
+#!
+#! Returns:
+#!     Real kind initial in ["s","d","x","q"] or an empty string on invalid input
+#!
+#:def c2ri(cmplx)
+$:"s" if cmplx=="c" else "d" if cmplx=="z" else "x" if cmplx=="y" else "q" if cmplx=="w" else "ERROR"
+#:enddef
+
+#! BLAS/LAPACK/Linear Algebra Integer Kinds
+#:set LINALG_INT_KINDS       = ["ilp"]
+#:set LINALG_INT_SUFFIX      = [""]
+#:if WITH_ILP64
+#:set LINALG_INT_KINDS       = LINALG_INT_KINDS+["ilp64"]
+#:set LINALG_INT_SUFFIX      = LINALG_INT_SUFFIX+["_I64"]
+#:endif
+#:set LINALG_INT_TYPES       = ["integer({})".format(k) for k in LINALG_INT_KINDS]
+#:set LINALG_INT_KINDS_TYPES = list(zip(LINALG_INT_KINDS, LINALG_INT_TYPES, LINALG_INT_SUFFIX))
+
 #! Complex types to be considered during templating
 #:set CMPLX_TYPES = ["complex({})".format(k) for k in CMPLX_KINDS]
+#:set CMPLX_SUFFIX = ["c{}".format(k) for k in CMPLX_KINDS]
 
 #! Collected (kind, type, initial) tuples for complex types
 #:set CMPLX_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_INIT))
@@ -102,6 +132,9 @@
 #! Bitset types to be considered during templating
 #:set BITSET_TYPES = ["type({})".format(k) for k in BITSET_KINDS]
 
+#! Sparse types to be considered during templating
+#:set SPARSE_KINDS = ["COO", "CSR", "CSC", "ELL"]
+
 #! Whether Fortran 90 compatible code should be generated
 #:set VERSION90 = defined('VERSION90')
 
@@ -137,6 +170,22 @@
 #!
 #:def emptyranksuffix(rank)
 #{if rank > 0}#(${"0" + ",0" * (rank - 1)}$)#{endif}#
+#:enddef
+
+#! Generates an array rank suffix with a fixed integer size for all dimensions.
+#!
+#! Args:
+#!     rank (int): Rank of the variable
+#!     size (int): Size along each dimension
+#!
+#! Returns:
+#!     Array rank suffix string
+#! E.g.,
+#!   fixedranksuffix(3,4)
+#!   -> (4,4,4) 
+#!
+#:def fixedranksuffix(rank,size)
+#{if rank > 0}#(${str(size) + (","+str(size)) * (rank - 1)}$)#{endif}#
 #:enddef
 
 #! Joins stripped lines with given character string
@@ -209,7 +258,7 @@ ${prefix + joinstr.join([line.strip() for line in txt.split("\n")]) + suffix}$
 #!   Array rank suffix string enclosed in braces
 #!
 #! E.g.,
-#!   select_subarray(5 , [(4, 'i'), (5, 'j')])}$
+#!   select_subarray(5 , [(4, 'i'), (5, 'j')])
 #!   -> (:, :, :, i, j)
 #!
 #:def select_subarray(rank, selectors)
@@ -283,6 +332,135 @@ ${prefix + joinstr.join([line.strip() for line in txt.split("\n")]) + suffix}$
       #:endfor
     #:endcall
   #:endif
+#:enddef
+
+#!
+#! Generates a list of loop variables
+#!
+#! Args:
+#!   varname(str): Name of the variable to be used as prefix
+#!   n      (int): Number of loop variables to be created
+#!   offset (int): Optional index offset
+#!
+#! Returns:
+#!   Variable definition string 
+#!
+#! E.g.,
+#!  loop_variables('j', 5)
+#!   -> "j1, j2, j3, j4, j5
+#!
+#:def loop_variables(varname, n, offset=0)
+  #:assert n > 0
+    #:call join_lines(joinstr=", ")
+      #:for i in range(1, n + 1)
+        ${varname}$${i+offset}$
+      #:endfor
+    #:endcall
+#:enddef
+
+#!
+#! Generates a list of loop variables from an array
+#!
+#! Args:
+#!   varname(str): Name of the array variable to be used as prefix
+#!   n      (int): Number of loop variables to be created
+#!   offset (int): Optional index offset
+#!
+#! Returns:
+#!   Variable definition string 
+#!
+#! E.g.,
+#!  loop_array_variables('j', 5)
+#!   -> "j(1), j(2), j(3), j(4), j(5)
+#!
+#!  loop_array_variables('j', 5, 2)
+#!   -> "j(3), j(4), j(5), j(6), j(7)
+#!
+#:def loop_array_variables(varname, n, offset=0)
+  #:assert n > 0
+    #:call join_lines(joinstr=", ")
+      #:for i in range(1, n + 1)
+        ${varname}$(${i+offset}$)
+      #:endfor
+    #:endcall
+#:enddef
+
+
+#! Generates an array shape specifier from an N-D array size
+#!
+#! Args:
+#!   name  (str): Name of the original variable
+#!   rank  (int): Rank of the original variable
+#!   offset(int): optional offset of the dimension loop (default = 0)
+#!
+#! Returns:
+#!   Array rank suffix string enclosed in braces
+#!
+#! E.g.,
+#!   shape_from_array_size('mat', 5)}$
+#!   -> (size(mat,1),size(mat,2),size(mat,3),size(mat,4),size(mat,5))
+#!   shape_from_array_size('mat', 5, 2)}$
+#!   -> (size(mat,3),size(mat,4),size(mat,5),size(mat,6),size(mat,7))
+#!
+#:def shape_from_array_size(name, rank, offset=0)
+  #:assert rank > 0
+  #:call join_lines(joinstr=", ", prefix="(", suffix=")")
+    #:for i in range(1, rank + 1)
+      size(${name}$,${i+offset}$)
+    #:endfor
+  #:endcall
+#:enddef
+
+#! Generates an array shape specifier from an N-D array of sizes
+#!
+#! Args:
+#!   name  (str): Name of the original variable
+#!   rank  (int): Rank of the original variable
+#!   offset(int): optional offset of the dimension loop (default = 0)
+#!
+#! Returns:
+#!   Array rank suffix string enclosed in braces
+#!
+#! E.g.,
+#!   shape_from_array_data('mat', 5)}$
+#!   -> (1:mat(1),1:mat(2),1:mat(3),1:mat(4),1:mat(5))
+#!   shape_from_array_data('mat', 5, 2)}$
+#!   -> (1:mat(3),1:mat(4),1:mat(5),1:mat(6),1:mat(7))
+#!
+#:def shape_from_array_data(name, rank, offset=0)
+  #:assert rank > 0
+  #:call join_lines(joinstr=", ", prefix="(", suffix=")")
+    #:for i in range(1, rank + 1)
+      1:${name}$(${i+offset}$)
+    #:endfor
+  #:endcall
+#:enddef
+
+#!
+#! Start a sequence of loop with indexed variables over an N-D array
+#!
+#! Args:
+#!   varname    (str): Name of the variable to be used as prefix
+#!   matname    (str): Name of the variable to be used as array
+#!   n          (int): Number of nested loops to be created (1=innermost; n=outermost)
+#!   dim_offset (int): Optional dimension offset (1st loop is over dimension 1+dim_offset)
+#!   intent     (str): Optional indentation. Default: 8 spaces
+#!
+#!
+#:def loop_variables_start(varname, matname, n, dim_offset=0, indent=" "*8)
+  #:assert n > 0
+    #:for i in range(1, n + 1)
+${indent}$do ${varname}$${n+1+dim_offset-i}$ = lbound(${matname}$, ${n+1+dim_offset-i}$), ubound(${matname}$, ${n+1+dim_offset-i}$)
+    #:endfor
+#:enddef
+
+#:def loop_variables_end(n, indent=" "*8)
+#:assert n > 0
+  #:call join_lines(joinstr="; ",prefix=indent)
+    #:for i in range(1, n + 1)
+       enddo 
+    #:endfor
+  #:endcall  
 #:enddef
 
 #:endmute

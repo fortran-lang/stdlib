@@ -1,5 +1,5 @@
 program selection_vs_sort
-  use stdlib_kinds, only: dp, sp, int64
+  use stdlib_kinds, only: int64
   use stdlib_selection, only: select, arg_select
   use stdlib_sorting, only: sort
   implicit none

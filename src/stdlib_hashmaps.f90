@@ -18,21 +18,12 @@ module stdlib_hashmaps
 
     use stdlib_hashmap_wrappers, only: &
         copy_key,                &
-        copy_other,              &
         fibonacci_hash,          &
-        fnv_1_hasher,            &
-        fnv_1a_hasher,           &
-        free_key,                &
-        free_other,              &
-        get,                     &
+        default_hasher => fnv_1_hasher,            &
         hasher_fun,              &
         operator(==),            &
-        seeded_nmhash32_hasher,  &
-        seeded_nmhash32x_hasher, &
-        seeded_water_hasher,     &
         set,                     &
         key_type,                &
-        other_type,              &
         int_hash
 
     implicit none
@@ -42,7 +33,6 @@ module stdlib_hashmaps
 !! Public data_types
     public ::                  &
         chaining_hashmap_type, &
-        hashmap_type,          &
         open_hashmap_type
 
 !! Values that parameterize David Chase's empirical SLOT expansion code
@@ -101,9 +91,10 @@ module stdlib_hashmaps
 !! Number of elements in the free_list
         integer(int32)     :: nbits = default_bits
 !! Number of bits used to address the slots
-        procedure(hasher_fun), pointer, nopass :: hasher => fnv_1_hasher
+        procedure(hasher_fun), pointer, nopass :: hasher => default_hasher
 !! Hash function
-
+        logical            :: initialized = .false. 
+        
     contains
         procedure, non_overridable, pass(map) :: calls
         procedure, non_overridable, pass(map) :: entries
@@ -131,7 +122,7 @@ module stdlib_hashmaps
         generic, public :: map_entry => key_map_entry, int8_map_entry, int32_map_entry, char_map_entry
         
         ! Get_other_data procedures
-        procedure(key_get_other_data), deferred, pass(map)  :: key_get_other_data
+        procedure(key_get_other_data), deferred, pass(map) :: key_get_other_data
         procedure, non_overridable, pass(map) :: int8_get_other_data
         procedure, non_overridable, pass(map) :: int32_get_other_data
         procedure, non_overridable, pass(map) :: char_get_other_data
@@ -181,10 +172,10 @@ module stdlib_hashmaps
 !!     other  - the other data associated with the key
 !!     exists - a logical flag indicating whether an entry with that key exists
 !
-            import hashmap_type, key_type, other_type
+            import hashmap_type, key_type
             class(hashmap_type), intent(inout) :: map
             type(key_type), intent(in)         :: key
-            type(other_type), intent(out)      :: other
+            class(*), allocatable, intent(out)      :: other
             logical, intent(out), optional     :: exists
         end subroutine key_get_other_data
 
@@ -212,7 +203,7 @@ module stdlib_hashmaps
 !
             import hashmap_type, hasher_fun, int32
             class(hashmap_type), intent(out)     :: map
-            procedure(hasher_fun)                 :: hasher
+            procedure(hasher_fun), optional      :: hasher
             integer, intent(in), optional         :: slots_bits
             integer(int32), intent(out), optional :: status
         end subroutine init_map
@@ -254,10 +245,10 @@ module stdlib_hashmaps
 !! Inserts an entry into the hash table
 !! ([Specifications](../page/specs/stdlib_hashmaps.html#map_entry-inserts-an-entry-into-the-hash-map))
 !!
-            import hashmap_type, key_type, other_type
+            import hashmap_type, key_type
             class(hashmap_type), intent(inout)     :: map
             type(key_type), intent(in)             :: key
-            type(other_type), intent(in), optional :: other
+            class(*), intent(in), optional         :: other
             logical, intent(out), optional         :: conflict
         end subroutine key_map_entry
 
@@ -302,10 +293,10 @@ module stdlib_hashmaps
 !!              in the map
 !!
 !
-            import hashmap_type, key_type, other_type
+            import hashmap_type, key_type
             class(hashmap_type), intent(inout) :: map
             type(key_type), intent(in)         :: key
-            type(other_type), intent(in)       :: other
+            class(*), intent(in)               :: other
             logical, intent(out), optional     :: exists
         end subroutine key_set_other_data
 
@@ -319,7 +310,7 @@ module stdlib_hashmaps
 !!     map - a hash map
             import hashmap_type, int64
             class(hashmap_type), intent(in) :: map
-            integer(int64)                   :: total_depth
+            integer(int64)                  :: total_depth
         end function total_depth
 
     end interface
@@ -336,7 +327,7 @@ module stdlib_hashmaps
 !! Full hash value
         type(key_type)     :: key
 !! The entry's key
-        type(other_type)   :: other
+        class(*), allocatable :: other
 !! Other entry data
         integer(int_index) :: inmap
 !! Index into inverse table
@@ -434,7 +425,7 @@ module stdlib_hashmaps
 !
             class(chaining_hashmap_type), intent(inout) :: map
             type(key_type), intent(in)                  :: key
-            type(other_type), intent(out)               :: other
+            class(*), allocatable, intent(out)          :: other
             logical, intent(out), optional              :: exists
         end subroutine get_other_chaining_data
 
@@ -459,7 +450,7 @@ module stdlib_hashmaps
 !!             greater than max_bits
 !
             class(chaining_hashmap_type), intent(out)  :: map
-            procedure(hasher_fun)                      :: hasher
+            procedure(hasher_fun), optional            :: hasher
             integer, intent(in), optional              :: slots_bits
             integer(int32), intent(out), optional      :: status
         end subroutine init_chaining_map
@@ -503,7 +494,7 @@ module stdlib_hashmaps
 !
             class(chaining_hashmap_type), intent(inout) :: map
             type(key_type), intent(in)             :: key
-            type(other_type), intent(in), optional :: other
+            class(*), intent(in), optional         :: other
             logical, intent(out), optional         :: conflict
         end subroutine map_chain_entry
 
@@ -550,7 +541,7 @@ module stdlib_hashmaps
 !
             class(chaining_hashmap_type), intent(inout) :: map
             type(key_type), intent(in)                  :: key
-            type(other_type), intent(in)                :: other
+            class(*), intent(in)                        :: other
             logical, intent(out), optional              :: exists
         end subroutine set_other_chaining_data
 
@@ -580,7 +571,7 @@ module stdlib_hashmaps
 !! Full hash value
         type(key_type)    :: key
 !! Hash entry key
-        type(other_type)  :: other
+        class(*), allocatable :: other
 !! Other entry data
         integer(int_index) :: inmap
 !! Index into inverse table
@@ -684,7 +675,7 @@ module stdlib_hashmaps
 !
             class(open_hashmap_type), intent(inout) :: map
             type(key_type), intent(in)              :: key
-            type(other_type), intent(out)           :: other
+            class(*), allocatable, intent(out)      :: other
             logical, intent(out), optional          :: exists
         end subroutine get_other_open_data
 
@@ -709,7 +700,7 @@ module stdlib_hashmaps
 !!             greater than max_bits
 
             class(open_hashmap_type), intent(out)      :: map
-            procedure(hasher_fun)                      :: hasher
+            procedure(hasher_fun), optional            :: hasher
             integer, intent(in), optional              :: slots_bits
             integer(int32), intent(out), optional      :: status
         end subroutine init_open_map
@@ -754,7 +745,7 @@ module stdlib_hashmaps
 !
             class(open_hashmap_type), intent(inout) :: map
             type(key_type), intent(in)              :: key
-            type(other_type), intent(in), optional  :: other
+            class(*), intent(in), optional          :: other
             logical, intent(out), optional          :: conflict
         end subroutine map_open_entry
 
@@ -799,7 +790,7 @@ module stdlib_hashmaps
 !
             class(open_hashmap_type), intent(inout) :: map
             type(key_type), intent(in)              :: key
-            type(other_type), intent(in)            :: other
+            class(*), intent(in)                    :: other
             logical, intent(out), optional          :: exists
         end subroutine set_other_open_data
 
@@ -828,7 +819,7 @@ module stdlib_hashmaps
 
             class(hashmap_type), intent(inout) :: map
             integer(int8), intent(in)          :: value(:)
-            type(other_type), intent(out)      :: other
+            class(*), allocatable, intent(out) :: other
             logical, intent(out), optional     :: exists
             
             type(key_type)                     :: key
@@ -847,7 +838,7 @@ module stdlib_hashmaps
 
             class(hashmap_type), intent(inout) :: map
             integer(int32), intent(in)         :: value(:)
-            type(other_type), intent(out)      :: other
+            class(*), allocatable, intent(out) :: other
             logical, intent(out), optional     :: exists
             
             type(key_type)                     :: key
@@ -866,7 +857,7 @@ module stdlib_hashmaps
 
             class(hashmap_type), intent(inout) :: map
             character(*), intent(in)           :: value
-            type(other_type), intent(out)      :: other
+            class(*), allocatable, intent(out) :: other
             logical, intent(out), optional     :: exists
             
             type(key_type)                     :: key
@@ -954,7 +945,7 @@ module stdlib_hashmaps
     !!
                 class(hashmap_type), intent(inout)     :: map
                 integer(int8), intent(in)              :: value(:)
-                type(other_type), intent(in), optional :: other
+                class(*), intent(in), optional         :: other
                 logical, intent(out), optional         :: conflict
             
                 type(key_type)                         :: key
@@ -974,7 +965,7 @@ module stdlib_hashmaps
 !!
             class(hashmap_type), intent(inout)     :: map
             integer(int32), intent(in)             :: value(:)
-            type(other_type), intent(in), optional :: other
+            class(*), intent(in), optional         :: other
             logical, intent(out), optional         :: conflict
             
             type(key_type)                         :: key
@@ -994,7 +985,7 @@ module stdlib_hashmaps
 !!
             class(hashmap_type), intent(inout)     :: map
             character(len=*), intent(in)           :: value
-            type(other_type), intent(in), optional :: other
+            class(*), intent(in), optional         :: other
             logical, intent(out), optional         :: conflict
             
             type(key_type)                         :: key
@@ -1094,7 +1085,7 @@ module stdlib_hashmaps
 !
             class(hashmap_type), intent(inout) :: map
             integer(int8), intent(in)          :: value(:)
-            type(other_type), intent(in)       :: other
+            class(*), intent(in)               :: other
             logical, intent(out), optional     :: exists
             
             type(key_type)                     :: key
@@ -1120,7 +1111,7 @@ module stdlib_hashmaps
 !
             class(hashmap_type), intent(inout) :: map
             integer(int32), intent(in)         :: value(:)
-            type(other_type), intent(in)       :: other
+            class(*), intent(in)               :: other
             logical, intent(out), optional     :: exists
             
             type(key_type)                     :: key
@@ -1146,7 +1137,7 @@ module stdlib_hashmaps
 !
             class(hashmap_type), intent(inout) :: map
             character(*), intent(in)           :: value
-            type(other_type), intent(in)       :: other
+            class(*), intent(in)               :: other
             logical, intent(out), optional     :: exists
             
             type(key_type)                     :: key

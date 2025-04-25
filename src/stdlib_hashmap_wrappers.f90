@@ -24,12 +24,10 @@ module stdlib_hashmap_wrappers
 !! Public procedures
     public ::                    &
         copy_key,                &
-        copy_other,              &
         fibonacci_hash,          &
         fnv_1_hasher,            &
         fnv_1a_hasher,           &
         free_key,                &
-        free_other,              &
         get,                     &
         hasher_fun,              &
         operator(==),            &
@@ -40,8 +38,7 @@ module stdlib_hashmap_wrappers
 
 !! Public types
     public ::      &
-        key_type,  &
-        other_type
+        key_type
 
 !! Public integers
     public ::   &
@@ -76,20 +73,12 @@ module stdlib_hashmap_wrappers
         end function hasher_fun
     end interface
 
-    type :: other_type
-!! Version: Experimental
-!!
-!! A wrapper type for the other data's true type
-!        private
-        class(*), allocatable :: value
-    end type other_type
-
+    
     interface get
 
         module procedure get_char_key,   &
                          get_int8_key,   &
-                         get_int32_key,   &
-                         get_other
+                         get_int32_key
 
     end interface get
 
@@ -102,8 +91,7 @@ module stdlib_hashmap_wrappers
 
         module procedure set_char_key,   &
                          set_int8_key,   &
-                         set_int32_key, &
-                         set_other
+                         set_int32_key
 
     end interface set
 
@@ -125,23 +113,6 @@ contains
         new_key % value = old_key % value
 
     end subroutine copy_key
-
-
-    subroutine copy_other( other_in, other_out )
-!! Version: Experimental
-!!
-!! Copies the other data, other_in, to the variable, other_out
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#copy_other-returns-a-copy-of-the-other-data))
-!!
-!! Arguments:
-!!     other_in  - the input data
-!!     other_out - the output data
-        type(other_type), intent(in)  :: other_in
-        type(other_type), intent(out) :: other_out
-
-        allocate(other_out % value, source = other_in % value )
-
-    end subroutine copy_other
 
 
     function equal_keys( key1, key2 ) result(test) ! Chase's tester
@@ -185,21 +156,6 @@ contains
         if ( allocated( key % value ) ) deallocate( key % value )
 
     end subroutine free_key
-
-
-    subroutine free_other( other )
-!! Version: Experimental
-!!
-!! Frees the memory in the other data
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#free_other-frees-the-memory-associated-with-other-data))
-!!
-!! Arguments:
-!!     other  - the other data
-        type(other_type), intent(inout) :: other
-
-        if ( allocated( other % value) ) deallocate( other % value )
-
-    end subroutine free_other
 
 
     subroutine get_char_key( key, value )
@@ -249,20 +205,6 @@ contains
 
     end subroutine get_char_key
 
-    subroutine get_other( other, value )
-!! Version: Experimental
-!!
-!! Gets the contents of the other as a CLASS(*) string
-!! Arguments:
-!!     other - the input other data
-!!     value - the contents of other mapped to a CLASS(*) variable
-        type(other_type), intent(in)       :: other
-        class(*), allocatable, intent(out) :: value
-
-        allocate(value, source=other % value)
-
-    end subroutine get_other
-
 
     subroutine get_int8_key( key, value )
 !! Version: Experimental
@@ -308,21 +250,6 @@ contains
                                 bytes_char * len( value ) )
 
     end subroutine set_char_key
-
-
-    subroutine set_other( other, value )
-!! Version: Experimental
-!!
-!! Sets the contents of the other data from a CLASS(*) variable
-!! Arguments:
-!!     other - the output other data
-!!     value - the input CLASS(*) variable
-        type(other_type), intent(out) :: other
-        class(*), intent(in)          :: value
-
-        allocate(other % value, source=value)
-
-    end subroutine set_other
 
 
     subroutine set_int8_key( key, value )

@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.14.0)
 set(CMAKE_USER_MAKE_RULES_OVERRIDE ${CMAKE_CURRENT_SOURCE_DIR}/config/DefaultFlags.cmake)
 
 project(fortran_stdlib
-        LANGUAGES Fortran
+	LANGUAGES Fortran C
         DESCRIPTION "Community driven and agreed upon de facto standard library for Fortran"
 )
 
@@ -88,6 +88,7 @@ list(
   "-DWITH_CBOOL=$<BOOL:${WITH_CBOOL}>"
   "-DWITH_QP=$<BOOL:${WITH_QP}>"
   "-DWITH_XDP=$<BOOL:${WITH_XDP}>"
+  "-DWITH_ILP64=$<BOOL:${WITH_ILP64}>"
   "-DPROJECT_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}"
   "-DPROJECT_VERSION_MINOR=${PROJECT_VERSION_MINOR}"
   "-DPROJECT_VERSION_PATCH=${PROJECT_VERSION_PATCH}"

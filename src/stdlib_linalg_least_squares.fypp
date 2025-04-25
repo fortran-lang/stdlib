@@ -10,7 +10,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
      use stdlib_linalg_lapack, only: gelsd, stdlib_ilaenv
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
-     implicit none(type,external)
+     implicit none
      
      character(*), parameter :: this = 'lstsq'
 
@@ -36,7 +36,6 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
       end subroutine handle_gelsd_info
 
      #:for rk,rt,ri in RC_KINDS_TYPES
-     #:if rk!="xdp"
      ! Workspace needed by gelsd
      elemental subroutine ${ri}$gelsd_space(m,n,nrhs,lrwork,liwork,lcwork)
          integer(ilp), intent(in) :: m,n,nrhs
@@ -74,12 +73,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
      end subroutine ${ri}$gelsd_space
 
-     #:endif
      #:endfor
 
      #:for nd,ndsuf,nde in ALL_RHS
      #:for rk,rt,ri in RC_KINDS_TYPES
-     #:if rk!="xdp"
 
      ! Compute the integer, real, [complex] working space requested byu the least squares procedure
      pure module subroutine stdlib_linalg_${ri}$_lstsq_space_${ndsuf}$(a,b,lrwork,liwork#{if rt.startswith('c')}#,lcwork#{endif}#)
@@ -206,12 +203,18 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
          !! Local variables
          type(linalg_state_type) :: err0
          integer(ilp) :: m,n,lda,ldb,nrhs,ldx,nrhsx,info,mnmin,mnmax,arank,lrwork,liwork,lcwork
-         integer(ilp) :: nrs,nis,ncs,nsvd
+         integer(ilp) :: nrs,nis,nsvd
+         #:if rt.startswith('complex')         
+         integer(ilp) :: ncs
+         #:endif
          integer(ilp), pointer :: iwork(:)
          logical(lk) :: copy_a,large_enough_x
          real(${rk}$) :: acond,rcond
          real(${rk}$), pointer :: rwork(:),singular(:)
-         ${rt}$, pointer :: xmat(:,:),amat(:,:),cwork(:)
+         ${rt}$, pointer :: xmat(:,:),amat(:,:)
+         #:if rt.startswith('complex')         
+         ${rt}$, pointer :: cwork(:)
+         #:endif  
 
          ! Problem sizes
          m     = size(a,1,kind=ilp)
@@ -357,7 +360,6 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
      end subroutine stdlib_linalg_${ri}$_solve_lstsq_${ndsuf}$
 
-     #:endif
      #:endfor
      #:endfor
 

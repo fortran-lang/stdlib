@@ -19,7 +19,6 @@ program test_32_bit_hash_performance
     integer, parameter :: rand_power = 16
     integer, parameter :: rand_size = 2**rand_power
     integer, parameter :: test_size = rand_size * 4
-    integer, parameter :: test_block = 2**10
     integer, parameter :: repeat = 4
     integer :: index, k
     integer :: lun

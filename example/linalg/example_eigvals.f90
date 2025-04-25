@@ -3,7 +3,6 @@ program example_eigvals
   use stdlib_linalg, only: eigvals
   implicit none
 
-  integer :: i
   real, allocatable :: A(:,:),lambda(:)
   complex, allocatable :: cA(:,:),clambda(:)
 

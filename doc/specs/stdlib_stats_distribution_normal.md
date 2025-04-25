@@ -64,11 +64,11 @@ Experimental
 
 The probability density function (pdf) of the single real variable normal distribution:
 
-$$f(x) = \frac{1}{\sigma \sqrt{2}} \exp{\left[-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^{2}\right]}$$
+$$f(x) = \frac{1}{\sigma \sqrt{2\pi}} \exp{\left[-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^{2}\right]}$$
 
 For a complex varible \( z=(x + y i) \) with independent real \( x \) and imaginary \( y \) parts, the joint probability density function is the product of the the corresponding real and imaginary marginal pdfs:[^2]
 
-$$f(x + y \mathit{i}) = f(x) f(y) = \frac{1}{2\sigma_{x}\sigma_{y}} \exp{\left[-\frac{1}{2}\left(\left(\frac{x-\mu_x}{\sigma_{x}}\right)^{2}+\left(\frac{y-\mu_y}{\sigma_{y}}\right)^{2}\right)\right]}$$
+$$f(x + y \mathit{i}) = f(x) f(y) = \frac{1}{2\pi\sigma_{x}\sigma_{y}} \exp{\left[-\frac{1}{2}\left(\left(\frac{x-\mu_x}{\sigma_{x}}\right)^{2}+\left(\frac{y-\mu_y}{\sigma_{y}}\right)^{2}\right)\right]}$$
 
 ### Syntax
 

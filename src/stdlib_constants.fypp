@@ -1,9 +1,13 @@
 #:include "common.fypp"
 #:set KINDS = REAL_KINDS
+#:set I_KINDS_TYPES = list(zip(INT_KINDS, INT_TYPES, INT_KINDS))
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+
 module stdlib_constants
     !! Constants
     !! ([Specification](../page/specs/stdlib_constants.html))
-    use stdlib_kinds, only: #{for k in KINDS[:-1]}#${k}$, #{endfor}#${KINDS[-1]}$
+    use stdlib_kinds
     use stdlib_codata, only: SPEED_OF_LIGHT_IN_VACUUM, &
                              VACUUM_ELECTRIC_PERMITTIVITY, &
                              VACUUM_MAG_PERMEABILITY, &
@@ -36,7 +40,7 @@ module stdlib_constants
     real(dp), parameter, public :: epsilon_0 = VACUUM_ELECTRIC_PERMITTIVITY%value !! vacuum mag. permeability
     real(dp), parameter, public :: h = PLANCK_CONSTANT%value !! Planck constant
     real(dp), parameter, public :: Planck = PLANCK_CONSTANT%value !! Planck constant
-    real(dp), parameter, public :: hbar = PLANCK_CONSTANT%value / PI_dp !! Reduced Planck constant
+    real(dp), parameter, public :: hbar = PLANCK_CONSTANT%value / (2.0_dp * PI_dp) !! Reduced Planck constant
     real(dp), parameter, public :: G = NEWTONIAN_CONSTANT_OF_GRAVITATION%value !! Newtonian constant of gravitation
     real(dp), parameter, public :: gravitation_constant = NEWTONIAN_CONSTANT_OF_GRAVITATION%value !! Newtonian constant of gravitation
     real(dp), parameter, public :: g2 = STANDARD_ACCELERATION_OF_GRAVITY%value !! Standard acceleration of gravity
@@ -60,5 +64,17 @@ module stdlib_constants
     real(dp), parameter, public :: u = ATOMIC_MASS_CONSTANT%value !! Atomic mass constant
 
     ! Additional constants if needed
+    #:for k, t, s in I_KINDS_TYPES
+    ${t}$, parameter, public :: zero_${s}$ = 0_${k}$
+    ${t}$, parameter, public :: one_${s}$  = 1_${k}$
+    #:endfor
+    #:for k, t, s in R_KINDS_TYPES
+    ${t}$, parameter, public :: zero_${s}$ = 0._${k}$
+    ${t}$, parameter, public :: one_${s}$  = 1._${k}$
+    #:endfor
+    #:for k, t, s in C_KINDS_TYPES
+    ${t}$, parameter, public :: zero_${s}$ = (0._${k}$,0._${k}$)
+    ${t}$, parameter, public :: one_${s}$  = (1._${k}$,0._${k}$)
+    #:endfor
 
 end module stdlib_constants

@@ -628,7 +628,7 @@ contains
         character(len=:), allocatable :: msg
 
         character(len=*), parameter :: filename = ".test-iomsg-deallocated.npy"
-        real(sp), allocatable :: input(:, :), output(:, :)
+        real(sp), allocatable :: input(:, :)
 
         msg = "This message should be deallocated."
 

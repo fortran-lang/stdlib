@@ -20,28 +20,21 @@ module test_linalg_svd
         allocate(tests(0))
 
         #:for rk,rt,ri in REAL_KINDS_TYPES
-        #:if rk!="xdp"
         tests = [tests,new_unittest("test_svd_${ri}$",test_svd_${ri}$)]        
-        #:endif
         #:endfor
 
         #:for ck,ct,ci in CMPLX_KINDS_TYPES
-        #:if ck!="xdp"
         tests = [tests,new_unittest("test_complex_svd_${ci}$",test_complex_svd_${ci}$)]        
-        #:endif
         #:endfor
 
         #:for rk,rt,ri in RC_KINDS_TYPES
-        #:if rk!="xdp"    
         tests = [tests,new_unittest("test_svd_row_${ri}$",test_svd_row_${ri}$)]         
-        #:endif
         #:endfor
 
     end subroutine test_svd
 
     !> Real matrix svd
     #:for rk,rt,ri in REAL_KINDS_TYPES
-    #:if rk!="xdp"
     subroutine test_svd_${ri}$(error)
         type(error_type), allocatable, intent(out) :: error
 
@@ -176,12 +169,10 @@ module test_linalg_svd
 
     end subroutine test_svd_${ri}$
 
-    #:endif
     #:endfor
 
     !> Test complex svd
     #:for ck,ct,ci in CMPLX_KINDS_TYPES
-    #:if ck!="xdp" 
     subroutine test_complex_svd_${ci}$(error)
         type(error_type), allocatable, intent(out) :: error
 
@@ -243,12 +234,10 @@ module test_linalg_svd
 
     end subroutine test_complex_svd_${ci}$
 
-    #:endif
     #:endfor
 
 
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp"     
     ! Issue #835: bounds checking triggers an error with 1-sized A matrix
     subroutine test_svd_row_${ri}$(error)
         type(error_type), allocatable, intent(out) :: error
@@ -273,7 +262,6 @@ module test_linalg_svd
     
     end subroutine test_svd_row_${ri}$
 
-    #:endif
     #:endfor
 
 

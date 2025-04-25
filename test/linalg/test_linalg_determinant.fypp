@@ -43,7 +43,6 @@ module test_linalg_determinant
 
         type(linalg_state_type) :: state
 
-        integer(ilp) :: i
         integer(ilp), parameter :: n = 128_ilp
 
         ${rt}$ :: a(n,n),deta
@@ -79,7 +78,7 @@ module test_linalg_determinant
 
         integer(ilp), parameter :: n = 4_ilp
         real(${rk}$), parameter :: coef = 0.01_${rk}$
-        integer(ilp) :: i,j
+        integer(ilp) :: i
         ${rt}$ :: a(n,n),deta
 
         !> Multiply eye by a very small number
@@ -108,7 +107,7 @@ module test_linalg_determinant
 
         type(linalg_state_type) :: state
 
-        integer(ilp) :: i,j,n
+        integer(ilp) :: i,n
         integer(ilp), parameter :: nmax = 10_ilp
 
         ${ct}$, parameter :: res(nmax) = [${ct}$::(1,1),(0,2),(-2,2),(-4,0),(-4,-4), &

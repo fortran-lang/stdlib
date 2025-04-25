@@ -40,7 +40,7 @@ jobs:
           ford -r $(git describe --always) --debug ${MAYBE_SKIP_SEARCH} "${FORD_FILE}"
 
       - name: Upload Documentation
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: FORD-API-docs
           path: ./API-doc/

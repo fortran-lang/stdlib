@@ -1,0 +1,4520 @@
+#:include "common.fypp" 
+module stdlib_lapack_orthogonal_factors
+  use stdlib_linalg_constants
+  use stdlib_linalg_lapack_aux
+  use stdlib_linalg_blas
+  use stdlib_lapack_base
+  implicit none
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_stzrzf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_stzrzf
+
+     pure module subroutine stdlib${ii}$_dtzrzf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_dtzrzf
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$tzrzf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ri}$tzrzf
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_ctzrzf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_ctzrzf
+
+     pure module subroutine stdlib${ii}$_ztzrzf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_ztzrzf
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$tzrzf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ci}$tzrzf
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cunmrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
+               info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, lwork, m, n
+           complex(sp), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(sp), intent(in) :: tau(*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cunmrz
+
+     pure module subroutine stdlib${ii}$_zunmrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
+               info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, lwork, m, n
+           complex(dp), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(dp), intent(in) :: tau(*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zunmrz
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$unmrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
+               info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, lwork, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(${ck}$), intent(in) :: tau(*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$unmrz
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sormrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
+               info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, lwork, m, n
+           real(sp), intent(inout) :: a(lda,*), c(ldc,*)
+           real(sp), intent(in) :: tau(*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sormrz
+
+     pure module subroutine stdlib${ii}$_dormrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
+               info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, lwork, m, n
+           real(dp), intent(inout) :: a(lda,*), c(ldc,*)
+           real(dp), intent(in) :: tau(*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dormrz
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$ormrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
+               info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, lwork, m, n
+           real(${rk}$), intent(inout) :: a(lda,*), c(ldc,*)
+           real(${rk}$), intent(in) :: tau(*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$ormrz
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cunmr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, m, n
+           complex(sp), intent(in) :: a(lda,*), tau(*)
+           complex(sp), intent(inout) :: c(ldc,*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cunmr3
+
+     pure module subroutine stdlib${ii}$_zunmr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, m, n
+           complex(dp), intent(in) :: a(lda,*), tau(*)
+           complex(dp), intent(inout) :: c(ldc,*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zunmr3
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$unmr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, m, n
+           complex(${ck}$), intent(in) :: a(lda,*), tau(*)
+           complex(${ck}$), intent(inout) :: c(ldc,*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$unmr3
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sormr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, m, n
+           real(sp), intent(in) :: a(lda,*), tau(*)
+           real(sp), intent(inout) :: c(ldc,*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sormr3
+
+     pure module subroutine stdlib${ii}$_dormr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, m, n
+           real(dp), intent(in) :: a(lda,*), tau(*)
+           real(dp), intent(inout) :: c(ldc,*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dormr3
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$ormr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, m, n
+           real(${rk}$), intent(in) :: a(lda,*), tau(*)
+           real(${rk}$), intent(inout) :: c(ldc,*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$ormr3
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_slarz( side, m, n, l, v, incv, tau, c, ldc, work )
+           character, intent(in) :: side
+           integer(${ik}$), intent(in) :: incv, l, ldc, m, n
+           real(sp), intent(in) :: tau
+           real(sp), intent(inout) :: c(ldc,*)
+           real(sp), intent(in) :: v(*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_slarz
+
+     pure module subroutine stdlib${ii}$_dlarz( side, m, n, l, v, incv, tau, c, ldc, work )
+           character, intent(in) :: side
+           integer(${ik}$), intent(in) :: incv, l, ldc, m, n
+           real(dp), intent(in) :: tau
+           real(dp), intent(inout) :: c(ldc,*)
+           real(dp), intent(in) :: v(*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dlarz
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$larz( side, m, n, l, v, incv, tau, c, ldc, work )
+           character, intent(in) :: side
+           integer(${ik}$), intent(in) :: incv, l, ldc, m, n
+           real(${rk}$), intent(in) :: tau
+           real(${rk}$), intent(inout) :: c(ldc,*)
+           real(${rk}$), intent(in) :: v(*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$larz
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_clarz( side, m, n, l, v, incv, tau, c, ldc, work )
+           character, intent(in) :: side
+           integer(${ik}$), intent(in) :: incv, l, ldc, m, n
+           complex(sp), intent(in) :: tau
+           complex(sp), intent(inout) :: c(ldc,*)
+           complex(sp), intent(in) :: v(*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_clarz
+
+     pure module subroutine stdlib${ii}$_zlarz( side, m, n, l, v, incv, tau, c, ldc, work )
+           character, intent(in) :: side
+           integer(${ik}$), intent(in) :: incv, l, ldc, m, n
+           complex(dp), intent(in) :: tau
+           complex(dp), intent(inout) :: c(ldc,*)
+           complex(dp), intent(in) :: v(*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zlarz
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$larz( side, m, n, l, v, incv, tau, c, ldc, work )
+           character, intent(in) :: side
+           integer(${ik}$), intent(in) :: incv, l, ldc, m, n
+           complex(${ck}$), intent(in) :: tau
+           complex(${ck}$), intent(inout) :: c(ldc,*)
+           complex(${ck}$), intent(in) :: v(*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$larz
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_slarzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
+               ldc, work, ldwork )
+           character, intent(in) :: direct, side, storev, trans
+           integer(${ik}$), intent(in) :: k, l, ldc, ldt, ldv, ldwork, m, n
+           real(sp), intent(inout) :: c(ldc,*), t(ldt,*), v(ldv,*)
+           real(sp), intent(out) :: work(ldwork,*)
+     end subroutine stdlib${ii}$_slarzb
+
+     pure module subroutine stdlib${ii}$_dlarzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
+               ldc, work, ldwork )
+           character, intent(in) :: direct, side, storev, trans
+           integer(${ik}$), intent(in) :: k, l, ldc, ldt, ldv, ldwork, m, n
+           real(dp), intent(inout) :: c(ldc,*), t(ldt,*), v(ldv,*)
+           real(dp), intent(out) :: work(ldwork,*)
+     end subroutine stdlib${ii}$_dlarzb
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$larzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
+               ldc, work, ldwork )
+           character, intent(in) :: direct, side, storev, trans
+           integer(${ik}$), intent(in) :: k, l, ldc, ldt, ldv, ldwork, m, n
+           real(${rk}$), intent(inout) :: c(ldc,*), t(ldt,*), v(ldv,*)
+           real(${rk}$), intent(out) :: work(ldwork,*)
+     end subroutine stdlib${ii}$_${ri}$larzb
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_clarzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
+               ldc, work, ldwork )
+           character, intent(in) :: direct, side, storev, trans
+           integer(${ik}$), intent(in) :: k, l, ldc, ldt, ldv, ldwork, m, n
+           complex(sp), intent(inout) :: c(ldc,*), t(ldt,*), v(ldv,*)
+           complex(sp), intent(out) :: work(ldwork,*)
+     end subroutine stdlib${ii}$_clarzb
+
+     pure module subroutine stdlib${ii}$_zlarzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
+               ldc, work, ldwork )
+           character, intent(in) :: direct, side, storev, trans
+           integer(${ik}$), intent(in) :: k, l, ldc, ldt, ldv, ldwork, m, n
+           complex(dp), intent(inout) :: c(ldc,*), t(ldt,*), v(ldv,*)
+           complex(dp), intent(out) :: work(ldwork,*)
+     end subroutine stdlib${ii}$_zlarzb
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$larzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
+               ldc, work, ldwork )
+           character, intent(in) :: direct, side, storev, trans
+           integer(${ik}$), intent(in) :: k, l, ldc, ldt, ldv, ldwork, m, n
+           complex(${ck}$), intent(inout) :: c(ldc,*), t(ldt,*), v(ldv,*)
+           complex(${ck}$), intent(out) :: work(ldwork,*)
+     end subroutine stdlib${ii}$_${ci}$larzb
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_slarzt( direct, storev, n, k, v, ldv, tau, t, ldt )
+           character, intent(in) :: direct, storev
+           integer(${ik}$), intent(in) :: k, ldt, ldv, n
+           real(sp), intent(out) :: t(ldt,*)
+           real(sp), intent(in) :: tau(*)
+           real(sp), intent(inout) :: v(ldv,*)
+     end subroutine stdlib${ii}$_slarzt
+
+     pure module subroutine stdlib${ii}$_dlarzt( direct, storev, n, k, v, ldv, tau, t, ldt )
+           character, intent(in) :: direct, storev
+           integer(${ik}$), intent(in) :: k, ldt, ldv, n
+           real(dp), intent(out) :: t(ldt,*)
+           real(dp), intent(in) :: tau(*)
+           real(dp), intent(inout) :: v(ldv,*)
+     end subroutine stdlib${ii}$_dlarzt
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$larzt( direct, storev, n, k, v, ldv, tau, t, ldt )
+           character, intent(in) :: direct, storev
+           integer(${ik}$), intent(in) :: k, ldt, ldv, n
+           real(${rk}$), intent(out) :: t(ldt,*)
+           real(${rk}$), intent(in) :: tau(*)
+           real(${rk}$), intent(inout) :: v(ldv,*)
+     end subroutine stdlib${ii}$_${ri}$larzt
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_clarzt( direct, storev, n, k, v, ldv, tau, t, ldt )
+           character, intent(in) :: direct, storev
+           integer(${ik}$), intent(in) :: k, ldt, ldv, n
+           complex(sp), intent(out) :: t(ldt,*)
+           complex(sp), intent(in) :: tau(*)
+           complex(sp), intent(inout) :: v(ldv,*)
+     end subroutine stdlib${ii}$_clarzt
+
+     pure module subroutine stdlib${ii}$_zlarzt( direct, storev, n, k, v, ldv, tau, t, ldt )
+           character, intent(in) :: direct, storev
+           integer(${ik}$), intent(in) :: k, ldt, ldv, n
+           complex(dp), intent(out) :: t(ldt,*)
+           complex(dp), intent(in) :: tau(*)
+           complex(dp), intent(inout) :: v(ldv,*)
+     end subroutine stdlib${ii}$_zlarzt
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$larzt( direct, storev, n, k, v, ldv, tau, t, ldt )
+           character, intent(in) :: direct, storev
+           integer(${ik}$), intent(in) :: k, ldt, ldv, n
+           complex(${ck}$), intent(out) :: t(ldt,*)
+           complex(${ck}$), intent(in) :: tau(*)
+           complex(${ck}$), intent(inout) :: v(ldv,*)
+     end subroutine stdlib${ii}$_${ci}$larzt
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_slatrz( m, n, l, a, lda, tau, work )
+           integer(${ik}$), intent(in) :: l, lda, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_slatrz
+
+     pure module subroutine stdlib${ii}$_dlatrz( m, n, l, a, lda, tau, work )
+           integer(${ik}$), intent(in) :: l, lda, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_dlatrz
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$latrz( m, n, l, a, lda, tau, work )
+           integer(${ik}$), intent(in) :: l, lda, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ri}$latrz
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_clatrz( m, n, l, a, lda, tau, work )
+           integer(${ik}$), intent(in) :: l, lda, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_clatrz
+
+     pure module subroutine stdlib${ii}$_zlatrz( m, n, l, a, lda, tau, work )
+           integer(${ik}$), intent(in) :: l, lda, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_zlatrz
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$latrz( m, n, l, a, lda, tau, work )
+           integer(${ik}$), intent(in) :: l, lda, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ci}$latrz
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sgeqr( m, n, a, lda, t, tsize, work, lwork,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: t(*), work(*)
+     end subroutine stdlib${ii}$_sgeqr
+
+     pure module subroutine stdlib${ii}$_dgeqr( m, n, a, lda, t, tsize, work, lwork,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: t(*), work(*)
+     end subroutine stdlib${ii}$_dgeqr
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$geqr( m, n, a, lda, t, tsize, work, lwork,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: t(*), work(*)
+     end subroutine stdlib${ii}$_${ri}$geqr
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cgeqr( m, n, a, lda, t, tsize, work, lwork,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: t(*), work(*)
+     end subroutine stdlib${ii}$_cgeqr
+
+     pure module subroutine stdlib${ii}$_zgeqr( m, n, a, lda, t, tsize, work, lwork,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: t(*), work(*)
+     end subroutine stdlib${ii}$_zgeqr
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$geqr( m, n, a, lda, t, tsize, work, lwork,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: t(*), work(*)
+     end subroutine stdlib${ii}$_${ci}$geqr
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sgemqr( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
+               info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
+           real(sp), intent(in) :: a(lda,*), t(*)
+           real(sp), intent(inout) :: c(ldc,*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sgemqr
+
+     pure module subroutine stdlib${ii}$_dgemqr( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
+               info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
+           real(dp), intent(in) :: a(lda,*), t(*)
+           real(dp), intent(inout) :: c(ldc,*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dgemqr
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$gemqr( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
+               info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
+           real(${rk}$), intent(in) :: a(lda,*), t(*)
+           real(${rk}$), intent(inout) :: c(ldc,*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$gemqr
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cgemqr( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
+               info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
+           complex(sp), intent(in) :: a(lda,*), t(*)
+           complex(sp), intent(inout) :: c(ldc,*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cgemqr
+
+     pure module subroutine stdlib${ii}$_zgemqr( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
+               info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
+           complex(dp), intent(in) :: a(lda,*), t(*)
+           complex(dp), intent(inout) :: c(ldc,*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zgemqr
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$gemqr( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
+               info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
+           complex(${ck}$), intent(in) :: a(lda,*), t(*)
+           complex(${ck}$), intent(inout) :: c(ldc,*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$gemqr
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sgeqrf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_sgeqrf
+
+     pure module subroutine stdlib${ii}$_dgeqrf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_dgeqrf
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$geqrf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ri}$geqrf
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cgeqrf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_cgeqrf
+
+     pure module subroutine stdlib${ii}$_zgeqrf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_zgeqrf
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$geqrf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ci}$geqrf
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sgeqr2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_sgeqr2
+
+     pure module subroutine stdlib${ii}$_dgeqr2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_dgeqr2
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$geqr2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ri}$geqr2
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cgeqr2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_cgeqr2
+
+     pure module subroutine stdlib${ii}$_zgeqr2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_zgeqr2
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$geqr2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ci}$geqr2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cungqr( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(in) :: tau(*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cungqr
+
+     pure module subroutine stdlib${ii}$_zungqr( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(in) :: tau(*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zungqr
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$ungqr( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(in) :: tau(*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$ungqr
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cung2r( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(in) :: tau(*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cung2r
+
+     pure module subroutine stdlib${ii}$_zung2r( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(in) :: tau(*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zung2r
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$ung2r( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(in) :: tau(*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$ung2r
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cunmqr( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           complex(sp), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(sp), intent(in) :: tau(*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cunmqr
+
+     pure module subroutine stdlib${ii}$_zunmqr( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           complex(dp), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(dp), intent(in) :: tau(*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zunmqr
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$unmqr( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(${ck}$), intent(in) :: tau(*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$unmqr
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cunm2r( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           complex(sp), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(sp), intent(in) :: tau(*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cunm2r
+
+     pure module subroutine stdlib${ii}$_zunm2r( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           complex(dp), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(dp), intent(in) :: tau(*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zunm2r
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$unm2r( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(${ck}$), intent(in) :: tau(*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$unm2r
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sorgqr( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(in) :: tau(*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sorgqr
+
+     pure module subroutine stdlib${ii}$_dorgqr( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(in) :: tau(*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dorgqr
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$orgqr( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(in) :: tau(*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$orgqr
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sorg2r( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(in) :: tau(*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sorg2r
+
+     pure module subroutine stdlib${ii}$_dorg2r( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(in) :: tau(*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dorg2r
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$org2r( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(in) :: tau(*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$org2r
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sormqr( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           real(sp), intent(inout) :: a(lda,*), c(ldc,*)
+           real(sp), intent(in) :: tau(*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sormqr
+
+     pure module subroutine stdlib${ii}$_dormqr( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           real(dp), intent(inout) :: a(lda,*), c(ldc,*)
+           real(dp), intent(in) :: tau(*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dormqr
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$ormqr( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           real(${rk}$), intent(inout) :: a(lda,*), c(ldc,*)
+           real(${rk}$), intent(in) :: tau(*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$ormqr
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sorm2r( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           real(sp), intent(inout) :: a(lda,*), c(ldc,*)
+           real(sp), intent(in) :: tau(*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sorm2r
+
+     pure module subroutine stdlib${ii}$_dorm2r( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           real(dp), intent(inout) :: a(lda,*), c(ldc,*)
+           real(dp), intent(in) :: tau(*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dorm2r
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$orm2r( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           real(${rk}$), intent(inout) :: a(lda,*), c(ldc,*)
+           real(${rk}$), intent(in) :: tau(*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$orm2r
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sgeqrt( m, n, nb, a, lda, t, ldt, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_sgeqrt
+
+     pure module subroutine stdlib${ii}$_dgeqrt( m, n, nb, a, lda, t, ldt, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_dgeqrt
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$geqrt( m, n, nb, a, lda, t, ldt, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_${ri}$geqrt
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cgeqrt( m, n, nb, a, lda, t, ldt, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_cgeqrt
+
+     pure module subroutine stdlib${ii}$_zgeqrt( m, n, nb, a, lda, t, ldt, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_zgeqrt
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$geqrt( m, n, nb, a, lda, t, ldt, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_${ci}$geqrt
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sgeqrt2( m, n, a, lda, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_sgeqrt2
+
+     pure module subroutine stdlib${ii}$_dgeqrt2( m, n, a, lda, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_dgeqrt2
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$geqrt2( m, n, a, lda, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_${ri}$geqrt2
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cgeqrt2( m, n, a, lda, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_cgeqrt2
+
+     pure module subroutine stdlib${ii}$_zgeqrt2( m, n, a, lda, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_zgeqrt2
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$geqrt2( m, n, a, lda, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_${ci}$geqrt2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure recursive module subroutine stdlib${ii}$_sgeqrt3( m, n, a, lda, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, ldt
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_sgeqrt3
+
+     pure recursive module subroutine stdlib${ii}$_dgeqrt3( m, n, a, lda, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, ldt
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_dgeqrt3
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure recursive module subroutine stdlib${ii}$_${ri}$geqrt3( m, n, a, lda, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, ldt
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_${ri}$geqrt3
+
+#:endif
+#:endfor
+
+     pure recursive module subroutine stdlib${ii}$_cgeqrt3( m, n, a, lda, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, ldt
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_cgeqrt3
+
+     pure recursive module subroutine stdlib${ii}$_zgeqrt3( m, n, a, lda, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, ldt
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_zgeqrt3
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure recursive module subroutine stdlib${ii}$_${ci}$geqrt3( m, n, a, lda, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, ldt
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_${ci}$geqrt3
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sgemqrt( side, trans, m, n, k, nb, v, ldv, t, ldt,c, ldc, work, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, nb, ldt
+           real(sp), intent(in) :: v(ldv,*), t(ldt,*)
+           real(sp), intent(inout) :: c(ldc,*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sgemqrt
+
+     pure module subroutine stdlib${ii}$_dgemqrt( side, trans, m, n, k, nb, v, ldv, t, ldt,c, ldc, work, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, nb, ldt
+           real(dp), intent(in) :: v(ldv,*), t(ldt,*)
+           real(dp), intent(inout) :: c(ldc,*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dgemqrt
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$gemqrt( side, trans, m, n, k, nb, v, ldv, t, ldt,c, ldc, work, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, nb, ldt
+           real(${rk}$), intent(in) :: v(ldv,*), t(ldt,*)
+           real(${rk}$), intent(inout) :: c(ldc,*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$gemqrt
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cgemqrt( side, trans, m, n, k, nb, v, ldv, t, ldt,c, ldc, work, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, nb, ldt
+           complex(sp), intent(in) :: v(ldv,*), t(ldt,*)
+           complex(sp), intent(inout) :: c(ldc,*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cgemqrt
+
+     pure module subroutine stdlib${ii}$_zgemqrt( side, trans, m, n, k, nb, v, ldv, t, ldt,c, ldc, work, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, nb, ldt
+           complex(dp), intent(in) :: v(ldv,*), t(ldt,*)
+           complex(dp), intent(inout) :: c(ldc,*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zgemqrt
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$gemqrt( side, trans, m, n, k, nb, v, ldv, t, ldt,c, ldc, work, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, nb, ldt
+           complex(${ck}$), intent(in) :: v(ldv,*), t(ldt,*)
+           complex(${ck}$), intent(inout) :: c(ldc,*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$gemqrt
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     module subroutine stdlib${ii}$_sgeqrfp( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_sgeqrfp
+
+     module subroutine stdlib${ii}$_dgeqrfp( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_dgeqrfp
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     module subroutine stdlib${ii}$_${ri}$geqrfp( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ri}$geqrfp
+
+#:endif
+#:endfor
+
+     module subroutine stdlib${ii}$_cgeqrfp( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_cgeqrfp
+
+     module subroutine stdlib${ii}$_zgeqrfp( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_zgeqrfp
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     module subroutine stdlib${ii}$_${ci}$geqrfp( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ci}$geqrfp
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     module subroutine stdlib${ii}$_sgeqr2p( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_sgeqr2p
+
+     module subroutine stdlib${ii}$_dgeqr2p( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_dgeqr2p
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     module subroutine stdlib${ii}$_${ri}$geqr2p( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ri}$geqr2p
+
+#:endif
+#:endfor
+
+     module subroutine stdlib${ii}$_cgeqr2p( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_cgeqr2p
+
+     module subroutine stdlib${ii}$_zgeqr2p( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_zgeqr2p
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     module subroutine stdlib${ii}$_${ci}$geqr2p( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ci}$geqr2p
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sgeqp3( m, n, a, lda, jpvt, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           integer(${ik}$), intent(inout) :: jpvt(*)
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_sgeqp3
+
+     pure module subroutine stdlib${ii}$_dgeqp3( m, n, a, lda, jpvt, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           integer(${ik}$), intent(inout) :: jpvt(*)
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_dgeqp3
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$geqp3( m, n, a, lda, jpvt, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           integer(${ik}$), intent(inout) :: jpvt(*)
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ri}$geqp3
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cgeqp3( m, n, a, lda, jpvt, tau, work, lwork, rwork,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           integer(${ik}$), intent(inout) :: jpvt(*)
+           real(sp), intent(out) :: rwork(*)
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_cgeqp3
+
+     pure module subroutine stdlib${ii}$_zgeqp3( m, n, a, lda, jpvt, tau, work, lwork, rwork,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           integer(${ik}$), intent(inout) :: jpvt(*)
+           real(dp), intent(out) :: rwork(*)
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_zgeqp3
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$geqp3( m, n, a, lda, jpvt, tau, work, lwork, rwork,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           integer(${ik}$), intent(inout) :: jpvt(*)
+           real(${ck}$), intent(out) :: rwork(*)
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ci}$geqp3
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_slaqp2( m, n, offset, a, lda, jpvt, tau, vn1, vn2,work )
+           integer(${ik}$), intent(in) :: lda, m, n, offset
+           integer(${ik}$), intent(inout) :: jpvt(*)
+           real(sp), intent(inout) :: a(lda,*), vn1(*), vn2(*)
+           real(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_slaqp2
+
+     pure module subroutine stdlib${ii}$_dlaqp2( m, n, offset, a, lda, jpvt, tau, vn1, vn2,work )
+           integer(${ik}$), intent(in) :: lda, m, n, offset
+           integer(${ik}$), intent(inout) :: jpvt(*)
+           real(dp), intent(inout) :: a(lda,*), vn1(*), vn2(*)
+           real(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_dlaqp2
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$laqp2( m, n, offset, a, lda, jpvt, tau, vn1, vn2,work )
+           integer(${ik}$), intent(in) :: lda, m, n, offset
+           integer(${ik}$), intent(inout) :: jpvt(*)
+           real(${rk}$), intent(inout) :: a(lda,*), vn1(*), vn2(*)
+           real(${rk}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ri}$laqp2
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_claqp2( m, n, offset, a, lda, jpvt, tau, vn1, vn2,work )
+           integer(${ik}$), intent(in) :: lda, m, n, offset
+           integer(${ik}$), intent(inout) :: jpvt(*)
+           real(sp), intent(inout) :: vn1(*), vn2(*)
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_claqp2
+
+     pure module subroutine stdlib${ii}$_zlaqp2( m, n, offset, a, lda, jpvt, tau, vn1, vn2,work )
+           integer(${ik}$), intent(in) :: lda, m, n, offset
+           integer(${ik}$), intent(inout) :: jpvt(*)
+           real(dp), intent(inout) :: vn1(*), vn2(*)
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_zlaqp2
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$laqp2( m, n, offset, a, lda, jpvt, tau, vn1, vn2,work )
+           integer(${ik}$), intent(in) :: lda, m, n, offset
+           integer(${ik}$), intent(inout) :: jpvt(*)
+           real(${ck}$), intent(inout) :: vn1(*), vn2(*)
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ci}$laqp2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_slaqps( m, n, offset, nb, kb, a, lda, jpvt, tau, vn1,vn2, auxv, f, &
+               ldf )
+           integer(${ik}$), intent(out) :: kb
+           integer(${ik}$), intent(in) :: lda, ldf, m, n, nb, offset
+           integer(${ik}$), intent(inout) :: jpvt(*)
+           real(sp), intent(inout) :: a(lda,*), auxv(*), f(ldf,*), vn1(*), vn2(*)
+           real(sp), intent(out) :: tau(*)
+     end subroutine stdlib${ii}$_slaqps
+
+     pure module subroutine stdlib${ii}$_dlaqps( m, n, offset, nb, kb, a, lda, jpvt, tau, vn1,vn2, auxv, f, &
+               ldf )
+           integer(${ik}$), intent(out) :: kb
+           integer(${ik}$), intent(in) :: lda, ldf, m, n, nb, offset
+           integer(${ik}$), intent(inout) :: jpvt(*)
+           real(dp), intent(inout) :: a(lda,*), auxv(*), f(ldf,*), vn1(*), vn2(*)
+           real(dp), intent(out) :: tau(*)
+     end subroutine stdlib${ii}$_dlaqps
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$laqps( m, n, offset, nb, kb, a, lda, jpvt, tau, vn1,vn2, auxv, f, &
+               ldf )
+           integer(${ik}$), intent(out) :: kb
+           integer(${ik}$), intent(in) :: lda, ldf, m, n, nb, offset
+           integer(${ik}$), intent(inout) :: jpvt(*)
+           real(${rk}$), intent(inout) :: a(lda,*), auxv(*), f(ldf,*), vn1(*), vn2(*)
+           real(${rk}$), intent(out) :: tau(*)
+     end subroutine stdlib${ii}$_${ri}$laqps
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_claqps( m, n, offset, nb, kb, a, lda, jpvt, tau, vn1,vn2, auxv, f, &
+               ldf )
+           integer(${ik}$), intent(out) :: kb
+           integer(${ik}$), intent(in) :: lda, ldf, m, n, nb, offset
+           integer(${ik}$), intent(inout) :: jpvt(*)
+           real(sp), intent(inout) :: vn1(*), vn2(*)
+           complex(sp), intent(inout) :: a(lda,*), auxv(*), f(ldf,*)
+           complex(sp), intent(out) :: tau(*)
+     end subroutine stdlib${ii}$_claqps
+
+     pure module subroutine stdlib${ii}$_zlaqps( m, n, offset, nb, kb, a, lda, jpvt, tau, vn1,vn2, auxv, f, &
+               ldf )
+           integer(${ik}$), intent(out) :: kb
+           integer(${ik}$), intent(in) :: lda, ldf, m, n, nb, offset
+           integer(${ik}$), intent(inout) :: jpvt(*)
+           real(dp), intent(inout) :: vn1(*), vn2(*)
+           complex(dp), intent(inout) :: a(lda,*), auxv(*), f(ldf,*)
+           complex(dp), intent(out) :: tau(*)
+     end subroutine stdlib${ii}$_zlaqps
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$laqps( m, n, offset, nb, kb, a, lda, jpvt, tau, vn1,vn2, auxv, f, &
+               ldf )
+           integer(${ik}$), intent(out) :: kb
+           integer(${ik}$), intent(in) :: lda, ldf, m, n, nb, offset
+           integer(${ik}$), intent(inout) :: jpvt(*)
+           real(${ck}$), intent(inout) :: vn1(*), vn2(*)
+           complex(${ck}$), intent(inout) :: a(lda,*), auxv(*), f(ldf,*)
+           complex(${ck}$), intent(out) :: tau(*)
+     end subroutine stdlib${ii}$_${ci}$laqps
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_slatsqr( m, n, mb, nb, a, lda, t, ldt, work,lwork, info)
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, mb, nb, ldt, lwork
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: work(*), t(ldt,*)
+     end subroutine stdlib${ii}$_slatsqr
+
+     pure module subroutine stdlib${ii}$_dlatsqr( m, n, mb, nb, a, lda, t, ldt, work,lwork, info)
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, mb, nb, ldt, lwork
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: work(*), t(ldt,*)
+     end subroutine stdlib${ii}$_dlatsqr
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$latsqr( m, n, mb, nb, a, lda, t, ldt, work,lwork, info)
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, mb, nb, ldt, lwork
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: work(*), t(ldt,*)
+     end subroutine stdlib${ii}$_${ri}$latsqr
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_clatsqr( m, n, mb, nb, a, lda, t, ldt, work,lwork, info)
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, mb, nb, ldt, lwork
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: work(*), t(ldt,*)
+     end subroutine stdlib${ii}$_clatsqr
+
+     pure module subroutine stdlib${ii}$_zlatsqr( m, n, mb, nb, a, lda, t, ldt, work,lwork, info)
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, mb, nb, ldt, lwork
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: work(*), t(ldt,*)
+     end subroutine stdlib${ii}$_zlatsqr
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$latsqr( m, n, mb, nb, a, lda, t, ldt, work,lwork, info)
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, mb, nb, ldt, lwork
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: work(*), t(ldt,*)
+     end subroutine stdlib${ii}$_${ci}$latsqr
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cungtsqr( m, n, mb, nb, a, lda, t, ldt, work, lwork,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(in) :: t(ldt,*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cungtsqr
+
+     pure module subroutine stdlib${ii}$_zungtsqr( m, n, mb, nb, a, lda, t, ldt, work, lwork,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(in) :: t(ldt,*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zungtsqr
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$ungtsqr( m, n, mb, nb, a, lda, t, ldt, work, lwork,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(in) :: t(ldt,*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$ungtsqr
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cungtsqr_row( m, n, mb, nb, a, lda, t, ldt, work,lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(in) :: t(ldt,*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cungtsqr_row
+
+     pure module subroutine stdlib${ii}$_zungtsqr_row( m, n, mb, nb, a, lda, t, ldt, work,lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(in) :: t(ldt,*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zungtsqr_row
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$ungtsqr_row( m, n, mb, nb, a, lda, t, ldt, work,lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(in) :: t(ldt,*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$ungtsqr_row
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sorgtsqr( m, n, mb, nb, a, lda, t, ldt, work, lwork,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(in) :: t(ldt,*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sorgtsqr
+
+     pure module subroutine stdlib${ii}$_dorgtsqr( m, n, mb, nb, a, lda, t, ldt, work, lwork,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(in) :: t(ldt,*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dorgtsqr
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$orgtsqr( m, n, mb, nb, a, lda, t, ldt, work, lwork,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(in) :: t(ldt,*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$orgtsqr
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sorgtsqr_row( m, n, mb, nb, a, lda, t, ldt, work,lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(in) :: t(ldt,*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sorgtsqr_row
+
+     pure module subroutine stdlib${ii}$_dorgtsqr_row( m, n, mb, nb, a, lda, t, ldt, work,lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(in) :: t(ldt,*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dorgtsqr_row
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$orgtsqr_row( m, n, mb, nb, a, lda, t, ldt, work,lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, mb, nb
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(in) :: t(ldt,*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$orgtsqr_row
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_slarfb_gett( ident, m, n, k, t, ldt, a, lda, b, ldb,work, ldwork )
+               
+           character, intent(in) :: ident
+           integer(${ik}$), intent(in) :: k, lda, ldb, ldt, ldwork, m, n
+           real(sp), intent(inout) :: a(lda,*), b(ldb,*)
+           real(sp), intent(in) :: t(ldt,*)
+           real(sp), intent(out) :: work(ldwork,*)
+     end subroutine stdlib${ii}$_slarfb_gett
+
+     pure module subroutine stdlib${ii}$_dlarfb_gett( ident, m, n, k, t, ldt, a, lda, b, ldb,work, ldwork )
+               
+           character, intent(in) :: ident
+           integer(${ik}$), intent(in) :: k, lda, ldb, ldt, ldwork, m, n
+           real(dp), intent(inout) :: a(lda,*), b(ldb,*)
+           real(dp), intent(in) :: t(ldt,*)
+           real(dp), intent(out) :: work(ldwork,*)
+     end subroutine stdlib${ii}$_dlarfb_gett
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$larfb_gett( ident, m, n, k, t, ldt, a, lda, b, ldb,work, ldwork )
+               
+           character, intent(in) :: ident
+           integer(${ik}$), intent(in) :: k, lda, ldb, ldt, ldwork, m, n
+           real(${rk}$), intent(inout) :: a(lda,*), b(ldb,*)
+           real(${rk}$), intent(in) :: t(ldt,*)
+           real(${rk}$), intent(out) :: work(ldwork,*)
+     end subroutine stdlib${ii}$_${ri}$larfb_gett
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_clarfb_gett( ident, m, n, k, t, ldt, a, lda, b, ldb,work, ldwork )
+               
+           character, intent(in) :: ident
+           integer(${ik}$), intent(in) :: k, lda, ldb, ldt, ldwork, m, n
+           complex(sp), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(sp), intent(in) :: t(ldt,*)
+           complex(sp), intent(out) :: work(ldwork,*)
+     end subroutine stdlib${ii}$_clarfb_gett
+
+     pure module subroutine stdlib${ii}$_zlarfb_gett( ident, m, n, k, t, ldt, a, lda, b, ldb,work, ldwork )
+               
+           character, intent(in) :: ident
+           integer(${ik}$), intent(in) :: k, lda, ldb, ldt, ldwork, m, n
+           complex(dp), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(dp), intent(in) :: t(ldt,*)
+           complex(dp), intent(out) :: work(ldwork,*)
+     end subroutine stdlib${ii}$_zlarfb_gett
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$larfb_gett( ident, m, n, k, t, ldt, a, lda, b, ldb,work, ldwork )
+               
+           character, intent(in) :: ident
+           integer(${ik}$), intent(in) :: k, lda, ldb, ldt, ldwork, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(${ck}$), intent(in) :: t(ldt,*)
+           complex(${ck}$), intent(out) :: work(ldwork,*)
+     end subroutine stdlib${ii}$_${ci}$larfb_gett
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_slamtsqr( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
+               lwork, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
+           real(sp), intent(in) :: a(lda,*), t(ldt,*)
+           real(sp), intent(out) :: work(*)
+           real(sp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_slamtsqr
+
+     pure module subroutine stdlib${ii}$_dlamtsqr( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
+               lwork, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
+           real(dp), intent(in) :: a(lda,*), t(ldt,*)
+           real(dp), intent(out) :: work(*)
+           real(dp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_dlamtsqr
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$lamtsqr( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
+               lwork, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
+           real(${rk}$), intent(in) :: a(lda,*), t(ldt,*)
+           real(${rk}$), intent(out) :: work(*)
+           real(${rk}$), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_${ri}$lamtsqr
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_clamtsqr( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
+               lwork, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
+           complex(sp), intent(in) :: a(lda,*), t(ldt,*)
+           complex(sp), intent(out) :: work(*)
+           complex(sp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_clamtsqr
+
+     pure module subroutine stdlib${ii}$_zlamtsqr( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
+               lwork, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
+           complex(dp), intent(in) :: a(lda,*), t(ldt,*)
+           complex(dp), intent(out) :: work(*)
+           complex(dp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_zlamtsqr
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$lamtsqr( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
+               lwork, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
+           complex(${ck}$), intent(in) :: a(lda,*), t(ldt,*)
+           complex(${ck}$), intent(out) :: work(*)
+           complex(${ck}$), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_${ci}$lamtsqr
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sgetsqrhrt( m, n, mb1, nb1, nb2, a, lda, t, ldt, work,lwork, info )
+               
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, nb1, nb2, mb1
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_sgetsqrhrt
+
+     pure module subroutine stdlib${ii}$_dgetsqrhrt( m, n, mb1, nb1, nb2, a, lda, t, ldt, work,lwork, info )
+               
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, nb1, nb2, mb1
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_dgetsqrhrt
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$getsqrhrt( m, n, mb1, nb1, nb2, a, lda, t, ldt, work,lwork, info )
+               
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, nb1, nb2, mb1
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_${ri}$getsqrhrt
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cgetsqrhrt( m, n, mb1, nb1, nb2, a, lda, t, ldt, work,lwork, info )
+               
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, nb1, nb2, mb1
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_cgetsqrhrt
+
+     pure module subroutine stdlib${ii}$_zgetsqrhrt( m, n, mb1, nb1, nb2, a, lda, t, ldt, work,lwork, info )
+               
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, nb1, nb2, mb1
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_zgetsqrhrt
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$getsqrhrt( m, n, mb1, nb1, nb2, a, lda, t, ldt, work,lwork, info )
+               
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, lwork, m, n, nb1, nb2, mb1
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_${ci}$getsqrhrt
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cunhr_col( m, n, nb, a, lda, t, ldt, d, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: d(*), t(ldt,*)
+     end subroutine stdlib${ii}$_cunhr_col
+
+     pure module subroutine stdlib${ii}$_zunhr_col( m, n, nb, a, lda, t, ldt, d, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: d(*), t(ldt,*)
+     end subroutine stdlib${ii}$_zunhr_col
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$unhr_col( m, n, nb, a, lda, t, ldt, d, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: d(*), t(ldt,*)
+     end subroutine stdlib${ii}$_${ci}$unhr_col
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sorhr_col( m, n, nb, a, lda, t, ldt, d, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: d(*), t(ldt,*)
+     end subroutine stdlib${ii}$_sorhr_col
+
+     pure module subroutine stdlib${ii}$_dorhr_col( m, n, nb, a, lda, t, ldt, d, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: d(*), t(ldt,*)
+     end subroutine stdlib${ii}$_dorhr_col
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$orhr_col( m, n, nb, a, lda, t, ldt, d, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n, nb
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: d(*), t(ldt,*)
+     end subroutine stdlib${ii}$_${ri}$orhr_col
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_claunhr_col_getrfnp( m, n, a, lda, d, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: d(*)
+     end subroutine stdlib${ii}$_claunhr_col_getrfnp
+
+     pure module subroutine stdlib${ii}$_zlaunhr_col_getrfnp( m, n, a, lda, d, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: d(*)
+     end subroutine stdlib${ii}$_zlaunhr_col_getrfnp
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$launhr_col_getrfnp( m, n, a, lda, d, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: d(*)
+     end subroutine stdlib${ii}$_${ci}$launhr_col_getrfnp
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_slaorhr_col_getrfnp( m, n, a, lda, d, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: d(*)
+     end subroutine stdlib${ii}$_slaorhr_col_getrfnp
+
+     pure module subroutine stdlib${ii}$_dlaorhr_col_getrfnp( m, n, a, lda, d, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: d(*)
+     end subroutine stdlib${ii}$_dlaorhr_col_getrfnp
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$laorhr_col_getrfnp( m, n, a, lda, d, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: d(*)
+     end subroutine stdlib${ii}$_${ri}$laorhr_col_getrfnp
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure recursive module subroutine stdlib${ii}$_claunhr_col_getrfnp2( m, n, a, lda, d, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: d(*)
+     end subroutine stdlib${ii}$_claunhr_col_getrfnp2
+
+     pure recursive module subroutine stdlib${ii}$_zlaunhr_col_getrfnp2( m, n, a, lda, d, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: d(*)
+     end subroutine stdlib${ii}$_zlaunhr_col_getrfnp2
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure recursive module subroutine stdlib${ii}$_${ci}$launhr_col_getrfnp2( m, n, a, lda, d, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: d(*)
+     end subroutine stdlib${ii}$_${ci}$launhr_col_getrfnp2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure recursive module subroutine stdlib${ii}$_slaorhr_col_getrfnp2( m, n, a, lda, d, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: d(*)
+     end subroutine stdlib${ii}$_slaorhr_col_getrfnp2
+
+     pure recursive module subroutine stdlib${ii}$_dlaorhr_col_getrfnp2( m, n, a, lda, d, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: d(*)
+     end subroutine stdlib${ii}$_dlaorhr_col_getrfnp2
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure recursive module subroutine stdlib${ii}$_${ri}$laorhr_col_getrfnp2( m, n, a, lda, d, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: d(*)
+     end subroutine stdlib${ii}$_${ri}$laorhr_col_getrfnp2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_stpqrt( m, n, l, nb, a, lda, b, ldb, t, ldt, work,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, nb
+           real(sp), intent(inout) :: a(lda,*), b(ldb,*)
+           real(sp), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_stpqrt
+
+     pure module subroutine stdlib${ii}$_dtpqrt( m, n, l, nb, a, lda, b, ldb, t, ldt, work,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, nb
+           real(dp), intent(inout) :: a(lda,*), b(ldb,*)
+           real(dp), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_dtpqrt
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$tpqrt( m, n, l, nb, a, lda, b, ldb, t, ldt, work,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, nb
+           real(${rk}$), intent(inout) :: a(lda,*), b(ldb,*)
+           real(${rk}$), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_${ri}$tpqrt
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_ctpqrt( m, n, l, nb, a, lda, b, ldb, t, ldt, work,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, nb
+           complex(sp), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(sp), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_ctpqrt
+
+     pure module subroutine stdlib${ii}$_ztpqrt( m, n, l, nb, a, lda, b, ldb, t, ldt, work,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, nb
+           complex(dp), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(dp), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_ztpqrt
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$tpqrt( m, n, l, nb, a, lda, b, ldb, t, ldt, work,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, nb
+           complex(${ck}$), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(${ck}$), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_${ci}$tpqrt
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_stpqrt2( m, n, l, a, lda, b, ldb, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
+           real(sp), intent(inout) :: a(lda,*), b(ldb,*)
+           real(sp), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_stpqrt2
+
+     pure module subroutine stdlib${ii}$_dtpqrt2( m, n, l, a, lda, b, ldb, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
+           real(dp), intent(inout) :: a(lda,*), b(ldb,*)
+           real(dp), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_dtpqrt2
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$tpqrt2( m, n, l, a, lda, b, ldb, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
+           real(${rk}$), intent(inout) :: a(lda,*), b(ldb,*)
+           real(${rk}$), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_${ri}$tpqrt2
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_ctpqrt2( m, n, l, a, lda, b, ldb, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
+           complex(sp), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(sp), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_ctpqrt2
+
+     pure module subroutine stdlib${ii}$_ztpqrt2( m, n, l, a, lda, b, ldb, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
+           complex(dp), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(dp), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_ztpqrt2
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$tpqrt2( m, n, l, a, lda, b, ldb, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
+           complex(${ck}$), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(${ck}$), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_${ci}$tpqrt2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_stpmqrt( side, trans, m, n, k, l, nb, v, ldv, t, ldt,a, lda, b, ldb, &
+               work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, nb, ldt
+           real(sp), intent(in) :: v(ldv,*), t(ldt,*)
+           real(sp), intent(inout) :: a(lda,*), b(ldb,*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_stpmqrt
+
+     pure module subroutine stdlib${ii}$_dtpmqrt( side, trans, m, n, k, l, nb, v, ldv, t, ldt,a, lda, b, ldb, &
+               work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, nb, ldt
+           real(dp), intent(in) :: v(ldv,*), t(ldt,*)
+           real(dp), intent(inout) :: a(lda,*), b(ldb,*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dtpmqrt
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$tpmqrt( side, trans, m, n, k, l, nb, v, ldv, t, ldt,a, lda, b, ldb, &
+               work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, nb, ldt
+           real(${rk}$), intent(in) :: v(ldv,*), t(ldt,*)
+           real(${rk}$), intent(inout) :: a(lda,*), b(ldb,*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$tpmqrt
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_ctpmqrt( side, trans, m, n, k, l, nb, v, ldv, t, ldt,a, lda, b, ldb, &
+               work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, nb, ldt
+           complex(sp), intent(in) :: v(ldv,*), t(ldt,*)
+           complex(sp), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_ctpmqrt
+
+     pure module subroutine stdlib${ii}$_ztpmqrt( side, trans, m, n, k, l, nb, v, ldv, t, ldt,a, lda, b, ldb, &
+               work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, nb, ldt
+           complex(dp), intent(in) :: v(ldv,*), t(ldt,*)
+           complex(dp), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_ztpmqrt
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$tpmqrt( side, trans, m, n, k, l, nb, v, ldv, t, ldt,a, lda, b, ldb, &
+               work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, nb, ldt
+           complex(${ck}$), intent(in) :: v(ldv,*), t(ldt,*)
+           complex(${ck}$), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$tpmqrt
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_stprfb( side, trans, direct, storev, m, n, k, l,v, ldv, t, ldt, a, &
+               lda, b, ldb, work, ldwork )
+           character, intent(in) :: direct, side, storev, trans
+           integer(${ik}$), intent(in) :: k, l, lda, ldb, ldt, ldv, ldwork, m, n
+           real(sp), intent(inout) :: a(lda,*), b(ldb,*)
+           real(sp), intent(in) :: t(ldt,*), v(ldv,*)
+           real(sp), intent(out) :: work(ldwork,*)
+     end subroutine stdlib${ii}$_stprfb
+
+     pure module subroutine stdlib${ii}$_dtprfb( side, trans, direct, storev, m, n, k, l,v, ldv, t, ldt, a, &
+               lda, b, ldb, work, ldwork )
+           character, intent(in) :: direct, side, storev, trans
+           integer(${ik}$), intent(in) :: k, l, lda, ldb, ldt, ldv, ldwork, m, n
+           real(dp), intent(inout) :: a(lda,*), b(ldb,*)
+           real(dp), intent(in) :: t(ldt,*), v(ldv,*)
+           real(dp), intent(out) :: work(ldwork,*)
+     end subroutine stdlib${ii}$_dtprfb
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$tprfb( side, trans, direct, storev, m, n, k, l,v, ldv, t, ldt, a, &
+               lda, b, ldb, work, ldwork )
+           character, intent(in) :: direct, side, storev, trans
+           integer(${ik}$), intent(in) :: k, l, lda, ldb, ldt, ldv, ldwork, m, n
+           real(${rk}$), intent(inout) :: a(lda,*), b(ldb,*)
+           real(${rk}$), intent(in) :: t(ldt,*), v(ldv,*)
+           real(${rk}$), intent(out) :: work(ldwork,*)
+     end subroutine stdlib${ii}$_${ri}$tprfb
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_ctprfb( side, trans, direct, storev, m, n, k, l,v, ldv, t, ldt, a, &
+               lda, b, ldb, work, ldwork )
+           character, intent(in) :: direct, side, storev, trans
+           integer(${ik}$), intent(in) :: k, l, lda, ldb, ldt, ldv, ldwork, m, n
+           complex(sp), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(sp), intent(in) :: t(ldt,*), v(ldv,*)
+           complex(sp), intent(out) :: work(ldwork,*)
+     end subroutine stdlib${ii}$_ctprfb
+
+     pure module subroutine stdlib${ii}$_ztprfb( side, trans, direct, storev, m, n, k, l,v, ldv, t, ldt, a, &
+               lda, b, ldb, work, ldwork )
+           character, intent(in) :: direct, side, storev, trans
+           integer(${ik}$), intent(in) :: k, l, lda, ldb, ldt, ldv, ldwork, m, n
+           complex(dp), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(dp), intent(in) :: t(ldt,*), v(ldv,*)
+           complex(dp), intent(out) :: work(ldwork,*)
+     end subroutine stdlib${ii}$_ztprfb
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$tprfb( side, trans, direct, storev, m, n, k, l,v, ldv, t, ldt, a, &
+               lda, b, ldb, work, ldwork )
+           character, intent(in) :: direct, side, storev, trans
+           integer(${ik}$), intent(in) :: k, l, lda, ldb, ldt, ldv, ldwork, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(${ck}$), intent(in) :: t(ldt,*), v(ldv,*)
+           complex(${ck}$), intent(out) :: work(ldwork,*)
+     end subroutine stdlib${ii}$_${ci}$tprfb
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sggqrf( n, m, p, a, lda, taua, b, ldb, taub, work,lwork, info )
+               
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
+           real(sp), intent(inout) :: a(lda,*), b(ldb,*)
+           real(sp), intent(out) :: taua(*), taub(*), work(*)
+     end subroutine stdlib${ii}$_sggqrf
+
+     pure module subroutine stdlib${ii}$_dggqrf( n, m, p, a, lda, taua, b, ldb, taub, work,lwork, info )
+               
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
+           real(dp), intent(inout) :: a(lda,*), b(ldb,*)
+           real(dp), intent(out) :: taua(*), taub(*), work(*)
+     end subroutine stdlib${ii}$_dggqrf
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$ggqrf( n, m, p, a, lda, taua, b, ldb, taub, work,lwork, info )
+               
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
+           real(${rk}$), intent(inout) :: a(lda,*), b(ldb,*)
+           real(${rk}$), intent(out) :: taua(*), taub(*), work(*)
+     end subroutine stdlib${ii}$_${ri}$ggqrf
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cggqrf( n, m, p, a, lda, taua, b, ldb, taub, work,lwork, info )
+               
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
+           complex(sp), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(sp), intent(out) :: taua(*), taub(*), work(*)
+     end subroutine stdlib${ii}$_cggqrf
+
+     pure module subroutine stdlib${ii}$_zggqrf( n, m, p, a, lda, taua, b, ldb, taub, work,lwork, info )
+               
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
+           complex(dp), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(dp), intent(out) :: taua(*), taub(*), work(*)
+     end subroutine stdlib${ii}$_zggqrf
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$ggqrf( n, m, p, a, lda, taua, b, ldb, taub, work,lwork, info )
+               
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
+           complex(${ck}$), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(${ck}$), intent(out) :: taua(*), taub(*), work(*)
+     end subroutine stdlib${ii}$_${ci}$ggqrf
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sgerqf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_sgerqf
+
+     pure module subroutine stdlib${ii}$_dgerqf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_dgerqf
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$gerqf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ri}$gerqf
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cgerqf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_cgerqf
+
+     pure module subroutine stdlib${ii}$_zgerqf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_zgerqf
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$gerqf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ci}$gerqf
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sgerq2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_sgerq2
+
+     pure module subroutine stdlib${ii}$_dgerq2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_dgerq2
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$gerq2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ri}$gerq2
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cgerq2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_cgerq2
+
+     pure module subroutine stdlib${ii}$_zgerq2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_zgerq2
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$gerq2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ci}$gerq2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cungrq( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(in) :: tau(*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cungrq
+
+     pure module subroutine stdlib${ii}$_zungrq( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(in) :: tau(*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zungrq
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$ungrq( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(in) :: tau(*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$ungrq
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cunmrq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           complex(sp), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(sp), intent(in) :: tau(*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cunmrq
+
+     pure module subroutine stdlib${ii}$_zunmrq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           complex(dp), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(dp), intent(in) :: tau(*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zunmrq
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$unmrq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(${ck}$), intent(in) :: tau(*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$unmrq
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cunmr2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           complex(sp), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(sp), intent(in) :: tau(*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cunmr2
+
+     pure module subroutine stdlib${ii}$_zunmr2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           complex(dp), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(dp), intent(in) :: tau(*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zunmr2
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$unmr2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(${ck}$), intent(in) :: tau(*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$unmr2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cungr2( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(in) :: tau(*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cungr2
+
+     pure module subroutine stdlib${ii}$_zungr2( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(in) :: tau(*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zungr2
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$ungr2( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(in) :: tau(*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$ungr2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sorgrq( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(in) :: tau(*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sorgrq
+
+     pure module subroutine stdlib${ii}$_dorgrq( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(in) :: tau(*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dorgrq
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$orgrq( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(in) :: tau(*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$orgrq
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sormrq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           real(sp), intent(inout) :: a(lda,*), c(ldc,*)
+           real(sp), intent(in) :: tau(*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sormrq
+
+     pure module subroutine stdlib${ii}$_dormrq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           real(dp), intent(inout) :: a(lda,*), c(ldc,*)
+           real(dp), intent(in) :: tau(*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dormrq
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$ormrq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           real(${rk}$), intent(inout) :: a(lda,*), c(ldc,*)
+           real(${rk}$), intent(in) :: tau(*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$ormrq
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sormr2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           real(sp), intent(inout) :: a(lda,*), c(ldc,*)
+           real(sp), intent(in) :: tau(*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sormr2
+
+     pure module subroutine stdlib${ii}$_dormr2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           real(dp), intent(inout) :: a(lda,*), c(ldc,*)
+           real(dp), intent(in) :: tau(*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dormr2
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$ormr2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           real(${rk}$), intent(inout) :: a(lda,*), c(ldc,*)
+           real(${rk}$), intent(in) :: tau(*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$ormr2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sorgr2( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(in) :: tau(*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sorgr2
+
+     pure module subroutine stdlib${ii}$_dorgr2( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(in) :: tau(*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dorgr2
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$orgr2( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(in) :: tau(*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$orgr2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sggrqf( m, p, n, a, lda, taua, b, ldb, taub, work,lwork, info )
+               
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
+           real(sp), intent(inout) :: a(lda,*), b(ldb,*)
+           real(sp), intent(out) :: taua(*), taub(*), work(*)
+     end subroutine stdlib${ii}$_sggrqf
+
+     pure module subroutine stdlib${ii}$_dggrqf( m, p, n, a, lda, taua, b, ldb, taub, work,lwork, info )
+               
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
+           real(dp), intent(inout) :: a(lda,*), b(ldb,*)
+           real(dp), intent(out) :: taua(*), taub(*), work(*)
+     end subroutine stdlib${ii}$_dggrqf
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$ggrqf( m, p, n, a, lda, taua, b, ldb, taub, work,lwork, info )
+               
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
+           real(${rk}$), intent(inout) :: a(lda,*), b(ldb,*)
+           real(${rk}$), intent(out) :: taua(*), taub(*), work(*)
+     end subroutine stdlib${ii}$_${ri}$ggrqf
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cggrqf( m, p, n, a, lda, taua, b, ldb, taub, work,lwork, info )
+               
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
+           complex(sp), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(sp), intent(out) :: taua(*), taub(*), work(*)
+     end subroutine stdlib${ii}$_cggrqf
+
+     pure module subroutine stdlib${ii}$_zggrqf( m, p, n, a, lda, taua, b, ldb, taub, work,lwork, info )
+               
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
+           complex(dp), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(dp), intent(out) :: taua(*), taub(*), work(*)
+     end subroutine stdlib${ii}$_zggrqf
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$ggrqf( m, p, n, a, lda, taua, b, ldb, taub, work,lwork, info )
+               
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, lwork, m, n, p
+           complex(${ck}$), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(${ck}$), intent(out) :: taua(*), taub(*), work(*)
+     end subroutine stdlib${ii}$_${ci}$ggrqf
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sgelq( m, n, a, lda, t, tsize, work, lwork,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: t(*), work(*)
+     end subroutine stdlib${ii}$_sgelq
+
+     pure module subroutine stdlib${ii}$_dgelq( m, n, a, lda, t, tsize, work, lwork,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: t(*), work(*)
+     end subroutine stdlib${ii}$_dgelq
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$gelq( m, n, a, lda, t, tsize, work, lwork,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: t(*), work(*)
+     end subroutine stdlib${ii}$_${ri}$gelq
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cgelq( m, n, a, lda, t, tsize, work, lwork,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: t(*), work(*)
+     end subroutine stdlib${ii}$_cgelq
+
+     pure module subroutine stdlib${ii}$_zgelq( m, n, a, lda, t, tsize, work, lwork,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: t(*), work(*)
+     end subroutine stdlib${ii}$_zgelq
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$gelq( m, n, a, lda, t, tsize, work, lwork,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, tsize, lwork
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: t(*), work(*)
+     end subroutine stdlib${ii}$_${ci}$gelq
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sgemlq( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
+               info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
+           real(sp), intent(in) :: a(lda,*), t(*)
+           real(sp), intent(inout) :: c(ldc,*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sgemlq
+
+     pure module subroutine stdlib${ii}$_dgemlq( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
+               info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
+           real(dp), intent(in) :: a(lda,*), t(*)
+           real(dp), intent(inout) :: c(ldc,*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dgemlq
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$gemlq( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
+               info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
+           real(${rk}$), intent(in) :: a(lda,*), t(*)
+           real(${rk}$), intent(inout) :: c(ldc,*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$gemlq
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cgemlq( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
+               info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
+           complex(sp), intent(in) :: a(lda,*), t(*)
+           complex(sp), intent(inout) :: c(ldc,*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cgemlq
+
+     pure module subroutine stdlib${ii}$_zgemlq( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
+               info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
+           complex(dp), intent(in) :: a(lda,*), t(*)
+           complex(dp), intent(inout) :: c(ldc,*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zgemlq
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$gemlq( side, trans, m, n, k, a, lda, t, tsize,c, ldc, work, lwork, &
+               info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, tsize, lwork, ldc
+           complex(${ck}$), intent(in) :: a(lda,*), t(*)
+           complex(${ck}$), intent(inout) :: c(ldc,*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$gemlq
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sgelqf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_sgelqf
+
+     pure module subroutine stdlib${ii}$_dgelqf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_dgelqf
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$gelqf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ri}$gelqf
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cgelqf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_cgelqf
+
+     pure module subroutine stdlib${ii}$_zgelqf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_zgelqf
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$gelqf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ci}$gelqf
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sgelq2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_sgelq2
+
+     pure module subroutine stdlib${ii}$_dgelq2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_dgelq2
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$gelq2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ri}$gelq2
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cgelq2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_cgelq2
+
+     pure module subroutine stdlib${ii}$_zgelq2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_zgelq2
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$gelq2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ci}$gelq2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cunglq( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(in) :: tau(*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cunglq
+
+     pure module subroutine stdlib${ii}$_zunglq( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(in) :: tau(*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zunglq
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$unglq( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(in) :: tau(*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$unglq
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cungl2( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(in) :: tau(*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cungl2
+
+     pure module subroutine stdlib${ii}$_zungl2( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(in) :: tau(*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zungl2
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$ungl2( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(in) :: tau(*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$ungl2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cunmlq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           complex(sp), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(sp), intent(in) :: tau(*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cunmlq
+
+     pure module subroutine stdlib${ii}$_zunmlq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           complex(dp), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(dp), intent(in) :: tau(*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zunmlq
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$unmlq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(${ck}$), intent(in) :: tau(*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$unmlq
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cunml2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           complex(sp), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(sp), intent(in) :: tau(*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cunml2
+
+     pure module subroutine stdlib${ii}$_zunml2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           complex(dp), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(dp), intent(in) :: tau(*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zunml2
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$unml2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(${ck}$), intent(in) :: tau(*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$unml2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sorglq( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(in) :: tau(*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sorglq
+
+     pure module subroutine stdlib${ii}$_dorglq( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(in) :: tau(*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dorglq
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$orglq( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(in) :: tau(*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$orglq
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sorgl2( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(in) :: tau(*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sorgl2
+
+     pure module subroutine stdlib${ii}$_dorgl2( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(in) :: tau(*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dorgl2
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$orgl2( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(in) :: tau(*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$orgl2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sormlq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           real(sp), intent(inout) :: a(lda,*), c(ldc,*)
+           real(sp), intent(in) :: tau(*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sormlq
+
+     pure module subroutine stdlib${ii}$_dormlq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           real(dp), intent(inout) :: a(lda,*), c(ldc,*)
+           real(dp), intent(in) :: tau(*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dormlq
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$ormlq( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           real(${rk}$), intent(inout) :: a(lda,*), c(ldc,*)
+           real(${rk}$), intent(in) :: tau(*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$ormlq
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sorml2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           real(sp), intent(inout) :: a(lda,*), c(ldc,*)
+           real(sp), intent(in) :: tau(*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sorml2
+
+     pure module subroutine stdlib${ii}$_dorml2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           real(dp), intent(inout) :: a(lda,*), c(ldc,*)
+           real(dp), intent(in) :: tau(*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dorml2
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$orml2( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           real(${rk}$), intent(inout) :: a(lda,*), c(ldc,*)
+           real(${rk}$), intent(in) :: tau(*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$orml2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sgelqt( m, n, mb, a, lda, t, ldt, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n, mb
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_sgelqt
+
+     pure module subroutine stdlib${ii}$_dgelqt( m, n, mb, a, lda, t, ldt, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n, mb
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_dgelqt
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$gelqt( m, n, mb, a, lda, t, ldt, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n, mb
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_${ri}$gelqt
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cgelqt( m, n, mb, a, lda, t, ldt, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n, mb
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_cgelqt
+
+     pure module subroutine stdlib${ii}$_zgelqt( m, n, mb, a, lda, t, ldt, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n, mb
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_zgelqt
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$gelqt( m, n, mb, a, lda, t, ldt, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldt, m, n, mb
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_${ci}$gelqt
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure recursive module subroutine stdlib${ii}$_sgelqt3( m, n, a, lda, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, ldt
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_sgelqt3
+
+     pure recursive module subroutine stdlib${ii}$_dgelqt3( m, n, a, lda, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, ldt
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_dgelqt3
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure recursive module subroutine stdlib${ii}$_${ri}$gelqt3( m, n, a, lda, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, ldt
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_${ri}$gelqt3
+
+#:endif
+#:endfor
+
+     pure recursive module subroutine stdlib${ii}$_cgelqt3( m, n, a, lda, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, ldt
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_cgelqt3
+
+     pure recursive module subroutine stdlib${ii}$_zgelqt3( m, n, a, lda, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, ldt
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_zgelqt3
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure recursive module subroutine stdlib${ii}$_${ci}$gelqt3( m, n, a, lda, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, ldt
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_${ci}$gelqt3
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sgemlqt( side, trans, m, n, k, mb, v, ldv, t, ldt,c, ldc, work, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, mb, ldt
+           real(sp), intent(in) :: v(ldv,*), t(ldt,*)
+           real(sp), intent(inout) :: c(ldc,*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sgemlqt
+
+     pure module subroutine stdlib${ii}$_dgemlqt( side, trans, m, n, k, mb, v, ldv, t, ldt,c, ldc, work, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, mb, ldt
+           real(dp), intent(in) :: v(ldv,*), t(ldt,*)
+           real(dp), intent(inout) :: c(ldc,*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dgemlqt
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$gemlqt( side, trans, m, n, k, mb, v, ldv, t, ldt,c, ldc, work, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, mb, ldt
+           real(${rk}$), intent(in) :: v(ldv,*), t(ldt,*)
+           real(${rk}$), intent(inout) :: c(ldc,*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$gemlqt
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cgemlqt( side, trans, m, n, k, mb, v, ldv, t, ldt,c, ldc, work, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, mb, ldt
+           complex(sp), intent(in) :: v(ldv,*), t(ldt,*)
+           complex(sp), intent(inout) :: c(ldc,*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cgemlqt
+
+     pure module subroutine stdlib${ii}$_zgemlqt( side, trans, m, n, k, mb, v, ldv, t, ldt,c, ldc, work, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, mb, ldt
+           complex(dp), intent(in) :: v(ldv,*), t(ldt,*)
+           complex(dp), intent(inout) :: c(ldc,*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zgemlqt
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$gemlqt( side, trans, m, n, k, mb, v, ldv, t, ldt,c, ldc, work, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, ldc, m, n, mb, ldt
+           complex(${ck}$), intent(in) :: v(ldv,*), t(ldt,*)
+           complex(${ck}$), intent(inout) :: c(ldc,*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$gemlqt
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_slaswlq( m, n, mb, nb, a, lda, t, ldt, work, lwork,info)
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, mb, nb, lwork, ldt
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: work(*), t(ldt,*)
+     end subroutine stdlib${ii}$_slaswlq
+
+     pure module subroutine stdlib${ii}$_dlaswlq( m, n, mb, nb, a, lda, t, ldt, work, lwork,info)
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, mb, nb, lwork, ldt
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: work(*), t(ldt,*)
+     end subroutine stdlib${ii}$_dlaswlq
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$laswlq( m, n, mb, nb, a, lda, t, ldt, work, lwork,info)
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, mb, nb, lwork, ldt
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: work(*), t(ldt,*)
+     end subroutine stdlib${ii}$_${ri}$laswlq
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_claswlq( m, n, mb, nb, a, lda, t, ldt, work, lwork,info)
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, mb, nb, lwork, ldt
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: work(*), t(ldt,*)
+     end subroutine stdlib${ii}$_claswlq
+
+     pure module subroutine stdlib${ii}$_zlaswlq( m, n, mb, nb, a, lda, t, ldt, work, lwork,info)
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, mb, nb, lwork, ldt
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: work(*), t(ldt,*)
+     end subroutine stdlib${ii}$_zlaswlq
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$laswlq( m, n, mb, nb, a, lda, t, ldt, work, lwork,info)
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, mb, nb, lwork, ldt
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: work(*), t(ldt,*)
+     end subroutine stdlib${ii}$_${ci}$laswlq
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_slamswlq( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
+               lwork, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
+           real(sp), intent(in) :: a(lda,*), t(ldt,*)
+           real(sp), intent(out) :: work(*)
+           real(sp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_slamswlq
+
+     pure module subroutine stdlib${ii}$_dlamswlq( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
+               lwork, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
+           real(dp), intent(in) :: a(lda,*), t(ldt,*)
+           real(dp), intent(out) :: work(*)
+           real(dp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_dlamswlq
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$lamswlq( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
+               lwork, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
+           real(${rk}$), intent(in) :: a(lda,*), t(ldt,*)
+           real(${rk}$), intent(out) :: work(*)
+           real(${rk}$), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_${ri}$lamswlq
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_clamswlq( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
+               lwork, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
+           complex(sp), intent(in) :: a(lda,*), t(ldt,*)
+           complex(sp), intent(out) :: work(*)
+           complex(sp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_clamswlq
+
+     pure module subroutine stdlib${ii}$_zlamswlq( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
+               lwork, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
+           complex(dp), intent(in) :: a(lda,*), t(ldt,*)
+           complex(dp), intent(out) :: work(*)
+           complex(dp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_zlamswlq
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$lamswlq( side, trans, m, n, k, mb, nb, a, lda, t,ldt, c, ldc, work, &
+               lwork, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n, k, mb, nb, ldt, lwork, ldc
+           complex(${ck}$), intent(in) :: a(lda,*), t(ldt,*)
+           complex(${ck}$), intent(out) :: work(*)
+           complex(${ck}$), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_${ci}$lamswlq
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_stplqt( m, n, l, mb, a, lda, b, ldb, t, ldt, work,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, mb
+           real(sp), intent(inout) :: a(lda,*), b(ldb,*)
+           real(sp), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_stplqt
+
+     pure module subroutine stdlib${ii}$_dtplqt( m, n, l, mb, a, lda, b, ldb, t, ldt, work,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, mb
+           real(dp), intent(inout) :: a(lda,*), b(ldb,*)
+           real(dp), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_dtplqt
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$tplqt( m, n, l, mb, a, lda, b, ldb, t, ldt, work,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, mb
+           real(${rk}$), intent(inout) :: a(lda,*), b(ldb,*)
+           real(${rk}$), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_${ri}$tplqt
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_ctplqt( m, n, l, mb, a, lda, b, ldb, t, ldt, work,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, mb
+           complex(sp), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(sp), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_ctplqt
+
+     pure module subroutine stdlib${ii}$_ztplqt( m, n, l, mb, a, lda, b, ldb, t, ldt, work,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, mb
+           complex(dp), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(dp), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_ztplqt
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$tplqt( m, n, l, mb, a, lda, b, ldb, t, ldt, work,info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l, mb
+           complex(${ck}$), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(${ck}$), intent(out) :: t(ldt,*), work(*)
+     end subroutine stdlib${ii}$_${ci}$tplqt
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_stplqt2( m, n, l, a, lda, b, ldb, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
+           real(sp), intent(inout) :: a(lda,*), b(ldb,*)
+           real(sp), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_stplqt2
+
+     pure module subroutine stdlib${ii}$_dtplqt2( m, n, l, a, lda, b, ldb, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
+           real(dp), intent(inout) :: a(lda,*), b(ldb,*)
+           real(dp), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_dtplqt2
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$tplqt2( m, n, l, a, lda, b, ldb, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
+           real(${rk}$), intent(inout) :: a(lda,*), b(ldb,*)
+           real(${rk}$), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_${ri}$tplqt2
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_ctplqt2( m, n, l, a, lda, b, ldb, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
+           complex(sp), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(sp), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_ctplqt2
+
+     pure module subroutine stdlib${ii}$_ztplqt2( m, n, l, a, lda, b, ldb, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
+           complex(dp), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(dp), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_ztplqt2
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$tplqt2( m, n, l, a, lda, b, ldb, t, ldt, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, ldb, ldt, n, m, l
+           complex(${ck}$), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(${ck}$), intent(out) :: t(ldt,*)
+     end subroutine stdlib${ii}$_${ci}$tplqt2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_stpmlqt( side, trans, m, n, k, l, mb, v, ldv, t, ldt,a, lda, b, ldb, &
+               work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, mb, ldt
+           real(sp), intent(in) :: v(ldv,*), t(ldt,*)
+           real(sp), intent(inout) :: a(lda,*), b(ldb,*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_stpmlqt
+
+     pure module subroutine stdlib${ii}$_dtpmlqt( side, trans, m, n, k, l, mb, v, ldv, t, ldt,a, lda, b, ldb, &
+               work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, mb, ldt
+           real(dp), intent(in) :: v(ldv,*), t(ldt,*)
+           real(dp), intent(inout) :: a(lda,*), b(ldb,*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dtpmlqt
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$tpmlqt( side, trans, m, n, k, l, mb, v, ldv, t, ldt,a, lda, b, ldb, &
+               work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, mb, ldt
+           real(${rk}$), intent(in) :: v(ldv,*), t(ldt,*)
+           real(${rk}$), intent(inout) :: a(lda,*), b(ldb,*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$tpmlqt
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_ctpmlqt( side, trans, m, n, k, l, mb, v, ldv, t, ldt,a, lda, b, ldb, &
+               work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, mb, ldt
+           complex(sp), intent(in) :: v(ldv,*), t(ldt,*)
+           complex(sp), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_ctpmlqt
+
+     pure module subroutine stdlib${ii}$_ztpmlqt( side, trans, m, n, k, l, mb, v, ldv, t, ldt,a, lda, b, ldb, &
+               work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, mb, ldt
+           complex(dp), intent(in) :: v(ldv,*), t(ldt,*)
+           complex(dp), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_ztpmlqt
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$tpmlqt( side, trans, m, n, k, l, mb, v, ldv, t, ldt,a, lda, b, ldb, &
+               work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, ldv, lda, ldb, m, n, l, mb, ldt
+           complex(${ck}$), intent(in) :: v(ldv,*), t(ldt,*)
+           complex(${ck}$), intent(inout) :: a(lda,*), b(ldb,*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$tpmlqt
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sgeqlf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_sgeqlf
+
+     pure module subroutine stdlib${ii}$_dgeqlf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_dgeqlf
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$geqlf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ri}$geqlf
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cgeqlf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_cgeqlf
+
+     pure module subroutine stdlib${ii}$_zgeqlf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_zgeqlf
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$geqlf( m, n, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ci}$geqlf
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sgeql2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_sgeql2
+
+     pure module subroutine stdlib${ii}$_dgeql2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_dgeql2
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$geql2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ri}$geql2
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cgeql2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_cgeql2
+
+     pure module subroutine stdlib${ii}$_zgeql2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_zgeql2
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$geql2( m, n, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: tau(*), work(*)
+     end subroutine stdlib${ii}$_${ci}$geql2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cungql( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(in) :: tau(*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cungql
+
+     pure module subroutine stdlib${ii}$_zungql( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(in) :: tau(*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zungql
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$ungql( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(in) :: tau(*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$ungql
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cunmql( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           complex(sp), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(sp), intent(in) :: tau(*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cunmql
+
+     pure module subroutine stdlib${ii}$_zunmql( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           complex(dp), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(dp), intent(in) :: tau(*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zunmql
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$unmql( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(${ck}$), intent(in) :: tau(*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$unmql
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cung2l( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(in) :: tau(*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cung2l
+
+     pure module subroutine stdlib${ii}$_zung2l( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(in) :: tau(*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zung2l
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$ung2l( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(in) :: tau(*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$ung2l
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cunm2l( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           complex(sp), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(sp), intent(in) :: tau(*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cunm2l
+
+     pure module subroutine stdlib${ii}$_zunm2l( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           complex(dp), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(dp), intent(in) :: tau(*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zunm2l
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$unm2l( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(${ck}$), intent(in) :: tau(*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$unm2l
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sorgql( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(in) :: tau(*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sorgql
+
+     pure module subroutine stdlib${ii}$_dorgql( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(in) :: tau(*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dorgql
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$orgql( m, n, k, a, lda, tau, work, lwork, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, lwork, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(in) :: tau(*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$orgql
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sormql( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           real(sp), intent(inout) :: a(lda,*), c(ldc,*)
+           real(sp), intent(in) :: tau(*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sormql
+
+     pure module subroutine stdlib${ii}$_dormql( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           real(dp), intent(inout) :: a(lda,*), c(ldc,*)
+           real(dp), intent(in) :: tau(*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dormql
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$ormql( side, trans, m, n, k, a, lda, tau, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, lwork, m, n
+           real(${rk}$), intent(inout) :: a(lda,*), c(ldc,*)
+           real(${rk}$), intent(in) :: tau(*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$ormql
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sorg2l( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(in) :: tau(*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sorg2l
+
+     pure module subroutine stdlib${ii}$_dorg2l( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(in) :: tau(*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dorg2l
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$org2l( m, n, k, a, lda, tau, work, info )
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(in) :: tau(*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$org2l
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sorm2l( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           real(sp), intent(inout) :: a(lda,*), c(ldc,*)
+           real(sp), intent(in) :: tau(*)
+           real(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_sorm2l
+
+     pure module subroutine stdlib${ii}$_dorm2l( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           real(dp), intent(inout) :: a(lda,*), c(ldc,*)
+           real(dp), intent(in) :: tau(*)
+           real(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_dorm2l
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$orm2l( side, trans, m, n, k, a, lda, tau, c, ldc,work, info )
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, lda, ldc, m, n
+           real(${rk}$), intent(inout) :: a(lda,*), c(ldc,*)
+           real(${rk}$), intent(in) :: tau(*)
+           real(${rk}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ri}$orm2l
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cunm22( side, trans, m, n, n1, n2, q, ldq, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(in) :: m, n, n1, n2, ldq, ldc, lwork
+           integer(${ik}$), intent(out) :: info
+           complex(sp), intent(in) :: q(ldq,*)
+           complex(sp), intent(inout) :: c(ldc,*)
+           complex(sp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_cunm22
+
+     pure module subroutine stdlib${ii}$_zunm22( side, trans, m, n, n1, n2, q, ldq, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(in) :: m, n, n1, n2, ldq, ldc, lwork
+           integer(${ik}$), intent(out) :: info
+           complex(dp), intent(in) :: q(ldq,*)
+           complex(dp), intent(inout) :: c(ldc,*)
+           complex(dp), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_zunm22
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$unm22( side, trans, m, n, n1, n2, q, ldq, c, ldc,work, lwork, info )
+               
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(in) :: m, n, n1, n2, ldq, ldc, lwork
+           integer(${ik}$), intent(out) :: info
+           complex(${ck}$), intent(in) :: q(ldq,*)
+           complex(${ck}$), intent(inout) :: c(ldc,*)
+           complex(${ck}$), intent(out) :: work(*)
+     end subroutine stdlib${ii}$_${ci}$unm22
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+end module stdlib_lapack_orthogonal_factors

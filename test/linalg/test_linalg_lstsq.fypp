@@ -24,16 +24,13 @@ module test_linalg_least_squares
         tests = [tests,new_unittest("issue_823",test_issue_823)]
 
         #:for rk,rt,ri in REAL_KINDS_TYPES
-        #:if rk!="xdp"
         tests = [tests,new_unittest("least_squares_${ri}$",test_lstsq_one_${ri}$), &
                        new_unittest("least_squares_randm_${ri}$",test_lstsq_random_${ri}$)]
-        #:endif
         #:endfor
 
     end subroutine test_least_squares
     
     #:for rk,rt,ri in REAL_KINDS_TYPES
-    #:if rk!="xdp"
     !> Simple polynomial fit
     subroutine test_lstsq_one_${ri}$(error)
         type(error_type), allocatable, intent(out) :: error
@@ -100,7 +97,6 @@ module test_linalg_least_squares
         
     end subroutine test_lstsq_random_${ri}$    
     
-    #:endif
     #:endfor
     
     ! Test issue #823

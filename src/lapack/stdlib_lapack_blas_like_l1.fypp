@@ -1,0 +1,1704 @@
+#:include "common.fypp" 
+submodule(stdlib_lapack_base) stdlib_lapack_blas_like_l1
+  implicit none
+
+
+  contains
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+
+     pure module subroutine stdlib${ii}$_clacgv( n, x, incx )
+     !! CLACGV conjugates a complex vector of length N.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           integer(${ik}$), intent(in) :: incx, n
+           ! Array Arguments 
+           complex(sp), intent(inout) :: x(*)
+       ! =====================================================================
+           ! Local Scalars 
+           integer(${ik}$) :: i, ioff
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           if( incx==1_${ik}$ ) then
+              do i = 1, n
+                 x( i ) = conjg( x( i ) )
+              end do
+           else
+              ioff = 1_${ik}$
+              if( incx<0_${ik}$ )ioff = 1_${ik}$ - ( n-1 )*incx
+              do i = 1, n
+                 x( ioff ) = conjg( x( ioff ) )
+                 ioff = ioff + incx
+              end do
+           end if
+           return
+     end subroutine stdlib${ii}$_clacgv
+
+     pure module subroutine stdlib${ii}$_zlacgv( n, x, incx )
+     !! ZLACGV conjugates a complex vector of length N.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           integer(${ik}$), intent(in) :: incx, n
+           ! Array Arguments 
+           complex(dp), intent(inout) :: x(*)
+       ! =====================================================================
+           ! Local Scalars 
+           integer(${ik}$) :: i, ioff
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           if( incx==1_${ik}$ ) then
+              do i = 1, n
+                 x( i ) = conjg( x( i ) )
+              end do
+           else
+              ioff = 1_${ik}$
+              if( incx<0_${ik}$ )ioff = 1_${ik}$ - ( n-1 )*incx
+              do i = 1, n
+                 x( ioff ) = conjg( x( ioff ) )
+                 ioff = ioff + incx
+              end do
+           end if
+           return
+     end subroutine stdlib${ii}$_zlacgv
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$lacgv( n, x, incx )
+     !! ZLACGV: conjugates a complex vector of length N.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           integer(${ik}$), intent(in) :: incx, n
+           ! Array Arguments 
+           complex(${ck}$), intent(inout) :: x(*)
+       ! =====================================================================
+           ! Local Scalars 
+           integer(${ik}$) :: i, ioff
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           if( incx==1_${ik}$ ) then
+              do i = 1, n
+                 x( i ) = conjg( x( i ) )
+              end do
+           else
+              ioff = 1_${ik}$
+              if( incx<0_${ik}$ )ioff = 1_${ik}$ - ( n-1 )*incx
+              do i = 1, n
+                 x( ioff ) = conjg( x( ioff ) )
+                 ioff = ioff + incx
+              end do
+           end if
+           return
+     end subroutine stdlib${ii}$_${ci}$lacgv
+
+#:endif
+#:endfor
+
+
+
+     pure module subroutine stdlib${ii}$_slasrt( id, n, d, info )
+     !! Sort the numbers in D in increasing order (if ID = 'I') or
+     !! in decreasing order (if ID = 'D' ).
+     !! Use Quick Sort, reverting to Insertion sort on arrays of
+     !! size <= 20. Dimension of STACK limits N to about 2**32.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: id
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: n
+           ! Array Arguments 
+           real(sp), intent(inout) :: d(*)
+        ! =====================================================================
+           ! Parameters 
+           integer(${ik}$), parameter :: select = 20_${ik}$
+           
+           ! Local Scalars 
+           integer(${ik}$) :: dir, endd, i, j, start, stkpnt
+           real(sp) :: d1, d2, d3, dmnmx, tmp
+           ! Local Arrays 
+           integer(${ik}$) :: stack(2_${ik}$,32_${ik}$)
+           ! Executable Statements 
+           ! test the input parameters.
+           info = 0_${ik}$
+           dir = -1_${ik}$
+           if( stdlib_lsame( id, 'D' ) ) then
+              dir = 0_${ik}$
+           else if( stdlib_lsame( id, 'I' ) ) then
+              dir = 1_${ik}$
+           end if
+           if( dir==-1_${ik}$ ) then
+              info = -1_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -2_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'SLASRT', -info )
+              return
+           end if
+           ! quick return if possible
+           if( n<=1 )return
+           stkpnt = 1_${ik}$
+           stack( 1_${ik}$, 1_${ik}$ ) = 1_${ik}$
+           stack( 2_${ik}$, 1_${ik}$ ) = n
+           10 continue
+           start = stack( 1_${ik}$, stkpnt )
+           endd = stack( 2_${ik}$, stkpnt )
+           stkpnt = stkpnt - 1_${ik}$
+           if( endd-start<=select .and. endd-start>0_${ik}$ ) then
+              ! do insertion sort on d( start:endd )
+              if( dir==0_${ik}$ ) then
+                 ! sort into decreasing order
+                 loop_30: do i = start + 1, endd
+                    do j = i, start + 1, -1
+                       if( d( j )>d( j-1 ) ) then
+                          dmnmx = d( j )
+                          d( j ) = d( j-1 )
+                          d( j-1 ) = dmnmx
+                       else
+                          cycle loop_30
+                       end if
+                    end do
+                 end do loop_30
+              else
+                 ! sort into increasing order
+                 loop_50: do i = start + 1, endd
+                    do j = i, start + 1, -1
+                       if( d( j )<d( j-1 ) ) then
+                          dmnmx = d( j )
+                          d( j ) = d( j-1 )
+                          d( j-1 ) = dmnmx
+                       else
+                          cycle loop_50
+                       end if
+                    end do
+                 end do loop_50
+              end if
+           else if( endd-start>select ) then
+              ! partition d( start:endd ) and stack parts, largest one first
+              ! choose partition entry as median of 3
+              d1 = d( start )
+              d2 = d( endd )
+              i = ( start+endd ) / 2_${ik}$
+              d3 = d( i )
+              if( d1<d2 ) then
+                 if( d3<d1 ) then
+                    dmnmx = d1
+                 else if( d3<d2 ) then
+                    dmnmx = d3
+                 else
+                    dmnmx = d2
+                 end if
+              else
+                 if( d3<d2 ) then
+                    dmnmx = d2
+                 else if( d3<d1 ) then
+                    dmnmx = d3
+                 else
+                    dmnmx = d1
+                 end if
+              end if
+              if( dir==0_${ik}$ ) then
+                 ! sort into decreasing order
+                 i = start - 1_${ik}$
+                 j = endd + 1_${ik}$
+                 60 continue
+                 70 continue
+                 j = j - 1_${ik}$
+                 if( d( j )<dmnmx )go to 70
+                 80 continue
+                 i = i + 1_${ik}$
+                 if( d( i )>dmnmx )go to 80
+                 if( i<j ) then
+                    tmp = d( i )
+                    d( i ) = d( j )
+                    d( j ) = tmp
+                    go to 60
+                 end if
+                 if( j-start>endd-j-1 ) then
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = start
+                    stack( 2_${ik}$, stkpnt ) = j
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = j + 1_${ik}$
+                    stack( 2_${ik}$, stkpnt ) = endd
+                 else
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = j + 1_${ik}$
+                    stack( 2_${ik}$, stkpnt ) = endd
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = start
+                    stack( 2_${ik}$, stkpnt ) = j
+                 end if
+              else
+                 ! sort into increasing order
+                 i = start - 1_${ik}$
+                 j = endd + 1_${ik}$
+                 90 continue
+                 100 continue
+                 j = j - 1_${ik}$
+                 if( d( j )>dmnmx )go to 100
+                 110 continue
+                 i = i + 1_${ik}$
+                 if( d( i )<dmnmx )go to 110
+                 if( i<j ) then
+                    tmp = d( i )
+                    d( i ) = d( j )
+                    d( j ) = tmp
+                    go to 90
+                 end if
+                 if( j-start>endd-j-1 ) then
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = start
+                    stack( 2_${ik}$, stkpnt ) = j
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = j + 1_${ik}$
+                    stack( 2_${ik}$, stkpnt ) = endd
+                 else
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = j + 1_${ik}$
+                    stack( 2_${ik}$, stkpnt ) = endd
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = start
+                    stack( 2_${ik}$, stkpnt ) = j
+                 end if
+              end if
+           end if
+           if( stkpnt>0 )go to 10
+           return
+     end subroutine stdlib${ii}$_slasrt
+
+     pure module subroutine stdlib${ii}$_dlasrt( id, n, d, info )
+     !! Sort the numbers in D in increasing order (if ID = 'I') or
+     !! in decreasing order (if ID = 'D' ).
+     !! Use Quick Sort, reverting to Insertion sort on arrays of
+     !! size <= 20. Dimension of STACK limits N to about 2**32.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: id
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: n
+           ! Array Arguments 
+           real(dp), intent(inout) :: d(*)
+        ! =====================================================================
+           ! Parameters 
+           integer(${ik}$), parameter :: select = 20_${ik}$
+           
+           ! Local Scalars 
+           integer(${ik}$) :: dir, endd, i, j, start, stkpnt
+           real(dp) :: d1, d2, d3, dmnmx, tmp
+           ! Local Arrays 
+           integer(${ik}$) :: stack(2_${ik}$,32_${ik}$)
+           ! Executable Statements 
+           ! test the input parameters.
+           info = 0_${ik}$
+           dir = -1_${ik}$
+           if( stdlib_lsame( id, 'D' ) ) then
+              dir = 0_${ik}$
+           else if( stdlib_lsame( id, 'I' ) ) then
+              dir = 1_${ik}$
+           end if
+           if( dir==-1_${ik}$ ) then
+              info = -1_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -2_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'DLASRT', -info )
+              return
+           end if
+           ! quick return if possible
+           if( n<=1 )return
+           stkpnt = 1_${ik}$
+           stack( 1_${ik}$, 1_${ik}$ ) = 1_${ik}$
+           stack( 2_${ik}$, 1_${ik}$ ) = n
+           10 continue
+           start = stack( 1_${ik}$, stkpnt )
+           endd = stack( 2_${ik}$, stkpnt )
+           stkpnt = stkpnt - 1_${ik}$
+           if( endd-start<=select .and. endd-start>0_${ik}$ ) then
+              ! do insertion sort on d( start:endd )
+              if( dir==0_${ik}$ ) then
+                 ! sort into decreasing order
+                 loop_30: do i = start + 1, endd
+                    do j = i, start + 1, -1
+                       if( d( j )>d( j-1 ) ) then
+                          dmnmx = d( j )
+                          d( j ) = d( j-1 )
+                          d( j-1 ) = dmnmx
+                       else
+                          cycle loop_30
+                       end if
+                    end do
+                 end do loop_30
+              else
+                 ! sort into increasing order
+                 loop_50: do i = start + 1, endd
+                    do j = i, start + 1, -1
+                       if( d( j )<d( j-1 ) ) then
+                          dmnmx = d( j )
+                          d( j ) = d( j-1 )
+                          d( j-1 ) = dmnmx
+                       else
+                          cycle loop_50
+                       end if
+                    end do
+                 end do loop_50
+              end if
+           else if( endd-start>select ) then
+              ! partition d( start:endd ) and stack parts, largest one first
+              ! choose partition entry as median of 3
+              d1 = d( start )
+              d2 = d( endd )
+              i = ( start+endd ) / 2_${ik}$
+              d3 = d( i )
+              if( d1<d2 ) then
+                 if( d3<d1 ) then
+                    dmnmx = d1
+                 else if( d3<d2 ) then
+                    dmnmx = d3
+                 else
+                    dmnmx = d2
+                 end if
+              else
+                 if( d3<d2 ) then
+                    dmnmx = d2
+                 else if( d3<d1 ) then
+                    dmnmx = d3
+                 else
+                    dmnmx = d1
+                 end if
+              end if
+              if( dir==0_${ik}$ ) then
+                 ! sort into decreasing order
+                 i = start - 1_${ik}$
+                 j = endd + 1_${ik}$
+                 60 continue
+                 70 continue
+                 j = j - 1_${ik}$
+                 if( d( j )<dmnmx )go to 70
+                 80 continue
+                 i = i + 1_${ik}$
+                 if( d( i )>dmnmx )go to 80
+                 if( i<j ) then
+                    tmp = d( i )
+                    d( i ) = d( j )
+                    d( j ) = tmp
+                    go to 60
+                 end if
+                 if( j-start>endd-j-1 ) then
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = start
+                    stack( 2_${ik}$, stkpnt ) = j
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = j + 1_${ik}$
+                    stack( 2_${ik}$, stkpnt ) = endd
+                 else
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = j + 1_${ik}$
+                    stack( 2_${ik}$, stkpnt ) = endd
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = start
+                    stack( 2_${ik}$, stkpnt ) = j
+                 end if
+              else
+                 ! sort into increasing order
+                 i = start - 1_${ik}$
+                 j = endd + 1_${ik}$
+                 90 continue
+                 100 continue
+                 j = j - 1_${ik}$
+                 if( d( j )>dmnmx )go to 100
+                 110 continue
+                 i = i + 1_${ik}$
+                 if( d( i )<dmnmx )go to 110
+                 if( i<j ) then
+                    tmp = d( i )
+                    d( i ) = d( j )
+                    d( j ) = tmp
+                    go to 90
+                 end if
+                 if( j-start>endd-j-1 ) then
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = start
+                    stack( 2_${ik}$, stkpnt ) = j
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = j + 1_${ik}$
+                    stack( 2_${ik}$, stkpnt ) = endd
+                 else
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = j + 1_${ik}$
+                    stack( 2_${ik}$, stkpnt ) = endd
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = start
+                    stack( 2_${ik}$, stkpnt ) = j
+                 end if
+              end if
+           end if
+           if( stkpnt>0 )go to 10
+           return
+     end subroutine stdlib${ii}$_dlasrt
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$lasrt( id, n, d, info )
+     !! Sort the numbers in D in increasing order (if ID = 'I') or
+     !! in decreasing order (if ID = 'D' ).
+     !! Use Quick Sort, reverting to Insertion sort on arrays of
+     !! size <= 20. Dimension of STACK limits N to about 2**32.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: id
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: n
+           ! Array Arguments 
+           real(${rk}$), intent(inout) :: d(*)
+        ! =====================================================================
+           ! Parameters 
+           integer(${ik}$), parameter :: select = 20_${ik}$
+           
+           ! Local Scalars 
+           integer(${ik}$) :: dir, endd, i, j, start, stkpnt
+           real(${rk}$) :: d1, d2, d3, dmnmx, tmp
+           ! Local Arrays 
+           integer(${ik}$) :: stack(2_${ik}$,32_${ik}$)
+           ! Executable Statements 
+           ! test the input parameters.
+           info = 0_${ik}$
+           dir = -1_${ik}$
+           if( stdlib_lsame( id, 'D' ) ) then
+              dir = 0_${ik}$
+           else if( stdlib_lsame( id, 'I' ) ) then
+              dir = 1_${ik}$
+           end if
+           if( dir==-1_${ik}$ ) then
+              info = -1_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -2_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'DLASRT', -info )
+              return
+           end if
+           ! quick return if possible
+           if( n<=1 )return
+           stkpnt = 1_${ik}$
+           stack( 1_${ik}$, 1_${ik}$ ) = 1_${ik}$
+           stack( 2_${ik}$, 1_${ik}$ ) = n
+           10 continue
+           start = stack( 1_${ik}$, stkpnt )
+           endd = stack( 2_${ik}$, stkpnt )
+           stkpnt = stkpnt - 1_${ik}$
+           if( endd-start<=select .and. endd-start>0_${ik}$ ) then
+              ! do insertion sort on d( start:endd )
+              if( dir==0_${ik}$ ) then
+                 ! sort into decreasing order
+                 loop_30: do i = start + 1, endd
+                    do j = i, start + 1, -1
+                       if( d( j )>d( j-1 ) ) then
+                          dmnmx = d( j )
+                          d( j ) = d( j-1 )
+                          d( j-1 ) = dmnmx
+                       else
+                          cycle loop_30
+                       end if
+                    end do
+                 end do loop_30
+              else
+                 ! sort into increasing order
+                 loop_50: do i = start + 1, endd
+                    do j = i, start + 1, -1
+                       if( d( j )<d( j-1 ) ) then
+                          dmnmx = d( j )
+                          d( j ) = d( j-1 )
+                          d( j-1 ) = dmnmx
+                       else
+                          cycle loop_50
+                       end if
+                    end do
+                 end do loop_50
+              end if
+           else if( endd-start>select ) then
+              ! partition d( start:endd ) and stack parts, largest one first
+              ! choose partition entry as median of 3
+              d1 = d( start )
+              d2 = d( endd )
+              i = ( start+endd ) / 2_${ik}$
+              d3 = d( i )
+              if( d1<d2 ) then
+                 if( d3<d1 ) then
+                    dmnmx = d1
+                 else if( d3<d2 ) then
+                    dmnmx = d3
+                 else
+                    dmnmx = d2
+                 end if
+              else
+                 if( d3<d2 ) then
+                    dmnmx = d2
+                 else if( d3<d1 ) then
+                    dmnmx = d3
+                 else
+                    dmnmx = d1
+                 end if
+              end if
+              if( dir==0_${ik}$ ) then
+                 ! sort into decreasing order
+                 i = start - 1_${ik}$
+                 j = endd + 1_${ik}$
+                 60 continue
+                 70 continue
+                 j = j - 1_${ik}$
+                 if( d( j )<dmnmx )go to 70
+                 80 continue
+                 i = i + 1_${ik}$
+                 if( d( i )>dmnmx )go to 80
+                 if( i<j ) then
+                    tmp = d( i )
+                    d( i ) = d( j )
+                    d( j ) = tmp
+                    go to 60
+                 end if
+                 if( j-start>endd-j-1 ) then
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = start
+                    stack( 2_${ik}$, stkpnt ) = j
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = j + 1_${ik}$
+                    stack( 2_${ik}$, stkpnt ) = endd
+                 else
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = j + 1_${ik}$
+                    stack( 2_${ik}$, stkpnt ) = endd
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = start
+                    stack( 2_${ik}$, stkpnt ) = j
+                 end if
+              else
+                 ! sort into increasing order
+                 i = start - 1_${ik}$
+                 j = endd + 1_${ik}$
+                 90 continue
+                 100 continue
+                 j = j - 1_${ik}$
+                 if( d( j )>dmnmx )go to 100
+                 110 continue
+                 i = i + 1_${ik}$
+                 if( d( i )<dmnmx )go to 110
+                 if( i<j ) then
+                    tmp = d( i )
+                    d( i ) = d( j )
+                    d( j ) = tmp
+                    go to 90
+                 end if
+                 if( j-start>endd-j-1 ) then
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = start
+                    stack( 2_${ik}$, stkpnt ) = j
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = j + 1_${ik}$
+                    stack( 2_${ik}$, stkpnt ) = endd
+                 else
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = j + 1_${ik}$
+                    stack( 2_${ik}$, stkpnt ) = endd
+                    stkpnt = stkpnt + 1_${ik}$
+                    stack( 1_${ik}$, stkpnt ) = start
+                    stack( 2_${ik}$, stkpnt ) = j
+                 end if
+              end if
+           end if
+           if( stkpnt>0 )go to 10
+           return
+     end subroutine stdlib${ii}$_${ri}$lasrt
+
+#:endif
+#:endfor
+
+
+
+     pure module subroutine stdlib${ii}$_slassq( n, x, incx, scl, sumsq )
+     !! SLASSQ returns the values  scl  and  smsq  such that
+     !! ( scl**2 )*smsq = x( 1 )**2 +...+ x( n )**2 + ( scale**2 )*sumsq,
+     !! where  x( i ) = X( 1 + ( i - 1 )*INCX ). The value of  sumsq  is
+     !! assumed to be non-negative.
+     !! scale and sumsq must be supplied in SCALE and SUMSQ and
+     !! scl and smsq are overwritten on SCALE and SUMSQ respectively.
+     !! If scale * sqrt( sumsq ) > tbig then
+     !! we require:   scale >= sqrt( TINY*EPS ) / sbig   on entry,
+     !! and if 0 < scale * sqrt( sumsq ) < tsml then
+     !! we require:   scale <= sqrt( HUGE ) / ssml       on entry,
+     !! where
+     !! tbig -- upper threshold for values whose square is representable;
+     !! sbig -- scaling constant for big numbers; \see la_constants.f90
+     !! tsml -- lower threshold for values whose square is representable;
+     !! ssml -- scaling constant for small numbers; \see la_constants.f90
+     !! and
+     !! TINY*EPS -- tiniest representable number;
+     !! HUGE     -- biggest representable number.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: zero, half, one, two, tbig, tsml, ssml, sbig
+        ! Scalar Arguments 
+     integer(${ik}$), intent(in) :: incx, n
+        real(sp), intent(inout) :: scl, sumsq
+        ! Array Arguments 
+        real(sp), intent(in) :: x(*)
+        ! =====================================================================
+        ! Local Scalars
+     integer(${ik}$) :: i, ix
+     logical(lk) :: notbig
+        real(sp) :: abig, amed, asml, ax, ymax, ymin
+        ! quick return if possible
+        if( ieee_is_nan(scl) .or. ieee_is_nan(sumsq) ) return
+        if( sumsq == zero ) scl = one
+        if( scl == zero ) then
+           scl = one
+           sumsq = zero
+        end if
+        if (n <= 0_${ik}$) then
+           return
+        end if
+        ! compute the sum of squares in 3 accumulators:
+           ! abig -- sums of squares scaled down to avoid overflow
+           ! asml -- sums of squares scaled up to avoid underflow
+           ! amed -- sums of squares that do not require scaling
+        ! the thresholds and multipliers are
+           ! tbig -- values bigger than this are scaled down by sbig
+           ! tsml -- values smaller than this are scaled up by ssml
+        notbig = .true.
+        asml = zero
+        amed = zero
+        abig = zero
+        ix = 1_${ik}$
+        if( incx < 0_${ik}$ ) ix = 1_${ik}$ - (n-1)*incx
+        do i = 1, n
+           ax = abs(x(ix))
+           if (ax > tbig) then
+              abig = abig + (ax*sbig)**2_${ik}$
+              notbig = .false.
+           else if (ax < tsml) then
+              if (notbig) asml = asml + (ax*ssml)**2_${ik}$
+           else
+              amed = amed + ax**2_${ik}$
+           end if
+           ix = ix + incx
+        end do
+        ! put the existing sum of squares into one of the accumulators
+        if( sumsq > zero ) then
+           ax = scl*sqrt( sumsq )
+           if (ax > tbig) then
+              ! we assume scl >= sqrt( tiny*eps ) / sbig
+              abig = abig + (scl*sbig)**2_${ik}$ * sumsq
+           else if (ax < tsml) then
+              ! we assume scl <= sqrt( huge ) / ssml
+              if (notbig) asml = asml + (scl*ssml)**2_${ik}$ * sumsq
+           else
+              amed = amed + scl**2_${ik}$ * sumsq
+           end if
+        end if
+        ! combine abig and amed or amed and asml if more than one
+        ! accumulator was used.
+        if (abig > zero) then
+           ! combine abig and amed if abig > 0.
+           if (amed > zero .or. ieee_is_nan(amed)) then
+              abig = abig + (amed*sbig)*sbig
+           end if
+           scl = one / sbig
+           sumsq = abig
+        else if (asml > zero) then
+           ! combine amed and asml if asml > 0.
+           if (amed > zero .or. ieee_is_nan(amed)) then
+              amed = sqrt(amed)
+              asml = sqrt(asml) / ssml
+              if (asml > amed) then
+                 ymin = amed
+                 ymax = asml
+              else
+                 ymin = asml
+                 ymax = amed
+              end if
+              scl = one
+              sumsq = ymax**2_${ik}$*( one + (ymin/ymax)**2_${ik}$ )
+           else
+              scl = one / ssml
+              sumsq = asml
+           end if
+        else
+           ! otherwise all values are mid-range or zero
+           scl = one
+           sumsq = amed
+        end if
+        return
+     end subroutine stdlib${ii}$_slassq
+
+     pure module subroutine stdlib${ii}$_dlassq( n, x, incx, scl, sumsq )
+     !! DLASSQ returns the values  scl  and  smsq  such that
+     !! ( scl**2 )*smsq = x( 1 )**2 +...+ x( n )**2 + ( scale**2 )*sumsq,
+     !! where  x( i ) = X( 1 + ( i - 1 )*INCX ). The value of  sumsq  is
+     !! assumed to be non-negative.
+     !! scale and sumsq must be supplied in SCALE and SUMSQ and
+     !! scl and smsq are overwritten on SCALE and SUMSQ respectively.
+     !! If scale * sqrt( sumsq ) > tbig then
+     !! we require:   scale >= sqrt( TINY*EPS ) / sbig   on entry,
+     !! and if 0 < scale * sqrt( sumsq ) < tsml then
+     !! we require:   scale <= sqrt( HUGE ) / ssml       on entry,
+     !! where
+     !! tbig -- upper threshold for values whose square is representable;
+     !! sbig -- scaling constant for big numbers; \see la_constants.f90
+     !! tsml -- lower threshold for values whose square is representable;
+     !! ssml -- scaling constant for small numbers; \see la_constants.f90
+     !! and
+     !! TINY*EPS -- tiniest representable number;
+     !! HUGE     -- biggest representable number.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: zero, half, one, two, tbig, tsml, ssml, sbig
+        ! Scalar Arguments 
+     integer(${ik}$), intent(in) :: incx, n
+        real(dp), intent(inout) :: scl, sumsq
+        ! Array Arguments 
+        real(dp), intent(in) :: x(*)
+        ! =====================================================================
+        ! Local Scalars 
+     integer(${ik}$) :: i, ix
+     logical(lk) :: notbig
+        real(dp) :: abig, amed, asml, ax, ymax, ymin
+        ! quick return if possible
+        if( ieee_is_nan(scl) .or. ieee_is_nan(sumsq) ) return
+        if( sumsq == zero ) scl = one
+        if( scl == zero ) then
+           scl = one
+           sumsq = zero
+        end if
+        if (n <= 0_${ik}$) then
+           return
+        end if
+        ! compute the sum of squares in 3 accumulators:
+           ! abig -- sums of squares scaled down to avoid overflow
+           ! asml -- sums of squares scaled up to avoid underflow
+           ! amed -- sums of squares that do not require scaling
+        ! the thresholds and multipliers are
+           ! tbig -- values bigger than this are scaled down by sbig
+           ! tsml -- values smaller than this are scaled up by ssml
+        notbig = .true.
+        asml = zero
+        amed = zero
+        abig = zero
+        ix = 1_${ik}$
+        if( incx < 0_${ik}$ ) ix = 1_${ik}$ - (n-1)*incx
+        do i = 1, n
+           ax = abs(x(ix))
+           if (ax > tbig) then
+              abig = abig + (ax*sbig)**2_${ik}$
+              notbig = .false.
+           else if (ax < tsml) then
+              if (notbig) asml = asml + (ax*ssml)**2_${ik}$
+           else
+              amed = amed + ax**2_${ik}$
+           end if
+           ix = ix + incx
+        end do
+        ! put the existing sum of squares into one of the accumulators
+        if( sumsq > zero ) then
+           ax = scl*sqrt( sumsq )
+           if (ax > tbig) then
+              ! we assume scl >= sqrt( tiny*eps ) / sbig
+              abig = abig + (scl*sbig)**2_${ik}$ * sumsq
+           else if (ax < tsml) then
+              ! we assume scl <= sqrt( huge ) / ssml
+              if (notbig) asml = asml + (scl*ssml)**2_${ik}$ * sumsq
+           else
+              amed = amed + scl**2_${ik}$ * sumsq
+           end if
+        end if
+        ! combine abig and amed or amed and asml if more than one
+        ! accumulator was used.
+        if (abig > zero) then
+           ! combine abig and amed if abig > 0.
+           if (amed > zero .or. ieee_is_nan(amed)) then
+              abig = abig + (amed*sbig)*sbig
+           end if
+           scl = one / sbig
+           sumsq = abig
+        else if (asml > zero) then
+           ! combine amed and asml if asml > 0.
+           if (amed > zero .or. ieee_is_nan(amed)) then
+              amed = sqrt(amed)
+              asml = sqrt(asml) / ssml
+              if (asml > amed) then
+                 ymin = amed
+                 ymax = asml
+              else
+                 ymin = asml
+                 ymax = amed
+              end if
+              scl = one
+              sumsq = ymax**2_${ik}$*( one + (ymin/ymax)**2_${ik}$ )
+           else
+              scl = one / ssml
+              sumsq = asml
+           end if
+        else
+           ! otherwise all values are mid-range or zero
+           scl = one
+           sumsq = amed
+        end if
+        return
+     end subroutine stdlib${ii}$_dlassq
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$lassq( n, x, incx, scl, sumsq )
+     !! DLASSQ:  returns the values  scl  and  smsq  such that
+     !! ( scl**2 )*smsq = x( 1 )**2 +...+ x( n )**2 + ( scale**2 )*sumsq,
+     !! where  x( i ) = X( 1 + ( i - 1 )*INCX ). The value of  sumsq  is
+     !! assumed to be non-negative.
+     !! scale and sumsq must be supplied in SCALE and SUMSQ and
+     !! scl and smsq are overwritten on SCALE and SUMSQ respectively.
+     !! If scale * sqrt( sumsq ) > tbig then
+     !! we require:   scale >= sqrt( TINY*EPS ) / sbig   on entry,
+     !! and if 0 < scale * sqrt( sumsq ) < tsml then
+     !! we require:   scale <= sqrt( HUGE ) / ssml       on entry,
+     !! where
+     !! tbig -- upper threshold for values whose square is representable;
+     !! sbig -- scaling constant for big numbers; \see la_constants.f90
+     !! tsml -- lower threshold for values whose square is representable;
+     !! ssml -- scaling constant for small numbers; \see la_constants.f90
+     !! and
+     !! TINY*EPS -- tiniest representable number;
+     !! HUGE     -- biggest representable number.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${rk}$, only: zero, half, one, two, tbig, tsml, ssml, sbig
+        ! Scalar Arguments 
+     integer(${ik}$), intent(in) :: incx, n
+        real(${rk}$), intent(inout) :: scl, sumsq
+        ! Array Arguments 
+        real(${rk}$), intent(in) :: x(*)
+        ! =====================================================================
+        ! Local Scalars
+     integer(${ik}$) :: i, ix
+     logical(lk) :: notbig
+        real(${rk}$) :: abig, amed, asml, ax, ymax, ymin
+        ! quick return if possible
+        if( ieee_is_nan(scl) .or. ieee_is_nan(sumsq) ) return
+        if( sumsq == zero ) scl = one
+        if( scl == zero ) then
+           scl = one
+           sumsq = zero
+        end if
+        if (n <= 0_${ik}$) then
+           return
+        end if
+        ! compute the sum of squares in 3 accumulators:
+           ! abig -- sums of squares scaled down to avoid overflow
+           ! asml -- sums of squares scaled up to avoid underflow
+           ! amed -- sums of squares that do not require scaling
+        ! the thresholds and multipliers are
+           ! tbig -- values bigger than this are scaled down by sbig
+           ! tsml -- values smaller than this are scaled up by ssml
+        notbig = .true.
+        asml = zero
+        amed = zero
+        abig = zero
+        ix = 1_${ik}$
+        if( incx < 0_${ik}$ ) ix = 1_${ik}$ - (n-1)*incx
+        do i = 1, n
+           ax = abs(x(ix))
+           if (ax > tbig) then
+              abig = abig + (ax*sbig)**2_${ik}$
+              notbig = .false.
+           else if (ax < tsml) then
+              if (notbig) asml = asml + (ax*ssml)**2_${ik}$
+           else
+              amed = amed + ax**2_${ik}$
+           end if
+           ix = ix + incx
+        end do
+        ! put the existing sum of squares into one of the accumulators
+        if( sumsq > zero ) then
+           ax = scl*sqrt( sumsq )
+           if (ax > tbig) then
+              ! we assume scl >= sqrt( tiny*eps ) / sbig
+              abig = abig + (scl*sbig)**2_${ik}$ * sumsq
+           else if (ax < tsml) then
+              ! we assume scl <= sqrt( huge ) / ssml
+              if (notbig) asml = asml + (scl*ssml)**2_${ik}$ * sumsq
+           else
+              amed = amed + scl**2_${ik}$ * sumsq
+           end if
+        end if
+        ! combine abig and amed or amed and asml if more than one
+        ! accumulator was used.
+        if (abig > zero) then
+           ! combine abig and amed if abig > 0.
+           if (amed > zero .or. ieee_is_nan(amed)) then
+              abig = abig + (amed*sbig)*sbig
+           end if
+           scl = one / sbig
+           sumsq = abig
+        else if (asml > zero) then
+           ! combine amed and asml if asml > 0.
+           if (amed > zero .or. ieee_is_nan(amed)) then
+              amed = sqrt(amed)
+              asml = sqrt(asml) / ssml
+              if (asml > amed) then
+                 ymin = amed
+                 ymax = asml
+              else
+                 ymin = asml
+                 ymax = amed
+              end if
+              scl = one
+              sumsq = ymax**2_${ik}$*( one + (ymin/ymax)**2_${ik}$ )
+           else
+              scl = one / ssml
+              sumsq = asml
+           end if
+        else
+           ! otherwise all values are mid-range or zero
+           scl = one
+           sumsq = amed
+        end if
+        return
+     end subroutine stdlib${ii}$_${ri}$lassq
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_classq( n, x, incx, scl, sumsq )
+     !! CLASSQ returns the values  scl  and  smsq  such that
+     !! ( scl**2 )*smsq = x( 1 )**2 +...+ x( n )**2 + ( scale**2 )*sumsq,
+     !! where  x( i ) = X( 1 + ( i - 1 )*INCX ). The value of  sumsq  is
+     !! assumed to be non-negative.
+     !! scale and sumsq must be supplied in SCALE and SUMSQ and
+     !! scl and smsq are overwritten on SCALE and SUMSQ respectively.
+     !! If scale * sqrt( sumsq ) > tbig then
+     !! we require:   scale >= sqrt( TINY*EPS ) / sbig   on entry,
+     !! and if 0 < scale * sqrt( sumsq ) < tsml then
+     !! we require:   scale <= sqrt( HUGE ) / ssml       on entry,
+     !! where
+     !! tbig -- upper threshold for values whose square is representable;
+     !! sbig -- scaling constant for big numbers; \see la_constants.f90
+     !! tsml -- lower threshold for values whose square is representable;
+     !! ssml -- scaling constant for small numbers; \see la_constants.f90
+     !! and
+     !! TINY*EPS -- tiniest representable number;
+     !! HUGE     -- biggest representable number.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: zero, half, one, two, tbig, tsml, ssml, sbig
+        ! Scalar Arguments 
+     integer(${ik}$), intent(in) :: incx, n
+        real(sp), intent(inout) :: scl, sumsq
+        ! Array Arguments 
+        complex(sp), intent(in) :: x(*)
+        ! =====================================================================
+        ! Local Scalars 
+     integer(${ik}$) :: i, ix
+     logical(lk) :: notbig
+        real(sp) :: abig, amed, asml, ax, ymax, ymin
+        ! quick return if possible
+        if( ieee_is_nan(scl) .or. ieee_is_nan(sumsq) ) return
+        if( sumsq == zero ) scl = one
+        if( scl == zero ) then
+           scl = one
+           sumsq = zero
+        end if
+        if (n <= 0_${ik}$) then
+           return
+        end if
+        ! compute the sum of squares in 3 accumulators:
+           ! abig -- sums of squares scaled down to avoid overflow
+           ! asml -- sums of squares scaled up to avoid underflow
+           ! amed -- sums of squares that do not require scaling
+        ! the thresholds and multipliers are
+           ! tbig -- values bigger than this are scaled down by sbig
+           ! tsml -- values smaller than this are scaled up by ssml
+        notbig = .true.
+        asml = zero
+        amed = zero
+        abig = zero
+        ix = 1_${ik}$
+        if( incx < 0_${ik}$ ) ix = 1_${ik}$ - (n-1)*incx
+        do i = 1, n
+           ax = abs(real(x(ix),KIND=sp))
+           if (ax > tbig) then
+              abig = abig + (ax*sbig)**2_${ik}$
+              notbig = .false.
+           else if (ax < tsml) then
+              if (notbig) asml = asml + (ax*ssml)**2_${ik}$
+           else
+              amed = amed + ax**2_${ik}$
+           end if
+           ax = abs(aimag(x(ix)))
+           if (ax > tbig) then
+              abig = abig + (ax*sbig)**2_${ik}$
+              notbig = .false.
+           else if (ax < tsml) then
+              if (notbig) asml = asml + (ax*ssml)**2_${ik}$
+           else
+              amed = amed + ax**2_${ik}$
+           end if
+           ix = ix + incx
+        end do
+        ! put the existing sum of squares into one of the accumulators
+        if( sumsq > zero ) then
+           ax = scl*sqrt( sumsq )
+           if (ax > tbig) then
+              ! we assume scl >= sqrt( tiny*eps ) / sbig
+              abig = abig + (scl*sbig)**2_${ik}$ * sumsq
+           else if (ax < tsml) then
+              ! we assume scl <= sqrt( huge ) / ssml
+              if (notbig) asml = asml + (scl*ssml)**2_${ik}$ * sumsq
+           else
+              amed = amed + scl**2_${ik}$ * sumsq
+           end if
+        end if
+        ! combine abig and amed or amed and asml if more than one
+        ! accumulator was used.
+        if (abig > zero) then
+           ! combine abig and amed if abig > 0.
+           if (amed > zero .or. ieee_is_nan(amed)) then
+              abig = abig + (amed*sbig)*sbig
+           end if
+           scl = one / sbig
+           sumsq = abig
+        else if (asml > zero) then
+           ! combine amed and asml if asml > 0.
+           if (amed > zero .or. ieee_is_nan(amed)) then
+              amed = sqrt(amed)
+              asml = sqrt(asml) / ssml
+              if (asml > amed) then
+                 ymin = amed
+                 ymax = asml
+              else
+                 ymin = asml
+                 ymax = amed
+              end if
+              scl = one
+              sumsq = ymax**2_${ik}$*( one + (ymin/ymax)**2_${ik}$ )
+           else
+              scl = one / ssml
+              sumsq = asml
+           end if
+        else
+           ! otherwise all values are mid-range or zero
+           scl = one
+           sumsq = amed
+        end if
+        return
+     end subroutine stdlib${ii}$_classq
+
+     pure module subroutine stdlib${ii}$_zlassq( n, x, incx, scl, sumsq )
+     !! ZLASSQ returns the values  scl  and  smsq  such that
+     !! ( scl**2 )*smsq = x( 1 )**2 +...+ x( n )**2 + ( scale**2 )*sumsq,
+     !! where  x( i ) = X( 1 + ( i - 1 )*INCX ). The value of  sumsq  is
+     !! assumed to be non-negative.
+     !! scale and sumsq must be supplied in SCALE and SUMSQ and
+     !! scl and smsq are overwritten on SCALE and SUMSQ respectively.
+     !! If scale * sqrt( sumsq ) > tbig then
+     !! we require:   scale >= sqrt( TINY*EPS ) / sbig   on entry,
+     !! and if 0 < scale * sqrt( sumsq ) < tsml then
+     !! we require:   scale <= sqrt( HUGE ) / ssml       on entry,
+     !! where
+     !! tbig -- upper threshold for values whose square is representable;
+     !! sbig -- scaling constant for big numbers; \see la_constants.f90
+     !! tsml -- lower threshold for values whose square is representable;
+     !! ssml -- scaling constant for small numbers; \see la_constants.f90
+     !! and
+     !! TINY*EPS -- tiniest representable number;
+     !! HUGE     -- biggest representable number.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: zero, half, one, two, tbig, tsml, ssml, sbig
+        ! Scalar Arguments 
+     integer(${ik}$), intent(in) :: incx, n
+        real(dp), intent(inout) :: scl, sumsq
+        ! Array Arguments 
+        complex(dp), intent(in) :: x(*)
+        ! =====================================================================
+        ! Local Scalars 
+     integer(${ik}$) :: i, ix
+     logical(lk) :: notbig
+        real(dp) :: abig, amed, asml, ax, ymax, ymin
+        ! quick return if possible
+        if( ieee_is_nan(scl) .or. ieee_is_nan(sumsq) ) return
+        if( sumsq == zero ) scl = one
+        if( scl == zero ) then
+           scl = one
+           sumsq = zero
+        end if
+        if (n <= 0_${ik}$) then
+           return
+        end if
+        ! compute the sum of squares in 3 accumulators:
+           ! abig -- sums of squares scaled down to avoid overflow
+           ! asml -- sums of squares scaled up to avoid underflow
+           ! amed -- sums of squares that do not require scaling
+        ! the thresholds and multipliers are
+           ! tbig -- values bigger than this are scaled down by sbig
+           ! tsml -- values smaller than this are scaled up by ssml
+        notbig = .true.
+        asml = zero
+        amed = zero
+        abig = zero
+        ix = 1_${ik}$
+        if( incx < 0_${ik}$ ) ix = 1_${ik}$ - (n-1)*incx
+        do i = 1, n
+           ax = abs(real(x(ix),KIND=dp))
+           if (ax > tbig) then
+              abig = abig + (ax*sbig)**2_${ik}$
+              notbig = .false.
+           else if (ax < tsml) then
+              if (notbig) asml = asml + (ax*ssml)**2_${ik}$
+           else
+              amed = amed + ax**2_${ik}$
+           end if
+           ax = abs(aimag(x(ix)))
+           if (ax > tbig) then
+              abig = abig + (ax*sbig)**2_${ik}$
+              notbig = .false.
+           else if (ax < tsml) then
+              if (notbig) asml = asml + (ax*ssml)**2_${ik}$
+           else
+              amed = amed + ax**2_${ik}$
+           end if
+           ix = ix + incx
+        end do
+        ! put the existing sum of squares into one of the accumulators
+        if( sumsq > zero ) then
+           ax = scl*sqrt( sumsq )
+           if (ax > tbig) then
+              ! we assume scl >= sqrt( tiny*eps ) / sbig
+              abig = abig + (scl*sbig)**2_${ik}$ * sumsq
+           else if (ax < tsml) then
+              ! we assume scl <= sqrt( huge ) / ssml
+              if (notbig) asml = asml + (scl*ssml)**2_${ik}$ * sumsq
+           else
+              amed = amed + scl**2_${ik}$ * sumsq
+           end if
+        end if
+        ! combine abig and amed or amed and asml if more than one
+        ! accumulator was used.
+        if (abig > zero) then
+           ! combine abig and amed if abig > 0.
+           if (amed > zero .or. ieee_is_nan(amed)) then
+              abig = abig + (amed*sbig)*sbig
+           end if
+           scl = one / sbig
+           sumsq = abig
+        else if (asml > zero) then
+           ! combine amed and asml if asml > 0.
+           if (amed > zero .or. ieee_is_nan(amed)) then
+              amed = sqrt(amed)
+              asml = sqrt(asml) / ssml
+              if (asml > amed) then
+                 ymin = amed
+                 ymax = asml
+              else
+                 ymin = asml
+                 ymax = amed
+              end if
+              scl = one
+              sumsq = ymax**2_${ik}$*( one + (ymin/ymax)**2_${ik}$ )
+           else
+              scl = one / ssml
+              sumsq = asml
+           end if
+        else
+           ! otherwise all values are mid-range or zero
+           scl = one
+           sumsq = amed
+        end if
+        return
+     end subroutine stdlib${ii}$_zlassq
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$lassq( n, x, incx, scl, sumsq )
+     !! ZLASSQ:  returns the values  scl  and  smsq  such that
+     !! ( scl**2 )*smsq = x( 1 )**2 +...+ x( n )**2 + ( scale**2 )*sumsq,
+     !! where  x( i ) = X( 1 + ( i - 1 )*INCX ). The value of  sumsq  is
+     !! assumed to be non-negative.
+     !! scale and sumsq must be supplied in SCALE and SUMSQ and
+     !! scl and smsq are overwritten on SCALE and SUMSQ respectively.
+     !! If scale * sqrt( sumsq ) > tbig then
+     !! we require:   scale >= sqrt( TINY*EPS ) / sbig   on entry,
+     !! and if 0 < scale * sqrt( sumsq ) < tsml then
+     !! we require:   scale <= sqrt( HUGE ) / ssml       on entry,
+     !! where
+     !! tbig -- upper threshold for values whose square is representable;
+     !! sbig -- scaling constant for big numbers; \see la_constants.f90
+     !! tsml -- lower threshold for values whose square is representable;
+     !! ssml -- scaling constant for small numbers; \see la_constants.f90
+     !! and
+     !! TINY*EPS -- tiniest representable number;
+     !! HUGE     -- biggest representable number.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${ck}$, only: zero, half, one, two, tbig, tsml, ssml, sbig
+        ! Scalar Arguments 
+     integer(${ik}$), intent(in) :: incx, n
+        real(${ck}$), intent(inout) :: scl, sumsq
+        ! Array Arguments 
+        complex(${ck}$), intent(in) :: x(*)
+        ! =====================================================================
+        ! Local Scalars 
+     integer(${ik}$) :: i, ix
+     logical(lk) :: notbig
+        real(${ck}$) :: abig, amed, asml, ax, ymax, ymin
+        ! quick return if possible
+        if( ieee_is_nan(scl) .or. ieee_is_nan(sumsq) ) return
+        if( sumsq == zero ) scl = one
+        if( scl == zero ) then
+           scl = one
+           sumsq = zero
+        end if
+        if (n <= 0_${ik}$) then
+           return
+        end if
+        ! compute the sum of squares in 3 accumulators:
+           ! abig -- sums of squares scaled down to avoid overflow
+           ! asml -- sums of squares scaled up to avoid underflow
+           ! amed -- sums of squares that do not require scaling
+        ! the thresholds and multipliers are
+           ! tbig -- values bigger than this are scaled down by sbig
+           ! tsml -- values smaller than this are scaled up by ssml
+        notbig = .true.
+        asml = zero
+        amed = zero
+        abig = zero
+        ix = 1_${ik}$
+        if( incx < 0_${ik}$ ) ix = 1_${ik}$ - (n-1)*incx
+        do i = 1, n
+           ax = abs(real(x(ix),KIND=${ck}$))
+           if (ax > tbig) then
+              abig = abig + (ax*sbig)**2_${ik}$
+              notbig = .false.
+           else if (ax < tsml) then
+              if (notbig) asml = asml + (ax*ssml)**2_${ik}$
+           else
+              amed = amed + ax**2_${ik}$
+           end if
+           ax = abs(aimag(x(ix)))
+           if (ax > tbig) then
+              abig = abig + (ax*sbig)**2_${ik}$
+              notbig = .false.
+           else if (ax < tsml) then
+              if (notbig) asml = asml + (ax*ssml)**2_${ik}$
+           else
+              amed = amed + ax**2_${ik}$
+           end if
+           ix = ix + incx
+        end do
+        ! put the existing sum of squares into one of the accumulators
+        if( sumsq > zero ) then
+           ax = scl*sqrt( sumsq )
+           if (ax > tbig) then
+              ! we assume scl >= sqrt( tiny*eps ) / sbig
+              abig = abig + (scl*sbig)**2_${ik}$ * sumsq
+           else if (ax < tsml) then
+              ! we assume scl <= sqrt( huge ) / ssml
+              if (notbig) asml = asml + (scl*ssml)**2_${ik}$ * sumsq
+           else
+              amed = amed + scl**2_${ik}$ * sumsq
+           end if
+        end if
+        ! combine abig and amed or amed and asml if more than one
+        ! accumulator was used.
+        if (abig > zero) then
+           ! combine abig and amed if abig > 0.
+           if (amed > zero .or. ieee_is_nan(amed)) then
+              abig = abig + (amed*sbig)*sbig
+           end if
+           scl = one / sbig
+           sumsq = abig
+        else if (asml > zero) then
+           ! combine amed and asml if asml > 0.
+           if (amed > zero .or. ieee_is_nan(amed)) then
+              amed = sqrt(amed)
+              asml = sqrt(asml) / ssml
+              if (asml > amed) then
+                 ymin = amed
+                 ymax = asml
+              else
+                 ymin = asml
+                 ymax = amed
+              end if
+              scl = one
+              sumsq = ymax**2_${ik}$*( one + (ymin/ymax)**2_${ik}$ )
+           else
+              scl = one / ssml
+              sumsq = asml
+           end if
+        else
+           ! otherwise all values are mid-range or zero
+           scl = one
+           sumsq = amed
+        end if
+        return
+     end subroutine stdlib${ii}$_${ci}$lassq
+
+#:endif
+#:endfor
+
+
+
+     pure module subroutine stdlib${ii}$_srscl( n, sa, sx, incx )
+     !! SRSCL multiplies an n-element real vector x by the real scalar 1/a.
+     !! This is done without overflow or underflow as long as
+     !! the final result x/a does not overflow or underflow.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           integer(${ik}$), intent(in) :: incx, n
+           real(sp), intent(in) :: sa
+           ! Array Arguments 
+           real(sp), intent(inout) :: sx(*)
+       ! =====================================================================
+           
+           ! Local Scalars 
+           logical(lk) :: done
+           real(sp) :: bignum, cden, cden1, cnum, cnum1, mul, smlnum
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! quick return if possible
+           if( n<=0 )return
+           ! get machine parameters
+           smlnum = stdlib${ii}$_slamch( 'S' )
+           bignum = one / smlnum
+           call stdlib${ii}$_slabad( smlnum, bignum )
+           ! initialize the denominator to sa and the numerator to 1.
+           cden = sa
+           cnum = one
+           10 continue
+           cden1 = cden*smlnum
+           cnum1 = cnum / bignum
+           if( abs( cden1 )>abs( cnum ) .and. cnum/=zero ) then
+              ! pre-multiply x by smlnum if cden is large compared to cnum.
+              mul = smlnum
+              done = .false.
+              cden = cden1
+           else if( abs( cnum1 )>abs( cden ) ) then
+              ! pre-multiply x by bignum if cden is small compared to cnum.
+              mul = bignum
+              done = .false.
+              cnum = cnum1
+           else
+              ! multiply x by cnum / cden and return.
+              mul = cnum / cden
+              done = .true.
+           end if
+           ! scale the vector x by mul
+           call stdlib${ii}$_sscal( n, mul, sx, incx )
+           if( .not.done )go to 10
+           return
+     end subroutine stdlib${ii}$_srscl
+
+     pure module subroutine stdlib${ii}$_drscl( n, sa, sx, incx )
+     !! DRSCL multiplies an n-element real vector x by the real scalar 1/a.
+     !! This is done without overflow or underflow as long as
+     !! the final result x/a does not overflow or underflow.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           integer(${ik}$), intent(in) :: incx, n
+           real(dp), intent(in) :: sa
+           ! Array Arguments 
+           real(dp), intent(inout) :: sx(*)
+       ! =====================================================================
+           
+           ! Local Scalars 
+           logical(lk) :: done
+           real(dp) :: bignum, cden, cden1, cnum, cnum1, mul, smlnum
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! quick return if possible
+           if( n<=0 )return
+           ! get machine parameters
+           smlnum = stdlib${ii}$_dlamch( 'S' )
+           bignum = one / smlnum
+           call stdlib${ii}$_dlabad( smlnum, bignum )
+           ! initialize the denominator to sa and the numerator to 1.
+           cden = sa
+           cnum = one
+           10 continue
+           cden1 = cden*smlnum
+           cnum1 = cnum / bignum
+           if( abs( cden1 )>abs( cnum ) .and. cnum/=zero ) then
+              ! pre-multiply x by smlnum if cden is large compared to cnum.
+              mul = smlnum
+              done = .false.
+              cden = cden1
+           else if( abs( cnum1 )>abs( cden ) ) then
+              ! pre-multiply x by bignum if cden is small compared to cnum.
+              mul = bignum
+              done = .false.
+              cnum = cnum1
+           else
+              ! multiply x by cnum / cden and return.
+              mul = cnum / cden
+              done = .true.
+           end if
+           ! scale the vector x by mul
+           call stdlib${ii}$_dscal( n, mul, sx, incx )
+           if( .not.done )go to 10
+           return
+     end subroutine stdlib${ii}$_drscl
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$rscl( n, sa, sx, incx )
+     !! DRSCL: multiplies an n-element real vector x by the real scalar 1/a.
+     !! This is done without overflow or underflow as long as
+     !! the final result x/a does not overflow or underflow.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           integer(${ik}$), intent(in) :: incx, n
+           real(${rk}$), intent(in) :: sa
+           ! Array Arguments 
+           real(${rk}$), intent(inout) :: sx(*)
+       ! =====================================================================
+           
+           ! Local Scalars 
+           logical(lk) :: done
+           real(${rk}$) :: bignum, cden, cden1, cnum, cnum1, mul, smlnum
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! quick return if possible
+           if( n<=0 )return
+           ! get machine parameters
+           smlnum = stdlib${ii}$_${ri}$lamch( 'S' )
+           bignum = one / smlnum
+           call stdlib${ii}$_${ri}$labad( smlnum, bignum )
+           ! initialize the denominator to sa and the numerator to 1.
+           cden = sa
+           cnum = one
+           10 continue
+           cden1 = cden*smlnum
+           cnum1 = cnum / bignum
+           if( abs( cden1 )>abs( cnum ) .and. cnum/=zero ) then
+              ! pre-multiply x by smlnum if cden is large compared to cnum.
+              mul = smlnum
+              done = .false.
+              cden = cden1
+           else if( abs( cnum1 )>abs( cden ) ) then
+              ! pre-multiply x by bignum if cden is small compared to cnum.
+              mul = bignum
+              done = .false.
+              cnum = cnum1
+           else
+              ! multiply x by cnum / cden and return.
+              mul = cnum / cden
+              done = .true.
+           end if
+           ! scale the vector x by mul
+           call stdlib${ii}$_${ri}$scal( n, mul, sx, incx )
+           if( .not.done )go to 10
+           return
+     end subroutine stdlib${ii}$_${ri}$rscl
+
+#:endif
+#:endfor
+
+
+
+     pure module subroutine stdlib${ii}$_csrscl( n, sa, sx, incx )
+     !! CSRSCL multiplies an n-element complex vector x by the real scalar
+     !! 1/a.  This is done without overflow or underflow as long as
+     !! the final result x/a does not overflow or underflow.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           integer(${ik}$), intent(in) :: incx, n
+           real(sp), intent(in) :: sa
+           ! Array Arguments 
+           complex(sp), intent(inout) :: sx(*)
+       ! =====================================================================
+           
+           ! Local Scalars 
+           logical(lk) :: done
+           real(sp) :: bignum, cden, cden1, cnum, cnum1, mul, smlnum
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! quick return if possible
+           if( n<=0 )return
+           ! get machine parameters
+           smlnum = stdlib${ii}$_slamch( 'S' )
+           bignum = one / smlnum
+           call stdlib${ii}$_slabad( smlnum, bignum )
+           ! initialize the denominator to sa and the numerator to 1.
+           cden = sa
+           cnum = one
+           10 continue
+           cden1 = cden*smlnum
+           cnum1 = cnum / bignum
+           if( abs( cden1 )>abs( cnum ) .and. cnum/=zero ) then
+              ! pre-multiply x by smlnum if cden is large compared to cnum.
+              mul = smlnum
+              done = .false.
+              cden = cden1
+           else if( abs( cnum1 )>abs( cden ) ) then
+              ! pre-multiply x by bignum if cden is small compared to cnum.
+              mul = bignum
+              done = .false.
+              cnum = cnum1
+           else
+              ! multiply x by cnum / cden and return.
+              mul = cnum / cden
+              done = .true.
+           end if
+           ! scale the vector x by mul
+           call stdlib${ii}$_csscal( n, mul, sx, incx )
+           if( .not.done )go to 10
+           return
+     end subroutine stdlib${ii}$_csrscl
+
+
+
+     pure module subroutine stdlib${ii}$_zdrscl( n, sa, sx, incx )
+     !! ZDRSCL multiplies an n-element complex vector x by the real scalar
+     !! 1/a.  This is done without overflow or underflow as long as
+     !! the final result x/a does not overflow or underflow.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           integer(${ik}$), intent(in) :: incx, n
+           real(dp), intent(in) :: sa
+           ! Array Arguments 
+           complex(dp), intent(inout) :: sx(*)
+       ! =====================================================================
+           
+           ! Local Scalars 
+           logical(lk) :: done
+           real(dp) :: bignum, cden, cden1, cnum, cnum1, mul, smlnum
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! quick return if possible
+           if( n<=0 )return
+           ! get machine parameters
+           smlnum = stdlib${ii}$_dlamch( 'S' )
+           bignum = one / smlnum
+           call stdlib${ii}$_dlabad( smlnum, bignum )
+           ! initialize the denominator to sa and the numerator to 1.
+           cden = sa
+           cnum = one
+           10 continue
+           cden1 = cden*smlnum
+           cnum1 = cnum / bignum
+           if( abs( cden1 )>abs( cnum ) .and. cnum/=zero ) then
+              ! pre-multiply x by smlnum if cden is large compared to cnum.
+              mul = smlnum
+              done = .false.
+              cden = cden1
+           else if( abs( cnum1 )>abs( cden ) ) then
+              ! pre-multiply x by bignum if cden is small compared to cnum.
+              mul = bignum
+              done = .false.
+              cnum = cnum1
+           else
+              ! multiply x by cnum / cden and return.
+              mul = cnum / cden
+              done = .true.
+           end if
+           ! scale the vector x by mul
+           call stdlib${ii}$_zdscal( n, mul, sx, incx )
+           if( .not.done )go to 10
+           return
+     end subroutine stdlib${ii}$_zdrscl
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$drscl( n, sa, sx, incx )
+     !! ZDRSCL: multiplies an n-element complex vector x by the real scalar
+     !! 1/a.  This is done without overflow or underflow as long as
+     !! the final result x/a does not overflow or underflow.
+        ! -- lapack auxiliary routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           integer(${ik}$), intent(in) :: incx, n
+           real(${ck}$), intent(in) :: sa
+           ! Array Arguments 
+           complex(${ck}$), intent(inout) :: sx(*)
+       ! =====================================================================
+           
+           ! Local Scalars 
+           logical(lk) :: done
+           real(${ck}$) :: bignum, cden, cden1, cnum, cnum1, mul, smlnum
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! quick return if possible
+           if( n<=0 )return
+           ! get machine parameters
+           smlnum = stdlib${ii}$_${c2ri(ci)}$lamch( 'S' )
+           bignum = one / smlnum
+           call stdlib${ii}$_${c2ri(ci)}$labad( smlnum, bignum )
+           ! initialize the denominator to sa and the numerator to 1.
+           cden = sa
+           cnum = one
+           10 continue
+           cden1 = cden*smlnum
+           cnum1 = cnum / bignum
+           if( abs( cden1 )>abs( cnum ) .and. cnum/=zero ) then
+              ! pre-multiply x by smlnum if cden is large compared to cnum.
+              mul = smlnum
+              done = .false.
+              cden = cden1
+           else if( abs( cnum1 )>abs( cden ) ) then
+              ! pre-multiply x by bignum if cden is small compared to cnum.
+              mul = bignum
+              done = .false.
+              cnum = cnum1
+           else
+              ! multiply x by cnum / cden and return.
+              mul = cnum / cden
+              done = .true.
+           end if
+           ! scale the vector x by mul
+           call stdlib${ii}$_${ci}$dscal( n, mul, sx, incx )
+           if( .not.done )go to 10
+           return
+     end subroutine stdlib${ii}$_${ci}$drscl
+
+#:endif
+#:endfor
+
+
+#:endfor
+end submodule stdlib_lapack_blas_like_l1

@@ -1,0 +1,179 @@
+#:include "common.fypp"
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+submodule (stdlib_linalg) stdlib_linalg_inverse
+!! Compute inverse of a square matrix    
+     use stdlib_linalg_constants
+     use stdlib_linalg_lapack, only: getri,getrf,stdlib_ilaenv
+     use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
+         LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
+     use ieee_arithmetic, only: ieee_value, ieee_quiet_nan
+     implicit none
+
+     character(*), parameter :: this = 'inverse'  
+
+     contains
+
+     elemental subroutine handle_getri_info(info,lda,n,err)
+         integer(ilp), intent(in) :: info,lda,n
+         type(linalg_state_type), intent(out) :: err
+
+         ! Process output
+         select case (info)
+            case (0)
+                ! Success
+            case (:-1)
+                err = linalg_state_type(this,LINALG_ERROR,'invalid matrix size a=',[lda,n])
+            case (1:)
+                ! Matrix is singular
+                err = linalg_state_type(this,LINALG_ERROR,'singular matrix')
+            case default
+                err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'catastrophic error')
+         end select
+         
+     end subroutine handle_getri_info
+
+     #:for rk,rt,ri in RC_KINDS_TYPES
+     ! Compute the in-place square matrix inverse of a
+     module subroutine stdlib_linalg_invert_inplace_${ri}$(a,pivot,err)
+         !> Input matrix a[n,n]. On return, A is destroyed and replaced by the inverse
+         ${rt}$, intent(inout) :: a(:,:)
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+
+         !> Local variables
+         type(linalg_state_type) :: err0
+         integer(ilp) :: lda,n,info,nb,lwork,npiv
+         integer(ilp), pointer :: ipiv(:)
+         ${rt}$, allocatable :: work(:)
+
+         !> Problem sizes
+         lda  = size(a,1,kind=ilp)
+         n    = size(a,2,kind=ilp)
+
+         ! Has a pre-allocated pivots storage array been provided? 
+         if (present(pivot)) then 
+            ipiv => pivot
+         else
+            allocate(ipiv(n))
+         endif
+         npiv = size(ipiv,kind=ilp)
+
+         if (lda<1 .or. n<1 .or. lda/=n .or. npiv<n) then
+            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size: a=',[lda,n], &
+                                                             ', pivot=',npiv)
+            if (.not.present(pivot)) deallocate(ipiv)
+            call linalg_error_handling(err0,err)
+            return
+         end if
+
+         ! Factorize matrix (overwrite result)
+         call getrf(lda,n,a,lda,ipiv,info)
+
+         ! Return codes from getrf and getri are identical
+         if (info==0) then
+
+            ! Get optimal worksize (returned in work(1)) (inflate by a 5% safety margin)
+            nb = stdlib_ilaenv(1,'${ri}$getri',' ',n,-1,-1,-1)
+            lwork = max(1,min(huge(0_ilp),ceiling(1.05_${rk}$*real(n,${rk}$)*nb,kind=ilp)))
+
+            allocate(work(lwork))
+
+            ! Invert matrix
+            call getri(n,a,lda,ipiv,work,lwork,info)
+
+         endif
+
+         ! Process output
+         call handle_getri_info(info,lda,n,err0)
+
+         ! Process output and return
+         if (.not.present(pivot)) deallocate(ipiv)
+         call linalg_error_handling(err0,err)
+
+     end subroutine stdlib_linalg_invert_inplace_${ri}$
+
+     ! Compute the square matrix inverse of a
+     module subroutine stdlib_linalg_invert_split_${ri}$(a,inva,pivot,err)
+         !> Input matrix a[n,n].
+         ${rt}$, intent(in) :: a(:,:)
+         !> Inverse matrix a[n,n]. 
+         ${rt}$, intent(out) :: inva(:,:)         
+         !> [optional] Storage array for the diagonal pivot indices
+         integer(ilp), optional, intent(inout), target :: pivot(:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+         
+         type(linalg_state_type) :: err0
+         integer(ilp) :: sa(2),sinva(2)
+         
+         sa    = shape(a,kind=ilp)
+         sinva = shape(inva,kind=ilp)
+         
+         if (any(sa/=sinva)) then
+ 
+             err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size: a=',sa,' inva=',sinva)
+            
+         else
+            
+             !> Copy data in 
+             inva = a
+
+             !> Compute matrix inverse
+             call stdlib_linalg_invert_inplace_${ri}$(inva,pivot=pivot,err=err0)      
+            
+         end if         
+         
+         ! Process output and return
+         call linalg_error_handling(err0,err)   
+         
+     end subroutine stdlib_linalg_invert_split_${ri}$
+
+     ! Invert matrix in place
+     module function stdlib_linalg_inverse_${ri}$(a,err) result(inva)
+         !> Input matrix a[n,n]
+         ${rt}$, intent(in) :: a(:,:)
+         !> Output matrix inverse
+         ${rt}$, allocatable :: inva(:,:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+
+         !> Allocate with copy
+         allocate(inva,source=a)
+
+         !> Compute matrix inverse
+         call stdlib_linalg_invert_inplace_${ri}$(inva,err=err)
+
+     end function stdlib_linalg_inverse_${ri}$
+
+     ! Inverse matrix operator
+     module function stdlib_linalg_inverse_${ri}$_operator(a) result(inva)
+         !> Input matrix a[n,n]
+         ${rt}$, intent(in) :: a(:,:)
+         !> Result matrix
+         ${rt}$, allocatable :: inva(:,:)
+         
+         type(linalg_state_type) :: err
+
+         ! Provide an error handler to return NaNs on issues
+         inva = stdlib_linalg_inverse_${ri}$(a,err=err)
+         
+         ! Return NaN on issues
+         if (err%error()) then 
+            if (allocated(inva)) deallocate(inva)
+            allocate(inva(size(a,1,kind=ilp),size(a,2,kind=ilp))) 
+            
+            #:if rt.startswith('real')
+            inva = ieee_value(1.0_${rk}$,ieee_quiet_nan)
+            #:else
+            inva = cmplx(ieee_value(1.0_${rk}$,ieee_quiet_nan), &
+                         ieee_value(1.0_${rk}$,ieee_quiet_nan), kind=${rk}$)
+            #:endif
+         endif
+
+     end function stdlib_linalg_inverse_${ri}$_operator
+
+     #:endfor
+
+end submodule stdlib_linalg_inverse

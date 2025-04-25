@@ -10,7 +10,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
      use stdlib_linalg_lapack, only: gesv
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
           LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR     
-     implicit none(type,external)
+     implicit none
      
      character(*), parameter :: this = 'solve'
 
@@ -42,7 +42,6 @@ submodule (stdlib_linalg) stdlib_linalg_solve
 
      #:for nd,ndsuf,nde in ALL_RHS
      #:for rk,rt,ri in RC_KINDS_TYPES
-     #:if rk!="xdp"
      ! Compute the solution to a real system of linear equations A * X = B
      module function stdlib_linalg_${ri}$_solve_${ndsuf}$(a,b,overwrite_a,err) result(x)
          !> Input matrix a[n,n]
@@ -163,7 +162,6 @@ submodule (stdlib_linalg) stdlib_linalg_solve
 
      end subroutine stdlib_linalg_${ri}$_solve_lu_${ndsuf}$     
      
-     #:endif
      #:endfor
      #:endfor
 

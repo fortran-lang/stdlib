@@ -10,13 +10,6 @@ module test_blas_lapack
 
     implicit none
 
-    real(sp), parameter :: sptol = 1000 * epsilon(1._sp)
-    real(dp), parameter :: dptol = 1000 * epsilon(1._dp)
-#:if WITH_QP
-    real(qp), parameter :: qptol = 1000 * epsilon(1._qp)
-#:endif
-
-
 
 contains
 
@@ -43,10 +36,8 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
-#:if k1=="xdp"
-        call skip_test(error, "Extended precision is not enabled")
-#:else
         ${t1}$ :: A(3,3),x(3),y(3),ylap(3),yintr(3),alpha,beta
+        real(${k1}$), parameter :: tol = 1000 * epsilon(1.0_${k1}$)
         call random_number(alpha)
         call random_number(beta)
         call random_number(A)
@@ -56,10 +47,10 @@ contains
         call gemv('No transpose',size(A,1),size(A,2),alpha,A,size(A,1),x,1,beta,ylap,1)
         yintr = alpha*matmul(A,x)+beta*y
 
-        call check(error, sum(abs(ylap - yintr)) < sptol, &
-            "blas vs. intrinsics axpy: sum() < sptol failed")
+        call check(error, sum(abs(ylap - yintr)) < tol, &
+            "blas vs. intrinsics axpy: sum() < tol failed")
         if (allocated(error)) return
-#:endif
+
     end subroutine test_gemv${t1[0]}$${k1}$
 
     ! Find matrix inverse from LU decomposition
@@ -67,15 +58,11 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
-#:if k1=="xdp"
-        call skip_test(error, "Extended precision is not enabled")
-#:else
-
         integer(ilp), parameter :: n = 3
         ${t1}$ :: A(n,n)
         ${t1}$,allocatable :: work(:)
         integer(ilp) :: ipiv(n),info,lwork,nb
-
+        real(${k1}$), parameter :: tol = 1000 * epsilon(1.0_${k1}$)
 
         A = eye(n)
 
@@ -95,10 +82,10 @@ contains
         call check(error, info==0, "lapack getri returned info/=0")
         if (allocated(error)) return
 
-        call check(error, sum(abs(A - eye(3))) < sptol, &
+        call check(error, sum(abs(A - eye(3))) < tol, &
             "lapack eye inversion: tolerance check failed")
         if (allocated(error)) return
-#:endif
+
     end subroutine test_getri${t1[0]}$${k1}$
   #:endfor
 

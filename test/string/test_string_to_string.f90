@@ -1,7 +1,7 @@
 ! SPDX-Identifier: MIT
 module test_string_to_string
 
-    use stdlib_strings, only: to_string, starts_with
+    use stdlib_strings, only: to_string, to_c_char, starts_with
     use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_optval, only: optval
     implicit none
@@ -22,7 +22,8 @@ contains
             new_unittest("to_string-limit-i1", test_string_i1), &
             new_unittest("to_string-limit-i2", test_string_i2), &
             new_unittest("to_string-limit-i4", test_string_i4), &
-            new_unittest("to_string-limit-i8", test_string_i8) &
+            new_unittest("to_string-limit-i8", test_string_i8), &
+            new_unittest("to_c_char", test_to_c_char) &
             ]
     end subroutine collect_string_to_string
 
@@ -149,6 +150,49 @@ contains
 
     end subroutine test_to_string_logical
 
+    subroutine test_to_c_char(error)
+        use stdlib_kinds, only : c_char
+        use stdlib_string_type, only: string_type, len, char
+        use iso_c_binding, only: c_size_t
+        
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error        
+        
+        !> Interface to C standard library 
+        interface 
+            integer(c_size_t) function c_strlen(cstr) bind(C, name="strlen") result(len)
+               import :: c_char, c_size_t
+               character(kind=c_char), intent(in) :: cstr(*)
+            end function c_strlen
+        end interface
+        
+        type(string_type) :: shello
+        character(kind=c_char), allocatable :: cstr(:)
+        character(*), parameter :: hello = "Hello, World!"
+        integer :: i
+          
+        ! Convert character array
+        cstr = to_c_char(hello)
+        call check(error, len(hello)==c_strlen(cstr), 'to_c_char_from_char: invalid C length')
+        if (allocated(error)) return
+        
+        do i=1,len(hello)
+            call check(error, hello(i:i)==cstr(i), 'to_c_char_from_char: character mismatch')
+            if (allocated(error)) return
+        end do
+        
+        ! Convert string type
+        shello = string_type(hello)
+        cstr = to_c_char(shello)
+        call check(error, len(shello)==c_strlen(cstr), 'to_c_char_from_string: invalid C length')
+        if (allocated(error)) return
+        
+        do i=1,len(shello)
+            call check(error, char(shello,pos=i)==cstr(i), 'to_c_char_from_string: character mismatch')
+            if (allocated(error)) return
+        end do
+        
+    end subroutine test_to_c_char
 
     subroutine test_string_i1(error)
         use stdlib_kinds, only : i1 => int8

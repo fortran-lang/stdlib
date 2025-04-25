@@ -4,8 +4,8 @@
 
 module test_stdlib_math
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
-    use stdlib_math, only: clip, arg, argd, argpi, arange, is_close, all_close, diff, &
-                           arange
+    use stdlib_math, only: clip, swap, arg, argd, argpi, arange, is_close, all_close, diff, &
+                           arange, deg2rad, rad2deg
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
     implicit none
 
@@ -38,11 +38,27 @@ contains
             new_unittest("clip-real-quad", test_clip_rqp), &
             new_unittest("clip-real-quad-bounds", test_clip_rqp_bounds) &
             
+            !> Tests swap
+            #:for k1, t1 in INT_KINDS_TYPES + REAL_KINDS_TYPES
+            , new_unittest("swap_${k1}$", test_swap_${k1}$) &
+            #:endfor
+            #:for k1, t1 in CMPLX_KINDS_TYPES
+            , new_unittest("swap_c${k1}$", test_swap_c${k1}$) &
+            #:endfor
+            , new_unittest("swap_str", test_swap_str) &
+            , new_unittest("swap_stt", test_swap_stt) &
+
             !> Tests for arg/argd/argpi
             #:for k1 in CMPLX_KINDS
             , new_unittest("arg-cmplx-${k1}$", test_arg_${k1}$) &
             , new_unittest("argd-cmplx-${k1}$", test_argd_${k1}$) &
             , new_unittest("argpi-cmplx-${k1}$", test_argpi_${k1}$) &
+            #:endfor
+            
+            !> Tests for deg2rad/rad2deg
+            #:for k1 in REAL_KINDS
+            , new_unittest("deg2rad-real-${k1}$", test_deg2rad_${k1}$) &
+            , new_unittest("rad2deg-real-${k1}$", test_rad2deg_${k1}$) &
             #:endfor
             
             !> Tests for `is_close` and `all_close`
@@ -240,6 +256,166 @@ contains
 
     end subroutine test_clip_rqp_bounds
 
+    #:for k1, t1 in INT_KINDS_TYPES + REAL_KINDS_TYPES
+    subroutine test_swap_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        ${t1}$ :: x(3), y(3)
+        
+        x = [${t1}$ :: 1, 2, 3]
+        y = [${t1}$ :: 4, 5, 6]
+
+        call swap(x,y)
+        
+        call check(error, all( x == [${t1}$ :: 4, 5, 6] ) )
+        if (allocated(error)) return
+        call check(error, all( y == [${t1}$ :: 1, 2, 3] ) )
+        if (allocated(error)) return
+
+        ! check self swap
+        call swap(x,x)
+
+        call check(error, all( x == [${t1}$ :: 4, 5, 6] ) )
+        if (allocated(error)) return
+    end subroutine test_swap_${k1}$
+    #:endfor
+
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+    subroutine test_swap_c${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        ${t1}$ :: x(3), y(3)
+        
+        x = cmplx( [1, 2, 3] , [4, 5, 6] )
+        y = cmplx( [4, 5, 6] , [1, 2, 3] )
+
+        call swap(x,y)
+        
+        call check(error, all( x == cmplx( [4, 5, 6] , [1, 2, 3] ) ) )
+        if (allocated(error)) return
+        call check(error, all( y == cmplx( [1, 2, 3] , [4, 5, 6] ) ) )
+        if (allocated(error)) return
+
+        ! check self swap
+        call swap(x,x)
+        
+        call check(error, all( x == cmplx( [4, 5, 6] , [1, 2, 3] ) ) )
+        if (allocated(error)) return
+    end subroutine test_swap_c${k1}$
+    #:endfor
+
+    subroutine test_swap_str(error)
+        type(error_type), allocatable, intent(out) :: error
+        block
+            character(5) :: x(2), y(2)
+            
+            x = ['abcde','fghij'] 
+            y = ['fghij','abcde']
+
+            call swap(x,y)
+            
+            call check(error, all( x == ['fghij','abcde'] ) )
+            if (allocated(error)) return
+            call check(error, all( y == ['abcde','fghij']  ) )
+            if (allocated(error)) return
+
+            ! check self swap
+            call swap(x,x)
+            
+            call check(error, all( x == ['fghij','abcde'] ) )
+            if (allocated(error)) return
+        end block
+
+        block
+            character(4) :: x
+            character(6) :: y
+            
+            x = 'abcd'
+            y = 'efghij'
+            call swap(x,y)
+            
+            call check(error, x == 'efgh' )
+            if (allocated(error)) return
+            call check(error, y(1:6) == 'abcd  ' )
+            if (allocated(error)) return
+
+            x = 'abcd'
+            y = 'efghij'
+            call swap(x,y(1:4))
+            
+            call check(error, x == 'efgh' )
+            if (allocated(error)) return
+            call check(error, y == 'abcdij' )
+            if (allocated(error)) return
+        end block
+    end subroutine test_swap_str
+
+    subroutine test_swap_stt(error)
+        use stdlib_string_type
+        type(error_type), allocatable, intent(out) :: error
+        type(string_type) :: x(2), y(2)
+        
+        x = ['abcde','fghij'] 
+        y = ['fghij','abcde']
+
+        call swap(x,y)
+        
+        call check(error, all( x == ['fghij','abcde'] ) )
+        if (allocated(error)) return
+        call check(error, all( y == ['abcde','fghij']  ) )
+        if (allocated(error)) return
+
+        ! check self swap
+        call swap(x,x)
+        
+        call check(error, all( x == ['fghij','abcde'] ) )
+        if (allocated(error)) return
+    end subroutine test_swap_stt
+
+    subroutine test_swap_bitset_64(error)
+        use stdlib_bitsets
+        type(error_type), allocatable, intent(out) :: error
+        type(bitset_64) :: x, y, u, v
+        
+        x = [.true.,.false.,.true.,.false.] 
+        u = x
+        y = [.false.,.true.,.false.,.true.]
+        v = y
+        call swap(x,y)
+        
+        call check(error, x == v )
+        if (allocated(error)) return
+        call check(error, y == u  )
+        if (allocated(error)) return
+
+        ! check self swap
+        call swap(x,x)
+        
+        call check(error, x == v )
+        if (allocated(error)) return
+    end subroutine test_swap_bitset_64
+
+    subroutine test_swap_bitset_large(error)
+        use stdlib_bitsets
+        type(error_type), allocatable, intent(out) :: error
+        type(bitset_large) :: x, y, u, v
+        
+        x = [.true.,.false.,.true.,.false.] 
+        u = x
+        y = [.false.,.true.,.false.,.true.]
+        v = y
+        call swap(x,y)
+        
+        call check(error, x == v )
+        if (allocated(error)) return
+        call check(error, y == u )
+        if (allocated(error)) return
+
+        ! check self swap
+        call swap(x,x)
+        
+        call check(error, x == v )
+        if (allocated(error)) return
+    end subroutine test_swap_bitset_large
+
     #:for k1 in CMPLX_KINDS
     subroutine test_arg_${k1}$(error)
         type(error_type), allocatable, intent(out) :: error
@@ -300,6 +476,26 @@ contains
             "test_array")
         
     end subroutine test_argpi_${k1}$
+    #:endfor
+    
+    #:for k1 in REAL_KINDS
+    subroutine test_deg2rad_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        real(${k1}$), parameter :: tol = sqrt(epsilon(1.0_${k1}$))
+
+        call check(error, PI_${k1}$, deg2rad(180.0_${k1}$), thr=tol)
+        if (allocated(error)) return
+
+    end subroutine test_deg2rad_${k1}$
+    
+    subroutine test_rad2deg_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        real(${k1}$), parameter :: tol = sqrt(epsilon(1.0_${k1}$))
+
+        call check(error, 180.0_${k1}$, rad2deg(PI_${k1}$), thr=tol)
+        if (allocated(error)) return
+
+    end subroutine test_rad2deg_${k1}$
     #:endfor
 
     #:for k1 in REAL_KINDS

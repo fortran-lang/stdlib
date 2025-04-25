@@ -6,7 +6,7 @@ submodule(stdlib_linalg) stdlib_linalg_svd
      use stdlib_linalg_lapack, only: gesdd
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR, LINALG_SUCCESS
-     implicit none(type,external)
+     implicit none
      
      character(*), parameter :: this = 'svd'
      
@@ -59,7 +59,6 @@ submodule(stdlib_linalg) stdlib_linalg_svd
 
 
      #:for rk,rt,ri in RC_KINDS_TYPES
-     #:if rk!="xdp"
 
      !> Singular values of matrix A
      module function stdlib_linalg_svdvals_${ri}$(a,err) result(s)
@@ -148,7 +147,9 @@ submodule(stdlib_linalg) stdlib_linalg_svd
          character :: task
          ${rt}$, target :: work_dummy(1),u_dummy(1,1),vt_dummy(1,1)
          ${rt}$, allocatable :: work(:)
+         #:if rt.startswith('complex')
          real(${rk}$), allocatable :: rwork(:)
+         #:endif
          ${rt}$, pointer :: amat(:,:),umat(:,:),vtmat(:,:)
 
          !> Matrix determinant size
@@ -270,7 +271,11 @@ submodule(stdlib_linalg) stdlib_linalg_svd
          if (info==0) then
 
             !> Prepare working storage
-            lwork = nint(real(work_dummy(1),kind=${rk}$), kind=ilp)
+            ! Check if the returned working storage space is smaller than the largest value
+            ! allowed by lwork
+            lwork = merge(nint(real(work_dummy(1),kind=${rk}$), kind=ilp) &
+                          , huge(lwork) &
+                          , real(work_dummy(1),kind=${rk}$) < real(huge(lwork),kind=${rk}$) )
             allocate(work(lwork))
 
             !> Compute SVD
@@ -287,7 +292,6 @@ submodule(stdlib_linalg) stdlib_linalg_svd
          call linalg_error_handling(err0,err)
 
      end subroutine stdlib_linalg_svd_${ri}$
-     #:endif
      #:endfor
 
 end submodule stdlib_linalg_svd

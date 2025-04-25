@@ -19,24 +19,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-12]
+        os: [ubuntu-latest, macos-13]
         toolchain:
           - {compiler: gcc, version: 10}
           - {compiler: gcc, version: 11}
           - {compiler: gcc, version: 12}
           - {compiler: gcc, version: 13}
-          - {compiler: intel, version: '2024.1'}
-          - {compiler: intel-classic, version: '2021.9'}
-        build: [cmake]
+          - {compiler: intel, version: '2024.1'}          
+        build: [cmake]        
         include:
+          - os: ubuntu-22.04
+            build: cmake
+            toolchain: {compiler: intel-classic, version: '2021.10'}            
           - os: ubuntu-latest
             build: cmake-inline
-            toolchain:
-              - {compiler: gcc, version: 10}
+            toolchain: {compiler: gcc, version: 10}
         exclude:
-          - os: macos-12
+          - os: macos-13
             toolchain: {compiler: intel, version: '2024.1'}
-          - os: macos-12
+          - os: macos-13
             toolchain: {compiler: gcc, version: 13}
     env:
       BUILD_DIR: ${{ matrix.build == 'cmake' && 'build' || '.' }}
@@ -54,7 +55,7 @@ jobs:
       run: pip install --upgrade fypp ninja
 
     - name: Setup Fortran compiler
-      uses: fortran-lang/setup-fortran@v1.6.1
+      uses: fortran-lang/setup-fortran@v1.6.2
       id: setup-fortran
       with:
         compiler: ${{ matrix.toolchain.compiler }}
