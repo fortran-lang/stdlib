@@ -39,12 +39,13 @@ contains
         end if
         
         if(present(workspace)) then
-            if(.not.allocated(workspace_%tmp)) allocate( workspace_%tmp(n,4) )
             workspace_ => workspace
         else
             allocate( workspace_ )
-            allocate( workspace_%tmp(n,4) , source = 0._dp )
         end if
+        if(.not.allocated(workspace_%tmp)) allocate( workspace_%tmp(n,4) , source = 0.d0 )
+        !-------------------------
+        ! Jacobi preconditionner factorization
         call diag(A,diagonal)
         where(abs(diagonal)>epsilon(0.d0)) diagonal = 1._dp/diagonal
         !-------------------------
@@ -53,17 +54,14 @@ contains
 
         !-------------------------
         ! internal memory cleanup
-        if(present(di))then
-            di_ => null()
-        else 
-            deallocate(di_)
-        end if
-        if(present(workspace)) then
-            workspace_ => null()
-        else
+        if(.not.present(di)) deallocate(di_)
+        di_ => null()
+        
+        if(.not.present(workspace)) then
             deallocate( workspace_%tmp )
             deallocate( workspace_ )
         end if
+        workspace_ => null()
         contains
         
         subroutine my_matvec(x,y)

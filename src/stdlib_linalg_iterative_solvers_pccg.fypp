@@ -119,29 +119,25 @@ contains
         end if
         
         if(present(workspace)) then
-            if(.not.allocated(workspace_%tmp)) allocate( workspace_%tmp(n,4) )
             workspace_ => workspace
         else
             allocate( workspace_ )
-            allocate( workspace_%tmp(n,4) , source = zero_${s}$ )
         end if
+        if(.not.allocated(workspace_%tmp)) allocate( workspace_%tmp(n,4) , source = zero_${s}$ )
         !-------------------------
         ! main call to the solver
         call solve_pccg_generic(op,b,x,di_,tol_,maxiter_,restart_,workspace_)
 
         !-------------------------
         ! internal memory cleanup
-        if(present(di))then
-            di_ => null()
-        else 
-            deallocate(di_)
-        end if
-        if(present(workspace)) then
-            workspace_ => null()
-        else
+        if(.not.present(di)) deallocate(di_)
+        di_ => null()
+        
+        if(.not.present(workspace)) then
             deallocate( workspace_%tmp )
             deallocate( workspace_ )
         end if
+        workspace_ => null()
         contains
         
         subroutine default_matvec(x,y)
