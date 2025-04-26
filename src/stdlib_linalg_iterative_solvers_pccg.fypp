@@ -25,33 +25,35 @@ contains
         type(solver_workspace_${s}$), intent(inout) :: workspace
         !-------------------------
         integer :: iter
-        ${t}$ :: norm_sq, norm_sq0, norm_sq_old, residual0, residual
+        ${t}$ :: norm_sq, norm_sq0, norm_sq_old
         ${t}$ :: zr1, zr2, zv2, alpha, beta, tolsq
         !-------------------------
+        iter = 0
         associate(  R => workspace%tmp(:,1), &
                     S => workspace%tmp(:,2), &
                     P => workspace%tmp(:,3), &
                     Q => workspace%tmp(:,4))
         norm_sq = A%inner_product( b, b )
         norm_sq0 = norm_sq
-        residual0 = sqrt(norm_sq0)
+        if(associated(workspace%callback)) call workspace%callback(x, norm_sq, iter)
+        
         if ( norm_sq0 > zero_${s}$ ) then
             if(restart) X = zero_${s}$
             X = merge( B, X, di ) !> copy dirichlet load conditions encoded in B and indicated by di
             
-            call A%matvec(X, R)
+            call A%apply(X, R)
             R = merge( zero_${s}$, B - R , di ) !> R = B - A*X
             
-            call M%matvec(R,P) !> P = M^{-1}*R
+            call M%apply(R,P) !> P = M^{-1}*R
             P = merge( zero_${s}$, P, di )
             
             tolsq = tol*tol
-            iter = 0
+            
             zr1 = zero_${s}$
             zr2 = one_${s}$
             do while ( (iter < maxiter) .AND. (norm_sq > tolsq * norm_sq0) )
                 
-                call M%matvec(R,S) !> S = M^{-1}*R
+                call M%apply(R,S) !> S = M^{-1}*R
                 S = merge( zero_${s}$, S, di )
                 zr2 = A%inner_product( R, S )
             
@@ -60,7 +62,7 @@ contains
                     P = S + beta * P
                 end if
                 
-                call A%matvec(P, Q)
+                call A%apply(P, Q)
                 Q = merge( zero_${s}$, Q, di )
                 zv2 = A%inner_product( P, Q )
             
@@ -72,9 +74,9 @@ contains
                 norm_sq_old = norm_sq
                 zr1 = zr2
                 iter = iter + 1
+                if(associated(workspace%callback)) call workspace%callback(x, norm_sq, iter)
             end do
         end if
-        residual = sqrt(norm_sq)
         end associate
     end subroutine
     #:endfor
@@ -111,12 +113,12 @@ contains
 
         !-------------------------
         ! internal memory setup
-        op%matvec => default_matvec
+        op%apply => default_matvec
         if(present(M)) then
             M_ => M
         else 
             allocate( M_ )
-            M_%matvec => default_preconditionner
+            M_%apply => default_preconditionner
         end if
         if(present(di))then
             di_ => di

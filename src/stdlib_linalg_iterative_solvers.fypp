@@ -10,15 +10,18 @@ module stdlib_linalg_iterative_solvers
     implicit none
     private 
 
+    !> brief workspace size for the iterative solvers
+    !> details The size of the workspace is defined by the number of vectors used in the iterative solver.
     enum, bind(c)
         enumerator :: size_wksp_cg = 3
         enumerator :: size_wksp_pccg = 4
     end enum
     public :: size_wksp_cg, size_wksp_pccg
 
+    !> linear operator class for the iterative solvers
     #:for k, t, s in R_KINDS_TYPES
     type, public :: linop_${s}$
-        procedure(vector_sub_${s}$), nopass, pointer    :: matvec => null()
+        procedure(vector_sub_${s}$), nopass, pointer    :: apply => null()
         procedure(reduction_sub_${s}$), nopass, pointer :: inner_product => default_dot_${s}$
     end type
     #:endfor
@@ -26,6 +29,7 @@ module stdlib_linalg_iterative_solvers
     #:for k, t, s in R_KINDS_TYPES
     type, public :: solver_workspace_${s}$
         ${t}$, allocatable :: tmp(:,:)
+        procedure(logger_sub_${s}$), pointer, nopass :: callback => null()
     end type 
 
     #:endfor
@@ -42,6 +46,12 @@ module stdlib_linalg_iterative_solvers
             ${t}$, intent(in) :: x(:)
             ${t}$, intent(in) :: y(:)
         end function
+        subroutine logger_sub_${s}$(x,norm_sq,iter)
+            import :: ${k}$
+            ${t}$, intent(in) :: x(:)
+            ${t}$, intent(in) :: norm_sq
+            integer, intent(in) :: iter
+        end subroutine
         #:endfor
     end interface
 

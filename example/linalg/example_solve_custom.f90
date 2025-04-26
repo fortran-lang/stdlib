@@ -25,17 +25,18 @@ contains
         logical :: restart_
         logical(1), pointer :: di_(:)
         real(dp), allocatable :: diagonal(:)
+        real(dp) :: norm_sq0
         !-------------------------
         n = size(b)
         maxiter_ = n;       if(present(maxiter)) maxiter_ = maxiter
         restart_ = .true.;  if(present(restart)) restart_ = restart
         tol_ = 1.e-4_dp;    if(present(tol)) tol_ = tol
-
+        norm_sq0 = 0.d0
         !-------------------------
         ! internal memory setup
-        op%matvec => my_matvec
+        op%apply => my_matvec
         op%inner_product => my_dot
-        M%matvec => jacobi_preconditionner
+        M%apply => jacobi_preconditionner
         if(present(di))then
             di_ => di
         else 
@@ -48,6 +49,7 @@ contains
             allocate( workspace_ )
         end if
         if(.not.allocated(workspace_%tmp)) allocate( workspace_%tmp(n,size_wksp_pccg) , source = 0.d0 )
+        workspace_%callback => my_logger
         !-------------------------
         ! Jacobi preconditionner factorization
         call diag(A,diagonal)
@@ -83,6 +85,13 @@ contains
             real(dp), intent(in) :: y(:)
             r = dot_product(x,y)
         end function
+        subroutine my_logger(x,norm_sq,iter)
+            real(dp), intent(in) :: x(:)
+            real(dp), intent(in) :: norm_sq
+            integer, intent(in) :: iter
+            if(iter == 0) norm_sq0 = norm_sq
+            print *, "Iteration: ", iter, " Residual: ", sqrt(norm_sq), " Relative: ", sqrt(norm_sq)/sqrt(norm_sq0)
+        end subroutine
     end subroutine
     
 end module custom_solver

@@ -24,20 +24,21 @@ contains
         type(solver_workspace_${s}$), intent(inout) :: workspace
         !-------------------------
         integer :: iter
-        ${t}$ :: norm_sq, norm_sq_old, norm_sq0, residual0, residual
+        ${t}$ :: norm_sq, norm_sq_old, norm_sq0
         ${t}$ :: alpha, beta, tolsq
         !-------------------------
+        iter = 0
         associate(  P  => workspace%tmp(:,1), &
                     R  => workspace%tmp(:,2), &
                     Ap => workspace%tmp(:,3))
             
             norm_sq0 = A%inner_product(B, B)
-            residual0 = sqrt(norm_sq0)
+            if(associated(workspace%callback)) call workspace%callback(x, norm_sq0, iter)
 
             if(restart) X = zero_${s}$
             X = merge( B, X, di ) !> copy dirichlet load conditions encoded in B and indicated by di
 
-            call A%matvec(X, R)
+            call A%apply(X, R)
             R = merge( zero_${s}$, B - R , di ) !> R = B - A*X
             norm_sq = A%inner_product(R, R)
    
@@ -45,9 +46,9 @@ contains
             
             tolsq = tol*tol
             beta = zero_${s}$
-            iter = 0
+            if(associated(workspace%callback)) call workspace%callback(x, norm_sq, iter)
             do while( norm_sq > tolsq * norm_sq0 .and. iter < maxiter)
-                call A%matvec(P,Ap) 
+                call A%apply(P,Ap) 
                 Ap = merge( zero_${s}$, Ap, di )
                 
                 alpha = norm_sq / A%inner_product(P, Ap)
@@ -62,8 +63,9 @@ contains
                 P = R + beta * P
 
                 iter = iter + 1
+
+                if(associated(workspace%callback)) call workspace%callback(x, norm_sq, iter)
             end do
-            residual = sqrt(norm_sq)
         end associate
     end subroutine
     #:endfor
@@ -98,7 +100,7 @@ contains
 
         !-------------------------
         ! internal memory setup
-        op%matvec => default_matvec
+        op%apply => default_matvec
         ! op%inner_product => default_dot
         if(present(di))then
             di_ => di
