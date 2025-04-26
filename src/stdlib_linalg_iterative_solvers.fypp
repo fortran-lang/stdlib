@@ -36,10 +36,12 @@ module stdlib_linalg_iterative_solvers
 
     abstract interface
         #:for k, t, s in R_KINDS_TYPES
-        subroutine vector_sub_${s}$(x,y)
+        subroutine vector_sub_${s}$(x,y,alpha,beta)
             import :: ${k}$
             ${t}$, intent(in)  :: x(:)
             ${t}$, intent(inout) :: y(:)
+            ${t}$, intent(in) :: alpha
+            ${t}$, intent(in) :: beta
         end subroutine
         pure ${t}$ function reduction_sub_${s}$(x,y) result(r)
             import :: ${k}$
@@ -57,14 +59,12 @@ module stdlib_linalg_iterative_solvers
 
     interface solve_cg_generic
         #:for k, t, s in R_KINDS_TYPES
-        module subroutine solve_cg_generic_${s}$(A,b,x,di,tol,maxiter,restart,workspace)
+        module subroutine solve_cg_generic_${s}$(A,b,x,tol,maxiter,workspace)
             class(linop_${s}$), intent(in) :: A
             ${t}$, intent(in) :: b(:)
             ${t}$, intent(inout) :: x(:)
             ${t}$, intent(in) :: tol
-            logical(1), intent(in) :: di(:)
             integer, intent(in) :: maxiter
-            logical, intent(in) :: restart
             type(solver_workspace_${s}$), intent(inout) :: workspace
         end subroutine
         #:endfor
@@ -95,15 +95,13 @@ module stdlib_linalg_iterative_solvers
 
     interface solve_pccg_generic
         #:for k, t, s in R_KINDS_TYPES
-        module subroutine solve_pccg_generic_${s}$(A,M,b,x,di,tol,maxiter,restart,workspace)
+        module subroutine solve_pccg_generic_${s}$(A,M,b,x,tol,maxiter,workspace)
             class(linop_${s}$), intent(in) :: A
             class(linop_${s}$), intent(in) :: M !> preconditionner
             ${t}$, intent(in) :: b(:)
             ${t}$, intent(inout) :: x(:)
             ${t}$, intent(in) :: tol
-            logical(1), intent(in) :: di(:)
             integer, intent(in) :: maxiter
-            logical, intent(in) :: restart
             type(solver_workspace_${s}$), intent(inout) :: workspace
         end subroutine
         #:endfor
@@ -124,7 +122,7 @@ module stdlib_linalg_iterative_solvers
             ${t}$, intent(in), optional :: tol
             logical(1), intent(in), optional, target  :: di(:)
             integer, intent(in), optional  :: maxiter
-            logical, intent(in), optional  :: restart
+            logical, intent(in), optional :: restart
             class(linop_${s}$), optional , intent(in), target :: M !> preconditionner
             type(solver_workspace_${s}$), optional, intent(inout), target :: workspace
         end subroutine

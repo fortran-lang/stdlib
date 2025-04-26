@@ -56,7 +56,7 @@ contains
         where(abs(diagonal)>epsilon(0.d0)) diagonal = 1._dp/diagonal
         !-------------------------
         ! main call to the solver
-        call solve_pccg_generic(op,M,b,x,di_,tol_,maxiter_,restart_,workspace_)
+        call solve_pccg_generic(op,M,b,x,tol_,maxiter_,workspace_)
 
         !-------------------------
         ! internal memory cleanup
@@ -70,15 +70,20 @@ contains
         workspace_ => null()
         contains
         
-        subroutine my_apply(x,y)
+        subroutine my_apply(x,y,alpha,beta)
             real(dp), intent(in)  :: x(:)
             real(dp), intent(inout) :: y(:)
-            call spmv( A , x, y )
+            real(dp), intent(in) :: alpha
+            real(dp), intent(in) :: beta
+            call spmv( A , x, y , alpha, beta )
+            y = merge( 0._dp, y, di_ )
         end subroutine
-        subroutine my_jacobi_preconditionner(x,y)
+        subroutine my_jacobi_preconditionner(x,y,alpha,beta)
             real(dp), intent(in)  :: x(:)
             real(dp), intent(inout) :: y(:)
-            y = diagonal * x
+            real(dp), intent(in) :: alpha
+            real(dp), intent(in) :: beta
+            y = merge( 0._dp, diagonal * x , di_ )
         end subroutine
         pure real(dp) function my_dot(x,y) result(r)
             real(dp), intent(in) :: x(:)

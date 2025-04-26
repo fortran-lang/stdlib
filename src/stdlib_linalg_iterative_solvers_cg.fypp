@@ -14,13 +14,11 @@ submodule(stdlib_linalg_iterative_solvers) stdlib_linalg_iterative_cg
 contains
 
     #:for k, t, s in R_KINDS_TYPES
-    module subroutine solve_cg_generic_${s}$(A,b,x,di,tol,maxiter,restart,workspace)
+    module subroutine solve_cg_generic_${s}$(A,b,x,tol,maxiter,workspace)
         class(linop_${s}$), intent(in) :: A
         ${t}$, intent(in) :: b(:), tol
         ${t}$, intent(inout) :: x(:)
-        logical(1), intent(in) :: di(:)
         integer, intent(in) :: maxiter
-        logical, intent(in) :: restart 
         type(solver_workspace_${s}$), intent(inout) :: workspace
         !-------------------------
         integer :: iter
@@ -35,11 +33,8 @@ contains
             norm_sq0 = A%inner_product(B, B)
             if(associated(workspace%callback)) call workspace%callback(x, norm_sq0, iter)
 
-            if(restart) X = zero_${s}$
-            X = merge( B, X, di ) !> copy dirichlet load conditions encoded in B and indicated by di
-
-            call A%apply(X, R)
-            R = merge( zero_${s}$, B - R , di ) !> R = B - A*X
+            R = B
+            call A%apply(X, R, alpha= -one_${s}$, beta=one_${s}$) !> R = B - A*X
             norm_sq = A%inner_product(R, R)
    
             P = R
@@ -48,8 +43,7 @@ contains
             beta = zero_${s}$
             if(associated(workspace%callback)) call workspace%callback(x, norm_sq, iter)
             do while( norm_sq > tolsq * norm_sq0 .and. iter < maxiter)
-                call A%apply(P,Ap) 
-                Ap = merge( zero_${s}$, Ap, di )
+                call A%apply(P,Ap, alpha= one_${s}$, beta=zero_${s}$) !> Ap = A*P
                 
                 alpha = norm_sq / A%inner_product(P, Ap)
                 
@@ -116,7 +110,9 @@ contains
         if(.not.allocated(workspace_%tmp)) allocate( workspace_%tmp(n,size_wksp_cg), source = zero_${s}$ )
         !-------------------------
         ! main call to the solver
-        call solve_cg_generic(op,b,x,di_,tol_,maxiter_,restart_,workspace_)
+        if(restart_) x = zero_${s}$
+        x = merge( b, x, di_ ) !> copy dirichlet load conditions encoded in B and indicated by di
+        call solve_cg_generic(op,b,x,tol_,maxiter_,workspace_)
 
         !-------------------------
         ! internal memory cleanup
@@ -130,14 +126,17 @@ contains
         workspace_ => null()
         contains
         
-        subroutine default_matvec(x,y)
+        subroutine default_matvec(x,y,alpha,beta)
             ${t}$, intent(in)  :: x(:)
             ${t}$, intent(inout) :: y(:)
+            ${t}$, intent(in) :: alpha
+            ${t}$, intent(in) :: beta
             #:if matrix == "dense"
-            y = matmul(A,x)
+            y = alpha * matmul(A,x) + beta * y
             #:else 
-            call spmv( A , x, y )
+            call spmv( A , x, y , alpha, beta )
             #:endif
+            y = merge( zero_${s}$, y, di_ )
         end subroutine
     end subroutine
 

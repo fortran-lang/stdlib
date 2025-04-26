@@ -14,14 +14,12 @@ submodule(stdlib_linalg_iterative_solvers) stdlib_linalg_iterative_pccg
 contains
 
     #:for k, t, s in R_KINDS_TYPES
-    module subroutine solve_pccg_generic_${s}$(A,M,b,x,di,tol,maxiter,restart,workspace)
+    module subroutine solve_pccg_generic_${s}$(A,M,b,x,tol,maxiter,workspace)
         class(linop_${s}$), intent(in) :: A
         class(linop_${s}$), intent(in) :: M !> preconditionner
         ${t}$, intent(in) :: b(:), tol
         ${t}$, intent(inout) :: x(:)
-        logical(1), intent(in) :: di(:)
         integer, intent(in) :: maxiter
-        logical, intent(in) :: restart 
         type(solver_workspace_${s}$), intent(inout) :: workspace
         !-------------------------
         integer :: iter
@@ -38,14 +36,11 @@ contains
         if(associated(workspace%callback)) call workspace%callback(x, norm_sq, iter)
         
         if ( norm_sq0 > zero_${s}$ ) then
-            if(restart) X = zero_${s}$
-            X = merge( B, X, di ) !> copy dirichlet load conditions encoded in B and indicated by di
             
-            call A%apply(X, R)
-            R = merge( zero_${s}$, B - R , di ) !> R = B - A*X
+            R = B
+            call A%apply(X, R, alpha= -one_${s}$, beta=one_${s}$) !> R = B - A*X
             
-            call M%apply(R,P) !> P = M^{-1}*R
-            P = merge( zero_${s}$, P, di )
+            call M%apply(R,P, alpha= one_${s}$, beta=zero_${s}$) !> P = M^{-1}*R
             
             tolsq = tol*tol
             
@@ -53,8 +48,7 @@ contains
             zr2 = one_${s}$
             do while ( (iter < maxiter) .AND. (norm_sq > tolsq * norm_sq0) )
                 
-                call M%apply(R,S) !> S = M^{-1}*R
-                S = merge( zero_${s}$, S, di )
+                call M%apply(R,S, alpha= one_${s}$, beta=zero_${s}$) !> S = M^{-1}*R
                 zr2 = A%inner_product( R, S )
             
                 if (iter>0) then
@@ -62,16 +56,17 @@ contains
                     P = S + beta * P
                 end if
                 
-                call A%apply(P, Q)
-                Q = merge( zero_${s}$, Q, di )
+                call A%apply(P, Q, alpha= one_${s}$, beta=zero_${s}$) !> Q = A*P
                 zv2 = A%inner_product( P, Q )
             
                 alpha = zr2 / zv2
             
                 X = X + alpha * P
                 R = R - alpha * Q
+
                 norm_sq = A%inner_product( R, R )
                 norm_sq_old = norm_sq
+
                 zr1 = zr2
                 iter = iter + 1
                 if(associated(workspace%callback)) call workspace%callback(x, norm_sq, iter)
@@ -134,7 +129,9 @@ contains
         if(.not.allocated(workspace_%tmp)) allocate( workspace_%tmp(n,size_wksp_pccg) , source = zero_${s}$ )
         !-------------------------
         ! main call to the solver
-        call solve_pccg_generic(op,M_,b,x,di_,tol_,maxiter_,restart_,workspace_)
+        if(restart_) x = zero_${s}$
+        x = merge( b, x, di_ ) !> copy dirichlet load conditions encoded in B and indicated by di
+        call solve_pccg_generic(op,M_,b,x,tol_,maxiter_,workspace_)
 
         !-------------------------
         ! internal memory cleanup
@@ -149,19 +146,24 @@ contains
         workspace_ => null()
         contains
         
-        subroutine default_matvec(x,y)
+        subroutine default_matvec(x,y,alpha,beta)
             ${t}$, intent(in)  :: x(:)
             ${t}$, intent(inout) :: y(:)
+            ${t}$, intent(in) :: alpha
+            ${t}$, intent(in) :: beta
             #:if matrix == "dense"
-            y = matmul(A,x)
+            y = alpha * matmul(A,x) + beta * y
             #:else 
-            call spmv( A , x, y )
+            call spmv( A , x, y , alpha, beta )
             #:endif
+            y = merge( zero_${s}$, y, di_ )
         end subroutine
-        subroutine default_preconditionner(x,y)
+        subroutine default_preconditionner(x,y,alpha,beta)
             ${t}$, intent(in)  :: x(:)
             ${t}$, intent(inout) :: y(:)
-            y = x
+            ${t}$, intent(in) :: alpha
+            ${t}$, intent(in) :: beta
+            y = merge( zero_${s}$, x, di_ )
         end subroutine
     end subroutine
 
