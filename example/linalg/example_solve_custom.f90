@@ -34,9 +34,9 @@ contains
         norm_sq0 = 0.d0
         !-------------------------
         ! internal memory setup
-        op%apply => my_matvec
+        op%apply => my_apply
         op%inner_product => my_dot
-        M%apply => jacobi_preconditionner
+        M%apply => my_jacobi_preconditionner
         if(present(di))then
             di_ => di
         else 
@@ -70,12 +70,12 @@ contains
         workspace_ => null()
         contains
         
-        subroutine my_matvec(x,y)
+        subroutine my_apply(x,y)
             real(dp), intent(in)  :: x(:)
             real(dp), intent(inout) :: y(:)
             call spmv( A , x, y )
         end subroutine
-        subroutine jacobi_preconditionner(x,y)
+        subroutine my_jacobi_preconditionner(x,y)
             real(dp), intent(in)  :: x(:)
             real(dp), intent(inout) :: y(:)
             y = diagonal * x
