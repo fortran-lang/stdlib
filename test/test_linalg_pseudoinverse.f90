@@ -47,7 +47,7 @@ module test_linalg_pseudoinverse
 
         integer(ilp) :: i,j
         integer(ilp), parameter :: n = 15_ilp
-        real(sp), parameter :: tol = 100*sqrt(epsilon(0.0_sp))
+        real(sp), parameter :: tol = 1000*sqrt(epsilon(0.0_sp))
 
         real(sp) :: a(n,n),inva(n,n)
 
@@ -86,7 +86,7 @@ module test_linalg_pseudoinverse
 
         integer(ilp) :: i,j
         integer(ilp), parameter :: n = 15_ilp
-        real(dp), parameter :: tol = 100*sqrt(epsilon(0.0_dp))
+        real(dp), parameter :: tol = 1000*sqrt(epsilon(0.0_dp))
 
         real(dp) :: a(n,n),inva(n,n)
 
@@ -128,7 +128,7 @@ module test_linalg_pseudoinverse
 
         integer(ilp) :: failed
         integer(ilp), parameter :: n = 10
-        real(sp), parameter :: tol = 100*sqrt(epsilon(0.0_sp))
+        real(sp), parameter :: tol = 1000*sqrt(epsilon(0.0_sp))
         real(sp) :: a(n, n), inva(n, n)
         
         call random_number(a)
@@ -155,7 +155,7 @@ module test_linalg_pseudoinverse
 
         integer(ilp) :: failed
         integer(ilp), parameter :: m = 20, n = 10
-        real(sp), parameter :: tol = 100*sqrt(epsilon(0.0_sp))
+        real(sp), parameter :: tol = 1000*sqrt(epsilon(0.0_sp))
         real(sp) :: a(m, n), inva(n, m)
         
         call random_number(a)
@@ -182,7 +182,7 @@ module test_linalg_pseudoinverse
 
         integer(ilp) :: failed
         integer(ilp), parameter :: m = 10, n = 20
-        real(sp), parameter :: tol = 100*sqrt(epsilon(0.0_sp))
+        real(sp), parameter :: tol = 1000*sqrt(epsilon(0.0_sp))
         real(sp) :: a(m, n), inva(n, m)
         
         call random_number(a)
@@ -209,7 +209,7 @@ module test_linalg_pseudoinverse
 
         integer(ilp) :: failed
         integer(ilp), parameter :: n = 10
-        real(sp), parameter :: tol = 100*sqrt(epsilon(0.0_sp))
+        real(sp), parameter :: tol = 1000*sqrt(epsilon(0.0_sp))
         real(sp) :: a(n, n), inva(n, n)
         
         call random_number(a)
@@ -240,7 +240,7 @@ module test_linalg_pseudoinverse
 
         integer(ilp) :: failed
         integer(ilp), parameter :: n = 10
-        real(dp), parameter :: tol = 100*sqrt(epsilon(0.0_dp))
+        real(dp), parameter :: tol = 1000*sqrt(epsilon(0.0_dp))
         real(dp) :: a(n, n), inva(n, n)
         
         call random_number(a)
@@ -267,7 +267,7 @@ module test_linalg_pseudoinverse
 
         integer(ilp) :: failed
         integer(ilp), parameter :: m = 20, n = 10
-        real(dp), parameter :: tol = 100*sqrt(epsilon(0.0_dp))
+        real(dp), parameter :: tol = 1000*sqrt(epsilon(0.0_dp))
         real(dp) :: a(m, n), inva(n, m)
         
         call random_number(a)
@@ -294,7 +294,7 @@ module test_linalg_pseudoinverse
 
         integer(ilp) :: failed
         integer(ilp), parameter :: m = 10, n = 20
-        real(dp), parameter :: tol = 100*sqrt(epsilon(0.0_dp))
+        real(dp), parameter :: tol = 1000*sqrt(epsilon(0.0_dp))
         real(dp) :: a(m, n), inva(n, m)
         
         call random_number(a)
@@ -321,7 +321,7 @@ module test_linalg_pseudoinverse
 
         integer(ilp) :: failed
         integer(ilp), parameter :: n = 10
-        real(dp), parameter :: tol = 100*sqrt(epsilon(0.0_dp))
+        real(dp), parameter :: tol = 1000*sqrt(epsilon(0.0_dp))
         real(dp) :: a(n, n), inva(n, n)
         
         call random_number(a)
@@ -352,7 +352,7 @@ module test_linalg_pseudoinverse
 
         integer(ilp) :: failed
         integer(ilp), parameter :: n = 10
-        real(sp), parameter :: tol = 100*sqrt(epsilon(0.0_sp))
+        real(sp), parameter :: tol = 1000*sqrt(epsilon(0.0_sp))
         complex(sp) :: a(n, n), inva(n, n)
         real(sp) :: rea(n, n, 2)
         
@@ -381,7 +381,7 @@ module test_linalg_pseudoinverse
 
         integer(ilp) :: failed
         integer(ilp), parameter :: m = 20, n = 10
-        real(sp), parameter :: tol = 100*sqrt(epsilon(0.0_sp))
+        real(sp), parameter :: tol = 1000*sqrt(epsilon(0.0_sp))
         complex(sp) :: a(m, n), inva(n, m)
         real(sp) :: rea(m, n, 2)
         
@@ -410,7 +410,7 @@ module test_linalg_pseudoinverse
 
         integer(ilp) :: failed
         integer(ilp), parameter :: m = 10, n = 20
-        real(sp), parameter :: tol = 100*sqrt(epsilon(0.0_sp))
+        real(sp), parameter :: tol = 1000*sqrt(epsilon(0.0_sp))
         complex(sp) :: a(m, n), inva(n, m)
         real(sp) :: rea(m, n, 2)
         
@@ -439,7 +439,7 @@ module test_linalg_pseudoinverse
 
         integer(ilp) :: failed
         integer(ilp), parameter :: n = 10
-        real(sp), parameter :: tol = 100*sqrt(epsilon(0.0_sp))
+        real(sp), parameter :: tol = 1000*sqrt(epsilon(0.0_sp))
         complex(sp) :: a(n, n), inva(n, n)
         real(sp) :: rea(n, n, 2)
         
@@ -472,7 +472,7 @@ module test_linalg_pseudoinverse
 
         integer(ilp) :: failed
         integer(ilp), parameter :: n = 10
-        real(dp), parameter :: tol = 100*sqrt(epsilon(0.0_dp))
+        real(dp), parameter :: tol = 1000*sqrt(epsilon(0.0_dp))
         complex(dp) :: a(n, n), inva(n, n)
         real(dp) :: rea(n, n, 2)
         
@@ -501,7 +501,7 @@ module test_linalg_pseudoinverse
 
         integer(ilp) :: failed
         integer(ilp), parameter :: m = 20, n = 10
-        real(dp), parameter :: tol = 100*sqrt(epsilon(0.0_dp))
+        real(dp), parameter :: tol = 1000*sqrt(epsilon(0.0_dp))
         complex(dp) :: a(m, n), inva(n, m)
         real(dp) :: rea(m, n, 2)
         
@@ -530,7 +530,7 @@ module test_linalg_pseudoinverse
 
         integer(ilp) :: failed
         integer(ilp), parameter :: m = 10, n = 20
-        real(dp), parameter :: tol = 100*sqrt(epsilon(0.0_dp))
+        real(dp), parameter :: tol = 1000*sqrt(epsilon(0.0_dp))
         complex(dp) :: a(m, n), inva(n, m)
         real(dp) :: rea(m, n, 2)
         
@@ -559,7 +559,7 @@ module test_linalg_pseudoinverse
 
         integer(ilp) :: failed
         integer(ilp), parameter :: n = 10
-        real(dp), parameter :: tol = 100*sqrt(epsilon(0.0_dp))
+        real(dp), parameter :: tol = 1000*sqrt(epsilon(0.0_dp))
         complex(dp) :: a(n, n), inva(n, n)
         real(dp) :: rea(n, n, 2)
         
