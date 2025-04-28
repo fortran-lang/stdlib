@@ -1,7 +1,7 @@
 #:include "common.fypp"
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
 #:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
-#:set MATRIX_TYPES = ["dense", "CSR", "CSC", "ELL", "SELLC"]
+#:set MATRIX_TYPES = ["dense", "CSR"]
 #:set RANKS = range(1, 2+1)
 
 module stdlib_linalg_iterative_solvers
@@ -130,6 +130,41 @@ module stdlib_linalg_iterative_solvers
         #:endfor
     end interface
     public :: solve_pccg 
+
+    interface solve_forward_triangular
+        !> Solve the system L x = b, where L is a strictly lower triangular matrix (diagonal assumed = 1).
+        #:for k, t, s in R_KINDS_TYPES
+        module subroutine solve_forward_triangular_dense_${s}$(L,b,x)
+            ${t}$, intent(in) :: L(:,:)
+            ${t}$, intent(in) :: b(:)
+            ${t}$, intent(inout) :: x(:)
+        end subroutine
+        module subroutine solve_forward_triangular_csr_${s}$(L,b,x)
+            type(CSR_${s}$_type), intent(in) :: L
+            ${t}$, intent(in) :: b(:)
+            ${t}$, intent(inout) :: x(:)
+        end subroutine
+        #:endfor    
+    end interface
+    public :: solve_forward_triangular
+ 
+
+    interface solve_backward_triangular
+        !> Solve the system U x = b, where U is a strictly upper triangular matrix (diagonal assumed = 1).
+        #:for k, t, s in R_KINDS_TYPES
+        module subroutine solve_backward_triangular_dense_${s}$(U,b,x)
+            ${t}$, intent(in) :: U(:,:)
+            ${t}$, intent(in) :: b(:)
+            ${t}$, intent(inout) :: x(:)
+        end subroutine
+        module subroutine solve_backward_triangular_csr_${s}$(U,b,x)
+            type(CSR_${s}$_type), intent(in) :: U
+            ${t}$, intent(in) :: b(:)
+            ${t}$, intent(inout) :: x(:)
+        end subroutine
+        #:endfor    
+    end interface
+    public :: solve_backward_triangular
 
 
 contains

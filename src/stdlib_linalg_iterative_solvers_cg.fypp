@@ -1,7 +1,7 @@
 #:include "common.fypp"
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
 #:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
-#:set MATRIX_TYPES = ["dense", "CSR", "CSC", "ELL", "SELLC"]
+#:set MATRIX_TYPES = ["dense", "CSR"]
 #:set RANKS = range(1, 2+1)
 
 submodule(stdlib_linalg_iterative_solvers) stdlib_linalg_iterative_cg

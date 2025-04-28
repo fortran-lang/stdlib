@@ -1,0 +1,137 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set MATRIX_TYPES = ["dense", "CSR"]
+#:set RANKS = range(1, 2+1)
+
+submodule(stdlib_linalg_iterative_solvers) stdlib_linalg_iterative_aux
+    use stdlib_kinds
+    use stdlib_sparse
+    use stdlib_constants
+    use stdlib_linalg_iterative_solvers
+    use stdlib_constants
+    implicit none
+
+    integer, parameter :: ilp = int32
+
+contains
+
+    #:for k, t, s in R_KINDS_TYPES
+    module subroutine solve_forward_triangular_dense_${s}$(L,b,x)
+        ${t}$, intent(in) :: L(:,:)
+        ${t}$, intent(in) :: b(:)
+        ${t}$, intent(inout) :: x(:)
+        ${t}$ :: aux
+
+        integer(ilp) :: i, j, m
+
+        do i = 1, size(L,dim=1)
+            aux = zero_${s}$
+            do j = 1, i-1
+                aux = aux + L(i,j)*x(j)
+            end do
+            x(i) = b(i) - aux
+        end do
+    end subroutine
+
+    module subroutine solve_backward_triangular_dense_${s}$(U,b,x)
+        ${t}$, intent(in) :: U(:,:)
+        ${t}$, intent(in) :: b(:)
+        ${t}$, intent(inout) :: x(:)
+        ${t}$ :: aux
+        ${t}$ :: baux(size(x))
+
+        integer(ilp) :: i, j, m
+
+        baux = zero_${s}$
+        do i = size(U,dim=1), 1, -1
+            x(i) = x(i) - baux(i)
+            do j = i+1, size(U,dim=2)
+                baux(j) = baux(j) + U(i,j)*x(i)
+            end do
+        end do
+    end subroutine
+
+    #:endfor    
+
+    #:for k, t, s in R_KINDS_TYPES
+    module subroutine solve_forward_triangular_csr_${s}$(L,b,x)
+        type(CSR_${s}$_type), intent(in) :: L
+        ${t}$, intent(in) :: b(:)
+        ${t}$, intent(inout) :: x(:)
+        ${t}$ :: aux
+    
+        integer(ilp) :: i, j, m
+        select case (L%storage)
+        case(sparse_full)
+            do i = 1, L%nrows
+                aux = zero_${s}$
+                do m = L%rowptr(i), L%rowptr(i+1)-1
+                    j = L%col(m)
+                    if(j>i) cycle !> skip upper part of the matrix
+                    aux = aux + L%data(m)*x(j)
+                end do
+                x(i) = b(i) - aux
+            end do
+        case(sparse_lower)
+            do i = 1, L%nrows
+                aux = zero_${s}$
+                do m = L%rowptr(i), L%rowptr(i+1)-2
+                    j = L%col(m)
+                    aux = aux + L%data(m)*x(j)
+                end do
+                x(i) = b(i) - aux
+            end do
+        case(sparse_upper) !> treates as lower triangular (thus transpose)
+            do i = 1, L%nrows
+                x(i) = b(i)
+                do m = L%rowptr(i)+1, L%rowptr(i+1)-1
+                    j = L%col(m)
+                    x(j) = x(j) - L%data(m)*x(i)
+                end do
+            end do
+        end select
+    end subroutine
+    
+    module subroutine solve_backward_triangular_csr_${s}$(U,b,x)
+        type(CSR_${s}$_type), intent(in) :: U
+        ${t}$, intent(in) :: b(:)
+        ${t}$, intent(inout) :: x(:)
+        ${t}$ :: aux
+        ${t}$ :: baux(size(x))
+    
+        integer(ilp) :: i, j, m
+    
+        baux = zero_${s}$
+        select case (U%storage)
+        case(sparse_full)
+            do i = U%nrows, 1, -1
+                x(i) = b(i) - baux(i)
+                do m = U%rowptr(i), U%rowptr(i+1)-1
+                    j = U%col(m)
+                    if(j<i) cycle !> skip lower part of the matrix
+                    baux(j) = baux(j) + U%data(m)*x(i)
+                end do
+            end do
+        case(sparse_lower)
+            do i = U%nrows, 1, -1
+                x(i) = b(i) - baux(i)
+                do m = U%rowptr(i), U%rowptr(i+1)-2
+                    j = U%col(m)
+                    baux(j) = baux(j) + U%data(m)*x(i)
+                end do
+            end do
+        case(sparse_upper) 
+            do i = U%nrows, 1, -1
+                x(i) = b(i)
+                do m = U%rowptr(i)+1, U%rowptr(i+1)-1
+                    j = U%col(m)
+                    x(i) = x(i) - U%data(m)*x(j)
+                end do
+            end do
+        end select
+    end subroutine
+
+    #:endfor
+    
+
+end submodule stdlib_linalg_iterative_aux
