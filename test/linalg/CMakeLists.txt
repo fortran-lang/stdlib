@@ -15,7 +15,6 @@ set(
   "test_linalg_matrix_property_checks.fypp"
   "test_linalg_sparse.fypp"
   "test_linalg_cholesky.fypp"
-  "test_blas_lapack.fypp"
 )
 
 # Preprocessed files to contain preprocessor directives -> .F90
@@ -41,5 +40,5 @@ ADDTEST(linalg_lstsq)
 ADDTEST(linalg_qr)
 ADDTEST(linalg_schur)
 ADDTEST(linalg_svd)
-ADDTEST(blas_lapack)
 ADDTEST(linalg_sparse)
+ADDTESTPP(blas_lapack)
