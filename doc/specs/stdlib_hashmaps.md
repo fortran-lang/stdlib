@@ -145,13 +145,12 @@ Procedures to manipulate `key_type` data:
   `key_in`, to contents of the key, `key_out`.
 
 * `get( key, value )` - extracts the contents of `key` into `value`,
-  an `int8` array, `int32` array, or character string.
+  an `int8` array, `int32` array, or `character` string.
 
 * `free_key( key )` - frees the memory in `key`.
 
-* `set( key, value )` - sets the content of `key` to `value`.  
-  Supported key types are `int8` array, `int32` array, and character
-  string.
+* `set( key, value )` - sets key type `key` based on `value`.  
+  Value may be a scalar or rank-1 array of any type.  
 
 Procedures to hash keys to 32 bit integers:
 
@@ -409,7 +408,7 @@ Pure function prototype
 
 ##### Argument
 
-`key`: Shall be a rank one array expression of type `integer(int8)`.
+`key`: Shall be a rank-1 array expression of type `integer(int8)`.
 It is an `intent(in)` argument.
 
 ##### Result character
@@ -646,14 +645,13 @@ Subroutine.
 `key`: shall be a scalar variable of type `key_type`. It
 is an `intent(out)` argument.
 
-`value`: shall be a default `character` string scalar expression,
-or a vector expression of type `integer`and kind `int8` or `int32`.
+`value`: shall be a scalar or rank-1 array of any type.
 It is an `intent(in)` argument.
 
 ##### Note
 
-Values of types other than a scalar default character or and
-`int8` or `int32` vector can be used as the basis of a `key` by transferring the
+Values of types not supported such as rank-2 or higher arrays 
+can be used as the basis of a `key` by transferring the
 value to an `int8` vector.
 
 ##### Example
@@ -684,12 +682,14 @@ overall structure and performance of the hash map object:`calls`,
 `int_probes`, `success`, `alloc_fault`, and `array_size_error`.
 
 Generic key interfaces for `key_test`, `map_entry`, `get_other_data`,
-`remove`, and `set_other_data` are povided so that the supported types
-of `int8` arrays, `int32` arrays and `character` scalars can be used in the
-key field as well as the base `key` type.  So for `key_test`,
-`key_key_test` specifies key type for the key field, `int8_key_test` is `int8`
-for the key field and so on.  Procedures other than `key_key_test` will call
-the `set` function to generate a key type and pass to `key_key_test`.         
+`remove`, and `set_other_data` are povided so that scalar and rank-1
+values of any type can be provided as well as the base `key` type.  
+So for `key_test`, `scalar_key_test` and `rank_one_key_test` are the generic
+interfaces for scalar and rank-1 values.  A `key_type` will be generated
+based on those values and passed to `key_key_test`.  If a key_type already
+is available, then `key_key_test` can be used instead of the generic `key_test`
+interface and may have slightly better performance since there is no 
+select type construct used.  
 
 ### The `stdlib_hashmaps` module's public constants
 
@@ -850,37 +850,35 @@ The type's definition is below:
         procedure(rehash_map), deferred, pass(map)          :: rehash
         procedure(total_depth), deferred, pass(map)         :: total_depth
     
-        !! Generic interfaces for key types.
+        !! Key_test procedures.
         procedure(key_key_test), deferred, pass(map) :: key_key_test
-        procedure, non_overridable, pass(map) :: int8_key_test
-        procedure, non_overridable, pass(map) :: int32_key_test
-        procedure, non_overridable, pass(map) :: char_key_test
+        procedure, non_overridable, pass(map) :: scalar_key_test
+        procedure, non_overridable, pass(map) :: rank_one_key_test
+        generic, public :: key_test => scalar_key_test, rank_one_key_test
         
+        ! Map_entry procedures
         procedure(key_map_entry), deferred, pass(map) :: key_map_entry
-        procedure, non_overridable, pass(map) :: int8_map_entry
-        procedure, non_overridable, pass(map) :: int32_map_entry
-        procedure, non_overridable, pass(map) :: char_map_entry
+        procedure, non_overridable, pass(map) :: scalar_map_entry
+        procedure, non_overridable, pass(map) :: rank_one_map_entry
+        generic, public :: map_entry => scalar_map_entry, rank_one_map_entry
         
-        procedure(key_get_other_data), deferred, pass(map)  :: key_get_other_data
-        procedure, non_overridable, pass(map) :: int8_get_other_data
-        procedure, non_overridable, pass(map) :: int32_get_other_data
-        procedure, non_overridable, pass(map) :: char_get_other_data
+        ! Get_other_data procedures
+        procedure(key_get_other_data), deferred, pass(map) :: key_get_other_data
+        procedure, non_overridable, pass(map) :: scalar_get_other_data
+        procedure, non_overridable, pass(map) :: rank_one_get_other_data
+        generic, public :: get_other_data => scalar_get_other_data, rank_one_get_other_data
         
+        ! Key_remove_entry procedures
         procedure(key_remove_entry), deferred, pass(map) :: key_remove_entry
-        procedure, non_overridable, pass(map) :: int8_remove_entry
-        procedure, non_overridable, pass(map) :: int32_remove_entry
-        procedure, non_overridable, pass(map) :: char_remove_entry
+        procedure, non_overridable, pass(map) :: scalar_remove_entry
+        procedure, non_overridable, pass(map) :: rank_one_remove_entry
+        generic, public :: remove => scalar_remove_entry, rank_one_remove_entry
         
+        ! Set_other_data procedures
         procedure(key_set_other_data), deferred, pass(map)  :: key_set_other_data
-        procedure, non_overridable, pass(map) :: int8_set_other_data
-        procedure, non_overridable, pass(map) :: int32_set_other_data
-        procedure, non_overridable, pass(map) :: char_set_other_data
-        
-        generic, public :: key_test => key_key_test, int8_key_test, int32_key_test, char_key_test
-        generic, public :: map_entry => key_map_entry, int8_map_entry, int32_map_entry, char_map_entry
-        generic, public :: get_other_data => key_get_other_data, int8_get_other_data, int32_get_other_data, char_get_other_data
-        generic, public :: remove => key_remove_entry, int8_remove_entry, int32_remove_entry, char_remove_entry
-        generic, public :: set_other_data => key_set_other_data, int8_set_other_data, int32_set_other_data, char_set_other_data
+        procedure, non_overridable, pass(map) :: scalar_set_other_data
+        procedure, non_overridable, pass(map) :: rank_one_set_other_data
+        generic, public :: set_other_data => scalar_set_other_data, rank_one_set_other_data
         
     end type hashmap_type
 ```
@@ -1263,8 +1261,8 @@ Subroutine
   `intent(inout)` argument. It will be 
   the hash map used to store and access the other data.
 
-`key`: shall be a of type `key_type` scalar, `character` scalar, `int8` array
-or `int32` array. It is an `intent(in)` argument.
+`key`: shall be a scalar or rank-1 array of any type.
+It is an `intent(in)` argument.
 
 `other`: shall be a allocatable unlimited polymorphic scalar.  
 (class(*), allocatable)  It is an `intent(out)` argument.
@@ -1375,8 +1373,8 @@ Subroutine.
 It is an `intent(inout)` argument. It is the hash map whose entries
 are examined.
 
-`key`: shall be a of type `key_type` scalar, `character` scalar, `int8` array
-or `int32` array. It is an `intent(in)` argument. It is a `key` whose 
+`key`: shall be a scalar or rank-1 array of any type.
+It is an `intent(in)` argument. It is a `key` whose 
 presence in the `map` is being examined.
 
 `present`: shall be a scalar variable of type `logical`.
@@ -1456,8 +1454,8 @@ Subroutine
 is an `intent(inout)` argument. It is the hash map to receive the
 entry.
 
-`key`: shall be a of type `key_type` scalar, `character` scalar, `int8` array
-or `int32` array. It is an `intent(in)` argument. It is the key for the entry
+`key`: shall be a scalar or rank-1 array of any type.
+It is an `intent(in)` argument. It is the key for the entry
 to be placed in the table.
 
 `other` (optional): shall be a scalar of any type, including derived types.
@@ -1621,8 +1619,8 @@ Subroutine
 It is an `intent(inout)` argument. It is the hash map with the element 
 to be removed.
 
-`key`: shall be a of type `key_type` scalar, `character` scalar, `int8` array
-or `int32` array. It is an `intent(in)` argument. It is the `key` identifying 
+`key`: shall be a scalar or rank-1 array of any type.
+It is an `intent(in)` argument. It is the `key` identifying 
 the entry to be removed.
 
 `existed` (optional): shall be a scalar variable of type default
@@ -1664,8 +1662,8 @@ Subroutine
 is an `intent(inout)` argument. It will be a hash map used to store
 and access the entry's data.
 
-`key`: shall be a of type `key_type` scalar, `character` scalar, `int8` array
-or `int32` array. It is an `intent(in)` argument. It is the `key` to the 
+`key`: shall be a scalar or rank-1 array of any type.
+It is an `intent(in)` argument. It is the `key` to the 
 entry whose `other` data is to be replaced.
 
 `other` (optional): shall be a scalar of any type, including derived types.
