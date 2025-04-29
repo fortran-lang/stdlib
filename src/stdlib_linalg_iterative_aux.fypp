@@ -20,16 +20,15 @@ contains
         ${t}$, intent(in) :: L(:,:)
         ${t}$, intent(in) :: b(:)
         ${t}$, intent(inout) :: x(:)
-        ${t}$ :: aux
 
         integer(ilp) :: i, j, m
 
-        do i = 1, size(L,dim=1)
-            aux = zero_${s}$
-            do j = 1, i-1
-                aux = aux + L(i,j)*x(j)
+        x = zero_${s}$
+        do j = 1, size(L,dim=1)
+            x(j) = x(j) + b(j)
+            do i = j+1, size(L,dim=1)
+                x(i) = x(i) - L(i,j)*x(j)
             end do
-            x(i) = b(i) - aux
         end do
     end subroutine
 
@@ -37,16 +36,13 @@ contains
         ${t}$, intent(in) :: U(:,:)
         ${t}$, intent(in) :: b(:)
         ${t}$, intent(inout) :: x(:)
-        ${t}$ :: aux
-        ${t}$ :: baux(size(x))
 
         integer(ilp) :: i, j, m
 
-        baux = zero_${s}$
-        do i = size(U,dim=1), 1, -1
-            x(i) = x(i) - baux(i)
-            do j = i+1, size(U,dim=2)
-                baux(j) = baux(j) + U(i,j)*x(i)
+        do j = size(U,dim=1), 1, -1
+            x(j) = b(j)
+            do i = 1, j-1
+                x(i) = x(i) - U(i,j)*x(j)
             end do
         end do
     end subroutine
