@@ -127,10 +127,8 @@ set(SRC
 add_library(${PROJECT_NAME} ${SRC})
 
 # Link to BLAS and LAPACK
-if(BLAS_FOUND)
+if(BLAS_FOUND AND LAPACK_FOUND)
   target_link_libraries(${PROJECT_NAME} "BLAS::BLAS")
-endif()
-if(LAPACK_FOUND)
   target_link_libraries(${PROJECT_NAME} "LAPACK::LAPACK")
 endif()
 

@@ -44,28 +44,54 @@ endif()
 
 option(FIND_BLAS "Find external BLAS and LAPACK" ON)
 
-# --- find BLAS and LAPACK
+# --- find external BLAS and LAPACK
 if(FIND_BLAS)
-  if(NOT BLAS_FOUND)
-    #Required for MKL
-    if(DEFINED ENV{MKLROOT} OR "${BLA_VENDOR}" MATCHES "^Intel")
-      enable_language("C")
+
+  message(STATUS "Searching for external BLAS/LAPACK")
+
+  # Common MKL setup
+  if(DEFINED ENV{MKLROOT} OR "${BLA_VENDOR}" MATCHES "^(Intel|Intel10_64)")
+    enable_language("C")
+    message(STATUS "Detected Intel MKL environment")
+  endif()
+
+  find_package(BLAS)
+  find_package(LAPACK)
+
+  if(BLAS_FOUND AND LAPACK_FOUND)
+    message(STATUS "Found external BLAS: ${BLAS_LIBRARIES}")
+    message(STATUS "Found external LAPACK: ${LAPACK_LIBRARIES}")
+
+    # Detect ILP64 (common function)
+    function(detect_ilp64 lib_name)
+      set(${lib_name}_ILP64 False PARENT_SCOPE)
+      # Prefer checking BLA_SIZEOF_INTEGER (available in CMake >= 3.22)
+      if(DEFINED BLA_SIZEOF_INTEGER AND BLA_SIZEOF_INTEGER EQUAL 8)
+        set(${lib_name}_ILP64 True PARENT_SCOPE)
+      # Fallback: Check BLA_VENDOR manually for signs of ILP64
+      elseif("${BLA_VENDOR}" MATCHES ".*(_ilp|ILP64).*")
+        set(${lib_name}_ILP64 True PARENT_SCOPE)
+      endif()
+    endfunction()
+
+    detect_ilp64(BLAS)
+    detect_ilp64(LAPACK)
+
+    # Set compile definitions
+    if(BLAS_ILP64 OR LAPACK_ILP64)
+      message(STATUS "Enabling 64-bit integer support (ILP64)")
+      add_compile_definitions(STDLIB_EXTERNAL_BLAS_I64 STDLIB_EXTERNAL_LAPACK_I64)
+      set(WITH_ILP64 True CACHE BOOL "Use 64-bit integer BLAS/LAPACK" FORCE)
+    else()
+      message(STATUS "Using standard 32-bit integer interface")
+      add_compile_definitions(STDLIB_EXTERNAL_BLAS STDLIB_EXTERNAL_LAPACK)
     endif()
-    find_package("BLAS")
+
+  else()
+    message(WARNING "External BLAS/LAPACK not found - "
+      "Using built-in reference BLAS")
   endif()
-  if(BLAS_FOUND)
-    add_compile_definitions(STDLIB_EXTERNAL_BLAS)
-  endif()
-  if(NOT LAPACK_FOUND)
-    #Required for MKL
-    if(DEFINED ENV{MKLROOT} OR "${BLA_VENDOR}" MATCHES "^Intel")
-      enable_language("C")
-    endif()
-    find_package("LAPACK")
-  endif()
-  if(LAPACK_FOUND)
-    add_compile_definitions(STDLIB_EXTERNAL_LAPACK)
-  endif()
+
 endif()
 
 # --- find preprocessor
