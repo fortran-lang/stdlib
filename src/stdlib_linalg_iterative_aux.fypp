@@ -24,7 +24,7 @@ contains
         integer(ilp) :: i, j, m
 
         x = zero_${s}$
-        do j = 1, size(L,dim=1)
+        do j = 1, size(L,dim=2)
             x(j) = x(j) + b(j)
             do i = j+1, size(L,dim=1)
                 x(i) = x(i) - L(i,j)*x(j)
@@ -39,7 +39,7 @@ contains
 
         integer(ilp) :: i, j, m
 
-        do j = size(U,dim=1), 1, -1
+        do j = size(U,dim=2), 1, -1
             x(j) = b(j)
             do i = 1, j-1
                 x(i) = x(i) - U(i,j)*x(j)
