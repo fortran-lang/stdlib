@@ -7,9 +7,17 @@
 submodule(stdlib_linalg_iterative_solvers) stdlib_linalg_iterative_pccg
     use stdlib_kinds
     use stdlib_sparse
+    use stdlib_linalg, only: diag
     use stdlib_constants
     use stdlib_linalg_iterative_solvers
     implicit none
+
+    enum, bind(c)
+        enumerator :: none = 0
+        enumerator :: jacobi
+        enumerator :: ssor 
+        enumerator :: ichol
+    end enum
 
 contains
 
@@ -78,7 +86,7 @@ contains
 
     #:for matrix in MATRIX_TYPES
     #:for k, t, s in R_KINDS_TYPES
-    module subroutine solve_pccg_${matrix}$_${s}$(A,b,x,di,tol,maxiter,restart,M,workspace)
+    module subroutine solve_pccg_${matrix}$_${s}$(A,b,x,di,tol,maxiter,restart,precond,M,workspace)
         #:if matrix == "dense"
         ${t}$, intent(in) :: A(:,:)
         #:else 
@@ -90,6 +98,7 @@ contains
         logical(1), intent(in), optional, target  :: di(:)
         integer, intent(in), optional  :: maxiter
         logical, intent(in), optional  :: restart
+        integer, intent(in), optional  :: precond !> preconditionner method flag
         class(linop_${s}$), optional , intent(in), target :: M !> preconditionner
         type(solver_workspace_${s}$), optional, intent(inout), target :: workspace
         !-------------------------
@@ -101,25 +110,53 @@ contains
         logical :: restart_
         logical(1), pointer :: di_(:)
         !-------------------------
+        ! working data for preconditionner
+        integer :: precond_
+        ${t}$, allocatable :: diagonal(:)
+        #:if matrix == "dense"
+        ${t}$, allocatable:: L(:,:) !> lower triangular
+        #:else 
+        type(${matrix}$_${s}$_type) :: L !> lower triangular
+        #:endif
+        !-------------------------
         n = size(b)
         maxiter_ = n;       if(present(maxiter)) maxiter_ = maxiter
         restart_ = .true.;  if(present(restart)) restart_ = restart
         tol_ = 1.e-4_${s}$; if(present(tol)) tol_ = tol
-
+        precond_ = none   ; if(present(precond)) precond_ = precond
         !-------------------------
         ! internal memory setup
-        op%apply => default_matvec
+        op%apply => matvec
         if(present(M)) then
             M_ => M
         else 
             allocate( M_ )
-            M_%apply => default_preconditionner
+            select case(precond_)
+            case(jacobi)
+                #:if matrix == "dense"
+                diagonal = diag(A)
+                #:else 
+                call diag(A,diagonal)
+                #:endif
+                where(abs(diagonal)>epsilon(0.d0)) diagonal = 1._dp/diagonal
+                M_%apply => precond_jacobi
+            case(ssor)
+                #:if matrix == "dense"
+                diagonal = diag(A)
+                #:else 
+                call diag(A,diagonal)
+                #:endif
+                where(abs(diagonal)>epsilon(0.d0)) diagonal = 1._dp/diagonal
+                ! TODO: Extract the lower triangular part of A in L
+                M_%apply => precond_ldl
+            case(ichol)
+                ! TODO: Add LDL^t factorization
+                M_%apply => precond_ldl
+            case default
+                M_%apply => precond_none
+            end select
         end if
-        !> TODO: factorize the preconditionner
-        !> Jacobi: M = diag(A)^{-1}
-        !> SOR: M = (w/(2-w)) (D/w+L) D^{-1} (D/w+U) ; A =  D + L + U
-        !> ILU: M = ( LU )^{-1} ; A = LU
-        !> ICHOL: M = (L*D*U)^{-1} ; A = L*D*U
+        
         if(present(di))then
             di_ => di
         else 
@@ -151,7 +188,7 @@ contains
         workspace_ => null()
         contains
         
-        subroutine default_matvec(x,y,alpha,beta)
+        subroutine matvec(x,y,alpha,beta)
             ${t}$, intent(in)  :: x(:)
             ${t}$, intent(inout) :: y(:)
             ${t}$, intent(in) :: alpha
@@ -163,12 +200,29 @@ contains
             #:endif
             y = merge( zero_${s}$, y, di_ )
         end subroutine
-        subroutine default_preconditionner(x,y,alpha,beta)
+
+        subroutine precond_none(x,y,alpha,beta)
             ${t}$, intent(in)  :: x(:)
             ${t}$, intent(inout) :: y(:)
             ${t}$, intent(in) :: alpha
             ${t}$, intent(in) :: beta
             y = merge( zero_${s}$, x, di_ )
+        end subroutine
+        subroutine precond_jacobi(x,y,alpha,beta)
+            ${t}$, intent(in)  :: x(:)
+            ${t}$, intent(inout) :: y(:)
+            ${t}$, intent(in) :: alpha
+            ${t}$, intent(in) :: beta
+            y = merge( zero_${s}$, diagonal * x, di_ ) !> inverted diagonal
+        end subroutine
+        subroutine precond_ldl(x,y,alpha,beta)
+            ${t}$, intent(in)  :: x(:)
+            ${t}$, intent(inout) :: y(:)
+            ${t}$, intent(in) :: alpha
+            ${t}$, intent(in) :: beta
+            call solve_forward_triangular( L , x , y )
+            y = merge( zero_${s}$, diagonal * y, di_ ) !> inverted diagonal
+            call solve_backward_triangular( L , y , y )
         end subroutine
     end subroutine
 
