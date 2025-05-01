@@ -1,0 +1,129 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set MATRIX_TYPES = ["dense", "CSR"]
+! Test linear system iterative solvers
+module test_linalg_solve_iterative
+    use stdlib_kinds
+    use stdlib_sparse
+    use stdlib_linalg_iterative_solvers
+    use testdrive, only: error_type, check, new_unittest, unittest_type    
+
+    implicit none 
+    private
+    
+    public :: test_linear_systems
+
+    contains
+
+    subroutine test_linear_systems(tests)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: tests(:)
+
+        allocate(tests(0))
+
+        tests = [ new_unittest("factorize_ldlt",test_factorize_ldlt), &
+                  new_unittest("solve_ldlt",test_solve_ldlt) ]
+
+    end subroutine test_linear_systems    
+    
+    
+    !> Simple linear system
+    subroutine test_factorize_ldlt(error)
+        type(error_type), allocatable, intent(out) :: error
+        
+        #:for k, t, s in R_KINDS_TYPES
+        block
+        ${t}$, parameter :: tol = 1.e-4_${k}$
+        ${t}$ :: A(5,5) = reshape([${t}$ ::  5, -2,  0, -2, -2, &
+                                            -2,  5, -2,  0,  0, &
+                                             0, -2,  5, -2,  0, &
+                                            -2,  0, -2,  5, -2, &
+                                            -2,  0,  0, -2,  5], [5,5])
+        ${t}$ :: Lref(5,5) = transpose(reshape([${t}$ :: 1. ,  0.        ,  0.        ,  0. ,  0.,&
+                                                        -0.4,  1.        ,  0.        ,  0. ,  0.,&
+                                                         0. , -0.47619048,  1.        ,  0. ,  0.,&
+                                                        -0.4, -0.19047619, -0.58823529,  1. ,  0., &
+                                                        -0.4, -0.19047619, -0.09411765, -1.2,  1.], [5,5]))
+        
+        ${t}$ :: Dref(5) = [${t}$ :: 5, 4.2, 4.04761904761904744987, 2.64705882352941124225, 0.2]
+
+        ${t}$ :: L(5,5), D(5)
+
+        call factorize_ldlt(A, L, D)
+
+        call check(error, all(abs(L-Lref)<tol), 'LDLt factorization L doesnt match')
+        if (allocated(error)) return
+        call check(error, all(abs(D-Dref)<tol), 'LDLt factorization D doesnt match')
+        if (allocated(error)) return
+        
+        end block
+
+        #:endfor
+    end subroutine test_factorize_ldlt
+
+    subroutine test_solve_ldlt(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for k, t, s in R_KINDS_TYPES
+        block
+        ${t}$, parameter :: tol = 1000*epsilon(0.0_${k}$)
+        ${t}$ :: A(3,3) = reshape([${t}$ ::  4,  12, -16, &
+                                            12,  37, -43, &
+                                           -16, -43, 98], [3,3])
+        ${t}$ :: Lref(3,3) = transpose(reshape([${t}$ ::  1, 0, 0, &
+                                                          3, 1, 0, &
+                                                         -4, 5, 1], [3,3]))
+        ${t}$ :: Dref(3) = [${t}$ :: 4, 1, 9]
+        ${t}$ :: L(3,3), D(3), b(3), x(3), res(3)
+
+        call factorize_ldlt(A, L, D)
+        
+        call check(error, all(abs(L-Lref)<tol), 'LDLt factorization L doesnt match')
+        if (allocated(error)) return
+        call check(error, all(abs(D-Dref)<tol), 'LDLt factorization D doesnt match')
+        if (allocated(error)) return
+
+        D = 1._${k}$ / D
+        
+        b = [${t}$ :: 1,2,3]
+        call solve_forward_triangular( L , b , x )
+        x = D * x
+        call solve_backward_triangular( L , x , x )
+        
+        res = [343._${k}$/12,-23._${k}$/3,4._${k}$/3]
+        call check(error, norm2(x-res)<tol*norm2(res), 'LDLt solve result doesnt match')
+        if (allocated(error)) return
+        end block
+
+        #:endfor
+    end subroutine test_solve_ldlt
+
+    ! TODO: add tests for solve_cg, solve_pccg, etc.
+
+end module test_linalg_solve_iterative
+
+program test_solve_iterative
+     use, intrinsic :: iso_fortran_env, only : error_unit
+     use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+     use test_linalg_solve_iterative, only : test_linear_systems
+     implicit none
+     integer :: stat, is
+     type(testsuite_type), allocatable :: testsuites(:)
+     character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+     stat = 0
+
+     testsuites = [ &
+         new_testsuite("linalg_solve_iterative", test_linear_systems) &
+         ]
+
+     do is = 1, size(testsuites)
+         write(error_unit, fmt) "Testing:", testsuites(is)%name
+         call run_testsuite(testsuites(is)%collect, error_unit, stat)
+     end do
+
+     if (stat > 0) then
+         write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+         error stop
+     end if
+end program test_solve_iterative
