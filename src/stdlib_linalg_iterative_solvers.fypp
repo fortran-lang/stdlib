@@ -153,13 +153,13 @@ module stdlib_linalg_iterative_solvers
     interface solve_backward_triangular
         !> Solve the system U x = b, where U is a strictly upper triangular matrix (diagonal assumed = 1).
         #:for k, t, s in R_KINDS_TYPES
-        module subroutine solve_backward_triangular_dense_${s}$(U,b,x)
-            ${t}$, intent(in) :: U(:,:)
+        module subroutine solve_backward_triangular_dense_${s}$(Lt,b,x)
+            ${t}$, intent(in) :: Lt(:,:)
             ${t}$, intent(in) :: b(:)
             ${t}$, intent(inout) :: x(:)
         end subroutine
-        module subroutine solve_backward_triangular_csr_${s}$(U,b,x)
-            type(CSR_${s}$_type), intent(in) :: U
+        module subroutine solve_backward_triangular_csr_${s}$(Lt,b,x)
+            type(CSR_${s}$_type), intent(in) :: Lt
             ${t}$, intent(in) :: b(:)
             ${t}$, intent(inout) :: x(:)
         end subroutine

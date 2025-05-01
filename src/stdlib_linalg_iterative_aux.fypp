@@ -32,17 +32,17 @@ contains
         end do
     end subroutine
 
-    module subroutine solve_backward_triangular_dense_${s}$(U,b,x)
-        ${t}$, intent(in) :: U(:,:)
+    module subroutine solve_backward_triangular_dense_${s}$(Lt,b,x)
+        ${t}$, intent(in) :: Lt(:,:)
         ${t}$, intent(in) :: b(:)
         ${t}$, intent(inout) :: x(:)
 
         integer(ilp) :: i, j, m
 
-        do j = size(U,dim=2), 1, -1
+        do j = size(Lt,dim=2), 1, -1
             x(j) = b(j)
             do i = 1, j-1
-                x(i) = x(i) - U(i,j)*x(j)
+                x(i) = x(i) - Lt(j,i)*x(j)
             end do
         end do
     end subroutine
@@ -88,8 +88,8 @@ contains
         end select
     end subroutine
     
-    module subroutine solve_backward_triangular_csr_${s}$(U,b,x)
-        type(CSR_${s}$_type), intent(in) :: U
+    module subroutine solve_backward_triangular_csr_${s}$(Lt,b,x)
+        type(CSR_${s}$_type), intent(in) :: Lt
         ${t}$, intent(in) :: b(:)
         ${t}$, intent(inout) :: x(:)
         ${t}$ :: aux
@@ -98,30 +98,30 @@ contains
         integer(ilp) :: i, j, m
     
         baux = zero_${s}$
-        select case (U%storage)
+        select case (Lt%storage)
         case(sparse_full)
-            do i = U%nrows, 1, -1
+            do i = Lt%nrows, 1, -1
                 x(i) = b(i) - baux(i)
-                do m = U%rowptr(i), U%rowptr(i+1)-1
-                    j = U%col(m)
+                do m = Lt%rowptr(i), Lt%rowptr(i+1)-1
+                    j = Lt%col(m)
                     if(j<i) cycle !> skip lower part of the matrix
-                    baux(j) = baux(j) + U%data(m)*x(i)
+                    baux(j) = baux(j) + Lt%data(m)*x(i)
                 end do
             end do
         case(sparse_lower)
-            do i = U%nrows, 1, -1
+            do i = Lt%nrows, 1, -1
                 x(i) = b(i) - baux(i)
-                do m = U%rowptr(i), U%rowptr(i+1)-2
-                    j = U%col(m)
-                    baux(j) = baux(j) + U%data(m)*x(i)
+                do m = Lt%rowptr(i), Lt%rowptr(i+1)-2
+                    j = Lt%col(m)
+                    baux(j) = baux(j) + Lt%data(m)*x(i)
                 end do
             end do
         case(sparse_upper) 
-            do i = U%nrows, 1, -1
+            do i = Lt%nrows, 1, -1
                 x(i) = b(i)
-                do m = U%rowptr(i)+1, U%rowptr(i+1)-1
-                    j = U%col(m)
-                    x(i) = x(i) - U%data(m)*x(j)
+                do m = Lt%rowptr(i)+1, Lt%rowptr(i+1)-1
+                    j = Lt%col(m)
+                    x(i) = x(i) - Lt%data(m)*x(j)
                 end do
             end do
         end select
