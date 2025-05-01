@@ -130,4 +130,183 @@ contains
     #:endfor
     
 
+    !==============================================================
+    ! Factorization for preconditioners
+    !==============================================================
+    #:for k, t, s in R_KINDS_TYPES
+    module subroutine factorize_ssor_dense_${s}$(A, w, L, D)
+        ${t}$, intent(in) :: A(:,:)
+        ${t}$, intent(in) :: w
+        ${t}$, intent(out) :: L(:,:)
+        ${t}$, intent(out) :: D(:)
+        
+        integer(ilp) :: i, j, n
+        ${t}$ :: inv_w
+    
+        n = size(A,dim=1)
+        inv_w = 1._${s}$ / w
+        do j = 1, n 
+            D(j) = A(j,j) * (2._${s}$-w)*inv_w
+            do i = 1, j-1 
+                L(i,j) = 0._${s}$
+            end do
+            L(j,j) = L(j,j) * inv_w
+            do i = j+1, n 
+                L(i,j) = A(i,j) 
+            end do
+        end do
+
+    end subroutine
+
+    #:endfor
+
+    #:for k, t, s in R_KINDS_TYPES
+    module subroutine factorize_ssor_csr_${s}$(A, w, L, D)
+        type(CSR_${s}$_type), intent(in) :: A
+        ${t}$, intent(in) :: w
+        type(CSR_${s}$_type), intent(out) :: L
+        ${t}$, intent(out) :: D(:)
+        
+        integer(ilp) :: i, j, n
+        ${t}$ :: inv_w
+        
+        inv_w = 1._${s}$ / w
+        L%data = A%data
+        select case(A%storage)
+        case(sparse_lower)
+            do i = 1, A%nrows
+                D(i) = A%data( A%rowptr(i+1)-1 ) * (2._${s}$-w)*inv_w
+                L%data( A%rowptr(i+1)-1 ) = L%data( A%rowptr(i+1)-1 ) * inv_w
+            end do
+        case(sparse_upper)
+            do i = 1, A%nrows
+                D(i) = A%data( A%rowptr(i) ) * (2._${s}$-w)*inv_w
+                L%data( A%rowptr(i) ) = L%data( A%rowptr(i) ) * inv_w
+            end do
+        case(sparse_full)
+            do i = 1, A%nrows
+                do j = A%rowptr(i), A%rowptr(i+1)-1
+                    if( A%col(j) == i ) then
+                        D(i) = A%data(j) * (2._${s}$-w)*inv_w
+                        L%data(j) = L%data(j) * inv_w
+                        exit
+                    end if
+                end do
+            end do
+        end select
+
+    end subroutine
+
+    #:endfor
+
+    !> Bunch-Kaufman factorization of a symmetric positive definite matrix A.
+    !> The matrix A is assumed to be symmetric and positive definite.
+    #:for k, t, s in R_KINDS_TYPES
+    module subroutine factorize_ldlt_dense_${s}$(A, L, D)
+        ${t}$, intent(in) :: A(:,:)
+        ${t}$, intent(out) :: L(:,:)
+        ${t}$, intent(out) :: D(:)
+        
+        ${t}$:: auxsum
+        integer(ilp) :: i, j, k, n
+    
+        ! Initialize L to zero
+        n = size(A,dim=1)
+        L = zero_${s}$
+
+        do i = 1, n
+            ! Compute D(i)
+            auxsum = A(i, i)
+            do k = 1, i - 1
+                auxsum = auxsum - (L(i, k) ** 2) * D(k)
+            end do
+            D(i) = auxsum
+    
+            ! Check for positive definiteness
+            if (D(i) <= zero_${s}$ ) D(i) = one_${s}$
+    
+            ! Set unit diagonal
+            L(i, i) = one_${s}$
+    
+            ! Compute L(j, i) for j = i+1 to n
+            do j = i + 1, n
+                auxsum = A(j, i)
+                do k = 1, i - 1
+                    auxsum = auxsum - L(j, k) * L(i, k) * D(k)
+                end do
+                L(j, i) = auxsum / D(i)
+            end do
+        end do
+    end subroutine
+
+    #:endfor
+
+    #:for k, t, s in R_KINDS_TYPES
+    module subroutine factorize_ldlt_csr_${s}$(A, L, D)
+        type(CSR_${s}$_type), intent(in) :: A
+        type(CSR_${s}$_type), intent(out) :: L
+        ${t}$, intent(out) :: D(:)
+        
+        ${t}$:: auxsum
+        integer(ilp) :: i, j, k, n, p, q
+
+        integer, allocatable :: col_to_pos(:)
+        ${t}$, allocatable :: temp(:)
+
+        allocate(col_to_pos(n), source=-1)
+        allocate(temp(n),source=zero_${s}$)
+
+        n = A%nrows
+        do i = 1, n
+            ! Zero the temp workspace
+            temp = zero_${s}$
+
+            ! Load row i into temp (lower triangle only)
+            do p = A%rowptr(i), A%rowptr(i+1) - 1
+                j = A%col(p)
+                if (j > i) cycle
+                temp(j) = A%data(p)
+                col_to_pos(j) = p  ! map column to position in L%data
+            end do
+
+            ! Compute L(i, k) * D(k) * L(i, k) contributions
+            do p = A%rowptr(i), A%rowptr(i+1) - 1
+                k = A%col(p)
+                if (k >= i) exit
+
+                auxsum = temp(k)
+
+                ! Compute L(i, 1:k-1) ⋅ D(1:k-1) ⋅ L(k, 1:k-1)
+                do q = A%rowptr(k), A%rowptr(k+1) - 1
+                    j = A%col(q)
+                    if (j >= k) exit
+                    auxsum = auxsum - L%data(col_to_pos(j)) * D(j) * L%data(q)
+                end do
+
+                L%data(p) = auxsum / D(k)
+                temp(k) = zero_${s}$  ! Clear temp slot
+            end do
+
+            ! Compute D(i)
+            auxsum = temp(i)
+            do p = A%rowptr(i), A%rowptr(i+1) - 1
+                k = A%col(p)
+                if (k >= i) exit
+                auxsum = auxsum - L%data(p)**2 * D(k)
+            end do
+
+            D(i) = merge( auxsum, one_${s}$ , auxsum > zero_${s}$)
+
+            ! Set L(i, i) = 1.0
+            L%data(col_to_pos(i)) = one_${s}$
+
+            ! Reset col_to_pos map
+            do p = A%rowptr(i), A%rowptr(i+1) - 1
+                col_to_pos(A%col(p)) = -1
+            end do
+        end do  
+    end subroutine
+
+    #:endfor
+
 end submodule stdlib_linalg_iterative_aux
