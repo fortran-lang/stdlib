@@ -203,10 +203,9 @@ end function
 ! softmax
 !==================================================
 #:for rk, rt in REAL_KINDS_TYPES
-pure module function softmax_r1_${rk}$( x , dim ) result( y )
+pure module function softmax_r1_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x(:)
     ${rt}$ :: y(size(x))
-    integer, intent(in), optional :: dim
 
     y = exp(x - maxval(x))
     y = y / sum(y)
@@ -242,10 +241,9 @@ pure module function softmax_r${rank}$_${rk}$( x , dim ) result( y )
 end function
 #:endfor
 
-pure module function softmax_grad_r1_${rk}$( x , dim ) result( y )
+pure module function softmax_grad_r1_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x(:)
     ${rt}$ :: y(size(x))
-    integer, intent(in), optional :: dim
     
     y = softmax(x)
     y = y * (1._${rk}$ - y)
@@ -272,10 +270,10 @@ end function
 ! logsoftmax
 !==================================================
 #:for rk, rt in REAL_KINDS_TYPES
-pure module function logsoftmax_r1_${rk}$( x, dim ) result( y )
+pure module function logsoftmax_r1_${rk}$( x ) result( y )
     ${rt}$, intent(in) :: x(:)
     ${rt}$ :: y(size(x))
-    integer, intent(in), optional :: dim
+
     y = x - maxval(x)
     y = y - log( sum(exp(y)) )
 end function

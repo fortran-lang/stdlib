@@ -321,10 +321,9 @@ module stdlib_specialfunctions
         !! softmax function. Available for ranks 1 to 4
         !> ([Specification](../page/specs/stdlib_specialfunctions.html#softmax))
         #:for rk, rt in REAL_KINDS_TYPES
-        pure module function softmax_r1_${rk}$( x , dim ) result( y )
+        pure module function softmax_r1_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x(:)
             ${rt}$ :: y(size(x))
-            integer, intent(in), optional :: dim
         end function
         #:for rank in RANKS
         pure module function softmax_r${rank}$_${rk}$( x , dim ) result( y )
@@ -343,10 +342,9 @@ module stdlib_specialfunctions
         !! Gradient of the softmax function. Available for ranks 1 to 4
         !> ([Specification](../page/specs/stdlib_specialfunctions.html#softmax_grad))
         #:for rk, rt in REAL_KINDS_TYPES
-        pure module function softmax_grad_r1_${rk}$( x , dim ) result( y )
+        pure module function softmax_grad_r1_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x(:)
             ${rt}$ :: y(size(x))
-            integer, intent(in), optional :: dim
         end function
         #:for rank in RANKS
         pure module function softmax_grad_r${rank}$_${rk}$( x , dim ) result( y )
@@ -365,10 +363,9 @@ module stdlib_specialfunctions
         !! softmax function. Available for ranks 1 to 4
         !> ([Specification](../page/specs/stdlib_specialfunctions.html#logsoftmax))
         #:for rk, rt in REAL_KINDS_TYPES
-        pure module function logsoftmax_r1_${rk}$( x, dim ) result( y )
+        pure module function logsoftmax_r1_${rk}$( x ) result( y )
             ${rt}$, intent(in) :: x(:)
             ${rt}$ :: y(size(x))
-            integer, intent(in), optional :: dim
         end function
         #:for rank in RANKS
         pure module function logsoftmax_r${rank}$_${rk}$( x , dim ) result( y )
