@@ -21,7 +21,7 @@ submodule(stdlib_linalg_iterative_solvers) stdlib_linalg_iterative_pccg
 contains
 
     #:for k, t, s in R_KINDS_TYPES
-    module subroutine solve_pccg_generic_${s}$(A,M,b,x,tol,maxiter,workspace)
+    module subroutine solve_pccg_kernel_${s}$(A,M,b,x,tol,maxiter,workspace)
         class(linop_${s}$), intent(in) :: A
         class(linop_${s}$), intent(in) :: M !> preconditionner
         ${t}$, intent(in) :: b(:), tol
@@ -180,7 +180,7 @@ contains
         ! main call to the solver
         if(restart_) x = zero_${s}$
         x = merge( b, x, di_ ) !> copy dirichlet load conditions encoded in B and indicated by di
-        call solve_pccg_generic(op,M_,b,x,tol_,maxiter_,workspace_)
+        call solve_pccg_kernel(op,M_,b,x,tol_,maxiter_,workspace_)
 
         !-------------------------
         ! internal memory cleanup

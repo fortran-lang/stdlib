@@ -3,7 +3,7 @@ module custom_solver
     use stdlib_sparse
     use stdlib_linalg_iterative_solvers, only: linop_dp, &
                     solver_workspace_dp, &
-                    solve_pccg_generic, &
+                    solve_pccg_kernel, &
                     size_wksp_pccg
     implicit none
 contains
@@ -56,7 +56,7 @@ contains
         where(abs(diagonal)>epsilon(0.d0)) diagonal = 1._dp/diagonal
         !-------------------------
         ! main call to the solver
-        call solve_pccg_generic(op,M,b,x,tol_,maxiter_,workspace_)
+        call solve_pccg_kernel(op,M,b,x,tol_,maxiter_,workspace_)
 
         !-------------------------
         ! internal memory cleanup
