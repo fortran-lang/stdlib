@@ -114,7 +114,7 @@ contains
     #:for k1, t1 in REAL_KINDS_TYPES
     impure function rvs_exp_0_${t1[0]}$${k1}$( ) result(res)
     !
-    ! Standard exponential random variate (lambda=1)
+    ! Standard exponential random variate (lambda=1; scale=1/lambda=1)
     !
         ${t1}$ :: res, x
         ${t1}$, parameter :: r = 7.69711747013104972_${k1}$
@@ -153,18 +153,18 @@ contains
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    impure elemental function rvs_exp_${t1[0]}$${k1}$(lambda) result(res)
+    impure elemental function rvs_exp_${t1[0]}$${k1}$(loc, scale) result(res)
     !
     ! Exponential distributed random variate
     !
-        ${t1}$, intent(in) :: lambda
+        ${t1}$, intent(in) :: loc, scale
         ${t1}$ :: res
 
-        if (lambda <= 0._${k1}$) then
+        if (scale <= 0._${k1}$) then
             res = ieee_value(1._${k1}$, ieee_quiet_nan)
         else
             res = rvs_exp_0_${t1[0]}$${k1}$(  )
-            res = res / lambda
+            res = res * scale + loc
         end if
     end function rvs_exp_${t1[0]}$${k1}$
 
@@ -174,13 +174,13 @@ contains
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
-    impure elemental function rvs_exp_${t1[0]}$${k1}$(lambda) result(res)
-        ${t1}$, intent(in) :: lambda
+    impure elemental function rvs_exp_${t1[0]}$${k1}$(loc, scale) result(res)
+        ${t1}$, intent(in) :: loc, scale
         ${t1}$ :: res
         real(${k1}$) :: tr, ti
 
-        tr = rvs_exp_r${k1}$(lambda % re)
-        ti = rvs_exp_r${k1}$(lambda % im)
+        tr = rvs_exp_r${k1}$(loc%re, scale%re)
+        ti = rvs_exp_r${k1}$(loc%im, scale%im)
         res = cmplx(tr, ti, kind=${k1}$)
     end function rvs_exp_${t1[0]}$${k1}$
 
@@ -190,14 +190,14 @@ contains
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    impure function rvs_exp_array_${t1[0]}$${k1}$(lambda, array_size) result(res)
-        ${t1}$, intent(in) :: lambda
+    impure function rvs_exp_array_${t1[0]}$${k1}$(loc, scale, array_size) result(res)
+        ${t1}$, intent(in) :: loc, scale
         integer, intent(in) :: array_size
         ${t1}$ :: res(array_size), x, re
         ${t1}$, parameter :: r = 7.69711747013104972_${k1}$
         integer :: jz, iz, i
 
-        if (lambda <= 0._${k1}$) then
+        if (scale <= 0._${k1}$) then
             res = ieee_value(1._${k1}$, ieee_quiet_nan)
             return
         end if
@@ -228,7 +228,7 @@ contains
                     end if
                end do L1
             endif
-            res(i) = re / lambda
+            res(i) = re * scale + loc
         end do
     end function rvs_exp_array_${t1[0]}$${k1}$
 
@@ -238,16 +238,16 @@ contains
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
-    impure function rvs_exp_array_${t1[0]}$${k1}$(lambda, array_size) result(res)
-        ${t1}$, intent(in) :: lambda
+    impure function rvs_exp_array_${t1[0]}$${k1}$(loc, scale, array_size) result(res)
+        ${t1}$, intent(in) :: loc, scale
         integer, intent(in) :: array_size
         ${t1}$ :: res(array_size)
         integer :: i
         real(${k1}$) :: tr, ti
 
         do i = 1, array_size
-            tr = rvs_exp_r${k1}$(lambda % re)
-            ti = rvs_exp_r${k1}$(lambda % im)
+            tr = rvs_exp_r${k1}$(loc%re, scale%re)
+            ti = rvs_exp_r${k1}$(loc%im, scale%im)
             res(i) = cmplx(tr, ti, kind=${k1}$)
         end do
     end function rvs_exp_array_${t1[0]}$${k1}$
@@ -258,19 +258,19 @@ contains
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    elemental function pdf_exp_${t1[0]}$${k1}$(x, lambda) result(res)
+    elemental function pdf_exp_${t1[0]}$${k1}$(x, loc, scale) result(res)
     !
     ! Exponential Distribution Probability Density Function
     !
-        ${t1}$, intent(in) :: x, lambda
+        ${t1}$, intent(in) :: x, loc, scale
         real(${k1}$) :: res
 
-        if (lambda <= 0._${k1}$) then
+        if (scale <= 0._${k1}$) then
             res = ieee_value(1._${k1}$, ieee_quiet_nan)
-        else if (x < 0._${k1}$) then
+        else if (x < loc) then
             res = 0._${k1}$
         else
-            res = exp(- x * lambda) * lambda
+            res = exp(- (x - loc) / scale) / scale
         end if
     end function pdf_exp_${t1[0]}$${k1}$
 
@@ -280,12 +280,12 @@ contains
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
-    elemental function pdf_exp_${t1[0]}$${k1}$(x, lambda) result(res)
-        ${t1}$, intent(in) :: x, lambda
+    elemental function pdf_exp_${t1[0]}$${k1}$(x, loc, scale) result(res)
+        ${t1}$, intent(in) :: x, loc, scale
         real(${k1}$) :: res
 
-        res = pdf_exp_r${k1}$(x % re, lambda % re)
-        res = res * pdf_exp_r${k1}$(x % im, lambda % im)
+        res = pdf_exp_r${k1}$(x%re, loc%re, scale%re)
+        res = res * pdf_exp_r${k1}$(x%im, loc%im, scale%im)
     end function pdf_exp_${t1[0]}$${k1}$
 
     #:endfor
@@ -294,19 +294,19 @@ contains
 
 
     #:for k1, t1 in REAL_KINDS_TYPES
-    elemental function cdf_exp_${t1[0]}$${k1}$(x, lambda) result(res)
+    elemental function cdf_exp_${t1[0]}$${k1}$(x, loc, scale) result(res)
     !
     ! Exponential Distribution Cumulative Distribution Function
     !
-        ${t1}$, intent(in) :: x, lambda
+        ${t1}$, intent(in) :: x, loc, scale
         real(${k1}$) :: res
 
-        if (lambda <= 0._${k1}$) then
+        if (scale <= 0._${k1}$) then
             res = ieee_value(1._${k1}$, ieee_quiet_nan)
-        else if (x < 0._${k1}$) then
+        else if (x < loc) then
             res = 0._${k1}$
         else
-            res = 1.0_${k1}$ - exp(- x * lambda)
+            res = 1.0_sp - exp(- (x - loc) / scale)
         end if
     end function cdf_exp_${t1[0]}$${k1}$
 
@@ -316,12 +316,12 @@ contains
 
 
     #:for k1, t1 in CMPLX_KINDS_TYPES
-    elemental function cdf_exp_${t1[0]}$${k1}$(x, lambda) result(res)
-        ${t1}$, intent(in) :: x, lambda
+    elemental function cdf_exp_${t1[0]}$${k1}$(x, loc, scale) result(res)
+        ${t1}$, intent(in) :: x, loc, scale
         real(${k1}$) :: res
 
-        res = cdf_exp_r${k1}$(x % re, lambda % re)
-        res = res * cdf_exp_r${k1}$(x % im, lambda % im)
+        res = cdf_exp_r${k1}$(x%re, loc%re, scale%re)
+        res = res * cdf_exp_r${k1}$(x%im, loc%im, scale%im)
     end function cdf_exp_${t1[0]}$${k1}$
 
     #:endfor
