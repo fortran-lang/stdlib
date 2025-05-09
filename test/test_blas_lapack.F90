@@ -21,7 +21,9 @@ contains
             new_unittest("test_getrirsp", test_getrirsp), &
             new_unittest("test_gemvrdp", test_gemvrdp), &
             new_unittest("test_getrirdp", test_getrirdp), &
-            new_unittest("test_idamax", test_idamax) &
+            new_unittest("test_idamax", test_idamax), &
+            new_unittest("test_external_blas",external_blas_test), &
+            new_unittest("test_external_lapack",external_lapack_test) &
             ]
 
     end subroutine collect_blas_lapack
@@ -154,6 +156,75 @@ contains
         call check(error, imax==5, "blas idamax returned wrong location")
 
     end subroutine test_idamax
+
+    !> Test availability of the external BLAS interface
+    subroutine external_blas_test(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+#ifdef STDLIB_EXTERNAL_BLAS           
+        interface 
+            subroutine saxpy(n,sa,sx,incx,sy,incy)
+                 import sp,ilp 
+                 implicit none(type,external) 
+                 real(sp), intent(in) :: sa,sx(*)
+                 integer(ilp), intent(in) :: incx,incy,n
+                 real(sp), intent(inout) :: sy(*)
+            end subroutine saxpy        
+        end interface
+        
+        integer(ilp), parameter :: n = 5, inc=1
+        real(sp) :: a,x(n),y(n)
+             
+        x = 1.0_sp
+        y = 2.0_sp
+        a = 3.0_sp
+        
+        call saxpy(n,a,x,inc,y,inc)
+        call check(error, all(abs(y-5.0_sp)<sqrt(epsilon(0.0_sp))), "saxpy: check result")
+        if (allocated(error)) return
+        
+#else
+        call skip_test(error, "Not using an external BLAS")
+#endif        
+        
+    end subroutine external_blas_test        
+                
+    !> Test availability of the external BLAS interface
+    subroutine external_lapack_test(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+#ifdef STDLIB_EXTERNAL_LAPACK       
+        interface 
+           subroutine dgetrf( m, n, a, lda, ipiv, info )
+                import dp,ilp
+                implicit none(type,external) 
+                integer(ilp), intent(out) :: info,ipiv(*)
+                integer(ilp), intent(in) :: lda,m,n
+                real(dp), intent(inout) :: a(lda,*)
+           end subroutine dgetrf       
+        end interface
+        
+        integer(ilp), parameter :: n = 3
+        real(dp) :: A(n,n)
+        integer(ilp) :: ipiv(n),info
+
+
+        A = eye(n)        
+        info = 123
+
+        ! Factorize matrix 
+        call dgetrf(n,n,A,n,ipiv,info)
+
+        call check(error, info==0, "dgetrf: check result")
+        if (allocated(error)) return
+        
+#else
+        call skip_test(error, "Not using an external LAPACK")
+#endif        
+        
+    end subroutine external_lapack_test                  
 
 end module test_blas_lapack
 
