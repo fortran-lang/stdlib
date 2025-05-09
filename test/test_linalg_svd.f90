@@ -82,7 +82,7 @@ module test_linalg_svd
         if (allocated(error)) return        
         call check(error, all(abs(s-s_sol)<=tol), test//': S')
         if (allocated(error)) return             
-        call check(error, all(abs(u-u_sol)<=tol) .or. all(abs(u+u_sol)<=tol), test//': U')
+        call check(error, all(abs(abs(u)-abs(u_sol))<=tol), test//': U')
         if (allocated(error)) return             
 
         !> [S, U]. Overwrite A matrix
@@ -93,7 +93,7 @@ module test_linalg_svd
         if (allocated(error)) return        
         call check(error, all(abs(s-s_sol)<=tol), test//': S')
         if (allocated(error)) return             
-        call check(error, all(abs(u-u_sol)<=tol) .or. all(abs(u+u_sol)<=tol), test//': U')
+        call check(error, all(abs(abs(u)-abs(u_sol))<=tol), test//': U')
         if (allocated(error)) return            
 
         !> [S, U, V^T]
@@ -105,9 +105,9 @@ module test_linalg_svd
         if (allocated(error)) return        
         call check(error, all(abs(s-s_sol)<=tol), test//': S')
         if (allocated(error)) return             
-        call check(error, all(abs(u-u_sol)<=tol) .or. all(abs(u+u_sol)<=tol), test//': U')
+        call check(error, all(abs(abs(u)-abs(u_sol))<=tol), test//': U')
         if (allocated(error)) return           
-        call check(error, all(abs(vt-vt_sol)<=tol) .or. all(abs(vt+vt_sol)<=tol), test//': V^T')
+        call check(error, all(abs(abs(vt)-abs(vt_sol))<=tol), test//': V^T')
         if (allocated(error)) return           
         
         !> [S, V^T]. Do not overwrite A matrix
@@ -119,7 +119,7 @@ module test_linalg_svd
         if (allocated(error)) return        
         call check(error, all(abs(s-s_sol)<=tol), test//': S')
         if (allocated(error)) return             
-        call check(error, all(abs(vt-vt_sol)<=tol) .or. all(abs(vt+vt_sol)<=tol), test//': V^T')
+        call check(error, all(abs(abs(vt)-abs(vt_sol))<=tol), test//': V^T')
         if (allocated(error)) return   
 
         !> [S, V^T]. Overwrite A matrix
@@ -130,7 +130,7 @@ module test_linalg_svd
         if (allocated(error)) return        
         call check(error, all(abs(s-s_sol)<=tol), test//': S')
         if (allocated(error)) return             
-        call check(error, all(abs(vt-vt_sol)<=tol) .or. all(abs(vt+vt_sol)<=tol), test//': V^T')
+        call check(error, all(abs(abs(vt)-abs(vt_sol))<=tol), test//': V^T')
         if (allocated(error)) return           
         
         !> [U, S, V^T].
@@ -140,11 +140,11 @@ module test_linalg_svd
         test = '[U, S, V^T]'
         call check(error,state%ok(),test//': '//state%print())
         if (allocated(error)) return        
-        call check(error, all(abs(u-u_sol)<=tol) .or. all(abs(u+u_sol)<=tol), test//': U')
+        call check(error, all(abs(abs(u)-abs(u_sol))<=tol), test//': U')
         if (allocated(error)) return                   
         call check(error, all(abs(s-s_sol)<=tol), test//': S')
         if (allocated(error)) return     
-        call check(error, all(abs(vt-vt_sol)<=tol) .or. all(abs(vt+vt_sol)<=tol), test//': V^T')
+        call check(error, all(abs(abs(vt)-abs(vt_sol))<=tol), test//': V^T')
         if (allocated(error)) return             
 
         !> [U, S, V^T]. Partial storage -> compare until k=2 columns of U rows of V^T
@@ -156,11 +156,11 @@ module test_linalg_svd
         test = '[U, S, V^T], partial storage'
         call check(error,state%ok(),test//': '//state%print())
         if (allocated(error)) return        
-        call check(error, all(abs(u(:,:2)-u_sol(:,:2))<=tol) .or. all(abs(u(:,:2)+u_sol(:,:2))<=tol), test//': U(:,:2)')
+        call check(error, all(abs(abs(u(:,:2))-abs(u_sol(:,:2)))<=tol), test//': U(:,:2)')
         if (allocated(error)) return                   
         call check(error, all(abs(s-s_sol)<=tol), test//': S')
         if (allocated(error)) return     
-        call check(error, all(abs(vt(:2,:)-vt_sol(:2,:))<=tol) .or. all(abs(vt(:2,:)+vt_sol(:2,:))<=tol), test//': V^T(:2,:)')
+        call check(error, all(abs(abs(vt(:2,:))-abs(vt_sol(:2,:)))<=tol), test//': V^T(:2,:)')
         if (allocated(error)) return           
 
     end subroutine test_svd_s
@@ -216,7 +216,7 @@ module test_linalg_svd
         if (allocated(error)) return        
         call check(error, all(abs(s-s_sol)<=tol), test//': S')
         if (allocated(error)) return             
-        call check(error, all(abs(u-u_sol)<=tol) .or. all(abs(u+u_sol)<=tol), test//': U')
+        call check(error, all(abs(abs(u)-abs(u_sol))<=tol), test//': U')
         if (allocated(error)) return             
 
         !> [S, U]. Overwrite A matrix
@@ -227,7 +227,7 @@ module test_linalg_svd
         if (allocated(error)) return        
         call check(error, all(abs(s-s_sol)<=tol), test//': S')
         if (allocated(error)) return             
-        call check(error, all(abs(u-u_sol)<=tol) .or. all(abs(u+u_sol)<=tol), test//': U')
+        call check(error, all(abs(abs(u)-abs(u_sol))<=tol), test//': U')
         if (allocated(error)) return            
 
         !> [S, U, V^T]
@@ -239,9 +239,9 @@ module test_linalg_svd
         if (allocated(error)) return        
         call check(error, all(abs(s-s_sol)<=tol), test//': S')
         if (allocated(error)) return             
-        call check(error, all(abs(u-u_sol)<=tol) .or. all(abs(u+u_sol)<=tol), test//': U')
+        call check(error, all(abs(abs(u)-abs(u_sol))<=tol), test//': U')
         if (allocated(error)) return           
-        call check(error, all(abs(vt-vt_sol)<=tol) .or. all(abs(vt+vt_sol)<=tol), test//': V^T')
+        call check(error, all(abs(abs(vt)-abs(vt_sol))<=tol), test//': V^T')
         if (allocated(error)) return           
         
         !> [S, V^T]. Do not overwrite A matrix
@@ -253,7 +253,7 @@ module test_linalg_svd
         if (allocated(error)) return        
         call check(error, all(abs(s-s_sol)<=tol), test//': S')
         if (allocated(error)) return             
-        call check(error, all(abs(vt-vt_sol)<=tol) .or. all(abs(vt+vt_sol)<=tol), test//': V^T')
+        call check(error, all(abs(abs(vt)-abs(vt_sol))<=tol), test//': V^T')
         if (allocated(error)) return   
 
         !> [S, V^T]. Overwrite A matrix
@@ -264,7 +264,7 @@ module test_linalg_svd
         if (allocated(error)) return        
         call check(error, all(abs(s-s_sol)<=tol), test//': S')
         if (allocated(error)) return             
-        call check(error, all(abs(vt-vt_sol)<=tol) .or. all(abs(vt+vt_sol)<=tol), test//': V^T')
+        call check(error, all(abs(abs(vt)-abs(vt_sol))<=tol), test//': V^T')
         if (allocated(error)) return           
         
         !> [U, S, V^T].
@@ -274,11 +274,11 @@ module test_linalg_svd
         test = '[U, S, V^T]'
         call check(error,state%ok(),test//': '//state%print())
         if (allocated(error)) return        
-        call check(error, all(abs(u-u_sol)<=tol) .or. all(abs(u+u_sol)<=tol), test//': U')
+        call check(error, all(abs(abs(u)-abs(u_sol))<=tol), test//': U')
         if (allocated(error)) return                   
         call check(error, all(abs(s-s_sol)<=tol), test//': S')
         if (allocated(error)) return     
-        call check(error, all(abs(vt-vt_sol)<=tol) .or. all(abs(vt+vt_sol)<=tol), test//': V^T')
+        call check(error, all(abs(abs(vt)-abs(vt_sol))<=tol), test//': V^T')
         if (allocated(error)) return             
 
         !> [U, S, V^T]. Partial storage -> compare until k=2 columns of U rows of V^T
@@ -290,11 +290,11 @@ module test_linalg_svd
         test = '[U, S, V^T], partial storage'
         call check(error,state%ok(),test//': '//state%print())
         if (allocated(error)) return        
-        call check(error, all(abs(u(:,:2)-u_sol(:,:2))<=tol) .or. all(abs(u(:,:2)+u_sol(:,:2))<=tol), test//': U(:,:2)')
+        call check(error, all(abs(abs(u(:,:2))-abs(u_sol(:,:2)))<=tol), test//': U(:,:2)')
         if (allocated(error)) return                   
         call check(error, all(abs(s-s_sol)<=tol), test//': S')
         if (allocated(error)) return     
-        call check(error, all(abs(vt(:2,:)-vt_sol(:2,:))<=tol) .or. all(abs(vt(:2,:)+vt_sol(:2,:))<=tol), test//': V^T(:2,:)')
+        call check(error, all(abs(abs(vt(:2,:))-abs(vt_sol(:2,:)))<=tol), test//': V^T(:2,:)')
         if (allocated(error)) return           
 
     end subroutine test_svd_d
