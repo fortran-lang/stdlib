@@ -127,6 +127,12 @@ set(SRC
 
 add_library(${PROJECT_NAME} ${SRC})
 
+# Link to BLAS and LAPACK
+if(BLAS_FOUND AND LAPACK_FOUND)
+  target_link_libraries(${PROJECT_NAME} "BLAS::BLAS")
+  target_link_libraries(${PROJECT_NAME} "LAPACK::LAPACK")
+endif()
+
 set_target_properties(
   ${PROJECT_NAME}
   PROPERTIES
