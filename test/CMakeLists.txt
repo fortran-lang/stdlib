@@ -18,6 +18,15 @@ macro(ADDTEST name)
              WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 endmacro(ADDTEST)
 
+macro(ADDTESTPP name)
+    add_executable(test_${name} test_${name}.F90)
+    target_link_libraries(test_${name} "${PROJECT_NAME}" "test-drive::test-drive")
+    add_test(NAME ${name}
+             COMMAND $<TARGET_FILE:test_${name}> ${CMAKE_CURRENT_BINARY_DIR}
+             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+endmacro(ADDTESTPP)
+
+
 add_subdirectory(array)
 add_subdirectory(ascii)
 add_subdirectory(bitsets)

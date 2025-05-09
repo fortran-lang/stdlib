@@ -1,4 +1,4 @@
-list(APPEND cppFiles
+list(APPEND fppFiles
     lapack/stdlib_lapack_base.fypp
     lapack/stdlib_lapack_solve.fypp
     lapack/stdlib_lapack_others.fypp
@@ -55,4 +55,4 @@ list(APPEND cppFiles
     lapack/stdlib_lapack_svd_comp2.fypp
 )
 
-set(cppFiles "${cppFiles}" PARENT_SCOPE)
+set(fppFiles "${fppFiles}" PARENT_SCOPE)
