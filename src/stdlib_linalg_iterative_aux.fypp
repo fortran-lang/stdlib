@@ -134,7 +134,7 @@ contains
     ! Factorization for preconditioners
     !==============================================================
     #:for k, t, s in R_KINDS_TYPES
-    module subroutine factorize_ssor_dense_${s}$(A, w, L, D)
+    module subroutine ssor_dense_${s}$(A, w, L, D)
         ${t}$, intent(in) :: A(:,:)
         ${t}$, intent(in) :: w
         ${t}$, intent(inout) :: L(:,:)
@@ -161,7 +161,7 @@ contains
     #:endfor
 
     #:for k, t, s in R_KINDS_TYPES
-    module subroutine factorize_ssor_csr_${s}$(A, w, L, D)
+    module subroutine ssor_csr_${s}$(A, w, L, D)
         type(CSR_${s}$_type), intent(in) :: A
         ${t}$, intent(in) :: w
         type(CSR_${s}$_type), intent(inout) :: L
@@ -202,7 +202,7 @@ contains
     !> Bunch-Kaufman factorization of a symmetric positive definite matrix A.
     !> The matrix A is assumed to be symmetric and positive definite.
     #:for k, t, s in R_KINDS_TYPES
-    module subroutine factorize_ldlt_dense_${s}$(A, L, D)
+    module subroutine ldlt_dense_${s}$(A, L, D)
         ${t}$, intent(in) :: A(:,:)
         ${t}$, intent(inout) :: L(:,:)
         ${t}$, intent(inout) :: D(:)
@@ -242,7 +242,7 @@ contains
     #:endfor
 
     #:for k, t, s in R_KINDS_TYPES
-    module subroutine factorize_ldlt_csr_${s}$(A, L, D)
+    module subroutine ldlt_csr_${s}$(A, L, D)
         type(CSR_${s}$_type), intent(in) :: A
         type(CSR_${s}$_type), intent(inout) :: L
         ${t}$, intent(inout) :: D(:)

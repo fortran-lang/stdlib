@@ -49,13 +49,12 @@ module test_linalg_solve_iterative
 
         ${t}$ :: L(5,5), D(5)
 
-        call factorize_ldlt(A, L, D)
+        call ldlt(A, L, D)
 
         call check(error, all(abs(L-Lref)<tol), 'LDLt factorization L doesnt match')
         if (allocated(error)) return
         call check(error, all(abs(D-Dref)<tol), 'LDLt factorization D doesnt match')
         if (allocated(error)) return
-        
         end block
 
         #:endfor
@@ -76,7 +75,7 @@ module test_linalg_solve_iterative
         ${t}$ :: Dref(3) = [${t}$ :: 4, 1, 9]
         ${t}$ :: L(3,3), D(3), b(3), x(3), res(3)
 
-        call factorize_ldlt(A, L, D)
+        call ldlt(A, L, D)
         
         call check(error, all(abs(L-Lref)<tol), 'LDLt factorization L doesnt match')
         if (allocated(error)) return

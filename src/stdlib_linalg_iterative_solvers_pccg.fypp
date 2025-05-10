@@ -12,10 +12,10 @@ submodule(stdlib_linalg_iterative_solvers) stdlib_linalg_iterative_pccg
     implicit none
 
     enum, bind(c)
-        enumerator :: none = 0
-        enumerator :: jacobi
-        enumerator :: ssor 
-        enumerator :: ldlt
+        enumerator :: pc_none = 0
+        enumerator :: pc_jacobi
+        enumerator :: pc_ssor 
+        enumerator :: pc_ldlt
     end enum
 
 contains
@@ -123,7 +123,7 @@ contains
         maxiter_ = n;       if(present(maxiter)) maxiter_ = maxiter
         restart_ = .true.;  if(present(restart)) restart_ = restart
         tol_ = 1.e-4_${s}$; if(present(tol)) tol_ = tol
-        precond_ = none   ; if(present(precond)) precond_ = precond
+        precond_ = pc_none; if(present(precond)) precond_ = precond
         !-------------------------
         ! internal memory setup
         ! Preconditionner
@@ -134,25 +134,25 @@ contains
             allocate(diagonal(n),source=zero_${s}$)
 
             select case(precond_)
-            case(jacobi)
+            case(pc_jacobi)
                 #:if matrix == "dense"
                 diagonal = diag(A)
                 #:else 
                 call diag(A,diagonal)
                 #:endif
                 M_%apply => precond_jacobi
-            case(ssor)
+            case(pc_ssor)
                 #:if matrix == "dense"
                 diagonal = diag(A)
                 #:else 
                 call diag(A,diagonal)
                 #:endif
                 L = A !> copy A structure to L
-                call factorize_ssor( A , one_${s}$ , L, diagonal )
+                call ssor( A , one_${s}$ , L, diagonal )
                 M_%apply => precond_ldl
-            case(ldlt)
+            case(pc_ldlt)
                 L = A !> copy A structure to L
-                call factorize_ldlt( A , L, diagonal )
+                call ldlt( A , L, diagonal )
                 M_%apply => precond_ldl
             case default
                 M_%apply => precond_none

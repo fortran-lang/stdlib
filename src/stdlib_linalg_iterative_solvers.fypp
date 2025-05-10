@@ -167,31 +167,31 @@ module stdlib_linalg_iterative_solvers
     end interface
     public :: solve_backward_triangular
 
-    interface factorize_ldlt
+    interface ldlt
         #:for k, t, s in R_KINDS_TYPES
-        module subroutine factorize_ldlt_dense_${s}$(A, L, D)
+        module subroutine ldlt_dense_${s}$(A, L, D)
             ${t}$, intent(in) :: A(:,:)
             ${t}$, intent(inout) :: L(:,:)
             ${t}$, intent(inout) :: D(:)
         end subroutine
-        module subroutine factorize_ldlt_csr_${s}$(A, L, D)
+        module subroutine ldlt_csr_${s}$(A, L, D)
             type(CSR_${s}$_type), intent(in) :: A
             type(CSR_${s}$_type), intent(inout) :: L
             ${t}$, intent(inout) :: D(:)
         end subroutine
         #:endfor    
     end interface
-    public :: factorize_ldlt
+    public :: ldlt
 
-    interface factorize_ssor
+    interface ssor
         #:for k, t, s in R_KINDS_TYPES
-        module subroutine factorize_ssor_dense_${s}$(A, w, L, D)
+        module subroutine ssor_dense_${s}$(A, w, L, D)
             ${t}$, intent(in) :: A(:,:)
             ${t}$, intent(in) :: w
             ${t}$, intent(inout) :: L(:,:)
             ${t}$, intent(inout) :: D(:)
         end subroutine
-        module subroutine factorize_ssor_csr_${s}$(A, w, L, D)
+        module subroutine ssor_csr_${s}$(A, w, L, D)
             type(CSR_${s}$_type), intent(in) :: A
             ${t}$, intent(in) :: w
             type(CSR_${s}$_type), intent(inout) :: L
@@ -199,7 +199,7 @@ module stdlib_linalg_iterative_solvers
         end subroutine
         #:endfor    
     end interface
-    public :: factorize_ssor
+    public :: ssor
 
 
 contains
