@@ -12,9 +12,17 @@ program example_exponential_cdf
   seed_put = 1234567
   call random_seed(seed_put, seed_get)
 
+  ! standard exponential cumulative distribution at x=1.0 with lambda=1.0
+  print *, exp_cdf(1.0, 1.0)
+  ! 0.632120550
+
   ! standard exponential cumulative distribution at x=1.0 with loc=0.0, scale=1.0
   print *, exp_cdf(1.0, 0.0, 1.0)
   ! 0.632120550
+
+  ! cumulative distribution at x=2.0 with lambda=2
+  print *, exp_cdf(2.0, 2.0)
+  ! 0.981684387
 
   ! cumulative distribution at x=2.0 with loc=0.0 and scale=0.5 (equivalent of lambda=2)
   print *, exp_cdf(2.0, 0.0, 0.5)

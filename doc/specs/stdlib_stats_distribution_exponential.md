@@ -15,14 +15,19 @@ Experimental
 ### Description
 
 An exponential distribution is the distribution of time between events in a Poisson point process.
-The inverse scale parameter `lambda` specifies the average time between events (\(\lambda\)), also called the rate of events.
+The inverse `scale` parameter `lambda` specifies the average time between events (\(\lambda\)), also called the rate of events. The location `loc` specifies the value by which the distribution is shifted.
 
-Without argument, the function returns a random sample from the standard exponential distribution \(E(\lambda=1)\).
+Without argument, the function returns a random sample from the unshifted standard exponential distribution \(E(\lambda=1)\) or \(E(loc=0, scale=1)\).
 
-With a single argument, the function returns a random sample from the exponential distribution \(E(\lambda=\text{lambda})\).
+With a single argument of type `real`, the function returns a random sample from the exponential distribution \(E(\lambda=\text{lambda})\). 
 For complex arguments, the real and imaginary parts are sampled independently of each other.
 
-With two arguments, the function returns a rank-1 array of exponentially distributed random variates.
+With one argument of type `real` and one argument of type `integer`, the function returns a rank-1 array of exponentially distributed random variates for (E(\lambda=\text{lambda})\).
+
+With two arguments of type `real`, the function returns a random sample from the exponential distribution \(E(loc=loc, scale=scale)\).
+For complex arguments, the real and imaginary parts are sampled independently of each other.
+
+With two arguments of type `real` and one argument of type `integer`, the function returns a rank-1 array of exponentially distributed random variates for \(E(loc=loc, scale=scale)\).
 
 @note
 The algorithm used for generating exponential random variates is fundamentally limited to double precision.[^1]
@@ -30,6 +35,10 @@ The algorithm used for generating exponential random variates is fundamentally l
 ### Syntax
 
 `result = ` [[stdlib_stats_distribution_exponential(module):rvs_exp(interface)]] `([lambda] [[, array_size]])`
+
+or
+
+`result = ` [[stdlib_stats_distribution_exponential(module):rvs_exp(interface)]] `([loc, scale] [[, array_size]])`
 
 ### Class
 
@@ -40,12 +49,20 @@ Elemental function
 `lambda`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`.
 If `lambda` is `real`, its value must be positive. If `lambda` is `complex`, both the real and imaginary components must be positive.
 
+`loc`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`. 
+
+`scale`: optional argument has `intent(in)` and is a positive scalar of type `real` or `complex`.
+If `scale` is `real`, its value must be positive. If `scale` is `complex`, both the real and imaginary components must be positive.
+
 `array_size`: optional argument has `intent(in)` and is a scalar of type `integer` with default kind.
 
 ### Return value
 
-The result is a scalar or rank-1 array with a size of `array_size`, and the same type as `lambda`.
+If `lambda` is passed, the result is a scalar or rank-1 array with a size of `array_size`, and the same type as `lambda`.
 If `lambda` is non-positive, the result is `NaN`.
+
+If `loc` and `scale` are passed, the result is a scalar or rank-1 array with a size of `array_size`, and the same type as `scale`.
+If `scale` is non-positive, the result is `NaN`.
 
 ### Example
 
@@ -69,9 +86,15 @@ For a complex variable \(z=(x + y i)\) with independent real \(x\) and imaginary
 
 $$f(x+\mathit{i}y)=f(x)f(y)=\begin{cases} \lambda_{x} \lambda_{y} e^{-(\lambda_{x} x + \lambda_{y} y)} &x\geqslant 0, y\geqslant 0 \\\\ 0 &\text{otherwise}\end{cases}$$
 
+Instead of of the inverse scale parameter `lambda`, it is possible to pass `loc` and `scale`, where \(scale = \frac{1}{\lambda}\) and `loc` specifies the value by which the distribution is shifted.
+
 ### Syntax
 
 `result = ` [[stdlib_stats_distribution_exponential(module):pdf_exp(interface)]] `(x, lambda)`
+
+or
+
+`result = ` [[stdlib_stats_distribution_exponential(module):pdf_exp(interface)]] `(x, loc, scale)`
 
 ### Class
 
@@ -84,11 +107,20 @@ Elemental function
 `lambda`: has `intent(in)` and is a scalar of type `real` or `complex`.
 If `lambda` is `real`, its value must be positive. If `lambda` is `complex`, both the real and imaginary components must be positive.
 
+`loc`: has `intent(in)` and is a scalar of type `real` or `complex`.
+
+`scale`: has `intent(in)` and is a positive scalar of type `real` or `complex`.
+If `scale` is `real`, its value must be positive. If `scale` is `complex`, both the real and imaginary components must be positive.
+
 All arguments must have the same type.
 
 ### Return value
 
-The result is a scalar or an array, with a shape conformable to the arguments, and the same type as the input arguments. If `lambda` is non-positive, the result is `NaN`.
+If `lambda` is passed, the result is a scalar or an array, with a shape conformable to the arguments, and the same type as the input arguments. If `lambda` is non-positive, the result is `NaN`.
+
+
+If `loc` and `scale` are passed, the result is a scalar or an array, with a shape conformable to the arguments, and the same type as the input arguments. If `scale` is non-positive, the result is `NaN`.
+
 
 ### Example
 
@@ -112,9 +144,15 @@ For a complex variable  \(z=(x + y i)\) with independent real \(x\) and imaginar
 
 $$F(x+\mathit{i}y)=F(x)F(y)=\begin{cases} (1 - e^{-\lambda_{x} x})(1 - e^{-\lambda_{y} y}) &x\geqslant 0, \;\; y\geqslant 0 \\\\ 0 & \text{otherwise} \end{cases}$$
 
+Instead of of the inverse scale parameter `lambda`, it is possible to pass `loc` and `scale`, where \(scale = \frac{1}{\lambda}\) and `loc` specifies the value by which the distribution is shifted.
+
 ### Syntax
 
 `result = ` [[stdlib_stats_distribution_exponential(module):cdf_exp(interface)]] `(x, lambda)`
+
+or
+
+`result = ` [[stdlib_stats_distribution_exponential(module):cdf_exp(interface)]] `(x, loc, scale)`
 
 ### Class
 
@@ -127,11 +165,19 @@ Elemental function
 `lambda`: has `intent(in)` and is a scalar of type `real` or `complex`.
 If `lambda` is `real`, its value must be positive. If `lambda` is `complex`, both the real and imaginary components must be positive.
 
+`loc`: has `intent(in)` and is a scalar of type `real` or `complex`.
+
+`scale`: has `intent(in)` and is a positive scalar of type `real` or `complex`.
+If `scale` is `real`, its value must be positive. If `scale` is `complex`, both the real and imaginary components must be positive.
+
 All arguments must have the same type.
 
 ### Return value
 
-The result is a scalar or an array, with a shape conformable to the arguments, and the same type as the input arguments. If `lambda` is non-positive, the result is `NaN`.
+If `lamba` is passed, the result is a scalar or an array, with a shape conformable to the arguments, and the same type as the input arguments. If `lambda` is non-positive, the result is `NaN`.
+
+
+If `loc` and `scale` are passed, the result is a scalar or an array, with a shape conformable to the arguments, and the same type as the input arguments. If `scale` is non-positive, the result is `NaN`.
 
 ### Example
 

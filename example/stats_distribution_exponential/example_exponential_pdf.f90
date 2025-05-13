@@ -12,9 +12,17 @@ program example_exponential_pdf
   seed_put = 1234567
   call random_seed(seed_put, seed_get)
 
-  ! probability density at x=1.0 with loc=0 and in standard exponential
+  ! probability density at x=1.0 with lambda=1.0
+  print *, exp_pdf(1.0, 1.0)
+  ! 0.367879450
+
+  ! probability density at x=1.0 with loc=0 and scale=1.0
   print *, exp_pdf(1.0, 0.0, 1.0)
   ! 0.367879450
+
+  ! probability density at x=2.0 with lambda=2.0
+  print *, exp_pdf(2.0, 2.0)
+  ! 3.66312787E-02
 
   ! probability density at x=2.0 with loc=0.0 and scale=0.5 (lambda=2.0)
   print *, exp_pdf(2.0, 0.0, 0.5)
