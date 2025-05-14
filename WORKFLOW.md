@@ -134,7 +134,7 @@ In order to help lowering the barrier for collaborating on ongoing efforts (e.g.
                                      │
                        [Push access to Alice's repo]
 
-After having forked and downloaded locally `stdlib` on your local machine; on an unix compatible terminal with access to the `git` CLI, being at the root folder: 
+After having forked from `fortran-lang/stdlib` and downloaded `stdlib` on your local machine; on an unix compatible terminal with access to the `git` CLI, being at the root folder: 
 ```sh
 ./.github/collab.sh
 ```
@@ -144,5 +144,7 @@ Enter the GitHub username of the fork owner (e.g., alice): alice
 Enter the PR branch name (e.g., feature-branch): feature-branch
 ```
 This will fetch Alice's repository and switch your view to Alice's feature-branch. Now you can review, build, run, play around, propose your nice improvements.
+
+Once you finish helping out, you can always `git checkout <your_own_branch>` and/or delet Alice's branch from your local view `git branch -d feature-branch`.
 
 Remember, announce your willingness to help 😉
