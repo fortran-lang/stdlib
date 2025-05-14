@@ -134,7 +134,7 @@ In order to help lowering the barrier for collaborating on ongoing efforts (e.g.
                                      │
                        [Push access to Alice's repo]
 
-After having forked from `fortran-lang/stdlib` and downloaded `stdlib` on your local machine; on an unix compatible terminal with access to the `git` CLI, being at the root folder: 
+After having forked from `fortran-lang/stdlib` and cloned your `stdlib` fork on your local machine; on an unix compatible terminal with access to the `git` CLI, being at the root folder: 
 ```sh
 ./.github/collab.sh
 ```
