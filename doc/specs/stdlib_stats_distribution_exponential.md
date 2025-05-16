@@ -171,10 +171,7 @@ All arguments must have the same type.
 
 ### Return value
 
-If `lamba` is passed, the result is a scalar or an array, with a shape conformable to the arguments, and the same type as the input arguments. If `lambda` is non-positive, the result is `NaN`.
-
-
-If `loc` and `scale` are passed, the result is a scalar or an array, with a shape conformable to the arguments, and the same type as the input arguments. If `scale` is non-positive, the result is `NaN`.
+The result is a scalar or an array, with a shape conformable to the arguments, and the same type as the input arguments. With non-positive `lambda` or `scale`, the result is `NaN`.
 
 ### Example
 
