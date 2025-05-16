@@ -141,7 +141,7 @@ For a complex variable  \(z=(x + y i)\) with independent real \(x\) and imaginar
 
 $$F(x+\mathit{i}y)=F(x)F(y)=\begin{cases} (1 - e^{-\lambda_{x} x})(1 - e^{-\lambda_{y} y}) &x\geqslant 0, \;\; y\geqslant 0 \\\\ 0 & \text{otherwise} \end{cases}$$
 
-Instead of of the inverse scale parameter `lambda`, it is possible to pass `loc` and `scale`, where \(scale = \frac{1}{\lambda}\) and `loc` specifies the value by which the distribution is shifted.
+Alternative to the inverse scale parameter `lambda`, it is possible to pass `loc` and `scale`, where \(scale = \frac{1}{\lambda}\) and `loc` specifies the value by which the distribution is shifted.
 
 ### Syntax
 
