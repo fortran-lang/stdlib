@@ -532,3 +532,54 @@ The file is removed from the filesystem if the operation is successful. If the o
 ```fortran
 {!example/system/example_delete_file.f90!}
 ```
+
+## `get_terminal_size` - Get terminal window size in characters
+
+### Status
+
+Experimental
+
+### Description
+
+Queries the terminal window size in characters (columns × lines). 
+
+This routine performs the following checks:
+1. Verifies stdout is connected to a terminal (not redirected);
+2. Queries terminal dimensions via platform-specific APIs.
+
+Typical execution time: <100μs on modern systems.
+
+### Syntax
+
+`call [[stdlib_system(module):get_terminal_size(subroutine)]](columns, lines[, err])`
+
+### Class
+
+Subroutine
+
+### Arguments
+
+`columns`: `integer, intent(out)`.
+    Number of columns in the terminal window. Set to `-1` on error.
+
+`lines`: `integer, intent(out)`.
+    Number of lines in the terminal window. Set to `-1` on error.
+
+`err`: `type(state_type), intent(out), optional`.
+    Error state object. If absent, errors terminate execution.
+
+### Error Handling
+
+- **Success**: `columns` and `lines` contain valid dimensions.
+- **Failure**:
+  - Both arguments set to `-1`.
+  - If `err` present, `stat` contains error code:
+    - Unix: Contains `errno` (typically `ENOTTY` when redirected);
+    - Windows: Contains `GetLastError()` code.
+  - If `err` absent: Program stops with error message.
+
+### Example
+
+```fortran
+{!./example/system/example_get_terminal_size.f90}!
+```
