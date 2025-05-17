@@ -752,38 +752,38 @@ contains
         type :: list
             character(1), allocatable :: chars(:)
         end type
-        type(list) :: tests(15)
+        type(list) :: ascii_codes(15)
 
-        tests(1)%chars  = [(achar(j),j=0,8)]    ! control codes
-        tests(2)%chars  = [(achar(j),j=9,9)]    ! tab
-        tests(3)%chars  = [(achar(j),j=10,13)]  ! whitespaces
-        tests(4)%chars  = [(achar(j),j=14,31)]  ! control codes
-        tests(5)%chars  = [(achar(j),j=32,32)]  ! space
-        tests(6)%chars  = [(achar(j),j=33,47)]  ! !"#$%&'()*+,-./
-        tests(7)%chars  = [(achar(j),j=48,57)]  ! 0123456789
-        tests(8)%chars  = [(achar(j),j=58,64)]  ! :;<=>?@
-        tests(9)%chars  = [(achar(j),j=65,70)]  ! ABCDEF
-        tests(10)%chars = [(achar(j),j=71,90)]  ! GHIJKLMNOPQRSTUVWXYZ
-        tests(11)%chars = [(achar(j),j=91,96)]  ! [\]^_`
-        tests(12)%chars = [(achar(j),j=97,102)] ! abcdef
-        tests(13)%chars = [(achar(j),j=103,122)]! ghijklmnopqrstuvwxyz
-        tests(14)%chars = [(achar(j),j=123,126)]! {|}~
-        tests(15)%chars = [(achar(j),j=127,127)]! backspace character
+        ascii_codes(1)%chars  = [(achar(j),j=0,8)]    ! control codes
+        ascii_codes(2)%chars  = [(achar(j),j=9,9)]    ! tab
+        ascii_codes(3)%chars  = [(achar(j),j=10,13)]  ! whitespaces
+        ascii_codes(4)%chars  = [(achar(j),j=14,31)]  ! control codes
+        ascii_codes(5)%chars  = [(achar(j),j=32,32)]  ! space
+        ascii_codes(6)%chars  = [(achar(j),j=33,47)]  ! !"#$%&'()*+,-./
+        ascii_codes(7)%chars  = [(achar(j),j=48,57)]  ! 0123456789
+        ascii_codes(8)%chars  = [(achar(j),j=58,64)]  ! :;<=>?@
+        ascii_codes(9)%chars  = [(achar(j),j=65,70)]  ! ABCDEF
+        ascii_codes(10)%chars = [(achar(j),j=71,90)]  ! GHIJKLMNOPQRSTUVWXYZ
+        ascii_codes(11)%chars = [(achar(j),j=91,96)]  ! [\]^_`
+        ascii_codes(12)%chars = [(achar(j),j=97,102)] ! abcdef
+        ascii_codes(13)%chars = [(achar(j),j=103,122)]! ghijklmnopqrstuvwxyz
+        ascii_codes(14)%chars = [(achar(j),j=123,126)]! {|}~
+        ascii_codes(15)%chars = [(achar(j),j=127,127)]! backspace character
 
         ! loop through functions
         do i = 1, 15
-            table(i,1)  = all(is_control(tests(i)%chars)) 
-            table(i,2)  = all(is_printable(tests(i)%chars))
-            table(i,3)  = all(is_white(tests(i)%chars))
-            table(i,4)  = all(is_blank(tests(i)%chars))
-            table(i,5)  = all(is_graphical(tests(i)%chars)) 
-            table(i,6)  = all(is_punctuation(tests(i)%chars))
-            table(i,7)  = all(is_alphanum(tests(i)%chars))
-            table(i,8)  = all(is_alpha(tests(i)%chars))
-            table(i,9)  = all(is_upper(tests(i)%chars))  
-            table(i,10) = all(is_lower(tests(i)%chars)) 
-            table(i,11) = all(is_digit(tests(i)%chars)) 
-            table(i,12) = all(is_hex_digit(tests(i)%chars)) 
+            table(i,1)  = all(is_control(ascii_codes(i)%chars)) 
+            table(i,2)  = all(is_printable(ascii_codes(i)%chars))
+            table(i,3)  = all(is_white(ascii_codes(i)%chars))
+            table(i,4)  = all(is_blank(ascii_codes(i)%chars))
+            table(i,5)  = all(is_graphical(ascii_codes(i)%chars)) 
+            table(i,6)  = all(is_punctuation(ascii_codes(i)%chars))
+            table(i,7)  = all(is_alphanum(ascii_codes(i)%chars))
+            table(i,8)  = all(is_alpha(ascii_codes(i)%chars))
+            table(i,9)  = all(is_upper(ascii_codes(i)%chars))  
+            table(i,10) = all(is_lower(ascii_codes(i)%chars)) 
+            table(i,11) = all(is_digit(ascii_codes(i)%chars)) 
+            table(i,12) = all(is_hex_digit(ascii_codes(i)%chars)) 
         end do
 
         call check(error, all(table .eqv. ascii_class_table), "ascii table was not accurately generated")
