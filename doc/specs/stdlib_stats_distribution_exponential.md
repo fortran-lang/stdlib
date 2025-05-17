@@ -34,11 +34,11 @@ The algorithm used for generating exponential random variates is fundamentally l
 
 ### Syntax
 
-`result = ` [[stdlib_stats_distribution_exponential(module):rvs_exp(interface)]] `([lambda] [[, array_size]])`
+`result = ` [[stdlib_stats_distribution_exponential(module):rvs_exp(interface)]] `([loc, scale] [[, array_size]])`
 
 or
 
-`result = ` [[stdlib_stats_distribution_exponential(module):rvs_exp(interface)]] `([loc, scale] [[, array_size]])`
+`result = ` [[stdlib_stats_distribution_exponential(module):rvs_exp(interface)]] `([lambda] [[, array_size]])`
 
 ### Class
 
@@ -90,11 +90,11 @@ Instead of of the inverse scale parameter `lambda`, it is possible to pass `loc`
 
 ### Syntax
 
-`result = ` [[stdlib_stats_distribution_exponential(module):pdf_exp(interface)]] `(x, lambda)`
+`result = ` [[stdlib_stats_distribution_exponential(module):pdf_exp(interface)]] `(x, loc, scale)`
 
 or
 
-`result = ` [[stdlib_stats_distribution_exponential(module):pdf_exp(interface)]] `(x, loc, scale)`
+`result = ` [[stdlib_stats_distribution_exponential(module):pdf_exp(interface)]] `(x, lambda)`
 
 ### Class
 
@@ -145,11 +145,11 @@ Alternative to the inverse scale parameter `lambda`, it is possible to pass `loc
 
 ### Syntax
 
-`result = ` [[stdlib_stats_distribution_exponential(module):cdf_exp(interface)]] `(x, lambda)`
+`result = ` [[stdlib_stats_distribution_exponential(module):cdf_exp(interface)]] `(x, loc, scale)`
 
 or
 
-`result = ` [[stdlib_stats_distribution_exponential(module):cdf_exp(interface)]] `(x, loc, scale)`
+`result = ` [[stdlib_stats_distribution_exponential(module):cdf_exp(interface)]] `(x, lambda)`
 
 ### Class
 

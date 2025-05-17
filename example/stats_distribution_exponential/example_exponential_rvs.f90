@@ -9,17 +9,17 @@ program example_exponential_rvs
   seed_put = 1234567
   call random_seed(seed_put, seed_get)
 
- ! single standard exponential random variate
+  ! single standard exponential random variate
   print *, rexp()
   ! 0.358690143
-
-  ! exponential random variate with lambda=2
-   print *, rexp(2.0)
-  ! 0.204114929
 
   ! exponential random variate with loc=0 and scale=0.5 (lambda=2)
   print *, rexp(0.0, 0.5)
   ! 0.122672431
+
+  ! exponential random variate with lambda=2
+   print *, rexp(2.0)
+  ! 0.204114929
 
   ! exponential random variate with loc=0.6 and scale=0.2 (lambda=5)
   print *, rexp(0.6, 0.2)
