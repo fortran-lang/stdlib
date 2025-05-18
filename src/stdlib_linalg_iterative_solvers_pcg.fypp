@@ -149,11 +149,11 @@ contains
                 #:endif
                 L = A !> copy A structure to L
                 call ssor( A , one_${s}$ , L, diagonal )
-                M_%apply => precond_ldl
+                M_%apply => precond_ldlt
             case(pc_ldlt)
                 L = A !> copy A structure to L
                 call ldlt( A , L, diagonal )
-                M_%apply => precond_ldl
+                M_%apply => precond_ldlt
             case default
                 M_%apply => precond_none
             end select
@@ -222,7 +222,7 @@ contains
             ${t}$, intent(in) :: beta
             y = merge( zero_${s}$, diagonal * x, di_ ) !> inverted diagonal
         end subroutine
-        subroutine precond_ldl(x,y,alpha,beta)
+        subroutine precond_ldlt(x,y,alpha,beta)
             ${t}$, intent(in)  :: x(:)
             ${t}$, intent(inout) :: y(:)
             ${t}$, intent(in) :: alpha
