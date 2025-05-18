@@ -1,4 +1,4 @@
-program example_solve_pccg
+program example_solve_pcg
     use stdlib_kinds, only: dp
     use stdlib_linalg_iterative_solvers, only: solve_cg
 

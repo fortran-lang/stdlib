@@ -14,9 +14,9 @@ module stdlib_linalg_iterative_solvers
     !> details The size of the workspace is defined by the number of vectors used in the iterative solver.
     enum, bind(c)
         enumerator :: size_wksp_cg = 3
-        enumerator :: size_wksp_pccg = 4
+        enumerator :: size_wksp_pcg = 4
     end enum
-    public :: size_wksp_cg, size_wksp_pccg
+    public :: size_wksp_cg, size_wksp_pcg
 
     !> linear operator class for the iterative solvers
     #:for k, t, s in R_KINDS_TYPES
@@ -93,9 +93,9 @@ module stdlib_linalg_iterative_solvers
     end interface
     public :: solve_cg
 
-    interface solve_pccg_kernel
+    interface solve_pcg_kernel
         #:for k, t, s in R_KINDS_TYPES
-        module subroutine solve_pccg_kernel_${s}$(A,M,b,x,tol,maxiter,workspace)
+        module subroutine solve_pcg_kernel_${s}$(A,M,b,x,tol,maxiter,workspace)
             class(linop_${s}$), intent(in) :: A
             class(linop_${s}$), intent(in) :: M !> preconditionner
             ${t}$, intent(in) :: b(:)
@@ -106,12 +106,12 @@ module stdlib_linalg_iterative_solvers
         end subroutine
         #:endfor
     end interface
-    public :: solve_pccg_kernel
+    public :: solve_pcg_kernel
 
-    interface solve_pccg
+    interface solve_pcg
         #:for matrix in MATRIX_TYPES
         #:for k, t, s in R_KINDS_TYPES
-        module subroutine solve_pccg_${matrix}$_${s}$(A,b,x,di,tol,maxiter,restart,precond,M,workspace)
+        module subroutine solve_pcg_${matrix}$_${s}$(A,b,x,di,tol,maxiter,restart,precond,M,workspace)
             #:if matrix == "dense"
             ${t}$, intent(in) :: A(:,:)
             #:else 
@@ -130,7 +130,7 @@ module stdlib_linalg_iterative_solvers
         #:endfor
         #:endfor
     end interface
-    public :: solve_pccg 
+    public :: solve_pcg 
 
     interface solve_forward_triangular
         !> Solve the system L x = b, where L is a strictly lower triangular matrix (diagonal assumed = 1).

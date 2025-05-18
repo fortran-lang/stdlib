@@ -97,7 +97,7 @@ module test_linalg_solve_iterative
         #:endfor
     end subroutine test_solve_ldlt
 
-    ! TODO: add tests for solve_cg, solve_pccg, etc.
+    ! TODO: add tests for solve_cg, solve_pcg, etc.
 
 end module test_linalg_solve_iterative
 

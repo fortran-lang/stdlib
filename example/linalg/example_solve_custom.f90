@@ -3,11 +3,11 @@ module custom_solver
     use stdlib_sparse
     use stdlib_linalg_iterative_solvers, only: linop_dp, &
                     solver_workspace_dp, &
-                    solve_pccg_kernel, &
-                    size_wksp_pccg
+                    solve_pcg_kernel, &
+                    size_wksp_pcg
     implicit none
 contains
-    subroutine solve_pccg_custom(A,b,x,di,tol,maxiter,restart,workspace)
+    subroutine solve_pcg_custom(A,b,x,di,tol,maxiter,restart,workspace)
         type(CSR_dp_type), intent(in) :: A
         real(dp), intent(in) :: b(:)
         real(dp), intent(inout) :: x(:)
@@ -48,7 +48,7 @@ contains
         else
             allocate( workspace_ )
         end if
-        if(.not.allocated(workspace_%tmp)) allocate( workspace_%tmp(n,size_wksp_pccg) , source = 0.d0 )
+        if(.not.allocated(workspace_%tmp)) allocate( workspace_%tmp(n,size_wksp_pcg) , source = 0.d0 )
         workspace_%callback => my_logger
         !-------------------------
         ! Jacobi preconditionner factorization
@@ -56,7 +56,7 @@ contains
         where(abs(diagonal)>epsilon(0.d0)) diagonal = 1._dp/diagonal
         !-------------------------
         ! main call to the solver
-        call solve_pccg_kernel(op,M,b,x,tol_,maxiter_,workspace_)
+        call solve_pcg_kernel(op,M,b,x,tol_,maxiter_,workspace_)
 
         !-------------------------
         ! internal memory cleanup
@@ -126,7 +126,7 @@ program example_solve_custom
     dirichlet = .false._1 
     dirichlet([1,5]) = .true._1
 
-    call solve_pccg_custom(laplacian_csr, load, x, tol=1.d-6, di=dirichlet)
+    call solve_pcg_custom(laplacian_csr, load, x, tol=1.d-6, di=dirichlet)
     print *, x !> solution: [0.0, 2.5, 5.0, 2.5, 0.0]
     
 end program example_solve_custom
