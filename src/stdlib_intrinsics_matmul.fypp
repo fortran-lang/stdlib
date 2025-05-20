@@ -74,7 +74,8 @@ contains
             k = p(start + 1)
             call gemm('N', 'N', m, n, k, one_${s}$, temp, m, m3, k, zero_${s}$, r, m)
         else
-            error stop "stdlib_matmul: error: unexpected s(i,j)"
+            ! our internal functions are incorrent, abort
+            error stop this//": error: unexpected s(i,j)"
         end if
 
     end function matmul_chain_mult_${s}$_3
@@ -120,7 +121,8 @@ contains
             k = p(start + 3)
             call gemm('N', 'N', m, n, k, one_${s}$, temp, m, m4, k, zero_${s}$, r, m)
         else
-            error stop "stdlib_matmul: error: unexpected s(i,j)"
+            ! our internal functions are incorrent, abort
+            error stop this//": error: unexpected s(i,j)"
         end if
 
     end function matmul_chain_mult_${s}$_4
