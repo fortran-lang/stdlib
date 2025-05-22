@@ -51,6 +51,8 @@ contains
 
         print *, ""
         print *, "Test exponential random generator with chi-squared"
+
+        ! using interface for lambda
         freq = 0
         do i = 1, num
             j = 1000 * (1 - exp(- expon_rvs(1.0)))
@@ -66,12 +68,30 @@ contains
         write(*,*) "Chi-squared for exponential random generator is : ", chisq
         call check((chisq < 1143.9), &
             msg="exponential randomness failed chi-squared test", warn=warn)
+
+        ! using interface for loc and scale
+        freq = 0
+        do i = 1, num
+            j = 1000 * (1 - exp(- expon_rvs(0.0, 1.0)))
+            freq(j) = freq(j) + 1
+        end do
+        chisq = 0.0_dp
+        expct = num / array_size
+        do i = 0, array_size - 1
+           chisq = chisq + (freq(i) - expct) ** 2 / expct
+        end do
+        write(*,*) "The critical values for chi-squared with 1000 d. of f. is" &
+            //" 1143.92"
+        write(*,*) "Chi-squared for exponential random generator is : ", chisq
+        call check((chisq < 1143.9), &
+            msg="exponential randomness failed chi-squared test", warn=warn)
+
     end subroutine test_exponential_random_generator
 
 
 
     subroutine test_expon_rvs_rsp
-        real(sp) :: res(10), scale
+        real(sp) :: res(10), lambda, loc, scale
         integer, parameter :: k = 5
         integer :: i
         integer :: seed, get
@@ -89,20 +109,33 @@ contains
 
         print *, "Test exponential_distribution_rvs_rsp"
         seed = 593742186
+
+        ! set args
+        lambda = 1.5_sp
+        loc    = 0._sp
+        scale  = 1.0_sp/lambda
+
+        ! tests using interface for lambda
         call random_seed(seed, get)
-
-        scale = 1.5_sp
-
         do i = 1, k
-            res(i) = expon_rvs(scale)      ! 1 dummy
+            res(i) = expon_rvs(lambda)      ! 1 dummy
         end do
-        res(6:10) = expon_rvs(scale, k)    ! 2 dummies
+        res(6:10) = expon_rvs(lambda, k)    ! 2 dummies
+        call check(all(abs(res - ans) < sptol),                            &
+            msg="exponential_distribution_rvs_rsp failed", warn=warn)
+
+        ! tests using interface for loc and scale
+        call random_seed(seed, get)
+        do i = 1, k
+            res(i) = expon_rvs(loc, scale)
+        end do
+        res(6:10) = expon_rvs(loc, scale, k)
         call check(all(abs(res - ans) < sptol),                            &
             msg="exponential_distribution_rvs_rsp failed", warn=warn)
     end subroutine test_expon_rvs_rsp
 
     subroutine test_expon_rvs_rdp
-        real(dp) :: res(10), scale
+        real(dp) :: res(10), lambda, loc, scale
         integer, parameter :: k = 5
         integer :: i
         integer :: seed, get
@@ -120,20 +153,33 @@ contains
 
         print *, "Test exponential_distribution_rvs_rdp"
         seed = 593742186
+
+        ! set args
+        lambda = 1.5_dp
+        loc    = 0._dp
+        scale  = 1.0_dp/lambda
+
+        ! tests using interface for lambda
         call random_seed(seed, get)
-
-        scale = 1.5_dp
-
         do i = 1, k
-            res(i) = expon_rvs(scale)      ! 1 dummy
+            res(i) = expon_rvs(lambda)      ! 1 dummy
         end do
-        res(6:10) = expon_rvs(scale, k)    ! 2 dummies
+        res(6:10) = expon_rvs(lambda, k)    ! 2 dummies
+        call check(all(abs(res - ans) < dptol),                            &
+            msg="exponential_distribution_rvs_rdp failed", warn=warn)
+
+        ! tests using interface for loc and scale
+        call random_seed(seed, get)
+        do i = 1, k
+            res(i) = expon_rvs(loc, scale)
+        end do
+        res(6:10) = expon_rvs(loc, scale, k)
         call check(all(abs(res - ans) < dptol),                            &
             msg="exponential_distribution_rvs_rdp failed", warn=warn)
     end subroutine test_expon_rvs_rdp
 
     subroutine test_expon_rvs_csp
-        complex(sp) :: res(10), scale
+        complex(sp) :: res(10), lambda, loc, scale
         integer, parameter :: k = 5
         integer :: i
         integer :: seed, get
@@ -161,20 +207,33 @@ contains
 
         print *, "Test exponential_distribution_rvs_csp"
         seed = 593742186
+
+        ! set args
+        lambda = (0.7_sp, 1.3_sp)
+        loc    = (0._sp, 0._sp)
+        scale  = cmplx(1.0_sp/lambda%re, 1.0_sp/lambda%im, kind=sp)
+
+        ! tests using interface for lambda
         call random_seed(seed, get)
-
-        scale = (0.7_sp, 1.3_sp)
-
         do i = 1, k
-            res(i) = expon_rvs(scale)      ! 1 dummy
+            res(i) = expon_rvs(lambda)      ! 1 dummy
         end do
-        res(6:10) = expon_rvs(scale, k)    ! 2 dummies
+        res(6:10) = expon_rvs(lambda, k)    ! 2 dummies
+        call check(all(abs(res - ans) < sptol),                            &
+            msg="exponential_distribution_rvs_csp failed", warn=warn)
+
+        ! tests using interface for loc and scale
+        call random_seed(seed, get)
+        do i = 1, k
+            res(i) = expon_rvs(loc, scale)
+        end do
+        res(6:10) = expon_rvs(loc, scale, k)
         call check(all(abs(res - ans) < sptol),                            &
             msg="exponential_distribution_rvs_csp failed", warn=warn)
     end subroutine test_expon_rvs_csp
 
     subroutine test_expon_rvs_cdp
-        complex(dp) :: res(10), scale
+        complex(dp) :: res(10), lambda, loc, scale
         integer, parameter :: k = 5
         integer :: i
         integer :: seed, get
@@ -202,14 +261,27 @@ contains
 
         print *, "Test exponential_distribution_rvs_cdp"
         seed = 593742186
+
+        ! set args
+        lambda = (0.7_dp, 1.3_dp)
+        loc    = (0._dp, 0._dp)
+        scale  = cmplx(1.0_dp/lambda%re, 1.0_dp/lambda%im, kind=dp)
+
+        ! tests using interface for lambda
         call random_seed(seed, get)
-
-        scale = (0.7_dp, 1.3_dp)
-
         do i = 1, k
-            res(i) = expon_rvs(scale)      ! 1 dummy
+            res(i) = expon_rvs(lambda)      ! 1 dummy
         end do
-        res(6:10) = expon_rvs(scale, k)    ! 2 dummies
+        res(6:10) = expon_rvs(lambda, k)    ! 2 dummies
+        call check(all(abs(res - ans) < dptol),                            &
+            msg="exponential_distribution_rvs_cdp failed", warn=warn)
+
+        ! tests using interface for loc and scale
+        call random_seed(seed, get)
+        do i = 1, k
+            res(i) = expon_rvs(loc, scale)
+        end do
+        res(6:10) = expon_rvs(loc, scale, k)
         call check(all(abs(res - ans) < dptol),                            &
             msg="exponential_distribution_rvs_cdp failed", warn=warn)
     end subroutine test_expon_rvs_cdp
@@ -220,7 +292,7 @@ contains
 
     subroutine test_expon_pdf_rsp
 
-        real(sp) :: x1, x2(3,4), scale
+        real(sp) :: x1, x2(3,4), lambda, loc, scale
         integer :: seed, get
         real(sp) :: res(3,5)
         real(sp), parameter :: ans(15) =                                   &
@@ -242,20 +314,35 @@ contains
 
         print *, "Test exponential_distribution_pdf_rsp"
         seed = 123987654
-        call random_seed(seed, get)
-        scale = 1.5_sp
 
-        x1 = expon_rvs(scale)
-        x2 = reshape(expon_rvs(scale, 12), [3,4])
-        res(:,1) = expon_pdf(x1, scale)
-        res(:, 2:5) = expon_pdf(x2, scale)
+        ! set args
+        lambda = 1.5_sp
+        loc    = 0._sp
+        scale  = 1.0_sp/lambda
+
+        ! tests using interface for lambda
+        call random_seed(seed, get)
+        x1 = expon_rvs(lambda)
+        x2 = reshape(expon_rvs(lambda, 12), [3,4])
+        res(:,1) = expon_pdf(x1, lambda)
+        res(:, 2:5) = expon_pdf(x2, lambda)
         call check(all(abs(res - reshape(ans, [3,5])) < sptol),            &
             msg="exponential_distribution_pdf_rsp failed", warn=warn)
+
+        ! tests using interface for loc and scale
+        call random_seed(seed, get)
+        x1 = expon_rvs(loc, scale)
+        x2 = reshape(expon_rvs(loc, scale, 12), [3,4])
+        res(:,1) = expon_pdf(x1, loc, scale)
+        res(:, 2:5) = expon_pdf(x2, loc, scale)
+        call check(all(abs(res - reshape(ans, [3,5])) < sptol),            &
+            msg="exponential_distribution_pdf_rsp failed", warn=warn)
+
     end subroutine test_expon_pdf_rsp
 
     subroutine test_expon_pdf_rdp
 
-        real(dp) :: x1, x2(3,4), scale
+        real(dp) :: x1, x2(3,4), lambda, loc, scale
         integer :: seed, get
         real(dp) :: res(3,5)
         real(dp), parameter :: ans(15) =                                   &
@@ -277,20 +364,35 @@ contains
 
         print *, "Test exponential_distribution_pdf_rdp"
         seed = 123987654
-        call random_seed(seed, get)
-        scale = 1.5_dp
 
-        x1 = expon_rvs(scale)
-        x2 = reshape(expon_rvs(scale, 12), [3,4])
-        res(:,1) = expon_pdf(x1, scale)
-        res(:, 2:5) = expon_pdf(x2, scale)
+        ! set args
+        lambda = 1.5_dp
+        loc    = 0._dp
+        scale  = 1.0_dp/lambda
+
+        ! tests using interface for lambda
+        call random_seed(seed, get)
+        x1 = expon_rvs(lambda)
+        x2 = reshape(expon_rvs(lambda, 12), [3,4])
+        res(:,1) = expon_pdf(x1, lambda)
+        res(:, 2:5) = expon_pdf(x2, lambda)
         call check(all(abs(res - reshape(ans, [3,5])) < dptol),            &
             msg="exponential_distribution_pdf_rdp failed", warn=warn)
+
+        ! tests using interface for loc and scale
+        call random_seed(seed, get)
+        x1 = expon_rvs(loc, scale)
+        x2 = reshape(expon_rvs(loc, scale, 12), [3,4])
+        res(:,1) = expon_pdf(x1, loc, scale)
+        res(:, 2:5) = expon_pdf(x2, loc, scale)
+        call check(all(abs(res - reshape(ans, [3,5])) < dptol),            &
+            msg="exponential_distribution_pdf_rdp failed", warn=warn)
+
     end subroutine test_expon_pdf_rdp
 
     subroutine test_expon_pdf_csp
 
-        complex(sp) :: x1, x2(3,4), scale
+        complex(sp) :: x1, x2(3,4), lambda, loc, scale
         integer :: seed, get
         real(sp) :: res(3,5)
         real(sp), parameter :: ans(15) =                                   &
@@ -312,20 +414,35 @@ contains
 
         print *, "Test exponential_distribution_pdf_csp"
         seed = 123987654
-        call random_seed(seed, get)
-        scale = (0.3_sp, 1.6_sp)
 
-        x1 = expon_rvs(scale)
-        x2 = reshape(expon_rvs(scale, 12), [3,4])
-        res(:,1) = expon_pdf(x1, scale)
-        res(:, 2:5) = expon_pdf(x2, scale)
+        ! set args
+        lambda = (0.3_sp, 1.6_sp)
+        loc    = (0._sp, 0._sp)
+        scale  = cmplx(1.0_sp/lambda%re, 1.0_sp/lambda%im, kind=sp)
+
+        ! tests using interface for lambda
+        call random_seed(seed, get)
+        x1 = expon_rvs(lambda)
+        x2 = reshape(expon_rvs(lambda, 12), [3,4])
+        res(:,1) = expon_pdf(x1, lambda)
+        res(:, 2:5) = expon_pdf(x2, lambda)
         call check(all(abs(res - reshape(ans, [3,5])) < sptol),            &
             msg="exponential_distribution_pdf_csp failed", warn=warn)
+
+        ! tests using interface for loc and scale
+        call random_seed(seed, get)
+        x1 = expon_rvs(loc, scale)
+        x2 = reshape(expon_rvs(loc, scale, 12), [3,4])
+        res(:,1) = expon_pdf(x1, loc, scale)
+        res(:, 2:5) = expon_pdf(x2, loc, scale)
+        call check(all(abs(res - reshape(ans, [3,5])) < sptol),            &
+            msg="exponential_distribution_pdf_csp failed", warn=warn)
+
     end subroutine test_expon_pdf_csp
 
     subroutine test_expon_pdf_cdp
 
-        complex(dp) :: x1, x2(3,4), scale
+        complex(dp) :: x1, x2(3,4), lambda, loc, scale
         integer :: seed, get
         real(dp) :: res(3,5)
         real(dp), parameter :: ans(15) =                                   &
@@ -347,15 +464,30 @@ contains
 
         print *, "Test exponential_distribution_pdf_cdp"
         seed = 123987654
-        call random_seed(seed, get)
-        scale = (0.3_dp, 1.6_dp)
 
-        x1 = expon_rvs(scale)
-        x2 = reshape(expon_rvs(scale, 12), [3,4])
-        res(:,1) = expon_pdf(x1, scale)
-        res(:, 2:5) = expon_pdf(x2, scale)
+        ! set args
+        lambda = (0.3_dp, 1.6_dp)
+        loc    = (0._dp, 0._dp)
+        scale  = cmplx(1.0_dp/lambda%re, 1.0_dp/lambda%im, kind=dp)
+
+        ! tests using interface for lambda
+        call random_seed(seed, get)
+        x1 = expon_rvs(lambda)
+        x2 = reshape(expon_rvs(lambda, 12), [3,4])
+        res(:,1) = expon_pdf(x1, lambda)
+        res(:, 2:5) = expon_pdf(x2, lambda)
         call check(all(abs(res - reshape(ans, [3,5])) < dptol),            &
             msg="exponential_distribution_pdf_cdp failed", warn=warn)
+
+        ! tests using interface for loc and scale
+        call random_seed(seed, get)
+        x1 = expon_rvs(loc, scale)
+        x2 = reshape(expon_rvs(loc, scale, 12), [3,4])
+        res(:,1) = expon_pdf(x1, loc, scale)
+        res(:, 2:5) = expon_pdf(x2, loc, scale)
+        call check(all(abs(res - reshape(ans, [3,5])) < dptol),            &
+            msg="exponential_distribution_pdf_cdp failed", warn=warn)
+
     end subroutine test_expon_pdf_cdp
 
 
@@ -364,7 +496,7 @@ contains
 
     subroutine test_expon_cdf_rsp
 
-        real(sp) :: x1, x2(3,4), scale
+        real(sp) :: x1, x2(3,4), lambda, loc, scale
         integer :: seed, get
         real(sp) :: res(3,5)
         real(sp), parameter :: ans(15) =                                   &
@@ -386,21 +518,35 @@ contains
 
         print *, "Test exponential_distribution_cdf_rsp"
         seed = 621957438
+
+        ! set args
+        lambda = 2.0_sp
+        loc    = 0._sp
+        scale  = 1.0_sp/lambda
+
+        ! tests using interface for lambda
         call random_seed(seed, get)
-
-        scale = 2.0_sp
-
-        x1 = expon_rvs(scale)
-        x2 = reshape(expon_rvs(scale, 12), [3,4])
-        res(:,1) = expon_cdf(x1, scale)
-        res(:, 2:5) = expon_cdf(x2, scale)
+        x1 = expon_rvs(lambda)
+        x2 = reshape(expon_rvs(lambda, 12), [3,4])
+        res(:,1) = expon_cdf(x1, lambda)
+        res(:, 2:5) = expon_cdf(x2, lambda)
         call check(all(abs(res - reshape(ans,[3,5])) < sptol),             &
             msg="exponential_distribution_cdf_rsp failed", warn=warn)
+
+        ! tests using interface for loc and scale
+        call random_seed(seed, get)
+        x1 = expon_rvs(loc, scale)
+        x2 = reshape(expon_rvs(loc, scale, 12), [3,4])
+        res(:,1) = expon_cdf(x1, loc, scale)
+        res(:, 2:5) = expon_cdf(x2, loc, scale)
+        call check(all(abs(res - reshape(ans,[3,5])) < sptol),             &
+            msg="exponential_distribution_cdf_rsp failed", warn=warn)
+
     end subroutine test_expon_cdf_rsp
 
     subroutine test_expon_cdf_rdp
 
-        real(dp) :: x1, x2(3,4), scale
+        real(dp) :: x1, x2(3,4), lambda, loc, scale
         integer :: seed, get
         real(dp) :: res(3,5)
         real(dp), parameter :: ans(15) =                                   &
@@ -422,21 +568,35 @@ contains
 
         print *, "Test exponential_distribution_cdf_rdp"
         seed = 621957438
+
+        ! set args
+        lambda = 2.0_dp
+        loc    = 0._dp
+        scale  = 1.0_dp/lambda
+
+        ! tests using interface for lambda
         call random_seed(seed, get)
-
-        scale = 2.0_dp
-
-        x1 = expon_rvs(scale)
-        x2 = reshape(expon_rvs(scale, 12), [3,4])
-        res(:,1) = expon_cdf(x1, scale)
-        res(:, 2:5) = expon_cdf(x2, scale)
+        x1 = expon_rvs(lambda)
+        x2 = reshape(expon_rvs(lambda, 12), [3,4])
+        res(:,1) = expon_cdf(x1, lambda)
+        res(:, 2:5) = expon_cdf(x2, lambda)
         call check(all(abs(res - reshape(ans,[3,5])) < dptol),             &
             msg="exponential_distribution_cdf_rdp failed", warn=warn)
+
+        ! tests using interface for loc and scale
+        call random_seed(seed, get)
+        x1 = expon_rvs(loc, scale)
+        x2 = reshape(expon_rvs(loc, scale, 12), [3,4])
+        res(:,1) = expon_cdf(x1, loc, scale)
+        res(:, 2:5) = expon_cdf(x2, loc, scale)
+        call check(all(abs(res - reshape(ans,[3,5])) < dptol),             &
+            msg="exponential_distribution_cdf_rdp failed", warn=warn)
+
     end subroutine test_expon_cdf_rdp
 
     subroutine test_expon_cdf_csp
 
-        complex(sp) :: x1, x2(3,4), scale
+        complex(sp) :: x1, x2(3,4), lambda, loc, scale
         integer :: seed, get
         real(sp) :: res(3,5)
         real(sp), parameter :: ans(15) =                                   &
@@ -458,21 +618,35 @@ contains
 
         print *, "Test exponential_distribution_cdf_csp"
         seed = 621957438
+
+        ! set args
+        lambda = (1.3_sp, 2.1_sp)
+        loc    = (0._sp, 0._sp)
+        scale  = cmplx(1.0_sp/lambda%re, 1.0_sp/lambda%im, kind=sp)
+
+        ! tests using interface for lambda
         call random_seed(seed, get)
-
-        scale = (1.3_sp, 2.1_sp)
-
-        x1 = expon_rvs(scale)
-        x2 = reshape(expon_rvs(scale, 12), [3,4])
-        res(:,1) = expon_cdf(x1, scale)
-        res(:, 2:5) = expon_cdf(x2, scale)
+        x1 = expon_rvs(lambda)
+        x2 = reshape(expon_rvs(lambda, 12), [3,4])
+        res(:,1) = expon_cdf(x1, lambda)
+        res(:, 2:5) = expon_cdf(x2, lambda)
         call check(all(abs(res - reshape(ans,[3,5])) < sptol),             &
             msg="exponential_distribution_cdf_csp failed", warn=warn)
+
+        ! tests using interface for loc and scale
+        call random_seed(seed, get)
+        x1 = expon_rvs(loc, scale)
+        x2 = reshape(expon_rvs(loc, scale, 12), [3,4])
+        res(:,1) = expon_cdf(x1, loc, scale)
+        res(:, 2:5) = expon_cdf(x2, loc, scale)
+        call check(all(abs(res - reshape(ans,[3,5])) < sptol),             &
+            msg="exponential_distribution_cdf_csp failed", warn=warn)
+
     end subroutine test_expon_cdf_csp
 
     subroutine test_expon_cdf_cdp
 
-        complex(dp) :: x1, x2(3,4), scale
+        complex(dp) :: x1, x2(3,4), lambda, loc, scale
         integer :: seed, get
         real(dp) :: res(3,5)
         real(dp), parameter :: ans(15) =                                   &
@@ -494,16 +668,30 @@ contains
 
         print *, "Test exponential_distribution_cdf_cdp"
         seed = 621957438
+
+        ! set args
+        lambda = (1.3_dp, 2.1_dp)
+        loc    = (0._dp, 0._dp)
+        scale  = cmplx(1.0_dp/lambda%re, 1.0_dp/lambda%im, kind=dp)
+
+        ! tests using interface for lambda
         call random_seed(seed, get)
-
-        scale = (1.3_dp, 2.1_dp)
-
-        x1 = expon_rvs(scale)
-        x2 = reshape(expon_rvs(scale, 12), [3,4])
-        res(:,1) = expon_cdf(x1, scale)
-        res(:, 2:5) = expon_cdf(x2, scale)
+        x1 = expon_rvs(lambda)
+        x2 = reshape(expon_rvs(lambda, 12), [3,4])
+        res(:,1) = expon_cdf(x1, lambda)
+        res(:, 2:5) = expon_cdf(x2, lambda)
         call check(all(abs(res - reshape(ans,[3,5])) < dptol),             &
             msg="exponential_distribution_cdf_cdp failed", warn=warn)
+
+        ! tests using interface for loc and scale
+        call random_seed(seed, get)
+        x1 = expon_rvs(loc, scale)
+        x2 = reshape(expon_rvs(loc, scale, 12), [3,4])
+        res(:,1) = expon_cdf(x1, loc, scale)
+        res(:, 2:5) = expon_cdf(x2, loc, scale)
+        call check(all(abs(res - reshape(ans,[3,5])) < dptol),             &
+            msg="exponential_distribution_cdf_cdp failed", warn=warn)
+
     end subroutine test_expon_cdf_cdp
 
 
