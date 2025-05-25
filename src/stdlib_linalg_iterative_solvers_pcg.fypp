@@ -23,7 +23,7 @@ contains
     #:for k, t, s in R_KINDS_TYPES
     module subroutine solve_pcg_kernel_${s}$(A,M,b,x,tol,maxiter,workspace)
         class(linop_${s}$), intent(in) :: A
-        class(linop_${s}$), intent(in) :: M !> preconditionner
+        class(linop_${s}$), intent(in) :: M 
         ${t}$, intent(in) :: b(:), tol
         ${t}$, intent(inout) :: x(:)
         integer, intent(in) :: maxiter
@@ -98,8 +98,8 @@ contains
         logical(1), intent(in), optional, target  :: di(:)
         integer, intent(in), optional  :: maxiter
         logical, intent(in), optional  :: restart
-        integer, intent(in), optional  :: precond !> preconditionner method flag
-        class(linop_${s}$), optional , intent(in), target :: M !> preconditionner
+        integer, intent(in), optional  :: precond 
+        class(linop_${s}$), optional , intent(in), target :: M 
         type(solver_workspace_${s}$), optional, intent(inout), target :: workspace
         !-------------------------
         type(linop_${s}$) :: op

@@ -3,7 +3,8 @@
 #:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
 #:set MATRIX_TYPES = ["dense", "CSR"]
 #:set RANKS = range(1, 2+1)
-
+!! The `stdlib_linalg_iterative_solvers` module provides interfaces for iterative solvers.
+!!
 module stdlib_linalg_iterative_solvers
     use stdlib_kinds
     use stdlib_sparse
@@ -18,7 +19,10 @@ module stdlib_linalg_iterative_solvers
     end enum
     public :: size_wksp_cg, size_wksp_pcg
 
-    !> linear operator class for the iterative solvers
+    !! version: experimental
+    !!
+    !! linop type holding the linear operator and its associated methods.
+    !! The `linop` type is used to define the linear operator for the iterative solvers.
     #:for k, t, s in R_KINDS_TYPES
     type, public :: linop_${s}$
         procedure(vector_sub_${s}$), nopass, pointer    :: apply => null()
@@ -26,6 +30,9 @@ module stdlib_linalg_iterative_solvers
     end type
     #:endfor
 
+    !! version: experimental
+    !!
+    !! solver_workspace type holding temporal array data for the iterative solvers.
     #:for k, t, s in R_KINDS_TYPES
     type, public :: solver_workspace_${s}$
         ${t}$, allocatable :: tmp(:,:)
@@ -57,15 +64,19 @@ module stdlib_linalg_iterative_solvers
         #:endfor
     end interface
 
+    !! version: experimental
+    !!
+    !! solve_cg_kernel interface for the conjugate gradient method.
+    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#solve_cg_kernel)
     interface solve_cg_kernel
         #:for k, t, s in R_KINDS_TYPES
         module subroutine solve_cg_kernel_${s}$(A,b,x,tol,maxiter,workspace)
-            class(linop_${s}$), intent(in) :: A
-            ${t}$, intent(in) :: b(:)
-            ${t}$, intent(inout) :: x(:)
-            ${t}$, intent(in) :: tol
-            integer, intent(in) :: maxiter
-            type(solver_workspace_${s}$), intent(inout) :: workspace
+            class(linop_${s}$), intent(in) :: A !! linear operator
+            ${t}$, intent(in) :: b(:) !! right-hand side vector
+            ${t}$, intent(inout) :: x(:) !! solution vector and initial guess
+            ${t}$, intent(in) :: tol !! tolerance for convergence
+            integer, intent(in) :: maxiter !! maximum number of iterations
+            type(solver_workspace_${s}$), intent(inout) :: workspace !! workspace for the solver
         end subroutine
         #:endfor
     end interface
@@ -75,34 +86,39 @@ module stdlib_linalg_iterative_solvers
         #:for matrix in MATRIX_TYPES
         #:for k, t, s in R_KINDS_TYPES
         module subroutine solve_cg_${matrix}$_${s}$(A,b,x,di,tol,maxiter,restart,workspace)
+            !! linear operator matrix
             #:if matrix == "dense"
-            ${t}$, intent(in) :: A(:,:)
+            ${t}$, intent(in) :: A(:,:) 
             #:else 
             type(${matrix}$_${s}$_type), intent(in) :: A
             #:endif
-            ${t}$, intent(in) :: b(:)
-            ${t}$, intent(inout) :: x(:)
-            ${t}$, intent(in), optional :: tol
-            logical(1), intent(in), optional, target  :: di(:)
-            integer, intent(in), optional :: maxiter
-            logical, intent(in), optional :: restart
-            type(solver_workspace_${s}$), optional, intent(inout), target :: workspace
+            ${t}$, intent(in) :: b(:) !! right-hand side vector
+            ${t}$, intent(inout) :: x(:) !! solution vector and initial guess
+            ${t}$, intent(in), optional :: tol !! tolerance for convergence
+            logical(1), intent(in), optional, target  :: di(:) !! dirichlet conditions mask
+            integer, intent(in), optional :: maxiter !! maximum number of iterations
+            logical, intent(in), optional :: restart !! restart flag
+            type(solver_workspace_${s}$), optional, intent(inout), target :: workspace !! workspace for the solver
         end subroutine
         #:endfor
         #:endfor
     end interface
     public :: solve_cg
 
+    !! version: experimental
+    !!
+    !! solve_pcg_kernel interface for the preconditionned conjugate gradient method.
+    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#solve_pcg_kernel)
     interface solve_pcg_kernel
         #:for k, t, s in R_KINDS_TYPES
         module subroutine solve_pcg_kernel_${s}$(A,M,b,x,tol,maxiter,workspace)
-            class(linop_${s}$), intent(in) :: A
-            class(linop_${s}$), intent(in) :: M !> preconditionner
-            ${t}$, intent(in) :: b(:)
-            ${t}$, intent(inout) :: x(:)
-            ${t}$, intent(in) :: tol
-            integer, intent(in) :: maxiter
-            type(solver_workspace_${s}$), intent(inout) :: workspace
+            class(linop_${s}$), intent(in) :: A !! linear operator
+            class(linop_${s}$), intent(in) :: M !! preconditionner linear operator
+            ${t}$, intent(in) :: b(:) !! right-hand side vector
+            ${t}$, intent(inout) :: x(:) !! solution vector and initial guess
+            ${t}$, intent(in) :: tol !! tolerance for convergence
+            integer, intent(in) :: maxiter !! maximum number of iterations
+            type(solver_workspace_${s}$), intent(inout) :: workspace !! workspace for the solver
         end subroutine
         #:endfor
     end interface
@@ -112,20 +128,21 @@ module stdlib_linalg_iterative_solvers
         #:for matrix in MATRIX_TYPES
         #:for k, t, s in R_KINDS_TYPES
         module subroutine solve_pcg_${matrix}$_${s}$(A,b,x,di,tol,maxiter,restart,precond,M,workspace)
+            !! linear operator matrix
             #:if matrix == "dense"
             ${t}$, intent(in) :: A(:,:)
             #:else 
             type(${matrix}$_${s}$_type), intent(in) :: A
             #:endif
-            ${t}$, intent(in) :: b(:)
-            ${t}$, intent(inout) :: x(:)
-            ${t}$, intent(in), optional :: tol
-            logical(1), intent(in), optional, target  :: di(:)
-            integer, intent(in), optional  :: maxiter
-            logical, intent(in), optional :: restart
-            integer, intent(in), optional  :: precond !> preconditionner method flag
-            class(linop_${s}$), optional , intent(in), target :: M !> preconditionner
-            type(solver_workspace_${s}$), optional, intent(inout), target :: workspace
+            ${t}$, intent(in) :: b(:) !! right-hand side vector
+            ${t}$, intent(inout) :: x(:) !! solution vector and initial guess
+            ${t}$, intent(in), optional :: tol !! tolerance for convergence
+            logical(1), intent(in), optional, target  :: di(:) !! dirichlet conditions mask
+            integer, intent(in), optional  :: maxiter !! maximum number of iterations
+            logical, intent(in), optional :: restart !! restart flag
+            integer, intent(in), optional  :: precond !! preconditionner method enumerator
+            class(linop_${s}$), optional , intent(in), target :: M !! preconditionner linear operator
+            type(solver_workspace_${s}$), optional, intent(inout), target :: workspace !! workspace for the solver
         end subroutine
         #:endfor
         #:endfor
