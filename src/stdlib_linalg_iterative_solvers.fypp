@@ -11,8 +11,7 @@ module stdlib_linalg_iterative_solvers
     implicit none
     private 
 
-    !> brief workspace size for the iterative solvers
-    !> details The size of the workspace is defined by the number of vectors used in the iterative solver.
+    !! workspace sizes: defined by the number of vectors used by the iterative solver.
     enum, bind(c)
         enumerator :: size_wksp_cg = 3
         enumerator :: size_wksp_pcg = 4
@@ -150,7 +149,7 @@ module stdlib_linalg_iterative_solvers
     public :: solve_pcg 
 
     interface solve_forward_triangular
-        !> Solve the system L x = b, where L is a strictly lower triangular matrix (diagonal assumed = 1).
+        ! Solve the system L x = b, where L is a strictly lower triangular matrix (diagonal assumed = 1).
         #:for k, t, s in R_KINDS_TYPES
         module subroutine solve_forward_triangular_dense_${s}$(L,b,x)
             ${t}$, intent(in) :: L(:,:)
@@ -168,7 +167,7 @@ module stdlib_linalg_iterative_solvers
  
 
     interface solve_backward_triangular
-        !> Solve the system U x = b, where U is a strictly upper triangular matrix (diagonal assumed = 1).
+        ! Solve the system U x = b, where U is a strictly upper triangular matrix (diagonal assumed = 1).
         #:for k, t, s in R_KINDS_TYPES
         module subroutine solve_backward_triangular_dense_${s}$(Lt,b,x)
             ${t}$, intent(in) :: Lt(:,:)

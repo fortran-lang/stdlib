@@ -45,9 +45,9 @@ contains
         if ( norm_sq0 > zero_${s}$ ) then
             
             R = B
-            call A%apply(X, R, alpha= -one_${s}$, beta=one_${s}$) !> R = B - A*X
+            call A%apply(X, R, alpha= -one_${s}$, beta=one_${s}$) ! R = B - A*X
             
-            call M%apply(R,P, alpha= one_${s}$, beta=zero_${s}$) !> P = M^{-1}*R
+            call M%apply(R,P, alpha= one_${s}$, beta=zero_${s}$) ! P = M^{-1}*R
             
             tolsq = tol*tol
             
@@ -55,7 +55,7 @@ contains
             zr2 = one_${s}$
             do while ( (iter < maxiter) .AND. (norm_sq > tolsq * norm_sq0) )
                 
-                call M%apply(R,S, alpha= one_${s}$, beta=zero_${s}$) !> S = M^{-1}*R
+                call M%apply(R,S, alpha= one_${s}$, beta=zero_${s}$) ! S = M^{-1}*R
                 zr2 = A%inner_product( R, S )
             
                 if (iter>0) then
@@ -63,7 +63,7 @@ contains
                     P = S + beta * P
                 end if
                 
-                call A%apply(P, Q, alpha= one_${s}$, beta=zero_${s}$) !> Q = A*P
+                call A%apply(P, Q, alpha= one_${s}$, beta=zero_${s}$) ! Q = A*P
                 zv2 = A%inner_product( P, Q )
             
                 alpha = zr2 / zv2
@@ -114,9 +114,9 @@ contains
         integer :: precond_
         ${t}$, allocatable :: diagonal(:)
         #:if matrix == "dense"
-        ${t}$, allocatable:: L(:,:) !> lower triangular
+        ${t}$, allocatable:: L(:,:) ! lower triangular
         #:else 
-        type(${matrix}$_${s}$_type) :: L !> lower triangular
+        type(${matrix}$_${s}$_type) :: L ! lower triangular
         #:endif
         !-------------------------
         n = size(b)
@@ -147,11 +147,11 @@ contains
                 #:else 
                 call diag(A,diagonal)
                 #:endif
-                L = A !> copy A structure to L
+                L = A ! copy A structure to L
                 call ssor( A , one_${s}$ , L, diagonal )
                 M_%apply => precond_ldlt
             case(pc_ldlt)
-                L = A !> copy A structure to L
+                L = A ! copy A structure to L
                 call ldlt( A , L, diagonal )
                 M_%apply => precond_ldlt
             case default
@@ -179,7 +179,7 @@ contains
         !-------------------------
         ! main call to the solver
         if(restart_) x = zero_${s}$
-        x = merge( b, x, di_ ) !> copy dirichlet load conditions encoded in B and indicated by di
+        x = merge( b, x, di_ ) ! copy dirichlet load conditions encoded in B and indicated by di
         call solve_pcg_kernel(op,M_,b,x,tol_,maxiter_,workspace_)
 
         !-------------------------
@@ -220,7 +220,7 @@ contains
             ${t}$, intent(inout) :: y(:)
             ${t}$, intent(in) :: alpha
             ${t}$, intent(in) :: beta
-            y = merge( zero_${s}$, diagonal * x, di_ ) !> inverted diagonal
+            y = merge( zero_${s}$, diagonal * x, di_ ) ! inverted diagonal
         end subroutine
         subroutine precond_ldlt(x,y,alpha,beta)
             ${t}$, intent(in)  :: x(:)
@@ -228,7 +228,7 @@ contains
             ${t}$, intent(in) :: alpha
             ${t}$, intent(in) :: beta
             call solve_forward_triangular( L , x , y )
-            y = merge( zero_${s}$, diagonal * y, di_ ) !> inverted diagonal
+            y = merge( zero_${s}$, diagonal * y, di_ ) ! inverted diagonal
             call solve_backward_triangular( L , y , y )
         end subroutine
     end subroutine

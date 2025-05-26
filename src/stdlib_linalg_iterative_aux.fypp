@@ -63,7 +63,7 @@ contains
                 aux = zero_${s}$
                 do m = L%rowptr(i), L%rowptr(i+1)-1
                     j = L%col(m)
-                    if(j>i) cycle !> skip upper part of the matrix
+                    if(j>i) cycle ! skip upper part of the matrix
                     aux = aux + L%data(m)*x(j)
                 end do
                 x(i) = b(i) - aux
@@ -77,7 +77,7 @@ contains
                 end do
                 x(i) = b(i) - aux
             end do
-        case(sparse_upper) !> treates as lower triangular (thus transpose)
+        case(sparse_upper) ! treates as lower triangular (thus transpose)
             do i = 1, L%nrows
                 x(i) = b(i)
                 do m = L%rowptr(i)+1, L%rowptr(i+1)-1
@@ -104,7 +104,7 @@ contains
                 x(i) = b(i) - baux(i)
                 do m = Lt%rowptr(i), Lt%rowptr(i+1)-1
                     j = Lt%col(m)
-                    if(j<i) cycle !> skip lower part of the matrix
+                    if(j<i) cycle ! skip lower part of the matrix
                     baux(j) = baux(j) + Lt%data(m)*x(i)
                 end do
             end do
@@ -199,8 +199,8 @@ contains
 
     #:endfor
 
-    !> Bunch-Kaufman factorization of a symmetric positive definite matrix A.
-    !> The matrix A is assumed to be symmetric and positive definite.
+    !! Bunch-Kaufman factorization of a symmetric positive definite matrix A.
+    !! The matrix A is assumed to be symmetric and positive definite.
     #:for k, t, s in R_KINDS_TYPES
     module subroutine ldlt_dense_${s}$(A, L, D)
         ${t}$, intent(in) :: A(:,:)
