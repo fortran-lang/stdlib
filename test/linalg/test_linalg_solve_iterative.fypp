@@ -22,7 +22,9 @@ module test_linalg_solve_iterative
         allocate(tests(0))
 
         tests = [ new_unittest("factorize_ldlt",test_factorize_ldlt), &
-                  new_unittest("solve_ldlt",test_solve_ldlt) ]
+                  new_unittest("solve_ldlt",test_solve_ldlt), &
+                  new_unittest("solve_cg",test_solve_cg), &
+                  new_unittest("solve_pcg",test_solve_pcg) ]
 
     end subroutine test_linear_systems    
     
@@ -97,7 +99,58 @@ module test_linalg_solve_iterative
         #:endfor
     end subroutine test_solve_ldlt
 
-    ! TODO: add tests for solve_cg, solve_pcg, etc.
+    subroutine test_solve_cg(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for k, t, s in R_KINDS_TYPES
+        block
+        ${t}$, parameter :: tol = 1000*epsilon(0.0_${k}$)
+        ${t}$ :: A(2,2) = reshape([${t}$ ::  4,  1, &
+                                             1,  3], [2,2])
+        ${t}$ :: x(2), load(2), xref(2)
+        
+        xref = [0.0909, 0.6364]
+        x    = real( [2,1] , kind = ${k}$ ) ! initial guess
+        load = real( [1,2] , kind = ${k}$ ) ! load vector
+
+        call solve_cg(A, load, x)
+
+        
+        call check(error, norm2(x-xref)<1.e-4_${k}$, 'error in conjugate gradient solver')
+        if (allocated(error)) return
+        end block
+
+        #:endfor
+    end subroutine test_solve_cg
+
+    subroutine test_solve_pcg(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for k, t, s in R_KINDS_TYPES
+        block
+        ${t}$, parameter :: tol = 1000*epsilon(0.0_${k}$)
+        ${t}$ :: A(5,5) = reshape([${t}$ :: 1, -1,  0,  0,  0,&
+                                           -1,  2, -1,  0,  0,&
+                                            0, -1,  2, -1,  0,&
+                                            0,  0, -1,  2, -1,&
+                                            0,  0,  0, -1,  1] , [5,5])
+        ${t}$ :: x(5), load(5), xref(5)
+        logical(1) :: dirichlet(5)
+        
+        xref = [0.0_${k}$,2.5_${k}$,5.0_${k}$,2.5_${k}$,0.0_${k}$]
+        x    = 0.0_${k}$ 
+        load = real( [0,0,5,0,0] , kind = ${k}$ ) ! load vector
+        dirichlet = .false._1 
+        dirichlet([1,5]) = .true._1
+
+        call solve_pcg(A, load, x, di=dirichlet, tol=1.e-6_${k}$)
+
+        call check(error, norm2(x-xref)<1.e-6_${k}$*norm2(xref), 'error in preconditionned conjugate gradient solver')
+        if (allocated(error)) return
+        end block
+
+        #:endfor
+    end subroutine test_solve_pcg
 
 end module test_linalg_solve_iterative
 
