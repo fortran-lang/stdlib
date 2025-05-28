@@ -22,12 +22,12 @@ contains
 
     #:for k, t, s in R_KINDS_TYPES
     module subroutine solve_pcg_kernel_${s}$(A,M,b,x,tol,maxiter,workspace)
-        class(linop_${s}$), intent(in) :: A
-        class(linop_${s}$), intent(in) :: M 
+        class(linop_${s}$_type), intent(in) :: A
+        class(linop_${s}$_type), intent(in) :: M 
         ${t}$, intent(in) :: b(:), tol
         ${t}$, intent(inout) :: x(:)
         integer, intent(in) :: maxiter
-        type(solver_workspace_${s}$), intent(inout) :: workspace
+        type(solver_workspace_${s}$_type), intent(inout) :: workspace
         !-------------------------
         integer :: iter
         ${t}$ :: norm_sq, norm_sq0, norm_sq_old
@@ -99,12 +99,12 @@ contains
         integer, intent(in), optional  :: maxiter
         logical, intent(in), optional  :: restart
         integer, intent(in), optional  :: precond 
-        class(linop_${s}$), optional , intent(in), target :: M 
-        type(solver_workspace_${s}$), optional, intent(inout), target :: workspace
+        class(linop_${s}$_type), optional , intent(in), target :: M 
+        type(solver_workspace_${s}$_type), optional, intent(inout), target :: workspace
         !-------------------------
-        type(linop_${s}$) :: op
-        type(linop_${s}$), pointer :: M_ => null()
-        type(solver_workspace_${s}$), pointer :: workspace_
+        type(linop_${s}$_type) :: op
+        type(linop_${s}$_type), pointer :: M_ => null()
+        type(solver_workspace_${s}$_type), pointer :: workspace_
         integer :: n, maxiter_
         ${t}$ :: tol_
         logical :: restart_

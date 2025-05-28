@@ -17,7 +17,7 @@ The `stdlib_linalg_iterative_solvers` module provides base implementations for k
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### The `linop` derived type
 
-The `linop_<kind>` derive type is an auxiliary class enabling to abstract the definition of the linear system and the actual implementation of the solvers.
+The `linop_<kind>_type` derive type is an auxiliary class enabling to abstract the definition of the linear system and the actual implementation of the solvers.
 
 #### Type-bound procedures
 
@@ -70,7 +70,7 @@ The output is a scalar of `type` and `kind` same as to that of `x` and `y`.
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### The `solver_workspace` derived type
 
-The `solver_workspace_<kind>` derive type is an auxiliary class enabling to hold the data associated to the working arrays needed by the solvers to operate.
+The `solver_workspace_<kind>_type` derive type is an auxiliary class enabling to hold the data associated to the working arrays needed by the solvers to operate.
 
 #### Type-bound procedures
 
@@ -109,7 +109,7 @@ Subroutine
 
 #### Argument(s)
 
-`A`: `class(linop_<kind>)` defining the linear operator. This argument is `intent(in)`.
+`A`: `class(linop_<kind>_type)` defining the linear operator. This argument is `intent(in)`.
 
 `b`: 1-D array of `real(<kind>)` defining the loading conditions of the linear system. This argument is `intent(in)`.
 
@@ -119,7 +119,7 @@ Subroutine
 
 `maxiter`: scalar of type `integer` defining the maximum allowed number of iterations. This argument is `intent(in)`.
 
-`workspace`: `type(solver_workspace_<kind>)` holding the work temporal array for the solver. This argument is `intent(inout)`.
+`workspace`: `type(solver_workspace_<kind>_type)` holding the work temporal array for the solver. This argument is `intent(inout)`.
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### `solve_cg` subroutine
@@ -154,7 +154,7 @@ Subroutine
 
 `maxiter` (optional): scalar of type `integer` defining the maximum allowed number of iterations. If no value is given, a default of `N` is set, where `N = size(b)`. This argument is `intent(in)`.
 
-`workspace` (optional): `type(solver_workspace_<kind>)` holding the work temporal array for the solver. If the user passes its own `workspace`, then internally a pointer is set to it, otherwise, memory will be internally allocated and deallocated before exiting the procedure. This argument is `intent(inout)`.
+`workspace` (optional): `type(solver_workspace_<kind>_type)` holding the work temporal array for the solver. If the user passes its own `workspace`, then internally a pointer is set to it, otherwise, memory will be internally allocated and deallocated before exiting the procedure. This argument is `intent(inout)`.
 
 #### Example
 
@@ -183,9 +183,9 @@ Subroutine
 
 #### Argument(s)
 
-`A`: `class(linop_<kind>)` defining the linear operator. This argument is `intent(in)`.
+`A`: `class(linop_<kind>_type)` defining the linear operator. This argument is `intent(in)`.
 
-`M`: `class(linop_<kind>)` defining the preconditionner linear operator. This argument is `intent(in)`.
+`M`: `class(linop_<kind>_type)` defining the preconditionner linear operator. This argument is `intent(in)`.
 
 `b`: 1-D array of `real(<kind>)` defining the loading conditions of the linear system. This argument is `intent(in)`.
 
@@ -195,7 +195,7 @@ Subroutine
 
 `maxiter`: scalar of type `integer` defining the maximum allowed number of iterations. This argument is `intent(in)`.
 
-`workspace`: `type(solver_workspace_<kind>)` holding the work temporal array for the solver. This argument is `intent(inout)`.
+`workspace`: `type(solver_workspace_<kind>_type)` holding the work temporal array for the solver. This argument is `intent(inout)`.
 
 #### Example
 
@@ -238,9 +238,9 @@ Subroutine
 
 `precond` (optional): scalar of type `integer` enabling to switch among the default preconditionners available. If no value is given, no preconditionning will be applied. This argument is `intent(in)`.
 
-`M` (optional): `class(linop_<kind>)` defining a custom preconditionner linear operator. If given, `precond` will have no effect, a pointer is set to this custom preconditionner.
+`M` (optional): `class(linop_<kind>_type)` defining a custom preconditionner linear operator. If given, `precond` will have no effect, a pointer is set to this custom preconditionner.
 
-`workspace` (optional): `type(solver_workspace_<kind>)` holding the work temporal array for the solver. If the user passes its own `workspace`, then internally a pointer is set to it, otherwise, memory will be internally allocated and deallocated before exiting the procedure. This argument is `intent(inout)`.
+`workspace` (optional): `type(solver_workspace_<kind>_type)` holding the work temporal array for the solver. If the user passes its own `workspace`, then internally a pointer is set to it, otherwise, memory will be internally allocated and deallocated before exiting the procedure. This argument is `intent(inout)`.
 
 #### Example
 

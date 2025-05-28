@@ -1,8 +1,8 @@
 module custom_solver
     use stdlib_kinds, only: dp
     use stdlib_sparse
-    use stdlib_linalg_iterative_solvers, only: linop_dp, &
-                    solver_workspace_dp, &
+    use stdlib_linalg_iterative_solvers, only: linop_dp_type, &
+                    solver_workspace_dp_type, &
                     solve_pcg_kernel, &
                     size_wksp_pcg
     implicit none
@@ -15,11 +15,11 @@ contains
         logical(1), intent(in), optional, target  :: di(:)
         integer, intent(in), optional  :: maxiter
         logical, intent(in), optional  :: restart
-        type(solver_workspace_dp), optional, intent(inout), target :: workspace
+        type(solver_workspace_dp_type), optional, intent(inout), target :: workspace
         !-------------------------
-        type(linop_dp) :: op
-        type(linop_dp) :: M
-        type(solver_workspace_dp), pointer :: workspace_
+        type(linop_dp_type) :: op
+        type(linop_dp_type) :: M
+        type(solver_workspace_dp_type), pointer :: workspace_
         integer :: n, maxiter_
         real(dp) :: tol_
         logical :: restart_

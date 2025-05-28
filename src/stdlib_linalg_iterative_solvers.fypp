@@ -23,7 +23,7 @@ module stdlib_linalg_iterative_solvers
     !! linop type holding the linear operator and its associated methods.
     !! The `linop` type is used to define the linear operator for the iterative solvers.
     #:for k, t, s in R_KINDS_TYPES
-    type, public :: linop_${s}$
+    type, public :: linop_${s}$_type
         procedure(vector_sub_${s}$), nopass, pointer    :: apply => null()
         procedure(reduction_sub_${s}$), nopass, pointer :: inner_product => default_dot_${s}$
     end type
@@ -33,7 +33,7 @@ module stdlib_linalg_iterative_solvers
     !!
     !! solver_workspace type holding temporal array data for the iterative solvers.
     #:for k, t, s in R_KINDS_TYPES
-    type, public :: solver_workspace_${s}$
+    type, public :: solver_workspace_${s}$_type
         ${t}$, allocatable :: tmp(:,:)
         procedure(logger_sub_${s}$), pointer, nopass :: callback => null()
     end type 
@@ -70,12 +70,12 @@ module stdlib_linalg_iterative_solvers
     interface solve_cg_kernel
         #:for k, t, s in R_KINDS_TYPES
         module subroutine solve_cg_kernel_${s}$(A,b,x,tol,maxiter,workspace)
-            class(linop_${s}$), intent(in) :: A !! linear operator
+            class(linop_${s}$_type), intent(in) :: A !! linear operator
             ${t}$, intent(in) :: b(:) !! right-hand side vector
             ${t}$, intent(inout) :: x(:) !! solution vector and initial guess
             ${t}$, intent(in) :: tol !! tolerance for convergence
             integer, intent(in) :: maxiter !! maximum number of iterations
-            type(solver_workspace_${s}$), intent(inout) :: workspace !! workspace for the solver
+            type(solver_workspace_${s}$_type), intent(inout) :: workspace !! workspace for the solver
         end subroutine
         #:endfor
     end interface
@@ -97,7 +97,7 @@ module stdlib_linalg_iterative_solvers
             logical(1), intent(in), optional, target  :: di(:) !! dirichlet conditions mask
             integer, intent(in), optional :: maxiter !! maximum number of iterations
             logical, intent(in), optional :: restart !! restart flag
-            type(solver_workspace_${s}$), optional, intent(inout), target :: workspace !! workspace for the solver
+            type(solver_workspace_${s}$_type), optional, intent(inout), target :: workspace !! workspace for the solver
         end subroutine
         #:endfor
         #:endfor
@@ -111,13 +111,13 @@ module stdlib_linalg_iterative_solvers
     interface solve_pcg_kernel
         #:for k, t, s in R_KINDS_TYPES
         module subroutine solve_pcg_kernel_${s}$(A,M,b,x,tol,maxiter,workspace)
-            class(linop_${s}$), intent(in) :: A !! linear operator
-            class(linop_${s}$), intent(in) :: M !! preconditionner linear operator
+            class(linop_${s}$_type), intent(in) :: A !! linear operator
+            class(linop_${s}$_type), intent(in) :: M !! preconditionner linear operator
             ${t}$, intent(in) :: b(:) !! right-hand side vector
             ${t}$, intent(inout) :: x(:) !! solution vector and initial guess
             ${t}$, intent(in) :: tol !! tolerance for convergence
             integer, intent(in) :: maxiter !! maximum number of iterations
-            type(solver_workspace_${s}$), intent(inout) :: workspace !! workspace for the solver
+            type(solver_workspace_${s}$_type), intent(inout) :: workspace !! workspace for the solver
         end subroutine
         #:endfor
     end interface
@@ -140,8 +140,8 @@ module stdlib_linalg_iterative_solvers
             integer, intent(in), optional  :: maxiter !! maximum number of iterations
             logical, intent(in), optional :: restart !! restart flag
             integer, intent(in), optional  :: precond !! preconditionner method enumerator
-            class(linop_${s}$), optional , intent(in), target :: M !! preconditionner linear operator
-            type(solver_workspace_${s}$), optional, intent(inout), target :: workspace !! workspace for the solver
+            class(linop_${s}$_type), optional , intent(in), target :: M !! preconditionner linear operator
+            type(solver_workspace_${s}$_type), optional, intent(inout), target :: workspace !! workspace for the solver
         end subroutine
         #:endfor
         #:endfor
