@@ -167,7 +167,7 @@ Subroutine
 
 #### Description
 
-Implements the Preconditionned Conjugate Gradient (PCG) method for solving the linear system \( Ax = b \), where \( A \) is a symmetric positive-definite linear operator defined via the `linop` type. This is the core implementation, allowing flexibility for custom matrix types or parallel environments.
+Implements the Preconditioned Conjugate Gradient (PCG) method for solving the linear system \( Ax = b \), where \( A \) is a symmetric positive-definite linear operator defined via the `linop` type. This is the core implementation, allowing flexibility for custom matrix types or parallel environments.
 
 #### Syntax
 
@@ -185,7 +185,7 @@ Subroutine
 
 `A`: `class(linop_<kind>_type)` defining the linear operator. This argument is `intent(in)`.
 
-`M`: `class(linop_<kind>_type)` defining the preconditionner linear operator. This argument is `intent(in)`.
+`M`: `class(linop_<kind>_type)` defining the preconditioner linear operator. This argument is `intent(in)`.
 
 `b`: 1-D array of `real(<kind>)` defining the loading conditions of the linear system. This argument is `intent(in)`.
 
@@ -236,9 +236,9 @@ Subroutine
 
 `maxiter` (optional): scalar of type `integer` defining the maximum allowed number of iterations. If no value is given, a default of `N` is set, where `N = size(b)`. This argument is `intent(in)`.
 
-`precond` (optional): scalar of type `integer` enabling to switch among the default preconditionners available. If no value is given, no preconditionning will be applied. This argument is `intent(in)`.
+`precond` (optional): scalar of type `integer` enabling to switch among the default preconditioners available. If no value is given, no preconditionning will be applied. This argument is `intent(in)`.
 
-`M` (optional): `class(linop_<kind>_type)` defining a custom preconditionner linear operator. If given, `precond` will have no effect, a pointer is set to this custom preconditionner.
+`M` (optional): `class(linop_<kind>_type)` defining a custom preconditioner linear operator. If given, `precond` will have no effect, a pointer is set to this custom preconditioner.
 
 `workspace` (optional): `type(solver_workspace_<kind>_type)` holding the work temporal array for the solver. If the user passes its own `workspace`, then internally a pointer is set to it, otherwise, memory will be internally allocated and deallocated before exiting the procedure. This argument is `intent(inout)`.
 

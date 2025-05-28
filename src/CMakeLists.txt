@@ -94,7 +94,6 @@ set(cppFiles
 
     stdlib_linalg_blas.fypp
     stdlib_linalg_lapack.fypp
-    stdlib_linalg_iterative_aux.fypp
     stdlib_linalg_iterative_solvers.fypp
     stdlib_linalg_iterative_solvers_cg.fypp
     stdlib_linalg_iterative_solvers_pcg.fypp

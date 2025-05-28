@@ -14,8 +14,6 @@ submodule(stdlib_linalg_iterative_solvers) stdlib_linalg_iterative_pcg
     enum, bind(c)
         enumerator :: pc_none = 0
         enumerator :: pc_jacobi
-        enumerator :: pc_ssor 
-        enumerator :: pc_ldlt
     end enum
 
 contains
@@ -110,14 +108,10 @@ contains
         logical :: restart_
         logical(1), pointer :: di_(:)
         !-------------------------
-        ! working data for preconditionner
+        ! working data for preconditioner
         integer :: precond_
         ${t}$, allocatable :: diagonal(:)
-        #:if matrix == "dense"
-        ${t}$, allocatable:: L(:,:) ! lower triangular
-        #:else 
-        type(${matrix}$_${s}$_type) :: L ! lower triangular
-        #:endif
+
         !-------------------------
         n = size(b)
         maxiter_ = n;       if(present(maxiter)) maxiter_ = maxiter
@@ -126,7 +120,7 @@ contains
         precond_ = pc_none; if(present(precond)) precond_ = precond
         !-------------------------
         ! internal memory setup
-        ! Preconditionner
+        ! preconditioner
         if(present(M)) then
             M_ => M
         else 
@@ -141,19 +135,6 @@ contains
                 call diag(A,diagonal)
                 #:endif
                 M_%apply => precond_jacobi
-            case(pc_ssor)
-                #:if matrix == "dense"
-                diagonal = diag(A)
-                #:else 
-                call diag(A,diagonal)
-                #:endif
-                L = A ! copy A structure to L
-                call ssor( A , one_${s}$ , L, diagonal )
-                M_%apply => precond_ldlt
-            case(pc_ldlt)
-                L = A ! copy A structure to L
-                call ldlt( A , L, diagonal )
-                M_%apply => precond_ldlt
             case default
                 M_%apply => precond_none
             end select
@@ -221,15 +202,6 @@ contains
             ${t}$, intent(in) :: alpha
             ${t}$, intent(in) :: beta
             y = merge( zero_${s}$, diagonal * x, di_ ) ! inverted diagonal
-        end subroutine
-        subroutine precond_ldlt(x,y,alpha,beta)
-            ${t}$, intent(in)  :: x(:)
-            ${t}$, intent(inout) :: y(:)
-            ${t}$, intent(in) :: alpha
-            ${t}$, intent(in) :: beta
-            call solve_forward_triangular( L , x , y )
-            y = merge( zero_${s}$, diagonal * y, di_ ) ! inverted diagonal
-            call solve_backward_triangular( L , y , y )
         end subroutine
     end subroutine
 

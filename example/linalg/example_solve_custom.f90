@@ -36,7 +36,7 @@ contains
         ! internal memory setup
         op%apply => my_apply
         op%inner_product => my_dot
-        M%apply => my_jacobi_preconditionner
+        M%apply => my_jacobi_preconditioner
         if(present(di))then
             di_ => di
         else 
@@ -51,7 +51,7 @@ contains
         if(.not.allocated(workspace_%tmp)) allocate( workspace_%tmp(n,size_wksp_pcg) , source = 0.d0 )
         workspace_%callback => my_logger
         !-------------------------
-        ! Jacobi preconditionner factorization
+        ! Jacobi preconditioner factorization
         call diag(A,diagonal)
         where(abs(diagonal)>epsilon(0.d0)) diagonal = 1._dp/diagonal
         !-------------------------
@@ -78,7 +78,7 @@ contains
             call spmv( A , x, y , alpha, beta )
             y = merge( 0._dp, y, di_ )
         end subroutine
-        subroutine my_jacobi_preconditionner(x,y,alpha,beta)
+        subroutine my_jacobi_preconditioner(x,y,alpha,beta)
             real(dp), intent(in)  :: x(:)
             real(dp), intent(inout) :: y(:)
             real(dp), intent(in) :: alpha

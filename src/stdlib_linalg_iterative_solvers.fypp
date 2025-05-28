@@ -112,7 +112,7 @@ module stdlib_linalg_iterative_solvers
         #:for k, t, s in R_KINDS_TYPES
         module subroutine solve_pcg_kernel_${s}$(A,M,b,x,tol,maxiter,workspace)
             class(linop_${s}$_type), intent(in) :: A !! linear operator
-            class(linop_${s}$_type), intent(in) :: M !! preconditionner linear operator
+            class(linop_${s}$_type), intent(in) :: M !! preconditioner linear operator
             ${t}$, intent(in) :: b(:) !! right-hand side vector
             ${t}$, intent(inout) :: x(:) !! solution vector and initial guess
             ${t}$, intent(in) :: tol !! tolerance for convergence
@@ -139,84 +139,14 @@ module stdlib_linalg_iterative_solvers
             logical(1), intent(in), optional, target  :: di(:) !! dirichlet conditions mask
             integer, intent(in), optional  :: maxiter !! maximum number of iterations
             logical, intent(in), optional :: restart !! restart flag
-            integer, intent(in), optional  :: precond !! preconditionner method enumerator
-            class(linop_${s}$_type), optional , intent(in), target :: M !! preconditionner linear operator
+            integer, intent(in), optional  :: precond !! preconditioner method enumerator
+            class(linop_${s}$_type), optional , intent(in), target :: M !! preconditioner linear operator
             type(solver_workspace_${s}$_type), optional, intent(inout), target :: workspace !! workspace for the solver
         end subroutine
         #:endfor
         #:endfor
     end interface
     public :: solve_pcg 
-
-    interface solve_forward_triangular
-        ! Solve the system L x = b, where L is a strictly lower triangular matrix (diagonal assumed = 1).
-        #:for k, t, s in R_KINDS_TYPES
-        module subroutine solve_forward_triangular_dense_${s}$(L,b,x)
-            ${t}$, intent(in) :: L(:,:)
-            ${t}$, intent(in) :: b(:)
-            ${t}$, intent(inout) :: x(:)
-        end subroutine
-        module subroutine solve_forward_triangular_csr_${s}$(L,b,x)
-            type(CSR_${s}$_type), intent(in) :: L
-            ${t}$, intent(in) :: b(:)
-            ${t}$, intent(inout) :: x(:)
-        end subroutine
-        #:endfor    
-    end interface
-    public :: solve_forward_triangular
- 
-
-    interface solve_backward_triangular
-        ! Solve the system U x = b, where U is a strictly upper triangular matrix (diagonal assumed = 1).
-        #:for k, t, s in R_KINDS_TYPES
-        module subroutine solve_backward_triangular_dense_${s}$(Lt,b,x)
-            ${t}$, intent(in) :: Lt(:,:)
-            ${t}$, intent(in) :: b(:)
-            ${t}$, intent(inout) :: x(:)
-        end subroutine
-        module subroutine solve_backward_triangular_csr_${s}$(Lt,b,x)
-            type(CSR_${s}$_type), intent(in) :: Lt
-            ${t}$, intent(in) :: b(:)
-            ${t}$, intent(inout) :: x(:)
-        end subroutine
-        #:endfor    
-    end interface
-    public :: solve_backward_triangular
-
-    interface ldlt
-        #:for k, t, s in R_KINDS_TYPES
-        module subroutine ldlt_dense_${s}$(A, L, D)
-            ${t}$, intent(in) :: A(:,:)
-            ${t}$, intent(inout) :: L(:,:)
-            ${t}$, intent(inout) :: D(:)
-        end subroutine
-        module subroutine ldlt_csr_${s}$(A, L, D)
-            type(CSR_${s}$_type), intent(in) :: A
-            type(CSR_${s}$_type), intent(inout) :: L
-            ${t}$, intent(inout) :: D(:)
-        end subroutine
-        #:endfor    
-    end interface
-    public :: ldlt
-
-    interface ssor
-        #:for k, t, s in R_KINDS_TYPES
-        module subroutine ssor_dense_${s}$(A, w, L, D)
-            ${t}$, intent(in) :: A(:,:)
-            ${t}$, intent(in) :: w
-            ${t}$, intent(inout) :: L(:,:)
-            ${t}$, intent(inout) :: D(:)
-        end subroutine
-        module subroutine ssor_csr_${s}$(A, w, L, D)
-            type(CSR_${s}$_type), intent(in) :: A
-            ${t}$, intent(in) :: w
-            type(CSR_${s}$_type), intent(inout) :: L
-            ${t}$, intent(inout) :: D(:)
-        end subroutine
-        #:endfor    
-    end interface
-    public :: ssor
-
 
 contains
 
