@@ -13,10 +13,10 @@ module stdlib_linalg_iterative_solvers
 
     !! workspace sizes: defined by the number of vectors used by the iterative solver.
     enum, bind(c)
-        enumerator :: size_wksp_cg = 3
-        enumerator :: size_wksp_pcg = 4
+        enumerator :: stdlib_size_wksp_cg = 3
+        enumerator :: stdlib_size_wksp_pcg = 4
     end enum
-    public :: size_wksp_cg, size_wksp_pcg
+    public :: stdlib_size_wksp_cg, stdlib_size_wksp_pcg
 
     !! version: experimental
     !!

@@ -156,7 +156,7 @@ contains
         else
             allocate( workspace_ )
         end if
-        if(.not.allocated(workspace_%tmp)) allocate( workspace_%tmp(n,size_wksp_pcg) , source = zero_${s}$ )
+        if(.not.allocated(workspace_%tmp)) allocate( workspace_%tmp(n,stdlib_size_wksp_pcg) , source = zero_${s}$ )
         !-------------------------
         ! main call to the solver
         if(restart_) x = zero_${s}$
