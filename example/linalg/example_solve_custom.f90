@@ -4,7 +4,7 @@ module custom_solver
     use stdlib_linalg_iterative_solvers, only: linop_dp_type, &
                     solver_workspace_dp_type, &
                     solve_pcg_kernel, &
-                    size_wksp_pcg
+                    stdlib_size_wksp_pcg
     implicit none
 contains
     subroutine solve_pcg_custom(A,b,x,di,tol,maxiter,restart,workspace)
@@ -48,7 +48,7 @@ contains
         else
             allocate( workspace_ )
         end if
-        if(.not.allocated(workspace_%tmp)) allocate( workspace_%tmp(n,size_wksp_pcg) , source = 0.d0 )
+        if(.not.allocated(workspace_%tmp)) allocate( workspace_%tmp(n,stdlib_size_wksp_pcg) , source = 0.d0 )
         workspace_%callback => my_logger
         !-------------------------
         ! Jacobi preconditioner factorization
