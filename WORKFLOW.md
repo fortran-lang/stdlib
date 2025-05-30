@@ -116,6 +116,7 @@ Contributing can be daunting, we know! Even more for a big project with many con
 
 In order to help lowering the barrier for collaborating on ongoing efforts (e.g. an open PR), we have crafted a simple script that might come in handy. To explain the process we'll use Alice (the person you want to help) and Bob (you):
 
+```text
        ┌────────────────────────────┐
        │    fortran-lang/stdlib     │
        └────────────▲───────────────┘
@@ -133,6 +134,7 @@ In order to help lowering the barrier for collaborating on ongoing efforts (e.g.
                                      ▲
                                      │
                        [Push access to Alice's repo]
+```
 
 After having forked from `fortran-lang/stdlib` and cloned your `stdlib` fork on your local machine; on an unix compatible terminal with access to the `git` CLI, being at the root folder: 
 ```sh
