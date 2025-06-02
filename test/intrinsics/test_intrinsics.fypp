@@ -7,6 +7,7 @@ module test_intrinsics
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
     use stdlib_intrinsics
+    use stdlib_linalg_state, only: linalg_state_type, LINALG_VALUE_ERROR, operator(==)
     use stdlib_math, only: swap
     implicit none
     
@@ -19,7 +20,8 @@ subroutine collect_suite(testsuite)
 
     testsuite = [ &
         new_unittest('sum', test_sum), &
-        new_unittest('dot_product', test_dot_product) &
+        new_unittest('dot_product', test_dot_product), &
+        new_unittest('matmul', test_matmul) &
     ]
 end subroutine
 
@@ -249,6 +251,45 @@ subroutine test_dot_product(error)
     #:endfor
 
 end subroutine
+
+subroutine test_matmul(error)
+    type(error_type), allocatable, intent(out) :: error
+    type(linalg_state_type) :: linerr
+    real :: a(2, 3), b(3, 4), c(3, 2), d(2, 2)
+
+    d = stdlib_matmul(a, b, c, err=linerr)
+    call check(error, linerr == LINALG_VALUE_ERROR, "incompatible matrices are considered compatible")
+    if (allocated(error)) return
+
+    #:for k, t, s in R_KINDS_TYPES
+    block
+        ${t}$ :: x(10,20), y(20,30), z(30,10), r(10,10), r1(10,10)
+        call random_number(x)
+        call random_number(y)
+        call random_number(z)
+
+        r = stdlib_matmul(x, y, z) ! the optimal ordering would be (x(yz))
+        r1 = matmul(matmul(x, y), z) ! the opposite order to induce a difference
+
+        call check(error, all(abs(r-r1) <= epsilon(0._${k}$) * 300), "real, ${k}$, 3 args: error too large")
+        if (allocated(error)) return
+    end block
+
+    block
+        ${t}$ :: x(10,20), y(20,30), z(30,10), w(10, 20), r(10,20), r1(10,20)
+        call random_number(x)
+        call random_number(y)
+        call random_number(z)
+        call random_number(w)
+
+        r = stdlib_matmul(x, y, z, w) ! the optimal order would be ((x(yz))w)
+        r1 = matmul(matmul(x, y), matmul(z, w))
+
+        call check(error, all(abs(r-r1) <= epsilon(0._${k}$) * 1500), "real, ${k}$, 4 args: error too large")
+        if (allocated(error)) return
+    end block
+    #:endfor
+end subroutine test_matmul
     
 end module test_intrinsics
 
