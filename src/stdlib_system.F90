@@ -83,7 +83,22 @@ public :: wait
 public :: kill
 public :: elapsed
 public :: is_windows
-     
+
+!! Public path related functions and interfaces
+#ifdef WINDOWS
+    character(len=1), parameter, public :: pathsep = '\'
+    logical, parameter, public :: ISWIN = .true.
+#else
+    character(len=1), parameter, public :: pathsep = '/'
+    logical, parameter, public :: ISWIN = .false.
+#endif
+
+public :: joinpath
+public :: operator(/)
+public :: splitpath
+public :: basename
+public :: dirname
+
 !! version: experimental
 !!
 !! Tests if a given path matches an existing directory.
@@ -549,6 +564,87 @@ interface
     end function process_get_ID
     
 end interface 
+
+interface joinpath
+    !! version: experimental
+    !!
+    !!### Summary
+    !! join the paths provided according to the OS-specific path-separator
+    !! ([Specification](../page/specs/stdlib_system.html#joinpath))
+    !!
+    module pure function join2(p1, p2) result(path)
+        character(:), allocatable :: path
+        character(*), intent(in) :: p1, p2
+    end function join2
+
+    module pure function joinarr(p) result(path)
+        character(:), allocatable :: path
+        character(*), intent(in) :: p(:)
+    end function joinarr
+end interface joinpath
+
+interface operator(/)
+    !! version: experimental
+    !!
+    !!### Summary
+    !! A binary operator to join the paths provided according to the OS-specific path-separator
+    !! ([Specification](../page/specs/stdlib_system.html#operator(/)))
+    !!
+    module pure function join_op(p1, p2) result(path)
+        character(:), allocatable :: path
+        character(*), intent(in) :: p1, p2
+    end function join_op
+end interface operator(/)
+
+interface splitpath
+    !! version: experimental
+    !!
+    !!### Summary
+    !! splits the path immediately following the final path-separator
+    !! separating into typically a directory and a file name.
+    !! ([Specification](../page/specs/stdlib_system.html#splitpath))
+    !!
+    !!### Description
+    !! If the path is empty `head`='.' and tail=''
+    !! If the path only consists of separators, `head` is set to the separator and tail is empty
+    !! If the path is a root directory, `head` is set to that directory and tail is empty
+    !! `head` ends with a path-separator iff the path appears to be a root directory
+    module subroutine splitpath(p, head, tail)
+        character(*), intent(in) :: p
+        character(:), allocatable, intent(out) :: head, tail
+    end subroutine splitpath
+end interface splitpath
+
+interface basename
+    !! version: experimental
+    !!
+    !!### Summary
+    !! returns the basename (last component) of the provided path
+    !! ([Specification](../page/specs/stdlib_system.html#basename))
+    !!
+    !!### Description
+    !! The value returned is the `tail` of the interface `splitpath`
+    module function basename(p) result(base)
+        character(:), allocatable :: base
+        character(*), intent(in) :: p
+    end function basename
+end interface basename
+
+interface dirname
+    !! version: experimental
+    !!
+    !!### Summary
+    !! returns everything but the last component of the provided path
+    !! ([Specification](../page/specs/stdlib_system.html#dirname))
+    !!
+    !!### Description
+    !! The value returned is the `head` of the interface `splitpath`
+    module function dirname(p) result(base)
+        character(:), allocatable :: base
+        character(*), intent(in) :: p
+    end function dirname
+end interface dirname
+
 
 contains
 

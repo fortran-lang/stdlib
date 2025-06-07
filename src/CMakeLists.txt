@@ -32,14 +32,14 @@ set(fppFiles
     stdlib_linalg_kronecker.fypp
     stdlib_linalg_cross_product.fypp
     stdlib_linalg_eigenvalues.fypp
-    stdlib_linalg_solve.fypp    
+    stdlib_linalg_solve.fypp
     stdlib_linalg_determinant.fypp
     stdlib_linalg_qr.fypp
     stdlib_linalg_inverse.fypp
     stdlib_linalg_pinv.fypp
     stdlib_linalg_norms.fypp
     stdlib_linalg_state.fypp
-    stdlib_linalg_svd.fypp 
+    stdlib_linalg_svd.fypp
     stdlib_linalg_cholesky.fypp
     stdlib_linalg_schur.fypp
     stdlib_optval.fypp
@@ -94,6 +94,7 @@ set(cppFiles
 
     stdlib_linalg_blas.fypp
     stdlib_linalg_lapack.fypp
+    stdlib_system.F90
 )
 
 add_subdirectory(blas)
@@ -116,7 +117,7 @@ set(SRC
     stdlib_sorting_radix_sort.f90
     stdlib_system_subprocess.c
     stdlib_system_subprocess.F90
-    stdlib_system.F90
+    stdlib_system_path.f90
     stdlib_sparse.f90
     stdlib_specialfunctions_legendre.f90
     stdlib_quadrature_gauss.f90
