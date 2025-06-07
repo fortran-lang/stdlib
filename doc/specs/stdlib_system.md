@@ -532,3 +532,180 @@ The file is removed from the filesystem if the operation is successful. If the o
 ```fortran
 {!example/system/example_delete_file.f90!}
 ```
+
+## `joinpath` - Joins the provided paths according to the OS
+
+### Status
+
+Experimental
+
+### Description
+
+This interface joins the paths provided to it according to the platform specific path-separator.
+i.e `\` for windows and `/` for others
+
+### Syntax
+
+`res = [[stdlib_system(module):joinpath(interface)]] (p1, p2)`
+`res = [[stdlib_system(module):joinpath(interface)]] (p)`
+
+### Class
+Pure function
+
+### Arguments
+
+`p1, p2`: Shall be a character string. It is an `intent(in)` argument.
+    or
+`p`: Shall be a list of character strings. `intent(in)` argument.
+
+### Return values
+
+The resultant path.
+
+### Example
+
+```fortran
+{!example/system/example_path_1.f90!}
+```
+
+## `operator(/)`
+
+Join two paths according to the platform specific path-separator,
+Behavior exactly similar to `joinpath`
+
+### Status
+
+Experimental
+
+### Syntax
+
+`p = lval + rval`
+
+### Class
+
+Pure function.
+
+### Arguments
+
+`lval`: A character string, `intent(in)`.
+`rval`: A character string, `intent(in)`.
+
+### Result value
+
+The result is an `allocatable` character string
+
+#### Example
+
+```fortran
+{!example/system/example_path_1.f90!}
+```
+
+## `splitpath` - splits a path immediately following the last separator
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine splits a path immediately following the last separator after removing the trailing separators
+splitting it into most of the times a directory and a file name.
+
+### Syntax
+
+`call [[stdlib_system(module):splitpath(interface)]] (p, head, tail)`
+
+### Class
+Subroutine
+
+### Arguments
+
+`p`: A character string containing the path to be split. `intent(in)`
+`head`: The first part of the path. `allocatable, intent(out)`
+`tail`: The rest part of the path. `allocatable, intent(out)`
+
+### Behavior
+
+- If `p` is empty, `head` is set to `.` and `tail` is empty
+- If `p` consists entirely of path-separators. `head` is set to the path-separator and `tail` is empty
+- `head` ends in a path-separator iff and only if `p` appears to be a root directory or child of one
+
+### Return values
+
+The splitted path. `head` and `tail`.
+
+### Example
+
+```fortran
+{!example/system/example_path_1.f90!}
+```
+
+## `basename` - The last part of a path
+
+### Status
+
+Experimental
+
+### Description
+
+This function returns the last part of a path after removing trailing path separators.
+
+### Syntax
+
+`res = [[stdlib_system(module):basename(interface)]] (p)`
+
+### Class
+Function
+
+### Arguments
+
+`p`: the path, a character string, `intent(in)`
+
+### Behavior
+
+- The `tail` of `stdlib_system(module):splitpath(interface)` is exactly what is returned. Same Behavior.
+
+### Return values
+
+A character string.
+
+### Example
+
+```fortran
+{!example/system/example_path_1.f90!}
+```
+
+## `dirname` - Everything except the last part of the path
+
+### Status
+
+Experimental
+
+### Description
+
+This function returns everything except the last part of a path.
+
+### Syntax
+
+`res = [[stdlib_system(module):dirname(interface)]] (p)`
+
+### Class
+Function
+
+### Arguments
+
+`p`: the path, a character string, `intent(in)`
+
+### Behavior
+
+- The `head` of `stdlib_system(module):splitpath(interface)` is exactly what is returned. Same Behavior.
+
+### Return values
+
+A character string.
+
+### Example
+
+```fortran
+{!example/system/example_path_1.f90!}
+```
