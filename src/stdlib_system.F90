@@ -608,7 +608,7 @@ interface splitpath
     !! If the path is empty `head`='.' and tail=''
     !! If the path only consists of separators, `head` is set to the separator and tail is empty
     !! If the path is a root directory, `head` is set to that directory and tail is empty
-    !! `head` ends with a path-separator iff the path appears to be a root directory
+    !! `head` ends with a path-separator iff the path appears to be a root directory or a child of the root directory
     module subroutine splitpath(p, head, tail)
         character(*), intent(in) :: p
         character(:), allocatable, intent(out) :: head, tail
