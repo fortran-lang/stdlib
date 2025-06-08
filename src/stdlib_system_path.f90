@@ -56,8 +56,9 @@ contains
 
         head = temp(:len(temp)-i)
 
-        if (head == '') then
-            head = pathsep
+        ! child of a root directory
+        if (find(head, pathsep) == 0) then
+            head = head // pathsep
         end if
 
         tail = temp(len(temp)-i+2:)
