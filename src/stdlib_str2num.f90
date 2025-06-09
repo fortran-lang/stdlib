@@ -116,7 +116,7 @@ module stdlib_str2num
         integer(int8) :: err
         !----------------------------------------------
         call to_num_base(s,v,p,err)
-        p = min( p , len(s, kind = int8) )
+        p = min( p , len(s) )
         s => s(p:)
         if(present(stat)) stat = err
     end function
@@ -144,7 +144,7 @@ module stdlib_str2num
         integer(int8) :: err
         !----------------------------------------------
         call to_num_base(s,v,p,err)
-        p = min( p , len(s, kind = int8) )
+        p = min( p , len(s) )
         s => s(p:)
         if(present(stat)) stat = err
     end function
@@ -172,7 +172,7 @@ module stdlib_str2num
         integer(int8) :: err
         !----------------------------------------------
         call to_num_base(s,v,p,err)
-        p = min( p , len(s, kind = int8) )
+        p = min( p , len(s) )
         s => s(p:)
         if(present(stat)) stat = err
     end function
@@ -200,7 +200,7 @@ module stdlib_str2num
         integer(int8) :: err
         !----------------------------------------------
         call to_num_base(s,v,p,err)
-        p = min( p , len(s, kind = int8) )
+        p = min( p , len(s) )
         s => s(p:)
         if(present(stat)) stat = err
     end function
@@ -228,7 +228,7 @@ module stdlib_str2num
         integer(int8) :: err
         !----------------------------------------------
         call to_num_base(s,v,p,err)
-        p = min( p , len(s, kind = int8) )
+        p = min( p , len(s) )
         s => s(p:)
         if(present(stat)) stat = err
     end function
@@ -256,7 +256,7 @@ module stdlib_str2num
         integer(int8) :: err
         !----------------------------------------------
         call to_num_base(s,v,p,err)
-        p = min( p , len(s, kind = int8) )
+        p = min( p , len(s) )
         s => s(p:)
         if(present(stat)) stat = err
     end function
