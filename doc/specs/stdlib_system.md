@@ -628,7 +628,7 @@ Subroutine
 
 - If `p` is empty, `head` is set to `.` and `tail` is empty
 - If `p` consists entirely of path-separators. `head` is set to the path-separator and `tail` is empty
-- `head` ends in a path-separator iff and only if `p` appears to be a root directory or child of one
+- `head` ends in a path-separator if and only if `p` appears to be a root directory or child of one
 
 ### Return values
 
