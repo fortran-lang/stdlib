@@ -6,7 +6,12 @@ module test_specialmatrices
     use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
     use stdlib_linalg, only: hermitian
     use stdlib_math, only: all_close
-    use stdlib_specialmatrices
+    use stdlib_specialmatrices, only: tridiagonal, &
+                                      tridiagonal_sp_type, &
+                                      tridiagonal_dp_type, & 
+                                      tridiagonal_xdp_type, & 
+                                      tridiagonal_qp_type, &
+                                      dense, spmv
 
     implicit none
 
@@ -30,7 +35,7 @@ contains
         block
             integer, parameter :: wp = ${k1}$
             integer, parameter :: n = 5
-            type(Tridiagonal_${s1}$_type) :: A
+            type(tridiagonal_${s1}$_type) :: A
             ${t1}$, allocatable :: Amat(:,:), dl(:), dv(:), du(:)
             ${t1}$, allocatable :: x(:)
             ${t1}$, allocatable :: y1(:), y2(:)
@@ -38,7 +43,7 @@ contains
             ! Initialize matrix.
             allocate(dl(n-1), dv(n), du(n-1))
             call random_number(dl) ; call random_number(dv) ; call random_number(du)
-            A = Tridiagonal(dl, dv, du) ; Amat = dense(A)
+            A = tridiagonal(dl, dv, du) ; Amat = dense(A)
 
             ! Random vectors.
             allocate(x(n), source = 0.0_wp)   ; call random_number(x)

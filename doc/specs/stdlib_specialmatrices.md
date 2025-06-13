@@ -33,7 +33,7 @@ Experimental
 #### Description
 
 Tridiagonal matrices are ubiquituous in scientific computing and often appear when discretizing 1D differential operators.
-A generic tridiagonal matrix has the following structure
+A generic tridiagonal matrix has the following structure:
 $$
     A
     =
@@ -50,25 +50,25 @@ This particular structure also lends itself to specialized implementations for m
 Interfaces to the most common ones will soon be provided by `stdlib_specialmatrices`.
 To date, `stdlib_specialmatrices` supports the following data types:
 
-- `Tridiagonal_sp_type`   : Tridiagonal matrix of size `n` with `real`/`single precision` data.
-- `Tridiagonal_dp_type`   : Tridiagonal matrix of size `n` with `real`/`double precision` data.
-- `Tridiagonal_xdp_type`  : Tridiagonal matrix of size `n` with `real`/`extended precision` data.
-- `Tridiagonal_qp_type`   : Tridiagonal matrix of size `n` with `real`/`quadruple precision` data.
-- `Tridiagonal_csp_type`  : Tridiagonal matrix of size `n` with `complex`/`single precision` data.
-- `Tridiagonal_cdp_type`  : Tridiagonal matrix of size `n` with `complex`/`double precision` data.
-- `Tridiagonal_cxdp_type` : Tridiagonal matrix of size `n` with `complex`/`extended precision` data.
-- `Tridiagonal_cqp_type`  : Tridiagonal matrix of size `n` with `complex`/`quadruple precision` data.
+- `tridiagonal_sp_type`   : Tridiagonal matrix of size `n` with `real`/`single precision` data.
+- `tridiagonal_dp_type`   : Tridiagonal matrix of size `n` with `real`/`double precision` data.
+- `tridiagonal_xdp_type`  : Tridiagonal matrix of size `n` with `real`/`extended precision` data.
+- `tridiagonal_qp_type`   : Tridiagonal matrix of size `n` with `real`/`quadruple precision` data.
+- `tridiagonal_csp_type`  : Tridiagonal matrix of size `n` with `complex`/`single precision` data.
+- `tridiagonal_cdp_type`  : Tridiagonal matrix of size `n` with `complex`/`double precision` data.
+- `tridiagonal_cxdp_type` : Tridiagonal matrix of size `n` with `complex`/`extended precision` data.
+- `tridiagonal_cqp_type`  : Tridiagonal matrix of size `n` with `complex`/`quadruple precision` data.
 
 
 #### Syntax
 
 - To construct a tridiagonal matrix from already allocated arrays `dl` (lower diagonal, size `n-1`), `dv` (main diagonal, size `n`) and `du` (upper diagonal, size `n-1`):
 
-`A = ` [[stdlib_specialmatrices(module):Tridiagonal(interface)]] `(dl, dv, du)`
+`A = ` [[stdlib_specialmatrices(module):tridiagonal(interface)]] `(dl, dv, du)`
 
 - To construct a tridiagonal matrix of size `n x n` with constant diagonal elements `dl`, `dv`, and `du`:
 
-`A = ` [[stdlib_specialmatrices(module):Tridiagonal(interface)]] `(dl, dv, du, n)`
+`A = ` [[stdlib_specialmatrices(module):tridiagonal(interface)]] `(dl, dv, du, n)`
 
 #### Example
 
@@ -90,7 +90,7 @@ Experimental
 
 With the exception of `extended precision` and `quadruple precision`, all the types provided by `stdlib_specialmatrices` benefit from specialized kernels for matrix-vector products accessible via the common `spmv` interface.
 
-- For `Tridiagonal` matrices, the LAPACK `lagtm` backend is being used.
+- For `tridiagonal` matrices, the LAPACK `lagtm` backend is being used.
 
 #### Syntax
 
@@ -111,7 +111,7 @@ With the exception of `extended precision` and `quadruple precision`, all the ty
 - `op` (optional) : In-place operator identifier. Shall be a character(1) argument. It can have any of the following values: `N`: no transpose, `T`: transpose, `H`: hermitian or complex transpose.
 
 @warning
-Due to some underlying `lapack`-related designs, `alpha` and `beta` can only take values in `[-1, 0, 1]` for `Tridiagonal` and `SymTridiagonal` matrices. See `lagtm` for more details.
+Due to some underlying `lapack`-related designs, `alpha` and `beta` can only take values in `[-1, 0, 1]` for `tridiagonal` and `symtridiagonal` matrices. See `lagtm` for more details.
 @endwarning
 
 #### Examples

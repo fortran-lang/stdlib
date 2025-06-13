@@ -11,7 +11,7 @@ module stdlib_specialmatrices
     use stdlib_linalg_constants
     implicit none
     private
-    public :: Tridiagonal
+    public :: tridiagonal
     public :: spmv
     public :: dense, transpose, hermitian
     public :: operator(*), operator(+), operator(-)
@@ -24,8 +24,8 @@ module stdlib_specialmatrices
 
     !--> Tridiagonal matrices
     #:for k1, t1, s1 in (KINDS_TYPES)
-    type, public :: Tridiagonal_${s1}$_type
-        !! Base type to define a `Tridiagonal` matrix.
+    type, public :: tridiagonal_${s1}$_type
+        !! Base type to define a `tridiagonal` matrix.
         private
         ${t1}$, allocatable :: dl(:), dv(:), du(:)
         integer(ilp) :: n
@@ -38,9 +38,9 @@ module stdlib_specialmatrices
     !-----                      -----
     !--------------------------------
 
-    interface Tridiagonal
+    interface tridiagonal
         !! ([Specifications](../page/specs/stdlib_specialmatrices.html#Tridiagonal)) This
-        !! interface provides different methods to construct a `Tridiagonal` matrix. Only
+        !! interface provides different methods to construct a `tridiagonal` matrix. Only
         !! the non-zero elements of \( A \) are stored, i.e.
         !!
         !! \[
@@ -57,44 +57,44 @@ module stdlib_specialmatrices
         !!
         !! #### Syntax
         !!
-        !! - Construct a real `Tridiagonal` matrix from rank-1 arrays:
+        !! - Construct a real `tridiagonal` matrix from rank-1 arrays:
         !!
         !! ```fortran
         !!    integer, parameter :: n
         !!    real(dp), allocatable :: dl(:), dv(:), du(:)
-        !!    type(Tridiagonal_rdp_type) :: A
+        !!    type(tridiagonal_rdp_type) :: A
         !!    integer :: i
         !!
         !!    dl = [(i, i=1, n-1)]; dv = [(2*i, i=1, n)]; du = [(3*i, i=1, n)]
         !!    A = Tridiagonal(dl, dv, du)
         !! ```
         !!
-        !! - Construct a real `Tridiagonal` matrix with constant diagonals:
+        !! - Construct a real `tridiagonal` matrix with constant diagonals:
         !!
         !! ```fortran
         !!    integer, parameter :: n
         !!    real(dp), parameter :: a = 1.0_dp, b = 1.0_dp, c = 2.0_dp
-        !!    type(Tridiagonal_rdp_type) :: A
+        !!    type(tridiagonal_rdp_type) :: A
         !!
         !!    A = Tridiagonal(a, b, c, n)
         !! ```
         #:for k1, t1, s1 in (KINDS_TYPES)
         pure module function initialize_tridiagonal_${s1}$(dl, dv, du) result(A)
-            !! Construct a `Tridiagonal` matrix from the rank-1 arrays
+            !! Construct a `tridiagonal` matrix from the rank-1 arrays
             !! `dl`, `dv` and `du`.
             ${t1}$, intent(in) :: dl(:), dv(:), du(:)
             !! Tridiagonal matrix elements.
-            type(Tridiagonal_${s1}$_type) :: A
+            type(tridiagonal_${s1}$_type) :: A
             !! Corresponding Tridiagonal matrix.
         end function
 
         pure module function initialize_constant_tridiagonal_${s1}$(dl, dv, du, n) result(A)
-            !! Construct a `Tridiagonal` matrix with constant elements.
+            !! Construct a `tridiagonal` matrix with constant elements.
             ${t1}$, intent(in) :: dl, dv, du
             !! Tridiagonal matrix elements.
             integer(ilp), intent(in) :: n
             !! Matrix dimension.
-            type(Tridiagonal_${s1}$_type) :: A
+            type(tridiagonal_${s1}$_type) :: A
             !! Corresponding Tridiagonal matrix.
         end function   
         #:endfor
@@ -116,7 +116,7 @@ module stdlib_specialmatrices
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
         module subroutine spmv_tridiag_${rank}$d_${s1}$(A, x, y, alpha, beta, op)
-         type(Tridiagonal_${s1}$_type), intent(in) :: A
+         type(tridiagonal_${s1}$_type), intent(in) :: A
             ${t1}$, intent(in), contiguous, target :: x${ranksuffix(rank)}$
             ${t1}$, intent(inout), contiguous, target :: y${ranksuffix(rank)}$
             real(${k1}$), intent(in), optional :: alpha
@@ -139,8 +139,8 @@ module stdlib_specialmatrices
         !! ([Specifications](../page/specs/stdlib_specialmatrices.html#dense))
         #:for k1, t1, s1 in (KINDS_TYPES)
         pure module function tridiagonal_to_dense_${s1}$(A) result(B)
-            !! Convert a `Tridiagonal` matrix to its dense representation.
-            type(Tridiagonal_${s1}$_type), intent(in) :: A
+            !! Convert a `tridiagonal` matrix to its dense representation.
+            type(tridiagonal_${s1}$_type), intent(in) :: A
             !! Input Tridiagonal matrix.
             ${t1}$, allocatable :: B(:, :)
             !! Corresponding dense matrix.
@@ -154,9 +154,9 @@ module stdlib_specialmatrices
         !! [Specifications](../page/specs/stdlib_specialmatrices.html#transpose)
         #:for k1, t1, s1 in (KINDS_TYPES)
         pure module function transpose_tridiagonal_${s1}$(A) result(B)
-            type(Tridiagonal_${s1}$_type), intent(in) :: A
+            type(tridiagonal_${s1}$_type), intent(in) :: A
             !! Input matrix.
-            type(Tridiagonal_${s1}$_type) :: B
+            type(tridiagonal_${s1}$_type) :: B
         end function
         #:endfor
     end interface
@@ -168,9 +168,9 @@ module stdlib_specialmatrices
         !! [Specifications](../page/specs/stdlib_specialmatrices.html#hermitian)
         #:for k1, t1, s1 in (KINDS_TYPES)
         pure module function hermitian_tridiagonal_${s1}$(A) result(B)
-            type(Tridiagonal_${s1}$_type), intent(in) :: A
+            type(tridiagonal_${s1}$_type), intent(in) :: A
             !! Input matrix.
-            type(Tridiagonal_${s1}$_type) :: B
+            type(tridiagonal_${s1}$_type) :: B
         end function
         #:endfor
     end interface
@@ -188,13 +188,13 @@ module stdlib_specialmatrices
         #:for k1, t1, s1 in (KINDS_TYPES)
         pure module function scalar_multiplication_tridiagonal_${s1}$(alpha, A) result(B)
             ${t1}$, intent(in) :: alpha
-            type(Tridiagonal_${s1}$_type), intent(in) :: A
-            type(Tridiagonal_${s1}$_type) :: B
+            type(tridiagonal_${s1}$_type), intent(in) :: A
+            type(tridiagonal_${s1}$_type) :: B
         end function
         pure module function scalar_multiplication_bis_tridiagonal_${s1}$(A, alpha) result(B)
-            type(Tridiagonal_${s1}$_type), intent(in) :: A
+            type(tridiagonal_${s1}$_type), intent(in) :: A
             ${t1}$, intent(in) :: alpha
-            type(Tridiagonal_${s1}$_type) :: B
+            type(tridiagonal_${s1}$_type) :: B
         end function
         #:endfor
     end interface
@@ -205,9 +205,9 @@ module stdlib_specialmatrices
         !! [Specifications](../page/specs/stdlib_specialmatrices.html#operators)
         #:for k1, t1, s1 in (KINDS_TYPES)
         pure module function matrix_add_tridiagonal_${s1}$(A, B) result(C)
-            type(Tridiagonal_${s1}$_type), intent(in) :: A
-            type(Tridiagonal_${s1}$_type), intent(in) :: B
-            type(Tridiagonal_${s1}$_type) :: C
+            type(tridiagonal_${s1}$_type), intent(in) :: A
+            type(tridiagonal_${s1}$_type), intent(in) :: B
+            type(tridiagonal_${s1}$_type) :: C
         end function
         #:endfor
     end interface
@@ -218,9 +218,9 @@ module stdlib_specialmatrices
         !! [Specifications](../page/specs/stdlib_specialmatrices.html#operators)
         #:for k1, t1, s1 in (KINDS_TYPES)
         pure module function matrix_sub_tridiagonal_${s1}$(A, B) result(C)
-            type(Tridiagonal_${s1}$_type), intent(in) :: A
-            type(Tridiagonal_${s1}$_type), intent(in) :: B
-            type(Tridiagonal_${s1}$_type) :: C
+            type(tridiagonal_${s1}$_type), intent(in) :: A
+            type(tridiagonal_${s1}$_type), intent(in) :: B
+            type(tridiagonal_${s1}$_type) :: C
         end function
         #:endfor
     end interface
