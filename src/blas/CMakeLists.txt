@@ -4,9 +4,6 @@ set(dir "${CMAKE_CURRENT_SOURCE_DIR}")
 
 list(APPEND fppFiles
     blas/stdlib_blas_constants.fypp
-)
-
-list(APPEND cppFiles
     blas/stdlib_blas.fypp
     blas/stdlib_blas_level1.fypp
     blas/stdlib_blas_level2_ban.fypp
@@ -21,4 +18,3 @@ list(APPEND cppFiles
 )
 
 set(fppFiles "${fppFiles}" PARENT_SCOPE)
-set(cppFiles "${cppFiles}" PARENT_SCOPE)
