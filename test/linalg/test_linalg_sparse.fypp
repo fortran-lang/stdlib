@@ -25,7 +25,7 @@ contains
             new_unittest('sellc', test_sellc),  &
             new_unittest('symmetries', test_symmetries), &
             new_unittest('diagonal', test_diagonal), &
-            new_unittest('add_get_values', test_add_get_values) & 
+            new_unittest('add_get_values', test_add_get_values) &
         ]
     end subroutine
 
