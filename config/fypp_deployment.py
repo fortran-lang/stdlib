@@ -1,4 +1,5 @@
 import os
+import platform
 import fypp
 import argparse
 from joblib import Parallel, delayed
@@ -115,6 +116,7 @@ def fpm_build(args,unknown):
     for idx, arg in enumerate(unknown):
         if arg.startswith("--flag"):
             flags= flags + unknown[idx+1]
+    flags = flags + "-D{}".format(platform.system().upper())
     #==========================================
     # build with fpm
     subprocess.run("fpm build"+
