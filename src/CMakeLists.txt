@@ -91,10 +91,8 @@ set(fppFiles
 # Preprocessed files to contain preprocessor directives -> .F90
 set(cppFiles
     stdlib_linalg_constants.fypp
-
     stdlib_linalg_blas.fypp
     stdlib_linalg_lapack.fypp
-    stdlib_system.F90
 )
 
 add_subdirectory(blas)
@@ -118,6 +116,7 @@ set(SRC
     stdlib_system_subprocess.c
     stdlib_system_subprocess.F90
     stdlib_system_path.f90
+    stdlib_system.F90
     stdlib_sparse.f90
     stdlib_specialfunctions_legendre.f90
     stdlib_quadrature_gauss.f90
