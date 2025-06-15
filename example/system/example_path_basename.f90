@@ -1,5 +1,5 @@
-! Usage of splitpath, dirname, basename
-program example_path_splitpath
+! Usage of basename
+program example_path_basename
     use stdlib_system, only: basename, ISWIN
     character(len=:), allocatable :: p1
 
@@ -13,4 +13,4 @@ program example_path_splitpath
     ! basename of C:\Users -> Users
     ! OR
     ! basename of /home -> home
-end program example_path_splitpath
+end program example_path_basename
