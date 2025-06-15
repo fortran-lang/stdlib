@@ -174,7 +174,7 @@ The result is a real value representing the elapsed time in seconds, measured fr
 
 ### Syntax
 
-`delta_t = ` [[stdlib_system(module):elapsed(subroutine)]] `(process)`
+`delta_t = ` [[stdlib_system(module):elapsed(interface)]] `(process)`
 
 ### Arguments
 
@@ -212,7 +212,7 @@ in case of process hang or delay.
 
 ### Syntax
 
-`call ` [[stdlib_system(module):wait(subroutine)]] `(process [, max_wait_time])`
+`call ` [[stdlib_system(module):wait(interface)]] `(process [, max_wait_time])`
 
 ### Arguments
 
@@ -243,7 +243,7 @@ This is especially useful for monitoring asynchronous processes and retrieving t
 
 ### Syntax
 
-`call ` [[stdlib_system(module):update(subroutine)]] `(process)`
+`call ` [[stdlib_system(module):update(interface)]] `(process)`
 
 ### Arguments
 
@@ -269,7 +269,7 @@ This interface is useful when a process needs to be forcefully stopped, for exam
 
 ### Syntax
 
-`call ` [[stdlib_system(module):kill(subroutine)]] `(process, success)`
+`call ` [[stdlib_system(module):kill(interface)]] `(process, success)`
 
 ### Arguments
 
@@ -298,7 +298,7 @@ It ensures that the requested sleep duration is honored on both Windows and Unix
 
 ### Syntax
 
-`call ` [[stdlib_system(module):sleep(subroutine)]] `(millisec)`
+`call ` [[stdlib_system(module):sleep(interface)]] `(millisec)`
 
 ### Arguments
 
@@ -324,7 +324,7 @@ This function is highly efficient and works during the compilation phase, avoidi
 
 ### Syntax
 
-`result = ` [[stdlib_system(module):is_windows(function)]] `()`
+`result = ` [[stdlib_system(module):is_windows(interface)]] `()`
 
 ### Return Value
 
@@ -359,7 +359,7 @@ If the OS cannot be identified, the function returns `OS_UNKNOWN`.
 
 ### Syntax
 
-`os = [[stdlib_system(module):get_runtime_os(function)]]()`
+`os = ` [[stdlib_system(module):get_runtime_os(function)]] `()`
 
 ### Class
 
@@ -396,7 +396,7 @@ This caching mechanism ensures negligible overhead for repeated calls, unlike `g
 
 ### Syntax
 
-`os = [[stdlib_system(module):OS_TYPE(function)]]()`
+`os = ` [[stdlib_system(module):OS_TYPE(function)]]`()`
 
 ### Class
 
@@ -431,7 +431,7 @@ It is designed to work across multiple platforms. On Windows, paths with both fo
 
 ### Syntax
 
-`result = [[stdlib_system(module):is_directory(function)]] (path)`
+`result = ` [[stdlib_system(module):is_directory(function)]]`(path)`
 
 ### Class
 
@@ -471,7 +471,7 @@ It reads as an empty file. The null device's path varies by operating system:
 
 ### Syntax
 
-`path = [[stdlib_system(module):null_device(function)]]()`
+`path = ` [[stdlib_system(module):null_device(function)]]`()`
 
 ### Class
 
@@ -506,7 +506,7 @@ The function provides an optional error-handling mechanism via the `state_type` 
 
 ### Syntax
 
-`call [[stdlib_system(module):delete_file(subroutine)]] (path [, err])`
+`call ` [[stdlib_system(module):delete_file(subroutine)]]` (path [, err])`
 
 ### Class
 Subroutine
@@ -546,8 +546,9 @@ i.e `\` for windows and `/` for others
 
 ### Syntax
 
-`res = [[stdlib_system(module):joinpath(interface)]] (p1, p2)`
-`res = [[stdlib_system(module):joinpath(interface)]] (p)`
+`res = ` [[stdlib_system(module):joinpath(interface)]] ` (p1, p2)`
+
+`res = ` [[stdlib_system(module):joinpath(interface)]] ` (p)`
 
 ### Class
 Pure function
@@ -562,16 +563,9 @@ Pure function
 
 The resultant path.
 
-### Example
-
-```fortran
-{!example/system/example_path_1.f90!}
-```
-
 ## `operator(/)`
 
-Join two paths according to the platform specific path-separator,
-Behavior exactly similar to `joinpath`
+Alternative syntax to`joinpath` using an overloaded operator. Join two paths according to the platform specific path-separator.
 
 ### Status
 
@@ -579,7 +573,7 @@ Experimental
 
 ### Syntax
 
-`p = lval + rval`
+`p = lval / rval`
 
 ### Class
 
@@ -588,6 +582,7 @@ Pure function.
 ### Arguments
 
 `lval`: A character string, `intent(in)`.
+
 `rval`: A character string, `intent(in)`.
 
 ### Result value
@@ -597,7 +592,7 @@ The result is an `allocatable` character string
 #### Example
 
 ```fortran
-{!example/system/example_path_1.f90!}
+{!example/system/example_path_join.f90!}
 ```
 
 ## `splitpath` - splits a path immediately following the last separator
@@ -613,7 +608,7 @@ splitting it into most of the times a directory and a file name.
 
 ### Syntax
 
-`call [[stdlib_system(module):splitpath(interface)]] (p, head, tail)`
+`call `[[stdlib_system(module):splitpath(interface)]]`(p, head, tail)`
 
 ### Class
 Subroutine
@@ -637,7 +632,7 @@ The splitted path. `head` and `tail`.
 ### Example
 
 ```fortran
-{!example/system/example_path_1.f90!}
+{!example/system/example_path_splitpath.f90!}
 ```
 
 ## `basename` - The last part of a path
@@ -652,7 +647,7 @@ This function returns the last part of a path after removing trailing path separ
 
 ### Syntax
 
-`res = [[stdlib_system(module):basename(interface)]] (p)`
+`res = ` [[stdlib_system(module):basename(interface)]]`(p)`
 
 ### Class
 Function
@@ -672,7 +667,7 @@ A character string.
 ### Example
 
 ```fortran
-{!example/system/example_path_1.f90!}
+{!example/system/example_path_basename.f90!}
 ```
 
 ## `dirname` - Everything except the last part of the path
@@ -687,7 +682,7 @@ This function returns everything except the last part of a path.
 
 ### Syntax
 
-`res = [[stdlib_system(module):dirname(interface)]] (p)`
+`res = ` [[stdlib_system(module):dirname(interface)]]`(p)`
 
 ### Class
 Function
@@ -707,5 +702,5 @@ A character string.
 ### Example
 
 ```fortran
-{!example/system/example_path_1.f90!}
+{!example/system/example_path_dirname.f90!}
 ```
