@@ -224,6 +224,19 @@ contains
 
 end type fs_error
 
+interface operator(==)
+    module procedure code_eq_err
+    module procedure err_eq_code
+end interface operator(==)
+
+interface operator(/=)
+    module procedure code_neq_err
+    module procedure err_neq_code
+end interface operator(/=)
+
+public :: operator(==)
+public :: operator(/=)
+
 interface runasync
     !! version: experimental
     !!
@@ -844,5 +857,29 @@ pure subroutine fs_error_handling(err,err_out)
         error stop err_msg
     end if
 end subroutine fs_error_handling
+
+pure logical function code_eq_err(code, err)
+    integer, intent(in) :: code
+    type(fs_error), intent(in) :: err
+    code_eq_err = code == err%code
+end function code_eq_err
+
+pure logical function err_eq_code(err, code)
+    integer, intent(in):: code
+    type(fs_error), intent(in) :: err
+    err_eq_code = code == err%code
+end function err_eq_code
+
+pure logical function code_neq_err(code, err)
+    integer, intent(in) :: code
+    type(fs_error), intent(in) :: err
+    code_neq_err = code /= err%code
+end function code_neq_err
+
+pure logical function err_neq_code(err, code)
+    integer, intent(in) :: code
+    type(fs_error), intent(in) :: err
+    err_neq_code = code /= err%code
+end function err_neq_code
 
 end module stdlib_system

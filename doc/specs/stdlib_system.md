@@ -30,6 +30,10 @@ The following convenience type-bound procedures are provided:
 - `error()` returns a `logical` flag that is `.true.` in case of an error (`code /= 0`).
 - `handle([err])` assigns `err` to the calling variable or stops the program by calling `error stop` 
 
+### Overloaded Operators
+
+operators `==`, `/=` are provided for comparing `type(fs_error)` variables and `integer` codes.
+
 ### Example
 
 ```
