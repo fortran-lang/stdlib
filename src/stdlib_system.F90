@@ -198,6 +198,32 @@ contains
     
 end type process_type
 
+! For Fileystem related error handling
+type, public :: fs_error
+    ! the status code returned by C-functions or 
+    ! global variables like `errno` etc whenever called
+    ! When no C interface is involved but there is an error it is set to -1
+    integer :: code = 0
+
+    ! A user friendly message about the error
+    character(len=128) :: message = repeat(' ', 128)
+
+contains
+    ! resets the error state
+    procedure :: destroy => fs_error_destroy
+
+    ! returns the formatted error message
+    procedure :: print => fs_error_message
+
+    !> properties
+    procedure :: ok        => fs_error_is_ok
+    procedure :: error     => fs_error_is_error
+
+    !> Handle optional error message
+    procedure :: handle    => fs_error_handling
+
+end type fs_error
+
 interface runasync
     !! version: experimental
     !!
@@ -769,5 +795,54 @@ subroutine delete_file(path, err)
         return              
     end if
 end subroutine delete_file
+
+elemental subroutine fs_error_destroy(this)
+    class(fs_error), intent(inout) :: this
+
+    this%code = 0
+    this%message = repeat(' ', len(this%message))
+end subroutine fs_error_destroy
+
+pure function fs_error_message(this) result(msg)
+    class(fs_error), intent(in) :: this
+    character(len=:), allocatable :: msg
+    character(len=7) :: tmp ! should be more than enough
+
+    if (this%code == 0) then
+        msg = 'No Error!'
+    else
+        write(tmp, '(i0)') this%code
+        msg = 'Filesystem Error, code '//trim(tmp)//': '// trim(this%message)
+    end if
+end function fs_error_message
+
+elemental function fs_error_is_ok(this) result(is_ok)
+    class(fs_error), intent(in) :: this
+    logical :: is_ok
+    is_ok = this%code == 0
+end function fs_error_is_ok
+
+elemental function fs_error_is_error(this) result(is_err)
+    class(fs_error), intent(in) :: this
+    logical :: is_err
+    is_err = this%code /= 0
+end function fs_error_is_error
+
+pure subroutine fs_error_handling(err,err_out)
+    class(fs_error), intent(in) :: err
+    class(fs_error), optional, intent(inout) :: err_out
+
+    character(len=:),allocatable :: err_msg
+
+    if (present(err_out)) then
+        ! copy err into err_out
+        err_out%code = err%code
+        err_out%message = err%message
+    else if (err%error()) then
+        ! stop the program
+        err_msg = err%print()
+        error stop err_msg
+    end if
+end subroutine fs_error_handling
 
 end module stdlib_system
