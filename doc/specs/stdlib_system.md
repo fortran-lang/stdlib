@@ -9,6 +9,34 @@ and monitoring of system commands or applications directly from Fortran.
 
 [TOC]
 
+## `fs_error` - A derived type for concise error handling
+
+### Status
+
+Experimental
+
+### Description
+
+The derived type contains a `code`, an integer and a fixed-length string containg a user friendly message.
+The code is usually the one returned by C functions like `GetLastError` (Windows API) or global variables like `errno` (Unix platforms)
+It is default initialized to `0` and it remains so if no errors occured.
+In case the error is not because of any C functions, It is always set to `-1` (For distinguishability)
+
+### Type-bound Procedures
+
+The following convenience type-bound procedures are provided:
+- `print()` returns a formatted allocatable character string containing the code and the message;
+- `ok()` returns a `logical` flag that is `.true.` in case of no errors (`code == 0`);
+- `error()` returns a `logical` flag that is `.true.` in case of an error (`code /= 0`).
+- `handle([err])` assigns `err` to the calling variable or stops the program by calling `error stop` 
+
+### Example
+
+```
+fortran
+{!example/system/example_fs_error.f90!}
+```
+
 ## `run` - Execute an external process synchronously
 
 ### Status
