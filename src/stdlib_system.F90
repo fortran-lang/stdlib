@@ -93,11 +93,11 @@ public :: is_windows
     logical, parameter, public :: ISWIN = .false.
 #endif
 
-public :: joinpath
+public :: join_path
 public :: operator(/)
-public :: splitpath
-public :: basename
-public :: dirname
+public :: split_path
+public :: base_name
+public :: dir_name
 
 !! version: experimental
 !!
@@ -565,12 +565,12 @@ interface
     
 end interface 
 
-interface joinpath
+interface join_path
     !! version: experimental
     !!
     !!### Summary
     !! join the paths provided according to the OS-specific path-separator
-    !! ([Specification](../page/specs/stdlib_system.html#joinpath))
+    !! ([Specification](../page/specs/stdlib_system.html#join_path))
     !!
     module pure function join2(p1, p2) result(path)
         character(:), allocatable :: path
@@ -581,7 +581,7 @@ interface joinpath
         character(:), allocatable :: path
         character(*), intent(in) :: p(:)
     end function joinarr
-end interface joinpath
+end interface join_path
 
 interface operator(/)
     !! version: experimental
@@ -596,54 +596,54 @@ interface operator(/)
     end function join_op
 end interface operator(/)
 
-interface splitpath
+interface split_path
     !! version: experimental
     !!
     !!### Summary
     !! splits the path immediately following the final path-separator
     !! separating into typically a directory and a file name.
-    !! ([Specification](../page/specs/stdlib_system.html#splitpath))
+    !! ([Specification](../page/specs/stdlib_system.html#split_path))
     !!
     !!### Description
     !! If the path is empty `head`='.' and tail=''
     !! If the path only consists of separators, `head` is set to the separator and tail is empty
     !! If the path is a root directory, `head` is set to that directory and tail is empty
     !! `head` ends with a path-separator iff the path appears to be a root directory or a child of the root directory
-    module subroutine splitpath(p, head, tail)
+    module subroutine split_path(p, head, tail)
         character(*), intent(in) :: p
         character(:), allocatable, intent(out) :: head, tail
-    end subroutine splitpath
-end interface splitpath
+    end subroutine split_path
+end interface split_path
 
-interface basename
+interface base_name
     !! version: experimental
     !!
     !!### Summary
-    !! returns the basename (last component) of the provided path
-    !! ([Specification](../page/specs/stdlib_system.html#basename))
+    !! returns the base name (last component) of the provided path
+    !! ([Specification](../page/specs/stdlib_system.html#base_name))
     !!
     !!### Description
-    !! The value returned is the `tail` of the interface `splitpath`
-    module function basename(p) result(base)
+    !! The value returned is the `tail` of the interface `split_path`
+    module function base_name(p) result(base)
         character(:), allocatable :: base
         character(*), intent(in) :: p
-    end function basename
-end interface basename
+    end function base_name
+end interface base_name
 
-interface dirname
+interface dir_name
     !! version: experimental
     !!
     !!### Summary
     !! returns everything but the last component of the provided path
-    !! ([Specification](../page/specs/stdlib_system.html#dirname))
+    !! ([Specification](../page/specs/stdlib_system.html#dir_name))
     !!
     !!### Description
-    !! The value returned is the `head` of the interface `splitpath`
-    module function dirname(p) result(base)
+    !! The value returned is the `head` of the interface `split_path`
+    module function dir_name(p) result(base)
         character(:), allocatable :: base
         character(*), intent(in) :: p
-    end function dirname
-end interface dirname
+    end function dir_name
+end interface dir_name
 
 
 contains

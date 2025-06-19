@@ -533,7 +533,7 @@ The file is removed from the filesystem if the operation is successful. If the o
 {!example/system/example_delete_file.f90!}
 ```
 
-## `joinpath` - Joins the provided paths according to the OS
+## `join_path` - Joins the provided paths according to the OS
 
 ### Status
 
@@ -546,9 +546,9 @@ i.e `\` for windows and `/` for others
 
 ### Syntax
 
-`res = ` [[stdlib_system(module):joinpath(interface)]] ` (p1, p2)`
+`res = ` [[stdlib_system(module):join_path(interface)]] ` (p1, p2)`
 
-`res = ` [[stdlib_system(module):joinpath(interface)]] ` (p)`
+`res = ` [[stdlib_system(module):join_path(interface)]] ` (p)`
 
 ### Class
 Pure function
@@ -565,7 +565,7 @@ The resultant path.
 
 ## `operator(/)`
 
-Alternative syntax to`joinpath` using an overloaded operator. Join two paths according to the platform specific path-separator.
+Alternative syntax to`join_path` using an overloaded operator. Join two paths according to the platform specific path-separator.
 
 ### Status
 
@@ -595,7 +595,7 @@ The result is an `allocatable` character string
 {!example/system/example_path_join.f90!}
 ```
 
-## `splitpath` - splits a path immediately following the last separator
+## `split_path` - splits a path immediately following the last separator
 
 ### Status
 
@@ -608,7 +608,7 @@ splitting it into most of the times a directory and a file name.
 
 ### Syntax
 
-`call `[[stdlib_system(module):splitpath(interface)]]`(p, head, tail)`
+`call `[[stdlib_system(module):split_path(interface)]]`(p, head, tail)`
 
 ### Class
 Subroutine
@@ -632,10 +632,10 @@ The splitted path. `head` and `tail`.
 ### Example
 
 ```fortran
-{!example/system/example_path_splitpath.f90!}
+{!example/system/example_path_split_path.f90!}
 ```
 
-## `basename` - The last part of a path
+## `base_name` - The last part of a path
 
 ### Status
 
@@ -647,7 +647,7 @@ This function returns the last part of a path after removing trailing path separ
 
 ### Syntax
 
-`res = ` [[stdlib_system(module):basename(interface)]]`(p)`
+`res = ` [[stdlib_system(module):base_name(interface)]]`(p)`
 
 ### Class
 Function
@@ -658,7 +658,7 @@ Function
 
 ### Behavior
 
-- The `tail` of `stdlib_system(module):splitpath(interface)` is exactly what is returned. Same Behavior.
+- The `tail` of `stdlib_system(module):split_path(interface)` is exactly what is returned. Same Behavior.
 
 ### Return values
 
@@ -667,10 +667,10 @@ A character string.
 ### Example
 
 ```fortran
-{!example/system/example_path_basename.f90!}
+{!example/system/example_path_base_name.f90!}
 ```
 
-## `dirname` - Everything except the last part of the path
+## `dir_name` - Everything except the last part of the path
 
 ### Status
 
@@ -682,7 +682,7 @@ This function returns everything except the last part of a path.
 
 ### Syntax
 
-`res = ` [[stdlib_system(module):dirname(interface)]]`(p)`
+`res = ` [[stdlib_system(module):dir_name(interface)]]`(p)`
 
 ### Class
 Function
@@ -693,7 +693,7 @@ Function
 
 ### Behavior
 
-- The `head` of `stdlib_system(module):splitpath(interface)` is exactly what is returned. Same Behavior.
+- The `head` of `stdlib_system(module):split_path(interface)` is exactly what is returned. Same Behavior.
 
 ### Return values
 
@@ -702,5 +702,5 @@ A character string.
 ### Example
 
 ```fortran
-{!example/system/example_path_dirname.f90!}
+{!example/system/example_path_dir_name.f90!}
 ```

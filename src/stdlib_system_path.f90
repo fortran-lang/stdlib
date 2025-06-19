@@ -20,10 +20,10 @@ contains
         character(:), allocatable :: path
         character(*), intent(in) :: p1, p2
 
-        path = joinpath(p1, p2)
+        path = join_path(p1, p2)
     end function join_op
 
-    module subroutine splitpath(p, head, tail)
+    module subroutine split_path(p, head, tail)
         character(*), intent(in) :: p
         character(:), allocatable, intent(out) :: head, tail
         character(:), allocatable :: temp
@@ -62,19 +62,19 @@ contains
         end if
 
         tail = temp(len(temp)-i+2:)
-    end subroutine splitpath
+    end subroutine split_path
 
-    module function basename(p) result(base)
+    module function base_name(p) result(base)
         character(:), allocatable :: base, temp
         character(*), intent(in) :: p
 
-        call splitpath(p, temp, base)
-    end function basename
+        call split_path(p, temp, base)
+    end function base_name
 
-    module function dirname(p) result(dir)
+    module function dir_name(p) result(dir)
         character(:), allocatable :: dir, temp
         character(*), intent(in) :: p
 
-        call splitpath(p, dir, temp)
-    end function dirname
+        call split_path(p, dir, temp)
+    end function dir_name
 end submodule stdlib_system_path
