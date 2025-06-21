@@ -2,21 +2,21 @@ submodule(stdlib_system) stdlib_system_path
     use stdlib_ascii, only: reverse
     use stdlib_strings, only: chomp, find, join
 contains
-    module pure function join2(p1, p2) result(path)
+    module function join2(p1, p2) result(path)
         character(:), allocatable :: path
         character(*), intent(in) :: p1, p2
 
-        path = trim(p1) // pathsep // trim(p2)
+        path = trim(p1) // path_sep() // trim(p2)
     end function join2
 
-    module pure function joinarr(p) result(path)
+    module function joinarr(p) result(path)
         character(:), allocatable :: path
         character(*), intent(in) :: p(:)
 
-        path = join(p, pathsep)
+        path = join(p, path_sep())
     end function joinarr
 
-    module pure function join_op(p1, p2) result(path)
+    module function join_op(p1, p2) result(path)
         character(:), allocatable :: path
         character(*), intent(in) :: p1, p2
 
@@ -28,6 +28,8 @@ contains
         character(:), allocatable, intent(out) :: head, tail
         character(:), allocatable :: temp
         integer :: i
+        character(len=1) :: sep
+        sep = path_sep()
 
         ! Empty string, return (.,'')
         if (trim(p) == '') then
@@ -37,19 +39,19 @@ contains
         end if
 
         ! Remove trailing path separators
-        temp = trim(chomp(trim(p), pathsep))
+        temp = trim(chomp(trim(p), sep))
 
         if (temp == '') then
-            head = pathsep
+            head = sep
             tail = ''
             return
         end if
 
-        i = find(reverse(temp), pathsep)
+        i = find(reverse(temp), sep)
 
         ! if no `pathsep`, then it probably was a root dir like `C:\`
         if (i == 0) then
-            head = temp // pathsep
+            head = temp // sep
             tail = ''
             return
         end if
@@ -57,8 +59,8 @@ contains
         head = temp(:len(temp)-i)
 
         ! child of a root directory
-        if (find(head, pathsep) == 0) then
-            head = head // pathsep
+        if (find(head, sep) == 0) then
+            head = head // sep
         end if
 
         tail = temp(len(temp)-i+2:)

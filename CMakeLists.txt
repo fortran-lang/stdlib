@@ -31,12 +31,6 @@ if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU AND CMAKE_Fortran_COMPILER_VERSION VER
   message(FATAL_ERROR "GCC Version 9 or newer required")
 endif()
 
-# Convert CMAKE_SYSTEM_NAME to uppercase
-string(TOUPPER "${CMAKE_SYSTEM_NAME}" SYSTEM_NAME_UPPER)
-
-# Pass the uppercase system name as a macro
-add_compile_options(-D${SYSTEM_NAME_UPPER})
-
 # --- compiler feature checks
 include(CheckFortranSourceCompiles)
 include(CheckFortranSourceRuns)

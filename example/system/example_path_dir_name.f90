@@ -1,9 +1,9 @@
 ! Usage of dir_name
 program example_path_dir_name
-    use stdlib_system, only: dir_name, ISWIN
+    use stdlib_system, only: dir_name, OS_TYPE, OS_WINDOWS
     character(len=:), allocatable :: p1, head, tail
 
-    if( ISWIN ) then
+    if(OS_TYPE() == OS_WINDOWS) then
         p1 = 'C:\Users' ! C:\Users
     else
         p1 = '/home' ! /home
