@@ -1,6 +1,6 @@
 module test_path
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
-    use stdlib_system, only: join_path, operator(/), split_path, ISWIN
+    use stdlib_system, only: join_path, operator(/), split_path, OS_TYPE, OS_WINDOWS
     implicit none
 contains
     !> Collect all exported unit tests
@@ -32,7 +32,7 @@ contains
         character(len=:), allocatable :: path
         character(len=20) :: paths(5)
 
-        if (ISWIN) then
+        if (OS_TYPE() == OS_WINDOWS) then
             path = join_path('C:\Users', 'Alice')
             call checkpath(error, 'join_path', 'C:\Users\Alice', path)
             if (allocated(error)) return
@@ -43,8 +43,8 @@ contains
             call checkpath(error, 'join_path', 'C:\Users\Bob\Pictures\2025', path)
             if (allocated(error)) return
 
-            path = join_path('C:\Users\John Doe', 'Pictures\2025') ! path with spaces
-            call checkpath(error, 'join_path', 'C:\Users\John Doe\Pictures\2025', path)
+            path = join_path('"C:\Users\John Doe"', 'Pictures\2025') ! path with spaces
+            call checkpath(error, 'join_path', '"C:\Users\John Doe"\Pictures\2025', path)
             if (allocated(error)) return
         else
             path = join_path('/home', 'Alice')
@@ -64,7 +64,7 @@ contains
         type(error_type), allocatable, intent(out) :: error
         character(len=:), allocatable :: path
 
-        if (ISWIN) then
+        if (OS_TYPE() == OS_WINDOWS) then
             path = 'C:'/'Users'/'Alice'/'Desktop'
             call checkpath(error, 'join_path operator', 'C:\Users\Alice\Desktop', path)
             if (allocated(error)) return
@@ -85,7 +85,7 @@ contains
         call checkpath(error, 'split_path-tail', '', tail)
         if (allocated(error)) return
 
-        if (ISWIN) then
+        if (OS_TYPE() == OS_WINDOWS) then
             call split_path('\\\\', head, tail)
             call checkpath(error, 'split_path-head', '\', head)
             if (allocated(error)) return

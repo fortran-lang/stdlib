@@ -85,14 +85,7 @@ public :: elapsed
 public :: is_windows
 
 !! Public path related functions and interfaces
-#ifdef WINDOWS
-    character(len=1), parameter, public :: pathsep = '\'
-    logical, parameter, public :: ISWIN = .true.
-#else
-    character(len=1), parameter, public :: pathsep = '/'
-    logical, parameter, public :: ISWIN = .false.
-#endif
-
+public :: path_sep
 public :: join_path
 public :: operator(/)
 public :: split_path
@@ -572,12 +565,12 @@ interface join_path
     !! join the paths provided according to the OS-specific path-separator
     !! ([Specification](../page/specs/stdlib_system.html#join_path))
     !!
-    module pure function join2(p1, p2) result(path)
+    module function join2(p1, p2) result(path)
         character(:), allocatable :: path
         character(*), intent(in) :: p1, p2
     end function join2
 
-    module pure function joinarr(p) result(path)
+    module function joinarr(p) result(path)
         character(:), allocatable :: path
         character(*), intent(in) :: p(:)
     end function joinarr
@@ -590,7 +583,7 @@ interface operator(/)
     !! A binary operator to join the paths provided according to the OS-specific path-separator
     !! ([Specification](../page/specs/stdlib_system.html#operator(/)))
     !!
-    module pure function join_op(p1, p2) result(path)
+    module function join_op(p1, p2) result(path)
         character(:), allocatable :: path
         character(*), intent(in) :: p1, p2
     end function join_op
@@ -865,5 +858,13 @@ subroutine delete_file(path, err)
         return              
     end if
 end subroutine delete_file
+
+character function path_sep()
+    if (OS_TYPE() == OS_WINDOWS) then
+        path_sep = '\'
+    else
+        path_sep = '/'
+    end if
+end function path_sep
 
 end module stdlib_system

@@ -1,10 +1,10 @@
 ! Usage of join_path, operator(/)
 program example_path_join
-    use stdlib_system, only: join_path, operator(/), ISWIN
+    use stdlib_system, only: join_path, operator(/), OS_TYPE, OS_WINDOWS
     character(len=:), allocatable :: p1, p2, p3
     character(len=20) :: parr(4)
 
-    if( ISWIN ) then
+    if(OS_TYPE() == OS_WINDOWS) then
         p1 = 'C:'/'Users'/'User1'/'Desktop'
         p2 = join_path('C:\Users\User1', 'Desktop')
         parr = [character(len=20) :: 'C:', 'Users', 'User1', 'Desktop']
