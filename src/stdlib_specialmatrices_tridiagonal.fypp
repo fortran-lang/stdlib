@@ -120,7 +120,11 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         integer(ilp) :: i
 
         associate (n => A%n)
-        allocate(B(n, n)) ; B = 0.0_${k1}$
+        #:if t1.startswith('complex')
+        allocate(B(n, n), source=zero_c${k1}$)
+        #:else
+        allocate(B(n, n), source=zero_${k1}$)
+        #:endif
         B(1, 1) = A%dv(1) ; B(1, 2) = A%du(1)
         do concurrent (i=2:n-1)
             B(i, i-1) = A%dl(i-1)
