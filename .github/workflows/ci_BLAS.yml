@@ -41,7 +41,7 @@ jobs:
           -Wdev
           -B build
           -DCMAKE_BUILD_TYPE=Debug
-          -DCMAKE_Fortran_FLAGS_DEBUG="-Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all -fbacktrace"
+          -DCMAKE_Fortran_FLAGS_DEBUG="-Wall -Wextra -Wno-external-argument-mismatch -Wimplicit-interface -fPIC -g -fcheck=all -fbacktrace"
           -DCMAKE_MAXIMUM_RANK:String=4
           -DCMAKE_INSTALL_PREFIX=$PWD/_dist
           -DFIND_BLAS:STRING=TRUE
