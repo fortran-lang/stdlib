@@ -6,13 +6,7 @@ module test_specialmatrices
     use stdlib_kinds
     use stdlib_linalg, only: hermitian
     use stdlib_math, only: all_close
-    use stdlib_specialmatrices, only: tridiagonal, &
-                                      tridiagonal_sp_type, &
-                                      tridiagonal_dp_type, & 
-                                      tridiagonal_xdp_type, & 
-                                      tridiagonal_qp_type, &
-                                      dense, spmv
-
+    use stdlib_specialmatrices
     implicit none
 
 contains
