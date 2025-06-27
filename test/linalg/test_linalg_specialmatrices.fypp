@@ -45,20 +45,20 @@ contains
 
             ! Test y = A @ x
             y1 = matmul(Amat, x) ; call spmv(A, x, y2)
-            call check(error, all_close(y1, y2))
+            call check(error, all_close(y1, y2), .true.)
             if (allocated(error)) return
 
             ! Test y = A.T @ x
             y1 = 0.0_wp ; y2 = 0.0_wp
             y1 = matmul(transpose(Amat), x) ; call spmv(A, x, y2, op="T")
-            call check(error, all_close(y1, y2))
+            call check(error, all_close(y1, y2), .true.)
             if (allocated(error)) return
 
             #:if t1.startswith('complex') 
             ! Test y = A.H @ x
             y1 = 0.0_wp ; y2 = 0.0_wp
             y1 = matmul(hermitian(Amat), x) ; call spmv(A, x, y2, op="H")
-            call check(error, all_close(y1, y2))
+            call check(error, all_close(y1, y2), .true.)
             if (allocated(error)) return
             #:endif
         end block
