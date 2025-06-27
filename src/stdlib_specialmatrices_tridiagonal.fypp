@@ -15,12 +15,12 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure module function initialize_tridiagonal_${s1}$(dl, dv, du) result(A)
-        !! Construct a `Tridiagonal` matrix from the rank-1 arrays
+        !! Construct a `tridiagonal` matrix from the rank-1 arrays
         !! `dl`, `dv` and `du`.
         ${t1}$, intent(in) :: dl(:), dv(:), du(:)
-        !! Tridiagonal matrix elements.
-        type(Tridiagonal_${s1}$_type) :: A
-        !! Corresponding Tridiagonal matrix.
+        !! tridiagonal matrix elements.
+        type(tridiagonal_${s1}$_type) :: A
+        !! Corresponding tridiagonal matrix.
 
         ! Internal variables.
         integer(ilp) :: n
@@ -37,13 +37,13 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
     end function
 
     pure module function initialize_constant_tridiagonal_${s1}$(dl, dv, du, n) result(A)
-        !! Construct a `Tridiagonal` matrix with constant elements.
+        !! Construct a `tridiagonal` matrix with constant elements.
         ${t1}$, intent(in) :: dl, dv, du
-        !! Tridiagonal matrix elements.
+        !! tridiagonal matrix elements.
         integer(ilp), intent(in) :: n
         !! Matrix dimension.
-        type(Tridiagonal_${s1}$_type) :: A
-        !! Corresponding Tridiagonal matrix.
+        type(tridiagonal_${s1}$_type) :: A
+        !! Corresponding tridiagonal matrix.
 
         ! Internal variables.
         integer(ilp) :: i
@@ -67,7 +67,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
     #:for k1, t1, s1 in (KINDS_TYPES)
     #:for rank in RANKS
     module subroutine spmv_tridiag_${rank}$d_${s1}$(A, x, y, alpha, beta, op)
-        type(Tridiagonal_${s1}$_type), intent(in) :: A
+        type(tridiagonal_${s1}$_type), intent(in) :: A
         ${t1}$, intent(in), contiguous, target :: x${ranksuffix(rank)}$
         ${t1}$, intent(inout), contiguous, target :: y${ranksuffix(rank)}$
         real(${k1}$), intent(in), optional :: alpha
@@ -110,9 +110,9 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure module function tridiagonal_to_dense_${s1}$(A) result(B)
-        !! Convert a `Tridiagonal` matrix to its dense representation.
-        type(Tridiagonal_${s1}$_type), intent(in) :: A
-        !! Input Tridiagonal matrix.
+        !! Convert a `tridiagonal` matrix to its dense representation.
+        type(tridiagonal_${s1}$_type), intent(in) :: A
+        !! Input tridiagonal matrix.
         ${t1}$, allocatable :: B(:, :)
         !! Corresponding dense matrix.
 
@@ -138,23 +138,22 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure module function transpose_tridiagonal_${s1}$(A) result(B)
-        type(Tridiagonal_${s1}$_type), intent(in) :: A
+        type(tridiagonal_${s1}$_type), intent(in) :: A
         !! Input matrix.
-        type(Tridiagonal_${s1}$_type) :: B
-        B%n = A%n ; B%dv = A%dv ; B%du = A%dl ; B%dl = A%du
+        type(tridiagonal_${s1}$_type) :: B
+        B = tridiagonal(A%du, A%dv, A%dl)
     end function
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure module function hermitian_tridiagonal_${s1}$(A) result(B)
-        type(Tridiagonal_${s1}$_type), intent(in) :: A
+        type(tridiagonal_${s1}$_type), intent(in) :: A
         !! Input matrix.
-        type(Tridiagonal_${s1}$_type) :: B
-        B%n = A%n
+        type(tridiagonal_${s1}$_type) :: B
         #:if t1.startswith("complex")
-        B%dv = conjg(A%dv) ; B%du = conjg(A%dl) ; B%dl = conjg(A%du)
+        B = tridiagonal(conjg(A%du), conjg(A%dv), conjg(A%dl))
         #:else
-        B%dv = A%dv ; B%du = A%dl ; B%dl = A%du
+        B = tridiagonal(A%du, A%dv, A%dl)
         #:endif
     end function
     #:endfor
@@ -162,32 +161,36 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure module function scalar_multiplication_tridiagonal_${s1}$(alpha, A) result(B)
         ${t1}$, intent(in) :: alpha
-        type(Tridiagonal_${s1}$_type), intent(in) :: A
-        type(Tridiagonal_${s1}$_type) :: B
-        B = Tridiagonal(alpha*A%dl, alpha*A%dv, alpha*A%du)
+        type(tridiagonal_${s1}$_type), intent(in) :: A
+        type(tridiagonal_${s1}$_type) :: B
+        B = tridiagonal(A%dl, A%dv, A%du)
+        B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = alpha*B%du
     end function
 
     pure module function scalar_multiplication_bis_tridiagonal_${s1}$(A, alpha) result(B)
-        type(Tridiagonal_${s1}$_type), intent(in) :: A
+        type(tridiagonal_${s1}$_type), intent(in) :: A
         ${t1}$, intent(in) :: alpha
-        type(Tridiagonal_${s1}$_type) :: B
-        B = Tridiagonal(alpha*A%dl, alpha*A%dv, alpha*A%du)
+        type(tridiagonal_${s1}$_type) :: B
+        B = tridiagonal(A%dl, A%dv, A%du)
+        B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = alpha*B%du
     end function
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure module function matrix_add_tridiagonal_${s1}$(A, B) result(C)
-        type(Tridiagonal_${s1}$_type), intent(in) :: A
-        type(Tridiagonal_${s1}$_type), intent(in) :: B
-        type(Tridiagonal_${s1}$_type) :: C
-        C = Tridiagonal(A%dl+B%dl, A%dv+B%dv, A%du+B%du)
+        type(tridiagonal_${s1}$_type), intent(in) :: A
+        type(tridiagonal_${s1}$_type), intent(in) :: B
+        type(tridiagonal_${s1}$_type) :: C
+        C = tridiagonal(A%dl, A%dv, A%du)
+        C%dl = C%dl + B%dl; C%dv = C%dv + B%dv; C%du = C%du + B%du
     end function
 
     pure module function matrix_sub_tridiagonal_${s1}$(A, B) result(C)
-        type(Tridiagonal_${s1}$_type), intent(in) :: A
-        type(Tridiagonal_${s1}$_type), intent(in) :: B
-        type(Tridiagonal_${s1}$_type) :: C
-        C = Tridiagonal(A%dl-B%dl, A%dv-B%dv, A%du-B%du)
+        type(tridiagonal_${s1}$_type), intent(in) :: A
+        type(tridiagonal_${s1}$_type), intent(in) :: B
+        type(tridiagonal_${s1}$_type) :: C
+        C = tridiagonal(A%dl, A%dv, A%du)
+        C%dl = C%dl - B%dl; C%dv = C%dv - B%dv; C%du = C%du - B%du
     end function
     #:endfor
 
