@@ -102,8 +102,7 @@ contains
                                     & reference_list /= work_list" )
 
             reference_list = all_strings(i-stride+1:i) // reference_list
-            call check( reference_list == &
-                            & [ ( string_type( to_string(j) ), j = i - stride + 1, last ) ], &
+            call check( reference_list == all_strings(i-stride+1:last), &
                             & "test_append_prepend_array: reference_list ==&
                             & [ ( string_type( to_string(j) ), j = i - stride + 1, last ) ]" )
 
