@@ -140,7 +140,7 @@ module test_linalg_least_squares
     end subroutine test_issue_823
 
     ! gcc-15 bugfix utility
-    pure subroutine add_test(tests,new_test)
+    subroutine add_test(tests,new_test)
         type(unittest_type), allocatable, intent(inout) :: tests(:)    
         type(unittest_type), intent(in) :: new_test
         

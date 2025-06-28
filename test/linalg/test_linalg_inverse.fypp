@@ -292,7 +292,7 @@ module test_linalg_inverse
     #:endfor
 
     ! gcc-15 bugfix utility
-    pure subroutine add_test(tests,new_test)
+    subroutine add_test(tests,new_test)
         type(unittest_type), allocatable, intent(inout) :: tests(:)    
         type(unittest_type), intent(in) :: new_test
         
