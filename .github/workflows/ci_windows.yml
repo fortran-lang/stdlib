@@ -28,8 +28,8 @@ jobs:
         update: false
         install: >-
           git
-          mingw-w64-${{ matrix.arch }}-gcc-14
-          mingw-w64-${{ matrix.arch }}-gcc-fortran-14
+          mingw-w64-${{ matrix.arch }}-gcc
+          mingw-w64-${{ matrix.arch }}-gcc-fortran
           mingw-w64-${{ matrix.arch }}-python
           mingw-w64-${{ matrix.arch }}-python-fypp
           mingw-w64-${{ matrix.arch }}-cmake
