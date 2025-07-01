@@ -2,7 +2,7 @@ module stdlib_system
 use, intrinsic :: iso_c_binding, only : c_int, c_long, c_ptr, c_null_ptr, c_int64_t, c_size_t, &
     c_f_pointer
 use stdlib_kinds, only: int64, dp, c_bool, c_char
-use stdlib_strings, only: to_c_char
+use stdlib_strings, only: to_c_char, to_string
 use stdlib_error, only: state_type, STDLIB_SUCCESS, STDLIB_FS_ERROR
 implicit none
 private
@@ -99,6 +99,36 @@ public :: is_windows
 !! Windows, and various UNIX-like environments. On unsupported operating systems, the function will return `.false.`.
 !!
 public :: is_directory
+
+!! version: experimental
+!!
+!! Makes an empty directory.
+!! ([Specification](../page/specs/stdlib_system.html#make_directory))
+!!
+!! ### Summary
+!! Creates an empty directory with particular permissions.
+!!
+!! ### Description
+!! This function makes an empty directory according to the path provided.
+!! Relative paths as well as on Windows paths involving either `/` or `\` are accepted
+!! appropriate error message is returned whenever any error occur.
+!!
+public :: make_directory
+
+!! version: experimental
+!!
+!! Removes an empty directory.
+!! ([Specification](../page/specs/stdlib_system.html#remove_directory))
+!!
+!! ### Summary
+!! Deletes an empty directory.
+!!
+!! ### Description
+!! This function deletes an empty directory according to the path provided.
+!! Relative paths as well as on Windows paths involving either `/` or `\` are accepted.
+!! appropriate error message is returned whenever any error occur.
+!!
+public :: remove_directory
 
 !! version: experimental
 !!
@@ -689,6 +719,98 @@ logical function is_directory(path)
     is_directory = logical(stdlib_is_directory(to_c_char(trim(path))))
     
 end function is_directory
+
+function c_get_strerror() result(str)
+    character(len=:), allocatable :: str
+
+    interface
+        type(c_ptr) function strerror(len) bind(C, name='stdlib_strerror')
+            import c_size_t, c_ptr, c_int
+            implicit none
+            integer(c_size_t), intent(out) :: len
+        end function strerror
+    end interface
+
+    type(c_ptr) :: c_str_ptr
+    integer(c_size_t) :: len, i
+    character(kind=c_char), pointer :: c_str(:)
+
+    c_str_ptr = strerror(len)
+
+    call c_f_pointer(c_str_ptr, c_str, [len])
+
+    allocate(character(len=len) :: str)
+
+    do concurrent (i=1:len)
+        str(i:i) = c_str(i)
+    end do
+end function c_get_strerror
+
+!! makes an empty directory
+subroutine make_directory(path, mode, err)
+    character(len=*), intent(in) :: path
+    integer, intent(in), optional :: mode
+    character, allocatable :: err_msg
+    type(state_type), optional, intent(out) :: err
+
+    integer :: code
+    type(state_type) :: err0
+
+
+    interface
+        integer function stdlib_make_directory(cpath, cmode) bind(C, name='stdlib_make_directory')
+            import c_char
+            character(kind=c_char), intent(in) :: cpath(*)
+            integer, intent(in) :: cmode
+        end function stdlib_make_directory
+    end interface
+
+    if (is_windows() .and. present(mode)) then
+        ! _mkdir() doesn't have a `mode` argument
+        err0 = state_type(STDLIB_FS_ERROR, "mode argument not present for Windows")
+        call err0%handle(err)
+        return
+    end if
+
+    code = stdlib_make_directory(to_c_char(trim(path)), mode)
+
+    select case (code)
+        case (0)
+            return
+        case default
+            ! error
+            err0 = state_type(STDLIB_FS_ERROR, "code:", to_string(code)//',', c_get_strerror())
+            call err0%handle(err)
+    end select
+end subroutine make_directory
+
+!! Removes an empty directory
+subroutine remove_directory(path, err)
+    character(len=*), intent(in) :: path
+    character, allocatable :: err_msg
+    type(state_type), optional, intent(out) :: err
+
+    integer :: code
+    type(state_type) :: err0
+
+    interface
+        integer function stdlib_remove_directory(cpath) bind(C, name='stdlib_remove_directory')
+            import c_char
+            character(kind=c_char), intent(in) :: cpath(*)
+        end function stdlib_remove_directory
+    end interface
+
+    code = stdlib_remove_directory(to_c_char(trim(path)))
+
+    select case (code)
+        case (0)
+            return
+        case default
+            ! error
+            err0 = state_type(STDLIB_FS_ERROR, "code:", to_string(code)//',', c_get_strerror())
+            call err0%handle(err)
+    end select
+end subroutine remove_directory
 
 !> Returns the file path of the null device for the current operating system.
 !>
