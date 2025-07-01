@@ -31,6 +31,13 @@ if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU AND CMAKE_Fortran_COMPILER_VERSION VER
   message(FATAL_ERROR "GCC Version 9 or newer required")
 endif()
 
+# --- silence gfortran-15 argument-mismatch warnings
+if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU
+   AND CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 15.0
+   AND CMAKE_Fortran_COMPILER_VERSION VERSION_LESS 16.0)
+    add_compile_options("$<$<COMPILE_LANGUAGE:Fortran>:-Wno-external-argument-mismatch>")
+endif()
+
 # --- compiler feature checks
 include(CheckFortranSourceCompiles)
 include(CheckFortranSourceRuns)

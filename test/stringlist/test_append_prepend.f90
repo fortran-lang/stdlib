@@ -16,6 +16,11 @@ contains
         integer, parameter              :: first = -100
         integer, parameter              :: last = 100
         character(len=:), allocatable   :: string
+        type(string_type)               :: all_strings(first:last)
+        
+        do concurrent (i=first:last)
+            all_strings(i) = string_type( to_string(i) )
+        end do        
 
         do i = first, last
             string = to_string(i)
@@ -26,10 +31,10 @@ contains
         end do
 
         call compare_list( work_list, first, last + 1, 1 )
-        call check( work_list == [ ( string_type( to_string(i) ), i = first, last ) ], &
+        call check( work_list == all_strings, &
                         & "test_append_prepend_string: work_list ==&
                         & [ ( string_type( to_string(i) ), i = first, last ) ]" )
-        call check( [ ( string_type( to_string(i) ), i = first, last ) ] == work_list, &
+        call check( all_strings == work_list, &
                         & "test_append_prepend_string: [ ( string_type( to_string(i) ),&
                         & i = first, last ) ] == work_list" )
 
@@ -47,9 +52,9 @@ contains
         end do
 
         call compare_list( reference_list, first, last + 1, 2 )
-        call check( reference_list == [ ( string_type( to_string(i) ), i = first, last ) ], "test_append_prepend_string:&
+        call check( reference_list == all_strings, "test_append_prepend_string:&
                     & reference_list == [ ( string_type( to_string(i) ), i = first, last ) ]" )
-        call check( [ ( string_type( to_string(i) ), i = first, last ) ] == reference_list, &
+        call check( all_strings == reference_list, &
                     & "test_append_prepend_string: [ ( string_type( to_string(i) ), i = first, last ) ] == reference_list" )
 
         call check( work_list == reference_list, "test_append_prepend_string:&
@@ -66,10 +71,15 @@ contains
         integer, parameter              :: first = -100
         integer, parameter              :: last = 100
         integer, parameter              :: stride = 10
+        type(string_type)               :: all_strings(first:last)
+        
+        do concurrent (j=first:last)
+            all_strings(j) = string_type( to_string(j) )
+        end do   
 
         do i = first, last - 1, stride
-            work_list = work_list // [ ( string_type( to_string(j) ), j = i, i + stride - 1) ]
-            call check( work_list == [ ( string_type( to_string(j) ), j = first, i + stride - 1) ], &
+            work_list = work_list // all_strings(i:i+stride-1)
+            call check( work_list == all_strings(first:i+stride-1), &
                     & "test_append_prepend_array: work_list ==&
                     & [ ( string_type( to_string(j) ), j = first, i + stride - 1) ]" )
 
@@ -78,10 +88,10 @@ contains
         work_list = work_list // to_string(last)
 
         call compare_list( work_list, first, last + 1, 3 )
-        call check( work_list == [ ( string_type( to_string(i) ), i = first, last) ], &
+        call check( work_list == all_strings, &
                     & "test_append_prepend_array: work_list ==&
                     & [ ( string_type( to_string(i) ), i = first, last) ]" )
-        call check( [ ( string_type( to_string(i) ), i = first, last) ] == work_list, &
+        call check( all_strings == work_list, &
                     & "test_append_prepend_array: [ ( string_type( to_string(i) ), i = first, last) ]&
                     & == work_list" )
 
@@ -91,10 +101,8 @@ contains
             call check( reference_list /= work_list, "test_append_prepend_array:&
                                     & reference_list /= work_list" )
 
-            reference_list = [ ( string_type( to_string(j) ), j = i - stride + 1, i ) ] &
-                            & // reference_list
-            call check( reference_list == &
-                            & [ ( string_type( to_string(j) ), j = i - stride + 1, last ) ], &
+            reference_list = all_strings(i-stride+1:i) // reference_list
+            call check( reference_list == all_strings(i-stride+1:last), &
                             & "test_append_prepend_array: reference_list ==&
                             & [ ( string_type( to_string(j) ), j = i - stride + 1, last ) ]" )
 
@@ -103,10 +111,10 @@ contains
         reference_list = to_string(first) // reference_list
 
         call compare_list( reference_list, first, last + 1, 4 )
-        call check( [ ( string_type( to_string(i) ), i = first, last) ] == reference_list, &
+        call check( all_strings == reference_list, &
                     & "test_append_prepend_array:&
                     & [ ( string_type( to_string(i) ), i = first, last) ] == reference_list" )
-        call check( [ ( string_type( to_string(i) ), i = first, last) ] == reference_list, &
+        call check( all_strings == reference_list, &
                     & "test_append_prepend_array: [ ( string_type( to_string(i) ), i = first, last) ]&
                     & == reference_list" )
 
@@ -124,6 +132,11 @@ contains
         integer, parameter              :: first = -100
         integer, parameter              :: last = 100
         integer, parameter              :: stride = 10
+        type(string_type)               :: all_strings(first:last)
+        
+        do concurrent (j=first:last)
+            all_strings(j) = string_type( to_string(j) )
+        end do   
 
         do i = first, last - 1, stride
             call temp_list%clear()
@@ -132,7 +145,7 @@ contains
             end do
             work_list = work_list // temp_list
             
-            call check( work_list == [ ( string_type( to_string(j) ), j = first, i + stride - 1 ) ], &
+            call check( work_list == all_strings(first:i+stride-1), &
                     & "test_append_prepend_list: work_list ==&
                     & [ ( to_string(j), j = first, i + stride - 1) ]" )
 
@@ -141,9 +154,9 @@ contains
         work_list = work_list // to_string(last)
 
         call compare_list( work_list, first, last + 1, 5 )
-        call check( work_list == [ ( string_type( to_string(i) ), i = first, last) ], "test_append_prepend_list:&
+        call check( work_list == all_strings, "test_append_prepend_list:&
                     & work_list == [ ( string_type( to_string(i) ), i = first, last) ]" )
-        call check( [ ( string_type( to_string(i) ), i = first, last) ] == work_list, &
+        call check( all_strings == work_list, &
                     & "test_append_prepend_list: [ ( string_type( to_string(i) ), i = first, last) ]&
                     & == work_list" )
 
@@ -160,7 +173,7 @@ contains
             reference_list = temp_list // reference_list
 
             call check( reference_list == &
-                            & [ ( string_type( to_string(j) ), j = i - stride + 1, last ) ], &
+                            & all_strings(i-stride+1:last), &
                             & "test_append_prepend_list: reference_list ==&
                             & [ ( string_type( to_string(j) ), j = i - stride + 1, last ) ]" )
 
@@ -169,10 +182,10 @@ contains
         reference_list = to_string(first) // reference_list
 
         call compare_list( reference_list, first, last + 1, 6 )
-        call check( [ ( string_type( to_string(i) ), i = first, last) ] == reference_list, &
+        call check( all_strings == reference_list, &
                     & "test_append_prepend_list:&
                     & [ ( string_type( to_string(i) ), i = first, last) ] == reference_list" )
-        call check( [ ( string_type( to_string(i) ), i = first, last) ] == reference_list, &
+        call check( all_strings == reference_list, &
                     & "test_append_prepend_list: [ ( string_type( to_string(i) ), i = first, last) ]&
                     & == reference_list" )
 
