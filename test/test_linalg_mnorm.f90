@@ -15,14 +15,14 @@ module test_linalg_mnorm
         
         allocate(tests(0))
         
-        tests = [tests,new_unittest("test_matrix_norms_s",test_matrix_norms_s)]
-        tests = [tests,new_unittest("test_mnorm_s_3d",test_mnorm_s_3d)]
-        tests = [tests,new_unittest("test_matrix_norms_d",test_matrix_norms_d)]
-        tests = [tests,new_unittest("test_mnorm_d_3d",test_mnorm_d_3d)]
-        tests = [tests,new_unittest("test_matrix_norms_c",test_matrix_norms_c)]
-        tests = [tests,new_unittest("test_mnorm_c_3d",test_mnorm_c_3d)]
-        tests = [tests,new_unittest("test_matrix_norms_z",test_matrix_norms_z)]
-        tests = [tests,new_unittest("test_mnorm_z_3d",test_mnorm_z_3d)]
+        call add_test(tests,new_unittest("test_matrix_norms_s",test_matrix_norms_s))
+        call add_test(tests,new_unittest("test_mnorm_s_3d",test_mnorm_s_3d))
+        call add_test(tests,new_unittest("test_matrix_norms_d",test_matrix_norms_d))
+        call add_test(tests,new_unittest("test_mnorm_d_3d",test_mnorm_d_3d))
+        call add_test(tests,new_unittest("test_matrix_norms_c",test_matrix_norms_c))
+        call add_test(tests,new_unittest("test_mnorm_c_3d",test_mnorm_c_3d))
+        call add_test(tests,new_unittest("test_matrix_norms_z",test_matrix_norms_z))
+        call add_test(tests,new_unittest("test_mnorm_z_3d",test_mnorm_z_3d))
         
     end subroutine test_matrix_norms
     
@@ -442,6 +442,27 @@ module test_linalg_mnorm
         
     end subroutine test_mnorm_z_3d
     
+
+    ! gcc-15 bugfix utility
+    subroutine add_test(tests,new_test)
+        type(unittest_type), allocatable, intent(inout) :: tests(:)    
+        type(unittest_type), intent(in) :: new_test
+        
+        integer :: n
+        type(unittest_type), allocatable :: new_tests(:)
+        
+        if (allocated(tests)) then 
+            n = size(tests)
+        else
+            n = 0
+        end if
+        
+        allocate(new_tests(n+1))
+        if (n>0) new_tests(1:n) = tests(1:n)
+                 new_tests(1+n) = new_test
+        call move_alloc(from=new_tests,to=tests)        
+        
+    end subroutine add_test
 
 end module test_linalg_mnorm
 

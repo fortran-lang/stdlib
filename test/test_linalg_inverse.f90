@@ -19,18 +19,18 @@ module test_linalg_inverse
         
         allocate(tests(0))
 
-        tests = [tests,new_unittest("s_eye_inverse",test_s_eye_inverse), &
-                       new_unittest("s_singular_inverse",test_s_singular_inverse), &
-                       new_unittest("s_random_spd_inverse",test_s_random_spd_inverse)]
-        tests = [tests,new_unittest("d_eye_inverse",test_d_eye_inverse), &
-                       new_unittest("d_singular_inverse",test_d_singular_inverse), &
-                       new_unittest("d_random_spd_inverse",test_d_random_spd_inverse)]
-        tests = [tests,new_unittest("c_eye_inverse",test_c_eye_inverse), &
-                       new_unittest("c_singular_inverse",test_c_singular_inverse), &
-                       new_unittest("c_random_spd_inverse",test_c_random_spd_inverse)]
-        tests = [tests,new_unittest("z_eye_inverse",test_z_eye_inverse), &
-                       new_unittest("z_singular_inverse",test_z_singular_inverse), &
-                       new_unittest("z_random_spd_inverse",test_z_random_spd_inverse)]
+        call add_test(tests,new_unittest("s_eye_inverse",test_s_eye_inverse)) 
+        call add_test(tests,new_unittest("s_singular_inverse",test_s_singular_inverse)) 
+        call add_test(tests,new_unittest("s_random_spd_inverse",test_s_random_spd_inverse))
+        call add_test(tests,new_unittest("d_eye_inverse",test_d_eye_inverse)) 
+        call add_test(tests,new_unittest("d_singular_inverse",test_d_singular_inverse)) 
+        call add_test(tests,new_unittest("d_random_spd_inverse",test_d_random_spd_inverse))
+        call add_test(tests,new_unittest("c_eye_inverse",test_c_eye_inverse)) 
+        call add_test(tests,new_unittest("c_singular_inverse",test_c_singular_inverse)) 
+        call add_test(tests,new_unittest("c_random_spd_inverse",test_c_random_spd_inverse))
+        call add_test(tests,new_unittest("z_eye_inverse",test_z_eye_inverse)) 
+        call add_test(tests,new_unittest("z_singular_inverse",test_z_singular_inverse)) 
+        call add_test(tests,new_unittest("z_random_spd_inverse",test_z_random_spd_inverse))
 
     end subroutine test_inverse_matrix
 
@@ -546,6 +546,27 @@ module test_linalg_inverse
         
     end subroutine test_z_singular_inverse
 
+
+    ! gcc-15 bugfix utility
+    subroutine add_test(tests,new_test)
+        type(unittest_type), allocatable, intent(inout) :: tests(:)    
+        type(unittest_type), intent(in) :: new_test
+        
+        integer :: n
+        type(unittest_type), allocatable :: new_tests(:)
+        
+        if (allocated(tests)) then 
+            n = size(tests)
+        else
+            n = 0
+        end if
+        
+        allocate(new_tests(n+1))
+        if (n>0) new_tests(1:n) = tests(1:n)
+                 new_tests(1+n) = new_test
+        call move_alloc(from=new_tests,to=tests)        
+        
+    end subroutine add_test
 
 end module test_linalg_inverse
 

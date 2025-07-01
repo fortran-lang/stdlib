@@ -19,16 +19,16 @@ module test_linalg_determinant
         
         allocate(tests(0))
 
-        tests = [tests,new_unittest("$eye_det_rsp",test_rsp_eye_determinant)]
-        tests = [tests,new_unittest("$eye_det_multiple_rsp",test_rsp_eye_multiple)]
-        tests = [tests,new_unittest("$eye_det_rdp",test_rdp_eye_determinant)]
-        tests = [tests,new_unittest("$eye_det_multiple_rdp",test_rdp_eye_multiple)]
-        tests = [tests,new_unittest("$eye_det_csp",test_csp_eye_determinant)]
-        tests = [tests,new_unittest("$eye_det_multiple_csp",test_csp_eye_multiple)]
-        tests = [tests,new_unittest("$eye_det_cdp",test_cdp_eye_determinant)]
-        tests = [tests,new_unittest("$eye_det_multiple_cdp",test_cdp_eye_multiple)]
-        tests = [tests,new_unittest("$complex_det_cdp",test_csp_complex_determinant)]
-        tests = [tests,new_unittest("$complex_det_cdp",test_cdp_complex_determinant)]
+        call add_test(tests,new_unittest("$eye_det_rsp",test_rsp_eye_determinant))
+        call add_test(tests,new_unittest("$eye_det_multiple_rsp",test_rsp_eye_multiple))
+        call add_test(tests,new_unittest("$eye_det_rdp",test_rdp_eye_determinant))
+        call add_test(tests,new_unittest("$eye_det_multiple_rdp",test_rdp_eye_multiple))
+        call add_test(tests,new_unittest("$eye_det_csp",test_csp_eye_determinant))
+        call add_test(tests,new_unittest("$eye_det_multiple_csp",test_csp_eye_multiple))
+        call add_test(tests,new_unittest("$eye_det_cdp",test_cdp_eye_determinant))
+        call add_test(tests,new_unittest("$eye_det_multiple_cdp",test_cdp_eye_multiple))
+        call add_test(tests,new_unittest("$complex_det_cdp",test_csp_complex_determinant))
+        call add_test(tests,new_unittest("$complex_det_cdp",test_cdp_complex_determinant))
 
     end subroutine test_matrix_determinant
 
@@ -348,6 +348,27 @@ module test_linalg_determinant
 
     end subroutine test_cdp_complex_determinant
 
+    
+    ! gcc-15 bugfix utility
+    subroutine add_test(tests,new_test)
+        type(unittest_type), allocatable, intent(inout) :: tests(:)    
+        type(unittest_type), intent(in) :: new_test
+        
+        integer :: n
+        type(unittest_type), allocatable :: new_tests(:)
+        
+        if (allocated(tests)) then 
+            n = size(tests)
+        else
+            n = 0
+        end if
+        
+        allocate(new_tests(n+1))
+        if (n>0) new_tests(1:n) = tests(1:n)
+                 new_tests(1+n) = new_test
+        call move_alloc(from=new_tests,to=tests)        
+        
+    end subroutine add_test
 
 end module test_linalg_determinant
 

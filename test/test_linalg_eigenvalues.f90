@@ -19,23 +19,23 @@ module test_linalg_eigenvalues
 
         allocate(tests(0))
 
-        tests = [tests,new_unittest("test_eig_real_s",test_eig_real_s), &
-                       new_unittest("test_eigvals_identity_s",test_eigvals_identity_s), &    
-                       new_unittest("test_eigvals_diagonal_B_s",test_eigvals_diagonal_B_s), &
-                       new_unittest("test_eigvals_nondiagonal_B_s",test_eigvals_nondiagonal_B_s), &
-                       new_unittest("test_eigh_real_s",test_eigh_real_s)]        
-        tests = [tests,new_unittest("test_eig_real_d",test_eig_real_d), &
-                       new_unittest("test_eigvals_identity_d",test_eigvals_identity_d), &    
-                       new_unittest("test_eigvals_diagonal_B_d",test_eigvals_diagonal_B_d), &
-                       new_unittest("test_eigvals_nondiagonal_B_d",test_eigvals_nondiagonal_B_d), &
-                       new_unittest("test_eigh_real_d",test_eigh_real_d)]        
+        call add_test(tests,new_unittest("test_eig_real_s",test_eig_real_s))
+        call add_test(tests,new_unittest("test_eigvals_identity_s",test_eigvals_identity_s))
+        call add_test(tests,new_unittest("test_eigvals_diagonal_B_s",test_eigvals_diagonal_B_s))
+        call add_test(tests,new_unittest("test_eigvals_nondiagonal_B_s",test_eigvals_nondiagonal_B_s))
+        call add_test(tests,new_unittest("test_eigh_real_s",test_eigh_real_s))
+        call add_test(tests,new_unittest("test_eig_real_d",test_eig_real_d))
+        call add_test(tests,new_unittest("test_eigvals_identity_d",test_eigvals_identity_d))
+        call add_test(tests,new_unittest("test_eigvals_diagonal_B_d",test_eigvals_diagonal_B_d))
+        call add_test(tests,new_unittest("test_eigvals_nondiagonal_B_d",test_eigvals_nondiagonal_B_d))
+        call add_test(tests,new_unittest("test_eigh_real_d",test_eigh_real_d))
         
-        tests = [tests,new_unittest("test_eig_complex_c",test_eig_complex_c), &
-                       new_unittest("test_eig_generalized_complex_c",test_eigvals_generalized_complex_c), &
-                       new_unittest("test_eig_issue_927_c",test_issue_927_c)]                
-        tests = [tests,new_unittest("test_eig_complex_z",test_eig_complex_z), &
-                       new_unittest("test_eig_generalized_complex_z",test_eigvals_generalized_complex_z), &
-                       new_unittest("test_eig_issue_927_z",test_issue_927_z)]                
+        call add_test(tests,new_unittest("test_eig_complex_c",test_eig_complex_c))
+        call add_test(tests,new_unittest("test_eig_generalized_complex_c",test_eigvals_generalized_complex_c))
+        call add_test(tests,new_unittest("test_eig_issue_927_c",test_issue_927_c))
+        call add_test(tests,new_unittest("test_eig_complex_z",test_eig_complex_z))
+        call add_test(tests,new_unittest("test_eig_generalized_complex_z",test_eigvals_generalized_complex_z))
+        call add_test(tests,new_unittest("test_eig_issue_927_z",test_issue_927_z))
 
     end subroutine test_eig_eigh
 
@@ -649,8 +649,26 @@ module test_linalg_eigenvalues
     end subroutine test_issue_927_z
 
 
-
-
+    ! gcc-15 bugfix utility
+    subroutine add_test(tests,new_test)
+        type(unittest_type), allocatable, intent(inout) :: tests(:)    
+        type(unittest_type), intent(in) :: new_test
+        
+        integer :: n
+        type(unittest_type), allocatable :: new_tests(:)
+        
+        if (allocated(tests)) then 
+            n = size(tests)
+        else
+            n = 0
+        end if
+        
+        allocate(new_tests(n+1))
+        if (n>0) new_tests(1:n) = tests(1:n)
+                 new_tests(1+n) = new_test
+        call move_alloc(from=new_tests,to=tests)        
+        
+    end subroutine add_test
 
 end module test_linalg_eigenvalues
 

@@ -18,24 +18,24 @@ module test_linalg_pseudoinverse
         
         allocate(tests(0))
 
-        tests = [tests,new_unittest("s_eye_pseudoinverse",test_s_eye_pseudoinverse)]        
-        tests = [tests,new_unittest("d_eye_pseudoinverse",test_d_eye_pseudoinverse)]        
-        tests = [tests,new_unittest("s_square_pseudoinverse",test_s_square_pseudoinverse), &
-                       new_unittest("s_tall_pseudoinverse",test_s_tall_pseudoinverse), &
-                       new_unittest("s_wide_pseudoinverse",test_s_wide_pseudoinverse), &
-                       new_unittest("s_singular_pseudoinverse",test_s_singular_pseudoinverse)]
-        tests = [tests,new_unittest("d_square_pseudoinverse",test_d_square_pseudoinverse), &
-                       new_unittest("d_tall_pseudoinverse",test_d_tall_pseudoinverse), &
-                       new_unittest("d_wide_pseudoinverse",test_d_wide_pseudoinverse), &
-                       new_unittest("d_singular_pseudoinverse",test_d_singular_pseudoinverse)]
-        tests = [tests,new_unittest("c_square_pseudoinverse",test_c_square_pseudoinverse), &
-                       new_unittest("c_tall_pseudoinverse",test_c_tall_pseudoinverse), &
-                       new_unittest("c_wide_pseudoinverse",test_c_wide_pseudoinverse), &
-                       new_unittest("c_singular_pseudoinverse",test_c_singular_pseudoinverse)]
-        tests = [tests,new_unittest("z_square_pseudoinverse",test_z_square_pseudoinverse), &
-                       new_unittest("z_tall_pseudoinverse",test_z_tall_pseudoinverse), &
-                       new_unittest("z_wide_pseudoinverse",test_z_wide_pseudoinverse), &
-                       new_unittest("z_singular_pseudoinverse",test_z_singular_pseudoinverse)]
+        call add_test(tests,new_unittest("s_eye_pseudoinverse",test_s_eye_pseudoinverse))       
+        call add_test(tests,new_unittest("d_eye_pseudoinverse",test_d_eye_pseudoinverse))       
+        call add_test(tests,new_unittest("s_square_pseudoinverse",test_s_square_pseudoinverse))
+        call add_test(tests,new_unittest("s_tall_pseudoinverse",test_s_tall_pseudoinverse))
+        call add_test(tests,new_unittest("s_wide_pseudoinverse",test_s_wide_pseudoinverse))
+        call add_test(tests,new_unittest("s_singular_pseudoinverse",test_s_singular_pseudoinverse))
+        call add_test(tests,new_unittest("d_square_pseudoinverse",test_d_square_pseudoinverse))
+        call add_test(tests,new_unittest("d_tall_pseudoinverse",test_d_tall_pseudoinverse))
+        call add_test(tests,new_unittest("d_wide_pseudoinverse",test_d_wide_pseudoinverse))
+        call add_test(tests,new_unittest("d_singular_pseudoinverse",test_d_singular_pseudoinverse))
+        call add_test(tests,new_unittest("c_square_pseudoinverse",test_c_square_pseudoinverse))
+        call add_test(tests,new_unittest("c_tall_pseudoinverse",test_c_tall_pseudoinverse))
+        call add_test(tests,new_unittest("c_wide_pseudoinverse",test_c_wide_pseudoinverse))
+        call add_test(tests,new_unittest("c_singular_pseudoinverse",test_c_singular_pseudoinverse))
+        call add_test(tests,new_unittest("z_square_pseudoinverse",test_z_square_pseudoinverse))
+        call add_test(tests,new_unittest("z_tall_pseudoinverse",test_z_tall_pseudoinverse))
+        call add_test(tests,new_unittest("z_wide_pseudoinverse",test_z_wide_pseudoinverse))
+        call add_test(tests,new_unittest("z_singular_pseudoinverse",test_z_singular_pseudoinverse))
 
     end subroutine test_pseudoinverse_matrix
 
@@ -583,6 +583,27 @@ module test_linalg_pseudoinverse
 
     end subroutine test_z_singular_pseudoinverse
 
+
+    ! gcc-15 bugfix utility
+    subroutine add_test(tests,new_test)
+        type(unittest_type), allocatable, intent(inout) :: tests(:)    
+        type(unittest_type), intent(in) :: new_test
+        
+        integer :: n
+        type(unittest_type), allocatable :: new_tests(:)
+        
+        if (allocated(tests)) then 
+            n = size(tests)
+        else
+            n = 0
+        end if
+        
+        allocate(new_tests(n+1))
+        if (n>0) new_tests(1:n) = tests(1:n)
+                 new_tests(1+n) = new_test
+        call move_alloc(from=new_tests,to=tests)        
+        
+    end subroutine add_test
 
 end module test_linalg_pseudoinverse
 
