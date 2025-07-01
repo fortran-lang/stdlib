@@ -1,6 +1,6 @@
 module test_filesystem
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
-    use stdlib_system, only: is_directory, delete_file
+    use stdlib_system, only: is_directory, delete_file, make_directory, remove_directory
     use stdlib_error, only: state_type
 
     implicit none
@@ -17,7 +17,11 @@ contains
             new_unittest("fs_is_directory_file", test_is_directory_file), &
             new_unittest("fs_delete_non_existent", test_delete_file_non_existent), &
             new_unittest("fs_delete_existing_file", test_delete_file_existing), &
-            new_unittest("fs_delete_file_being_dir", test_delete_directory) &            
+            new_unittest("fs_delete_file_being_dir", test_delete_directory), &            
+            new_unittest("fs_make_dir", test_make_directory), &            
+            new_unittest("fs_make_dir_existing_dir", test_make_directory_existing), &            
+            new_unittest("fs_remove_dir", test_remove_directory), &            
+            new_unittest("fs_remove_dir_non_existent", test_remove_directory_nonexistent) &            
         ]
     end subroutine collect_suite
 
@@ -145,7 +149,79 @@ contains
         if (allocated(error)) return        
 
     end subroutine test_delete_directory
+    
+    subroutine test_make_directory(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(state_type) :: err
+        character(len=256) :: filename
+        integer :: ios,iocmd
+        character(len=512) :: msg
 
+        filename = "test_directory"
+
+        call make_directory(filename, err=err)
+        call check(error, err%ok(), 'Could not make directory: '//err%print())
+        if (allocated(error)) return
+
+        ! Clean up: remove the empty directory
+        call execute_command_line('rmdir ' // filename, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        call check(error, ios==0 .and. iocmd==0, 'Cannot cleanup make_directory test: '//trim(msg))
+        if (allocated(error)) return
+    end subroutine test_make_directory
+
+    subroutine test_make_directory_existing(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(state_type) :: err
+        character(len=256) :: filename
+        integer :: ios,iocmd
+        character(len=512) :: msg
+
+        filename = "test_directory"
+
+        call execute_command_line('mkdir ' // filename, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        call check(error, ios==0 .and. iocmd==0, 'Cannot init make_directory_existing test: '//trim(msg))
+        if (allocated(error)) return
+
+        call make_directory(filename, err=err)
+        call check(error, err%error(), 'Made an already existing directory somehow')
+
+        ! Clean up: remove the empty directory
+        call execute_command_line('rmdir ' // filename, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        call check(error, ios==0 .and. iocmd==0, 'Cannot cleanup make_directory test: '//trim(msg))
+        if (allocated(error)) return
+    end subroutine test_make_directory_existing
+
+    subroutine test_remove_directory(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(state_type) :: err
+        character(len=256) :: filename
+        integer :: ios,iocmd
+        character(len=512) :: msg
+
+        filename = "test_directory"
+
+        call execute_command_line('mkdir ' // filename, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        call check(error, ios==0 .and. iocmd==0, 'Cannot init remove_directory test: '//trim(msg))
+        if (allocated(error)) return
+
+        call remove_directory(filename, err)
+        call check(error, err%ok(), 'Could not remove directory: '//err%print())
+        if (allocated(error)) then 
+            ! Clean up: remove the empty directory
+            call execute_command_line('rmdir ' // filename, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+            call check(error, ios==0 .and. iocmd==0, 'Cannot cleanup make_directory test: '//trim(msg))
+            if (allocated(error)) return
+        end if
+    end subroutine test_remove_directory
+
+    subroutine test_remove_directory_nonexistent(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(state_type) :: err
+
+        call remove_directory("random_name", err)
+        call check(error, err%error(), 'Somehow removed a non-existent directory!: ')
+        if (allocated(error)) return
+    end subroutine test_remove_directory_nonexistent
 
 end module test_filesystem
 
