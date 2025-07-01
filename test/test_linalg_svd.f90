@@ -17,16 +17,16 @@ module test_linalg_svd
         
         allocate(tests(0))
 
-        tests = [tests,new_unittest("test_svd_s",test_svd_s)]        
-        tests = [tests,new_unittest("test_svd_d",test_svd_d)]        
+        call add_test(tests,new_unittest("test_svd_s",test_svd_s))        
+        call add_test(tests,new_unittest("test_svd_d",test_svd_d))        
 
-        tests = [tests,new_unittest("test_complex_svd_c",test_complex_svd_c)]        
-        tests = [tests,new_unittest("test_complex_svd_z",test_complex_svd_z)]        
+        call add_test(tests,new_unittest("test_complex_svd_c",test_complex_svd_c))        
+        call add_test(tests,new_unittest("test_complex_svd_z",test_complex_svd_z))        
 
-        tests = [tests,new_unittest("test_svd_row_s",test_svd_row_s)]         
-        tests = [tests,new_unittest("test_svd_row_d",test_svd_row_d)]         
-        tests = [tests,new_unittest("test_svd_row_c",test_svd_row_c)]         
-        tests = [tests,new_unittest("test_svd_row_z",test_svd_row_z)]         
+        call add_test(tests,new_unittest("test_svd_row_s",test_svd_row_s))         
+        call add_test(tests,new_unittest("test_svd_row_d",test_svd_row_d))         
+        call add_test(tests,new_unittest("test_svd_row_c",test_svd_row_c))         
+        call add_test(tests,new_unittest("test_svd_row_z",test_svd_row_z))         
 
     end subroutine test_svd
 
@@ -522,6 +522,26 @@ module test_linalg_svd
     end subroutine test_svd_row_z
 
 
+    ! gcc-15 bugfix utility
+    subroutine add_test(tests,new_test)
+        type(unittest_type), allocatable, intent(inout) :: tests(:)    
+        type(unittest_type), intent(in) :: new_test
+        
+        integer :: n
+        type(unittest_type), allocatable :: new_tests(:)
+        
+        if (allocated(tests)) then 
+            n = size(tests)
+        else
+            n = 0
+        end if
+        
+        allocate(new_tests(n+1))
+        if (n>0) new_tests(1:n) = tests(1:n)
+                 new_tests(1+n) = new_test
+        call move_alloc(from=new_tests,to=tests)        
+    
+    end subroutine add_test
 
 end module test_linalg_svd
 

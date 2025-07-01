@@ -19,15 +19,15 @@ module test_linalg_solve
 
         allocate(tests(0))
 
-        tests = [tests,new_unittest("solve_s",test_s_solve), &
-                       new_unittest("solve_s_multiple",test_s_solve_multiple)]
-        tests = [tests,new_unittest("solve_d",test_d_solve), &
-                       new_unittest("solve_d_multiple",test_d_solve_multiple)]
+        call add_test(tests,new_unittest("solve_s",test_s_solve))
+        call add_test(tests,new_unittest("solve_s_multiple",test_s_solve_multiple))
+        call add_test(tests,new_unittest("solve_d",test_d_solve))
+        call add_test(tests,new_unittest("solve_d_multiple",test_d_solve_multiple))
 
-        tests = [tests,new_unittest("solve_complex_c",test_c_solve), &
-                       new_unittest("solve_2x2_complex_c",test_2x2_c_solve)]
-        tests = [tests,new_unittest("solve_complex_z",test_z_solve), &
-                       new_unittest("solve_2x2_complex_z",test_2x2_z_solve)]
+        call add_test(tests,new_unittest("solve_complex_c",test_c_solve))
+        call add_test(tests,new_unittest("solve_2x2_complex_c",test_2x2_c_solve))
+        call add_test(tests,new_unittest("solve_complex_z",test_z_solve))
+        call add_test(tests,new_unittest("solve_2x2_complex_z",test_2x2_z_solve))
 
     end subroutine test_linear_systems    
     
@@ -256,7 +256,28 @@ module test_linalg_solve
 
 
     end subroutine test_2x2_z_solve
-
+    
+    ! gcc-15 bugfix utility
+    subroutine add_test(tests,new_test)
+        type(unittest_type), allocatable, intent(inout) :: tests(:)    
+        type(unittest_type), intent(in) :: new_test
+        
+        integer :: n
+        type(unittest_type), allocatable :: new_tests(:)
+        
+        if (allocated(tests)) then 
+            n = size(tests)
+        else
+            n = 0
+        end if
+        
+        allocate(new_tests(n+1))
+        if (n>0) new_tests(1:n) = tests(1:n)
+                 new_tests(1+n) = new_test
+        call move_alloc(from=new_tests,to=tests)        
+    
+    end subroutine add_test
+    
 end module test_linalg_solve
 
 program test_solve

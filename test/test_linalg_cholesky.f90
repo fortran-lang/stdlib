@@ -19,10 +19,10 @@ module test_linalg_cholesky
 
         allocate(tests(0))
         
-        tests = [tests,new_unittest("least_cholesky_s",test_cholesky_s)]
-        tests = [tests,new_unittest("least_cholesky_d",test_cholesky_d)]
-        tests = [tests,new_unittest("least_cholesky_c",test_cholesky_c)]
-        tests = [tests,new_unittest("least_cholesky_z",test_cholesky_z)]
+        call add_test(tests,new_unittest("least_cholesky_s",test_cholesky_s))
+        call add_test(tests,new_unittest("least_cholesky_d",test_cholesky_d))
+        call add_test(tests,new_unittest("least_cholesky_c",test_cholesky_c))
+        call add_test(tests,new_unittest("least_cholesky_z",test_cholesky_z))
 
     end subroutine test_cholesky_factorization
 
@@ -168,6 +168,26 @@ module test_linalg_cholesky
     end subroutine test_cholesky_z
 
 
+    ! gcc-15 bugfix utility
+    subroutine add_test(tests,new_test)
+        type(unittest_type), allocatable, intent(inout) :: tests(:)    
+        type(unittest_type), intent(in) :: new_test
+        
+        integer :: n
+        type(unittest_type), allocatable :: new_tests(:)
+        
+        if (allocated(tests)) then 
+            n = size(tests)
+        else
+            n = 0
+        end if
+        
+        allocate(new_tests(n+1))
+        if (n>0) new_tests(1:n) = tests(1:n)
+                 new_tests(1+n) = new_test
+        call move_alloc(from=new_tests,to=tests)        
+        
+    end subroutine add_test
 
 end module test_linalg_cholesky
 

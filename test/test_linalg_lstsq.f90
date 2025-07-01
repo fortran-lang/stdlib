@@ -19,12 +19,12 @@ module test_linalg_least_squares
         
         allocate(tests(0))
         
-        tests = [tests,new_unittest("issue_823",test_issue_823)]
+        call add_test(tests,new_unittest("issue_823",test_issue_823))
 
-        tests = [tests,new_unittest("least_squares_s",test_lstsq_one_s), &
-                       new_unittest("least_squares_randm_s",test_lstsq_random_s)]
-        tests = [tests,new_unittest("least_squares_d",test_lstsq_one_d), &
-                       new_unittest("least_squares_randm_d",test_lstsq_random_d)]
+        call add_test(tests,new_unittest("least_squares_s",test_lstsq_one_s))
+        call add_test(tests,new_unittest("least_squares_randm_s",test_lstsq_random_s))
+        call add_test(tests,new_unittest("least_squares_d",test_lstsq_one_d))
+        call add_test(tests,new_unittest("least_squares_randm_d",test_lstsq_random_d))
 
     end subroutine test_least_squares
     
@@ -200,6 +200,27 @@ module test_linalg_least_squares
         if (allocated(error)) return
 
     end subroutine test_issue_823
+
+    ! gcc-15 bugfix utility
+    subroutine add_test(tests,new_test)
+        type(unittest_type), allocatable, intent(inout) :: tests(:)    
+        type(unittest_type), intent(in) :: new_test
+        
+        integer :: n
+        type(unittest_type), allocatable :: new_tests(:)
+        
+        if (allocated(tests)) then 
+            n = size(tests)
+        else
+            n = 0
+        end if
+        
+        allocate(new_tests(n+1))
+        if (n>0) new_tests(1:n) = tests(1:n)
+                 new_tests(1+n) = new_test
+        call move_alloc(from=new_tests,to=tests)        
+        
+    end subroutine add_test
 
 end module test_linalg_least_squares
 

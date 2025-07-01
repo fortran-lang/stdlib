@@ -19,10 +19,10 @@ module test_linalg_qr
         
         allocate(tests(0))
         
-        tests = [tests,new_unittest("qr_random_s",test_qr_random_s)]
-        tests = [tests,new_unittest("qr_random_d",test_qr_random_d)]
-        tests = [tests,new_unittest("qr_random_c",test_qr_random_c)]
-        tests = [tests,new_unittest("qr_random_z",test_qr_random_z)]
+        call add_test(tests,new_unittest("qr_random_s",test_qr_random_s))
+        call add_test(tests,new_unittest("qr_random_d",test_qr_random_d))
+        call add_test(tests,new_unittest("qr_random_c",test_qr_random_c))
+        call add_test(tests,new_unittest("qr_random_z",test_qr_random_z))
 
     end subroutine test_qr_factorization
 
@@ -326,6 +326,26 @@ module test_linalg_qr
     end subroutine test_qr_random_z
 
 
+    ! gcc-15 bugfix utility
+    subroutine add_test(tests,new_test)
+        type(unittest_type), allocatable, intent(inout) :: tests(:)    
+        type(unittest_type), intent(in) :: new_test
+        
+        integer :: n
+        type(unittest_type), allocatable :: new_tests(:)
+        
+        if (allocated(tests)) then 
+            n = size(tests)
+        else
+            n = 0
+        end if
+        
+        allocate(new_tests(n+1))
+        if (n>0) new_tests(1:n) = tests(1:n)
+                 new_tests(1+n) = new_test
+        call move_alloc(from=new_tests,to=tests)        
+        
+    end subroutine add_test
 
 end module test_linalg_qr
 
