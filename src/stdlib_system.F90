@@ -725,7 +725,7 @@ function c_get_strerror() result(str)
 
     interface
         type(c_ptr) function strerror(len) bind(C, name='stdlib_strerror')
-            import c_size_t, c_ptr, c_int
+            import c_size_t, c_ptr
             implicit none
             integer(c_size_t), intent(out) :: len
         end function strerror
@@ -750,7 +750,6 @@ end function c_get_strerror
 subroutine make_directory(path, mode, err)
     character(len=*), intent(in) :: path
     integer, intent(in), optional :: mode
-    character, allocatable :: err_msg
     type(state_type), optional, intent(out) :: err
 
     integer :: code
@@ -787,7 +786,6 @@ end subroutine make_directory
 !! Removes an empty directory
 subroutine remove_directory(path, err)
     character(len=*), intent(in) :: path
-    character, allocatable :: err_msg
     type(state_type), optional, intent(out) :: err
 
     integer :: code
