@@ -58,6 +58,7 @@ module test_linalg_expm
 
         ! Check result.
         err = mnorm(Eref - E, "inf")
+        print *, "Error", err, maxval(abs(Eref - E)), (n**2)*epsilon(1.0_${rk}$)
         call check(error, err < (n**2)*epsilon(1.0_${rk}$), "Analytical matrix exponential.")
         if (allocated(error)) return
         return        
