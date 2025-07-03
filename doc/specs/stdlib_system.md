@@ -24,7 +24,7 @@ Additionally, a callback function can be specified to execute upon process compl
 
 ### Syntax
 
-`process = ` [[stdlib_subprocess(module):run(interface)]] `(args [, stdin] [, want_stdout] [, want_stderr] [, callback] [, payload])`
+`process = ` [[stdlib_system(module):run(interface)]] `(args [, stdin] [, want_stdout] [, want_stderr] [, callback] [, payload])`
 
 ### Arguments
 
@@ -69,7 +69,7 @@ Additionally, a callback function can be specified to execute upon process compl
 
 ### Syntax
 
-`process = ` [[stdlib_subprocess(module):runasync(interface)]] `(args [, stdin] [, want_stdout] [, want_stderr] [, callback] [, payload])`
+`process = ` [[stdlib_system(module):runasync(interface)]] `(args [, stdin] [, want_stdout] [, want_stderr] [, callback] [, payload])`
 
 ### Arguments
 
@@ -108,7 +108,7 @@ This is useful for monitoring the status of asynchronous processes created with 
 
 ### Syntax
 
-`status = ` [[stdlib_subprocess(module):is_running(interface)]] `(process)`
+`status = ` [[stdlib_system(module):is_running(interface)]] `(process)`
 
 ### Arguments
 
@@ -139,7 +139,7 @@ This is useful for determining whether asynchronous processes created with the `
 
 ### Syntax
 
-`status = ` [[stdlib_subprocess(module):is_completed(interface)]] `(process)`
+`status = ` [[stdlib_system(module):is_completed(interface)]] `(process)`
 
 ### Arguments
 
@@ -174,7 +174,7 @@ The result is a real value representing the elapsed time in seconds, measured fr
 
 ### Syntax
 
-`delta_t = ` [[stdlib_subprocess(module):elapsed(subroutine)]] `(process)`
+`delta_t = ` [[stdlib_system(module):elapsed(subroutine)]] `(process)`
 
 ### Arguments
 
@@ -212,7 +212,7 @@ in case of process hang or delay.
 
 ### Syntax
 
-`call ` [[stdlib_subprocess(module):wait(subroutine)]] `(process [, max_wait_time])`
+`call ` [[stdlib_system(module):wait(subroutine)]] `(process [, max_wait_time])`
 
 ### Arguments
 
@@ -243,7 +243,7 @@ This is especially useful for monitoring asynchronous processes and retrieving t
 
 ### Syntax
 
-`call ` [[stdlib_subprocess(module):update(subroutine)]] `(process)`
+`call ` [[stdlib_system(module):update(subroutine)]] `(process)`
 
 ### Arguments
 
@@ -269,7 +269,7 @@ This interface is useful when a process needs to be forcefully stopped, for exam
 
 ### Syntax
 
-`call ` [[stdlib_subprocess(module):kill(subroutine)]] `(process, success)`
+`call ` [[stdlib_system(module):kill(subroutine)]] `(process, success)`
 
 ### Arguments
 
@@ -410,13 +410,51 @@ None.
 
 Returns one of the `integer` `OS_*` parameters representing the OS type, from the `stdlib_system` module, or `OS_UNKNOWN` if undetermined.
 
----
-
 ### Example
 
 ```fortran
 {!example/system/example_os_type.f90!}
 ```
+
+---
+
+## `is_directory` - Test if a path is a directory
+
+### Status
+
+Experimental
+
+### Description
+
+This function checks if a specified file system path is a directory. 
+It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+
+### Syntax
+
+`result = [[stdlib_system(module):is_directory(function)]] (path)`
+
+### Class
+
+Function
+
+### Arguments
+
+`path`: Shall be a character string containing the file system path to evaluate. It is an `intent(in)` argument.
+
+### Return values
+
+The function returns a `logical` value:
+
+- `.true.` if the path matches an existing directory.
+- `.false.` otherwise, or if the operating system is unsupported.
+
+### Example
+
+```fortran
+{!example/system/example_is_directory.f90!}
+```
+
+---
 
 ## `null_device` - Return the null device file path
 
@@ -452,4 +490,45 @@ None.
 
 ```fortran
 {!example/system/example_null_device.f90!}
+```
+
+## `delete_file` - Delete a file
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine deletes a specified file from the filesystem. It ensures that the file exists and is not a directory before attempting deletion.
+If the file cannot be deleted due to permissions, being a directory, or other issues, an error is raised. 
+The function provides an optional error-handling mechanism via the `state_type` class. If the `err` argument is not provided, exceptions will trigger an `error stop`.
+
+### Syntax
+
+`call [[stdlib_system(module):delete_file(subroutine)]] (path [, err])`
+
+### Class
+Subroutine
+
+### Arguments
+
+`path`: Shall be a character string containing the path to the file to be deleted. It is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(state_type)` variable for error handling. If provided, errors are returned as a state object. If not provided, the program stops execution on error.
+
+### Behavior
+
+- Checks if the file exists. If not, an error is raised.
+- Ensures the path is not a directory before deletion.
+- Attempts to delete the file, raising an error if unsuccessful.
+
+### Return values
+
+The file is removed from the filesystem if the operation is successful. If the operation fails, an error is raised.
+
+### Example
+
+```fortran
+{!example/system/example_delete_file.f90!}
 ```

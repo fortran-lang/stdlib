@@ -1,7 +1,9 @@
 module stdlib_system
 use, intrinsic :: iso_c_binding, only : c_int, c_long, c_ptr, c_null_ptr, c_int64_t, c_size_t, &
     c_f_pointer
-use stdlib_kinds, only: int64, dp, c_char
+use stdlib_kinds, only: int64, dp, c_bool, c_char
+use stdlib_strings, only: to_c_char
+use stdlib_error, only: state_type, STDLIB_SUCCESS, STDLIB_FS_ERROR
 implicit none
 private
 public :: sleep
@@ -82,6 +84,39 @@ public :: kill
 public :: elapsed
 public :: is_windows
      
+!! version: experimental
+!!
+!! Tests if a given path matches an existing directory.
+!! ([Specification](../page/specs/stdlib_system.html#is_directory-test-if-a-path-is-a-directory))
+!!
+!!### Summary
+!! Function to evaluate whether a specified path corresponds to an existing directory.
+!!
+!!### Description
+!! 
+!! This function checks if a given file system path is a directory. It is cross-platform and utilizes
+!! native system calls. It supports common operating systems such as Linux, macOS, 
+!! Windows, and various UNIX-like environments. On unsupported operating systems, the function will return `.false.`.
+!!
+public :: is_directory
+
+!! version: experimental
+!!
+!! Deletes a specified file from the filesystem.
+!! ([Specification](../page/specs/stdlib_system.html#delete_file-delete-a-file))
+!!
+!!### Summary
+!! Subroutine to safely delete a file from the filesystem. It handles errors gracefully using the library's `state_type`.
+!!
+!!### Description
+!! 
+!! This subroutine deletes a specified file. If the file is a directory or inaccessible, an error is raised.
+!! If the file does not exist, a warning is returned, but no error state. Errors are handled using the 
+!! library's `state_type` mechanism. If the optional `err` argument is not provided, exceptions trigger 
+!! an `error stop`.
+!!
+public :: delete_file
+
 !! version: experimental
 !!
 !! Returns the file path of the null device, which discards all data written to it.
@@ -636,6 +671,25 @@ pure function OS_NAME(os)
     end select
 end function OS_NAME
 
+!! Tests if a given path matches an existing directory.
+!! Cross-platform implementation without using external C libraries.
+logical function is_directory(path)
+    !> Input path to evaluate
+    character(*), intent(in) :: path
+
+    interface
+        
+        logical(c_bool) function stdlib_is_directory(path) bind(c, name="stdlib_is_directory")
+            import c_bool, c_char
+            character(kind=c_char), intent(in) :: path(*)
+        end function stdlib_is_directory
+
+    end interface        
+    
+    is_directory = logical(stdlib_is_directory(to_c_char(trim(path))))
+    
+end function is_directory
+
 !> Returns the file path of the null device for the current operating system.
 !>
 !> Version: Helper function.
@@ -670,5 +724,50 @@ function null_device() result(path)
     end do
         
 end function null_device
+
+!> Delete a file at the given path.
+subroutine delete_file(path, err)
+    character(*), intent(in) :: path
+    type(state_type), optional, intent(out) :: err
+
+    !> Local variables
+    integer :: file_unit, ios        
+    type(state_type) :: err0
+    character(len=512) :: msg
+    logical :: file_exists
+
+    ! Verify the file is not a directory.     
+    if (is_directory(path)) then 
+        ! If unable to open, assume it's a directory or inaccessible
+        err0 = state_type(STDLIB_FS_ERROR,'Cannot delete',path,'- is a directory')
+        call err0%handle(err)
+        return            
+    end if
+
+    ! Check if the path exists
+    ! Because Intel compilers return .false. if path is a directory, this must be tested
+    ! _after_ the directory test
+    inquire(file=path, exist=file_exists)
+    if (.not. file_exists) then
+        ! File does not exist, return non-error status
+        err0 = state_type(STDLIB_SUCCESS,path,' not deleted: file does not exist')
+        call err0%handle(err)
+        return
+    endif
+
+    ! Close and delete the file
+    open(newunit=file_unit, file=path, status='old', iostat=ios, iomsg=msg)
+    if (ios /= 0) then
+        err0 = state_type(STDLIB_FS_ERROR,'Cannot delete',path,'-',msg)
+        call err0%handle(err)
+        return              
+    end if        
+    close(unit=file_unit, status='delete', iostat=ios, iomsg=msg)
+    if (ios /= 0) then
+        err0 = state_type(STDLIB_FS_ERROR,'Cannot delete',path,'-',msg)
+        call err0%handle(err)
+        return              
+    end if
+end subroutine delete_file
 
 end module stdlib_system

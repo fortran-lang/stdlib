@@ -187,6 +187,10 @@ to the original.
 
 Stable
 
+### Class
+
+Pure function.
+
 ### Description
 
 Create a diagonal array or extract the diagonal elements of an array

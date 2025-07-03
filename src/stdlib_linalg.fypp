@@ -155,13 +155,13 @@ module stdlib_linalg
       ! Vector to matrix
       !
     #:for k1, t1 in RCI_KINDS_TYPES
-      module function diag_${t1[0]}$${k1}$(v) result(res)
+      module pure function diag_${t1[0]}$${k1}$(v) result(res)
         ${t1}$, intent(in) :: v(:)
         ${t1}$ :: res(size(v),size(v))
       end function diag_${t1[0]}$${k1}$
     #:endfor
     #:for k1, t1 in RCI_KINDS_TYPES
-      module function diag_${t1[0]}$${k1}$_k(v,k) result(res)
+      module pure function diag_${t1[0]}$${k1}$_k(v,k) result(res)
         ${t1}$, intent(in) :: v(:)
         integer, intent(in) :: k
         ${t1}$ :: res(size(v)+abs(k),size(v)+abs(k))
@@ -172,13 +172,13 @@ module stdlib_linalg
       ! Matrix to vector
       !
     #:for k1, t1 in RCI_KINDS_TYPES
-      module function diag_${t1[0]}$${k1}$_mat(A) result(res)
+      module pure function diag_${t1[0]}$${k1}$_mat(A) result(res)
         ${t1}$, intent(in) :: A(:,:)
         ${t1}$ :: res(minval(shape(A)))
       end function diag_${t1[0]}$${k1}$_mat
     #:endfor
     #:for k1, t1 in RCI_KINDS_TYPES
-      module function diag_${t1[0]}$${k1}$_mat_k(A,k) result(res)
+      module pure function diag_${t1[0]}$${k1}$_mat_k(A,k) result(res)
         ${t1}$, intent(in) :: A(:,:)
         integer, intent(in) :: k
         ${t1}$ :: res(minval(shape(A))-abs(k))

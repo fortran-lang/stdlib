@@ -6,21 +6,8 @@ from joblib import Parallel, delayed
 C_PREPROCESSED = (
     "stdlib_linalg_constants" ,
     "stdlib_linalg_blas" ,
-    "stdlib_linalg_blas_aux",
-    "stdlib_linalg_blas_s",
-    "stdlib_linalg_blas_d",
-    "stdlib_linalg_blas_q",
-    "stdlib_linalg_blas_c",
-    "stdlib_linalg_blas_z",
-    "stdlib_linalg_blas_w",
     "stdlib_linalg_lapack",
-    "stdlib_linalg_lapack_aux",
-    "stdlib_linalg_lapack_s",
-    "stdlib_linalg_lapack_d",
-    "stdlib_linalg_lapack_q",
-    "stdlib_linalg_lapack_c",
-    "stdlib_linalg_lapack_z",
-    "stdlib_linalg_lapack_w"
+    "test_blas_lapack"
 )
 
 def pre_process_fypp(args):
@@ -105,7 +92,7 @@ def deploy_stdlib_fpm(with_ilp64):
         for root, _, files in os.walk(folder):
             for file in files:
                 if file not in prune:
-                    if file.endswith((".f90", ".F90", ".dat", ".npy", ".c")):
+                    if file.endswith((".f90", ".F90", ".dat", ".npy", ".c", ".h")):
                         shutil.copy2(os.path.join(root, file), base_folder+os.sep+folder+os.sep+file)
     recursive_copy('src')
     recursive_copy('test')

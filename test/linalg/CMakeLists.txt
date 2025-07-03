@@ -1,8 +1,6 @@
 set(
   fppFiles
   "test_linalg.fypp"
-  "test_blas_lapack.fypp"
-  "test_linalg_cholesky.fypp"
   "test_linalg_eigenvalues.fypp"
   "test_linalg_solve.fypp"
   "test_linalg_inverse.fypp"
@@ -16,9 +14,18 @@ set(
   "test_linalg_svd.fypp"
   "test_linalg_matrix_property_checks.fypp"
   "test_linalg_sparse.fypp"
+  "test_linalg_cholesky.fypp"
   "test_linalg_expm.fypp"
 )
+
+# Preprocessed files to contain preprocessor directives -> .F90
+set(
+  cppFiles
+  "test_blas_lapack.fypp"
+)
+
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
+fypp_f90pp("${fyppFlags}" "${cppFiles}" outPreprocFiles)
 
 ADDTEST(linalg)
 ADDTEST(linalg_cholesky)
@@ -34,6 +41,6 @@ ADDTEST(linalg_lstsq)
 ADDTEST(linalg_qr)
 ADDTEST(linalg_schur)
 ADDTEST(linalg_svd)
-ADDTEST(blas_lapack)
 ADDTEST(linalg_sparse)
 ADDTEST(linalg_expm)
+ADDTESTPP(blas_lapack)
