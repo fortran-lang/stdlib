@@ -4,7 +4,7 @@ module stdlib_linalg_lapack_aux
      use stdlib_linalg_constants
      use stdlib_linalg_blas
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
-         LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
+         LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR, LINALG_SUCCESS
      use ieee_arithmetic, only: ieee_support_inf, ieee_support_nan
      implicit none
      private
@@ -42,6 +42,7 @@ module stdlib_linalg_lapack_aux
      #:endfor   
      public :: handle_potrf_info
      public :: handle_getri_info
+     public :: handle_gesdd_info
      
      ! SELCTG is a LOGICAL FUNCTION of three DOUBLE PRECISION arguments 
      ! used to select eigenvalues to sort to the top left of the Schur form. 
@@ -1330,5 +1331,36 @@ module stdlib_linalg_lapack_aux
              err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'catastrophic error')
       end select
    end subroutine handle_getri_info
+
+   elemental subroutine handle_gesdd_info(this,err,info,m,n)
+        character(len=*), intent(in) :: this
+        !> Error handler
+        type(linalg_state_type), intent(inout) :: err
+        !> GESDD return flag
+        integer(ilp), intent(in) :: info
+        !> Input matrix size
+        integer(ilp), intent(in) :: m,n
+
+        select case (info)
+           case (0)
+               ! Success!
+               err%state = LINALG_SUCCESS
+           case (-1)
+               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Invalid task ID on input to GESDD.')
+           case (-5,-3:-2)
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size: a=',[m,n])
+           case (-8)
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix U size, with a=',[m,n])
+           case (-10)
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix V size, with a=',[m,n])
+           case (-4)
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'A contains invalid/NaN values.')
+           case (1:)
+               err = linalg_state_type(this,LINALG_ERROR,'SVD computation did not converge.')
+           case default
+               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Unknown error returned by GESDD.')
+        end select
+
+     end subroutine handle_gesdd_info
 
 end module stdlib_linalg_lapack_aux
