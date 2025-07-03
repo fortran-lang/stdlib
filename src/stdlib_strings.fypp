@@ -310,10 +310,9 @@ contains
 
         if (last <= 0) then
             chomped_string = ''
-            return
-        end if
-
-        chomped_string = string(1:last)
+        else
+            chomped_string = string(1:last)
+        end if        
 
     end function chomp_substring_char_char
 
