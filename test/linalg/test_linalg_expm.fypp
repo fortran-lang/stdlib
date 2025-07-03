@@ -4,7 +4,7 @@
 module test_linalg_expm
     use testdrive, only: error_type, check, new_unittest, unittest_type
     use stdlib_linalg_constants
-    use stdlib_linalg, only: expm, eye, mnorm
+    use stdlib_linalg, only: expm, eye, norm
     use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
 
