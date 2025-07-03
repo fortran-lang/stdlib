@@ -1275,4 +1275,36 @@ module stdlib_linalg_lapack_aux
 
      #:endfor
 
+   !----------------------------------------------------------------------------
+   !-----                                                                  -----
+   !-----     AUXILIARY INFO HANDLING FUNCTIONS FOR LAPACK SUBROUTINES     -----
+   !-----                                                                  -----
+   !----------------------------------------------------------------------------
+
+   elemental subroutine handle_potrf_info(info,triangle,lda,n,err)
+      character, intent(in) :: triangle
+      integer(ilp), intent(in) :: info,lda,n
+      type(linalg_state_type), intent(out) :: err
+
+      ! Process output
+      select case (info)
+      case (0)
+         ! Success
+      case (-1)
+         err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'invalid triangle selection: ', &
+                  triangle,'. should be U/L')
+      case (-2)
+         err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size n=',n)
+      case (-4)
+         err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid lda=',lda,': is < n = ',n)
+      case (1:)
+         err = linalg_state_type(this,LINALG_ERROR,'cannot complete factorization:',info, &
+               '-th order leading minor is not positive definite')
+      case default
+         err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'catastrophic error')
+      end select
+
+   end subroutine handle_potrf_info
+
+
 end module stdlib_linalg_lapack_aux
