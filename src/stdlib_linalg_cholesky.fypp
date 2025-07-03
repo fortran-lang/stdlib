@@ -60,7 +60,7 @@ submodule (stdlib_linalg) stdlib_linalg_cholesky
          
              ! Compute factorization
              call potrf(triangle,n,a,lda,info)
-             call handle_potrf_info(info,triangle,lda,n,err0)
+             call handle_potrf_info(this, info,triangle,lda,n,err0)
                       
              ! Zero-out the unused part of matrix A
              clean_unused: if (other_zeroed_ .and. err0%ok()) then    

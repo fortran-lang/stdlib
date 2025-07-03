@@ -3,6 +3,8 @@
 module stdlib_linalg_lapack_aux
      use stdlib_linalg_constants
      use stdlib_linalg_blas
+     use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
+         LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
      use ieee_arithmetic, only: ieee_support_inf, ieee_support_nan
      implicit none
      private
@@ -38,6 +40,7 @@ module stdlib_linalg_lapack_aux
      public :: stdlib_select_${ri}$
      public :: stdlib_selctg_${ri}$     
      #:endfor   
+     public :: handle_potrf_info
      
      ! SELCTG is a LOGICAL FUNCTION of three DOUBLE PRECISION arguments 
      ! used to select eigenvalues to sort to the top left of the Schur form. 
@@ -1280,8 +1283,10 @@ module stdlib_linalg_lapack_aux
    !-----     AUXILIARY INFO HANDLING FUNCTIONS FOR LAPACK SUBROUTINES     -----
    !-----                                                                  -----
    !----------------------------------------------------------------------------
-
-   elemental subroutine handle_potrf_info(info,triangle,lda,n,err)
+   
+   ! Cholesky factorization
+   elemental subroutine handle_potrf_info(this,info,triangle,lda,n,err)
+      character(len=*), intent(in) :: this
       character, intent(in) :: triangle
       integer(ilp), intent(in) :: info,lda,n
       type(linalg_state_type), intent(out) :: err
