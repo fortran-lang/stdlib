@@ -1,21 +1,13 @@
 #:include "common.fypp"
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 submodule (stdlib_linalg) stdlib_linalg_matrix_functions
+    use stdlib_constants
     use stdlib_linalg_constants
     use stdlib_linalg_blas, only: gemm
     use stdlib_linalg_lapack, only: gesv
     use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
     implicit none
-
-    #:for rk, rt, ri in (REAL_KINDS_TYPES)
-    ${rt}$, parameter :: zero_${ri}$ = 0._${rk}$
-    ${rt}$, parameter :: one_${ri}$  = 1._${rk}$
-    #:endfor
-    #:for rk, rt, ri in (CMPLX_KINDS_TYPES)
-    ${rt}$, parameter :: zero_${ri}$ = (0._${rk}$, 0._${rk}$)
-    ${rt}$, parameter :: one_${ri}$  = (1._${rk}$, 0._${rk}$)
-    #:endfor
 
 contains
 
@@ -105,7 +97,11 @@ contains
             ${rt}$ :: E_tmp(n, n)
             do k = 1, s
                 E_tmp = E
-                call gemm("N", "N", n, n, n, one_${ri}$, E_tmp, n, E_tmp, n, zero_${ri}$, E, n)
+                #:if rt.startswith('complex')
+                call gemm("N", "N", n, n, n, one_c${rk}$, E_tmp, n, E_tmp, n, zero_c${rk}$, E, n)
+                #:else
+                call gemm("N", "N", n, n, n, one_${rk}$, E_tmp, n, E_tmp, n, zero_${rk}$, E, n)
+                #:endif
             enddo
         end block
         return
