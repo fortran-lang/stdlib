@@ -66,24 +66,32 @@ contains
         enddo
 
         ! Iteratively compute the Pade approximation.
-        p = .true.
-        do k = 2, order_
-            c = c * (order_ - k + 1) / (k * (2*order_ - k + 1))
-            X = matmul(A2, X)
-            do concurrent(i=1:n, j=1:n)
-                E(i, j) = E(i, j) + c*X(i, j)       ! E = E + c*X
+        block
+            ${rt}$ :: X_tmp(n, n)
+            p = .true.
+            do k = 2, order_
+                c = c * (order_ - k + 1) / (k * (2*order_ - k + 1))
+                X_tmp = X
+                #:if rt.startswith('complex')
+                call gemm("N", "N", n, n, n, one_c${rk}$, A2, n, X_tmp, n, zero_c${rk}$, X, n)
+                #:else
+                call gemm("N", "N", n, n, n, one_${rk}$, A2, n, X_tmp, n, zero_${rk}$, X, n)
+                #:endif
+                do concurrent(i=1:n, j=1:n)
+                    E(i, j) = E(i, j) + c*X(i, j)       ! E = E + c*X
+                enddo
+                if (p) then
+                    do concurrent(i=1:n, j=1:n)
+                        Q(i, j) = Q(i, j) + c*X(i, j)   ! Q = Q + c*X
+                    enddo
+                else
+                    do concurrent(i=1:n, j=1:n)
+                        Q(i, j) = Q(i, j) - c*X(i, j)   ! Q = Q - c*X
+                    enddo
+                endif
+                p = .not. p
             enddo
-            if (p) then
-                do concurrent(i=1:n, j=1:n)
-                    Q(i, j) = Q(i, j) + c*X(i, j)   ! Q = Q + c*X
-                enddo
-            else
-                do concurrent(i=1:n, j=1:n)
-                    Q(i, j) = Q(i, j) - c*X(i, j)   ! Q = Q - c*X
-                enddo
-            endif
-            p = .not. p
-        enddo
+        end block
 
         block
             integer(ilp) :: ipiv(n), info
