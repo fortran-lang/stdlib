@@ -83,7 +83,15 @@ public :: wait
 public :: kill
 public :: elapsed
 public :: is_windows
-     
+
+!! Public path related functions and interfaces
+public :: path_sep
+public :: join_path
+public :: operator(/)
+public :: split_path
+public :: base_name
+public :: dir_name
+
 !! version: experimental
 !!
 !! Tests if a given path matches an existing directory.
@@ -550,6 +558,87 @@ interface
     
 end interface 
 
+interface join_path
+    !! version: experimental
+    !!
+    !!### Summary
+    !! join the paths provided according to the OS-specific path-separator
+    !! ([Specification](../page/specs/stdlib_system.html#join_path))
+    !!
+    module function join2(p1, p2) result(path)
+        character(:), allocatable :: path
+        character(*), intent(in) :: p1, p2
+    end function join2
+
+    module function joinarr(p) result(path)
+        character(:), allocatable :: path
+        character(*), intent(in) :: p(:)
+    end function joinarr
+end interface join_path
+
+interface operator(/)
+    !! version: experimental
+    !!
+    !!### Summary
+    !! A binary operator to join the paths provided according to the OS-specific path-separator
+    !! ([Specification](../page/specs/stdlib_system.html#operator(/)))
+    !!
+    module function join_op(p1, p2) result(path)
+        character(:), allocatable :: path
+        character(*), intent(in) :: p1, p2
+    end function join_op
+end interface operator(/)
+
+interface split_path
+    !! version: experimental
+    !!
+    !!### Summary
+    !! splits the path immediately following the final path-separator
+    !! separating into typically a directory and a file name.
+    !! ([Specification](../page/specs/stdlib_system.html#split_path))
+    !!
+    !!### Description
+    !! If the path is empty `head`='.' and tail=''
+    !! If the path only consists of separators, `head` is set to the separator and tail is empty
+    !! If the path is a root directory, `head` is set to that directory and tail is empty
+    !! `head` ends with a path-separator iff the path appears to be a root directory or a child of the root directory
+    module subroutine split_path(p, head, tail)
+        character(*), intent(in) :: p
+        character(:), allocatable, intent(out) :: head, tail
+    end subroutine split_path
+end interface split_path
+
+interface base_name
+    !! version: experimental
+    !!
+    !!### Summary
+    !! returns the base name (last component) of the provided path
+    !! ([Specification](../page/specs/stdlib_system.html#base_name))
+    !!
+    !!### Description
+    !! The value returned is the `tail` of the interface `split_path`
+    module function base_name(p) result(base)
+        character(:), allocatable :: base
+        character(*), intent(in) :: p
+    end function base_name
+end interface base_name
+
+interface dir_name
+    !! version: experimental
+    !!
+    !!### Summary
+    !! returns everything but the last component of the provided path
+    !! ([Specification](../page/specs/stdlib_system.html#dir_name))
+    !!
+    !!### Description
+    !! The value returned is the `head` of the interface `split_path`
+    module function dir_name(p) result(base)
+        character(:), allocatable :: base
+        character(*), intent(in) :: p
+    end function dir_name
+end interface dir_name
+
+
 contains
 
 integer function get_runtime_os() result(os)
@@ -769,5 +858,13 @@ subroutine delete_file(path, err)
         return              
     end if
 end subroutine delete_file
+
+character function path_sep()
+    if (OS_TYPE() == OS_WINDOWS) then
+        path_sep = '\'
+    else
+        path_sep = '/'
+    end if
+end function path_sep
 
 end module stdlib_system
