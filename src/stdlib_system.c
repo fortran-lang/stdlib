@@ -1,4 +1,6 @@
+#include <limits.h>
 #include <stddef.h>
+#include <stdlib.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <string.h>
@@ -43,4 +45,44 @@ int stdlib_remove_directory(const char* path){
 #endif /* ifdef _WIN32 */
 
     return (!code) ? 0 : errno;
+}
+
+char* stdlib_get_cwd(size_t* len, int* stat){
+    *stat = 0;
+#ifdef _WIN32
+    char* buffer;
+    buffer = _getcwd(NULL, 0);
+
+    if (buffer == NULL) {
+        *stat = errno;
+        return NULL;
+    }
+
+    *len = strlen(buffer)
+    return buffer;
+#else
+    char buffer[PATH_MAX + 1];
+    if (!getcwd(buffer, sizeof(buffer))) {
+        *stat = errno;
+    }
+
+    *len = strlen(buffer);
+
+    char* res = malloc(*len);
+    strncpy(res, buffer, *len);
+
+    return res;
+#endif /* ifdef _WIN32 */
+}
+
+int stdlib_set_cwd(char* path) {
+    int code;
+#ifdef _WIN32
+    code = _chdir(path);
+#else
+    code = chdir(path);
+#endif /* ifdef _WIN32 */
+    
+    if (code == -1) return errno;
+    return 0;
 }
