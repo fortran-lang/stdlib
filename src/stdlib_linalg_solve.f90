@@ -2,6 +2,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
 !! Solve linear system Ax=b
      use stdlib_linalg_constants
      use stdlib_linalg_lapack, only: gesv
+     use stdlib_linalg_lapack_aux, only: handle_gesv_info
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
           LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR     
      implicit none
@@ -10,29 +11,6 @@ submodule (stdlib_linalg) stdlib_linalg_solve
 
      contains
      
-     elemental subroutine handle_gesv_info(info,lda,n,nrhs,err)
-         integer(ilp), intent(in) :: info,lda,n,nrhs
-         type(linalg_state_type), intent(out) :: err
-
-         ! Process output
-         select case (info)
-            case (0)
-                ! Success
-            case (-1)
-                err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid problem size n=',n)
-            case (-2)
-                err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid rhs size n=',nrhs)
-            case (-4)
-                err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size a=',[lda,n])
-            case (-7)
-                err = linalg_state_type(this,LINALG_ERROR,'invalid matrix size a=',[lda,n])
-            case (1:)
-                err = linalg_state_type(this,LINALG_ERROR,'singular matrix')
-            case default
-                err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'catastrophic error')
-         end select
-         
-     end subroutine handle_gesv_info
 
      ! Compute the solution to a real system of linear equations A * X = B
      module function stdlib_linalg_s_solve_one(a,b,overwrite_a,err) result(x)
@@ -144,7 +122,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
          call gesv(n,nrhs,amat,lda,ipiv,xmat,ldb,info)
 
          ! Process output
-         call handle_gesv_info(info,lda,n,nrhs,err0)
+         call handle_gesv_info(this,info,lda,n,nrhs,err0)
 
          if (copy_a) deallocate(amat)
          if (.not.present(pivot)) deallocate(ipiv)
@@ -264,7 +242,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
          call gesv(n,nrhs,amat,lda,ipiv,xmat,ldb,info)
 
          ! Process output
-         call handle_gesv_info(info,lda,n,nrhs,err0)
+         call handle_gesv_info(this,info,lda,n,nrhs,err0)
 
          if (copy_a) deallocate(amat)
          if (.not.present(pivot)) deallocate(ipiv)
@@ -384,7 +362,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
          call gesv(n,nrhs,amat,lda,ipiv,xmat,ldb,info)
 
          ! Process output
-         call handle_gesv_info(info,lda,n,nrhs,err0)
+         call handle_gesv_info(this,info,lda,n,nrhs,err0)
 
          if (copy_a) deallocate(amat)
          if (.not.present(pivot)) deallocate(ipiv)
@@ -504,7 +482,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
          call gesv(n,nrhs,amat,lda,ipiv,xmat,ldb,info)
 
          ! Process output
-         call handle_gesv_info(info,lda,n,nrhs,err0)
+         call handle_gesv_info(this,info,lda,n,nrhs,err0)
 
          if (copy_a) deallocate(amat)
          if (.not.present(pivot)) deallocate(ipiv)
@@ -624,7 +602,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
          call gesv(n,nrhs,amat,lda,ipiv,xmat,ldb,info)
 
          ! Process output
-         call handle_gesv_info(info,lda,n,nrhs,err0)
+         call handle_gesv_info(this,info,lda,n,nrhs,err0)
 
          if (copy_a) deallocate(amat)
          if (.not.present(pivot)) deallocate(ipiv)
@@ -744,7 +722,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
          call gesv(n,nrhs,amat,lda,ipiv,xmat,ldb,info)
 
          ! Process output
-         call handle_gesv_info(info,lda,n,nrhs,err0)
+         call handle_gesv_info(this,info,lda,n,nrhs,err0)
 
          if (copy_a) deallocate(amat)
          if (.not.present(pivot)) deallocate(ipiv)
@@ -864,7 +842,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
          call gesv(n,nrhs,amat,lda,ipiv,xmat,ldb,info)
 
          ! Process output
-         call handle_gesv_info(info,lda,n,nrhs,err0)
+         call handle_gesv_info(this,info,lda,n,nrhs,err0)
 
          if (copy_a) deallocate(amat)
          if (.not.present(pivot)) deallocate(ipiv)
@@ -984,7 +962,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
          call gesv(n,nrhs,amat,lda,ipiv,xmat,ldb,info)
 
          ! Process output
-         call handle_gesv_info(info,lda,n,nrhs,err0)
+         call handle_gesv_info(this,info,lda,n,nrhs,err0)
 
          if (copy_a) deallocate(amat)
          if (.not.present(pivot)) deallocate(ipiv)

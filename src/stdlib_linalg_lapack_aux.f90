@@ -1,6 +1,8 @@
 module stdlib_linalg_lapack_aux
      use stdlib_linalg_constants
      use stdlib_linalg_blas
+     use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
+         LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR, LINALG_SUCCESS
      use ieee_arithmetic, only: ieee_support_inf, ieee_support_nan
      implicit none
      private
@@ -40,6 +42,17 @@ module stdlib_linalg_lapack_aux
      public :: stdlib_selctg_c     
      public :: stdlib_select_z
      public :: stdlib_selctg_z     
+     public :: handle_potrf_info
+     public :: handle_getri_info
+     public :: handle_gesdd_info
+     public :: handle_gesv_info
+     public :: handle_gees_info
+     public :: handle_geqrf_info
+     public :: handle_orgqr_info
+     public :: handle_gelsd_info
+     public :: handle_geev_info
+     public :: handle_ggev_info
+     public :: handle_heev_info
      
      ! SELCTG is a LOGICAL FUNCTION of three DOUBLE PRECISION arguments 
      ! used to select eigenvalues to sort to the top left of the Schur form. 
@@ -1551,5 +1564,324 @@ module stdlib_linalg_lapack_aux
            return
      end function stdlib_ilaenv2stage
 
+
+   !----------------------------------------------------------------------------
+   !-----                                                                  -----
+   !-----     AUXILIARY INFO HANDLING FUNCTIONS FOR LAPACK SUBROUTINES     -----
+   !-----                                                                  -----
+   !----------------------------------------------------------------------------
+   
+   ! Cholesky factorization
+   elemental subroutine handle_potrf_info(this,info,triangle,lda,n,err)
+      character(len=*), intent(in) :: this
+      character, intent(in) :: triangle
+      integer(ilp), intent(in) :: info,lda,n
+      type(linalg_state_type), intent(out) :: err
+
+      ! Process output
+      select case (info)
+      case (0)
+         ! Success
+      case (-1)
+         err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'invalid triangle selection: ', &
+                  triangle,'. should be U/L')
+      case (-2)
+         err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size n=',n)
+      case (-4)
+         err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid lda=',lda,': is < n = ',n)
+      case (1:)
+         err = linalg_state_type(this,LINALG_ERROR,'cannot complete factorization:',info, &
+               '-th order leading minor is not positive definite')
+      case default
+         err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'catastrophic error')
+      end select
+
+   end subroutine handle_potrf_info
+
+   elemental subroutine handle_getri_info(this,info,lda,n,err)
+      character(len=*), intent(in) :: this
+      integer(ilp), intent(in) :: info,lda,n
+      type(linalg_state_type), intent(out) :: err
+
+      ! Process output
+      select case (info)
+         case (0)
+             ! Success
+         case (:-1)
+             err = linalg_state_type(this,LINALG_ERROR,'invalid matrix size a=',[lda,n])
+         case (1:)
+             ! Matrix is singular
+             err = linalg_state_type(this,LINALG_ERROR,'singular matrix')
+         case default
+             err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'catastrophic error')
+      end select
+   end subroutine handle_getri_info
+
+   elemental subroutine handle_gesdd_info(this,err,info,m,n)
+        character(len=*), intent(in) :: this
+        !> Error handler
+        type(linalg_state_type), intent(inout) :: err
+        !> GESDD return flag
+        integer(ilp), intent(in) :: info
+        !> Input matrix size
+        integer(ilp), intent(in) :: m,n
+
+        select case (info)
+           case (0)
+               ! Success!
+               err%state = LINALG_SUCCESS
+           case (-1)
+               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Invalid task ID on input to GESDD.')
+           case (-5,-3:-2)
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size: a=',[m,n])
+           case (-8)
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix U size, with a=',[m,n])
+           case (-10)
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix V size, with a=',[m,n])
+           case (-4)
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'A contains invalid/NaN values.')
+           case (1:)
+               err = linalg_state_type(this,LINALG_ERROR,'SVD computation did not converge.')
+           case default
+               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Unknown error returned by GESDD.')
+        end select
+
+     end subroutine handle_gesdd_info
+
+     elemental subroutine handle_gesv_info(this,info,lda,n,nrhs,err)
+         character(len=*), intent(in) :: this
+         integer(ilp), intent(in) :: info,lda,n,nrhs
+         type(linalg_state_type), intent(out) :: err
+
+         ! Process output
+         select case (info)
+            case (0)
+                ! Success
+            case (-1)
+                err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid problem size n=',n)
+            case (-2)
+                err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid rhs size n=',nrhs)
+            case (-4)
+                err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size a=',[lda,n])
+            case (-7)
+                err = linalg_state_type(this,LINALG_ERROR,'invalid matrix size a=',[lda,n])
+            case (1:)
+                err = linalg_state_type(this,LINALG_ERROR,'singular matrix')
+            case default
+                err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'catastrophic error')
+         end select
+         
+     end subroutine handle_gesv_info
+
+   !> Wrapper function to handle GEES error codes
+    elemental subroutine handle_gees_info(this, info, m, n, ldvs, err)
+        character(len=*), intent(in) :: this
+        integer(ilp), intent(in) :: info, m, n, ldvs
+        type(linalg_state_type), intent(out) :: err
+
+        ! Process GEES output
+        select case (info)
+        case (0_ilp)
+            ! Success
+        case (-1_ilp)
+            ! Vector not wanted, but task is wrong
+            err = linalg_state_type(this, LINALG_INTERNAL_ERROR,'Invalid Schur vector task request')
+        case (-2_ilp)
+            ! Vector not wanted, but task is wrong
+            err = linalg_state_type(this, LINALG_INTERNAL_ERROR,'Invalid sorting task request')            
+        case (-4_ilp,-6_ilp)
+            ! Vector not wanted, but task is wrong
+            err = linalg_state_type(this, LINALG_VALUE_ERROR,'Invalid/non-square input matrix size:',[m,n])  
+        case (-11_ilp)
+            err = linalg_state_type(this, LINALG_VALUE_ERROR,'Schur vector matrix has insufficient size',[ldvs,n])
+        case (-13_ilp)
+            err = linalg_state_type(this, LINALG_INTERNAL_ERROR,'Insufficient working storage size')
+        case (1_ilp:)
+            
+            if (info==n+2) then 
+                err = linalg_state_type(this, LINALG_ERROR, 'Ill-conditioned problem: could not sort eigenvalues')
+            elseif (info==n+1) then 
+                err = linalg_state_type(this, LINALG_ERROR, 'Some selected eigenvalues lost property due to sorting')                
+            elseif (info==n) then 
+                err = linalg_state_type(this, LINALG_ERROR, 'Convergence failure: no converged eigenvalues')
+            else
+                err = linalg_state_type(this, LINALG_ERROR, 'Convergence failure; converged range is',[info,n])                            
+            end if
+            
+        case default
+            
+            err = linalg_state_type(this, LINALG_INTERNAL_ERROR, 'GEES catastrophic error: info=', info)
+
+        end select
+        
+    end subroutine handle_gees_info
+
+   elemental subroutine handle_geqrf_info(this,info,m,n,lwork,err)
+         character(len=*), intent(in) :: this
+         integer(ilp), intent(in) :: info,m,n,lwork
+         type(linalg_state_type), intent(out) :: err
+
+         ! Process output
+         select case (info)
+            case (0)
+                ! Success
+            case (-1)
+                err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size m=',m)
+            case (-2)
+                err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size n=',n)
+            case (-4)
+                err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size a=',[m,n])
+            case (-7)
+                err = linalg_state_type(this,LINALG_ERROR,'invalid input for lwork=',lwork)
+            case default
+                err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'catastrophic error')
+         end select
+
+     end subroutine handle_geqrf_info
+
+     elemental subroutine handle_orgqr_info(this,info,m,n,k,lwork,err)
+         character(len=*), intent(in) :: this
+         integer(ilp), intent(in) :: info,m,n,k,lwork
+         type(linalg_state_type), intent(out) :: err
+
+         ! Process output
+         select case (info)
+            case (0)
+                ! Success
+            case (-1)
+                err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size m=',m)
+            case (-2)
+                err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size n=',n)
+            case (-4)
+                err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid k=min(m,n)=',k)
+            case (-5)
+                err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size a=',[m,n])                
+            case (-8)
+                err = linalg_state_type(this,LINALG_ERROR,'invalid input for lwork=',lwork)
+            case default
+                err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'catastrophic error')
+         end select
+
+     end subroutine handle_orgqr_info     
+
+     elemental subroutine handle_gelsd_info(this,info,lda,n,ldb,nrhs,err)
+          character(len=*), intent(in) :: this
+          integer(ilp), intent(in) :: info,lda,n,ldb,nrhs
+          type(linalg_state_type), intent(out) :: err
+
+          ! Process output
+          select case (info)
+             case (0)
+                 ! Success
+             case (:-1)
+                 err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid problem size a=',[lda,n], &
+                                                                                    ', b=',[ldb,nrhs])
+             case (1:)
+                 err = linalg_state_type(this,LINALG_ERROR,'SVD did not converge.')
+             case default
+                 err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'catastrophic error')
+          end select
+
+      end subroutine handle_gelsd_info
+
+     !> Process GEEV output flags
+     pure subroutine handle_geev_info(this,err,info,shapea)
+        character(len=*), intent(in) :: this
+        !> Error handler
+        type(linalg_state_type), intent(inout) :: err
+        !> GEEV return flag
+        integer(ilp), intent(in) :: info
+        !> Input matrix size
+        integer(ilp), intent(in) :: shapea(2)
+
+        select case (info)
+           case (0)
+               ! Success!
+               err%state = LINALG_SUCCESS
+           case (-1)
+               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Invalid task ID: left eigenvectors.')
+           case (-2)
+               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Invalid task ID: right eigenvectors.')
+           case (-5,-3)
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size: a=',shapea)
+           case (-9)
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'insufficient left vector matrix size.')
+           case (-11)
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'insufficient right vector matrix size.')
+           case (-13)
+               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Insufficient work array size.')
+           case (1:)
+               err = linalg_state_type(this,LINALG_ERROR,'Eigenvalue computation did not converge.')
+           case default
+               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Unknown error returned by geev.')
+        end select
+
+     end subroutine handle_geev_info
+
+     !> Process GGEV output flags
+     pure subroutine handle_ggev_info(this,err,info,shapea,shapeb)
+        character(len=*), intent(in) :: this
+        !> Error handler
+        type(linalg_state_type), intent(inout) :: err
+        !> GEEV return flag
+        integer(ilp), intent(in) :: info
+        !> Input matrix size
+        integer(ilp), intent(in) :: shapea(2),shapeb(2)
+
+        select case (info)
+           case (0)
+               ! Success!
+               err%state = LINALG_SUCCESS
+           case (-1)
+               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Invalid task ID: left eigenvectors.')
+           case (-2)
+               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Invalid task ID: right eigenvectors.')
+           case (-5,-3)
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size: a=',shapea)
+           case (-7)
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size: b=',shapeb)               
+           case (-12)
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'insufficient left vector matrix size.')
+           case (-14)
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'insufficient right vector matrix size.')
+           case (-16)
+               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Insufficient work array size.')
+           case (1:)
+               err = linalg_state_type(this,LINALG_ERROR,'Eigenvalue computation did not converge.')
+           case default
+               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Unknown error returned by ggev.')
+        end select
+
+     end subroutine handle_ggev_info
+
+     !> Process SYEV/HEEV output flags
+     elemental subroutine handle_heev_info(this,err,info,m,n)
+        character(len=*), intent(in) :: this
+        !> Error handler
+        type(linalg_state_type), intent(inout) :: err
+        !> SYEV/HEEV return flag
+        integer(ilp), intent(in) :: info
+        !> Input matrix size
+        integer(ilp), intent(in) :: m,n
+
+        select case (info)
+           case (0)
+               ! Success!
+               err%state = LINALG_SUCCESS
+           case (-1)
+               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Invalid eigenvector request.')
+           case (-2)
+               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Invalid triangular section request.')
+           case (-5,-3)
+               err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size: a=',[m,n])
+           case (-8)
+               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'insufficient workspace size.')
+           case (1:)
+               err = linalg_state_type(this,LINALG_ERROR,'Eigenvalue computation did not converge.')
+           case default
+               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Unknown error returned by syev/heev.')
+        end select
+
+     end subroutine handle_heev_info
 
 end module stdlib_linalg_lapack_aux

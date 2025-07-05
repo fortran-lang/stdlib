@@ -2,6 +2,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
 !! Compute eigenvalues and eigenvectors    
      use stdlib_linalg_constants
      use stdlib_linalg_lapack, only: geev, ggev, heev, syev
+     use stdlib_linalg_lapack_aux, only: handle_geev_info, handle_ggev_info, handle_heev_info
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
           LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR, LINALG_SUCCESS     
      use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_positive_inf, ieee_quiet_nan
@@ -31,103 +32,6 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
         symmetric_triangle_task = 'L'
         if (present(upper)) symmetric_triangle_task = merge('U','L',upper)
      end function symmetric_triangle_task
-
-     !> Process GEEV output flags
-     pure subroutine handle_geev_info(err,info,shapea)
-        !> Error handler
-        type(linalg_state_type), intent(inout) :: err
-        !> GEEV return flag
-        integer(ilp), intent(in) :: info
-        !> Input matrix size
-        integer(ilp), intent(in) :: shapea(2)
-
-        select case (info)
-           case (0)
-               ! Success!
-               err%state = LINALG_SUCCESS
-           case (-1)
-               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Invalid task ID: left eigenvectors.')
-           case (-2)
-               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Invalid task ID: right eigenvectors.')
-           case (-5,-3)
-               err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size: a=',shapea)
-           case (-9)
-               err = linalg_state_type(this,LINALG_VALUE_ERROR,'insufficient left vector matrix size.')
-           case (-11)
-               err = linalg_state_type(this,LINALG_VALUE_ERROR,'insufficient right vector matrix size.')
-           case (-13)
-               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Insufficient work array size.')
-           case (1:)
-               err = linalg_state_type(this,LINALG_ERROR,'Eigenvalue computation did not converge.')
-           case default
-               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Unknown error returned by geev.')
-        end select
-
-     end subroutine handle_geev_info
-
-     !> Process GGEV output flags
-     pure subroutine handle_ggev_info(err,info,shapea,shapeb)
-        !> Error handler
-        type(linalg_state_type), intent(inout) :: err
-        !> GEEV return flag
-        integer(ilp), intent(in) :: info
-        !> Input matrix size
-        integer(ilp), intent(in) :: shapea(2),shapeb(2)
-
-        select case (info)
-           case (0)
-               ! Success!
-               err%state = LINALG_SUCCESS
-           case (-1)
-               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Invalid task ID: left eigenvectors.')
-           case (-2)
-               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Invalid task ID: right eigenvectors.')
-           case (-5,-3)
-               err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size: a=',shapea)
-           case (-7)
-               err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size: b=',shapeb)               
-           case (-12)
-               err = linalg_state_type(this,LINALG_VALUE_ERROR,'insufficient left vector matrix size.')
-           case (-14)
-               err = linalg_state_type(this,LINALG_VALUE_ERROR,'insufficient right vector matrix size.')
-           case (-16)
-               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Insufficient work array size.')
-           case (1:)
-               err = linalg_state_type(this,LINALG_ERROR,'Eigenvalue computation did not converge.')
-           case default
-               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Unknown error returned by ggev.')
-        end select
-
-     end subroutine handle_ggev_info
-
-     !> Process SYEV/HEEV output flags
-     elemental subroutine handle_heev_info(err,info,m,n)
-        !> Error handler
-        type(linalg_state_type), intent(inout) :: err
-        !> SYEV/HEEV return flag
-        integer(ilp), intent(in) :: info
-        !> Input matrix size
-        integer(ilp), intent(in) :: m,n
-
-        select case (info)
-           case (0)
-               ! Success!
-               err%state = LINALG_SUCCESS
-           case (-1)
-               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Invalid eigenvector request.')
-           case (-2)
-               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Invalid triangular section request.')
-           case (-5,-3)
-               err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size: a=',[m,n])
-           case (-8)
-               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'insufficient workspace size.')
-           case (1:)
-               err = linalg_state_type(this,LINALG_ERROR,'Eigenvalue computation did not converge.')
-           case default
-               err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'Unknown error returned by syev/heev.')
-        end select
-
-     end subroutine handle_heev_info
 
 
      module function stdlib_linalg_eigvals_standard_s(a,err) result(lambda)
@@ -296,7 +200,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
                        lreal,limag,  &
                        umat,ldu,vmat,ldv,&
                        work_dummy,lwork,info)
-             call handle_geev_info(err0,info,shape(amat))
+             call handle_geev_info(this,err0,info,shape(amat))
 
              ! Compute eigenvalues
              if (info==0) then
@@ -310,7 +214,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
                           lreal,limag,  &
                           umat,ldu,vmat,ldv,&            
                           work,lwork,info)
-                call handle_geev_info(err0,info,shape(amat))
+                call handle_geev_info(this,err0,info,shape(amat))
 
              endif
              
@@ -532,7 +436,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
                        beta, &
                        umat,ldu,vmat,ldv,&
                        work_dummy,lwork,info)
-             call handle_ggev_info(err0,info,shape(amat),shape(bmat))
+             call handle_ggev_info(this,err0,info,shape(amat),shape(bmat))
 
              ! Compute eigenvalues
              if (info==0) then
@@ -548,7 +452,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
                           beta, &
                           umat,ldu,vmat,ldv,&            
                           work,lwork,info)
-                call handle_ggev_info(err0,info,shape(amat),shape(bmat))
+                call handle_ggev_info(this,err0,info,shape(amat),shape(bmat))
 
              endif
              
@@ -723,7 +627,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          ! Request workspace size
          lwork = -1_ilp
          call syev(task,triangle,n,amat,lda,lambda,work_dummy,lwork,info)
-         call handle_heev_info(err0,info,m,n)
+         call handle_heev_info(this,err0,info,m,n)
 
          ! Compute eigenvalues
          if (info==0) then
@@ -734,7 +638,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
 
             !> Compute eigensystem
             call syev(task,triangle,n,amat,lda,lambda,work,lwork,info)
-            call handle_heev_info(err0,info,m,n)
+            call handle_heev_info(this,err0,info,m,n)
 
          endif
          
@@ -911,7 +815,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
                        lreal,limag,  &
                        umat,ldu,vmat,ldv,&
                        work_dummy,lwork,info)
-             call handle_geev_info(err0,info,shape(amat))
+             call handle_geev_info(this,err0,info,shape(amat))
 
              ! Compute eigenvalues
              if (info==0) then
@@ -925,7 +829,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
                           lreal,limag,  &
                           umat,ldu,vmat,ldv,&            
                           work,lwork,info)
-                call handle_geev_info(err0,info,shape(amat))
+                call handle_geev_info(this,err0,info,shape(amat))
 
              endif
              
@@ -1147,7 +1051,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
                        beta, &
                        umat,ldu,vmat,ldv,&
                        work_dummy,lwork,info)
-             call handle_ggev_info(err0,info,shape(amat),shape(bmat))
+             call handle_ggev_info(this,err0,info,shape(amat),shape(bmat))
 
              ! Compute eigenvalues
              if (info==0) then
@@ -1163,7 +1067,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
                           beta, &
                           umat,ldu,vmat,ldv,&            
                           work,lwork,info)
-                call handle_ggev_info(err0,info,shape(amat),shape(bmat))
+                call handle_ggev_info(this,err0,info,shape(amat),shape(bmat))
 
              endif
              
@@ -1338,7 +1242,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          ! Request workspace size
          lwork = -1_ilp
          call syev(task,triangle,n,amat,lda,lambda,work_dummy,lwork,info)
-         call handle_heev_info(err0,info,m,n)
+         call handle_heev_info(this,err0,info,m,n)
 
          ! Compute eigenvalues
          if (info==0) then
@@ -1349,7 +1253,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
 
             !> Compute eigensystem
             call syev(task,triangle,n,amat,lda,lambda,work,lwork,info)
-            call handle_heev_info(err0,info,m,n)
+            call handle_heev_info(this,err0,info,m,n)
 
          endif
          
@@ -1526,7 +1430,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
                        lambda,  &
                        umat,ldu,vmat,ldv,&
                        work_dummy,lwork,rwork,info)
-             call handle_geev_info(err0,info,shape(amat))
+             call handle_geev_info(this,err0,info,shape(amat))
 
              ! Compute eigenvalues
              if (info==0) then
@@ -1540,7 +1444,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
                           lambda,  &
                           umat,ldu,vmat,ldv,&            
                           work,lwork,rwork,info)
-                call handle_geev_info(err0,info,shape(amat))
+                call handle_geev_info(this,err0,info,shape(amat))
 
              endif
              
@@ -1752,7 +1656,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
                        beta, &
                        umat,ldu,vmat,ldv,&
                        work_dummy,lwork,rwork,info)
-             call handle_ggev_info(err0,info,shape(amat),shape(bmat))
+             call handle_ggev_info(this,err0,info,shape(amat),shape(bmat))
 
              ! Compute eigenvalues
              if (info==0) then
@@ -1768,7 +1672,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
                           beta, &
                           umat,ldu,vmat,ldv,&            
                           work,lwork,rwork,info)
-                call handle_ggev_info(err0,info,shape(amat),shape(bmat))
+                call handle_ggev_info(this,err0,info,shape(amat),shape(bmat))
 
              endif
              
@@ -1935,7 +1839,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          lwork = -1_ilp
          allocate(rwork(max(1,3*n-2)))
          call heev(task,triangle,n,amat,lda,lambda,work_dummy,lwork,rwork,info)
-         call handle_heev_info(err0,info,m,n)
+         call handle_heev_info(this,err0,info,m,n)
 
          ! Compute eigenvalues
          if (info==0) then
@@ -1946,7 +1850,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
 
             !> Compute eigensystem
             call heev(task,triangle,n,amat,lda,lambda,work,lwork,rwork,info)
-            call handle_heev_info(err0,info,m,n)
+            call handle_heev_info(this,err0,info,m,n)
 
          endif
          
@@ -2123,7 +2027,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
                        lambda,  &
                        umat,ldu,vmat,ldv,&
                        work_dummy,lwork,rwork,info)
-             call handle_geev_info(err0,info,shape(amat))
+             call handle_geev_info(this,err0,info,shape(amat))
 
              ! Compute eigenvalues
              if (info==0) then
@@ -2137,7 +2041,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
                           lambda,  &
                           umat,ldu,vmat,ldv,&            
                           work,lwork,rwork,info)
-                call handle_geev_info(err0,info,shape(amat))
+                call handle_geev_info(this,err0,info,shape(amat))
 
              endif
              
@@ -2349,7 +2253,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
                        beta, &
                        umat,ldu,vmat,ldv,&
                        work_dummy,lwork,rwork,info)
-             call handle_ggev_info(err0,info,shape(amat),shape(bmat))
+             call handle_ggev_info(this,err0,info,shape(amat),shape(bmat))
 
              ! Compute eigenvalues
              if (info==0) then
@@ -2365,7 +2269,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
                           beta, &
                           umat,ldu,vmat,ldv,&            
                           work,lwork,rwork,info)
-                call handle_ggev_info(err0,info,shape(amat),shape(bmat))
+                call handle_ggev_info(this,err0,info,shape(amat),shape(bmat))
 
              endif
              
@@ -2532,7 +2436,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
          lwork = -1_ilp
          allocate(rwork(max(1,3*n-2)))
          call heev(task,triangle,n,amat,lda,lambda,work_dummy,lwork,rwork,info)
-         call handle_heev_info(err0,info,m,n)
+         call handle_heev_info(this,err0,info,m,n)
 
          ! Compute eigenvalues
          if (info==0) then
@@ -2543,7 +2447,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
 
             !> Compute eigensystem
             call heev(task,triangle,n,amat,lda,lambda,work,lwork,rwork,info)
-            call handle_heev_info(err0,info,m,n)
+            call handle_heev_info(this,err0,info,m,n)
 
          endif
          
