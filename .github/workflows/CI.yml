@@ -61,6 +61,7 @@ jobs:
         compiler: ${{ matrix.toolchain.compiler }}
         version: ${{ matrix.toolchain.version }}
 
+    # Build and test with built-in BLAS and LAPACK
     - name: Configure with CMake
       if: ${{ contains(matrix.build, 'cmake') }}
       run: >-
@@ -68,6 +69,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_MAXIMUM_RANK:String=4
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
+        -DFIND_BLAS:STRING=FALSE
         -S . -B ${{ env.BUILD_DIR }}
 
     - name: Build and compile
@@ -75,8 +77,8 @@ jobs:
       run: cmake --build ${{ env.BUILD_DIR }} --parallel
 
     - name: catch build fail
-      run: cmake --build ${{ env.BUILD_DIR }} --verbose --parallel 1
       if: ${{ failure() && contains(matrix.build, 'cmake') }}
+      run: cmake --build ${{ env.BUILD_DIR }} --verbose --parallel 1
 
     - name: test
       if: ${{ contains(matrix.build, 'cmake') }}

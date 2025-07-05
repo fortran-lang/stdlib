@@ -178,7 +178,7 @@ Type-bound procedures to enable requesting data from a sparse matrix.
 
 `v` : Shall be a `real` or `complex` value in accordance to the declared sparse matrix object. If the `ij` tuple is within the sparse pattern, `v` contains the value in the data buffer. If the `ij` tuple is outside the sparse pattern, `v` is equal `0`. If the `ij` tuple is outside the matrix pattern `(nrows,ncols)`, `v` is `NaN`.
 
-## Example
+### Example
 ```fortran
 {!example/linalg/example_sparse_data_accessors.f90!}
 ```
@@ -257,7 +257,7 @@ This module provides facility functions for converting between storage formats.
 
 `chunk`, `optional`: chunk size, only valid in the case of a `SELLC` matrix, by default it will be taken from the `SELLC` default attribute chunk size. It is an `intent(in)` argument.
 
-## Example
+### Example
 ```fortran
 {!example/linalg/example_sparse_from_ijv.f90!}
 ```
@@ -358,7 +358,7 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 `coo` : Shall be a `COO` type of `real` or `complex` type. It is an `intent(out)` argument.
 
-## Example
+### Example
 ```fortran
 {!example/linalg/example_sparse_spmv.f90!}
 ```

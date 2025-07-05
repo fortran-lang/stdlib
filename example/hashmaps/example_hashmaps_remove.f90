@@ -1,8 +1,7 @@
 program example_remove
   use stdlib_kinds, only: int8, int64
   use stdlib_hashmaps, only: open_hashmap_type
-  use stdlib_hashmap_wrappers, only: fnv_1_hasher, &
-                                     fnv_1a_hasher, key_type, set
+  use stdlib_hashmap_wrappers, only: key_type, set
   implicit none
   type(open_hashmap_type) :: map
   type(key_type)      :: key
@@ -11,7 +10,7 @@ program example_remove
   
   ! Initialize hashmap with 2^10 slots.
   ! Hashmap will dynamically increase size if needed.
-  call map%init(fnv_1_hasher, slots_bits=10)
+  call map%init(slots_bits=10)
   ! Explicitly set key type using set function
   call set(key, [1, 2, 3])
   call map%map_entry(key, 4.0)

@@ -427,7 +427,7 @@ Experimental
 
 Elemenal function.
 
-### Description
+#### Description
 
 `deg2rad` converts phase angles from degrees to radians.
 
@@ -459,7 +459,7 @@ Experimental
 
 Elemenal function.
 
-### Description
+#### Description
 
 `rad2deg` converts phase angles from radians to degrees.
 

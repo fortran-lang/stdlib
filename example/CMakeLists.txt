@@ -6,6 +6,7 @@ macro(ADD_EXAMPLE name)
              WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 endmacro(ADD_EXAMPLE)
 
+add_subdirectory(ansi)
 add_subdirectory(array)
 add_subdirectory(ascii)
 add_subdirectory(bitsets)
