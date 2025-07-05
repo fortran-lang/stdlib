@@ -158,6 +158,32 @@ public :: remove_directory
 
 !! version: experimental
 !!
+!! Gets the current working directory of the process
+!! ([Specification](../page/specs/stdlib_system.html#get_cwd))
+!!
+!! ### Summary
+!! Gets the current working directory.
+!!
+!! ### Description
+!! This subroutine gets the current working directory of the process calling this function.
+!!
+public :: get_cwd
+
+!! version: experimental
+!!
+!! Sets the current working directory of the process
+!! ([Specification](../page/specs/stdlib_system.html#set_cwd))
+!!
+!! ### Summary
+!! Changes the current working directory to the one specified.
+!!
+!! ### Description
+!! This subroutine sets the current working directory of the process calling this function to the one specified.
+!!
+public :: set_cwd
+
+!! version: experimental
+!!
 !! Deletes a specified file from the filesystem.
 !! ([Specification](../page/specs/stdlib_system.html#delete_file-delete-a-file))
 !!
@@ -1023,6 +1049,62 @@ subroutine remove_directory(path, err)
     end if
 
 end subroutine remove_directory
+
+subroutine get_cwd(cwd, err)
+    character(:), allocatable, intent(out) :: cwd
+    type(state_type), intent(out) :: err
+    type(state_type) :: err0
+
+    interface
+        type(c_ptr) function stdlib_get_cwd(len, stat) bind(C, name='stdlib_get_cwd')
+            import c_ptr, c_size_t
+            integer(c_size_t), intent(out) :: len
+            integer :: stat
+        end function stdlib_get_cwd
+    end interface
+
+    type(c_ptr) :: c_str_ptr
+    integer(c_size_t) :: len, i
+    integer :: stat
+    character(kind=c_char), pointer :: c_str(:)
+
+    c_str_ptr = stdlib_get_cwd(len, stat)
+
+    if (stat /= 0) then
+        err0 = state_type(STDLIB_FS_ERROR, "code: ", to_string(stat)//",", c_get_strerror())
+        call err0%handle(err)
+    end if
+
+    call c_f_pointer(c_str_ptr, c_str, [len])
+
+    allocate(character(len=len) :: cwd)
+
+    do concurrent (i=1:len)
+        cwd(i:i) = c_str(i)
+    end do
+end subroutine get_cwd
+
+subroutine set_cwd(path, err)
+    character(len=*), intent(in) :: path
+    type(state_type), intent(out) :: err
+    type(state_type) :: err0
+
+    interface
+        integer function stdlib_set_cwd(path) bind(C, name='stdlib_set_cwd')
+            import c_char
+            character(kind=c_char), intent(in) :: path(*)
+        end function stdlib_set_cwd
+    end interface
+
+    integer :: code
+
+    code = stdlib_set_cwd(to_c_char(trim(path)))
+
+    if (code /= 0) then
+        err0 = state_type(STDLIB_FS_ERROR, "code: ", to_string(code)//",", c_get_strerror())
+        call err0%handle(err)
+    end if
+end subroutine set_cwd
 
 !> Returns the file path of the null device for the current operating system.
 !>
