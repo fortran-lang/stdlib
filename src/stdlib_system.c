@@ -58,7 +58,7 @@ char* stdlib_get_cwd(size_t* len, int* stat){
         return NULL;
     }
 
-    *len = strlen(buffer)
+    *len = strlen(buffer);
     return buffer;
 #else
     char buffer[PATH_MAX + 1];

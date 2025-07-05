@@ -646,6 +646,80 @@ Subroutine
 
 ---
 
+## `get_cwd` - Gets the current working directory
+
+### Status
+
+Experimental
+
+### Description
+
+It gets the current working directory associated with the process calling this subroutine.
+It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+
+### Syntax
+
+`call [[stdlib_system(module):get_cwd(subroutine)]] (cwd, err)`
+
+### Class
+
+Subroutine
+
+### Arguments
+
+`cwd`: Shall be a character string containing the path of the current working directory (cwd). It is an `intent(out)` argument.
+
+`err`: Shall be of type `state_type`, for error handling. It is an `intent(out)` argument.
+
+### Return values
+
+The `err` is set accordingly.
+
+### Example
+
+```fortran
+{!example/system/example_cwd.f90!}
+```
+
+---
+
+## `set_cwd` - Sets the current working directory
+
+### Status
+
+Experimental
+
+### Description
+
+It sets the current working directory associated with the process calling this subroutine.
+It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+
+### Syntax
+
+`call [[stdlib_system(module):set_cwd(subroutine)]] (path, err)`
+
+### Class
+
+Subroutine
+
+### Arguments
+
+`path`: Shall be a character string containing the path of the directory. It is an `intent(in)` argument.
+
+`err`: Shall be of type `state_type`, for error handling. It is an `intent(out)` argument.
+
+### Return values
+
+The `err` is set accordingly.
+
+### Example
+
+```fortran
+{!example/system/example_cwd.f90!}
+```
+
+---
+
 ## `null_device` - Return the null device file path
 
 ### Status
@@ -681,6 +755,8 @@ None.
 ```fortran
 {!example/system/example_null_device.f90!}
 ```
+
+---
 
 ## `delete_file` - Delete a file
 
@@ -722,6 +798,8 @@ The file is removed from the filesystem if the operation is successful. If the o
 ```fortran
 {!example/system/example_delete_file.f90!}
 ```
+
+---
 
 ## `join_path` - Joins the provided paths according to the OS
 
@@ -785,6 +863,8 @@ The result is an `allocatable` character string or `type(string_type)`
 {!example/system/example_path_join.f90!}
 ```
 
+---
+
 ## `split_path` - splits a path immediately following the last separator
 
 ### Status
@@ -825,6 +905,8 @@ The splitted path. `head` and `tail`.
 {!example/system/example_path_split_path.f90!}
 ```
 
+---
+
 ## `base_name` - The last part of a path
 
 ### Status
@@ -859,6 +941,8 @@ A character string or `type(string_type)`.
 ```fortran
 {!example/system/example_path_base_name.f90!}
 ```
+
+---
 
 ## `dir_name` - Everything except the last part of the path
 
