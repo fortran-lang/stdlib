@@ -1,6 +1,7 @@
 submodule (stdlib_linalg) stdlib_linalg_qr
      use stdlib_linalg_constants
      use stdlib_linalg_lapack, only: geqrf, orgqr, ungqr
+     use stdlib_linalg_lapack_aux, only: handle_geqrf_info, handle_orgqr_info
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR     
      implicit none
@@ -40,51 +41,6 @@ submodule (stdlib_linalg) stdlib_linalg_qr
          
      end subroutine check_problem_size
      
-     elemental subroutine handle_orgqr_info(info,m,n,k,lwork,err)
-         integer(ilp), intent(in) :: info,m,n,k,lwork
-         type(linalg_state_type), intent(out) :: err
-
-         ! Process output
-         select case (info)
-            case (0)
-                ! Success
-            case (-1)
-                err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size m=',m)
-            case (-2)
-                err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size n=',n)
-            case (-4)
-                err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid k=min(m,n)=',k)
-            case (-5)
-                err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size a=',[m,n])                
-            case (-8)
-                err = linalg_state_type(this,LINALG_ERROR,'invalid input for lwork=',lwork)
-            case default
-                err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'catastrophic error')
-         end select
-
-     end subroutine handle_orgqr_info
-     
-     elemental subroutine handle_geqrf_info(info,m,n,lwork,err)
-         integer(ilp), intent(in) :: info,m,n,lwork
-         type(linalg_state_type), intent(out) :: err
-
-         ! Process output
-         select case (info)
-            case (0)
-                ! Success
-            case (-1)
-                err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size m=',m)
-            case (-2)
-                err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size n=',n)
-            case (-4)
-                err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size a=',[m,n])
-            case (-7)
-                err = linalg_state_type(this,LINALG_ERROR,'invalid input for lwork=',lwork)
-            case default
-                err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'catastrophic error')
-         end select
-
-     end subroutine handle_geqrf_info
 
      
      ! Get workspace size for QR operations
@@ -110,7 +66,7 @@ submodule (stdlib_linalg) stdlib_linalg_qr
          ! QR space
          lwork_qr = -1_ilp
          call geqrf(m,n,a_dummy,m,tau_dummy,work_dummy,lwork_qr,info)    
-         call handle_geqrf_info(info,m,n,lwork_qr,err0)
+         call handle_geqrf_info(this,info,m,n,lwork_qr,err0)
          if (err0%error()) then 
             call linalg_error_handling(err0,err)
             return
@@ -121,7 +77,7 @@ submodule (stdlib_linalg) stdlib_linalg_qr
          lwork_ord = -1_ilp
          call  orgqr   &
               (m,m,k,a_dummy,m,tau_dummy,work_dummy,lwork_ord,info)
-         call handle_orgqr_info(info,m,n,k,lwork_ord,err0)   
+         call handle_orgqr_info(this,info,m,n,k,lwork_ord,err0)   
          if (err0%error()) then 
             call linalg_error_handling(err0,err)
             return
@@ -221,7 +177,7 @@ submodule (stdlib_linalg) stdlib_linalg_qr
              
              ! Compute factorization. 
              call geqrf(m,n,amat,m,tau,work,lwork,info) 
-             call handle_geqrf_info(info,m,n,lwork,err0)
+             call handle_geqrf_info(this,info,m,n,lwork,err0)
              
              if (err0%ok()) then      
                 
@@ -233,7 +189,7 @@ submodule (stdlib_linalg) stdlib_linalg_qr
                  ! Convert K elementary reflectors tau(1:k) -> orthogonal matrix Q
                  call  orgqr   &
                       (q1,q2,k,amat,lda,tau,work,lwork,info)
-                 call handle_orgqr_info(info,m,n,k,lwork,err0)      
+                 call handle_orgqr_info(this,info,m,n,k,lwork,err0)      
                       
                  ! Copy result back to Q
                  if (.not.use_q_matrix) q = amat(:q1,:q2) 
@@ -283,7 +239,7 @@ submodule (stdlib_linalg) stdlib_linalg_qr
          ! QR space
          lwork_qr = -1_ilp
          call geqrf(m,n,a_dummy,m,tau_dummy,work_dummy,lwork_qr,info)    
-         call handle_geqrf_info(info,m,n,lwork_qr,err0)
+         call handle_geqrf_info(this,info,m,n,lwork_qr,err0)
          if (err0%error()) then 
             call linalg_error_handling(err0,err)
             return
@@ -294,7 +250,7 @@ submodule (stdlib_linalg) stdlib_linalg_qr
          lwork_ord = -1_ilp
          call  orgqr   &
               (m,m,k,a_dummy,m,tau_dummy,work_dummy,lwork_ord,info)
-         call handle_orgqr_info(info,m,n,k,lwork_ord,err0)   
+         call handle_orgqr_info(this,info,m,n,k,lwork_ord,err0)   
          if (err0%error()) then 
             call linalg_error_handling(err0,err)
             return
@@ -394,7 +350,7 @@ submodule (stdlib_linalg) stdlib_linalg_qr
              
              ! Compute factorization. 
              call geqrf(m,n,amat,m,tau,work,lwork,info) 
-             call handle_geqrf_info(info,m,n,lwork,err0)
+             call handle_geqrf_info(this,info,m,n,lwork,err0)
              
              if (err0%ok()) then      
                 
@@ -406,7 +362,7 @@ submodule (stdlib_linalg) stdlib_linalg_qr
                  ! Convert K elementary reflectors tau(1:k) -> orthogonal matrix Q
                  call  orgqr   &
                       (q1,q2,k,amat,lda,tau,work,lwork,info)
-                 call handle_orgqr_info(info,m,n,k,lwork,err0)      
+                 call handle_orgqr_info(this,info,m,n,k,lwork,err0)      
                       
                  ! Copy result back to Q
                  if (.not.use_q_matrix) q = amat(:q1,:q2) 
@@ -456,7 +412,7 @@ submodule (stdlib_linalg) stdlib_linalg_qr
          ! QR space
          lwork_qr = -1_ilp
          call geqrf(m,n,a_dummy,m,tau_dummy,work_dummy,lwork_qr,info)    
-         call handle_geqrf_info(info,m,n,lwork_qr,err0)
+         call handle_geqrf_info(this,info,m,n,lwork_qr,err0)
          if (err0%error()) then 
             call linalg_error_handling(err0,err)
             return
@@ -467,7 +423,7 @@ submodule (stdlib_linalg) stdlib_linalg_qr
          lwork_ord = -1_ilp
          call  ungqr   &
               (m,m,k,a_dummy,m,tau_dummy,work_dummy,lwork_ord,info)
-         call handle_orgqr_info(info,m,n,k,lwork_ord,err0)   
+         call handle_orgqr_info(this,info,m,n,k,lwork_ord,err0)   
          if (err0%error()) then 
             call linalg_error_handling(err0,err)
             return
@@ -567,7 +523,7 @@ submodule (stdlib_linalg) stdlib_linalg_qr
              
              ! Compute factorization. 
              call geqrf(m,n,amat,m,tau,work,lwork,info) 
-             call handle_geqrf_info(info,m,n,lwork,err0)
+             call handle_geqrf_info(this,info,m,n,lwork,err0)
              
              if (err0%ok()) then      
                 
@@ -579,7 +535,7 @@ submodule (stdlib_linalg) stdlib_linalg_qr
                  ! Convert K elementary reflectors tau(1:k) -> orthogonal matrix Q
                  call  ungqr   &
                       (q1,q2,k,amat,lda,tau,work,lwork,info)
-                 call handle_orgqr_info(info,m,n,k,lwork,err0)      
+                 call handle_orgqr_info(this,info,m,n,k,lwork,err0)      
                       
                  ! Copy result back to Q
                  if (.not.use_q_matrix) q = amat(:q1,:q2) 
@@ -629,7 +585,7 @@ submodule (stdlib_linalg) stdlib_linalg_qr
          ! QR space
          lwork_qr = -1_ilp
          call geqrf(m,n,a_dummy,m,tau_dummy,work_dummy,lwork_qr,info)    
-         call handle_geqrf_info(info,m,n,lwork_qr,err0)
+         call handle_geqrf_info(this,info,m,n,lwork_qr,err0)
          if (err0%error()) then 
             call linalg_error_handling(err0,err)
             return
@@ -640,7 +596,7 @@ submodule (stdlib_linalg) stdlib_linalg_qr
          lwork_ord = -1_ilp
          call  ungqr   &
               (m,m,k,a_dummy,m,tau_dummy,work_dummy,lwork_ord,info)
-         call handle_orgqr_info(info,m,n,k,lwork_ord,err0)   
+         call handle_orgqr_info(this,info,m,n,k,lwork_ord,err0)   
          if (err0%error()) then 
             call linalg_error_handling(err0,err)
             return
@@ -740,7 +696,7 @@ submodule (stdlib_linalg) stdlib_linalg_qr
              
              ! Compute factorization. 
              call geqrf(m,n,amat,m,tau,work,lwork,info) 
-             call handle_geqrf_info(info,m,n,lwork,err0)
+             call handle_geqrf_info(this,info,m,n,lwork,err0)
              
              if (err0%ok()) then      
                 
@@ -752,7 +708,7 @@ submodule (stdlib_linalg) stdlib_linalg_qr
                  ! Convert K elementary reflectors tau(1:k) -> orthogonal matrix Q
                  call  ungqr   &
                       (q1,q2,k,amat,lda,tau,work,lwork,info)
-                 call handle_orgqr_info(info,m,n,k,lwork,err0)      
+                 call handle_orgqr_info(this,info,m,n,k,lwork,err0)      
                       
                  ! Copy result back to Q
                  if (.not.use_q_matrix) q = amat(:q1,:q2) 

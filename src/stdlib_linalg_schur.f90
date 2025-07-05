@@ -1,6 +1,7 @@
 submodule (stdlib_linalg) stdlib_linalg_schur
     use stdlib_linalg_constants
     use stdlib_linalg_lapack, only: gees
+    use stdlib_linalg_lapack_aux, only: handle_gees_info
     use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
         LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
     implicit none
@@ -32,48 +33,6 @@ submodule (stdlib_linalg) stdlib_linalg_schur
         logical(lk), intent(in) :: sorted 
         gees_sort_eigs = merge(GEES_SORTED_VECTORS,GEES_NOT,sorted)
     end function gees_sort_eigs    
-
-    !> Wrapper function to handle GEES error codes
-    elemental subroutine handle_gees_info(info, m, n, ldvs, err)
-        integer(ilp), intent(in) :: info, m, n, ldvs
-        type(linalg_state_type), intent(out) :: err
-
-        ! Process GEES output
-        select case (info)
-        case (0_ilp)
-            ! Success
-        case (-1_ilp)
-            ! Vector not wanted, but task is wrong
-            err = linalg_state_type(this, LINALG_INTERNAL_ERROR,'Invalid Schur vector task request')
-        case (-2_ilp)
-            ! Vector not wanted, but task is wrong
-            err = linalg_state_type(this, LINALG_INTERNAL_ERROR,'Invalid sorting task request')            
-        case (-4_ilp,-6_ilp)
-            ! Vector not wanted, but task is wrong
-            err = linalg_state_type(this, LINALG_VALUE_ERROR,'Invalid/non-square input matrix size:',[m,n])  
-        case (-11_ilp)
-            err = linalg_state_type(this, LINALG_VALUE_ERROR,'Schur vector matrix has insufficient size',[ldvs,n])
-        case (-13_ilp)
-            err = linalg_state_type(this, LINALG_INTERNAL_ERROR,'Insufficient working storage size')
-        case (1_ilp:)
-            
-            if (info==n+2) then 
-                err = linalg_state_type(this, LINALG_ERROR, 'Ill-conditioned problem: could not sort eigenvalues')
-            elseif (info==n+1) then 
-                err = linalg_state_type(this, LINALG_ERROR, 'Some selected eigenvalues lost property due to sorting')                
-            elseif (info==n) then 
-                err = linalg_state_type(this, LINALG_ERROR, 'Convergence failure: no converged eigenvalues')
-            else
-                err = linalg_state_type(this, LINALG_ERROR, 'Convergence failure; converged range is',[info,n])                            
-            end if
-            
-        case default
-            
-            err = linalg_state_type(this, LINALG_INTERNAL_ERROR, 'GEES catastrophic error: info=', info)
-
-        end select
-        
-    end subroutine handle_gees_info
 
     !> Workspace query
     module subroutine get_schur_s_workspace(a,lwork,err)
@@ -109,7 +68,7 @@ submodule (stdlib_linalg) stdlib_linalg_schur
         call gees(jobvs,sort,do_not_select,n,amat,m,sdim,wr_dummy,wi_dummy, &
                   vs_dummy,m,work_dummy,lwork,bwork_dummy,info)
         if (info==0) lwork = nint(real(work_dummy(1),kind=sp),kind=ilp)
-        call handle_gees_info(info,m,n,m,err0)
+        call handle_gees_info(this,info,m,n,m,err0)
         call linalg_error_handling(err0,err)
         
         contains
@@ -262,7 +221,7 @@ submodule (stdlib_linalg) stdlib_linalg_schur
             ! Compute Schur decomposition
             call gees(jobvs,sort,eig_select,nt,t,mt,sdim,eigs,eigi, &
                       vs,ldvs,work,lwork,bwork,info)
-            call handle_gees_info(info,m,n,m,err0)            
+            call handle_gees_info(this,info,m,n,m,err0)            
             
         
         end if  
@@ -364,7 +323,7 @@ submodule (stdlib_linalg) stdlib_linalg_schur
         call gees(jobvs,sort,do_not_select,n,amat,m,sdim,wr_dummy,wi_dummy, &
                   vs_dummy,m,work_dummy,lwork,bwork_dummy,info)
         if (info==0) lwork = nint(real(work_dummy(1),kind=dp),kind=ilp)
-        call handle_gees_info(info,m,n,m,err0)
+        call handle_gees_info(this,info,m,n,m,err0)
         call linalg_error_handling(err0,err)
         
         contains
@@ -517,7 +476,7 @@ submodule (stdlib_linalg) stdlib_linalg_schur
             ! Compute Schur decomposition
             call gees(jobvs,sort,eig_select,nt,t,mt,sdim,eigs,eigi, &
                       vs,ldvs,work,lwork,bwork,info)
-            call handle_gees_info(info,m,n,m,err0)            
+            call handle_gees_info(this,info,m,n,m,err0)            
             
         
         end if  
@@ -619,7 +578,7 @@ submodule (stdlib_linalg) stdlib_linalg_schur
         call gees(jobvs,sort,do_not_select,n,amat,m,sdim,wr_dummy,&
                   vs_dummy,m,work_dummy,lwork,rwork_dummy,bwork_dummy,info)
         if (info==0) lwork = nint(real(work_dummy(1),kind=sp),kind=ilp)
-        call handle_gees_info(info,m,n,m,err0)
+        call handle_gees_info(this,info,m,n,m,err0)
         call linalg_error_handling(err0,err)
         
         contains
@@ -773,7 +732,7 @@ submodule (stdlib_linalg) stdlib_linalg_schur
             ! Compute Schur decomposition
             call gees(jobvs,sort,eig_select,nt,t,mt,sdim,eigs, &
                       vs,ldvs,work,lwork,rwork,bwork,info)
-            call handle_gees_info(info,m,n,m,err0)            
+            call handle_gees_info(this,info,m,n,m,err0)            
             
         
         end if  
@@ -871,7 +830,7 @@ submodule (stdlib_linalg) stdlib_linalg_schur
         call gees(jobvs,sort,do_not_select,n,amat,m,sdim,wr_dummy,&
                   vs_dummy,m,work_dummy,lwork,rwork_dummy,bwork_dummy,info)
         if (info==0) lwork = nint(real(work_dummy(1),kind=dp),kind=ilp)
-        call handle_gees_info(info,m,n,m,err0)
+        call handle_gees_info(this,info,m,n,m,err0)
         call linalg_error_handling(err0,err)
         
         contains
@@ -1025,7 +984,7 @@ submodule (stdlib_linalg) stdlib_linalg_schur
             ! Compute Schur decomposition
             call gees(jobvs,sort,eig_select,nt,t,mt,sdim,eigs, &
                       vs,ldvs,work,lwork,rwork,bwork,info)
-            call handle_gees_info(info,m,n,m,err0)            
+            call handle_gees_info(this,info,m,n,m,err0)            
             
         
         end if  

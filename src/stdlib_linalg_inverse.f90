@@ -2,6 +2,7 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
 !! Compute inverse of a square matrix    
      use stdlib_linalg_constants
      use stdlib_linalg_lapack, only: getri,getrf,stdlib_ilaenv
+     use stdlib_linalg_lapack_aux, only: handle_getri_info
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
      use ieee_arithmetic, only: ieee_value, ieee_quiet_nan
@@ -10,25 +11,6 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
      character(*), parameter :: this = 'inverse'  
 
      contains
-
-     elemental subroutine handle_getri_info(info,lda,n,err)
-         integer(ilp), intent(in) :: info,lda,n
-         type(linalg_state_type), intent(out) :: err
-
-         ! Process output
-         select case (info)
-            case (0)
-                ! Success
-            case (:-1)
-                err = linalg_state_type(this,LINALG_ERROR,'invalid matrix size a=',[lda,n])
-            case (1:)
-                ! Matrix is singular
-                err = linalg_state_type(this,LINALG_ERROR,'singular matrix')
-            case default
-                err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'catastrophic error')
-         end select
-         
-     end subroutine handle_getri_info
 
      ! Compute the in-place square matrix inverse of a
      module subroutine stdlib_linalg_invert_inplace_s(a,pivot,err)
@@ -83,7 +65,7 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
          endif
 
          ! Process output
-         call handle_getri_info(info,lda,n,err0)
+         call handle_getri_info(this,info,lda,n,err0)
 
          ! Process output and return
          if (.not.present(pivot)) deallocate(ipiv)
@@ -219,7 +201,7 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
          endif
 
          ! Process output
-         call handle_getri_info(info,lda,n,err0)
+         call handle_getri_info(this,info,lda,n,err0)
 
          ! Process output and return
          if (.not.present(pivot)) deallocate(ipiv)
@@ -355,7 +337,7 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
          endif
 
          ! Process output
-         call handle_getri_info(info,lda,n,err0)
+         call handle_getri_info(this,info,lda,n,err0)
 
          ! Process output and return
          if (.not.present(pivot)) deallocate(ipiv)
@@ -492,7 +474,7 @@ submodule (stdlib_linalg) stdlib_linalg_inverse
          endif
 
          ! Process output
-         call handle_getri_info(info,lda,n,err0)
+         call handle_getri_info(this,info,lda,n,err0)
 
          ! Process output and return
          if (.not.present(pivot)) deallocate(ipiv)
