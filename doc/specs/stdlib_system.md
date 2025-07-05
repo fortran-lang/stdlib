@@ -532,6 +532,80 @@ The `err` is set accordingly.
 
 ---
 
+## `get_cwd` - Gets the current working directory
+
+### Status
+
+Experimental
+
+### Description
+
+It gets the current working directory associated with the process calling this subroutine.
+It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+
+### Syntax
+
+`call [[stdlib_system(module):get_cwd(subroutine)]] (cwd, err)`
+
+### Class
+
+Subroutine
+
+### Arguments
+
+`cwd`: Shall be a character string containing the path of the current working directory (cwd). It is an `intent(out)` argument.
+
+`err`: Shall be of type `state_type`, for error handling. It is an `intent(out)` argument.
+
+### Return values
+
+The `err` is set accordingly.
+
+### Example
+
+```fortran
+{!example/system/example_cwd.f90!}
+```
+
+---
+
+## `set_cwd` - Sets the current working directory
+
+### Status
+
+Experimental
+
+### Description
+
+It sets the current working directory associated with the process calling this subroutine.
+It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+
+### Syntax
+
+`call [[stdlib_system(module):set_cwd(subroutine)]] (path, err)`
+
+### Class
+
+Subroutine
+
+### Arguments
+
+`path`: Shall be a character string containing the path of the directory. It is an `intent(in)` argument.
+
+`err`: Shall be of type `state_type`, for error handling. It is an `intent(out)` argument.
+
+### Return values
+
+The `err` is set accordingly.
+
+### Example
+
+```fortran
+{!example/system/example_cwd.f90!}
+```
+
+---
+
 ## `null_device` - Return the null device file path
 
 ### Status
