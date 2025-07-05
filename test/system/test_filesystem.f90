@@ -166,7 +166,6 @@ contains
         ! Clean up: remove the empty directory
         call execute_command_line('rmdir ' // filename, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
         call check(error, ios==0 .and. iocmd==0, 'Cannot cleanup make_directory test: '//trim(msg))
-        if (allocated(error)) return
     end subroutine test_make_directory
 
     subroutine test_make_directory_existing(error)
@@ -187,8 +186,12 @@ contains
 
         ! Clean up: remove the empty directory
         call execute_command_line('rmdir ' // filename, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        if (allocated(error)) then
+            ! if previous error is allocated as well
+            call check(error, ios==0 .and. iocmd==0, error%message // ' and cannot cleanup make_directory test: '//trim(msg))
+            return
+        end if
         call check(error, ios==0 .and. iocmd==0, 'Cannot cleanup make_directory test: '//trim(msg))
-        if (allocated(error)) return
     end subroutine test_make_directory_existing
 
     subroutine test_remove_directory(error)
@@ -209,8 +212,7 @@ contains
         if (allocated(error)) then 
             ! Clean up: remove the empty directory
             call execute_command_line('rmdir ' // filename, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
-            call check(error, ios==0 .and. iocmd==0, 'Cannot cleanup make_directory test: '//trim(msg))
-            if (allocated(error)) return
+            call check(error, ios==0 .and. iocmd==0, error%message // ' and cannot cleanup make_directory test: '//trim(msg))
         end if
     end subroutine test_remove_directory
 
