@@ -20,15 +20,15 @@ module test_linalg_svd
         allocate(tests(0))
 
         #:for rk,rt,ri in REAL_KINDS_TYPES
-        tests = [tests,new_unittest("test_svd_${ri}$",test_svd_${ri}$)]        
+        call add_test(tests,new_unittest("test_svd_${ri}$",test_svd_${ri}$))        
         #:endfor
 
         #:for ck,ct,ci in CMPLX_KINDS_TYPES
-        tests = [tests,new_unittest("test_complex_svd_${ci}$",test_complex_svd_${ci}$)]        
+        call add_test(tests,new_unittest("test_complex_svd_${ci}$",test_complex_svd_${ci}$))        
         #:endfor
 
         #:for rk,rt,ri in RC_KINDS_TYPES
-        tests = [tests,new_unittest("test_svd_row_${ri}$",test_svd_row_${ri}$)]         
+        call add_test(tests,new_unittest("test_svd_row_${ri}$",test_svd_row_${ri}$))         
         #:endfor
 
     end subroutine test_svd
@@ -264,6 +264,26 @@ module test_linalg_svd
 
     #:endfor
 
+    ! gcc-15 bugfix utility
+    subroutine add_test(tests,new_test)
+        type(unittest_type), allocatable, intent(inout) :: tests(:)    
+        type(unittest_type), intent(in) :: new_test
+        
+        integer :: n
+        type(unittest_type), allocatable :: new_tests(:)
+        
+        if (allocated(tests)) then 
+            n = size(tests)
+        else
+            n = 0
+        end if
+        
+        allocate(new_tests(n+1))
+        if (n>0) new_tests(1:n) = tests(1:n)
+                 new_tests(1+n) = new_test
+        call move_alloc(from=new_tests,to=tests)        
+    
+    end subroutine add_test
 
 end module test_linalg_svd
 

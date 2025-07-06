@@ -22,9 +22,9 @@ module test_linalg_inverse
         allocate(tests(0))
 
         #:for rk,rt,ri in RC_KINDS_TYPES
-        tests = [tests,new_unittest("${ri}$_eye_inverse",test_${ri}$_eye_inverse), &
-                       new_unittest("${ri}$_singular_inverse",test_${ri}$_singular_inverse), &
-                       new_unittest("${ri}$_random_spd_inverse",test_${ri}$_random_spd_inverse)]
+        call add_test(tests,new_unittest("${ri}$_eye_inverse",test_${ri}$_eye_inverse)) 
+        call add_test(tests,new_unittest("${ri}$_singular_inverse",test_${ri}$_singular_inverse)) 
+        call add_test(tests,new_unittest("${ri}$_random_spd_inverse",test_${ri}$_random_spd_inverse))
         #:endfor
 
     end subroutine test_inverse_matrix
@@ -290,6 +290,27 @@ module test_linalg_inverse
     end subroutine test_${ci}$_singular_inverse
 
     #:endfor
+
+    ! gcc-15 bugfix utility
+    subroutine add_test(tests,new_test)
+        type(unittest_type), allocatable, intent(inout) :: tests(:)    
+        type(unittest_type), intent(in) :: new_test
+        
+        integer :: n
+        type(unittest_type), allocatable :: new_tests(:)
+        
+        if (allocated(tests)) then 
+            n = size(tests)
+        else
+            n = 0
+        end if
+        
+        allocate(new_tests(n+1))
+        if (n>0) new_tests(1:n) = tests(1:n)
+                 new_tests(1+n) = new_test
+        call move_alloc(from=new_tests,to=tests)        
+        
+    end subroutine add_test
 
 end module test_linalg_inverse
 
