@@ -305,3 +305,48 @@ Exceptions trigger an `error stop` unless the optional `err` argument is provide
 {!example/io/example_get_file.f90!}
 ```
 
+## `print_array` - Print an array to an output unit
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine interface prints a 2D array to a specified output unit.
+
+### Syntax
+
+`call [[stdlib_io(module):print_array(subroutine)]] (array[, unit][, fmt][, delimiter][, brief])`
+
+### Class
+
+Subroutine
+
+### Arguments
+
+`array`: Shall be a 2D array of `integer`, `real`, or `complex` type. It is an `intent(in)` argument.
+
+`unit`: Shall be an integer containing the output unit. It is an `intent(in)` argument. The default is the intrinsic `output_unit` provided by `iso_fortran_env`.
+
+`fmt`: Shall be a character string containing the format for printing the array. It is an `intent(in)` argument. The default is based on [the Formatting constants](#formatting-constants).
+
+`delimiter`: Shall be a character string containing the delimiter between array elements. It is an `intent(in)` argument. The default is a `" "` (space).
+
+`brief`: Shall be a logical flag. The default is `.true.`. If `.true.`, the array is printed in a shortened/abridged version
+that shows only the representative portions of large arrays, which is useful for gaining a glimpse of large arrays. Specifically:
+  + For arrays with more than 5 rows or columns, it will display:
+    - First 3 rows and columns;
+    - Last row and column;
+    - Eilipsis (`...`) to indicate omitted elements.
+  + For arrays with 5 rows or columns or less, it will display the entire array.
+
+### Example
+
+```fortran
+{!./example/io/example_print_array_brief.f90}
+```
+
+```fortran
+{!./example/io/example_print_array.f90}
+```
