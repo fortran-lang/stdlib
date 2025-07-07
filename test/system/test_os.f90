@@ -1,7 +1,8 @@
 module test_os
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
-    use stdlib_system, only: get_runtime_os, OS_WINDOWS, OS_UNKNOWN, OS_TYPE, is_windows, null_device
-
+    use stdlib_system, only: get_runtime_os, OS_WINDOWS, OS_UNKNOWN, OS_TYPE, is_windows, null_device, &
+                             get_terminal_size
+    use stdlib_error, only: state_type
     implicit none
 
 contains
@@ -12,11 +13,37 @@ contains
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
+            new_unittest('test_get_terminal_size', test_get_terminal_size), &
             new_unittest('test_get_runtime_os', test_get_runtime_os), &
             new_unittest('test_is_windows', test_is_windows), &
             new_unittest('test_null_device', test_null_device) &
         ]
     end subroutine collect_suite
+
+    subroutine test_get_terminal_size(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer :: columns, lines
+        type(state_type) :: err
+
+        !> Get terminal size
+        call get_terminal_size(columns, lines, err)
+
+        if (err%ok()) then
+            call check(error, columns > 0, "Terminal width is not positive")
+            if (allocated(error)) return
+
+            call check(error, lines > 0, "Terminal height is not positive")
+
+        !> In Github Actions, the terminal size is not available, standard output is redirected to a file
+        else
+            call check(error, columns, -1)
+            if (allocated(error)) return
+
+            call check(error, lines, -1)
+
+        end if
+
+    end subroutine test_get_terminal_size
 
     subroutine test_get_runtime_os(error)
         type(error_type), allocatable, intent(out) :: error
