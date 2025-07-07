@@ -48,7 +48,7 @@ $$
 Hence, only one vector of size `n` and two of size `n-1` need to be stored to fully represent the matrix.
 This particular structure also lends itself to specialized implementations for many linear algebra tasks.
 Interfaces to the most common ones will soon be provided by `stdlib_specialmatrices`.
-To date, `stdlib_specialmatrices` supports the following data types:
+Tridiagonal matrices are available with all supported data types as `tridiagonal_<kind>_type`, for example:
 
 - `tridiagonal_sp_type`   : Tridiagonal matrix of size `n` with `real`/`single precision` data.
 - `tridiagonal_dp_type`   : Tridiagonal matrix of size `n` with `real`/`double precision` data.
