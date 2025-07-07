@@ -111,7 +111,7 @@ With the exception of `extended precision` and `quadruple precision`, all the ty
 - `op` (optional) : In-place operator identifier. Shall be a character(1) argument. It can have any of the following values: `N`: no transpose, `T`: transpose, `H`: hermitian or complex transpose.
 
 @warning
-Due to some underlying `lapack`-related designs, `alpha` and `beta` can only take values in `[-1, 0, 1]` for `tridiagonal` and `symtridiagonal` matrices. See `lagtm` for more details.
+Due to limitations of the underlying `lapack` driver, currently `alpha` and `beta` can only take one of the values `[-1, 0, 1]` for `tridiagonal` and `symtridiagonal` matrices. See `lagtm` for more details.
 @endwarning
 
 #### Examples
