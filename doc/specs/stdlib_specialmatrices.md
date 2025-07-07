@@ -211,5 +211,5 @@ The definition of all standard artihmetic operators have been overloaded to be a
 `B = alpha` [[stdlib_specialmatrices(module):operator(*)(interface)]] `A`
 
 @note
-For addition (`+`) and subtraction (`-`), the matrices `A`, `B` and `C` all need to be of the same type and kind. For scalar multiplication (`*`), `A` and `B` need to be of the same type and kind, while `alpha` is either `real` or `complex` (with the same kind again) depending on the type being used.
+For addition (`+`) and subtraction (`-`), matrices `A`, `B` and `C` all need to be of the same type and kind. For scalar multiplication (`*`), `A` and `B` need to be of the same type and kind, while `alpha` is either `real` or `complex` (with the same kind again) depending on the type being used.
 @endnote
