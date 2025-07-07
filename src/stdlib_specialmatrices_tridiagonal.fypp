@@ -89,7 +89,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
 
         ! Prepare Lapack arguments.
         n = A%n ; ldx = n ; ldy = n ; y = 0.0_${k1}$
-        nrhs = #{if rank==1}# 1 #{else}# size(x, 2) #{endif}#
+        nrhs = #{if rank==1}# 1 #{else}# size(x, dim=2, kind=ilp) #{endif}#
 
         #:if rank == 1
         ! Pointer trick.
