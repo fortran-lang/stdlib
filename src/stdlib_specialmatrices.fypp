@@ -10,6 +10,8 @@ module stdlib_specialmatrices
     !! applications. ([Specifications](../page/specs/stdlib_specialmatrices.html))
     use stdlib_linalg_constants
     use stdlib_constants
+    use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
+        LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
     implicit none
     private
     public :: tridiagonal
@@ -80,7 +82,7 @@ module stdlib_specialmatrices
         !!    A = Tridiagonal(a, b, c, n)
         !! ```
         #:for k1, t1, s1 in (KINDS_TYPES)
-        pure module function initialize_tridiagonal_${s1}$(dl, dv, du) result(A)
+        pure module function initialize_tridiagonal_pure_${s1}$(dl, dv, du) result(A)
             !! Construct a `tridiagonal` matrix from the rank-1 arrays
             !! `dl`, `dv` and `du`.
             ${t1}$, intent(in) :: dl(:), dv(:), du(:)
@@ -89,12 +91,35 @@ module stdlib_specialmatrices
             !! Corresponding Tridiagonal matrix.
         end function
 
-        pure module function initialize_constant_tridiagonal_${s1}$(dl, dv, du, n) result(A)
+        pure module function initialize_constant_tridiagonal_pure_${s1}$(dl, dv, du, n) result(A)
             !! Construct a `tridiagonal` matrix with constant elements.
             ${t1}$, intent(in) :: dl, dv, du
             !! Tridiagonal matrix elements.
             integer(ilp), intent(in) :: n
             !! Matrix dimension.
+            type(tridiagonal_${s1}$_type) :: A
+            !! Corresponding Tridiagonal matrix.
+        end function   
+
+        module function initialize_tridiagonal_impure_${s1}$(dl, dv, du, err) result(A)
+            !! Construct a `tridiagonal` matrix from the rank-1 arrays
+            !! `dl`, `dv` and `du`.
+            ${t1}$, intent(in) :: dl(:), dv(:), du(:)
+            !! Tridiagonal matrix elements.
+            type(linalg_state_type), intent(out) :: err
+            !! Error handling.
+            type(tridiagonal_${s1}$_type) :: A
+            !! Corresponding Tridiagonal matrix.
+        end function
+
+        module function initialize_constant_tridiagonal_impure_${s1}$(dl, dv, du, n, err) result(A)
+            !! Construct a `tridiagonal` matrix with constant elements.
+            ${t1}$, intent(in) :: dl, dv, du
+            !! Tridiagonal matrix elements.
+            integer(ilp), intent(in) :: n
+            !! Matrix dimension.
+            type(linalg_state_type), intent(out) :: err
+            !! Error handling.
             type(tridiagonal_${s1}$_type) :: A
             !! Corresponding Tridiagonal matrix.
         end function   
