@@ -36,7 +36,7 @@ contains
         order_ = 10 ; if (present(order)) order_ = order
 
         ! Problem's dimension.
-        m = size(A, 1) ; n = size(A, 2)
+        m = size(A, dim=1, kind=ilp) ; n = size(A, dim=2, kind=ilp)
 
         if (m /= n) then
             err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'Invalid matrix size A=',[m, n])
@@ -53,7 +53,7 @@ contains
         a_norm = mnorm(A, "inf")
 
         ! Determine scaling factor for the matrix.
-        ee = int(log(a_norm) / log2_${rk}$) + 1
+        ee = int(log(a_norm) / log2_${rk}$, kind=ilp) + 1
         s  = max(0, ee+1)
 
         ! Scale the input matrix & initialize polynomial.
