@@ -5,9 +5,12 @@ submodule (stdlib_linalg) stdlib_linalg_matrix_functions
     use stdlib_linalg_constants
     use stdlib_linalg_blas, only: gemm
     use stdlib_linalg_lapack, only: gesv
+    use stdlib_linalg_lapack_aux, only: handle_gesv_info
     use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
     implicit none
+
+    character(len=*), parameter :: this = "matrix_exponential"
 
 contains
 
@@ -96,7 +99,7 @@ contains
         block
             integer(ilp) :: ipiv(n), info
             call gesv(n, n, Q, n, ipiv, E, n, info) ! E = inv(Q) @ E
-            call handle_gesv_info(info, n, n, n, err0)
+            call handle_gesv_info(this, info, n, n, n, err0)
             call linalg_error_handling(err0, err)
         end block
 
@@ -113,28 +116,6 @@ contains
             enddo
         end block
         return
-    contains
-        elemental subroutine handle_gesv_info(info,lda,n,nrhs,err)
-            integer(ilp), intent(in) :: info,lda,n,nrhs
-            type(linalg_state_type), intent(out) :: err
-            ! Process output
-            select case (info)
-            case (0)
-            ! Success
-            case (-1)
-                err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid problem size n=',n)
-            case (-2)
-                err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid rhs size n=',nrhs)
-            case (-4)
-                err = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid matrix size a=',[lda,n])
-            case (-7)
-                err = linalg_state_type(this,LINALG_ERROR,'invalid matrix size a=',[lda,n])
-            case (1:)
-                err = linalg_state_type(this,LINALG_ERROR,'singular matrix')
-            case default
-                err = linalg_state_type(this,LINALG_INTERNAL_ERROR,'catastrophic error')
-            end select
-        end subroutine handle_gesv_info
     end function stdlib_expm_${ri}$
     #:endfor
 
