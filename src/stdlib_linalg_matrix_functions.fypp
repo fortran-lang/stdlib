@@ -61,8 +61,8 @@ contains
         c = 0.5_${rk}$
         allocate (E, source=A2) ; allocate (Q, source=A2)
         do concurrent(i=1:n, j=1:n)
-            E(i, j) =  c*E(i, j) ; if (i == j) E(i, j) = 1.0_${rk}$ + E(i, j) ! E = I + c*A2
-            Q(i, j) = -c*Q(i, j) ; if (i == j) Q(i, j) = 1.0_${rk}$ + Q(i, j) ! Q = I - c*A2
+            E(i, j) = merge(1.0_${rk}$ + c*E(i, j), c*E(i, j), i == j)
+            Q(i, j) = merge(1.0_${rk}$ - c*Q(i, j), -c*Q(i, j), i == j)
         enddo
 
         ! Iteratively compute the Pade approximation.
