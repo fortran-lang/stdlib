@@ -30,7 +30,6 @@ contains
         real(${rk}$)        :: a_norm, c
         integer(ilp)        :: m, n, ee, k, s, order_, i, j
         logical(lk)         :: p
-        character(len=*), parameter :: this = "expm"
         type(linalg_state_type)     :: err0
 
         ! Deal with optional args.
@@ -54,7 +53,7 @@ contains
         a_norm = mnorm(A, "inf")
 
         ! Determine scaling factor for the matrix.
-        ee = int(log(a_norm) / log(2.0_${rk}$)) + 1
+        ee = int(log(a_norm) / log2_${rk}$) + 1
         s  = max(0, ee+1)
 
         ! Scale the input matrix & initialize polynomial.
