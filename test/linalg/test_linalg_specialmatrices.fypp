@@ -5,6 +5,7 @@ module test_specialmatrices
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_kinds
     use stdlib_linalg, only: hermitian
+    use stdlib_linalg_state, only: linalg_state_type
     use stdlib_math, only: all_close
     use stdlib_specialmatrices
     implicit none
@@ -18,7 +19,8 @@ contains
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
-            new_unittest('tridiagonal', test_tridiagonal) &
+            new_unittest('tridiagonal', test_tridiagonal), &
+            new_unittest('tridiagonal error handling', test_tridiagonal_error_handling) &
         ]
     end subroutine
 
@@ -63,6 +65,33 @@ contains
             #:endif
         end block
         #:endfor
+    end subroutine
+
+    subroutine test_tridiagonal_error_handling(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        block
+            integer, parameter :: wp = ${k1}$
+            integer, parameter :: n = 5
+            type(tridiagonal_${s1}$_type) :: A
+            ${t1}$, allocatable :: dl(:), dv(:), du(:)
+            type(linalg_state_type) :: state
+            integer :: i
+
+            !> Test constructor from arrays.
+            dl = [(1.0_wp, i = 1, n-2)] ; du = dl
+            dv = [(2.0_wp, i = 1, n)]
+            A = tridiagonal(dl, dv, du, state)
+            call check(error, state%ok(), .false.)
+            if (allocated(error)) return
+
+            !> Test contructor from constants.
+            A = tridiagonal(dl(1), dv(1), du(1), -n, state)
+            call check(error, state%ok(), .false.)
+            if (allocated(error)) return
+        end block
+        #:endfor       
     end subroutine
 
 end module
