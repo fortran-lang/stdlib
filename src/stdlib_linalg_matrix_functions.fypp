@@ -104,7 +104,7 @@ contains
 
             ! Iteratively compute the Pade approximation.
             block
-                ${rt}$ :: X_tmp(n, n)
+                ${rt}$, allocatable :: X_tmp(:, :)
                 p = .true.
                 do k = 2, order_
                     c = c * (order_ - k + 1) / (k * (2*order_ - k + 1))
@@ -138,7 +138,7 @@ contains
 
             ! Matrix squaring.
             block
-                ${rt}$ :: E_tmp(n, n)
+                ${rt}$, allocatable :: E_tmp(:, :)
                 do k = 1, s
                     E_tmp = A
                     #:if rt.startswith('complex')
