@@ -140,12 +140,13 @@ contains
             block
                 ${rt}$ :: E_tmp(n, n)
                 do k = 1, s
-                    E_tmp = A
-                    #:if rt.startswith('complex')
-                    call gemm("N", "N", n, n, n, one_c${rk}$, E_tmp, n, E_tmp, n, zero_c${rk}$, A, n)
-                    #:else
-                    call gemm("N", "N", n, n, n, one_${rk}$, E_tmp, n, E_tmp, n, zero_${rk}$, A, n)
-                    #:endif
+                    A = matmul(A, A)
+                    ! E_tmp = A
+                    ! #:if rt.startswith('complex')
+                    ! call gemm("N", "N", n, n, n, one_c${rk}$, E_tmp, n, E_tmp, n, zero_c${rk}$, A, n)
+                    ! #:else
+                    ! call gemm("N", "N", n, n, n, one_${rk}$, E_tmp, n, E_tmp, n, zero_${rk}$, A, n)
+                    ! #:endif
                 enddo
             end block
         endif
