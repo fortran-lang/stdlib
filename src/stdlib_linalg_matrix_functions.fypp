@@ -48,7 +48,7 @@ contains
                                      'invalid matrix sizes: A=',[lda,n], &
                                                           ' E=',[lde,ne])
         else
-            E(:n, :n) = A(:n, :n) ; call stdlib_linalg_${ri}$_expm_inplace(E, order, err)
+            E(:n, :n) = A(:n, :n) ; call stdlib_linalg_${ri}$_expm_inplace(E, order, err0)
         endif
         
         ! Process output and return
