@@ -4,7 +4,7 @@
 module test_linalg_expm
     use testdrive, only: error_type, check, new_unittest, unittest_type
     use stdlib_linalg_constants
-    use stdlib_linalg, only: expm, eye, norm
+    use stdlib_linalg, only: expm, eye, norm, matrix_exp
     use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
 
@@ -82,13 +82,13 @@ module test_linalg_expm
         enddo
 
         ! Compute matrix exponential.
-        E = expm(A, order=-1, err=err)
+        call matrix_exp(A, E, order=-1, err=err)
         ! Check result.
         call check(error, err%error(), "Negative Pade order")
         if (allocated(error)) return
 
         ! Compute matrix exponential.
-        E = expm(A(:n, :n-1), err=err)
+        call matrix_exp(A(:n, :n-1), E, err=err)
         ! Check result.
         call check(error, err%error(), "Invalid matrix size")
         if (allocated(error)) return
