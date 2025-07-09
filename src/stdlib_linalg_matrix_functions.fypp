@@ -108,13 +108,12 @@ contains
                 p = .true.
                 do k = 2, order_
                     c = c * (order_ - k + 1) / (k * (2*order_ - k + 1))
-                    X = matmul(A2, X)
-                    ! X_tmp = X
-                    ! #:if rt.startswith('complex')
-                    ! call gemm("N", "N", n, n, n, one_c${rk}$, A2, n, X_tmp, n, zero_c${rk}$, X, n)
-                    ! #:else
-                    ! call gemm("N", "N", n, n, n, one_${rk}$, A2, n, X_tmp, n, zero_${rk}$, X, n)
-                    ! #:endif
+                    X_tmp = X
+                    #:if rt.startswith('complex')
+                    call gemm("N", "N", n, n, n, one_c${rk}$, A2, n, X_tmp, n, zero_c${rk}$, X, n)
+                    #:else
+                    call gemm("N", "N", n, n, n, one_${rk}$, A2, n, X_tmp, n, zero_${rk}$, X, n)
+                    #:endif
                     do concurrent(i=1:n, j=1:n)
                         A(i, j) = A(i, j) + c*X(i, j)       ! E = E + c*X
                     enddo
@@ -141,13 +140,12 @@ contains
             block
                 ${rt}$ :: E_tmp(n, n)
                 do k = 1, s
-                    A = matmul(A, A)
-                    ! E_tmp = A
-                    ! #:if rt.startswith('complex')
-                    ! call gemm("N", "N", n, n, n, one_c${rk}$, E_tmp, n, E_tmp, n, zero_c${rk}$, A, n)
-                    ! #:else
-                    ! call gemm("N", "N", n, n, n, one_${rk}$, E_tmp, n, E_tmp, n, zero_${rk}$, A, n)
-                    ! #:endif
+                    E_tmp = A
+                    #:if rt.startswith('complex')
+                    call gemm("N", "N", n, n, n, one_c${rk}$, E_tmp, n, E_tmp, n, zero_c${rk}$, A, n)
+                    #:else
+                    call gemm("N", "N", n, n, n, one_${rk}$, E_tmp, n, E_tmp, n, zero_${rk}$, A, n)
+                    #:endif
                 enddo
             end block
         endif
