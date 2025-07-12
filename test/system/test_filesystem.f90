@@ -1,7 +1,7 @@
 module test_filesystem
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_system, only: is_directory, delete_file, FS_ERROR, FS_ERROR_CODE
-    use stdlib_error, only: state_type
+    use stdlib_error, only: state_type, STDLIB_FS_ERROR
 
     implicit none
 
@@ -30,13 +30,15 @@ contains
         msg = "code - 10, Cannot create File temp.txt - File already exists"
         s1 = FS_ERROR_CODE(10, "Cannot create File temp.txt -", "File already exists")
 
-        call check(error, s1%message == msg, "FS_ERROR: Could not construct message with code correctly")
+        call check(error, s1%state == STDLIB_FS_ERROR .and. s1%message == msg, &
+            "FS_ERROR: Could not construct the state with code correctly")
         if (allocated(error)) return
 
         msg = "Cannot create File temp.txt - File already exists"
         s2 = FS_ERROR("Cannot create File temp.txt -", "File already exists")
 
-        call check(error, s2%message == msg, "FS_ERROR: Could not construct message without code correctly")
+        call check(error, s2%state == STDLIB_FS_ERROR .and. s2%message == msg, &
+            "FS_ERROR: Could not construct state without code correctly")
         if (allocated(error)) return
     end subroutine test_FS_ERROR
 
