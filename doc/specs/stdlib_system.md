@@ -557,7 +557,7 @@ Pure function
 
 `p1, p2`: Shall be a character string. It is an `intent(in)` argument.
     or
-`p`: Shall be a list of character strings. `intent(in)` argument.
+`p`: Shall be a list of character strings. It is an `intent(in)` argument.
 
 ### Return values
 
@@ -581,9 +581,9 @@ Pure function.
 
 ### Arguments
 
-`lval`: A character string, `intent(in)`.
+`lval`: A character string. It is an `intent(in)` argument.
 
-`rval`: A character string, `intent(in)`.
+`rval`: A character string. It is an `intent(in)` argument.
 
 ### Result value
 
@@ -615,15 +615,15 @@ Subroutine
 
 ### Arguments
 
-`p`: A character string containing the path to be split. `intent(in)`
-`head`: The first part of the path. `allocatable, intent(out)`
-`tail`: The rest part of the path. `allocatable, intent(out)`
+`p`: A character string containing the path to be split. It is an `intent(in)` argument.
+`head`: The first part of the path. It is an `allocatable, intent(out)` argument.
+`tail`: The rest part of the path. It is an `allocatable, intent(out)` argument.
 
 ### Behavior
 
-- If `p` is empty, `head` is set to `.` and `tail` is empty
-- If `p` consists entirely of path-separators. `head` is set to the path-separator and `tail` is empty
-- `head` ends in a path-separator if and only if `p` appears to be a root directory or child of one
+- If `p` is empty, `head` is set to `.` and `tail` is left empty.
+- If `p` consists entirely of path-separators, `head` is set to the path-separator and `tail` is left empty.
+- `head` ends with a path-separator if and only if `p` appears to be a root directory or child of one.
 
 ### Return values
 
@@ -654,11 +654,11 @@ Function
 
 ### Arguments
 
-`p`: the path, a character string, `intent(in)`
+`p`: the path, a character string. It is an `intent(in)` argument.
 
 ### Behavior
 
-- The `tail` of `stdlib_system(module):split_path(interface)` is exactly what is returned. Same Behavior.
+- The `tail` of `[[stdlib_system(module):split_path(interface)]]` is exactly what is returned. Same Behavior.
 
 ### Return values
 
@@ -689,11 +689,11 @@ Function
 
 ### Arguments
 
-`p`: the path, a character string, `intent(in)`
+`p`: the path, a character string. It is an `intent(in)` argument.
 
 ### Behavior
 
-- The `head` of `stdlib_system(module):split_path(interface)` is exactly what is returned. Same Behavior.
+- The `head` of `[[stdlib_system(module):split_path(interface)]]` is exactly what is returned. Same Behavior.
 
 ### Return values
 
