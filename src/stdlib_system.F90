@@ -3,6 +3,7 @@ use, intrinsic :: iso_c_binding, only : c_int, c_long, c_ptr, c_null_ptr, c_int6
     c_f_pointer
 use stdlib_kinds, only: int64, dp, c_bool, c_char
 use stdlib_strings, only: to_c_char
+use stdlib_string_type, only: string_type
 use stdlib_error, only: state_type, STDLIB_SUCCESS, STDLIB_FS_ERROR
 implicit none
 private
@@ -565,15 +566,37 @@ interface join_path
     !! join the paths provided according to the OS-specific path-separator
     !! ([Specification](../page/specs/stdlib_system.html#join_path))
     !!
-    module function join2(p1, p2) result(path)
+    module function join2_char_char(p1, p2) result(path)
         character(:), allocatable :: path
         character(*), intent(in) :: p1, p2
-    end function join2
+    end function join2_char_char
 
-    module function joinarr(p) result(path)
+    module function join2_char_string(p1, p2) result(path)
+        character(:), allocatable :: path
+        character(*), intent(in) :: p1
+        type(string_type), intent(in) :: p2
+    end function join2_char_string
+
+    module function join2_string_char(p1, p2) result(path)
+        type(string_type) :: path
+        type(string_type), intent(in) :: p1
+        character(*), intent(in) :: p2
+    end function join2_string_char
+
+    module function join2_string_string(p1, p2) result(path)
+        type(string_type) :: path
+        type(string_type), intent(in) :: p1, p2
+    end function join2_string_string
+
+    module function joinarr_char(p) result(path)
         character(:), allocatable :: path
         character(*), intent(in) :: p(:)
-    end function joinarr
+    end function joinarr_char
+
+    module function joinarr_string(p) result(path)
+        type(string_type) :: path
+        type(string_type), intent(in) :: p(:)
+    end function joinarr_string
 end interface join_path
 
 interface operator(/)
@@ -583,10 +606,27 @@ interface operator(/)
     !! A binary operator to join the paths provided according to the OS-specific path-separator
     !! ([Specification](../page/specs/stdlib_system.html#operator(/)))
     !!
-    module function join_op(p1, p2) result(path)
+    module function join_op_char_char(p1, p2) result(path)
         character(:), allocatable :: path
         character(*), intent(in) :: p1, p2
-    end function join_op
+    end function join_op_char_char
+
+    module function join_op_char_string(p1, p2) result(path)
+        character(:), allocatable :: path
+        character(*), intent(in) :: p1
+        type(string_type), intent(in) :: p2
+    end function join_op_char_string
+
+    module function join_op_string_char(p1, p2) result(path)
+        type(string_type) :: path
+        type(string_type), intent(in) :: p1
+        character(*), intent(in) :: p2
+    end function join_op_string_char
+
+    module function join_op_string_string(p1, p2) result(path)
+        type(string_type) :: path
+        type(string_type), intent(in) :: p1, p2
+    end function join_op_string_string
 end interface operator(/)
 
 interface split_path
@@ -602,10 +642,15 @@ interface split_path
     !! If the path only consists of separators, `head` is set to the separator and tail is empty
     !! If the path is a root directory, `head` is set to that directory and tail is empty
     !! `head` ends with a path-separator iff the path appears to be a root directory or a child of the root directory
-    module subroutine split_path(p, head, tail)
+    module subroutine split_path_char(p, head, tail)
         character(*), intent(in) :: p
         character(:), allocatable, intent(out) :: head, tail
-    end subroutine split_path
+    end subroutine split_path_char
+
+    module subroutine split_path_string(p, head, tail)
+        type(string_type), intent(in) :: p
+        type(string_type), intent(out) :: head, tail
+    end subroutine split_path_string
 end interface split_path
 
 interface base_name
@@ -617,10 +662,15 @@ interface base_name
     !!
     !!### Description
     !! The value returned is the `tail` of the interface `split_path`
-    module function base_name(p) result(base)
+    module function base_name_char(p) result(base)
         character(:), allocatable :: base
         character(*), intent(in) :: p
-    end function base_name
+    end function base_name_char
+
+    module function base_name_string(p) result(base)
+        type(string_type) :: base
+        type(string_type), intent(in) :: p
+    end function base_name_string
 end interface base_name
 
 interface dir_name
@@ -632,10 +682,15 @@ interface dir_name
     !!
     !!### Description
     !! The value returned is the `head` of the interface `split_path`
-    module function dir_name(p) result(base)
-        character(:), allocatable :: base
+    module function dir_name_char(p) result(dir)
+        character(:), allocatable :: dir
         character(*), intent(in) :: p
-    end function dir_name
+    end function dir_name_char
+
+    module function dir_name_string(p) result(dir)
+        type(string_type) :: dir
+        type(string_type), intent(in) :: p
+    end function dir_name_string
 end interface dir_name
 
 
