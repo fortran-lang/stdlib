@@ -555,13 +555,13 @@ Pure function
 
 ### Arguments
 
-`p1, p2`: Shall be a character string. It is an `intent(in)` argument.
+`p1, p2`: Shall be a character string or `type(string_type)`. It is an `intent(in)` argument.
     or
-`p`: Shall be a list of character strings. It is an `intent(in)` argument.
+`p`: Shall be a list of character strings or list of `type(string_type)`. It is an `intent(in)` argument.
 
 ### Return values
 
-The resultant path.
+The resultant path, either a character string or `type(string_type)`.
 
 ## `operator(/)`
 
@@ -581,13 +581,13 @@ Pure function.
 
 ### Arguments
 
-`lval`: A character string. It is an `intent(in)` argument.
+`lval`: A character string or `type(string_type)`. It is an `intent(in)` argument.
 
-`rval`: A character string. It is an `intent(in)` argument.
+`rval`: A character string or `type(string_type)`. It is an `intent(in)` argument.
 
 ### Result value
 
-The result is an `allocatable` character string
+The result is an `allocatable` character string or `type(string_type)`
 
 #### Example
 
@@ -615,9 +615,9 @@ Subroutine
 
 ### Arguments
 
-`p`: A character string containing the path to be split. It is an `intent(in)` argument.
-`head`: The first part of the path. It is an `allocatable, intent(out)` argument.
-`tail`: The rest part of the path. It is an `allocatable, intent(out)` argument.
+`p`: A character string or `type(string_type)` containing the path to be split. It is an `intent(in)` argument.
+`head`: The first part of the path. Either a character string or `type(string_type)`. It is an `intent(out)` argument.
+`tail`: The rest part of the path. Either a character string or `type(string_type)`. It is an `intent(out)` argument.
 
 ### Behavior
 
@@ -654,7 +654,7 @@ Function
 
 ### Arguments
 
-`p`: the path, a character string. It is an `intent(in)` argument.
+`p`: the path, a character string or `type(string_type)`. It is an `intent(in)` argument.
 
 ### Behavior
 
@@ -662,7 +662,7 @@ Function
 
 ### Return values
 
-A character string.
+A character string or `type(string_type)`.
 
 ### Example
 
@@ -689,7 +689,7 @@ Function
 
 ### Arguments
 
-`p`: the path, a character string. It is an `intent(in)` argument.
+`p`: the path, a character string or `type(string_type)`. It is an `intent(in)` argument.
 
 ### Behavior
 
@@ -697,7 +697,7 @@ Function
 
 ### Return values
 
-A character string.
+A character string or `type(string_type)`.
 
 ### Example
 
