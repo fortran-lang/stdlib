@@ -1910,7 +1910,7 @@ Given a matrix \(A\), this function computes its matrix exponential \(E = \exp(A
 
 The returned array `E` contains the Pade approximation of \(\exp(A)\).
 
-If `A` is non-square or `order` is negative, it raise a `LINALG_VALUE_ERROR`.
+If `A` is non-square or `order` is negative, it raises a `LINALG_VALUE_ERROR`.
 If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
