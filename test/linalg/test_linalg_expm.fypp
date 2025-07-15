@@ -1,8 +1,10 @@
+
 #:include "common.fypp"
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
-! Test Schur decomposition
+! Test the matrix exponential.
 module test_linalg_expm
     use testdrive, only: error_type, check, new_unittest, unittest_type
+    use stdlib_constants
     use stdlib_linalg_constants
     use stdlib_linalg, only: expm, eye, norm, matrix_exp
     use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
@@ -14,99 +16,120 @@ module test_linalg_expm
 
     contains
 
-    !> schur decomposition tests
+    ! gcc-15 bugfix utility
+    subroutine add_test(tests,new_test)
+        type(unittest_type), allocatable, intent(inout) :: tests(:)    
+        type(unittest_type), intent(in) :: new_test
+
+        integer :: n
+        type(unittest_type), allocatable :: new_tests(:)
+
+        if (allocated(tests)) then 
+            n = size(tests)
+        else
+            n = 0
+        end if
+
+        allocate(new_tests(n+1))
+        if (n>0) new_tests(1:n) = tests(1:n)
+                 new_tests(1+n) = new_test
+        call move_alloc(from=new_tests,to=tests)        
+
+    end subroutine add_test
+
+    !> Exponent of matrix tests
     subroutine test_expm_computation(tests)
         !> Collection of tests
         type(unittest_type), allocatable, intent(out) :: tests(:)
         
-        allocate(tests(0))
-        
-        #:for rk,rt,ri in RC_KINDS_TYPES
-        tests = [tests, new_unittest("expm_${ri}$",test_expm_${ri}$)]
-        tests = [tests, new_unittest("Error-handling expm_${ri}$",test_error_handling_expm_${ri}$)]
-        #:endfor
+        call add_test(tests,new_unittest("expm",test_expm))
+        call add_test(tests,new_unittest("error_handling_expm",test_error_handling_expm))
 
     end subroutine test_expm_computation
 
     !> Matrix exponential with analytic expression.
-    #:for rk,rt,ri in RC_KINDS_TYPES
-    subroutine test_expm_${ri}$(error)
+    subroutine test_expm(error)
         type(error_type), allocatable, intent(out) :: error
         ! Problem dimension.
         integer(ilp), parameter :: n = 5, m = 6
         ! Test matrix.
-        ${rt}$ :: A(n, n), E(n, n), Eref(n, n)
-        real(${rk}$) :: err
         integer(ilp) :: i, j
 
-        ! Initialize matrix.
-        A = 0.0_${rk}$
-        do i = 1, n-1
-            A(i, i+1) = m*1.0_${rk}$
-        enddo
-
-        ! Reference with analytical exponential.
-        Eref = eye(n, mold=1.0_${rk}$)
-        do i = 1, n-1
-            do j = 1, n-i
-                Eref(i, i+j) = Eref(i, i+j-1)*m/j
+        #:for rk,rt,ri in RC_KINDS_TYPES
+        block
+            ${rt}$ :: A(n, n), E(n, n), Eref(n, n)
+            real(${rk}$) :: err
+            
+            ! Initialize matrix.
+            A = zero_${rk}$
+            do i = 1, n-1
+                A(i, i+1) = m*one_${rk}$
             enddo
-        enddo
 
-        ! Compute matrix exponential.
-        E = expm(A)
+            ! Reference with analytical exponential
+            Eref = eye(n, mold=one_${rk}$)
+            do i = 1, n-1
+                do j = 1, n-i
+                    Eref(i, i+j) = Eref(i, i+j-1)*m/j
+                enddo
+            enddo
 
-        ! Check result.
-        err = norm(Eref - E, "inf")
-        call check(error, err < (n**2)*epsilon(1.0_${rk}$), "Analytical matrix exponential.")
-        if (allocated(error)) return
-        return        
-    end subroutine test_expm_${ri}$    
-    #:endfor    
+            ! Compute matrix exponential.
+            E = expm(A)
+
+            ! Check result.
+            err = norm(Eref - E, "inf")
+            print *, err , (n**2)*epsilon(1.0_${rk}$)
+            call check(error, err < (n**2)*epsilon(1.0_${rk}$), "Analytical matrix exponential.")
+            if (allocated(error)) return
+        end block     
+        #:endfor  
+    end subroutine test_expm
 
     !> Test error handler.
-    #:for rk,rt,ri in RC_KINDS_TYPES
-    subroutine test_error_handling_expm_${ri}$(error)
+    subroutine test_error_handling_expm(error)
         type(error_type), allocatable, intent(out) :: error
         ! Problem dimension.
         integer(ilp), parameter :: n = 5, m = 6
         ! Test matrix.
-        ${rt}$ :: A(n, n), E(n, n)
+        
         type(linalg_state_type) :: err
         integer(ilp) :: i
 
-        ! Initialize matrix.
-        A = 0.0_${rk}$
-        do i = 1, n-1
-            A(i, i+1) = m*1.0_${rk}$
-        enddo
+        #:for rk,rt,ri in RC_KINDS_TYPES
+        block
+            ${rt}$ :: A(n, n), E(n, n)
+            ! Initialize matrix.
+            A = zero_${rk}$
+            do i = 1, n-1
+                A(i, i+1) = m*one_${rk}$
+            enddo
 
-        ! Compute matrix exponential.
-        call matrix_exp(A, E, order=-1, err=err)
-        ! Check result.
-        call check(error, err%error(), "Negative Pade order")
-        if (allocated(error)) return
+            ! Compute matrix exponential.
+            call matrix_exp(A, E, order=-1, err=err)
+            ! Check result.
+            call check(error, err%error(), "Negative Pade order")
+            if (allocated(error)) return
 
-        call matrix_exp(A, order=-1, err=err)
-        ! Check result.
-        call check(error, err%error(), "Negative Pade order")
-        if (allocated(error)) return
+            call matrix_exp(A, order=-1, err=err)
+            ! Check result.
+            call check(error, err%error(), "Negative Pade order")
+            if (allocated(error)) return
 
-        ! Compute matrix exponential.
-        call matrix_exp(A, E(:n, :n-1), err=err)
-        ! Check result.
-        call check(error, err%error(), "Invalid matrix size")
-        if (allocated(error)) return
+            ! Compute matrix exponential.
+            call matrix_exp(A, E(:n, :n-1), err=err)
+            ! Check result.
+            call check(error, err%error(), "Invalid matrix size")
+            if (allocated(error)) return
 
-        ! Compute matrix exponential.
-        call matrix_exp(A(:n, :n-1), err=err)
-        ! Check result.
-        call check(error, err%error(), "Invalid matrix size")
-        if (allocated(error)) return
-
-        return        
-    end subroutine test_error_handling_expm_${ri}$    
-    #:endfor    
+            ! Compute matrix exponential.
+            call matrix_exp(A(:n, :n-1), err=err)
+            ! Check result.
+            call check(error, err%error(), "Invalid matrix size")
+            if (allocated(error)) return
+        end block
+        #:endfor
+    end subroutine test_error_handling_expm
 
 end module test_linalg_expm
 
