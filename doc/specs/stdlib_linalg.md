@@ -1892,7 +1892,7 @@ Experimental
 
 ### Description
 
-Given a matrix \(A\), this function compute its matrix exponential \(E = \exp(A)\) using a Pade approximation.
+Given a matrix \(A\), this function computes its matrix exponential \(E = \exp(A)\) using a Pade approximation.
 
 ### Syntax
 
