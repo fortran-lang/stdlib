@@ -137,9 +137,14 @@ public :: null_device
 !! version: experimental
 !!
 !! A helper function for returning the `type(state_type)` with the flag `STDLIB_FS_ERROR` set.
-!! `FS_ERROR_CODE` also prefixes the `code` passed to it as the first argument 
 !!
-public :: FS_ERROR, FS_ERROR_CODE
+public :: fs_error
+!! version: experimental
+!!
+!! A helper function for returning the `type(state_type)` with the flag `STDLIB_FS_ERROR` set.
+!! It also formats and prefixes the `code` passed to it as the first argument
+!!
+public :: fs_error_code
      
 ! CPU clock ticks storage
 integer, parameter, private :: TICKS = int64
@@ -777,7 +782,7 @@ subroutine delete_file(path, err)
     end if
 end subroutine delete_file
 
-pure function FS_ERROR_CODE(code,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10, & 
+pure function fs_error_code(code,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10, & 
         a11,a12,a13,a14,a15,a16,a17,a18) result(state)
 
     type(state_type) :: state
@@ -789,9 +794,9 @@ pure function FS_ERROR_CODE(code,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10, &
 
     state = state_type(STDLIB_FS_ERROR, "code -", to_string(code)//",",a1,a2,a3,a4,a5,a6,a7,a8, & 
         a9,a10,a11,a12,a13,a14,a15,a16,a17,a18)
-end function FS_ERROR_CODE
+end function fs_error_code
 
-pure function FS_ERROR(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11, &
+pure function fs_error(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11, &
         a12,a13,a14,a15,a16,a17,a18,a19,a20) result(state)
 
     type(state_type) :: state
@@ -801,6 +806,6 @@ pure function FS_ERROR(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11, &
 
     state = state_type(STDLIB_FS_ERROR, a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12, &
         a13,a14,a15,a16,a17,a18,a19,a20)
-end function FS_ERROR
+end function fs_error
 
 end module stdlib_system
