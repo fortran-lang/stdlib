@@ -1,7 +1,7 @@
 submodule(stdlib_system) stdlib_system_path
     use stdlib_ascii, only: reverse
     use stdlib_strings, only: chomp, find, join
-    use stdlib_string_type, only: string_type, char, assignment(=)
+    use stdlib_string_type, only: string_type, char, move
 contains
     module function join2_char_char(p1, p2) result(path)
         character(:), allocatable :: path
@@ -22,15 +22,21 @@ contains
         type(string_type) :: path
         type(string_type), intent(in) :: p1
         character(*), intent(in) :: p2
+        character(:), allocatable :: join_char
 
-        path = join_path(char(p1), p2)
+        join_char = join_path(char(p1), p2)
+
+        call move(join_char, path)
     end function join2_string_char
 
     module function join2_string_string(p1, p2) result(path)
         type(string_type) :: path
         type(string_type), intent(in) :: p1, p2
+        character(:), allocatable :: join_char
 
-        path = join_path(char(p1), char(p2))
+        join_char = join_path(char(p1), char(p2))
+
+        call move(join_char, path)
     end function join2_string_string
 
     module function joinarr_char(p) result(path)
@@ -59,7 +65,7 @@ contains
         character(*), intent(in) :: p1
         type(string_type), intent(in) :: p2
 
-        path = join_path(p1, char(p2))
+        path = join_path(p1, p2)
     end function join_op_char_string
 
     module function join_op_string_char(p1, p2) result(path)
@@ -67,14 +73,14 @@ contains
         type(string_type), intent(in) :: p1
         character(*), intent(in) :: p2
 
-        path = join_path(char(p1), p2)
+        path = join_path(p1, p2)
     end function join_op_string_char
 
     module function join_op_string_string(p1, p2) result(path)
         type(string_type) :: path
         type(string_type), intent(in) :: p1, p2
 
-        path = join_path(char(p1), char(p2))
+        path = join_path(p1, p2)
     end function join_op_string_string
 
     module subroutine split_path_char(p, head, tail)
@@ -128,8 +134,8 @@ contains
 
         call split_path(char(p), head_char, tail_char)
 
-        head = head_char
-        tail = tail_char
+        call move(head_char, head)
+        call move(tail_char, tail)
     end subroutine split_path_string
 
     module function base_name_char(p) result(base)
