@@ -246,6 +246,28 @@ subroutine test_dot_product(error)
         call check(error, all(err(:)<tolerance) , "complex dot_product is not accurate" )
         if (allocated(error)) return
     end block
+
+    block ! test for https://github.com/fortran-lang/stdlib/issues/1016
+        ${t}$, allocatable :: x(:), y(:)
+        real(${k}$), allocatable :: z(:,:)
+        real(${k}$), parameter :: tolerance = epsilon(1._${k}$)*10000
+        real(${k}$) :: err(2)
+        ${t}$ :: p(3)
+
+        allocate(x(n),y(n),z(n,2))
+        call random_number(z)
+        x%re = z(:, 1); x%im = z(:, 2)
+        call random_number(z)
+        y%re = z(:, 1); y%im = z(:, 2)
+        
+        p(1) = dot_product(x,y) ! compiler intrinsic
+        p(2) = stdlib_dot_product_kahan(x,y) ! chunked Kahan dot_product
+        p(3) = stdlib_dot_product(x,y)       ! chunked dot_product
+        err(1:2) = ( abs( p(2:3)%re - p(1)%re ) + abs( p(2:3)%im - p(1)%im ) ) / 2
+        
+        call check(error, all(err(:)<tolerance) , "complex dot_product does not conform to the standard" )
+        if (allocated(error)) return
+    end block
     #:endfor
 
 end subroutine
