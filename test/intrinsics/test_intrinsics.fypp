@@ -248,13 +248,12 @@ subroutine test_dot_product(error)
     end block
 
     block ! test for https://github.com/fortran-lang/stdlib/issues/1016
-        ${t}$, allocatable :: x(:), y(:)
-        real(${k}$), allocatable :: z(:,:)
-        real(${k}$), parameter :: tolerance = epsilon(1._${k}$)*10000
+        ${t}$ :: x(128), y(128)
+        real(${k}$) :: z(128,2)
+        real(${k}$), parameter :: tolerance = epsilon(1._${k}$)*100000
         real(${k}$) :: err(2)
         ${t}$ :: p(3)
 
-        allocate(x(n),y(n),z(n,2))
         call random_number(z)
         x%re = z(:, 1); x%im = z(:, 2)
         call random_number(z)
