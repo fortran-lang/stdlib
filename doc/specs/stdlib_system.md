@@ -442,7 +442,7 @@ An arbitrary list of `integer`, `real`, `complex`, or `character` variables. Num
 
 ### Behavior
 
-Formats all the arguments into a nice error message, utilising the constructor of [[stdlib_system(module):state_type(type)]]
+Formats all the arguments into a nice error message, utilizing the constructor of [[stdlib_system(module):state_type(type)]]
 
 ### Return values
 
@@ -481,7 +481,7 @@ An arbitrary list of `integer`, `real`, `complex`, or `character` variables. Num
 
 ### Behavior
 
-Formats all the arguments into a nice error message, utilising the constructor of [[stdlib_system(module):state_type(type)]]
+Formats all the arguments into a nice error message, utilizing the constructor of [[stdlib_system(module):state_type(type)]]
 
 ### Return values
 
