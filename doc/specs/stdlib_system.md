@@ -418,6 +418,83 @@ Returns one of the `integer` `OS_*` parameters representing the OS type, from th
 
 ---
 
+## `fs_error` - Helper function for error handling
+
+### Status
+
+Experimental
+
+### Description
+
+A helper function for returning the `type(state_type)` with the flag `STDLIB_FS_ERROR` set.
+
+### Syntax
+
+`err = fs_error([a1,a2,a3,a4...... a20])`
+
+### Class
+Pure Function
+
+### Arguments
+
+`a1,a2,a3.....a20`(optional) : They are of type `class(*), dimension(..), optional, intent(in)`. 
+An arbitrary list of `integer`, `real`, `complex`, or `character` variables. Numeric variables may be provided as either scalars or rank-1 (array) inputs.
+
+### Behavior
+
+Formats all the arguments into a nice error message, utilising the constructor of [[stdlib_system(module):state_type(type)]]
+
+### Return values
+
+`type(state_type)`
+
+### Example
+
+```fortran
+{!example/system/example_fs_error.f90!}
+```
+
+---
+
+## `fs_error_code` - Helper function for error handling (with error code)
+
+### Status
+
+Experimental
+
+### Description
+
+A helper function for returning the `type(state_type)` with the flag `STDLIB_FS_ERROR` set.
+It also formats and prefixes the `code` passed to it as the first argument.
+
+### Syntax
+
+`err = fs_error(code [, a1,a2,a3,a4...... a19])`
+
+### Class
+Pure Function
+
+### Arguments
+
+`a1,a2,a3.....a19`: They are of type `class(*), dimension(..), optional, intent(in)`.
+An arbitrary list of `integer`, `real`, `complex`, or `character` variables. Numeric variables may be provided as either scalars or rank-1 (array) inputs.
+
+### Behavior
+
+Formats all the arguments into a nice error message, utilising the constructor of [[stdlib_system(module):state_type(type)]]
+
+### Return values
+
+`type(state_type)`
+
+### Example
+
+```fortran
+{!example/system/example_fs_error.f90!}
+```
+
+---
+
 ## `is_directory` - Test if a path is a directory
 
 ### Status
