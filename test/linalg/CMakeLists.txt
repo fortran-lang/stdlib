@@ -14,6 +14,7 @@ set(
   "test_linalg_svd.fypp"
   "test_linalg_matrix_property_checks.fypp"
   "test_linalg_sparse.fypp"
+  "test_linalg_specialmatrices.fypp"
   "test_linalg_cholesky.fypp"
   "test_linalg_expm.fypp"
 )
@@ -31,6 +32,7 @@ ADDTEST(linalg)
 ADDTEST(linalg_cholesky)
 ADDTEST(linalg_determinant)
 ADDTEST(linalg_eigenvalues)
+ADDTEST(linalg_expm)
 ADDTEST(linalg_matrix_property_checks)
 ADDTEST(linalg_inverse)
 ADDTEST(linalg_pseudoinverse)
@@ -42,5 +44,5 @@ ADDTEST(linalg_qr)
 ADDTEST(linalg_schur)
 ADDTEST(linalg_svd)
 ADDTEST(linalg_sparse)
-ADDTEST(linalg_expm)
+ADDTEST(linalg_specialmatrices)
 ADDTESTPP(blas_lapack)
