@@ -262,7 +262,7 @@ subroutine test_dot_product(error)
         p(1) = dot_product(x,y) ! compiler intrinsic
         p(2) = stdlib_dot_product_kahan(x,y) ! chunked Kahan dot_product
         p(3) = stdlib_dot_product(x,y)       ! chunked dot_product
-        err(1:2) = ( abs( p(2:3)%re - p(1)%re ) + abs( p(2:3)%im - p(1)%im ) ) / 2
+        err(1:2) = sqrt((p(2:3)%re - p(1)%re)**2 + (p(2:3)%im - p(1)%im)**2)
         
         call check(error, all(err(:)<tolerance) , "complex dot_product does not conform to the standard" )
         if (allocated(error)) return
