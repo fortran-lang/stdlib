@@ -20,15 +20,15 @@ module test_linalg_svd
         allocate(tests(0))
 
         #:for rk,rt,ri in REAL_KINDS_TYPES
-        tests = [tests,new_unittest("test_svd_${ri}$",test_svd_${ri}$)]        
+        call add_test(tests,new_unittest("test_svd_${ri}$",test_svd_${ri}$))        
         #:endfor
 
         #:for ck,ct,ci in CMPLX_KINDS_TYPES
-        tests = [tests,new_unittest("test_complex_svd_${ci}$",test_complex_svd_${ci}$)]        
+        call add_test(tests,new_unittest("test_complex_svd_${ci}$",test_complex_svd_${ci}$))        
         #:endfor
 
         #:for rk,rt,ri in RC_KINDS_TYPES
-        tests = [tests,new_unittest("test_svd_row_${ri}$",test_svd_row_${ri}$)]         
+        call add_test(tests,new_unittest("test_svd_row_${ri}$",test_svd_row_${ri}$))         
         #:endfor
 
     end subroutine test_svd
@@ -86,7 +86,7 @@ module test_linalg_svd
         if (allocated(error)) return        
         call check(error, all(abs(s-s_sol)<=tol), test//': S')
         if (allocated(error)) return             
-        call check(error, all(abs(u-u_sol)<=tol) .or. all(abs(u+u_sol)<=tol), test//': U')
+        call check(error, all(abs(abs(u)-abs(u_sol))<=tol), test//': U')
         if (allocated(error)) return             
 
         !> [S, U]. Overwrite A matrix
@@ -97,7 +97,7 @@ module test_linalg_svd
         if (allocated(error)) return        
         call check(error, all(abs(s-s_sol)<=tol), test//': S')
         if (allocated(error)) return             
-        call check(error, all(abs(u-u_sol)<=tol) .or. all(abs(u+u_sol)<=tol), test//': U')
+        call check(error, all(abs(abs(u)-abs(u_sol))<=tol), test//': U')
         if (allocated(error)) return            
 
         !> [S, U, V^T]
@@ -109,9 +109,9 @@ module test_linalg_svd
         if (allocated(error)) return        
         call check(error, all(abs(s-s_sol)<=tol), test//': S')
         if (allocated(error)) return             
-        call check(error, all(abs(u-u_sol)<=tol) .or. all(abs(u+u_sol)<=tol), test//': U')
+        call check(error, all(abs(abs(u)-abs(u_sol))<=tol), test//': U')
         if (allocated(error)) return           
-        call check(error, all(abs(vt-vt_sol)<=tol) .or. all(abs(vt+vt_sol)<=tol), test//': V^T')
+        call check(error, all(abs(abs(vt)-abs(vt_sol))<=tol), test//': V^T')
         if (allocated(error)) return           
         
         !> [S, V^T]. Do not overwrite A matrix
@@ -123,7 +123,7 @@ module test_linalg_svd
         if (allocated(error)) return        
         call check(error, all(abs(s-s_sol)<=tol), test//': S')
         if (allocated(error)) return             
-        call check(error, all(abs(vt-vt_sol)<=tol) .or. all(abs(vt+vt_sol)<=tol), test//': V^T')
+        call check(error, all(abs(abs(vt)-abs(vt_sol))<=tol), test//': V^T')
         if (allocated(error)) return   
 
         !> [S, V^T]. Overwrite A matrix
@@ -134,7 +134,7 @@ module test_linalg_svd
         if (allocated(error)) return        
         call check(error, all(abs(s-s_sol)<=tol), test//': S')
         if (allocated(error)) return             
-        call check(error, all(abs(vt-vt_sol)<=tol) .or. all(abs(vt+vt_sol)<=tol), test//': V^T')
+        call check(error, all(abs(abs(vt)-abs(vt_sol))<=tol), test//': V^T')
         if (allocated(error)) return           
         
         !> [U, S, V^T].
@@ -144,11 +144,11 @@ module test_linalg_svd
         test = '[U, S, V^T]'
         call check(error,state%ok(),test//': '//state%print())
         if (allocated(error)) return        
-        call check(error, all(abs(u-u_sol)<=tol) .or. all(abs(u+u_sol)<=tol), test//': U')
+        call check(error, all(abs(abs(u)-abs(u_sol))<=tol), test//': U')
         if (allocated(error)) return                   
         call check(error, all(abs(s-s_sol)<=tol), test//': S')
         if (allocated(error)) return     
-        call check(error, all(abs(vt-vt_sol)<=tol) .or. all(abs(vt+vt_sol)<=tol), test//': V^T')
+        call check(error, all(abs(abs(vt)-abs(vt_sol))<=tol), test//': V^T')
         if (allocated(error)) return             
 
         !> [U, S, V^T]. Partial storage -> compare until k=2 columns of U rows of V^T
@@ -160,11 +160,11 @@ module test_linalg_svd
         test = '[U, S, V^T], partial storage'
         call check(error,state%ok(),test//': '//state%print())
         if (allocated(error)) return        
-        call check(error, all(abs(u(:,:2)-u_sol(:,:2))<=tol) .or. all(abs(u(:,:2)+u_sol(:,:2))<=tol), test//': U(:,:2)')
+        call check(error, all(abs(abs(u(:,:2))-abs(u_sol(:,:2)))<=tol), test//': U(:,:2)')
         if (allocated(error)) return                   
         call check(error, all(abs(s-s_sol)<=tol), test//': S')
         if (allocated(error)) return     
-        call check(error, all(abs(vt(:2,:)-vt_sol(:2,:))<=tol) .or. all(abs(vt(:2,:)+vt_sol(:2,:))<=tol), test//': V^T(:2,:)')
+        call check(error, all(abs(abs(vt(:2,:))-abs(vt_sol(:2,:)))<=tol), test//': V^T(:2,:)')
         if (allocated(error)) return           
 
     end subroutine test_svd_${ri}$
@@ -264,6 +264,26 @@ module test_linalg_svd
 
     #:endfor
 
+    ! gcc-15 bugfix utility
+    subroutine add_test(tests,new_test)
+        type(unittest_type), allocatable, intent(inout) :: tests(:)    
+        type(unittest_type), intent(in) :: new_test
+        
+        integer :: n
+        type(unittest_type), allocatable :: new_tests(:)
+        
+        if (allocated(tests)) then 
+            n = size(tests)
+        else
+            n = 0
+        end if
+        
+        allocate(new_tests(n+1))
+        if (n>0) new_tests(1:n) = tests(1:n)
+                 new_tests(1+n) = new_test
+        call move_alloc(from=new_tests,to=tests)        
+    
+    end subroutine add_test
 
 end module test_linalg_svd
 
