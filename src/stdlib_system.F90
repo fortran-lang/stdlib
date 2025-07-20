@@ -137,17 +137,17 @@ public :: null_device
 !! version: experimental
 !!
 !! A helper function for returning the `type(state_type)` with the flag `STDLIB_FS_ERROR` set.
-!! ([Specification](../page/specs/stdlib_system.html#fs_error))
+!! ([Specification](../page/specs/stdlib_system.html#FS_ERROR))
 !!
-public :: fs_error
+public :: FS_ERROR
 
 !! version: experimental
 !!
 !! A helper function for returning the `type(state_type)` with the flag `STDLIB_FS_ERROR` set.
 !! It also formats and prefixes the `code` passed to it as the first argument
-!! ([Specification](../page/specs/stdlib_system.html#fs_error_code))
+!! ([Specification](../page/specs/stdlib_system.html#FS_ERROR_CODE))
 !!
-public :: fs_error_code
+public :: FS_ERROR_CODE
      
 ! CPU clock ticks storage
 integer, parameter, private :: TICKS = int64
@@ -785,34 +785,34 @@ subroutine delete_file(path, err)
     end if
 end subroutine delete_file
 
-pure function fs_error_code(code,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10, & 
-        a11,a12,a13,a14,a15,a16,a17,a18, a19) result(state)
+pure function FS_ERROR_CODE(code,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,& 
+        a11,a12,a13,a14,a15,a16,a17,a18,a19) result(state)
 
     type(state_type) :: state
     !> Platform specific error code
     integer, intent(in) :: code
     !> Optional rank-agnostic arguments
-    class(*), intent(in), optional, dimension(..) :: a1,a2,a3,a4,a5,a6,a7,a8,a9,a10, &
-        a11,a12,a13,a14,a15,a16,a17,a18, a19
+    class(*), intent(in), optional, dimension(..) :: a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,&
+        a11,a12,a13,a14,a15,a16,a17,a18,a19
 
     character(32) :: code_msg
 
     write(code_msg, "('code - ', i0, ',')") code
 
-    state = state_type(STDLIB_FS_ERROR, code_msg,a1,a2,a3,a4,a5,a6,a7,a8, &
-        a9,a10,a11,a12,a13,a14,a15,a16,a17,a18, a19)
-end function fs_error_code
+    state = state_type(STDLIB_FS_ERROR, code_msg,a1,a2,a3,a4,a5,a6,a7,a8,&
+        a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19)
+end function FS_ERROR_CODE
 
-pure function fs_error(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11, &
+pure function FS_ERROR(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,&
         a12,a13,a14,a15,a16,a17,a18,a19,a20) result(state)
 
     type(state_type) :: state
     !> Optional rank-agnostic arguments
-    class(*), intent(in), optional, dimension(..) :: a1,a2,a3,a4,a5,a6,a7,a8,a9,a10, &
+    class(*), intent(in), optional, dimension(..) :: a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,&
         a11,a12,a13,a14,a15,a16,a17,a18,a19,a20
 
-    state = state_type(STDLIB_FS_ERROR, a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12, &
+    state = state_type(STDLIB_FS_ERROR, a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,&
         a13,a14,a15,a16,a17,a18,a19,a20)
-end function fs_error
+end function FS_ERROR
 
 end module stdlib_system
