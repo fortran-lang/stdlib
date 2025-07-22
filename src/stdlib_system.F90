@@ -2,7 +2,8 @@ module stdlib_system
 use, intrinsic :: iso_c_binding, only : c_int, c_long, c_ptr, c_null_ptr, c_int64_t, c_size_t, &
     c_f_pointer
 use stdlib_kinds, only: int64, dp, c_bool, c_char
-use stdlib_strings, only: to_c_char, to_string
+use stdlib_strings, only: to_c_char
+use stdlib_string_type, only: string_type
 use stdlib_error, only: state_type, STDLIB_SUCCESS, STDLIB_FS_ERROR
 implicit none
 private
@@ -83,7 +84,15 @@ public :: wait
 public :: kill
 public :: elapsed
 public :: is_windows
-     
+
+!! Public path related functions and interfaces
+public :: path_sep
+public :: join_path
+public :: operator(/)
+public :: split_path
+public :: base_name
+public :: dir_name
+
 !! version: experimental
 !!
 !! Tests if a given path matches an existing directory.
@@ -163,6 +172,21 @@ public :: delete_file
 !! On Windows, this is `NUL`. On UNIX-like systems, this is `/dev/null`.
 !!
 public :: null_device
+
+!! version: experimental
+!!
+!! A helper function for returning the `type(state_type)` with the flag `STDLIB_FS_ERROR` set.
+!! ([Specification](../page/specs/stdlib_system.html#FS_ERROR))
+!!
+public :: FS_ERROR
+
+!! version: experimental
+!!
+!! A helper function for returning the `type(state_type)` with the flag `STDLIB_FS_ERROR` set.
+!! It also formats and prefixes the `code` passed to it as the first argument
+!! ([Specification](../page/specs/stdlib_system.html#FS_ERROR_CODE))
+!!
+public :: FS_ERROR_CODE
      
 ! CPU clock ticks storage
 integer, parameter, private :: TICKS = int64
@@ -580,6 +604,141 @@ interface
     
 end interface 
 
+interface join_path
+    !! version: experimental
+    !!
+    !!### Summary
+    !! join the paths provided according to the OS-specific path-separator
+    !! ([Specification](../page/specs/stdlib_system.html#join_path))
+    !!
+    module function join2_char_char(p1, p2) result(path)
+        character(:), allocatable :: path
+        character(*), intent(in) :: p1, p2
+    end function join2_char_char
+
+    module function join2_char_string(p1, p2) result(path)
+        character(:), allocatable :: path
+        character(*), intent(in) :: p1
+        type(string_type), intent(in) :: p2
+    end function join2_char_string
+
+    module function join2_string_char(p1, p2) result(path)
+        type(string_type) :: path
+        type(string_type), intent(in) :: p1
+        character(*), intent(in) :: p2
+    end function join2_string_char
+
+    module function join2_string_string(p1, p2) result(path)
+        type(string_type) :: path
+        type(string_type), intent(in) :: p1, p2
+    end function join2_string_string
+
+    module function joinarr_char(p) result(path)
+        character(:), allocatable :: path
+        character(*), intent(in) :: p(:)
+    end function joinarr_char
+
+    module function joinarr_string(p) result(path)
+        type(string_type) :: path
+        type(string_type), intent(in) :: p(:)
+    end function joinarr_string
+end interface join_path
+
+interface operator(/)
+    !! version: experimental
+    !!
+    !!### Summary
+    !! A binary operator to join the paths provided according to the OS-specific path-separator
+    !! ([Specification](../page/specs/stdlib_system.html#operator(/)))
+    !!
+    module function join_op_char_char(p1, p2) result(path)
+        character(:), allocatable :: path
+        character(*), intent(in) :: p1, p2
+    end function join_op_char_char
+
+    module function join_op_char_string(p1, p2) result(path)
+        character(:), allocatable :: path
+        character(*), intent(in) :: p1
+        type(string_type), intent(in) :: p2
+    end function join_op_char_string
+
+    module function join_op_string_char(p1, p2) result(path)
+        type(string_type) :: path
+        type(string_type), intent(in) :: p1
+        character(*), intent(in) :: p2
+    end function join_op_string_char
+
+    module function join_op_string_string(p1, p2) result(path)
+        type(string_type) :: path
+        type(string_type), intent(in) :: p1, p2
+    end function join_op_string_string
+end interface operator(/)
+
+interface split_path
+    !! version: experimental
+    !!
+    !!### Summary
+    !! splits the path immediately following the final path-separator
+    !! separating into typically a directory and a file name.
+    !! ([Specification](../page/specs/stdlib_system.html#split_path))
+    !!
+    !!### Description
+    !! If the path is empty `head`='.' and tail=''
+    !! If the path only consists of separators, `head` is set to the separator and tail is empty
+    !! If the path is a root directory, `head` is set to that directory and tail is empty
+    !! `head` ends with a path-separator iff the path appears to be a root directory or a child of the root directory
+    module subroutine split_path_char(p, head, tail)
+        character(*), intent(in) :: p
+        character(:), allocatable, intent(out) :: head, tail
+    end subroutine split_path_char
+
+    module subroutine split_path_string(p, head, tail)
+        type(string_type), intent(in) :: p
+        type(string_type), intent(out) :: head, tail
+    end subroutine split_path_string
+end interface split_path
+
+interface base_name
+    !! version: experimental
+    !!
+    !!### Summary
+    !! returns the base name (last component) of the provided path
+    !! ([Specification](../page/specs/stdlib_system.html#base_name))
+    !!
+    !!### Description
+    !! The value returned is the `tail` of the interface `split_path`
+    module function base_name_char(p) result(base)
+        character(:), allocatable :: base
+        character(*), intent(in) :: p
+    end function base_name_char
+
+    module function base_name_string(p) result(base)
+        type(string_type) :: base
+        type(string_type), intent(in) :: p
+    end function base_name_string
+end interface base_name
+
+interface dir_name
+    !! version: experimental
+    !!
+    !!### Summary
+    !! returns everything but the last component of the provided path
+    !! ([Specification](../page/specs/stdlib_system.html#dir_name))
+    !!
+    !!### Description
+    !! The value returned is the `head` of the interface `split_path`
+    module function dir_name_char(p) result(dir)
+        character(:), allocatable :: dir
+        character(*), intent(in) :: p
+    end function dir_name_char
+
+    module function dir_name_string(p) result(dir)
+        type(string_type) :: dir
+        type(string_type), intent(in) :: p
+    end function dir_name_string
+end interface dir_name
+
+
 contains
 
 integer function get_runtime_os() result(os)
@@ -889,5 +1048,43 @@ subroutine delete_file(path, err)
         return              
     end if
 end subroutine delete_file
+
+pure function FS_ERROR_CODE(code,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,& 
+        a11,a12,a13,a14,a15,a16,a17,a18,a19) result(state)
+
+    type(state_type) :: state
+    !> Platform specific error code
+    integer, intent(in) :: code
+    !> Optional rank-agnostic arguments
+    class(*), intent(in), optional, dimension(..) :: a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,&
+        a11,a12,a13,a14,a15,a16,a17,a18,a19
+
+    character(32) :: code_msg
+
+    write(code_msg, "('code - ', i0, ',')") code
+
+    state = state_type(STDLIB_FS_ERROR, code_msg,a1,a2,a3,a4,a5,a6,a7,a8,&
+        a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19)
+end function FS_ERROR_CODE
+
+pure function FS_ERROR(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,&
+        a12,a13,a14,a15,a16,a17,a18,a19,a20) result(state)
+
+    type(state_type) :: state
+    !> Optional rank-agnostic arguments
+    class(*), intent(in), optional, dimension(..) :: a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,&
+        a11,a12,a13,a14,a15,a16,a17,a18,a19,a20
+
+    state = state_type(STDLIB_FS_ERROR, a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,&
+        a13,a14,a15,a16,a17,a18,a19,a20)
+end function FS_ERROR
+
+character function path_sep()
+    if (OS_TYPE() == OS_WINDOWS) then
+        path_sep = '\'
+    else
+        path_sep = '/'
+    end if
+end function path_sep
 
 end module stdlib_system

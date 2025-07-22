@@ -174,7 +174,7 @@ The result is a real value representing the elapsed time in seconds, measured fr
 
 ### Syntax
 
-`delta_t = ` [[stdlib_system(module):elapsed(subroutine)]] `(process)`
+`delta_t = ` [[stdlib_system(module):elapsed(interface)]] `(process)`
 
 ### Arguments
 
@@ -212,7 +212,7 @@ in case of process hang or delay.
 
 ### Syntax
 
-`call ` [[stdlib_system(module):wait(subroutine)]] `(process [, max_wait_time])`
+`call ` [[stdlib_system(module):wait(interface)]] `(process [, max_wait_time])`
 
 ### Arguments
 
@@ -243,7 +243,7 @@ This is especially useful for monitoring asynchronous processes and retrieving t
 
 ### Syntax
 
-`call ` [[stdlib_system(module):update(subroutine)]] `(process)`
+`call ` [[stdlib_system(module):update(interface)]] `(process)`
 
 ### Arguments
 
@@ -269,7 +269,7 @@ This interface is useful when a process needs to be forcefully stopped, for exam
 
 ### Syntax
 
-`call ` [[stdlib_system(module):kill(subroutine)]] `(process, success)`
+`call ` [[stdlib_system(module):kill(interface)]] `(process, success)`
 
 ### Arguments
 
@@ -298,7 +298,7 @@ It ensures that the requested sleep duration is honored on both Windows and Unix
 
 ### Syntax
 
-`call ` [[stdlib_system(module):sleep(subroutine)]] `(millisec)`
+`call ` [[stdlib_system(module):sleep(interface)]] `(millisec)`
 
 ### Arguments
 
@@ -324,7 +324,7 @@ This function is highly efficient and works during the compilation phase, avoidi
 
 ### Syntax
 
-`result = ` [[stdlib_system(module):is_windows(function)]] `()`
+`result = ` [[stdlib_system(module):is_windows(interface)]] `()`
 
 ### Return Value
 
@@ -359,7 +359,7 @@ If the OS cannot be identified, the function returns `OS_UNKNOWN`.
 
 ### Syntax
 
-`os = [[stdlib_system(module):get_runtime_os(function)]]()`
+`os = ` [[stdlib_system(module):get_runtime_os(function)]] `()`
 
 ### Class
 
@@ -396,7 +396,7 @@ This caching mechanism ensures negligible overhead for repeated calls, unlike `g
 
 ### Syntax
 
-`os = [[stdlib_system(module):OS_TYPE(function)]]()`
+`os = ` [[stdlib_system(module):OS_TYPE(function)]]`()`
 
 ### Class
 
@@ -418,6 +418,85 @@ Returns one of the `integer` `OS_*` parameters representing the OS type, from th
 
 ---
 
+## `FS_ERROR` - Helper function for error handling
+
+### Status
+
+Experimental
+
+### Description
+
+A helper function for returning the `type(state_type)` with the flag `STDLIB_FS_ERROR` set.
+
+### Syntax
+
+`err = FS_ERROR([a1,a2,a3,a4...... a20])`
+
+### Class
+Pure Function
+
+### Arguments
+
+`a1,a2,a3.....a20`(optional): They are of type `class(*), dimension(..), optional, intent(in)`. 
+An arbitrary list of `integer`, `real`, `complex`, `character` or `string_type` variables. Numeric variables may be provided as either scalars or rank-1 (array) inputs.
+
+### Behavior
+
+Formats all the arguments into a nice error message, utilizing the constructor of [[stdlib_system(module):state_type(type)]]
+
+### Return values
+
+`type(state_type)`
+
+### Example
+
+```fortran
+{!example/system/example_fs_error.f90!}
+```
+
+---
+
+## `FS_ERROR_CODE` - Helper function for error handling (with error code)
+
+### Status
+
+Experimental
+
+### Description
+
+A helper function for returning the `type(state_type)` with the flag `STDLIB_FS_ERROR` set.
+It also formats and prefixes the `code` passed to it as the first argument.
+
+### Syntax
+
+`err = FS_ERROR_CODE(code [, a1,a2,a3,a4...... a19])`
+
+### Class
+Pure Function
+
+### Arguments
+
+`code`: An `integer` code.
+
+`a1,a2,a3.....a19`(optional): They are of type `class(*), dimension(..), optional, intent(in)`.
+An arbitrary list of `integer`, `real`, `complex`, `character` or `string_type` variables. Numeric variables may be provided as either scalars or rank-1 (array) inputs.
+
+### Behavior
+
+Formats all the arguments into a nice error message, utilizing the constructor of [[stdlib_system(module):state_type(type)]]
+
+### Return values
+
+`type(state_type)`
+
+### Example
+
+```fortran
+{!example/system/example_fs_error.f90!}
+```
+
+---
+
 ## `is_directory` - Test if a path is a directory
 
 ### Status
@@ -431,7 +510,7 @@ It is designed to work across multiple platforms. On Windows, paths with both fo
 
 ### Syntax
 
-`result = [[stdlib_system(module):is_directory(function)]] (path)`
+`result = ` [[stdlib_system(module):is_directory(function)]]`(path)`
 
 ### Class
 
@@ -547,7 +626,7 @@ It reads as an empty file. The null device's path varies by operating system:
 
 ### Syntax
 
-`path = [[stdlib_system(module):null_device(function)]]()`
+`path = ` [[stdlib_system(module):null_device(function)]]`()`
 
 ### Class
 
@@ -582,7 +661,7 @@ The function provides an optional error-handling mechanism via the `state_type` 
 
 ### Syntax
 
-`call [[stdlib_system(module):delete_file(subroutine)]] (path [, err])`
+`call ` [[stdlib_system(module):delete_file(subroutine)]]` (path [, err])`
 
 ### Class
 Subroutine
@@ -607,4 +686,176 @@ The file is removed from the filesystem if the operation is successful. If the o
 
 ```fortran
 {!example/system/example_delete_file.f90!}
+```
+
+## `join_path` - Joins the provided paths according to the OS
+
+### Status
+
+Experimental
+
+### Description
+
+This interface joins the paths provided to it according to the platform specific path-separator.
+i.e `\` for windows and `/` for others
+
+### Syntax
+
+`res = ` [[stdlib_system(module):join_path(interface)]] ` (p1, p2)`
+
+`res = ` [[stdlib_system(module):join_path(interface)]] ` (p)`
+
+### Class
+Pure function
+
+### Arguments
+
+`p1, p2`: Shall be a character string or `type(string_type)`. It is an `intent(in)` argument.
+    or
+`p`: Shall be a list of character strings or list of `type(string_type)`. It is an `intent(in)` argument.
+
+### Return values
+
+The resultant path, either a character string or `type(string_type)`.
+
+## `operator(/)`
+
+Alternative syntax to`join_path` using an overloaded operator. Join two paths according to the platform specific path-separator.
+
+### Status
+
+Experimental
+
+### Syntax
+
+`p = lval / rval`
+
+### Class
+
+Pure function.
+
+### Arguments
+
+`lval`: A character string or `type(string_type)`. It is an `intent(in)` argument.
+
+`rval`: A character string or `type(string_type)`. It is an `intent(in)` argument.
+
+### Result value
+
+The result is an `allocatable` character string or `type(string_type)`
+
+#### Example
+
+```fortran
+{!example/system/example_path_join.f90!}
+```
+
+## `split_path` - splits a path immediately following the last separator
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine splits a path immediately following the last separator after removing the trailing separators
+splitting it into most of the times a directory and a file name.
+
+### Syntax
+
+`call `[[stdlib_system(module):split_path(interface)]]`(p, head, tail)`
+
+### Class
+Subroutine
+
+### Arguments
+
+`p`: A character string or `type(string_type)` containing the path to be split. It is an `intent(in)` argument.
+`head`: The first part of the path. Either a character string or `type(string_type)`. It is an `intent(out)` argument.
+`tail`: The rest part of the path. Either a character string or `type(string_type)`. It is an `intent(out)` argument.
+
+### Behavior
+
+- If `p` is empty, `head` is set to `.` and `tail` is left empty.
+- If `p` consists entirely of path-separators, `head` is set to the path-separator and `tail` is left empty.
+- `head` ends with a path-separator if and only if `p` appears to be a root directory or child of one.
+
+### Return values
+
+The splitted path. `head` and `tail`.
+
+### Example
+
+```fortran
+{!example/system/example_path_split_path.f90!}
+```
+
+## `base_name` - The last part of a path
+
+### Status
+
+Experimental
+
+### Description
+
+This function returns the last part of a path after removing trailing path separators.
+
+### Syntax
+
+`res = ` [[stdlib_system(module):base_name(interface)]]`(p)`
+
+### Class
+Function
+
+### Arguments
+
+`p`: the path, a character string or `type(string_type)`. It is an `intent(in)` argument.
+
+### Behavior
+
+- The `tail` of `[[stdlib_system(module):split_path(interface)]]` is exactly what is returned. Same Behavior.
+
+### Return values
+
+A character string or `type(string_type)`.
+
+### Example
+
+```fortran
+{!example/system/example_path_base_name.f90!}
+```
+
+## `dir_name` - Everything except the last part of the path
+
+### Status
+
+Experimental
+
+### Description
+
+This function returns everything except the last part of a path.
+
+### Syntax
+
+`res = ` [[stdlib_system(module):dir_name(interface)]]`(p)`
+
+### Class
+Function
+
+### Arguments
+
+`p`: the path, a character string or `type(string_type)`. It is an `intent(in)` argument.
+
+### Behavior
+
+- The `head` of `[[stdlib_system(module):split_path(interface)]]` is exactly what is returned. Same Behavior.
+
+### Return values
+
+A character string or `type(string_type)`.
+
+### Example
+
+```fortran
+{!example/system/example_path_dir_name.f90!}
 ```

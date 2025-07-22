@@ -1,7 +1,7 @@
 module test_filesystem
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
-    use stdlib_system, only: is_directory, delete_file, make_directory, remove_directory
-    use stdlib_error, only: state_type
+    use stdlib_system, only: is_directory, delete_file, FS_ERROR, FS_ERROR_CODE
+    use stdlib_error, only: state_type, STDLIB_FS_ERROR
 
     implicit none
 
@@ -13,6 +13,7 @@ contains
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
+            new_unittest("fs_error", test_fs_error), &
             new_unittest("fs_is_directory_dir", test_is_directory_dir), &
             new_unittest("fs_is_directory_file", test_is_directory_file), &
             new_unittest("fs_delete_non_existent", test_delete_file_non_existent), &
@@ -24,6 +25,26 @@ contains
             new_unittest("fs_remove_dir_non_existent", test_remove_directory_nonexistent) &            
         ]
     end subroutine collect_suite
+
+    subroutine test_fs_error(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(state_type) :: s1, s2
+        character(:), allocatable :: msg
+
+        msg = "code - 10, Cannot create File temp.txt - File already exists"
+        s1 = FS_ERROR_CODE(10, "Cannot create File temp.txt -", "File already exists")
+
+        call check(error, s1%state == STDLIB_FS_ERROR .and. s1%message == msg, &
+            "FS_ERROR_CODE: Could not construct the state with code correctly")
+        if (allocated(error)) return
+
+        msg = "Cannot create File temp.txt - File already exists"
+        s2 = FS_ERROR("Cannot create File temp.txt -", "File already exists")
+
+        call check(error, s2%state == STDLIB_FS_ERROR .and. s2%message == msg, &
+            "FS_ERROR: Could not construct state without code correctly")
+        if (allocated(error)) return
+    end subroutine test_fs_error
 
     ! Test `is_directory` for a directory
     subroutine test_is_directory_dir(error)
