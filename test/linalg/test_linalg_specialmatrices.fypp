@@ -400,9 +400,11 @@ contains
             integer, parameter :: wp = ${k1}$
             integer, parameter :: n = 5
             type(hermtridiagonal_${s1}$_type) :: A, B, C
-            ${t1}$, allocatable :: Amat(:, :), Bmat(:, :), Cmat(:, :)
+            type(tridiagonal_${s1}$_type) :: D
+            ${t1}$, allocatable :: Amat(:, :), Bmat(:, :), Cmat(:, :), Dmat(:, :)
             ${t1}$, allocatable :: dv(:), ev(:)
-            ${t1}$, parameter :: alpha = 2.0_dp
+            ${t1}$, parameter :: alpha = cmplx(2.0_wp, 2.0_wp, kind=wp)
+            real(${k1}$), parameter :: beta = 2.0_wp
             integer :: i, j
             real(wp), allocatable :: data(:, :)
 
@@ -428,12 +430,20 @@ contains
             if (allocated(error)) return
 
             ! Matrix scalar multiplication
-            C = alpha * A ; Cmat = dense(C)
-            call check(error, all_close(Cmat, alpha * Amat), .true.)
+            D = alpha * A ; Dmat = dense(D)
+            call check(error, all_close(Dmat, alpha * Amat), .true.)
             if (allocated(error)) return
 
-            C = A *alpha ; Cmat = dense(C)
-            call check(error, all_close(Cmat, alpha * Amat), .true.)
+            D = A * alpha ; Dmat = dense(D)
+            call check(error, all_close(Dmat, alpha * Amat), .true.)
+            if (allocated(error)) return
+
+            C = beta * A ; Cmat = dense(C)
+            call check(error, all_close(Cmat, beta * Amat), .true.)
+            if (allocated(error)) return
+
+            C = A * beta ; Cmat = dense(C)
+            call check(error, all_close(Cmat, beta * Amat), .true.)
             if (allocated(error)) return
         end block
         #:endfor

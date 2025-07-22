@@ -452,11 +452,21 @@ module stdlib_specialmatrices
         pure module function scalar_multiplication_hermtridiagonal_${s1}$(alpha, A) result(B)
             ${t1}$, intent(in) :: alpha
             type(hermtridiagonal_${s1}$_type), intent(in) :: A
-            type(hermtridiagonal_${s1}$_type) :: B
+            type(tridiagonal_${s1}$_type) :: B
         end function
         pure module function scalar_multiplication_bis_hermtridiagonal_${s1}$(A, alpha) result(B)
             type(hermtridiagonal_${s1}$_type), intent(in) :: A
             ${t1}$, intent(in) :: alpha
+            type(tridiagonal_${s1}$_type) :: B
+        end function
+        pure module function real_scalar_multiplication_hermtridiagonal_${s1}$(alpha, A) result(B)
+            real(${k1}$), intent(in) :: alpha
+            type(hermtridiagonal_${s1}$_type), intent(in) :: A
+            type(hermtridiagonal_${s1}$_type) :: B
+        end function
+        pure module function real_scalar_multiplication_bis_hermtridiagonal_${s1}$(A, alpha) result(B)
+            type(hermtridiagonal_${s1}$_type), intent(in) :: A
+            real(${k1}$), intent(in) :: alpha
             type(hermtridiagonal_${s1}$_type) :: B
         end function
         #:endif

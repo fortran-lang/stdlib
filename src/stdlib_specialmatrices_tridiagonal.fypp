@@ -549,17 +549,33 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
      pure module function scalar_multiplication_hermtridiagonal_${s1}$(alpha, A) result(B)
         ${t1}$, intent(in) :: alpha
         type(hermtridiagonal_${s1}$_type), intent(in) :: A
-        type(hermtridiagonal_${s1}$_type) :: B
-        B = hermtridiagonal(A%dv, A%du)
-        B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = conjg(B%dl)
+        type(tridiagonal_${s1}$_type) :: B
+        B = tridiagonal(A%dl, A%dv, A%du)
+        B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = alpha*B%du
     end function
 
     pure module function scalar_multiplication_bis_hermtridiagonal_${s1}$(A, alpha) result(B)
         type(hermtridiagonal_${s1}$_type), intent(in) :: A
         ${t1}$, intent(in) :: alpha
+        type(tridiagonal_${s1}$_type) :: B
+        B = tridiagonal(A%dl, A%dv, A%du)
+        B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = alpha*B%du
+    end function
+    
+    pure module function real_scalar_multiplication_hermtridiagonal_${s1}$(alpha, A) result(B)
+        real(${k1}$), intent(in) :: alpha
+        type(hermtridiagonal_${s1}$_type), intent(in) :: A
         type(hermtridiagonal_${s1}$_type) :: B
         B = hermtridiagonal(A%dv, A%du)
-        B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = conjg(B%dl)
+        B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = alpha*B%du
+    end function
+
+    pure module function real_scalar_multiplication_bis_hermtridiagonal_${s1}$(A, alpha) result(B)
+        type(hermtridiagonal_${s1}$_type), intent(in) :: A
+        real(${k1}$), intent(in) :: alpha
+        type(hermtridiagonal_${s1}$_type) :: B
+        B = hermtridiagonal(A%dv, A%du)
+        B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = alpha*B%du
     end function
     #:endif
     #:endfor
