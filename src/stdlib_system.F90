@@ -2,7 +2,7 @@ module stdlib_system
 use, intrinsic :: iso_c_binding, only : c_int, c_long, c_ptr, c_null_ptr, c_int64_t, c_size_t, &
     c_f_pointer
 use stdlib_kinds, only: int64, dp, c_bool, c_char
-use stdlib_strings, only: to_c_char, ends_with
+use stdlib_strings, only: to_c_char, find
 use stdlib_string_type, only: string_type
 use stdlib_optval, only: optval
 use stdlib_error, only: state_type, STDLIB_SUCCESS, STDLIB_FS_ERROR
@@ -124,6 +124,22 @@ public :: is_directory
 !! Appropriate error message is returned whenever any error occurs.
 !!
 public :: make_directory
+
+!! version: experimental
+!!
+!! Makes an empty directory, also creating all the parent directories required.
+!! ([Specification](../page/specs/stdlib_system.html#make_directory))
+!!
+!! ### Summary
+!! Creates an empty directory with all the parent directories required to do so.
+!!
+!! ### Description
+!! This function makes an empty directory according to the path provided.
+!! It also creates all the parent directories required in doing so.
+!! Relative paths as well as on Windows, paths involving either `/` or `\` are accepted.
+!! Appropriate error message is returned whenever any error occurs.
+!!
+public :: make_directory_all
 
 !! version: experimental
 !!
@@ -932,6 +948,51 @@ subroutine make_directory(path, err)
     end if
 
 end subroutine make_directory
+
+subroutine make_directory_all(path, err)
+    character(len=*), intent(in) :: path
+    type(state_type), optional, intent(out) :: err
+
+    integer :: code, i, indx
+    type(state_type) :: err0
+    character(len=1) :: sep
+    logical :: is_dir
+
+    sep = path_sep()
+    i = 1
+    indx = find(path, sep, i)
+
+    do
+        ! Base case to exit the loop
+        if (indx == 0 .or. indx == len(trim(path))) then
+            is_dir = is_directory(path)
+
+            if (.not. is_dir) then
+                call make_directory(path, err0)
+
+                if (err0%error()) then
+                    call err0%handle(err)
+                end if
+
+                return
+            end if
+        end if
+
+        is_dir = is_directory(path(1:indx))
+
+        if (.not. is_dir) then
+            call make_directory(path(1:indx), err0)
+
+            if (err0%error()) then
+                call err0%handle(err)
+                return
+            end if
+        end if
+
+        i = i + 1
+        indx = find(path, sep, i)
+    end do
+end subroutine make_directory_all
 
 !! Removes an empty directory
 subroutine remove_directory(path, err)
