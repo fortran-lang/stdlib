@@ -166,6 +166,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         alpha_ = 1.0_${k1}$ ; if (present(alpha)) alpha_ = alpha
         beta_  = 0.0_${k1}$ ; if (present(beta))  beta_  = beta
         op_    = "N"        ; if (present(op))    op_    = op
+        if (op_ == "H") op_ = "C"
 
         ! Prepare Lapack arguments.
         n = A%n ; ldx = n ; ldy = n ; y = 0.0_${k1}$
