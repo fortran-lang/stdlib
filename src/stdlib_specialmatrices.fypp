@@ -46,6 +46,15 @@ module stdlib_specialmatrices
     end type
     #:endfor
 
+    !--> Hermitian Tridiagonal matrices
+    #:for k1, t1, s1 in (C_KINDS_TYPES)
+    type, extends(tridiagonal_${s1}$_type), public :: hermtridiagonal_${s1}$_type
+        !! Base type to de fine a `hermtridiagonal` matrix.
+        private
+        logical(lk) :: is_posdef
+    end type
+    #:endfor
+
     !--------------------------------
     !-----                      -----
     !-----     CONSTRUCTORS     -----
@@ -218,6 +227,91 @@ module stdlib_specialmatrices
             !! Error handling.
             type(symtridiagonal_${s1}$_type) :: A
             !! Corresponding SymTridiagonal matrix.
+        end function   
+        #:endfor
+    end interface
+
+    interface hermtridiagonal
+        !! ([Specifications](../page/specs/stdlib_specialmatrices.html#HermTridiagonal)) This
+        !! interface provides different methods to construct a `hermtridiagonal`
+        !! matrix. Only the non-zero elements of \( A \) are stored, i.e.
+        !!
+        !! \[
+        !!    A
+        !!    =
+        !!    \begin{bmatrix}
+        !!       a_1   &  b_1  \\
+        !!       b_1  &  a_2      &  b_2  \\
+        !!             &  \ddots   &  \ddots   &  \ddots   \\
+        !!             &           &  b_{n-2} &  a_{n-1}  &  b_{n-1} \\
+        !!             &           &           &  b_{n-1} &  a_n
+        !!    \end{bmatrix}.
+        !! \]
+        !!
+        !! #### Syntax
+        !!
+        !! - Construct a complex `hermtridiagonal` matrix from rank-1 arrays:
+        !!
+        !! ```fortran
+        !!    integer, parameter :: n
+        !!    complex(dp), allocatable :: dv(:), ev(:)
+        !!    type(hermtridiagonal_cdp_type) :: A
+        !!    integer :: i
+        !!
+        !!    ev = [(i, i=1, n-1)]; dv = [(2*i, i=1, n)]
+        !!    A = HermTridiagonal(dv, ev)
+        !! ```
+        !!
+        !! - Construct a complex `hermtridiagonal` matrix with constant diagonals:
+        !!
+        !! ```fortran
+        !!    integer, parameter :: n
+        !!    complex(dp), parameter :: a = 1.0_dp, b = 1.0_dp
+        !!    type(hermtridiagonal_rdp_type) :: A
+        !!
+        !!    A = HermTridiagonal(a, b, n)
+        !! ```
+        #:for k1, t1, s1 in (C_KINDS_TYPES)
+        pure module function initialize_hermtridiagonal_pure_${s1}$(dv, ev) result(A)
+            !! Construct a `tridiagonal` matrix from the rank-1 arrays
+            !! `dl`, `dv` and `du`.
+            ${t1}$, intent(in) :: dv(:), ev(:)
+            !! SymTridiagonal matrix elements.
+            type(hermtridiagonal_${s1}$_type) :: A
+            !! Corresponding HermTridiagonal matrix.
+        end function
+
+        pure module function initialize_constant_hermtridiagonal_pure_${s1}$(dv, ev, n) result(A)
+            !! Construct a `hermtridiagonal` matrix with constant elements.
+            ${t1}$, intent(in) :: dv, ev
+            !! HermTridiagonal matrix elements.
+            integer(ilp), intent(in) :: n
+            !! Matrix dimension.
+            type(hermtridiagonal_${s1}$_type) :: A
+            !! Corresponding HermTridiagonal matrix.
+        end function   
+
+        module function initialize_hermtridiagonal_impure_${s1}$(dv, ev, err) result(A)
+            !! Construct a `hermtridiagonal` matrix from the rank-1 arrays
+            !! `dl`, `dv` and `du`.
+            ${t1}$, intent(in) :: dv(:), ev(:)
+            !! Tridiagonal matrix elements.
+            type(linalg_state_type), intent(out) :: err
+            !! Error handling.
+            type(hermtridiagonal_${s1}$_type) :: A
+            !! Corresponding HermTridiagonal matrix.
+        end function
+
+        module function initialize_constant_hermtridiagonal_impure_${s1}$(dv, ev, n, err) result(A)
+            !! Construct a `hermtridiagonal` matrix with constant elements.
+            ${t1}$, intent(in) :: dv, ev
+            !! Tridiagonal matrix elements.
+            integer(ilp), intent(in) :: n
+            !! Matrix dimension.
+            type(linalg_state_type), intent(out) :: err
+            !! Error handling.
+            type(Hermtridiagonal_${s1}$_type) :: A
+            !! Corresponding HermTridiagonal matrix.
         end function   
         #:endfor
     end interface
