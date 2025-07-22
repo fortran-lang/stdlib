@@ -42,6 +42,7 @@ module stdlib_specialmatrices
         private
         ${t1}$, allocatable :: dv(:), ev(:)
         integer(ilp) :: n
+        logical(lk) :: is_posdef
     end type
     #:endfor
 
@@ -138,7 +139,7 @@ module stdlib_specialmatrices
 
     interface symtridiagonal
         !! ([Specifications](../page/specs/stdlib_specialmatrices.html#SymTridiagonal)) This
-        !! interface provides different methods to construct a `sylmtridiagonal`
+        !! interface provides different methods to construct a `symtridiagonal`
         !! matrix. Only the non-zero elements of \( A \) are stored, i.e.
         !!
         !! \[
@@ -237,7 +238,16 @@ module stdlib_specialmatrices
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
         module subroutine spmv_tridiag_${rank}$d_${s1}$(A, x, y, alpha, beta, op)
-         type(tridiagonal_${s1}$_type), intent(in) :: A
+            type(tridiagonal_${s1}$_type), intent(in) :: A
+            ${t1}$, intent(in), contiguous, target :: x${ranksuffix(rank)}$
+            ${t1}$, intent(inout), contiguous, target :: y${ranksuffix(rank)}$
+            real(${k1}$), intent(in), optional :: alpha
+            real(${k1}$), intent(in), optional :: beta
+            character(1), intent(in), optional :: op
+        end subroutine
+
+        module subroutine spmv_symtridiag_${rank}$d_${s1}$(A, x, y, alpha, beta, op)
+            type(symtridiagonal_${s1}$_type), intent(in) :: A
             ${t1}$, intent(in), contiguous, target :: x${ranksuffix(rank)}$
             ${t1}$, intent(inout), contiguous, target :: y${ranksuffix(rank)}$
             real(${k1}$), intent(in), optional :: alpha
@@ -266,6 +276,14 @@ module stdlib_specialmatrices
             ${t1}$, allocatable :: B(:, :)
             !! Corresponding dense matrix.
         end function
+
+        pure module function symtridiagonal_to_dense_${s1}$(A) result(B)
+            !! Convert a `symtridiagonal` matrix to its dense representation.
+            type(symtridiagonal_${s1}$_type), intent(in) :: A
+            !! Input SymTridiagonal matrix.
+            ${t1}$, allocatable :: B(:, :)
+            !! Corresponding dense matrix.
+        end function
         #:endfor
     end interface
 
@@ -278,6 +296,12 @@ module stdlib_specialmatrices
             type(tridiagonal_${s1}$_type), intent(in) :: A
             !! Input matrix.
             type(tridiagonal_${s1}$_type) :: B
+        end function
+
+        pure module function transpose_symtridiagonal_${s1}$(A) result(B)
+            type(symtridiagonal_${s1}$_type), intent(in) :: A
+            !! Input matrix.
+            type(symtridiagonal_${s1}$_type) :: B
         end function
         #:endfor
     end interface
@@ -292,6 +316,12 @@ module stdlib_specialmatrices
             type(tridiagonal_${s1}$_type), intent(in) :: A
             !! Input matrix.
             type(tridiagonal_${s1}$_type) :: B
+        end function
+
+        pure module function hermitian_symtridiagonal_${s1}$(A) result(B)
+            type(symtridiagonal_${s1}$_type), intent(in) :: A
+            !! Input matrix.
+            type(symtridiagonal_${s1}$_type) :: B
         end function
         #:endfor
     end interface
@@ -317,6 +347,17 @@ module stdlib_specialmatrices
             ${t1}$, intent(in) :: alpha
             type(tridiagonal_${s1}$_type) :: B
         end function
+
+        pure module function scalar_multiplication_symtridiagonal_${s1}$(alpha, A) result(B)
+            ${t1}$, intent(in) :: alpha
+            type(symtridiagonal_${s1}$_type), intent(in) :: A
+            type(symtridiagonal_${s1}$_type) :: B
+        end function
+        pure module function scalar_multiplication_bis_symtridiagonal_${s1}$(A, alpha) result(B)
+            type(symtridiagonal_${s1}$_type), intent(in) :: A
+            ${t1}$, intent(in) :: alpha
+            type(symtridiagonal_${s1}$_type) :: B
+        end function
         #:endfor
     end interface
 
@@ -330,6 +371,12 @@ module stdlib_specialmatrices
             type(tridiagonal_${s1}$_type), intent(in) :: B
             type(tridiagonal_${s1}$_type) :: C
         end function
+
+        pure module function matrix_add_symtridiagonal_${s1}$(A, B) result(C)
+            type(symtridiagonal_${s1}$_type), intent(in) :: A
+            type(symtridiagonal_${s1}$_type), intent(in) :: B
+            type(symtridiagonal_${s1}$_type) :: C
+        end function
         #:endfor
     end interface
 
@@ -342,6 +389,12 @@ module stdlib_specialmatrices
             type(tridiagonal_${s1}$_type), intent(in) :: A
             type(tridiagonal_${s1}$_type), intent(in) :: B
             type(tridiagonal_${s1}$_type) :: C
+        end function
+
+        pure module function matrix_sub_symtridiagonal_${s1}$(A, B) result(C)
+            type(symtridiagonal_${s1}$_type), intent(in) :: A
+            type(symtridiagonal_${s1}$_type), intent(in) :: B
+            type(symtridiagonal_${s1}$_type) :: C
         end function
         #:endfor
     end interface
