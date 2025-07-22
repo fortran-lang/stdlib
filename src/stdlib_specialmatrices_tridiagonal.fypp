@@ -147,7 +147,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
     #:for k1, t1, s1 in (KINDS_TYPES)
     #:for rank in RANKS
     module subroutine spmv_tridiag_${rank}$d_${s1}$(A, x, y, alpha, beta, op)
-        type(tridiagonal_${s1}$_type), intent(in) :: A
+        class(tridiagonal_${s1}$_type), intent(in) :: A
         ${t1}$, intent(in), contiguous, target :: x${ranksuffix(rank)}$
         ${t1}$, intent(inout), contiguous, target :: y${ranksuffix(rank)}$
         real(${k1}$), intent(in), optional :: alpha
@@ -192,7 +192,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure module function tridiagonal_to_dense_${s1}$(A) result(B)
         !! Convert a `tridiagonal` matrix to its dense representation.
-        type(tridiagonal_${s1}$_type), intent(in) :: A
+        class(tridiagonal_${s1}$_type), intent(in) :: A
         !! Input tridiagonal matrix.
         ${t1}$, allocatable :: B(:, :)
         !! Corresponding dense matrix.
@@ -219,59 +219,110 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure module function transpose_tridiagonal_${s1}$(A) result(B)
-        type(tridiagonal_${s1}$_type), intent(in) :: A
+        class(tridiagonal_${s1}$_type), intent(in) :: A
         !! Input matrix.
-        type(tridiagonal_${s1}$_type) :: B
-        B = tridiagonal(A%du, A%dv, A%dl)
+        class(tridiagonal_${s1}$_type), allocatable :: B
+        select type(A)
+        type is(tridiagonal_${s1}$_type)
+            B = tridiagonal(A%du, A%dv, A%dl)
+        type is(symtridiagonal_${s1}$_type)
+            B = symtridiagonal(A%dv, A%du)
+        end select
     end function
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure module function hermitian_tridiagonal_${s1}$(A) result(B)
-        type(tridiagonal_${s1}$_type), intent(in) :: A
+        class(tridiagonal_${s1}$_type), intent(in) :: A
         !! Input matrix.
-        type(tridiagonal_${s1}$_type) :: B
-        #:if t1.startswith("complex")
-        B = tridiagonal(conjg(A%du), conjg(A%dv), conjg(A%dl))
-        #:else
-        B = tridiagonal(A%du, A%dv, A%dl)
-        #:endif
+        class(tridiagonal_${s1}$_type), allocatable :: B
+        select type(A)
+        type is(tridiagonal_${s1}$_type)
+            #:if t1.startswith("complex")
+            B = tridiagonal(conjg(A%du), conjg(A%dv), conjg(A%dl))
+            #:else
+            B = tridiagonal(A%du, A%dv, A%dl)
+            #:endif
+        type is(symtridiagonal_${s1}$_type)
+            #:if t1.startswith("complex")
+            B = symtridiagonal(conjg(A%dv), conjg(A%du))
+            #:else
+            B = symtridiagonal(A%dv, A%du)
+            #:endif
+        end select
     end function
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure module function scalar_multiplication_tridiagonal_${s1}$(alpha, A) result(B)
         ${t1}$, intent(in) :: alpha
-        type(tridiagonal_${s1}$_type), intent(in) :: A
-        type(tridiagonal_${s1}$_type) :: B
-        B = tridiagonal(A%dl, A%dv, A%du)
-        B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = alpha*B%du
+        class(tridiagonal_${s1}$_type), intent(in) :: A
+        class(tridiagonal_${s1}$_type), allocatable :: B
+        select type(A)
+        type is(tridiagonal_${s1}$_type)
+            B = tridiagonal(A%dl, A%dv, A%du)
+            B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = alpha*B%du
+        type is(symtridiagonal_${s1}$_type)
+            B = symtridiagonal(A%dv, A%du)
+            B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = B%dl
+        end select
     end function
 
     pure module function scalar_multiplication_bis_tridiagonal_${s1}$(A, alpha) result(B)
-        type(tridiagonal_${s1}$_type), intent(in) :: A
+        class(tridiagonal_${s1}$_type), intent(in) :: A
         ${t1}$, intent(in) :: alpha
-        type(tridiagonal_${s1}$_type) :: B
-        B = tridiagonal(A%dl, A%dv, A%du)
-        B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = alpha*B%du
+        class(tridiagonal_${s1}$_type), allocatable :: B
+        B = scalar_multiplication_tridiagonal_${s1}$(alpha, A)
     end function
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure module function matrix_add_tridiagonal_${s1}$(A, B) result(C)
-        type(tridiagonal_${s1}$_type), intent(in) :: A
-        type(tridiagonal_${s1}$_type), intent(in) :: B
-        type(tridiagonal_${s1}$_type) :: C
-        C = tridiagonal(A%dl, A%dv, A%du)
-        C%dl = C%dl + B%dl; C%dv = C%dv + B%dv; C%du = C%du + B%du
+        class(tridiagonal_${s1}$_type), intent(in) :: A
+        class(tridiagonal_${s1}$_type), intent(in) :: B
+        class(tridiagonal_${s1}$_type), allocatable :: C
+        select type(A)
+        type is(tridiagonal_${s1}$_type)
+            ! Tridiagonal + Tridiagonal = Tridiagonal
+            ! Tridiagonal + SymTridiagonal = Tridiagonal
+            C = tridiagonal(A%dl, A%dv, A%du)
+            C%dl = C%dl + B%dl; C%dv = C%dv + B%dv; C%du = C%du + B%du
+        type is(symtridiagonal_${s1}$_type)
+            select type(B)
+            type is(tridiagonal_${s1}$_type)
+                ! SymTridiagonal + Tridiagonal = Tridiagonal
+                C = tridiagonal(A%dl, A%dv, A%du)
+                C%dl = C%dl + B%dl; C%dv = C%dv + B%dv; C%du = C%du + B%du
+            type is(symtridiagonal_${s1}$_type)
+                ! SymTridiagonal + SymTridiagoanl = SymTridiagonal
+                C = symtridiagonal(A%dv, A%du)
+                C%dl = C%dl + B%dl; C%dv = C%dv + B%dv; C%du = C%dl
+            end select
+        end select
     end function
 
     pure module function matrix_sub_tridiagonal_${s1}$(A, B) result(C)
-        type(tridiagonal_${s1}$_type), intent(in) :: A
-        type(tridiagonal_${s1}$_type), intent(in) :: B
-        type(tridiagonal_${s1}$_type) :: C
-        C = tridiagonal(A%dl, A%dv, A%du)
-        C%dl = C%dl - B%dl; C%dv = C%dv - B%dv; C%du = C%du - B%du
+        class(tridiagonal_${s1}$_type), intent(in) :: A
+        class(tridiagonal_${s1}$_type), intent(in) :: B
+        class(tridiagonal_${s1}$_type), allocatable :: C
+        select type(A)
+        type is(tridiagonal_${s1}$_type)
+            ! Tridiagonal - Tridiagonal = Tridiagonal
+            ! Tridiagonal - SymTridiagonal = Tridiagonal
+            C = tridiagonal(A%dl, A%dv, A%du)
+            C%dl = C%dl - B%dl; C%dv = C%dv - B%dv; C%du = C%du - B%du
+        type is(symtridiagonal_${s1}$_type)
+            select type(B)
+            type is(tridiagonal_${s1}$_type)
+                ! SymTridiagonal - Tridiagonal = Tridiagonal
+                C = tridiagonal(A%dl, A%dv, A%du)
+                C%dl = C%dl - B%dl; C%dv = C%dv - B%dv; C%du = C%du - B%du    
+            type is(symtridiagonal_${s1}$_type)
+                ! SymTridiagonal - SymTridiagoanl = SymTridiagonal
+                C = symtridiagonal(A%dv, A%du)
+                C%dl = C%dl - B%dl; C%dv = C%dv - B%dv; C%du = C%dl
+            end select
+        end select
     end function
     #:endfor
 

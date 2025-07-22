@@ -42,7 +42,7 @@ submodule (stdlib_specialmatrices) symtridiagonal_matrices
         ! Description of the matrix.
         A%n = n
         ! Matrix elements.
-        A%dv = dv ; A%ev = ev
+        A%dl = ev ; A%dv = dv ; A%du = ev
     end function
 
     pure module function initialize_constant_symtridiagonal_pure_${s1}$(dv, ev, n) result(A)
@@ -65,8 +65,9 @@ submodule (stdlib_specialmatrices) symtridiagonal_matrices
             call linalg_error_handling(err0)
         endif
         ! Matrix elements.
+        A%dl = [(ev, i = 1, n-1)]
         A%dv = [(dv, i = 1, n-1)]
-        A%ev = [(ev, i = 1, n-1)]
+        A%du = [(ev, i = 1, n-1)]
     end function
 
     module function initialize_symtridiagonal_impure_${s1}$(dv, ev, err) result(A)
@@ -97,7 +98,7 @@ submodule (stdlib_specialmatrices) symtridiagonal_matrices
         ! Description of the matrix.
         A%n = n
         ! Matrix elements.
-        A%dv = dv ; A%ev = ev
+        A%dl = ev ; A%dv = dv ; A%du = ev
     end function
 
     module function initialize_constant_symtridiagonal_impure_${s1}$(dv, ev, n, err) result(A)
@@ -122,146 +123,9 @@ submodule (stdlib_specialmatrices) symtridiagonal_matrices
             call linalg_error_handling(err0, err)
         endif
         ! Matrix elements.
+        A%dl = [(ev, i = 1, n)]
         A%dv = [(dv, i = 1, n-1)]
-        A%ev = [(ev, i = 1, n)]
-    end function
-    #:endfor
-
-    !-----------------------------------------
-    !-----                               -----
-    !-----     MATRIX-VECTOR PRODUCT     -----
-    !-----                               -----
-    !-----------------------------------------
-
-    !! spmv_tridiag
-    #:for k1, t1, s1 in (KINDS_TYPES)
-    #:for rank in RANKS
-    module subroutine spmv_symtridiag_${rank}$d_${s1}$(A, x, y, alpha, beta, op)
-        type(symtridiagonal_${s1}$_type), intent(in) :: A
-        ${t1}$, intent(in), contiguous, target :: x${ranksuffix(rank)}$
-        ${t1}$, intent(inout), contiguous, target :: y${ranksuffix(rank)}$
-        real(${k1}$), intent(in), optional :: alpha
-        real(${k1}$), intent(in), optional :: beta
-        character(1), intent(in), optional :: op
-
-        ! Internal variables.
-        real(${k1}$) :: alpha_, beta_
-        integer(ilp) :: n, nrhs, ldx, ldy
-        character(1) :: op_
-        #:if rank == 1
-        ${t1}$, pointer :: xmat(:, :), ymat(:, :)
-        #:endif
-
-        ! Deal with optional arguments.
-        alpha_ = 1.0_${k1}$ ; if (present(alpha)) alpha_ = alpha
-        beta_  = 0.0_${k1}$ ; if (present(beta))  beta_  = beta
-        op_    = "N"        ; if (present(op))    op_    = op
-        if (op_ == "H") op_ = "C"
-
-        ! Prepare Lapack arguments.
-        n = A%n ; ldx = n ; ldy = n ; y = 0.0_${k1}$
-        nrhs = #{if rank==1}# 1 #{else}# size(x, dim=2, kind=ilp) #{endif}#
-
-        #:if rank == 1
-        ! Pointer trick.
-        xmat(1:n, 1:nrhs) => x ; ymat(1:n, 1:nrhs) => y
-        call lagtm(op_, n, nrhs, alpha_, A%ev, A%dv, A%ev, xmat, ldx, beta_, ymat, ldy)
-        #:else
-        call lagtm(op_, n, nrhs, alpha_, A%ev, A%dv, A%ev, x, ldx, beta_, y, ldy)
-        #:endif
-    end subroutine
-    #:endfor
-    #:endfor
-
-    !-------------------------------------
-    !-----                           -----
-    !-----     UTILITY FUNCTIONS     -----
-    !-----                           -----
-    !-------------------------------------
-
-    #:for k1, t1, s1 in (KINDS_TYPES)
-    pure module function symtridiagonal_to_dense_${s1}$(A) result(B)
-        !! Convert a `symtridiagonal` matrix to its dense representation.
-        type(symtridiagonal_${s1}$_type), intent(in) :: A
-        !! Input symtridiagonal matrix.
-        ${t1}$, allocatable :: B(:, :)
-        !! Corresponding dense matrix.
-
-        ! Internal variables.
-        integer(ilp) :: i
-
-        associate (n => A%n)
-        #:if t1.startswith('complex')
-        allocate(B(n, n), source=zero_c${k1}$)
-        #:else
-        allocate(B(n, n), source=zero_${k1}$)
-        #:endif
-        B(1, 1) = A%dv(1) ; B(1, 2) = A%ev(1)
-        do concurrent (i=2:n-1)
-            B(i, i-1) = A%ev(i-1)
-            B(i, i) = A%dv(i)
-            B(i, i+1) = A%ev(i)
-        enddo
-        B(n, n-1) = A%ev(n-1) ; B(n, n) = A%dv(n)
-        end associate
-    end function
-    #:endfor
-
-    #:for k1, t1, s1 in (KINDS_TYPES)
-    pure module function transpose_symtridiagonal_${s1}$(A) result(B)
-        type(symtridiagonal_${s1}$_type), intent(in) :: A
-        !! Input matrix.
-        type(symtridiagonal_${s1}$_type) :: B
-        B = A
-    end function
-    #:endfor
-
-    #:for k1, t1, s1 in (KINDS_TYPES)
-    pure module function hermitian_symtridiagonal_${s1}$(A) result(B)
-        type(symtridiagonal_${s1}$_type), intent(in) :: A
-        !! Input matrix.
-        type(symtridiagonal_${s1}$_type) :: B
-        #:if t1.startswith("complex")
-        B = symtridiagonal(A%dv, conjg(A%ev))
-        #:else
-        B = symtridiagonal(A%dv, A%ev)
-        #:endif
-    end function
-    #:endfor
-
-    #:for k1, t1, s1 in (KINDS_TYPES)
-    pure module function scalar_multiplication_symtridiagonal_${s1}$(alpha, A) result(B)
-        ${t1}$, intent(in) :: alpha
-        type(symtridiagonal_${s1}$_type), intent(in) :: A
-        type(symtridiagonal_${s1}$_type) :: B
-        B = symtridiagonal(A%dv, A%ev)
-        B%dv = alpha*B%dv; B%ev = alpha*B%ev
-    end function
-
-    pure module function scalar_multiplication_bis_symtridiagonal_${s1}$(A, alpha) result(B)
-        type(symtridiagonal_${s1}$_type), intent(in) :: A
-        ${t1}$, intent(in) :: alpha
-        type(symtridiagonal_${s1}$_type) :: B
-        B = symtridiagonal(A%dv, A%ev)
-        B%dv = alpha*B%dv; B%ev = alpha*B%ev
-    end function
-    #:endfor
-
-    #:for k1, t1, s1 in (KINDS_TYPES)
-    pure module function matrix_add_symtridiagonal_${s1}$(A, B) result(C)
-        type(symtridiagonal_${s1}$_type), intent(in) :: A
-        type(symtridiagonal_${s1}$_type), intent(in) :: B
-        type(symtridiagonal_${s1}$_type) :: C
-        C = symtridiagonal(A%dv, A%ev)
-        C%dv = C%dv + B%dv; C%ev = C%ev + B%ev
-    end function
-
-    pure module function matrix_sub_symtridiagonal_${s1}$(A, B) result(C)
-        type(symtridiagonal_${s1}$_type), intent(in) :: A
-        type(symtridiagonal_${s1}$_type), intent(in) :: B
-        type(symtridiagonal_${s1}$_type) :: C
-        C = symtridiagonal(A%dv, A%ev)
-        C%dv = C%dv - B%dv; C%ev = C%ev - B%ev
+        A%du = [(ev, i = 1, n)]
     end function
     #:endfor
 
