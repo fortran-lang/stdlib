@@ -584,7 +584,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     ! Tridiag + Tridiag = Tridiag
-    pure function matrix_add_tridiag_tridiag_${s1}$(A, B) result(C)
+    pure module function matrix_add_tridiag_tridiag_${s1}$(A, B) result(C)
         type(tridiagonal_${s1}$_type), intent(in) :: A, B
         type(tridiagonal_${s1}$_type) :: C
         C = tridiagonal(A%dl, A%dv, A%du)
@@ -668,7 +668,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     ! Tridiag - Tridiag = Tridiag
-    pure function matrix_sub_tridiag_tridiag_${s1}$(A, B) result(C)
+    pure module function matrix_sub_tridiag_tridiag_${s1}$(A, B) result(C)
         type(tridiagonal_${s1}$_type), intent(in) :: A, B
         type(tridiagonal_${s1}$_type) :: C
         C = tridiagonal(A%dl, A%dv, A%du)
@@ -746,7 +746,6 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         C%dl = C%dl - B%dl ; C%dv = C%dv - B%dv ; C%du = conjg(C%dl)
     end function
     #:endif
-
     #:endfor
 
 end submodule
