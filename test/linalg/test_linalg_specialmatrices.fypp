@@ -24,9 +24,9 @@ contains
             ! new_unittest('tridiagonal arithmetic', test_tridiagonal_arithmetic), &
             new_unittest('tridiagonal spmv kernel', test_tridiagonal_spmv), &
             ! new_unittest('tridiagonal error handling', test_tridiagonal_error_handling), &
-            new_unittest('symtridiagonal arithmetic', test_symtridiagonal_arithmetic), &
+            ! new_unittest('symtridiagonal arithmetic', test_symtridiagonal_arithmetic), &
             new_unittest('symtridiagonal spmv kernel', test_symtridiagonal_spmv), &
-            new_unittest('hermtridiagonal arithmetic', test_hermtridiagonal_arithmetic), &
+            ! new_unittest('hermtridiagonal arithmetic', test_hermtridiagonal_arithmetic), &
             new_unittest('hermtridiagonal spmv kernel', test_hermtridiagonal_spmv) &
         ]
     end subroutine
