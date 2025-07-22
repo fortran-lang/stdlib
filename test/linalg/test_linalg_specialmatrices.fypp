@@ -1,9 +1,11 @@
 #:include "common.fypp"
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
-#:set KINDS_TYPES = R_KINDS_TYPES
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
 module test_specialmatrices
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_kinds
+    use stdlib_constants
     use stdlib_linalg, only: hermitian
     use stdlib_linalg_state, only: linalg_state_type
     use stdlib_math, only: all_close
@@ -41,17 +43,33 @@ contains
             integer, parameter :: n = 5
             type(tridiagonal_${s1}$_type) :: A
             ${t1}$, allocatable :: Amat(:,:), dl(:), dv(:), du(:)
+            #: if t1.startswith('complex')
+            real(wp), allocatable :: data(:, :)
+            #:endif
             ${t1}$, allocatable :: x(:)
             ${t1}$, allocatable :: y1(:), y2(:)
 
             ! Initialize matrix.
             allocate(dl(n-1), dv(n), du(n-1))
+            #:if t1.startswith('real')
             call random_number(dl) ; call random_number(dv) ; call random_number(du)
+            #:else
+            allocate(data(n, 2))
+            call random_number(data) ; dl%re = data(:n-1, 1) ; dl%im = data(:n-1, 2)
+            call random_number(data) ; dv%re = data(:n, 1) ; dv%im = data(:n, 2)
+            call random_number(data) ; du%re = data(:n-1, 1) ; du%im = data(:n-1, 2)
+            #:endif
             A = tridiagonal(dl, dv, du) ; Amat = dense(A)
 
             ! Random vectors.
+            #:if t1.startswith('real')
             allocate(x(n), source = 0.0_wp)   ; call random_number(x)
             allocate(y1(n), source = 0.0_wp)  ; allocate(y2(n), source=0.0_wp)
+            #:else
+            allocate(x(n), source=zero_c${k1}$)
+            call random_number(data) ; x%re = data(:, 1) ; x%im = data(:, 2)
+            allocate(y1(n), source = zero_c${k1}$)  ; allocate(y2(n), source=zero_c${k1}$)
+            #:endif
 
             ! Test y = A @ x
             y1 = matmul(Amat, x) ; call spmv(A, x, y2)
@@ -117,26 +135,43 @@ contains
             integer, parameter :: n = 5
             type(symtridiagonal_${s1}$_type) :: A
             ${t1}$, allocatable :: Amat(:,:), dv(:), ev(:)
+            #:if t1.startswith('complex')
+            real(wp), allocatable :: data(:, :)
+            #:endif
             ${t1}$, allocatable :: x(:)
             ${t1}$, allocatable :: y1(:), y2(:)
 
             ! Initialize matrix.
             allocate(ev(n-1), dv(n))
+            #:if t1.startswith('real')
             call random_number(dv) ; call random_number(ev)
+            #:else
+            allocate(data(n, 2), source=0.0_wp)
+            call random_number(data) ; dv%re = data(:, 1) ; dv%im = data(:, 2)
+            call random_number(data) ; ev%re = data(:n-1, 1) ; ev%im = data(:n-1, 2)
+            #:endif
             A = symtridiagonal(dv, ev) ; Amat = dense(A)
 
             ! Random vectors.
+            #:if t1.startswith('real')
             allocate(x(n), source = 0.0_wp)   ; call random_number(x)
             allocate(y1(n), source = 0.0_wp)  ; allocate(y2(n), source=0.0_wp)
+            #:else
+            allocate(x(n), source=zero_c${k1}$)
+            call random_number(data) ; x%re = data(:, 1) ; x%im = data(:, 2)
+            allocate(y1(n), source = zero_c${k1}$)  ; allocate(y2(n), source=zero_c${k1}$)
+            #:endif
 
             ! Test y = A @ x
             y1 = matmul(Amat, x) ; call spmv(A, x, y2)
+            print *, "matvec :", all_close(y1, y2)
             call check(error, all_close(y1, y2), .true.)
             if (allocated(error)) return
 
             ! Test y = A.T @ x
             y1 = 0.0_wp ; y2 = 0.0_wp
             y1 = matmul(transpose(Amat), x) ; call spmv(A, x, y2, op="T")
+            print *, "tranposed matvec :", all_close(y1, y2)
             call check(error, all_close(y1, y2), .true.)
             if (allocated(error)) return
 
@@ -144,6 +179,7 @@ contains
             ! Test y = A.H @ x
             y1 = 0.0_wp ; y2 = 0.0_wp
             y1 = matmul(hermitian(Amat), x) ; call spmv(A, x, y2, op="H")
+            print *, "hermitian matvec :", all_close(y1, y2)
             call check(error, all_close(y1, y2), .true.)
             if (allocated(error)) return
             #:endif
