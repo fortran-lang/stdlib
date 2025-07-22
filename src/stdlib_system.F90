@@ -2,7 +2,7 @@ module stdlib_system
 use, intrinsic :: iso_c_binding, only : c_int, c_long, c_ptr, c_null_ptr, c_int64_t, c_size_t, &
     c_f_pointer
 use stdlib_kinds, only: int64, dp, c_bool, c_char
-use stdlib_strings, only: to_c_char
+use stdlib_strings, only: to_c_char, to_string
 use stdlib_string_type, only: string_type
 use stdlib_error, only: state_type, STDLIB_SUCCESS, STDLIB_FS_ERROR
 implicit none
@@ -142,6 +142,21 @@ public :: delete_file
 !! On Windows, this is `NUL`. On UNIX-like systems, this is `/dev/null`.
 !!
 public :: null_device
+
+!! version: experimental
+!!
+!! A helper function for returning the `type(state_type)` with the flag `STDLIB_FS_ERROR` set.
+!! ([Specification](../page/specs/stdlib_system.html#FS_ERROR))
+!!
+public :: FS_ERROR
+
+!! version: experimental
+!!
+!! A helper function for returning the `type(state_type)` with the flag `STDLIB_FS_ERROR` set.
+!! It also formats and prefixes the `code` passed to it as the first argument
+!! ([Specification](../page/specs/stdlib_system.html#FS_ERROR_CODE))
+!!
+public :: FS_ERROR_CODE
      
 ! CPU clock ticks storage
 integer, parameter, private :: TICKS = int64
@@ -913,6 +928,36 @@ subroutine delete_file(path, err)
         return              
     end if
 end subroutine delete_file
+
+pure function FS_ERROR_CODE(code,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,& 
+        a11,a12,a13,a14,a15,a16,a17,a18,a19) result(state)
+
+    type(state_type) :: state
+    !> Platform specific error code
+    integer, intent(in) :: code
+    !> Optional rank-agnostic arguments
+    class(*), intent(in), optional, dimension(..) :: a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,&
+        a11,a12,a13,a14,a15,a16,a17,a18,a19
+
+    character(32) :: code_msg
+
+    write(code_msg, "('code - ', i0, ',')") code
+
+    state = state_type(STDLIB_FS_ERROR, code_msg,a1,a2,a3,a4,a5,a6,a7,a8,&
+        a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19)
+end function FS_ERROR_CODE
+
+pure function FS_ERROR(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,&
+        a12,a13,a14,a15,a16,a17,a18,a19,a20) result(state)
+
+    type(state_type) :: state
+    !> Optional rank-agnostic arguments
+    class(*), intent(in), optional, dimension(..) :: a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,&
+        a11,a12,a13,a14,a15,a16,a17,a18,a19,a20
+
+    state = state_type(STDLIB_FS_ERROR, a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,&
+        a13,a14,a15,a16,a17,a18,a19,a20)
+end function FS_ERROR
 
 character function path_sep()
     if (OS_TYPE() == OS_WINDOWS) then
