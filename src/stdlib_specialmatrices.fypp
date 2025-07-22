@@ -14,7 +14,7 @@ module stdlib_specialmatrices
         LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
     implicit none
     private
-    public :: tridiagonal, symtridiagonal
+    public :: tridiagonal, symtridiagonal, hermtridiagonal
     public :: spmv
     public :: dense, transpose, hermitian
     public :: operator(*), operator(+), operator(-)
@@ -370,10 +370,22 @@ module stdlib_specialmatrices
         !! [Specifications](../page/specs/stdlib_specialmatrices.html#transpose)
         #:for k1, t1, s1 in (KINDS_TYPES)
         pure module function transpose_tridiagonal_${s1}$(A) result(B)
-            class(tridiagonal_${s1}$_type), intent(in) :: A
+            type(tridiagonal_${s1}$_type), intent(in) :: A
             !! Input matrix.
-            class(tridiagonal_${s1}$_type), allocatable :: B
+            type(tridiagonal_${s1}$_type) :: B
         end function
+        pure module function transpose_symtridiagonal_${s1}$(A) result(B)
+            type(symtridiagonal_${s1}$_type), intent(in) :: A
+            !! Input matrix.
+            type(symtridiagonal_${s1}$_type) :: B
+        end function
+        #:if t1.startswith('complex')
+        pure module function transpose_hermtridiagonal_${s1}$(A) result(B)
+            type(hermtridiagonal_${s1}$_type), intent(in) :: A
+            !! Input matrix.
+            type(hermtridiagonal_${s1}$_type) :: B
+        end function
+        #:endif
         #:endfor
     end interface
 
@@ -384,10 +396,22 @@ module stdlib_specialmatrices
         !! [Specifications](../page/specs/stdlib_specialmatrices.html#hermitian)
         #:for k1, t1, s1 in (KINDS_TYPES)
         pure module function hermitian_tridiagonal_${s1}$(A) result(B)
-            class(tridiagonal_${s1}$_type), intent(in) :: A
+            type(tridiagonal_${s1}$_type), intent(in) :: A
             !! Input matrix.
-            class(tridiagonal_${s1}$_type), allocatable :: B
+            type(tridiagonal_${s1}$_type) :: B
         end function
+        pure module function hermitian_symtridiagonal_${s1}$(A) result(B)
+            type(symtridiagonal_${s1}$_type), intent(in) :: A
+            !! Input matrix.
+            type(symtridiagonal_${s1}$_type) :: B
+        end function
+        #:if t1.startswith('complex')
+        pure module function hermitian_hermtridiagonal_${s1}$(A) result(B)
+            type(hermtridiagonal_${s1}$_type), intent(in) :: A
+            !! Input matrix.
+            type(hermtridiagonal_${s1}$_type) :: B
+        end function
+        #:endif
         #:endfor
     end interface
 
@@ -404,14 +428,38 @@ module stdlib_specialmatrices
         #:for k1, t1, s1 in (KINDS_TYPES)
         pure module function scalar_multiplication_tridiagonal_${s1}$(alpha, A) result(B)
             ${t1}$, intent(in) :: alpha
-            class(tridiagonal_${s1}$_type), intent(in) :: A
-            class(tridiagonal_${s1}$_type), allocatable :: B
+            type(tridiagonal_${s1}$_type), intent(in) :: A
+            type(tridiagonal_${s1}$_type) :: B
         end function
         pure module function scalar_multiplication_bis_tridiagonal_${s1}$(A, alpha) result(B)
-            class(tridiagonal_${s1}$_type), intent(in) :: A
+            type(tridiagonal_${s1}$_type), intent(in) :: A
             ${t1}$, intent(in) :: alpha
-            class(tridiagonal_${s1}$_type), allocatable :: B
+            type(tridiagonal_${s1}$_type) :: B
         end function
+
+        pure module function scalar_multiplication_symtridiagonal_${s1}$(alpha, A) result(B)
+            ${t1}$, intent(in) :: alpha
+            type(symtridiagonal_${s1}$_type), intent(in) :: A
+            type(symtridiagonal_${s1}$_type) :: B
+        end function
+        pure module function scalar_multiplication_bis_symtridiagonal_${s1}$(A, alpha) result(B)
+            type(symtridiagonal_${s1}$_type), intent(in) :: A
+            ${t1}$, intent(in) :: alpha
+            type(symtridiagonal_${s1}$_type) :: B
+        end function
+    
+        #:if t1.startswith("complex")
+        pure module function scalar_multiplication_hermtridiagonal_${s1}$(alpha, A) result(B)
+            ${t1}$, intent(in) :: alpha
+            type(hermtridiagonal_${s1}$_type), intent(in) :: A
+            type(hermtridiagonal_${s1}$_type) :: B
+        end function
+        pure module function scalar_multiplication_bis_hermtridiagonal_${s1}$(A, alpha) result(B)
+            type(hermtridiagonal_${s1}$_type), intent(in) :: A
+            ${t1}$, intent(in) :: alpha
+            type(hermtridiagonal_${s1}$_type) :: B
+        end function
+        #:endif
         #:endfor
     end interface
 

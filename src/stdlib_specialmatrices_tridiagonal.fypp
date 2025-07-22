@@ -453,86 +453,107 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure module function transpose_tridiagonal_${s1}$(A) result(B)
-        class(tridiagonal_${s1}$_type), intent(in) :: A
+        type(tridiagonal_${s1}$_type), intent(in) :: A
         !! Input matrix.
-        class(tridiagonal_${s1}$_type), allocatable :: B
-
-        select type(A)
-        type is(tridiagonal_${s1}$_type)
-            B = tridiagonal(A%du, A%dv, A%dl)
-    
-        type is(symtridiagonal_${s1}$_type)
-            B = symtridiagonal(A%dv, A%du)
-        
-        #:if t1.startswith('complex')
-        type is(hermtridiagonal_${s1}$_type)
-            B = hermtridiagonal(A%dv, A%dl)
-        #:endif
-        end select
-
+        type(tridiagonal_${s1}$_type) :: B
+        B = tridiagonal(A%du, A%dv, A%dl)
     end function
+
+    pure module function transpose_symtridiagonal_${s1}$(A) result(B)
+        type(symtridiagonal_${s1}$_type), intent(in) :: A
+        type(symtridiagonal_${s1}$_type) :: B
+        B = symtridiagonal(A%dv, A%du)
+    end function
+        
+    #:if t1.startswith('complex')
+    pure module function transpose_hermtridiagonal_${s1}$(A) result(B)
+        type(hermtridiagonal_${s1}$_type), intent(in) :: A
+        type(hermtridiagonal_${s1}$_type) :: B
+        B = hermtridiagonal(A%dv, A%dl)
+    end function
+    #:endif
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure module function hermitian_tridiagonal_${s1}$(A) result(B)
-        class(tridiagonal_${s1}$_type), intent(in) :: A
+        type(tridiagonal_${s1}$_type), intent(in) :: A
         !! Input matrix.
-        class(tridiagonal_${s1}$_type), allocatable :: B
-
-        select type(A)
-        type is(tridiagonal_${s1}$_type)
-            #:if t1.startswith("complex")
-            B = tridiagonal(conjg(A%du), conjg(A%dv), conjg(A%dl))
-            #:else
-            B = tridiagonal(A%du, A%dv, A%dl)
-            #:endif
-        
-        type is(symtridiagonal_${s1}$_type)
-            #:if t1.startswith("complex")
-            B = symtridiagonal(conjg(A%dv), conjg(A%du))
-            #:else
-            B = symtridiagonal(A%dv, A%du)
-            #:endif
-        
+        type(tridiagonal_${s1}$_type) :: B
         #:if t1.startswith("complex")
-        type is(hermtridiagonal_${s1}$_type)
-            B = hermtridiagonal(A%dv, A%du)
+        B = tridiagonal(conjg(A%du), conjg(A%dv), conjg(A%dl))
+        #:else
+        B = tridiagonal(A%du, A%dv, A%dl)
         #:endif
-        end select
-
     end function
+       
+    pure module function hermitian_symtridiagonal_${s1}$(A) result(B)
+        type(symtridiagonal_${s1}$_type), intent(in) :: A
+        type(symtridiagonal_${s1}$_type) :: B
+        #:if t1.startswith("complex")
+        B = symtridiagonal(conjg(A%dv), conjg(A%du))
+        #:else
+        B = A
+        #:endif
+    end function
+        
+    #:if t1.startswith("complex")
+    pure module function hermitian_hermtridiagonal_${s1}$(A) result(B)
+        type(hermtridiagonal_${s1}$_type), intent(in) :: A
+        type(hermtridiagonal_${s1}$_type) :: B
+        B = A
+    end function
+    #:endif
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure module function scalar_multiplication_tridiagonal_${s1}$(alpha, A) result(B)
         ${t1}$, intent(in) :: alpha
-        class(tridiagonal_${s1}$_type), intent(in) :: A
-        class(tridiagonal_${s1}$_type), allocatable :: B
-
-        select type(A)
-        type is(tridiagonal_${s1}$_type)
-            B = tridiagonal(A%dl, A%dv, A%du)
-            B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = alpha*B%du
-    
-        type is(symtridiagonal_${s1}$_type)
-            B = symtridiagonal(A%dv, A%du)
-            B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = B%dl
-        
-        #:if t1.startswith("complex")
-        type is (hermtridiagonal_${s1}$_type)
-            B = hermtridiagonal(A%dv, A%du)
-            B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = conjg(B%dl)
-        #:endif
-        end select
-
+        type(tridiagonal_${s1}$_type), intent(in) :: A
+        type(tridiagonal_${s1}$_type) :: B
+        B = tridiagonal(A%dl, A%dv, A%du)
+        B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = alpha*B%du
     end function
 
     pure module function scalar_multiplication_bis_tridiagonal_${s1}$(A, alpha) result(B)
-        class(tridiagonal_${s1}$_type), intent(in) :: A
+        type(tridiagonal_${s1}$_type), intent(in) :: A
         ${t1}$, intent(in) :: alpha
-        class(tridiagonal_${s1}$_type), allocatable :: B
+        type(tridiagonal_${s1}$_type) :: B
         B = scalar_multiplication_tridiagonal_${s1}$(alpha, A)
     end function
+
+    pure module function scalar_multiplication_symtridiagonal_${s1}$(alpha, A) result(B)
+        ${t1}$, intent(in) :: alpha
+        type(symtridiagonal_${s1}$_type), intent(in) :: A
+        type(symtridiagonal_${s1}$_type) :: B
+        B = symtridiagonal(A%dv, A%du)
+        B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = B%dl
+    end function
+
+    pure module function scalar_multiplication_bis_symtridiagonal_${s1}$(A, alpha) result(B)
+        type(symtridiagonal_${s1}$_type), intent(in) :: A
+        ${t1}$, intent(in) :: alpha
+        type(symtridiagonal_${s1}$_type) :: B
+        B = symtridiagonal(A%dv, A%du)
+        B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = B%dl
+    end function
+
+    #:if t1.startswith("complex")
+     pure module function scalar_multiplication_hermtridiagonal_${s1}$(alpha, A) result(B)
+        ${t1}$, intent(in) :: alpha
+        type(hermtridiagonal_${s1}$_type), intent(in) :: A
+        type(hermtridiagonal_${s1}$_type) :: B
+        B = hermtridiagonal(A%dv, A%du)
+        B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = conjg(B%dl)
+    end function
+
+    pure module function scalar_multiplication_bis_hermtridiagonal_${s1}$(A, alpha) result(B)
+        type(hermtridiagonal_${s1}$_type), intent(in) :: A
+        ${t1}$, intent(in) :: alpha
+        type(hermtridiagonal_${s1}$_type) :: B
+        B = hermtridiagonal(A%dv, A%du)
+        B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = conjg(B%dl)
+    end function
+    #:endif
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)

@@ -21,10 +21,13 @@ contains
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
-            new_unittest('tridiagonal', test_tridiagonal), &
+            new_unittest('tridiagonal arithmetic', test_tridiagonal_arithmetic), &
+            new_unittest('tridiagonal spmv kernel', test_tridiagonal_spmv), &
             new_unittest('tridiagonal error handling', test_tridiagonal_error_handling), &
-            new_unittest('symtridiagonal', test_symtridiagonal), &
-            new_unittest('symtridiagonal error handling', test_symtridiagonal_error_handling) &
+            new_unittest('symtridiagonal arithmetic', test_symtridiagonal_arithmetic), &
+            new_unittest('symtridiagonal spmv kernel', test_symtridiagonal_spmv), &
+            new_unittest('hermtridiagonal arithmetic', test_hermtridiagonal_arithmetic), &
+            new_unittest('hermtridiagonal spmv kernel', test_hermtridiagonal_spmv) &
         ]
     end subroutine
 
@@ -34,7 +37,66 @@ contains
     !-----                              -----
     !----------------------------------------
 
-    subroutine test_tridiagonal(error)
+    subroutine test_tridiagonal_arithmetic(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        block
+            integer, parameter :: wp = ${k1}$
+            integer, parameter :: n = 5
+            type(tridiagonal_${s1}$_type) :: A, B, C
+            ${t1}$, allocatable :: Amat(:, :), Bmat(:, :), Cmat(:, :)
+            ${t1}$, allocatable :: dl(:), dv(:), du(:)
+            ${t1}$, parameter :: alpha = 2.0_dp
+            integer :: i, j
+            #:if t1.startswith('complex')
+            real(wp), allocatable :: data(:, :)
+            #:endif
+
+            ! Initialize A and B matrices.
+            allocate(dl(n-1), dv(n), du(n-1))
+            #:if t1.startswith('real')
+            call random_number(dl) ; call random_number(dv) ; call random_number(du)
+            #:else
+            allocate(data(n, 2))
+            call random_number(data) ; dl%re = data(:n-1, 1) ; dl%im = data(:n-1, 2)
+            call random_number(data) ; dv%re = data(:n, 1) ; dv%im = data(:n, 2)
+            call random_number(data) ; du%re = data(:n-1, 1) ; du%im = data(:n-1, 2)
+            #:endif
+            A = tridiagonal(dl, dv, du) ; Amat = dense(A)
+            
+            #:if t1.startswith('real')
+            call random_number(dl) ; call random_number(dv) ; call random_number(du)
+            #:else
+            call random_number(data) ; dl%re = data(:n-1, 1) ; dl%im = data(:n-1, 2)
+            call random_number(data) ; dv%re = data(:n, 1) ; dv%im = data(:n, 2)
+            call random_number(data) ; du%re = data(:n-1, 1) ; du%im = data(:n-1, 2)
+            #:endif
+            B = tridiagonal(dl, dv, du) ; Bmat = dense(B)
+       
+            ! Matrix addition.
+            C = A + B ; Cmat = dense(C)
+            call check(error, all_close(Cmat, Amat+Bmat), .true.)
+            if (allocated(error)) return
+
+            ! Matrix subtraction.
+            C = A - B ; Cmat = dense(C)
+            call check(error, all_close(Cmat, Amat-Bmat), .true.)
+            if (allocated(error)) return
+
+            ! Matrix scalar multiplication
+            C = alpha * A ; Cmat = dense(C)
+            call check(error, all_close(Cmat, alpha * Amat), .true.)
+            if (allocated(error)) return
+
+            C = A *alpha ; Cmat = dense(C)
+            call check(error, all_close(Cmat, alpha * Amat), .true.)
+            if (allocated(error)) return
+        end block
+        #:endfor
+    end subroutine
+
+    subroutine test_tridiagonal_spmv(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
         #:for k1, t1, s1 in (KINDS_TYPES)
@@ -126,7 +188,66 @@ contains
     !-----                                        -----
     !--------------------------------------------------
 
-    subroutine test_symtridiagonal(error)
+    subroutine test_symtridiagonal_arithmetic(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        block
+            integer, parameter :: wp = ${k1}$
+            integer, parameter :: n = 5
+            type(symtridiagonal_${s1}$_type) :: A, B, C
+            class(tridiagonal_${s1}$_type), allocatable :: D
+            ${t1}$, allocatable :: Amat(:, :), Bmat(:, :), Cmat(:, :)
+            ${t1}$, allocatable :: dv(:), ev(:)
+            ${t1}$, parameter :: alpha = 2.0_dp
+            integer :: i, j
+            #:if t1.startswith('complex')
+            real(wp), allocatable :: data(:, :)
+            #:endif
+
+            ! Initialize A and B matrices.
+            allocate(ev(n-1), dv(n))
+            #:if t1.startswith('real')
+            call random_number(ev) ; call random_number(dv)
+            #:else
+            allocate(data(n, 2))
+            call random_number(data) ; dv%re = data(:n, 1) ; dv%im = data(:n, 2)
+            call random_number(data) ; ev%re = data(:n-1, 1) ; ev%im = data(:n-1, 2)
+            #:endif
+            A = symtridiagonal(dv, ev) ; Amat = dense(A)
+            
+            #:if t1.startswith('real')
+            call random_number(ev) ; call random_number(dv)
+            #:else
+            call random_number(data) ; dv%re = data(:n, 1) ; dv%im = data(:n, 2)
+            call random_number(data) ; ev%re = data(:n-1, 1) ; ev%im = data(:n-1, 2)
+            #:endif
+            B = symtridiagonal(dv, ev) ; Bmat = dense(B)
+       
+            ! Matrix addition.
+            D = A + B ; Cmat = dense(D)
+            call check(error, all_close(Cmat, Amat+Bmat), .true.)
+            if (allocated(error)) return
+
+            ! Matrix subtraction.
+            D = A - B ; Cmat = dense(D)
+            call check(error, all_close(Cmat, Amat-Bmat), .true.)
+            if (allocated(error)) return
+
+            ! Matrix scalar multiplication
+            C = alpha * A ; Cmat = dense(C)
+            call check(error, all_close(Cmat, alpha * Amat), .true.)
+            if (allocated(error)) return
+
+            C = A *alpha ; Cmat = dense(C)
+            call check(error, all_close(Cmat, alpha * Amat), .true.)
+            if (allocated(error)) return
+        end block
+        #:endfor
+    end subroutine
+
+
+    subroutine test_symtridiagonal_spmv(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
         #:for k1, t1, s1 in (KINDS_TYPES)
@@ -164,14 +285,12 @@ contains
 
             ! Test y = A @ x
             y1 = matmul(Amat, x) ; call spmv(A, x, y2)
-            print *, "matvec :", all_close(y1, y2)
             call check(error, all_close(y1, y2), .true.)
             if (allocated(error)) return
 
             ! Test y = A.T @ x
             y1 = 0.0_wp ; y2 = 0.0_wp
             y1 = matmul(transpose(Amat), x) ; call spmv(A, x, y2, op="T")
-            print *, "tranposed matvec :", all_close(y1, y2)
             call check(error, all_close(y1, y2), .true.)
             if (allocated(error)) return
 
@@ -179,7 +298,6 @@ contains
             ! Test y = A.H @ x
             y1 = 0.0_wp ; y2 = 0.0_wp
             y1 = matmul(hermitian(Amat), x) ; call spmv(A, x, y2, op="H")
-            print *, "hermitian matvec :", all_close(y1, y2)
             call check(error, all_close(y1, y2), .true.)
             if (allocated(error)) return
             #:endif
@@ -187,32 +305,108 @@ contains
         #:endfor
     end subroutine
 
-    subroutine test_symtridiagonal_error_handling(error)
+    !--------------------------------------
+    !-----                            -----
+    !-----     HERMITIAN MATRICES     -----
+    !-----                            -----
+    !--------------------------------------
+
+    subroutine test_hermtridiagonal_arithmetic(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
-        #:for k1, t1, s1 in (KINDS_TYPES)
+        #:for k1, t1, s1 in (C_KINDS_TYPES)
         block
             integer, parameter :: wp = ${k1}$
             integer, parameter :: n = 5
-            type(symtridiagonal_${s1}$_type) :: A
+            type(hermtridiagonal_${s1}$_type) :: A, B, C
+            class(tridiagonal_${s1}$_type), allocatable :: D
+            ${t1}$, allocatable :: Amat(:, :), Bmat(:, :), Cmat(:, :)
             ${t1}$, allocatable :: dv(:), ev(:)
-            type(linalg_state_type) :: state
-            integer :: i
+            ${t1}$, parameter :: alpha = 2.0_dp
+            integer :: i, j
+            real(wp), allocatable :: data(:, :)
 
-            !> Test constructor from arrays.
-            ev = [(1.0_wp, i = 1, n-2)]
-            dv = [(2.0_wp, i = 1, n)]
-            A = symtridiagonal(dv, ev, state)
-            call check(error, state%ok(), .false.)
+            ! Initialize A and B matrices.
+            allocate(ev(n-1), dv(n))
+            allocate(data(n, 2))
+            call random_number(data) ; dv%re = data(:n, 1) ; dv%im = data(:n, 2)
+            call random_number(data) ; ev%re = data(:n-1, 1) ; ev%im = data(:n-1, 2)
+            A = hermtridiagonal(dv, ev) ; Amat = dense(A)
+            
+            call random_number(data) ; dv%re = data(:n, 1) ; dv%im = data(:n, 2)
+            call random_number(data) ; ev%re = data(:n-1, 1) ; ev%im = data(:n-1, 2)
+            B = hermtridiagonal(dv, ev) ; Bmat = dense(B)
+       
+            ! Matrix addition.
+            D = A + B ; Cmat = dense(D)
+            call check(error, all_close(Cmat, Amat+Bmat), .true.)
             if (allocated(error)) return
 
-            !> Test contructor from constants.
-            A = symtridiagonal(dv(1), ev(1), -n, state)
-            call check(error, state%ok(), .false.)
+            ! Matrix subtraction.
+            D = A - B ; Cmat = dense(D)
+            call check(error, all_close(Cmat, Amat-Bmat), .true.)
+            if (allocated(error)) return
+
+            ! Matrix scalar multiplication
+            C = alpha * A ; Cmat = dense(C)
+            call check(error, all_close(Cmat, alpha * Amat), .true.)
+            if (allocated(error)) return
+
+            C = A *alpha ; Cmat = dense(C)
+            call check(error, all_close(Cmat, alpha * Amat), .true.)
             if (allocated(error)) return
         end block
-        #:endfor       
+        #:endfor
     end subroutine
+
+
+    subroutine test_hermtridiagonal_spmv(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in (C_KINDS_TYPES)
+        block
+            integer, parameter :: wp = ${k1}$
+            integer, parameter :: n = 5
+            type(hermtridiagonal_${s1}$_type) :: A
+            ${t1}$, allocatable :: Amat(:,:), dv(:), ev(:)
+            real(wp), allocatable :: data(:, :)
+            ${t1}$, allocatable :: x(:)
+            ${t1}$, allocatable :: y1(:), y2(:)
+
+            ! Initialize matrix.
+            allocate(ev(n-1), dv(n))
+            allocate(data(n, 2), source=0.0_wp)
+            call random_number(data) ; dv%re = data(:, 1) ; dv%im = data(:, 2)
+            call random_number(data) ; ev%re = data(:n-1, 1) ; ev%im = data(:n-1, 2)
+            A = hermtridiagonal(dv, ev) ; Amat = dense(A)
+
+            ! Random vectors.
+            allocate(x(n), source=zero_c${k1}$)
+            call random_number(data) ; x%re = data(:, 1) ; x%im = data(:, 2)
+            allocate(y1(n), source = zero_c${k1}$)  ; allocate(y2(n), source=zero_c${k1}$)
+
+            ! Test y = A @ x
+            y1 = matmul(Amat, x) ; call spmv(A, x, y2)
+            call check(error, all_close(y1, y2), .true.)
+            if (allocated(error)) return
+
+            ! Test y = A.T @ x
+            y1 = 0.0_wp ; y2 = 0.0_wp
+            y1 = matmul(transpose(Amat), x) ; call spmv(A, x, y2, op="T")
+            call check(error, all_close(y1, y2), .true.)
+            if (allocated(error)) return
+
+            #:if t1.startswith('complex') 
+            ! Test y = A.H @ x
+            y1 = 0.0_wp ; y2 = 0.0_wp
+            y1 = matmul(hermitian(Amat), x) ; call spmv(A, x, y2, op="H")
+            call check(error, all_close(y1, y2), .true.)
+            if (allocated(error)) return
+            #:endif
+        end block
+        #:endfor
+    end subroutine
+
 
 end module
 
