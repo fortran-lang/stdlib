@@ -572,6 +572,44 @@ Subroutine
 
 ---
 
+## `make_directory_all` - Creates an empty directory with all its parent directories
+
+### Status
+
+Experimental
+
+### Description
+
+It creates an empty directory with default permissions.
+It also creates all the parent directories required in doing so.
+It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+
+### Syntax
+
+`call [[stdlib_system(module):make_directory_all(subroutine)]] (path [,err])`
+
+### Class
+
+Subroutine
+
+### Arguments
+
+`path`: Shall be a character string containing the path of the directory to create. It is an `intent(in)` argument.
+
+`err`(optional): Shall be of type `state_type`, for error handling. It is an `optional, intent(out)` argument.
+
+### Return values
+
+`err` is an optional state return flag. On error if not requested, a `FS_ERROR` will trigger an error stop.
+
+### Example
+
+```fortran
+{!example/system/example_make_directory.f90!}
+```
+
+---
+
 ## `remove_directory` - Removes an empty directory
 
 ### Status
