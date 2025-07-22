@@ -14,6 +14,7 @@ set(
   "test_linalg_svd.fypp"
   "test_linalg_matrix_property_checks.fypp"
   "test_linalg_sparse.fypp"
+  "test_linalg_specialmatrices.fypp"
   "test_linalg_cholesky.fypp"
 )
 
@@ -41,4 +42,5 @@ ADDTEST(linalg_qr)
 ADDTEST(linalg_schur)
 ADDTEST(linalg_svd)
 ADDTEST(linalg_sparse)
+ADDTEST(linalg_specialmatrices)
 ADDTESTPP(blas_lapack)
