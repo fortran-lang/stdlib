@@ -582,7 +582,6 @@ Experimental
 
 It creates an empty directory with default permissions.
 It also creates all the parent directories required in doing so.
-It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
 
 ### Syntax
 

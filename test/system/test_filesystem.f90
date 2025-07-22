@@ -1,7 +1,8 @@
 module test_filesystem
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_system, only: is_directory, delete_file, FS_ERROR, FS_ERROR_CODE, &
-        make_directory, remove_directory, make_directory_all, is_windows
+        make_directory, remove_directory, make_directory_all, is_windows, OS_TYPE, &
+        OS_WINDOWS
     use stdlib_error, only: state_type, STDLIB_FS_ERROR
 
     implicit none
@@ -226,7 +227,11 @@ contains
         integer :: ios,iocmd
         character(len=512) :: msg
 
-        dir_name = "d1/d2/d3/d4/"
+        if (OS_TYPE() == OS_WINDOWS) then
+            dir_name = "d1\d2\d3\d4\"
+        else
+            dir_name = "d1/d2/d3/d4/"
+        end if
 
         call make_directory_all(dir_name, err=err)
         call check(error, err%ok(), 'Could not make all directories: '//err%print())
