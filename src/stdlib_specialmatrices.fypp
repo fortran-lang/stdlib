@@ -14,7 +14,7 @@ module stdlib_specialmatrices
         LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
     implicit none
     private
-    public :: tridiagonal
+    public :: tridiagonal, symtridiagonal
     public :: spmv
     public :: dense, transpose, hermitian
     public :: operator(*), operator(+), operator(-)
