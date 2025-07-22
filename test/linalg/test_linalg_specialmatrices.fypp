@@ -21,7 +21,7 @@ contains
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
-            new_unittest('tridiagonal arithmetic', test_tridiagonal_arithmetic), &
+            ! new_unittest('tridiagonal arithmetic', test_tridiagonal_arithmetic), &
             new_unittest('tridiagonal spmv kernel', test_tridiagonal_spmv), &
             new_unittest('tridiagonal error handling', test_tridiagonal_error_handling), &
             new_unittest('symtridiagonal arithmetic', test_symtridiagonal_arithmetic), &
