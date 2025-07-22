@@ -15,19 +15,16 @@ char* stdlib_strerror(size_t* len){
     return err;
 }
 
-int stdlib_make_directory(const char* path, mode_t mode){
+int stdlib_make_directory(const char* path){
     int code;
 #ifdef _WIN32
     code = _mkdir(path);
 #else
-    code = mkdir(path, mode);
+    // Default mode 0777
+    code = mkdir(path, 0777);
 #endif /* ifdef _WIN32 */
     
-    if (!code){
-        return 0;
-    }
-
-    return errno;
+    return (!code) ? 0 : errno;
 }
 
 int stdlib_remove_directory(const char* path){
@@ -38,9 +35,5 @@ int stdlib_remove_directory(const char* path){
     code = rmdir(path);
 #endif /* ifdef _WIN32 */
 
-    if (!code){
-        return 0;
-    }
-
-    return errno;
+    return (!code) ? 0 : errno;
 }

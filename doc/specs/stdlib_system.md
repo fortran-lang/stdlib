@@ -543,12 +543,12 @@ Experimental
 
 ### Description
 
-It creates an empty directory.
+It creates an empty directory with default permissions.
 It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
 
 ### Syntax
 
-`call [[stdlib_system(module):make_directory(subroutine)]] (path, mode, err)`
+`call [[stdlib_system(module):make_directory(subroutine)]] (path [,err])`
 
 ### Class
 
@@ -558,13 +558,11 @@ Subroutine
 
 `path`: Shall be a character string containing the path of the directory to create. It is an `intent(in)` argument.
 
-`mode`: Shall be a scalar integer indicating the permission bits required (Not applicable to Windows). It is an `optional, intent(in)` argument.
-
-`err`: Shall be of type `state_type`, for error handling. It is an `optional, intent(out)` argument.
+`err`(optional): Shall be of type `state_type`, for error handling. It is an `optional, intent(out)` argument.
 
 ### Return values
 
-The `err` is set accordingly.
+`err` is an optional state return flag. On error if not requested, a `FS_ERROR` will trigger an error stop.
 
 ### Example
 
@@ -597,11 +595,11 @@ Subroutine
 
 `path`: Shall be a character string containing the path of the directory to create. It is an `intent(in)` argument.
 
-`err`: Shall be of type `state_type`, for error handling. It is an `intent(out)` argument.
+`err`(optional): Shall be of type `state_type`, for error handling. It is an `intent(out)` argument.
 
 ### Return values
 
-The `err` is set accordingly.
+`err` is an optional state return flag. On error if not requested, a `FS_ERROR` will trigger an error stop.
 
 ### Example
 

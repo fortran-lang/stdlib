@@ -1,6 +1,7 @@
 module test_filesystem
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
-    use stdlib_system, only: is_directory, delete_file, FS_ERROR, FS_ERROR_CODE
+    use stdlib_system, only: is_directory, delete_file, FS_ERROR, FS_ERROR_CODE, &
+        make_directory, remove_directory
     use stdlib_error, only: state_type, STDLIB_FS_ERROR
 
     implicit none
@@ -207,11 +208,13 @@ contains
 
         ! Clean up: remove the empty directory
         call execute_command_line('rmdir ' // filename, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+
         if (allocated(error)) then
             ! if previous error is allocated as well
             call check(error, ios==0 .and. iocmd==0, error%message // ' and cannot cleanup make_directory test: '//trim(msg))
             return
         end if
+
         call check(error, ios==0 .and. iocmd==0, 'Cannot cleanup make_directory test: '//trim(msg))
     end subroutine test_make_directory_existing
 
@@ -230,6 +233,7 @@ contains
 
         call remove_directory(filename, err)
         call check(error, err%ok(), 'Could not remove directory: '//err%print())
+
         if (allocated(error)) then 
             ! Clean up: remove the empty directory
             call execute_command_line('rmdir ' // filename, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
@@ -242,7 +246,7 @@ contains
         type(state_type) :: err
 
         call remove_directory("random_name", err)
-        call check(error, err%error(), 'Somehow removed a non-existent directory!: ')
+        call check(error, err%error(), 'Somehow removed a non-existent directory')
         if (allocated(error)) return
     end subroutine test_remove_directory_nonexistent
 

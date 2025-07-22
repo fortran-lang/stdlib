@@ -1,6 +1,6 @@
-! Illustrate the usage of remove_directory
+! Illustrate the usage of `remove_directory`
 program example_remove_directory
-    use stdlib_system, only: make_directory, is_directory, remove_directory
+    use stdlib_system, only: remove_directory
     use stdlib_error, only: state_type
     implicit none
 
