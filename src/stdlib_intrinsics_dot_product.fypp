@@ -34,10 +34,10 @@ pure module function stdlib_dot_product_${s}$(a,b) result(p)
     n = size(a,kind=ilp)
     r = mod(n,chunk)
 
-    abatch(1:r)       = a(1:r)*${cnjg(t,'b(1:r)')}$
+    abatch(1:r)       = ${cnjg(t,'a(1:r)')}$*b(1:r)
     abatch(r+1:chunk) = zero_${s}$
     do i = r+1, n-r, chunk
-        abatch(1:chunk) = abatch(1:chunk) + a(i:i+chunk-1)*${cnjg(t,'b(i:i+chunk-1)')}$
+        abatch(1:chunk) = abatch(1:chunk) + ${cnjg(t,'a(i:i+chunk-1)')}$*b(i:i+chunk-1)
     end do
 
     p = zero_${s}$
@@ -60,11 +60,11 @@ pure module function stdlib_dot_product_kahan_${s}$(a,b) result(p)
     n = size(a,kind=ilp)
     r = mod(n,chunk)
 
-    abatch(1:r)       = a(1:r)*${cnjg(t,'b(1:r)')}$
+    abatch(1:r)       = ${cnjg(t,'a(1:r)')}$*b(1:r)
     abatch(r+1:chunk) = zero_${s}$
     cbatch = zero_${s}$
     do i = r+1, n-r, chunk
-        call kahan_kernel( a(i:i+chunk-1)*${cnjg(t,'b(i:i+chunk-1)')}$ , abatch(1:chunk) , cbatch(1:chunk) )
+        call kahan_kernel( ${cnjg(t,'a(i:i+chunk-1)')}$*b(i:i+chunk-1) , abatch(1:chunk) , cbatch(1:chunk) )
     end do     
 
     p = zero_${s}$
