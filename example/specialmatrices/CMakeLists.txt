@@ -1,2 +1,4 @@
 ADD_EXAMPLE(specialmatrices_dp_spmv)
 ADD_EXAMPLE(tridiagonal_dp_type)
+ADD_EXAMPLE(symtridiagonal_dp_type)
+ADD_EXAMPLE(hermtridiagonal_cdp_type)
