@@ -154,10 +154,10 @@ pure module function stdlib_dot_product_csp(a,b) result(p)
     n = size(a,kind=ilp)
     r = mod(n,chunk)
 
-    abatch(1:r)       = a(1:r)*conjg(b(1:r))
+    abatch(1:r)       = conjg(a(1:r))*b(1:r)
     abatch(r+1:chunk) = zero_csp
     do i = r+1, n-r, chunk
-        abatch(1:chunk) = abatch(1:chunk) + a(i:i+chunk-1)*conjg(b(i:i+chunk-1))
+        abatch(1:chunk) = abatch(1:chunk) + conjg(a(i:i+chunk-1))*b(i:i+chunk-1)
     end do
 
     p = zero_csp
@@ -176,10 +176,10 @@ pure module function stdlib_dot_product_cdp(a,b) result(p)
     n = size(a,kind=ilp)
     r = mod(n,chunk)
 
-    abatch(1:r)       = a(1:r)*conjg(b(1:r))
+    abatch(1:r)       = conjg(a(1:r))*b(1:r)
     abatch(r+1:chunk) = zero_cdp
     do i = r+1, n-r, chunk
-        abatch(1:chunk) = abatch(1:chunk) + a(i:i+chunk-1)*conjg(b(i:i+chunk-1))
+        abatch(1:chunk) = abatch(1:chunk) + conjg(a(i:i+chunk-1))*b(i:i+chunk-1)
     end do
 
     p = zero_cdp
@@ -248,11 +248,11 @@ pure module function stdlib_dot_product_kahan_csp(a,b) result(p)
     n = size(a,kind=ilp)
     r = mod(n,chunk)
 
-    abatch(1:r)       = a(1:r)*conjg(b(1:r))
+    abatch(1:r)       = conjg(a(1:r))*b(1:r)
     abatch(r+1:chunk) = zero_csp
     cbatch = zero_csp
     do i = r+1, n-r, chunk
-        call kahan_kernel( a(i:i+chunk-1)*conjg(b(i:i+chunk-1)) , abatch(1:chunk) , cbatch(1:chunk) )
+        call kahan_kernel( conjg(a(i:i+chunk-1))*b(i:i+chunk-1) , abatch(1:chunk) , cbatch(1:chunk) )
     end do     
 
     p = zero_csp
@@ -272,11 +272,11 @@ pure module function stdlib_dot_product_kahan_cdp(a,b) result(p)
     n = size(a,kind=ilp)
     r = mod(n,chunk)
 
-    abatch(1:r)       = a(1:r)*conjg(b(1:r))
+    abatch(1:r)       = conjg(a(1:r))*b(1:r)
     abatch(r+1:chunk) = zero_cdp
     cbatch = zero_cdp
     do i = r+1, n-r, chunk
-        call kahan_kernel( a(i:i+chunk-1)*conjg(b(i:i+chunk-1)) , abatch(1:chunk) , cbatch(1:chunk) )
+        call kahan_kernel( conjg(a(i:i+chunk-1))*b(i:i+chunk-1) , abatch(1:chunk) , cbatch(1:chunk) )
     end do     
 
     p = zero_cdp
