@@ -120,8 +120,8 @@ public :: is_directory
 !!
 !! ### Description
 !! This function makes an empty directory according to the path provided.
-!! Relative paths as well as on Windows, paths involving either `/` or `\` are accepted.
-!! Appropriate error message is returned whenever any error occurs.
+!! Relative paths are supported. On Windows, paths involving either `/` or `\` are accepted.
+!! An appropriate error message is returned whenever any error occurs.
 !!
 public :: make_directory
 
@@ -135,9 +135,9 @@ public :: make_directory
 !!
 !! ### Description
 !! This function makes an empty directory according to the path provided.
-!! It also creates all the parent directories required in doing so.
-!! Relative paths as well as on Windows, paths involving either `/` or `\` are accepted.
-!! Appropriate error message is returned whenever any error occurs.
+!! It also creates all the necessary parent directories in the path if they do not exist already.
+!! Relative paths are supported.
+!! An appropriate error message is returned whenever any error occurs.
 !!
 public :: make_directory_all
 
@@ -151,8 +151,8 @@ public :: make_directory_all
 !!
 !! ### Description
 !! This function Removes an empty directory according to the path provided.
-!! Relative paths as well as on Windows paths involving either `/` or `\` are accepted.
-!! Appropriate error message is returned whenever any error occurs.
+!! Relative paths are supported. On Windows paths involving either `/` or `\` are accepted.
+!! An appropriate error message is returned whenever any error occurs.
 !!
 public :: remove_directory
 
@@ -1000,7 +1000,7 @@ subroutine make_directory_all(path, err)
     end do
 end subroutine make_directory_all
 
-!! Removes an empty directory
+!! removes an empty directory
 subroutine remove_directory(path, err)
     character(len=*), intent(in) :: path
     type(state_type), optional, intent(out) :: err

@@ -558,11 +558,11 @@ Subroutine
 
 `path`: Shall be a character string containing the path of the directory to create. It is an `intent(in)` argument.
 
-`err`(optional): Shall be of type `state_type`, for error handling. It is an `optional, intent(out)` argument.
+`err`(optional): Shall be of type `state_type`, and is used for error handling. It is an `optional, intent(out)` argument.
 
 ### Return values
 
-`err` is an optional state return flag. On error if not requested, a `FS_ERROR` will trigger an error stop.
+`err` is an optional state return flag. If not requested and an error occurs, a `FS_ERROR` will trigger an error stop.
 
 ### Example
 
@@ -581,7 +581,7 @@ Experimental
 ### Description
 
 It creates an empty directory with default permissions.
-It also creates all the parent directories required in doing so.
+It also creates all the necessary parent directories in the path if they do not exist already.
 
 ### Syntax
 
@@ -595,11 +595,11 @@ Subroutine
 
 `path`: Shall be a character string containing the path of the directory to create. It is an `intent(in)` argument.
 
-`err`(optional): Shall be of type `state_type`, for error handling. It is an `optional, intent(out)` argument.
+`err`(optional): Shall be of type `state_type`, and is used for error handling. It is an `optional, intent(out)` argument.
 
 ### Return values
 
-`err` is an optional state return flag. On error if not requested, a `FS_ERROR` will trigger an error stop.
+`err` is an optional state return flag. If not requested and an error occurs, a `FS_ERROR` will trigger an error stop.
 
 ### Example
 
@@ -632,7 +632,7 @@ Subroutine
 
 `path`: Shall be a character string containing the path of the directory to create. It is an `intent(in)` argument.
 
-`err`(optional): Shall be of type `state_type`, for error handling. It is an `intent(out)` argument.
+`err`(optional): Shall be of type `state_type`, and is used for error handling. It is an `optional, intent(out)` argument.
 
 ### Return values
 
