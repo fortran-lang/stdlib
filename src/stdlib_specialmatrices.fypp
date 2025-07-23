@@ -188,7 +188,7 @@ module stdlib_specialmatrices
         !! ```
         #:for k1, t1, s1 in (KINDS_TYPES)
         pure module function initialize_symtridiagonal_pure_${s1}$(dv, ev) result(A)
-            !! Construct a `tridiagonal` matrix from the rank-1 arrays
+            !! Construct a `symtridiagonal` matrix from the rank-1 arrays
             !! `dl`, `dv` and `du`.
             ${t1}$, intent(in) :: dv(:), ev(:)
             !! SymTridiagonal matrix elements.
@@ -241,10 +241,10 @@ module stdlib_specialmatrices
         !!    =
         !!    \begin{bmatrix}
         !!       a_1   &  b_1  \\
-        !!       b_1  &  a_2      &  b_2  \\
+        !!       \bar{b}_1  &  a_2      &  b_2  \\
         !!             &  \ddots   &  \ddots   &  \ddots   \\
-        !!             &           &  b_{n-2} &  a_{n-1}  &  b_{n-1} \\
-        !!             &           &           &  b_{n-1} &  a_n
+        !!             &           &  \bar{b}_{n-2} &  a_{n-1}  &  b_{n-1} \\
+        !!             &           &           &  \bar{b}_{n-1} &  a_n
         !!    \end{bmatrix}.
         !! \]
         !!
@@ -273,10 +273,10 @@ module stdlib_specialmatrices
         !! ```
         #:for k1, t1, s1 in (C_KINDS_TYPES)
         pure module function initialize_hermtridiagonal_pure_${s1}$(dv, ev) result(A)
-            !! Construct a `tridiagonal` matrix from the rank-1 arrays
+            !! Construct a `hermtridiagonal` matrix from the rank-1 arrays
             !! `dl`, `dv` and `du`.
             ${t1}$, intent(in) :: dv(:), ev(:)
-            !! SymTridiagonal matrix elements.
+            !! HermTridiagonal matrix elements.
             type(hermtridiagonal_${s1}$_type) :: A
             !! Corresponding HermTridiagonal matrix.
         end function
@@ -332,12 +332,22 @@ module stdlib_specialmatrices
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
         module subroutine spmv_tridiag_${rank}$d_${s1}$(A, x, y, alpha, beta, op)
+            !! Matrix-vector kernel for matrices extended from the `tridiagonal` class.
             class(tridiagonal_${s1}$_type), intent(in) :: A
+            !! Input matrix.
             ${t1}$, intent(in), contiguous, target :: x${ranksuffix(rank)}$
+            !! Vector(s) to be multiplied by the matrix `A`.
             ${t1}$, intent(inout), contiguous, target :: y${ranksuffix(rank)}$
+            !! Resulting vector.
             real(${k1}$), intent(in), optional :: alpha
+            !! Real scaling parameter for `Ax`
             real(${k1}$), intent(in), optional :: beta
+            !! Real scaling parameter for `y` (right-hand side)
             character(1), intent(in), optional :: op
+            !! Which operation to perform:
+            !! - `op = "N"` : `y = alpha * A @ x + beta * y`
+            !! - `op = "T"` : `y = alpha * A.T @ x + beta * y`
+            !! - `op = "H"` : `y = alpha * A.H @ x + beta * y` (for complex-valued matrices only).
         end subroutine
         #:endfor
         #:endfor
@@ -475,7 +485,7 @@ module stdlib_specialmatrices
 
     interface operator(+)
         !! Overload the `+` operator for matrix-matrix addition. The two matrices need to
-        !! be of the same type and kind.
+        !! be of the class type and kind.
         !! [Specifications](../page/specs/stdlib_specialmatrices.html#operators)
         #:for k1, t1, s1 in (KINDS_TYPES)
         pure module function matrix_add_tridiag_tridiag_${s1}$(A, B) result(C)
@@ -528,7 +538,7 @@ module stdlib_specialmatrices
 
     interface operator(-)
         !! Overload the `-` operator for matrix-matrix subtraction. The two matrices need to
-        !! be of the same type and kind.
+        !! be of the same class and kind.
         !! [Specifications](../page/specs/stdlib_specialmatrices.html#operators)
         #:for k1, t1, s1 in (KINDS_TYPES)
         pure module function matrix_sub_tridiag_tridiag_${s1}$(A, B) result(C)
