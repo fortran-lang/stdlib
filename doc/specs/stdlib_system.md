@@ -562,7 +562,7 @@ Subroutine
 
 ### Return values
 
-`err` is an optional state return flag. If not requested and an error occurs, a `FS_ERROR` will trigger an error stop.
+`err` is an optional state return flag. If not requested and an error occurs, an `FS_ERROR` will trigger an error stop.
 
 ### Example
 
@@ -599,7 +599,7 @@ Subroutine
 
 ### Return values
 
-`err` is an optional state return flag. If not requested and an error occurs, a `FS_ERROR` will trigger an error stop.
+`err` is an optional state return flag. If not requested and an error occurs, an `FS_ERROR` will trigger an error stop.
 
 ### Example
 
@@ -636,7 +636,7 @@ Subroutine
 
 ### Return values
 
-`err` is an optional state return flag. On error if not requested, a `FS_ERROR` will trigger an error stop.
+`err` is an optional state return flag. On error if not requested, an `FS_ERROR` will trigger an error stop.
 
 ### Example
 

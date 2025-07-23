@@ -239,9 +239,9 @@ contains
 
         ! clean up: remove the empty directory
         if (is_windows()) then
-            call execute_command_line('rmdir /s /q ' // dir_name, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+            call execute_command_line('rmdir /s /q d1', exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
         else
-            call execute_command_line('rm -rf ' // dir_name, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+            call execute_command_line('rm -rf d1', exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
         end if
 
         call check(error, ios==0 .and. iocmd==0, 'Cannot cleanup make_directory_all test: '//trim(msg))
