@@ -14,20 +14,19 @@ module test_specialmatrices
 
 contains
 
-
     !> Collect all exported unit tests
     subroutine collect_suite(testsuite)
         !> Collection of tests
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
-            ! new_unittest('tridiagonal arithmetic', test_tridiagonal_arithmetic), &
-            new_unittest('tridiagonal spmv kernel', test_tridiagonal_spmv) &
-            ! new_unittest('tridiagonal error handling', test_tridiagonal_error_handling), &
-            ! new_unittest('symtridiagonal arithmetic', test_symtridiagonal_arithmetic), &
-            ! new_unittest('symtridiagonal spmv kernel', test_symtridiagonal_spmv), &
-            ! ! new_unittest('hermtridiagonal arithmetic', test_hermtridiagonal_arithmetic), &
-            ! new_unittest('hermtridiagonal spmv kernel', test_hermtridiagonal_spmv) &
+            new_unittest('tridiagonal arithmetic', test_tridiagonal_arithmetic), &
+            new_unittest('tridiagonal spmv kernel', test_tridiagonal_spmv), &
+            new_unittest('tridiagonal error handling', test_tridiagonal_error_handling), &
+            new_unittest('symtridiagonal arithmetic', test_symtridiagonal_arithmetic), &
+            new_unittest('symtridiagonal spmv kernel', test_symtridiagonal_spmv), &
+            new_unittest('hermtridiagonal arithmetic', test_hermtridiagonal_arithmetic), &
+            new_unittest('hermtridiagonal spmv kernel', test_hermtridiagonal_spmv) &
         ]
     end subroutine
 
@@ -48,7 +47,7 @@ contains
             type(symtridiagonal_${s1}$_type) :: D
             ${t1}$, allocatable :: Amat(:, :), Bmat(:, :), Cmat(:, :), Dmat(:, :)
             ${t1}$, allocatable :: dl(:), dv(:), du(:), ev(:)
-            ${t1}$, parameter :: alpha = 2.0_dp
+            ${t1}$, parameter :: alpha = #{if t1.startswith('real')}# 2.0_wp #{else}# cmplx(2.0_wp, 2.0_wp, kind=wp) #{endif}#
             integer :: i, j
             #:if t1.startswith('complex')
             type(hermtridiagonal_${s1}$_type) :: E
@@ -62,32 +61,32 @@ contains
             call random_number(dl) ; call random_number(dv) ; call random_number(du)
             #:else
             allocate(data(n, 2))
-            call random_number(data) ; dl%re = data(:n-1, 1) ; dl%im = data(:n-1, 2)
-            call random_number(data) ; dv%re = data(:n, 1) ; dv%im = data(:n, 2)
-            call random_number(data) ; du%re = data(:n-1, 1) ; du%im = data(:n-1, 2)
+            call random_number(data) ; dl = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; du = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
             #:endif
             A = tridiagonal(dl, dv, du) ; Amat = dense(A)
             
             #:if t1.startswith('real')
             call random_number(dl) ; call random_number(dv) ; call random_number(du)
             #:else
-            call random_number(data) ; dl%re = data(:n-1, 1) ; dl%im = data(:n-1, 2)
-            call random_number(data) ; dv%re = data(:n, 1) ; dv%im = data(:n, 2)
-            call random_number(data) ; du%re = data(:n-1, 1) ; du%im = data(:n-1, 2)
+            call random_number(data) ; dl = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; du = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
             #:endif
             B = tridiagonal(dl, dv, du) ; Bmat = dense(B)
             
             #:if t1.startswith('real')
             call random_number(dv) ; call random_number(ev)
             #:else
-            call random_number(data) ; dv%re = data(:n, 1) ; dv%im = data(:n, 2)
-            call random_number(data) ; ev%re = data(:n-1, 1) ; ev%im = data(:n-1, 2)
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; ev = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
             #:endif
             D = symtridiagonal(dv, ev) ; Dmat = dense(D)
 
             #:if t1.startswith('complex')
-            call random_number(data) ; dv%re = data(:n, 1) ; dv%im = data(:n, 2)
-            call random_number(data) ; ev%re = data(:n-1, 1) ; ev%im = data(:n-1, 2)
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; ev = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
             E = hermtridiagonal(dv, ev) ; Emat = dense(E)
             #:endif
        
@@ -137,13 +136,12 @@ contains
             if (allocated(error)) return
         #:endif
 
-
             ! Matrix scalar multiplication
             C = alpha * A ; Cmat = dense(C)
             call check(error, all_close(Cmat, alpha * Amat), .true.)
             if (allocated(error)) return
 
-            C = A *alpha ; Cmat = dense(C)
+            C = A * alpha ; Cmat = dense(C)
             call check(error, all_close(Cmat, alpha * Amat), .true.)
             if (allocated(error)) return
         end block
@@ -170,10 +168,10 @@ contains
             #:if t1.startswith('real')
             call random_number(dl) ; call random_number(dv) ; call random_number(du)
             #:else
-            allocate(data(n, 2))
-            call random_number(data) ; dl%re = data(:n-1, 1) ; dl%im = data(:n-1, 2)
-            call random_number(data) ; dv%re = data(:n, 1) ; dv%im = data(:n, 2)
-            call random_number(data) ; du%re = data(:n-1, 1) ; du%im = data(:n-1, 2)
+            allocate(data(n, 2), source=0.0_wp)
+            call random_number(data) ; dl = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; du = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
             #:endif
             A = tridiagonal(dl, dv, du) ; Amat = dense(A)
 
@@ -183,7 +181,7 @@ contains
             allocate(y1(n), source = 0.0_wp)  ; allocate(y2(n), source=0.0_wp)
             #:else
             allocate(x(n), source=zero_c${k1}$)
-            call random_number(data) ; x%re = data(:, 1) ; x%im = data(:, 2)
+            call random_number(data) ; x = cmplx(data(:, 1), data(:, 2), kind=wp)
             allocate(y1(n), source = zero_c${k1}$)  ; allocate(y2(n), source=zero_c${k1}$)
             #:endif
 
@@ -253,7 +251,7 @@ contains
             type(tridiagonal_${s1}$_type) :: D
             ${t1}$, allocatable :: Amat(:, :), Bmat(:, :), Cmat(:, :)
             ${t1}$, allocatable :: dv(:), ev(:)
-            ${t1}$, parameter :: alpha = 2.0_dp
+            ${t1}$, parameter :: alpha = #{if t1.startswith("real")}# 2.0_wp #{else}# cmplx(2.0_wp, 2.0_wp, kind=wp) #{endif}#
             integer :: i, j
             #:if t1.startswith('complex')
             type(hermtridiagonal_${s1}$_type) :: E
@@ -267,22 +265,22 @@ contains
             call random_number(ev) ; call random_number(dv)
             #:else
             allocate(data(n, 2))
-            call random_number(data) ; dv%re = data(:n, 1) ; dv%im = data(:n, 2)
-            call random_number(data) ; ev%re = data(:n-1, 1) ; ev%im = data(:n-1, 2)
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; ev = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
             #:endif
             A = symtridiagonal(dv, ev) ; Amat = dense(A)
 
             #:if t1.startswith('real')
             call random_number(ev) ; call random_number(dv)
             #:else
-            call random_number(data) ; dv%re = data(:n, 1) ; dv%im = data(:n, 2)
-            call random_number(data) ; ev%re = data(:n-1, 1) ; ev%im = data(:n-1, 2)
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; ev = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
             #:endif
             B = symtridiagonal(dv, ev) ; Bmat = dense(B)
 
         #:if t1.startswith('complex')
-            call random_number(data) ; dv%re = data(:n, 1) ; dv%im = data(:n, 2)
-            call random_number(data) ; ev%re = data(:n-1, 1) ; ev%im = data(:n-1, 2)
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; ev = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
             E = hermtridiagonal(dv, ev) ; Emat = dense(E)
         #:endif
 
@@ -321,7 +319,7 @@ contains
             call check(error, all_close(Cmat, alpha * Amat), .true.)
             if (allocated(error)) return
 
-            C = A *alpha ; Cmat = dense(C)
+            C = A * alpha ; Cmat = dense(C)
             call check(error, all_close(Cmat, alpha * Amat), .true.)
             if (allocated(error)) return
         end block
@@ -349,8 +347,8 @@ contains
             call random_number(dv) ; call random_number(ev)
             #:else
             allocate(data(n, 2), source=0.0_wp)
-            call random_number(data) ; dv%re = data(:, 1) ; dv%im = data(:, 2)
-            call random_number(data) ; ev%re = data(:n-1, 1) ; ev%im = data(:n-1, 2)
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; ev = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
             #:endif
             A = symtridiagonal(dv, ev) ; Amat = dense(A)
 
@@ -360,7 +358,7 @@ contains
             allocate(y1(n), source = 0.0_wp)  ; allocate(y2(n), source=0.0_wp)
             #:else
             allocate(x(n), source=zero_c${k1}$)
-            call random_number(data) ; x%re = data(:, 1) ; x%im = data(:, 2)
+            call random_number(data) ; x = cmplx(data(:, 1), data(:, 2), kind=wp)
             allocate(y1(n), source = zero_c${k1}$)  ; allocate(y2(n), source=zero_c${k1}$)
             #:endif
 
@@ -411,12 +409,12 @@ contains
             ! Initialize A and B matrices.
             allocate(ev(n-1), dv(n))
             allocate(data(n, 2))
-            call random_number(data) ; dv%re = data(:n, 1) ; dv%im = data(:n, 2)
-            call random_number(data) ; ev%re = data(:n-1, 1) ; ev%im = data(:n-1, 2)
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; ev = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
             A = hermtridiagonal(dv, ev) ; Amat = dense(A)
 
-            call random_number(data) ; dv%re = data(:n, 1) ; dv%im = data(:n, 2)
-            call random_number(data) ; ev%re = data(:n-1, 1) ; ev%im = data(:n-1, 2)
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; ev = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
             B = hermtridiagonal(dv, ev) ; Bmat = dense(B)
 
             ! Matrix addition.
@@ -465,13 +463,13 @@ contains
             ! Initialize matrix.
             allocate(ev(n-1), dv(n))
             allocate(data(n, 2), source=0.0_wp)
-            call random_number(data) ; dv%re = data(:, 1) ; dv%im = data(:, 2)
-            call random_number(data) ; ev%re = data(:n-1, 1) ; ev%im = data(:n-1, 2)
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; ev = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
             A = hermtridiagonal(dv, ev) ; Amat = dense(A)
 
             ! Random vectors.
             allocate(x(n), source=zero_c${k1}$)
-            call random_number(data) ; x%re = data(:, 1) ; x%im = data(:, 2)
+            call random_number(data) ; x = cmplx(data(:, 1), data(:, 2), kind=wp)
             allocate(y1(n), source = zero_c${k1}$)  ; allocate(y2(n), source=zero_c${k1}$)
 
             ! Test y = A @ x
@@ -496,7 +494,6 @@ contains
         #:endfor
     end subroutine
 
-
 end module
 
 
@@ -512,7 +509,7 @@ program tester
     stat = 0
 
     testsuites = [ &
-        new_testsuite("sparse", collect_suite) &
+        new_testsuite("Tridiagonal matrices", collect_suite) &
         ]
 
     do is = 1, size(testsuites)
