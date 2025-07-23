@@ -114,7 +114,7 @@ Symmetric tridiagonal matrices are available with all supported data types as `s
 
 #### Syntax
 
-- To construct a symmetric tridiagonal matrix from already allocated arrays `dv` (main diagonal, size `n`) and `ev` (upper diagonal, size `n-1`):
+- To construct a symmetric tridiagonal matrix from already allocated arrays `dv` (main diagonal, size `n`, only its real part is being referenced) and `ev` (upper diagonal, size `n-1`):
 
 `A = ` [[stdlib_specialmatrices(module):symtridiagonal(interface)]] `(dv, ev)`
 
@@ -175,7 +175,7 @@ Note that only the real parts of the diagonal elements `dv` are being used to co
 #### Example
 
 ```fortran
-{!example/specialmatrices/example_hermtridiagonal_dp_type.f90!}
+{!example/specialmatrices/example_hermtridiagonal_cdp_type.f90!}
 ```
 
 ## Specialized drivers for linear algebra tasks
