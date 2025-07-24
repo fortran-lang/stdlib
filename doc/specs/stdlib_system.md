@@ -535,6 +535,117 @@ The function returns a `logical` value:
 
 ---
 
+## `make_directory` - Creates an empty directory
+
+### Status
+
+Experimental
+
+### Description
+
+It creates an empty directory with default permissions.
+It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+
+### Syntax
+
+`call [[stdlib_system(module):make_directory(subroutine)]] (path [,err])`
+
+### Class
+
+Subroutine
+
+### Arguments
+
+`path`: Shall be a character string containing the path of the directory to create. It is an `intent(in)` argument.
+
+`err`(optional): Shall be of type `state_type`, and is used for error handling. It is an `optional, intent(out)` argument.
+
+### Return values
+
+`err` is an optional state return flag. If not requested and an error occurs, an `FS_ERROR` will trigger an error stop.
+
+### Example
+
+```fortran
+{!example/system/example_make_directory.f90!}
+```
+
+---
+
+## `make_directory_all` - Creates an empty directory with all its parent directories
+
+### Status
+
+Experimental
+
+### Description
+
+It creates an empty directory with default permissions.
+It also creates all the necessary parent directories in the path if they do not exist already.
+
+### Syntax
+
+`call [[stdlib_system(module):make_directory_all(subroutine)]] (path [,err])`
+
+### Class
+
+Subroutine
+
+### Arguments
+
+`path`: Shall be a character string containing the path of the directory to create. It is an `intent(in)` argument.
+
+`err`(optional): Shall be of type `state_type`, and is used for error handling. It is an `optional, intent(out)` argument.
+
+### Return values
+
+`err` is an optional state return flag. If not requested and an error occurs, an `FS_ERROR` will trigger an error stop.
+
+### Example
+
+```fortran
+{!example/system/example_make_directory.f90!}
+```
+
+---
+
+## `remove_directory` - Removes an empty directory
+
+### Status
+
+Experimental
+
+### Description
+
+It deletes an empty directory.
+It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+
+### Syntax
+
+`call [[stdlib_system(module):remove_directory(subroutine)]] (path, err)`
+
+### Class
+
+Subroutine
+
+### Arguments
+
+`path`: Shall be a character string containing the path of the directory to create. It is an `intent(in)` argument.
+
+`err`(optional): Shall be of type `state_type`, and is used for error handling. It is an `optional, intent(out)` argument.
+
+### Return values
+
+`err` is an optional state return flag. On error if not requested, an `FS_ERROR` will trigger an error stop.
+
+### Example
+
+```fortran
+{!example/system/example_remove_directory.f90!}
+```
+
+---
+
 ## `null_device` - Return the null device file path
 
 ### Status

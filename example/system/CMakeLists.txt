@@ -16,4 +16,5 @@ ADD_EXAMPLE(path_join)
 ADD_EXAMPLE(path_split_path)
 ADD_EXAMPLE(path_base_name)
 ADD_EXAMPLE(path_dir_name)
-
+ADD_EXAMPLE(make_directory)
+ADD_EXAMPLE(remove_directory)

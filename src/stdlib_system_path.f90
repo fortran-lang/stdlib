@@ -1,6 +1,6 @@
 submodule(stdlib_system) stdlib_system_path
     use stdlib_ascii, only: reverse
-    use stdlib_strings, only: chomp, find, join
+    use stdlib_strings, only: chomp, join
     use stdlib_string_type, only: string_type, char, move
 contains
     module function join2_char_char(p1, p2) result(path)
