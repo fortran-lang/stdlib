@@ -1,9 +1,11 @@
 #:include "common.fypp"
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
-#:set KINDS_TYPES = R_KINDS_TYPES
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
 module test_specialmatrices
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_kinds
+    use stdlib_constants
     use stdlib_linalg, only: hermitian
     use stdlib_linalg_state, only: linalg_state_type
     use stdlib_math, only: all_close
@@ -12,19 +14,141 @@ module test_specialmatrices
 
 contains
 
-
     !> Collect all exported unit tests
     subroutine collect_suite(testsuite)
         !> Collection of tests
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
-            new_unittest('tridiagonal', test_tridiagonal), &
-            new_unittest('tridiagonal error handling', test_tridiagonal_error_handling) &
+            new_unittest('tridiagonal arithmetic', test_tridiagonal_arithmetic), &
+            new_unittest('tridiagonal spmv kernel', test_tridiagonal_spmv), &
+            new_unittest('tridiagonal error handling', test_tridiagonal_error_handling), &
+            new_unittest('symtridiagonal arithmetic', test_symtridiagonal_arithmetic), &
+            new_unittest('symtridiagonal spmv kernel', test_symtridiagonal_spmv), &
+            new_unittest('hermtridiagonal arithmetic', test_hermtridiagonal_arithmetic), &
+            new_unittest('hermtridiagonal spmv kernel', test_hermtridiagonal_spmv) &
         ]
     end subroutine
 
-    subroutine test_tridiagonal(error)
+    !----------------------------------------
+    !-----                              -----
+    !-----     TRIDIAGONAL MATRICES     -----
+    !-----                              -----
+    !----------------------------------------
+
+    subroutine test_tridiagonal_arithmetic(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        block
+            integer, parameter :: wp = ${k1}$
+            integer, parameter :: n = 5
+            type(tridiagonal_${s1}$_type) :: A, B, C
+            type(symtridiagonal_${s1}$_type) :: D
+            ${t1}$, allocatable :: Amat(:, :), Bmat(:, :), Cmat(:, :), Dmat(:, :)
+            ${t1}$, allocatable :: dl(:), dv(:), du(:), ev(:)
+            ${t1}$, parameter :: alpha = #{if t1.startswith('real')}# 2.0_wp #{else}# cmplx(2.0_wp, 2.0_wp, kind=wp) #{endif}#
+            integer :: i, j
+            #:if t1.startswith('complex')
+            type(hermtridiagonal_${s1}$_type) :: E
+            ${t1}$, allocatable :: Emat(:, :)
+            real(wp), allocatable :: data(:, :)
+            #:endif
+
+            ! Initialize A and B matrices.
+            allocate(dl(n-1), dv(n), du(n-1), ev(n-1))
+            #:if t1.startswith('real')
+            call random_number(dl) ; call random_number(dv) ; call random_number(du)
+            #:else
+            allocate(data(n, 2))
+            call random_number(data) ; dl = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; du = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
+            #:endif
+            A = tridiagonal(dl, dv, du) ; Amat = dense(A)
+            
+            #:if t1.startswith('real')
+            call random_number(dl) ; call random_number(dv) ; call random_number(du)
+            #:else
+            call random_number(data) ; dl = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; du = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
+            #:endif
+            B = tridiagonal(dl, dv, du) ; Bmat = dense(B)
+            
+            #:if t1.startswith('real')
+            call random_number(dv) ; call random_number(ev)
+            #:else
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; ev = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
+            #:endif
+            D = symtridiagonal(dv, ev) ; Dmat = dense(D)
+
+            #:if t1.startswith('complex')
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; ev = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
+            E = hermtridiagonal(dv, ev) ; Emat = dense(E)
+            #:endif
+       
+            ! Matrix addition.
+            C = A + B ; Cmat = dense(C) ! Tridiag + Tridiag = Tridiag
+            call check(error, all_close(Cmat, Amat+Bmat), .true.)
+            if (allocated(error)) return
+
+            C = A + D ; Cmat = dense(C) ! Tridiag + SymTridiag = Tridiag
+            call check(error, all_close(Cmat, Amat+Dmat), .true.)
+            if (allocated(error)) return
+
+            C = D + A ; Cmat = dense(C) ! SymTridiag + Tridiag = Tridiag
+            call check(error, all_close(Cmat, Amat+Dmat), .true.)
+            if (allocated(error)) return
+
+        #:if t1.startswith("complex")
+            C = A + E ; Cmat = dense(C) ! Tridiag + HermTridiag = Tridiag
+            call check(error, all_close(Cmat, Amat+Emat), .true.)
+            if (allocated(error)) return
+
+            C = E + A ; Cmat = dense(C) ! HermTridiag + Tridiag = Tridiag
+            call check(error, all_close(Cmat, Amat+Emat), .true.)
+            if (allocated(error)) return
+        #:endif
+
+            ! Matrix subtraction.
+            C = A - B ; Cmat = dense(C) ! Tridiag - Tridiag = Tridiag
+            call check(error, all_close(Cmat, Amat-Bmat), .true.)
+            if (allocated(error)) return
+
+            C = A - D ; Cmat = dense(C) ! Tridiag - SymTridiag = Tridiag
+            call check(error, all_close(Cmat, Amat-Dmat), .true.)
+            if (allocated(error)) return
+
+            C = D - A ; Cmat = dense(C) ! SymTridiag - Tridiag = Tridiag
+            call check(error, all_close(Cmat, Dmat-Amat), .true.)
+            if (allocated(error)) return
+
+        #:if t1.startswith("complex")
+            C = A - E ; Cmat = dense(C) ! Tridiag - HermTridiag = Tridiag
+            call check(error, all_close(Cmat, Amat-Emat), .true.)
+            if (allocated(error)) return
+
+            C = E - A ; Cmat = dense(C) ! HermTridiag - Tridiag = Tridiag
+            call check(error, all_close(Cmat, Emat-Amat), .true.)
+            if (allocated(error)) return
+        #:endif
+
+            ! Matrix scalar multiplication
+            C = alpha * A ; Cmat = dense(C)
+            call check(error, all_close(Cmat, alpha * Amat), .true.)
+            if (allocated(error)) return
+
+            C = A * alpha ; Cmat = dense(C)
+            call check(error, all_close(Cmat, alpha * Amat), .true.)
+            if (allocated(error)) return
+        end block
+        #:endfor
+    end subroutine
+
+    subroutine test_tridiagonal_spmv(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
         #:for k1, t1, s1 in (KINDS_TYPES)
@@ -33,17 +157,33 @@ contains
             integer, parameter :: n = 5
             type(tridiagonal_${s1}$_type) :: A
             ${t1}$, allocatable :: Amat(:,:), dl(:), dv(:), du(:)
+            #: if t1.startswith('complex')
+            real(wp), allocatable :: data(:, :)
+            #:endif
             ${t1}$, allocatable :: x(:)
             ${t1}$, allocatable :: y1(:), y2(:)
 
             ! Initialize matrix.
             allocate(dl(n-1), dv(n), du(n-1))
+            #:if t1.startswith('real')
             call random_number(dl) ; call random_number(dv) ; call random_number(du)
+            #:else
+            allocate(data(n, 2), source=0.0_wp)
+            call random_number(data) ; dl = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; du = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
+            #:endif
             A = tridiagonal(dl, dv, du) ; Amat = dense(A)
 
             ! Random vectors.
+            #:if t1.startswith('real')
             allocate(x(n), source = 0.0_wp)   ; call random_number(x)
             allocate(y1(n), source = 0.0_wp)  ; allocate(y2(n), source=0.0_wp)
+            #:else
+            allocate(x(n), source=zero_c${k1}$)
+            call random_number(data) ; x = cmplx(data(:, 1), data(:, 2), kind=wp)
+            allocate(y1(n), source = zero_c${k1}$)  ; allocate(y2(n), source=zero_c${k1}$)
+            #:endif
 
             ! Test y = A @ x
             y1 = matmul(Amat, x) ; call spmv(A, x, y2)
@@ -94,6 +234,266 @@ contains
         #:endfor       
     end subroutine
 
+    !--------------------------------------------------
+    !-----                                        -----
+    !-----     SYMMETRIC TRIDIAGONAL MATRICES     -----
+    !-----                                        -----
+    !--------------------------------------------------
+
+    subroutine test_symtridiagonal_arithmetic(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        block
+            integer, parameter :: wp = ${k1}$
+            integer, parameter :: n = 5
+            type(symtridiagonal_${s1}$_type) :: A, B, C
+            type(tridiagonal_${s1}$_type) :: D
+            ${t1}$, allocatable :: Amat(:, :), Bmat(:, :), Cmat(:, :)
+            ${t1}$, allocatable :: dv(:), ev(:)
+            ${t1}$, parameter :: alpha = #{if t1.startswith("real")}# 2.0_wp #{else}# cmplx(2.0_wp, 2.0_wp, kind=wp) #{endif}#
+            integer :: i, j
+            #:if t1.startswith('complex')
+            type(hermtridiagonal_${s1}$_type) :: E
+            ${t1}$, allocatable :: Emat(:, :)
+            real(wp), allocatable :: data(:, :)
+            #:endif
+
+            ! Initialize A and B matrices.
+            allocate(ev(n-1), dv(n))
+            #:if t1.startswith('real')
+            call random_number(ev) ; call random_number(dv)
+            #:else
+            allocate(data(n, 2))
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; ev = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
+            #:endif
+            A = symtridiagonal(dv, ev) ; Amat = dense(A)
+
+            #:if t1.startswith('real')
+            call random_number(ev) ; call random_number(dv)
+            #:else
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; ev = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
+            #:endif
+            B = symtridiagonal(dv, ev) ; Bmat = dense(B)
+
+        #:if t1.startswith('complex')
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; ev = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
+            E = hermtridiagonal(dv, ev) ; Emat = dense(E)
+        #:endif
+
+            ! Matrix addition.
+            C = A + B ; Cmat = dense(C) ! SymTridiag + SymTridiag = SymTridiag
+            call check(error, all_close(Cmat, Amat+Bmat), .true.)
+            if (allocated(error)) return
+
+        #:if t1.startswith("complex")
+            D = A + E ; Cmat = dense(D) ! SymTridiag + HermTridiag = Tridiag
+            call check(error, all_close(Cmat, Amat+Emat), .true.)
+            if (allocated(error)) return
+
+            D = E + A ; Cmat = dense(D) ! HermTridiag + SymTridiag = Tridiag
+            call check(error, all_close(Cmat, Amat+Emat), .true.)
+            if (allocated(error)) return
+        #:endif
+
+            ! Matrix subtraction.
+            C = A - B ; Cmat = dense(C) ! SymTridiag - SymTridiag = SymTridiag
+            call check(error, all_close(Cmat, Amat-Bmat), .true.)
+            if (allocated(error)) return
+
+        #:if t1.startswith("complex")
+            D = A - E ; Cmat = dense(D) ! SymTridiag - HermTridiag = Tridiag
+            call check(error, all_close(Cmat, Amat-Emat), .true.)
+            if (allocated(error)) return
+
+            D = E - A ; Cmat = dense(D) ! HermTridiag - SymTridiag = Tridiag
+            call check(error, all_close(Cmat, Emat-Amat), .true.)
+            if (allocated(error)) return
+        #:endif
+
+            ! Matrix scalar multiplication
+            C = alpha * A ; Cmat = dense(C)
+            call check(error, all_close(Cmat, alpha * Amat), .true.)
+            if (allocated(error)) return
+
+            C = A * alpha ; Cmat = dense(C)
+            call check(error, all_close(Cmat, alpha * Amat), .true.)
+            if (allocated(error)) return
+        end block
+        #:endfor
+    end subroutine
+
+    subroutine test_symtridiagonal_spmv(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        block
+            integer, parameter :: wp = ${k1}$
+            integer, parameter :: n = 5
+            type(symtridiagonal_${s1}$_type) :: A
+            ${t1}$, allocatable :: Amat(:,:), dv(:), ev(:)
+            #:if t1.startswith('complex')
+            real(wp), allocatable :: data(:, :)
+            #:endif
+            ${t1}$, allocatable :: x(:)
+            ${t1}$, allocatable :: y1(:), y2(:)
+
+            ! Initialize matrix.
+            allocate(ev(n-1), dv(n))
+            #:if t1.startswith('real')
+            call random_number(dv) ; call random_number(ev)
+            #:else
+            allocate(data(n, 2), source=0.0_wp)
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; ev = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
+            #:endif
+            A = symtridiagonal(dv, ev) ; Amat = dense(A)
+
+            ! Random vectors.
+            #:if t1.startswith('real')
+            allocate(x(n), source = 0.0_wp)   ; call random_number(x)
+            allocate(y1(n), source = 0.0_wp)  ; allocate(y2(n), source=0.0_wp)
+            #:else
+            allocate(x(n), source=zero_c${k1}$)
+            call random_number(data) ; x = cmplx(data(:, 1), data(:, 2), kind=wp)
+            allocate(y1(n), source = zero_c${k1}$)  ; allocate(y2(n), source=zero_c${k1}$)
+            #:endif
+
+            ! Test y = A @ x
+            y1 = matmul(Amat, x) ; call spmv(A, x, y2)
+            call check(error, all_close(y1, y2), .true.)
+            if (allocated(error)) return
+
+            ! Test y = A.T @ x
+            y1 = 0.0_wp ; y2 = 0.0_wp
+            y1 = matmul(transpose(Amat), x) ; call spmv(A, x, y2, op="T")
+            call check(error, all_close(y1, y2), .true.)
+            if (allocated(error)) return
+
+            #:if t1.startswith('complex') 
+            ! Test y = A.H @ x
+            y1 = 0.0_wp ; y2 = 0.0_wp
+            y1 = matmul(hermitian(Amat), x) ; call spmv(A, x, y2, op="H")
+            call check(error, all_close(y1, y2), .true.)
+            if (allocated(error)) return
+            #:endif
+        end block
+        #:endfor
+    end subroutine
+
+    !--------------------------------------
+    !-----                            -----
+    !-----     HERMITIAN MATRICES     -----
+    !-----                            -----
+    !--------------------------------------
+
+    subroutine test_hermtridiagonal_arithmetic(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in (C_KINDS_TYPES)
+        block
+            integer, parameter :: wp = ${k1}$
+            integer, parameter :: n = 5
+            type(hermtridiagonal_${s1}$_type) :: A, B, C
+            type(tridiagonal_${s1}$_type) :: D
+            ${t1}$, allocatable :: Amat(:, :), Bmat(:, :), Cmat(:, :), Dmat(:, :)
+            ${t1}$, allocatable :: dv(:), ev(:)
+            ${t1}$, parameter :: alpha = cmplx(2.0_wp, 2.0_wp, kind=wp)
+            real(${k1}$), parameter :: beta = 2.0_wp
+            integer :: i, j
+            real(wp), allocatable :: data(:, :)
+
+            ! Initialize A and B matrices.
+            allocate(ev(n-1), dv(n))
+            allocate(data(n, 2))
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; ev = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
+            A = hermtridiagonal(dv, ev) ; Amat = dense(A)
+
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; ev = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
+            B = hermtridiagonal(dv, ev) ; Bmat = dense(B)
+
+            ! Matrix addition.
+            C = A + B ; Cmat = dense(C)
+            call check(error, all_close(Cmat, Amat+Bmat), .true.)
+            if (allocated(error)) return
+
+            ! Matrix subtraction.
+            C = A - B ; Cmat = dense(C)
+            call check(error, all_close(Cmat, Amat-Bmat), .true.)
+            if (allocated(error)) return
+
+            ! Matrix scalar multiplication
+            D = alpha * A ; Dmat = dense(D)
+            call check(error, all_close(Dmat, alpha * Amat), .true.)
+            if (allocated(error)) return
+
+            D = A * alpha ; Dmat = dense(D)
+            call check(error, all_close(Dmat, alpha * Amat), .true.)
+            if (allocated(error)) return
+
+            C = beta * A ; Cmat = dense(C)
+            call check(error, all_close(Cmat, beta * Amat), .true.)
+            if (allocated(error)) return
+
+            C = A * beta ; Cmat = dense(C)
+            call check(error, all_close(Cmat, beta * Amat), .true.)
+            if (allocated(error)) return
+        end block
+        #:endfor
+    end subroutine
+
+    subroutine test_hermtridiagonal_spmv(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in (C_KINDS_TYPES)
+        block
+            integer, parameter :: wp = ${k1}$
+            integer, parameter :: n = 5
+            type(hermtridiagonal_${s1}$_type) :: A
+            ${t1}$, allocatable :: Amat(:,:), dv(:), ev(:)
+            real(wp), allocatable :: data(:, :)
+            ${t1}$, allocatable :: x(:)
+            ${t1}$, allocatable :: y1(:), y2(:)
+
+            ! Initialize matrix.
+            allocate(ev(n-1), dv(n))
+            allocate(data(n, 2), source=0.0_wp)
+            call random_number(data) ; dv = cmplx(data(:, 1), data(:, 2), kind=wp)
+            call random_number(data) ; ev = cmplx(data(:n-1, 1), data(:n-1, 2), kind=wp)
+            A = hermtridiagonal(dv, ev) ; Amat = dense(A)
+
+            ! Random vectors.
+            allocate(x(n), source=zero_c${k1}$)
+            call random_number(data) ; x = cmplx(data(:, 1), data(:, 2), kind=wp)
+            allocate(y1(n), source = zero_c${k1}$)  ; allocate(y2(n), source=zero_c${k1}$)
+
+            ! Test y = A @ x
+            y1 = matmul(Amat, x) ; call spmv(A, x, y2)
+            call check(error, all_close(y1, y2), .true.)
+            if (allocated(error)) return
+
+            ! Test y = A.T @ x
+            y1 = 0.0_wp ; y2 = 0.0_wp
+            y1 = matmul(transpose(Amat), x) ; call spmv(A, x, y2, op="T")
+            call check(error, all_close(y1, y2), .true.)
+            if (allocated(error)) return
+
+            #:if t1.startswith('complex') 
+            ! Test y = A.H @ x
+            y1 = 0.0_wp ; y2 = 0.0_wp
+            y1 = matmul(hermitian(Amat), x) ; call spmv(A, x, y2, op="H")
+            call check(error, all_close(y1, y2), .true.)
+            if (allocated(error)) return
+            #:endif
+        end block
+        #:endfor
+    end subroutine
+
 end module
 
 
@@ -109,7 +509,7 @@ program tester
     stat = 0
 
     testsuites = [ &
-        new_testsuite("sparse", collect_suite) &
+        new_testsuite("Tridiagonal matrices", collect_suite) &
         ]
 
     do is = 1, size(testsuites)

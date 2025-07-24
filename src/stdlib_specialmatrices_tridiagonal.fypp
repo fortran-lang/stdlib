@@ -7,6 +7,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
     use stdlib_linalg_lapack, only: lagtm
 
     character(len=*), parameter :: this = "tridiagonal matrices"
+
     contains
 
     !--------------------------------
@@ -14,6 +15,8 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
     !-----     CONSTRUCTORS     -----
     !-----                      -----
     !--------------------------------
+
+    ! ----- Tridiagonal matrices -----
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure module function initialize_tridiagonal_pure_${s1}$(dl, dv, du) result(A)
@@ -137,6 +140,238 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
     end function
     #:endfor
 
+    !----- Symmetric Tridiagonal matrices -----
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    pure module function initialize_symtridiagonal_pure_${s1}$(dv, ev) result(A)
+        !! Construct a `symtridiagonal` matrix from the rank-1 arrays
+        !! `dv` and `ev`.
+        ${t1}$, intent(in) :: dv(:), ev(:)
+        !! symtridiagonal matrix elements.
+        type(symtridiagonal_${s1}$_type) :: A
+        !! Corresponding symtridiagonal matrix.
+
+        ! Internal variables.
+        integer(ilp) :: n
+        type(linalg_state_type) :: err0
+
+        ! Sanity check.
+        n = size(dv, kind=ilp)
+        if (n <= 0) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Matrix size needs to be positive, n = ", n, ".")
+            call linalg_error_handling(err0)
+        endif
+        if (size(ev, kind=ilp) /= n-1) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Vector ev does not have the correct length.")
+            call linalg_error_handling(err0)
+        endif
+
+        ! Description of the matrix.
+        A%n = n
+        ! Matrix elements.
+        A%dl = ev ; A%dv = dv ; A%du = ev
+    end function
+
+    pure module function initialize_constant_symtridiagonal_pure_${s1}$(dv, ev, n) result(A)
+        !! Construct a `symtridiagonal` matrix with constant elements.
+        ${t1}$, intent(in) :: dv, ev
+        !! symtridiagonal matrix elements.
+        integer(ilp), intent(in) :: n
+        !! Matrix dimension.
+        type(symtridiagonal_${s1}$_type) :: A
+        !! Corresponding symtridiagonal matrix.
+
+        ! Internal variables.
+        integer(ilp) :: i
+        type(linalg_state_type) :: err0
+
+        ! Description of the matrix.
+        A%n = n
+        if (n <= 0) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Matrix size needs to be positive, n = ", n, ".")
+            call linalg_error_handling(err0)
+        endif
+        ! Matrix elements.
+        A%dl = [(ev, i = 1, n-1)]
+        A%dv = [(dv, i = 1, n-1)]
+        A%du = [(ev, i = 1, n-1)]
+    end function
+
+    module function initialize_symtridiagonal_impure_${s1}$(dv, ev, err) result(A)
+        !! Construct a `symtridiagonal` matrix from the rank-1 arrays
+        !! `dl` and `ev`.
+        ${t1}$, intent(in) :: dv(:), ev(:)
+        !! symtridiagonal matrix elements.
+        type(linalg_state_type), intent(out) :: err
+        !! Error handling.
+        type(symtridiagonal_${s1}$_type) :: A
+        !! Corresponding symtridiagonal matrix.
+
+        ! Internal variables.
+        integer(ilp) :: n
+        type(linalg_state_type) :: err0
+
+        ! Sanity check.
+        n = size(dv, kind=ilp)
+        if (n <= 0) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Matrix size needs to be positive, n = ", n, ".")
+            call linalg_error_handling(err0, err)
+        endif
+        if (size(ev, kind=ilp) /= n-1) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Vector ev does not have the correct length.")
+            call linalg_error_handling(err0, err)
+        endif
+
+        ! Description of the matrix.
+        A%n = n
+        ! Matrix elements.
+        A%dl = ev ; A%dv = dv ; A%du = ev
+    end function
+
+    module function initialize_constant_symtridiagonal_impure_${s1}$(dv, ev, n, err) result(A)
+        !! Construct a `symtridiagonal` matrix with constant elements.
+        ${t1}$, intent(in) :: dv, ev
+        !! symtridiagonal matrix elements.
+        integer(ilp), intent(in) :: n
+        !! Matrix dimension.
+        type(linalg_state_type), intent(out) :: err
+        !! Error handling
+        type(symtridiagonal_${s1}$_type) :: A
+        !! Corresponding symtridiagonal matrix.
+
+        ! Internal variables.
+        integer(ilp) :: i
+        type(linalg_state_type) :: err0
+
+        ! Description of the matrix.
+        A%n = n
+        if (n <= 0) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Matrix size needs to be positive, n = ", n, ".")
+            call linalg_error_handling(err0, err)
+        endif
+        ! Matrix elements.
+        A%dl = [(ev, i = 1, n)]
+        A%dv = [(dv, i = 1, n-1)]
+        A%du = [(ev, i = 1, n)]
+    end function
+    #:endfor
+
+    !----- Hermitian Tridiagonal matrices -----
+
+    #:for k1, t1, s1 in (C_KINDS_TYPES)
+    pure module function initialize_hermtridiagonal_pure_${s1}$(dv, ev) result(A)
+        !! Construct a `hermtridiagonal` matrix from the rank-1 arrays
+        !! `dl` and `ev`.
+        ${t1}$, intent(in) :: dv(:), ev(:)
+        !! hermtridiagonal matrix elements.
+        type(hermtridiagonal_${s1}$_type) :: A
+        !! Corresponding hermtridiagonal matrix.
+
+        ! Internal variables.
+        integer(ilp) :: n
+        type(linalg_state_type) :: err0
+
+        ! Sanity check.
+        n = size(dv, kind=ilp)
+        if (n <= 0) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Matrix size needs to be positive, n = ", n, ".")
+            call linalg_error_handling(err0)
+        endif
+        if (size(ev, kind=ilp) /= n-1) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Vector ev does not have the correct length.")
+            call linalg_error_handling(err0)
+        endif
+
+        ! Description of the matrix.
+        A%n = n
+        ! Matrix elements.
+        A%dl = conjg(ev) ; A%dv = dv%re ; A%du = ev
+    end function
+
+    pure module function initialize_constant_hermtridiagonal_pure_${s1}$(dv, ev, n) result(A)
+        !! Construct a `hermtridiagonal` matrix with constant elements.
+        ${t1}$, intent(in) :: dv, ev
+        !! hermtridiagonal matrix elements.
+        integer(ilp), intent(in) :: n
+        !! Matrix dimension.
+        type(hermtridiagonal_${s1}$_type) :: A
+        !! Corresponding hermtridiagonal matrix.
+
+        ! Internal variables.
+        integer(ilp) :: i
+        type(linalg_state_type) :: err0
+
+        ! Description of the matrix.
+        A%n = n
+        if (n <= 0) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Matrix size needs to be positive, n = ", n, ".")
+            call linalg_error_handling(err0)
+        endif
+        ! Matrix elements.
+        A%dl = [(conjg(ev), i = 1, n-1)]
+        A%dv = [(dv%re, i = 1, n-1)]
+        A%du = [(ev, i = 1, n-1)]
+    end function
+
+    module function initialize_hermtridiagonal_impure_${s1}$(dv, ev, err) result(A)
+        !! Construct a `hermtridiagonal` matrix from the rank-1 arrays
+        !! `dl`, `dv` and `du`.
+        ${t1}$, intent(in) :: dv(:), ev(:)
+        !! symtridiagonal matrix elements.
+        type(linalg_state_type), intent(out) :: err
+        !! Error handling.
+        type(hermtridiagonal_${s1}$_type) :: A
+        !! Corresponding hermtridiagonal matrix.
+
+        ! Internal variables.
+        integer(ilp) :: n
+        type(linalg_state_type) :: err0
+
+        ! Sanity check.
+        n = size(dv, kind=ilp)
+        if (n <= 0) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Matrix size needs to be positive, n = ", n, ".")
+            call linalg_error_handling(err0, err)
+        endif
+        if (size(ev, kind=ilp) /= n-1) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Vector ev does not have the correct length.")
+            call linalg_error_handling(err0, err)
+        endif
+
+        ! Description of the matrix.
+        A%n = n
+        ! Matrix elements.
+        A%dl = conjg(ev) ; A%dv = dv%re ; A%du = ev
+    end function
+
+    module function initialize_constant_hermtridiagonal_impure_${s1}$(dv, ev, n, err) result(A)
+        !! Construct a `hermtridiagonal` matrix with constant elements.
+        ${t1}$, intent(in) :: dv, ev
+        !! symtridiagonal matrix elements.
+        integer(ilp), intent(in) :: n
+        !! Matrix dimension.
+        type(linalg_state_type), intent(out) :: err
+        !! Error handling
+        type(hermtridiagonal_${s1}$_type) :: A
+        !! Corresponding hermtridiagonal matrix.
+
+        ! Internal variables.
+        integer(ilp) :: i
+        type(linalg_state_type) :: err0
+
+        ! Description of the matrix.
+        A%n = n
+        if (n <= 0) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Matrix size needs to be positive, n = ", n, ".")
+            call linalg_error_handling(err0, err)
+        endif
+        ! Matrix elements.
+        A%dl = [(conjg(ev), i = 1, n)]
+        A%dv = [(dv%re, i = 1, n-1)]
+        A%du = [(ev, i = 1, n)]
+    end function
+    #:endfor
+
     !-----------------------------------------
     !-----                               -----
     !-----     MATRIX-VECTOR PRODUCT     -----
@@ -147,7 +382,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
     #:for k1, t1, s1 in (KINDS_TYPES)
     #:for rank in RANKS
     module subroutine spmv_tridiag_${rank}$d_${s1}$(A, x, y, alpha, beta, op)
-        type(tridiagonal_${s1}$_type), intent(in) :: A
+        class(tridiagonal_${s1}$_type), intent(in) :: A
         ${t1}$, intent(in), contiguous, target :: x${ranksuffix(rank)}$
         ${t1}$, intent(inout), contiguous, target :: y${ranksuffix(rank)}$
         real(${k1}$), intent(in), optional :: alpha
@@ -166,6 +401,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         alpha_ = 1.0_${k1}$ ; if (present(alpha)) alpha_ = alpha
         beta_  = 0.0_${k1}$ ; if (present(beta))  beta_  = beta
         op_    = "N"        ; if (present(op))    op_    = op
+        if (op_ == "H") op_ = "C"
 
         ! Prepare Lapack arguments.
         n = A%n ; ldx = n ; ldy = n ; y = 0.0_${k1}$
@@ -175,6 +411,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         ! Pointer trick.
         xmat(1:n, 1:nrhs) => x ; ymat(1:n, 1:nrhs) => y
         call lagtm(op_, n, nrhs, alpha_, A%dl, A%dv, A%du, xmat, ldx, beta_, ymat, ldy)
+        nullify(xmat, ymat)
         #:else
         call lagtm(op_, n, nrhs, alpha_, A%dl, A%dv, A%du, x, ldx, beta_, y, ldy)
         #:endif
@@ -188,10 +425,12 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
     !-----                           -----
     !-------------------------------------
 
+    !----- To dense matrix -----
+
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure module function tridiagonal_to_dense_${s1}$(A) result(B)
         !! Convert a `tridiagonal` matrix to its dense representation.
-        type(tridiagonal_${s1}$_type), intent(in) :: A
+        class(tridiagonal_${s1}$_type), intent(in) :: A
         !! Input tridiagonal matrix.
         ${t1}$, allocatable :: B(:, :)
         !! Corresponding dense matrix.
@@ -216,19 +455,35 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
     end function
     #:endfor
 
+    !----- Matrix transposition -----
+
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure module function transpose_tridiagonal_${s1}$(A) result(B)
         type(tridiagonal_${s1}$_type), intent(in) :: A
-        !! Input matrix.
         type(tridiagonal_${s1}$_type) :: B
         B = tridiagonal(A%du, A%dv, A%dl)
     end function
+
+    pure module function transpose_symtridiagonal_${s1}$(A) result(B)
+        type(symtridiagonal_${s1}$_type), intent(in) :: A
+        type(symtridiagonal_${s1}$_type) :: B
+        B = symtridiagonal(A%dv, A%du)
+    end function
+        
+    #:if t1.startswith('complex')
+    pure module function transpose_hermtridiagonal_${s1}$(A) result(B)
+        type(hermtridiagonal_${s1}$_type), intent(in) :: A
+        type(hermtridiagonal_${s1}$_type) :: B
+        B = hermtridiagonal(A%dv, A%dl)
+    end function
+    #:endif
     #:endfor
+
+    !----- Hermitian operator -----
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure module function hermitian_tridiagonal_${s1}$(A) result(B)
         type(tridiagonal_${s1}$_type), intent(in) :: A
-        !! Input matrix.
         type(tridiagonal_${s1}$_type) :: B
         #:if t1.startswith("complex")
         B = tridiagonal(conjg(A%du), conjg(A%dv), conjg(A%dl))
@@ -236,7 +491,27 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         B = tridiagonal(A%du, A%dv, A%dl)
         #:endif
     end function
+       
+    pure module function hermitian_symtridiagonal_${s1}$(A) result(B)
+        type(symtridiagonal_${s1}$_type), intent(in) :: A
+        type(symtridiagonal_${s1}$_type) :: B
+        #:if t1.startswith("complex")
+        B = symtridiagonal(conjg(A%dv), conjg(A%du))
+        #:else
+        B = A
+        #:endif
+    end function
+        
+    #:if t1.startswith("complex")
+    pure module function hermitian_hermtridiagonal_${s1}$(A) result(B)
+        type(hermtridiagonal_${s1}$_type), intent(in) :: A
+        type(hermtridiagonal_${s1}$_type) :: B
+        B = A
+    end function
+    #:endif
     #:endfor
+
+    !----- Scalar multiplication -----
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     pure module function scalar_multiplication_tridiagonal_${s1}$(alpha, A) result(B)
@@ -251,27 +526,226 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         type(tridiagonal_${s1}$_type), intent(in) :: A
         ${t1}$, intent(in) :: alpha
         type(tridiagonal_${s1}$_type) :: B
+        B = scalar_multiplication_tridiagonal_${s1}$(alpha, A)
+    end function
+
+    pure module function scalar_multiplication_symtridiagonal_${s1}$(alpha, A) result(B)
+        ${t1}$, intent(in) :: alpha
+        type(symtridiagonal_${s1}$_type), intent(in) :: A
+        type(symtridiagonal_${s1}$_type) :: B
+        B = symtridiagonal(A%dv, A%du)
+        B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = B%dl
+    end function
+
+    pure module function scalar_multiplication_bis_symtridiagonal_${s1}$(A, alpha) result(B)
+        type(symtridiagonal_${s1}$_type), intent(in) :: A
+        ${t1}$, intent(in) :: alpha
+        type(symtridiagonal_${s1}$_type) :: B
+        B = symtridiagonal(A%dv, A%du)
+        B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = B%dl
+    end function
+
+    #:if t1.startswith("complex")
+     pure module function scalar_multiplication_hermtridiagonal_${s1}$(alpha, A) result(B)
+        ${t1}$, intent(in) :: alpha
+        type(hermtridiagonal_${s1}$_type), intent(in) :: A
+        type(tridiagonal_${s1}$_type) :: B
         B = tridiagonal(A%dl, A%dv, A%du)
         B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = alpha*B%du
     end function
+
+    pure module function scalar_multiplication_bis_hermtridiagonal_${s1}$(A, alpha) result(B)
+        type(hermtridiagonal_${s1}$_type), intent(in) :: A
+        ${t1}$, intent(in) :: alpha
+        type(tridiagonal_${s1}$_type) :: B
+        B = tridiagonal(A%dl, A%dv, A%du)
+        B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = alpha*B%du
+    end function
+    
+    pure module function real_scalar_multiplication_hermtridiagonal_${s1}$(alpha, A) result(B)
+        real(${k1}$), intent(in) :: alpha
+        type(hermtridiagonal_${s1}$_type), intent(in) :: A
+        type(hermtridiagonal_${s1}$_type) :: B
+        B = hermtridiagonal(A%dv, A%du)
+        B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = conjg(B%dl)
+    end function
+
+    pure module function real_scalar_multiplication_bis_hermtridiagonal_${s1}$(A, alpha) result(B)
+        type(hermtridiagonal_${s1}$_type), intent(in) :: A
+        real(${k1}$), intent(in) :: alpha
+        type(hermtridiagonal_${s1}$_type) :: B
+        B = hermtridiagonal(A%dv, A%du)
+        B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = conjg(B%dl)
+    end function
+    #:endif
     #:endfor
 
+    !----- Matrix addition -----
+
     #:for k1, t1, s1 in (KINDS_TYPES)
-    pure module function matrix_add_tridiagonal_${s1}$(A, B) result(C)
-        type(tridiagonal_${s1}$_type), intent(in) :: A
-        type(tridiagonal_${s1}$_type), intent(in) :: B
+    ! Tridiag + Tridiag = Tridiag
+    pure module function matrix_add_tridiag_tridiag_${s1}$(A, B) result(C)
+        type(tridiagonal_${s1}$_type), intent(in) :: A, B
         type(tridiagonal_${s1}$_type) :: C
         C = tridiagonal(A%dl, A%dv, A%du)
-        C%dl = C%dl + B%dl; C%dv = C%dv + B%dv; C%du = C%du + B%du
+        C%dl = C%dl + B%dl ; C%dv = C%dv + B%dv ; C%du = C%du + B%du
     end function
 
-    pure module function matrix_sub_tridiagonal_${s1}$(A, B) result(C)
+    ! Tridiag + SymTridiag = Tridiag
+    pure module function matrix_add_tridiag_symtridiag_${s1}$(A, B) result(C)
         type(tridiagonal_${s1}$_type), intent(in) :: A
+        type(symtridiagonal_${s1}$_type), intent(in) :: B
+        type(tridiagonal_${s1}$_type) :: C
+        C = tridiagonal(A%dl, A%dv, A%du)
+        C%dl = C%dl + B%dl ; C%dv = C%dv + B%dv ; C%du = C%du + B%du
+    end function
+
+    ! SymTridiag + Tridiag = Tridiag
+    pure module function matrix_add_symtridiag_tridiag_${s1}$(A, B) result(C)
+        type(symtridiagonal_${s1}$_type), intent(in) :: A
         type(tridiagonal_${s1}$_type), intent(in) :: B
         type(tridiagonal_${s1}$_type) :: C
         C = tridiagonal(A%dl, A%dv, A%du)
-        C%dl = C%dl - B%dl; C%dv = C%dv - B%dv; C%du = C%du - B%du
+        C%dl = C%dl + B%dl ; C%dv = C%dv + B%dv ; C%du = C%du + B%du
     end function
+
+    ! SymTridiag + SymTridiag = SymTridiag
+    pure module function matrix_add_symtridiag_symtridiag_${s1}$(A, B) result(C)
+        type(symtridiagonal_${s1}$_type), intent(in) :: A, B
+        type(symtridiagonal_${s1}$_type) :: C
+        C = symtridiagonal(A%dv, A%du)
+        C%dl = C%dl + B%dl ; C%dv = C%dv + B%dv ; C%du = C%dl
+    end function
+
+    #:if t1.startswith("complex")
+    ! Tridiag + HermTridiag = Tridiag
+    pure module function matrix_add_tridiag_hermtridiag_${s1}$(A, B) result(C)
+        type(tridiagonal_${s1}$_type), intent(in) :: A
+        type(hermtridiagonal_${s1}$_type), intent(in) :: B
+        type(tridiagonal_${s1}$_type) :: C
+        C = tridiagonal(A%dl, A%dv, A%du)
+        C%dl = C%dl + B%dl ; C%dv = C%dv + B%dv ; C%du = C%du + B%du
+    end function
+
+    ! HermTridiag + Tridiag = Tridiag
+    pure module function matrix_add_hermtridiag_tridiag_${s1}$(A, B) result(C)
+        type(hermtridiagonal_${s1}$_type), intent(in) :: A
+        type(tridiagonal_${s1}$_type), intent(in) :: B
+        type(tridiagonal_${s1}$_type) :: C
+        C = tridiagonal(A%dl, A%dv, A%du)
+        C%dl = C%dl + B%dl ; C%dv = C%dv + B%dv ; C%du = C%du + B%du
+    end function
+
+    ! SymTridiag + HermTridiag = Tridiag
+    pure module function matrix_add_symtridiag_hermtridiag_${s1}$(A, B) result(C)
+        type(symtridiagonal_${s1}$_type), intent(in) :: A
+        type(hermtridiagonal_${s1}$_type), intent(in) :: B
+        type(tridiagonal_${s1}$_type) :: C
+        C = tridiagonal(A%dl, A%dv, A%du)
+        C%dl = C%dl + B%dl ; C%dv = C%dv + B%dv ; C%du = C%du + B%du
+    end function
+
+    ! HermTridiag + SymTridiag = Tridiag
+    pure module function matrix_add_hermtridiag_symtridiag_${s1}$(A, B) result(C)
+        type(hermtridiagonal_${s1}$_type), intent(in) :: A
+        type(symtridiagonal_${s1}$_type), intent(in) :: B
+        type(tridiagonal_${s1}$_type) :: C
+        C = tridiagonal(A%dl, A%dv, A%du)
+        C%dl = C%dl + B%dl ; C%dv = C%dv + B%dv ; C%du = C%du + B%du
+    end function
+
+    ! HermTridiag + HermTridiag = HermTridiag
+    pure module function matrix_add_hermtridiag_hermtridiag_${s1}$(A, B) result(C)
+        type(hermtridiagonal_${s1}$_type), intent(in) :: A, B
+        type(hermtridiagonal_${s1}$_type) :: C
+        C = hermtridiagonal(A%dv, A%du)
+        C%dl = C%dl + B%dl ; C%dv = C%dv + B%dv ; C%du = conjg(C%dl)
+    end function
+    #:endif
+    #:endfor
+
+    !----- Matrix subtraction -----
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    ! Tridiag - Tridiag = Tridiag
+    pure module function matrix_sub_tridiag_tridiag_${s1}$(A, B) result(C)
+        type(tridiagonal_${s1}$_type), intent(in) :: A, B
+        type(tridiagonal_${s1}$_type) :: C
+        C = tridiagonal(A%dl, A%dv, A%du)
+        C%dl = C%dl - B%dl ; C%dv = C%dv - B%dv ; C%du = C%du - B%du
+    end function
+
+    ! Tridiag - SymTridiag = Tridiag
+    pure module function matrix_sub_tridiag_symtridiag_${s1}$(A, B) result(C)
+        type(tridiagonal_${s1}$_type), intent(in) :: A
+        type(symtridiagonal_${s1}$_type), intent(in) :: B
+        type(tridiagonal_${s1}$_type) :: C
+        C = tridiagonal(A%dl, A%dv, A%du)
+        C%dl = C%dl - B%dl ; C%dv = C%dv - B%dv ; C%du = C%du - B%du
+    end function
+
+    ! SymTridiag - Tridiag = Tridiag
+    pure module function matrix_sub_symtridiag_tridiag_${s1}$(A, B) result(C)
+        type(symtridiagonal_${s1}$_type), intent(in) :: A
+        type(tridiagonal_${s1}$_type), intent(in) :: B
+        type(tridiagonal_${s1}$_type) :: C
+        C = tridiagonal(A%dl, A%dv, A%du)
+        C%dl = C%dl - B%dl ; C%dv = C%dv - B%dv ; C%du = C%du - B%du
+    end function
+
+    ! SymTridiag - SymTridiag = SymTridiag
+    pure module function matrix_sub_symtridiag_symtridiag_${s1}$(A, B) result(C)
+        type(symtridiagonal_${s1}$_type), intent(in) :: A, B
+        type(symtridiagonal_${s1}$_type) :: C
+        C = symtridiagonal(A%dv, A%du)
+        C%dl = C%dl - B%dl ; C%dv = C%dv - B%dv ; C%du = C%dl
+    end function
+
+    #:if t1.startswith("complex")
+    ! Tridiag - HermTridiag = Tridiag
+    pure module function matrix_sub_tridiag_hermtridiag_${s1}$(A, B) result(C)
+        type(tridiagonal_${s1}$_type), intent(in) :: A
+        type(hermtridiagonal_${s1}$_type), intent(in) :: B
+        type(tridiagonal_${s1}$_type) :: C
+        C = tridiagonal(A%dl, A%dv, A%du)
+        C%dl = C%dl - B%dl ; C%dv = C%dv - B%dv ; C%du = C%du - B%du
+    end function
+
+    ! HermTridiag - Tridiag = Tridiag
+    pure module function matrix_sub_hermtridiag_tridiag_${s1}$(A, B) result(C)
+        type(hermtridiagonal_${s1}$_type), intent(in) :: A
+        type(tridiagonal_${s1}$_type), intent(in) :: B
+        type(tridiagonal_${s1}$_type) :: C
+        C = tridiagonal(A%dl, A%dv, A%du)
+        C%dl = C%dl - B%dl ; C%dv = C%dv - B%dv ; C%du = C%du - B%du
+    end function
+
+    ! SymTridiag - HermTridiag = Tridiag
+    pure module function matrix_sub_symtridiag_hermtridiag_${s1}$(A, B) result(C)
+        type(symtridiagonal_${s1}$_type), intent(in) :: A
+        type(hermtridiagonal_${s1}$_type), intent(in) :: B
+        type(tridiagonal_${s1}$_type) :: C
+        C = tridiagonal(A%dl, A%dv, A%du)
+        C%dl = C%dl - B%dl ; C%dv = C%dv - B%dv ; C%du = C%du - B%du
+    end function
+
+    ! HermTridiag - SymTridiag = Tridiag
+    pure module function matrix_sub_hermtridiag_symtridiag_${s1}$(A, B) result(C)
+        type(hermtridiagonal_${s1}$_type), intent(in) :: A
+        type(symtridiagonal_${s1}$_type), intent(in) :: B
+        type(tridiagonal_${s1}$_type) :: C
+        C = tridiagonal(A%dl, A%dv, A%du)
+        C%dl = C%dl - B%dl ; C%dv = C%dv - B%dv ; C%du = C%du - B%du
+    end function
+
+    ! HermTridiag - HermTridiag = HermTridiag
+    pure module function matrix_sub_hermtridiag_hermtridiag_${s1}$(A, B) result(C)
+        type(hermtridiagonal_${s1}$_type), intent(in) :: A, B
+        type(hermtridiagonal_${s1}$_type) :: C
+        C = hermtridiagonal(A%dv, A%du)
+        C%dl = C%dl - B%dl ; C%dv = C%dv - B%dv ; C%du = conjg(C%dl)
+    end function
+    #:endif
     #:endfor
 
 end submodule

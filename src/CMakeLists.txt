@@ -56,7 +56,7 @@ set(fppFiles
     stdlib_specialfunctions_gamma.fypp
     stdlib_specialfunctions.fypp
     stdlib_specialmatrices.fypp
-    stdlib_specialmatrices_tridiagonal.fypp    
+    stdlib_specialmatrices_tridiagonal.fypp
     stdlib_stats.fypp
     stdlib_stats_corr.fypp
     stdlib_stats_cov.fypp
