@@ -39,15 +39,8 @@ jobs:
         if: contains( matrix.os, 'ubuntu')
         run: |
           sudo apt-get install lcov
-          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-          sudo apt-get update
-          sudo apt-get install -y gcc-14 gfortran-14
-          sudo update-alternatives \
-             --install /usr/bin/gcc gcc /usr/bin/gcc-14 100 \
-             --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-14 \
-             --slave /usr/bin/gcov gcov /usr/bin/gcov-14
 
-      - name: Run test to generate the coverage.
+      - name: Run tests to generate the coverage.
         run: | # Use fpm gnu ci to check xdp and qp
           python config/fypp_deployment.py #--with_xdp --with_qp
           fpm test --profile debug --flag '-coverage'
