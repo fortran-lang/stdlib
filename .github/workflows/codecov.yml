@@ -1,4 +1,4 @@
-name: fpm-deployment
+name: code-coverage
 
 on: [push, pull_request]
 
