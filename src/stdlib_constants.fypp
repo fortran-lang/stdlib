@@ -71,6 +71,7 @@ module stdlib_constants
     #:for k, t, s in R_KINDS_TYPES
     ${t}$, parameter, public :: zero_${s}$ = 0._${k}$
     ${t}$, parameter, public :: one_${s}$  = 1._${k}$
+    ${t}$, parameter, public :: log2_${s}$ = log(2.0_${k}$)
     #:endfor
     #:for k, t, s in C_KINDS_TYPES
     ${t}$, parameter, public :: zero_${s}$ = (0._${k}$,0._${k}$)
