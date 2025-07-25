@@ -49,9 +49,9 @@ jobs:
         run: |
           mkdir -p ${{ env.COV_DIR }}
           mv ./build/gfortran_*/*/* ${{ env.COV_DIR }}
-          lcov --capture --initial --base-directory . --directory ${{ env.COV_DIR }} --output-file ${{ env.COV_DIR }}/coverage.base
-          lcov --capture           --base-directory . --directory ${{ env.COV_DIR }} --output-file ${{ env.COV_DIR }}/coverage.capture
-          lcov --add-tracefile ${{ env.COV_DIR }}/coverage.base --add-tracefile ${{ env.COV_DIR }}/coverage.capture --output-file ${{ env.COV_DIR }}/coverage.info
+          lcov --capture --initial --base-directory . --directory ${{ env.COV_DIR }} --output-file ${{ env.COV_DIR }}/coverage.base --ignore-errors mismatch
+          lcov --capture           --base-directory . --directory ${{ env.COV_DIR }} --output-file ${{ env.COV_DIR }}/coverage.capture --ignore-errors mismatch
+          lcov --add-tracefile ${{ env.COV_DIR }}/coverage.base --add-tracefile ${{ env.COV_DIR }}/coverage.capture --output-file ${{ env.COV_DIR }}/coverage.info --ignore-errors mismatch
         env:
             COV_DIR: build/coverage
 
