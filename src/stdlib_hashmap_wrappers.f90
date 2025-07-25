@@ -89,9 +89,8 @@ module stdlib_hashmap_wrappers
 
     interface set
 
-        module procedure set_char_key,   &
-                         set_int8_key,   &
-                         set_int32_key
+        module procedure set_scalar_key,   &
+                         set_rank_one_key
 
     end interface set
 
@@ -236,50 +235,41 @@ contains
     end subroutine get_int32_key
 
 
-    subroutine set_char_key( key, value )
+    subroutine set_scalar_key( key, value )
 !! Version: Experimental
 !!
-!! Sets the contents of the key from a CHARACTER string
+!! Sets the contents of the key from a scalar of any type
 !! Arguments:
 !!     key   - the output key
-!!     value - the input CHARACTER string
+!!     value - the input scalar value of any type
         type(key_type), intent(out) :: key
-        character(*), intent(in)    :: value
+        class(*), intent(in)        :: value
 
-        key % value = transfer( value, key % value, &
-                                bytes_char * len( value ) )
+        key % value = transfer( value, key % value )
 
-    end subroutine set_char_key
+    end subroutine set_scalar_key
 
 
-    subroutine set_int8_key( key, value )
+    subroutine set_rank_one_key( key, value )
 !! Version: Experimental
 !!
-!! Sets the contents of the key from an INTEGER(INT8) vector
+!! Sets the contents of the key from a rank one array of any type
 !! Arguments:
 !!     key   - the output key
-!!     value - the input INTEGER(INT8) vector
+!!     value - the input rank one array of any type
         type(key_type), intent(out) :: key
-        integer(int8), intent(in)   :: value(:)
+        class(*), intent(in)   :: value(:)
+        
+        select type (value)
+            type is (integer(int8))
+                key % value = value
+                    
+            class default
+                key % value = transfer( value, key % value )
 
-        key % value = value
-
-    end subroutine set_int8_key
-
-
-    pure subroutine set_int32_key( key, value )
-!! Version: Experimental
-!!
-!! Sets the contents of the key from an INTEGER(INT32) vector
-!! Arguments:
-!!     key   - the output key
-!!     value - the input INTEGER(INT32) vector
-        type(key_type), intent(out) :: key
-        integer(int32), intent(in)   :: value(:)
-                
-        key % value = transfer(value, key % value)
-                
-    end subroutine set_int32_key
+        end select
+            
+    end subroutine set_rank_one_key
 
 
     pure function fnv_1_hasher( key )

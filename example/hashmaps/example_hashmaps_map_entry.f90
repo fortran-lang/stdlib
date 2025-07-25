@@ -6,13 +6,14 @@ program example_map_entry
   type(chaining_hashmap_type) :: map
   type(key_type)      :: key
   logical             :: conflict
-  integer             :: int_scalar
   
   type :: array_data_wrapper
       integer, allocatable :: array(:)
   end type
   
   type(array_data_wrapper) :: array_example
+  
+  integer :: unsupported_key(3,3)
   
   ! Initialize hashmap with 2^10 slots.
   ! Hashmap will dynamically increase size if needed.
@@ -23,21 +24,20 @@ program example_map_entry
   call map%map_entry(key, 4, conflict)
   print *, 'CONFLICT = ', conflict
   
-  ! Using map_entry int32 array interface
+  ! Using the set function is not required.  Can input key into the map_entry key fied.  
   call map%map_entry( [4, 5, 6], 4, conflict)
   print *, 'CONFLICT = ', conflict
   
-  ! Integer scalars need to be passed as an array.
-  int_scalar = 1
-  call map%map_entry( [int_scalar], 4, conflict)
+  ! Scalars can also be used as keys.
+  call map%map_entry( 1, 4, conflict)
   print *, 'CONFLICT = ', conflict
   
-  ! Using map_entry character interface
+  ! Any type of scalar or rank 1 array can be used as a key.  
   call map%map_entry( 'key_string', 4, conflict)
   print *, 'CONFLICT = ', conflict
   
-  ! Transfer unsupported key types to int8 arrays.
-  call map%map_entry( transfer( [1_int64, 2_int64, 3_int64], [0_int8] ), 4, conflict)
+  ! A rank 2 or higher array can used as a key by transfering to an int8 array.
+  call map%map_entry( transfer( unsupported_key, [0_int8] ), 4, conflict)
   print *, 'CONFLICT = ', conflict
   
 ! Keys can be mapped alone without a corresponding value (other) for 'Set' type functionality.
