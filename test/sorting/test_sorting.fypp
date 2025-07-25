@@ -4,10 +4,10 @@
 module test_sorting
 
     use, intrinsic :: iso_fortran_env, only: compiler_version, error_unit
-    use stdlib_kinds, only: int32, int64, dp, sp
+    use stdlib_kinds, only: int32, int64, dp, sp, lk
     use stdlib_sorting
     use stdlib_string_type, only: string_type, assignment(=), operator(>), &
-        operator(<), write(formatted)
+        operator(<), operator(==), write(formatted)
     use stdlib_bitsets, only: bitset_64, bitset_large, &
         assignment(=), operator(>), operator(<)
     use testdrive, only: new_unittest, unittest_type, error_type, check
@@ -106,11 +106,153 @@ contains
             new_unittest('bitset_large_sort_indexes_${namei}$', test_bitsetl_sort_indexes_${namei}$), &
             new_unittest('bitset_64_sort_indexes_${namei}$', test_bitset64_sort_indexes_${namei}$), &
 #:endfor
+            new_unittest('int_unique', test_int_unique), &
+            new_unittest('real_unique', test_real_unique), &
+            new_unittest('char_unique', test_char_unique), &
+            new_unittest('string_unique', test_string_unique), &
             new_unittest('int_ord_sorts', test_int_ord_sorts) &
         ]
 
     end subroutine collect_sorting
 
+    
+    ! Test function for the unique integer functionality
+    subroutine test_int_unique(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        
+        integer :: test_array(10), expected(6)
+        integer, allocatable :: result(:)
+        
+        ! Test case 1: Basic functionality
+        test_array = [1, 2, 3, 3, 4, 5, 5, 6, 6, 6]
+        expected = [1, 2, 3, 4, 5, 6]
+        
+        result = unique(test_array)
+        call check(error, size(result) == 6, "Size of unique array should be 6")
+        if (allocated(error)) return
+        
+        ! Check if all values are present
+        call check(error, all([(any(result == expected(i)), i=1,6)]), &
+                   "All expected values should be present in result")
+        if (allocated(error)) return
+        
+        ! Test case 2: With sorted=.true.
+        deallocate(result)
+        result = unique(test_array, sorted=.true.)
+        call check(error, size(result) == 6, "Size of sorted unique array should be 6")
+        if (allocated(error)) return
+        
+        ! Check if result is sorted
+        call check(error, all(result == expected), &
+                   "Result should be sorted and match expected values")
+        if (allocated(error)) return
+        
+        ! Test case 3: Empty array
+        deallocate(result)
+        result = unique([integer ::])
+        call check(error, size(result) == 0, "Size of unique array from empty input should be 0")
+        if (allocated(error)) return
+        
+        ! Test case 4: Array with all identical elements
+        deallocate(result)
+        result = unique([5, 5, 5, 5, 5])
+        call check(error, size(result) == 1, "Size of unique array with identical elements should be 1")
+        if (allocated(error)) return
+        call check(error, result(1) == 5, "Unique value should be 5")
+    end subroutine test_int_unique
+    
+    ! Test function for the unique real functionality
+    subroutine test_real_unique(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        
+        real(sp) :: test_array(8), expected(5)
+        real(sp), allocatable :: result(:)
+        
+        ! Test case 1: Basic functionality
+        test_array = [3.1, 2.5, 7.2, 3.1, 2.5, 8.0, 7.2, 9.5]
+        expected = [2.5, 3.1, 7.2, 8.0, 9.5]
+        
+        result = unique(test_array)
+        call check(error, size(result) == 5, "Size of unique array should be 5")
+        if (allocated(error)) return
+        
+        ! Test case 2: With sorted=.true.
+        deallocate(result)
+        result = unique(test_array, sorted=.true.)
+        call check(error, size(result) == 5, "Size of sorted unique array should be 5")
+        if (allocated(error)) return
+        
+        ! Check if result is sorted
+        call check(error, all(abs(result - expected) < 1.0e-5), &
+                   "Result should be sorted and match expected values")
+    end subroutine test_real_unique
+    
+    ! Test function for the unique character functionality
+    subroutine test_char_unique(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        
+        character(len=4) :: test_array(7), expected(4)
+        character(len=4), allocatable :: result(:)
+        
+        ! Test case 1: Basic functionality
+        test_array = ["abcd", "efgh", "ijkl", "abcd", "mnop", "efgh", "ijkl"]
+        expected = ["abcd", "efgh", "ijkl", "mnop"]
+        
+        result = unique(test_array)
+        call check(error, size(result) == 4, "Size of unique array should be 4")
+        if (allocated(error)) return
+        
+        ! Test case 2: With sorted=.true.
+        deallocate(result)
+        result = unique(test_array, sorted=.true.)
+        call check(error, size(result) == 4, "Size of sorted unique array should be 4")
+        if (allocated(error)) return
+        
+        ! Check if result is sorted alphabetically
+        call check(error, all(result == expected), &
+                   "Result should be sorted and match expected values")
+    end subroutine test_char_unique
+    
+    ! Test function for the unique string_type functionality
+    subroutine test_string_unique(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        
+        type(string_type) :: test_array(8), expected(4)
+        type(string_type), allocatable :: result(:)
+        
+        ! Test case 1: Basic functionality
+        test_array(1) = "apple"
+        test_array(2) = "banana" 
+        test_array(3) = "cherry"
+        test_array(4) = "apple"
+        test_array(5) = "date"
+        test_array(6) = "banana"
+        test_array(7) = "cherry"
+        test_array(8) = "apple"
+        
+        expected(1) = "apple"
+        expected(2) = "banana"
+        expected(3) = "cherry"
+        expected(4) = "date"
+        
+        result = unique(test_array)
+        call check(error, size(result) == 4, "Size of unique array should be 4")
+        if (allocated(error)) return
+        
+        ! Test case 2: With sorted=.true.
+        deallocate(result)
+        result = unique(test_array, sorted=.true.)
+        call check(error, size(result) == 4, "Size of sorted unique array should be 4")
+        if (allocated(error)) return
+        
+        ! Check if result is sorted alphabetically
+        call check(error, all([(result(i) == expected(i), i=1,4)]), &
+                   "Result should be sorted and match expected values")
+    end subroutine test_string_unique
 
     subroutine initialize_tests()
 
