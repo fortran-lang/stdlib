@@ -57,6 +57,10 @@ jobs:
           python config/fypp_deployment.py --with_xdp --with_qp
           fpm test --profile release --flag '-DWITH_XDP -DWITH_QP -coverage'
 
+      - run: | # Use fpm gnu ci to check xdp and qp
+          python config/fypp_deployment.py --with_xdp --with_qp
+          fpm test --profile debug --flag '-DWITH_XDP -DWITH_QP -coverage'
+
       - name: Create coverage report
         run: |
           mkdir -p ${{ env.COV_DIR }}
