@@ -39,13 +39,13 @@ jobs:
         if: contains( matrix.os, 'ubuntu')
         run: |
           sudo apt-get install lcov
-          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-          sudo apt-get update
-          sudo apt-get install -y gcc-13 gfortran-13
-          sudo update-alternatives \
-             --install /usr/bin/gcc gcc /usr/bin/gcc-13 100 \
-             --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-13 \
-             --slave /usr/bin/gcov gcov /usr/bin/gcov-13
+          # sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+          # sudo apt-get update
+          # sudo apt-get install -y gcc-13 gfortran-13
+          # sudo update-alternatives \
+             # --install /usr/bin/gcc gcc /usr/bin/gcc-13 100 \
+             # --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-13 \
+             # --slave /usr/bin/gcov gcov /usr/bin/gcov-13
 
       - run: | # Just for deployment: create stdlib-fpm folder
           python config/fypp_deployment.py --deploy_stdlib_fpm
