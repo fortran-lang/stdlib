@@ -55,7 +55,7 @@ jobs:
 
       - run: | # Use fpm gnu ci to check xdp and qp
           python config/fypp_deployment.py --with_xdp --with_qp
-          fpm test --profile release --flag '-DWITH_XDP -DWITH_QP -coverage'
+          fpm test --profile release --flag '-DWITH_XDP -DWITH_QP'
 
       - run: | # Use fpm gnu ci to check xdp and qp
           python config/fypp_deployment.py --with_xdp --with_qp
