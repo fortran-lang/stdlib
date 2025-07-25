@@ -535,6 +535,156 @@ The function returns a `logical` value:
 
 ---
 
+## `make_directory` - Creates an empty directory
+
+### Status
+
+Experimental
+
+### Description
+
+It creates an empty directory.
+It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+
+### Syntax
+
+`call [[stdlib_system(module):make_directory(subroutine)]] (path, mode, err)`
+
+### Class
+
+Subroutine
+
+### Arguments
+
+`path`: Shall be a character string containing the path of the directory to create. It is an `intent(in)` argument.
+
+`mode`: Shall be a scalar integer indicating the permission bits required (Not applicable to Windows). It is an `optional, intent(in)` argument.
+
+`err`: Shall be of type `state_type`, for error handling. It is an `optional, intent(out)` argument.
+
+### Return values
+
+The `err` is set accordingly.
+
+### Example
+
+```fortran
+{!example/system/example_make_directory.f90!}
+```
+
+---
+
+## `remove_directory` - Removes an empty directory
+
+### Status
+
+Experimental
+
+### Description
+
+It deletes an empty directory.
+It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+
+### Syntax
+
+`call [[stdlib_system(module):remove_directory(subroutine)]] (path, err)`
+
+### Class
+
+Subroutine
+
+### Arguments
+
+`path`: Shall be a character string containing the path of the directory to create. It is an `intent(in)` argument.
+
+`err`: Shall be of type `state_type`, for error handling. It is an `intent(out)` argument.
+
+### Return values
+
+The `err` is set accordingly.
+
+### Example
+
+```fortran
+{!example/system/example_remove_directory.f90!}
+```
+
+---
+
+## `get_cwd` - Gets the current working directory
+
+### Status
+
+Experimental
+
+### Description
+
+It gets the current working directory associated with the process calling this subroutine.
+It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+
+### Syntax
+
+`call [[stdlib_system(module):get_cwd(subroutine)]] (cwd, err)`
+
+### Class
+
+Subroutine
+
+### Arguments
+
+`cwd`: Shall be a character string containing the path of the current working directory (cwd). It is an `intent(out)` argument.
+
+`err`: Shall be of type `state_type`, for error handling. It is an `intent(out)` argument.
+
+### Return values
+
+The `err` is set accordingly.
+
+### Example
+
+```fortran
+{!example/system/example_cwd.f90!}
+```
+
+---
+
+## `set_cwd` - Sets the current working directory
+
+### Status
+
+Experimental
+
+### Description
+
+It sets the current working directory associated with the process calling this subroutine.
+It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+
+### Syntax
+
+`call [[stdlib_system(module):set_cwd(subroutine)]] (path, err)`
+
+### Class
+
+Subroutine
+
+### Arguments
+
+`path`: Shall be a character string containing the path of the directory. It is an `intent(in)` argument.
+
+`err`: Shall be of type `state_type`, for error handling. It is an `intent(out)` argument.
+
+### Return values
+
+The `err` is set accordingly.
+
+### Example
+
+```fortran
+{!example/system/example_cwd.f90!}
+```
+
+---
+
 ## `null_device` - Return the null device file path
 
 ### Status
