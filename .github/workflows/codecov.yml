@@ -1,0 +1,69 @@
+name: fpm-deployment
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            toolchain: {compiler: gcc, version: 14}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2.3.1
+
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.x
+
+      - name: Install requirements
+        run: pip install --upgrade -r config/requirements.txt
+
+      - uses: fortran-lang/setup-fortran@main
+        id: setup-fortran
+        with:
+          compiler: ${{ matrix.toolchain.compiler }}
+          version: ${{ matrix.toolchain.version }}
+
+      - name: Setup Fortran Package Manager
+        uses: fortran-lang/setup-fpm@v5
+        with:
+          fpm-version: 'v0.10.0'
+
+      - name: Prepare for code coverage
+        if: contains( matrix.os, 'ubuntu')
+        run: |
+          sudo apt-get install lcov
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+          sudo apt-get update
+          sudo apt-get install -y gcc-14 gfortran-14
+          sudo update-alternatives \
+             --install /usr/bin/gcc gcc /usr/bin/gcc-14 100 \
+             --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-14 \
+             --slave /usr/bin/gcov gcov /usr/bin/gcov-14
+
+      - name: Run test to generate the coverage.
+        run: | # Use fpm gnu ci to check xdp and qp
+          python config/fypp_deployment.py #--with_xdp --with_qp
+          fpm test --profile debug --flag '-coverage'
+
+      - name: Create coverage report
+        run: |
+          mkdir -p ${{ env.COV_DIR }}
+          mv ./build/gfortran_*/*/* ${{ env.COV_DIR }}
+          lcov --capture --initial --base-directory . --directory ${{ env.COV_DIR }} --output-file ${{ env.COV_DIR }}/coverage.base
+          lcov --capture           --base-directory . --directory ${{ env.COV_DIR }} --output-file ${{ env.COV_DIR }}/coverage.capture
+          lcov --add-tracefile ${{ env.COV_DIR }}/coverage.base --add-tracefile ${{ env.COV_DIR }}/coverage.capture --output-file ${{ env.COV_DIR }}/coverage.info
+        env:
+            COV_DIR: build/coverage
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: build/coverage/coverage.info
