@@ -90,7 +90,8 @@ module stdlib_hashmap_wrappers
     interface set
 
         module procedure set_scalar_key,   &
-                         set_rank_one_key
+                         set_int8_key,   &
+                         set_int32_key
 
     end interface set
 
@@ -250,28 +251,36 @@ contains
     end subroutine set_scalar_key
 
 
-    subroutine set_rank_one_key( key, value )
+    pure subroutine set_int8_key( key, value )
 !! Version: Experimental
 !!
-!! Sets the contents of the key from a rank one array of any type
+!! Sets the contents of the key from an INTEGER(INT8) vector
 !! Arguments:
 !!     key   - the output key
 !!     value - the input rank one array of any type
         type(key_type), intent(out) :: key
-        class(*), intent(in)   :: value(:)
-        
-        select type (value)
-            type is (integer(int8))
-                key % value = value
-                    
-            class default
-                key % value = transfer( value, key % value )
+        integer(int8), intent(in)   :: value(:)
 
-        end select
-            
-    end subroutine set_rank_one_key
+        key % value = value
 
+    end subroutine set_int8_key
 
+    
+    pure subroutine set_int32_key( key, value )
+!! Version: Experimental
+!!
+!! Sets the contents of the key from an INTEGER(INT32) vector
+!! Arguments:
+!!     key   - the output key
+!!     value - the input INTEGER(INT32) vector
+        type(key_type), intent(out) :: key
+        integer(int32), intent(in)   :: value(:)
+                
+        key % value = transfer(value, key % value)
+                
+    end subroutine set_int32_key
+    
+    
     pure function fnv_1_hasher( key )
 !! Version: Experimental
 !!
