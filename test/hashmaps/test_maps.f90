@@ -146,7 +146,7 @@ module test_hashmaps
             end select
         
             ! Set key to a new value    
-            call map % set_other_data( key, (i+test_size), exists )
+            call map % set_other_data( key, -i, exists )
             call check(error, exists, "Failure on key interface set_other_data for"//trim(name))
         
             ! Get updated value and verify it is correct.
@@ -154,7 +154,7 @@ module test_hashmaps
             call check(error, exists, "Failure on key interface for get_other_data after set_other_data for"//trim(name))
             select type(data)
                 type is (integer)
-                    call check(error, data == (i+test_size), "Failure on key interface set_other_data data check for"//trim(name))
+                    call check(error, data == -i, "Failure on key interface set_other_data data check for"//trim(name))
                 class default
                     call test_failed(error, "Key interface set_other_data get_other_data didn't return an integer for "//trim(name))
                 end select
@@ -167,7 +167,7 @@ module test_hashmaps
         call map%get_all_keys(keys)
         call check(error, size(keys) == test_size, "Failure on key interface for get_all_keys for "//trim(name))
         
-        ! Check remove and get all keys function
+        ! Check key remove
         do i = 1, test_size
             call set(key, [i])
         
@@ -211,7 +211,7 @@ module test_hashmaps
             end select
 
             ! Set key to a new value                  
-            call map % set_other_data( key_array, (i+test_size), exists )
+            call map % set_other_data( key_array, -i, exists )
             call check(error, exists, "Failure on int8 interface set_other_data for"//trim(name))
         
             ! Get updated value and verify it is correct.
@@ -219,7 +219,7 @@ module test_hashmaps
             call check(error, exists, "Failure on int8 interface for get_other_data after set_other_data for"//trim(name))
             select type(data)
                 type is (integer)
-                    call check(error, data == (i+test_size), &
+                    call check(error, data == -i, &
                     "Failure on int8 interface set_other_data data check for"//trim(name))
                 class default
                     call test_failed(error, &
@@ -234,7 +234,7 @@ module test_hashmaps
         call map%get_all_keys(keys)
         call check(error, size(keys) == test_size, "Failure on int8 interface for get_all_keys for "//trim(name))
         
-        ! Check remove and get all keys function
+        ! Check key remove
         do i = 1, test_size
             key_array = transfer(i,key_array)
         
@@ -279,7 +279,7 @@ module test_hashmaps
                 end select
                 
             ! Set key to a new value 
-            call map % set_other_data( key_array, (i+test_size), exists )
+            call map % set_other_data( key_array, -i, exists )
             call check(error, exists, "Failure on int32 interface set_other_data for"//trim(name))
         
             ! Get updated value and verify it is correct.
@@ -287,7 +287,7 @@ module test_hashmaps
             call check(error, exists, "Failure on int32 interface for get_other_data after set_other_data for"//trim(name))
             select type(data)
                 type is (integer)
-                    call check(error, data == (i+test_size), &
+                    call check(error, data == -i, &
                     "Failure on int32 interface set_other_data data check for"//trim(name))
                 class default
                     call test_failed(error, &
@@ -301,7 +301,7 @@ module test_hashmaps
         call map%get_all_keys(keys)
         call check(error, size(keys) == test_size, "Failure on int32 interface for get_all_keys for "//trim(name))
             
-        ! Check remove and get all keys function
+        ! Check key remove
         do i = 1, test_size
             key_array = i
               
@@ -347,7 +347,7 @@ module test_hashmaps
             end select
         
             ! Set key to a new value 
-            call map % set_other_data( char_key, (i+test_size), exists )
+            call map % set_other_data( char_key, -i, exists )
             call check(error, exists, "Failure on char interface set_other_data for"//trim(name))
         
             ! Get updated value and verify it is correct.
@@ -356,7 +356,7 @@ module test_hashmaps
             "Failure on char interface for get_other_data after set_other_data for"//trim(name))
             select type(data)
                 type is (integer)
-                    call check(error, data == (i+test_size), &
+                    call check(error, data == -i, &
                     "Failure on char interface set_other_data data check for"//trim(name))
                 class default
                     call test_failed(error, &
@@ -370,7 +370,7 @@ module test_hashmaps
         call map%get_all_keys(keys)
         call check(error, size(keys) == test_size, "Failure on char interface for get_all_keys for "//trim(name))
       
-        ! Check remove and get all keys function
+        ! Check key remove
         do i = 1, test_size
             write(char_key, '(I0)') i
               
@@ -409,7 +409,7 @@ module test_hashmaps
             end select
     enddo
     
-    ! Check miscellaneous functions calls
+    ! Check miscellaneous functions
     block
         real :: ratio
         integer :: num_slots, nprobes, depth, bits
