@@ -219,9 +219,11 @@ module test_hashmaps
             call check(error, exists, "Failure on int8 interface for get_other_data after set_other_data for"//trim(name))
             select type(data)
                 type is (integer)
-                    call check(error, data == (i+test_size), "Failure on int8 interface set_other_data data check for"//trim(name))
+                    call check(error, data == (i+test_size), &
+                    "Failure on int8 interface set_other_data data check for"//trim(name))
                 class default
-                    call test_failed(error, "Int8 interface set_other_data get_other_data didn't return an integer for "//trim(name))
+                    call test_failed(error, &
+                    "Int8 interface set_other_data get_other_data didn't return an integer for "//trim(name))
                 end select
                 
             ! Check entry count and very it matches expected entry count
@@ -242,7 +244,8 @@ module test_hashmaps
             call map % key_test(key_array, exists )
             call check(error, .not.exists, "Key exists after removal on int8 interface for "//trim(name))
         
-            call check( error, map % entries() == (test_size-i), "Failure on int8 interface remove entery count for "//trim(name) )
+            call check( error, map % entries() == (test_size-i), &
+            "Failure on int8 interface remove entery count for "//trim(name) )
         enddo
     end block
     
@@ -284,9 +287,11 @@ module test_hashmaps
             call check(error, exists, "Failure on int32 interface for get_other_data after set_other_data for"//trim(name))
             select type(data)
                 type is (integer)
-                    call check(error, data == (i+test_size), "Failure on int32 interface set_other_data data check for"//trim(name))
+                    call check(error, data == (i+test_size), &
+                    "Failure on int32 interface set_other_data data check for"//trim(name))
                 class default
-                    call test_failed(error, "Int32 interface set_other_data get_other_data didn't return an integer for "//trim(name))
+                    call test_failed(error, &
+                    "Int32 interface set_other_data get_other_data didn't return an integer for "//trim(name))
             end select
                 
             call check( error, map % entries() == i, "Failure on int32 interface add entery count for "//trim(name) )
@@ -347,12 +352,15 @@ module test_hashmaps
         
             ! Get updated value and verify it is correct.
             call map % get_other_data( char_key, data, exists )
-            call check(error, exists, "Failure on char interface for get_other_data after set_other_data for"//trim(name))
+            call check(error, exists, &
+            "Failure on char interface for get_other_data after set_other_data for"//trim(name))
             select type(data)
                 type is (integer)
-                    call check(error, data == (i+test_size), "Failure on char interface set_other_data data check for"//trim(name))
+                    call check(error, data == (i+test_size), &
+                    "Failure on char interface set_other_data data check for"//trim(name))
                 class default
-                    call test_failed(error, "Char interface set_other_data get_other_data didn't return an integer for "//trim(name))
+                    call test_failed(error, &
+                    "Char interface set_other_data get_other_data didn't return an integer for "//trim(name))
                 end select
                 
             call check( error, map % entries() == i, "Failure on char interface add entery count for "//trim(name) )
@@ -372,7 +380,8 @@ module test_hashmaps
             call map % key_test(char_key, exists )
             call check(error, .not.exists, "Key exists after removal on char interface for "//trim(name))
         
-            call check( error, map % entries() == (test_size-i), "Failure on char interface remove entery count for "//trim(name) )
+            call check( error, map % entries() == (test_size-i), &
+            "Failure on char interface remove entery count for "//trim(name) )
         enddo
     end block
     
