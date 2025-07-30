@@ -2,7 +2,7 @@ module stdlib_system
 use, intrinsic :: iso_c_binding, only : c_int, c_long, c_ptr, c_null_ptr, c_int64_t, c_size_t, &
     c_f_pointer
 use stdlib_kinds, only: int64, dp, c_bool, c_char
-use stdlib_strings, only: to_c_char, find
+use stdlib_strings, only: to_c_char, find, to_string
 use stdlib_string_type, only: string_type
 use stdlib_optval, only: optval
 use stdlib_error, only: state_type, STDLIB_SUCCESS, STDLIB_FS_ERROR
