@@ -165,7 +165,7 @@ public :: remove_directory
 !! Gets the current working directory.
 !!
 !! ### Description
-!! This subroutine gets the current working directory of the process calling this function.
+!! This subroutine gets the current working directory the process is executing from.
 !!
 public :: get_cwd
 
@@ -178,7 +178,7 @@ public :: get_cwd
 !! Changes the current working directory to the one specified.
 !!
 !! ### Description
-!! This subroutine sets the current working directory of the process calling this function to the one specified.
+!! This subroutine sets the current working directory the process is executing from.
 !!
 public :: set_cwd
 
@@ -1064,7 +1064,7 @@ end subroutine remove_directory
 
 subroutine get_cwd(cwd, err)
     character(:), allocatable, intent(out) :: cwd
-    type(state_type), intent(out) :: err
+    type(state_type), optional, intent(out) :: err
     type(state_type) :: err0
 
     interface
@@ -1082,7 +1082,7 @@ subroutine get_cwd(cwd, err)
     c_str_ptr = stdlib_get_cwd(len, stat)
 
     if (stat /= 0) then
-        err0 = state_type(STDLIB_FS_ERROR, "code: ", to_string(stat)//",", c_get_strerror())
+        err0 = FS_ERROR_CODE(stat, c_get_strerror())
         call err0%handle(err)
     end if
 
@@ -1092,7 +1092,7 @@ end subroutine get_cwd
 
 subroutine set_cwd(path, err)
     character(len=*), intent(in) :: path
-    type(state_type), intent(out) :: err
+    type(state_type), optional, intent(out) :: err
     type(state_type) :: err0
 
     interface
@@ -1107,7 +1107,7 @@ subroutine set_cwd(path, err)
     code = stdlib_set_cwd(to_c_char(trim(path)))
 
     if (code /= 0) then
-        err0 = state_type(STDLIB_FS_ERROR, "code: ", to_string(code)//",", c_get_strerror())
+        err0 = FS_ERROR_CODE(code, c_get_strerror())
         call err0%handle(err)
     end if
 end subroutine set_cwd

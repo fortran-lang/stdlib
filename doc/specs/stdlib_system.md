@@ -654,7 +654,7 @@ Experimental
 
 ### Description
 
-This subroutine retrieves the current working directory, the running process is executing from.
+This subroutine retrieves the current working directory the running process is executing from.
 It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
 
 ### Syntax

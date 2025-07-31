@@ -1,4 +1,4 @@
-! Illustrate the usage of get_cwd, set_cwd
+! Illustrate the usage of `get_cwd`, `set_cwd`
 program example_cwd
     use stdlib_system, only: get_cwd, set_cwd
     use stdlib_error, only: state_type
