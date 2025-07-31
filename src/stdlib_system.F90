@@ -922,6 +922,25 @@ logical function is_directory(path)
     
 end function is_directory
 
+! A Helper function to convert C character arrays to Fortran character strings
+function to_f_char(c_str_ptr, len) result(f_str)
+    type(c_ptr), intent(in) :: c_str_ptr
+    ! length of the string excluding the null character
+    integer(kind=c_size_t), intent(in) :: len
+    character(:), allocatable :: f_str
+
+    integer :: i
+    character(kind=c_char), pointer :: c_str(:)
+
+    call c_f_pointer(c_str_ptr, c_str, [len])
+
+    allocate(character(len=len) :: f_str)
+
+    do concurrent (i=1:len)
+        f_str(i:i) = c_str(i)
+    end do
+end function to_f_char
+
 ! A helper function to get the result of the C function `strerror`.
 ! `strerror` is a function provided by `<string.h>`. 
 ! It returns a string describing the meaning of `errno` in the C header `<errno.h>`
@@ -937,18 +956,11 @@ function c_get_strerror() result(str)
     end interface
 
     type(c_ptr) :: c_str_ptr
-    integer(c_size_t) :: len, i
-    character(kind=c_char), pointer :: c_str(:)
+    integer(c_size_t) :: len
 
     c_str_ptr = strerror(len)
 
-    call c_f_pointer(c_str_ptr, c_str, [len])
-
-    allocate(character(len=len) :: str)
-
-    do concurrent (i=1:len)
-        str(i:i) = c_str(i)
-    end do
+    str = to_f_char(c_str_ptr, len)
 end function c_get_strerror
 
 !! makes an empty directory
@@ -1064,9 +1076,8 @@ subroutine get_cwd(cwd, err)
     end interface
 
     type(c_ptr) :: c_str_ptr
-    integer(c_size_t) :: len, i
+    integer(c_size_t) :: len
     integer :: stat
-    character(kind=c_char), pointer :: c_str(:)
 
     c_str_ptr = stdlib_get_cwd(len, stat)
 
@@ -1075,13 +1086,8 @@ subroutine get_cwd(cwd, err)
         call err0%handle(err)
     end if
 
-    call c_f_pointer(c_str_ptr, c_str, [len])
+    cwd = to_f_char(c_str_ptr, len)
 
-    allocate(character(len=len) :: cwd)
-
-    do concurrent (i=1:len)
-        cwd(i:i) = c_str(i)
-    end do
 end subroutine get_cwd
 
 subroutine set_cwd(path, err)
@@ -1124,21 +1130,13 @@ function null_device() result(path)
         
     end interface
     
-    integer(c_size_t) :: i, len
+    integer(c_size_t) :: len
     type(c_ptr) :: c_path_ptr
-    character(kind=c_char), pointer :: c_path(:)    
 
     ! Call the C function to get the null device path and its length
     c_path_ptr = process_null_device(len)
-    call c_f_pointer(c_path_ptr,c_path,[len])
 
-    ! Allocate the Fortran string with the length returned from C
-    allocate(character(len=len) :: path)
-        
-    do concurrent (i=1:len)
-        path(i:i) = c_path(i)
-    end do
-        
+    path = to_f_char(c_path_ptr, len)
 end function null_device
 
 !> Delete a file at the given path.
