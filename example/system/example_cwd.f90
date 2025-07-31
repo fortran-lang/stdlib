@@ -25,7 +25,6 @@ program example_cwd
 
     if (err%error()) then
         print *, "Error getting current working directory after using set_cwd: "//err%print()
-        return
     end if
     
     print *, "CWD: "//path

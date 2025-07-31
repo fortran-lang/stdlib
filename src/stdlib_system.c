@@ -47,6 +47,9 @@ int stdlib_remove_directory(const char* path){
     return (!code) ? 0 : errno;
 }
 
+// Wrapper to the platform's `getcwd`(get current working directory) call.
+// Uses `getcwd` on unix, `_getcwd` on windows.
+// Returns the cwd, sets the length of cwd and the `stat` of the operation.
 char* stdlib_get_cwd(size_t* len, int* stat){
     *stat = 0;
 #ifdef _WIN32
@@ -75,6 +78,9 @@ char* stdlib_get_cwd(size_t* len, int* stat){
 #endif /* ifdef _WIN32 */
 }
 
+// Wrapper to the platform's `chdir`(change directory) call.
+// Uses `chdir` on unix, `_chdir` on windows.
+// Returns 0 if successful, otherwise returns the `errno`.
 int stdlib_set_cwd(char* path) {
     int code;
 #ifdef _WIN32
@@ -83,6 +89,5 @@ int stdlib_set_cwd(char* path) {
     code = chdir(path);
 #endif /* ifdef _WIN32 */
     
-    if (code == -1) return errno;
-    return 0;
+    return (code == -1) ? errno : 0;
 }
