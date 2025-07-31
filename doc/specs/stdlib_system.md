@@ -654,12 +654,12 @@ Experimental
 
 ### Description
 
-It gets the current working directory associated with the process calling this subroutine.
+This subroutine retrieves the current working directory, the running process is executing from.
 It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
 
 ### Syntax
 
-`call [[stdlib_system(module):get_cwd(subroutine)]] (cwd, err)`
+`call [[stdlib_system(module):get_cwd(subroutine)]] (cwd [, err])`
 
 ### Class
 
@@ -667,13 +667,13 @@ Subroutine
 
 ### Arguments
 
-`cwd`: Shall be a character string containing the path of the current working directory (cwd). It is an `intent(out)` argument.
+`cwd`: Shall be a character string for receiving the path of the current working directory (cwd). It is an `intent(out)` argument.
 
-`err`: Shall be of type `state_type`, for error handling. It is an `intent(out)` argument.
+`err`(optional): Shall be of type `state_type`, and is used for error handling. It is an `intent(out)` argument.
 
 ### Return values
 
-The `err` is set accordingly.
+`err` is an optional state return flag. On error if not requested, an `FS_ERROR` will trigger an error stop.
 
 ### Example
 
@@ -691,12 +691,12 @@ Experimental
 
 ### Description
 
-It sets the current working directory associated with the process calling this subroutine.
+This subrotine sets the current working directory the process is executing from.
 It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
 
 ### Syntax
 
-`call [[stdlib_system(module):set_cwd(subroutine)]] (path, err)`
+`call [[stdlib_system(module):set_cwd(subroutine)]] (path [, err])`
 
 ### Class
 
@@ -706,11 +706,11 @@ Subroutine
 
 `path`: Shall be a character string containing the path of the directory. It is an `intent(in)` argument.
 
-`err`: Shall be of type `state_type`, for error handling. It is an `intent(out)` argument.
+`err`(optional): Shall be of type `state_type`, and is used for error handling. It is an `intent(out)` argument.
 
 ### Return values
 
-The `err` is set accordingly.
+`err` is an optional state return flag. On error if not requested, an `FS_ERROR` will trigger an error stop.
 
 ### Example
 
