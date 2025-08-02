@@ -204,6 +204,44 @@ public :: FS_ERROR
 !! ([Specification](../page/specs/stdlib_system.html#FS_ERROR_CODE))
 !!
 public :: FS_ERROR_CODE
+
+!> Version: experimental
+!>
+!> Integer constants representing the most common path types.
+!> ([Specification](../page/specs/stdlib_system.html))
+integer, parameter, public :: &
+    !> Represents an unknown path type
+    type_unknown      = 0, &
+    !> Represents a regular file
+    type_regular_file = 1, &
+    !> Represents a directory
+    type_directory    = 2, &
+    !> Represents a symbolic link
+    type_symlink      = 3
+
+!! version: experimental
+!!
+!! Checks if a path exists in the filesystem.
+!! ([Specification](../page/specs/stdlib_system.html#exists))
+!!
+!!### Summary
+!! Function to check whether the path exists in the fileystem at all.
+!! If the path does exist, returns the type of the path.
+!!
+!!### Description
+!! 
+!! The function performs a system call (syscall) to the operating system, to retrieve the metadata
+!! corresponding to a path, and identifies the type of path it is. 
+!! It can distinguish among the following path types
+!!
+!! - Regular File
+!! - Directory
+!! - Symbolic Link
+!!
+!! Returns a constant representing the path type or `type_unknown` if it cannot be determined.
+!! If there has been an error, It is handled using `state_type`.
+!!
+public :: exists
      
 ! CPU clock ticks storage
 integer, parameter, private :: TICKS = int64
@@ -899,22 +937,27 @@ end function is_directory
 ! A helper function to get the result of the C function `strerror`.
 ! `strerror` is a function provided by `<string.h>`. 
 ! It returns a string describing the meaning of `errno` in the C header `<errno.h>`
-function c_get_strerror() result(str)
+function c_get_strerror(winapi) result(str)
     character(len=:), allocatable :: str
+    logical, optional, intent(in) :: winapi
 
     interface
-        type(c_ptr) function strerror(len) bind(C, name='stdlib_strerror')
-            import c_size_t, c_ptr
+        type(c_ptr) function strerror(len, winapi) bind(C, name='stdlib_strerror')
+            import c_size_t, c_ptr, c_bool
             implicit none
             integer(c_size_t), intent(out) :: len
+            logical, intent(in) :: winapi
         end function strerror
     end interface
 
     type(c_ptr) :: c_str_ptr
     integer(c_size_t) :: len, i
     character(kind=c_char), pointer :: c_str(:)
+    logical :: winapi_
 
-    c_str_ptr = strerror(len)
+    winapi_ = optval(winapi, .false.)
+
+    c_str_ptr = strerror(len, winapi_)
 
     call c_f_pointer(c_str_ptr, c_str, [len])
 
@@ -1133,6 +1176,31 @@ pure function FS_ERROR(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,&
     state = state_type(STDLIB_FS_ERROR, a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,&
         a13,a14,a15,a16,a17,a18,a19,a20)
 end function FS_ERROR
+
+function exists(path, err) result(fs_type)
+    character(*), intent(in) :: path
+    type(state_type), optional, intent(out) :: err
+    integer :: fs_type
+
+    type(state_type) :: err0
+
+    interface
+        integer function stdlib_exists(path, stat) bind(C, name='stdlib_exists')
+            import c_char, c_int
+            character(kind=c_char), intent(in) :: path(*)
+            integer(kind=c_int), intent(out) :: stat
+        end function stdlib_exists
+    end interface
+
+    integer(kind=c_int) :: stat
+
+    fs_type = stdlib_exists(to_c_char(trim(path)), stat)
+
+    if (stat /= 0) then
+        err0 = FS_ERROR_CODE(stat, c_get_strerror())
+        call err0%handle(err)
+    end if
+end function exists
 
 character function path_sep()
     if (OS_TYPE() == OS_WINDOWS) then
