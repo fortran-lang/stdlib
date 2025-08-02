@@ -166,10 +166,7 @@ contains
             call execute_command_line(cmd, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
         else
             cmd = 'ln -s '//target_name//' '//link_name
-            print *, cmd
             call execute_command_line(cmd, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
-            cmd = 'mklink '//link_name//' '//target_name
-            print *, cmd
         end if
 
         call check(error, ios == 0 .and. iocmd == 0, "Cannot create symlink!: " // trim(msg))
@@ -177,7 +174,7 @@ contains
         if (allocated(error)) then
             ! Clean up: remove the target
             close(iunit,status='delete',iostat=ios,iomsg=msg)
-            call check(error, ios == 0, err%message // "and cannot delete target: " // trim(msg))
+            call check(error, ios == 0, err%message // " and cannot delete target: " // trim(msg))
             return
         end if
 
@@ -187,12 +184,12 @@ contains
         if (allocated(error)) then
             ! Clean up: remove the link
             call execute_command_line("rm " // link_name, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
-            call check(error, ios == 0 .and. iocmd == 0, err%message // "and &
+            call check(error, ios == 0 .and. iocmd == 0, err%message // " and &
                 & cannot delete link: " // trim(msg))
 
             ! Clean up: remove the target
             close(iunit,status='delete',iostat=ios,iomsg=msg)
-            call check(error, ios == 0, err%message // "and cannot delete target: " // trim(msg))
+            call check(error, ios == 0, err%message // " and cannot delete target: " // trim(msg))
             return
         end if
 
@@ -220,6 +217,10 @@ contains
             close(iunit,status='delete',iostat=ios,iomsg=msg)
             call check(error, ios == 0, err%message // " and cannot delete target: " // trim(msg))
         end if
+
+        ! Clean up: remove the target
+        close(iunit,status='delete',iostat=ios,iomsg=msg)
+        call check(error, ios == 0, "Cannot delete target: " // trim(msg))
     end subroutine test_exists_symlink
 
     ! Test `is_directory` for a directory
