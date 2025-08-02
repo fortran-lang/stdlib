@@ -4,6 +4,7 @@ module test_filesystem
         make_directory, remove_directory, make_directory_all, is_windows, OS_TYPE, &
         OS_WINDOWS, exists, type_unknown, type_regular_file, type_directory, type_symlink
     use stdlib_error, only: state_type, STDLIB_FS_ERROR
+    use stdlib_strings, only: to_string
 
     implicit none
 
@@ -88,7 +89,8 @@ contains
             return
         end if
 
-        call check(error, t == type_regular_file, "exists incorrectly identifies type of reg files!")
+        call check(error, t == type_regular_file, "exists incorrectly identifies type of &
+            reg files!: type=" // to_string(t))
 
         if (allocated(error)) then
             ! Clean up: remove the file
@@ -123,17 +125,18 @@ contains
         if (allocated(error)) then
             ! Clean up: remove the directory
             call execute_command_line("rmdir " // dirname, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
-            call check(error, ios == 0 .and. iocmd == 0, err%message // "and &
+            call check(error, ios == 0 .and. iocmd == 0, err%message // " and &
                 & cannot cleanup test_exists_dir: " // trim(msg))
             return
         end if
 
-        call check(error, t == type_directory, "exists incorrectly identifies type of directories!")
+        call check(error, t == type_directory, "exists incorrectly identifies type of &
+            directories!: type=" // to_string(t))
 
         if (allocated(error)) then
             ! Clean up: remove the directory
             call execute_command_line("rmdir " // dirname, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
-            call check(error, ios == 0 .and. iocmd == 0, err%message // "and &
+            call check(error, ios == 0 .and. iocmd == 0, err%message // " and &
                 & cannot cleanup test_exists_dir: " // trim(msg))
             return
         end if
@@ -184,17 +187,18 @@ contains
             return
         end if
 
-        call check(error, t == type_symlink, "exists incorrectly identifies type of symlinks!")
+        call check(error, t == type_symlink, "exists incorrectly identifies type of &
+            symlinks!: type=" // to_string(t))
 
         if (allocated(error)) then
             ! Clean up: remove the link
             call execute_command_line("rm " // link_name, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
-            call check(error, ios == 0 .and. iocmd == 0, err%message // "and &
+            call check(error, ios == 0 .and. iocmd == 0, err%message // " and &
                 & cannot delete link: " // trim(msg))
 
             ! Clean up: remove the target
             close(iunit,status='delete',iostat=ios,iomsg=msg)
-            call check(error, ios == 0, err%message // "and cannot delete target: " // trim(msg))
+            call check(error, ios == 0, err%message // " and cannot delete target: " // trim(msg))
             return
         end if
 
@@ -205,7 +209,7 @@ contains
         if (allocated(error)) then
             ! Clean up: remove the target
             close(iunit,status='delete',iostat=ios,iomsg=msg)
-            call check(error, ios == 0, err%message // "and cannot delete target: " // trim(msg))
+            call check(error, ios == 0, err%message // " and cannot delete target: " // trim(msg))
         end if
     end subroutine test_exists_symlink
 
