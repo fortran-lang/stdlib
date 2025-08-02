@@ -149,9 +149,9 @@ contains
     subroutine test_exists_symlink(error)
         type(error_type), allocatable, intent(out) :: error
         type(state_type) :: err
-        character(len=256) :: target_name, link_name, cmd
+        character(len=128) :: target_name, link_name
         integer :: ios, iunit, iocmd, t
-        character(len=512) :: msg
+        character(len=512) :: msg, cmd
 
         target_name = "test_file.txt"
         link_name = "symlink.txt"
@@ -165,12 +165,21 @@ contains
             cmd = 'mklink '//link_name//' '//target_name
             call execute_command_line(cmd, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
         else
-            cmd = 'ln -s '//link_name//' '//target_name
+            cmd = 'ln -s '//target_name//' '//link_name
+            print *, cmd
             call execute_command_line(cmd, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+            cmd = 'mklink '//link_name//' '//target_name
+            print *, cmd
         end if
 
         call check(error, ios == 0 .and. iocmd == 0, "Cannot create symlink!: " // trim(msg))
-        if (allocated(error)) return
+
+        if (allocated(error)) then
+            ! Clean up: remove the target
+            close(iunit,status='delete',iostat=ios,iomsg=msg)
+            call check(error, ios == 0, err%message // "and cannot delete target: " // trim(msg))
+            return
+        end if
 
         t = exists(link_name, err)
         call check(error, err%ok(), "exists failed for symlink: " // err%print())
