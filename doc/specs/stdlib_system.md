@@ -646,6 +646,51 @@ Subroutine
 
 ---
 
+## `exists` - Checks if a path exists in the filesystem
+
+### Status
+
+Experimental
+
+### Description
+
+This function performs a system call (syscall) to the operating system, to retrieve the metadata
+corresponding to the path, and identifies the type of path it is. 
+It can distinguish among the following path types
+
+- Regular File
+- Directory
+- Symbolic Link
+
+Returns a constant representing the path type or `type_unknown` if it cannot be determined.
+If there has been an error, It is handled using `state_type`.
+
+### Syntax
+
+`res = [[stdlib_system(module):exists(function)]] (path [, err])`
+
+### Class
+
+Function
+
+### Arguments
+
+`path`: Shall be a character string containing the path. It is an `intent(in)` argument.
+
+`err`(optional): Shall be of type `state_type`, and is used for error handling. It is an `optional, intent(out)` argument.
+
+### Return values
+
+`err` is an optional state return flag. On error if not requested, an `FS_ERROR` will trigger an error stop.
+
+### Example
+
+```fortran
+{!example/system/example_exists.f90!}
+```
+
+---
+
 ## `null_device` - Return the null device file path
 
 ### Status
