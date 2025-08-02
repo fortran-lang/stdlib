@@ -2,7 +2,7 @@ module test_filesystem
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_system, only: is_directory, delete_file, FS_ERROR, FS_ERROR_CODE, &
         make_directory, remove_directory, make_directory_all, is_windows, OS_TYPE, &
-        OS_WINDOWS
+        OS_WINDOWS, exists, type_unknown, type_regular_file, type_directory, type_symlink
     use stdlib_error, only: state_type, STDLIB_FS_ERROR
 
     implicit none
@@ -16,6 +16,10 @@ contains
 
         testsuite = [ &
             new_unittest("fs_error", test_fs_error), &
+            new_unittest("fs_exists_not_exists", test_exists_not_exists), &
+            new_unittest("fs_exists_reg_file", test_exists_reg_file), &
+            new_unittest("fs_exists_dir", test_exists_dir), &
+            new_unittest("fs_exists_symlink", test_exists_symlink), &
             new_unittest("fs_is_directory_dir", test_is_directory_dir), &
             new_unittest("fs_is_directory_file", test_is_directory_file), &
             new_unittest("fs_delete_non_existent", test_delete_file_non_existent), &
@@ -48,6 +52,162 @@ contains
             "FS_ERROR: Could not construct state without code correctly")
         if (allocated(error)) return
     end subroutine test_fs_error
+
+    subroutine test_exists_not_exists(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(state_type) :: err
+
+        character(*), parameter :: path = "rand_name"
+        integer :: t
+
+        t = exists(path, err)
+        call check(error, err%error(), "False positive for a non-existent path!")
+    end subroutine test_exists_not_exists
+
+    subroutine test_exists_reg_file(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(state_type) :: err
+        character(len=256) :: filename
+        integer :: ios, iunit, t
+        character(len=512) :: msg
+
+        filename = "test_file.txt"
+
+        ! Create a file
+        open(newunit=iunit, file=filename, status="replace", iostat=ios, iomsg=msg)
+        call check(error, ios == 0, "Cannot init test_exists_reg_file: " // trim(msg))
+        if (allocated(error)) return
+
+        t = exists(filename, err)
+        call check(error, err%ok(), "exists failed for reg file: " // err%print())
+
+        if (allocated(error)) then
+            ! Clean up: remove the file
+            close(iunit,status='delete',iostat=ios,iomsg=msg)
+            call check(error, ios == 0, err%message// " and cannot delete test file: " // trim(msg))
+            return
+        end if
+
+        call check(error, t == type_regular_file, "exists incorrectly identifies type of reg files!")
+
+        if (allocated(error)) then
+            ! Clean up: remove the file
+            close(iunit,status='delete',iostat=ios,iomsg=msg)
+            call check(error, ios == 0, err%message// " and cannot delete test file: " // trim(msg))
+            return
+        end if
+
+        ! Clean up: remove the file
+        close(iunit,status='delete',iostat=ios,iomsg=msg)
+        call check(error, ios == 0, "Cannot delete test file: " // trim(msg))
+        if (allocated(error)) return
+    end subroutine test_exists_reg_file
+
+    subroutine test_exists_dir(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(state_type) :: err
+        character(len=256) :: dirname
+        integer :: ios, iocmd, t
+        character(len=512) :: msg
+
+        dirname = "temp_dir"
+
+        ! Create a directory
+        call execute_command_line("mkdir " // dirname, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        call check(error, ios == 0 .and. iocmd == 0, "Cannot int test_exists_dir: " // trim(msg))
+        if (allocated(error)) return
+
+        t = exists(dirname, err)
+        call check(error, err%ok(), "exists failed for directory: " // err%print())
+
+        if (allocated(error)) then
+            ! Clean up: remove the directory
+            call execute_command_line("rmdir " // dirname, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+            call check(error, ios == 0 .and. iocmd == 0, err%message // "and &
+                & cannot cleanup test_exists_dir: " // trim(msg))
+            return
+        end if
+
+        call check(error, t == type_directory, "exists incorrectly identifies type of directories!")
+
+        if (allocated(error)) then
+            ! Clean up: remove the directory
+            call execute_command_line("rmdir " // dirname, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+            call check(error, ios == 0 .and. iocmd == 0, err%message // "and &
+                & cannot cleanup test_exists_dir: " // trim(msg))
+            return
+        end if
+
+        ! Clean up: remove the directory
+        call execute_command_line("rmdir " // dirname, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        call check(error, ios == 0 .and. iocmd == 0, "Cannot cleanup test_exists_dir: " // trim(msg))
+    end subroutine test_exists_dir
+
+    subroutine test_exists_symlink(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(state_type) :: err
+        character(len=256) :: target_name, link_name, cmd
+        integer :: ios, iunit, iocmd, t
+        character(len=512) :: msg
+
+        target_name = "test_file.txt"
+        link_name = "symlink.txt"
+
+        ! Create a file
+        open(newunit=iunit, file=target_name, status="replace", iostat=ios, iomsg=msg)
+        call check(error, ios == 0, "Cannot init test_exists_symlink: " // trim(msg))
+        if (allocated(error)) return
+
+        if (is_windows()) then
+            cmd = 'mklink '//link_name//' '//target_name
+            call execute_command_line(cmd, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        else
+            cmd = 'ln -s '//link_name//' '//target_name
+            call execute_command_line(cmd, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        end if
+
+        call check(error, ios == 0 .and. iocmd == 0, "Cannot create symlink!: " // trim(msg))
+        if (allocated(error)) return
+
+        t = exists(link_name, err)
+        call check(error, err%ok(), "exists failed for symlink: " // err%print())
+
+        if (allocated(error)) then
+            ! Clean up: remove the link
+            call execute_command_line("rm " // link_name, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+            call check(error, ios == 0 .and. iocmd == 0, err%message // "and &
+                & cannot delete link: " // trim(msg))
+
+            ! Clean up: remove the target
+            close(iunit,status='delete',iostat=ios,iomsg=msg)
+            call check(error, ios == 0, err%message // "and cannot delete target: " // trim(msg))
+            return
+        end if
+
+        call check(error, t == type_symlink, "exists incorrectly identifies type of symlinks!")
+
+        if (allocated(error)) then
+            ! Clean up: remove the link
+            call execute_command_line("rm " // link_name, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+            call check(error, ios == 0 .and. iocmd == 0, err%message // "and &
+                & cannot delete link: " // trim(msg))
+
+            ! Clean up: remove the target
+            close(iunit,status='delete',iostat=ios,iomsg=msg)
+            call check(error, ios == 0, err%message // "and cannot delete target: " // trim(msg))
+            return
+        end if
+
+        ! Clean up: remove the link
+        call execute_command_line("rm " // link_name, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        call check(error, ios == 0 .and. iocmd == 0, "Cannot delete link: " // trim(msg))
+
+        if (allocated(error)) then
+            ! Clean up: remove the target
+            close(iunit,status='delete',iostat=ios,iomsg=msg)
+            call check(error, ios == 0, err%message // "and cannot delete target: " // trim(msg))
+        end if
+    end subroutine test_exists_symlink
 
     ! Test `is_directory` for a directory
     subroutine test_is_directory_dir(error)
