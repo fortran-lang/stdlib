@@ -94,7 +94,7 @@ int stdlib_exists(const char* path, int* stat){
         return type_unknown;
     }
 
-    // It is not a directory or a symlink
+    // Let's assume it is a regular file
     type = type_regular_file;
 
     if (attrs & FILE_ATTRIBUTE_REPARSE_POINT) type = type_symlink;

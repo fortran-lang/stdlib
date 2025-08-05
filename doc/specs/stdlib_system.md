@@ -654,16 +654,15 @@ Experimental
 
 ### Description
 
-This function performs a system call (syscall) to the operating system, to retrieve the metadata
-corresponding to the path, and identifies the type of path it is. 
-It can distinguish among the following path types
+This function makes a system call (syscall) to retrieve metadata for the specified path and determines its type.
+It can distinguish between the following path types:
 
 - Regular File
 - Directory
 - Symbolic Link
 
-Returns a constant representing the path type or `type_unknown` if it cannot be determined.
-If there has been an error, It is handled using `state_type`.
+It returns a constant representing the detected path type, or `type_unknown` if the type cannot be determined. 
+Any encountered errors are handled using `state_type`.
 
 ### Syntax
 
@@ -681,7 +680,7 @@ Function
 
 ### Return values
 
-`err` is an optional state return flag. On error if not requested, an `FS_ERROR` will trigger an error stop.
+`err` is an optional state return flag. If not requested and an error occurs, an `FS_ERROR` will trigger an error stop.
 
 ### Example
 

@@ -229,17 +229,16 @@ integer, parameter, public :: &
 !! If the path does exist, returns the type of the path.
 !!
 !!### Description
-!! 
-!! The function performs a system call (syscall) to the operating system, to retrieve the metadata
-!! corresponding to a path, and identifies the type of path it is. 
-!! It can distinguish among the following path types
+!!
+!! This function makes a system call (syscall) to retrieve metadata for the specified path and determines its type.
+!! It can distinguish between the following path types:
 !!
 !! - Regular File
 !! - Directory
 !! - Symbolic Link
 !!
-!! Returns a constant representing the path type or `type_unknown` if it cannot be determined.
-!! If there has been an error, It is handled using `state_type`.
+!! It returns a constant representing the detected path type, or `type_unknown` if the type cannot be determined. 
+!! Any encountered errors are handled using `state_type`.
 !!
 public :: exists
      
@@ -1177,6 +1176,7 @@ pure function FS_ERROR(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,&
         a13,a14,a15,a16,a17,a18,a19,a20)
 end function FS_ERROR
 
+! checks if a path exists and returns its type
 function exists(path, err) result(fs_type)
     character(*), intent(in) :: path
     type(state_type), optional, intent(out) :: err
@@ -1188,6 +1188,7 @@ function exists(path, err) result(fs_type)
         integer function stdlib_exists(path, stat) bind(C, name='stdlib_exists')
             import c_char, c_int
             character(kind=c_char), intent(in) :: path(*)
+            ! to return the error code if any
             integer(kind=c_int), intent(out) :: stat
         end function stdlib_exists
     end interface
@@ -1196,6 +1197,7 @@ function exists(path, err) result(fs_type)
 
     fs_type = stdlib_exists(to_c_char(trim(path)), stat)
 
+    ! an error occurred
     if (stat /= 0) then
         err0 = FS_ERROR_CODE(stat, c_get_strerror())
         call err0%handle(err)
