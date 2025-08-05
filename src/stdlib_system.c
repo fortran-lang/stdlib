@@ -12,9 +12,9 @@
 #endif /* ifdef _WIN32 */
 
 // Wrapper to get the string describing a system syscall error.
-// Uses `strerr` on unix.
+// Always Uses `strerr` on unix.
 // if `winapi` is `false`, uses the usual `strerr` on windows.
-// If `winapi` is `false`, uses `FormatMessage`(from windows.h) on windows.
+// If `winapi` is `true`, uses `FormatMessageA`(from windows.h) on windows.
 char* stdlib_strerror(size_t* len, bool winapi){
 
     if (winapi) {
@@ -22,7 +22,7 @@ char* stdlib_strerror(size_t* len, bool winapi){
     LPSTR err = NULL;
     DWORD dw = GetLastError();
 
-    FormatMessage(
+    FormatMessageA(
     FORMAT_MESSAGE_ALLOCATE_BUFFER |
     FORMAT_MESSAGE_FROM_SYSTEM |
     FORMAT_MESSAGE_IGNORE_INSERTS,

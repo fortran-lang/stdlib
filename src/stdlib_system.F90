@@ -934,9 +934,9 @@ logical function is_directory(path)
     
 end function is_directory
 
-! A helper function to get the result of the C function `strerror`.
-! `strerror` is a function provided by `<string.h>`. 
-! It returns a string describing the meaning of `errno` in the C header `<errno.h>`
+! A helper function to get the string describing an error from C functions.
+! If `winapi` is  false or not present, uses `strerror` provided by `<string.h>`
+! Otherwise, uses `strerror` on unix and `FormatMessageA` on windows.
 function c_get_strerror(winapi) result(str)
     character(len=:), allocatable :: str
     logical, optional, intent(in) :: winapi
