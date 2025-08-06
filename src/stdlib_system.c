@@ -78,12 +78,12 @@ int stdlib_remove_directory(const char* path){
 // Returns the `type` of the path, and sets the `stat`(if any errors).
 int stdlib_exists(const char* path, int* stat){
     // All the valid types
-    const int type_unknown = 0;
-    const int type_regular_file = 1;
-    const int type_directory = 2;
-    const int type_symlink = 3;
+    const int fs_type_unknown = 0;
+    const int fs_type_regular_file = 1;
+    const int fs_type_directory = 2;
+    const int fs_type_symlink = 3;
 
-    int type = type_unknown;
+    int type = fs_type_unknown;
     *stat = 0;
 
 #ifdef _WIN32
@@ -91,14 +91,14 @@ int stdlib_exists(const char* path, int* stat){
 
     if (attrs == INVALID_FILE_ATTRIBUTES) {
         *stat = (int) GetLastError();
-        return type_unknown;
+        return fs_type_unknown;
     }
 
     // Let's assume it is a regular file
-    type = type_regular_file;
+    type = fs_type_regular_file;
 
-    if (attrs & FILE_ATTRIBUTE_REPARSE_POINT) type = type_symlink;
-    if (attrs & FILE_ATTRIBUTE_DIRECTORY) type = type_directory;
+    if (attrs & FILE_ATTRIBUTE_REPARSE_POINT) type = fs_type_symlink;
+    if (attrs & FILE_ATTRIBUTE_DIRECTORY) type = fs_type_directory;
 #else
     struct stat buf = {0};
     int status;
@@ -107,14 +107,14 @@ int stdlib_exists(const char* path, int* stat){
     if (status == -1) {
         // `lstat` failed
         *stat = errno;
-        return type_unknown;
+        return fs_type_unknown;
     }
 
     switch (buf.st_mode & S_IFMT) {
-        case S_IFREG: type = type_regular_file; break;
-        case S_IFDIR: type = type_directory;    break;
-        case S_IFLNK: type = type_symlink;      break;
-        default:      type = type_unknown;      break;
+        case S_IFREG: type = fs_type_regular_file; break;
+        case S_IFDIR: type = fs_type_directory;    break;
+        case S_IFLNK: type = fs_type_symlink;      break;
+        default:      type = fs_type_unknown;      break;
     }
 #endif /* ifdef _WIN32 */
     return type;

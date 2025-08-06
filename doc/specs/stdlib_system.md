@@ -666,7 +666,7 @@ Any encountered errors are handled using `state_type`.
 
 ### Syntax
 
-`res = [[stdlib_system(module):exists(function)]] (path [, err])`
+`fs_type = [[stdlib_system(module):exists(function)]] (path [, err])`
 
 ### Class
 
@@ -680,7 +680,13 @@ Function
 
 ### Return values
 
-`err` is an optional state return flag. If not requested and an error occurs, an `FS_ERROR` will trigger an error stop.
+`fs_type`: An `intent(out), integer` parameter indicating the type. The possible values are:
+- `fs_type_unknown`: 0      => an unknown type
+- `fs_type_regular_file`: 1 => a regular file
+- `fs_type_directory`: 2    => a directory 
+- `fs_type_symlink`: 3      => a symbolic link
+
+`err`(optional): It is an optional state return flag. If not requested and an error occurs, an `FS_ERROR` will trigger an error stop.
 
 ### Example
 

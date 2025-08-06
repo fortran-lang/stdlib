@@ -1,7 +1,7 @@
 ! Illustrate the usage of `exists`
 program example_exists
-    use stdlib_system, only: exists, type_unknown, type_regular_file, &
-        type_directory, type_symlink
+    use stdlib_system, only: exists, fs_type_unknown, fs_type_regular_file, &
+        fs_type_directory, fs_type_symlink
     use stdlib_error, only: state_type
     implicit none
 
@@ -19,12 +19,12 @@ program example_exists
         print *, err%print()
     end if
 
-    ! switching on the types returned by `exists`
+    ! switching on the type returned by `exists`
     select case (t)
-    case (type_unknown); print *, "Unknown type!"
-    case (type_regular_file); print *, "Regular File!"
-    case (type_directory); print *, "Directory!"
-    case (type_symlink); print *, "Symbolic Link!"
+    case (fs_type_unknown); print *, "Unknown type!"
+    case (fs_type_regular_file); print *, "Regular File!"
+    case (fs_type_directory); print *, "Directory!"
+    case (fs_type_symlink); print *, "Symbolic Link!"
     end select
 end program example_exists
 

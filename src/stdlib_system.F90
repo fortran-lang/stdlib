@@ -211,13 +211,13 @@ public :: FS_ERROR_CODE
 !> ([Specification](../page/specs/stdlib_system.html))
 integer, parameter, public :: &
     !> Represents an unknown path type
-    type_unknown      = 0, &
+    fs_type_unknown      = 0, &
     !> Represents a regular file
-    type_regular_file = 1, &
+    fs_type_regular_file = 1, &
     !> Represents a directory
-    type_directory    = 2, &
+    fs_type_directory    = 2, &
     !> Represents a symbolic link
-    type_symlink      = 3
+    fs_type_symlink      = 3
 
 !! version: experimental
 !!

@@ -2,7 +2,7 @@ module test_filesystem
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_system, only: is_directory, delete_file, FS_ERROR, FS_ERROR_CODE, &
         make_directory, remove_directory, make_directory_all, is_windows, OS_TYPE, &
-        OS_WINDOWS, exists, type_unknown, type_regular_file, type_directory, type_symlink
+        OS_WINDOWS, exists, fs_type_unknown, fs_type_regular_file, fs_type_directory, fs_type_symlink
     use stdlib_error, only: state_type, STDLIB_FS_ERROR
     use stdlib_strings, only: to_string
 
@@ -89,7 +89,7 @@ contains
             return
         end if
 
-        call check(error, t == type_regular_file, "exists incorrectly identifies type of &
+        call check(error, t == fs_type_regular_file, "exists incorrectly identifies type of &
             reg files!: type=" // to_string(t))
 
         if (allocated(error)) then
@@ -130,7 +130,7 @@ contains
             return
         end if
 
-        call check(error, t == type_directory, "exists incorrectly identifies type of &
+        call check(error, t == fs_type_directory, "exists incorrectly identifies type of &
             directories!: type=" // to_string(t))
 
         if (allocated(error)) then
@@ -193,7 +193,7 @@ contains
             return
         end if
 
-        call check(error, t == type_symlink, "exists incorrectly identifies type of &
+        call check(error, t == fs_type_symlink, "exists incorrectly identifies type of &
             symlinks!: type=" // to_string(t))
 
         if (allocated(error)) then
