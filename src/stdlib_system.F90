@@ -241,6 +241,9 @@ integer, parameter, public :: &
 !! Any encountered errors are handled using `state_type`.
 !!
 public :: exists
+
+public :: is_symlink
+public :: is_regular_file
      
 ! CPU clock ticks storage
 integer, parameter, private :: TICKS = int64
@@ -1203,6 +1206,25 @@ function exists(path, err) result(fs_type)
         call err0%handle(err)
     end if
 end function exists
+
+logical function is_symlink(path)
+    character(len=*), intent(in) :: path
+
+    is_symlink = exists(path) == fs_type_symlink
+end function is_symlink
+
+logical function is_regular_file(path)
+    character(len=*), intent(in) :: path
+
+    interface
+        logical(c_bool) function stdlib_is_regular_file(path) bind(C, name='stdlib_is_regular_file')
+            import c_char, c_bool
+            character(kind=c_char) :: path(:)
+        end function stdlib_is_regular_file
+    end interface
+
+    is_regular_file = logical(stdlib_is_regular_file(to_c_char(path)))
+end function is_regular_file
 
 character function path_sep()
     if (OS_TYPE() == OS_WINDOWS) then
