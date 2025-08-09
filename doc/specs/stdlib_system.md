@@ -497,6 +497,45 @@ Formats all the arguments into a nice error message, utilizing the constructor o
 
 ---
 
+## `is_regular_file` - Test if a path is a regular file
+
+### Status
+
+Experimental
+
+### Description
+
+This function checks if a specified file system path is a regular file. 
+It follows symbolic links and returns the status of the `target`.
+It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+
+### Syntax
+
+`result = ` [[stdlib_system(module):is_regular_file(function)]]`(path)`
+
+### Class
+
+Function
+
+### Arguments
+
+`path`: Shall be a character string containing the file system path to evaluate. It is an `intent(in)` argument.
+
+### Return values
+
+The function returns a `logical` value:
+
+- `.true.` if the path matches an existing regular file.
+- `.false.` otherwise, or if path does not exist.
+
+### Example
+
+```fortran
+{!example/system/example_is_regular_file.f90!}
+```
+
+---
+
 ## `is_directory` - Test if a path is a directory
 
 ### Status
@@ -506,6 +545,7 @@ Experimental
 ### Description
 
 This function checks if a specified file system path is a directory. 
+It follows symbolic links and returns the status of the `target`.
 It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
 
 ### Syntax
@@ -531,6 +571,46 @@ The function returns a `logical` value:
 
 ```fortran
 {!example/system/example_is_directory.f90!}
+```
+
+---
+
+## `is_symlink` - Test if a path is a symbolic link.
+
+### Status
+
+Experimental
+
+### Description
+
+This function checks if a specified file system path is a symbolic link to either a file or a directory. 
+Use [[stdlib_system(module):is_regular_file(function)]] and [[stdlib_system(module):is_directory(function)]] functions
+to check further if the link is to a file or a directory respectively.
+It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+
+### Syntax
+
+`result = ` [[stdlib_system(module):is_symlink(function)]]`(path)`
+
+### Class
+
+Function
+
+### Arguments
+
+`path`: Shall be a character string containing the file system path to evaluate. It is an `intent(in)` argument.
+
+### Return values
+
+The function returns a `logical` value:
+
+- `.true.` if the path matches an existing regular file.
+- `.false.` otherwise, or if the path does not exist.
+
+### Example
+
+```fortran
+{!example/system/example_is_symlink.f90!}
 ```
 
 ---
