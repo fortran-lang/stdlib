@@ -2,7 +2,8 @@ module test_filesystem
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_system, only: is_directory, delete_file, FS_ERROR, FS_ERROR_CODE, &
         make_directory, remove_directory, make_directory_all, is_windows, OS_TYPE, &
-        OS_WINDOWS, exists, fs_type_unknown, fs_type_regular_file, fs_type_directory, fs_type_symlink
+        OS_WINDOWS, exists, fs_type_unknown, fs_type_regular_file, fs_type_directory, fs_type_symlink, &
+        is_regular_file
     use stdlib_error, only: state_type, STDLIB_FS_ERROR
     use stdlib_strings, only: to_string
 
@@ -21,6 +22,7 @@ contains
             new_unittest("fs_exists_reg_file", test_exists_reg_file), &
             new_unittest("fs_exists_dir", test_exists_dir), &
             new_unittest("fs_exists_symlink", test_exists_symlink), &
+            new_unittest("fs_is_regular_file", test_is_regular_file), &
             new_unittest("fs_is_directory_dir", test_is_directory_dir), &
             new_unittest("fs_is_directory_file", test_is_directory_file), &
             new_unittest("fs_delete_non_existent", test_delete_file_non_existent), &
@@ -85,7 +87,7 @@ contains
         if (allocated(error)) then
             ! Clean up: remove the file
             close(iunit,status='delete',iostat=ios,iomsg=msg)
-            call check(error, ios == 0, err%message// " and cannot delete test file: " // trim(msg))
+            call check(error, ios == 0, error%message// " and cannot delete test file: " // trim(msg))
             return
         end if
 
@@ -95,7 +97,7 @@ contains
         if (allocated(error)) then
             ! Clean up: remove the file
             close(iunit,status='delete',iostat=ios,iomsg=msg)
-            call check(error, ios == 0, err%message// " and cannot delete test file: " // trim(msg))
+            call check(error, ios == 0, error%message// " and cannot delete test file: " // trim(msg))
             return
         end if
 
@@ -104,6 +106,37 @@ contains
         call check(error, ios == 0, "Cannot delete test file: " // trim(msg))
         if (allocated(error)) return
     end subroutine test_exists_reg_file
+
+    subroutine test_is_regular_file(error)
+        type(error_type), allocatable, intent(out) :: error
+        character(len=256) :: filename
+        integer :: ios, iunit
+        character(len=512) :: msg
+
+        logical :: is_file
+
+        filename = "test_file.txt"
+
+        ! Create a file
+        open(newunit=iunit, file=filename, status="replace", iostat=ios, iomsg=msg)
+        call check(error, ios == 0, "Cannot init test_is_regular_file: " // trim(msg))
+        if (allocated(error)) return
+
+        is_file = is_regular_file(filename)
+        call check(error, is_file, "is_regular_file could not identify a file")
+
+        if (allocated(error)) then
+            ! Clean up: remove the file
+            close(iunit,status='delete',iostat=ios,iomsg=msg)
+            call check(error, ios == 0, error%message// " and cannot delete test file: " // trim(msg))
+            return
+        end if
+
+        ! Clean up: remove the file
+        close(iunit,status='delete',iostat=ios,iomsg=msg)
+        call check(error, ios == 0, "Cannot delete test file: " // trim(msg))
+        if (allocated(error)) return
+    end subroutine test_is_regular_file
 
     subroutine test_exists_dir(error)
         type(error_type), allocatable, intent(out) :: error
@@ -125,7 +158,7 @@ contains
         if (allocated(error)) then
             ! Clean up: remove the directory
             call execute_command_line("rmdir " // dirname, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
-            call check(error, ios == 0 .and. iocmd == 0, err%message // " and &
+            call check(error, ios == 0 .and. iocmd == 0, error%message // " and &
                 & cannot cleanup test_exists_dir: " // trim(msg))
             return
         end if
@@ -136,7 +169,7 @@ contains
         if (allocated(error)) then
             ! Clean up: remove the directory
             call execute_command_line("rmdir " // dirname, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
-            call check(error, ios == 0 .and. iocmd == 0, err%message // " and &
+            call check(error, ios == 0 .and. iocmd == 0, error%message // " and &
                 & cannot cleanup test_exists_dir: " // trim(msg))
             return
         end if
@@ -174,7 +207,7 @@ contains
         if (allocated(error)) then
             ! Clean up: remove the target
             close(iunit,status='delete',iostat=ios,iomsg=msg)
-            call check(error, ios == 0, err%message // " and cannot delete target: " // trim(msg))
+            call check(error, ios == 0, error%message // " and cannot delete target: " // trim(msg))
             return
         end if
 
@@ -184,12 +217,12 @@ contains
         if (allocated(error)) then
             ! Clean up: remove the link
             call execute_command_line("rm " // link_name, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
-            call check(error, ios == 0 .and. iocmd == 0, err%message // " and &
+            call check(error, ios == 0 .and. iocmd == 0, error%message // " and &
                 & cannot delete link: " // trim(msg))
 
             ! Clean up: remove the target
             close(iunit,status='delete',iostat=ios,iomsg=msg)
-            call check(error, ios == 0, err%message // " and cannot delete target: " // trim(msg))
+            call check(error, ios == 0, error%message // " and cannot delete target: " // trim(msg))
             return
         end if
 
@@ -199,12 +232,12 @@ contains
         if (allocated(error)) then
             ! Clean up: remove the link
             call execute_command_line("rm " // link_name, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
-            call check(error, ios == 0 .and. iocmd == 0, err%message // " and &
+            call check(error, ios == 0 .and. iocmd == 0, error%message // " and &
                 & cannot delete link: " // trim(msg))
 
             ! Clean up: remove the target
             close(iunit,status='delete',iostat=ios,iomsg=msg)
-            call check(error, ios == 0, err%message // " and cannot delete target: " // trim(msg))
+            call check(error, ios == 0, error%message // " and cannot delete target: " // trim(msg))
             return
         end if
 
@@ -215,7 +248,7 @@ contains
         if (allocated(error)) then
             ! Clean up: remove the target
             close(iunit,status='delete',iostat=ios,iomsg=msg)
-            call check(error, ios == 0, err%message // " and cannot delete target: " // trim(msg))
+            call check(error, ios == 0, error%message // " and cannot delete target: " // trim(msg))
         end if
 
         ! Clean up: remove the target
