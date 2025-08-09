@@ -583,7 +583,7 @@ Experimental
 
 ### Description
 
-This function checks if a specified file system path is a symbolic link to either a file or a directory. 
+This function checks if a specified file system path is a symbolic link to either a file or a directory.
 Use [[stdlib_system(module):is_regular_file(function)]] and [[stdlib_system(module):is_directory(function)]] functions
 to check further if the link is to a file or a directory respectively.
 It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.

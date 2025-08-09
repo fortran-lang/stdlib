@@ -1245,8 +1245,9 @@ end function exists
 ! public convenience wrapper to check if path is a symbolic link
 logical function is_symlink(path)
     character(len=*), intent(in) :: path
+    type(state_type) :: err
 
-    is_symlink = exists(path) == fs_type_symlink
+    is_symlink = exists(path, err) == fs_type_symlink
 end function is_symlink
 
 ! checks if path is a regular file.
