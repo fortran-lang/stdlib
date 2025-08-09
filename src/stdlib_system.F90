@@ -104,9 +104,12 @@ public :: dir_name
 !!
 !!### Description
 !! 
-!! This function checks if a given file system path is a directory. It is cross-platform and utilizes
-!! native system calls. It supports common operating systems such as Linux, macOS, 
-!! Windows, and various UNIX-like environments. On unsupported operating systems, the function will return `.false.`.
+!! This function checks if a given file system path is a directory. 
+!! It follows symbolic links to return the status of the `target`.
+!!
+!! It is cross-platform and utilizes native system calls. 
+!! It supports common operating systems such as Linux, macOS, Windows, and various UNIX-like environments. 
+!! On unsupported operating systems, the function will return `.false.`.
 !!
 public :: is_directory
 
@@ -237,12 +240,44 @@ integer, parameter, public :: &
 !! - Directory
 !! - Symbolic Link
 !!
+!! It does not follow symbolic links.
+!!
 !! It returns a constant representing the detected path type, or `type_unknown` if the type cannot be determined. 
 !! Any encountered errors are handled using `state_type`.
 !!
 public :: exists
 
+!! version: experimental
+!!
+!! Tests if a given path is a symbolic link.
+!! ([Specification](../page/specs/stdlib_system.html#is_directory-test-if-a-path-is-a-directory))
+!!
+!!### Summary
+!! Function to evaluate whether a specified path corresponds to a symbolic link.
+!!
+!!### Description
+!! 
+!! This function checks if a given file system path is a symbolic link either to a 
+!! file or a directory. It is cross-platform and utilizes native system calls. 
+!! It supports common operating systems such as Linux, macOS, Windows, and various UNIX-like environments.
+!!
 public :: is_symlink
+
+!! version: experimental
+!!
+!! Tests if a given path is a regular file (Not a symbolic link or directory).
+!! ([Specification](../page/specs/stdlib_system.html#is_directory-test-if-a-path-is-a-directory))
+!!
+!!### Summary
+!! Function to evaluate whether a specified path corresponds to a regular file.
+!!
+!!### Description
+!! 
+!! This function checks if a given file system path is a regular file. 
+!! It follows symbolic links to return the status of the `target`.
+!! It is cross-platform and utilizes native system calls. 
+!! It supports common operating systems such as Linux, macOS, Windows, and various UNIX-like environments.
+!!
 public :: is_regular_file
      
 ! CPU clock ticks storage
@@ -1207,23 +1242,26 @@ function exists(path, err) result(fs_type)
     end if
 end function exists
 
+! public convenience wrapper to check if path is a symbolic link
 logical function is_symlink(path)
     character(len=*), intent(in) :: path
 
     is_symlink = exists(path) == fs_type_symlink
 end function is_symlink
 
+! checks if path is a regular file.
+! It follows symbolic links and returns the status of the `target`.
 logical function is_regular_file(path)
     character(len=*), intent(in) :: path
 
     interface
         logical(c_bool) function stdlib_is_regular_file(path) bind(C, name='stdlib_is_regular_file')
             import c_char, c_bool
-            character(kind=c_char) :: path(:)
+            character(kind=c_char) :: path(*)
         end function stdlib_is_regular_file
     end interface
 
-    is_regular_file = logical(stdlib_is_regular_file(to_c_char(path)))
+    is_regular_file = logical(stdlib_is_regular_file(to_c_char(trim(path))))
 end function is_regular_file
 
 character function path_sep()
