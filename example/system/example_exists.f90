@@ -8,7 +8,7 @@ program example_exists
     type(state_type) :: err
 
     ! Path to check
-    character(*), parameter :: path = "path"
+    character(*), parameter :: path = "path/to/check"
     ! To get the type of the path
     integer :: t
 
