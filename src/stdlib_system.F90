@@ -250,7 +250,7 @@ public :: exists
 !! version: experimental
 !!
 !! Tests if a given path is a symbolic link.
-!! ([Specification](../page/specs/stdlib_system.html#is_directory-test-if-a-path-is-a-directory))
+!! ([Specification](../page/specs/stdlib_system.html#is_symlink))
 !!
 !!### Summary
 !! Function to evaluate whether a specified path corresponds to a symbolic link.
@@ -265,8 +265,8 @@ public :: is_symlink
 
 !! version: experimental
 !!
-!! Tests if a given path is a regular file (Not a symbolic link or directory).
-!! ([Specification](../page/specs/stdlib_system.html#is_directory-test-if-a-path-is-a-directory))
+!! Tests if a given path is a regular file.
+!! ([Specification](../page/specs/stdlib_system.html#is_regular_file))
 !!
 !!### Summary
 !! Function to evaluate whether a specified path corresponds to a regular file.
