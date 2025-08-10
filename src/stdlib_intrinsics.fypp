@@ -8,6 +8,7 @@ module stdlib_intrinsics
     !!Alternative implementations of some Fortran intrinsic functions offering either faster and/or more accurate evaluation.
     !! ([Specification](../page/specs/stdlib_intrinsics.html))
     use stdlib_kinds
+    use stdlib_linalg_state, only: linalg_state_type
     implicit none
     private
 
@@ -146,6 +147,49 @@ module stdlib_intrinsics
         #:endfor
     end interface
     public :: kahan_kernel
+
+    interface stdlib_matmul
+        !! version: experimental
+        !!
+        !!### Summary
+        !! compute the matrix multiplication of more than two matrices with a single function call.
+        !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_matmul))
+        !!
+        !!### Description
+        !!
+        !! matrix multiply more than two matrices with a single function call
+        !! the multiplication with the optimal parenthesization for efficiency of computation is done automatically
+        !! Supported data types are `real` and `complex`.
+        !!
+        !! Note: The matrices must be of compatible shapes to be multiplied
+        #:for k, t, s in R_KINDS_TYPES + C_KINDS_TYPES
+            pure module function stdlib_matmul_pure_${s}$ (m1, m2, m3, m4, m5) result(r)
+                ${t}$, intent(in) :: m1(:,:), m2(:,:)
+                ${t}$, intent(in), optional :: m3(:,:), m4(:,:), m5(:,:)
+                ${t}$, allocatable :: r(:,:)
+            end function stdlib_matmul_pure_${s}$
+
+            module function stdlib_matmul_${s}$ (m1, m2, m3, m4, m5, err) result(r)
+                ${t}$, intent(in) :: m1(:,:), m2(:,:)
+                ${t}$, intent(in), optional :: m3(:,:), m4(:,:), m5(:,:)
+                type(linalg_state_type), intent(out) :: err
+                ${t}$, allocatable :: r(:,:)
+            end function stdlib_matmul_${s}$
+        #:endfor
+    end interface stdlib_matmul
+    public :: stdlib_matmul
+
+    ! internal interface
+    interface stdlib_matmul_sub
+        #:for k, t, s in R_KINDS_TYPES + C_KINDS_TYPES
+            pure module subroutine stdlib_matmul_sub_${s}$ (res, m1, m2, m3, m4, m5, err)
+                ${t}$, intent(out), allocatable :: res(:,:)
+                ${t}$, intent(in) :: m1(:,:), m2(:,:)
+                ${t}$, intent(in), optional :: m3(:,:), m4(:,:), m5(:,:)
+                type(linalg_state_type), intent(out), optional :: err
+            end subroutine stdlib_matmul_sub_${s}$
+        #:endfor
+    end interface stdlib_matmul_sub
     
 contains
 
