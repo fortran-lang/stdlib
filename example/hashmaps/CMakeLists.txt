@@ -1,3 +1,4 @@
+ADD_EXAMPLE(hashmaps_abstract_type)
 ADD_EXAMPLE(hashmaps_calls)
 ADD_EXAMPLE(hashmaps_copy_key)
 ADD_EXAMPLE(hashmaps_entries)
