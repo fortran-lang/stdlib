@@ -978,3 +978,79 @@ A character string or `type(string_type)`.
 ```fortran
 {!example/system/example_path_dir_name.f90!}
 ```
+
+---
+
+## `is_abs` - Checks if the path is absolute
+
+### Status
+
+Experimental
+
+### Description
+
+This function checks if the path is absolute (i.e not relative).
+- On POSIX systems this means the path starts with `/`.
+- On Windows systems this means the path is either an UNC path (like `\\host\path\share`) or
+a path starting with a drive letter (like `C:\Users\`)
+
+### Syntax
+
+`res = ` [[stdlib_system(module):is_abs(interface)]]`(p)`
+
+### Class
+
+Function
+
+### Arguments
+
+`p`: the path, a character string or `type(string_type)`. It is an `intent(in)` argument.
+
+
+### Return values
+
+A `logical` indicating if the the path is absolute.
+
+### Example
+
+```fortran
+{!example/system/example_path_abs.f90!}
+```
+
+---
+
+## `abs_path` - Returns the absolute path
+
+### Status
+
+Experimental
+
+### Description
+
+This function returns the absolutized version of the provided path.
+
+### Syntax
+
+`res = ` [[stdlib_system(module):abs_path(interface)]]`(p [, err])`
+
+### Class
+
+Function
+
+### Arguments
+
+`p`: the path, a character string or `type(string_type)`. It is an `intent(in)` argument.
+
+`err`(optional): Shall be of type `state_type`, and is used for error handling. It is an `optional, intent(out)` argument.
+
+### Return values
+
+`res`: the absolutized version of the path, It is of type `character(:), allocatable`.
+
+`err`: It is an optional state return flag. On error if not requested, an `FS_ERROR` will trigger an error stop.
+
+### Example
+
+```fortran
+{!example/system/example_path_abs.f90!}
+```
