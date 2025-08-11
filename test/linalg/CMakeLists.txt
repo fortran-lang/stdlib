@@ -16,6 +16,7 @@ set(
   "test_linalg_sparse.fypp"
   "test_linalg_specialmatrices.fypp"
   "test_linalg_cholesky.fypp"
+  "test_linalg_expm.fypp"
 )
 
 # Preprocessed files to contain preprocessor directives -> .F90
@@ -31,6 +32,7 @@ ADDTEST(linalg)
 ADDTEST(linalg_cholesky)
 ADDTEST(linalg_determinant)
 ADDTEST(linalg_eigenvalues)
+ADDTEST(linalg_expm)
 ADDTEST(linalg_matrix_property_checks)
 ADDTEST(linalg_inverse)
 ADDTEST(linalg_pseudoinverse)

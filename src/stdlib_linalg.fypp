@@ -28,6 +28,7 @@ module stdlib_linalg
   public :: eigh
   public :: eigvals
   public :: eigvalsh
+  public :: expm, matrix_exp
   public :: eye
   public :: inv
   public :: invert
@@ -1677,6 +1678,108 @@ module stdlib_linalg
       #:endfor
       #:endfor            
   end interface mnorm
+
+  !> Matrix exponential: function interface
+  interface expm
+    !! version : experimental
+    !!
+    !! Computes the exponential of a matrix using a rational Pade approximation.
+    !! ([Specification](../page/specs/stdlib_linalg.html#expm))
+    !!
+    !! ### Description
+    !!
+    !! This interface provides methods for computing the exponential of a matrix
+    !! represented as a standard Fortran rank-2 array. Supported data types include
+    !! `real` and `complex`.
+    !!
+    !! By default, the order of the Pade approximation is set to 10. It can be changed
+    !! via the `order` argument which must be non-negative.
+    !!
+    !! If the input matrix is non-square or the order of the Pade approximation is
+    !! negative, the function returns an error state.
+    !!
+    !! ### Example
+    !!
+    !! ```fortran
+    !!  real(dp) :: A(3, 3), E(3, 3)
+    !!
+    !!  A = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
+    !!
+    !!  ! Default Pade approximation of the matrix exponential.
+    !!  E = expm(A)
+    !!
+    !!  ! Pade approximation with specified order.
+    !!  E = expm(A, order=12)
+    !! ```
+    !!
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    module function stdlib_linalg_${ri}$_expm_fun(A, order) result(E)
+        !> Input matrix a(n, n).
+        ${rt}$, intent(in) :: A(:, :)
+        !> [optional] Order of the Pade approximation (default `order=10`)
+        integer(ilp), optional, intent(in) :: order
+        !> Exponential of the input matrix E = exp(A).
+        ${rt}$, allocatable :: E(:, :)
+    end function stdlib_linalg_${ri}$_expm_fun
+    #:endfor
+  end interface expm
+
+  !> Matrix exponential: subroutine interface
+  interface matrix_exp
+    !! version : experimental
+    !!
+    !! Computes the exponential of a matrix using a rational Pade approximation.
+    !! ([Specification](../page/specs/stdlib_linalg.html#matrix_exp))
+    !!
+    !! ### Description
+    !!
+    !! This interface provides methods for computing the exponential of a matrix
+    !! represented as a standard Fortran rank-2 array. Supported data types include
+    !! `real` and `complex`.
+    !!
+    !! By default, the order of the Pade approximation is set to 10. It can be changed
+    !! via the `order` argument which must be non-negative.
+    !!
+    !! If the input matrix is non-square or the order of the Pade approximation is
+    !! negative, the function returns an error state.
+    !!
+    !! ### Example
+    !!
+    !! ```fortran
+    !!  real(dp) :: A(3, 3), E(3, 3)
+    !!
+    !!  A = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
+    !!
+    !!  ! Default Pade approximation of the matrix exponential.
+    !!  call matrix_exp(A, E) ! Out-of-place
+    !!  ! call matrix_exp(A) for in-place computation.
+    !!
+    !!  ! Pade approximation with specified order.
+    !!  call matrix_exp(A, E, order=12)
+    !! ```
+    !!
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    module subroutine stdlib_linalg_${ri}$_expm_inplace(A, order, err)
+        !> Input matrix A(n, n) / Output matrix E = exp(A)
+        ${rt}$, intent(inout) :: A(:, :)
+        !> [optional] Order of the Pade approximation (default `order=10`)
+        integer(ilp), optional, intent(in) :: order
+        !> [optional] Error handling.
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_${ri}$_expm_inplace
+
+    module subroutine stdlib_linalg_${ri}$_expm(A, E, order, err)
+        !> Input matrix A(n, n)
+        ${rt}$, intent(in) :: A(:, :)
+        !> Output matrix exponential E = exp(A)
+        ${rt}$, intent(out) :: E(:, :)
+        !> [optional] Order of the Pade approximation (default `order=10`)
+        integer(ilp), optional, intent(in) :: order
+        !> [optional] Error handling.
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_${ri}$_expm
+    #:endfor
+  end interface matrix_exp
 
 contains
 
