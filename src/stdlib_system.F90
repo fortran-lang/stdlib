@@ -93,6 +93,8 @@ public :: operator(/)
 public :: split_path
 public :: base_name
 public :: dir_name
+public :: is_abs
+public :: abs_path
 
 !! version: experimental
 !!
@@ -781,6 +783,46 @@ interface dir_name
     end function dir_name_string
 end interface dir_name
 
+interface is_abs
+    !! version: experimental
+    !!
+    !!### Summary
+    !! This function checks if the path is absolute.
+    !! ([Specification](../page/specs/stdlib_system.html#is_abs))
+    !!
+    !!### Description
+    !! This function checks if the path is absolute (i.e not relative).
+    !! - On POSIX systems this means the path starts with `/`.
+    !! - On Windows systems this means the path is either an UNC path (like `\\host\path\share`) or
+    !! a path starting with a drive letter (like `C:\Users\`)
+    module logical function is_abs_char(p)
+        character(len=*), intent(in) :: p
+    end function is_abs_char
+
+    module logical function is_abs_string(p)
+        type(string_type), intent(in) :: p
+    end function is_abs_string
+end interface is_abs
+
+interface abs_path
+    !! version: experimental
+    !!
+    !!### Summary
+    !! This function returns the absolutized version of the provided path.
+    !! ([Specification](../page/specs/stdlib_system.html#abs_path))
+    !!
+    module function abs_path_char(p, err) result(abs_p)
+        character(len=*), intent(in) :: p
+        type(state_type), optional, intent(out) :: err
+        character(len=:), allocatable :: abs_p
+    end function abs_path_char
+
+    module function abs_path_string(p, err) result(abs_p)
+        type(string_type), intent(in) :: p
+        type(state_type), optional, intent(out) :: err
+        type(string_type) :: abs_p
+    end function abs_path_string
+end interface abs_path
 
 contains
 
