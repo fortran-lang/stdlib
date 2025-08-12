@@ -168,7 +168,7 @@ int stdlib_exists(const char* path, int* stat){
 
 // `stat` and `_stat` follow symlinks automatically.
 // so no need for winapi functions.
-bool stdlib_is_regular_file(const char* path) {
+bool stdlib_is_file(const char* path) {
 #ifdef _WIN32
     struct _stat buf = {0};
     return _stat(path, &buf) == 0 && S_ISREG(buf.st_mode);

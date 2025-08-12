@@ -292,7 +292,7 @@ public :: is_symlink
 !! version: experimental
 !!
 !! Tests if a given path is a regular file.
-!! ([Specification](../page/specs/stdlib_system.html#is_regular_file))
+!! ([Specification](../page/specs/stdlib_system.html#is_file))
 !!
 !!### Summary
 !! Function to evaluate whether a specified path corresponds to a regular file.
@@ -304,7 +304,7 @@ public :: is_symlink
 !! It is cross-platform and utilizes native system calls. 
 !! It supports common operating systems such as Linux, macOS, Windows, and various UNIX-like environments.
 !!
-public :: is_regular_file
+public :: is_file
      
 ! CPU clock ticks storage
 integer, parameter, private :: TICKS = int64
@@ -1333,18 +1333,18 @@ end function is_symlink
 
 ! checks if path is a regular file.
 ! It follows symbolic links and returns the status of the `target`.
-logical function is_regular_file(path)
+logical function is_file(path)
     character(len=*), intent(in) :: path
 
     interface
-        logical(c_bool) function stdlib_is_regular_file(path) bind(C, name='stdlib_is_regular_file')
+        logical(c_bool) function stdlib_is_file(path) bind(C, name='stdlib_is_file')
             import c_char, c_bool
             character(kind=c_char) :: path(*)
-        end function stdlib_is_regular_file
+        end function stdlib_is_file
     end interface
 
-    is_regular_file = logical(stdlib_is_regular_file(to_c_char(trim(path))))
-end function is_regular_file
+    is_file = logical(stdlib_is_file(to_c_char(trim(path))))
+end function is_file
 
 character function path_sep()
     if (OS_TYPE() == OS_WINDOWS) then

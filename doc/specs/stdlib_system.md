@@ -497,7 +497,7 @@ Formats all the arguments into a nice error message, utilizing the constructor o
 
 ---
 
-## `is_regular_file` - Test if a path is a regular file
+## `is_file` - Test if a path is a regular file
 
 ### Status
 
@@ -511,7 +511,7 @@ It is designed to work across multiple platforms. On Windows, paths with both fo
 
 ### Syntax
 
-`result = ` [[stdlib_system(module):is_regular_file(function)]]`(path)`
+`result = ` [[stdlib_system(module):is_file(function)]]`(path)`
 
 ### Class
 
@@ -531,7 +531,7 @@ The function returns a `logical` value:
 ### Example
 
 ```fortran
-{!example/system/example_is_regular_file.f90!}
+{!example/system/example_is_file.f90!}
 ```
 
 ---
@@ -584,7 +584,7 @@ Experimental
 ### Description
 
 This function checks if a specified file system path is a symbolic link to either a file or a directory.
-Use [[stdlib_system(module):is_regular_file(function)]] and [[stdlib_system(module):is_directory(function)]] functions
+Use [[stdlib_system(module):is_file(function)]] and [[stdlib_system(module):is_directory(function)]] functions
 to check further if the link is to a file or a directory respectively.
 It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
 
