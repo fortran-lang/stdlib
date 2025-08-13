@@ -1,6 +1,6 @@
 submodule(stdlib_system) stdlib_system_path
     use stdlib_ascii, only: reverse
-    use stdlib_strings, only: chomp, join
+    use stdlib_strings, only: chomp, join, starts_with
     use stdlib_string_type, only: string_type, char, move
 contains
     module function join2_char_char(p1, p2) result(path)
@@ -167,4 +167,58 @@ contains
 
         call split_path(p, dir, temp)
     end function dir_name_string
+
+    module logical function is_abs_path_char(p)
+        character(len=*), intent(in) :: p
+        character(len=1) :: sep
+
+        sep = path_sep()
+
+        if (sep == '/') then
+            ! should start with '/'
+            is_abs_path_char = starts_with(p, sep)
+        else
+            ! should be either an UNC path like '\\server\host...'
+            ! or should be starting with a drive letter like 'C:\Users\...'
+            is_abs_path_char = starts_with(p(2:), ':\') .or. starts_with(p, '\\')
+        end if
+    end function is_abs_path_char
+
+    module logical function is_abs_path_string(p)
+        type(string_type), intent(in) :: p
+
+        is_abs_path_string = is_abs_path(char(p))
+    end function is_abs_path_string
+
+    module function abs_path_char(p, err) result(abs_p)
+        character(len=*), intent(in) :: p
+        type(state_type), optional, intent(out) :: err
+        character(len=:), allocatable :: abs_p
+
+        type(state_type) :: err0
+        character(:), allocatable :: cwd
+
+        ! get the current working directory
+        call get_cwd(cwd, err0)
+
+        if (err0%error()) then
+            abs_p = ''
+            call err0%handle(err)
+        end if
+
+        ! join the cwd and path
+        abs_p = cwd / p
+    end function abs_path_char
+
+    module function abs_path_string(p, err) result(abs_p)
+        type(string_type), intent(in) :: p
+        type(state_type), optional, intent(out) :: err
+        type(string_type) :: abs_p
+
+        character(len=:), allocatable :: res
+
+        res = abs_path(char(p), err)
+
+        call move(res, abs_p)
+    end function abs_path_string
 end submodule stdlib_system_path
