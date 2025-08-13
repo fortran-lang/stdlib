@@ -1,6 +1,6 @@
-! Illustrate the usage of `abs_path`, `is_abs`
+! Illustrate the usage of `abs_path`, `is_abs_path`
 program example_path_abs
-    use stdlib_system, only: abs_path, is_abs
+    use stdlib_system, only: abs_path, is_abs_path
     use stdlib_error, only: state_type
     implicit none
 
@@ -8,7 +8,7 @@ program example_path_abs
     character(:), allocatable :: absolute_path
     type(state_type) :: err
 
-    if (is_abs(path)) then
+    if (is_abs_path(path)) then
         print *, "Path is absolute!"
         ! terminate the program since path is already absolute
         stop

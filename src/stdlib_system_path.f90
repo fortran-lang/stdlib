@@ -168,7 +168,7 @@ contains
         call split_path(p, dir, temp)
     end function dir_name_string
 
-    module logical function is_abs_char(p)
+    module logical function is_abs_path_char(p)
         character(len=*), intent(in) :: p
         character(len=1) :: sep
 
@@ -176,19 +176,19 @@ contains
 
         if (sep == '/') then
             ! should start with '/'
-            is_abs_char = starts_with(p, sep)
+            is_abs_path_char = starts_with(p, sep)
         else
             ! should be either an UNC path like '\\server\host...'
             ! or should be starting with a drive letter like 'C:\Users\...'
-            is_abs_char = starts_with(p(2:), ':\') .or. starts_with(p, '\\')
+            is_abs_path_char = starts_with(p(2:), ':\') .or. starts_with(p, '\\')
         end if
-    end function is_abs_char
+    end function is_abs_path_char
 
-    module logical function is_abs_string(p)
+    module logical function is_abs_path_string(p)
         type(string_type), intent(in) :: p
 
-        is_abs_string = is_abs(char(p))
-    end function is_abs_string
+        is_abs_path_string = is_abs_path(char(p))
+    end function is_abs_path_string
 
     module function abs_path_char(p, err) result(abs_p)
         character(len=*), intent(in) :: p

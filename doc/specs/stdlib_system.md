@@ -981,7 +981,7 @@ A character string or `type(string_type)`.
 
 ---
 
-## `is_abs` - Checks if the path is absolute
+## `is_abs_path` - Checks if the path is absolute
 
 ### Status
 
@@ -996,7 +996,7 @@ a path starting with a drive letter (like `C:\Users\`)
 
 ### Syntax
 
-`res = ` [[stdlib_system(module):is_abs(interface)]]`(p)`
+`res = ` [[stdlib_system(module):is_abs_path(interface)]]`(p)`
 
 ### Class
 
@@ -1009,7 +1009,10 @@ Function
 
 ### Return values
 
-A `logical` indicating if the the path is absolute.
+The function returns a `logical` value:
+
+- `.true.` if the path is absolute.
+- `.false.` otherwise.
 
 ### Example
 
@@ -1047,7 +1050,7 @@ Function
 
 `res`: the absolutized version of the path, It is of type `character(:), allocatable`.
 
-`err`: It is an optional state return flag. On error if not requested, an `FS_ERROR` will trigger an error stop.
+`err`: it is an optional state return flag. On error if not requested, an `FS_ERROR` will trigger an error stop.
 
 ### Example
 
