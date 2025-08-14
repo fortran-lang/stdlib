@@ -43,25 +43,25 @@ contains
         if ( norm_sq0 > zero_${s}$ ) then
             
             R = B
-            call A%apply(X, R, alpha= -one_${s}$, beta=one_${s}$) ! R = B - A*X
+            call A%matvec(X, R, alpha= -one_${s}$, beta=one_${s}$, op='N') ! R = B - A*X
             
-            call M%apply(R,P, alpha= one_${s}$, beta=zero_${s}$) ! P = M^{-1}*R
+            call M%matvec(R,P, alpha= one_${s}$, beta=zero_${s}$, op='N') ! P = M^{-1}*R
             
             tolsq = tol*tol
             
             zr1 = zero_${s}$
             zr2 = one_${s}$
             do while ( (iter < maxiter) .AND. (norm_sq > tolsq * norm_sq0) )
-                
-                call M%apply(R,S, alpha= one_${s}$, beta=zero_${s}$) ! S = M^{-1}*R
+
+                call M%matvec(R,S, alpha= one_${s}$, beta=zero_${s}$, op='N') ! S = M^{-1}*R
                 zr2 = A%inner_product( R, S )
             
                 if (iter>0) then
                     beta = zr2 / zr1
                     P = S + beta * P
                 end if
-                
-                call A%apply(P, Q, alpha= one_${s}$, beta=zero_${s}$) ! Q = A*P
+
+                call A%matvec(P, Q, alpha= one_${s}$, beta=zero_${s}$, op='N') ! Q = A*P
                 zv2 = A%inner_product( P, Q )
             
                 alpha = zr2 / zv2
@@ -134,14 +134,14 @@ contains
                 #:else 
                 call diag(A,diagonal)
                 #:endif
-                M_%apply => precond_jacobi
+                M_%matvec => precond_jacobi
             case default
-                M_%apply => precond_none
+                M_%matvec => precond_none
             end select
             where(abs(diagonal)>epsilon(zero_${s}$)) diagonal = one_${s}$/diagonal
         end if
         ! matvec for the operator
-        op%apply => matvec
+        op%matvec => matvec
         
         ! direchlet boundary conditions mask
         if(present(di))then
@@ -176,31 +176,37 @@ contains
         workspace_ => null()
         contains
         
-        subroutine matvec(x,y,alpha,beta)
+        subroutine matvec(x,y,alpha,beta,op)
+            #:if matrix == "dense"
+            use stdlib_linalg_blas, only: gemv
+            #:endif 
             ${t}$, intent(in)  :: x(:)
             ${t}$, intent(inout) :: y(:)
             ${t}$, intent(in) :: alpha
             ${t}$, intent(in) :: beta
+            character(1), intent(in) :: op
             #:if matrix == "dense"
-            y = alpha * matmul(A,x) + beta * y
+            call gemv(op,m=size(A,1),n=size(A,2),alpha=alpha,a=A,lda=size(A,1),x=x,incx=1,beta=beta,y=y,incy=1)
             #:else 
-            call spmv( A , x, y , alpha, beta )
+            call spmv( A , x, y , alpha, beta , op)
             #:endif
             y = merge( zero_${s}$, y, di_ )
         end subroutine
 
-        subroutine precond_none(x,y,alpha,beta)
+        subroutine precond_none(x,y,alpha,beta,op)
             ${t}$, intent(in)  :: x(:)
             ${t}$, intent(inout) :: y(:)
             ${t}$, intent(in) :: alpha
             ${t}$, intent(in) :: beta
+            character(1), intent(in) :: op
             y = merge( zero_${s}$, x, di_ )
         end subroutine
-        subroutine precond_jacobi(x,y,alpha,beta)
+        subroutine precond_jacobi(x,y,alpha,beta,op)
             ${t}$, intent(in)  :: x(:)
             ${t}$, intent(inout) :: y(:)
             ${t}$, intent(in) :: alpha
             ${t}$, intent(in) :: beta
+            character(1), intent(in) :: op
             y = merge( zero_${s}$, diagonal * x, di_ ) ! inverted diagonal
         end subroutine
     end subroutine

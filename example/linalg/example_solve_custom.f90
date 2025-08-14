@@ -34,9 +34,9 @@ contains
         norm_sq0 = 0.d0
         !-------------------------
         ! internal memory setup
-        op%apply => my_apply
+        op%matvec => my_matvec
         op%inner_product => my_dot
-        M%apply => my_jacobi_preconditioner
+        M%matvec => my_jacobi_preconditioner
         if(present(di))then
             di_ => di
         else 
@@ -69,20 +69,22 @@ contains
         end if
         workspace_ => null()
         contains
-        
-        subroutine my_apply(x,y,alpha,beta)
+
+        subroutine my_matvec(x,y,alpha,beta,op)
             real(dp), intent(in)  :: x(:)
             real(dp), intent(inout) :: y(:)
             real(dp), intent(in) :: alpha
             real(dp), intent(in) :: beta
-            call spmv( A , x, y , alpha, beta )
+            character(1), intent(in) :: op
+            call spmv( A , x, y , alpha, beta , op)
             y = merge( 0._dp, y, di_ )
         end subroutine
-        subroutine my_jacobi_preconditioner(x,y,alpha,beta)
+        subroutine my_jacobi_preconditioner(x,y,alpha,beta,op)
             real(dp), intent(in)  :: x(:)
             real(dp), intent(inout) :: y(:)
             real(dp), intent(in) :: alpha
             real(dp), intent(in) :: beta
+            character(1), intent(in) :: op
             y = merge( 0._dp, diagonal * x , di_ )
         end subroutine
         pure real(dp) function my_dot(x,y) result(r)

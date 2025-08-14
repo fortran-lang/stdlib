@@ -34,7 +34,7 @@ contains
             if(associated(workspace%callback)) call workspace%callback(x, norm_sq0, iter)
 
             R = B
-            call A%apply(X, R, alpha= -one_${s}$, beta=one_${s}$) ! R = B - A*X
+            call A%matvec(X, R, alpha= -one_${s}$, beta=one_${s}$, op='N') ! R = B - A*X
             norm_sq = A%inner_product(R, R)
    
             P = R
@@ -43,8 +43,8 @@ contains
             beta = zero_${s}$
             if(associated(workspace%callback)) call workspace%callback(x, norm_sq, iter)
             do while( norm_sq > tolsq * norm_sq0 .and. iter < maxiter)
-                call A%apply(P,Ap, alpha= one_${s}$, beta=zero_${s}$) ! Ap = A*P
-                
+                call A%matvec(P,Ap, alpha= one_${s}$, beta=zero_${s}$, op='N') ! Ap = A*P
+
                 alpha = norm_sq / A%inner_product(P, Ap)
                 
                 X = X + alpha * P
@@ -94,7 +94,7 @@ contains
 
         !-------------------------
         ! internal memory setup
-        op%apply => default_matvec
+        op%matvec => matvec
         ! op%inner_product => default_dot
         if(present(di))then
             di_ => di
@@ -126,15 +126,19 @@ contains
         workspace_ => null()
         contains
         
-        subroutine default_matvec(x,y,alpha,beta)
+        subroutine matvec(x,y,alpha,beta,op)
+            #:if matrix == "dense"
+            use stdlib_linalg_blas, only: gemv
+            #:endif 
             ${t}$, intent(in)  :: x(:)
             ${t}$, intent(inout) :: y(:)
             ${t}$, intent(in) :: alpha
             ${t}$, intent(in) :: beta
+            character(1), intent(in) :: op
             #:if matrix == "dense"
-            y = alpha * matmul(A,x) + beta * y
+            call gemv(op,m=size(A,1),n=size(A,2),alpha=alpha,a=A,lda=size(A,1),x=x,incx=1,beta=beta,y=y,incy=1)
             #:else 
-            call spmv( A , x, y , alpha, beta )
+            call spmv( A , x, y , alpha, beta , op)
             #:endif
             y = merge( zero_${s}$, y, di_ )
         end subroutine

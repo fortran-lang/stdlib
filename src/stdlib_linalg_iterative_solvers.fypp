@@ -24,7 +24,7 @@ module stdlib_linalg_iterative_solvers
     !! The `linop` type is used to define the linear operator for the iterative solvers.
     #:for k, t, s in R_KINDS_TYPES
     type, public :: linop_${s}$_type
-        procedure(vector_sub_${s}$), nopass, pointer    :: apply => null()
+        procedure(vector_sub_${s}$), nopass, pointer    :: matvec => null()
         procedure(reduction_sub_${s}$), nopass, pointer :: inner_product => default_dot_${s}$
     end type
     #:endfor
@@ -42,12 +42,13 @@ module stdlib_linalg_iterative_solvers
 
     abstract interface
         #:for k, t, s in R_KINDS_TYPES
-        subroutine vector_sub_${s}$(x,y,alpha,beta)
+        subroutine vector_sub_${s}$(x,y,alpha,beta,op)
             import :: ${k}$
             ${t}$, intent(in)  :: x(:)
             ${t}$, intent(inout) :: y(:)
             ${t}$, intent(in) :: alpha
             ${t}$, intent(in) :: beta
+            character(1), intent(in) :: op
         end subroutine
         pure ${t}$ function reduction_sub_${s}$(x,y) result(r)
             import :: ${k}$

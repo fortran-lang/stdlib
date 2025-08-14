@@ -23,13 +23,13 @@ The `linop_<kind>_type` derive type is an auxiliary class enabling to abstract t
 
 The following type-bound procedures pointer enable customization of the solver:
 
-##### `apply`
+##### `matvec`
 
-Proxy procedure for the matrix-vector product $y = alpha * M * x + beta * y$.
+Proxy procedure for the matrix-vector product $y = alpha * op(M) * x + beta * y$.
 
 #### Syntax
 
-`call ` [[stdlib_iterative_solvers(module):apply(interface)]] ` (x,y,alpha,beta)`
+`call ` [[stdlib_iterative_solvers(module):matvec(interface)]] ` (x,y,alpha,beta,op)`
 
 ###### Class
 
@@ -44,6 +44,8 @@ Subroutine
 `alpha`: scalar of `real(<kind>)`. This argument is `intent(in)`.
 
 `beta`: scalar of `real(<kind>)`. This argument is `intent(in)`.
+
+`op`: `character(1)` scalar. This argument is `intent(in)`.
 
 ##### `inner_product`
 
