@@ -535,6 +535,191 @@ The function returns a `logical` value:
 
 ---
 
+## `make_directory` - Creates an empty directory
+
+### Status
+
+Experimental
+
+### Description
+
+It creates an empty directory with default permissions.
+It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+
+### Syntax
+
+`call [[stdlib_system(module):make_directory(subroutine)]] (path [,err])`
+
+### Class
+
+Subroutine
+
+### Arguments
+
+`path`: Shall be a character string containing the path of the directory to create. It is an `intent(in)` argument.
+
+`err`(optional): Shall be of type `state_type`, and is used for error handling. It is an `optional, intent(out)` argument.
+
+### Return values
+
+`err` is an optional state return flag. If not requested and an error occurs, an `FS_ERROR` will trigger an error stop.
+
+### Example
+
+```fortran
+{!example/system/example_make_directory.f90!}
+```
+
+---
+
+## `make_directory_all` - Creates an empty directory with all its parent directories
+
+### Status
+
+Experimental
+
+### Description
+
+It creates an empty directory with default permissions.
+It also creates all the necessary parent directories in the path if they do not exist already.
+
+### Syntax
+
+`call [[stdlib_system(module):make_directory_all(subroutine)]] (path [,err])`
+
+### Class
+
+Subroutine
+
+### Arguments
+
+`path`: Shall be a character string containing the path of the directory to create. It is an `intent(in)` argument.
+
+`err`(optional): Shall be of type `state_type`, and is used for error handling. It is an `optional, intent(out)` argument.
+
+### Return values
+
+`err` is an optional state return flag. If not requested and an error occurs, an `FS_ERROR` will trigger an error stop.
+
+### Example
+
+```fortran
+{!example/system/example_make_directory.f90!}
+```
+
+---
+
+## `remove_directory` - Removes an empty directory
+
+### Status
+
+Experimental
+
+### Description
+
+It deletes an empty directory.
+It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+
+### Syntax
+
+`call [[stdlib_system(module):remove_directory(subroutine)]] (path, err)`
+
+### Class
+
+Subroutine
+
+### Arguments
+
+`path`: Shall be a character string containing the path of the directory to create. It is an `intent(in)` argument.
+
+`err`(optional): Shall be of type `state_type`, and is used for error handling. It is an `optional, intent(out)` argument.
+
+### Return values
+
+`err` is an optional state return flag. On error if not requested, an `FS_ERROR` will trigger an error stop.
+
+### Example
+
+```fortran
+{!example/system/example_remove_directory.f90!}
+```
+
+---
+
+## `get_cwd` - Gets the current working directory
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine retrieves the current working directory the running process is executing from.
+It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+
+### Syntax
+
+`call [[stdlib_system(module):get_cwd(subroutine)]] (cwd [, err])`
+
+### Class
+
+Subroutine
+
+### Arguments
+
+`cwd`: Shall be a character string for receiving the path of the current working directory (cwd). It is an `intent(out)` argument.
+
+`err`(optional): Shall be of type `state_type`, and is used for error handling. It is an `intent(out)` argument.
+
+### Return values
+
+`err` is an optional state return flag. On error if not requested, an `FS_ERROR` will trigger an error stop.
+
+### Example
+
+```fortran
+{!example/system/example_cwd.f90!}
+```
+
+---
+
+## `set_cwd` - Sets the current working directory
+
+### Status
+
+Experimental
+
+### Description
+
+This subrotine sets the current working directory the process is executing from.
+It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+
+### Syntax
+
+`call [[stdlib_system(module):set_cwd(subroutine)]] (path [, err])`
+
+### Class
+
+Subroutine
+
+### Arguments
+
+`path`: Shall be a character string containing the path of the directory. It is an `intent(in)` argument.
+
+`err`(optional): Shall be of type `state_type`, and is used for error handling. It is an `intent(out)` argument.
+
+### Return values
+
+`err` is an optional state return flag. On error if not requested, an `FS_ERROR` will trigger an error stop.
+
+### Example
+
+```fortran
+{!example/system/example_cwd.f90!}
+```
+
+---
+
 ## `null_device` - Return the null device file path
 
 ### Status
@@ -570,6 +755,8 @@ None.
 ```fortran
 {!example/system/example_null_device.f90!}
 ```
+
+---
 
 ## `delete_file` - Delete a file
 
@@ -611,6 +798,8 @@ The file is removed from the filesystem if the operation is successful. If the o
 ```fortran
 {!example/system/example_delete_file.f90!}
 ```
+
+---
 
 ## `join_path` - Joins the provided paths according to the OS
 
@@ -674,6 +863,8 @@ The result is an `allocatable` character string or `type(string_type)`
 {!example/system/example_path_join.f90!}
 ```
 
+---
+
 ## `split_path` - splits a path immediately following the last separator
 
 ### Status
@@ -714,6 +905,8 @@ The splitted path. `head` and `tail`.
 {!example/system/example_path_split_path.f90!}
 ```
 
+---
+
 ## `base_name` - The last part of a path
 
 ### Status
@@ -748,6 +941,8 @@ A character string or `type(string_type)`.
 ```fortran
 {!example/system/example_path_base_name.f90!}
 ```
+
+---
 
 ## `dir_name` - Everything except the last part of the path
 

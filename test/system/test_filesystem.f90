@@ -1,6 +1,8 @@
 module test_filesystem
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
-    use stdlib_system, only: is_directory, delete_file, FS_ERROR, FS_ERROR_CODE
+    use stdlib_system, only: is_directory, delete_file, FS_ERROR, FS_ERROR_CODE, &
+        make_directory, remove_directory, make_directory_all, is_windows, OS_TYPE, &
+        OS_WINDOWS, get_cwd, set_cwd, operator(/)
     use stdlib_error, only: state_type, STDLIB_FS_ERROR
 
     implicit none
@@ -18,7 +20,13 @@ contains
             new_unittest("fs_is_directory_file", test_is_directory_file), &
             new_unittest("fs_delete_non_existent", test_delete_file_non_existent), &
             new_unittest("fs_delete_existing_file", test_delete_file_existing), &
-            new_unittest("fs_delete_file_being_dir", test_delete_directory) &            
+            new_unittest("fs_delete_file_being_dir", test_delete_directory), &            
+            new_unittest("fs_make_dir", test_make_directory), &            
+            new_unittest("fs_make_dir_existing_dir", test_make_directory_existing), &            
+            new_unittest("fs_make_dir_all", test_make_directory_all), &            
+            new_unittest("fs_remove_dir", test_remove_directory), &            
+            new_unittest("fs_remove_dir_non_existent", test_remove_directory_nonexistent), &            
+            new_unittest("fs_cwd", test_cwd) &            
         ]
     end subroutine collect_suite
 
@@ -166,7 +174,161 @@ contains
         if (allocated(error)) return        
 
     end subroutine test_delete_directory
+    
+    subroutine test_make_directory(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(state_type) :: err
+        character(len=256) :: dir_name
+        integer :: ios,iocmd
+        character(len=512) :: msg
 
+        dir_name = "test_directory"
+
+        call make_directory(dir_name, err=err)
+        call check(error, err%ok(), 'Could not make directory: '//err%print())
+        if (allocated(error)) return
+
+        ! clean up: remove the empty directory
+        call execute_command_line('rmdir ' // dir_name, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        call check(error, ios==0 .and. iocmd==0, 'Cannot cleanup make_directory test: '//trim(msg))
+    end subroutine test_make_directory
+
+    subroutine test_make_directory_existing(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(state_type) :: err
+        character(len=256) :: dir_name
+        integer :: ios,iocmd
+        character(len=512) :: msg
+
+        dir_name = "test_directory"
+
+        call execute_command_line('mkdir ' // dir_name, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        call check(error, ios==0 .and. iocmd==0, 'Cannot init make_directory_existing test: '//trim(msg))
+        if (allocated(error)) return
+
+        call make_directory(dir_name, err=err)
+        call check(error, err%error(), 'Made an already existing directory somehow')
+
+        ! clean up: remove the empty directory
+        call execute_command_line('rmdir ' // dir_name, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+
+        if (allocated(error)) then
+            ! if previous error is allocated as well
+            call check(error, ios==0 .and. iocmd==0, error%message // ' and cannot cleanup make_directory test: '//trim(msg))
+            return
+        end if
+
+        call check(error, ios==0 .and. iocmd==0, 'Cannot cleanup make_directory test: '//trim(msg))
+    end subroutine test_make_directory_existing
+
+    subroutine test_make_directory_all(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(state_type) :: err
+        character(len=256) :: dir_name
+        integer :: ios,iocmd
+        character(len=512) :: msg
+
+        if (OS_TYPE() == OS_WINDOWS) then
+            dir_name = "d1\d2\d3\d4\"
+        else
+            dir_name = "d1/d2/d3/d4/"
+        end if
+
+        call make_directory_all(dir_name, err=err)
+        call check(error, err%ok(), 'Could not make all directories: '//err%print())
+        if (allocated(error)) return
+
+        ! clean up: remove the empty directory
+        if (is_windows()) then
+            call execute_command_line('rmdir /s /q d1', exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        else
+            call execute_command_line('rm -rf d1', exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        end if
+
+        call check(error, ios==0 .and. iocmd==0, 'Cannot cleanup make_directory_all test: '//trim(msg))
+    end subroutine test_make_directory_all
+
+    subroutine test_remove_directory(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(state_type) :: err
+        character(len=256) :: dir_name
+        integer :: ios,iocmd
+        character(len=512) :: msg
+
+        dir_name = "test_directory"
+
+        call execute_command_line('mkdir ' // dir_name, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        call check(error, ios==0 .and. iocmd==0, 'Cannot init remove_directory test: '//trim(msg))
+        if (allocated(error)) return
+
+        call remove_directory(dir_name, err)
+        call check(error, err%ok(), 'Could not remove directory: '//err%print())
+
+        if (allocated(error)) then 
+            ! clean up: remove the empty directory
+            call execute_command_line('rmdir ' // dir_name, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+            call check(error, ios==0 .and. iocmd==0, error%message // ' and cannot cleanup make_directory test: '//trim(msg))
+        end if
+    end subroutine test_remove_directory
+
+    subroutine test_remove_directory_nonexistent(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(state_type) :: err
+
+        call remove_directory("random_name", err)
+        call check(error, err%error(), 'Somehow removed a non-existent directory')
+        if (allocated(error)) return
+    end subroutine test_remove_directory_nonexistent
+
+    subroutine test_cwd(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(state_type) :: err
+        character(len=256) :: dir_name
+        integer :: ios,iocmd
+        character(len=512) :: msg
+
+        character(:), allocatable :: pwd1, pwd2, abs_dir_name
+
+        ! get the initial cwd
+        call get_cwd(pwd1, err)
+        call check(error, err%ok(), 'Could not get current working directory: '//err%print())
+        if (allocated(error)) return
+
+        ! create a temporary directory for use by `set_cwd`
+        dir_name = "test_directory"
+
+        call execute_command_line('mkdir ' // dir_name, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        call check(error, ios==0 .and. iocmd==0, 'Cannot init cwd test: '//trim(msg))
+        if (allocated(error)) return
+
+        abs_dir_name = pwd1 / dir_name
+        call set_cwd(abs_dir_name, err)
+        call check(error, err%ok(), 'Could not set current working directory: '//err%print())
+        if (allocated(error)) return
+
+        ! get the new cwd -> should be same as (pwd1 / dir_name)
+        call get_cwd(pwd2, err)
+        call check(error, err%ok(), 'Could not get current working directory: '//err%print())
+        if (allocated(error)) return
+
+        call check(error, pwd2 == abs_dir_name, 'Working directory is wrong, & 
+            & expected: '//abs_dir_name//" got: "//pwd2)
+        if (allocated(error)) return
+
+        ! cleanup: set the cwd back to the initial value
+        call set_cwd(pwd1, err)
+        call check(error, err%ok(), 'Could not clean up cwd test, could not set the cwd back: '//err%print())
+        if (allocated(error)) then 
+            ! our cwd now is `./test_directory`
+            ! there is no way of removing the empty test directory
+            return
+        end if
+
+        ! cleanup: remove the empty directory
+        call execute_command_line('rmdir ' // dir_name, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        call check(error, ios==0 .and. iocmd==0, 'Cannot cleanup cwd test, cannot remove empty dir: '//trim(msg))
+        if (allocated(error)) return
+    end subroutine test_cwd
 
 end module test_filesystem
 

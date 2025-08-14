@@ -2,8 +2,9 @@ module stdlib_system
 use, intrinsic :: iso_c_binding, only : c_int, c_long, c_ptr, c_null_ptr, c_int64_t, c_size_t, &
     c_f_pointer
 use stdlib_kinds, only: int64, dp, c_bool, c_char
-use stdlib_strings, only: to_c_char, to_string
+use stdlib_strings, only: to_c_char, find, to_string
 use stdlib_string_type, only: string_type
+use stdlib_optval, only: optval
 use stdlib_error, only: state_type, STDLIB_SUCCESS, STDLIB_FS_ERROR
 implicit none
 private
@@ -108,6 +109,78 @@ public :: dir_name
 !! Windows, and various UNIX-like environments. On unsupported operating systems, the function will return `.false.`.
 !!
 public :: is_directory
+
+!! version: experimental
+!!
+!! Makes an empty directory.
+!! ([Specification](../page/specs/stdlib_system.html#make_directory))
+!!
+!! ### Summary
+!! Creates an empty directory with default permissions.
+!!
+!! ### Description
+!! This function makes an empty directory according to the path provided.
+!! Relative paths are supported. On Windows, paths involving either `/` or `\` are accepted.
+!! An appropriate error message is returned whenever any error occurs.
+!!
+public :: make_directory
+
+!! version: experimental
+!!
+!! Makes an empty directory, also creating all the parent directories required.
+!! ([Specification](../page/specs/stdlib_system.html#make_directory))
+!!
+!! ### Summary
+!! Creates an empty directory with all the parent directories required to do so.
+!!
+!! ### Description
+!! This function makes an empty directory according to the path provided.
+!! It also creates all the necessary parent directories in the path if they do not exist already.
+!! Relative paths are supported.
+!! An appropriate error message is returned whenever any error occurs.
+!!
+public :: make_directory_all
+
+!! version: experimental
+!!
+!! Removes an empty directory.
+!! ([Specification](../page/specs/stdlib_system.html#remove_directory))
+!!
+!! ### Summary
+!! Removes an empty directory.
+!!
+!! ### Description
+!! This function Removes an empty directory according to the path provided.
+!! Relative paths are supported. On Windows paths involving either `/` or `\` are accepted.
+!! An appropriate error message is returned whenever any error occurs.
+!!
+public :: remove_directory
+
+!! version: experimental
+!!
+!! Gets the current working directory of the process
+!! ([Specification](../page/specs/stdlib_system.html#get_cwd))
+!!
+!! ### Summary
+!! Gets the current working directory.
+!!
+!! ### Description
+!! This subroutine gets the current working directory the process is executing from.
+!!
+public :: get_cwd
+
+!! version: experimental
+!!
+!! Sets the current working directory of the process
+!! ([Specification](../page/specs/stdlib_system.html#set_cwd))
+!!
+!! ### Summary
+!! Changes the current working directory to the one specified.
+!!
+!! ### Description
+!! This subroutine sets the current working directory the process is executing from.
+!!
+public :: set_cwd
 
 !! version: experimental
 !!
@@ -849,6 +922,196 @@ logical function is_directory(path)
     
 end function is_directory
 
+! A Helper function to convert C character arrays to Fortran character strings
+function to_f_char(c_str_ptr, len) result(f_str)
+    type(c_ptr), intent(in) :: c_str_ptr
+    ! length of the string excluding the null character
+    integer(kind=c_size_t), intent(in) :: len
+    character(:), allocatable :: f_str
+
+    integer :: i
+    character(kind=c_char), pointer :: c_str(:)
+
+    call c_f_pointer(c_str_ptr, c_str, [len])
+
+    allocate(character(len=len) :: f_str)
+
+    do concurrent (i=1:len)
+        f_str(i:i) = c_str(i)
+    end do
+end function to_f_char
+
+! A helper function to get the result of the C function `strerror`.
+! `strerror` is a function provided by `<string.h>`. 
+! It returns a string describing the meaning of `errno` in the C header `<errno.h>`
+function c_get_strerror() result(str)
+    character(len=:), allocatable :: str
+
+    interface
+        type(c_ptr) function strerror(len) bind(C, name='stdlib_strerror')
+            import c_size_t, c_ptr
+            implicit none
+            integer(c_size_t), intent(out) :: len
+        end function strerror
+    end interface
+
+    type(c_ptr) :: c_str_ptr
+    integer(c_size_t) :: len
+
+    c_str_ptr = strerror(len)
+
+    str = to_f_char(c_str_ptr, len)
+end function c_get_strerror
+
+!! makes an empty directory
+subroutine make_directory(path, err)
+    character(len=*), intent(in) :: path
+    type(state_type), optional, intent(out) :: err
+
+    integer :: code
+    type(state_type) :: err0
+
+    interface
+        integer function stdlib_make_directory(cpath) bind(C, name='stdlib_make_directory')
+            import c_char
+            character(kind=c_char), intent(in) :: cpath(*)
+        end function stdlib_make_directory
+    end interface
+
+    code = stdlib_make_directory(to_c_char(trim(path)))
+
+    if (code /= 0) then
+        err0 = FS_ERROR_CODE(code, c_get_strerror())
+        call err0%handle(err)
+    end if
+
+end subroutine make_directory
+
+subroutine make_directory_all(path, err)
+    character(len=*), intent(in) :: path
+    type(state_type), optional, intent(out) :: err
+
+    integer :: i, indx
+    type(state_type) :: err0
+    character(len=1) :: sep
+    logical :: is_dir, check_is_dir
+
+    sep = path_sep()
+    i = 1
+    indx = find(path, sep, i)
+    check_is_dir = .true.
+
+    do
+        ! Base case to exit the loop
+        if (indx == 0) then
+            is_dir = is_directory(path)
+
+            if (.not. is_dir) then
+                call make_directory(path, err0)
+
+                if (err0%error()) then
+                    call err0%handle(err)
+                end if
+            end if
+
+            return
+        end if
+
+        if (check_is_dir) then
+            is_dir = is_directory(path(1:indx))
+        end if
+
+        if (.not. is_dir) then
+            ! no need for further `is_dir` checks
+            ! all paths going forward need to be created
+            check_is_dir = .false.
+            call make_directory(path(1:indx), err0)
+
+            if (err0%error()) then
+                call err0%handle(err)
+                return
+            end if
+        end if
+
+        i = i + 1 ! the next occurence of `sep`
+        indx = find(path, sep, i)
+    end do
+end subroutine make_directory_all
+
+!! removes an empty directory
+subroutine remove_directory(path, err)
+    character(len=*), intent(in) :: path
+    type(state_type), optional, intent(out) :: err
+
+    integer :: code
+    type(state_type) :: err0
+
+    interface
+        integer function stdlib_remove_directory(cpath) bind(C, name='stdlib_remove_directory')
+            import c_char
+            character(kind=c_char), intent(in) :: cpath(*)
+        end function stdlib_remove_directory
+    end interface
+
+    code = stdlib_remove_directory(to_c_char(trim(path)))
+
+    if (code /= 0) then
+        err0 = FS_ERROR_CODE(code, c_get_strerror())
+        call err0%handle(err)
+    end if
+
+end subroutine remove_directory
+
+subroutine get_cwd(cwd, err)
+    character(:), allocatable, intent(out) :: cwd
+    type(state_type), optional, intent(out) :: err
+    type(state_type) :: err0
+
+    interface
+        type(c_ptr) function stdlib_get_cwd(len, stat) bind(C, name='stdlib_get_cwd')
+            import c_ptr, c_size_t
+            integer(c_size_t), intent(out) :: len
+            integer :: stat
+        end function stdlib_get_cwd
+    end interface
+
+    type(c_ptr) :: c_str_ptr
+    integer(c_size_t) :: len
+    integer :: stat
+
+    c_str_ptr = stdlib_get_cwd(len, stat)
+
+    if (stat /= 0) then
+        err0 = FS_ERROR_CODE(stat, c_get_strerror())
+        call err0%handle(err)
+    end if
+
+    cwd = to_f_char(c_str_ptr, len)
+
+end subroutine get_cwd
+
+subroutine set_cwd(path, err)
+    character(len=*), intent(in) :: path
+    type(state_type), optional, intent(out) :: err
+    type(state_type) :: err0
+
+    interface
+        integer function stdlib_set_cwd(path) bind(C, name='stdlib_set_cwd')
+            import c_char
+            character(kind=c_char), intent(in) :: path(*)
+        end function stdlib_set_cwd
+    end interface
+
+    integer :: code
+
+    code = stdlib_set_cwd(to_c_char(trim(path)))
+
+    if (code /= 0) then
+        err0 = FS_ERROR_CODE(code, c_get_strerror())
+        call err0%handle(err)
+    end if
+end subroutine set_cwd
+
 !> Returns the file path of the null device for the current operating system.
 !>
 !> Version: Helper function.
@@ -867,21 +1130,13 @@ function null_device() result(path)
         
     end interface
     
-    integer(c_size_t) :: i, len
+    integer(c_size_t) :: len
     type(c_ptr) :: c_path_ptr
-    character(kind=c_char), pointer :: c_path(:)    
 
     ! Call the C function to get the null device path and its length
     c_path_ptr = process_null_device(len)
-    call c_f_pointer(c_path_ptr,c_path,[len])
 
-    ! Allocate the Fortran string with the length returned from C
-    allocate(character(len=len) :: path)
-        
-    do concurrent (i=1:len)
-        path(i:i) = c_path(i)
-    end do
-        
+    path = to_f_char(c_path_ptr, len)
 end function null_device
 
 !> Delete a file at the given path.
