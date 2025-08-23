@@ -3,234 +3,276 @@
 module stdlib_linalg_blas
      use stdlib_linalg_constants
      use stdlib_linalg_blas_aux
-     #:for rk,rt,ri in RC_KINDS_TYPES
-     use stdlib_linalg_blas_${ri}$
-     #:endfor
-     implicit none(type,external)
-     public
+     use stdlib_blas
+     
+     implicit none
+     public     
+         
+          interface asum
+          !! ASUM takes the sum of the absolute values.
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
+               pure real(dp) function dasum( n, x, incx )
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,n
+                    real(dp), intent(in) :: x(*)
+               end function dasum
+#else
+               module procedure stdlib${ii}$_dasum
+#endif
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
+               pure real(dp) function dzasum( n, x, incx )
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,n
+                    complex(dp), intent(in) :: x(*)
+               end function dzasum
+#else
+               module procedure stdlib${ii}$_dzasum
+#endif
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
+               pure real(sp) function sasum( n, x, incx )
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,n
+                    real(sp), intent(in) :: x(*)
+               end function sasum
+#else
+               module procedure stdlib${ii}$_sasum
+#endif
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
+               pure real(sp) function scasum( n, x, incx )
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,n
+                    complex(sp), intent(in) :: x(*)
+               end function scasum
+#else
+               module procedure stdlib${ii}$_scasum
+#endif
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$asum
+#:endif
+#:endfor
+#:for rk,rt,ri in CMPLX_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${c2ri(ri)}$zasum
+#:endif
+#:endfor
+#:endfor
+          end interface asum
 
           interface axpy
           !! AXPY constant times a vector plus a vector.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine caxpy(n,ca,cx,incx,cy,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(sp), intent(in) :: ca,cx(*)
-                    integer(ilp), intent(in) :: incx,incy,n
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     complex(sp), intent(inout) :: cy(*)
                end subroutine caxpy
-#else 
-               module procedure stdlib_caxpy
+#else
+               module procedure stdlib${ii}$_caxpy
 #endif
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine daxpy(n,da,dx,incx,dy,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(in) :: da,dx(*)
-                    integer(ilp), intent(in) :: incx,incy,n
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     real(dp), intent(inout) :: dy(*)
                end subroutine daxpy
-#else 
-               module procedure stdlib_daxpy
+#else
+               module procedure stdlib${ii}$_daxpy
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$axpy
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine saxpy(n,sa,sx,incx,sy,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(in) :: sa,sx(*)
-                    integer(ilp), intent(in) :: incx,incy,n
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     real(sp), intent(inout) :: sy(*)
                end subroutine saxpy
-#else 
-               module procedure stdlib_saxpy
+#else
+               module procedure stdlib${ii}$_saxpy
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
+               pure subroutine zaxpy(n,za,zx,incx,zy,incy)
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    complex(dp), intent(in) :: za,zx(*)
+                    integer(${ik}$), intent(in) :: incx,incy,n
+                    complex(dp), intent(inout) :: zy(*)
+               end subroutine zaxpy
+#else
+               module procedure stdlib${ii}$_zaxpy
+#endif
+#:for rk,rt,ri in RC_KINDS_TYPES
 #:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$axpy
+               module procedure stdlib${ii}$_${ri}$axpy
 
 #:endif
 #:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
-               pure subroutine zaxpy(n,za,zx,incx,zy,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    complex(dp), intent(in) :: za,zx(*)
-                    integer(ilp), intent(in) :: incx,incy,n
-                    complex(dp), intent(inout) :: zy(*)
-               end subroutine zaxpy
-#else 
-               module procedure stdlib_zaxpy
-#endif
+#:endfor
           end interface axpy
-
-
 
           interface copy
           !! COPY copies a vector x to a vector y.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ccopy(n,cx,incx,cy,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,incy,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     complex(sp), intent(in) :: cx(*)
                     complex(sp), intent(out) :: cy(*)
                end subroutine ccopy
-#else 
-               module procedure stdlib_ccopy
+#else
+               module procedure stdlib${ii}$_ccopy
 #endif
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dcopy(n,dx,incx,dy,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,incy,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     real(dp), intent(in) :: dx(*)
                     real(dp), intent(out) :: dy(*)
                end subroutine dcopy
-#else 
-               module procedure stdlib_dcopy
+#else
+               module procedure stdlib${ii}$_dcopy
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$copy
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine scopy(n,sx,incx,sy,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,incy,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     real(sp), intent(in) :: sx(*)
                     real(sp), intent(out) :: sy(*)
                end subroutine scopy
-#else 
-               module procedure stdlib_scopy
+#else
+               module procedure stdlib${ii}$_scopy
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$copy
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine zcopy(n,zx,incx,zy,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,incy,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     complex(dp), intent(in) :: zx(*)
                     complex(dp), intent(out) :: zy(*)
                end subroutine zcopy
-#else 
-               module procedure stdlib_zcopy
+#else
+               module procedure stdlib${ii}$_zcopy
 #endif
+#:for rk,rt,ri in RC_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$copy
+
+#:endif
+#:endfor
+#:endfor
           end interface copy
-
-
 
           interface dot
           !! DOT forms the dot product of two vectors.
           !! uses unrolled loops for increments equal to one.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure real(dp) function ddot(n,dx,incx,dy,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,incy,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     real(dp), intent(in) :: dx(*),dy(*)
                end function ddot
-#else 
-               module procedure stdlib_ddot
+#else
+               module procedure stdlib${ii}$_ddot
+#endif
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
+               pure real(sp) function sdot(n,sx,incx,sy,incy)
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,incy,n
+                    real(sp), intent(in) :: sx(*),sy(*)
+               end function sdot
+#else
+               module procedure stdlib${ii}$_sdot
 #endif
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$dot
-
+               module procedure stdlib${ii}$_${ri}$dot
 #:endif
 #:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
-               pure real(sp) function sdot(n,sx,incx,sy,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,incy,n
-                    real(sp), intent(in) :: sx(*),sy(*)
-               end function sdot
-#else 
-               module procedure stdlib_sdot
-#endif
+#:endfor
           end interface dot
-
-
 
           interface dotc
           !! DOTC forms the dot product of two complex vectors
           !! DOTC = X^H * Y
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure complex(sp) function cdotc(n,cx,incx,cy,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,incy,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     complex(sp), intent(in) :: cx(*),cy(*)
                end function cdotc
-#else 
-               module procedure stdlib_cdotc
+#else
+               module procedure stdlib${ii}$_cdotc
+#endif
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
+               pure complex(dp) function zdotc(n,zx,incx,zy,incy)
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,incy,n
+                    complex(dp), intent(in) :: zx(*),zy(*)
+               end function zdotc
+#else
+               module procedure stdlib${ii}$_zdotc
 #endif
 #:for rk,rt,ri in CMPLX_KINDS_TYPES
 #:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$dotc
+               module procedure stdlib${ii}$_${ri}$dotc
 
 #:endif
 #:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
-               pure complex(dp) function zdotc(n,zx,incx,zy,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,incy,n
-                    complex(dp), intent(in) :: zx(*),zy(*)
-               end function zdotc
-#else 
-               module procedure stdlib_zdotc
-#endif
+#:endfor
           end interface dotc
-
-
 
           interface dotu
           !! DOTU forms the dot product of two complex vectors
           !! DOTU = X^T * Y
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure complex(sp) function cdotu(n,cx,incx,cy,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,incy,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     complex(sp), intent(in) :: cx(*),cy(*)
                end function cdotu
-#else 
-               module procedure stdlib_cdotu
+#else
+               module procedure stdlib${ii}$_cdotu
+#endif
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
+               pure complex(dp) function zdotu(n,zx,incx,zy,incy)
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,incy,n
+                    complex(dp), intent(in) :: zx(*),zy(*)
+               end function zdotu
+#else
+               module procedure stdlib${ii}$_zdotu
 #endif
 #:for rk,rt,ri in CMPLX_KINDS_TYPES
 #:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$dotu
+               module procedure stdlib${ii}$_${ri}$dotu
 
 #:endif
 #:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
-               pure complex(dp) function zdotu(n,zx,incx,zy,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,incy,n
-                    complex(dp), intent(in) :: zx(*),zy(*)
-               end function zdotu
-#else 
-               module procedure stdlib_zdotu
-#endif
+#:endfor
           end interface dotu
-
-
 
           interface gbmv
           !! GBMV performs one of the matrix-vector operations
@@ -238,69 +280,62 @@ module stdlib_linalg_blas
           !! y := alpha*A**H*x + beta*y,
           !! where alpha and beta are scalars, x and y are vectors and A is an
           !! m by n band matrix, with kl sub-diagonals and ku super-diagonals.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine cgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
-                    integer(ilp), intent(in) :: incx,incy,kl,ku,lda,m,n
+                    integer(${ik}$), intent(in) :: incx,incy,kl,ku,lda,m,n
                     character, intent(in) :: trans
                     complex(sp), intent(inout) :: y(*)
                end subroutine cgbmv
-#else 
-               module procedure stdlib_cgbmv
+#else
+               module procedure stdlib${ii}$_cgbmv
 #endif
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
-                    integer(ilp), intent(in) :: incx,incy,kl,ku,lda,m,n
+                    integer(${ik}$), intent(in) :: incx,incy,kl,ku,lda,m,n
                     character, intent(in) :: trans
                     real(dp), intent(inout) :: y(*)
                end subroutine dgbmv
-#else 
-               module procedure stdlib_dgbmv
+#else
+               module procedure stdlib${ii}$_dgbmv
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$gbmv
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine sgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
-                    integer(ilp), intent(in) :: incx,incy,kl,ku,lda,m,n
+                    integer(${ik}$), intent(in) :: incx,incy,kl,ku,lda,m,n
                     character, intent(in) :: trans
                     real(sp), intent(inout) :: y(*)
                end subroutine sgbmv
-#else 
-               module procedure stdlib_sgbmv
+#else
+               module procedure stdlib${ii}$_sgbmv
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$gbmv
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine zgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
-                    integer(ilp), intent(in) :: incx,incy,kl,ku,lda,m,n
+                    integer(${ik}$), intent(in) :: incx,incy,kl,ku,lda,m,n
                     character, intent(in) :: trans
                     complex(dp), intent(inout) :: y(*)
                end subroutine zgbmv
-#else 
-               module procedure stdlib_zgbmv
+#else
+               module procedure stdlib${ii}$_zgbmv
 #endif
+#:for rk,rt,ri in RC_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$gbmv
+#:endif
+#:endfor
+#:endfor
           end interface gbmv
-
-
 
           interface gemm
           !! GEMM performs one of the matrix-matrix operations
@@ -309,69 +344,62 @@ module stdlib_linalg_blas
           !! op( X ) = X   or   op( X ) = X**T   or   op( X ) = X**H,
           !! alpha and beta are scalars, and A, B and C are matrices, with op( A )
           !! an m by k matrix,  op( B )  a  k by n matrix and  C an m by n matrix.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine cgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
-                    integer(ilp), intent(in) :: k,lda,ldb,ldc,m,n
+                    integer(${ik}$), intent(in) :: k,lda,ldb,ldc,m,n
                     character, intent(in) :: transa,transb
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine cgemm
-#else 
-               module procedure stdlib_cgemm
+#else
+               module procedure stdlib${ii}$_cgemm
 #endif
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
-                    integer(ilp), intent(in) :: k,lda,ldb,ldc,m,n
+                    integer(${ik}$), intent(in) :: k,lda,ldb,ldc,m,n
                     character, intent(in) :: transa,transb
                     real(dp), intent(inout) :: c(ldc,*)
                end subroutine dgemm
-#else 
-               module procedure stdlib_dgemm
+#else
+               module procedure stdlib${ii}$_dgemm
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$gemm
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine sgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
-                    integer(ilp), intent(in) :: k,lda,ldb,ldc,m,n
+                    integer(${ik}$), intent(in) :: k,lda,ldb,ldc,m,n
                     character, intent(in) :: transa,transb
                     real(sp), intent(inout) :: c(ldc,*)
                end subroutine sgemm
-#else 
-               module procedure stdlib_sgemm
+#else
+               module procedure stdlib${ii}$_sgemm
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$gemm
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine zgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
-                    integer(ilp), intent(in) :: k,lda,ldb,ldc,m,n
+                    integer(${ik}$), intent(in) :: k,lda,ldb,ldc,m,n
                     character, intent(in) :: transa,transb
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zgemm
-#else 
-               module procedure stdlib_zgemm
+#else
+               module procedure stdlib${ii}$_zgemm
 #endif
+#:for rk,rt,ri in RC_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$gemm
+#:endif
+#:endfor
+#:endfor
           end interface gemm
-
-
 
           interface gemv
           !! GEMV performs one of the matrix-vector operations
@@ -379,219 +407,211 @@ module stdlib_linalg_blas
           !! y := alpha*A**H*x + beta*y,
           !! where alpha and beta are scalars, x and y are vectors and A is an
           !! m by n matrix.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine cgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
-                    integer(ilp), intent(in) :: incx,incy,lda,m,n
+                    integer(${ik}$), intent(in) :: incx,incy,lda,m,n
                     character, intent(in) :: trans
                     complex(sp), intent(inout) :: y(*)
                end subroutine cgemv
-#else 
-               module procedure stdlib_cgemv
+#else
+               module procedure stdlib${ii}$_cgemv
 #endif
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
-                    integer(ilp), intent(in) :: incx,incy,lda,m,n
+                    integer(${ik}$), intent(in) :: incx,incy,lda,m,n
                     character, intent(in) :: trans
                     real(dp), intent(inout) :: y(*)
                end subroutine dgemv
-#else 
-               module procedure stdlib_dgemv
+#else
+               module procedure stdlib${ii}$_dgemv
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$gemv
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine sgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
-                    integer(ilp), intent(in) :: incx,incy,lda,m,n
+                    integer(${ik}$), intent(in) :: incx,incy,lda,m,n
                     character, intent(in) :: trans
                     real(sp), intent(inout) :: y(*)
                end subroutine sgemv
-#else 
-               module procedure stdlib_sgemv
+#else
+               module procedure stdlib${ii}$_sgemv
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$gemv
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine zgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
-                    integer(ilp), intent(in) :: incx,incy,lda,m,n
+                    integer(${ik}$), intent(in) :: incx,incy,lda,m,n
                     character, intent(in) :: trans
                     complex(dp), intent(inout) :: y(*)
                end subroutine zgemv
-#else 
-               module procedure stdlib_zgemv
+#else
+               module procedure stdlib${ii}$_zgemv
 #endif
+#:for rk,rt,ri in RC_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$gemv
+#:endif
+#:endfor
+#:endfor
           end interface gemv
-
-
 
           interface ger
           !! GER performs the rank 1 operation
           !! A := alpha*x*y**T + A,
           !! where alpha is a scalar, x is an m element vector, y is an n element
           !! vector and A is an m by n matrix.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dger(m,n,alpha,x,incx,y,incy,a,lda)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(in) :: alpha,x(*),y(*)
-                    integer(ilp), intent(in) :: incx,incy,lda,m,n
+                    integer(${ik}$), intent(in) :: incx,incy,lda,m,n
                     real(dp), intent(inout) :: a(lda,*)
                end subroutine dger
-#else 
-               module procedure stdlib_dger
+#else
+               module procedure stdlib${ii}$_dger
+#endif
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
+               pure subroutine sger(m,n,alpha,x,incx,y,incy,a,lda)
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    real(sp), intent(in) :: alpha,x(*),y(*)
+                    integer(${ik}$), intent(in) :: incx,incy,lda,m,n
+                    real(sp), intent(inout) :: a(lda,*)
+               end subroutine sger
+#else
+               module procedure stdlib${ii}$_sger
 #endif
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$ger
-
+               module procedure stdlib${ii}$_${ri}$ger
 #:endif
 #:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
-               pure subroutine sger(m,n,alpha,x,incx,y,incy,a,lda)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    real(sp), intent(in) :: alpha,x(*),y(*)
-                    integer(ilp), intent(in) :: incx,incy,lda,m,n
-                    real(sp), intent(inout) :: a(lda,*)
-               end subroutine sger
-#else 
-               module procedure stdlib_sger
-#endif
+#:endfor
           end interface ger
-
-
 
           interface gerc
           !! GERC performs the rank 1 operation
           !! A := alpha*x*y**H + A,
           !! where alpha is a scalar, x is an m element vector, y is an n element
           !! vector and A is an m by n matrix.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine cgerc(m,n,alpha,x,incx,y,incy,a,lda)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(sp), intent(in) :: alpha,x(*),y(*)
-                    integer(ilp), intent(in) :: incx,incy,lda,m,n
+                    integer(${ik}$), intent(in) :: incx,incy,lda,m,n
                     complex(sp), intent(inout) :: a(lda,*)
                end subroutine cgerc
-#else 
-               module procedure stdlib_cgerc
+#else
+               module procedure stdlib${ii}$_cgerc
+#endif
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
+               pure subroutine zgerc(m,n,alpha,x,incx,y,incy,a,lda)
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    complex(dp), intent(in) :: alpha,x(*),y(*)
+                    integer(${ik}$), intent(in) :: incx,incy,lda,m,n
+                    complex(dp), intent(inout) :: a(lda,*)
+               end subroutine zgerc
+#else
+               module procedure stdlib${ii}$_zgerc
 #endif
 #:for rk,rt,ri in CMPLX_KINDS_TYPES
 #:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$gerc
+               module procedure stdlib${ii}$_${ri}$gerc
 
 #:endif
 #:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
-               pure subroutine zgerc(m,n,alpha,x,incx,y,incy,a,lda)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    complex(dp), intent(in) :: alpha,x(*),y(*)
-                    integer(ilp), intent(in) :: incx,incy,lda,m,n
-                    complex(dp), intent(inout) :: a(lda,*)
-               end subroutine zgerc
-#else 
-               module procedure stdlib_zgerc
-#endif
+#:endfor
           end interface gerc
-
-
 
           interface geru
           !! GERU performs the rank 1 operation
           !! A := alpha*x*y**T + A,
           !! where alpha is a scalar, x is an m element vector, y is an n element
           !! vector and A is an m by n matrix.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine cgeru(m,n,alpha,x,incx,y,incy,a,lda)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(sp), intent(in) :: alpha,x(*),y(*)
-                    integer(ilp), intent(in) :: incx,incy,lda,m,n
+                    integer(${ik}$), intent(in) :: incx,incy,lda,m,n
                     complex(sp), intent(inout) :: a(lda,*)
                end subroutine cgeru
-#else 
-               module procedure stdlib_cgeru
+#else
+               module procedure stdlib${ii}$_cgeru
+#endif
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
+               pure subroutine zgeru(m,n,alpha,x,incx,y,incy,a,lda)
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    complex(dp), intent(in) :: alpha,x(*),y(*)
+                    integer(${ik}$), intent(in) :: incx,incy,lda,m,n
+                    complex(dp), intent(inout) :: a(lda,*)
+               end subroutine zgeru
+#else
+               module procedure stdlib${ii}$_zgeru
 #endif
 #:for rk,rt,ri in CMPLX_KINDS_TYPES
 #:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$geru
+               module procedure stdlib${ii}$_${ri}$geru
 
 #:endif
 #:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
-               pure subroutine zgeru(m,n,alpha,x,incx,y,incy,a,lda)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    complex(dp), intent(in) :: alpha,x(*),y(*)
-                    integer(ilp), intent(in) :: incx,incy,lda,m,n
-                    complex(dp), intent(inout) :: a(lda,*)
-               end subroutine zgeru
-#else 
-               module procedure stdlib_zgeru
-#endif
+#:endfor
           end interface geru
-
-
 
           interface hbmv
           !! HBMV performs the matrix-vector  operation
           !! y := alpha*A*x + beta*y,
           !! where alpha and beta are scalars, x and y are n element vectors and
           !! A is an n by n hermitian band matrix, with k super-diagonals.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine chbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
-                    integer(ilp), intent(in) :: incx,incy,k,lda,n
+                    integer(${ik}$), intent(in) :: incx,incy,k,lda,n
                     character, intent(in) :: uplo
                     complex(sp), intent(inout) :: y(*)
                end subroutine chbmv
-#else 
-               module procedure stdlib_chbmv
+#else
+               module procedure stdlib${ii}$_chbmv
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$hbmv
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine zhbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
-                    integer(ilp), intent(in) :: incx,incy,k,lda,n
+                    integer(${ik}$), intent(in) :: incx,incy,k,lda,n
                     character, intent(in) :: uplo
                     complex(dp), intent(inout) :: y(*)
                end subroutine zhbmv
-#else 
-               module procedure stdlib_zhbmv
+#else
+               module procedure stdlib${ii}$_zhbmv
 #endif
+#:for rk,rt,ri in CMPLX_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$hbmv
+
+#:endif
+#:endfor
+#:endfor
           end interface hbmv
-
-
 
           interface hemm
           !! HEMM performs one of the matrix-matrix operations
@@ -600,158 +620,158 @@ module stdlib_linalg_blas
           !! C := alpha*B*A + beta*C,
           !! where alpha and beta are scalars, A is an hermitian matrix and  B and
           !! C are m by n matrices.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine chemm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
-                    integer(ilp), intent(in) :: lda,ldb,ldc,m,n
+                    integer(${ik}$), intent(in) :: lda,ldb,ldc,m,n
                     character, intent(in) :: side,uplo
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine chemm
-#else 
-               module procedure stdlib_chemm
+#else
+               module procedure stdlib${ii}$_chemm
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$hemm
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine zhemm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
-                    integer(ilp), intent(in) :: lda,ldb,ldc,m,n
+                    integer(${ik}$), intent(in) :: lda,ldb,ldc,m,n
                     character, intent(in) :: side,uplo
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zhemm
-#else 
-               module procedure stdlib_zhemm
+#else
+               module procedure stdlib${ii}$_zhemm
 #endif
+#:for rk,rt,ri in CMPLX_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$hemm
+
+#:endif
+#:endfor
+#:endfor
           end interface hemm
-
-
 
           interface hemv
           !! HEMV performs the matrix-vector  operation
           !! y := alpha*A*x + beta*y,
           !! where alpha and beta are scalars, x and y are n element vectors and
           !! A is an n by n hermitian matrix.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine chemv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
-                    integer(ilp), intent(in) :: incx,incy,lda,n
+                    integer(${ik}$), intent(in) :: incx,incy,lda,n
                     character, intent(in) :: uplo
                     complex(sp), intent(inout) :: y(*)
                end subroutine chemv
-#else 
-               module procedure stdlib_chemv
+#else
+               module procedure stdlib${ii}$_chemv
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$hemv
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine zhemv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
-                    integer(ilp), intent(in) :: incx,incy,lda,n
+                    integer(${ik}$), intent(in) :: incx,incy,lda,n
                     character, intent(in) :: uplo
                     complex(dp), intent(inout) :: y(*)
                end subroutine zhemv
-#else 
-               module procedure stdlib_zhemv
+#else
+               module procedure stdlib${ii}$_zhemv
 #endif
+#:for rk,rt,ri in CMPLX_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$hemv
+
+#:endif
+#:endfor
+#:endfor
           end interface hemv
-
-
 
           interface her
           !! HER performs the hermitian rank 1 operation
           !! A := alpha*x*x**H + A,
           !! where alpha is a real scalar, x is an n element vector and A is an
           !! n by n hermitian matrix.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine cher(uplo,n,alpha,x,incx,a,lda)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(in) :: alpha
-                    integer(ilp), intent(in) :: incx,lda,n
+                    integer(${ik}$), intent(in) :: incx,lda,n
                     character, intent(in) :: uplo
                     complex(sp), intent(inout) :: a(lda,*)
                     complex(sp), intent(in) :: x(*)
                end subroutine cher
-#else 
-               module procedure stdlib_cher
+#else
+               module procedure stdlib${ii}$_cher
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$her
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine zher(uplo,n,alpha,x,incx,a,lda)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(in) :: alpha
-                    integer(ilp), intent(in) :: incx,lda,n
+                    integer(${ik}$), intent(in) :: incx,lda,n
                     character, intent(in) :: uplo
                     complex(dp), intent(inout) :: a(lda,*)
                     complex(dp), intent(in) :: x(*)
                end subroutine zher
-#else 
-               module procedure stdlib_zher
+#else
+               module procedure stdlib${ii}$_zher
 #endif
+#:for rk,rt,ri in CMPLX_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$her
+
+#:endif
+#:endfor
+#:endfor
           end interface her
-
-
 
           interface her2
           !! HER2 performs the hermitian rank 2 operation
           !! A := alpha*x*y**H + conjg( alpha )*y*x**H + A,
           !! where alpha is a scalar, x and y are n element vectors and A is an n
           !! by n hermitian matrix.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine cher2(uplo,n,alpha,x,incx,y,incy,a,lda)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(sp), intent(in) :: alpha,x(*),y(*)
-                    integer(ilp), intent(in) :: incx,incy,lda,n
+                    integer(${ik}$), intent(in) :: incx,incy,lda,n
                     character, intent(in) :: uplo
                     complex(sp), intent(inout) :: a(lda,*)
                end subroutine cher2
-#else 
-               module procedure stdlib_cher2
+#else
+               module procedure stdlib${ii}$_cher2
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$her2
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine zher2(uplo,n,alpha,x,incx,y,incy,a,lda)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(dp), intent(in) :: alpha,x(*),y(*)
-                    integer(ilp), intent(in) :: incx,incy,lda,n
+                    integer(${ik}$), intent(in) :: incx,incy,lda,n
                     character, intent(in) :: uplo
                     complex(dp), intent(inout) :: a(lda,*)
                end subroutine zher2
-#else 
-               module procedure stdlib_zher2
+#else
+               module procedure stdlib${ii}$_zher2
 #endif
+#:for rk,rt,ri in CMPLX_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$her2
+
+#:endif
+#:endfor
+#:endfor
           end interface her2
-
-
 
           interface her2k
           !! HER2K performs one of the hermitian rank 2k operations
@@ -761,41 +781,41 @@ module stdlib_linalg_blas
           !! where  alpha and beta  are scalars with  beta  real,  C is an  n by n
           !! hermitian matrix and  A and B  are  n by k matrices in the first case
           !! and  k by n  matrices in the second case.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine cher2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(sp), intent(in) :: alpha,a(lda,*),b(ldb,*)
                     real(sp), intent(in) :: beta
-                    integer(ilp), intent(in) :: k,lda,ldb,ldc,n
+                    integer(${ik}$), intent(in) :: k,lda,ldb,ldc,n
                     character, intent(in) :: trans,uplo
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine cher2k
-#else 
-               module procedure stdlib_cher2k
+#else
+               module procedure stdlib${ii}$_cher2k
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$her2k
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine zher2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(dp), intent(in) :: alpha,a(lda,*),b(ldb,*)
                     real(dp), intent(in) :: beta
-                    integer(ilp), intent(in) :: k,lda,ldb,ldc,n
+                    integer(${ik}$), intent(in) :: k,lda,ldb,ldc,n
                     character, intent(in) :: trans,uplo
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zher2k
-#else 
-               module procedure stdlib_zher2k
+#else
+               module procedure stdlib${ii}$_zher2k
 #endif
+#:for rk,rt,ri in CMPLX_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$her2k
+
+#:endif
+#:endfor
+#:endfor
           end interface her2k
-
-
 
           interface herk
           !! HERK performs one of the hermitian rank k operations
@@ -805,228 +825,251 @@ module stdlib_linalg_blas
           !! where  alpha and beta  are  real scalars,  C is an  n by n  hermitian
           !! matrix and  A  is an  n by k  matrix in the  first case and a  k by n
           !! matrix in the second case.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine cherk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(in) :: alpha,beta
-                    integer(ilp), intent(in) :: k,lda,ldc,n
+                    integer(${ik}$), intent(in) :: k,lda,ldc,n
                     character, intent(in) :: trans,uplo
                     complex(sp), intent(in) :: a(lda,*)
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine cherk
-#else 
-               module procedure stdlib_cherk
+#else
+               module procedure stdlib${ii}$_cherk
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$herk
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine zherk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(in) :: alpha,beta
-                    integer(ilp), intent(in) :: k,lda,ldc,n
+                    integer(${ik}$), intent(in) :: k,lda,ldc,n
                     character, intent(in) :: trans,uplo
                     complex(dp), intent(in) :: a(lda,*)
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zherk
-#else 
-               module procedure stdlib_zherk
+#else
+               module procedure stdlib${ii}$_zherk
 #endif
+#:for rk,rt,ri in CMPLX_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$herk
+
+#:endif
+#:endfor
+#:endfor
           end interface herk
-
-
 
           interface hpmv
           !! HPMV performs the matrix-vector operation
           !! y := alpha*A*x + beta*y,
           !! where alpha and beta are scalars, x and y are n element vectors and
           !! A is an n by n hermitian matrix, supplied in packed form.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine chpmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(sp), intent(in) :: alpha,beta,ap(*),x(*)
-                    integer(ilp), intent(in) :: incx,incy,n
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     character, intent(in) :: uplo
                     complex(sp), intent(inout) :: y(*)
                end subroutine chpmv
-#else 
-               module procedure stdlib_chpmv
+#else
+               module procedure stdlib${ii}$_chpmv
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$hpmv
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine zhpmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(dp), intent(in) :: alpha,beta,ap(*),x(*)
-                    integer(ilp), intent(in) :: incx,incy,n
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     character, intent(in) :: uplo
                     complex(dp), intent(inout) :: y(*)
                end subroutine zhpmv
-#else 
-               module procedure stdlib_zhpmv
+#else
+               module procedure stdlib${ii}$_zhpmv
 #endif
+#:for rk,rt,ri in CMPLX_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$hpmv
+
+#:endif
+#:endfor
+#:endfor
           end interface hpmv
-
-
 
           interface hpr
           !! HPR performs the hermitian rank 1 operation
           !! A := alpha*x*x**H + A,
           !! where alpha is a real scalar, x is an n element vector and A is an
           !! n by n hermitian matrix, supplied in packed form.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine chpr(uplo,n,alpha,x,incx,ap)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(in) :: alpha
-                    integer(ilp), intent(in) :: incx,n
+                    integer(${ik}$), intent(in) :: incx,n
                     character, intent(in) :: uplo
                     complex(sp), intent(inout) :: ap(*)
                     complex(sp), intent(in) :: x(*)
                end subroutine chpr
-#else 
-               module procedure stdlib_chpr
+#else
+               module procedure stdlib${ii}$_chpr
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$hpr
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine zhpr(uplo,n,alpha,x,incx,ap)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(in) :: alpha
-                    integer(ilp), intent(in) :: incx,n
+                    integer(${ik}$), intent(in) :: incx,n
                     character, intent(in) :: uplo
                     complex(dp), intent(inout) :: ap(*)
                     complex(dp), intent(in) :: x(*)
                end subroutine zhpr
-#else 
-               module procedure stdlib_zhpr
+#else
+               module procedure stdlib${ii}$_zhpr
 #endif
+#:for rk,rt,ri in CMPLX_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$hpr
+
+#:endif
+#:endfor
+#:endfor
           end interface hpr
-
-
 
           interface hpr2
           !! HPR2 performs the hermitian rank 2 operation
           !! A := alpha*x*y**H + conjg( alpha )*y*x**H + A,
           !! where alpha is a scalar, x and y are n element vectors and A is an
           !! n by n hermitian matrix, supplied in packed form.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine chpr2(uplo,n,alpha,x,incx,y,incy,ap)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(sp), intent(in) :: alpha,x(*),y(*)
-                    integer(ilp), intent(in) :: incx,incy,n
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     character, intent(in) :: uplo
                     complex(sp), intent(inout) :: ap(*)
                end subroutine chpr2
-#else 
-               module procedure stdlib_chpr2
+#else
+               module procedure stdlib${ii}$_chpr2
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$hpr2
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine zhpr2(uplo,n,alpha,x,incx,y,incy,ap)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(dp), intent(in) :: alpha,x(*),y(*)
-                    integer(ilp), intent(in) :: incx,incy,n
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     character, intent(in) :: uplo
                     complex(dp), intent(inout) :: ap(*)
                end subroutine zhpr2
-#else 
-               module procedure stdlib_zhpr2
+#else
+               module procedure stdlib${ii}$_zhpr2
 #endif
+#:for rk,rt,ri in CMPLX_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$hpr2
+
+#:endif
+#:endfor
+#:endfor
           end interface hpr2
-
-
 
           interface nrm2
           !! NRM2 returns the euclidean norm of a vector via the function
           !! name, so that
           !! NRM2 := sqrt( x'*x )
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure real(dp) function dnrm2( n, x, incx )
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,n
                     real(dp), intent(in) :: x(*)
                end function dnrm2
-#else 
-               module procedure stdlib_dnrm2
+#else
+               module procedure stdlib${ii}$_dnrm2
+#endif
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
+               pure real(dp) function dznrm2( n, x, incx )
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,n
+                    complex(dp), intent(in) :: x(*)
+               end function dznrm2
+#else
+               module procedure stdlib${ii}$_dznrm2
+#endif
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
+               pure real(sp) function snrm2( n, x, incx )
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,n
+                    real(sp), intent(in) :: x(*)
+               end function snrm2
+#else
+               module procedure stdlib${ii}$_snrm2
+#endif
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
+               pure real(sp) function scnrm2( n, x, incx )
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,n
+                    complex(sp), intent(in) :: x(*)
+               end function scnrm2
+#else
+               module procedure stdlib${ii}$_scnrm2
 #endif
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$nrm2
-
+               module procedure stdlib${ii}$_${ri}$nrm2
 #:endif
 #:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
-               pure real(sp) function snrm2( n, x, incx )
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,n
-                    real(sp), intent(in) :: x(*)
-               end function snrm2
-#else 
-               module procedure stdlib_snrm2
-#endif
+#:for rk,rt,ri in CMPLX_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${c2ri(ri)}$znrm2
+#:endif
+#:endfor
+#:endfor
           end interface nrm2
-
-
 
           interface rot
           !! ROT applies a plane rotation.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine drot(n,dx,incx,dy,incy,c,s)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(in) :: c,s
-                    integer(ilp), intent(in) :: incx,incy,n
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     real(dp), intent(inout) :: dx(*),dy(*)
                end subroutine drot
-#else 
-               module procedure stdlib_drot
+#else
+               module procedure stdlib${ii}$_drot
+#endif
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
+               pure subroutine srot(n,sx,incx,sy,incy,c,s)
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    real(sp), intent(in) :: c,s
+                    integer(${ik}$), intent(in) :: incx,incy,n
+                    real(sp), intent(inout) :: sx(*),sy(*)
+               end subroutine srot
+#else
+               module procedure stdlib${ii}$_srot
 #endif
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$rot
-
+               module procedure stdlib${ii}$_${ri}$rot
 #:endif
 #:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
-               pure subroutine srot(n,sx,incx,sy,incy,c,s)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    real(sp), intent(in) :: c,s
-                    integer(ilp), intent(in) :: incx,incy,n
-                    real(sp), intent(inout) :: sx(*),sy(*)
-               end subroutine srot
-#else 
-               module procedure stdlib_srot
-#endif
+#:endfor
           end interface rot
-
-
 
           interface rotg
           !! The computation uses the formulas
@@ -1042,255 +1085,250 @@ module stdlib_linalg_blas
           !! the same as in SROTG when |a| > |b|.  When |b| >= |a|, the
           !! sign of c and s will be different from those computed by SROTG
           !! if the signs of a and b are not the same.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine crotg( a, b, c, s )
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(out) :: c
                     complex(sp), intent(inout) :: a
                     complex(sp), intent(in) :: b
                     complex(sp), intent(out) :: s
                end subroutine crotg
-#else 
-               module procedure stdlib_crotg
+#:if not 'ilp64' in ik
+#else
+               module procedure stdlib${ii}$_crotg
+#:endif               
 #endif
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine drotg( a, b, c, s )
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(inout) :: a,b
                     real(dp), intent(out) :: c,s
                end subroutine drotg
-#else 
-               module procedure stdlib_drotg
-#endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$rotg
-
+#:if not 'ilp64' in ik
+#else
+               module procedure stdlib${ii}$_drotg
 #:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#endif
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine srotg( a, b, c, s )
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(inout) :: a,b
                     real(sp), intent(out) :: c,s
                end subroutine srotg
-#else 
-               module procedure stdlib_srotg
+#:if not 'ilp64' in ik               
+#else
+               module procedure stdlib${ii}$_srotg
+#:endif               
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$rotg
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine zrotg( a, b, c, s )
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(out) :: c
                     complex(dp), intent(inout) :: a
                     complex(dp), intent(in) :: b
                     complex(dp), intent(out) :: s
                end subroutine zrotg
-#else 
-               module procedure stdlib_zrotg
+#:if not 'ilp64' in ik               
+#else
+               module procedure stdlib${ii}$_zrotg
+#:endif               
 #endif
+#:endfor
+#:for rk,rt,ri in RC_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib_${ri}$rotg
+#:endif
+#:endfor
           end interface rotg
 
-
-
           interface rotm
-          !! ROTM applies the modified Givens transformation, \(H\), to the 2-by-N matrix 
-          !! $$ \left[ \begin{array}{c}DX^T\\DY^T\\ \end{array} \right], $$ 
-          !! where \(^T\) indicates transpose. The elements of \(DX\) are in 
-          !! DX(LX+I*INCX), I = 0:N-1, where LX = 1 if INCX >= 0, else LX = (-INCX)*N, 
-          !! and similarly for DY using LY and INCY. 
-          !! With DPARAM(1)=DFLAG, \(H\) has one of the following forms: 
+          !! ROTM applies the modified Givens transformation, \(H\), to the 2-by-N matrix
+          !! $$ \left[ \begin{array}{c}DX^T\\DY^T\\ \end{array} \right], $$
+          !! where \(^T\) indicates transpose. The elements of \(DX\) are in
+          !! DX(LX+I*INCX), I = 0:N-1, where LX = 1 if INCX >= 0, else LX = (-INCX)*N,
+          !! and similarly for DY using LY and INCY.
+          !! With DPARAM(1)=DFLAG, \(H\) has one of the following forms:
           !! $$ H=\underbrace{\begin{bmatrix}DH_{11} & DH_{12}\\DH_{21} & DH_{22}\end{bmatrix}}_{DFLAG=-1},
-          !!      \underbrace{\begin{bmatrix}1 & DH_{12}\\DH_{21} & 1\end{bmatrix}}_{DFLAG=0}, 
-          !!      \underbrace{\begin{bmatrix}DH_{11} & 1\\-1 & DH_{22}\end{bmatrix}}_{DFLAG=1},  
-          !!      \underbrace{\begin{bmatrix}1 & 0\\0 & 1\end{bmatrix}}_{DFLAG=-2}. $$     
-          !! See ROTMG for a description of data storage in DPARAM.           
-#ifdef STDLIB_EXTERNAL_BLAS
+          !!      \underbrace{\begin{bmatrix}1 & DH_{12}\\DH_{21} & 1\end{bmatrix}}_{DFLAG=0},
+          !!      \underbrace{\begin{bmatrix}DH_{11} & 1\\-1 & DH_{22}\end{bmatrix}}_{DFLAG=1},
+          !!      \underbrace{\begin{bmatrix}1 & 0\\0 & 1\end{bmatrix}}_{DFLAG=-2}. $$
+          !! See ROTMG for a description of data storage in DPARAM.
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine drotm(n,dx,incx,dy,incy,dparam)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,incy,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     real(dp), intent(in) :: dparam(5)
                     real(dp), intent(inout) :: dx(*),dy(*)
                end subroutine drotm
-#else 
-               module procedure stdlib_drotm
+#else
+               module procedure stdlib${ii}$_drotm
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$rotm
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine srotm(n,sx,incx,sy,incy,sparam)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,incy,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     real(sp), intent(in) :: sparam(5)
                     real(sp), intent(inout) :: sx(*),sy(*)
                end subroutine srotm
-#else 
-               module procedure stdlib_srotm
+#else
+               module procedure stdlib${ii}$_srotm
 #endif
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$rotm
+#:endif
+#:endfor
+#:endfor
           end interface rotm
 
-
-
           interface rotmg
-          !! ROTMG Constructs the modified Givens transformation matrix \(H\) which zeros the 
-          !! second component of the 2-vector 
+          !! ROTMG Constructs the modified Givens transformation matrix \(H\) which zeros the
+          !! second component of the 2-vector
           !! $$ \left[ {\sqrt{DD_1}\cdot DX_1,\sqrt{DD_2}\cdot DY_2} \right]^T. $$
-          !! With DPARAM(1)=DFLAG, \(H\) has one of the following forms:          
+          !! With DPARAM(1)=DFLAG, \(H\) has one of the following forms:
           !! $$ H=\underbrace{\begin{bmatrix}DH_{11} & DH_{12}\\DH_{21} & DH_{22}\end{bmatrix}}_{DFLAG=-1},
-          !!      \underbrace{\begin{bmatrix}1 & DH_{12}\\DH_{21} & 1\end{bmatrix}}_{DFLAG=0}, 
-          !!      \underbrace{\begin{bmatrix}DH_{11} & 1\\-1 & DH_{22}\end{bmatrix}}_{DFLAG=1},  
+          !!      \underbrace{\begin{bmatrix}1 & DH_{12}\\DH_{21} & 1\end{bmatrix}}_{DFLAG=0},
+          !!      \underbrace{\begin{bmatrix}DH_{11} & 1\\-1 & DH_{22}\end{bmatrix}}_{DFLAG=1},
           !!      \underbrace{\begin{bmatrix}1 & 0\\0 & 1\end{bmatrix}}_{DFLAG=-2}. $$
           !! Locations 2-4 of DPARAM contain DH11, DH21, DH12 and DH22 respectively.
           !! (Values of 1.0, -1.0, or 0.0 implied by the value of DPARAM(1) are not stored in DPARAM.)
-          !! The values of parameters GAMSQ and RGAMSQ may be inexact. This is OK as they are only 
+          !! The values of parameters GAMSQ and RGAMSQ may be inexact. This is OK as they are only
           !! used for testing the size of DD1 and DD2. All actual scaling of data is done using GAM.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine drotmg(dd1,dd2,dx1,dy1,dparam)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(inout) :: dd1,dd2,dx1
                     real(dp), intent(in) :: dy1
                     real(dp), intent(out) :: dparam(5)
                end subroutine drotmg
-#else 
-               module procedure stdlib_drotmg
+#:if not 'ilp64' in ik               
+#else
+               module procedure stdlib${ii}$_drotmg
+#:endif               
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$rotmg
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine srotmg(sd1,sd2,sx1,sy1,sparam)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(inout) :: sd1,sd2,sx1
                     real(sp), intent(in) :: sy1
                     real(sp), intent(out) :: sparam(5)
                end subroutine srotmg
-#else 
+#:if not 'ilp64' in ik               
+#else
                module procedure stdlib_srotmg
+#:endif               
 #endif
+#:endfor
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib_${ri}$rotmg
+#:endif
+#:endfor
           end interface rotmg
-
-
 
           interface sbmv
           !! SBMV performs the matrix-vector  operation
           !! y := alpha*A*x + beta*y,
           !! where alpha and beta are scalars, x and y are n element vectors and
           !! A is an n by n symmetric band matrix, with k super-diagonals.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dsbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
-                    integer(ilp), intent(in) :: incx,incy,k,lda,n
+                    integer(${ik}$), intent(in) :: incx,incy,k,lda,n
                     character, intent(in) :: uplo
                     real(dp), intent(inout) :: y(*)
                end subroutine dsbmv
-#else 
-               module procedure stdlib_dsbmv
+#else
+               module procedure stdlib${ii}$_dsbmv
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$sbmv
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ssbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
-                    integer(ilp), intent(in) :: incx,incy,k,lda,n
+                    integer(${ik}$), intent(in) :: incx,incy,k,lda,n
                     character, intent(in) :: uplo
                     real(sp), intent(inout) :: y(*)
                end subroutine ssbmv
-#else 
-               module procedure stdlib_ssbmv
-#endif
-          end interface sbmv
-
-
-
-          interface scal
-          !! SCAL scales a vector by a constant.
-#ifdef STDLIB_EXTERNAL_BLAS
-               pure subroutine cscal(n,ca,cx,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    complex(sp), intent(in) :: ca
-                    integer(ilp), intent(in) :: incx,n
-                    complex(sp), intent(inout) :: cx(*)
-               end subroutine cscal
-#else 
-               module procedure stdlib_cscal
-#endif
-#ifdef STDLIB_EXTERNAL_BLAS
-               pure subroutine dscal(n,da,dx,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    real(dp), intent(in) :: da
-                    integer(ilp), intent(in) :: incx,n
-                    real(dp), intent(inout) :: dx(*)
-               end subroutine dscal
-#else 
-               module procedure stdlib_dscal
+#else
+               module procedure stdlib${ii}$_ssbmv
 #endif
 #:for rk,rt,ri in REAL_KINDS_TYPES
 #:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$scal
-
+               module procedure stdlib${ii}$_${ri}$sbmv
 #:endif
 #:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#:endfor
+          end interface sbmv
+
+          interface scal
+          !! SCAL scales a vector by a constant.
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
+               pure subroutine cscal(n,ca,cx,incx)
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    complex(sp), intent(in) :: ca
+                    integer(${ik}$), intent(in) :: incx,n
+                    complex(sp), intent(inout) :: cx(*)
+               end subroutine cscal
+#else
+               module procedure stdlib${ii}$_cscal
+#endif
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
+               pure subroutine dscal(n,da,dx,incx)
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    real(dp), intent(in) :: da
+                    integer(${ik}$), intent(in) :: incx,n
+                    real(dp), intent(inout) :: dx(*)
+               end subroutine dscal
+#else
+               module procedure stdlib${ii}$_dscal
+#endif
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine sscal(n,sa,sx,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(in) :: sa
-                    integer(ilp), intent(in) :: incx,n
+                    integer(${ik}$), intent(in) :: incx,n
                     real(sp), intent(inout) :: sx(*)
                end subroutine sscal
-#else 
-               module procedure stdlib_sscal
+#else
+               module procedure stdlib${ii}$_sscal
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$scal
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine zscal(n,za,zx,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(dp), intent(in) :: za
-                    integer(ilp), intent(in) :: incx,n
+                    integer(${ik}$), intent(in) :: incx,n
                     complex(dp), intent(inout) :: zx(*)
                end subroutine zscal
-#else 
-               module procedure stdlib_zscal
+#else
+               module procedure stdlib${ii}$_zscal
 #endif
+#:for rk,rt,ri in RC_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$scal
+#:endif
+#:endfor
+#:endfor
           end interface scal
-
-
 
           interface sdot
           !! Compute the inner product of two vectors with extended
@@ -1299,240 +1337,229 @@ module stdlib_linalg_blas
           !! SDOT = sum for I = 0 to N-1 of  SX(LX+I*INCX) * SY(LY+I*INCY),
           !! where LX = 1 if INCX >= 0, else LX = 1+(1-N)*INCX, and LY is
           !! defined in a similar way using INCY.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES          
+#:if WITH_QP          
+               !! Provide a unique interface to accumulate double precision reals
+               !! into the highest available precision.
+               module procedure stdlib${ii}$_qsdot
+#:elif WITH_XDP
+               !! Provide a unique interface to accumulate double precision reals
+               !! into the highest available precision.
+               module procedure stdlib${ii}$_xsdot
+#:endif
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure real(dp) function dsdot(n,sx,incx,sy,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,incy,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     real(sp), intent(in) :: sx(*),sy(*)
                end function dsdot
-#else 
-               module procedure stdlib_dsdot
+#else
+               module procedure stdlib${ii}$_dsdot
 #endif
-
-#:if WITH_QP
-               !! Provide a unique interface to accumulate double precision reals 
-               !! into the highest available precision. 
-               module procedure stdlib_qsdot
-#:elif WITH_XDP
-               !! Provide a unique interface to accumulate double precision reals 
-               !! into the highest available precision.
-               module procedure stdlib_xsdot
-#:endif
+#:endfor
           end interface sdot
-
-
 
           interface spmv
           !! SPMV performs the matrix-vector operation
           !! y := alpha*A*x + beta*y,
           !! where alpha and beta are scalars, x and y are n element vectors and
           !! A is an n by n symmetric matrix, supplied in packed form.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dspmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(in) :: alpha,beta,ap(*),x(*)
-                    integer(ilp), intent(in) :: incx,incy,n
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     character, intent(in) :: uplo
                     real(dp), intent(inout) :: y(*)
                end subroutine dspmv
-#else 
-               module procedure stdlib_dspmv
+#else
+               module procedure stdlib${ii}$_dspmv
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$spmv
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine sspmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(in) :: alpha,beta,ap(*),x(*)
-                    integer(ilp), intent(in) :: incx,incy,n
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     character, intent(in) :: uplo
                     real(sp), intent(inout) :: y(*)
                end subroutine sspmv
-#else 
-               module procedure stdlib_sspmv
+#else
+               module procedure stdlib${ii}$_sspmv
 #endif
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$spmv
+#:endif
+#:endfor
+#:endfor
           end interface spmv
-
-
 
           interface spr
           !! SPR performs the symmetric rank 1 operation
           !! A := alpha*x*x**T + A,
           !! where alpha is a real scalar, x is an n element vector and A is an
           !! n by n symmetric matrix, supplied in packed form.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dspr(uplo,n,alpha,x,incx,ap)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(in) :: alpha,x(*)
-                    integer(ilp), intent(in) :: incx,n
+                    integer(${ik}$), intent(in) :: incx,n
                     character, intent(in) :: uplo
                     real(dp), intent(inout) :: ap(*)
                end subroutine dspr
-#else 
-               module procedure stdlib_dspr
+#else
+               module procedure stdlib${ii}$_dspr
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$spr
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine sspr(uplo,n,alpha,x,incx,ap)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(in) :: alpha,x(*)
-                    integer(ilp), intent(in) :: incx,n
+                    integer(${ik}$), intent(in) :: incx,n
                     character, intent(in) :: uplo
                     real(sp), intent(inout) :: ap(*)
                end subroutine sspr
-#else 
-               module procedure stdlib_sspr
+#else
+               module procedure stdlib${ii}$_sspr
 #endif
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$spr
+#:endif
+#:endfor
+#:endfor
           end interface spr
-
-
 
           interface spr2
           !! SPR2 performs the symmetric rank 2 operation
           !! A := alpha*x*y**T + alpha*y*x**T + A,
           !! where alpha is a scalar, x and y are n element vectors and A is an
           !! n by n symmetric matrix, supplied in packed form.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dspr2(uplo,n,alpha,x,incx,y,incy,ap)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(in) :: alpha,x(*),y(*)
-                    integer(ilp), intent(in) :: incx,incy,n
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     character, intent(in) :: uplo
                     real(dp), intent(inout) :: ap(*)
                end subroutine dspr2
-#else 
-               module procedure stdlib_dspr2
+#else
+               module procedure stdlib${ii}$_dspr2
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$spr2
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine sspr2(uplo,n,alpha,x,incx,y,incy,ap)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(in) :: alpha,x(*),y(*)
-                    integer(ilp), intent(in) :: incx,incy,n
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     character, intent(in) :: uplo
                     real(sp), intent(inout) :: ap(*)
                end subroutine sspr2
-#else 
-               module procedure stdlib_sspr2
+#else
+               module procedure stdlib${ii}$_sspr2
 #endif
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$spr2
+#:endif
+#:endfor
+#:endfor
           end interface spr2
-
-
 
           interface srot
           !! SROT applies a plane rotation, where the cos and sin (c and s) are real
           !! and the vectors cx and cy are complex.
           !! jack dongarra, linpack, 3/11/78.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine csrot( n, cx, incx, cy, incy, c, s )
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,incy,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     real(sp), intent(in) :: c,s
                     complex(sp), intent(inout) :: cx(*),cy(*)
                end subroutine csrot
-#else 
-               module procedure stdlib_csrot
+#else
+               module procedure stdlib${ii}$_csrot
 #endif
+#:endfor
           end interface srot
-
-
 
           interface sscal
           !! SSCAL scales a complex vector by a real constant.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine csscal(n,sa,cx,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(in) :: sa
-                    integer(ilp), intent(in) :: incx,n
+                    integer(${ik}$), intent(in) :: incx,n
                     complex(sp), intent(inout) :: cx(*)
                end subroutine csscal
-#else 
-               module procedure stdlib_csscal
+#else
+               module procedure stdlib${ii}$_csscal
 #endif
+#:endfor
           end interface sscal
-
-
 
           interface swap
           !! SWAP interchanges two vectors.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine cswap(n,cx,incx,cy,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,incy,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     complex(sp), intent(inout) :: cx(*),cy(*)
                end subroutine cswap
-#else 
-               module procedure stdlib_cswap
+#else
+               module procedure stdlib${ii}$_cswap
 #endif
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dswap(n,dx,incx,dy,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,incy,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     real(dp), intent(inout) :: dx(*),dy(*)
                end subroutine dswap
-#else 
-               module procedure stdlib_dswap
+#else
+               module procedure stdlib${ii}$_dswap
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$swap
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine sswap(n,sx,incx,sy,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,incy,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     real(sp), intent(inout) :: sx(*),sy(*)
                end subroutine sswap
-#else 
-               module procedure stdlib_sswap
+#else
+               module procedure stdlib${ii}$_sswap
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$swap
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine zswap(n,zx,incx,zy,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,incy,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,incy,n
                     complex(dp), intent(inout) :: zx(*),zy(*)
                end subroutine zswap
-#else 
-               module procedure stdlib_zswap
+#else
+               module procedure stdlib${ii}$_zswap
 #endif
+#:for rk,rt,ri in RC_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$swap
+#:endif
+#:endfor
+#:endfor
           end interface swap
-
-
 
           interface symm
           !! SYMM performs one of the matrix-matrix operations
@@ -1541,186 +1568,176 @@ module stdlib_linalg_blas
           !! C := alpha*B*A + beta*C,
           !! where  alpha and beta are scalars, A is a symmetric matrix and  B and
           !! C are m by n matrices.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine csymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
-                    integer(ilp), intent(in) :: lda,ldb,ldc,m,n
+                    integer(${ik}$), intent(in) :: lda,ldb,ldc,m,n
                     character, intent(in) :: side,uplo
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine csymm
-#else 
-               module procedure stdlib_csymm
+#else
+               module procedure stdlib${ii}$_csymm
 #endif
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dsymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
-                    integer(ilp), intent(in) :: lda,ldb,ldc,m,n
+                    integer(${ik}$), intent(in) :: lda,ldb,ldc,m,n
                     character, intent(in) :: side,uplo
                     real(dp), intent(inout) :: c(ldc,*)
                end subroutine dsymm
-#else 
-               module procedure stdlib_dsymm
+#else
+               module procedure stdlib${ii}$_dsymm
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$symm
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ssymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
-                    integer(ilp), intent(in) :: lda,ldb,ldc,m,n
+                    integer(${ik}$), intent(in) :: lda,ldb,ldc,m,n
                     character, intent(in) :: side,uplo
                     real(sp), intent(inout) :: c(ldc,*)
                end subroutine ssymm
-#else 
-               module procedure stdlib_ssymm
+#else
+               module procedure stdlib${ii}$_ssymm
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$symm
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine zsymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
-                    integer(ilp), intent(in) :: lda,ldb,ldc,m,n
+                    integer(${ik}$), intent(in) :: lda,ldb,ldc,m,n
                     character, intent(in) :: side,uplo
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zsymm
-#else 
-               module procedure stdlib_zsymm
+#else
+               module procedure stdlib${ii}$_zsymm
 #endif
+#:for rk,rt,ri in RC_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$symm
+#:endif
+#:endfor
+#:endfor
           end interface symm
-
-
 
           interface symv
           !! SYMV performs the matrix-vector  operation
           !! y := alpha*A*x + beta*y,
           !! where alpha and beta are scalars, x and y are n element vectors and
           !! A is an n by n symmetric matrix.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dsymv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
-                    integer(ilp), intent(in) :: incx,incy,lda,n
+                    integer(${ik}$), intent(in) :: incx,incy,lda,n
                     character, intent(in) :: uplo
                     real(dp), intent(inout) :: y(*)
                end subroutine dsymv
-#else 
-               module procedure stdlib_dsymv
+#else
+               module procedure stdlib${ii}$_dsymv
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$symv
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ssymv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
-                    integer(ilp), intent(in) :: incx,incy,lda,n
+                    integer(${ik}$), intent(in) :: incx,incy,lda,n
                     character, intent(in) :: uplo
                     real(sp), intent(inout) :: y(*)
                end subroutine ssymv
-#else 
-               module procedure stdlib_ssymv
+#else
+               module procedure stdlib${ii}$_ssymv
 #endif
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$symv
+#:endif
+#:endfor
+#:endfor
           end interface symv
-
-
 
           interface syr
           !! SYR performs the symmetric rank 1 operation
           !! A := alpha*x*x**T + A,
           !! where alpha is a real scalar, x is an n element vector and A is an
           !! n by n symmetric matrix.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dsyr(uplo,n,alpha,x,incx,a,lda)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(in) :: alpha,x(*)
-                    integer(ilp), intent(in) :: incx,lda,n
+                    integer(${ik}$), intent(in) :: incx,lda,n
                     character, intent(in) :: uplo
                     real(dp), intent(inout) :: a(lda,*)
                end subroutine dsyr
-#else 
-               module procedure stdlib_dsyr
+#else
+               module procedure stdlib${ii}$_dsyr
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$syr
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ssyr(uplo,n,alpha,x,incx,a,lda)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(in) :: alpha,x(*)
-                    integer(ilp), intent(in) :: incx,lda,n
+                    integer(${ik}$), intent(in) :: incx,lda,n
                     character, intent(in) :: uplo
                     real(sp), intent(inout) :: a(lda,*)
                end subroutine ssyr
-#else 
-               module procedure stdlib_ssyr
+#else
+               module procedure stdlib${ii}$_ssyr
 #endif
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$syr
+#:endif
+#:endfor
+#:endfor
           end interface syr
-
-
 
           interface syr2
           !! SYR2 performs the symmetric rank 2 operation
           !! A := alpha*x*y**T + alpha*y*x**T + A,
           !! where alpha is a scalar, x and y are n element vectors and A is an n
           !! by n symmetric matrix.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dsyr2(uplo,n,alpha,x,incx,y,incy,a,lda)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(in) :: alpha,x(*),y(*)
-                    integer(ilp), intent(in) :: incx,incy,lda,n
+                    integer(${ik}$), intent(in) :: incx,incy,lda,n
                     character, intent(in) :: uplo
                     real(dp), intent(inout) :: a(lda,*)
                end subroutine dsyr2
-#else 
-               module procedure stdlib_dsyr2
+#else
+               module procedure stdlib${ii}$_dsyr2
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$syr2
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ssyr2(uplo,n,alpha,x,incx,y,incy,a,lda)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(in) :: alpha,x(*),y(*)
-                    integer(ilp), intent(in) :: incx,incy,lda,n
+                    integer(${ik}$), intent(in) :: incx,incy,lda,n
                     character, intent(in) :: uplo
                     real(sp), intent(inout) :: a(lda,*)
                end subroutine ssyr2
-#else 
-               module procedure stdlib_ssyr2
+#else
+               module procedure stdlib${ii}$_ssyr2
 #endif
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$syr2
+#:endif
+#:endfor
+#:endfor
           end interface syr2
-
-
 
           interface syr2k
           !! SYR2K performs one of the symmetric rank 2k operations
@@ -1730,69 +1747,62 @@ module stdlib_linalg_blas
           !! where  alpha and beta  are scalars,  C is an  n by n symmetric matrix
           !! and  A and B  are  n by k  matrices  in the  first  case  and  k by n
           !! matrices in the second case.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine csyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
-                    integer(ilp), intent(in) :: k,lda,ldb,ldc,n
+                    integer(${ik}$), intent(in) :: k,lda,ldb,ldc,n
                     character, intent(in) :: trans,uplo
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine csyr2k
-#else 
-               module procedure stdlib_csyr2k
+#else
+               module procedure stdlib${ii}$_csyr2k
 #endif
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dsyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
-                    integer(ilp), intent(in) :: k,lda,ldb,ldc,n
+                    integer(${ik}$), intent(in) :: k,lda,ldb,ldc,n
                     character, intent(in) :: trans,uplo
                     real(dp), intent(inout) :: c(ldc,*)
                end subroutine dsyr2k
-#else 
-               module procedure stdlib_dsyr2k
+#else
+               module procedure stdlib${ii}$_dsyr2k
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$syr2k
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ssyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
-                    integer(ilp), intent(in) :: k,lda,ldb,ldc,n
+                    integer(${ik}$), intent(in) :: k,lda,ldb,ldc,n
                     character, intent(in) :: trans,uplo
                     real(sp), intent(inout) :: c(ldc,*)
                end subroutine ssyr2k
-#else 
-               module procedure stdlib_ssyr2k
+#else
+               module procedure stdlib${ii}$_ssyr2k
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$syr2k
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine zsyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
-                    integer(ilp), intent(in) :: k,lda,ldb,ldc,n
+                    integer(${ik}$), intent(in) :: k,lda,ldb,ldc,n
                     character, intent(in) :: trans,uplo
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zsyr2k
-#else 
-               module procedure stdlib_zsyr2k
+#else
+               module procedure stdlib${ii}$_zsyr2k
 #endif
+#:for rk,rt,ri in RC_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$syr2k
+#:endif
+#:endfor
+#:endfor
           end interface syr2k
-
-
 
           interface syrk
           !! SYRK performs one of the symmetric rank k operations
@@ -1802,138 +1812,124 @@ module stdlib_linalg_blas
           !! where  alpha and beta  are scalars,  C is an  n by n symmetric matrix
           !! and  A  is an  n by k  matrix in the first case and a  k by n  matrix
           !! in the second case.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine csyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(sp), intent(in) :: alpha,beta,a(lda,*)
-                    integer(ilp), intent(in) :: k,lda,ldc,n
+                    integer(${ik}$), intent(in) :: k,lda,ldc,n
                     character, intent(in) :: trans,uplo
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine csyrk
-#else 
-               module procedure stdlib_csyrk
+#else
+               module procedure stdlib${ii}$_csyrk
 #endif
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dsyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(in) :: alpha,beta,a(lda,*)
-                    integer(ilp), intent(in) :: k,lda,ldc,n
+                    integer(${ik}$), intent(in) :: k,lda,ldc,n
                     character, intent(in) :: trans,uplo
                     real(dp), intent(inout) :: c(ldc,*)
                end subroutine dsyrk
-#else 
-               module procedure stdlib_dsyrk
+#else
+               module procedure stdlib${ii}$_dsyrk
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$syrk
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ssyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(in) :: alpha,beta,a(lda,*)
-                    integer(ilp), intent(in) :: k,lda,ldc,n
+                    integer(${ik}$), intent(in) :: k,lda,ldc,n
                     character, intent(in) :: trans,uplo
                     real(sp), intent(inout) :: c(ldc,*)
                end subroutine ssyrk
-#else 
-               module procedure stdlib_ssyrk
+#else
+               module procedure stdlib${ii}$_ssyrk
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$syrk
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine zsyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(dp), intent(in) :: alpha,beta,a(lda,*)
-                    integer(ilp), intent(in) :: k,lda,ldc,n
+                    integer(${ik}$), intent(in) :: k,lda,ldc,n
                     character, intent(in) :: trans,uplo
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zsyrk
-#else 
-               module procedure stdlib_zsyrk
+#else
+               module procedure stdlib${ii}$_zsyrk
 #endif
+#:for rk,rt,ri in RC_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$syrk
+#:endif
+#:endfor
+#:endfor
           end interface syrk
-
-
 
           interface tbmv
           !! TBMV performs one of the matrix-vector operations
           !! x := A*x,   or   x := A**T*x,   or   x := A**H*x,
           !! where x is an n element vector and  A is an n by n unit, or non-unit,
           !! upper or lower triangular band matrix, with ( k + 1 ) diagonals.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ctbmv(uplo,trans,diag,n,k,a,lda,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,k,lda,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,k,lda,n
                     character, intent(in) :: diag,trans,uplo
                     complex(sp), intent(in) :: a(lda,*)
                     complex(sp), intent(inout) :: x(*)
                end subroutine ctbmv
-#else 
-               module procedure stdlib_ctbmv
+#else
+               module procedure stdlib${ii}$_ctbmv
 #endif
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dtbmv(uplo,trans,diag,n,k,a,lda,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,k,lda,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,k,lda,n
                     character, intent(in) :: diag,trans,uplo
                     real(dp), intent(in) :: a(lda,*)
                     real(dp), intent(inout) :: x(*)
                end subroutine dtbmv
-#else 
-               module procedure stdlib_dtbmv
+#else
+               module procedure stdlib${ii}$_dtbmv
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$tbmv
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine stbmv(uplo,trans,diag,n,k,a,lda,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,k,lda,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,k,lda,n
                     character, intent(in) :: diag,trans,uplo
                     real(sp), intent(in) :: a(lda,*)
                     real(sp), intent(inout) :: x(*)
                end subroutine stbmv
-#else 
-               module procedure stdlib_stbmv
+#else
+               module procedure stdlib${ii}$_stbmv
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$tbmv
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ztbmv(uplo,trans,diag,n,k,a,lda,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,k,lda,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,k,lda,n
                     character, intent(in) :: diag,trans,uplo
                     complex(dp), intent(in) :: a(lda,*)
                     complex(dp), intent(inout) :: x(*)
                end subroutine ztbmv
-#else 
-               module procedure stdlib_ztbmv
+#else
+               module procedure stdlib${ii}$_ztbmv
 #endif
+#:for rk,rt,ri in RC_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$tbmv
+#:endif
+#:endfor
+#:endfor
           end interface tbmv
-
-
 
           interface tbsv
           !! TBSV solves one of the systems of equations
@@ -1943,138 +1939,124 @@ module stdlib_linalg_blas
           !! diagonals.
           !! No test for singularity or near-singularity is included in this
           !! routine. Such tests must be performed before calling this routine.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ctbsv(uplo,trans,diag,n,k,a,lda,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,k,lda,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,k,lda,n
                     character, intent(in) :: diag,trans,uplo
                     complex(sp), intent(in) :: a(lda,*)
                     complex(sp), intent(inout) :: x(*)
                end subroutine ctbsv
-#else 
-               module procedure stdlib_ctbsv
+#else
+               module procedure stdlib${ii}$_ctbsv
 #endif
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dtbsv(uplo,trans,diag,n,k,a,lda,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,k,lda,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,k,lda,n
                     character, intent(in) :: diag,trans,uplo
                     real(dp), intent(in) :: a(lda,*)
                     real(dp), intent(inout) :: x(*)
                end subroutine dtbsv
-#else 
-               module procedure stdlib_dtbsv
+#else
+               module procedure stdlib${ii}$_dtbsv
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$tbsv
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine stbsv(uplo,trans,diag,n,k,a,lda,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,k,lda,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,k,lda,n
                     character, intent(in) :: diag,trans,uplo
                     real(sp), intent(in) :: a(lda,*)
                     real(sp), intent(inout) :: x(*)
                end subroutine stbsv
-#else 
-               module procedure stdlib_stbsv
+#else
+               module procedure stdlib${ii}$_stbsv
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$tbsv
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ztbsv(uplo,trans,diag,n,k,a,lda,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,k,lda,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,k,lda,n
                     character, intent(in) :: diag,trans,uplo
                     complex(dp), intent(in) :: a(lda,*)
                     complex(dp), intent(inout) :: x(*)
                end subroutine ztbsv
-#else 
-               module procedure stdlib_ztbsv
+#else
+               module procedure stdlib${ii}$_ztbsv
 #endif
+#:for rk,rt,ri in RC_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$tbsv
+#:endif
+#:endfor
+#:endfor
           end interface tbsv
-
-
 
           interface tpmv
           !! TPMV performs one of the matrix-vector operations
           !! x := A*x,   or   x := A**T*x,   or   x := A**H*x,
           !! where x is an n element vector and  A is an n by n unit, or non-unit,
           !! upper or lower triangular matrix, supplied in packed form.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ctpmv(uplo,trans,diag,n,ap,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,n
                     character, intent(in) :: diag,trans,uplo
                     complex(sp), intent(in) :: ap(*)
                     complex(sp), intent(inout) :: x(*)
                end subroutine ctpmv
-#else 
-               module procedure stdlib_ctpmv
+#else
+               module procedure stdlib${ii}$_ctpmv
 #endif
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dtpmv(uplo,trans,diag,n,ap,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,n
                     character, intent(in) :: diag,trans,uplo
                     real(dp), intent(in) :: ap(*)
                     real(dp), intent(inout) :: x(*)
                end subroutine dtpmv
-#else 
-               module procedure stdlib_dtpmv
+#else
+               module procedure stdlib${ii}$_dtpmv
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$tpmv
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine stpmv(uplo,trans,diag,n,ap,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,n
                     character, intent(in) :: diag,trans,uplo
                     real(sp), intent(in) :: ap(*)
                     real(sp), intent(inout) :: x(*)
                end subroutine stpmv
-#else 
-               module procedure stdlib_stpmv
+#else
+               module procedure stdlib${ii}$_stpmv
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$tpmv
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ztpmv(uplo,trans,diag,n,ap,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,n
                     character, intent(in) :: diag,trans,uplo
                     complex(dp), intent(in) :: ap(*)
                     complex(dp), intent(inout) :: x(*)
                end subroutine ztpmv
-#else 
-               module procedure stdlib_ztpmv
+#else
+               module procedure stdlib${ii}$_ztpmv
 #endif
+#:for rk,rt,ri in RC_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$tpmv
+#:endif
+#:endfor
+#:endfor
           end interface tpmv
-
-
 
           interface tpsv
           !! TPSV solves one of the systems of equations
@@ -2083,69 +2065,62 @@ module stdlib_linalg_blas
           !! non-unit, upper or lower triangular matrix, supplied in packed form.
           !! No test for singularity or near-singularity is included in this
           !! routine. Such tests must be performed before calling this routine.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ctpsv(uplo,trans,diag,n,ap,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,n
                     character, intent(in) :: diag,trans,uplo
                     complex(sp), intent(in) :: ap(*)
                     complex(sp), intent(inout) :: x(*)
                end subroutine ctpsv
-#else 
-               module procedure stdlib_ctpsv
+#else
+               module procedure stdlib${ii}$_ctpsv
 #endif
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dtpsv(uplo,trans,diag,n,ap,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,n
                     character, intent(in) :: diag,trans,uplo
                     real(dp), intent(in) :: ap(*)
                     real(dp), intent(inout) :: x(*)
                end subroutine dtpsv
-#else 
-               module procedure stdlib_dtpsv
+#else
+               module procedure stdlib${ii}$_dtpsv
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$tpsv
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine stpsv(uplo,trans,diag,n,ap,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,n
                     character, intent(in) :: diag,trans,uplo
                     real(sp), intent(in) :: ap(*)
                     real(sp), intent(inout) :: x(*)
                end subroutine stpsv
-#else 
-               module procedure stdlib_stpsv
+#else
+               module procedure stdlib${ii}$_stpsv
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$tpsv
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ztpsv(uplo,trans,diag,n,ap,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,n
                     character, intent(in) :: diag,trans,uplo
                     complex(dp), intent(in) :: ap(*)
                     complex(dp), intent(inout) :: x(*)
                end subroutine ztpsv
-#else 
-               module procedure stdlib_ztpsv
+#else
+               module procedure stdlib${ii}$_ztpsv
 #endif
+#:for rk,rt,ri in RC_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$tpsv
+#:endif
+#:endfor
+#:endfor
           end interface tpsv
-
-
 
           interface trmm
           !! TRMM performs one of the matrix-matrix operations
@@ -2153,138 +2128,124 @@ module stdlib_linalg_blas
           !! where  alpha  is a scalar,  B  is an m by n matrix,  A  is a unit, or
           !! non-unit,  upper or lower triangular matrix  and  op( A )  is one  of
           !! op( A ) = A   or   op( A ) = A**T   or   op( A ) = A**H.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ctrmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(sp), intent(in) :: alpha,a(lda,*)
-                    integer(ilp), intent(in) :: lda,ldb,m,n
+                    integer(${ik}$), intent(in) :: lda,ldb,m,n
                     character, intent(in) :: diag,side,transa,uplo
                     complex(sp), intent(inout) :: b(ldb,*)
                end subroutine ctrmm
-#else 
-               module procedure stdlib_ctrmm
+#else
+               module procedure stdlib${ii}$_ctrmm
 #endif
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dtrmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(in) :: alpha,a(lda,*)
-                    integer(ilp), intent(in) :: lda,ldb,m,n
+                    integer(${ik}$), intent(in) :: lda,ldb,m,n
                     character, intent(in) :: diag,side,transa,uplo
                     real(dp), intent(inout) :: b(ldb,*)
                end subroutine dtrmm
-#else 
-               module procedure stdlib_dtrmm
+#else
+               module procedure stdlib${ii}$_dtrmm
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$trmm
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine strmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(in) :: alpha,a(lda,*)
-                    integer(ilp), intent(in) :: lda,ldb,m,n
+                    integer(${ik}$), intent(in) :: lda,ldb,m,n
                     character, intent(in) :: diag,side,transa,uplo
                     real(sp), intent(inout) :: b(ldb,*)
                end subroutine strmm
-#else 
-               module procedure stdlib_strmm
+#else
+               module procedure stdlib${ii}$_strmm
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$trmm
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ztrmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(dp), intent(in) :: alpha,a(lda,*)
-                    integer(ilp), intent(in) :: lda,ldb,m,n
+                    integer(${ik}$), intent(in) :: lda,ldb,m,n
                     character, intent(in) :: diag,side,transa,uplo
                     complex(dp), intent(inout) :: b(ldb,*)
                end subroutine ztrmm
-#else 
-               module procedure stdlib_ztrmm
+#else
+               module procedure stdlib${ii}$_ztrmm
 #endif
+#:for rk,rt,ri in RC_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$trmm
+#:endif
+#:endfor
+#:endfor
           end interface trmm
-
-
 
           interface trmv
           !! TRMV performs one of the matrix-vector operations
           !! x := A*x,   or   x := A**T*x,   or   x := A**H*x,
           !! where x is an n element vector and  A is an n by n unit, or non-unit,
           !! upper or lower triangular matrix.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ctrmv(uplo,trans,diag,n,a,lda,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,lda,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,lda,n
                     character, intent(in) :: diag,trans,uplo
                     complex(sp), intent(in) :: a(lda,*)
                     complex(sp), intent(inout) :: x(*)
                end subroutine ctrmv
-#else 
-               module procedure stdlib_ctrmv
+#else
+               module procedure stdlib${ii}$_ctrmv
 #endif
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dtrmv(uplo,trans,diag,n,a,lda,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,lda,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,lda,n
                     character, intent(in) :: diag,trans,uplo
                     real(dp), intent(in) :: a(lda,*)
                     real(dp), intent(inout) :: x(*)
                end subroutine dtrmv
-#else 
-               module procedure stdlib_dtrmv
+#else
+               module procedure stdlib${ii}$_dtrmv
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$trmv
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine strmv(uplo,trans,diag,n,a,lda,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,lda,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,lda,n
                     character, intent(in) :: diag,trans,uplo
                     real(sp), intent(in) :: a(lda,*)
                     real(sp), intent(inout) :: x(*)
                end subroutine strmv
-#else 
-               module procedure stdlib_strmv
+#else
+               module procedure stdlib${ii}$_strmv
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$trmv
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ztrmv(uplo,trans,diag,n,a,lda,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,lda,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,lda,n
                     character, intent(in) :: diag,trans,uplo
                     complex(dp), intent(in) :: a(lda,*)
                     complex(dp), intent(inout) :: x(*)
                end subroutine ztrmv
-#else 
-               module procedure stdlib_ztrmv
+#else
+               module procedure stdlib${ii}$_ztrmv
 #endif
+#:for rk,rt,ri in RC_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$trmv
+#:endif
+#:endfor
+#:endfor
           end interface trmv
-
-
 
           interface trsm
           !! TRSM solves one of the matrix equations
@@ -2293,69 +2254,62 @@ module stdlib_linalg_blas
           !! non-unit,  upper or lower triangular matrix  and  op( A )  is one  of
           !! op( A ) = A   or   op( A ) = A**T   or   op( A ) = A**H.
           !! The matrix X is overwritten on B.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ctrsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(sp), intent(in) :: alpha,a(lda,*)
-                    integer(ilp), intent(in) :: lda,ldb,m,n
+                    integer(${ik}$), intent(in) :: lda,ldb,m,n
                     character, intent(in) :: diag,side,transa,uplo
                     complex(sp), intent(inout) :: b(ldb,*)
                end subroutine ctrsm
-#else 
-               module procedure stdlib_ctrsm
+#else
+               module procedure stdlib${ii}$_ctrsm
 #endif
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dtrsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(dp), intent(in) :: alpha,a(lda,*)
-                    integer(ilp), intent(in) :: lda,ldb,m,n
+                    integer(${ik}$), intent(in) :: lda,ldb,m,n
                     character, intent(in) :: diag,side,transa,uplo
                     real(dp), intent(inout) :: b(ldb,*)
                end subroutine dtrsm
-#else 
-               module procedure stdlib_dtrsm
+#else
+               module procedure stdlib${ii}$_dtrsm
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$trsm
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine strsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     real(sp), intent(in) :: alpha,a(lda,*)
-                    integer(ilp), intent(in) :: lda,ldb,m,n
+                    integer(${ik}$), intent(in) :: lda,ldb,m,n
                     character, intent(in) :: diag,side,transa,uplo
                     real(sp), intent(inout) :: b(ldb,*)
                end subroutine strsm
-#else 
-               module procedure stdlib_strsm
+#else
+               module procedure stdlib${ii}$_strsm
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$trsm
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ztrsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
                     complex(dp), intent(in) :: alpha,a(lda,*)
-                    integer(ilp), intent(in) :: lda,ldb,m,n
+                    integer(${ik}$), intent(in) :: lda,ldb,m,n
                     character, intent(in) :: diag,side,transa,uplo
                     complex(dp), intent(inout) :: b(ldb,*)
                end subroutine ztrsm
-#else 
-               module procedure stdlib_ztrsm
+#else
+               module procedure stdlib${ii}$_ztrsm
 #endif
+#:for rk,rt,ri in RC_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$trsm
+#:endif
+#:endfor
+#:endfor
           end interface trsm
-
-
 
           interface trsv
           !! TRSV solves one of the systems of equations
@@ -2364,70 +2318,61 @@ module stdlib_linalg_blas
           !! non-unit, upper or lower triangular matrix.
           !! No test for singularity or near-singularity is included in this
           !! routine. Such tests must be performed before calling this routine.
-#ifdef STDLIB_EXTERNAL_BLAS
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ctrsv(uplo,trans,diag,n,a,lda,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,lda,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,lda,n
                     character, intent(in) :: diag,trans,uplo
                     complex(sp), intent(in) :: a(lda,*)
                     complex(sp), intent(inout) :: x(*)
                end subroutine ctrsv
-#else 
-               module procedure stdlib_ctrsv
+#else
+               module procedure stdlib${ii}$_ctrsv
 #endif
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine dtrsv(uplo,trans,diag,n,a,lda,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,lda,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,lda,n
                     character, intent(in) :: diag,trans,uplo
                     real(dp), intent(in) :: a(lda,*)
                     real(dp), intent(inout) :: x(*)
                end subroutine dtrsv
-#else 
-               module procedure stdlib_dtrsv
+#else
+               module procedure stdlib${ii}$_dtrsv
 #endif
-#:for rk,rt,ri in REAL_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$trsv
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine strsv(uplo,trans,diag,n,a,lda,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,lda,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,lda,n
                     character, intent(in) :: diag,trans,uplo
                     real(sp), intent(in) :: a(lda,*)
                     real(sp), intent(inout) :: x(*)
                end subroutine strsv
-#else 
-               module procedure stdlib_strsv
+#else
+               module procedure stdlib${ii}$_strsv
 #endif
-#:for rk,rt,ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp","dp"]
-               module procedure stdlib_${ri}$trsv
-
-#:endif
-#:endfor
-#ifdef STDLIB_EXTERNAL_BLAS
+#ifdef STDLIB_EXTERNAL_BLAS${ii}$
                pure subroutine ztrsv(uplo,trans,diag,n,a,lda,x,incx)
-                    import sp,dp,qp,ilp,lk 
-                    implicit none(type,external) 
-                    integer(ilp), intent(in) :: incx,lda,n
+                    import sp,dp,qp,${ik}$,lk
+                    implicit none
+                    integer(${ik}$), intent(in) :: incx,lda,n
                     character, intent(in) :: diag,trans,uplo
                     complex(dp), intent(in) :: a(lda,*)
                     complex(dp), intent(inout) :: x(*)
                end subroutine ztrsv
-#else 
-               module procedure stdlib_ztrsv
+#else
+               module procedure stdlib${ii}$_ztrsv
 #endif
+#:for rk,rt,ri in RC_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+               module procedure stdlib${ii}$_${ri}$trsv
+#:endif
+#:endfor
+#:endfor
           end interface trsv
-
-
-
-
 
 end module stdlib_linalg_blas

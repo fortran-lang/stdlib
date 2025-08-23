@@ -51,6 +51,8 @@ contains
 
         print *, ""
         print *, "Test exponential random generator with chi-squared"
+
+        ! using interface for lambda
         freq = 0
         do i = 1, num
             j = 1000 * (1 - exp(- expon_rvs(1.0)))
@@ -66,15 +68,33 @@ contains
         write(*,*) "Chi-squared for exponential random generator is : ", chisq
         call check((chisq < 1143.9), &
             msg="exponential randomness failed chi-squared test", warn=warn)
+
+        ! using interface for loc and scale
+        freq = 0
+        do i = 1, num
+            j = 1000 * (1 - exp(- expon_rvs(0.0, 1.0)))
+            freq(j) = freq(j) + 1
+        end do
+        chisq = 0.0_dp
+        expct = num / array_size
+        do i = 0, array_size - 1
+           chisq = chisq + (freq(i) - expct) ** 2 / expct
+        end do
+        write(*,*) "The critical values for chi-squared with 1000 d. of f. is" &
+            //" 1143.92"
+        write(*,*) "Chi-squared for exponential random generator is : ", chisq
+        call check((chisq < 1143.9), &
+            msg="exponential randomness failed chi-squared test", warn=warn)
+
     end subroutine test_exponential_random_generator
 
 
 
     #:for k1, t1 in RC_KINDS_TYPES
     subroutine test_expon_rvs_${t1[0]}$${k1}$
-        ${t1}$ :: res(10), scale
+        ${t1}$ :: res(10), lambda, loc, scale
         integer, parameter :: k = 5
-        integer :: i, n
+        integer :: i
         integer :: seed, get
         #:if t1[0] == "r"
             #! for real type
@@ -116,20 +136,35 @@ contains
 
         print *, "Test exponential_distribution_rvs_${t1[0]}$${k1}$"
         seed = 593742186
-        call random_seed(seed, get)
 
+        ! set args
         #:if t1[0] == "r"
             #! for real type
-        scale = 1.5_${k1}$
+        lambda = 1.5_${k1}$
+        loc    = 0._${k1}$
+        scale  = 1.0_${k1}$/lambda
         #:else
             #! for complex type
-        scale = (0.7_${k1}$, 1.3_${k1}$)
+        lambda = (0.7_${k1}$, 1.3_${k1}$)
+        loc    = (0._${k1}$, 0._${k1}$)
+        scale  = cmplx(1.0_${k1}$/lambda%re, 1.0_${k1}$/lambda%im, kind=${k1}$)
         #:endif
 
+        ! tests using interface for lambda
+        call random_seed(seed, get)
         do i = 1, k
-            res(i) = expon_rvs(scale)      ! 1 dummy
+            res(i) = expon_rvs(lambda)      ! 1 dummy
         end do
-        res(6:10) = expon_rvs(scale, k)    ! 2 dummies
+        res(6:10) = expon_rvs(lambda, k)    ! 2 dummies
+        call check(all(abs(res - ans) < ${k1}$tol),                            &
+            msg="exponential_distribution_rvs_${t1[0]}$${k1}$ failed", warn=warn)
+
+        ! tests using interface for loc and scale
+        call random_seed(seed, get)
+        do i = 1, k
+            res(i) = expon_rvs(loc, scale)
+        end do
+        res(6:10) = expon_rvs(loc, scale, k)
         call check(all(abs(res - ans) < ${k1}$tol),                            &
             msg="exponential_distribution_rvs_${t1[0]}$${k1}$ failed", warn=warn)
     end subroutine test_expon_rvs_${t1[0]}$${k1}$
@@ -142,8 +177,7 @@ contains
     #:for k1, t1 in RC_KINDS_TYPES
     subroutine test_expon_pdf_${t1[0]}$${k1}$
 
-        ${t1}$ :: x1, x2(3,4), scale
-        integer :: i, n
+        ${t1}$ :: x1, x2(3,4), lambda, loc, scale
         integer :: seed, get
         real(${k1}$) :: res(3,5)
         #:if t1[0] == "r"
@@ -186,21 +220,38 @@ contains
 
         print *, "Test exponential_distribution_pdf_${t1[0]}$${k1}$"
         seed = 123987654
-        call random_seed(seed, get)
+
+        ! set args
         #:if t1[0] == "r"
             #! for real type
-        scale = 1.5_${k1}$
+        lambda = 1.5_${k1}$
+        loc    = 0._${k1}$
+        scale  = 1.0_${k1}$/lambda
         #:else
             #! for complex type
-        scale = (0.3_${k1}$, 1.6_${k1}$)
+        lambda = (0.3_${k1}$, 1.6_${k1}$)
+        loc    = (0._${k1}$, 0._${k1}$)
+        scale  = cmplx(1.0_${k1}$/lambda%re, 1.0_${k1}$/lambda%im, kind=${k1}$)
         #:endif
 
-        x1 = expon_rvs(scale)
-        x2 = reshape(expon_rvs(scale, 12), [3,4])
-        res(:,1) = expon_pdf(x1, scale)
-        res(:, 2:5) = expon_pdf(x2, scale)
+        ! tests using interface for lambda
+        call random_seed(seed, get)
+        x1 = expon_rvs(lambda)
+        x2 = reshape(expon_rvs(lambda, 12), [3,4])
+        res(:,1) = expon_pdf(x1, lambda)
+        res(:, 2:5) = expon_pdf(x2, lambda)
         call check(all(abs(res - reshape(ans, [3,5])) < ${k1}$tol),            &
             msg="exponential_distribution_pdf_${t1[0]}$${k1}$ failed", warn=warn)
+
+        ! tests using interface for loc and scale
+        call random_seed(seed, get)
+        x1 = expon_rvs(loc, scale)
+        x2 = reshape(expon_rvs(loc, scale, 12), [3,4])
+        res(:,1) = expon_pdf(x1, loc, scale)
+        res(:, 2:5) = expon_pdf(x2, loc, scale)
+        call check(all(abs(res - reshape(ans, [3,5])) < ${k1}$tol),            &
+            msg="exponential_distribution_pdf_${t1[0]}$${k1}$ failed", warn=warn)
+
     end subroutine test_expon_pdf_${t1[0]}$${k1}$
 
     #:endfor
@@ -211,8 +262,7 @@ contains
     #:for k1, t1 in RC_KINDS_TYPES
     subroutine test_expon_cdf_${t1[0]}$${k1}$
 
-        ${t1}$ :: x1, x2(3,4), scale
-        integer :: i, n
+        ${t1}$ :: x1, x2(3,4), lambda, loc, scale
         integer :: seed, get
         real(${k1}$) :: res(3,5)
         #:if t1[0] == "r"
@@ -254,21 +304,37 @@ contains
 
         print *, "Test exponential_distribution_cdf_${t1[0]}$${k1}$"
         seed = 621957438
-        call random_seed(seed, get)
 
+        ! set args
         #:if t1[0] == "r"
             #! for real type
-        scale = 2.0_${k1}$
+        lambda = 2.0_${k1}$
+        loc    = 0._${k1}$
+        scale  = 1.0_${k1}$/lambda
         #:else
-        scale = (1.3_${k1}$, 2.1_${k1}$)
+        lambda = (1.3_${k1}$, 2.1_${k1}$)
+        loc    = (0._${k1}$, 0._${k1}$)
+        scale  = cmplx(1.0_${k1}$/lambda%re, 1.0_${k1}$/lambda%im, kind=${k1}$)
         #:endif
 
-        x1 = expon_rvs(scale)
-        x2 = reshape(expon_rvs(scale, 12), [3,4])
-        res(:,1) = expon_cdf(x1, scale)
-        res(:, 2:5) = expon_cdf(x2, scale)
+        ! tests using interface for lambda
+        call random_seed(seed, get)
+        x1 = expon_rvs(lambda)
+        x2 = reshape(expon_rvs(lambda, 12), [3,4])
+        res(:,1) = expon_cdf(x1, lambda)
+        res(:, 2:5) = expon_cdf(x2, lambda)
         call check(all(abs(res - reshape(ans,[3,5])) < ${k1}$tol),             &
             msg="exponential_distribution_cdf_${t1[0]}$${k1}$ failed", warn=warn)
+
+        ! tests using interface for loc and scale
+        call random_seed(seed, get)
+        x1 = expon_rvs(loc, scale)
+        x2 = reshape(expon_rvs(loc, scale, 12), [3,4])
+        res(:,1) = expon_cdf(x1, loc, scale)
+        res(:, 2:5) = expon_cdf(x2, loc, scale)
+        call check(all(abs(res - reshape(ans,[3,5])) < ${k1}$tol),             &
+            msg="exponential_distribution_cdf_${t1[0]}$${k1}$ failed", warn=warn)
+
     end subroutine test_expon_cdf_${t1[0]}$${k1}$
 
     #:endfor

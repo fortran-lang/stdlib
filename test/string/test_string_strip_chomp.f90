@@ -151,6 +151,8 @@ contains
         call check(error, chomp("hellooooo", "oo") == "hello")
         if (allocated(error)) return
         call check(error, chomp("hellooooo", substring="oo") == "hello")
+        if (allocated(error)) return
+        call check(error, chomp("helhel", substring="hel") == "")
     end subroutine test_chomp_substring_char
 
     subroutine test_chomp_substring_string(error)

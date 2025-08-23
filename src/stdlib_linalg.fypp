@@ -5,6 +5,9 @@
 #:set RHS_SYMBOL = [ranksuffix(r) for r in [1,2]]
 #:set RHS_EMPTY  = [emptyranksuffix(r) for r in [1,2]]
 #:set ALL_RHS    = list(zip(RHS_SYMBOL,RHS_SUFFIX,RHS_EMPTY))
+#:set EIG_PROBLEM  = ["standard", "generalized"]
+#:set EIG_FUNCTION = ["geev","ggev"]
+#:set EIG_PROBLEM_LIST = list(zip(EIG_PROBLEM, EIG_FUNCTION))
 module stdlib_linalg
   !!Provides a support for various linear algebra procedures
   !! ([Specification](../page/specs/stdlib_linalg.html))
@@ -16,6 +19,8 @@ module stdlib_linalg
   implicit none
   private
 
+  public :: chol
+  public :: cholesky
   public :: det
   public :: operator(.det.)
   public :: diag
@@ -27,8 +32,14 @@ module stdlib_linalg
   public :: inv
   public :: invert
   public :: operator(.inv.)
+  public :: pinv
+  public :: pseudoinvert
+  public :: operator(.pinv.)
   public :: lstsq
   public :: lstsq_space
+  public :: norm
+  public :: mnorm
+  public :: get_norm
   public :: solve
   public :: solve_lu  
   public :: solve_lstsq
@@ -38,10 +49,15 @@ module stdlib_linalg
   public :: outer_product
   public :: kronecker_product
   public :: cross_product
+  public :: qr
+  public :: qr_space
+  public :: schur
+  public :: schur_space
   public :: is_square
   public :: is_diagonal
   public :: is_symmetric
   public :: is_skew_symmetric
+  public :: hermitian
   public :: is_hermitian
   public :: is_triangular
   public :: is_hessenberg
@@ -49,6 +65,85 @@ module stdlib_linalg
   ! Export linalg error handling
   public :: linalg_state_type, linalg_error_handling
 
+  interface chol
+    !! version: experimental 
+    !!
+    !! Computes the Cholesky factorization \( A = L \cdot L^T \), or \( A = U^T \cdot U \). 
+    !! ([Specification](../page/specs/stdlib_linalg.html#chol-compute-the-cholesky-factorization-of-a-rank-2-square-array-matrix))
+    !! 
+    !!### Summary 
+    !! Pure function interface for computing the Cholesky triangular factors. 
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the lower- or upper- triangular matrix from the 
+    !! Cholesky factorization of a `real` symmetric or `complex` Hermitian matrix.
+    !! Supported data types include `real` and `complex`.    
+    !! 
+    !!@note The solution is based on LAPACK's `*POTRF` methods.
+    !!     
+     #:for rk,rt,ri in RC_KINDS_TYPES
+     pure module function stdlib_linalg_${ri}$_cholesky_fun(a,lower,other_zeroed) result(c)
+         !> Input matrix a[m,n]
+         ${rt}$, intent(in) :: a(:,:)
+         !> [optional] is the lower or upper triangular factor required? Default = lower
+         logical(lk), optional, intent(in) :: lower
+         !> [optional] should the unused half of the return matrix be zeroed out? Default: yes
+         logical(lk), optional, intent(in) :: other_zeroed
+         !> Output matrix with Cholesky factors c[n,n]
+         ${rt}$ :: c(size(a,1),size(a,2))                  
+     end function stdlib_linalg_${ri}$_cholesky_fun
+     #:endfor    
+  end interface chol  
+
+  interface cholesky
+    !! version: experimental 
+    !!
+    !! Computes the Cholesky factorization \( A = L \cdot L^T \), or \( A = U^T \cdot U \). 
+    !! ([Specification](../page/specs/stdlib_linalg.html#cholesky-compute-the-cholesky-factorization-of-a-rank-2-square-array-matrix))
+    !! 
+    !!### Summary 
+    !! Pure subroutine interface for computing the Cholesky triangular factors. 
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the lower- or upper- triangular matrix from the 
+    !! Cholesky factorization of a `real` symmetric or `complex` Hermitian matrix.
+    !! Supported data types include `real` and `complex`.    
+    !! The factorization is computed in-place if only one matrix argument is present; or returned into 
+    !! a second matrix argument, if present. The `lower` `logical` flag allows to select between upper or 
+    !! lower factorization; the `other_zeroed` optional `logical` flag allows to choose whether the unused
+    !! part of the triangular matrix should be filled with zeroes.
+    !! 
+    !!@note The solution is based on LAPACK's `*POTRF` methods.
+    !!         
+     #:for rk,rt,ri in RC_KINDS_TYPES
+     pure module subroutine stdlib_linalg_${ri}$_cholesky_inplace(a,lower,other_zeroed,err) 
+         !> Input matrix a[m,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> [optional] is the lower or upper triangular factor required? Default = lower
+         logical(lk), optional, intent(in) :: lower
+         !> [optional] should the unused half of the return matrix be zeroed out? Default: yes
+         logical(lk), optional, intent(in) :: other_zeroed
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+     end subroutine stdlib_linalg_${ri}$_cholesky_inplace
+     
+     pure module subroutine stdlib_linalg_${ri}$_cholesky(a,c,lower,other_zeroed,err) 
+         !> Input matrix a[n,n]
+         ${rt}$, intent(in) :: a(:,:)
+         !> Output matrix with Cholesky factors c[n,n]
+         ${rt}$, intent(out) :: c(:,:)         
+         !> [optional] is the lower or upper triangular factor required? Default = lower
+         logical(lk), optional, intent(in) :: lower
+         !> [optional] should the unused half of the return matrix be zeroed out? Default: yes
+         logical(lk), optional, intent(in) :: other_zeroed
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err     
+     end subroutine stdlib_linalg_${ri}$_cholesky
+     #:endfor
+  end interface cholesky
+     
   interface diag
     !! version: experimental
     !!
@@ -59,13 +154,13 @@ module stdlib_linalg
       ! Vector to matrix
       !
     #:for k1, t1 in RCI_KINDS_TYPES
-      module function diag_${t1[0]}$${k1}$(v) result(res)
+      module pure function diag_${t1[0]}$${k1}$(v) result(res)
         ${t1}$, intent(in) :: v(:)
         ${t1}$ :: res(size(v),size(v))
       end function diag_${t1[0]}$${k1}$
     #:endfor
     #:for k1, t1 in RCI_KINDS_TYPES
-      module function diag_${t1[0]}$${k1}$_k(v,k) result(res)
+      module pure function diag_${t1[0]}$${k1}$_k(v,k) result(res)
         ${t1}$, intent(in) :: v(:)
         integer, intent(in) :: k
         ${t1}$ :: res(size(v)+abs(k),size(v)+abs(k))
@@ -76,13 +171,13 @@ module stdlib_linalg
       ! Matrix to vector
       !
     #:for k1, t1 in RCI_KINDS_TYPES
-      module function diag_${t1[0]}$${k1}$_mat(A) result(res)
+      module pure function diag_${t1[0]}$${k1}$_mat(A) result(res)
         ${t1}$, intent(in) :: A(:,:)
         ${t1}$ :: res(minval(shape(A)))
       end function diag_${t1[0]}$${k1}$_mat
     #:endfor
     #:for k1, t1 in RCI_KINDS_TYPES
-      module function diag_${t1[0]}$${k1}$_mat_k(A,k) result(res)
+      module pure function diag_${t1[0]}$${k1}$_mat_k(A,k) result(res)
         ${t1}$, intent(in) :: A(:,:)
         integer, intent(in) :: k
         ${t1}$ :: res(minval(shape(A))-abs(k))
@@ -103,6 +198,16 @@ module stdlib_linalg
     #:endfor
   end interface
 
+  ! Identity matrix 
+  interface eye
+    !! version: experimental
+    !!
+    !! Constructs the identity matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#eye-construct-the-identity-matrix))    
+    #:for k1, t1 in RCI_KINDS_TYPES
+      module procedure eye_${t1[0]}$${k1}$
+    #:endfor
+  end interface eye
 
   ! Outer product (of two vectors)
   interface outer_product
@@ -212,6 +317,31 @@ module stdlib_linalg
       module procedure is_hermitian_${t1[0]}$${k1}$
     #:endfor
   end interface is_hermitian
+
+  interface hermitian
+    !! version: experimental
+    !!
+    !! Computes the Hermitian version of a rank-2 matrix.
+    !! For complex matrices, this returns `conjg(transpose(a))`.
+    !! For real or integer matrices, this returns `transpose(a)`.
+    !!
+    !! Usage:
+    !! ```
+    !! A  = reshape([(1, 2), (3, 4), (5, 6), (7, 8)], [2, 2])
+    !! AH = hermitian(A)
+    !! ```
+    !!
+    !! [Specification](../page/specs/stdlib_linalg.html#hermitian-compute-the-hermitian-version-of-a-rank-2-matrix)
+    !!
+
+    #:for k1, t1 in RCI_KINDS_TYPES
+    pure module function hermitian_${t1[0]}$${k1}$(a) result(ah)
+        ${t1}$, intent(in) :: a(:,:)
+        ${t1}$ :: ah(size(a, 2), size(a, 1))
+    end function hermitian_${t1[0]}$${k1}$
+    #:endfor
+
+  end interface hermitian
 
 
   ! Check for triangularity
@@ -445,6 +575,161 @@ module stdlib_linalg
     #:endfor
   end interface lstsq_space
 
+  ! QR factorization of rank-2 array A
+  interface qr
+    !! version: experimental 
+    !!
+    !! Computes the QR factorization of matrix \( A = Q R \). 
+    !! ([Specification](../page/specs/stdlib_linalg.html#qr-compute-the-qr-factorization-of-a-matrix))
+    !! 
+    !!### Summary 
+    !! Compute the QR factorization of a `real` or `complex` matrix: \( A = Q R \), where \( Q \)  is orthonormal 
+    !! and \( R \) is upper-triangular. Matrix \( A \) has size `[m,n]`, with \( m\ge n \). 
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the QR factorization of a matrix. 
+    !! Supported data types include `real` and `complex`. If a pre-allocated work space 
+    !! is provided, no internal memory allocations take place when using this interface.
+    !!
+    !! Given `k = min(m,n)`, one can write \( A = \( Q_1  Q_2 \) \cdot \( \frac{R_1}{0}\) \). 
+    !! The user may want the full problem (provide `shape(Q)==[m,m]`, `shape(R)==[m,n]`) or the reduced  
+    !! problem only: \( A = Q_1 R_1 \) (provide `shape(Q)==[m,k]`, `shape(R)==[k,n]`).
+    !! 
+    !!@note The solution is based on LAPACK's QR factorization (`*GEQRF`) and ordered matrix output (`*ORGQR`, `*UNGQR`). 
+    !!     
+    #:for rk,rt,ri in RC_KINDS_TYPES
+      pure module subroutine stdlib_linalg_${ri}$_qr(a,q,r,overwrite_a,storage,err) 
+         !> Input matrix a[m,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Orthogonal matrix Q ([m,m], or [m,k] if reduced)
+         ${rt}$, intent(out), contiguous, target :: q(:,:)
+         !> Upper triangular matrix R ([m,n], or [k,n] if reduced)
+         ${rt}$, intent(out), contiguous, target :: r(:,:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] Provide pre-allocated workspace, size to be checked with qr_space
+         ${rt}$, intent(out), optional, target :: storage(:)
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_${ri}$_qr
+    #:endfor    
+  end interface qr
+
+  ! Return the working array space required by the QR factorization solver
+  interface qr_space
+    !! version: experimental 
+    !!
+    !! Computes the working array space required by the QR factorization solver
+    !! ([Specification](../page/specs/stdlib_linalg.html#qr-space-compute-internal-working-space-requirements-for-the-qr-factorization))
+    !! 
+    !!### Description
+    !! 
+    !! This interface returns the size of the `real` or `complex` working storage required by the 
+    !! QR factorization solver. The working size only depends on the kind (`real` or `complex`) and size of
+    !! the matrix being factorized. Storage size can be used to pre-allocate a working array in case several 
+    !! repeated QR factorizations to a same-size matrix are sought. If pre-allocated working arrays 
+    !! are provided, no internal allocations will take place during the factorization.
+    !!     
+    #:for rk,rt,ri in RC_KINDS_TYPES
+      pure module subroutine get_qr_${ri}$_workspace(a,lwork,err)
+         !> Input matrix a[m,n]
+         ${rt}$, intent(in), target :: a(:,:)
+         !> Minimum workspace size for both operations
+         integer(ilp), intent(out) :: lwork
+         !> State return flag. Returns an error if the query failed
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine get_qr_${ri}$_workspace
+    #:endfor
+  end interface qr_space
+ 
+  ! Schur decomposition of rank-2 array A
+  interface schur
+    !! version: experimental
+    !!
+    !! Computes the Schur decomposition of matrix \( A = Z T Z^H \).
+    !! ([Specification](../page/specs/stdlib_linalg.html#schur-compute-the-schur-decomposition-of-a-matrix))
+    !!
+    !!### Summary
+    !! Compute the Schur decomposition of a `real` or `complex` matrix: \( A = Z T Z^H \), where \( Z \) is
+    !! orthonormal/unitary and \( T \) is upper-triangular or quasi-upper-triangular. Matrix \( A \) has size `[m,m]`.
+    !!
+    !!### Description
+    !! 
+    !! This interface provides methods for computing the Schur decomposition of a matrix.
+    !! Supported data types include `real` and `complex`. If a pre-allocated workspace is provided, no internal 
+    !! memory allocations take place when using this interface.
+    !!
+    !! The output matrix \( T \) is upper-triangular for `complex` input matrices and quasi-upper-triangular
+    !! for `real` input matrices (with possible \( 2 \times 2 \) blocks on the diagonal).
+    !!
+    !!@note The solution is based on LAPACK's Schur decomposition routines (`*GEES`). 
+    !! 
+    #:for rk,rt,ri in RC_KINDS_TYPES
+      module subroutine stdlib_linalg_${ri}$_schur(a, t, z, eigvals, overwrite_a, storage, err)
+         !> Input matrix a[m,m]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Schur form of A: upper-triangular or quasi-upper-triangular matrix T
+         ${rt}$, intent(out), contiguous, target :: t(:,:)
+         !> Unitary/orthonormal transformation matrix Z
+         ${rt}$, optional, intent(out), contiguous, target :: z(:,:)
+         !> [optional] Output eigenvalues that appear on the diagonal of T
+         complex(${rk}$), optional, intent(out), contiguous, target :: eigvals(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a                 
+         !> [optional] Provide pre-allocated workspace, size to be checked with schur_space         
+         ${rt}$, optional, intent(inout), target :: storage(:)
+         !> [optional] State return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine stdlib_linalg_${ri}$_schur
+      
+      ! Schur decomposition subroutine: real eigenvalue interface
+      module subroutine stdlib_linalg_real_eig_${ri}$_schur(a,t,z,eigvals,overwrite_a,storage,err)
+         !> Input matrix a[m,m]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Schur form of A: upper-triangular or quasi-upper-triangular matrix T
+         ${rt}$, intent(out), contiguous, target :: t(:,:)
+         !> Unitary/orthonormal transformation matrix Z
+         ${rt}$, optional, intent(out), contiguous, target :: z(:,:)
+         !> Output real eigenvalues that appear on the diagonal of T
+         real(${rk}$), intent(out), contiguous, target :: eigvals(:)
+         !> [optional] Provide pre-allocated workspace, size to be checked with schur_space
+         ${rt}$, optional, intent(inout), target :: storage(:)
+         !> [optional] Can A data be overwritten and destroyed?
+         logical(lk), optional, intent(in) :: overwrite_a        
+         !> [optional] State return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err        
+      end subroutine stdlib_linalg_real_eig_${ri}$_schur 
+    #:endfor
+  end interface schur
+
+  ! Return the working array space required by the Schur decomposition solver
+  interface schur_space
+    !! version: experimental
+    !!
+    !! Computes the working array space required by the Schur decomposition solver
+    !! ([Specification](../page/specs/stdlib_linalg.html#schur-space-compute-internal-working-space-requirements-for-the-schur-decomposition))
+    !!
+    !!### Description
+    !! 
+    !! This interface returns the size of the `real` or `complex` working storage required by the 
+    !! Schur decomposition solver. The working size only depends on the kind (`real` or `complex`) and size of
+    !! the matrix being decomposed. Storage size can be used to pre-allocate a working array in case several 
+    !! repeated Schur decompositions of same-size matrices are sought. If pre-allocated working arrays 
+    !! are provided, no internal allocations will take place during the decomposition.
+    !!     
+    #:for rk,rt,ri in RC_KINDS_TYPES
+      module subroutine get_schur_${ri}$_workspace(a,lwork,err)
+         !> Input matrix a[m,m]
+         ${rt}$, intent(in), target :: a(:,:)
+         !> Minimum workspace size for the decomposition operation
+         integer(ilp), intent(out) :: lwork
+         !> State return flag. Returns an error if the query failed
+         type(linalg_state_type), optional, intent(out) :: err
+      end subroutine get_schur_${ri}$_workspace
+    #:endfor
+  end interface schur_space
+
   interface det
     !! version: experimental 
     !!
@@ -655,6 +940,131 @@ module stdlib_linalg
   end interface operator(.inv.)
 
 
+  ! Moore-Penrose Pseudo-Inverse: Function interface
+  interface pinv
+    !! version: experimental 
+    !!
+    !! Pseudo-inverse of a matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#pinv-moore-penrose-pseudo-inverse-of-a-matrix))
+    !!
+    !!### Summary
+    !! This interface provides methods for computing the Moore-Penrose pseudo-inverse of a matrix.
+    !! The pseudo-inverse \( A^{+} \) is a generalization of the matrix inverse, computed for square, singular, 
+    !! or rectangular matrices. It is defined such that it satisfies the conditions:
+    !! - \( A \cdot A^{+} \cdot A = A \)
+    !! - \( A^{+} \cdot A \cdot A^{+} = A^{+} \)
+    !! - \( (A \cdot A^{+})^T = A \cdot A^{+} \)
+    !! - \( (A^{+} \cdot A)^T = A^{+} \cdot A \)
+    !!
+    !!### Description
+    !!     
+    !! This function interface provides methods that return the Moore-Penrose pseudo-inverse of a matrix.    
+    !! Supported data types include `real` and `complex`. 
+    !! The pseudo-inverse \( A^{+} \) is returned as a function result. The computation is based on the 
+    !! singular value decomposition (SVD). An optional relative tolerance `rtol` is provided to control the 
+    !! inclusion of singular values during inversion. Singular values below \( \text{rtol} \cdot \sigma_{\max} \) 
+    !! are treated as zero, where \( \sigma_{\max} \) is the largest singular value. If `rtol` is not provided, 
+    !! a default threshold is applied.
+    !! 
+    !! Exceptions are raised in case of computational errors or invalid input, and trigger an `error stop` 
+    !! if the state flag `err` is not provided. 
+    !!
+    !!@note The provided functions are intended for both rectangular and square matrices.
+    !!       
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    module function stdlib_linalg_pseudoinverse_${ri}$(a,rtol,err) result(pinva)
+        !> Input matrix a[m,n]
+        ${rt}$, intent(in), target :: a(:,:)
+        !> [optional] Relative tolerance for singular value cutoff
+        real(${rk}$), optional, intent(in) :: rtol         
+        !> [optional] State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+        !> Output matrix pseudo-inverse [n,m]
+        ${rt}$ :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))         
+     end function stdlib_linalg_pseudoinverse_${ri}$
+    #:endfor
+  end interface pinv
+
+  ! Moore-Penrose Pseudo-Inverse: Subroutine interface 
+  interface pseudoinvert
+    !! version: experimental 
+    !!
+    !! Computation of the Moore-Penrose pseudo-inverse
+    !! ([Specification](../page/specs/stdlib_linalg.html#pseudoinvert-moore-penrose-pseudo-inverse-of-a-matrix))
+    !!
+    !!### Summary
+    !! This interface provides methods for computing the Moore-Penrose pseudo-inverse of a rectangular 
+    !! or square `real` or `complex` matrix.
+    !! The pseudo-inverse \( A^{+} \) generalizes the matrix inverse and satisfies the properties:
+    !! - \( A \cdot A^{+} \cdot A = A \)
+    !! - \( A^{+} \cdot A \cdot A^{+} = A^{+} \)
+    !! - \( (A \cdot A^{+})^T = A \cdot A^{+} \)
+    !! - \( (A^{+} \cdot A)^T = A^{+} \cdot A \)
+    !!
+    !!### Description
+    !!     
+    !! This subroutine interface provides a way to compute the Moore-Penrose pseudo-inverse of a matrix.    
+    !! Supported data types include `real` and `complex`. 
+    !! Users must provide two matrices: the input matrix `a` [m,n] and the output pseudo-inverse `pinva` [n,m]. 
+    !! The input matrix `a` is used to compute the pseudo-inverse and is not modified. The computed 
+    !! pseudo-inverse is stored in `pinva`. The computation is based on the singular value decomposition (SVD).
+    !! 
+    !! An optional relative tolerance `rtol` is used to control the inclusion of singular values in the 
+    !! computation. Singular values below \( \text{rtol} \cdot \sigma_{\max} \) are treated as zero, 
+    !! where \( \sigma_{\max} \) is the largest singular value. If `rtol` is not provided, a default 
+    !! threshold is applied. 
+    !! 
+    !! Exceptions are raised in case of computational errors or invalid input, and trigger an `error stop` 
+    !! if the state flag `err` is not provided.
+    !!
+    !!@note The provided subroutines are intended for both rectangular and square matrices.
+    !!       
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    module subroutine stdlib_linalg_pseudoinvert_${ri}$(a,pinva,rtol,err)
+        !> Input matrix a[m,n]
+        ${rt}$, intent(inout) :: a(:,:)
+        !> Output pseudo-inverse matrix [n,m]
+        ${rt}$, intent(out) :: pinva(:,:)
+        !> [optional] Relative tolerance for singular value cutoff
+        real(${rk}$), optional, intent(in) :: rtol
+        !> [optional] State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_pseudoinvert_${ri}$
+    #:endfor
+  end interface pseudoinvert
+
+  ! Moore-Penrose Pseudo-Inverse: Operator interface
+  interface operator(.pinv.)
+    !! version: experimental 
+    !!
+    !! Pseudo-inverse operator of a matrix
+    !! ([Specification](../page/specs/stdlib_linalg.html#pinv-moore-penrose-pseudo-inverse-operator))
+    !!
+    !!### Summary
+    !! Operator interface for computing the Moore-Penrose pseudo-inverse of a `real` or `complex` matrix.
+    !!
+    !!### Description
+    !! 
+    !! This operator interface provides a convenient way to compute the Moore-Penrose pseudo-inverse 
+    !! of a matrix. Supported data types include `real` and `complex`. The pseudo-inverse \( A^{+} \) 
+    !! is computed using singular value decomposition (SVD), with singular values below an internal 
+    !! threshold treated as zero.
+    !! 
+    !! For computational errors or invalid input, the function may return a matrix filled with NaNs.
+    !!
+    !!@note The provided functions are intended for both rectangular and square matrices.
+    !!
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    module function stdlib_linalg_pinv_${ri}$_operator(a) result(pinva)
+         !> Input matrix a[m,n]
+         ${rt}$, intent(in), target :: a(:,:)
+         !> Result pseudo-inverse matrix
+         ${rt}$ :: pinva(size(a,2,kind=ilp),size(a,1,kind=ilp))
+    end function stdlib_linalg_pinv_${ri}$_operator
+    #:endfor
+  end interface operator(.pinv.)
+
+
   ! Eigendecomposition of a square matrix: eigenvalues, and optionally eigenvectors
   interface eig    
      !! version: experimental 
@@ -677,12 +1087,17 @@ module stdlib_linalg
      !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
      !!       
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp"
-    module subroutine stdlib_linalg_eig_${ri}$(a,lambda,right,left,overwrite_a,err)
+    #:for ep,ei in EIG_PROBLEM_LIST
+    module subroutine stdlib_linalg_eig_${ep}$_${ri}$(a#{if ei=='ggev'}#,b#{endif}#,lambda,right,left, &
+                                                      overwrite_a#{if ei=='ggev'}#,overwrite_b#{endif}#,err)
      !! Eigendecomposition of matrix A returning an array `lambda` of eigenvalues, 
      !! and optionally right or left eigenvectors.        
          !> Input matrix A[m,n]
          ${rt}$, intent(inout), target :: a(:,:)
+         #:if ei=='ggev'
+         !> Generalized problem matrix B[n,n]
+         ${rt}$, intent(inout), target :: b(:,:)
+         #:endif         
          !> Array of eigenvalues
          complex(${rk}$), intent(out) :: lambda(:)
          !> The columns of RIGHT contain the right eigenvectors of A
@@ -691,19 +1106,25 @@ module stdlib_linalg
          complex(${rk}$), optional, intent(out), target :: left(:,:)
          !> [optional] Can A data be overwritten and destroyed?
          logical(lk), optional, intent(in) :: overwrite_a
+         #:if ei=='ggev'
+         !> [optional] Can B data be overwritten and destroyed? (default: no)
+         logical(lk), optional, intent(in) :: overwrite_b
+         #:endif         
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err
-    end subroutine stdlib_linalg_eig_${ri}$
-    #:endif
-    #:endfor
-    #:for rk,rt,ri in REAL_KINDS_TYPES
-    #:if rk!="xdp"
-    module subroutine stdlib_linalg_real_eig_${ri}$(a,lambda,right,left,overwrite_a,err)
+    end subroutine stdlib_linalg_eig_${ep}$_${ri}$
+
+    module subroutine stdlib_linalg_real_eig_${ep}$_${ri}$(a#{if ei=='ggev'}#,b#{endif}#,lambda,right,left, &
+                                                           overwrite_a#{if ei=='ggev'}#,overwrite_b#{endif}#,err)
      !! Eigendecomposition of matrix A returning an array `lambda` of real eigenvalues, 
      !! and optionally right or left eigenvectors. Returns an error if the eigenvalues had
      !! non-trivial imaginary parts.
          !> Input matrix A[m,n]
          ${rt}$, intent(inout), target :: a(:,:)
+         #:if ei=='ggev'
+         !> Generalized problem matrix B[n,n]
+         ${rt}$, intent(inout), target :: b(:,:)  
+         #:endif
          !> Array of real eigenvalues
          real(${rk}$), intent(out) :: lambda(:)
          !> The columns of RIGHT contain the right eigenvectors of A
@@ -712,11 +1133,15 @@ module stdlib_linalg
          complex(${rk}$), optional, intent(out), target :: left(:,:)
          !> [optional] Can A data be overwritten and destroyed?
          logical(lk), optional, intent(in) :: overwrite_a
+         #:if ei=='ggev'
+         !> [optional] Can B data be overwritten and destroyed? (default: no)
+         logical(lk), optional, intent(in) :: overwrite_b
+         #:endif         
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err
-    end subroutine stdlib_linalg_real_eig_${ri}$
-    #:endif
+    end subroutine stdlib_linalg_real_eig_${ep}$_${ri}$
     #:endfor    
+    #:endfor
   end interface eig
 
   ! Eigenvalues of a square matrix
@@ -740,25 +1165,33 @@ module stdlib_linalg
      !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
      !!       
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp"
-    module function stdlib_linalg_eigvals_${ri}$(a,err) result(lambda)
+    #:for ep,ei in EIG_PROBLEM_LIST
+    module function stdlib_linalg_eigvals_${ep}$_${ri}$(a#{if ei=='ggev'}#,b#{endif}#,err) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         ${rt}$, intent(in), target :: a(:,:)
+         ${rt}$, intent(in), dimension(:,:), target :: a 
+         #:if ei=='ggev'
+         !> Generalized problem matrix B[n,n]
+         ${rt}$, intent(inout), dimension(:,:), target :: b         
+         #:endif                  
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), intent(out) :: err
          !> Array of singular values
          complex(${rk}$), allocatable :: lambda(:)        
-    end function stdlib_linalg_eigvals_${ri}$
+    end function stdlib_linalg_eigvals_${ep}$_${ri}$
     
-    module function stdlib_linalg_eigvals_noerr_${ri}$(a) result(lambda)
+    module function stdlib_linalg_eigvals_noerr_${ep}$_${ri}$(a#{if ei=='ggev'}#,b#{endif}#) result(lambda)
      !! Return an array of eigenvalues of matrix A.
          !> Input matrix A[m,n]
-         ${rt}$, intent(in), target :: a(:,:)
+         ${rt}$, intent(in), dimension(:,:), target :: a 
+         #:if ei=='ggev'
+         !> Generalized problem matrix B[n,n]
+         ${rt}$, intent(inout), dimension(:,:), target :: b         
+         #:endif                  
          !> Array of singular values
          complex(${rk}$), allocatable :: lambda(:)
-    end function stdlib_linalg_eigvals_noerr_${ri}$
-    #:endif
+    end function stdlib_linalg_eigvals_noerr_${ep}$_${ri}$
+    #:endfor
     #:endfor
   end interface eigvals
      
@@ -787,7 +1220,6 @@ module stdlib_linalg
      !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
      !!      
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp"
     module subroutine stdlib_linalg_eigh_${ri}$(a,lambda,vectors,upper_a,overwrite_a,err)
      !! Eigendecomposition of a real symmetric or complex Hermitian matrix A returning an array `lambda` 
      !! of eigenvalues, and optionally right or left eigenvectors.        
@@ -804,7 +1236,6 @@ module stdlib_linalg
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err
     end subroutine stdlib_linalg_eigh_${ri}$
-    #:endif
     #:endfor        
   end interface eigh
      
@@ -832,7 +1263,6 @@ module stdlib_linalg
      !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
      !!         
     #:for rk,rt,ri in RC_KINDS_TYPES
-    #:if rk!="xdp"
     module function stdlib_linalg_eigvalsh_${ri}$(a,upper_a,err) result(lambda)
      !! Return an array of eigenvalues of real symmetric / complex hermitian A
          !> Input matrix A[m,n]
@@ -854,7 +1284,6 @@ module stdlib_linalg
          !> Array of singular values
          real(${rk}$), allocatable :: lambda(:)
     end function stdlib_linalg_eigvalsh_noerr_${ri}$
-    #:endif
     #:endfor                
   end interface eigvalsh
 
@@ -984,6 +1413,271 @@ module stdlib_linalg
     #:endfor             
   end interface svdvals  
 
+
+  #! Allow for integer or character norm input: i.e., norm(a,2) or norm(a, '2')
+  #:set NORM_INPUT_TYPE    = ["character(len=*)","integer(ilp)"]
+  #:set NORM_INPUT_SHORT   = ["char","int"]
+  #:set NORM_INPUT_OPTIONS = list(zip(NORM_INPUT_TYPE,NORM_INPUT_SHORT))
+  ! Vector norms: function interface
+  interface norm
+     !! version: experimental 
+     !!
+     !! Computes the vector norm of a generic-rank array \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#norm-computes-the-vector-norm-of-a-generic-rank-array))
+     !! 
+     !!### Summary 
+     !! Return one of several scalar norm metrics of a `real` or `complex` input array \( A \), 
+     !! that can have any rank. For generic rank-n arrays, the scalar norm over the whole 
+     !! array is returned by default. If `n>=2` and the optional input dimension `dim` is specified, 
+     !! a rank `n-1` array is returned with dimension `dim` collapsed, containing all 1D array norms 
+     !! evaluated along dimension `dim` only.
+     !! 
+     !!
+     !!### Description
+     !! 
+     !! This interface provides methods for computing the vector norm(s) of an array.  
+     !! Supported data types include `real` and `complex`. 
+     !! Input arrays may have generic rank from 1 to ${MAXRANK}$.
+     !!
+     !! Norm type input is mandatory, and it is provided via the `order` argument. 
+     !! This can be provided as either an `integer` value or a `character` string. 
+     !! Allowed metrics are: 
+     !! - 1-norm \( \sum_i{ \left|a_i\right| } \): `order` = 1 or '1'    
+     !! - Euclidean norm \( \sqrt{\sum_i{ a_i^2 }} \): `order` = 2 or '2'
+     !! - p-norm \( \left( \sum_i{ \left|a_i\right|^p }\right) ^{1/p} \): `integer` `order`, order>=3
+     !! - Infinity norm \( \max_i{ \left|a_i\right| } \): order = huge(0) or 'inf'
+     !! - Minus-infinity norm \( \min_i{ \left|a_i\right| } \): order = -huge(0) or '-inf'
+     !! 
+     !!### Example
+     !!
+     !!```fortran
+     !!
+     !!    real(sp) :: a(3,3), na, rown(3)
+     !!    a = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
+     !!
+     !!    ! L2 norm: whole matrix
+     !!    na = norm(a, 2)
+     !!   
+     !!    ! Infinity norm of each row
+     !!    rown = norm(a, 'inf', dim=2)
+     !!     
+     !!```     
+     !!
+     #:for rk,rt,ri in RC_KINDS_TYPES
+     #:for it,ii in NORM_INPUT_OPTIONS
+     !> Scalar norms: ${rt}$
+     #:for rank in range(1, MAXRANK + 1)        
+     pure module function stdlib_linalg_norm_${rank}$D_order_${ii}$_${ri}$(a, order) result(nrm)
+        !> Input ${rank}$-d matrix a${ranksuffix(rank)}$
+        ${rt}$, intent(in) :: a${ranksuffix(rank)}$
+        !> Order of the matrix norm being computed.
+        ${it}$, intent(in) :: order
+        !> Norm of the matrix.
+        real(${rk}$) :: nrm       
+     end function stdlib_linalg_norm_${rank}$D_order_${ii}$_${ri}$
+     module function stdlib_linalg_norm_${rank}$D_order_err_${ii}$_${ri}$(a, order, err) result(nrm)
+        !> Input ${rank}$-d matrix a${ranksuffix(rank)}$
+        ${rt}$, intent(in) :: a${ranksuffix(rank)}$
+        !> Order of the matrix norm being computed.
+        ${it}$, intent(in) :: order
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                         
+        !> Norm of the matrix.
+        real(${rk}$) :: nrm               
+     end function stdlib_linalg_norm_${rank}$D_order_err_${ii}$_${ri}$
+     #:endfor
+     !> Array norms: ${rt}$
+     #:for rank in range(2, MAXRANK + 1)
+     pure module function stdlib_linalg_norm_${rank}$D_to_${rank-1}$D_${ii}$_${ri}$(a, order, dim) result(nrm)
+        !> Input matrix a[..]
+        ${rt}$, intent(in), target :: a${ranksuffix(rank)}$
+        !> Order of the matrix norm being computed.
+        ${it}$, intent(in) :: order
+        !> Dimension the norm is computed along 
+        integer(ilp), intent(in) :: dim
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(${rk}$) :: nrm${reduced_shape('a', rank, 'dim')}$   
+     end function stdlib_linalg_norm_${rank}$D_to_${rank-1}$D_${ii}$_${ri}$
+     module function stdlib_linalg_norm_${rank}$D_to_${rank-1}$D_err_${ii}$_${ri}$(a, order, dim, err) result(nrm)
+        !> Input matrix a[..]
+        ${rt}$, intent(in), target :: a${ranksuffix(rank)}$
+        !> Order of the matrix norm being computed.
+        ${it}$, intent(in) :: order
+        !> Dimension the norm is computed along
+        integer(ilp), intent(in) :: dim
+        !> Output state return flag. 
+        type(linalg_state_type), intent(out) :: err                                 
+        !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+        real(${rk}$) :: nrm${reduced_shape('a', rank, 'dim')}$     
+     end function stdlib_linalg_norm_${rank}$D_to_${rank-1}$D_err_${ii}$_${ri}$
+     #:endfor
+     #:endfor        
+     #:endfor            
+  end interface norm  
+
+  !> Vector norm: subroutine interface
+  interface get_norm
+     !! version: experimental 
+     !!
+     !! Computes the vector norm of a generic-rank array \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#get-norm-computes-the-vector-norm-of-a-generic-rank-array))
+     !! 
+     !!### Summary 
+     !! Subroutine interface that returns one of several scalar norm metrics of a `real` or `complex` 
+     !! input array \( A \), that can have any rank. For generic rank-n arrays, the scalar norm over 
+     !! the whole array is returned by default. If `n>=2` and the optional input dimension `dim` is 
+     !! specified, a rank `n-1` array is returned with dimension `dim` collapsed, containing all 1D 
+     !! array norms evaluated along dimension `dim` only.
+     !! 
+     !!
+     !!### Description
+     !! 
+     !! This `pure subroutine `interface provides methods for computing the vector norm(s) of an array.  
+     !! Supported data types include `real` and `complex`. 
+     !! Input arrays may have generic rank from 1 to ${MAXRANK}$.
+     !!
+     !! Norm type input is mandatory, and it is provided via the `order` argument. 
+     !! This can be provided as either an `integer` value or a `character` string. 
+     !! Allowed metrics are: 
+     !! - 1-norm \( \sum_i{ \left|a_i\right| } \): `order` = 1 or '1'    
+     !! - Euclidean norm \( \sqrt{\sum_i{ a_i^2 }} \): `order` = 2 or '2'
+     !! - p-norm \( \left( \sum_i{ \left|a_i\right|^p }\right) ^{1/p} \): `integer` `order`, order>=3
+     !! - Infinity norm \( \max_i{ \left|a_i\right| } \): order = huge(0) or 'inf'
+     !! - Minus-infinity norm \( \min_i{ \left|a_i\right| } \): order = -huge(0) or '-inf'
+     !!     
+     !!### Example
+     !!
+     !!```fortran
+     !!
+     !!    real(sp) :: a(3,3), na, rown(3)
+     !!    type(linalg_state_type) :: err
+     !!    a = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
+     !!
+     !!    ! L2 norm: whole matrix
+     !!    call get_norm(a, na, 2)
+     !!   
+     !!    ! Infinity norms of each row, with error control
+     !!    call get_norm(a, rown, 'inf', dim=2, err=err)     
+     !!     
+     !!```     
+     !!     
+     #:for rk,rt,ri in RC_KINDS_TYPES
+     #:for it,ii in NORM_INPUT_OPTIONS
+        !> Scalar norms: ${rt}$
+        #:for rank in range(1, MAXRANK + 1)                    
+        pure module subroutine norm_${rank}$D_${ii}$_${ri}$(a, nrm, order, err)
+           !> Input ${rank}$-d matrix a${ranksuffix(rank)}$
+           ${rt}$, intent(in), target :: a${ranksuffix(rank)}$
+           !> Norm of the matrix.
+           real(${rk}$), intent(out) :: nrm
+           !> Order of the matrix norm being computed.
+           ${it}$, intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err   
+        end subroutine norm_${rank}$D_${ii}$_${ri}$
+        #:endfor
+        !> Array norms: ${rt}$
+        #:for rank in range(2, MAXRANK + 1)
+        pure module subroutine norm_${rank}$D_to_${rank-1}$D_${ii}$_${ri}$(a, nrm, order, dim, err)
+           !> Input matrix a[..]
+           ${rt}$, intent(in) :: a${ranksuffix(rank)}$
+           !> Dimension the norm is computed along
+           integer(ilp), intent(in) :: dim        
+           !> Norm of the matrix. (Same shape as `a`, with `dim` dropped).
+           real(${rk}$), intent(out) :: nrm${reduced_shape('a', rank, 'dim')}$     
+           !> Order of the matrix norm being computed.
+           ${it}$, intent(in) :: order
+           !> [optional] state return flag. On error if not requested, the code will stop
+           type(linalg_state_type), intent(out), optional :: err           
+        end subroutine  norm_${rank}$D_to_${rank-1}$D_${ii}$_${ri}$
+        #:endfor
+     #:endfor
+     #:endfor
+  end interface get_norm
+
+  !> Matrix norms: function interface
+  interface mnorm
+     !! version: experimental 
+     !!
+     !! Computes the matrix norm of a generic-rank array \( A \). 
+     !! ([Specification](../page/specs/stdlib_linalg.html#mnorm-computes-the-matrix-norm-of-a-generic-rank-array))
+     !! 
+     !!### Summary 
+     !! Return one of several matrix norm metrics of a `real` or `complex` input array \( A \), 
+     !! that can have rank 2 or higher. For rank-2 arrays, the matrix norm is returned.
+     !! If rank>2 and the optional input dimensions `dim` are specified, 
+     !! a rank `n-2` array is returned with dimensions `dim(1),dim(2)` collapsed, containing all 
+     !! matrix norms evaluated over the specified dimensions only. `dim==[1,2]` are assumed as default
+     !! dimensions if not specified.
+     !! 
+     !!### Description
+     !! 
+     !! This interface provides methods for computing the matrix norm(s) of an array.  
+     !! Supported data types include `real` and `complex`. 
+     !! Input arrays must have rank >= 2.
+     !!
+     !! Norm type input is optional, and it is provided via the `order` argument. 
+     !! This can be provided as either an `integer` value or a `character` string. 
+     !! Allowed metrics are: 
+     !! - 1-norm: `order` = 1 or '1'    
+     !! - 2-norm: `order` = 2 or '2'
+     !! - Euclidean/Frobenius: `order` = 'Euclidean','Frobenius', or argument not specified
+     !! - Infinity norm: `order` = huge(0) or 'Inf'
+     !! 
+     !! If an invalid norm type is provided, the routine returns an error state.
+     !!
+     !!### Example
+     !!
+     !!```fortran
+     !!    real(sp) :: a(3,3), na
+     !!    real(sp) :: b(3,3,4), nb(4)  ! Array of 4 3x3 matrices
+     !!    a = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
+     !!    
+     !!    ! Euclidean/Frobenius norm of single matrix
+     !!    na = mnorm(a)
+     !!    na = mnorm(a, 'Euclidean')
+     !!   
+     !!    ! 1-norm of each 3x3 matrix in b
+     !!    nb = mnorm(b, 1, dim=[1,2])
+     !!     
+     !!    ! Infinity-norm 
+     !!    na = mnorm(b, 'inf', dim=[3,2])
+     !!```     
+     !!
+      #:for rk,rt,ri in RC_KINDS_TYPES
+      #:for it,ii in NORM_INPUT_OPTIONS   
+      
+      !> Matrix norms: ${rt}$ rank-2 arrays
+      module function matrix_norm_${ii}$_${ri}$(a, order, err) result(nrm)
+        !> Input matrix a(m,n)
+        ${rt}$, intent(in), target :: a(:,:)
+        !> Norm of the matrix.        
+        real(${rk}$) :: nrm
+        !> Order of the matrix norm being computed.
+        ${it}$, #{if 'integer' in it}#optional, #{endif}#intent(in) :: order
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), intent(out), optional :: err      
+      end function matrix_norm_${ii}$_${ri}$
+      
+      !> Matrix norms: ${rt}$ higher rank arrays
+      #:for rank in range(3, MAXRANK + 1)
+      module function matrix_norm_${rank}$D_to_${rank-2}$D_${ii}$_${ri}$(a, order, dim, err) result(nrm)
+          !> Input matrix a(m,n)
+          ${rt}$, intent(in), contiguous, target :: a${ranksuffix(rank)}$
+          !> Norm of the matrix.        
+          real(${rk}$), allocatable :: nrm${ranksuffix(rank-2)}$
+          !> Order of the matrix norm being computed.
+          ${it}$, #{if 'integer' in it}#optional, #{endif}#intent(in) :: order
+          !> [optional] dimensions of the sub-matrices the norms should be evaluated at (default = [1,2])
+          integer(ilp), optional, intent(in) :: dim(2)
+          !> [optional] state return flag. On error if not requested, the code will stop
+          type(linalg_state_type), intent(out), optional :: err        
+      end function matrix_norm_${rank}$D_to_${rank-2}$D_${ii}$_${ri}$
+      #:endfor            
+      #:endfor
+      #:endfor            
+  end interface mnorm
+
 contains
 
 
@@ -991,11 +1685,13 @@ contains
     !>
     !> Constructs the identity matrix.
     !> ([Specification](../page/specs/stdlib_linalg.html#eye-construct-the-identity-matrix))
-    pure function eye(dim1, dim2) result(result)
+    #:for k1, t1 in RCI_KINDS_TYPES
+    pure function eye_${t1[0]}$${k1}$(dim1, dim2, mold) result(result)
 
         integer, intent(in) :: dim1
         integer, intent(in), optional :: dim2
-        integer(int8), allocatable :: result(:, :)
+        ${t1}$, intent(in) #{if t1 == 'real(dp)'}#, optional #{endif}#:: mold        
+        ${t1}$, allocatable :: result(:, :)
 
         integer :: dim2_
         integer :: i
@@ -1003,12 +1699,13 @@ contains
         dim2_ = optval(dim2, dim1)
         allocate(result(dim1, dim2_))
         
-        result = 0_int8
+        result = 0
         do i = 1, min(dim1, dim2_)
-            result(i, i) = 1_int8
+            result(i, i) = 1
         end do
 
-    end function eye
+    end function eye_${t1[0]}$${k1}$
+    #:endfor
 
     #:for k1, t1 in RCI_KINDS_TYPES
       function trace_${t1[0]}$${k1}$(A) result(res)
@@ -1135,6 +1832,17 @@ contains
       end function is_hermitian_${t1[0]}$${k1}$
     #:endfor
 
+    #:for k1, t1 in RCI_KINDS_TYPES
+      pure module function hermitian_${t1[0]}$${k1}$(a) result(ah)
+        ${t1}$, intent(in) :: a(:,:)
+        ${t1}$ :: ah(size(a, 2), size(a, 1))
+        #:if t1.startswith('complex')
+        ah = conjg(transpose(a))
+        #:else
+        ah = transpose(a)
+        #:endif
+      end function hermitian_${t1[0]}$${k1}$
+    #:endfor
 
     #:for k1, t1 in RCI_KINDS_TYPES
       function is_triangular_${t1[0]}$${k1}$(A,uplo) result(res)

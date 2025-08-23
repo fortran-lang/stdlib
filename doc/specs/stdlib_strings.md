@@ -459,8 +459,46 @@ The result is of the same type as `string`.
 {!example/strings/example_zfill.f90!}
 ```
 
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `join`
+
+#### Description
+
+Joins an array of strings into a single string. This function concatenates the strings from the input array, 
+inserting a separator between each string (default: space). A user-defined separator may be provided, The resulting string is returned.
+
+
+#### Syntax
+
+`joined = ` [[stdlib_strings(module):join(interface)]] ` (strings, separator)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function
+
+#### Argument
+
+- `strings`: Array of strings (either `type(string_type)` or `character(len=*)`).
+  This argument is `intent(in)`. It is an array of strings that will be concatenated together.
+- `separator`: `character(len=*)` scalar (optional).
+  This argument is `intent(in)`. It specifies the separator to be used between the strings. If not provided, the default separator (a space) is used.
+
+#### Result value
+
+The result is of the same type as the elements of `strings` (`type(string_type)` or `character(len=:), allocatable`).
+
+#### Example
+
+```fortran
+{!example/strings/example_join.f90!}
+```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+
 ### `to_string`
 
 #### Description
@@ -497,4 +535,39 @@ The result is an `allocatable` length `character` scalar with up to `128` cached
 
 ```fortran
 {!example/strings/example_to_string.f90!}
+```
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `to_c_char`
+
+#### Description
+
+Convert a Fortran `character` string or a `type(string_type)` variable to a C character array.  
+This function converts a Fortran string into a C-style array of characters, ensuring proper null-termination for use in C functions or libraries.  
+
+#### Syntax
+
+`cstr = ` [[stdlib_strings(module):to_c_char(function)]] ` (value)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function.
+
+#### Argument
+
+- `value`: Shall be a `character(len=*)` string or a `type(string_type)` variable. It is an `intent(in)` argument.  
+  This Fortran variable will be converted to a C character array.
+
+#### Result value
+
+The result is a `character(kind=c_char)` array with a dimension of `len(value) + 1` to accommodate the null terminator.
+
+#### Example
+
+```fortran
+{!example/strings/example_to_c_char.f90!}
 ```

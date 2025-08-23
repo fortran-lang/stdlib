@@ -1,21 +1,22 @@
 #:include "common.fypp"
 #:set IR_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
-
+#:set BITSET_KINDS_TYPES = list(zip(BITSET_KINDS, BITSET_TYPES))
 module stdlib_math
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
     use stdlib_optval, only: optval
+    use stdlib_bitsets, only: bitset_64, bitset_large
 
     implicit none
     private
-    public :: clip, gcd, linspace, logspace
+    public :: clip, swap, gcd, linspace, logspace
     public :: EULERS_NUMBER_SP, EULERS_NUMBER_DP
 #:if WITH_QP
     public :: EULERS_NUMBER_QP
 #:endif
     public :: DEFAULT_LINSPACE_LENGTH, DEFAULT_LOGSPACE_BASE, DEFAULT_LOGSPACE_LENGTH
     public :: stdlib_meshgrid_ij, stdlib_meshgrid_xy
-    public :: arange, arg, argd, argpi, is_close, all_close, diff, meshgrid
+    public :: arange, arg, argd, argpi, deg2rad, rad2deg, is_close, all_close, diff, meshgrid
 
     integer, parameter :: DEFAULT_LINSPACE_LENGTH = 100
     integer, parameter :: DEFAULT_LOGSPACE_LENGTH = 50
@@ -41,6 +42,22 @@ module stdlib_math
         module procedure clip_${k1}$
     #:endfor
     end interface clip
+
+    !> Swap the values of the lhs and rhs arguments
+    !> ([Specification](../page/specs/stdlib_math.html#swap_subroutine))
+    !>
+    !> Version: experimental
+    interface swap
+      #:for k1, t1 in INT_KINDS_TYPES + REAL_KINDS_TYPES + BITSET_KINDS_TYPES
+      module procedure :: swap_${k1}$
+      #:endfor
+      #:for k1, t1 in CMPLX_KINDS_TYPES
+      module procedure :: swap_c${k1}$
+      #:endfor
+      module procedure :: swap_bool
+      module procedure :: swap_str
+      module procedure :: swap_stt
+    end interface
 
     !> Returns the greatest common divisor of two integers
     !> ([Specification](../page/specs/stdlib_math.html#gcd))
@@ -332,6 +349,26 @@ module stdlib_math
         procedure :: argpi_${k1}$
         #:endfor
     end interface argpi
+
+    !> Version: experimental
+    !> 
+    !> `deg2rad` converts phase angles from degrees to radians.
+    !> ([Specification](../page/specs/stdlib_math.html#deg2rad-function))
+    interface deg2rad
+        #:for k1 in REAL_KINDS
+        procedure :: deg2rad_${k1}$
+        #:endfor
+    end interface deg2rad
+    
+    !> Version: experimental
+    !> 
+    !> `rad2deg` converts phase angles from radians to degrees.
+    !> ([Specification](../page/specs/stdlib_math.html#rad2deg-function))
+    interface rad2deg
+        #:for k1 in REAL_KINDS
+        procedure :: rad2deg_${k1}$
+        #:endfor
+    end interface rad2deg
     
     !> Returns a boolean scalar/array where two scalar/arrays are element-wise equal within a tolerance.
     !> ([Specification](../page/specs/stdlib_math.html#is_close-function))
@@ -453,6 +490,22 @@ contains
     end function argpi_${k1}$
     #:endfor
 
+    #:for k1, t1 in REAL_KINDS_TYPES
+    elemental function deg2rad_${k1}$(theta) result(result)
+        ${t1}$, intent(in) :: theta
+        ${t1}$ :: result
+        result = theta * PI_${k1}$ / 180.0_${k1}$
+        
+    end function deg2rad_${k1}$
+    
+    elemental function rad2deg_${k1}$(theta) result(result)
+        ${t1}$, intent(in) :: theta
+        ${t1}$ :: result
+        result = theta * 180.0_${k1}$ / PI_${k1}$
+        
+    end function rad2deg_${k1}$
+    #:endfor
+
     #:for k1, t1 in INT_KINDS_TYPES
     !> Returns the greatest common divisor of two integers of kind ${k1}$
     !> using the Euclidean algorithm.
@@ -473,5 +526,42 @@ contains
     end function gcd_${k1}$
 
     #:endfor
+
+    #:for k1, t1 in INT_KINDS_TYPES + REAL_KINDS_TYPES + BITSET_KINDS_TYPES
+    elemental subroutine swap_${k1}$(lhs, rhs)
+        ${t1}$, intent(inout) :: lhs, rhs
+        ${t1}$ :: temp
+        temp = lhs; lhs = rhs; rhs = temp
+    end subroutine
+
+    #:endfor
+
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+    elemental subroutine swap_c${k1}$(lhs, rhs)
+        ${t1}$, intent(inout) :: lhs, rhs
+        ${t1}$ :: temp
+        temp = lhs; lhs = rhs; rhs = temp
+    end subroutine
+
+    #:endfor
+
+    elemental subroutine swap_bool(lhs, rhs)
+        logical, intent(inout) :: lhs, rhs
+        logical :: temp
+        temp = lhs; lhs = rhs; rhs = temp
+    end subroutine
+
+    elemental subroutine swap_str(lhs,rhs)
+        character(*), intent(inout) :: lhs, rhs
+        character(len=max(len(lhs), len(rhs))) :: temp
+        temp = lhs ; lhs = rhs ; rhs = temp
+    end subroutine
+
+    elemental subroutine swap_stt(lhs,rhs)
+        use stdlib_string_type, only: string_type
+        type(string_type), intent(inout) :: lhs, rhs
+        type(string_type) :: temp
+        temp = lhs ; lhs = rhs ; rhs = temp
+    end subroutine
     
 end module stdlib_math

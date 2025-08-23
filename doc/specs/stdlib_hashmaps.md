@@ -43,11 +43,9 @@ use by `stdlib_hashmaps`. It provides an
 interface to the 32 bit hash functions of the Standard Library module,
 `stdlib_hash_32bit`, and provides wrappers to some of the
 hash functions so that they no longer need to be supplied seeds. It
-also defines two data types used to store information in the hash
-maps, the `key_type` and the `other_type`. The `key_type` is used to
+also defines the `key_type` derived type. The `key_type` is used to
 define keys that, in turn, are used to identify the data entered into
-a hash map. The `other_type` is intended to contain the other data
-associated with the key.
+a hash map.
 
 The module `stdlib_hashmaps` defines the API for a parent datatype,
 `hashmap_type` and two extensions of that hash map type:
@@ -88,8 +86,8 @@ the ratio of the number of hash map probes to the number of subroutine
 calls.
 Wile the maps make extensive use of pointers internally, a private
 finalization subroutine avoids memory leaks.
-The maps can take entry keys of type `key_type`, and other data of the
-type `other_type`.
+The maps can take entry keys of type `key_type`, and other data (also
+commonly known as values, as in key value pairs) in any scalar type. 
 The maps allow the addition, removal, and lookup of entries, and the
 inclusion of data in addition to the entry key.
 
@@ -118,27 +116,18 @@ value, `int32`.
 
 ### The `stdlib_hashmap_wrappers`' module's derived types
 
-The `stdlib_hashmap_wrappers` module defines two derived types:
-`key_type`, and `other_type`. The `key_type` is intended to be used
-for the search keys of hash tables.  The `other_type` is intended to
-store additional data associated with a key. Both types are
-opaque. Their current representations are as follows
+The `stdlib_hashmap_wrappers` defines `key_type` which is intended to
+be used for the search keys of hash tables. The tye is opaque.
+The current representation is as follows
 
 ```fortran
     type :: key_type
         private
         integer(int8), allocatable :: value(:)
     end type key_type
-
-    type :: other_type
-        private
-        class(*), allocatable :: value
-    end type other_type
 ```
-
 The module also defines six procedures for those types: `copy_key`,
-`copy_other`, `equal_keys`, `free_key`, `free_other`, `get`, and
-`set`, and one operator, `==`,
+`equal_keys`, `free_key`, `get`, `set`, and one operator, `==`,
 for use by the hash maps to manipulate or inquire of components of
 those types.
 
@@ -146,10 +135,9 @@ those types.
 
 The  `stdlib_hashmap_wrappers` module provides procedures in
 several categories: procedures to manipulate data of the `key_type`;
-procedures to manipulate data of the `other_type`, and 32 bit hash
-functions for keys. The procedures in each category are listed
-below. It also provides an operator to compare two key type values for
-equality. 
+and 32 bit hash functions for keys. The procedures in each category 
+are listed below. It also provides an operator to compare two key 
+type values for equality. 
 
 Procedures to manipulate `key_type` data:
 
@@ -164,20 +152,6 @@ Procedures to manipulate `key_type` data:
 * `set( key, value )` - sets the content of `key` to `value`.  
   Supported key types are `int8` array, `int32` array, and character
   string.
-
-Procedures to manipulate `other_type` data:
-
-* `copy_other( other_in, other_out )` - Copies the contents of the
-  other data, `other_in`, to the contents of the other data,
-  `other_out`.
-
-* `get( other, value )` - extracts the contents of `other` into the
-  `class(*)` variable `value`.
-
-* `set( other, value )` - sets the content of `other` to the `class(*)`
-  variable `value`. 
-
-* `free_other( other )` - frees the memory in `other`.
 
 Procedures to hash keys to 32 bit integers:
 
@@ -230,38 +204,6 @@ is an `intent(out)` argument.
 
 ```fortran
 {!example/hashmaps/example_hashmaps_copy_key.f90!}
-```
-
-#### `copy_other` - Returns a copy of the other data
-
-##### Status
-
-Experimental
-
-##### Description
-
-Returns a copy of an input of type `other_type`.
-
-##### Syntax
-
-`call ` [[stdlib_hashmap_wrappers:copy_other]] `( other_in, other_out )`
-
-##### Class
-
-Subroutine.
-
-##### Arguments
-
-`other_in`: shall be a scalar expression of type `other_type`. It
-is an `intent(in)` argument.
-
-`other_out`: shall be a scalar variable of type `other_type`. It
-is an `intent(out)` argument.
-
-##### Example
-
-```fortran
-{!example/hashmaps/example_hashmaps_copy_other.f90!}
 ```
 
 
@@ -323,7 +265,6 @@ This code does not pass any of the SMHasher tests, but the resulting
 degradation in performance due to its larger number of collisions is
 expected to be minor compared to its faster hashing rate.
 
-
 ##### Example
 
 ```fortran
@@ -375,7 +316,6 @@ This code does not pass any of the SMHasher tests, but the resulting
 degradation in performance due to its larger number of collisions is
 expected to be minor compared to its faster hashing rate.
 
-
 ##### Example
 
 ```fortran
@@ -412,36 +352,6 @@ is an `intent(out)` argument.
 {!example/hashmaps/example_hashmaps_free_key.f90!}
 ```
 
-#### `free_other` - frees the memory associated with other data
-
-##### Status
-
-Experimental
-
-##### Description
-
-Deallocates the memory associated with a variable of type
-`other_type`.
-
-##### Syntax
-
-`call ` [[stdlib_hashmap_wrappers:free_other]] `( other )`
-
-##### Class
-
-Subroutine.
-
-##### Argument
-
-`other`: shall be a scalar variable of type `other_type`. It
-is an `intent(out)` argument.
-
-##### Example
-
-```fortran
-{!example/hashmaps/example_hashmaps_free_other.f90!}
-```
-
 
 #### `get` - extracts the data from a derived type
 
@@ -451,16 +361,12 @@ Experimental
 
 ##### Description
 
-Extracts the data from a `key_type` or `other_type` and stores it
-in the variable `value`.
+Extracts the data from a `key_type` and stores it in the
+variable `value`.
 
 ##### Syntax
 
 `call ` [[stdlib_hashmap_wrappers:get]] `( key, value )`
-
-or
-
-`call ` [[stdlib_hashmap_wrappers:get]] `( other, value )`
 
 ##### Class
 
@@ -471,14 +377,9 @@ Subroutine.
 `key`: shall be a scalar expression of type `key_type`. It
 is an `intent(in)` argument.
 
-`other`: shall be a scalar expression of type `other_type`. It
-is an `intent(in)` argument.
-
-`value`: if the the first argument is of `key_type`, `value` shall be
-an allocatable default `character` string variable, or 
-an allocatable vector variable of type `integer` and kind `int8` or 
-`int32`, otherwise the first argument is of `other_type` and `value` 
-shall be an allocatable of `class(*)`. It is an `intent(out)` argument.
+`value`: shall be an allocatable default `character` string variable,
+or an allocatable vector variable of type `integer` and kind `int8` or 
+`int32`.
 
 ##### Example
 
@@ -530,6 +431,7 @@ pointers intended for use as a hash function for the hash maps.
 {!example/hashmaps/example_hashmaps_hasher_fun.f90!}
 ```
 
+
 #### `operator(==)` - Compares two keys for equality 
 
 ##### Status 
@@ -569,6 +471,7 @@ The result is `.true.` if the keys are equal, otherwise `.falss.`.
 ```fortran 
 {!example/hashmaps/example_hashmaps_equal_keys.f90!}
 ```
+
 
 #### `seeded_nmhash32_hasher`- calculates a hash code from a key
 
@@ -613,12 +516,12 @@ As a result it should give fair performance for typical hash map
 applications.
 This code passes the SMHasher tests.
 
-
 ##### Example
 
 ```fortran
 {!example/hashmaps/example_hashmaps_seeded_nmhash32_hasher.f90!}
 ```
+
 
 #### `seeded_nmhash32x_hasher`- calculates a hash code from a key
 
@@ -669,6 +572,7 @@ This code passes the SMHasher tests.
 {!example/hashmaps/example_hashmaps_seeded_nmhash32x_hasher.f90!}
 ```
 
+
 #### `seeded_water_hasher`- calculates a hash code from a key
 
 ##### Status
@@ -712,7 +616,6 @@ As a result it should give reasonable performance for typical hash
 table applications.
 This code passes the SMHasher tests.
 
-
 ##### Example
 
 ```fortran
@@ -728,16 +631,11 @@ Experimental
 
 ##### Description
 
-Places the data from `value` in a `key_type` or an `other_type`.
+Places the data from `value` in a `key_type`.
 
 ##### Syntax
 
 `call ` [[stdlib_hashmap_wrappers:set]] `( key, value )`
-
-or
-
-`call ` [[stdlib_hashmap_wrappers:set]] `( other, value )`
-
 
 ##### Class
 
@@ -748,14 +646,9 @@ Subroutine.
 `key`: shall be a scalar variable of type `key_type`. It
 is an `intent(out)` argument.
 
-`other`: shall be a scalar variable of type `other_type`. It
-is an `intent(out)` argument.
-
-`value`: if the first argument is `key`, `value` shall be a default
-`character` string scalar expression, or a vector expression of type `integer`
-and kind `int8` or `int32`, while for a first argument of type 
-`other` `value` shall be of type `class(*)`. It is an `intent(in)` 
-argument.
+`value`: shall be a default `character` string scalar expression,
+or a vector expression of type `integer`and kind `int8` or `int32`.
+It is an `intent(in)` argument.
 
 ##### Note
 
@@ -870,7 +763,7 @@ type. Each of these types are described below.
 
 The `hashmap_type` abstract type serves as the parent type for the two
 types `chaining_hashmap_type` and `open_hashmap_type`. It defines
-seven private components:
+eight private components:
 
 * `call_count` - the number of procedure calls on the map;
 
@@ -889,6 +782,8 @@ seven private components:
 
 * `hasher` - a pointer to the hash function used by the map.
 
+* `initialized` - track if map has been initialized
+
 It also defines five non-overridable procedures:
 
 * `calls` - returns the number of procedure calls on the map;
@@ -906,7 +801,7 @@ and ten deferred procedures:
 
 * `get_all_keys` - gets all the keys contained in a map;
 
-* `get_other_data` - gets the other map data associated with the key;
+* `get_other_data` - gets the value associated with a key;
 
 * `init` - initializes the hash map;
 
@@ -916,14 +811,14 @@ and ten deferred procedures:
 * `loading` - returns the ratio of the number of entries to the number
   of slots;
 
-* `map_entry` - inserts a key and its other associated data into the
-  map;
+* `map_entry` - inserts a key and optionally a corresponding value into
+ the map;
 
 * `rehash` - rehashes the map with the provided hash function;
 
 * `remove` - removes the entry associated wit the key;
 
-* `set_other_data` - replaces the other data associated with the key;
+* `set_other_data` - replaces the value associated with a key;
 
 * `total_depth` - returns the number of probes needed to address all
   the entries in the map;
@@ -1003,13 +898,14 @@ the inverse table. The type's definition is below:
         private
         integer(int_hash)   :: hash_val ! Full hash value
         type(key_type)      :: key ! The entry's key
-        type(other_type)    :: other ! Other entry data
+        class(*), allocatable  :: other ! Other entry data
         integer(int_index)  :: index ! Index into inverse table
         type(chaining_map_entry_type), pointer :: &
             next => null() ! Next bucket
     end type chaining_map_entry_type
 ```
 Currently the `int_hash` and `int_index` have the value of `int32`.
+
 
 #### The `chaining_map_entry_ptr` derived type
 
@@ -1023,6 +919,7 @@ containing the elements of the table. The type's definition is below:
         type(chaining_map_entry_type), pointer :: target => null()
     end type chaining_map_entry_ptr
 ```
+
 
 #### The `chaining_map_entry_pool` derived type
 
@@ -1086,6 +983,7 @@ as follows:
     end type chaining_hashmap_type
 ```
 
+
 #### The `open_map_entry_type` derived type
 
 Entities of the type `open_map_entry_type` are used to define
@@ -1098,12 +996,13 @@ the inverse table. The type's definition is below:
         private
         integer(int_hash)  :: hash_val ! Full hash value
         type(key_type)     :: key ! The entry's key
-        type(other_type)   :: other ! Other entry data
+        class(*), allocatable  :: other ! Other entry data
         integer(int_index) :: index ! Index into inverse table
     end type open_map_entry_type
 ```
 
 Currently `int_hash` and `int_index` have the value of `int32`.
+
 
 #### The `open_map_entry_ptr` derived type
 
@@ -1117,6 +1016,7 @@ containing the elements of the table. The type's definition is below:
         type(open_map_entry_type), pointer :: target => null()
     end type open_map_entry_ptr
 ```
+
 
 #### The `open_hashmap_type` derived type
 
@@ -1164,6 +1064,7 @@ as follows:
     end type open_hashmap_type
 ```
 
+
 ### Table of `stdlib_hashmap` procedures
 
 The `stdlib_hashmap` module provides procedures in
@@ -1175,7 +1076,7 @@ are listed below.
 
 Procedure to initialize a chaining hash map:
 
-* `map % init( hasher[, slots_bits, status] )` - Routine
+* `map % init( [hasher, slots_bits, status] )` - Routine
   to initialize a chaining hash map.
 
 Procedure to modify the structure of a map:
@@ -1185,21 +1086,21 @@ Procedure to modify the structure of a map:
 
 Procedures to modify the content of a map:
 
-* `map % map_entry( key, other, conflict )` - Inserts an entry into the
+* `map % map_entry( key[, other, conflict] )` - Inserts an entry into the
   hash map.
 
-* `map % remove( key, existed )` - Remove the entry, if any,
+* `map % remove( key[, existed] )` - Remove the entry, if any,
   associated with the `key`.
 
-* `map % set_other_data( key, other, exists )` - Change the other data
-  associated with the entry.
+* `map % set_other_data( key, other[, exists] )` - Change the value 
+associated with the `key`.
 
 Procedures to report the content of a map:
 
 * `map % get_all_keys( all_keys )` - Returns all the keys
   contained in the map;
 
-* `map % get_other_data( key, other, exists )` - Returns the other data
+* `map % get_other_data( key, other[, exists] )` - Returns the value 
   associated with the `key`;
 
 * `map % key_test( key, present)` - Returns a flag indicating whether
@@ -1345,7 +1246,7 @@ Experimental
 
 ##### Description
 
-Returns the other data associated with the `key`,
+Returns the value associated with the `key`,
 
 ##### Syntax
 
@@ -1365,9 +1266,9 @@ Subroutine
 `key`: shall be a of type `key_type` scalar, `character` scalar, `int8` array
 or `int32` array. It is an `intent(in)` argument.
 
-`other`: shall be a variable of type `other_data`.
-  It is an `intent(out)` argument. It is the other data associated
-  with the `key`.
+`other`: shall be a allocatable unlimited polymorphic scalar.  
+(class(*), allocatable)  It is an `intent(out)` argument.
+It is the value associated with the `key`.
 
 `exists` (optional): shall be a variable of type logical. It is an
 `intent(out)` argument. If `.true.` an entry with the given `key`
@@ -1378,7 +1279,6 @@ undefined.
 
  The following is an example of the retrieval of other data
   associated with a `key`:
-
 
 ```fortran
 {!example/hashmaps/example_hashmaps_get_other_data.f90!}
@@ -1397,7 +1297,7 @@ Initializes a `hashmap_type` object.
 
 ##### Syntax
 
-`call map % ` [[hashmap_type(type):init(bound)]] `( hasher [, slots_bits, status ] )`
+`call map % ` [[hashmap_type(type):init(bound)]] `( [hasher, slots_bits, status ] )`
 
 ##### Class
 
@@ -1410,9 +1310,10 @@ Subroutine
   `intent(out)` argument. It will 
   be a hash map used to store and access the entries.
 
-`hasher`: shall be a procedure with interface `hash_fun`.
+`hasher`: (optional): shall be a procedure with interface `hash_fun`.
   It is an `intent(in)` argument. It is the procedure to be used to
-  generate the hashes for the table from the keys of the entries.
+  generate the hashes for the table from the keys of the entries. 
+  Defaults to fnv_1_hasher if not provided.
 
 `slots_bits` (optional): shall be a scalar default integer 
   expression. It is an `intent(in)` argument. The initial number of
@@ -1478,8 +1379,8 @@ are examined.
 or `int32` array. It is an `intent(in)` argument. It is a `key` whose 
 presence in the `map` is being examined.
 
-`present` (optional): shall be a scalar variable of type default
-`logical`. It is an intent(out) argument. It is a logical flag where
+`present`: shall be a scalar variable of type `logical`.
+It is an `intent(out)` argument. It is a logical flag where
 `.true.` indicates that an entry with that `key` is present in the
 `map` and `.false.` indicates that no such entry is present.
 
@@ -1529,6 +1430,7 @@ number of slots in the hash map.
 {!example/hashmaps/example_hashmaps_loading.f90!}
 ```
 
+
 #### `map_entry` - inserts an entry into the hash map
 
 ##### Status
@@ -1542,7 +1444,6 @@ Inserts an entry into the hash map if it is not already present.
 ##### Syntax
 
 `call map % ` [[hashmap_type(type):map_entry(bound)]] `( key[, other, conflict ] )`
-
 
 ##### Class
 
@@ -1559,9 +1460,9 @@ entry.
 or `int32` array. It is an `intent(in)` argument. It is the key for the entry
 to be placed in the table.
 
-`other` (optional): shall be a scalar expression of type `other_type`.
-  It is an `intent(in)` argument. If present it is the other data to be
-  associated with the `key`.
+`other` (optional): shall be a scalar of any type, including derived types.
+It is an `intent(in)` argument. If present it is the value to be
+associated with the `key`.
 
 `conflict` (optional): shall be a scalar variable of type
 `logical`. It is an `intent(out)` argument. If present, a `.true.`
@@ -1570,14 +1471,16 @@ and the entry was not entered into the map, a `.false.` value indicates
 that `key` was not present in the map and the entry was added to the
 map. 
 
-* If `key` is already present in `map` then the presence of `other` 
-is ignored.
+* If `key` is already present in `map` and the `conflict` argument has been
+provided then the presence of `other` is ignored. If `conflict` has not 
+been provided then it routine will error stop.  
 
 ##### Example
 
 ```fortran
 {!example/hashmaps/example_hashmaps_map_entry.f90!}
 ```
+
 
 #### `map_probes` - returns the number of hash map probes
 
@@ -1617,6 +1520,7 @@ rehashing.
 ```fortran
 {!example/hashmaps/example_hashmaps_probes.f90!}
 ```
+
 
 #### `num_slots` - returns the number of hash map slots.
 
@@ -1691,6 +1595,7 @@ It is the hash method to be used by `map`.
 {!example/hashmaps/example_hashmaps_rehash.f90!}
 ```
 
+
 #### `remove` - removes an entry from the hash map
 
 ##### Status
@@ -1732,6 +1637,7 @@ absent, the procedure returns with no entry with the given key.
 {!example/hashmaps/example_hashmaps_remove.f90!}
 ```
 
+
 #### `set_other_data` - replaces the other data for an entry
 
 ##### Status
@@ -1762,22 +1668,25 @@ and access the entry's data.
 or `int32` array. It is an `intent(in)` argument. It is the `key` to the 
 entry whose `other` data is to be replaced.
 
-`other`: shall be a scalar expression of type `other_type`.
-It is an `intent(in)` argument. It is the data to be stored as
-the other data for the entry with the key value, `key`.
+`other` (optional): shall be a scalar of any type, including derived types.
+It is an `intent(in)` argument. If present it is the value to be
+associated with the `key`.
 
-`exists` (optional): shall be a scalar variable of type default
-logical. It is an `intent(out)` argument. If present with the value
+`exists` (optional): shall be a scalar variable of type `logical`.
+It is an `intent(out)` argument. If present with the value
 `.true.` an entry with that `key` existed in the map and its `other`
-data was replaced, otherwise if `exists` is `.false.` the entry did
+data was replaced.  If `exists` is `.false.` the `key` did
 not exist and nothing was done.
 
+* If `key` is not already present in `map` and `exists` has not 
+been provided then the routine will error stop.
 
 ##### Example
 
 ```fortran
 {!example/hashmaps/example_hashmaps_set_other_data.f90!}
 ```
+
 
 #### `slots_bits` - returns the number of bits used to address the hash map slots 
 

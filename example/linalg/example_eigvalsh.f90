@@ -3,7 +3,6 @@ program example_eigvalsh
   use stdlib_linalg, only: eigvalsh
   implicit none
 
-  integer :: i
   real, allocatable :: A(:,:),lambda(:)
   complex, allocatable :: cA(:,:)
 

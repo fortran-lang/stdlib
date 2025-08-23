@@ -23,13 +23,13 @@ module test_linalg_determinant
 
         #:for rk,rt in RC_KINDS_TYPES
         #:if rk!="xdp"
-        tests = [tests,new_unittest("$eye_det_${rt[0]}$${rk}$",test_${rt[0]}$${rk}$_eye_determinant)]
-        tests = [tests,new_unittest("$eye_det_multiple_${rt[0]}$${rk}$",test_${rt[0]}$${rk}$_eye_multiple)]
+        call add_test(tests,new_unittest("$eye_det_${rt[0]}$${rk}$",test_${rt[0]}$${rk}$_eye_determinant))
+        call add_test(tests,new_unittest("$eye_det_multiple_${rt[0]}$${rk}$",test_${rt[0]}$${rk}$_eye_multiple))
         #:endif
         #:endfor
         #:for ck,ct in CMPLX_KINDS_TYPES
         #:if ck!="xdp"
-        tests = [tests,new_unittest("$complex_det_${rt[0]}$${rk}$",test_${ct[0]}$${ck}$_complex_determinant)]
+        call add_test(tests,new_unittest("$complex_det_${rt[0]}$${rk}$",test_${ct[0]}$${ck}$_complex_determinant))
         #:endif
         #: endfor
 
@@ -43,7 +43,6 @@ module test_linalg_determinant
 
         type(linalg_state_type) :: state
 
-        integer(ilp) :: i
         integer(ilp), parameter :: n = 128_ilp
 
         ${rt}$ :: a(n,n),deta
@@ -79,7 +78,7 @@ module test_linalg_determinant
 
         integer(ilp), parameter :: n = 4_ilp
         real(${rk}$), parameter :: coef = 0.01_${rk}$
-        integer(ilp) :: i,j
+        integer(ilp) :: i
         ${rt}$ :: a(n,n),deta
 
         !> Multiply eye by a very small number
@@ -108,7 +107,7 @@ module test_linalg_determinant
 
         type(linalg_state_type) :: state
 
-        integer(ilp) :: i,j,n
+        integer(ilp) :: i,n
         integer(ilp), parameter :: nmax = 10_ilp
 
         ${ct}$, parameter :: res(nmax) = [${ct}$::(1,1),(0,2),(-2,2),(-4,0),(-4,-4), &
@@ -144,6 +143,27 @@ module test_linalg_determinant
 
     #:endif
     #:endfor
+    
+    ! gcc-15 bugfix utility
+    subroutine add_test(tests,new_test)
+        type(unittest_type), allocatable, intent(inout) :: tests(:)    
+        type(unittest_type), intent(in) :: new_test
+        
+        integer :: n
+        type(unittest_type), allocatable :: new_tests(:)
+        
+        if (allocated(tests)) then 
+            n = size(tests)
+        else
+            n = 0
+        end if
+        
+        allocate(new_tests(n+1))
+        if (n>0) new_tests(1:n) = tests(1:n)
+                 new_tests(1+n) = new_test
+        call move_alloc(from=new_tests,to=tests)        
+        
+    end subroutine add_test
 
 end module test_linalg_determinant
 

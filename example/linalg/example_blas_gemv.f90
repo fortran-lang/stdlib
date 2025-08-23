@@ -1,7 +1,7 @@
 program example_gemv
   use stdlib_linalg, only: eye
   use stdlib_linalg_blas, only: sp,gemv
-  implicit none(type,external)
+  implicit none
   real(sp) :: A(2, 2), B(2), C(2)
   B = [1.0,2.0]
   A = eye(2)

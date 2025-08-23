@@ -13,9 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         include: [
-          { msystem: MSYS,    arch: x86_64 },
-          { msystem: MINGW64, arch: x86_64 },
-          { msystem: MINGW32, arch: i686   }
+          { msystem: MINGW64, arch: x86_64 }
         ]
     defaults:
       run:
@@ -25,7 +23,6 @@ jobs:
 
     - name: Setup MinGW native environment
       uses: msys2/setup-msys2@v2
-      if: contains(matrix.msystem, 'MINGW')
       with:
         msystem: ${{ matrix.msystem }}
         update: false
@@ -34,28 +31,9 @@ jobs:
           mingw-w64-${{ matrix.arch }}-gcc
           mingw-w64-${{ matrix.arch }}-gcc-fortran
           mingw-w64-${{ matrix.arch }}-python
-          mingw-w64-${{ matrix.arch }}-python-pip
-          mingw-w64-${{ matrix.arch }}-python-setuptools
+          mingw-w64-${{ matrix.arch }}-python-fypp
           mingw-w64-${{ matrix.arch }}-cmake
           mingw-w64-${{ matrix.arch }}-ninja
-
-    - name: Setup msys POSIX environment
-      uses: msys2/setup-msys2@v2
-      if: contains(matrix.msystem, 'MSYS')
-      with:
-        msystem: MSYS
-        update: false
-        install: >-
-          git
-          mingw-w64-x86_64-gcc
-          mingw-w64-x86_64-gcc-fortran
-          python
-          python-pip
-          cmake
-          ninja
-
-    - name: Install fypp
-      run: pip install fypp
 
     - run: >-
         PATH=$PATH:/mingw64/bin/ cmake
@@ -65,6 +43,7 @@ jobs:
         -DCMAKE_Fortran_FLAGS_DEBUG="-Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all -fbacktrace"
         -DCMAKE_MAXIMUM_RANK:String=4
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
+        -DFIND_BLAS:STRING=FALSE
       env:
         FC: gfortran
         CC: gcc
@@ -80,7 +59,7 @@ jobs:
     - name: CTest
       run: PATH=$PATH:/mingw64/bin/ ctest --test-dir build --output-on-failure --parallel -V -LE quadruple_precision
 
-    - uses: actions/upload-artifact@v1
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
         name: WindowsCMakeTestlog

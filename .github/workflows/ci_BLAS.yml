@@ -1,0 +1,136 @@
+name: CI_BLAS
+
+on: [push, pull_request]
+
+env:
+  CTEST_TIME_TIMEOUT: "5" # some failures hang forever
+  CMAKE_GENERATOR: Ninja
+
+jobs:
+  msys2-build:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include: [{ msystem: UCRT64, arch: x86_64 }]
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup MinGW native environment
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{ matrix.msystem }}
+          update: false
+          install: >-
+            git
+            mingw-w64-ucrt-${{ matrix.arch }}-gcc
+            mingw-w64-ucrt-${{ matrix.arch }}-gcc-fortran
+            mingw-w64-ucrt-${{ matrix.arch }}-python
+            mingw-w64-ucrt-${{ matrix.arch }}-python-fypp
+            mingw-w64-ucrt-${{ matrix.arch }}-cmake
+            mingw-w64-ucrt-${{ matrix.arch }}-ninja
+            mingw-w64-ucrt-${{ matrix.arch }}-openblas
+
+      # Build and test with external BLAS and LAPACK (OpenBLAS on UCRT64)
+      - name: Configure with CMake and OpenBLAS
+        run: >-
+          PATH=$PATH:/ucrt64/bin/ cmake
+          -Wdev
+          -B build
+          -DCMAKE_BUILD_TYPE=Debug
+          -DCMAKE_Fortran_FLAGS_DEBUG="-Wall -Wextra -Wimplicit-interface -fPIC -g -fcheck=all -fbacktrace"
+          -DCMAKE_MAXIMUM_RANK:String=4
+          -DCMAKE_INSTALL_PREFIX=$PWD/_dist
+          -DFIND_BLAS:STRING=TRUE
+        env:
+          FC: gfortran
+          CC: gcc
+          CXX: g++
+
+      - name: CMake build with OpenBLAS
+        run: PATH=$PATH:/ucrt64/bin/ cmake --build build --parallel
+
+      - name: catch build fail
+        if: failure()
+        run: PATH=$PATH:/ucrt64/bin/ cmake --build build --verbose --parallel 1
+
+      - name: CTest with OpenBLAS
+        run: PATH=$PATH:/ucrt64/bin/ ctest --test-dir build --output-on-failure --parallel -V -LE quadruple_precision
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: WindowsCMakeTestlog_openblas
+          path: build/Testing/Temporary/LastTest.log
+
+      - name: Install project with OpenBLAS
+        run: PATH=$PATH:/ucrt64/bin/ cmake --install build
+
+  Build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain:
+          - { compiler: intel, version: "2024.1" }
+        build: [cmake]
+    env:
+      BUILD_DIR: ${{ matrix.build == 'cmake' && 'build' || '.' }}
+      APT_PACKAGES: >-
+        intel-oneapi-mkl
+        intel-oneapi-mkl-devel
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v5 # Use pip to install latest CMake, & FORD/Jin2For, etc.
+        with:
+          python-version: 3.x
+
+      - name: Install fypp
+        run: pip install --upgrade fypp ninja
+
+      - name: Setup Fortran compiler
+        uses: fortran-lang/setup-fortran@v1.6.1
+        id: setup-fortran
+        with:
+          compiler: ${{ matrix.toolchain.compiler }}
+          version: ${{ matrix.toolchain.version }}
+
+      - name: Install Intel oneAPI MKL
+        run: |
+          sudo apt-get install ${APT_PACKAGES}
+          source /opt/intel/oneapi/mkl/latest/env/vars.sh
+          printenv >> $GITHUB_ENV
+
+      # Build and test with external BLAS and LAPACK (MKL on Ubuntu with Intel compilers)
+      - name: Configure with CMake and MKL
+        run: >-
+          cmake -Wdev -G Ninja
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_MAXIMUM_RANK:String=4
+          -DCMAKE_INSTALL_PREFIX=$PWD/_dist
+          -DFIND_BLAS:STRING=TRUE
+          -S . -B ${{ env.BUILD_DIR }}
+
+      - name: Build and compile with MKL
+        run: cmake --build ${{ env.BUILD_DIR }} --parallel
+
+      - name: catch build fail with MKL
+        if: failure()
+        run: cmake --build ${{ env.BUILD_DIR }} --verbose --parallel 1
+
+      - name: test with MKL
+        run: >-
+          ctest
+          --test-dir ${{ env.BUILD_DIR }}
+          --parallel
+          --output-on-failure
+          --no-tests=error
+
+      - name: Install project with MKL
+        run: cmake --install ${{ env.BUILD_DIR }}
