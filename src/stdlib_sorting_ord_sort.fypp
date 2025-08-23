@@ -117,6 +117,8 @@ contains
         integer :: stat
 
         array_size = size( array, kind=int_index )
+
+! If necessary allocate buffers to serve as scratch memory.
         if ( present(work) ) then
             if ( size(work, kind=int_index) < array_size/2 ) then
                 error stop "${name1}$_${sname}$_ord_sort: work array is too small."
