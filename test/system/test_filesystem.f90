@@ -389,7 +389,8 @@ contains
         call check(error, size == 0 .and. err%ok(), "Empty file has a non-zero size!: " // to_string(size))
 
         text = "Hello, World!"
-        write(iunit, '(A)', advance='NO') text ! no newlines or additional bytes
+        write(iunit, '(A)', advance='NO', iostat=ios, iomsg=msg) text ! no newlines or additional bytes
+        call check(error, ios == 0, "Cannot write to test file: " // trim(msg))
         flush(iunit) ! flush the buffer
 
         ! get the size of the file => should be len(text)
