@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <string.h>
 #include <errno.h>
+#include <stdint.h>
 #ifdef _WIN32
 #include <direct.h>
 #else
@@ -90,4 +91,27 @@ int stdlib_set_cwd(char* path) {
 #endif /* ifdef _WIN32 */
     
     return (code == -1) ? errno : 0;
+}
+
+int stdlib_get_file_size(char* path, int64_t* size){
+    int code;
+    *size = 0;
+#ifdef _WIN32
+    struct _stati64 buf = {0};
+
+    code = _stati64(path, &buf);
+
+    if (code == -1) return errno;
+
+    *size = (int64_t) buf.st_size;
+#else
+    struct stat buf = {0};
+    code = stat(path, &buf);
+
+    if (code == -1) return errno;
+
+    *size = (int64_t) buf.st_size;
+#endif /* ifdef _WIN32 */
+
+    return 0;
 }

@@ -1,9 +1,11 @@
 module test_filesystem
+    use, intrinsic :: iso_fortran_env, only: int64
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_system, only: is_directory, delete_file, FS_ERROR, FS_ERROR_CODE, &
         make_directory, remove_directory, make_directory_all, is_windows, OS_TYPE, &
-        OS_WINDOWS, get_cwd, set_cwd, operator(/)
+        OS_WINDOWS, get_cwd, set_cwd, operator(/), get_file_size
     use stdlib_error, only: state_type, STDLIB_FS_ERROR
+    use stdlib_strings, only: to_string
 
     implicit none
 
@@ -26,7 +28,9 @@ contains
             new_unittest("fs_make_dir_all", test_make_directory_all), &            
             new_unittest("fs_remove_dir", test_remove_directory), &            
             new_unittest("fs_remove_dir_non_existent", test_remove_directory_nonexistent), &            
-            new_unittest("fs_cwd", test_cwd) &            
+            new_unittest("fs_cwd", test_cwd), &
+            new_unittest("fs_get_file_size_dir", test_get_file_size_dir), &
+            new_unittest("fs_get_file_size_file", test_get_file_size_file) &
         ]
     end subroutine collect_suite
 
@@ -329,6 +333,80 @@ contains
         call check(error, ios==0 .and. iocmd==0, 'Cannot cleanup cwd test, cannot remove empty dir: '//trim(msg))
         if (allocated(error)) return
     end subroutine test_cwd
+
+    subroutine test_get_file_size_dir(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(state_type) :: err
+        character(len=256) :: dir_name
+        integer :: ios,iocmd
+        character(len=512) :: msg
+        integer(int64) :: size
+
+        ! create a temporary directory
+        dir_name = "test_directory"
+
+        call execute_command_line('mkdir ' // dir_name, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        call check(error, ios==0 .and. iocmd==0, 'Cannot init get_file_size test: '//trim(msg))
+        if (allocated(error)) return
+
+        size = get_file_size(dir_name, err)
+
+        call check(error, err%error(), 'get_file_size did not error out with a directory argument!')
+
+        if (allocated(error)) then
+            ! cleanup: remove the empty directory
+            call execute_command_line('rmdir ' // dir_name, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+            call check(error, ios==0 .and. iocmd==0, err%message // &
+                ' and cannot cleanup get_file_size test, cannot remove empty dir: '//trim(msg))
+            return
+        end if
+
+        ! cleanup: remove the empty directory
+        call execute_command_line('rmdir ' // dir_name, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        call check(error, ios==0 .and. iocmd==0, 'Cannot cleanup cwd test, cannot remove empty dir: '//trim(msg))
+        if (allocated(error)) return
+    end subroutine test_get_file_size_dir
+
+    subroutine test_get_file_size_file(error)
+        type(error_type), allocatable, intent(out) :: error
+        character(len=256) :: filename
+        integer :: ios, iunit, iocmd
+        character(len=512) :: msg
+        character(len=20) :: text
+
+        integer(int64) :: size
+        type(state_type) :: err
+
+        filename = "test_file.txt"
+
+        ! Create a file and open it in `stream` access
+        open(newunit=iunit, file=filename, status="replace", action='write', access='stream', iostat=ios, iomsg=msg)
+        call check(error, ios == 0, "Cannot create test file: " // trim(msg))
+        if (allocated(error)) return
+
+        ! get the size of an empty file => should be zero
+        size = get_file_size(filename, err)
+        call check(error, size == 0 .and. err%ok(), "Empty file has a non-zero size!: " // to_string(size))
+
+        text = "Hello, World!"
+        write(iunit, iostat=ios, iomsg=msg) text ! no newlines or additional bytes
+        call check(error, ios == 0, "Cannot write to test file: " // trim(msg))
+
+        ! close the file to flush the previous write
+        ! `flush` doesn't seem to work on windows
+        close(iunit,iostat=ios,iomsg=msg)
+        call check(error, ios == 0, "Cannot close test file: " // trim(msg))
+
+        ! get the size of the file => should be len(text)
+        size = get_file_size(filename, err)
+        call check(error, size == len(text) .and. err%ok(), "file has an unexpected size!, Expected: " &
+            // to_string(len(text)) // " ,Got: " // to_string(size))
+
+        ! Clean up: remove the file
+        call execute_command_line("rm " // filename, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        call check(error, ios == 0 .and. iocmd == 0, "Cannot remove test file: " // trim(msg))
+        if (allocated(error)) return
+    end subroutine test_get_file_size_file
 
 end module test_filesystem
 

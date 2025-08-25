@@ -184,6 +184,21 @@ public :: set_cwd
 
 !! version: experimental
 !!
+!! Gets the size (in bytes) of a file.
+!! ([Specification](../page/specs/stdlib_system.html#get_file_size))
+!!
+!! ### Summary
+!! Gets the size (in bytes) of a file.
+!!
+!! ### Description
+!! This function gets the size (in bytes) of a file in the filesystem.
+!! It follows symbolic links, gives an error if the symbolic link or the `path` points to a directory instead.
+!! It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+!!
+public :: get_file_size
+
+!! version: experimental
+!!
 !! Deletes a specified file from the filesystem.
 !! ([Specification](../page/specs/stdlib_system.html#delete_file-delete-a-file))
 !!
@@ -1111,6 +1126,39 @@ subroutine set_cwd(path, err)
         call err0%handle(err)
     end if
 end subroutine set_cwd
+
+integer(int64) function get_file_size(path, err) result(size)
+    character(*), intent(in) :: path
+    type(state_type), optional, intent(out) :: err
+
+    interface
+        integer function stdlib_get_file_size(path, size) bind(C)
+            import c_char, c_int64_t
+            character(kind=c_char), intent(in) :: path(*)
+            integer(c_int64_t), intent(out) :: size
+        end function stdlib_get_file_size
+    end interface
+
+    type(state_type) :: err0
+    integer :: code
+    integer(c_int64_t) :: c_size
+
+    if (is_directory(path)) then
+        err0 = FS_ERROR("Is a directory!")
+        call err0%handle(err)
+        return
+    end if
+
+    code = stdlib_get_file_size(to_c_char(trim(path)), c_size)
+
+    if (code /= 0) then
+        err0 = FS_ERROR_CODE(code, c_get_strerror())
+        call err0%handle(err)
+        return
+    end if
+
+    size = c_size
+end function get_file_size
 
 !> Returns the file path of the null device for the current operating system.
 !>
