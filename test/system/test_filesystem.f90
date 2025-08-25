@@ -370,7 +370,7 @@ contains
     subroutine test_get_file_size_file(error)
         type(error_type), allocatable, intent(out) :: error
         character(len=256) :: filename
-        integer :: ios, iunit
+        integer :: ios, iunit, iocmd
         character(len=512) :: msg
         character(len=20) :: text
 
@@ -379,8 +379,8 @@ contains
 
         filename = "test_file.txt"
 
-        ! Create a file
-        open(newunit=iunit, file=filename, status="replace", action='write', iostat=ios, iomsg=msg)
+        ! Create a file and open it in `stream` access
+        open(newunit=iunit, file=filename, status="replace", action='write', access='stream', iostat=ios, iomsg=msg)
         call check(error, ios == 0, "Cannot create test file: " // trim(msg))
         if (allocated(error)) return
 
@@ -389,9 +389,13 @@ contains
         call check(error, size == 0 .and. err%ok(), "Empty file has a non-zero size!: " // to_string(size))
 
         text = "Hello, World!"
-        write(iunit, '(A)', advance='NO', iostat=ios, iomsg=msg) text ! no newlines or additional bytes
+        write(iunit, iostat=ios, iomsg=msg) text ! no newlines or additional bytes
         call check(error, ios == 0, "Cannot write to test file: " // trim(msg))
-        flush(iunit) ! flush the buffer
+
+        ! close the file to flush the previous write
+        ! `flush` doesn't seem to work on windows
+        close(iunit,iostat=ios,iomsg=msg)
+        call check(error, ios == 0, "Cannot close test file: " // trim(msg))
 
         ! get the size of the file => should be len(text)
         size = get_file_size(filename, err)
@@ -399,8 +403,8 @@ contains
             // to_string(len(text)) // " ,Got: " // to_string(size))
 
         ! Clean up: remove the file
-        close(iunit,status='delete',iostat=ios,iomsg=msg)
-        call check(error, ios == 0, "Cannot delete test file: " // trim(msg))
+        call execute_command_line("rm " // filename, exitstat=ios, cmdstat=iocmd, cmdmsg=msg)
+        call check(error, ios == 0 .and. iocmd == 0, "Cannot remove test file: " // trim(msg))
         if (allocated(error)) return
     end subroutine test_get_file_size_file
 
