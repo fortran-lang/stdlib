@@ -1,5 +1,6 @@
 ADD_EXAMPLE(ord_sort)
 ADD_EXAMPLE(sort)
+ADD_EXAMPLE(sort_adjoint)
 ADD_EXAMPLE(sort_index)
 ADD_EXAMPLE(radix_sort)
 ADD_EXAMPLE(sort_bitset)
