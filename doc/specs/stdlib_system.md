@@ -720,6 +720,46 @@ Subroutine
 
 ---
 
+## `get_file_size` - Gets the size (in bytes) of a file.
+
+### Status
+
+Experimental
+
+### Description
+
+This function gets the size (in bytes) of a file in the filesystem.
+It follows symbolic links, returns an error if the symbolic link or the `path` points to a directory instead.
+It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+
+### Syntax
+
+`res = [[stdlib_system(module):get_file_size(function)]] (path [, err])`
+
+### Class
+
+Function
+
+### Arguments
+
+`path`: Shall be a character string containing the path of the file. It is an `intent(in)` argument.
+
+`err`(optional): Shall be of type `state_type`, and is used for error handling. It is an `intent(out)` argument.
+
+### Return values
+
+`res`: it is the size (in bytes). It is of type `integer(kind=int64)`.
+
+`err`: it is an optional state return flag. On error if not requested, an `FS_ERROR` will trigger an error stop.
+
+### Example
+
+```fortran
+{!example/system/example_get_file_size.f90!}
+```
+
+---
+
 ## `null_device` - Return the null device file path
 
 ### Status
