@@ -206,6 +206,8 @@ contains
         integer :: stat
 
         array_size = size( array, kind=int_index )
+
+! If necessary allocate buffers to serve as scratch memory.
         if ( present(work) ) then
             if ( size(work, kind=int_index) < array_size/2 ) then
                 error stop "int8_increase_ord_sort: work array is too small."
@@ -547,6 +549,8 @@ contains
         integer :: stat
 
         array_size = size( array, kind=int_index )
+
+! If necessary allocate buffers to serve as scratch memory.
         if ( present(work) ) then
             if ( size(work, kind=int_index) < array_size/2 ) then
                 error stop "int16_increase_ord_sort: work array is too small."
@@ -888,6 +892,8 @@ contains
         integer :: stat
 
         array_size = size( array, kind=int_index )
+
+! If necessary allocate buffers to serve as scratch memory.
         if ( present(work) ) then
             if ( size(work, kind=int_index) < array_size/2 ) then
                 error stop "int32_increase_ord_sort: work array is too small."
@@ -1229,6 +1235,8 @@ contains
         integer :: stat
 
         array_size = size( array, kind=int_index )
+
+! If necessary allocate buffers to serve as scratch memory.
         if ( present(work) ) then
             if ( size(work, kind=int_index) < array_size/2 ) then
                 error stop "int64_increase_ord_sort: work array is too small."
@@ -1570,6 +1578,8 @@ contains
         integer :: stat
 
         array_size = size( array, kind=int_index )
+
+! If necessary allocate buffers to serve as scratch memory.
         if ( present(work) ) then
             if ( size(work, kind=int_index) < array_size/2 ) then
                 error stop "sp_increase_ord_sort: work array is too small."
@@ -1911,6 +1921,8 @@ contains
         integer :: stat
 
         array_size = size( array, kind=int_index )
+
+! If necessary allocate buffers to serve as scratch memory.
         if ( present(work) ) then
             if ( size(work, kind=int_index) < array_size/2 ) then
                 error stop "dp_increase_ord_sort: work array is too small."
@@ -2252,6 +2264,8 @@ contains
         integer :: stat
 
         array_size = size( array, kind=int_index )
+
+! If necessary allocate buffers to serve as scratch memory.
         if ( present(work) ) then
             if ( size(work, kind=int_index) < array_size/2 ) then
                 error stop "string_type_increase_ord_sort: work array is too small."
@@ -2593,6 +2607,8 @@ contains
         integer :: stat
 
         array_size = size( array, kind=int_index )
+
+! If necessary allocate buffers to serve as scratch memory.
         if ( present(work) ) then
             if ( size(work, kind=int_index) < array_size/2 ) then
                 error stop "char_increase_ord_sort: work array is too small."
@@ -2935,6 +2951,8 @@ contains
         integer :: stat
 
         array_size = size( array, kind=int_index )
+
+! If necessary allocate buffers to serve as scratch memory.
         if ( present(work) ) then
             if ( size(work, kind=int_index) < array_size/2 ) then
                 error stop "bitset_64_increase_ord_sort: work array is too small."
@@ -3276,6 +3294,8 @@ contains
         integer :: stat
 
         array_size = size( array, kind=int_index )
+
+! If necessary allocate buffers to serve as scratch memory.
         if ( present(work) ) then
             if ( size(work, kind=int_index) < array_size/2 ) then
                 error stop "bitset_large_increase_ord_sort: work array is too small."
@@ -3617,6 +3637,8 @@ contains
         integer :: stat
 
         array_size = size( array, kind=int_index )
+
+! If necessary allocate buffers to serve as scratch memory.
         if ( present(work) ) then
             if ( size(work, kind=int_index) < array_size/2 ) then
                 error stop "int8_decrease_ord_sort: work array is too small."
@@ -3958,6 +3980,8 @@ contains
         integer :: stat
 
         array_size = size( array, kind=int_index )
+
+! If necessary allocate buffers to serve as scratch memory.
         if ( present(work) ) then
             if ( size(work, kind=int_index) < array_size/2 ) then
                 error stop "int16_decrease_ord_sort: work array is too small."
@@ -4299,6 +4323,8 @@ contains
         integer :: stat
 
         array_size = size( array, kind=int_index )
+
+! If necessary allocate buffers to serve as scratch memory.
         if ( present(work) ) then
             if ( size(work, kind=int_index) < array_size/2 ) then
                 error stop "int32_decrease_ord_sort: work array is too small."
@@ -4640,6 +4666,8 @@ contains
         integer :: stat
 
         array_size = size( array, kind=int_index )
+
+! If necessary allocate buffers to serve as scratch memory.
         if ( present(work) ) then
             if ( size(work, kind=int_index) < array_size/2 ) then
                 error stop "int64_decrease_ord_sort: work array is too small."
@@ -4981,6 +5009,8 @@ contains
         integer :: stat
 
         array_size = size( array, kind=int_index )
+
+! If necessary allocate buffers to serve as scratch memory.
         if ( present(work) ) then
             if ( size(work, kind=int_index) < array_size/2 ) then
                 error stop "sp_decrease_ord_sort: work array is too small."
@@ -5322,6 +5352,8 @@ contains
         integer :: stat
 
         array_size = size( array, kind=int_index )
+
+! If necessary allocate buffers to serve as scratch memory.
         if ( present(work) ) then
             if ( size(work, kind=int_index) < array_size/2 ) then
                 error stop "dp_decrease_ord_sort: work array is too small."
@@ -5663,6 +5695,8 @@ contains
         integer :: stat
 
         array_size = size( array, kind=int_index )
+
+! If necessary allocate buffers to serve as scratch memory.
         if ( present(work) ) then
             if ( size(work, kind=int_index) < array_size/2 ) then
                 error stop "string_type_decrease_ord_sort: work array is too small."
@@ -6004,6 +6038,8 @@ contains
         integer :: stat
 
         array_size = size( array, kind=int_index )
+
+! If necessary allocate buffers to serve as scratch memory.
         if ( present(work) ) then
             if ( size(work, kind=int_index) < array_size/2 ) then
                 error stop "char_decrease_ord_sort: work array is too small."
@@ -6346,6 +6382,8 @@ contains
         integer :: stat
 
         array_size = size( array, kind=int_index )
+
+! If necessary allocate buffers to serve as scratch memory.
         if ( present(work) ) then
             if ( size(work, kind=int_index) < array_size/2 ) then
                 error stop "bitset_64_decrease_ord_sort: work array is too small."
@@ -6687,6 +6725,8 @@ contains
         integer :: stat
 
         array_size = size( array, kind=int_index )
+
+! If necessary allocate buffers to serve as scratch memory.
         if ( present(work) ) then
             if ( size(work, kind=int_index) < array_size/2 ) then
                 error stop "bitset_large_decrease_ord_sort: work array is too small."

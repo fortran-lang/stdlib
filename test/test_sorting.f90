@@ -1,9 +1,10 @@
 
+
 module test_sorting
 
     use, intrinsic :: iso_fortran_env, only: compiler_version, error_unit
-    use stdlib_kinds, only: int32, int64, dp, sp
-    use stdlib_sorting
+    use stdlib_kinds, only: int8, int16, int32, int64, dp, sp, xdp, qp
+    use stdlib_sorting, only: sort, sort_index, sort_adjoint, ord_sort, radix_sort, int_index, int_index_low
     use stdlib_string_type, only: string_type, assignment(=), operator(>), &
         operator(<), write(formatted)
     use stdlib_bitsets, only: bitset_64, bitset_large, &
@@ -107,6 +108,28 @@ contains
             new_unittest('string_sort_indexes_low', test_string_sort_indexes_low), &
             new_unittest('bitset_large_sort_indexes_low', test_bitsetl_sort_indexes_low), &
             new_unittest('bitset_64_sort_indexes_low', test_bitset64_sort_indexes_low), &
+            new_unittest('int_sort_adjointes_int8', test_int_sort_adjointes_int8), &
+            new_unittest('char_sort_adjointes_int8', test_char_sort_adjointes_int8), &
+            new_unittest('string_sort_adjointes_int8', test_string_sort_adjointes_int8), &
+            new_unittest('bitset_large_sort_adjointes_int8', test_bitsetl_sort_adjointes_int8), &
+            new_unittest('bitset_64_sort_adjointes_int8', test_bitset64_sort_adjointes_int8), &
+            new_unittest('int_sort_adjointes_int16', test_int_sort_adjointes_int16), &
+            new_unittest('char_sort_adjointes_int16', test_char_sort_adjointes_int16), &
+            new_unittest('string_sort_adjointes_int16', test_string_sort_adjointes_int16), &
+            new_unittest('bitset_large_sort_adjointes_int16', test_bitsetl_sort_adjointes_int16), &
+            new_unittest('bitset_64_sort_adjointes_int16', test_bitset64_sort_adjointes_int16), &
+            new_unittest('int_sort_adjointes_int32', test_int_sort_adjointes_int32), &
+            new_unittest('char_sort_adjointes_int32', test_char_sort_adjointes_int32), &
+            new_unittest('string_sort_adjointes_int32', test_string_sort_adjointes_int32), &
+            new_unittest('bitset_large_sort_adjointes_int32', test_bitsetl_sort_adjointes_int32), &
+            new_unittest('bitset_64_sort_adjointes_int32', test_bitset64_sort_adjointes_int32), &
+            new_unittest('int_sort_adjointes_int64', test_int_sort_adjointes_int64), &
+            new_unittest('char_sort_adjointes_int64', test_char_sort_adjointes_int64), &
+            new_unittest('string_sort_adjointes_int64', test_string_sort_adjointes_int64), &
+            new_unittest('bitset_large_sort_adjointes_int64', test_bitsetl_sort_adjointes_int64), &
+            new_unittest('bitset_64_sort_adjointes_int64', test_bitset64_sort_adjointes_int64), &
+            new_unittest('real_sort_adjointes_sp', test_real_sort_adjointes_sp), &
+            new_unittest('real_sort_adjointes_dp', test_real_sort_adjointes_dp), &
             new_unittest('int_ord_sorts', test_int_ord_sorts) &
         ]
 
@@ -1865,6 +1888,1592 @@ contains
 
     end subroutine test_bitset64_sort_index_low
 
+    subroutine test_int_sort_adjointes_int8(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        integer(int64)              :: i
+        integer(int32), allocatable :: d1(:)
+        integer(int8), allocatable         :: adjoint(:)
+        logical                     :: ltest
+
+        call test_int_sort_adjoint_int8( blocks, "Blocks", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int8( decrease, "Decreasing", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int8( identical, "Identical", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int8( increase, "Increasing", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int8( rand1, "Random dense", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int8( rand2, "Random order", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int8( rand0, "Random sparse", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int8( rand3, "Random 3", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int8( rand10, "Random 10", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        d1 = [10, 2, -3, -4, 6, -6, 7, -8, 9, 0, 1, 20]
+        allocate( adjoint(size(d1)))
+        adjoint = int([(i, i=1, size(d1))], kind=int8)
+        call sort_adjoint( d1, adjoint )
+        call verify_sort( d1, ltest, i )
+        call check(error, ltest)
+
+    end subroutine test_int_sort_adjointes_int8
+
+    subroutine test_int_sort_adjoint_int8( a, a_name, ltest )
+        integer(int32), intent(inout) :: a(:)
+        character(*), intent(in)      :: a_name
+        logical, intent(out)          :: ltest
+
+        integer(int64)                 :: t0, t1, tdiff
+        real(dp)                       :: rate
+        integer(int8)                         :: adjoint(size(a))
+        integer(int8)                         :: iwork(size(a))
+        integer(int64)                 :: i, j
+        logical                        :: valid
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            dummy = a
+            adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int8)
+            call system_clock( t0, rate )
+            call sort_adjoint( dummy, adjoint, work, iwork )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_sort( dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a18, 2i7)') 'a(i-1:i) = ', a(i-1:i)
+        end if
+        write( lun, '("|      Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            test_size, a_name, "Sort_adjoint", tdiff/rate
+
+        !reverse
+        dummy = a
+        adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int8)
+        call sort_adjoint( dummy, adjoint, work, iwork, reverse=.true. )
+
+        call verify_reverse_sort( dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not reverse sort " // &
+                a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a18, 2i7)') 'a(i-1:i) = ', a(i-1:i)
+        end if
+
+    end subroutine test_int_sort_adjoint_int8
+
+    subroutine test_char_sort_adjointes_int8(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_char_sort_adjoint_int8( char_decrease, "Char. Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_char_sort_adjoint_int8( char_increase, "Char. Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_char_sort_adjoint_int8( char_rand, "Char. Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_char_sort_adjointes_int8
+
+    subroutine test_char_sort_adjoint_int8( a, a_name, ltest )
+        character(len=4), intent(in) :: a(0:)
+        character(*), intent(in) :: a_name
+        logical, intent(out)     :: ltest
+
+        integer(int8)         :: adjoint(size(a))
+        integer(int8)         :: iwork(size(a))
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i, j
+        logical        :: valid
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            char_dummy = a
+            adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int8)
+            call system_clock( t0, rate )
+
+            call sort_adjoint( char_dummy, adjoint, char_work, iwork )
+
+            call system_clock( t1, rate )
+
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_char_sort( char_dummy, valid, i )
+
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJ did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a17, 2(1x,a4))') 'char_dummy(i-1:i) = ', char_dummy(i-1:i)
+        end if
+        write( lun, '("|    Character |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            char_size, a_name, "Sort_adjoint", tdiff/rate
+
+    end subroutine test_char_sort_adjoint_int8
+
+    subroutine test_string_sort_adjointes_int8(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_string_sort_adjoint_int8( string_decrease, "String Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_string_sort_adjoint_int8( string_increase, "String Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_string_sort_adjoint_int8( string_rand, "String Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_string_sort_adjointes_int8
+
+    subroutine test_string_sort_adjoint_int8( a, a_name, ltest )
+        type(string_type), intent(in) :: a(0:)
+        character(*), intent(in) :: a_name
+        logical, intent(out) :: ltest
+
+        integer(int8)         :: adjoint(size(a))
+        integer(int8)         :: iwork(size(a))
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i, j
+        logical        :: valid
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            string_dummy = a
+            adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int8)
+            call system_clock( t0, rate )
+            call sort_adjoint( string_dummy, adjoint, string_work, iwork )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_string_sort( string_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a17, 2(1x,a4))') 'string_dummy(i-1:i) = ', &
+                string_dummy(i-1:i)
+        end if
+        write( lun, '("|  String_type |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            string_size, a_name, "Sort_adjoint", tdiff/rate
+
+    end subroutine test_string_sort_adjoint_int8
+
+    subroutine test_bitsetl_sort_adjointes_int8(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_bitsetl_sort_adjoint_int8( bitsetl_decrease, "Bitset Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitsetl_sort_adjoint_int8( bitsetl_increase, "Bitset Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitsetl_sort_adjoint_int8( bitsetl_rand, "Bitset Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_bitsetl_sort_adjointes_int8
+
+    subroutine test_bitsetl_sort_adjoint_int8( a, a_name, ltest )
+        type(bitset_large), intent(in) :: a(0:)
+        character(*), intent(in)       :: a_name
+        logical, intent(out)           :: ltest
+
+        integer(int8)         :: adjoint(size(a))
+        integer(int8)         :: iwork(size(a))
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i, j
+        logical        :: valid
+        character(:), allocatable :: bin_im1, bin_i
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            bitsetl_dummy = a
+            adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int8)
+            call system_clock( t0, rate )
+            call sort_adjoint( bitsetl_dummy, adjoint, bitsetl_work, iwork )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_bitsetl_sort( bitsetl_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            call bitsetl_dummy(i-1)%to_string(bin_im1)
+            call bitsetl_dummy(i)%to_string(bin_i)
+            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
+        end if
+        write( lun, '("| Bitset_large |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            bitset_size, a_name, "Sort_adjoint", tdiff/rate
+
+    end subroutine test_bitsetl_sort_adjoint_int8
+
+    subroutine test_bitset64_sort_adjointes_int8(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_bitset64_sort_adjoint_int8( bitset64_decrease, "Bitset Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitset64_sort_adjoint_int8( bitset64_increase, "Bitset Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitset64_sort_adjoint_int8( bitset64_rand, "Bitset Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_bitset64_sort_adjointes_int8
+
+    subroutine test_bitset64_sort_adjoint_int8( a, a_name, ltest )
+        type(bitset_64), intent(in) :: a(0:)
+        character(*), intent(in)    :: a_name
+        logical, intent(out)        :: ltest
+
+        integer(int8)         :: adjoint(size(a))
+        integer(int8)         :: iwork(size(a))
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i, j
+        logical        :: valid
+        character(:), allocatable :: bin_im1, bin_i
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            bitset64_dummy = a
+            adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int8)
+            call system_clock( t0, rate )
+            call sort_adjoint( bitset64_dummy, adjoint, bitset64_work, iwork )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_bitset64_sort( bitset64_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            call bitset64_dummy(i-1)%to_string(bin_im1)
+            call bitset64_dummy(i)%to_string(bin_i)
+            write(*,'(a, 2(a:,1x))') 'bitset64_dummy(i-1:i) = ', &
+                bin_im1, bin_i
+        end if
+        write( lun, '("|    Bitset_64 |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            bitset_size, a_name, "Sort_adjoint", tdiff/rate
+
+    end subroutine test_bitset64_sort_adjoint_int8
+    subroutine test_int_sort_adjointes_int16(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        integer(int64)              :: i
+        integer(int32), allocatable :: d1(:)
+        integer(int16), allocatable         :: adjoint(:)
+        logical                     :: ltest
+
+        call test_int_sort_adjoint_int16( blocks, "Blocks", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int16( decrease, "Decreasing", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int16( identical, "Identical", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int16( increase, "Increasing", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int16( rand1, "Random dense", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int16( rand2, "Random order", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int16( rand0, "Random sparse", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int16( rand3, "Random 3", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int16( rand10, "Random 10", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        d1 = [10, 2, -3, -4, 6, -6, 7, -8, 9, 0, 1, 20]
+        allocate( adjoint(size(d1)))
+        adjoint = int([(i, i=1, size(d1))], kind=int16)
+        call sort_adjoint( d1, adjoint )
+        call verify_sort( d1, ltest, i )
+        call check(error, ltest)
+
+    end subroutine test_int_sort_adjointes_int16
+
+    subroutine test_int_sort_adjoint_int16( a, a_name, ltest )
+        integer(int32), intent(inout) :: a(:)
+        character(*), intent(in)      :: a_name
+        logical, intent(out)          :: ltest
+
+        integer(int64)                 :: t0, t1, tdiff
+        real(dp)                       :: rate
+        integer(int16)                         :: adjoint(size(a))
+        integer(int16)                         :: iwork(size(a))
+        integer(int64)                 :: i, j
+        logical                        :: valid
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            dummy = a
+            adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int16)
+            call system_clock( t0, rate )
+            call sort_adjoint( dummy, adjoint, work, iwork )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_sort( dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a18, 2i7)') 'a(i-1:i) = ', a(i-1:i)
+        end if
+        write( lun, '("|      Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            test_size, a_name, "Sort_adjoint", tdiff/rate
+
+        !reverse
+        dummy = a
+        adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int16)
+        call sort_adjoint( dummy, adjoint, work, iwork, reverse=.true. )
+
+        call verify_reverse_sort( dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not reverse sort " // &
+                a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a18, 2i7)') 'a(i-1:i) = ', a(i-1:i)
+        end if
+
+    end subroutine test_int_sort_adjoint_int16
+
+    subroutine test_char_sort_adjointes_int16(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_char_sort_adjoint_int16( char_decrease, "Char. Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_char_sort_adjoint_int16( char_increase, "Char. Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_char_sort_adjoint_int16( char_rand, "Char. Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_char_sort_adjointes_int16
+
+    subroutine test_char_sort_adjoint_int16( a, a_name, ltest )
+        character(len=4), intent(in) :: a(0:)
+        character(*), intent(in) :: a_name
+        logical, intent(out)     :: ltest
+
+        integer(int16)         :: adjoint(size(a))
+        integer(int16)         :: iwork(size(a))
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i, j
+        logical        :: valid
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            char_dummy = a
+            adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int16)
+            call system_clock( t0, rate )
+
+            call sort_adjoint( char_dummy, adjoint, char_work, iwork )
+
+            call system_clock( t1, rate )
+
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_char_sort( char_dummy, valid, i )
+
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJ did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a17, 2(1x,a4))') 'char_dummy(i-1:i) = ', char_dummy(i-1:i)
+        end if
+        write( lun, '("|    Character |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            char_size, a_name, "Sort_adjoint", tdiff/rate
+
+    end subroutine test_char_sort_adjoint_int16
+
+    subroutine test_string_sort_adjointes_int16(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_string_sort_adjoint_int16( string_decrease, "String Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_string_sort_adjoint_int16( string_increase, "String Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_string_sort_adjoint_int16( string_rand, "String Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_string_sort_adjointes_int16
+
+    subroutine test_string_sort_adjoint_int16( a, a_name, ltest )
+        type(string_type), intent(in) :: a(0:)
+        character(*), intent(in) :: a_name
+        logical, intent(out) :: ltest
+
+        integer(int16)         :: adjoint(size(a))
+        integer(int16)         :: iwork(size(a))
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i, j
+        logical        :: valid
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            string_dummy = a
+            adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int16)
+            call system_clock( t0, rate )
+            call sort_adjoint( string_dummy, adjoint, string_work, iwork )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_string_sort( string_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a17, 2(1x,a4))') 'string_dummy(i-1:i) = ', &
+                string_dummy(i-1:i)
+        end if
+        write( lun, '("|  String_type |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            string_size, a_name, "Sort_adjoint", tdiff/rate
+
+    end subroutine test_string_sort_adjoint_int16
+
+    subroutine test_bitsetl_sort_adjointes_int16(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_bitsetl_sort_adjoint_int16( bitsetl_decrease, "Bitset Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitsetl_sort_adjoint_int16( bitsetl_increase, "Bitset Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitsetl_sort_adjoint_int16( bitsetl_rand, "Bitset Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_bitsetl_sort_adjointes_int16
+
+    subroutine test_bitsetl_sort_adjoint_int16( a, a_name, ltest )
+        type(bitset_large), intent(in) :: a(0:)
+        character(*), intent(in)       :: a_name
+        logical, intent(out)           :: ltest
+
+        integer(int16)         :: adjoint(size(a))
+        integer(int16)         :: iwork(size(a))
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i, j
+        logical        :: valid
+        character(:), allocatable :: bin_im1, bin_i
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            bitsetl_dummy = a
+            adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int16)
+            call system_clock( t0, rate )
+            call sort_adjoint( bitsetl_dummy, adjoint, bitsetl_work, iwork )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_bitsetl_sort( bitsetl_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            call bitsetl_dummy(i-1)%to_string(bin_im1)
+            call bitsetl_dummy(i)%to_string(bin_i)
+            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
+        end if
+        write( lun, '("| Bitset_large |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            bitset_size, a_name, "Sort_adjoint", tdiff/rate
+
+    end subroutine test_bitsetl_sort_adjoint_int16
+
+    subroutine test_bitset64_sort_adjointes_int16(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_bitset64_sort_adjoint_int16( bitset64_decrease, "Bitset Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitset64_sort_adjoint_int16( bitset64_increase, "Bitset Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitset64_sort_adjoint_int16( bitset64_rand, "Bitset Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_bitset64_sort_adjointes_int16
+
+    subroutine test_bitset64_sort_adjoint_int16( a, a_name, ltest )
+        type(bitset_64), intent(in) :: a(0:)
+        character(*), intent(in)    :: a_name
+        logical, intent(out)        :: ltest
+
+        integer(int16)         :: adjoint(size(a))
+        integer(int16)         :: iwork(size(a))
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i, j
+        logical        :: valid
+        character(:), allocatable :: bin_im1, bin_i
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            bitset64_dummy = a
+            adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int16)
+            call system_clock( t0, rate )
+            call sort_adjoint( bitset64_dummy, adjoint, bitset64_work, iwork )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_bitset64_sort( bitset64_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            call bitset64_dummy(i-1)%to_string(bin_im1)
+            call bitset64_dummy(i)%to_string(bin_i)
+            write(*,'(a, 2(a:,1x))') 'bitset64_dummy(i-1:i) = ', &
+                bin_im1, bin_i
+        end if
+        write( lun, '("|    Bitset_64 |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            bitset_size, a_name, "Sort_adjoint", tdiff/rate
+
+    end subroutine test_bitset64_sort_adjoint_int16
+    subroutine test_int_sort_adjointes_int32(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        integer(int64)              :: i
+        integer(int32), allocatable :: d1(:)
+        integer(int32), allocatable         :: adjoint(:)
+        logical                     :: ltest
+
+        call test_int_sort_adjoint_int32( blocks, "Blocks", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int32( decrease, "Decreasing", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int32( identical, "Identical", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int32( increase, "Increasing", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int32( rand1, "Random dense", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int32( rand2, "Random order", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int32( rand0, "Random sparse", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int32( rand3, "Random 3", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int32( rand10, "Random 10", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        d1 = [10, 2, -3, -4, 6, -6, 7, -8, 9, 0, 1, 20]
+        allocate( adjoint(size(d1)))
+        adjoint = int([(i, i=1, size(d1))], kind=int32)
+        call sort_adjoint( d1, adjoint )
+        call verify_sort( d1, ltest, i )
+        call check(error, ltest)
+
+    end subroutine test_int_sort_adjointes_int32
+
+    subroutine test_int_sort_adjoint_int32( a, a_name, ltest )
+        integer(int32), intent(inout) :: a(:)
+        character(*), intent(in)      :: a_name
+        logical, intent(out)          :: ltest
+
+        integer(int64)                 :: t0, t1, tdiff
+        real(dp)                       :: rate
+        integer(int32)                         :: adjoint(size(a))
+        integer(int32)                         :: iwork(size(a))
+        integer(int64)                 :: i, j
+        logical                        :: valid
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            dummy = a
+            adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int32)
+            call system_clock( t0, rate )
+            call sort_adjoint( dummy, adjoint, work, iwork )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_sort( dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a18, 2i7)') 'a(i-1:i) = ', a(i-1:i)
+        end if
+        write( lun, '("|      Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            test_size, a_name, "Sort_adjoint", tdiff/rate
+
+        !reverse
+        dummy = a
+        adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int32)
+        call sort_adjoint( dummy, adjoint, work, iwork, reverse=.true. )
+
+        call verify_reverse_sort( dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not reverse sort " // &
+                a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a18, 2i7)') 'a(i-1:i) = ', a(i-1:i)
+        end if
+
+    end subroutine test_int_sort_adjoint_int32
+
+    subroutine test_char_sort_adjointes_int32(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_char_sort_adjoint_int32( char_decrease, "Char. Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_char_sort_adjoint_int32( char_increase, "Char. Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_char_sort_adjoint_int32( char_rand, "Char. Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_char_sort_adjointes_int32
+
+    subroutine test_char_sort_adjoint_int32( a, a_name, ltest )
+        character(len=4), intent(in) :: a(0:)
+        character(*), intent(in) :: a_name
+        logical, intent(out)     :: ltest
+
+        integer(int32)         :: adjoint(size(a))
+        integer(int32)         :: iwork(size(a))
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i, j
+        logical        :: valid
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            char_dummy = a
+            adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int32)
+            call system_clock( t0, rate )
+
+            call sort_adjoint( char_dummy, adjoint, char_work, iwork )
+
+            call system_clock( t1, rate )
+
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_char_sort( char_dummy, valid, i )
+
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJ did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a17, 2(1x,a4))') 'char_dummy(i-1:i) = ', char_dummy(i-1:i)
+        end if
+        write( lun, '("|    Character |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            char_size, a_name, "Sort_adjoint", tdiff/rate
+
+    end subroutine test_char_sort_adjoint_int32
+
+    subroutine test_string_sort_adjointes_int32(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_string_sort_adjoint_int32( string_decrease, "String Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_string_sort_adjoint_int32( string_increase, "String Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_string_sort_adjoint_int32( string_rand, "String Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_string_sort_adjointes_int32
+
+    subroutine test_string_sort_adjoint_int32( a, a_name, ltest )
+        type(string_type), intent(in) :: a(0:)
+        character(*), intent(in) :: a_name
+        logical, intent(out) :: ltest
+
+        integer(int32)         :: adjoint(size(a))
+        integer(int32)         :: iwork(size(a))
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i, j
+        logical        :: valid
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            string_dummy = a
+            adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int32)
+            call system_clock( t0, rate )
+            call sort_adjoint( string_dummy, adjoint, string_work, iwork )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_string_sort( string_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a17, 2(1x,a4))') 'string_dummy(i-1:i) = ', &
+                string_dummy(i-1:i)
+        end if
+        write( lun, '("|  String_type |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            string_size, a_name, "Sort_adjoint", tdiff/rate
+
+    end subroutine test_string_sort_adjoint_int32
+
+    subroutine test_bitsetl_sort_adjointes_int32(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_bitsetl_sort_adjoint_int32( bitsetl_decrease, "Bitset Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitsetl_sort_adjoint_int32( bitsetl_increase, "Bitset Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitsetl_sort_adjoint_int32( bitsetl_rand, "Bitset Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_bitsetl_sort_adjointes_int32
+
+    subroutine test_bitsetl_sort_adjoint_int32( a, a_name, ltest )
+        type(bitset_large), intent(in) :: a(0:)
+        character(*), intent(in)       :: a_name
+        logical, intent(out)           :: ltest
+
+        integer(int32)         :: adjoint(size(a))
+        integer(int32)         :: iwork(size(a))
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i, j
+        logical        :: valid
+        character(:), allocatable :: bin_im1, bin_i
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            bitsetl_dummy = a
+            adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int32)
+            call system_clock( t0, rate )
+            call sort_adjoint( bitsetl_dummy, adjoint, bitsetl_work, iwork )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_bitsetl_sort( bitsetl_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            call bitsetl_dummy(i-1)%to_string(bin_im1)
+            call bitsetl_dummy(i)%to_string(bin_i)
+            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
+        end if
+        write( lun, '("| Bitset_large |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            bitset_size, a_name, "Sort_adjoint", tdiff/rate
+
+    end subroutine test_bitsetl_sort_adjoint_int32
+
+    subroutine test_bitset64_sort_adjointes_int32(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_bitset64_sort_adjoint_int32( bitset64_decrease, "Bitset Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitset64_sort_adjoint_int32( bitset64_increase, "Bitset Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitset64_sort_adjoint_int32( bitset64_rand, "Bitset Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_bitset64_sort_adjointes_int32
+
+    subroutine test_bitset64_sort_adjoint_int32( a, a_name, ltest )
+        type(bitset_64), intent(in) :: a(0:)
+        character(*), intent(in)    :: a_name
+        logical, intent(out)        :: ltest
+
+        integer(int32)         :: adjoint(size(a))
+        integer(int32)         :: iwork(size(a))
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i, j
+        logical        :: valid
+        character(:), allocatable :: bin_im1, bin_i
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            bitset64_dummy = a
+            adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int32)
+            call system_clock( t0, rate )
+            call sort_adjoint( bitset64_dummy, adjoint, bitset64_work, iwork )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_bitset64_sort( bitset64_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            call bitset64_dummy(i-1)%to_string(bin_im1)
+            call bitset64_dummy(i)%to_string(bin_i)
+            write(*,'(a, 2(a:,1x))') 'bitset64_dummy(i-1:i) = ', &
+                bin_im1, bin_i
+        end if
+        write( lun, '("|    Bitset_64 |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            bitset_size, a_name, "Sort_adjoint", tdiff/rate
+
+    end subroutine test_bitset64_sort_adjoint_int32
+    subroutine test_int_sort_adjointes_int64(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        integer(int64)              :: i
+        integer(int32), allocatable :: d1(:)
+        integer(int64), allocatable         :: adjoint(:)
+        logical                     :: ltest
+
+        call test_int_sort_adjoint_int64( blocks, "Blocks", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int64( decrease, "Decreasing", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int64( identical, "Identical", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int64( increase, "Increasing", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int64( rand1, "Random dense", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int64( rand2, "Random order", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int64( rand0, "Random sparse", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int64( rand3, "Random 3", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_int_sort_adjoint_int64( rand10, "Random 10", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        d1 = [10, 2, -3, -4, 6, -6, 7, -8, 9, 0, 1, 20]
+        allocate( adjoint(size(d1)))
+        adjoint = int([(i, i=1, size(d1))], kind=int64)
+        call sort_adjoint( d1, adjoint )
+        call verify_sort( d1, ltest, i )
+        call check(error, ltest)
+
+    end subroutine test_int_sort_adjointes_int64
+
+    subroutine test_int_sort_adjoint_int64( a, a_name, ltest )
+        integer(int32), intent(inout) :: a(:)
+        character(*), intent(in)      :: a_name
+        logical, intent(out)          :: ltest
+
+        integer(int64)                 :: t0, t1, tdiff
+        real(dp)                       :: rate
+        integer(int64)                         :: adjoint(size(a))
+        integer(int64)                         :: iwork(size(a))
+        integer(int64)                 :: i, j
+        logical                        :: valid
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            dummy = a
+            adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int64)
+            call system_clock( t0, rate )
+            call sort_adjoint( dummy, adjoint, work, iwork )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_sort( dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a18, 2i7)') 'a(i-1:i) = ', a(i-1:i)
+        end if
+        write( lun, '("|      Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            test_size, a_name, "Sort_adjoint", tdiff/rate
+
+        !reverse
+        dummy = a
+        adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int64)
+        call sort_adjoint( dummy, adjoint, work, iwork, reverse=.true. )
+
+        call verify_reverse_sort( dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not reverse sort " // &
+                a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a18, 2i7)') 'a(i-1:i) = ', a(i-1:i)
+        end if
+
+    end subroutine test_int_sort_adjoint_int64
+
+    subroutine test_char_sort_adjointes_int64(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_char_sort_adjoint_int64( char_decrease, "Char. Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_char_sort_adjoint_int64( char_increase, "Char. Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_char_sort_adjoint_int64( char_rand, "Char. Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_char_sort_adjointes_int64
+
+    subroutine test_char_sort_adjoint_int64( a, a_name, ltest )
+        character(len=4), intent(in) :: a(0:)
+        character(*), intent(in) :: a_name
+        logical, intent(out)     :: ltest
+
+        integer(int64)         :: adjoint(size(a))
+        integer(int64)         :: iwork(size(a))
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i, j
+        logical        :: valid
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            char_dummy = a
+            adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int64)
+            call system_clock( t0, rate )
+
+            call sort_adjoint( char_dummy, adjoint, char_work, iwork )
+
+            call system_clock( t1, rate )
+
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_char_sort( char_dummy, valid, i )
+
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJ did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a17, 2(1x,a4))') 'char_dummy(i-1:i) = ', char_dummy(i-1:i)
+        end if
+        write( lun, '("|    Character |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            char_size, a_name, "Sort_adjoint", tdiff/rate
+
+    end subroutine test_char_sort_adjoint_int64
+
+    subroutine test_string_sort_adjointes_int64(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_string_sort_adjoint_int64( string_decrease, "String Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_string_sort_adjoint_int64( string_increase, "String Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_string_sort_adjoint_int64( string_rand, "String Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_string_sort_adjointes_int64
+
+    subroutine test_string_sort_adjoint_int64( a, a_name, ltest )
+        type(string_type), intent(in) :: a(0:)
+        character(*), intent(in) :: a_name
+        logical, intent(out) :: ltest
+
+        integer(int64)         :: adjoint(size(a))
+        integer(int64)         :: iwork(size(a))
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i, j
+        logical        :: valid
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            string_dummy = a
+            adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int64)
+            call system_clock( t0, rate )
+            call sort_adjoint( string_dummy, adjoint, string_work, iwork )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_string_sort( string_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a17, 2(1x,a4))') 'string_dummy(i-1:i) = ', &
+                string_dummy(i-1:i)
+        end if
+        write( lun, '("|  String_type |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            string_size, a_name, "Sort_adjoint", tdiff/rate
+
+    end subroutine test_string_sort_adjoint_int64
+
+    subroutine test_bitsetl_sort_adjointes_int64(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_bitsetl_sort_adjoint_int64( bitsetl_decrease, "Bitset Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitsetl_sort_adjoint_int64( bitsetl_increase, "Bitset Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitsetl_sort_adjoint_int64( bitsetl_rand, "Bitset Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_bitsetl_sort_adjointes_int64
+
+    subroutine test_bitsetl_sort_adjoint_int64( a, a_name, ltest )
+        type(bitset_large), intent(in) :: a(0:)
+        character(*), intent(in)       :: a_name
+        logical, intent(out)           :: ltest
+
+        integer(int64)         :: adjoint(size(a))
+        integer(int64)         :: iwork(size(a))
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i, j
+        logical        :: valid
+        character(:), allocatable :: bin_im1, bin_i
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            bitsetl_dummy = a
+            adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int64)
+            call system_clock( t0, rate )
+            call sort_adjoint( bitsetl_dummy, adjoint, bitsetl_work, iwork )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_bitsetl_sort( bitsetl_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            call bitsetl_dummy(i-1)%to_string(bin_im1)
+            call bitsetl_dummy(i)%to_string(bin_i)
+            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
+        end if
+        write( lun, '("| Bitset_large |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            bitset_size, a_name, "Sort_adjoint", tdiff/rate
+
+    end subroutine test_bitsetl_sort_adjoint_int64
+
+    subroutine test_bitset64_sort_adjointes_int64(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_bitset64_sort_adjoint_int64( bitset64_decrease, "Bitset Decrease", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitset64_sort_adjoint_int64( bitset64_increase, "Bitset Increase", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_bitset64_sort_adjoint_int64( bitset64_rand, "Bitset Random", ltest )
+        call check(error, ltest)
+
+    end subroutine test_bitset64_sort_adjointes_int64
+
+    subroutine test_bitset64_sort_adjoint_int64( a, a_name, ltest )
+        type(bitset_64), intent(in) :: a(0:)
+        character(*), intent(in)    :: a_name
+        logical, intent(out)        :: ltest
+
+        integer(int64)         :: adjoint(size(a))
+        integer(int64)         :: iwork(size(a))
+        integer(int64) :: t0, t1, tdiff
+        real(dp)       :: rate
+        integer(int64) :: i, j
+        logical        :: valid
+        character(:), allocatable :: bin_im1, bin_i
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            bitset64_dummy = a
+            adjoint = int([(j, j=1_int64, size(a, kind=int64))], kind=int64)
+            call system_clock( t0, rate )
+            call sort_adjoint( bitset64_dummy, adjoint, bitset64_work, iwork )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_bitset64_sort( bitset64_dummy, valid, i )
+        ltest = (ltest .and. valid)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            call bitset64_dummy(i-1)%to_string(bin_im1)
+            call bitset64_dummy(i)%to_string(bin_i)
+            write(*,'(a, 2(a:,1x))') 'bitset64_dummy(i-1:i) = ', &
+                bin_im1, bin_i
+        end if
+        write( lun, '("|    Bitset_64 |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            bitset_size, a_name, "Sort_adjoint", tdiff/rate
+
+    end subroutine test_bitset64_sort_adjoint_int64
+
+    subroutine test_real_sort_adjointes_sp(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical                     :: ltest
+
+        call test_real_sort_adjoint_sp( blocks, "Blocks", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_real_sort_adjoint_sp( decrease, "Decreasing", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_real_sort_adjoint_sp( identical, "Identical", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_real_sort_adjoint_sp( increase, "Increasing", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_real_sort_adjoint_sp( rand1, "Random dense", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_real_sort_adjoint_sp( rand2, "Random order", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_real_sort_adjoint_sp( rand0, "Random sparse", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_real_sort_adjoint_sp( rand3, "Random 3", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_real_sort_adjoint_sp( rand10, "Random 10", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+    end subroutine test_real_sort_adjointes_sp
+
+    subroutine test_real_sort_adjoint_sp( a, a_name, ltest )
+        integer(int32), intent(inout) :: a(:)
+        character(*), intent(in)      :: a_name
+        logical, intent(out)          :: ltest
+
+        integer(int64)                 :: t0, t1, tdiff
+        real(dp)                       :: rate
+        real(sp)                         :: adjoint(size(a))
+        real(sp)                         :: iwork(size(a))
+        integer(int64)                 :: i, j
+        integer(int64)                 :: i_adj
+        logical                        :: valid
+        logical                        :: valid_adj
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            dummy = a
+            adjoint = real(dummy, kind=sp)
+            call system_clock( t0, rate )
+            call sort_adjoint( dummy, adjoint, work, iwork )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_sort( dummy, valid, i )
+        call verify_adjoint(int(adjoint, kind=int32), dummy, valid_adj, i_adj )
+
+        ltest = (ltest .and. valid .and. valid_adj)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a18, 2i7)') 'a(i-1:i) = ', a(i-1:i)
+        end if
+        if ( .not. valid_adj ) then
+            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
+            write(*,*) 'i_adj = ', i_adj
+            write(*,'(a18, 2i7)') 'a(i_adj-1:i_adj) = ', a(i_adj-1:i_adj)
+        end if
+        write( lun, '("|      Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            test_size, a_name, "Sort_adjoint", tdiff/rate
+
+        !reverse
+        dummy = a
+        adjoint = real(dummy, kind=sp)
+        call sort_adjoint( dummy, adjoint, work, iwork, reverse=.true. )
+
+        call verify_reverse_sort( dummy, valid, i )
+        call verify_adjoint(int(adjoint, kind=int32), dummy, valid_adj, i_adj )
+        ltest = (ltest .and. valid .and. valid_adj)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not reverse sort " // &
+                a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a18, 2i7)') 'a(i-1:i) = ', a(i-1:i)
+        end if
+        if ( .not. valid_adj ) then
+            write( *, * ) "SORT_ADJOINT did not reverse sort " // &
+                a_name // "."
+            write(*,*) 'i_adj = ', i_adj
+            write(*,'(a18, 2i7)') 'a(i_adj-1:i_adj) = ', a(i_adj-1:i_adj)
+        end if
+
+    end subroutine test_real_sort_adjoint_sp
+    subroutine test_real_sort_adjointes_dp(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical                     :: ltest
+
+        call test_real_sort_adjoint_dp( blocks, "Blocks", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_real_sort_adjoint_dp( decrease, "Decreasing", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_real_sort_adjoint_dp( identical, "Identical", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_real_sort_adjoint_dp( increase, "Increasing", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_real_sort_adjoint_dp( rand1, "Random dense", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_real_sort_adjoint_dp( rand2, "Random order", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_real_sort_adjoint_dp( rand0, "Random sparse", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_real_sort_adjoint_dp( rand3, "Random 3", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_real_sort_adjoint_dp( rand10, "Random 10", ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+    end subroutine test_real_sort_adjointes_dp
+
+    subroutine test_real_sort_adjoint_dp( a, a_name, ltest )
+        integer(int32), intent(inout) :: a(:)
+        character(*), intent(in)      :: a_name
+        logical, intent(out)          :: ltest
+
+        integer(int64)                 :: t0, t1, tdiff
+        real(dp)                       :: rate
+        real(dp)                         :: adjoint(size(a))
+        real(dp)                         :: iwork(size(a))
+        integer(int64)                 :: i, j
+        integer(int64)                 :: i_adj
+        logical                        :: valid
+        logical                        :: valid_adj
+
+        ltest = .true.
+
+        tdiff = 0
+        do i = 1, repeat
+            dummy = a
+            adjoint = real(dummy, kind=dp)
+            call system_clock( t0, rate )
+            call sort_adjoint( dummy, adjoint, work, iwork )
+            call system_clock( t1, rate )
+            tdiff = tdiff + t1 - t0
+        end do
+        tdiff = tdiff/repeat
+
+        call verify_sort( dummy, valid, i )
+        call verify_adjoint(int(adjoint, kind=int32), dummy, valid_adj, i_adj )
+
+        ltest = (ltest .and. valid .and. valid_adj)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a18, 2i7)') 'a(i-1:i) = ', a(i-1:i)
+        end if
+        if ( .not. valid_adj ) then
+            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
+            write(*,*) 'i_adj = ', i_adj
+            write(*,'(a18, 2i7)') 'a(i_adj-1:i_adj) = ', a(i_adj-1:i_adj)
+        end if
+        write( lun, '("|      Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
+            'a12, " |",  F10.6, " |" )' ) &
+            test_size, a_name, "Sort_adjoint", tdiff/rate
+
+        !reverse
+        dummy = a
+        adjoint = real(dummy, kind=dp)
+        call sort_adjoint( dummy, adjoint, work, iwork, reverse=.true. )
+
+        call verify_reverse_sort( dummy, valid, i )
+        call verify_adjoint(int(adjoint, kind=int32), dummy, valid_adj, i_adj )
+        ltest = (ltest .and. valid .and. valid_adj)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not reverse sort " // &
+                a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a18, 2i7)') 'a(i-1:i) = ', a(i-1:i)
+        end if
+        if ( .not. valid_adj ) then
+            write( *, * ) "SORT_ADJOINT did not reverse sort " // &
+                a_name // "."
+            write(*,*) 'i_adj = ', i_adj
+            write(*,'(a18, 2i7)') 'a(i_adj-1:i_adj) = ', a(i_adj-1:i_adj)
+        end if
+
+    end subroutine test_real_sort_adjoint_dp
+
     subroutine verify_sort( a, valid, i )
         integer(int32), intent(in) :: a(0:)
         logical, intent(out) :: valid
@@ -1880,6 +3489,23 @@ contains
         valid = .true.
 
     end subroutine verify_sort
+
+    subroutine verify_adjoint( a, true, valid, i )
+        integer(int32), intent(in) :: a(:)
+        integer(int32), intent(in) :: true(:)
+        logical, intent(out) :: valid
+        integer(int64), intent(out) :: i
+
+        integer(int64) :: n
+
+        n = size( a, kind=int64 )
+        valid = .false.
+        do i=1, n
+            if ( a(i) /= true(i) ) return
+        end do
+        valid = .true.
+
+    end subroutine verify_adjoint
 
     subroutine verify_real_sort( a, valid, i )
         real(sp), intent(in) :: a(0:)
