@@ -1,4 +1,3 @@
-
 ! For procedure interfaces, consider using abstract hashmap_type for interface definition. 
 ! This allows the procedure to be used for both chaining and open hashmap types.
     
