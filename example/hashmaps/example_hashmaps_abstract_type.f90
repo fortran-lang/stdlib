@@ -1,9 +1,7 @@
-
 ! For procedure interfaces, consider using abstract hashmap_type for interface definition. 
 ! This allows the procedure to be used for both chaining and open hashmap types.
     
 program example_abstract_type
-    use stdlib_kinds, only: int8, int64
     use stdlib_hashmaps, only: chaining_hashmap_type, open_hashmap_type, hashmap_type
   
     implicit none
