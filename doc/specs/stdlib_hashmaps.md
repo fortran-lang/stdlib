@@ -885,6 +885,13 @@ The type's definition is below:
     end type hashmap_type
 ```
 
+`hashmap_type` can be used to define a procedure interface that can accept both `open_hashmap_type` and `chaining_hashmap_type`.
+
+##### Example
+
+```fortran
+{!example/hashmaps/example_hashmaps_abstract_type.f90!}
+```
 
 #### The `chaining_map_entry_type` derived type
 
