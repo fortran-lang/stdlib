@@ -21,7 +21,7 @@ The `linop_<kind>_type` derive type is an auxiliary class enabling to abstract t
 
 #### Type-bound procedures
 
-The following type-bound procedures pointer enable customization of the solver:
+The following type-bound procedure pointers enable customization of the solver:
 
 ##### `matvec`
 
