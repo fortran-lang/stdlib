@@ -3,7 +3,7 @@ program example_solve_cg
     use stdlib_linalg_iterative_solvers, only: solve_cg
 
     real(dp) :: matrix(2,2)
-    real(dp) :: x(2), load(2)
+    real(dp) :: x(2), rhs(2)
 
     matrix = reshape( [4, 1,&
                        1, 3] , [2,2])
