@@ -61,7 +61,7 @@ module test_linalg_solve_iterative
                                             0,  0, -1,  2, -1,&
                                             0,  0,  0, -1,  1] , [5,5])
         ${t}$ :: x(5), load(5), xref(5)
-        logical(1) :: dirichlet(5)
+        logical(int8) :: dirichlet(5)
         
         xref = [0.0_${k}$,2.5_${k}$,5.0_${k}$,2.5_${k}$,0.0_${k}$]
         x    = 0.0_${k}$ 
