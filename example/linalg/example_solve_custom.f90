@@ -31,7 +31,7 @@ contains
         maxiter_ = n;       if(present(maxiter)) maxiter_ = maxiter
         restart_ = .true.;  if(present(restart)) restart_ = restart
         tol_ = 1.e-4_dp;    if(present(tol)) tol_ = tol
-        norm_sq0 = 0.d0
+        norm_sq0 = 0._dp
         !-------------------------
         ! internal memory setup
         op%matvec => my_matvec
