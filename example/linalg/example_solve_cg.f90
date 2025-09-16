@@ -11,7 +11,7 @@ program example_solve_cg
     x    = dble( [2,1] ) !> initial guess
     rhs = dble( [1,2] ) !> rhs vector
 
-    call solve_cg(matrix, load, x, restart=.false.)
+    call solve_cg(matrix, rhs, x, restart=.false.)
     print *, x !> solution: [0.0909, 0.6364]
 
 end program
