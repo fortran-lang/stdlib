@@ -9,7 +9,7 @@ program example_solve_cg
                        1, 3] , [2,2])
 
     x    = dble( [2,1] ) !> initial guess
-    load = dble( [1,2] ) !> load vector
+    rhs = dble( [1,2] ) !> rhs vector
 
     call solve_cg(matrix, load, x, restart=.false.)
     print *, x !> solution: [0.0909, 0.6364]
