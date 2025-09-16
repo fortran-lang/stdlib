@@ -23,7 +23,7 @@ contains
         integer :: n, maxiter_
         real(dp) :: tol_
         logical :: restart_
-        logical(1), pointer :: di_(:)
+        logical(int8), pointer :: di_(:)
         real(dp), allocatable :: diagonal(:)
         real(dp) :: norm_sq0
         !-------------------------
