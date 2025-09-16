@@ -66,8 +66,8 @@ module test_linalg_solve_iterative
         xref = [0.0_${k}$,2.5_${k}$,5.0_${k}$,2.5_${k}$,0.0_${k}$]
         x    = 0.0_${k}$ 
         load = real( [0,0,5,0,0] , kind = ${k}$ ) ! load vector
-        dirichlet = .false._1 
-        dirichlet([1,5]) = .true._1
+        dirichlet = .false._int8
+        dirichlet([1,5]) = .true._int8
 
         call solve_pcg(A, load, x, di=dirichlet, tol=1.e-6_${k}$)
 
