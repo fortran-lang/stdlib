@@ -12,7 +12,7 @@ contains
         real(dp), intent(in) :: b(:)
         real(dp), intent(inout) :: x(:)
         real(dp), intent(in), optional :: tol
-        logical(1), intent(in), optional, target  :: di(:)
+        logical(int8), intent(in), optional, target  :: di(:)
         integer, intent(in), optional  :: maxiter
         logical, intent(in), optional  :: restart
         type(solver_workspace_dp_type), optional, intent(inout), target :: workspace
