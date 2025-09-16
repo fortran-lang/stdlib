@@ -23,7 +23,7 @@ program example_solve_pcg
     dirichlet = .false._1 
     dirichlet([1,5]) = .true._1
 
-    call solve_pcg(laplacian, load, x, tol=1.d-6, di=dirichlet)
+    call solve_pcg(laplacian, rhs, x, tol=1.d-6, di=dirichlet)
     print *, x !> solution: [0.0, 2.5, 5.0, 2.5, 0.0]
     x = 0._dp
 
