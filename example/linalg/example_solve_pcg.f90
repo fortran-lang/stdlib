@@ -27,6 +27,6 @@ program example_solve_pcg
     print *, x !> solution: [0.0, 2.5, 5.0, 2.5, 0.0]
     x = 0._dp
 
-    call solve_pcg(laplacian_csr, load, x, tol=1.d-6, di=dirichlet)
+    call solve_pcg(laplacian_csr, rhs, x, tol=1.d-6, di=dirichlet)
     print *, x !> solution: [0.0, 2.5, 5.0, 2.5, 0.0]
 end program
