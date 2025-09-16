@@ -53,7 +53,7 @@ contains
         !-------------------------
         ! Jacobi preconditioner factorization
         call diag(A,diagonal)
-        where(abs(diagonal)>epsilon(0.d0)) diagonal = 1._dp/diagonal
+        where(abs(diagonal)>epsilon(0._dp)) diagonal = 1._dp/diagonal
         !-------------------------
         ! main call to the solver
         call solve_pcg_kernel(op,M,b,x,tol_,maxiter_,workspace_)
