@@ -242,7 +242,7 @@ Subroutine
 
 `M` (optional): scalar derived type of `class(linop_<kind>_type)` defining a custom preconditioner linear operator. If given, `precond` will have no effect, a pointer is set to this custom preconditioner.
 
-`workspace` (optional): `type(solver_workspace_<kind>_type)` holding the work temporal array for the solver. If the user passes its own `workspace`, then internally a pointer is set to it, otherwise, memory will be internally allocated and deallocated before exiting the procedure. This argument is `intent(inout)`.
+`workspace` (optional): scalar derived type of `type(solver_workspace_<kind>_type)` holding the work temporal array for the solver. If the user passes its own `workspace`, then internally a pointer is set to it, otherwise, memory will be internally allocated and deallocated before exiting the procedure. This argument is `intent(inout)`.
 
 #### Example
 
