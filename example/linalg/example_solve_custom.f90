@@ -48,7 +48,7 @@ contains
         else
             allocate( workspace_ )
         end if
-        if(.not.allocated(workspace_%tmp)) allocate( workspace_%tmp(n,stdlib_size_wksp_pcg) , source = 0.d0 )
+        if(.not.allocated(workspace_%tmp)) allocate( workspace_%tmp(n,stdlib_size_wksp_pcg) , source = 0._dp )
         workspace_%callback => my_logger
         !-------------------------
         ! Jacobi preconditioner factorization
