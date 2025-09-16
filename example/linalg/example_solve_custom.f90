@@ -1,6 +1,6 @@
 module custom_solver
     use stdlib_kinds, only: dp
-    use stdlib_sparse
+    use stdlib_sparse, only: CSR_dp_type
     use stdlib_linalg_iterative_solvers, only: linop_dp_type, &
                     solver_workspace_dp_type, &
                     solve_pcg_kernel, &
