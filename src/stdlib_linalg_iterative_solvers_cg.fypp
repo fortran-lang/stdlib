@@ -85,7 +85,7 @@ contains
         integer :: n, maxiter_
         ${t}$ :: tol_
         logical :: restart_
-        logical(1), pointer :: di_(:)
+        logical(int8), pointer :: di_(:)
         !-------------------------
         n = size(b)
         maxiter_ = n;       if(present(maxiter)) maxiter_ = maxiter
