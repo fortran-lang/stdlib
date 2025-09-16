@@ -7,7 +7,7 @@ program example_solve_pcg
     type(COO_dp_type) :: COO
     real(dp) :: laplacian(5,5)
     real(dp) :: x(5), rhs(5)
-    logical(1) :: dirichlet(5)
+    logical(int8) :: dirichlet(5)
 
     laplacian = reshape( [1, -1,  0,  0,  0,&
                          -1,  2, -1,  0,  0,&
