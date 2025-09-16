@@ -18,7 +18,7 @@ program example_solve_pcg
     call coo2csr(COO,laplacian_csr)
 
     x = 0._dp
-    load = dble( [0,0,5,0,0] )
+    rhs = real( [0,0,5,0,0], kind=1._dp )
 
     dirichlet = .false._1 
     dirichlet([1,5]) = .true._1
