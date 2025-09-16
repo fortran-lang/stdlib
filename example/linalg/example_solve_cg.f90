@@ -1,5 +1,5 @@
 program example_solve_cg
-    use stdlib_kinds, only: dp
+    use stdlib_kinds, only: int8, dp
     use stdlib_linalg_iterative_solvers, only: solve_cg
 
     real(dp) :: matrix(2,2)
@@ -8,7 +8,7 @@ program example_solve_cg
     matrix = reshape( [4, 1,&
                        1, 3] , [2,2])
 
-    x    = dble( [2,1] ) !> initial guess
+    x   = dble( [2,1] ) !> initial guess
     rhs = dble( [1,2] ) !> rhs vector
 
     call solve_cg(matrix, rhs, x, restart=.false.)

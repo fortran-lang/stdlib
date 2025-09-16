@@ -1,5 +1,5 @@
 program example_solve_pcg
-    use stdlib_kinds, only: dp
+    use stdlib_kinds, only: int8, dp
     use stdlib_sparse
     use stdlib_linalg_iterative_solvers, only: solve_pcg
 
@@ -18,7 +18,7 @@ program example_solve_pcg
     call coo2csr(COO,laplacian_csr)
 
     x = 0._dp
-    rhs = real( [0,0,5,0,0], kind=1._dp )
+    rhs = real( [0,0,5,0,0], kind=dp )
 
     dirichlet = .false._int8
     dirichlet([1,5]) = .true._int8

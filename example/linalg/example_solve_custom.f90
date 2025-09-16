@@ -1,6 +1,6 @@
 module custom_solver
-    use stdlib_kinds, only: dp
-    use stdlib_sparse, only: CSR_dp_type
+    use stdlib_kinds, only: int8, dp
+    use stdlib_sparse, only: CSR_dp_type, spmv, diag
     use stdlib_linalg_iterative_solvers, only: linop_dp_type, &
                     solver_workspace_dp_type, &
                     solve_pcg_kernel, &
@@ -106,13 +106,14 @@ end module custom_solver
 
 program example_solve_custom
     use custom_solver
+    use stdlib_sparse, only: CSR_dp_type, COO_dp_type, dense2coo, coo2csr
     implicit none
 
     type(CSR_dp_type) :: laplacian_csr
     type(COO_dp_type) :: COO
     real(dp) :: laplacian(5,5)
-    real(dp) :: x(5), load(5)
-    logical(1) :: dirichlet(5)
+    real(dp) :: x(5), rhs(5)
+    logical(int8) :: dirichlet(5)
 
     laplacian = reshape( [1, -1,  0,  0,  0,&
                          -1,  2, -1,  0,  0,&
@@ -123,12 +124,12 @@ program example_solve_custom
     call coo2csr(COO,laplacian_csr)
 
     x = 0._dp
-    load = dble( [0,0,5,0,0] )
+    rhs = dble( [0,0,5,0,0] )
 
     dirichlet = .false._1 
     dirichlet([1,5]) = .true._1
 
-    call solve_pcg_custom(laplacian_csr, load, x, tol=1.d-6, di=dirichlet)
+    call solve_pcg_custom(laplacian_csr, rhs, x, tol=1.d-6, di=dirichlet)
     print *, x !> solution: [0.0, 2.5, 5.0, 2.5, 0.0]
     
 end program example_solve_custom
