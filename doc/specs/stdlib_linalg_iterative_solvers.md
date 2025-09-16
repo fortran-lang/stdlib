@@ -45,7 +45,7 @@ Subroutine
 
 `beta`: scalar of `real(<kind>)`. This argument is `intent(in)`.
 
-`op`: `character(1)` scalar. This argument is `intent(in)`.
+`op`: `character(1)` scalar which can be have any of the following values: `N` (no transpose), `T` (transpose) or `H` (conjugate transpose). This argument is `intent(in)`.
 
 ##### `inner_product`
 
@@ -146,11 +146,11 @@ Subroutine
 
 `A`: `dense` or `CSR_<kind>_type` matrix defining the linear system. This argument is `intent(in)`.
 
-`b`: 1-D array of `real(<kind>)` defining the loading conditions of the linear system. This argument is `intent(in)`.
+`b`: 1-D array of `real(<kind>)` defining the right-hand-side (or loading) of the linear system. This argument is `intent(in)`.
 
-`x`: 1-D array of `real(<kind>)` which serves as the input initial guess and the output solution. This argument is `intent(inout)`.
+`x`: 1-D array of `real(<kind>)` which serves as the input initial guess and as the output solution. This argument is `intent(inout)`.
 
-`di` (optional): 1-D mask array of type `logical(1)` defining the degrees of freedom subject to dirichlet boundary conditions. The actual boundary conditions values should be stored in the `b` load array. This argument is `intent(in)`.
+`di` (optional): 1-D mask array of type `logical(int8)` defining the degrees of freedom subject to dirichlet boundary conditions. The actual boundary conditions values should be stored in the `b` load array. This argument is `intent(in)`.
 
 `tol` (optional): scalar of type `real(<kind>)` specifying the requested tolerance with respect to the relative residual vector norm. If no value is given, a default value of `1.e-4` is set. This argument is `intent(in)`.
 
@@ -238,7 +238,7 @@ Subroutine
 
 `maxiter` (optional): scalar of type `integer` defining the maximum allowed number of iterations. If no value is given, a default of `N` is set, where `N = size(b)`. This argument is `intent(in)`.
 
-`precond` (optional): scalar of type `integer` enabling to switch among the default preconditioners available. If no value is given, no preconditionning will be applied. This argument is `intent(in)`.
+`precond` (optional): scalar of type `integer` enabling to switch among the default preconditioners available with the following enum (`pc_none`, `pc_jacobi`). If no value is given, no preconditionning will be applied. This argument is `intent(in)`.
 
 `M` (optional): scalar derived type of `class(linop_<kind>_type)` defining a custom preconditioner linear operator. If given, `precond` will have no effect, a pointer is set to this custom preconditioner.
 
