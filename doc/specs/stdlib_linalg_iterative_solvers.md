@@ -232,7 +232,7 @@ Subroutine
 
 `x`: 1-D array of `real(<kind>)` which serves as the input initial guess and the output solution. This argument is `intent(inout)`.
 
-`di` (optional): 1-D mask array of type `logical(1)` defining the degrees of freedom subject to dirichlet boundary conditions. The actual boundary conditions values should be stored in the `b` load array. This argument is `intent(in)`.
+`di` (optional): 1-D mask array of type `logical(int8)` defining the degrees of freedom subject to dirichlet boundary conditions. The actual boundary conditions values should be stored in the `b` load array. This argument is `intent(in)`.
 
 `tol` (optional): scalar of type `real(<kind>)` specifying the requested tolerance with respect to the relative residual vector norm. If no value is given, a default value of `1.e-4` is set. This argument is `intent(in)`.
 
