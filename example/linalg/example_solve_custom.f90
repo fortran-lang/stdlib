@@ -40,7 +40,7 @@ contains
         if(present(di))then
             di_ => di
         else 
-            allocate(di_(n),source=.false._1)
+            allocate(di_(n),source=.false._int8)
         end if
         
         if(present(workspace)) then
