@@ -156,7 +156,7 @@ Subroutine
 
 `maxiter` (optional): scalar of type `integer` defining the maximum allowed number of iterations. If no value is given, a default of `N` is set, where `N = size(b)`. This argument is `intent(in)`.
 
-`workspace` (optional): `type(solver_workspace_<kind>_type)` holding the work temporal array for the solver. If the user passes its own `workspace`, then internally a pointer is set to it, otherwise, memory will be internally allocated and deallocated before exiting the procedure. This argument is `intent(inout)`.
+`workspace` (optional): scalar derived type of `type(solver_workspace_<kind>_type)` holding the work array for the solver. If the user passes its own `workspace`, then a pointer is set internally to it. Otherwise, memory will be internally allocated and deallocated before exiting the procedure. This argument is `intent(inout)`.
 
 #### Example
 
