@@ -7,7 +7,11 @@ module custom_solver
                     stdlib_size_wksp_pcg
     use stdlib_optval, only: optval
     implicit none
+    private
+    public :: solve_pcg_custom
+
 contains
+
     subroutine solve_pcg_custom(A,b,x,di,tol,maxiter,restart,workspace)
         type(CSR_dp_type), intent(in) :: A
         real(dp), intent(in) :: b(:)
@@ -107,6 +111,7 @@ end module custom_solver
 
 program example_solve_custom
     use custom_solver
+    use stdlib_kinds, only: int8, dp
     use stdlib_sparse, only: CSR_dp_type, COO_dp_type, dense2coo, coo2csr
     implicit none
 
