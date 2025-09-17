@@ -9,6 +9,7 @@ submodule(stdlib_linalg_iterative_solvers) stdlib_linalg_iterative_pcg
     use stdlib_sparse
     use stdlib_constants
     use stdlib_linalg_iterative_solvers
+    use stdlib_optval, only: optval
     implicit none
 
     enum, bind(c)
@@ -93,7 +94,7 @@ contains
         ${t}$, intent(in) :: b(:)
         ${t}$, intent(inout) :: x(:)
         ${t}$, intent(in), optional :: tol
-        logical(1), intent(in), optional, target  :: di(:)
+        logical(int8), intent(in), optional, target  :: di(:)
         integer, intent(in), optional  :: maxiter
         logical, intent(in), optional  :: restart
         integer, intent(in), optional  :: precond 
@@ -106,7 +107,7 @@ contains
         integer :: n, maxiter_
         ${t}$ :: tol_
         logical :: restart_
-        logical(1), pointer :: di_(:)
+        logical(int8), pointer :: di_(:)
         !-------------------------
         ! working data for preconditioner
         integer :: precond_
@@ -114,10 +115,10 @@ contains
 
         !-------------------------
         n = size(b)
-        maxiter_ = n;       if(present(maxiter)) maxiter_ = maxiter
-        restart_ = .true.;  if(present(restart)) restart_ = restart
-        tol_ = 1.e-4_${s}$; if(present(tol)) tol_ = tol
-        precond_ = pc_none; if(present(precond)) precond_ = precond
+        maxiter_ = optval(x=maxiter, default=n)
+        restart_ = optval(x=restart, default=.true.)
+        tol_     = optval(x=tol,     default=1.e-4_${s}$)
+        precond_ = optval(x=precond, default=pc_none)
         !-------------------------
         ! internal memory setup
         ! preconditioner

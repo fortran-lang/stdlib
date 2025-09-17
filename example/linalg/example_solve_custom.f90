@@ -5,6 +5,7 @@ module custom_solver
                     solver_workspace_dp_type, &
                     solve_pcg_kernel, &
                     stdlib_size_wksp_pcg
+    use stdlib_optval, only: optval
     implicit none
 contains
     subroutine solve_pcg_custom(A,b,x,di,tol,maxiter,restart,workspace)
@@ -28,9 +29,9 @@ contains
         real(dp) :: norm_sq0
         !-------------------------
         n = size(b)
-        maxiter_ = n;       if(present(maxiter)) maxiter_ = maxiter
-        restart_ = .true.;  if(present(restart)) restart_ = restart
-        tol_ = 1.e-4_dp;    if(present(tol)) tol_ = tol
+        maxiter_ = optval(x=maxiter, default=n)
+        restart_ = optval(x=restart, default=.true.)
+        tol_     = optval(x=tol,     default=1.e-4_dp)
         norm_sq0 = 0._dp
         !-------------------------
         ! internal memory setup

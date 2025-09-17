@@ -9,6 +9,7 @@ submodule(stdlib_linalg_iterative_solvers) stdlib_linalg_iterative_cg
     use stdlib_sparse
     use stdlib_constants
     use stdlib_linalg_iterative_solvers
+    use stdlib_optval, only: optval
     implicit none
 
 contains
@@ -88,9 +89,9 @@ contains
         logical(int8), pointer :: di_(:)
         !-------------------------
         n = size(b)
-        maxiter_ = n;       if(present(maxiter)) maxiter_ = maxiter
-        restart_ = .true.;  if(present(restart)) restart_ = restart
-        tol_ = 1.e-4_${s}$; if(present(tol)) tol_ = tol
+        maxiter_ = optval(x=maxiter, default=n)
+        restart_ = optval(x=restart, default=.true.)
+        tol_     = optval(x=tol,     default=1.e-4_${s}$)
 
         !-------------------------
         ! internal memory setup
