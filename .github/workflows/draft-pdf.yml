@@ -22,5 +22,5 @@ jobs:
       - name: Upload PDF
         uses: actions/upload-artifact@v4
         with:
-          name: joss/paper_sparse
-          path: joss/paper_sparse.pdf
+          name: paper_sparse
+          path: paper_sparse.pdf
