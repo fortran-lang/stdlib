@@ -23,4 +23,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: paper
-          path: paper.pdf
+          path: joss/paper.pdf
