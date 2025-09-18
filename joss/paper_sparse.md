@@ -5,7 +5,7 @@ tags:
   - linear algebra
   - sparse matrix
 authors:
-  - name: José R. Alves Z.
+  - name: José Alves
     corresponding: true
     orcid: 0000-0001-9448-0145
     affiliation: 1
@@ -133,7 +133,7 @@ end program main
 Sparse matrix–vector multiplication has been implemented for all formats. Preliminary tests confirm correctness and scalability to moderately large problems. However:
 
 * No sparse matrix–matrix multiplication or factorizations are yet implemented.
-* Parallelism (multi-thread or multi-process) and GPU acceleration are not currently supported.
+* For data-parallelism (multi-processing with MPI or coarrays) the `spmv` kernel can be used as basis within each process. Multi-threading or GPU acceleration is not currently supported.
 * Interfaces are subject to change while the module remains experimental.
 
 Future work will address these limitations by adding additional kernels, improving performance portability, and expanding supported formats.
