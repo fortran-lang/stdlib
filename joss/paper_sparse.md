@@ -11,6 +11,7 @@ authors:
     affiliation: 1
   - name: Ivan Pribec
     affiliation: 2
+    orcid: 0000-0001-8436-882X
   - name: Jeremie Vandenplas
     affiliation: 3
     orcid: 0000-0002-2554-072X
