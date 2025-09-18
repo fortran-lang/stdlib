@@ -19,8 +19,11 @@ jobs:
           journal: joss
           paper-path: joss/paper_sparse.md
 
+      - name: Move PDF into joss folder
+        run: mv paper.pdf joss/paper_sparse.pdf
+
       - name: Upload PDF
         uses: actions/upload-artifact@v4
         with:
           name: paper_sparse
-          path: paper_sparse.pdf
+          path: joss/paper_sparse.pdf
