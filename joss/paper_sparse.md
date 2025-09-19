@@ -17,6 +17,7 @@ authors:
     orcid: 0000-0002-2554-072X
   - name: Federico Perini
     affiliation: 4
+    orcid: 0000-0001-8017-1747
 affiliations:
  - name: Transvalor S.A., France
    index: 1
