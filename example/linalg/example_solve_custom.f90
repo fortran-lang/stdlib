@@ -1,18 +1,18 @@
 module custom_solver
     use stdlib_kinds, only: int8, dp
     use stdlib_sparse, only: CSR_dp_type, spmv, diag
-    use stdlib_linalg_iterative_solvers, only: linop_dp_type, &
-                    solver_workspace_dp_type, &
-                    solve_pcg_kernel, &
+    use stdlib_linalg_iterative_solvers, only: stdlib_linop_dp_type, &
+                    stdlib_solver_workspace_dp_type, &
+                    stdlib_solve_pcg_kernel, &
                     stdlib_size_wksp_pcg
     use stdlib_optval, only: optval
     implicit none
     private
-    public :: solve_pcg_custom
+    public :: stdlib_solve_pcg_custom
 
 contains
 
-    subroutine solve_pcg_custom(A,b,x,di,tol,maxiter,restart,workspace)
+    subroutine stdlib_solve_pcg_custom(A,b,x,di,tol,maxiter,restart,workspace)
         type(CSR_dp_type), intent(in) :: A
         real(dp), intent(in) :: b(:)
         real(dp), intent(inout) :: x(:)
@@ -20,11 +20,11 @@ contains
         logical(int8), intent(in), optional, target  :: di(:)
         integer, intent(in), optional  :: maxiter
         logical, intent(in), optional  :: restart
-        type(solver_workspace_dp_type), optional, intent(inout), target :: workspace
+        type(stdlib_solver_workspace_dp_type), optional, intent(inout), target :: workspace
         !-------------------------
-        type(linop_dp_type) :: op
-        type(linop_dp_type) :: M
-        type(solver_workspace_dp_type), pointer :: workspace_
+        type(stdlib_linop_dp_type) :: op
+        type(stdlib_linop_dp_type) :: M
+        type(stdlib_solver_workspace_dp_type), pointer :: workspace_
         integer :: n, maxiter_
         real(dp) :: tol_
         logical :: restart_
@@ -61,7 +61,7 @@ contains
         where(abs(diagonal)>epsilon(0._dp)) diagonal = 1._dp/diagonal
         !-------------------------
         ! main call to the solver
-        call solve_pcg_kernel(op,M,b,x,tol_,maxiter_,workspace_)
+        call stdlib_solve_pcg_kernel(op,M,b,x,tol_,maxiter_,workspace_)
 
         !-------------------------
         ! internal memory cleanup
@@ -135,7 +135,7 @@ program example_solve_custom
     dirichlet = .false._1 
     dirichlet([1,5]) = .true._1
 
-    call solve_pcg_custom(laplacian_csr, rhs, x, tol=1.d-6, di=dirichlet)
+    call stdlib_solve_pcg_custom(laplacian_csr, rhs, x, tol=1.d-6, di=dirichlet)
     print *, x !> solution: [0.0, 2.5, 5.0, 2.5, 0.0]
     
 end program example_solve_custom

@@ -1,7 +1,7 @@
 program example_solve_pcg
     use stdlib_kinds, only: int8, dp
     use stdlib_sparse
-    use stdlib_linalg_iterative_solvers, only: solve_pcg
+    use stdlib_linalg_iterative_solvers, only: stdlib_solve_pcg
 
     type(CSR_dp_type) :: laplacian_csr
     type(COO_dp_type) :: COO
@@ -23,10 +23,10 @@ program example_solve_pcg
     dirichlet = .false._int8
     dirichlet([1,5]) = .true._int8
 
-    call solve_pcg(laplacian, rhs, x, tol=1.d-6, di=dirichlet)
+    call stdlib_solve_pcg(laplacian, rhs, x, tol=1.d-6, di=dirichlet)
     print *, x !> solution: [0.0, 2.5, 5.0, 2.5, 0.0]
     x = 0._dp
 
-    call solve_pcg(laplacian_csr, rhs, x, tol=1.d-6, di=dirichlet)
+    call stdlib_solve_pcg(laplacian_csr, rhs, x, tol=1.d-6, di=dirichlet)
     print *, x !> solution: [0.0, 2.5, 5.0, 2.5, 0.0]
 end program

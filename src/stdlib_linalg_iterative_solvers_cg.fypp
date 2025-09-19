@@ -15,12 +15,12 @@ submodule(stdlib_linalg_iterative_solvers) stdlib_linalg_iterative_cg
 contains
 
     #:for k, t, s in R_KINDS_TYPES
-    module subroutine solve_cg_kernel_${s}$(A,b,x,tol,maxiter,workspace)
-        class(linop_${s}$_type), intent(in) :: A
+    module subroutine stdlib_solve_cg_kernel_${s}$(A,b,x,tol,maxiter,workspace)
+        class(stdlib_linop_${s}$_type), intent(in) :: A
         ${t}$, intent(in) :: b(:), tol
         ${t}$, intent(inout) :: x(:)
         integer, intent(in) :: maxiter
-        type(solver_workspace_${s}$_type), intent(inout) :: workspace
+        type(stdlib_solver_workspace_${s}$_type), intent(inout) :: workspace
         !-------------------------
         integer :: iter
         ${t}$ :: norm_sq, norm_sq_old, norm_sq0
@@ -67,7 +67,7 @@ contains
 
     #:for matrix in MATRIX_TYPES
     #:for k, t, s in R_KINDS_TYPES
-    module subroutine solve_cg_${matrix}$_${s}$(A,b,x,di,tol,maxiter,restart,workspace)
+    module subroutine stdlib_solve_cg_${matrix}$_${s}$(A,b,x,di,tol,maxiter,restart,workspace)
         #:if matrix == "dense"
         ${t}$, intent(in) :: A(:,:)
         #:else 
@@ -79,10 +79,10 @@ contains
         logical(int8), intent(in), optional, target  :: di(:)
         integer, intent(in), optional :: maxiter
         logical, intent(in), optional  :: restart
-        type(solver_workspace_${s}$_type), optional, intent(inout), target :: workspace
+        type(stdlib_solver_workspace_${s}$_type), optional, intent(inout), target :: workspace
         !-------------------------
-        type(linop_${s}$_type) :: op
-        type(solver_workspace_${s}$_type), pointer :: workspace_
+        type(stdlib_linop_${s}$_type) :: op
+        type(stdlib_solver_workspace_${s}$_type), pointer :: workspace_
         integer :: n, maxiter_
         ${t}$ :: tol_
         logical :: restart_
@@ -113,7 +113,7 @@ contains
         ! main call to the solver
         if(restart_) x = zero_${s}$
         x = merge( b, x, di_ ) ! copy dirichlet load conditions encoded in B and indicated by di
-        call solve_cg_kernel(op,b,x,tol_,maxiter_,workspace_)
+        call stdlib_solve_cg_kernel(op,b,x,tol_,maxiter_,workspace_)
 
         !-------------------------
         ! internal memory cleanup
