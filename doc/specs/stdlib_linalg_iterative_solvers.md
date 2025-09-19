@@ -121,7 +121,7 @@ Subroutine
 
 `maxiter`: scalar of type `integer` defining the maximum allowed number of iterations. This argument is `intent(in)`.
 
-`workspace`: `type(stdlib_solver_workspace_<kind>_type)` holding the work temporal array for the solver. This argument is `intent(inout)`.
+`workspace`: scalar derived type of `type(stdlib_solver_workspace_<kind>_type)` holding the work array for the solver. This argument is `intent(inout)`.
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### `solve_cg` subroutine
