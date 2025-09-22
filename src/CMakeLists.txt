@@ -10,6 +10,7 @@ function(configure_stdlib_target target_name regular_sources_var fypp_files_var 
     list(APPEND all_sources ${${regular_sources_var}})
 
     add_library(${target_name} ${all_sources})
+    add_library(${PROJECT_NAME}::${target_name} ALIAS ${target_name})
 
     set_target_properties(
       ${target_name}
@@ -68,10 +69,10 @@ set(blas_fppFiles
 )
 set(blas_cppFiles stdlib_linalg_constants.fypp stdlib_linalg_blas.fypp)
 
-configure_stdlib_target(stdlib_blas "" blas_fppFiles blas_cppFiles)
+configure_stdlib_target(blas "" blas_fppFiles blas_cppFiles)
 
 if(BLAS_FOUND)
-    target_link_libraries(stdlib_blas PUBLIC "BLAS::BLAS")
+    target_link_libraries(blas PUBLIC "BLAS::BLAS")
 endif()
 
 set(lapack_fppFiles
@@ -144,12 +145,12 @@ set(lapack_f90Files
     $<IF:$<BOOL:${f18errorstop}>,f18estop.f90,f08estop.f90>
 )
 
-configure_stdlib_target(stdlib_lapack lapack_f90Files lapack_fppFiles lapack_cppFiles)
+configure_stdlib_target(lapack lapack_f90Files lapack_fppFiles lapack_cppFiles)
 
 if(LAPACK_FOUND)
-    target_link_libraries(stdlib_lapack PUBLIC "LAPACK::LAPACK")
+    target_link_libraries(lapack PUBLIC "LAPACK::LAPACK")
 endif()
-target_link_libraries(stdlib_lapack PUBLIC stdlib_blas)
+target_link_libraries(lapack PUBLIC blas)
 
 set(fppFiles
     stdlib_ascii.fypp
@@ -266,4 +267,4 @@ set(f90Files
 
 configure_stdlib_target(${PROJECT_NAME} f90Files fppFiles cppFiles)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC stdlib_blas stdlib_lapack)
+target_link_libraries(${PROJECT_NAME} PUBLIC blas lapack)
