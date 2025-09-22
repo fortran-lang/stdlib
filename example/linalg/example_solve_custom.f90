@@ -12,11 +12,12 @@ module custom_solver
 
 contains
 
-    subroutine stdlib_solve_pcg_custom(A,b,x,di,tol,maxiter,restart,workspace)
+    subroutine stdlib_solve_pcg_custom(A,b,x,di,rtol,atol,maxiter,restart,workspace)
         type(CSR_dp_type), intent(in) :: A
         real(dp), intent(in) :: b(:)
         real(dp), intent(inout) :: x(:)
-        real(dp), intent(in), optional :: tol
+        real(dp), intent(in), optional :: rtol
+        real(dp), intent(in), optional :: atol
         logical(int8), intent(in), optional, target  :: di(:)
         integer, intent(in), optional  :: maxiter
         logical, intent(in), optional  :: restart
@@ -26,7 +27,7 @@ contains
         type(stdlib_linop_dp_type) :: M
         type(stdlib_solver_workspace_dp_type), pointer :: workspace_
         integer :: n, maxiter_
-        real(dp) :: tol_
+        real(dp) :: rtol_, atol_
         logical :: restart_
         logical(int8), pointer :: di_(:)
         real(dp), allocatable :: diagonal(:)
@@ -35,7 +36,8 @@ contains
         n = size(b)
         maxiter_ = optval(x=maxiter, default=n)
         restart_ = optval(x=restart, default=.true.)
-        tol_     = optval(x=tol,     default=1.e-4_dp)
+        rtol_    = optval(x=rtol,    default=1.e-4_dp)
+        atol_    = optval(x=atol,    default=0._dp)
         norm_sq0 = 0._dp
         !-------------------------
         ! internal memory setup
@@ -61,7 +63,7 @@ contains
         where(abs(diagonal)>epsilon(0._dp)) diagonal = 1._dp/diagonal
         !-------------------------
         ! main call to the solver
-        call stdlib_solve_pcg_kernel(op,M,b,x,tol_,maxiter_,workspace_)
+        call stdlib_solve_pcg_kernel(op,M,b,x,rtol_,atol_,maxiter_,workspace_)
 
         !-------------------------
         ! internal memory cleanup
@@ -135,7 +137,7 @@ program example_solve_custom
     dirichlet = .false._1 
     dirichlet([1,5]) = .true._1
 
-    call stdlib_solve_pcg_custom(laplacian_csr, rhs, x, tol=1.d-6, di=dirichlet)
+    call stdlib_solve_pcg_custom(laplacian_csr, rhs, x, rtol=1.d-6, di=dirichlet)
     print *, x !> solution: [0.0, 2.5, 5.0, 2.5, 0.0]
     
 end program example_solve_custom

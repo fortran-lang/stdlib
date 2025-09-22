@@ -70,11 +70,12 @@ module stdlib_linalg_iterative_solvers
     !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_cg_kernel)
     interface stdlib_solve_cg_kernel
         #:for k, t, s in R_KINDS_TYPES
-        module subroutine stdlib_solve_cg_kernel_${s}$(A,b,x,tol,maxiter,workspace)
+        module subroutine stdlib_solve_cg_kernel_${s}$(A,b,x,rtol,atol,maxiter,workspace)
             class(stdlib_linop_${s}$_type), intent(in) :: A !! linear operator
             ${t}$, intent(in) :: b(:) !! right-hand side vector
             ${t}$, intent(inout) :: x(:) !! solution vector and initial guess
-            ${t}$, intent(in) :: tol !! tolerance for convergence
+            ${t}$, intent(in) :: rtol !! relative tolerance for convergence
+            ${t}$, intent(in) :: atol !! absolut tolerance for convergence
             integer, intent(in) :: maxiter !! maximum number of iterations
             type(stdlib_solver_workspace_${s}$_type), intent(inout) :: workspace !! workspace for the solver
         end subroutine
@@ -85,7 +86,7 @@ module stdlib_linalg_iterative_solvers
     interface stdlib_solve_cg
         #:for matrix in MATRIX_TYPES
         #:for k, t, s in R_KINDS_TYPES
-        module subroutine stdlib_solve_cg_${matrix}$_${s}$(A,b,x,di,tol,maxiter,restart,workspace)
+        module subroutine stdlib_solve_cg_${matrix}$_${s}$(A,b,x,di,rtol,atol,maxiter,restart,workspace)
             !! linear operator matrix
             #:if matrix == "dense"
             ${t}$, intent(in) :: A(:,:) 
@@ -94,7 +95,8 @@ module stdlib_linalg_iterative_solvers
             #:endif
             ${t}$, intent(in) :: b(:) !! right-hand side vector
             ${t}$, intent(inout) :: x(:) !! solution vector and initial guess
-            ${t}$, intent(in), optional :: tol !! tolerance for convergence
+            ${t}$, intent(in), optional :: rtol !! relative tolerance for convergence
+            ${t}$, intent(in), optional :: atol !! absolute tolerance for convergence
             logical(1), intent(in), optional, target  :: di(:) !! dirichlet conditions mask
             integer, intent(in), optional :: maxiter !! maximum number of iterations
             logical, intent(in), optional :: restart !! restart flag
@@ -111,12 +113,13 @@ module stdlib_linalg_iterative_solvers
     !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_pcg_kernel)
     interface stdlib_solve_pcg_kernel
         #:for k, t, s in R_KINDS_TYPES
-        module subroutine stdlib_solve_pcg_kernel_${s}$(A,M,b,x,tol,maxiter,workspace)
+        module subroutine stdlib_solve_pcg_kernel_${s}$(A,M,b,x,rtol,atol,maxiter,workspace)
             class(stdlib_linop_${s}$_type), intent(in) :: A !! linear operator
             class(stdlib_linop_${s}$_type), intent(in) :: M !! preconditioner linear operator
             ${t}$, intent(in) :: b(:) !! right-hand side vector
             ${t}$, intent(inout) :: x(:) !! solution vector and initial guess
-            ${t}$, intent(in) :: tol !! tolerance for convergence
+            ${t}$, intent(in) :: rtol !! relative tolerance for convergence
+            ${t}$, intent(in) :: atol !! absolute tolerance for convergence
             integer, intent(in) :: maxiter !! maximum number of iterations
             type(stdlib_solver_workspace_${s}$_type), intent(inout) :: workspace !! workspace for the solver
         end subroutine
@@ -127,7 +130,7 @@ module stdlib_linalg_iterative_solvers
     interface stdlib_solve_pcg
         #:for matrix in MATRIX_TYPES
         #:for k, t, s in R_KINDS_TYPES
-        module subroutine stdlib_solve_pcg_${matrix}$_${s}$(A,b,x,di,tol,maxiter,restart,precond,M,workspace)
+        module subroutine stdlib_solve_pcg_${matrix}$_${s}$(A,b,x,di,rtol,atol,maxiter,restart,precond,M,workspace)
             !! linear operator matrix
             #:if matrix == "dense"
             ${t}$, intent(in) :: A(:,:)
@@ -136,7 +139,8 @@ module stdlib_linalg_iterative_solvers
             #:endif
             ${t}$, intent(in) :: b(:) !! right-hand side vector
             ${t}$, intent(inout) :: x(:) !! solution vector and initial guess
-            ${t}$, intent(in), optional :: tol !! tolerance for convergence
+            ${t}$, intent(in), optional :: rtol !! relative tolerance for convergence
+            ${t}$, intent(in), optional :: atol !! absolute tolerance for convergence
             logical(1), intent(in), optional, target  :: di(:) !! dirichlet conditions mask
             integer, intent(in), optional  :: maxiter !! maximum number of iterations
             logical, intent(in), optional :: restart !! restart flag

@@ -15,9 +15,9 @@ submodule(stdlib_linalg_iterative_solvers) stdlib_linalg_iterative_cg
 contains
 
     #:for k, t, s in R_KINDS_TYPES
-    module subroutine stdlib_solve_cg_kernel_${s}$(A,b,x,tol,maxiter,workspace)
+    module subroutine stdlib_solve_cg_kernel_${s}$(A,b,x,rtol,atol,maxiter,workspace)
         class(stdlib_linop_${s}$_type), intent(in) :: A
-        ${t}$, intent(in) :: b(:), tol
+        ${t}$, intent(in) :: b(:), rtol, atol
         ${t}$, intent(inout) :: x(:)
         integer, intent(in) :: maxiter
         type(stdlib_solver_workspace_${s}$_type), intent(inout) :: workspace
@@ -40,10 +40,10 @@ contains
    
             P = R
             
-            tolsq = tol*tol
+            tolsq = max(rtol*rtol * norm_sq0, atol*atol)
             beta = zero_${s}$
             if(associated(workspace%callback)) call workspace%callback(x, norm_sq, iter)
-            do while( norm_sq > tolsq * norm_sq0 .and. iter < maxiter)
+            do while( norm_sq >= tolsq .and. iter < maxiter)
                 call A%matvec(P,Ap, alpha= one_${s}$, beta=zero_${s}$, op='N') ! Ap = A*P
 
                 alpha = norm_sq / A%inner_product(P, Ap)
@@ -67,7 +67,7 @@ contains
 
     #:for matrix in MATRIX_TYPES
     #:for k, t, s in R_KINDS_TYPES
-    module subroutine stdlib_solve_cg_${matrix}$_${s}$(A,b,x,di,tol,maxiter,restart,workspace)
+    module subroutine stdlib_solve_cg_${matrix}$_${s}$(A,b,x,di,rtol,atol,maxiter,restart,workspace)
         #:if matrix == "dense"
         ${t}$, intent(in) :: A(:,:)
         #:else 
@@ -75,7 +75,7 @@ contains
         #:endif
         ${t}$, intent(in) :: b(:)
         ${t}$, intent(inout) :: x(:)
-        ${t}$, intent(in), optional :: tol
+        ${t}$, intent(in), optional :: rtol, atol
         logical(int8), intent(in), optional, target  :: di(:)
         integer, intent(in), optional :: maxiter
         logical, intent(in), optional  :: restart
@@ -84,14 +84,15 @@ contains
         type(stdlib_linop_${s}$_type) :: op
         type(stdlib_solver_workspace_${s}$_type), pointer :: workspace_
         integer :: n, maxiter_
-        ${t}$ :: tol_
+        ${t}$ :: rtol_, atol_
         logical :: restart_
         logical(int8), pointer :: di_(:)
         !-------------------------
         n = size(b)
         maxiter_ = optval(x=maxiter, default=n)
         restart_ = optval(x=restart, default=.true.)
-        tol_     = optval(x=tol,     default=1.e-4_${s}$)
+        rtol_    = optval(x=rtol,    default=1.e-4_${s}$)
+        atol_    = optval(x=atol,    default=zero_${s}$)
 
         !-------------------------
         ! internal memory setup
@@ -113,7 +114,7 @@ contains
         ! main call to the solver
         if(restart_) x = zero_${s}$
         x = merge( b, x, di_ ) ! copy dirichlet load conditions encoded in B and indicated by di
-        call stdlib_solve_cg_kernel(op,b,x,tol_,maxiter_,workspace_)
+        call stdlib_solve_cg_kernel(op,b,x,rtol_,atol_,maxiter_,workspace_)
 
         !-------------------------
         ! internal memory cleanup

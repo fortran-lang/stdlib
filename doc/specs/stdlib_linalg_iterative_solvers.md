@@ -95,7 +95,7 @@ Subroutine
 
 #### Description
 
-Implements the Conjugate Gradient (CG) method for solving the linear system \( Ax = b \), where \( A \) is a symmetric positive-definite linear operator defined via the `linop` type. This is the core implementation, allowing flexibility for custom matrix types or parallel environments.
+Implements the Conjugate Gradient (CG) method for solving the linear system \( Ax = b \), where \( A \) is a symmetric positive-definite linear operator defined via the `stdlib_linop` type. This is the core implementation, allowing flexibility for custom matrix types or parallel environments.
 
 #### Syntax
 
@@ -117,7 +117,7 @@ Subroutine
 
 `x`: 1-D array of `real(<kind>)` which serves as the input initial guess and the output solution. This argument is `intent(inout)`.
 
-`tol`: scalar of type `real(<kind>)` specifying the requested tolerance with respect to the relative residual vector norm. This argument is `intent(in)`.
+`rtol` and `atol`: scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used \( || b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 ) \). These arguments are `intent(in)`.
 
 `maxiter`: scalar of type `integer` defining the maximum allowed number of iterations. This argument is `intent(in)`.
 
@@ -132,7 +132,7 @@ Provides a user-friendly interface to the CG method for solving \( Ax = b \), su
 
 #### Syntax
 
-`call ` [[stdlib_iterative_solvers(module):solve_cg(interface)]] ` (A, b, x [, di, tol, maxiter, restart, workspace])`
+`call ` [[stdlib_iterative_solvers(module):solve_cg(interface)]] ` (A, b, x [, di, rtol, atol, maxiter, restart, workspace])`
 
 #### Status
 
@@ -152,7 +152,7 @@ Subroutine
 
 `di` (optional): 1-D mask array of type `logical(int8)` defining the degrees of freedom subject to dirichlet boundary conditions. The actual boundary conditions values should be stored in the `b` load array. This argument is `intent(in)`.
 
-`tol` (optional): scalar of type `real(<kind>)` specifying the requested tolerance with respect to the relative residual vector norm. If no value is given, a default value of `1.e-4` is set. This argument is `intent(in)`.
+`rtol` and `atol` (optional): scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used \( || b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 ) \). Defaults values are `rtol=1.e-4` and `atol=0`. These arguments are `intent(in)`.
 
 `maxiter` (optional): scalar of type `integer` defining the maximum allowed number of iterations. If no value is given, a default of `N` is set, where `N = size(b)`. This argument is `intent(in)`.
 
@@ -169,7 +169,7 @@ Subroutine
 
 #### Description
 
-Implements the Preconditioned Conjugate Gradient (PCG) method for solving the linear system \( Ax = b \), where \( A \) is a symmetric positive-definite linear operator defined via the `linop` type. This is the core implementation, allowing flexibility for custom matrix types or parallel environments.
+Implements the Preconditioned Conjugate Gradient (PCG) method for solving the linear system \( Ax = b \), where \( A \) is a symmetric positive-definite linear operator defined via the `stdlib_linop` type. This is the core implementation, allowing flexibility for custom matrix types or parallel environments.
 
 #### Syntax
 
@@ -193,7 +193,7 @@ Subroutine
 
 `x`: 1-D array of `real(<kind>)` which serves as the input initial guess and the output solution. This argument is `intent(inout)`.
 
-`tol`: scalar of type `real(<kind>)` specifying the requested tolerance with respect to the relative residual vector norm. This argument is `intent(in)`.
+`rtol` and `atol` (optional): scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used \( || b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 ) \). These arguments are `intent(in)`.
 
 `maxiter`: scalar of type `integer` defining the maximum allowed number of iterations. This argument is `intent(in)`.
 
@@ -234,7 +234,7 @@ Subroutine
 
 `di` (optional): 1-D mask array of type `logical(int8)` defining the degrees of freedom subject to dirichlet boundary conditions. The actual boundary conditions values should be stored in the `b` load array. This argument is `intent(in)`.
 
-`tol` (optional): scalar of type `real(<kind>)` specifying the requested tolerance with respect to the relative residual vector norm. If no value is given, a default value of `1.e-4` is set. This argument is `intent(in)`.
+`rtol` and `atol` (optional): scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used \( || b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 ) \). Defaults values are `rtol=1.e-4` and `atol=0`. These arguments are `intent(in)`.
 
 `maxiter` (optional): scalar of type `integer` defining the maximum allowed number of iterations. If no value is given, a default of `N` is set, where `N = size(b)`. This argument is `intent(in)`.
 
