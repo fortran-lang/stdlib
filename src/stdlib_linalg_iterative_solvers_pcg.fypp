@@ -117,8 +117,8 @@ contains
         n = size(b)
         maxiter_ = optval(x=maxiter, default=n)
         restart_ = optval(x=restart, default=.true.)
-        rtol_    = optval(x=rtol,    default=1.e-4_${s}$)
-        atol_    = optval(x=atol,    default=zero_${s}$)
+        rtol_    = optval(x=rtol,    default=1.e-5_${s}$)
+        atol_    = optval(x=atol,    default=epsilon(one_${s}$))
         precond_ = optval(x=precond, default=pc_none)
         !-------------------------
         ! internal memory setup

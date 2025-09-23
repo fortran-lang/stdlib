@@ -152,7 +152,7 @@ Subroutine
 
 `di` (optional): 1-D mask array of type `logical(int8)` defining the degrees of freedom subject to dirichlet boundary conditions. The actual boundary conditions values should be stored in the `b` load array. This argument is `intent(in)`.
 
-`rtol` and `atol` (optional): scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used \( || b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 ) \). Defaults values are `rtol=1.e-4` and `atol=0`. These arguments are `intent(in)`.
+`rtol` and `atol` (optional): scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used \( || b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 ) \). Defaults values are `rtol=1.e-5` and `atol=epsilon(1._<kind>)`. These arguments are `intent(in)`.
 
 `maxiter` (optional): scalar of type `integer` defining the maximum allowed number of iterations. If no value is given, a default of `N` is set, where `N = size(b)`. This argument is `intent(in)`.
 
@@ -234,7 +234,7 @@ Subroutine
 
 `di` (optional): 1-D mask array of type `logical(int8)` defining the degrees of freedom subject to dirichlet boundary conditions. The actual boundary conditions values should be stored in the `b` load array. This argument is `intent(in)`.
 
-`rtol` and `atol` (optional): scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used \( || b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 ) \). Defaults values are `rtol=1.e-4` and `atol=0`. These arguments are `intent(in)`.
+`rtol` and `atol` (optional): scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used \( || b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 ) \). Defaults values are `rtol=1.e-5` and `atol=epsilon(1._<kind>)`. These arguments are `intent(in)`.
 
 `maxiter` (optional): scalar of type `integer` defining the maximum allowed number of iterations. If no value is given, a default of `N` is set, where `N = size(b)`. This argument is `intent(in)`.
 
