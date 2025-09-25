@@ -95,6 +95,9 @@ set(cppFiles
     stdlib_linalg_constants.fypp
     stdlib_linalg_blas.fypp
     stdlib_linalg_lapack.fypp
+    stdlib_linalg_iterative_solvers.fypp
+    stdlib_linalg_iterative_solvers_cg.fypp
+    stdlib_linalg_iterative_solvers_pcg.fypp
 )
 
 add_subdirectory(blas)
