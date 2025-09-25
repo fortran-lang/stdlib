@@ -1,0 +1,219 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set MATRIX_TYPES = ["dense", "CSR"]
+#:set RANKS = range(1, 2+1)
+
+submodule(stdlib_linalg_iterative_solvers) stdlib_linalg_iterative_pcg
+    use stdlib_kinds
+    use stdlib_sparse
+    use stdlib_constants
+    use stdlib_linalg_iterative_solvers
+    use stdlib_optval, only: optval
+    implicit none
+
+    enum, bind(c)
+        enumerator :: pc_none = 0
+        enumerator :: pc_jacobi
+    end enum
+
+contains
+
+    #:for k, t, s in R_KINDS_TYPES
+    module subroutine stdlib_solve_pcg_kernel_${s}$(A,M,b,x,rtol,atol,maxiter,workspace)
+        class(stdlib_linop_${s}$_type), intent(in) :: A
+        class(stdlib_linop_${s}$_type), intent(in) :: M 
+        ${t}$, intent(in) :: b(:), rtol, atol
+        ${t}$, intent(inout) :: x(:)
+        integer, intent(in) :: maxiter
+        type(stdlib_solver_workspace_${s}$_type), intent(inout) :: workspace
+        !-------------------------
+        integer :: iter
+        ${t}$ :: norm_sq, norm_sq0, norm_sq_old
+        ${t}$ :: zr1, zr2, zv2, alpha, beta, tolsq
+        !-------------------------
+        iter = 0
+        associate(  R => workspace%tmp(:,1), &
+                    S => workspace%tmp(:,2), &
+                    P => workspace%tmp(:,3), &
+                    Q => workspace%tmp(:,4))
+        norm_sq = A%inner_product( b, b )
+        norm_sq0 = norm_sq
+        if(associated(workspace%callback)) call workspace%callback(x, norm_sq, iter)
+        
+        if ( norm_sq0 > zero_${s}$ ) then
+            
+            R = B
+            call A%matvec(X, R, alpha= -one_${s}$, beta=one_${s}$, op='N') ! R = B - A*X
+            
+            call M%matvec(R,P, alpha= one_${s}$, beta=zero_${s}$, op='N') ! P = M^{-1}*R
+            
+            tolsq = max(rtol*rtol * norm_sq0, atol*atol)
+            
+            zr1 = zero_${s}$
+            zr2 = one_${s}$
+            do while ( (iter < maxiter) .AND. (norm_sq >= tolsq) )
+
+                call M%matvec(R,S, alpha= one_${s}$, beta=zero_${s}$, op='N') ! S = M^{-1}*R
+                zr2 = A%inner_product( R, S )
+            
+                if (iter>0) then
+                    beta = zr2 / zr1
+                    P = S + beta * P
+                end if
+
+                call A%matvec(P, Q, alpha= one_${s}$, beta=zero_${s}$, op='N') ! Q = A*P
+                zv2 = A%inner_product( P, Q )
+            
+                alpha = zr2 / zv2
+            
+                X = X + alpha * P
+                R = R - alpha * Q
+
+                norm_sq = A%inner_product( R, R )
+                norm_sq_old = norm_sq
+
+                zr1 = zr2
+                iter = iter + 1
+                if(associated(workspace%callback)) call workspace%callback(x, norm_sq, iter)
+            end do
+        end if
+        end associate
+    end subroutine
+    #:endfor
+
+    #:for matrix in MATRIX_TYPES
+    #:for k, t, s in R_KINDS_TYPES
+    module subroutine stdlib_solve_pcg_${matrix}$_${s}$(A,b,x,di,rtol,atol,maxiter,restart,precond,M,workspace)
+        #:if matrix == "dense"
+        use stdlib_linalg, only: diag
+        ${t}$, intent(in) :: A(:,:)
+        #:else 
+        type(${matrix}$_${s}$_type), intent(in) :: A
+        #:endif
+        ${t}$, intent(in) :: b(:)
+        ${t}$, intent(inout) :: x(:)
+        ${t}$, intent(in), optional :: rtol, atol
+        logical(int8), intent(in), optional, target  :: di(:)
+        integer, intent(in), optional  :: maxiter
+        logical, intent(in), optional  :: restart
+        integer, intent(in), optional  :: precond 
+        class(stdlib_linop_${s}$_type), optional , intent(in), target :: M 
+        type(stdlib_solver_workspace_${s}$_type), optional, intent(inout), target :: workspace
+        !-------------------------
+        type(stdlib_linop_${s}$_type) :: op
+        type(stdlib_linop_${s}$_type), pointer :: M_ => null()
+        type(stdlib_solver_workspace_${s}$_type), pointer :: workspace_
+        integer :: n, maxiter_
+        ${t}$ :: rtol_, atol_
+        logical :: restart_
+        logical(int8), pointer :: di_(:)
+        !-------------------------
+        ! working data for preconditioner
+        integer :: precond_
+        ${t}$, allocatable :: diagonal(:)
+
+        !-------------------------
+        n = size(b)
+        maxiter_ = optval(x=maxiter, default=n)
+        restart_ = optval(x=restart, default=.true.)
+        rtol_    = optval(x=rtol,    default=1.e-5_${s}$)
+        atol_    = optval(x=atol,    default=epsilon(one_${s}$))
+        precond_ = optval(x=precond, default=pc_none)
+        !-------------------------
+        ! internal memory setup
+        ! preconditioner
+        if(present(M)) then
+            M_ => M
+        else 
+            allocate( M_ )
+            allocate(diagonal(n),source=zero_${s}$)
+
+            select case(precond_)
+            case(pc_jacobi)
+                #:if matrix == "dense"
+                diagonal = diag(A)
+                #:else 
+                call diag(A,diagonal)
+                #:endif
+                M_%matvec => precond_jacobi
+            case default
+                M_%matvec => precond_none
+            end select
+            where(abs(diagonal)>epsilon(zero_${s}$)) diagonal = one_${s}$/diagonal
+        end if
+        ! matvec for the operator
+        op%matvec => matvec
+        
+        ! direchlet boundary conditions mask
+        if(present(di))then
+            di_ => di
+        else 
+            allocate(di_(n),source=.false._int8)
+        end if
+        
+        ! workspace for the solver
+        if(present(workspace)) then
+            workspace_ => workspace
+        else
+            allocate( workspace_ )
+        end if
+        if(.not.allocated(workspace_%tmp)) allocate( workspace_%tmp(n,stdlib_size_wksp_pcg) , source = zero_${s}$ )
+        !-------------------------
+        ! main call to the solver
+        if(restart_) x = zero_${s}$
+        x = merge( b, x, di_ ) ! copy dirichlet load conditions encoded in B and indicated by di
+        call stdlib_solve_pcg_kernel(op,M_,b,x,rtol_,atol_,maxiter_,workspace_)
+
+        !-------------------------
+        ! internal memory cleanup
+        if(.not.present(di)) deallocate(di_)
+        di_ => null()
+        
+        if(.not.present(workspace)) then
+            deallocate( workspace_%tmp )
+            deallocate( workspace_ )
+        end if
+        M_ => null()
+        workspace_ => null()
+        contains
+        
+        subroutine matvec(x,y,alpha,beta,op)
+            #:if matrix == "dense"
+            use stdlib_linalg_blas, only: gemv
+            #:endif 
+            ${t}$, intent(in)  :: x(:)
+            ${t}$, intent(inout) :: y(:)
+            ${t}$, intent(in) :: alpha
+            ${t}$, intent(in) :: beta
+            character(1), intent(in) :: op
+            #:if matrix == "dense"
+            call gemv(op,m=size(A,1),n=size(A,2),alpha=alpha,a=A,lda=size(A,1),x=x,incx=1,beta=beta,y=y,incy=1)
+            #:else 
+            call spmv( A , x, y , alpha, beta , op)
+            #:endif
+            y = merge( zero_${s}$, y, di_ )
+        end subroutine
+
+        subroutine precond_none(x,y,alpha,beta,op)
+            ${t}$, intent(in)  :: x(:)
+            ${t}$, intent(inout) :: y(:)
+            ${t}$, intent(in) :: alpha
+            ${t}$, intent(in) :: beta
+            character(1), intent(in) :: op
+            y = merge( zero_${s}$, x, di_ )
+        end subroutine
+        subroutine precond_jacobi(x,y,alpha,beta,op)
+            ${t}$, intent(in)  :: x(:)
+            ${t}$, intent(inout) :: y(:)
+            ${t}$, intent(in) :: alpha
+            ${t}$, intent(in) :: beta
+            character(1), intent(in) :: op
+            y = merge( zero_${s}$, diagonal * x, di_ ) ! inverted diagonal
+        end subroutine
+    end subroutine
+
+    #:endfor
+    #:endfor
+
+end submodule stdlib_linalg_iterative_pcg
