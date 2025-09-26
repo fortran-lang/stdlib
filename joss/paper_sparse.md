@@ -35,7 +35,7 @@ bibliography: paper_sparse.bib
 
 Sparse matrices are a core building block in scientific computing, particularly in fields such as computational physics, engineering, and graph analysis. Despite Fortran’s long tradition in numerical computing, its ecosystem lacks a canonical, modern, high-level library for sparse data structures.
 
-We present stdlib_sparse, a sparse matrix library implemented in modern Fortran as part of the (community) Fortran Standard Library (stdlib). It provides well-defined sparse storage formats, conversion routines, and core operations such as sparse matrix–vector multiplication. This library aims to improve reproducibility, interoperability, and performance across Fortran applications by offering standardized, extensible data structures.
+We present stdlib_sparse, a sparse matrix library implemented in modern Fortran as part of the (community-driven) Fortran Standard Library (stdlib). It provides well-defined sparse storage formats, conversion routines, and core operations such as sparse matrix–vector multiplication. This library aims to improve reproducibility, interoperability, and performance across Fortran applications by offering standardized and extensible data structures.
 
 # Statement of need
 
