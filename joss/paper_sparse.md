@@ -56,9 +56,10 @@ Several sparse libraries exist in Fortran and other languages:
 
 * SPARSKIT (Fortran 77, Saad 1994) — influential, but outdated syntax and limited interoperability [@saad2003iterative].
 * MUMPS [@MUMPS:1] and PETSc [@petsc-web-page] — high-performance solvers written in Fortran/C with broad functionality, but heavy dependencies and steeper learning curve.
+* PSBLAS [@psblas] A Parallel Sparse BLAS library in Fortran 2003 and 2008.
 * SciPy.sparse (Python) [@2020SciPy-NMeth] and Eigen (C++) — modern high-level APIs in other ecosystems, demonstrating the value of standardized interfaces.
 
-Compared to these, stdlib_sparse focuses on providing a lightweight, modern Fortran interface integrated into the stdlib, emphasizing portability and extensibility rather than complete solver functionality.
+Compared to these, stdlib_sparse focuses on providing a lightweight, modern Fortran interface integrated into the stdlib, emphasizing portability and modularity rather than fully-integrated solvers frameworks.
 
 # Design and implementation
 ## Data structures
