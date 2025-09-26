@@ -63,7 +63,7 @@ Compared to these, stdlib_sparse focuses on providing a lightweight, modern Fort
 # Design and implementation
 ## Data structures
 
-All sparse formats extend an abstract base type sparse_type, which holds metadata such as number of rows, columns, and nonzeros. Implementations include:
+All sparse formats extend an abstract base derived type sparse_type, which holds metadata such as number of rows, columns, and nonzeros. Implementations include:
 
 * COO: coordinate (triplet) format.
 * CSR: compressed sparse row (Yale) format.
