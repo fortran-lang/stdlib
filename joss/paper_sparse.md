@@ -48,7 +48,7 @@ The stdlib_sparse library addresses this gap by offering:
 * Standardized operations such as sparse matrix–vector multiplication (SpMV).
 * A unified API, following modern Fortran practices, as part of the official Fortran stdlib project.
 
-By integrating directly into stdlib, stdlib_sparse lowers the barrier for Fortran developers to adopt sparse methods, reduces code duplication, and promotes best practices for numerical software development.
+By integrating it directly into stdlib, stdlib_sparse lowers the barrier for Fortran developers to adopt sparse methods, reduces code duplication, and promotes best practices for numerical software development.
 
 # Related work
 
