@@ -82,7 +82,7 @@ $$ y = \alpha op(A) * x + \beta * y$$
 
 ## Implementation details
 
-Before introducing stdlib_sparse, the core structure and API was crafted under a stand-aline project, FSPARSE [@fsparse2024]. This enabled testing and refinement of the library before integration into stdlib.
+Before introducing stdlib_sparse, the core structure and API was crafted under a stand-alone project, FSPARSE [@fsparse2024]. This enabled testing and refinement of the library before integration into stdlib.
 
 The module is designed with the following key features:
 
