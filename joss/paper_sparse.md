@@ -23,7 +23,7 @@ affiliations:
    index: 1
  - name: Leibniz Centre of Supercomputing, Germany
    index: 2
- - name: Wageningen University, The Netherlands
+ - name: Wageningen University and Research, The Netherlands
    index: 3
  - name: Wisconsin Engine Research Consultants, USA
    index: 4
