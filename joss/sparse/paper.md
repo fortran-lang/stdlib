@@ -70,7 +70,7 @@ All sparse formats extend an abstract base derived type sparse_type, which holds
 * CSR: compressed sparse row (Yale) format.
 * CSC: compressed sparse column format.
 * ELLPACK: fixed number of nonzeros per row, suited for vectorization.
-* SELL-C: sliced ELLPACK, balancing CSR and ELLPACK trade-offs [@scellc,@anzt2014implementing].
+* SELL-C: sliced ELLPACK, balancing CSR and ELLPACK trade-offs [@scellc;@anzt2014implementing].
 
 ## Core functionality
 
