@@ -28,7 +28,7 @@ affiliations:
  - name: Wisconsin Engine Research Consultants, USA
    index: 4
 date: 17 September 2025
-bibliography: paper_sparse.bib
+bibliography: paper.bib
 ---
 
 # Summary
