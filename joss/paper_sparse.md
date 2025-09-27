@@ -21,7 +21,7 @@ authors:
 affiliations:
  - name: Transvalor S.A., France
    index: 1
- - name: Leibniz Centre of Supercomputing, Germany
+ - name: Leibniz Supercomputing Centre, Garching, Germany
    index: 2
  - name: Wageningen University and Research, The Netherlands
    index: 3
@@ -70,7 +70,7 @@ All sparse formats extend an abstract base derived type sparse_type, which holds
 * CSR: compressed sparse row (Yale) format.
 * CSC: compressed sparse column format.
 * ELLPACK: fixed number of nonzeros per row, suited for vectorization.
-* SELL-C: sliced ELLPACK, balancing CSR and ELLPACK trade-offs [@anzt2014implementing].
+* SELL-C: sliced ELLPACK, balancing CSR and ELLPACK trade-offs [@scellc,@anzt2014implementing].
 
 ## Core functionality
 
@@ -83,7 +83,7 @@ $$ y = \alpha op(A) * x + \beta * y$$
 
 ## Implementation details
 
-Before introducing stdlib_sparse, the core structure and API was crafted under a stand-alone project, FSPARSE [@fsparse2024]. This enabled testing and refinement of the library before integration into stdlib.
+Before introducing stdlib_sparse, the core structure and API was crafted under a standalone project, FSPARSE [@fsparse2024]. This enabled testing and refinement of the library before integration into stdlib.
 
 The module is designed with the following key features:
 
@@ -132,7 +132,7 @@ end program main
 
 # Performance and limitations
 
-Sparse matrix–vector multiplication has been implemented for all formats. Preliminary tests confirm correctness and scalability to moderately large problems. However:
+Sparse matrix–vector multiplication has been implemented for all formats. Tests confirm correctness and scalability to moderately large problems. However:
 
 * No sparse matrix–matrix multiplication or factorizations are yet implemented.
 * For data-parallelism (multi-processing with MPI or coarrays) the `spmv` kernel can be used as basis within each process. Multi-threading or GPU acceleration is not currently supported.
