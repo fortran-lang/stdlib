@@ -15,9 +15,16 @@ module stdlib_linalg_iterative_solvers
     enum, bind(c)
         enumerator :: stdlib_size_wksp_cg = 3
         enumerator :: stdlib_size_wksp_pcg = 4
+        enumerator :: stdlib_size_wksp_bicgstab = 8
     end enum
-    public :: stdlib_size_wksp_cg, stdlib_size_wksp_pcg
+    public :: stdlib_size_wksp_cg, stdlib_size_wksp_pcg, stdlib_size_wksp_bicgstab
 
+    enum, bind(c)
+        enumerator :: pc_none = 0
+        enumerator :: pc_jacobi
+    end enum
+    public :: pc_none, pc_jacobi
+    
     !! version: experimental
     !!
     !! linop type holding the linear operator and its associated methods.
@@ -127,6 +134,26 @@ module stdlib_linalg_iterative_solvers
     end interface
     public :: stdlib_solve_pcg_kernel
 
+    !! version: experimental
+    !!
+    !! stdlib_solve_bicgstab_kernel interface for the biconjugate gradient stabilized method.
+    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_bicgstab_kernel)
+    interface stdlib_solve_bicgstab_kernel
+        #:for k, t, s in R_KINDS_TYPES
+        module subroutine stdlib_solve_bicgstab_kernel_${s}$(A,M,b,x,rtol,atol,maxiter,workspace)
+            class(stdlib_linop_${s}$_type), intent(in) :: A !! linear operator
+            class(stdlib_linop_${s}$_type), intent(in) :: M !! preconditioner linear operator
+            ${t}$, intent(in) :: b(:) !! right-hand side vector
+            ${t}$, intent(inout) :: x(:) !! solution vector and initial guess
+            ${t}$, intent(in) :: rtol !! relative tolerance for convergence
+            ${t}$, intent(in) :: atol !! absolute tolerance for convergence
+            integer, intent(in) :: maxiter !! maximum number of iterations
+            type(stdlib_solver_workspace_${s}$_type), intent(inout) :: workspace !! workspace for the solver
+        end subroutine
+        #:endfor
+    end interface
+    public :: stdlib_solve_bicgstab_kernel
+
     interface stdlib_solve_pcg
         #:for matrix in MATRIX_TYPES
         #:for k, t, s in R_KINDS_TYPES
@@ -152,6 +179,32 @@ module stdlib_linalg_iterative_solvers
         #:endfor
     end interface
     public :: stdlib_solve_pcg 
+
+    interface stdlib_solve_bicgstab
+        #:for matrix in MATRIX_TYPES
+        #:for k, t, s in R_KINDS_TYPES
+        module subroutine stdlib_solve_bicgstab_${matrix}$_${s}$(A,b,x,di,rtol,atol,maxiter,restart,precond,M,workspace)
+            !! linear operator matrix
+            #:if matrix == "dense"
+            ${t}$, intent(in) :: A(:,:)
+            #:else 
+            type(${matrix}$_${s}$_type), intent(in) :: A
+            #:endif
+            ${t}$, intent(in) :: b(:) !! right-hand side vector
+            ${t}$, intent(inout) :: x(:) !! solution vector and initial guess
+            ${t}$, intent(in), optional :: rtol !! relative tolerance for convergence
+            ${t}$, intent(in), optional :: atol !! absolute tolerance for convergence
+            logical(1), intent(in), optional, target  :: di(:) !! dirichlet conditions mask
+            integer, intent(in), optional  :: maxiter !! maximum number of iterations
+            logical, intent(in), optional :: restart !! restart flag
+            integer, intent(in), optional  :: precond !! preconditioner method enumerator
+            class(stdlib_linop_${s}$_type), optional , intent(in), target :: M !! preconditioner linear operator
+            type(stdlib_solver_workspace_${s}$_type), optional, intent(inout), target :: workspace !! workspace for the solver
+        end subroutine
+        #:endfor
+        #:endfor
+    end interface
+    public :: stdlib_solve_bicgstab
 
 contains
 

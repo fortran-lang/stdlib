@@ -98,6 +98,7 @@ set(cppFiles
     stdlib_linalg_iterative_solvers.fypp
     stdlib_linalg_iterative_solvers_cg.fypp
     stdlib_linalg_iterative_solvers_pcg.fypp
+    stdlib_linalg_iterative_solvers_bicgstab.fypp
 )
 
 add_subdirectory(blas)
