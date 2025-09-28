@@ -27,6 +27,8 @@ module stdlib_linalg_iterative_solvers
     
     !! version: experimental
     !!
+    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_linop)
+    !!
     !! linop type holding the linear operator and its associated methods.
     !! The `linop` type is used to define the linear operator for the iterative solvers.
     #:for k, t, s in R_KINDS_TYPES
@@ -37,6 +39,8 @@ module stdlib_linalg_iterative_solvers
     #:endfor
 
     !! version: experimental
+    !!
+    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solver_workspace)
     !!
     !! solver_workspace type holding temporal array data for the iterative solvers.
     #:for k, t, s in R_KINDS_TYPES
@@ -89,7 +93,10 @@ module stdlib_linalg_iterative_solvers
         #:endfor
     end interface
     public :: stdlib_solve_cg_kernel
-
+    
+    !! version: experimental
+    !!
+    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_cg)
     interface stdlib_solve_cg
         #:for matrix in MATRIX_TYPES
         #:for k, t, s in R_KINDS_TYPES
@@ -154,6 +161,9 @@ module stdlib_linalg_iterative_solvers
     end interface
     public :: stdlib_solve_bicgstab_kernel
 
+    !! version: experimental
+    !!
+    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_pcg)
     interface stdlib_solve_pcg
         #:for matrix in MATRIX_TYPES
         #:for k, t, s in R_KINDS_TYPES
@@ -180,6 +190,9 @@ module stdlib_linalg_iterative_solvers
     end interface
     public :: stdlib_solve_pcg 
 
+    !! version: experimental
+    !!
+    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_bicgstab)
     interface stdlib_solve_bicgstab
         #:for matrix in MATRIX_TYPES
         #:for k, t, s in R_KINDS_TYPES

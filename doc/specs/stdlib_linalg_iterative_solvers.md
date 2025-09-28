@@ -10,12 +10,12 @@ title: linalg_iterative_solvers
 
 The `stdlib_linalg_iterative_solvers` module provides base implementations for known iterative solver methods. Each method is exposed with two procedure flavors: 
 
-* A `solve_<method>_kernel` which holds the method's base implementation. The linear system argument is defined through a `linop` derived type which enables extending the method for implicit or unknown (by `stdlib`) matrices or to complex scenarios involving distributed parallelism for which the user shall extend the `inner_product` and/or matrix-vector product to account for parallel syncrhonization.
+* A `stdlib_solve_<method>_kernel` which holds the method's base implementation. The linear system argument is defined through a `stdlib_linop` derived type which enables extending the method for implicit or unknown (by `stdlib`) matrices or to complex scenarios involving distributed parallelism for which the user shall extend the `inner_product` and/or matrix-vector product to account for parallel syncrhonization.
 
-* A `solve_<method>` which proposes an off-the-shelf ready to use interface for `dense` and `CSR_<kind>_type` matrices for all `real` kinds.
+* A `stdlib_solve_<method>` which proposes an off-the-shelf ready to use interface for `dense` and `CSR_<kind>_type` matrices for all `real` kinds.
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
-### The `linop` derived type
+### The `stdlib_linop` derived type
 
 The `stdlib_linop_<kind>_type` derive type is an auxiliary class enabling to abstract the definition of the linear system and the actual implementation of the solvers.
 
@@ -25,11 +25,11 @@ The following type-bound procedure pointers enable customization of the solver:
 
 ##### `matvec`
 
-Proxy procedure for the matrix-vector product $y = alpha * op(M) * x + beta * y$.
+Proxy procedure for the matrix-vector product \( y = alpha * op(M) * x + beta * y \).
 
 #### Syntax
 
-`call ` [[stdlib_iterative_solvers(module):matvec(interface)]] ` (x,y,alpha,beta,op)`
+`call ` [[stdlib_linalg_iterative_solvers(module):stdlib_linop_dp_type(type)]] `%matvec(x,y,alpha,beta,op)`
 
 ###### Class
 
@@ -53,7 +53,7 @@ Proxy procedure for the `dot_product`.
 
 #### Syntax
 
-`res = ` [[stdlib_iterative_solvers(module):inner_product(interface)]] ` (x,y)`
+`res = ` [[stdlib_linalg_iterative_solvers(module):stdlib_linop_dp_type(type)]] `%inner_product(x,y)`
 
 ###### Class
 
@@ -99,7 +99,7 @@ Implements the Conjugate Gradient (CG) method for solving the linear system \( A
 
 #### Syntax
 
-`call ` [[stdlib_iterative_solvers(module):stdlib_solve_cg_kernel(interface)]] ` (A, b, x, tol, maxiter, workspace)`
+`call ` [[stdlib_linalg_iterative_solvers(module):stdlib_solve_cg_kernel(interface)]] ` (A, b, x, tol, maxiter, workspace)`
 
 #### Status
 
@@ -132,7 +132,7 @@ Provides a user-friendly interface to the CG method for solving \( Ax = b \), su
 
 #### Syntax
 
-`call ` [[stdlib_iterative_solvers(module):solve_cg(interface)]] ` (A, b, x [, di, rtol, atol, maxiter, restart, workspace])`
+`call ` [[stdlib_linalg_iterative_solvers(module):stdlib_solve_cg(interface)]] ` (A, b, x [, di, rtol, atol, maxiter, restart, workspace])`
 
 #### Status
 
@@ -173,7 +173,7 @@ Implements the Preconditioned Conjugate Gradient (PCG) method for solving the li
 
 #### Syntax
 
-`call ` [[stdlib_iterative_solvers(module):stdlib_solve_cg_kernel(interface)]] ` (A, M, b, x, tol, maxiter, workspace)`
+`call ` [[stdlib_linalg_iterative_solvers(module):stdlib_solve_cg_kernel(interface)]] ` (A, M, b, x, tol, maxiter, workspace)`
 
 #### Status
 
@@ -214,7 +214,7 @@ Provides a user-friendly interface to the PCG method for solving \( Ax = b \), s
 
 #### Syntax
 
-`call ` [[stdlib_iterative_solvers(module):stdlib_solve_pcg(interface)]] ` (A, b, x [, di, tol, maxiter, restart, precond, M, workspace])`
+`call ` [[stdlib_linalg_iterative_solvers(module):stdlib_solve_pcg(interface)]] ` (A, b, x [, di, tol, maxiter, restart, precond, M, workspace])`
 
 #### Status
 
@@ -259,7 +259,7 @@ Implements the Biconjugate Gradient Stabilized (BiCGSTAB) method for solving the
 
 #### Syntax
 
-`call ` [[stdlib_iterative_solvers(module):stdlib_solve_bicgstab_kernel(interface)]] ` (A, M, b, x, rtol, atol, maxiter, workspace)`
+`call ` [[stdlib_linalg_iterative_solvers(module):stdlib_solve_bicgstab_kernel(interface)]] ` (A, M, b, x, rtol, atol, maxiter, workspace)`
 
 #### Status
 
@@ -298,7 +298,7 @@ Provides a user-friendly interface to the BiCGSTAB method for solving \( Ax = b 
 
 #### Syntax
 
-`call ` [[stdlib_iterative_solvers(module):stdlib_solve_bicgstab(interface)]] ` (A, b, x [, di, rtol, atol, maxiter, restart, precond, M, workspace])`
+`call ` [[stdlib_linalg_iterative_solvers(module):stdlib_solve_bicgstab(interface)]] ` (A, b, x [, di, rtol, atol, maxiter, restart, precond, M, workspace])`
 
 #### Status
 
@@ -339,8 +339,13 @@ BiCGSTAB is particularly effective for:
 
 The method uses 8 auxiliary vectors internally, requiring more memory than simpler methods but often providing better stability and convergence properties.
 
-#### Example
+#### Example 1
 
 ```fortran
 {!example/linalg/example_solve_bicgstab.f90!}
+```
+
+#### Example 2
+```fortran
+{!example/linalg/example_solve_bicgstab_wilkinson.f90!}
 ```
