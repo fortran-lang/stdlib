@@ -109,5 +109,4 @@ function(configure_stdlib_target target_name regular_sources_var fypp_files_var 
             LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     )
     install(DIRECTORY ${LIB_MOD_DIR} DESTINATION "${INSTALL_MOD_DIR}")
-
 endfunction()
