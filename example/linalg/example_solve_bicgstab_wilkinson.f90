@@ -15,7 +15,7 @@ program example_solve_bicgstab_wilkinson
     ! Construct the Wilkinson's matrix in COO format
     ! https://en.wikipedia.org/wiki/Wilkinson_matrix
     call COO%malloc(n, n, n + 2*(n-1))
-    COO%data(1:n) = [( dble(abs(i)), i=-(n-1)/2, (n-1)/2)]
+    COO%data(1:n) = [( real(abs(i), kind=dp), i=-(n-1)/2, (n-1)/2)]
     COO%data(n+1:) = 1.0_dp
     do i = 1, n
         COO%index(1:2, i) = [i,i]
