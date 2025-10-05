@@ -69,7 +69,7 @@ function(configure_stdlib_target target_name regular_sources_var fypp_files_var 
     list(APPEND all_sources ${${regular_sources_var}})
 
     add_library(${target_name} ${all_sources})
-    add_library(${PROJECT_NAME}::${target_name} ALIAS ${target_name})
+    #add_library(${PROJECT_NAME}::${target_name} ALIAS ${target_name})
 
     set_target_properties(
       ${target_name}
