@@ -46,6 +46,7 @@ set(fppFiles
     stdlib_linalg_svd.fypp
     stdlib_linalg_cholesky.fypp
     stdlib_linalg_schur.fypp
+    stdlib_linalg_matrix_functions.fypp
     stdlib_optval.fypp
     stdlib_selection.fypp
     stdlib_sorting.fypp
