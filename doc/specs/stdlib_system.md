@@ -497,6 +497,45 @@ Formats all the arguments into a nice error message, utilizing the constructor o
 
 ---
 
+## `is_file` - Test if a path is a regular file
+
+### Status
+
+Experimental
+
+### Description
+
+This function checks if a specified file system path is a regular file. 
+It follows symbolic links and returns the status of the `target`.
+It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+
+### Syntax
+
+`result = ` [[stdlib_system(module):is_file(function)]]`(path)`
+
+### Class
+
+Function
+
+### Arguments
+
+`path`: Shall be a character string containing the file system path to evaluate. It is an `intent(in)` argument.
+
+### Return values
+
+The function returns a `logical` value:
+
+- `.true.` if the path matches an existing regular file.
+- `.false.` otherwise, or if path does not exist.
+
+### Example
+
+```fortran
+{!example/system/example_is_file.f90!}
+```
+
+---
+
 ## `is_directory` - Test if a path is a directory
 
 ### Status
@@ -506,6 +545,7 @@ Experimental
 ### Description
 
 This function checks if a specified file system path is a directory. 
+It follows symbolic links and returns the status of the `target`.
 It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
 
 ### Syntax
@@ -531,6 +571,46 @@ The function returns a `logical` value:
 
 ```fortran
 {!example/system/example_is_directory.f90!}
+```
+
+---
+
+## `is_symlink` - Test if a path is a symbolic link.
+
+### Status
+
+Experimental
+
+### Description
+
+This function checks if a specified file system path is a symbolic link to either a file or a directory.
+Use [[stdlib_system(module):is_file(function)]] and [[stdlib_system(module):is_directory(function)]] functions
+to check further if the link is to a file or a directory respectively.
+It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
+
+### Syntax
+
+`result = ` [[stdlib_system(module):is_symlink(function)]]`(path)`
+
+### Class
+
+Function
+
+### Arguments
+
+`path`: Shall be a character string containing the file system path to evaluate. It is an `intent(in)` argument.
+
+### Return values
+
+The function returns a `logical` value:
+
+- `.true.` if the path matches an existing regular file.
+- `.false.` otherwise, or if the path does not exist.
+
+### Example
+
+```fortran
+{!example/system/example_is_symlink.f90!}
 ```
 
 ---
@@ -716,6 +796,54 @@ Subroutine
 
 ```fortran
 {!example/system/example_cwd.f90!}
+```
+
+---
+
+## `exists` - Checks if a path exists in the filesystem
+
+### Status
+
+Experimental
+
+### Description
+
+This function makes a system call (syscall) to retrieve metadata for the specified path and determines its type.
+It can distinguish between the following path types:
+
+- Regular File
+- Directory
+- Symbolic Link
+
+It returns a constant representing the detected path type, or `type_unknown` if the type cannot be determined. 
+Any encountered errors are handled using `state_type`.
+
+### Syntax
+
+`fs_type = [[stdlib_system(module):exists(function)]] (path [, err])`
+
+### Class
+
+Function
+
+### Arguments
+
+`path`: Shall be a character string containing the path. It is an `intent(in)` argument.
+
+`err`(optional): Shall be of type `state_type`, and is used for error handling. It is an `optional, intent(out)` argument.
+
+### Return values
+
+`fs_type`: An `intent(out), integer` parameter indicating the type. The possible values are:
+- `fs_type_unknown`: 0      => an unknown type
+- `fs_type_regular_file`: 1 => a regular file
+- `fs_type_directory`: 2    => a directory 
+- `fs_type_symlink`: 3      => a symbolic link
+
+`err`(optional): It is an optional state return flag. If not requested and an error occurs, an `FS_ERROR` will trigger an error stop.
+
+```fortran
+{!example/system/example_exists.f90!}
 ```
 
 ---

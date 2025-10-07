@@ -1,0 +1,225 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set MATRIX_TYPES = ["dense", "CSR"]
+! Test linear system iterative solvers
+module test_linalg_solve_iterative
+    use stdlib_kinds
+    use stdlib_sparse
+    use stdlib_linalg_iterative_solvers
+    use testdrive, only: error_type, check, new_unittest, unittest_type    
+
+    implicit none 
+    private
+    
+    public :: test_linear_systems
+
+    contains
+
+    subroutine test_linear_systems(tests)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: tests(:)
+
+        allocate(tests(0))
+
+        tests = [ new_unittest("stdlib_solve_cg",test_stdlib_solve_cg), &
+                  new_unittest("stdlib_solve_pcg",test_stdlib_solve_pcg), &
+                  new_unittest("stdlib_solve_bicgstab",test_stdlib_solve_bicgstab), &
+                  new_unittest("stdlib_solve_bicgstab_nonsymmetric",test_stdlib_solve_bicgstab_nonsymmetric) ]
+
+    end subroutine test_linear_systems    
+
+    subroutine test_stdlib_solve_cg(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for k, t, s in R_KINDS_TYPES
+        block
+        ${t}$, parameter :: tol = 1000*epsilon(0.0_${k}$)
+        ${t}$ :: A(2,2) = reshape([${t}$ ::  4,  1, &
+                                             1,  3], [2,2])
+        ${t}$ :: x(2), load(2), xref(2)
+        
+        xref = [0.0909, 0.6364]
+        x    = real( [2,1] , kind = ${k}$ ) ! initial guess
+        load = real( [1,2] , kind = ${k}$ ) ! load vector
+
+        call stdlib_solve_cg(A, load, x)
+        
+        call check(error, norm2(x-xref)<1.e-4_${k}$, 'error in conjugate gradient solver')
+        if (allocated(error)) return
+        end block
+
+        #:endfor
+    end subroutine test_stdlib_solve_cg
+
+    subroutine test_stdlib_solve_pcg(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for k, t, s in R_KINDS_TYPES
+        block
+        ${t}$, parameter :: tol = 1000*epsilon(0.0_${k}$)
+        ${t}$ :: A(5,5) = reshape([${t}$ :: 1, -1,  0,  0,  0,&
+                                           -1,  2, -1,  0,  0,&
+                                            0, -1,  2, -1,  0,&
+                                            0,  0, -1,  2, -1,&
+                                            0,  0,  0, -1,  1] , [5,5])
+        ${t}$ :: x(5), load(5), xref(5)
+        logical(int8) :: dirichlet(5)
+        
+        xref = [0.0_${k}$,2.5_${k}$,5.0_${k}$,2.5_${k}$,0.0_${k}$]
+        x    = 0.0_${k}$ 
+        load = real( [0,0,5,0,0] , kind = ${k}$ ) ! load vector
+        dirichlet = .false._int8
+        dirichlet([1,5]) = .true._int8
+
+        call stdlib_solve_pcg(A, load, x, di=dirichlet, rtol=1.e-6_${k}$)
+
+        call check(error, norm2(x-xref)<1.e-6_${k}$*norm2(xref), 'error in preconditionned conjugate gradient solver')
+        if (allocated(error)) return
+        end block
+
+        #:endfor
+    end subroutine test_stdlib_solve_pcg
+
+    subroutine test_stdlib_solve_bicgstab(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for k, t, s in R_KINDS_TYPES
+        ! Test 1: Simple non-symmetric matrix (same as SciPy example)
+        block
+        ${t}$, parameter :: tol = 1000*epsilon(0.0_${k}$)
+        ${t}$ :: A(4,4) = reshape([${t}$ :: 4, 2, 0, 1, &
+                                            3, 0, 0, 2, &
+                                            0, 1, 1, 1, &
+                                            0, 2, 1, 0], [4,4])
+        ${t}$ :: x(4), load(4), xref(4)
+        
+        ! Reference solution computed with high precision
+        xref = [12.5_${k}$, -17._${k}$, 23.5_${k}$, -24.5_${k}$]
+        x    = 0.0_${k}$ ! initial guess
+        load = [-1.0_${k}$, -0.5_${k}$, -1.0_${k}$, 2.0_${k}$] ! load vector
+
+        call stdlib_solve_bicgstab(A, load, x, rtol=1.e-10_${k}$)
+        
+        call check(error, norm2(x-xref)<tol*norm2(xref), 'error in BiCGSTAB solver (basic test)')
+        if (allocated(error)) return
+        end block
+
+        ! Test 2: BiCGSTAB with Dirichlet boundary conditions
+        block
+        ${t}$, parameter :: tol = 1000*epsilon(0.0_${k}$)
+        ${t}$ :: A(5,5) = reshape([${t}$ :: 1, -1,  0,  0,  0,&
+                                          -1,  2, -1,  0,  0,&
+                                           0, -1,  2, -1,  0,&
+                                           0,  0, -1,  2, -1,&
+                                           0,  0,  0, -1,  1] , [5,5])
+        ${t}$ :: x(5), load(5), xref(5)
+        logical(int8) :: dirichlet(5)
+        
+        ! Expected solution with Dirichlet conditions
+        xref = [0.0_${k}$, 2.5_${k}$, 5.0_${k}$, 2.5_${k}$, 0.0_${k}$]
+        x    = 0.0_${k}$ 
+        load = [0.0_${k}$, 0.0_${k}$, 5.0_${k}$, 0.0_${k}$, 0.0_${k}$] ! load vector
+        dirichlet = .false._int8
+        dirichlet([1,5]) = .true._int8
+
+        call stdlib_solve_bicgstab(A, load, x, di=dirichlet)
+        
+        call check(error, norm2(x-xref)<tol*norm2(xref), 'error in BiCGSTAB solver (Dirichlet BC test)')
+        if (allocated(error)) return
+        end block
+
+        ! Test 3: BiCGSTAB with Jacobi preconditioning
+        block
+        ${t}$, parameter :: tol = 1000*epsilon(0.0_${k}$)
+        ${t}$ :: A(3,3) = reshape([${t}$ :: 10,  1,  2, &
+                                            1,  10,  3, &
+                                            2,   3, 10], [3,3])
+        ${t}$ :: x(3), load(3), xref(3)
+        
+        ! Well-conditioned system with diagonal dominance
+        xref = [(137._${k}$/218._${k}$), -(9._${k}$/109._${k}$), (87._${k}$/218._${k}$)]
+        x    = 0.0_${k}$ ! initial guess
+        load = [7.0_${k}$, 1.0_${k}$, 5.0_${k}$] ! load vector
+
+        ! Test with Jacobi preconditioning (precond=1 corresponds to pc_jacobi)
+        call stdlib_solve_bicgstab(A, load, x, rtol=1.e-10_${k}$, precond=1)
+        
+        call check(error, norm2(x-xref)<tol*norm2(xref), 'error in BiCGSTAB solver (Jacobi preconditioned test)')
+        if (allocated(error)) return
+        end block
+
+        #:endfor
+    end subroutine test_stdlib_solve_bicgstab
+
+    subroutine test_stdlib_solve_bicgstab_nonsymmetric(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for k, t, s in R_KINDS_TYPES
+        ! Test BiCGSTAB on a strongly non-symmetric matrix where CG would fail
+        block
+        ${t}$, parameter :: tol = 1000*epsilon(0.0_${k}$)
+        ${t}$ :: A(4,4) = reshape([${t}$ :: 5,  1,  2,  0, &
+                                           0,  4, -1,  1, &
+                                           1,  0,  3,  2, &
+                                           2, -1,  0,  6], [4,4])
+        ${t}$ :: x(4), load(4), x_exact(4), residual
+        
+        ! Create a known solution and corresponding RHS
+        x_exact = [1.0_${k}$, 2.0_${k}$, -1.0_${k}$, 0.5_${k}$]
+        load = matmul(A, x_exact)
+        x = 0.0_${k}$ ! initial guess
+        
+        call stdlib_solve_bicgstab(A, load, x, rtol=1.e-10_${k}$, atol=1.e-12_${k}$)
+        
+        call check(error, norm2(x-x_exact)<tol*norm2(x_exact), 'error in BiCGSTAB solver (strongly non-symmetric test)')
+        if (allocated(error)) return
+        end block
+
+        ! Test with a matrix that has complex eigenvalues (typical challenge for iterative solvers)
+        block
+        ${t}$, parameter :: tol = 1000*epsilon(0.0_${k}$)
+        ${t}$ :: A(3,3) = reshape([${t}$ :: 1, -2,  1, &
+                                            1,  1, -1, &
+                                           -1,  1,  2], [3,3])
+        ${t}$ :: x(3), load(3), x_exact(3)
+        
+        x_exact = [2.0_${k}$, -1.0_${k}$, 1.5_${k}$]
+        load = matmul(A, x_exact)
+        x = [0.1_${k}$, 0.1_${k}$, 0.1_${k}$] ! non-zero initial guess
+        
+        call stdlib_solve_bicgstab(A, load, x, rtol=1.e-8_${k}$, maxiter=100)
+        
+        call check(error, norm2(x-x_exact)<tol*norm2(x_exact), 'error in BiCGSTAB solver (complex eigenvalues test)')
+        if (allocated(error)) return
+        end block
+
+        #:endfor
+    end subroutine test_stdlib_solve_bicgstab_nonsymmetric
+
+end module test_linalg_solve_iterative
+
+program test_solve_iterative
+     use, intrinsic :: iso_fortran_env, only : error_unit
+     use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+     use test_linalg_solve_iterative, only : test_linear_systems
+     implicit none
+     integer :: stat, is
+     type(testsuite_type), allocatable :: testsuites(:)
+     character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+     stat = 0
+
+     testsuites = [ &
+         new_testsuite("linalg_solve_iterative", test_linear_systems) &
+         ]
+
+     do is = 1, size(testsuites)
+         write(error_unit, fmt) "Testing:", testsuites(is)%name
+         call run_testsuite(testsuites(is)%collect, error_unit, stat)
+     end do
+
+     if (stat > 0) then
+         write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+         error stop
+     end if
+end program test_solve_iterative

@@ -46,6 +46,9 @@ data:
 * `ORD_SORT` is intended to sort simple arrays of intrinsic data
   that have significant sections that were partially ordered before
   the sort;
+* `SORT_ADJOINT` is based on `ORD_SORT`, but in addition to sorting the
+  input array, it re-orders a second array of the same size
+  according to the same permutations;
 * `SORT_INDEX` is based on `ORD_SORT`, but in addition to sorting the
   input array, it returns indices that map the original array to its
   sorted version. This enables related arrays to be re-ordered in the
@@ -60,10 +63,10 @@ data:
 The Fortran Standard Library is distributed under the MIT
 License. However components of the library may be based on code with
 additional licensing restrictions. In particular `ORD_SORT`,
-`SORT_INDEX`, and `SORT` are translations of codes with their
+`SORT_ADJOINT`, `SORT_INDEX`, and `SORT` are translations of codes with their
 own distribution restrictions.
 
-The `ORD_SORT` and `SORT_INDEX` subroutines are essentially
+The `ORD_SORT`, `SORT_ADJOINT` and `SORT_INDEX` subroutines are essentially
 translations to Fortran 2008 of the `"Rust" sort` of the Rust Language
 distributed as part of
 [`slice.rs`](https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs).
@@ -140,6 +143,23 @@ argument or allocated internally on the stack.
 Arrays can be also sorted in a decreasing order by providing the argument `reverse
 = .true.`.
 
+#### The `SORT_ADJOINT` subroutine
+
+The `SORT` and `ORD_SORT` subroutines can sort rank 1 isolated
+arrays of intrinsic types, but do nothing for the coordinated sorting
+of related data, e.g., a related rank 1 array. Therefore the module
+provides a subroutine, `SORT_ADJOINT`, that re-order such a rank 1 array
+according to the same permutations as for the input array based on the `ORD_SORT` algorithm,
+in addition to sorting the input array.
+
+The logic of `SORT_ADJOINT` parallels that of `ORD_SORT`, with
+additional housekeeping to keep the associated array consistent with
+the sorted positions of the input array. Because of this additional
+housekeeping it has slower runtime performance than `ORD_SORT`.
+`SORT_ADJOINT` requires the use of two "scratch" arrays, that may be
+provided as optional `work` and `iwork` arguments or allocated
+internally on the stack.
+
 #### The `SORT_INDEX` subroutine
 
 The `SORT` and `ORD_SORT` subroutines can sort rank 1 isolated
@@ -198,7 +218,7 @@ factor of six. Still, even when it shows enhanced performance, its
 performance on partially sorted data is typically an order of
 magnitude slower than `ORD_SORT`. Its memory requirements are also
 low, being of order O(Ln(N)), while the memory requirements of
-`ORD_SORT` and `SORT_INDEX` are of order O(N).
+`ORD_SORT`, `SORT_ADJOINT` and `SORT_INDEX` are of order O(N).
 
 #### The `RADIX_SORT` subroutine
 
@@ -383,6 +403,85 @@ element of `array` is a `NaN`.
 
 ```fortran
 {!example/sorting/example_radix_sort.f90!}
+```
+
+#### `sort_adjoint` - sorts an associated array 
+according to the same permutations as for the input array.
+
+##### Status
+
+Experimental
+
+##### Description
+
+Returns the input `array` sorted in the direction requested while
+retaining order stability, and an associated array whose elements are
+sorted according to the same permutations as for the input `array`.
+
+##### Syntax
+
+`call ` [[stdlib_sorting(module):sort_adjoint(interface)]] `( array, adjoint_array[, work, iwork, reverse ] )`
+
+##### Class
+
+Generic subroutine.
+
+##### Arguments
+
+`array`: shall be a rank one array of any of the types:
+`integer(int8)`, `integer(int16)`, `integer(int32)`, `integer(int64)`,
+`real(sp)`, `real(dp)`, `real(qp)`, `character(*)`, `type(string_type)`,
+`type(bitset_64)`, or `type(bitset_large)`.
+It is an `intent(inout)` argument. On input it
+will be an array whose sorting indices are to be determined. On return
+it will be the sorted array.
+
+`adjoint_array`: shall be a rank one `integer` or `real` array of
+the size of `array`. It is an `intent(inout)` argument. On return it
+shall have values that are the indices needed to sort the original
+array in the desired direction.
+
+`work` (optional): shall be a rank one array of any of the same type as
+`array`, and shall have at least `size(array)/2` elements. It is an
+`intent(out)` argument. It is intended to be used as "scratch"
+memory for internal record keeping. If associated with an array in
+static storage, its use can significantly reduce the stack memory
+requirements for the code. Its contents on return are undefined.
+
+`iwork` (optional): shall be a rank one integer array of the same kind
+of the array `adjoint_array`, and shall have at least `size(array)/2` elements. It
+is an `intent(out)` argument.  It is intended to be used as "scratch"
+memory for internal record keeping. If associated with an array in
+static storage, its use can significantly reduce the stack memory
+requirements for the code. Its contents on return are undefined.
+
+`reverse` (optional): shall be a scalar of type default logical. It
+is an `intent(in)` argument. If present with a value of `.true.` then
+`array` will be sorted in order of non-increasing values in stable
+order. Otherwise `array` will be sorted in order of non-decreasing
+values in stable order.
+
+##### Notes
+
+`SORT_ADJOINT` implements the hybrid sorting algorithm of `ORD_SORT`,
+keeping the values of `adjoint_array` consistent with the elements of `array`
+as it is sorted. As a `merge sort` based algorithm, it is a stable
+sorting comparison algorithm. The optional `work` and `iwork` arrays
+replace "scratch" memory that would otherwise be allocated on the
+stack. If `array` is of any kind of `REAL` the order of the elements in
+`adjoint_array` and `array` on return are undefined if any element of `array`
+is a `NaN`. Sorting of `CHARACTER(*)` and `STRING_TYPE` arrays are
+based on the operator `>`, and not on the function `LGT`.
+
+It should be emphasized that the order of `array` will typically be
+different on return
+
+##### Examples
+
+Sorting a rank one array with `sort_adjoint`:
+
+```Fortran
+{!example/sorting/example_sort_adjoint.f90!}
 ```
 
 #### `sort_index` - creates an array of sorting indices for an input array, while also sorting the array.
