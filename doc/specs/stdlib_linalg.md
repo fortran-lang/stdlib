@@ -1896,7 +1896,7 @@ Given a matrix \(A\), this function computes its matrix exponential \(E = \exp(A
 
 ### Syntax
 
-`E = ` [[stdlib_linalg(module):expm(interface)]] `(a [, order, err])`
+`E = ` [[stdlib_linalg(module):expm(interface)]] `(a [, order])`
 
 ### Arguments
 
@@ -1904,11 +1904,45 @@ Given a matrix \(A\), this function computes its matrix exponential \(E = \exp(A
 
 `order` (optional): Shall be a non-negative `integer` value specifying the order of the Pade approximation. By default `order=10`. It is an `intent(in)` argument. 
 
+### Return value
+
+The returned array `E` contains the Pade approximation of \(\exp(A)\).
+
+If `A` is non-square or `order` is negative, it raises a `LINALG_VALUE_ERROR`.
+
+### Example
+
+```fortran
+{!example/linalg/example_expm.f90!}
+```
+
+## `matrix_exp` - Computes the matrix exponential {#matrix_exp}
+
+### Status
+
+Experimental
+
+### Description
+
+Given a matrix \(A\), this function computes its matrix exponential \(E = \exp(A)\) using a Pade approximation.
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):matrix_exp(interface)]] `(a [, e, order, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` array containing the data. If `e` is not passed, it is an `intent(inout)` argument and is overwritten on exit by the matrix exponential. If `e` is passed, it is an `intent(in)` argument and is left unchanged.
+
+`e` (optional): Shall be a rank-2 `real` or `complex` array with the same dimensions as `a`. It is an `intent(out)` argument. On exit, it contains the matrix exponential of `a`.
+
+`order` (optional): Shall be a non-negative `integer` value specifying the order of the Pade approximation. By default `order=10`. It is an `intent(in)` argument. 
+
 `err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument. 
 
 ### Return value
 
-The returned array `E` contains the Pade approximation of \(\exp(A)\).
+The returned array `A` (in-place) or `E` (out-of-place) contains the Pade approximation of \(\exp(A)\).
 
 If `A` is non-square or `order` is negative, it raises a `LINALG_VALUE_ERROR`.
 If `err` is not present, exceptions trigger an `error stop`.
@@ -1916,4 +1950,6 @@ If `err` is not present, exceptions trigger an `error stop`.
 ### Example
 
 ```fortran
-{!example/linalg/example_expm.f90!}
+{!example/linalg/example_matrix_exp.f90!}
+```
+
