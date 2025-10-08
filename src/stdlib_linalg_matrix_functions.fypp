@@ -1,37 +1,39 @@
 #:include "common.fypp"
-#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX, REAL_INIT))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX, CMPLX_INIT))
+#:set RC_KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES
 submodule (stdlib_linalg) stdlib_linalg_matrix_functions
     use stdlib_constants
     use stdlib_linalg_constants
     use stdlib_linalg_blas, only: gemm
-    use stdlib_linalg_lapack, only: gesv
+    use stdlib_linalg_lapack, only: gesv, lacpy
     use stdlib_linalg_lapack_aux, only: handle_gesv_info
     use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
-    implicit none
+    implicit none(type, external)
 
     character(len=*), parameter :: this = "matrix_exponential"
 
 contains
 
-    #:for rk,rt,ri in RC_KINDS_TYPES 
-    module function stdlib_linalg_${ri}$_expm_fun(A, order) result(E)
+    #:for k,t,s, i in RC_KINDS_TYPES 
+    module function stdlib_linalg_${i}$_expm_fun(A, order) result(E)
         !> Input matrix A(n, n).
-        ${rt}$, intent(in) :: A(:, :)
+        ${t}$, intent(in) :: A(:, :)
         !> [optional] Order of the Pade approximation.
         integer(ilp), optional, intent(in) :: order
         !> Exponential of the input matrix E = exp(A).
-        ${rt}$, allocatable :: E(:, :)
+        ${t}$, allocatable :: E(:, :)
 
         E = A
-        call stdlib_linalg_${ri}$_expm_inplace(E, order)
-    end function
+        call stdlib_linalg_${i}$_expm_inplace(E, order)
+    end function stdlib_linalg_${i}$_expm_fun
 
-    module subroutine stdlib_linalg_${ri}$_expm(A, E, order, err)
+    module subroutine stdlib_linalg_${i}$_expm(A, E, order, err)
         !> Input matrix A(n, n).
-        ${rt}$, intent(in) :: A(:, :)
+        ${t}$, intent(in) :: A(:, :)
         !> Exponential of the input matrix E = exp(A).
-        ${rt}$, intent(out) :: E(:, :)
+        ${t}$, intent(out) :: E(:, :)
          !> [optional] Order of the Pade approximation.
         integer(ilp), optional, intent(in) :: order
         !> [optional] State return flag.
@@ -49,27 +51,28 @@ contains
                                      'invalid matrix sizes: A must be square (lda=', lda, ', n=', n, ')', &
                                      ' E must be square (lde=', lde, ', ne=', ne, ')')
         else
-            E(:n, :n) = A(:n, :n)
-            call stdlib_linalg_${ri}$_expm_inplace(E, order, err0)
+            call lacpy("n", n, n, A, n, E, n) ! E = A
+            call stdlib_linalg_${i}$_expm_inplace(E, order, err0)
         endif
         
         ! Process output and return
         call linalg_error_handling(err0,err)
 
         return
-    end subroutine stdlib_linalg_${ri}$_expm
+    end subroutine stdlib_linalg_${i}$_expm
 
-    module subroutine stdlib_linalg_${ri}$_expm_inplace(A, order, err)
+    module subroutine stdlib_linalg_${i}$_expm_inplace(A, order, err)
         !> Input matrix A(n, n) / Output matrix exponential.
-        ${rt}$, intent(inout) :: A(:, :)
+        ${t}$, intent(inout) :: A(:, :)
         !> [optional] Order of the Pade approximation.
         integer(ilp), optional, intent(in) :: order
         !> [optional] State return flag.
         type(linalg_state_type), optional, intent(out) :: err
 
         ! Internal variables.
-        ${rt}$, allocatable     :: A2(:, :), Q(:, :), X(:, :), X_tmp(:, :)
-        real(${rk}$)            :: a_norm, c
+        ${t}$                   :: A2(size(A, 1), size(A, 2)), Q(size(A, 1), size(A, 2))
+        ${t}$                   :: X(size(A, 1), size(A, 2)), X_tmp(size(A, 1), size(A, 2))
+        real(${k}$)             :: a_norm, c
         integer(ilp)            :: m, n, ee, k, s, order_, i, j
         logical(lk)             :: p
         type(linalg_state_type) :: err0
@@ -90,42 +93,30 @@ contains
             a_norm = mnorm(A, "inf")
 
             ! Determine scaling factor for the matrix.
-            ee = int(log(a_norm) / log2_${rk}$, kind=ilp) + 1
+            ee = int(log(a_norm) / log2_${k}$, kind=ilp) + 1
             s  = max(0, ee+1)
 
             ! Scale the input matrix & initialize polynomial.
-            A2 = A/2.0_${rk}$**s ; X = A2
+            A2 = A/2.0_${k}$**s
+            call lacpy("n", n, n, A2, n, X, n) ! X = A2
 
             ! First step of the Pade approximation.
-            c = 0.5_${rk}$
-            allocate (Q, source=A2) ; A = A2
+            c = 0.5_${k}$
             do concurrent(i=1:n, j=1:n)
-                A(i, j) = merge(1.0_${rk}$ + c*A(i, j), c*A(i, j), i == j)
-                Q(i, j) = merge(1.0_${rk}$ - c*Q(i, j), -c*Q(i, j), i == j)
+                A(i, j) = merge(1.0_${k}$ + c*A2(i, j), c*A2(i, j), i == j)
+                Q(i, j) = merge(1.0_${k}$ - c*A2(i, j), -c*A2(i, j), i == j)
             enddo
 
             ! Iteratively compute the Pade approximation.
             p = .true.
             do k = 2, order_
                 c = c * (order_ - k + 1) / (k * (2*order_ - k + 1))
-                X_tmp = X
-                #:if rt.startswith('complex')
-                call gemm("N", "N", n, n, n, one_c${rk}$, A2, n, X_tmp, n, zero_c${rk}$, X, n)
-                #:else
-                call gemm("N", "N", n, n, n, one_${rk}$, A2, n, X_tmp, n, zero_${rk}$, X, n)
-                #:endif
+                call lacpy("n", n, n, X, n, X_tmp, n) ! X_tmp = X
+                call gemm("N", "N", n, n, n, one_${s}$, A2, n, X_tmp, n, zero_${s}$, X, n)
                 do concurrent(i=1:n, j=1:n)
                     A(i, j) = A(i, j) + c*X(i, j)       ! E = E + c*X
+                    Q(i, j) = merge(Q(i, j) + c*X(i, j), Q(i, j) - c*X(i, j), p)
                 enddo
-                if (p) then
-                    do concurrent(i=1:n, j=1:n)
-                        Q(i, j) = Q(i, j) + c*X(i, j)   ! Q = Q + c*X
-                    enddo
-                else
-                    do concurrent(i=1:n, j=1:n)
-                        Q(i, j) = Q(i, j) - c*X(i, j)   ! Q = Q - c*X
-                    enddo
-                endif
                 p = .not. p
             enddo
 
@@ -137,19 +128,15 @@ contains
 
             ! Matrix squaring.
             do k = 1, s
-                X = A ! Re-use X to minimize allocations.
-                #:if rt.startswith('complex')
-                call gemm("N", "N", n, n, n, one_c${rk}$, X, n, X, n, zero_c${rk}$, A, n)
-                #:else
-                call gemm("N", "N", n, n, n, one_${rk}$, X, n, X, n, zero_${rk}$, A, n)
-                #:endif
+                call lacpy("n", n, n, A, n, X, n) ! X = A
+                call gemm("N", "N", n, n, n, one_${s}$, X, n, X, n, zero_${s}$, A, n)
             enddo
         endif
         
         call linalg_error_handling(err0, err)
 
         return
-    end subroutine stdlib_linalg_${ri}$_expm_inplace
+    end subroutine stdlib_linalg_${i}$_expm_inplace
     #:endfor
 
 end submodule stdlib_linalg_matrix_functions
