@@ -1714,7 +1714,7 @@ module stdlib_linalg
     !!
     #:for rk,rt,ri in RC_KINDS_TYPES
     module function stdlib_linalg_${ri}$_expm_fun(A, order) result(E)
-        !> Input matrix a(n, n).
+        !> Input matrix a(:, :).
         ${rt}$, intent(in) :: A(:, :)
         !> [optional] Order of the Pade approximation (default `order=10`)
         integer(ilp), optional, intent(in) :: order
