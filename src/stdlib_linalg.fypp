@@ -1693,7 +1693,7 @@ module stdlib_linalg
     !! `real` and `complex`.
     !!
     !! By default, the order of the Pade approximation is set to 10. It can be changed
-    !! via the `order` argument which must be non-negative.
+    !! via the `order` argument that must be non-negative.
     !!
     !! If the input matrix is non-square or the order of the Pade approximation is
     !! negative, the function returns an error state.
@@ -1738,7 +1738,7 @@ module stdlib_linalg
     !! `real` and `complex`.
     !!
     !! By default, the order of the Pade approximation is set to 10. It can be changed
-    !! via the `order` argument which must be non-negative.
+    !! via the `order` argument that must be non-negative.
     !!
     !! If the input matrix is non-square or the order of the Pade approximation is
     !! negative, the function returns an error state.
