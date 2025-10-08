@@ -23,7 +23,8 @@ contains
         !> Exponential of the input matrix E = exp(A).
         ${rt}$, allocatable :: E(:, :)
 
-        E = A ; call stdlib_linalg_${ri}$_expm_inplace(E, order)
+        E = A
+        call stdlib_linalg_${ri}$_expm_inplace(E, order)
     end function
 
     module subroutine stdlib_linalg_${ri}$_expm(A, E, order, err)
@@ -48,7 +49,8 @@ contains
                                      'invalid matrix sizes: A must be square (lda=', lda, ', n=', n, ')', &
                                      ' E must be square (lde=', lde, ', ne=', ne, ')')
         else
-            E(:n, :n) = A(:n, :n) ; call stdlib_linalg_${ri}$_expm_inplace(E, order, err0)
+            E(:n, :n) = A(:n, :n)
+            call stdlib_linalg_${ri}$_expm_inplace(E, order, err0)
         endif
         
         ! Process output and return
