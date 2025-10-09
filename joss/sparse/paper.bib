@@ -1,0 +1,123 @@
+@book{saad2003iterative,
+  title={Iterative methods for sparse linear systems},
+  author={Saad, Yousef},
+  year={2003},
+  publisher={SIAM}
+}
+@article{MUMPS:1,
+   title   = {A Fully Asynchronous Multifrontal Solver Using Distributed Dynamic Scheduling},
+   author  = {P.R. Amestoy and I. S. Duff and J. Koster and J.-Y. L'Excellent},
+   journal = {SIAM Journal on Matrix Analysis and Applications},
+   volume  = {23},
+   number  = {1},
+   year    = {2001},
+   pages   = {15-41}
+}
+@article{MUMPS:2,
+  title = {{Performance and Scalability of the Block Low-Rank Multifrontal
+  Factorization on Multicore Architectures}},
+  author = {P.R. Amestoy and A. Buttari and J.-Y. L'Excellent and T. Mary},
+  journal = {ACM Transactions on Mathematical Software},
+  volume = 45,
+  issue = 1,
+  pages = {2:1--2:26},
+  year={2019},
+}
+
+@Misc{petsc-web-page,
+    author = {Satish Balay and Shrirang Abhyankar and Mark~F. Adams and Jed Brown and Peter Brune
+              and Kris Buschelman and Lisandro Dalcin and Victor Eijkhout and William~D. Gropp
+              and Dinesh Kaushik and Matthew~G. Knepley
+              and Lois Curfman McInnes and Karl Rupp and Barry~F. Smith
+              and Stefano Zampini and Hong Zhang},
+    title =  {{PETS}c {W}eb page},
+    url =    {http://www.mcs.anl.gov/petsc},
+    howpublished = {\url{http://www.mcs.anl.gov/petsc}},
+    year = {2015}
+}
+ 
+@techreport{bell2008efficient,
+  title={Efficient sparse matrix-vector multiplication on CUDA},
+  author={Bell, Nathan and Garland, Michael},
+  year={2008},
+  institution={Nvidia Technical Report NVR-2008-004, Nvidia Corporation}
+}
+@book{magoules2017calcul,
+  title={Calcul scientifique parall{\`e}le-2e {\'e}d.: Cours, exemples avec openMP et MPI, exercices corrig{\'e}s},
+  author={Magoul{\`e}s, Fr{\'e}d{\'e}ric and Roux, Fran{\c{c}}ois-Xavier},
+  year={2017},
+  publisher={Dunod}
+}
+@article{anzt2014implementing,
+  title={Implementing a Sparse Matrix Vector Product for the SELL-C/SELL-C-$\sigma$ formats on NVIDIA GPUs},
+  author={Anzt, Hartwig and Tomov, Stanimire and Dongarra, Jack},
+  journal={University of Tennessee, Tech. Rep. ut-eecs-14-727},
+  year={2014}
+}
+@software{fsparse2024,
+  author       = {José Alves and
+                  Samuele Giuli},
+  title        = {FSPARSE: Fortran Sparse Gallery library},
+  month        = may,
+  year         = 2024,
+  publisher    = {Zenodo},
+  version      = {v0.1.1},
+  doi          = {10.5281/zenodo.11175000},
+  url          = {https://doi.org/10.5281/zenodo.11175000},
+}
+@ARTICLE{2020SciPy-NMeth,
+  author  = {Virtanen, Pauli and Gommers, Ralf and Oliphant, Travis E. and
+            Haberland, Matt and Reddy, Tyler and Cournapeau, David and
+            Burovski, Evgeni and Peterson, Pearu and Weckesser, Warren and
+            Bright, Jonathan and {van der Walt}, St{\'e}fan J. and
+            Brett, Matthew and Wilson, Joshua and Millman, K. Jarrod and
+            Mayorov, Nikolay and Nelson, Andrew R. J. and Jones, Eric and
+            Kern, Robert and Larson, Eric and Carey, C J and
+            Polat, {\.I}lhan and Feng, Yu and Moore, Eric W. and
+            {VanderPlas}, Jake and Laxalde, Denis and Perktold, Josef and
+            Cimrman, Robert and Henriksen, Ian and Quintero, E. A. and
+            Harris, Charles R. and Archibald, Anne M. and
+            Ribeiro, Ant{\^o}nio H. and Pedregosa, Fabian and
+            {van Mulbregt}, Paul and {SciPy 1.0 Contributors}},
+  title   = {{{SciPy} 1.0: Fundamental Algorithms for Scientific
+            Computing in Python}},
+  journal = {Nature Methods},
+  year    = {2020},
+  volume  = {17},
+  pages   = {261--272},
+  adsurl  = {https://rdcu.be/b08Wh},
+  doi     = {10.1038/s41592-019-0686-2},
+}
+
+@article{psblas,
+author = {Filippone, Salvatore and Buttari, Alfredo},
+title = {Object-Oriented Techniques for Sparse Matrix Computations in Fortran 2003},
+year = {2012},
+issue_date = {August 2012},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {38},
+number = {4},
+issn = {0098-3500},
+url = {https://doi.org/10.1145/2331130.2331131},
+doi = {10.1145/2331130.2331131},
+abstract = {The efficiency of a sparse linear algebra operation heavily relies on the ability of the sparse matrix storage format to exploit the computing power of the underlying hardware. Since no format is universally better than the others across all possible kinds of operations and computers, sparse linear algebra software packages should provide facilities to easily implement and integrate new storage formats within a sparse linear algebra application without the need to modify it; it should also allow to dynamically change a storage format at run-time depending on the specific operations to be performed. Aiming at these important features, we present an Object Oriented design model for a sparse linear algebra package which relies on Design Patterns. We show that an implementation of our model can be efficiently achieved through some of the unique features of the Fortran 2003 language. Experimental results show that the proposed software infrastructure improves the modularity and ease of use of the code at no performance loss.},
+journal = {ACM Trans. Math. Softw.},
+month = aug,
+articleno = {23},
+numpages = {20},
+keywords = {sparse matrices, object-oriented design, Mathematics of computing}
+}
+
+@article{scellc,
+author = {Kreutzer, Moritz and Hager, Georg and Wellein, Gerhard and Fehske, Holger and Bishop, Alan R.},
+title = {A Unified Sparse Matrix Data Format for Efficient General Sparse Matrix-Vector Multiplication on Modern Processors with Wide SIMD Units},
+journal = {SIAM Journal on Scientific Computing},
+volume = {36},
+number = {5},
+pages = {C401-C423},
+year = {2014},
+doi = {10.1137/130930352},
+url = { https://doi.org/10.1137/130930352 },
+eprint = { https://doi.org/10.1137/130930352 },
+}
