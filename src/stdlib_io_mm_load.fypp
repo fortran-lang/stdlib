@@ -1,0 +1,275 @@
+! SPDX-Identifier: MIT
+
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set RC_KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES
+
+submodule (stdlib_io_mm) stdlib_io_mm_load
+    use stdlib_error, only : error_stop
+    use stdlib_strings, only : to_string, starts_with
+    use stdlib_str2num, only: to_num_from_stream
+    use stdlib_kinds
+    use stdlib_sparse_kinds
+    implicit none
+
+    
+    enum, bind(c)
+        enumerator :: MF_array = 1
+        enumerator :: MF_coordinate = 2
+    end enum    
+    enum, bind(c)
+        enumerator :: MQ_real = 1
+        enumerator :: MQ_integer = 2
+        enumerator :: MQ_complex = 3
+        enumerator :: MQ_pattern = 4
+    end enum    
+    enum, bind(c)
+        enumerator :: MS_general = 1
+        enumerator :: MS_symmetric = 2
+        enumerator :: MS_skew_symmetric = 3
+        enumerator :: MS_hermitian = 4
+    end enum
+
+    integer(int8), parameter :: LF = 10, CR = 13, PP=iachar('%')
+
+contains
+
+    #:for k, t, s in RC_KINDS_TYPES
+    module subroutine load_mm_dense_${s}$(filename, matrix, iostat, iomsg)
+        !> Name of the Matrix Market file to load from
+        character(len=*), intent(in) :: filename
+        !> Matrix to be loaded from the Matrix Market file
+        ${t}$, allocatable, intent(out) :: matrix(:,:)
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        ! Internal variables
+        type(mm_header_type) :: header
+        integer :: u , fsze, err, eol_position
+        integer :: nrows, ncols, i, j
+        integer(int8) :: stat
+        character(:), allocatable, target :: ff
+        character(len=:), pointer :: ffp
+        #:if t.startswith('complex') 
+        real(${k}$) :: mold, val_r, val_i
+        #:else 
+        ${t}$ :: mold
+        #:endif
+        !-----------------------------------------------------------------------------
+        ! Open file for regular reading
+        open( newunit = u , file=filename, status = 'old' , access='stream', action="read", iostat=err  )
+        if( err /= 0 ) return
+        err = 1
+
+        !----------------------------------------- 
+        ! Load file in a single string
+        inquire(unit=u, size=fsze)
+        allocate(character(fsze) :: ff)
+        read(u) ff
+        ffp => ff(1:)
+        close(u)
+
+        !----------------------------------------- 
+        ! Read header
+        call read_mm_header(ffp, header, err)
+        if( err /= 0 ) return
+        if( header%format /= MF_array ) then
+          err = 2
+          print *, "warning: a dense matrix is expected for the current file"
+          return
+        end if
+
+        !----------------------------------------- 
+        ! Skip comments
+        eol_position = shift_to_eol(ffp)
+        ffp => ffp(eol_position:)
+        do while( iachar(ffp(1:1))==PP )
+            eol_position = shift_to_eol(ffp)
+            ffp => ffp(eol_position+1:)
+        end do
+        
+        !----------------------------------------- 
+        ! Read matrix dimensions
+        nrows = to_num_from_stream(ffp, nrows, stat)
+        if( stat /= 0 ) return
+        ncols = to_num_from_stream(ffp, ncols, stat)
+        if( stat /= 0 ) return
+
+        !----------------------------------------- 
+        ! Read actual matrix data
+        allocate(matrix(nrows, ncols), stat=err)
+        if( err /= 0 ) return
+        do j = 1, ncols
+            do i = 1, nrows
+                #:if t.startswith('complex') 
+                val_r = to_num_from_stream(ffp, mold, stat)
+                val_i = to_num_from_stream(ffp, mold, stat)
+                matrix(i,j) = complex( val_r, val_i )
+                #:else 
+                matrix(i,j) = to_num_from_stream(ffp, mold, stat)
+                #:endif
+                if( stat /= 0 ) return
+            end do
+        end do
+    end subroutine
+    #:endfor
+
+    #:for k, t, s in RC_KINDS_TYPES
+    module subroutine load_mm_coo_${s}$(filename, matrix, iostat, iomsg)
+        !> Name of the Matrix Market file to load from
+        character(len=*), intent(in) :: filename
+        !> Matrix to be loaded from the Matrix Market file
+        type(COO_${s}$_type), intent(out) :: matrix
+        !> Error status of loading, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        ! Internal variables
+        type(mm_header_type) :: header
+        integer :: u , fsze, err, eol_position
+        integer :: i, j
+        integer(int8) :: stat
+        character(:), allocatable, target :: ff
+        character(len=:), pointer :: ffp
+        #:if t.startswith('complex') 
+        real(${k}$) :: mold, val_r, val_i
+        #:else 
+        ${t}$ :: mold
+        #:endif
+        !-----------------------------------------------------------------------------
+        ! Open file for regular reading
+        open( newunit = u , file=filename, status = 'old' , access='stream', action="read", iostat=err  )
+        if( err /= 0 ) return
+        err = 1
+
+        !----------------------------------------- 
+        ! Load file in a single string
+        inquire(unit=u, size=fsze)
+        allocate(character(fsze) :: ff)
+        read(u) ff
+        ffp => ff(1:)
+        close(u)
+
+        !----------------------------------------- 
+        ! Read header
+        call read_mm_header(ffp, header, err)
+        if( err /= 0 ) return
+        if( header%format /= MF_coordinate ) then
+          err = 2
+          print *, "warning: a coordinate matrix is expected for the current file"
+          return
+        end if
+
+        !----------------------------------------- 
+        ! Skip comments
+        eol_position = shift_to_eol(ffp)
+        ffp => ffp(eol_position:)
+        do while( iachar(ffp(1:1))==PP )
+            eol_position = shift_to_eol(ffp)
+            ffp => ffp(eol_position+1:)
+        end do
+        
+        !----------------------------------------- 
+        ! Read matrix dimensions
+        matrix%nrows = to_num_from_stream(ffp, matrix%nrows, stat)
+        if( stat /= 0 ) return
+        matrix%ncols = to_num_from_stream(ffp, matrix%ncols, stat)
+        if( stat /= 0 ) return
+        matrix%nnz = to_num_from_stream(ffp, matrix%nnz, stat)
+        if( stat /= 0 ) return
+        
+        !----------------------------------------- 
+        ! Read actual matrix data
+        call matrix%malloc( matrix%nrows, matrix%ncols, matrix%nnz )
+        do i = 1, matrix%nnz
+            matrix%index(1,i) = to_num_from_stream(ffp, matrix%index(1,i), stat)
+            matrix%index(2,i) = to_num_from_stream(ffp, matrix%index(2,i), stat)
+            #:if t.startswith('complex') 
+            val_r = to_num_from_stream(ffp, mold, stat)
+            val_i = to_num_from_stream(ffp, mold, stat)
+            matrix%data(i) = complex( val_r, val_i )
+            #:else 
+            matrix%data(i) = to_num_from_stream(ffp, mold, stat)
+            #:endif
+        end do
+    end subroutine
+    #:endfor
+
+    subroutine read_mm_header(ffp, header, err)
+        character(len=:), intent(inout), pointer :: ffp
+        type(mm_header_type), intent(out) :: header
+        integer, intent(out) :: err
+        !----------------------------------------------
+        err = 0
+        if( .not. starts_with(ffp, "%%MatrixMarket ") ) return
+        ffp => ffp(16:)
+        
+        ! Read object type: matrix
+        if( .not. starts_with(ffp, "matrix ") ) return
+        ffp => ffp(8:)
+        header%object = 1 ! matrix
+        
+        ! Read format type: coordinate or array
+        if( starts_with(ffp, "arr") ) then 
+            ffp => ffp(7:) ! array
+            header%format = MF_array
+        else if( starts_with(ffp, "coo") ) then
+            ffp => ffp(12:) ! coordinate
+            header%format = MF_coordinate
+        else
+            return
+        end if
+
+        ! Read first qualifier: real, complex, integer, pattern (sparse)
+        if( starts_with(ffp, "real") ) then
+            ffp => ffp(6:) ! real
+            header%qualifier = MQ_real
+        else if( starts_with(ffp, "complex") ) then
+            ffp => ffp(9:) ! complex
+            header%qualifier = MQ_complex
+        else if( starts_with(ffp, "integer") ) then
+            ffp => ffp(9:) ! integer
+            header%qualifier = MQ_integer
+        else if( starts_with(ffp, "pattern") ) then
+            ffp => ffp(9:) ! pattern
+            header%qualifier = MQ_pattern
+        else
+            return
+        end if
+
+        ! Read second qualifier: general, symmetric, skew-symmetric, hermitian
+        if( starts_with(ffp, "general") ) then
+            ffp => ffp(9:) ! general
+            header%symmetry = MS_general
+        else if( starts_with(ffp, "symmetric") ) then
+            ffp => ffp(11:) ! symmetric
+            header%symmetry = MS_symmetric
+        else if( starts_with(ffp, "skew-symmetric") ) then
+            ffp => ffp(16:) ! skew-symmetric
+            header%symmetry = MS_skew_symmetric
+        else if( starts_with(ffp, "hermitian") ) then
+            ffp => ffp(11:) ! hermitian
+            header%symmetry = MS_hermitian
+        else
+            return
+        end if
+    end subroutine
+
+    elemental function shift_to_eol(s) result(p)
+      !! move string to position of the next end-of-line character
+      character(*),intent(in) :: s !! character chain
+      integer :: p !! position
+      !----------------------------------------------
+      p = 1
+      do while( p<len(s) .and. .not.(iachar(s(p:p))==LF .or. iachar(s(p:p))==CR) ) 
+          p = p + 1
+      end do
+      ! skip both characters CRLF pair
+      if( p<len(s) .and. (iachar(s(p:p))==LF .or. iachar(s(p:p))==CR) ) p = p + 1
+    end function
+
+end submodule stdlib_io_mm_load
