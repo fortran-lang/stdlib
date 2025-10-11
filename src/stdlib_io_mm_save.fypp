@@ -12,6 +12,34 @@ submodule (stdlib_io_mm) stdlib_io_mm_save
     use stdlib_io, only : open
     implicit none
 
+    ! Matrix Market format constants
+    character(len=*), parameter :: MM_BANNER = "%%MatrixMarket"
+    character(len=*), parameter :: MM_COMMENT_CHAR = "%"
+    
+    ! Matrix Market object types
+    character(len=*), parameter :: &
+        MM_MATRIX = "matrix", &
+        MM_VECTOR = "vector"
+    
+    ! Matrix Market format types  
+    character(len=*), parameter :: &
+        MM_COORDINATE = "coordinate", &
+        MM_ARRAY = "array"
+    
+    ! Matrix Market data types
+    character(len=*), parameter :: &
+        MM_REAL = "real", &
+        MM_COMPLEX = "complex", &
+        MM_INTEGER = "integer", &
+        MM_PATTERN = "pattern"
+    
+    ! Matrix Market storage schemes
+    character(len=*), parameter :: &
+        MM_GENERAL = "general", &
+        MM_SYMMETRIC = "symmetric", &
+        MM_SKEW_SYMMETRIC = "skew-symmetric", &
+        MM_HERMITIAN = "hermitian"
+
 contains
 
     #:for k, t, s in RC_KINDS_TYPES

@@ -74,38 +74,4 @@ module stdlib_io_mm
     end interface save_mm
     public :: save_mm
 
-    ! Matrix Market format constants
-    character(len=*), parameter :: MM_BANNER = "%%MatrixMarket"
-    character(len=*), parameter :: MM_COMMENT_CHAR = "%"
-    
-    ! Matrix Market object types
-    character(len=*), parameter :: &
-        MM_MATRIX = "matrix", &
-        MM_VECTOR = "vector"
-    
-    ! Matrix Market format types  
-    character(len=*), parameter :: &
-        MM_COORDINATE = "coordinate", &
-        MM_ARRAY = "array"
-    
-    ! Matrix Market data types
-    character(len=*), parameter :: &
-        MM_REAL = "real", &
-        MM_COMPLEX = "complex", &
-        MM_INTEGER = "integer", &
-        MM_PATTERN = "pattern"
-    
-    ! Matrix Market storage schemes
-    character(len=*), parameter :: &
-        MM_GENERAL = "general", &
-        MM_SYMMETRIC = "symmetric", &
-        MM_SKEW_SYMMETRIC = "skew-symmetric", &
-        MM_HERMITIAN = "hermitian"
-
-    public :: MM_BANNER, MM_COMMENT_CHAR
-    public :: MM_MATRIX, MM_VECTOR
-    public :: MM_COORDINATE, MM_ARRAY  
-    public :: MM_REAL, MM_COMPLEX, MM_INTEGER, MM_PATTERN
-    public :: MM_GENERAL, MM_SYMMETRIC, MM_SKEW_SYMMETRIC, MM_HERMITIAN
-
 end module stdlib_io_mm

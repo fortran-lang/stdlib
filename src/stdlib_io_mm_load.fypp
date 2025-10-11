@@ -131,7 +131,7 @@ contains
         ! Internal variables
         type(mm_header_type) :: header
         integer :: u , fsze, err, eol_position
-        integer :: i, j
+        integer :: i, j, nnz, adr
         integer(int8) :: stat
         character(:), allocatable, target :: ff
         character(len=:), pointer :: ffp
@@ -179,13 +179,22 @@ contains
         if( stat /= 0 ) return
         matrix%ncols = to_num_from_stream(ffp, matrix%ncols, stat)
         if( stat /= 0 ) return
-        matrix%nnz = to_num_from_stream(ffp, matrix%nnz, stat)
+        nnz = to_num_from_stream(ffp, nnz, stat)
         if( stat /= 0 ) return
         
         !----------------------------------------- 
+        ! check storage hypothesis
+        matrix%nnz = nnz
+        if(header%symmetry == MS_symmetric) then 
+            matrix%nnz = 2*nnz - matrix%nrows
+        elseif(header%symmetry == MS_skew_symmetric) then 
+            matrix%nnz = 2*nnz
+        end if
+
+        !----------------------------------------- 
         ! Read actual matrix data
         call matrix%malloc( matrix%nrows, matrix%ncols, matrix%nnz )
-        do i = 1, matrix%nnz
+        do i = 1, nnz ! read entries from file
             matrix%index(1,i) = to_num_from_stream(ffp, matrix%index(1,i), stat)
             matrix%index(2,i) = to_num_from_stream(ffp, matrix%index(2,i), stat)
             #:if t.startswith('complex') 
@@ -196,6 +205,23 @@ contains
             matrix%data(i) = to_num_from_stream(ffp, mold, stat)
             #:endif
         end do
+
+        !----------------------------------------- 
+        ! Fill in symmetric entries if needed
+        if(header%symmetry==MS_general) return
+        adr = 1
+        do i = 1, nnz
+            if(matrix%index(1,i)==matrix%index(2,i)) cycle 
+            matrix%index(1,nnz+adr) = matrix%index(2,i)
+            matrix%index(2,nnz+adr) = matrix%index(1,i)
+            matrix%data(nnz+adr) = matrix%data(i)
+            if(header%symmetry==MS_skew_symmetric) matrix%data(nnz+adr) = -matrix%data(i)
+            #:if t.startswith('complex') 
+            if(header%symmetry==MS_hermitian) matrix%data(nnz+adr) = conjg(matrix%data(i))
+            #:endif
+            adr = adr + 1
+        end do
+
     end subroutine
     #:endfor
 
