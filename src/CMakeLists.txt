@@ -40,6 +40,7 @@ set(fppFiles
     stdlib_linalg_qr.fypp
     stdlib_linalg_inverse.fypp
     stdlib_linalg_iterative_solvers.fypp
+    stdlib_linalg_iterative_solvers_bicgstab.fypp
     stdlib_linalg_iterative_solvers_cg.fypp
     stdlib_linalg_iterative_solvers_pcg.fypp
     stdlib_linalg_pinv.fypp
