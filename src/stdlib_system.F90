@@ -500,7 +500,7 @@ interface is_running
     !!
     !! @note The implementation relies on system-level process management capabilities.
     !!
-    module logical function process_is_running(process) result(is_running)
+    logical module function process_is_running(process) result(is_running)
         !> The process object to check.
         class(process_type), intent(inout) :: process
         !> Logical result: `.true.` if the process is still running, `.false.` otherwise.
@@ -524,7 +524,7 @@ interface is_completed
     !!
     !! @note The implementation relies on system-level process management capabilities.
     !!
-    module logical function process_is_completed(process) result(is_completed)
+    logical module function process_is_completed(process) result(is_completed)
         !> The process object to check.
         class(process_type), intent(inout) :: process
         !> Logical result: `.true.` if the process has completed, `.false.` otherwise.
@@ -711,7 +711,7 @@ interface
     !!
     !! @note This function relies on the `_WIN32` macro, which is defined in C compilers when targeting Windows.
     !!
-    module logical function is_windows()
+    logical module function is_windows()
     end function is_windows
     
     module function process_get_ID(process) result(ID)
