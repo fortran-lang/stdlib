@@ -61,6 +61,15 @@ focus on the semantics of the proposed changes rather than style and formatting.
   ```  
   When defining many arrays of the same dimension, `dimension` can be used as an exception if it makes the code less verbose.
 * If the `optional` attribute is used to declare a dummy argument, it should follow the `intent` attribute.
+* For module procedures, declare attributes before the `module` keyword for better retro compatibility:
+  Use this:  
+  ```
+  pure module function example()
+  ```  
+  instead of:  
+  ```
+  module pure function example()
+  ```
 
 ## End <scope> block closing statements
 
