@@ -64,11 +64,11 @@ focus on the semantics of the proposed changes rather than style and formatting.
 * For module procedures, declare attributes before the `module` keyword for better retro compatibility:
   Use this:  
   ```
-  pure module function example()
+  <attribute> <attribute> module <function/subroutine> <name>
   ```  
   instead of:  
   ```
-  module pure function example()
+  module <attribute> <attribute> <function/subroutine> <name>
   ```
 
 ## End <scope> block closing statements
