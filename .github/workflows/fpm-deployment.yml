@@ -2,10 +2,6 @@ name: fpm-deployment
 
 on: [push, pull_request]
 
-env:
-  FPM_VERSION: 'v0.12.0'  # FPM version
-  SETUP_FPM_VERSION: 'v8' # setup-fpm action version
-
 jobs:
   deploy:
     name: Run tests and deploys the fpm branches
@@ -36,9 +32,9 @@ jobs:
           version: ${{ matrix.toolchain.version }}
 
       - name: Setup Fortran Package Manager
-        uses: fortran-lang/setup-fpm@${{ env.SETUP_FPM_VERSION }}
+        uses: fortran-lang/setup-fpm@v8
         with:
-          fpm-version: ${{ env.FPM_VERSION }}
+          fpm-version: v0.12.0
 
       - run: | # Just for deployment: create stdlib-fpm folder
           python config/fypp_deployment.py --deploy_stdlib_fpm
@@ -90,9 +86,9 @@ jobs:
           version: ${{ matrix.toolchain.version }}
 
       - name: Setup Fortran Package Manager
-        uses: fortran-lang/setup-fpm@${{ env.SETUP_FPM_VERSION }}
+        uses: fortran-lang/setup-fpm@v8
         with:
-          fpm-version: ${{ env.FPM_VERSION }}
+          fpm-version: v0.12.0
 
       - name: Prepare for code coverage
         if: contains( matrix.os, 'ubuntu')
