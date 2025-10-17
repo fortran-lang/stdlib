@@ -34,11 +34,11 @@ jobs:
           - os: ubuntu-latest
             build: cmake-inline
             toolchain: {compiler: gcc, version: 10}
-#        exclude:
-#          - os: macos-14
-#            toolchain: {compiler: intel, version: '2024.1'}
-#          - os: macos-14
-#            toolchain: {compiler: gcc, version: 13}
+        exclude:
+          - os: macos-14
+            toolchain: {compiler: intel, version: '2024.1'}
+          - os: macos-14
+            toolchain: {compiler: gcc, version: 10}
     env:
       BUILD_DIR: ${{ matrix.build == 'cmake' && 'build' || '.' }}
 
