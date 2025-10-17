@@ -35,8 +35,8 @@ jobs:
           - os: ubuntu-latest
             build: cmake-inline
             toolchain: {compiler: gcc, version: 10}
-          - os: ubuntu-22.04
-            build: cmake-3.10
+          - os: ubuntu-latest
+            build: cmake-3.14
             toolchain: {compiler: gcc, version: 10}
         exclude:
           - os: macos-14
@@ -58,9 +58,9 @@ jobs:
     - name: Install fypp
       run: pip install --upgrade fypp ninja
 
-    - name: Install cmake-3.10
-      if: ${{ matrix.build == 'cmake-3.10' }}
-      run: pip install cmake==3.10.3
+    - name: Install cmake-3.14
+      if: ${{ matrix.build == 'cmake-3.14' }}
+      run: pip install cmake==3.14.3
 
     - name: Setup Fortran compiler
       uses: fortran-lang/setup-fortran@v1.6.2
