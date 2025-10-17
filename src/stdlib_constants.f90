@@ -68,8 +68,10 @@ module stdlib_constants
     integer(int64), parameter, public :: one_int64  = 1_int64
     real(sp), parameter, public :: zero_sp = 0._sp
     real(sp), parameter, public :: one_sp  = 1._sp
+    real(sp), parameter, public :: log2_sp = log(2.0_sp)
     real(dp), parameter, public :: zero_dp = 0._dp
     real(dp), parameter, public :: one_dp  = 1._dp
+    real(dp), parameter, public :: log2_dp = log(2.0_dp)
     complex(sp), parameter, public :: zero_csp = (0._sp,0._sp)
     complex(sp), parameter, public :: one_csp  = (1._sp,0._sp)
     complex(dp), parameter, public :: zero_cdp = (0._dp,0._dp)

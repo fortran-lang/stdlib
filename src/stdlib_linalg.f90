@@ -18,6 +18,7 @@ module stdlib_linalg
   public :: eigh
   public :: eigvals
   public :: eigvalsh
+  public :: expm, matrix_exp
   public :: eye
   public :: inv
   public :: invert
@@ -5593,6 +5594,184 @@ module stdlib_linalg
       end function matrix_norm_4D_to_2D_int_z
   end interface mnorm
 
+  !> Matrix exponential: function interface
+  interface expm
+    !! version : experimental
+    !!
+    !! Computes the exponential of a matrix using a rational Pade approximation.
+    !! ([Specification](../page/specs/stdlib_linalg.html#expm))
+    !!
+    !! ### Description
+    !!
+    !! This interface provides methods for computing the exponential of a matrix
+    !! represented as a standard Fortran rank-2 array. Supported data types include
+    !! `real` and `complex`.
+    !!
+    !! By default, the order of the Pade approximation is set to 10. It can be changed
+    !! via the `order` argument that must be non-negative.
+    !!
+    !! If the input matrix is non-square or the order of the Pade approximation is
+    !! negative, the function returns an error state.
+    !!
+    !! ### Example
+    !!
+    !! ```fortran
+    !!  real(dp) :: A(3, 3), E(3, 3)
+    !!
+    !!  A = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
+    !!
+    !!  ! Default Pade approximation of the matrix exponential.
+    !!  E = expm(A)
+    !!
+    !!  ! Pade approximation with specified order.
+    !!  E = expm(A, order=12)
+    !! ```
+    !!
+    module function stdlib_linalg_s_expm_fun(A, order) result(E)
+        !> Input matrix a(:, :).
+        real(sp), intent(in) :: A(:, :)
+        !> [optional] Order of the Pade approximation (default `order=10`)
+        integer(ilp), optional, intent(in) :: order
+        !> Exponential of the input matrix E = exp(A).
+        real(sp), allocatable :: E(:, :)
+    end function stdlib_linalg_s_expm_fun
+    module function stdlib_linalg_d_expm_fun(A, order) result(E)
+        !> Input matrix a(:, :).
+        real(dp), intent(in) :: A(:, :)
+        !> [optional] Order of the Pade approximation (default `order=10`)
+        integer(ilp), optional, intent(in) :: order
+        !> Exponential of the input matrix E = exp(A).
+        real(dp), allocatable :: E(:, :)
+    end function stdlib_linalg_d_expm_fun
+    module function stdlib_linalg_c_expm_fun(A, order) result(E)
+        !> Input matrix a(:, :).
+        complex(sp), intent(in) :: A(:, :)
+        !> [optional] Order of the Pade approximation (default `order=10`)
+        integer(ilp), optional, intent(in) :: order
+        !> Exponential of the input matrix E = exp(A).
+        complex(sp), allocatable :: E(:, :)
+    end function stdlib_linalg_c_expm_fun
+    module function stdlib_linalg_z_expm_fun(A, order) result(E)
+        !> Input matrix a(:, :).
+        complex(dp), intent(in) :: A(:, :)
+        !> [optional] Order of the Pade approximation (default `order=10`)
+        integer(ilp), optional, intent(in) :: order
+        !> Exponential of the input matrix E = exp(A).
+        complex(dp), allocatable :: E(:, :)
+    end function stdlib_linalg_z_expm_fun
+  end interface expm
+
+  !> Matrix exponential: subroutine interface
+  interface matrix_exp
+    !! version : experimental
+    !!
+    !! Computes the exponential of a matrix using a rational Pade approximation.
+    !! ([Specification](../page/specs/stdlib_linalg.html#matrix_exp))
+    !!
+    !! ### Description
+    !!
+    !! This interface provides methods for computing the exponential of a matrix
+    !! represented as a standard Fortran rank-2 array. Supported data types include
+    !! `real` and `complex`.
+    !!
+    !! By default, the order of the Pade approximation is set to 10. It can be changed
+    !! via the `order` argument that must be non-negative.
+    !!
+    !! If the input matrix is non-square or the order of the Pade approximation is
+    !! negative, the function returns an error state.
+    !!
+    !! ### Example
+    !!
+    !! ```fortran
+    !!  real(dp) :: A(3, 3), E(3, 3)
+    !!
+    !!  A = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
+    !!
+    !!  ! Default Pade approximation of the matrix exponential.
+    !!  call matrix_exp(A, E) ! Out-of-place
+    !!  ! call matrix_exp(A) for in-place computation.
+    !!
+    !!  ! Pade approximation with specified order.
+    !!  call matrix_exp(A, E, order=12)
+    !! ```
+    !!
+    module subroutine stdlib_linalg_s_expm_inplace(A, order, err)
+        !> Input matrix A(n, n) / Output matrix E = exp(A)
+        real(sp), intent(inout) :: A(:, :)
+        !> [optional] Order of the Pade approximation (default `order=10`)
+        integer(ilp), optional, intent(in) :: order
+        !> [optional] Error handling.
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_s_expm_inplace
+
+    module subroutine stdlib_linalg_s_expm(A, E, order, err)
+        !> Input matrix A(n, n)
+        real(sp), intent(in) :: A(:, :)
+        !> Output matrix exponential E = exp(A)
+        real(sp), intent(out) :: E(:, :)
+        !> [optional] Order of the Pade approximation (default `order=10`)
+        integer(ilp), optional, intent(in) :: order
+        !> [optional] Error handling.
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_s_expm
+    module subroutine stdlib_linalg_d_expm_inplace(A, order, err)
+        !> Input matrix A(n, n) / Output matrix E = exp(A)
+        real(dp), intent(inout) :: A(:, :)
+        !> [optional] Order of the Pade approximation (default `order=10`)
+        integer(ilp), optional, intent(in) :: order
+        !> [optional] Error handling.
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_d_expm_inplace
+
+    module subroutine stdlib_linalg_d_expm(A, E, order, err)
+        !> Input matrix A(n, n)
+        real(dp), intent(in) :: A(:, :)
+        !> Output matrix exponential E = exp(A)
+        real(dp), intent(out) :: E(:, :)
+        !> [optional] Order of the Pade approximation (default `order=10`)
+        integer(ilp), optional, intent(in) :: order
+        !> [optional] Error handling.
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_d_expm
+    module subroutine stdlib_linalg_c_expm_inplace(A, order, err)
+        !> Input matrix A(n, n) / Output matrix E = exp(A)
+        complex(sp), intent(inout) :: A(:, :)
+        !> [optional] Order of the Pade approximation (default `order=10`)
+        integer(ilp), optional, intent(in) :: order
+        !> [optional] Error handling.
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_c_expm_inplace
+
+    module subroutine stdlib_linalg_c_expm(A, E, order, err)
+        !> Input matrix A(n, n)
+        complex(sp), intent(in) :: A(:, :)
+        !> Output matrix exponential E = exp(A)
+        complex(sp), intent(out) :: E(:, :)
+        !> [optional] Order of the Pade approximation (default `order=10`)
+        integer(ilp), optional, intent(in) :: order
+        !> [optional] Error handling.
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_c_expm
+    module subroutine stdlib_linalg_z_expm_inplace(A, order, err)
+        !> Input matrix A(n, n) / Output matrix E = exp(A)
+        complex(dp), intent(inout) :: A(:, :)
+        !> [optional] Order of the Pade approximation (default `order=10`)
+        integer(ilp), optional, intent(in) :: order
+        !> [optional] Error handling.
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_z_expm_inplace
+
+    module subroutine stdlib_linalg_z_expm(A, E, order, err)
+        !> Input matrix A(n, n)
+        complex(dp), intent(in) :: A(:, :)
+        !> Output matrix exponential E = exp(A)
+        complex(dp), intent(out) :: E(:, :)
+        !> [optional] Order of the Pade approximation (default `order=10`)
+        integer(ilp), optional, intent(in) :: order
+        !> [optional] Error handling.
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_z_expm
+  end interface matrix_exp
 contains
 
 
