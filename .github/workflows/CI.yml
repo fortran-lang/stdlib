@@ -35,9 +35,9 @@ jobs:
           - os: ubuntu-latest
             build: cmake-inline
             toolchain: {compiler: gcc, version: 10}
-          - os: ubuntu-latest
+          - os: macos-14
             build: cmake-3.10
-            toolchain: {compiler: gcc, version: 10}
+            toolchain: {compiler: gcc, version: 13}
         exclude:
           - os: macos-14
             toolchain: {compiler: intel, version: '2024.1'}
