@@ -5,7 +5,6 @@ on: [push, pull_request]
 env:
   FPM_VERSION: 'v0.12.0'  # FPM version
   SETUP_FPM_VERSION: 'v8' # setup-fpm action version
-  GNU_VERSION: '13'       # GNU compiler toolchain major version
 
 jobs:
   deploy:
@@ -16,7 +15,7 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            toolchain: {compiler: gcc, version: ${{ env.GNU_VERSION }} }
+            toolchain: {compiler: gcc, version: '13' }
 
     steps:
       - name: Checkout code
@@ -76,7 +75,7 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            toolchain: {compiler: gcc, version: ${{ env.GNU_VERSION }} }
+            toolchain: {compiler: gcc, version: '13' }
 
     steps:
       - name: Checkout code
