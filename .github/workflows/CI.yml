@@ -71,9 +71,19 @@ jobs:
 
     # Build and test with built-in BLAS and LAPACK
     - name: Configure with CMake
-      if: ${{ contains(matrix.build, 'cmake') }}
+      if: ${{ contains(matrix.build, 'cmake')  && matrix.build != 'cmake-3.14' }}
       run: >-
         cmake -Wdev -G Ninja
+        -DCMAKE_BUILD_TYPE=Release
+        -DCMAKE_MAXIMUM_RANK:String=4
+        -DCMAKE_INSTALL_PREFIX=$PWD/_dist
+        -DFIND_BLAS:STRING=FALSE
+        -S . -B ${{ env.BUILD_DIR }}
+
+    - name: Configure with CMake 3.14
+      if: ${{ matrix.build == 'cmake-3.14' }}
+      run: >-
+        cmake -Wdev
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_MAXIMUM_RANK:String=4
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
