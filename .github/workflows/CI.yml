@@ -19,12 +19,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-13]
+        os: [ubuntu-latest, macos-14]
         toolchain:
           - {compiler: gcc, version: 10}
           - {compiler: gcc, version: 11}
           - {compiler: gcc, version: 12}
           - {compiler: gcc, version: 13}
+          - {compiler: gcc, version: 14}
           - {compiler: intel, version: '2024.1'}          
         build: [cmake]        
         include:
@@ -34,11 +35,14 @@ jobs:
           - os: ubuntu-latest
             build: cmake-inline
             toolchain: {compiler: gcc, version: 10}
+          - os: ubuntu-latest
+            build: cmake-3.14
+            toolchain: {compiler: gcc, version: 10}
         exclude:
-          - os: macos-13
+          - os: macos-14
             toolchain: {compiler: intel, version: '2024.1'}
-          - os: macos-13
-            toolchain: {compiler: gcc, version: 13}
+          - os: macos-14
+            toolchain: {compiler: gcc, version: 10}
     env:
       BUILD_DIR: ${{ matrix.build == 'cmake' && 'build' || '.' }}
 
@@ -54,6 +58,10 @@ jobs:
     - name: Install fypp
       run: pip install --upgrade fypp ninja
 
+    - name: Install cmake-3.14
+      if: ${{ matrix.build == 'cmake-3.14' }}
+      run: pip install cmake==3.14.3
+
     - name: Setup Fortran compiler
       uses: fortran-lang/setup-fortran@v1.6.2
       id: setup-fortran
@@ -63,9 +71,19 @@ jobs:
 
     # Build and test with built-in BLAS and LAPACK
     - name: Configure with CMake
-      if: ${{ contains(matrix.build, 'cmake') }}
+      if: ${{ contains(matrix.build, 'cmake')  && matrix.build != 'cmake-3.14' }}
       run: >-
         cmake -Wdev -G Ninja
+        -DCMAKE_BUILD_TYPE=Release
+        -DCMAKE_MAXIMUM_RANK:String=4
+        -DCMAKE_INSTALL_PREFIX=$PWD/_dist
+        -DFIND_BLAS:STRING=FALSE
+        -S . -B ${{ env.BUILD_DIR }}
+
+    - name: Configure with CMake 3.14
+      if: ${{ matrix.build == 'cmake-3.14' }}
+      run: >-
+        cmake -Wdev
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_MAXIMUM_RANK:String=4
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist

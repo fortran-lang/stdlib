@@ -331,7 +331,7 @@ contains
     end subroutine launch_synchronous
     
     !> Return the current (or total) process lifetime, in seconds
-    module real(RTICKS) function process_lifetime(process) result(delta_t)
+    real(RTICKS) module function process_lifetime(process) result(delta_t)
         class(process_type), intent(in) :: process 
         
         real(RTICKS) :: ticks_per_second
@@ -511,7 +511,7 @@ contains
     end subroutine save_completed_state
 
     !> Live check if a process is running
-    module logical function process_is_running(process) result(is_running)
+    logical module function process_is_running(process) result(is_running)
         class(process_type), intent(inout) :: process
         
         ! Each evaluation triggers a state update
@@ -522,7 +522,7 @@ contains
     end function process_is_running
     
     !> Live check if a process has completed
-    module logical function process_is_completed(process) result(is_completed)
+    logical module function process_is_completed(process) result(is_completed)
         class(process_type), intent(inout) :: process
         
         ! Each evaluation triggers a state update
@@ -600,7 +600,7 @@ contains
     !> Returns the file path of the null device for the current operating system.
     !>
     !> Version: Helper function.
-    module logical function is_windows()
+    logical module function is_windows()
        is_windows = logical(process_is_windows())
     end function is_windows
     
