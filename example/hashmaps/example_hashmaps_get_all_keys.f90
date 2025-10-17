@@ -12,14 +12,11 @@ program example_hashmaps_get_all_keys
   character(:), allocatable :: str
 
   ! adding key-value pairs to the map
-  call set(key, "initial key")
-  call map%map_entry(key, "value 1")
+  call map%map_entry("initial key", "value 1")
 
-  call set(key, "second key")
-  call map%map_entry(key, "value 2")
+  call map%map_entry("second key", "value 2")
 
-  call set(key, "last key")
-  call map%map_entry(key, "value 3")
+  call map%map_entry("last key", "value 3")
 
   ! getting all the keys in the map
   call map%get_all_keys(keys)
