@@ -38,12 +38,15 @@ module stdlib_linalg
   public :: operator(.pinv.)
   public :: lstsq
   public :: lstsq_space
+  public :: constrained_lstsq
+  public :: constrained_lstsq_space
   public :: norm
   public :: mnorm
   public :: get_norm
   public :: solve
   public :: solve_lu  
   public :: solve_lstsq
+  public :: solve_constrained_lstsq
   public :: trace
   public :: svd
   public :: svdvals
@@ -607,7 +610,7 @@ module stdlib_linalg
         !> Solution vector.
         ${rt}$, intent(out) :: x(:)
         !> [optional] Storage.
-        ${rt}$, optional, intent(out) :: storage(:)
+        ${rt}$, optional, intent(out), target :: storage(:)
         !> [optional] Can A and C be overwritten?
         logical(lk), optional, intent(in) :: overwrite_matrices
         !> [optional] State return flag. On error if not requested, the code stops.
@@ -618,10 +621,11 @@ module stdlib_linalg
 
   interface constrained_lstsq_space
     #:for rk, rt, ri in RC_KINDS_TYPES
-    pure module subroutine stdlib_linalg_${ri}$_constrained_lstsq_space(A, b, C, d, lwork)
+    module subroutine stdlib_linalg_${ri}$_constrained_lstsq_space(A, b, C, d, lwork, err)
         ${rt}$, intent(in), target :: A(:, :), C(:, :)
         ${rt}$, intent(in), target :: b(:), d(:)
         integer(ilp), intent(out) :: lwork
+        type(linalg_state_type), optional, intent(out) :: err
     end subroutine stdlib_linalg_${ri}$_constrained_lstsq_space
     #:endfor
   end interface
