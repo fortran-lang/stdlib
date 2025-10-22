@@ -3290,12 +3290,12 @@ module stdlib_linalg_lapack
 #endif
 #:for rk, rt, ri in REAL_KINDS_TYPES
 #:if not rk in ["sp", "dp"]
-            module procedure stdlib${ii}$_${ri}$geqrf
+            module procedure stdlib${ii}$_${ri}$geqp3
 #:endif
 #:endfor
 #:for rk, rt, ri in CMPLX_KINDS_TYPES
 #:if not rk in ["sp", "dp"]
-            module procedure stdlib${ii}$_${ri}$geqrf
+            module procedure stdlib${ii}$_${ri}$geqp3
 #:endif
 #:endfor
 #:endfor
