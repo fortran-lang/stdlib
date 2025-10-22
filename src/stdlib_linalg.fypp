@@ -576,6 +576,56 @@ module stdlib_linalg
     #:endfor
   end interface lstsq_space
 
+  ! Equality-constrained least-squares, i.e. minimize the sum of squares
+  ! cost || Ax - b ||^2 subject to the equality constraint Cx = d.
+  interface constrained_lstsq
+    #:for rk, rt, ri in RC_KINDS_TYPES
+    module function stdlib_linalg_${ri}$_constrained_lstsq(A, b, C, d, overwrite_matrices, err) result(x)
+        !> Input matrices.
+        ${rt}$, intent(inout), target :: A(:, :), C(:, :)
+        !> Right-hand side vectors.
+        ${rt}$, intent(inout), target :: b(:), d(:)
+        !> [optional] Can A and C be overwritten?
+        logical(lk), optional, intent(in) :: overwrite_matrices
+        !> [optional] State return flag.
+        type(linalg_state_type), optional, intent(out) :: err
+        !> Solution of the constrained least-squares problem.
+        ${rt}$, allocatable, target :: x(:)
+    end function stdlib_linalg_${ri}$_constrained_lstsq
+    #:endfor
+  end interface
+
+  ! Equality-constrained least-squares, i.e. minimize the sum of squares
+  ! cost || Ax - b ||^2 subject to the equality constraint Cx = d.
+  interface solve_constrained_lstsq
+    #:for rk, rt, ri in RC_KINDS_TYPES
+    module subroutine stdlib_linalg_${ri}$_solve_constrained_lstsq(A, b, C, d, x, storage, overwrite_matrices, err)
+        !> Input matrices.
+        ${rt}$, intent(inout), target :: A(:, :), C(:, :)
+        !> Right-hand side vectors.
+        ${rt}$, intent(inout), target :: b(:), d(:)
+        !> Solution vector.
+        ${rt}$, intent(out) :: x(:)
+        !> [optional] Storage.
+        ${rt}$, optional, intent(out) :: storage(:)
+        !> [optional] Can A and C be overwritten?
+        logical(lk), optional, intent(in) :: overwrite_matrices
+        !> [optional] State return flag. On error if not requested, the code stops.
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_${ri}$_solve_constrained_lstsq
+    #:endfor
+  end interface
+
+  interface constrained_lstsq_space
+    #:for rk, rt, ri in RC_KINDS_TYPES
+    pure module subroutine stdlib_linalg_${ri}$_constrained_lstsq_space(A, b, C, d, lwork)
+        ${rt}$, intent(in), target :: A(:, :), C(:, :)
+        ${rt}$, intent(in), target :: b(:), d(:)
+        integer(ilp), intent(out) :: lwork
+    end subroutine stdlib_linalg_${ri}$_constrained_lstsq_space
+    #:endfor
+  end interface
+
   ! QR factorization of rank-2 array A
   interface qr
     !! version: experimental 
