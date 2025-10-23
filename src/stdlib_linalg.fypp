@@ -590,7 +590,7 @@ module stdlib_linalg
     !!  subject to      Cx = d
     !!
     !!  where A is of size `m x n` and C of size `p x n`.
-    !!  ([Specification]())
+    !!  ([Specification](../page/specs/stdlib_linalg.html#constrained-lstsq))
     !!
     !!  ### Description
     !!
