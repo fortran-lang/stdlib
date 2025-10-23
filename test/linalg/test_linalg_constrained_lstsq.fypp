@@ -79,7 +79,7 @@ module test_linalg_constrained_least_squares
         if (allocated(error)) return
 
         !----- Pre-allocated storage -----
-        call constrained_lstsq_space(A, b, C, d, lwork, err=state)
+        call constrained_lstsq_space(A, C, lwork, err=state)
         call check(error, state%ok(), state%print())
         if (allocated(error)) return
         allocate(work(lwork))

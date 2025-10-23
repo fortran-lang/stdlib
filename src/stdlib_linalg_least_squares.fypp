@@ -390,11 +390,11 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
     #:for rk, rt, ri in RC_KINDS_TYPES
     ! Compute the size of the workspace requested by the constrained least-squares procedure.
-    module subroutine stdlib_linalg_${ri}$_constrained_lstsq_space(A, b, C, d, lwork, err)
+    module subroutine stdlib_linalg_${ri}$_constrained_lstsq_space(A, C, lwork, err)
         !> Least-squares cost.
-        ${rt}$, intent(in) :: A(:, :), b(:)
+        ${rt}$, intent(in) :: A(:, :)
         !> Equality constraints.
-        ${rt}$, intent(in) :: C(:, :), d(:)
+        ${rt}$, intent(in) :: C(:, :)
         !> Size of the workspace array.
         integer(ilp), intent(out)  :: lwork
         !> [optional] State return flag.
@@ -492,7 +492,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
         endif
 
         !> Retrieve workspace size.
-        call stdlib_linalg_${ri}$_constrained_lstsq_space(A, b, C, d, lwork, err0)
+        call stdlib_linalg_${ri}$_constrained_lstsq_space(A, C, lwork, err0)
 
         if (err0%ok()) then
             !> Workspace.

@@ -31,7 +31,7 @@ program example_constrained_lstsq2
    d = [1.0_dp, 3.0_dp, -1.0_dp]
 
    !> Optimal workspace size.
-   call constrained_lstsq_space(A, b, C, d, lwork)
+   call constrained_lstsq_space(A, C, lwork)
    allocate (work(lwork))
 
    ! Compute the solution.
