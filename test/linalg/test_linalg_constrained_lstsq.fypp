@@ -1,0 +1,154 @@
+#:include "common.fypp"
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+! Test least squares solver
+module test_linalg_constrained_least_squares
+    use testdrive, only: error_type, check, new_unittest, unittest_type
+    use stdlib_linalg_constants
+    use stdlib_linalg, only: constrained_lstsq, solve_constrained_lstsq, constrained_lstsq_space
+    use stdlib_linalg_state, only: linalg_state_type
+
+    implicit none (type,external)
+    private
+    
+    public :: test_constrained_least_squares 
+
+    contains
+
+    !> Solve sample least squares problems
+    subroutine test_constrained_least_squares(tests)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: tests(:)
+        
+        allocate(tests(0))
+        
+        #:for rk,rt,ri in REAL_KINDS_TYPES
+        call add_test(tests,new_unittest("constrained_least_squares_randm_${ri}$",test_constrained_lstsq_random_${ri}$))
+        #:endfor
+
+    end subroutine test_constrained_least_squares
+    
+    #:for rk,rt,ri in REAL_KINDS_TYPES
+    !> Fit from random array
+    subroutine test_constrained_lstsq_random_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(linalg_state_type) :: state
+        integer(ilp), parameter :: m=5, n=4, p=3
+        !> Least-squares cost.
+        ${rt}$ :: A(m, n), b(m)
+        !> Equality constraints.
+        ${rt}$ :: C(p, n), d(p)
+        !> Solution.
+        ${rt}$ :: x(n), x_true(n)
+        !> Workspace.
+        integer(ilp) :: lwork
+        ${rt}$, allocatable :: work(:)
+
+        !> Least-squares cost.
+        A(1, :) = [1.0_${rk}$, 1.0_${rk}$, 1.0_${rk}$, 1.0_${rk}$]
+        A(2, :) = [1.0_${rk}$, 3.0_${rk}$, 1.0_${rk}$, 1.0_${rk}$]
+        A(3, :) = [1.0_${rk}$, -1.0_${rk}$, 3.0_${rk}$, 1.0_${rk}$]
+        A(4, :) = [1.0_${rk}$, 1.0_${rk}$, 1.0_${rk}$, 3.0_${rk}$]
+        A(5, :) = [1.0_${rk}$, 1.0_${rk}$, 1.0_${rk}$, -1.0_${rk}$]
+
+        b = [2.0_${rk}$, 1.0_${rk}$, 6.0_${rk}$, 3.0_${rk}$, 1.0_${rk}$]
+
+        !> Equality constraints.
+        C(1, :) = [1.0_${rk}$, 1.0_${rk}$, 1.0_${rk}$, -1.0_${rk}$]
+        C(2, :) = [1.0_${rk}$, -1.0_${rk}$, 1.0_${rk}$, 1.0_${rk}$]
+        C(3, :) = [1.0_${rk}$, 1.0_${rk}$, -1.0_${rk}$, 1.0_${rk}$]
+
+        d = [1.0_${rk}$, 3.0_${rk}$, -1.0_${rk}$]
+
+        !----- Function interface -----
+        x = constrained_lstsq(A, b, C, d, err=state)
+        x_true = [0.5_${rk}$, -0.5_${rk}$, 1.5_${rk}$, 0.5_${rk}$]
+
+        call check(error, state%ok(), state%print())
+        if (allocated(error)) return
+
+        call check(error, all(abs(x-x_true) < 1.0e-4_${rk}$), 'Solver converged')
+        if (allocated(error)) return
+
+        !----- Subroutine interface -----
+        call solve_constrained_lstsq(A, b, C, d, x, err=state)
+
+        call check(error, state%ok(), state%print())
+        if (allocated(error)) return
+
+        call check(error, all(abs(x-x_true) < 1.0e-4_${rk}$), 'Solver converged')
+        if (allocated(error)) return
+
+        !----- Pre-allocated storage -----
+        call constrained_lstsq_space(A, b, C, d, lwork, err=state)
+        call check(error, state%ok(), state%print())
+        if (allocated(error)) return
+        allocate(work(lwork))
+        call solve_constrained_lstsq(A, b, C, d, x, storage=work, err=state)
+
+        call check(error, state%ok(), state%print())
+        if (allocated(error)) return
+
+        call check(error, all(abs(x-x_true) < 1.0e-4_${rk}$), 'Solver converged')
+        if (allocated(error)) return
+
+        !----- Overwrite matrices (performances) -----
+        call solve_constrained_lstsq(A, b, C, d, x, storage=work, overwrite_matrices=.true., err=state)
+
+        call check(error, state%ok(), state%print())
+        if (allocated(error)) return
+
+        call check(error, all(abs(x-x_true) < 1.0e-4_${rk}$), 'Solver converged')
+        if (allocated(error)) return
+
+    end subroutine test_constrained_lstsq_random_${ri}$    
+    
+    #:endfor
+    
+    ! gcc-15 bugfix utility
+    subroutine add_test(tests,new_test)
+        type(unittest_type), allocatable, intent(inout) :: tests(:)    
+        type(unittest_type), intent(in) :: new_test
+        
+        integer :: n
+        type(unittest_type), allocatable :: new_tests(:)
+        
+        if (allocated(tests)) then 
+            n = size(tests)
+        else
+            n = 0
+        end if
+        
+        allocate(new_tests(n+1))
+        if (n>0) new_tests(1:n) = tests(1:n)
+                 new_tests(1+n) = new_test
+        call move_alloc(from=new_tests,to=tests)        
+        
+    end subroutine add_test
+
+end module test_linalg_constrained_least_squares
+
+program test_constrained_lstsq
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_linalg_constrained_least_squares, only : test_constrained_least_squares
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("linalg_constrained_least_squares", test_constrained_least_squares) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program test_constrained_lstsq
