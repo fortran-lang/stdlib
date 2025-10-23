@@ -60,7 +60,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
      #:for nd,ndsuf,nde in ALL_RHS
      #:for rk,rt,ri in RC_KINDS_TYPES
 
-     ! Compute the integer, real, [complex] working space requested byu the least squares procedure
+     ! Compute the integer, real, [complex] working space requested by the least squares procedure
      pure module subroutine stdlib_linalg_${ri}$_lstsq_space_${ndsuf}$(a,b,lrwork,liwork#{if rt.startswith('c')}#,lcwork#{endif}#)
          !> Input matrix a[m,n]
          ${rt}$, intent(in), target :: a(:,:)
@@ -376,7 +376,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
             err = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid matrix size a(m, n) =', [ma, na])
             return
         else if (mc < 1 .or. nc < 1) then
-            err = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid matrix size c(m, n) =', [mc, nc])
+            err = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid matrix size c(p, n) =', [mc, nc])
         else if (na /= nc) then
             err = linalg_state_type(this, LINALG_VALUE_ERROR, 'Matrix A and matrix C have inconsistent number of columns.')
         else if (mb /= ma) then
@@ -389,10 +389,15 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
     end subroutine check_problem_size
 
     #:for rk, rt, ri in RC_KINDS_TYPES
+    ! Compute the size of the workspace requested by the constrained least-squares procedure.
     module subroutine stdlib_linalg_${ri}$_constrained_lstsq_space(A, b, C, d, lwork, err)
-        ${rt}$, intent(in), target :: A(:, :), C(:, :)
-        ${rt}$, intent(in), target :: b(:), d(:)
+        !> Least-squares cost.
+        ${rt}$, intent(in) :: A(:, :), b(:)
+        !> Equality constraints.
+        ${rt}$, intent(in) :: C(:, :), d(:)
+        !> Size of the workspace array.
         integer(ilp), intent(out)  :: lwork
+        !> [optional] State return flag.
         type(linalg_state_type), optional, intent(out) :: err
         !> Local variables.
         integer(ilp) :: m, n, p, info
@@ -402,18 +407,40 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
         !> Problem dimensions.
         m = size(A, 1) ; n = size(A, 2) ; p = size(C, 1)
         lwork = -1_ilp
-        !> Compute constrained lstsq solution.
+        !> Workspace query.
         call gglse(m, n, p, a_dummy, m, c_dummy, p, b_dummy, d_dummy, x, work, lwork, info)
         call handle_gglse_info(this, info, m, n, p, err)
         !> Optimal workspace size.
         lwork = ceiling(real(work(1), kind=${rk}$), kind=ilp)
     end subroutine stdlib_linalg_${ri}$_constrained_lstsq_space
 
+    ! Constrained least-squares solver.
     module subroutine stdlib_linalg_${ri}$_solve_constrained_lstsq(A, b, C, d, x, storage, overwrite_matrices, err)
-        !> Input matrices.
-        ${rt}$, intent(inout), target :: A(:, :), C(:, :)
-        !> Right-hand side vectors.
-        ${rt}$, intent(inout), target :: b(:), d(:)
+        !!  ### Summary
+        !!  Compute the solution of the equality constrained least-squares problem
+        !!
+        !!      minimize     || Ax - b ||²
+        !!      subject to      Cx = d
+        !!
+        !!  ### Description
+        !!
+        !!  This function computes the solution of an equality constrained linear least-squares
+        !!  problem.
+        !!
+        !!  param: a Input matrix of size [m, n] (with m > n).
+        !!  param: b Right-hand side vector of size [m] in the least-squares cost.
+        !!  param: c Input matrix of size [p, n] (with p < n) defining the equality constraints.
+        !!  param: d Right-hand side vector of size [p] in the equality constraints.
+        !!  param: x Vector of size [n] solution to the problem.
+        !!  param: storage [optional] Working array.
+        !!  param: overwrite_matrices [optional] Boolean flag indicating whether the matrices
+        !!                                       and vectors can be overwritten.
+        !!  param: err [optional] State return flag.
+        !!
+        !> Least-squares cost.
+        ${rt}$, intent(inout), target :: A(:, :), b(:)
+        !> Equality constraints.
+        ${rt}$, intent(inout), target :: C(:, :), d(:)
         !> Solution vector.
         ${rt}$, intent(out) :: x(:)
         !> [optional] Storage.
@@ -494,10 +521,30 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
     end subroutine stdlib_linalg_${ri}$_solve_constrained_lstsq
 
     module function stdlib_linalg_${ri}$_constrained_lstsq(A, b, C, d, overwrite_matrices, err) result(x)
-        !> Input matrices.
-        ${rt}$, intent(inout), target :: A(:, :), C(:, :)
-        !> Right-hand side vectors.
-        ${rt}$, intent(inout), target :: b(:), d(:)
+        !!  ### Summary
+        !!  Compute the solution of the equality constrained least-squares problem
+        !!
+        !!      minimize     || Ax - b ||²
+        !!      subject to      Cx = d
+        !!
+        !!  ### Description
+        !!
+        !!  This function computes the solution of an equality constrained linear least-squares
+        !!  problem.
+        !!
+        !!  param: a Input matrix of size [m, n] (with m > n).
+        !!  param: b Right-hand side vector of size [m] in the least-squares cost.
+        !!  param: c Input matrix of size [p, n] (with p < n) defining the equality constraints.
+        !!  param: d Right-hand side vector of size [p] in the equality constraints.
+        !!  param: x Vector of size [n] solution to the problem.
+        !!  param: overwrite_matrices [optional] Boolean flag indicating whether the matrices
+        !!                                       and vectors can be overwritten.
+        !!  param: err [optional] State return flag.
+        !!
+        !> Least-squares cost.
+        ${rt}$, intent(inout), target :: A(:, :), b(:)
+        !> Equality constraints.
+        ${rt}$, intent(inout), target :: C(:, :), d(:)
         !> [optional] Can A, b, C, d be overwritten?
         logical(lk), optional, intent(in) :: overwrite_matrices
         !> [optional] State return flag.
