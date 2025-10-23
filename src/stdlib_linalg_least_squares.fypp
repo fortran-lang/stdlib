@@ -404,14 +404,17 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
         ${rt}$ :: a_dummy(1, 1), b_dummy(1)
         ${rt}$ :: c_dummy(1, 1), d_dummy(1)
         ${rt}$ :: work(1), x(1)
+        type(linalg_state_type) :: err0
         !> Problem dimensions.
         m = size(A, 1) ; n = size(A, 2) ; p = size(C, 1)
         lwork = -1_ilp
         !> Workspace query.
         call gglse(m, n, p, a_dummy, m, c_dummy, p, b_dummy, d_dummy, x, work, lwork, info)
-        call handle_gglse_info(this, info, m, n, p, err)
+        call handle_gglse_info(this, info, m, n, p, err0)
         !> Optimal workspace size.
         lwork = ceiling(real(work(1), kind=${rk}$), kind=ilp)
+
+        call linalg_error_handling(err0, err)
     end subroutine stdlib_linalg_${ri}$_constrained_lstsq_space
 
     ! Constrained least-squares solver.
