@@ -18,6 +18,11 @@
 #:set WITH_XDP = False
 #:endif
 
+#! Support for bitsets
+#:if not defined("WITH_BITSETS")
+#:set WITH_CBOOL = True
+#:endif
+
 #! Support for linear algebra with 64-bit integer sizes
 #:if not defined("WITH_ILP64")
 #:set WITH_ILP64 = False

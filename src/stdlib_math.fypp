@@ -1,11 +1,20 @@
 #:include "common.fypp"
 #:set IR_KINDS_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+
+#:set IRB_KIND_TYPES = INT_KINDS_TYPES + REAL_KINDS_TYPES
+
+#:if WITH_BITSETS
 #:set BITSET_KINDS_TYPES = list(zip(BITSET_KINDS, BITSET_TYPES))
+#:set IRB_KIND_TYPES = IRB_KIND_TYPES + BITSET_KINDS_TYPES
+#:endif
+
 module stdlib_math
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
     use stdlib_optval, only: optval
+#:if WITH_BITSETS
     use stdlib_bitsets, only: bitset_64, bitset_large
+#:endif
 
     implicit none
     private
@@ -48,7 +57,7 @@ module stdlib_math
     !>
     !> Version: experimental
     interface swap
-      #:for k1, t1 in INT_KINDS_TYPES + REAL_KINDS_TYPES + BITSET_KINDS_TYPES
+      #:for k1, t1 in IRB_KIND_TYPES
       module procedure :: swap_${k1}$
       #:endfor
       #:for k1, t1 in CMPLX_KINDS_TYPES
@@ -527,7 +536,7 @@ contains
 
     #:endfor
 
-    #:for k1, t1 in INT_KINDS_TYPES + REAL_KINDS_TYPES + BITSET_KINDS_TYPES
+    #:for k1, t1 in IRB_KIND_TYPES
     elemental subroutine swap_${k1}$(lhs, rhs)
         ${t1}$, intent(inout) :: lhs, rhs
         ${t1}$ :: temp

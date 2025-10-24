@@ -49,6 +49,8 @@ if(NOT DEFINED CMAKE_MAXIMUM_RANK)
   set(CMAKE_MAXIMUM_RANK 4 CACHE STRING "Maximum array rank for generated procedures")
 endif()
 
+option(WITH_BITSETS "Compile STDLIB BITSETS" ON)
+
 option(FIND_BLAS "Find external BLAS and LAPACK" ON)
 
 # --- find external BLAS and LAPACK
@@ -118,6 +120,7 @@ endif()
 
 list(
   APPEND fyppFlags
+  "-DWITH_BITSETS=$<BOOL:${WITH_BITSETS}>"
   "-DWITH_CBOOL=$<BOOL:${WITH_CBOOL}>"
   "-DWITH_QP=$<BOOL:${WITH_QP}>"
   "-DWITH_XDP=$<BOOL:${WITH_XDP}>"
