@@ -20,7 +20,7 @@
 
 #! Support for bitsets
 #:if not defined("WITH_BITSETS")
-#:set WITH_CBOOL = True
+#:set WITH_BITSETS = True
 #:endif
 
 #! Support for linear algebra with 64-bit integer sizes
