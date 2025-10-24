@@ -25,8 +25,8 @@ def pre_process_fypp(args):
     kwd.append("-DPROJECT_VERSION_MAJOR="+str(args.vmajor))
     kwd.append("-DPROJECT_VERSION_MINOR="+str(args.vminor))
     kwd.append("-DPROJECT_VERSION_PATCH="+str(args.vpatch))
-    if args.with_bitsets:
-        kwd.append("-DWITH_BITSETS=True")
+    if args.no_bitsets:
+        kwd.append("-DWITH_BITSETS=False")
     if args.with_qp:
         kwd.append("-DWITH_QP=True")
     if args.with_xdp:
@@ -135,7 +135,7 @@ if __name__ == "__main__":
 
     parser.add_argument("--njob", type=int, default=4, help="Number of parallel jobs for preprocessing")
     parser.add_argument("--maxrank",type=int, default=4, help="Set the maximum allowed rank for arrays")
-    parser.add_argument("--with_bitsets",action='store_true', help="Include WITH_BITSETS in the command")
+    parser.add_argument("--no_bitsets",action='store_true', help="Include WITH_BITSETS=False in the command")
     parser.add_argument("--with_qp",action='store_true', help="Include WITH_QP in the command")
     parser.add_argument("--with_xdp",action='store_true', help="Include WITH_XDP in the command")
     parser.add_argument("--with_ilp64",action='store_true', help="Include WITH_ILP64 to build 64-bit integer BLAS/LAPACK")
