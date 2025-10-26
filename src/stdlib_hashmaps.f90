@@ -33,7 +33,8 @@ module stdlib_hashmaps
 !! Public data_types
     public ::                  &
         chaining_hashmap_type, &
-        open_hashmap_type
+        open_hashmap_type,     &
+        hashmap_type
 
 !! Values that parameterize David Chase's empirical SLOT expansion code
     integer, parameter ::        &
