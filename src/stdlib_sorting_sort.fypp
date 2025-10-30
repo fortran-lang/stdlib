@@ -1,9 +1,9 @@
 #:include "common.fypp"
-#:set INT_TYPES_ALT_NAME = list(zip(INT_TYPES, INT_TYPES, INT_KINDS))
-#:set REAL_TYPES_ALT_NAME = list(zip(REAL_TYPES, REAL_TYPES, REAL_KINDS))
-#:set STRING_TYPES_ALT_NAME = list(zip(STRING_TYPES, STRING_TYPES, STRING_KINDS))
-#:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"],  ["character(len=len(array))"], ["char"]))
-#:set BITSET_TYPES_ALT_NAME = list(zip(BITSET_TYPES, BITSET_TYPES, BITSET_KINDS))
+#:set INT_TYPES_ALT_NAME = list(zip(INT_TYPES, INT_TYPES, INT_KINDS, INT_CPPS))
+#:set REAL_TYPES_ALT_NAME = list(zip(REAL_TYPES, REAL_TYPES, REAL_KINDS, REAL_CPPS))
+#:set STRING_TYPES_ALT_NAME = list(zip(STRING_TYPES, STRING_TYPES, STRING_KINDS, STRING_CPPS))
+#:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"],  ["character(len=len(array))"], ["char"], [""]))
+#:set BITSET_TYPES_ALT_NAME = list(zip(BITSET_TYPES, BITSET_TYPES, BITSET_KINDS, BITSET_CPPS))
 
 #! For better code reuse in fypp, make lists that contain the input types,
 #! with each having output types and a separate name prefix for subroutines
@@ -75,7 +75,8 @@ submodule(stdlib_sorting) stdlib_sorting_sort
 
 contains
 
-#:for t1, t2, name1 in IRSCB_TYPES_ALT_NAME
+#:for t1, t2, name1, cpp1 in IRSCB_TYPES_ALT_NAME
+#:block generate_cpp(cpp_var=cpp1)
     pure module subroutine ${name1}$_sort( array, reverse )
             ${t1}$, intent(inout) :: array(0:)
             logical, intent(in), optional            :: reverse
@@ -86,10 +87,12 @@ contains
              call ${name1}$_increase_sort(array)
             endif
     end subroutine ${name1}$_sort
+#:endblock
 #:endfor
 
 #:for sname, signt, signoppt in SIGN_NAME_TYPE
-#:for t1, t2, name1 in IRSCB_TYPES_ALT_NAME
+#:for t1, t2, name1, cpp1 in IRSCB_TYPES_ALT_NAME
+#:block generate_cpp(cpp_var=cpp1)
 
     pure subroutine ${name1}$_${sname}$_sort( array )
 ! `${name1}$_${sname}$_sort( array )` sorts the input `ARRAY` of type `${t1}$`
@@ -256,6 +259,7 @@ contains
 
     end subroutine ${name1}$_${sname}$_sort
 
+#:endblock
 #:endfor
 #:endfor
 

@@ -6,10 +6,22 @@ macro(ADD_EXAMPLE name)
              WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 endmacro(ADD_EXAMPLE)
 
+macro(ADD_EXAMPLEPP name)
+    add_executable(example_${name} example_${name}.F90)
+    target_link_libraries(example_${name} "${PROJECT_NAME}")
+    add_test(NAME ${name}
+             COMMAND $<TARGET_FILE:example_${name}> ${CMAKE_CURRENT_BINARY_DIR}
+             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+endmacro(ADD_EXAMPLEPP)
+
+
+
 add_subdirectory(ansi)
 add_subdirectory(array)
 add_subdirectory(ascii)
-add_subdirectory(bitsets)
+if (STDLIB_WITH_BITSET)
+  add_subdirectory(bitsets)
+endif()
 add_subdirectory(constants)
 add_subdirectory(error)
 add_subdirectory(hashmaps)

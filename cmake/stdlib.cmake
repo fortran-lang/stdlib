@@ -101,6 +101,9 @@ function(configure_stdlib_target target_name regular_sources_var fypp_files_var 
         $<BUILD_INTERFACE:${LIB_MOD_DIR}>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_MODULEDIR}>
     )
+    target_include_directories(${target_name} PRIVATE
+        ${PROJECT_SOURCE_DIR}/include
+    )
 
     install(TARGETS ${target_name}
             EXPORT ${PROJECT_NAME}-targets

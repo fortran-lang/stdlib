@@ -49,6 +49,14 @@ if(NOT DEFINED CMAKE_MAXIMUM_RANK)
   set(CMAKE_MAXIMUM_RANK 4 CACHE STRING "Maximum array rank for generated procedures")
 endif()
 
+
+option(STDLIB_WITH_BITSET "Compile STDLIB BITSET" ON)
+
+if(STDLIB_WITH_BITSET)
+  message(STATUS "Enable stdlib bitset module")
+  add_compile_definitions(STDLIB_BITSET)
+endif() 
+
 option(FIND_BLAS "Find external BLAS and LAPACK" ON)
 
 # --- find external BLAS and LAPACK
