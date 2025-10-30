@@ -488,8 +488,6 @@ ${indent}$do ${varname}$${n+1+dim_offset-i}$ = lbound(${matname}$, ${n+1+dim_off
 #:enddef
 
 #!
-
-#!
 #! Encapsulate code into CPP pre-processing directives #ifdef and #endif
 #!
 #! Args:
