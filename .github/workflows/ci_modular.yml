@@ -1,0 +1,80 @@
+name: CI
+
+on: [push, pull_request]
+
+env:
+  CMAKE_BUILD_PARALLEL_LEVEL: "2" # 2 cores on each GHA VM, enable parallel builds
+  CTEST_OUTPUT_ON_FAILURE: "ON" # This way we don't need a flag to ctest
+  CTEST_PARALLEL_LEVEL: "2"
+  CTEST_TIME_TIMEOUT: "5"  # some failures hang forever
+  HOMEBREW_NO_ANALYTICS: "ON" # Make Homebrew installation a little quicker
+  HOMEBREW_NO_AUTO_UPDATE: "ON"
+  HOMEBREW_NO_BOTTLE_SOURCE_FALLBACK: "ON"
+  HOMEBREW_NO_GITHUB_API: "ON"
+  HOMEBREW_NO_INSTALL_CLEANUP: "ON"
+
+jobs:
+  Build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        toolchain:
+          - {compiler: gcc, version: 14}
+        build: [cmake]        
+        with_bitset: [On, Off]
+    env:
+      BUILD_DIR: ${{ matrix.build == 'cmake' && 'build' || '.' }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v5 # Use pip to install latest CMake, & FORD/Jin2For, etc.
+      with:
+        python-version: 3.x
+
+    - name: Install fypp
+      run: pip install --upgrade fypp ninja
+
+    - name: Setup Fortran compiler
+      uses: fortran-lang/setup-fortran@v1.6.2
+      id: setup-fortran
+      with:
+        compiler: ${{ matrix.toolchain.compiler }}
+        version: ${{ matrix.toolchain.version }}
+
+    # Build and test with built-in BLAS and LAPACK
+    - name: Configure with CMake
+      if: ${{ contains(matrix.build, 'cmake') }}
+      run: >-
+        cmake -Wdev -G Ninja
+        -DCMAKE_BUILD_TYPE=Release
+        -DCMAKE_MAXIMUM_RANK:String=4
+        -DCMAKE_INSTALL_PREFIX=$PWD/_dist
+        -DFIND_BLAS:STRING=FALSE
+        -DSTDLIB_WITH_BITSET:STRING=${{ matrix.with_bitset }}
+        -S . -B ${{ env.BUILD_DIR }}
+
+    - name: Build and compile
+      if: ${{ contains(matrix.build, 'cmake') }}
+      run: cmake --build ${{ env.BUILD_DIR }} --parallel
+
+    - name: catch build fail
+      if: ${{ failure() && contains(matrix.build, 'cmake') }}
+      run: cmake --build ${{ env.BUILD_DIR }} --verbose --parallel 1
+
+    - name: test
+      if: ${{ contains(matrix.build, 'cmake') }}
+      run: >-
+        ctest
+        --test-dir ${{ env.BUILD_DIR }}
+        --parallel
+        --output-on-failure
+        --no-tests=error
+
+    - name: Install project
+      if: ${{ contains(matrix.build, 'cmake') }}
+      run: cmake --install ${{ env.BUILD_DIR }}
