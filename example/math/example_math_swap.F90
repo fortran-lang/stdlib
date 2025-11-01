@@ -1,3 +1,4 @@
+#include 'macros.inc'
 program example_math_swap
     use stdlib_math, only: swap
     implicit none

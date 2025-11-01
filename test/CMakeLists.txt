@@ -29,7 +29,7 @@ endmacro(ADDTESTPP)
 
 add_subdirectory(array)
 add_subdirectory(ascii)
-if (STDLIB_WITH_BITSET)
+if (NOT STDLIB_NO_BITSET)
   add_subdirectory(bitsets)
 endif()
 add_subdirectory(constants)
