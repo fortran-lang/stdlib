@@ -598,7 +598,7 @@ module stdlib_linalg
     !!  least-squares problem using a function. Supported data types include `real` and
     !!  `complex`. 
     !!
-    !!  @note The solution is based on LAPACK's `*GLLSE` methods.
+    !!  @note The solution is based on LAPACK's `*GGLSE` methods.
     #:for rk, rt, ri in RC_KINDS_TYPES
     module function stdlib_linalg_${ri}$_constrained_lstsq(A, b, C, d, overwrite_matrices, err) result(x)
         !> Least-squares cost
