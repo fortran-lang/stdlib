@@ -973,12 +973,7 @@ call [stdlib_linalg(module):constrained_lstsq_space(interface)]`(a,  c,  lwork [
 
 `a`: Shall be a rank-2 `real` or `complex` array used in the definition of the least-squares cost. It is an `intent(in)` argument.
 
-`b`: Shall be a rank-1 array of the same kind as `a` appearing in the definition of the least-squares cost. It is an `intent(in)` argument.
-
 `c`: Shall be a rank-2 `real` or `complex` array of the same kind as `a` defining the linear equality constraints. It is an `intent(in)` argument.
-
-`d`: Shall be a rank-1 array of the same kind as `a` appearing in the definition of the linear equality constraints.
-
 `lwork`: Shall be an `integer` scalar returning the optimal size required for the workspace array to solve the constrained least-squares problem.
 
 ## `det` - Computes the determinant of a square matrix
