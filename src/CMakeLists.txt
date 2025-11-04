@@ -1,11 +1,12 @@
+if (WITH_BITSETS)
+  add_subdirectory(bitsets)
+endif()
+
 add_subdirectory(blas)
 add_subdirectory(lapack)
 
 set(fppFiles
     stdlib_ascii.fypp
-    stdlib_bitsets.fypp
-    stdlib_bitsets_64.fypp
-    stdlib_bitsets_large.fypp
     stdlib_codata_type.fypp
     stdlib_constants.fypp
     stdlib_error.fypp
@@ -121,4 +122,7 @@ set(f90Files
 
 configure_stdlib_target(${PROJECT_NAME} f90Files fppFiles cppFiles)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC blas lapack)
+target_link_libraries(${PROJECT_NAME} PUBLIC 
+  $<$<BOOL:${WITH_BITSETS}>:bitsets>
+  blas lapack)
+

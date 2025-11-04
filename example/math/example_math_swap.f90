@@ -43,12 +43,4 @@ program example_math_swap
         call swap(x,y)
     end block
 
-    block
-        use stdlib_bitsets
-        type(bitset_64) :: x, y
-        call x%from_string('0000')
-        call y%from_string('1111')
-        call swap(x,y)
-    end block
-
 end program example_math_swap  

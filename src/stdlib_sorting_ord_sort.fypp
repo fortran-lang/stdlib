@@ -3,13 +3,16 @@
 #:set REAL_TYPES_ALT_NAME = list(zip(REAL_TYPES, REAL_TYPES, REAL_TYPES, REAL_KINDS))
 #:set STRING_TYPES_ALT_NAME = list(zip(STRING_TYPES, STRING_TYPES, STRING_TYPES, STRING_KINDS))
 #:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"],  ["character(len=:)"], ["character(len=len(array))"], ["char"]))
-#:set BITSET_TYPES_ALT_NAME = list(zip(BITSET_TYPES, BITSET_TYPES, BITSET_TYPES, BITSET_KINDS))
 
 #! For better code reuse in fypp, make lists that contain the input types,
 #! with each having output types and a separate name prefix for subroutines
 #! This approach allows us to have the same code for all input types.
-#:set IRSCB_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME &
-    & + BITSET_TYPES_ALT_NAME
+#:set IRSCB_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME
+
+#:if WITH_BITSETS
+#:set BITSET_TYPES_ALT_NAME = list(zip(BITSET_TYPES, BITSET_TYPES, BITSET_TYPES, BITSET_KINDS))
+#:set IRSCB_TYPES_ALT_NAME = IRSCB_TYPES_ALT_NAME + BITSET_TYPES_ALT_NAME
+#:endif
 
 #:set SIGN_NAME = ["increase", "decrease"]
 #:set SIGN_TYPE = [">", "<"]
