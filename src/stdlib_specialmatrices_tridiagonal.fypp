@@ -130,7 +130,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
             err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Matrix size needs to be positive, n = ", n, ".")
             call linalg_error_handling(err0, err)
         endif
-        
+
         if(err0%ok()) then
             ! Description of the matrix.
             A%n = n
