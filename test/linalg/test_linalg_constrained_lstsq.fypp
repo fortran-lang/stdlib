@@ -91,7 +91,7 @@ module test_linalg_constrained_least_squares
         call check(error, all(abs(x-x_true) < 1.0e-4_${rk}$), 'Solver converged')
         if (allocated(error)) return
 
-        !----- Overwrite matrices (performances) -----
+        !----- Overwrite matrices (performance) -----
         call solve_constrained_lstsq(A, b, C, d, x, storage=work, overwrite_matrices=.true., err=state)
 
         call check(error, state%ok(), state%print())
