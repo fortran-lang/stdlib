@@ -979,7 +979,7 @@ call [stdlib_linalg(module):constrained_lstsq_space(interface)]`(a,  c,  lwork [
 
 `d`: Shall be a rank-1 array of the same kind as `a` appearing in the definition of the linear equality constraints.
 
-`lwork`: Shall be an `interger` scalar returning the optimal size required for the workspace array to solve the constrained least-squares problem.
+`lwork`: Shall be an `integer` scalar returning the optimal size required for the workspace array to solve the constrained least-squares problem.
 
 ## `det` - Computes the determinant of a square matrix
 
