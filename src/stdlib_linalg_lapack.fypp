@@ -3231,7 +3231,7 @@ module stdlib_linalg_lapack
           end interface geqrt3
 
           interface geqp3
-          !! GEQP3 computes a QR factorization with column pivoting of a complex
+          !! GEQP3 computes a QR factorization with column pivoting of a real or complex
           !! M-by-N matrix A:
           !!
           !!    A * P = Q * R,
