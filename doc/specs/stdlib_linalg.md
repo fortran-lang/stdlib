@@ -953,7 +953,7 @@ the full problem is solved. On reduced matrices (`shape(Q)==[m,k]`, `shape(R)==[
 
 ### Syntax
 
-`call ` [[stdlib_linalg(module):qr(interface)]] `(a, q, r, [, storage] [, overwrite_a] [, err])`
+`call ` [[stdlib_linalg(module):qr(interface)]] `(a, q, r [, pivots] [, overwrite_a] [, storage] [, err])`
 
 ### Arguments
 
@@ -963,15 +963,17 @@ the full problem is solved. On reduced matrices (`shape(Q)==[m,k]`, `shape(R)==[
 
 `r`: Shall be a rank-2 array of the same kind as `a`, containing the upper triangular matrix `r`. It is an `intent(out)` argument. It should have a shape equal to either `[m,n]` or `[k,n]`, whether the full or the reduced problem is sought for.
 
-`storage` (optional): Shall be a rank-1 array of the same type and kind as `a`, providing working storage for the solver. Its minimum size can be determined with a call to [[stdlib_linalg(module):qr_space(interface)]]. It is an `intent(out)` argument.
+`pivots` (optional): Shall be an `integer` array of size `n`. If provided, QR factorization with column-pivoting is being computed.
 
 `overwrite_a` (optional): Shall be an input `logical` flag (default: `.false.`). If `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. It is an `intent(in)` argument.
+
+`storage` (optional): Shall be a rank-1 array of the same type and kind as `a`, providing working storage for the solver. Its minimum size can be determined with a call to [[stdlib_linalg(module):qr_space(interface)]]. It is an `intent(out)` argument.
 
 `err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument.
 
 ### Return value
 
-Returns the QR factorization matrices into the \( Q \) and \( R \) arguments. 
+Returns the QR factorization matrices into the \( Q \) and \( R \) arguments and the optional pivots in `pivots`.
 
 Raises `LINALG_VALUE_ERROR` if any of the matrices has invalid or unsuitable size for the full/reduced problem.
 Raises `LINALG_ERROR` on insufficient user storage space.
@@ -981,6 +983,8 @@ If the state argument `err` is not present, exceptions trigger an `error stop`.
 
 ```fortran
 {!example/linalg/example_qr.f90!}
+
+{!example/linalg/example_pivoting_qr.f90!}
 ```
 
 ## `qr_space` - Compute internal working space requirements for the QR factorization.
@@ -995,7 +999,7 @@ This subroutine computes the internal working space requirements for the QR fact
 
 ### Syntax
 
-`call ` [[stdlib_linalg(module):qr_space(interface)]] `(a, lwork, [, err])`
+`call ` [[stdlib_linalg(module):qr_space(interface)]] `(a, lwork, [, pivoting] [, err])`
 
 ### Arguments
 
@@ -1003,12 +1007,16 @@ This subroutine computes the internal working space requirements for the QR fact
 
 `lwork`: Shall be an `integer` scalar, that returns the minimum array size required for the working storage in [[stdlib_linalg(module):qr(interface)]] to factorize `a`.
 
+`pivoting` (optional): Shall a `logical` flag (default: `.false.`). If `.true.`, on exit `lwork` is the optimal workspace size for the QR factorization with column pivoting. If `.false.`, `lwork` is the optimal workspace size for the standard QR factorization.
+
 `err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
 
 ### Example
 
 ```fortran
 {!example/linalg/example_qr_space.f90!}
+
+{!example/linalg/example_pivoting_qr_space.f90!}
 ```
 
 ## `schur` - Compute the Schur decomposition of a matrix
