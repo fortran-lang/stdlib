@@ -1476,7 +1476,7 @@ module stdlib_linalg_lapack_aux
             case(-2)
                 err = linalg_state_type(this, LINALG_VALUE_ERROR, 'invalid matrix size n=', n)
             case(-4)
-                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'invalid matrix size a=', [m, n])
+                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'invalid matrix shape a=', [m, n])
             case(-7)
                 err = linalg_state_type(this, LINALG_VALUE_ERROR, 'invalid input for lwork=', lwork)
             case default
