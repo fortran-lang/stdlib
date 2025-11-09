@@ -1007,7 +1007,7 @@ This subroutine computes the internal working space requirements for the QR fact
 
 `lwork`: Shall be an `integer` scalar, that returns the minimum array size required for the working storage in [[stdlib_linalg(module):qr(interface)]] to factorize `a`.
 
-`pivoting` (optional): Shall a `logical` flag (default: `.false.`). If `.true.`, on exit `lwork` is the optimal workspace size for the QR factorization with column pivoting. If `.false.`, `lwork` is the optimal workspace size for the standard QR factorization.
+`pivoting` (optional): Shall a `logical` flag (default: `.false.`). If `.true.`, on exit `lwork` is the optimal workspace size for the QR factorization with column pivoting. If `.false.`, `lwork` is the optimal workspace size for the standard QR factorization. It is an `intent(in)` argument.
 
 `err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
 
