@@ -1,4 +1,4 @@
-! QR example with pre-allocated storage
+! Pivoting QR example with pre-allocated storage
 program example_pivoting_qr_space
    use stdlib_linalg_constants, only: ilp
    use stdlib_linalg, only: qr, qr_space, linalg_state_type
