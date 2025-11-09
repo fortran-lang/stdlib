@@ -1480,7 +1480,7 @@ module stdlib_linalg_lapack_aux
             case(-7)
                 err = linalg_state_type(this, LINALG_VALUE_ERROR, 'invalid input for lwork=', lwork)
             case default
-                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'catastrophic error')
+                err = linalg_state_type(this, LINALG_INTERNAL_ERROR, 'catastrophic error')
         end select
     end subroutine handle_geqp3_info
 
