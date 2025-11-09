@@ -963,7 +963,7 @@ the full problem is solved. On reduced matrices (`shape(Q)==[m,k]`, `shape(R)==[
 
 `r`: Shall be a rank-2 array of the same kind as `a`, containing the upper triangular matrix `r`. It is an `intent(out)` argument. It should have a shape equal to either `[m,n]` or `[k,n]`, whether the full or the reduced problem is sought for.
 
-`pivots` (optional): Shall be an `integer` array of size `n`. If provided, QR factorization with column-pivoting is being computed.
+`pivots` (optional): Shall be an `integer` array of size `n`. If provided, QR factorization with column-pivoting is being computed. It is an `intent(out)` argument.
 
 `overwrite_a` (optional): Shall be an input `logical` flag (default: `.false.`). If `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. It is an `intent(in)` argument.
 
