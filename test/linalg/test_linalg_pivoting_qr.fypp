@@ -5,7 +5,7 @@ module test_linalg_pivoting_qr
     use testdrive, only: error_type, check, new_unittest, unittest_type
     use stdlib_linalg_constants
     use stdlib_linalg_state, only: LINALG_VALUE_ERROR,linalg_state_type
-    use stdlib_linalg, only: qr,qr_space
+    use stdlib_linalg, only: qr, qr_space, mnorm
     use ieee_arithmetic, only: ieee_value,ieee_quiet_nan
 
     implicit none (type,external)
@@ -31,6 +31,7 @@ module test_linalg_pivoting_qr
     !> QR factorization of a random matrix
     #:for rk,rt,ri in RC_KINDS_TYPES
     subroutine test_pivoting_qr_random_tall_matrix_${ri}$(error)
+        use stdlib_linalg, only: hermitian
         type(error_type), allocatable, intent(out) :: error
         integer(ilp), parameter :: m   = 15_ilp
         integer(ilp), parameter :: n   =  4_ilp
@@ -64,7 +65,7 @@ module test_linalg_pivoting_qr
         ! Check solution
         call check(error, all(abs(a(:, pivots)-matmul(q,r))<tol), 'converged solution (full)')
         if (allocated(error)) return        
-                
+
         ! 2) QR factorization with reduced matrices
         call qr(a, qred, rred, pivots, err=state)
 
