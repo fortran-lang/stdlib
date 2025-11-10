@@ -3240,63 +3240,37 @@ module stdlib_linalg_lapack
           !! Q is an M-by-min(M, N) orthogonal matrix
           !! R is an min(M, N)-by-N upper triangular matrix;
 #:for ik, it, ii in LINALG_INT_KINDS_TYPES
+#:for rk, rt, ri in RC_KINDS_TYPES
 #ifdef STDLIB_EXTERNAL_LAPACK${ii}$
-            pure subroutine sgeqp3(m, n, a, lda, jpvt, tau, work, lwork, info)
+#:if rk in ["sp", "dp"]
+        #:if rt.startswith("real")
+            pure subroutine ${ri}$geqp3(m, n, a, lda, jpvt, tau, work, lwork, info)
                 import sp, dp, qp, ${ik}$, lk
                 implicit none
                 integer(${ik}$), intent(in) :: m, n, lda, lwork
                 integer(${ik}$), intent(out) :: info
                 integer(${ik}$), intent(inout) :: jpvt(*)
-                real(sp), intent(inout) :: a(lda, *)
-                real(sp), intent(out) :: tau(*), work(*)
-            end subroutine sgeqp3
-
-            pure subroutine dgeqp3(m, n, a, lda, jpvt, tau, work, lwork, info)
+                ${rt}$, intent(inout) :: a(lda, *)
+                ${rt}$, intent(out) :: tau(*), work(*)
+            end subroutine ${ri}$geqp3
+        #:else
+            pure subroutine ${ri}$geqp3(m, n, a, lda, jpvt, tau, work, lwork, rwork, info)
                 import sp, dp, qp, ${ik}$, lk
                 implicit none
                 integer(${ik}$), intent(in) :: m, n, lda, lwork
                 integer(${ik}$), intent(out) :: info
                 integer(${ik}$), intent(inout) :: jpvt(*)
-                real(dp), intent(inout) :: a(lda, *)
-                real(dp), intent(out) :: tau(*), work(*)
-            end subroutine dgeqp3
-
-            pure subroutine cgeqp3(m, n, a, lda, jpvt, tau, work, lwork, rwork, info)
-                import sp, dp, qp, ${ik}$, lk
-                implicit none
-                integer(${ik}$), intent(in) :: m, n, lda, lwork
-                integer(${ik}$), intent(out) :: info
-                integer(${ik}$), intent(inout) :: jpvt(*)
-                complex(sp), intent(inout) :: a(lda, *)
-                complex(sp), intent(out) :: tau(*), work(*)
-                real(sp), intent(out) :: rwork(*)
-            end subroutine cgeqp3
-    
-            pure subroutine zgeqp3(m, n, a, lda, jpvt, tau, work, lwork, rwork, info)
-                import sp, dp, qp, ${ik}$, lk
-                implicit none
-                integer(${ik}$), intent(in) :: m, n, lda, lwork
-                integer(${ik}$), intent(out) :: info
-                integer(${ik}$), intent(inout) :: jpvt(*)
-                complex(dp), intent(inout) :: a(lda, *)
-                complex(dp), intent(out) :: tau(*), work(*)
-                real(dp), intent(out) :: rwork(*)
-            end subroutine zgeqp3
+                ${rt}$, intent(inout) :: a(lda, *)
+                ${rt}$, intent(out) :: tau(*), work(*)
+                real(${rk}$), intent(out) :: rwork(*)
+            end subroutine ${ri}$geqp3
+        #:endif
+#:else
+            module procedure stdlib${ii}$_${ri}$geqp3
+#:endif
 #else
-            module procedure stdlib${ii}$_sgeqp3
-            module procedure stdlib${ii}$_dgeqp3
-            module procedure stdlib${ii}$_cgeqp3
-            module procedure stdlib${ii}$_zgeqp3
+            module procedure stdlib${ii}$_${ri}$geqp3
 #endif
-#:for rk, rt, ri in REAL_KINDS_TYPES
-#:if not rk in ["sp", "dp"]
-            module procedure stdlib${ii}$_${ri}$geqp3
-#:endif
-#:endfor
-#:for rk, rt, ri in CMPLX_KINDS_TYPES
-#:if not rk in ["sp", "dp"]
-            module procedure stdlib${ii}$_${ri}$geqp3
-#:endif
 #:endfor
 #:endfor
           end interface geqp3
