@@ -22,257 +22,248 @@ module test_linalg_pivoting_qr
         allocate(tests(0))
         
         #:for rk,rt,ri in RC_KINDS_TYPES
-        call add_test(tests,new_unittest("pivoting_qr_random_${ri}$",test_pivoting_qr_random_${ri}$))
+        call add_test(tests,new_unittest("pivoting_qr_random_tall_matrix_${ri}$",test_pivoting_qr_random_tall_matrix_${ri}$))
+        call add_test(tests,new_unittest("pivoting_qr_random_rank_deficient_${ri}$",test_pivoting_qr_random_rank_deficient_${ri}$))
+        call add_test(tests,new_unittest("pivoting_qr_random_wide_matrix_${ri}$",test_pivoting_qr_random_wide_matrix_${ri}$))
         #:endfor
-
     end subroutine test_pivoting_qr_factorization
 
     !> QR factorization of a random matrix
     #:for rk,rt,ri in RC_KINDS_TYPES
-    subroutine test_pivoting_qr_random_${ri}$(error)
+    subroutine test_pivoting_qr_random_tall_matrix_${ri}$(error)
         type(error_type), allocatable, intent(out) :: error
+        integer(ilp), parameter :: m   = 15_ilp
+        integer(ilp), parameter :: n   =  4_ilp
+        integer(ilp), parameter :: k   = min(m,n)
+        real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$ :: a(m,n),aorig(m,n),q(m,m),r(m,n),qred(m,k),rred(k,n),qerr(m,6),rerr(6,n)
+        real(${rk}$) :: rea(m,n),ima(m,n)
+        integer(ilp) :: pivots(n), i, j
+        integer(ilp) :: lwork
+        ${rt}$, allocatable :: work(:)
+        type(linalg_state_type) :: state
+        
+        call random_number(rea)
+        #:if rt.startswith('complex')
+        call random_number(ima)
+        a = cmplx(rea,ima,kind=${rk}$)
+        #:else
+        a = rea
+        #:endif
+        aorig = a
+        
+        ! 1) QR factorization with full matrices. Input NaNs to be sure Q and R are OK on return
+        q = ieee_value(0.0_${rk}$,ieee_quiet_nan)
+        r = ieee_value(0.0_${rk}$,ieee_quiet_nan)
+        call qr(a, q, r, pivots, err=state)
+        
+        ! Check return code
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return        
+        
+        ! Check solution
+        call check(error, all(abs(a(:, pivots)-matmul(q,r))<tol), 'converged solution (full)')
+        if (allocated(error)) return        
+                
+        ! 2) QR factorization with reduced matrices
+        call qr(a, qred, rred, pivots, err=state)
 
-        !-------------------------------
-        !-----     Tall matrix     -----
-        !-------------------------------
-        block
-            integer(ilp), parameter :: m   = 15_ilp
-            integer(ilp), parameter :: n   =  4_ilp
-            integer(ilp), parameter :: k   = min(m,n)
-            real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
-            ${rt}$ :: a(m,n),aorig(m,n),q(m,m),r(m,n),qred(m,k),rred(k,n),qerr(m,6),rerr(6,n)
-            real(${rk}$) :: rea(m,n),ima(m,n)
-            integer(ilp) :: pivots(n), i, j
-            integer(ilp) :: lwork
-            ${rt}$, allocatable :: work(:)
-            type(linalg_state_type) :: state
-            
-            call random_number(rea)
-            #:if rt.startswith('complex')
-            call random_number(ima)
-            a = cmplx(rea,ima,kind=${rk}$)
-            #:else
-            a = rea
-            #:endif
-            aorig = a
-            
-            ! 1) QR factorization with full matrices. Input NaNs to be sure Q and R are OK on return
-            q = ieee_value(0.0_${rk}$,ieee_quiet_nan)
-            r = ieee_value(0.0_${rk}$,ieee_quiet_nan)
-            call qr(a, q, r, pivots, err=state)
-            
-            ! Check return code
-            call check(error,state%ok(),state%print())
-            if (allocated(error)) return        
-            
-            ! Check solution
-            call check(error, all(abs(a(:, pivots)-matmul(q,r))<tol), 'converged solution (full)')
-            if (allocated(error)) return        
-                    
-            ! 2) QR factorization with reduced matrices
-            call qr(a, qred, rred, pivots, err=state)
+        ! Check return code
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return        
 
-            ! Check return code
-            call check(error,state%ok(),state%print())
-            if (allocated(error)) return        
+        ! Check solution
+        call check(error, all(abs(a(:, pivots)-matmul(qred,rred))<tol), 'converged solution (reduced)')
+        if (allocated(error)) return        
 
-            ! Check solution
-            call check(error, all(abs(a(:, pivots)-matmul(qred,rred))<tol), 'converged solution (reduced)')
-            if (allocated(error)) return        
+        ! 3) overwrite A
+        call qr(a, qred, rred, pivots, overwrite_a=.true., err=state)
 
-            ! 3) overwrite A
-            call qr(a, qred, rred, pivots, overwrite_a=.true., err=state)
+        ! Check return code
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return        
 
-            ! Check return code
-            call check(error,state%ok(),state%print())
-            if (allocated(error)) return        
+        ! Check solution
+        call check(error, all(abs(aorig(:, pivots)-matmul(qred,rred))<tol), 'converged solution (overwrite A)')
+        if (allocated(error)) return                
 
-            ! Check solution
-            call check(error, all(abs(aorig(:, pivots)-matmul(qred,rred))<tol), 'converged solution (overwrite A)')
-            if (allocated(error)) return                
+        ! 4) External storage option   
+        a = aorig
+        call qr_space(a, lwork, pivoting=.true.)
+        allocate(work(lwork))
+        call qr(a, q, r, pivots, storage=work, err=state)
 
-            ! 4) External storage option   
-            a = aorig
-            call qr_space(a, lwork, pivoting=.true.)
-            allocate(work(lwork))
-            call qr(a, q, r, pivots, storage=work, err=state)
+        ! Check return code
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return        
 
-            ! Check return code
-            call check(error,state%ok(),state%print())
-            if (allocated(error)) return        
+        ! Check solution
+        call check(error, all(abs(a(:, pivots)-matmul(q,r))<tol), 'converged solution (external storage)')
+        if (allocated(error)) return          
 
-            ! Check solution
-            call check(error, all(abs(a(:, pivots)-matmul(q,r))<tol), 'converged solution (external storage)')
-            if (allocated(error)) return          
+        ! Check that an invalid problem size returns an error
+        a = aorig        
+        call qr(a, qerr, rerr, pivots, err=state)
+        call check(error,state%error(),'invalid matrix sizes')
+        if (allocated(error)) return             
+    end subroutine test_pivoting_qr_random_tall_matrix_${ri}$
 
-            ! Check that an invalid problem size returns an error
-            a = aorig        
-            call qr(a, qerr, rerr, pivots, err=state)
-            call check(error,state%error(),'invalid matrix sizes')
-            if (allocated(error)) return             
-        end block
+    subroutine test_pivoting_qr_random_rank_deficient_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer(ilp), parameter :: m   = 15_ilp
+        integer(ilp), parameter :: n   =  4_ilp
+        integer(ilp), parameter :: k   = min(m,n)
+        real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$ :: a(m,n),aorig(m,n),q(m,m),r(m,n),qred(m,k),rred(k,n),qerr(m,6),rerr(6,n)
+        real(${rk}$) :: rea(m,n),ima(m,n)
+        integer(ilp) :: pivots(n), i, j
+        integer(ilp) :: lwork
+        ${rt}$, allocatable :: work(:)
+        type(linalg_state_type) :: state
+        
+        call random_number(rea)
+        #:if rt.startswith('complex')
+        call random_number(ima)
+        a = cmplx(rea,ima,kind=${rk}$)
+        #:else
+        a = rea
+        #:endif
+        a(:, 3) = 0.0_${rk}$ ! Zero-out column to test rank-deficiency.
+        aorig = a
+        
+        ! 1) QR factorization with full matrices. Input NaNs to be sure Q and R are OK on return
+        q = ieee_value(0.0_${rk}$,ieee_quiet_nan)
+        r = ieee_value(0.0_${rk}$,ieee_quiet_nan)
+        call qr(a, q, r, pivots, err=state)
+        
+        ! Check return code
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return        
+        
+        ! Check solution
+        call check(error, all(abs(a(:, pivots)-matmul(q,r))<tol), 'converged solution (full)')
+        if (allocated(error)) return        
+                
+        ! 2) QR factorization with reduced matrices
+        call qr(a, qred, rred, pivots, err=state)
 
-        !----------------------------------------------------
-        !-----     Tall matrix with rank deficiency     -----
-        !----------------------------------------------------
-        block
-            integer(ilp), parameter :: m   = 15_ilp
-            integer(ilp), parameter :: n   =  4_ilp
-            integer(ilp), parameter :: k   = min(m,n)
-            real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
-            ${rt}$ :: a(m,n),aorig(m,n),q(m,m),r(m,n),qred(m,k),rred(k,n),qerr(m,6),rerr(6,n)
-            real(${rk}$) :: rea(m,n),ima(m,n)
-            integer(ilp) :: pivots(n), i, j
-            integer(ilp) :: lwork
-            ${rt}$, allocatable :: work(:)
-            type(linalg_state_type) :: state
-            
-            call random_number(rea)
-            #:if rt.startswith('complex')
-            call random_number(ima)
-            a = cmplx(rea,ima,kind=${rk}$)
-            #:else
-            a = rea
-            #:endif
-            a(:, 3) = 0.0_${rk}$ ! Zero-out column to test rank-deficiency.
-            aorig = a
-            
-            ! 1) QR factorization with full matrices. Input NaNs to be sure Q and R are OK on return
-            q = ieee_value(0.0_${rk}$,ieee_quiet_nan)
-            r = ieee_value(0.0_${rk}$,ieee_quiet_nan)
-            call qr(a, q, r, pivots, err=state)
-            
-            ! Check return code
-            call check(error,state%ok(),state%print())
-            if (allocated(error)) return        
-            
-            ! Check solution
-            call check(error, all(abs(a(:, pivots)-matmul(q,r))<tol), 'converged solution (full)')
-            if (allocated(error)) return        
-                    
-            ! 2) QR factorization with reduced matrices
-            call qr(a, qred, rred, pivots, err=state)
+        ! Check return code
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return        
 
-            ! Check return code
-            call check(error,state%ok(),state%print())
-            if (allocated(error)) return        
+        ! Check solution
+        call check(error, all(abs(a(:, pivots)-matmul(qred,rred))<tol), 'converged solution (reduced)')
+        if (allocated(error)) return        
 
-            ! Check solution
-            call check(error, all(abs(a(:, pivots)-matmul(qred,rred))<tol), 'converged solution (reduced)')
-            if (allocated(error)) return        
+        ! 3) overwrite A
+        call qr(a, qred, rred, pivots, overwrite_a=.true., err=state)
 
-            ! 3) overwrite A
-            call qr(a, qred, rred, pivots, overwrite_a=.true., err=state)
+        ! Check return code
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return        
 
-            ! Check return code
-            call check(error,state%ok(),state%print())
-            if (allocated(error)) return        
+        ! Check solution
+        call check(error, all(abs(aorig(:, pivots)-matmul(qred,rred))<tol), 'converged solution (overwrite A)')
+        if (allocated(error)) return                
 
-            ! Check solution
-            call check(error, all(abs(aorig(:, pivots)-matmul(qred,rred))<tol), 'converged solution (overwrite A)')
-            if (allocated(error)) return                
+        ! 4) External storage option   
+        a = aorig
+        call qr_space(a, lwork, pivoting=.true.)
+        allocate(work(lwork))
+        call qr(a, q, r, pivots, storage=work, err=state)
 
-            ! 4) External storage option   
-            a = aorig
-            call qr_space(a, lwork, pivoting=.true.)
-            allocate(work(lwork))
-            call qr(a, q, r, pivots, storage=work, err=state)
+        ! Check return code
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return        
 
-            ! Check return code
-            call check(error,state%ok(),state%print())
-            if (allocated(error)) return        
+        ! Check solution
+        call check(error, all(abs(a(:, pivots)-matmul(q,r))<tol), 'converged solution (external storage)')
+        if (allocated(error)) return          
 
-            ! Check solution
-            call check(error, all(abs(a(:, pivots)-matmul(q,r))<tol), 'converged solution (external storage)')
-            if (allocated(error)) return          
+        ! Check that an invalid problem size returns an error
+        a = aorig        
+        call qr(a, qerr, rerr, pivots, err=state)
+        call check(error,state%error(),'invalid matrix sizes')
+        if (allocated(error)) return             
+    end subroutine test_pivoting_qr_random_rank_deficient_${ri}$
 
-            ! Check that an invalid problem size returns an error
-            a = aorig        
-            call qr(a, qerr, rerr, pivots, err=state)
-            call check(error,state%error(),'invalid matrix sizes')
-            if (allocated(error)) return             
-        end block
+    subroutine test_pivoting_qr_random_wide_matrix_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer(ilp), parameter :: m   = 4_ilp
+        integer(ilp), parameter :: n   =  15_ilp
+        integer(ilp), parameter :: k   = min(m,n)
+        real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$ :: a(m,n),aorig(m,n),q(m,m),r(m,n),qred(m,k),rred(k,n),qerr(m,6),rerr(6,n)
+        real(${rk}$) :: rea(m,n),ima(m,n)
+        integer(ilp) :: pivots(n), i, j
+        integer(ilp) :: lwork
+        ${rt}$, allocatable :: work(:)
+        type(linalg_state_type) :: state
+        
+        call random_number(rea)
+        #:if rt.startswith('complex')
+        call random_number(ima)
+        a = cmplx(rea,ima,kind=${rk}$)
+        #:else
+        a = rea
+        #:endif
+        aorig = a
+        
+        ! 1) QR factorization with full matrices. Input NaNs to be sure Q and R are OK on return
+        q = ieee_value(0.0_${rk}$,ieee_quiet_nan)
+        r = ieee_value(0.0_${rk}$,ieee_quiet_nan)
+        call qr(a, q, r, pivots, err=state)
+        
+        ! Check return code
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return        
+        
+        ! Check solution
+        call check(error, all(abs(a(:, pivots)-matmul(q,r))<tol), 'converged solution (full)')
+        if (allocated(error)) return        
+                
+        ! 2) QR factorization with reduced matrices
+        call qr(a, qred, rred, pivots, err=state)
 
-        !-------------------------------
-        !-----     Wide matrix     -----
-        !-------------------------------
-        block
-            integer(ilp), parameter :: m   = 4_ilp
-            integer(ilp), parameter :: n   =  15_ilp
-            integer(ilp), parameter :: k   = min(m,n)
-            real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
-            ${rt}$ :: a(m,n),aorig(m,n),q(m,m),r(m,n),qred(m,k),rred(k,n),qerr(m,6),rerr(6,n)
-            real(${rk}$) :: rea(m,n),ima(m,n)
-            integer(ilp) :: pivots(n), i, j
-            integer(ilp) :: lwork
-            ${rt}$, allocatable :: work(:)
-            type(linalg_state_type) :: state
-            
-            call random_number(rea)
-            #:if rt.startswith('complex')
-            call random_number(ima)
-            a = cmplx(rea,ima,kind=${rk}$)
-            #:else
-            a = rea
-            #:endif
-            aorig = a
-            
-            ! 1) QR factorization with full matrices. Input NaNs to be sure Q and R are OK on return
-            q = ieee_value(0.0_${rk}$,ieee_quiet_nan)
-            r = ieee_value(0.0_${rk}$,ieee_quiet_nan)
-            call qr(a, q, r, pivots, err=state)
-            
-            ! Check return code
-            call check(error,state%ok(),state%print())
-            if (allocated(error)) return        
-            
-            ! Check solution
-            call check(error, all(abs(a(:, pivots)-matmul(q,r))<tol), 'converged solution (full)')
-            if (allocated(error)) return        
-                    
-            ! 2) QR factorization with reduced matrices
-            call qr(a, qred, rred, pivots, err=state)
+        ! Check return code
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return        
 
-            ! Check return code
-            call check(error,state%ok(),state%print())
-            if (allocated(error)) return        
+        ! Check solution
+        call check(error, all(abs(a(:, pivots)-matmul(qred,rred))<tol), 'converged solution (reduced)')
+        if (allocated(error)) return        
 
-            ! Check solution
-            call check(error, all(abs(a(:, pivots)-matmul(qred,rred))<tol), 'converged solution (reduced)')
-            if (allocated(error)) return        
+        ! 3) overwrite A
+        call qr(a, qred, rred, pivots, overwrite_a=.true., err=state)
 
-            ! 3) overwrite A
-            call qr(a, qred, rred, pivots, overwrite_a=.true., err=state)
+        ! Check return code
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return        
 
-            ! Check return code
-            call check(error,state%ok(),state%print())
-            if (allocated(error)) return        
+        ! Check solution
+        call check(error, all(abs(aorig(:, pivots)-matmul(qred,rred))<tol), 'converged solution (overwrite A)')
+        if (allocated(error)) return                
 
-            ! Check solution
-            call check(error, all(abs(aorig(:, pivots)-matmul(qred,rred))<tol), 'converged solution (overwrite A)')
-            if (allocated(error)) return                
+        ! 4) External storage option   
+        a = aorig
+        call qr_space(a, lwork, pivoting=.true.)
+        allocate(work(lwork))
+        call qr(a, q, r, pivots, storage=work, err=state)
 
-            ! 4) External storage option   
-            a = aorig
-            call qr_space(a, lwork, pivoting=.true.)
-            allocate(work(lwork))
-            call qr(a, q, r, pivots, storage=work, err=state)
+        ! Check return code
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return        
 
-            ! Check return code
-            call check(error,state%ok(),state%print())
-            if (allocated(error)) return        
+        ! Check solution
+        call check(error, all(abs(a(:, pivots)-matmul(q,r))<tol), 'converged solution (external storage)')
+        if (allocated(error)) return          
 
-            ! Check solution
-            call check(error, all(abs(a(:, pivots)-matmul(q,r))<tol), 'converged solution (external storage)')
-            if (allocated(error)) return          
-
-            ! Check that an invalid problem size returns an error
-            a = aorig        
-            call qr(a, qerr, rerr, pivots, err=state)
-            call check(error,state%error(),'invalid matrix sizes')
-            if (allocated(error)) return             
-        end block        
-    end subroutine test_pivoting_qr_random_${ri}$
+        ! Check that an invalid problem size returns an error
+        a = aorig        
+        call qr(a, qerr, rerr, pivots, err=state)
+        call check(error,state%error(),'invalid matrix sizes')
+        if (allocated(error)) return             
+     end subroutine test_pivoting_qr_random_wide_matrix_${ri}$
 
     #:endfor
 
