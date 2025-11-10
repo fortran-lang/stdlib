@@ -3245,16 +3245,9 @@ module stdlib_linalg_lapack
 #:if rk in ["sp", "dp"]
         #:if rt.startswith("real")
             pure subroutine ${ri}$geqp3(m, n, a, lda, jpvt, tau, work, lwork, info)
-                import sp, dp, qp, ${ik}$, lk
-                implicit none
-                integer(${ik}$), intent(in) :: m, n, lda, lwork
-                integer(${ik}$), intent(out) :: info
-                integer(${ik}$), intent(inout) :: jpvt(*)
-                ${rt}$, intent(inout) :: a(lda, *)
-                ${rt}$, intent(out) :: tau(*), work(*)
-            end subroutine ${ri}$geqp3
         #:else
             pure subroutine ${ri}$geqp3(m, n, a, lda, jpvt, tau, work, lwork, rwork, info)
+        #:endif
                 import sp, dp, qp, ${ik}$, lk
                 implicit none
                 integer(${ik}$), intent(in) :: m, n, lda, lwork
@@ -3262,9 +3255,10 @@ module stdlib_linalg_lapack
                 integer(${ik}$), intent(inout) :: jpvt(*)
                 ${rt}$, intent(inout) :: a(lda, *)
                 ${rt}$, intent(out) :: tau(*), work(*)
+                #:if rt.startswith("complex")
                 real(${rk}$), intent(out) :: rwork(*)
+                #:endif
             end subroutine ${ri}$geqp3
-        #:endif
 #:else
             module procedure stdlib${ii}$_${ri}$geqp3
 #:endif
