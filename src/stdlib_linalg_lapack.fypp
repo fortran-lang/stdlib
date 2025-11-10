@@ -3230,6 +3230,51 @@ module stdlib_linalg_lapack
 #:endfor
           end interface geqrt3
 
+          interface geqp3
+          !! GEQP3 computes a QR factorization with column pivoting of a real or complex
+          !! M-by-N matrix A:
+          !!
+          !!    A * P = Q * R,
+          !!
+          !! where:
+          !! Q is an M-by-min(M, N) orthogonal matrix
+          !! R is an min(M, N)-by-N upper triangular matrix;
+#:for ik, it, ii in LINALG_INT_KINDS_TYPES
+#:for rk, rt, ri in RC_KINDS_TYPES
+#ifdef STDLIB_EXTERNAL_LAPACK${ii}$
+#:if rk in ["sp", "dp"]
+        #:if rt.startswith("real")
+            pure subroutine ${ri}$geqp3(m, n, a, lda, jpvt, tau, work, lwork, info)
+                import sp, dp, qp, ${ik}$, lk
+                implicit none
+                integer(${ik}$), intent(in) :: m, n, lda, lwork
+                integer(${ik}$), intent(out) :: info
+                integer(${ik}$), intent(inout) :: jpvt(*)
+                ${rt}$, intent(inout) :: a(lda, *)
+                ${rt}$, intent(out) :: tau(*), work(*)
+            end subroutine ${ri}$geqp3
+        #:else
+            pure subroutine ${ri}$geqp3(m, n, a, lda, jpvt, tau, work, lwork, rwork, info)
+                import sp, dp, qp, ${ik}$, lk
+                implicit none
+                integer(${ik}$), intent(in) :: m, n, lda, lwork
+                integer(${ik}$), intent(out) :: info
+                integer(${ik}$), intent(inout) :: jpvt(*)
+                ${rt}$, intent(inout) :: a(lda, *)
+                ${rt}$, intent(out) :: tau(*), work(*)
+                real(${rk}$), intent(out) :: rwork(*)
+            end subroutine ${ri}$geqp3
+        #:endif
+#:else
+            module procedure stdlib${ii}$_${ri}$geqp3
+#:endif
+#else
+            module procedure stdlib${ii}$_${ri}$geqp3
+#endif
+#:endfor
+#:endfor
+          end interface geqp3
+
           interface gerfs
           !! GERFS improves the computed solution to a system of linear
           !! equations and provides error bounds and backward error estimates for
