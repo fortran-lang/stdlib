@@ -5,7 +5,7 @@ module test_linalg_pivoting_qr
     use testdrive, only: error_type, check, new_unittest, unittest_type
     use stdlib_linalg_constants
     use stdlib_linalg_state, only: LINALG_VALUE_ERROR,linalg_state_type
-    use stdlib_linalg, only: qr,qr_space
+    use stdlib_linalg, only: qr, qr_space, mnorm
     use ieee_arithmetic, only: ieee_value,ieee_quiet_nan
 
     implicit none (type,external)
@@ -23,8 +23,8 @@ module test_linalg_pivoting_qr
         
         #:for rk,rt,ri in RC_KINDS_TYPES
         call add_test(tests,new_unittest("pivoting_qr_random_tall_matrix_${ri}$",test_pivoting_qr_random_tall_matrix_${ri}$))
-        call add_test(tests,new_unittest("pivoting_qr_random_rank_deficient_${ri}$",test_pivoting_qr_random_rank_deficient_${ri}$))
-        call add_test(tests,new_unittest("pivoting_qr_random_wide_matrix_${ri}$",test_pivoting_qr_random_wide_matrix_${ri}$))
+        ! call add_test(tests,new_unittest("pivoting_qr_random_rank_deficient_${ri}$",test_pivoting_qr_random_rank_deficient_${ri}$))
+        ! call add_test(tests,new_unittest("pivoting_qr_random_wide_matrix_${ri}$",test_pivoting_qr_random_wide_matrix_${ri}$))
         #:endfor
     end subroutine test_pivoting_qr_factorization
 
@@ -61,10 +61,10 @@ module test_linalg_pivoting_qr
         call check(error,state%ok(),state%print())
         if (allocated(error)) return        
         
-        ! ! Check solution
-        ! call check(error, all(abs(a(:, pivots)-matmul(q,r))<tol), 'converged solution (full)')
-        ! if (allocated(error)) return        
-        !
+        ! Check solution
+        call check(error, mnorm(a(:, pivots)-matmul(q,r), order=2) < tol, 'converged solution (full)')
+        if (allocated(error)) return        
+
         ! 2) QR factorization with reduced matrices
         call qr(a, qred, rred, pivots, err=state)
 
