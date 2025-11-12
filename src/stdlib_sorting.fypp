@@ -135,7 +135,7 @@ module stdlib_sorting
     use stdlib_string_type, only: string_type, assignment(=), operator(>), &
         operator(>=), operator(<), operator(<=)
 
-#ifdef STDLIB_BITSET
+#if STDLIB_BITSET == 1
     use stdlib_bitsets, only: bitset_64, bitset_large, &
         assignment(=), operator(>), operator(>=), operator(<), operator(<=)
 #endif
