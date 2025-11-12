@@ -1,9 +1,10 @@
+#include "macros.inc"
 #:include "common.fypp"
-#:set INT_TYPES_ALT_NAME = list(zip(INT_TYPES, INT_TYPES, INT_TYPES, INT_KINDS))
-#:set REAL_TYPES_ALT_NAME = list(zip(REAL_TYPES, REAL_TYPES, REAL_TYPES, REAL_KINDS))
-#:set STRING_TYPES_ALT_NAME = list(zip(STRING_TYPES, STRING_TYPES, STRING_TYPES, STRING_KINDS))
-#:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"],  ["character(len=:)"], ["character(len=len(array))"], ["char"]))
-#:set BITSET_TYPES_ALT_NAME = list(zip(BITSET_TYPES, BITSET_TYPES, BITSET_TYPES, BITSET_KINDS))
+#:set INT_TYPES_ALT_NAME = list(zip(INT_TYPES, INT_TYPES, INT_TYPES, INT_KINDS, INT_CPPS))
+#:set REAL_TYPES_ALT_NAME = list(zip(REAL_TYPES, REAL_TYPES, REAL_TYPES, REAL_KINDS, REAL_CPPS))
+#:set STRING_TYPES_ALT_NAME = list(zip(STRING_TYPES, STRING_TYPES, STRING_TYPES, STRING_KINDS, STRING_CPPS))
+#:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"],  ["character(len=:)"], ["character(len=len(array))"], ["char"], [""]))
+#:set BITSET_TYPES_ALT_NAME = list(zip(BITSET_TYPES, BITSET_TYPES, BITSET_TYPES, BITSET_KINDS, BITSET_CPPS))
 
 #! For better code reuse in fypp, make lists that contain the input types,
 #! with each having output types and a separate name prefix for subroutines
@@ -67,8 +68,10 @@ submodule(stdlib_sorting) stdlib_sorting_sort_adjoint
 
 contains
 
-#:for ki, ti, tii, namei in IR_INDEX_TYPES_ALT_NAME
-  #:for t1, t2, t3, name1 in IRSCB_TYPES_ALT_NAME
+#:for ki, ti, tii, namei, cppi in IR_INDEX_TYPES_ALT_NAME
+  #:for t1, t2, t3, name1, cpp1 in IRSCB_TYPES_ALT_NAME
+  #:block generate_cpp(cpp_var=cpp1)
+
 
     module subroutine ${name1}$_${namei}$_sort_adjoint( array, adjoint_array, work, iwork, reverse )
 ! A modification of `${name1}$_ord_sort` to return an array of indices that
@@ -484,6 +487,7 @@ contains
 
     end subroutine ${name1}$_${namei}$_sort_adjoint
 
+  #:endblock
   #:endfor
 #:endfor
 

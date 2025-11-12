@@ -45,8 +45,11 @@
 #:set REAL_TYPES = ["real({})".format(k) for k in REAL_KINDS]
 #:set REAL_SUFFIX = REAL_KINDS
 
+#! Real CPPS to be considered during templating
+#:set REAL_CPPS = ["" for k in REAL_KINDS]
+
 #! Collected (kind, type) tuples for real types
-#:set REAL_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_INIT))
+#:set REAL_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_INIT, REAL_CPPS))
 
 #! Complex kinds to be considered during templating
 #:set CMPLX_KINDS = ["sp", "dp"]
@@ -102,8 +105,14 @@ $:"s" if cmplx=="c" else "d" if cmplx=="z" else "x" if cmplx=="y" else "q" if cm
 #! Integer types to be considered during templating
 #:set INT_TYPES = ["integer({})".format(k) for k in INT_KINDS]
 
+#! Integer abbreviations to be considered during templating
+#:set INT_INIT = ["" for k in INT_KINDS]
+
+#! Integer CPPs to be considered during templating
+#:set INT_CPPS = ["" for k in INT_KINDS]
+
 #! Collected (kind, type) tuples for integer types
-#:set INT_KINDS_TYPES = list(zip(INT_KINDS, INT_TYPES))
+#:set INT_KINDS_TYPES = list(zip(INT_KINDS, INT_TYPES, INT_INIT, INT_CPPS))
 
 #! Logical kinds to be considered during templating
 #:set LOG_KINDS = ["lk"]
@@ -123,6 +132,12 @@ $:"s" if cmplx=="c" else "d" if cmplx=="z" else "x" if cmplx=="y" else "q" if cm
 #! String types to be considered during templating
 #:set STRING_TYPES = ["type({})".format(k) for k in STRING_KINDS]
 
+#! String abbreviations to be considered during templating
+#:set STRING_INIT = ["" for k in STRING_KINDS]
+
+#! String CPPs to be considered during templating
+#:set STRING_CPPS = ["" for k in STRING_KINDS]
+
 #! Collected (kind, type) tuples for string derived types
 #:set STRING_KINDS_TYPES = list(zip(STRING_KINDS, STRING_TYPES))
 
@@ -131,6 +146,15 @@ $:"s" if cmplx=="c" else "d" if cmplx=="z" else "x" if cmplx=="y" else "q" if cm
 
 #! Bitset types to be considered during templating
 #:set BITSET_TYPES = ["type({})".format(k) for k in BITSET_KINDS]
+
+#! Bitset abbreviations directive to be considered during templating
+#:set BITSET_INIT = ["" for k in BITSET_KINDS]
+
+#! Bitset CPP directive to be considered during templating
+#:set BITSET_CPPS = ["STDLIB_BITSET == 1" for k in BITSET_KINDS]
+
+#! Collected (kind, type) tuples for bitset types
+#:set BITSET_KINDS_TYPES = list(zip(BITSET_KINDS, BITSET_TYPES, BITSET_INIT, BITSET_CPPS))
 
 #! Sparse types to be considered during templating
 #:set SPARSE_KINDS = ["COO", "CSR", "CSC", "ELL"]
@@ -462,5 +486,22 @@ ${indent}$do ${varname}$${n+1+dim_offset-i}$ = lbound(${matname}$, ${n+1+dim_off
     #:endfor
   #:endcall  
 #:enddef
+
+#!
+#! Encapsulate code into CPP pre-processing directives #ifdef and #endif
+#!
+#! Args:
+#!   code    (str): Code to be encapsulated
+#!   cpp_var (str): CPP variable
+#!
+#:def generate_cpp(code, cpp_var)
+  #:if cpp_var != ""
+#if ${cpp_var}$
+  #:endif
+  $:code
+  #:if cpp_var != ""
+#endif
+  #:endif
+#:enddef generate_cpp
 
 #:endmute

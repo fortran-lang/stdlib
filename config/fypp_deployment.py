@@ -4,10 +4,18 @@ import argparse
 from joblib import Parallel, delayed
 
 C_PREPROCESSED = (
+    "example_math_swap",
     "stdlib_linalg_constants" ,
     "stdlib_linalg_blas" ,
     "stdlib_linalg_lapack",
-    "test_blas_lapack"
+    "stdlib_math",
+    "stdlib_sorting",
+    "stdlib_sorting_ord_sort",
+    "stdlib_sorting_sort",
+    "stdlib_sorting_sort_adjoint",
+    "test_blas_lapack",
+    "test_stdlib_math",
+    "test_sorting"
 )
 
 def pre_process_fypp(args):
