@@ -26,6 +26,10 @@ program test_distribution_normal
     call test_nor_rvs_${t1[0]}$${k1}$
     #:endfor
 
+    #:for k1, t1 in RC_KINDS_TYPES
+    call test_nor_rvs_default_${t1[0]}$${k1}$
+    #:endfor
+
 
 
     #:for k1, t1 in RC_KINDS_TYPES
@@ -134,6 +138,42 @@ contains
         call check(all(abs(res - ans) < ${k1}$tol),                            &
             msg="normal_distribution_rvs_${t1[0]}$${k1}$ failed", warn=warn)
     end subroutine test_nor_rvs_${t1[0]}$${k1}$
+
+    #:endfor
+
+
+    #:for k1, t1 in RC_KINDS_TYPES
+    subroutine test_nor_rvs_default_${t1[0]}$${k1}$
+        ${t1}$ :: a1(10), a2(10), mold
+        integer :: i
+        integer :: seed, get
+
+        print *, "Test normal_distribution_rvs_default_${t1[0]}$${k1}$"
+        seed = 25836914
+        call random_seed(seed, get)
+
+        ! explicit form with loc=0, scale=1
+        #:if t1[0] == "r"
+            a1 = nor_rvs(0.0_${k1}$, 1.0_${k1}$, 10)
+        #:else
+            a1 = nor_rvs((0.0_${k1}$, 0.0_${k1}$), (1.0_${k1}$, 1.0_${k1}$), 10)
+        #:endif
+
+        ! reset seed to reproduce same random sequence
+        seed = 25836914
+        call random_seed(seed, get)
+
+        ! default mold form: mold used only to disambiguate kind
+        #:if t1[0] == "r"
+            mold = 0.0_${k1}$
+        #:else
+            mold = (0.0_${k1}$, 0.0_${k1}$)
+        #:endif
+
+        a2 = nor_rvs(mold, 10)
+
+        call check(all(a1 == a2), msg="normal_distribution_rvs_default_${t1[0]}$${k1}$ failed", warn=warn)
+    end subroutine test_nor_rvs_default_${t1[0]}$${k1}$
 
     #:endfor
 

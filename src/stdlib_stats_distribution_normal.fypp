@@ -34,6 +34,10 @@ module stdlib_stats_distribution_normal
         #:for k1, t1 in RC_KINDS_TYPES
             module procedure rvs_norm_array_${t1[0]}$${k1}$  !3 dummy variables
         #:endfor
+
+        #:for k1, t1 in RC_KINDS_TYPES
+            module procedure rvs_norm_array_default_${t1[0]}$${k1}$  !2 dummy variables (mold, array_size)
+        #:endfor
     end interface rvs_normal
 
     interface pdf_normal
@@ -235,6 +239,82 @@ contains
                 res(i) = re*scale + loc
             end do
         end function rvs_norm_array_${t1[0]}$${k1}$
+
+    #:endfor
+
+    #:for k1, t1 in REAL_KINDS_TYPES
+        impure function rvs_norm_array_default_${t1[0]}$${k1}$ (mold, array_size) result(res)
+            !
+            ! Standard normal array random variate with default loc=0, scale=1
+            ! The mold argument is used only to determine the type and is not referenced
+            !
+            ${t1}$, intent(in) :: mold
+            integer, intent(in) :: array_size
+            ${t1}$ :: res(array_size)
+            ${t1}$, parameter  ::  r = 3.442619855899_${k1}$, rr = 1.0_${k1}$/r
+            ${t1}$ ::  x, y, re
+            integer :: hz, iz, i
+
+            if (.not. zig_norm_initialized) call zigset
+
+            do i = 1, array_size
+                iz = 0
+                hz = dist_rand(1_int32)
+                iz = iand(hz, 127)
+                if (abs(hz) < kn(iz)) then
+                    re = hz*wn(iz)
+                else
+                    L1: do
+                        L2: if (iz == 0) then
+                            do
+                                x = -log(uni(1.0_${k1}$))*rr
+                                y = -log(uni(1.0_${k1}$))
+                                if (y + y >= x*x) exit
+                            end do
+                            re = r + x
+                            if (hz <= 0) re = -re
+                            exit L1
+                        end if L2
+                        x = hz*wn(iz)
+                        if (fn(iz) + uni(1.0_${k1}$)*(fn(iz - 1) - fn(iz)) < &
+                            exp(-HALF*x*x)) then
+                            re = x
+                            exit L1
+                        end if
+
+                        hz = dist_rand(1_int32)
+                        iz = iand(hz, 127)
+                        if (abs(hz) < kn(iz)) then
+                            re = hz*wn(iz)
+                            exit L1
+                        end if
+                    end do L1
+                end if
+                res(i) = re  ! Default: loc=0, scale=1, so re*1 + 0 = re
+            end do
+        end function rvs_norm_array_default_${t1[0]}$${k1}$
+
+    #:endfor
+
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+        impure function rvs_norm_array_default_${t1[0]}$${k1}$ (mold, array_size) result(res)
+            !
+            ! Standard normal complex array random variate with default loc=0, scale=1
+            ! The mold argument is used only to determine the type and is not referenced
+            !
+            ${t1}$, intent(in) :: mold
+            integer, intent(in) :: array_size
+            integer :: i
+            ${t1}$ :: res(array_size)
+            real(${k1}$) :: tr, ti
+
+            do i = 1, array_size
+                tr = rvs_norm_0_r${k1}$ ()
+                ti = rvs_norm_0_r${k1}$ ()
+                res(i) = cmplx(tr, ti, kind=${k1}$)
+            end do
+
+        end function rvs_norm_array_default_${t1[0]}$${k1}$
 
     #:endfor
 
