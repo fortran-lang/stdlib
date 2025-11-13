@@ -76,7 +76,8 @@ contains
 
                     y1 = 0.0_wp
                     call random_number(y2)
-                    y1 = alpha * matmul(Amat, x) + beta * y2 ; call spmv(A, x, y2, alpha=alpha, beta=beta)
+                    y1 = alpha * matmul(Amat, x) + beta * y2
+                    call spmv(A, x, y2, alpha=alpha, beta=beta)
                     call check(error, all_close(y1, y2), .true.)
                     if (allocated(error)) return
                 end do

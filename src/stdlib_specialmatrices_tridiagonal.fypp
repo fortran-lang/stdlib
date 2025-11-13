@@ -69,9 +69,9 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
             call linalg_error_handling(err0)
         endif
         ! Matrix elements.
-        A%dl = [(dl, i = 1, n-1)]
-        A%dv = [(dv, i = 1, n)]
-        A%du = [(du, i = 1, n-1)]
+        allocate( A%dl(n-1), source = dl )
+        allocate( A%dv(n), source= dv )
+        allocate( A%du(n-1), source = du )
     end function
 
     module function initialize_tridiagonal_impure_${s1}$(dl, dv, du, err) result(A)
@@ -135,9 +135,9 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
             ! Description of the matrix.
             A%n = n
             ! Matrix elements.
-            A%dl = [(dl, i = 1, n-1)]
-            A%dv = [(dv, i = 1, n)]
-            A%du = [(du, i = 1, n-1)]
+            allocate( A%dl(n-1), source = dl )
+            allocate( A%dv(n), source= dv )
+            allocate( A%du(n-1), source = du )
         endif
     end function
     #:endfor
