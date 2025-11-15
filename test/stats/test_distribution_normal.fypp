@@ -170,7 +170,7 @@ contains
             mold = (0.0_${k1}$, 0.0_${k1}$)
         #:endif
 
-        a2 = nor_rvs(mold, 10)
+        a2 = nor_rvs(10, mold)
 
         call check(all(a1 == a2), msg="normal_distribution_rvs_default_${t1[0]}$${k1}$ failed", warn=warn)
     end subroutine test_nor_rvs_default_${t1[0]}$${k1}$
