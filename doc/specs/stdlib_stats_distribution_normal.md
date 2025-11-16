@@ -23,12 +23,16 @@ With two arguments, the function returns a normal distributed random variate \(N
 
 With three arguments, the function returns a rank-1 array of normal distributed random variates.
 
+With two arguments `array_size` and `mold`, the function returns a rank-1 array of standard normal distributed random variates \(N(0,1)\), where the `mold` argument is used only to determine the output type and kind.
+
 @note
 The algorithm used for generating exponential random variates is fundamentally limited to double precision.[^1]
 
 ### Syntax
 
 `result = ` [[stdlib_stats_distribution_normal(module):rvs_normal(interface)]] `([loc, scale] [[, array_size]])`
+
+`result = ` [[stdlib_stats_distribution_normal(module):rvs_normal(interface)]] `(array_size, mold)`
 
 ### Class
 
@@ -40,13 +44,15 @@ Elemental function (passing both `loc` and `scale`).
 
 `scale`: optional argument has `intent(in)` and is a positive scalar of type `real` or `complex`.
 
-`array_size`: optional argument has `intent(in)` and is a scalar of type `integer`.
+`array_size`: optional argument has `intent(in)` and is a scalar of type `integer`. When used with `loc` and `scale`, specifies the size of the output array. When used with `mold`, must be provided as the first argument.
+
+`mold`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`. Used only to determine the type and kind of the output; its value is not referenced. When provided, generates standard normal variates \(N(0,1)\).
 
 `loc` and `scale` arguments must be of the same type.
 
 ### Return value
 
-The result is a scalar or rank-1 array, with a size of `array_size`, and the same type as `scale` and `loc`. If `scale` is non-positive, the result is `NaN`.
+The result is a scalar or rank-1 array, with a size of `array_size`, and the same type as `scale` and `loc` (or same type and kind as `mold` when using the `array_size, mold` form). If `scale` is non-positive, the result is `NaN`.
 
 ### Example
 
