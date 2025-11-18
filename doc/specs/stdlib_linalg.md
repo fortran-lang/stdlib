@@ -943,7 +943,7 @@ where \(A\) is an \( m \times n \) matrix (with \(m \geq n\)) and \(C\) a \( p 
 
 `x`: Shall be a rank-1 array of the same kind as `a`. On exit, it contains the solution of the constrained least-squares problem. It is an `intent(out)` argument.
 
-`storage` (optional): Shall a rank-1 array of the same kind as `a` providing working storage for the solver. Its minimum size can be determined with a call to [stdlib_linalg(module):constrained_lstsq_space(interface)]. It is an `intent(out)` argument.
+`storage` (optional): Shall be a rank-1 array of the same kind as `a` providing working storage for the solver. Its minimum size can be determined with a call to [stdlib_linalg(module):constrained_lstsq_space(interface)]. It is an `intent(out)` argument.
 
 `overwrite_matrices` (optional): Shall be an input `logical` flag. If `.true.`, the input matrices and vectors will be overwritten during the computation of the solution. It is an `intent(in)` argument.
 
