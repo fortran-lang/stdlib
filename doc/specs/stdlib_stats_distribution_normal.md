@@ -52,7 +52,7 @@ Elemental function (passing both `loc` and `scale`).
 
 ### Return value
 
-The result is a scalar or rank-1 array, with a size of `array_size`, and the same type as `scale` and `loc` (or same type and kind as `mold` when using the `array_size, mold` form). If `scale` is non-positive, the result is `NaN`.
+The result is a scalar or rank-1 array, with a size of `array_size`, and the same type as `scale` and `loc` (or same type and kind as `mold` when using the `(array_size, mold)` form). If `scale` is non-positive, the result is `NaN`.
 
 ### Example
 
