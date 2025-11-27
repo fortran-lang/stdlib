@@ -63,9 +63,9 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
             call linalg_error_handling(err0)
         endif
         ! Matrix elements.
-        A%dl = [(dl, i = 1, n-1)]
-        A%dv = [(dv, i = 1, n)]
-        A%du = [(du, i = 1, n-1)]
+        allocate( A%dl(n-1), source = dl )
+        allocate( A%dv(n), source= dv )
+        allocate( A%du(n-1), source = du )
     end function
 
     module function initialize_tridiagonal_impure_sp(dl, dv, du, err) result(A)
@@ -97,10 +97,12 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
             call linalg_error_handling(err0, err)
         endif
 
-        ! Description of the matrix.
-        A%n = n
-        ! Matrix elements.
-        A%dl = dl ; A%dv = dv ; A%du = du
+        if(err0%ok()) then
+            ! Description of the matrix.
+            A%n = n
+            ! Matrix elements.
+            A%dl = dl ; A%dv = dv ; A%du = du
+        endif
     end function
 
     module function initialize_constant_tridiagonal_impure_sp(dl, dv, du, n, err) result(A)
@@ -118,16 +120,19 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         integer(ilp) :: i
         type(linalg_state_type) :: err0
 
-        ! Description of the matrix.
-        A%n = n
         if (n <= 0) then
             err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Matrix size needs to be positive, n = ", n, ".")
             call linalg_error_handling(err0, err)
         endif
-        ! Matrix elements.
-        A%dl = [(dl, i = 1, n-1)]
-        A%dv = [(dv, i = 1, n)]
-        A%du = [(du, i = 1, n-1)]
+
+        if(err0%ok()) then
+            ! Description of the matrix.
+            A%n = n
+            ! Matrix elements.
+            allocate( A%dl(n-1), source = dl )
+            allocate( A%dv(n), source= dv )
+            allocate( A%du(n-1), source = du )
+        endif
     end function
     pure module function initialize_tridiagonal_pure_dp(dl, dv, du) result(A)
         !! Construct a `tridiagonal` matrix from the rank-1 arrays
@@ -182,9 +187,9 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
             call linalg_error_handling(err0)
         endif
         ! Matrix elements.
-        A%dl = [(dl, i = 1, n-1)]
-        A%dv = [(dv, i = 1, n)]
-        A%du = [(du, i = 1, n-1)]
+        allocate( A%dl(n-1), source = dl )
+        allocate( A%dv(n), source= dv )
+        allocate( A%du(n-1), source = du )
     end function
 
     module function initialize_tridiagonal_impure_dp(dl, dv, du, err) result(A)
@@ -216,10 +221,12 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
             call linalg_error_handling(err0, err)
         endif
 
-        ! Description of the matrix.
-        A%n = n
-        ! Matrix elements.
-        A%dl = dl ; A%dv = dv ; A%du = du
+        if(err0%ok()) then
+            ! Description of the matrix.
+            A%n = n
+            ! Matrix elements.
+            A%dl = dl ; A%dv = dv ; A%du = du
+        endif
     end function
 
     module function initialize_constant_tridiagonal_impure_dp(dl, dv, du, n, err) result(A)
@@ -237,16 +244,19 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         integer(ilp) :: i
         type(linalg_state_type) :: err0
 
-        ! Description of the matrix.
-        A%n = n
         if (n <= 0) then
             err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Matrix size needs to be positive, n = ", n, ".")
             call linalg_error_handling(err0, err)
         endif
-        ! Matrix elements.
-        A%dl = [(dl, i = 1, n-1)]
-        A%dv = [(dv, i = 1, n)]
-        A%du = [(du, i = 1, n-1)]
+
+        if(err0%ok()) then
+            ! Description of the matrix.
+            A%n = n
+            ! Matrix elements.
+            allocate( A%dl(n-1), source = dl )
+            allocate( A%dv(n), source= dv )
+            allocate( A%du(n-1), source = du )
+        endif
     end function
     pure module function initialize_tridiagonal_pure_csp(dl, dv, du) result(A)
         !! Construct a `tridiagonal` matrix from the rank-1 arrays
@@ -301,9 +311,9 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
             call linalg_error_handling(err0)
         endif
         ! Matrix elements.
-        A%dl = [(dl, i = 1, n-1)]
-        A%dv = [(dv, i = 1, n)]
-        A%du = [(du, i = 1, n-1)]
+        allocate( A%dl(n-1), source = dl )
+        allocate( A%dv(n), source= dv )
+        allocate( A%du(n-1), source = du )
     end function
 
     module function initialize_tridiagonal_impure_csp(dl, dv, du, err) result(A)
@@ -335,10 +345,12 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
             call linalg_error_handling(err0, err)
         endif
 
-        ! Description of the matrix.
-        A%n = n
-        ! Matrix elements.
-        A%dl = dl ; A%dv = dv ; A%du = du
+        if(err0%ok()) then
+            ! Description of the matrix.
+            A%n = n
+            ! Matrix elements.
+            A%dl = dl ; A%dv = dv ; A%du = du
+        endif
     end function
 
     module function initialize_constant_tridiagonal_impure_csp(dl, dv, du, n, err) result(A)
@@ -356,16 +368,19 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         integer(ilp) :: i
         type(linalg_state_type) :: err0
 
-        ! Description of the matrix.
-        A%n = n
         if (n <= 0) then
             err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Matrix size needs to be positive, n = ", n, ".")
             call linalg_error_handling(err0, err)
         endif
-        ! Matrix elements.
-        A%dl = [(dl, i = 1, n-1)]
-        A%dv = [(dv, i = 1, n)]
-        A%du = [(du, i = 1, n-1)]
+
+        if(err0%ok()) then
+            ! Description of the matrix.
+            A%n = n
+            ! Matrix elements.
+            allocate( A%dl(n-1), source = dl )
+            allocate( A%dv(n), source= dv )
+            allocate( A%du(n-1), source = du )
+        endif
     end function
     pure module function initialize_tridiagonal_pure_cdp(dl, dv, du) result(A)
         !! Construct a `tridiagonal` matrix from the rank-1 arrays
@@ -420,9 +435,9 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
             call linalg_error_handling(err0)
         endif
         ! Matrix elements.
-        A%dl = [(dl, i = 1, n-1)]
-        A%dv = [(dv, i = 1, n)]
-        A%du = [(du, i = 1, n-1)]
+        allocate( A%dl(n-1), source = dl )
+        allocate( A%dv(n), source= dv )
+        allocate( A%du(n-1), source = du )
     end function
 
     module function initialize_tridiagonal_impure_cdp(dl, dv, du, err) result(A)
@@ -454,10 +469,12 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
             call linalg_error_handling(err0, err)
         endif
 
-        ! Description of the matrix.
-        A%n = n
-        ! Matrix elements.
-        A%dl = dl ; A%dv = dv ; A%du = du
+        if(err0%ok()) then
+            ! Description of the matrix.
+            A%n = n
+            ! Matrix elements.
+            A%dl = dl ; A%dv = dv ; A%du = du
+        endif
     end function
 
     module function initialize_constant_tridiagonal_impure_cdp(dl, dv, du, n, err) result(A)
@@ -475,16 +492,19 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         integer(ilp) :: i
         type(linalg_state_type) :: err0
 
-        ! Description of the matrix.
-        A%n = n
         if (n <= 0) then
             err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Matrix size needs to be positive, n = ", n, ".")
             call linalg_error_handling(err0, err)
         endif
-        ! Matrix elements.
-        A%dl = [(dl, i = 1, n-1)]
-        A%dv = [(dv, i = 1, n)]
-        A%du = [(du, i = 1, n-1)]
+
+        if(err0%ok()) then
+            ! Description of the matrix.
+            A%n = n
+            ! Matrix elements.
+            allocate( A%dl(n-1), source = dl )
+            allocate( A%dv(n), source= dv )
+            allocate( A%du(n-1), source = du )
+        endif
     end function
 
     !-----------------------------------------
@@ -514,7 +534,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         op_    = "N"        ; if (present(op))    op_    = op
 
         ! Prepare Lapack arguments.
-        n = A%n ; ldx = n ; ldy = n ; y = 0.0_sp
+        n = A%n ; ldx = n ; ldy = n ;
         nrhs =  1 
 
         ! Pointer trick.
@@ -540,7 +560,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         op_    = "N"        ; if (present(op))    op_    = op
 
         ! Prepare Lapack arguments.
-        n = A%n ; ldx = n ; ldy = n ; y = 0.0_sp
+        n = A%n ; ldx = n ; ldy = n ;
         nrhs =  size(x, dim=2, kind=ilp) 
 
         call lagtm(op_, n, nrhs, alpha_, A%dl, A%dv, A%du, x, ldx, beta_, y, ldy)
@@ -565,7 +585,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         op_    = "N"        ; if (present(op))    op_    = op
 
         ! Prepare Lapack arguments.
-        n = A%n ; ldx = n ; ldy = n ; y = 0.0_dp
+        n = A%n ; ldx = n ; ldy = n ;
         nrhs =  1 
 
         ! Pointer trick.
@@ -591,7 +611,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         op_    = "N"        ; if (present(op))    op_    = op
 
         ! Prepare Lapack arguments.
-        n = A%n ; ldx = n ; ldy = n ; y = 0.0_dp
+        n = A%n ; ldx = n ; ldy = n ;
         nrhs =  size(x, dim=2, kind=ilp) 
 
         call lagtm(op_, n, nrhs, alpha_, A%dl, A%dv, A%du, x, ldx, beta_, y, ldy)
@@ -616,7 +636,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         op_    = "N"        ; if (present(op))    op_    = op
 
         ! Prepare Lapack arguments.
-        n = A%n ; ldx = n ; ldy = n ; y = 0.0_sp
+        n = A%n ; ldx = n ; ldy = n ;
         nrhs =  1 
 
         ! Pointer trick.
@@ -642,7 +662,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         op_    = "N"        ; if (present(op))    op_    = op
 
         ! Prepare Lapack arguments.
-        n = A%n ; ldx = n ; ldy = n ; y = 0.0_sp
+        n = A%n ; ldx = n ; ldy = n ;
         nrhs =  size(x, dim=2, kind=ilp) 
 
         call lagtm(op_, n, nrhs, alpha_, A%dl, A%dv, A%du, x, ldx, beta_, y, ldy)
@@ -667,7 +687,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         op_    = "N"        ; if (present(op))    op_    = op
 
         ! Prepare Lapack arguments.
-        n = A%n ; ldx = n ; ldy = n ; y = 0.0_dp
+        n = A%n ; ldx = n ; ldy = n ;
         nrhs =  1 
 
         ! Pointer trick.
@@ -693,7 +713,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         op_    = "N"        ; if (present(op))    op_    = op
 
         ! Prepare Lapack arguments.
-        n = A%n ; ldx = n ; ldy = n ; y = 0.0_dp
+        n = A%n ; ldx = n ; ldy = n ;
         nrhs =  size(x, dim=2, kind=ilp) 
 
         call lagtm(op_, n, nrhs, alpha_, A%dl, A%dv, A%du, x, ldx, beta_, y, ldy)
