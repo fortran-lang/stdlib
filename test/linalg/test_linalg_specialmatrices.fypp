@@ -35,6 +35,10 @@ contains
             ${t1}$, allocatable :: Amat(:,:), dl(:), dv(:), du(:)
             ${t1}$, allocatable :: x(:)
             ${t1}$, allocatable :: y1(:), y2(:)
+            ${t1}$ :: alpha, beta
+
+            integer :: i, j
+            ${t1}$, parameter :: coeffs(3) = [-1.0_wp, 0.0_wp, 1.0_wp]
 
             ! Initialize matrix.
             allocate(dl(n-1), dv(n), du(n-1))
@@ -56,13 +60,28 @@ contains
             call check(error, all_close(y1, y2), .true.)
             if (allocated(error)) return
 
-            #:if t1.startswith('complex') 
+            #:if t1.startswith('complex')
             ! Test y = A.H @ x
             y1 = 0.0_wp ; y2 = 0.0_wp
             y1 = matmul(hermitian(Amat), x) ; call spmv(A, x, y2, op="H")
             call check(error, all_close(y1, y2), .true.)
             if (allocated(error)) return
             #:endif
+
+            ! Test y = alpha * A @ x + beta * y for alpha,beta in {-1,0,1}
+            do i = 1, 3
+                do j = 1,3
+                    alpha = coeffs(i)
+                    beta = coeffs(j)
+
+                    y1 = 0.0_wp
+                    call random_number(y2)
+                    y1 = alpha * matmul(Amat, x) + beta * y2
+                    call spmv(A, x, y2, alpha=alpha, beta=beta)
+                    call check(error, all_close(y1, y2), .true.)
+                    if (allocated(error)) return
+                end do
+            end do
         end block
         #:endfor
     end subroutine
@@ -91,7 +110,7 @@ contains
             call check(error, state%ok(), .false.)
             if (allocated(error)) return
         end block
-        #:endfor       
+        #:endfor
     end subroutine
 
 end module
