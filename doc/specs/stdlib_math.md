@@ -93,7 +93,7 @@ All arguments must have same `type` and same `kind`.
 #### Examples
 
 ```fortran
-{!example/math/example_math_swap.f90!}
+{!example/math/example_math_swap.F90!}
 ```
 
 ### `gcd` function

@@ -2,6 +2,6 @@ set(
   fppFiles
   "test_sorting.fypp"
 )
-fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
+fypp_f90pp("${fyppFlags}" "${fppFiles}" outFiles)
 
-ADDTEST(sorting)
+ADDTESTPP(sorting)
