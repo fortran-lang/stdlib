@@ -89,6 +89,8 @@ def deploy_stdlib_fpm(with_ilp64):
     else:
         base_folder = 'stdlib-fpm'        
 
+    if not os.path.exists(base_folder+os.sep+'include'):
+        os.makedirs(base_folder+os.sep+'include')
     if not os.path.exists(base_folder+os.sep+'src'):
         os.makedirs(base_folder+os.sep+'src')
     if not os.path.exists(base_folder+os.sep+'test'):
@@ -102,6 +104,7 @@ def deploy_stdlib_fpm(with_ilp64):
                 if file not in prune:
                     if file.endswith((".f90", ".F90", ".dat", ".npy", ".c", ".h")):
                         shutil.copy2(os.path.join(root, file), base_folder+os.sep+folder+os.sep+file)
+    recursive_copy('include')
     recursive_copy('src')
     recursive_copy('test')
     recursive_copy('example')
