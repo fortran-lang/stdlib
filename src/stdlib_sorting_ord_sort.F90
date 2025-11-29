@@ -1,3 +1,4 @@
+#include "macros.inc"
 
 
 
@@ -152,6 +153,7 @@ contains
         endif
 
     end subroutine char_ord_sort
+#if STDLIB_BITSET == 1
     module subroutine bitset_64_ord_sort( array, work, reverse )
         type(bitset_64), intent(inout)         :: array(0:)
         type(bitset_64), intent(out), optional :: work(0:)
@@ -164,6 +166,8 @@ contains
         endif
 
     end subroutine bitset_64_ord_sort
+#endif
+#if STDLIB_BITSET == 1
     module subroutine bitset_large_ord_sort( array, work, reverse )
         type(bitset_large), intent(inout)         :: array(0:)
         type(bitset_large), intent(out), optional :: work(0:)
@@ -176,6 +180,7 @@ contains
         endif
 
     end subroutine bitset_large_ord_sort
+#endif
 
 
     subroutine int8_increase_ord_sort( array, work )
@@ -2922,6 +2927,7 @@ contains
 
     end subroutine char_increase_ord_sort
 
+#if STDLIB_BITSET == 1
 
     subroutine bitset_64_increase_ord_sort( array, work )
 ! A translation to Fortran 2008, of the `"Rust" sort` algorithm found in
@@ -3265,6 +3271,8 @@ contains
 
     end subroutine bitset_64_increase_ord_sort
 
+#endif
+#if STDLIB_BITSET == 1
 
     subroutine bitset_large_increase_ord_sort( array, work )
 ! A translation to Fortran 2008, of the `"Rust" sort` algorithm found in
@@ -3608,6 +3616,7 @@ contains
 
     end subroutine bitset_large_increase_ord_sort
 
+#endif
 
     subroutine int8_decrease_ord_sort( array, work )
 ! A translation to Fortran 2008, of the `"Rust" sort` algorithm found in
@@ -6353,6 +6362,7 @@ contains
 
     end subroutine char_decrease_ord_sort
 
+#if STDLIB_BITSET == 1
 
     subroutine bitset_64_decrease_ord_sort( array, work )
 ! A translation to Fortran 2008, of the `"Rust" sort` algorithm found in
@@ -6696,6 +6706,8 @@ contains
 
     end subroutine bitset_64_decrease_ord_sort
 
+#endif
+#if STDLIB_BITSET == 1
 
     subroutine bitset_large_decrease_ord_sort( array, work )
 ! A translation to Fortran 2008, of the `"Rust" sort` algorithm found in
@@ -7039,6 +7051,7 @@ contains
 
     end subroutine bitset_large_decrease_ord_sort
 
+#endif
 
 end submodule stdlib_sorting_ord_sort
 
