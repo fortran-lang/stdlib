@@ -1,3 +1,4 @@
+#include "macros.inc"
 
 
 
@@ -140,6 +141,7 @@ contains
              call char_increase_sort(array)
             endif
     end subroutine char_sort
+#if STDLIB_BITSET == 1
     pure module subroutine bitset_64_sort( array, reverse )
             type(bitset_64), intent(inout) :: array(0:)
             logical, intent(in), optional            :: reverse
@@ -150,6 +152,8 @@ contains
              call bitset_64_increase_sort(array)
             endif
     end subroutine bitset_64_sort
+#endif
+#if STDLIB_BITSET == 1
     pure module subroutine bitset_large_sort( array, reverse )
             type(bitset_large), intent(inout) :: array(0:)
             logical, intent(in), optional            :: reverse
@@ -160,6 +164,7 @@ contains
              call bitset_large_increase_sort(array)
             endif
     end subroutine bitset_large_sort
+#endif
 
 
     pure subroutine int8_increase_sort( array )
@@ -1489,6 +1494,7 @@ contains
 
     end subroutine char_increase_sort
 
+#if STDLIB_BITSET == 1
 
     pure subroutine bitset_64_increase_sort( array )
 ! `bitset_64_increase_sort( array )` sorts the input `ARRAY` of type `type(bitset_64)`
@@ -1655,6 +1661,8 @@ contains
 
     end subroutine bitset_64_increase_sort
 
+#endif
+#if STDLIB_BITSET == 1
 
     pure subroutine bitset_large_increase_sort( array )
 ! `bitset_large_increase_sort( array )` sorts the input `ARRAY` of type `type(bitset_large)`
@@ -1821,6 +1829,7 @@ contains
 
     end subroutine bitset_large_increase_sort
 
+#endif
 
     pure subroutine int8_decrease_sort( array )
 ! `int8_decrease_sort( array )` sorts the input `ARRAY` of type `integer(int8)`
@@ -3149,6 +3158,7 @@ contains
 
     end subroutine char_decrease_sort
 
+#if STDLIB_BITSET == 1
 
     pure subroutine bitset_64_decrease_sort( array )
 ! `bitset_64_decrease_sort( array )` sorts the input `ARRAY` of type `type(bitset_64)`
@@ -3315,6 +3325,8 @@ contains
 
     end subroutine bitset_64_decrease_sort
 
+#endif
+#if STDLIB_BITSET == 1
 
     pure subroutine bitset_large_decrease_sort( array )
 ! `bitset_large_decrease_sort( array )` sorts the input `ARRAY` of type `type(bitset_large)`
@@ -3481,5 +3493,6 @@ contains
 
     end subroutine bitset_large_decrease_sort
 
+#endif
 
 end submodule stdlib_sorting_sort
