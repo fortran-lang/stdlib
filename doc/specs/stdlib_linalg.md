@@ -860,6 +860,122 @@ This subroutine computes the internal working space requirements for the least-s
 
 `lcwork` (`complex` `a`, `b`): For a `complex` system, shall be an `integer` scalar, that returns the minimum array size required for the `complex` working storage to this system.
 
+## `constrained_lstsq` - Compute the solution of the equality-constrained least-squares problem {#constrained-lstsq}
+
+### Status
+
+Experimental
+
+### Description
+
+This function computes the solution \(x\) of the equality-constrained linear least-squares problem
+$$
+\begin{aligned}
+    \mathrm{minimize}   &   \quad \| Ax - b \|^2 \\
+    \mathrm{subject~to} &   \quad   Cx = d,
+\end{aligned}
+$$
+where \(A\) is an \( m \times n \) matrix (with \(m \geq n\)) and \(C\) a \( p \times n\) matrix (with \(p \leq n\)). The solver is based on LAPACK's `*GLSE` backends.
+
+### Syntax
+
+`x = ` [[stdlib_linalg(module):constrained_lstsq(interface)]] `(A, b, C, d[, overwrite_matrices, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` array used in the definition of the least-squares cost. It is an `intent(inout)` argument.
+
+`b`: Shall be a rank-1 array of the same kind as `a` appearing in the definition of the least-squares cost. It is an `intent(inout)` argument.
+
+`c`: Shall be a rank-2 `real` or `complex` array of the same kind as `a` defining the linear equality constraints. It is an `intent(inout)` argument.
+
+`d`: Shall be a rank-1 array of the same kind as `a` appearing in the definition of the linear equality constraints.
+
+`overwrite_matrices` (optional): Shall be an input `logical` flag. If `.true.`, the input matrices and vectors will be overwritten during the computation of the solution. It is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Returns an array of the same kind as `a` containing the solution of the equality constrained least-squares problem.
+
+Raises `LINALG_ERROR` if the underlying constrained least-squares solver did not converge.
+Raises `LINALG_VALUE_ERROR` if the matrices and vectors have invalid/incompatible dimensions.
+Exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_constrained_lstsq1.f90!}
+```
+
+## `solve_constrained_lstsq` - Compute the solution of the equality-constrained least squares problem (subroutine interface) {#solve-constrained-lstsq}
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the solution \(x\) of the equality-constrained linear least-squares problem
+$$
+\begin{aligned}
+    \mathrm{minimize}   &   \quad \| Ax - b \|^2 \\
+    \mathrm{subject~to} &   \quad   Cx = d,
+\end{aligned}
+$$
+where \(A\) is an \( m \times n \) matrix (with \(m \geq n\)) and \(C\) a \( p \times n\) matrix (with \(p \leq n\)). The solver is based on LAPACK's `*GLSE` backends.
+
+### Syntax
+
+
+`call ` [[stdlib_linalg(module):solve_constrained_lstsq(interface)]] `(a, b, c, d, x [, storage, overwrite_matrices, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` array used in the definition of the least-squares cost. It is an `intent(inout)` argument.
+
+`b`: Shall be a rank-1 array of the same kind as `a` appearing in the definition of the least-squares cost. It is an `intent(inout)` argument.
+
+`c`: Shall be a rank-2 `real` or `complex` array of the same kind as `a` defining the linear equality constraints. It is an `intent(inout)` argument.
+
+`d`: Shall be a rank-1 array of the same kind as `a` appearing in the definition of the linear equality constraints.
+
+`x`: Shall be a rank-1 array of the same kind as `a`. On exit, it contains the solution of the constrained least-squares problem. It is an `intent(out)` argument.
+
+`storage` (optional): Shall be a rank-1 array of the same kind as `a` providing working storage for the solver. Its minimum size can be determined with a call to [stdlib_linalg(module):constrained_lstsq_space(interface)]. It is an `intent(out)` argument.
+
+`overwrite_matrices` (optional): Shall be an input `logical` flag. If `.true.`, the input matrices and vectors will be overwritten during the computation of the solution. It is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Example
+
+```fortran
+{!example/linalg/example_constrained_lstsq2.f90!}
+```
+
+## `constrained_lstsq_space` - Compute internal workspace requirements for the constrained least-square solver {#constrained-lstsq-space}
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the internal workspace requirements for the constrained least-squares solver, [stdlib_linalg(module):solve_constrained_lstsq(interface)].
+
+### Syntax
+
+call [stdlib_linalg(module):constrained_lstsq_space(interface)]`(a,  c,  lwork [, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` array used in the definition of the least-squares cost. It is an `intent(in)` argument.
+
+`c`: Shall be a rank-2 `real` or `complex` array of the same kind as `a` defining the linear equality constraints. It is an `intent(in)` argument.
+`lwork`: Shall be an `integer` scalar returning the optimal size required for the workspace array to solve the constrained least-squares problem.
+
 ## `det` - Computes the determinant of a square matrix
 
 ### Status

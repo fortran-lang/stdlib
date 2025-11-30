@@ -38,12 +38,15 @@ module stdlib_linalg
   public :: operator(.pinv.)
   public :: lstsq
   public :: lstsq_space
+  public :: constrained_lstsq
+  public :: constrained_lstsq_space
   public :: norm
   public :: mnorm
   public :: get_norm
   public :: solve
   public :: solve_lu  
   public :: solve_lstsq
+  public :: solve_constrained_lstsq
   public :: trace
   public :: svd
   public :: svdvals
@@ -575,6 +578,106 @@ module stdlib_linalg
     #:endfor
     #:endfor
   end interface lstsq_space
+
+  ! Equality-constrained least-squares, i.e. minimize the sum of squares
+  ! cost || Ax - b ||^2 subject to the equality constraint Cx = d.
+  interface constrained_lstsq
+    !!  version: experimental
+    !!
+    !!  Computes the solution of the equality constrained least-squares problem
+    !!
+    !!  minimize     || Ax - b ||²
+    !!  subject to      Cx = d
+    !!
+    !!  where A is of size `m x n` and C of size `p x n`.
+    !!  ([Specification](../page/specs/stdlib_linalg.html#constrained-lstsq))
+    !!
+    !!  ### Description
+    !!
+    !!  This interface provides methods for computing the solution of an equality-constrained
+    !!  least-squares problem using a function. Supported data types include `real` and
+    !!  `complex`. 
+    !!
+    !!  @note The solution is based on LAPACK's `*GGLSE` methods.
+    #:for rk, rt, ri in RC_KINDS_TYPES
+    module function stdlib_linalg_${ri}$_constrained_lstsq(A, b, C, d, overwrite_matrices, err) result(x)
+        !> Least-squares cost
+        ${rt}$, intent(inout), target :: A(:, :), b(:)
+        !> Equality constraints.
+        ${rt}$, intent(inout), target :: C(:, :), d(:)
+        !> [optional] Can A and C be overwritten?
+        logical(lk), optional, intent(in) :: overwrite_matrices
+        !> [optional] State return flag.
+        type(linalg_state_type), optional, intent(out) :: err
+        !> Solution of the constrained least-squares problem.
+        ${rt}$, allocatable, target :: x(:)
+    end function stdlib_linalg_${ri}$_constrained_lstsq
+    #:endfor
+  end interface
+
+  ! Equality-constrained least-squares, i.e. minimize the sum of squares
+  ! cost || Ax - b ||^2 subject to the equality constraint Cx = d.
+  interface solve_constrained_lstsq
+    !!  version: experimental
+    !!
+    !!  Computes the solution of the equality constrained least-squares problem
+    !!
+    !!  minimize     || Ax - b ||²
+    !!  subject to      Cx = d
+    !!
+    !!  where A is of size `m x n` and C of size `p x n`.
+    !!  ([Specification](../page/specs/stdlib_linalg.html#solve-constrained-lstsq))
+    !!
+    !!  ### Description
+    !!
+    !!  This interface provides methods for computing the solution of an equality-constrained
+    !!  least-squares problem using a subroutine. Supported data types include `real` and
+    !!  `complex`. If a pre-allocated workspace is provided, no internal memory allocation takes
+    !!  place.
+    !!
+    !!  @note The solution is based on LAPACK's `*GGLSE` methods.
+    #:for rk, rt, ri in RC_KINDS_TYPES
+    module subroutine stdlib_linalg_${ri}$_solve_constrained_lstsq(A, b, C, d, x, storage, overwrite_matrices, err)
+        !> Least-squares cost.
+        ${rt}$, intent(inout), target :: A(:, :), b(:)
+        !> Equality constraints.
+        ${rt}$, intent(inout), target :: C(:, :), d(:)
+        !> Solution vector.
+        ${rt}$, intent(out) :: x(:)
+        !> [optional] Storage.
+        ${rt}$, optional, intent(out), target :: storage(:)
+        !> [optional] Can A and C be overwritten?
+        logical(lk), optional, intent(in) :: overwrite_matrices
+        !> [optional] State return flag. On error if not requested, the code stops.
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_${ri}$_solve_constrained_lstsq
+    #:endfor
+  end interface
+
+  interface constrained_lstsq_space
+    !!  version: experimental
+    !!
+    !!  Computes the size of the workspace required by the constrained least-squares solver.
+    !!  ([Specification](../page/specs/stdlib_linalg.html#constrained-lstsq-space))
+    !!
+    !!  ### Description
+    !!
+    !!  This interface provides the size of the workspace array required by the constrained
+    !!  least-squares solver. It can be used to pre-allocate the working array in
+    !!  case several repeated solutions to a same system are sought. If pre-allocated,
+    !!  working arrays are provided, no internal allocation will take place.
+    !!
+    #:for rk, rt, ri in RC_KINDS_TYPES
+    module subroutine stdlib_linalg_${ri}$_constrained_lstsq_space(A, C, lwork, err)
+        !> Least-squares cost.
+        ${rt}$, intent(in) :: A(:, :)
+        !> Equality constraints.
+        ${rt}$, intent(in) :: C(:, :)
+        integer(ilp), intent(out) :: lwork
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_${ri}$_constrained_lstsq_space
+    #:endfor
+  end interface
 
   ! QR factorization of rank-2 array A
   interface qr

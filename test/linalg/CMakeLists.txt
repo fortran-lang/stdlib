@@ -6,6 +6,7 @@ set(
   "test_linalg_inverse.fypp"
   "test_linalg_pseudoinverse.fypp"
   "test_linalg_lstsq.fypp"
+  "test_linalg_constrained_lstsq.fypp"
   "test_linalg_norm.fypp"
   "test_linalg_mnorm.fypp"
   "test_linalg_determinant.fypp"
@@ -41,6 +42,7 @@ ADDTEST(linalg_norm)
 ADDTEST(linalg_mnorm)
 ADDTEST(linalg_solve)
 ADDTEST(linalg_lstsq)
+ADDTEST(linalg_constrained_lstsq)
 ADDTEST(linalg_qr)
 ADDTEST(linalg_schur)
 ADDTEST(linalg_solve_iterative)
