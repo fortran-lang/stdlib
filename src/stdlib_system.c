@@ -9,6 +9,13 @@
 #ifdef _WIN32
 #include <direct.h>
 #include <windows.h>
+#ifndef S_ISREG
+#if defined(S_IFMT) && defined(S_IFREG)
+#define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)
+#elif defined(_S_IFMT) && defined(_S_IFREG)
+#define S_ISREG(mode) (((mode) & _S_IFMT) == _S_IFREG)
+#endif
+#endif /* ifndef S_ISREG */
 #else
 #include <unistd.h>
 #endif /* ifdef _WIN32 */
