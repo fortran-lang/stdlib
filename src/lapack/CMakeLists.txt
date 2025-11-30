@@ -7,6 +7,9 @@ set(lapack_fppFiles
     ../stdlib_io.fypp
     ../stdlib_ascii.fypp
     ../stdlib_string_type.fypp
+    ../stdlib_string_type_constructor.fypp
+    ../stdlib_strings.fypp
+    ../stdlib_strings_to_string.fypp
     stdlib_lapack_base.fypp
     stdlib_lapack_solve.fypp
     stdlib_lapack_others.fypp
