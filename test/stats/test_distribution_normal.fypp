@@ -164,13 +164,18 @@ contains
         call random_seed(seed, get)
 
         ! default mold form: mold used only to disambiguate kind
-        #:if t1[0] == "r"
-            mold = 0.0_${k1}$
+        ! For real(dp), mold is optional; for other types (including complex), it's required
+        #:if t1[0] == "r" and k1 == "dp"
+            a2 = nor_rvs(10)  ! mold optional for rdp only, defaults to real(dp)
         #:else
-            mold = (0.0_${k1}$, 0.0_${k1}$)
+            #! mold required for all other types including complex and non-dp kinds
+            #:if t1[0] == "r"
+                mold = 0.0_${k1}$
+            #:else
+                mold = (0.0_${k1}$, 0.0_${k1}$)
+            #:endif
+            a2 = nor_rvs(10, mold)
         #:endif
-
-        a2 = nor_rvs(10, mold)
 
         call check(all(a1 == a2), msg="normal_distribution_rvs_default_${t1[0]}$${k1}$ failed", warn=warn)
     end subroutine test_nor_rvs_default_${t1[0]}$${k1}$
