@@ -146,8 +146,8 @@ module stdlib_specialmatrices
          type(tridiagonal_${s1}$_type), intent(in) :: A
             ${t1}$, intent(in), contiguous, target :: x${ranksuffix(rank)}$
             ${t1}$, intent(inout), contiguous, target :: y${ranksuffix(rank)}$
-            real(${k1}$), intent(in), optional :: alpha
-            real(${k1}$), intent(in), optional :: beta
+            ${t1}$, intent(in), optional :: alpha
+            ${t1}$, intent(in), optional :: beta
             character(1), intent(in), optional :: op
         end subroutine
         #:endfor

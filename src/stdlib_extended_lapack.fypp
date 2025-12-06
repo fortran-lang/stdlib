@@ -11,7 +11,7 @@ contains
     pure module subroutine stdlib${ii}$_glagtm_${s1}$(trans, n, nrhs, alpha, dl, d, du, x, ldx, beta, b, ldb)
         character, intent(in) :: trans
         integer(${ik}$), intent(in) :: ldb, ldx, n, nrhs
-        real(${k1}$), intent(in) :: alpha, beta
+        ${t1}$, intent(in) :: alpha, beta
         ${t1}$, intent(inout) :: b(ldb,*)
         ${t1}$, intent(in) :: d(*), dl(*), du(*), x(ldx,*)
         
