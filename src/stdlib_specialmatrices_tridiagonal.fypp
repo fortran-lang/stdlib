@@ -163,6 +163,8 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         real(${k1}$) :: alpha_, beta_
         integer(ilp) :: n, nrhs, ldx, ldy
         character(1) :: op_
+        logical :: alpha_special, beta_special
+
         #:if rank == 1
         ${t1}$, pointer :: xmat(:, :), ymat(:, :)
         #:endif
@@ -172,6 +174,9 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         beta_  = 0.0_${k1}$ ; if (present(beta))  beta_  = beta
         op_    = "N"        ; if (present(op))    op_    = op
 
+        alpha_special = (alpha_ ==  1.0_${k1}$  .or. alpha_ ==  0.0_${k1}$  .or. alpha_ == -1.0_${k1}$)
+        beta_special  = (beta_  ==  1.0_${k1}$  .or. beta_  ==  0.0_${k1}$  .or. beta_  == -1.0_${k1}$)
+
         ! Prepare Lapack arguments.
         n = A%n ; ldx = n ; ldy = n ;
         nrhs = #{if rank==1}# 1 #{else}# size(x, dim=2, kind=ilp) #{endif}#
@@ -179,9 +184,17 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         #:if rank == 1
         ! Pointer trick.
         xmat(1:n, 1:nrhs) => x ; ymat(1:n, 1:nrhs) => y
-        call lagtm(op_, n, nrhs, alpha_, A%dl, A%dv, A%du, xmat, ldx, beta_, ymat, ldy)
+        if(alpha_special .and. beta_special) then
+            call lagtm(op_, n, nrhs, alpha_, A%dl, A%dv, A%du, xmat, ldx, beta_, ymat, ldy)
+        else
+            call glagtm(op_, n, nrhs, alpha_, A%dl, A%dv, A%du, xmat, ldx, beta_, ymat, ldy)
+        end if
         #:else
-        call lagtm(op_, n, nrhs, alpha_, A%dl, A%dv, A%du, x, ldx, beta_, y, ldy)
+        if(alpha_special .and. beta_special) then
+            call lagtm(op_, n, nrhs, alpha_, A%dl, A%dv, A%du, x, ldx, beta_, y, ldy)
+        else
+            call glagtm(op_, n, nrhs, alpha_, A%dl, A%dv, A%du, x, ldx, beta_, y, ldy)
+        end if
         #:endif
     end subroutine
     #:endfor

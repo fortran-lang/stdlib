@@ -9,6 +9,8 @@ set(fppFiles
     stdlib_codata_type.fypp
     stdlib_constants.fypp
     stdlib_error.fypp
+    stdlib_extended_lapack_base.fypp
+    stdlib_extended_lapack.fypp
     stdlib_hash_32bit.fypp
     stdlib_hash_32bit_fnv.fypp
     stdlib_hash_32bit_nm.fypp
