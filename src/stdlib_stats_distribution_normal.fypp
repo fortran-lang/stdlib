@@ -33,6 +33,7 @@ module stdlib_stats_distribution_normal
 
         #:for k1, t1 in RC_KINDS_TYPES
             module procedure rvs_norm_array_${t1[0]}$${k1}$  !3 dummy variables
+            module procedure rvs_norm_array_default_${t1[0]}$${k1}$  !array_size, mold (mold optional for real(dp) only)
         #:endfor
     end interface rvs_normal
 
@@ -238,6 +239,22 @@ contains
 
     #:endfor
 
+    #:for k1, t1 in REAL_KINDS_TYPES
+        impure function rvs_norm_array_default_${t1[0]}$${k1}$ (array_size, mold) result(res)
+            !
+            ! Standard normal array random variate with default loc=0, scale=1
+            ! The mold argument is used only to determine the type and is not referenced
+            !
+            integer, intent(in) :: array_size
+            ${t1}$, intent(in) #{if t1 == 'real(dp)'}#, optional #{endif}#:: mold
+            ${t1}$ :: res(array_size)
+
+            res = rvs_norm_array_${t1[0]}$${k1}$ (0.0_${k1}$, 1.0_${k1}$, array_size)
+
+        end function rvs_norm_array_default_${t1[0]}$${k1}$
+
+    #:endfor
+
     #:for k1, t1 in CMPLX_KINDS_TYPES
         impure function rvs_norm_array_${t1[0]}$${k1}$ (loc, scale, array_size) result(res)
             ${t1}$, intent(in) :: loc, scale
@@ -253,6 +270,25 @@ contains
             end do
 
         end function rvs_norm_array_${t1[0]}$${k1}$
+
+    #:endfor
+
+    #:for k1, t1 in CMPLX_KINDS_TYPES
+        impure function rvs_norm_array_default_${t1[0]}$${k1}$ (array_size, mold) result(res)
+            !
+            ! Standard normal complex array random variate with default loc=0, scale=1
+            ! The mold argument is used only to determine the type and is not referenced
+            !
+            integer, intent(in) :: array_size
+            ${t1}$, intent(in) :: mold
+            ${t1}$ :: res(array_size)
+
+            ! Call the full procedure with default loc=(0,0), scale=(1,1)
+            res = rvs_norm_array_${t1[0]}$${k1}$ (cmplx(0.0_${k1}$, 0.0_${k1}$, kind=${k1}$), &
+                                                   cmplx(1.0_${k1}$, 1.0_${k1}$, kind=${k1}$), &
+                                                   array_size)
+
+        end function rvs_norm_array_default_${t1[0]}$${k1}$
 
     #:endfor
 
