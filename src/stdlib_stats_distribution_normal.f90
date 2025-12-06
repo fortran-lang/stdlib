@@ -31,9 +31,13 @@ module stdlib_stats_distribution_normal
             module procedure rvs_norm_cdp        !2 dummy variables
 
             module procedure rvs_norm_array_rsp  !3 dummy variables
+            module procedure rvs_norm_array_default_rsp  !array_size, mold (mold optional for real(dp) only)
             module procedure rvs_norm_array_rdp  !3 dummy variables
+            module procedure rvs_norm_array_default_rdp  !array_size, mold (mold optional for real(dp) only)
             module procedure rvs_norm_array_csp  !3 dummy variables
+            module procedure rvs_norm_array_default_csp  !array_size, mold (mold optional for real(dp) only)
             module procedure rvs_norm_array_cdp  !3 dummy variables
+            module procedure rvs_norm_array_default_cdp  !array_size, mold (mold optional for real(dp) only)
     end interface rvs_normal
 
     interface pdf_normal
@@ -359,6 +363,33 @@ contains
         end function rvs_norm_array_rdp
 
 
+        impure function rvs_norm_array_default_rsp (array_size, mold) result(res)
+            !
+            ! Standard normal array random variate with default loc=0, scale=1
+            ! The mold argument is used only to determine the type and is not referenced
+            !
+            integer, intent(in) :: array_size
+            real(sp), intent(in) :: mold
+            real(sp) :: res(array_size)
+
+            res = rvs_norm_array_rsp (0.0_sp, 1.0_sp, array_size)
+
+        end function rvs_norm_array_default_rsp
+
+        impure function rvs_norm_array_default_rdp (array_size, mold) result(res)
+            !
+            ! Standard normal array random variate with default loc=0, scale=1
+            ! The mold argument is used only to determine the type and is not referenced
+            !
+            integer, intent(in) :: array_size
+            real(dp), intent(in) , optional :: mold
+            real(dp) :: res(array_size)
+
+            res = rvs_norm_array_rdp (0.0_dp, 1.0_dp, array_size)
+
+        end function rvs_norm_array_default_rdp
+
+
         impure function rvs_norm_array_csp (loc, scale, array_size) result(res)
             complex(sp), intent(in) :: loc, scale
             integer, intent(in) :: array_size
@@ -388,6 +419,39 @@ contains
             end do
 
         end function rvs_norm_array_cdp
+
+
+        impure function rvs_norm_array_default_csp (array_size, mold) result(res)
+            !
+            ! Standard normal complex array random variate with default loc=0, scale=1
+            ! The mold argument is used only to determine the type and is not referenced
+            !
+            integer, intent(in) :: array_size
+            complex(sp), intent(in) :: mold
+            complex(sp) :: res(array_size)
+
+            ! Call the full procedure with default loc=(0,0), scale=(1,1)
+            res = rvs_norm_array_csp (cmplx(0.0_sp, 0.0_sp, kind=sp), &
+                                                   cmplx(1.0_sp, 1.0_sp, kind=sp), &
+                                                   array_size)
+
+        end function rvs_norm_array_default_csp
+
+        impure function rvs_norm_array_default_cdp (array_size, mold) result(res)
+            !
+            ! Standard normal complex array random variate with default loc=0, scale=1
+            ! The mold argument is used only to determine the type and is not referenced
+            !
+            integer, intent(in) :: array_size
+            complex(dp), intent(in) :: mold
+            complex(dp) :: res(array_size)
+
+            ! Call the full procedure with default loc=(0,0), scale=(1,1)
+            res = rvs_norm_array_cdp (cmplx(0.0_dp, 0.0_dp, kind=dp), &
+                                                   cmplx(1.0_dp, 1.0_dp, kind=dp), &
+                                                   array_size)
+
+        end function rvs_norm_array_default_cdp
 
 
         elemental function pdf_norm_rsp (x, loc, scale) result(res)
