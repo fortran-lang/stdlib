@@ -24,6 +24,11 @@ program test_distribution_normal
     call test_nor_rvs_csp
     call test_nor_rvs_cdp
 
+    call test_nor_rvs_default_rsp
+    call test_nor_rvs_default_rdp
+    call test_nor_rvs_default_csp
+    call test_nor_rvs_default_cdp
+
 
 
     call test_nor_pdf_rsp
@@ -211,6 +216,103 @@ contains
         call check(all(abs(res - ans) < dptol),                            &
             msg="normal_distribution_rvs_cdp failed", warn=warn)
     end subroutine test_nor_rvs_cdp
+
+
+
+    subroutine test_nor_rvs_default_rsp
+        real(sp) :: a1(10), a2(10), mold
+        integer :: i
+        integer :: seed, get
+
+        print *, "Test normal_distribution_rvs_default_rsp"
+        seed = 25836914
+        call random_seed(seed, get)
+
+        ! explicit form with loc=0, scale=1
+            a1 = nor_rvs(0.0_sp, 1.0_sp, 10)
+
+        ! reset seed to reproduce same random sequence
+        seed = 25836914
+        call random_seed(seed, get)
+
+        ! default mold form: mold used only to disambiguate kind
+        ! For real(dp), mold is optional; for other types (including complex), it's required
+                mold = 0.0_sp
+            a2 = nor_rvs(10, mold)
+
+        call check(all(a1 == a2), msg="normal_distribution_rvs_default_rsp failed", warn=warn)
+    end subroutine test_nor_rvs_default_rsp
+
+    subroutine test_nor_rvs_default_rdp
+        real(dp) :: a1(10), a2(10), mold
+        integer :: i
+        integer :: seed, get
+
+        print *, "Test normal_distribution_rvs_default_rdp"
+        seed = 25836914
+        call random_seed(seed, get)
+
+        ! explicit form with loc=0, scale=1
+            a1 = nor_rvs(0.0_dp, 1.0_dp, 10)
+
+        ! reset seed to reproduce same random sequence
+        seed = 25836914
+        call random_seed(seed, get)
+
+        ! default mold form: mold used only to disambiguate kind
+        ! For real(dp), mold is optional; for other types (including complex), it's required
+            a2 = nor_rvs(10)  ! mold optional for rdp only, defaults to real(dp)
+
+        call check(all(a1 == a2), msg="normal_distribution_rvs_default_rdp failed", warn=warn)
+    end subroutine test_nor_rvs_default_rdp
+
+    subroutine test_nor_rvs_default_csp
+        complex(sp) :: a1(10), a2(10), mold
+        integer :: i
+        integer :: seed, get
+
+        print *, "Test normal_distribution_rvs_default_csp"
+        seed = 25836914
+        call random_seed(seed, get)
+
+        ! explicit form with loc=0, scale=1
+            a1 = nor_rvs((0.0_sp, 0.0_sp), (1.0_sp, 1.0_sp), 10)
+
+        ! reset seed to reproduce same random sequence
+        seed = 25836914
+        call random_seed(seed, get)
+
+        ! default mold form: mold used only to disambiguate kind
+        ! For real(dp), mold is optional; for other types (including complex), it's required
+                mold = (0.0_sp, 0.0_sp)
+            a2 = nor_rvs(10, mold)
+
+        call check(all(a1 == a2), msg="normal_distribution_rvs_default_csp failed", warn=warn)
+    end subroutine test_nor_rvs_default_csp
+
+    subroutine test_nor_rvs_default_cdp
+        complex(dp) :: a1(10), a2(10), mold
+        integer :: i
+        integer :: seed, get
+
+        print *, "Test normal_distribution_rvs_default_cdp"
+        seed = 25836914
+        call random_seed(seed, get)
+
+        ! explicit form with loc=0, scale=1
+            a1 = nor_rvs((0.0_dp, 0.0_dp), (1.0_dp, 1.0_dp), 10)
+
+        ! reset seed to reproduce same random sequence
+        seed = 25836914
+        call random_seed(seed, get)
+
+        ! default mold form: mold used only to disambiguate kind
+        ! For real(dp), mold is optional; for other types (including complex), it's required
+                mold = (0.0_dp, 0.0_dp)
+            a2 = nor_rvs(10, mold)
+
+        call check(all(a1 == a2), msg="normal_distribution_rvs_default_cdp failed", warn=warn)
+    end subroutine test_nor_rvs_default_cdp
 
 
 
