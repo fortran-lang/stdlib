@@ -1,11 +1,11 @@
 if (NOT STDLIB_NO_BITSET)
   add_subdirectory(bitsets)
 endif()
+add_subdirectory(blas)
+add_subdirectory(lapack)
 if (NOT STDLIB_NO_STATS)
   add_subdirectory(stats)
 endif()
-add_subdirectory(blas)
-add_subdirectory(lapack)
 
 set(fppFiles
     stdlib_ascii.fypp
