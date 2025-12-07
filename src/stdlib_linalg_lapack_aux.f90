@@ -53,6 +53,7 @@ module stdlib_linalg_lapack_aux
      public :: handle_geev_info
      public :: handle_ggev_info
      public :: handle_heev_info
+     public :: handle_gglse_info
      
      ! SELCTG is a LOGICAL FUNCTION of three DOUBLE PRECISION arguments 
      ! used to select eigenvalues to sort to the top left of the Schur form. 
@@ -1883,5 +1884,29 @@ module stdlib_linalg_lapack_aux
         end select
 
      end subroutine handle_heev_info
+
+    elemental subroutine handle_gglse_info(this, info, m, n, p, err)
+        character(len=*), intent(in) :: this
+        integer(ilp), intent(in) :: info, m, n, p
+        type(linalg_state_type), intent(out) :: err
+        ! Process output.
+        select case (info)
+            case(2)
+                err = linalg_state_type(this, LINALG_ERROR, "rank([A, B]) < n, the least-squares solution cannot be computed.")
+            case(1)
+                err = linalg_state_type(this, LINALG_ERROR, "rank(C) < p, the least-squares solution cannot be computed.")
+            case(0)
+                ! Success.
+                err%state = LINALG_SUCCESS
+            case(-1)
+                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid number of rows for A, m=', m)
+            case(-2)
+                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid number of columns for A and C, n=', n)
+            case(-3)
+                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid number of rows for C, p=', p)
+            case default
+                err = linalg_state_type(this, LINALG_INTERNAL_ERROR, 'catastrophic error.')
+        end select
+    end subroutine handle_gglse_info
 
 end module stdlib_linalg_lapack_aux
