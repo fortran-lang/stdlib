@@ -10,14 +10,14 @@ program example_tridiagonal_matrix_cdp
     integer :: i
     complex(dp) :: alpha, beta
 
-    dl = [(cmplx(i,0.0_dp, dp), i=1, n - 1)]
-    dv = [(cmplx(2*i,0.0_dp, dp), i=1, n     )]
-    du = [(cmplx(3*i,0.0_dp, dp), i=1, n - 1)]
+    dl = [(cmplx(i,i, dp), i=1, n - 1)]
+    dv = [(cmplx(2*i,2*i, dp), i=1, n)]
+    du = [(cmplx(3*i,3*i, dp), i=1, n - 1)]
 
     A = tridiagonal(dl, dv, du)
 
     x = (1.0_dp, 0.0_dp)
-    y = (0.0_dp, 0.0_dp)
+    y = (3.0_dp, -7.0_dp)
     y_dense = (0.0_dp, 0.0_dp)
     alpha = cmplx(2.0_dp, 3.0_dp)
     beta = cmplx(-1.0_dp, 5.0_dp)

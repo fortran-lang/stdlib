@@ -14,7 +14,7 @@ contains
         ${t1}$, intent(in) :: alpha, beta
         ${t1}$, intent(inout) :: b(ldb,*)
         ${t1}$, intent(in) :: d(*), dl(*), du(*), x(ldx,*)
-        
+
         ! Internal variables.
         integer(${ik}$) :: i, j
         ${t1}$ :: temp

@@ -1,4 +1,4 @@
-#:include "common.fypp" 
+#:include "common.fypp"
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
 #:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
 #:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES

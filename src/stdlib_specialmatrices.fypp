@@ -100,7 +100,7 @@ module stdlib_specialmatrices
             !! Matrix dimension.
             type(tridiagonal_${s1}$_type) :: A
             !! Corresponding Tridiagonal matrix.
-        end function   
+        end function
 
         module function initialize_tridiagonal_impure_${s1}$(dl, dv, du, err) result(A)
             !! Construct a `tridiagonal` matrix from the rank-1 arrays
@@ -123,7 +123,7 @@ module stdlib_specialmatrices
             !! Error handling.
             type(tridiagonal_${s1}$_type) :: A
             !! Corresponding Tridiagonal matrix.
-        end function   
+        end function
         #:endfor
     end interface
 
