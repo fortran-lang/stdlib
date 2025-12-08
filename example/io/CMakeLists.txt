@@ -6,3 +6,6 @@ ADD_EXAMPLE(loadtxt)
 ADD_EXAMPLE(open)
 ADD_EXAMPLE(savenpy)
 ADD_EXAMPLE(savetxt)
+# ADD_EXAMPLE(input) -- Interactive example, do not run as test
+add_executable(example_input example_input.f90)
+target_link_libraries(example_input "${PROJECT_NAME}")

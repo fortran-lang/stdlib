@@ -16,25 +16,25 @@ module stdlib_io
   implicit none
   private
   ! Public API
-  public :: loadtxt, savetxt, open, get_line, get_file
+  public :: loadtxt, savetxt, open, get_line, get_file, input
 
-  !! version: experimental 
+  !! version: experimental
   !!
-  !! Reads a whole ASCII file and loads its contents into a string variable. 
+  !! Reads a whole ASCII file and loads its contents into a string variable.
   !! ([Specification](../page/specs/stdlib_io.html#get-file-read-a-whole-ascii-file-into-a-character-or-a-string-variable))
-  !! 
-  !!### Summary 
+  !!
+  !!### Summary
   !! Subroutine interface for reading the content of a file into a string.
   !!
   !!### Description
-  !! 
-  !! This subroutine reads the entirety of a specified ASCII file and returns it as a string. The optional 
-  !! `err` argument allows for handling errors through the library's `state_type` class. 
-  !! An optional `logical` flag can be passed to delete the file after reading.  
-  !! 
-  !!@note Handles errors using the library's `state_type` error-handling class. If not provided, 
-  !! exceptions will trigger an `error stop`. 
-  !!         
+  !!
+  !! This subroutine reads the entirety of a specified ASCII file and returns it as a string. The optional
+  !! `err` argument allows for handling errors through the library's `state_type` class.
+  !! An optional `logical` flag can be passed to delete the file after reading.
+  !!
+  !!@note Handles errors using the library's `state_type` error-handling class. If not provided,
+  !! exceptions will trigger an `error stop`.
+  !!
   interface get_file
     module procedure :: get_file_char
     module procedure :: get_file_string
@@ -81,6 +81,12 @@ module stdlib_io
     module procedure :: get_line_input_char
     module procedure :: get_line_input_string
   end interface get_line
+
+  !> Minimal Python-like input(prompt) convenience
+  !> Reads a whole line from standard input (preserving trailing whitespace)
+  interface input
+    module procedure :: input_character
+  end interface input
 
   interface loadtxt
     !! version: experimental
@@ -173,15 +179,15 @@ contains
 
       do i = 1, skiprows_
         read(s, *, iostat=ios, iomsg=iomsg)
-        
-        if (ios/=0) then 
-           write(msgout,1) trim(iomsg),i,trim(filename) 
+
+        if (ios/=0) then
+           write(msgout,1) trim(iomsg),i,trim(filename)
            1 format('loadtxt: error <',a,'> skipping line ',i0,' of ',a,'.')
            call error_stop(msg=trim(msgout))
         end if
-        
+
       end do
-      
+
       ! Default to format used for savetxt if fmt not specified.
       #:if 'real' in t1
       fmt_ = optval(fmt, "(*"//FMT_REAL_${k1}$(1:len(FMT_REAL_${k1}$)-1)//",:,1x))")
@@ -189,63 +195,63 @@ contains
       fmt_ = optval(fmt, "(*"//FMT_COMPLEX_${k1}$(1:len(FMT_COMPLEX_${k1}$)-1)//",:,1x))")
       #:else
       fmt_ = optval(fmt, "*")
-      #:endif      
+      #:endif
 
       if ( fmt_ == '*' ) then
         ! Use list directed read if user has specified fmt='*'
         if (is_blank(delimiter_) .or. delimiter_ == ",") then
           do i = 1, max_rows_
             read (s,*,iostat=ios,iomsg=iomsg) d(i, :)
-            
-            if (ios/=0) then 
+
+            if (ios/=0) then
               write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
               call error_stop(msg=trim(msgout))
-            end if          
-            
+            end if
+
           enddo
         ! Otherwise read each value separately
         else
           do i = 1, max_rows_
             call get_line(s, line, ios, iomsg_)
-            if (ios/=0) then 
+            if (ios/=0) then
                write(msgout,2) trim(iomsg_),size(d,2),i,trim(filename)
                call error_stop(msg=trim(msgout))
             end if
-  
+
             istart = 0
             do j = 1, ncol - 1
               iend = index(line(istart+1:), delimiter_)
               read (line(istart+1:istart+iend-1),*,iostat=ios,iomsg=iomsg) d(i, j)
-              if (ios/=0) then 
+              if (ios/=0) then
                  write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
                  call error_stop(msg=trim(msgout))
               end if
               istart = istart + iend
             end do
-  
+
             read (line(istart+1:),*,iostat=ios,iomsg=iomsg) d(i, ncol)
-            if (ios/=0) then 
+            if (ios/=0) then
                write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
                call error_stop(msg=trim(msgout))
-            end if          
-            
+            end if
+
           enddo
         end if
       else
         ! Otherwise pass default or user specified fmt string.
         do i = 1, max_rows_
           read (s,fmt_,iostat=ios,iomsg=iomsg) d(i, :)
-          
-          if (ios/=0) then 
+
+          if (ios/=0) then
              write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
              call error_stop(msg=trim(msgout))
-          end if             
-          
+          end if
+
         enddo
       endif
 
       close(s)
-      
+
       2 format('loadtxt: error <',a,'> reading ',i0,' values from line ',i0,' of ',a,'.')
 
     end subroutine loadtxt_${t1[0]}$${k1}$
@@ -297,17 +303,17 @@ contains
           write(s, *, &
         #:endif
                 iostat=ios,iomsg=iomsg) d(i, :)
-        
-        if (ios/=0) then 
-           write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
+
+        if (ios/=0) then
+           write(msgout,1) trim(iomsg),size(d,2),i,trim(filename)
            call error_stop(msg=trim(msgout))
-        end if           
-        
+        end if
+
       end do
       close(s)
-      
+
       1 format('savetxt: error <',a,'> writing ',i0,' values to line ',i0,' of ',a,'.')
-      
+
     end subroutine savetxt_${t1[0]}$${k1}$
   #:endfor
 
@@ -335,7 +341,7 @@ contains
       read(s, *)
     end do
     number_of_columns = 0
-    
+
     ! Read first non-skipped line as a whole
     call get_line(s, line, ios)
     if (ios/=0 .or. .not.allocated(line)) return
@@ -611,11 +617,49 @@ contains
     call get_line(input_unit, line, iostat, iomsg)
   end subroutine get_line_input_string
 
+    !> Version: experimental
+  !> Minimal Python-like input function.
+  !> Usage:
+  !>   s = input("Enter name: ")
+  !>   s = input("Prompt: ", stat) ! if you want status (optional)
+  impure function input_character(prompt, stat) result(str)
+    !> Optional prompt displayed before reading. If present, printed on same line.
+    character(len=*), intent(in), optional :: prompt
+    !> Optional iostat-like status output (0 success, non-zero indicates error/EOF)
+    integer, intent(out), optional :: stat
+    !> Result: deferred-length character string preserving trailing spaces/tabs
+    character(len=:), allocatable :: str
+
+    integer :: iostat_local
+    character(len=:), allocatable :: iomsg_local
+
+    ! Print prompt on same line if provided
+    if (present(prompt)) then
+      write(*,'(a)', advance='no') prompt
+    end if
+
+    ! Reuse existing get_line_input_char which already reads preserving trailing spaces
+    call get_line_input_char(str, iostat_local, iomsg_local)
+
+    ! Propagate iostat if requested, otherwise follow stdlib_io error semantics
+    if (present(stat)) then
+      stat = iostat_local
+    else if (iostat_local /= 0) then
+      if (allocated(iomsg_local)) then
+        call error_stop(trim(iomsg_local))
+      else
+        call error_stop("input: I/O error reading from standard input")
+      end if
+    end if
+
+  end function input_character
+
+
   !> Version: experimental
-  !> 
+  !>
   !> Reads a whole ASCII file and loads its contents into a string variable.
   !> The function handles error states and optionally deletes the file after reading.
-  subroutine get_file_string(filename,file,err,delete) 
+  subroutine get_file_string(filename,file,err,delete)
       !> Input file name
       character(*), intent(in) :: filename
       !> Output string variable
@@ -624,21 +668,21 @@ contains
       type(state_type), optional, intent(out) :: err
       !> [optional] Delete file after reading? Default: do not delete
       logical, optional, intent(in) :: delete
-        
+
       ! Local variables
       character(len=:), allocatable :: filestring
-      
+
       ! Process output
       call get_file_char(filename,filestring,err,delete)
-      call move(from=fileString,to=file)
+      call move(from=filestring,to=file)
 
   end subroutine get_file_string
 
   !> Version: experimental
-  !> 
+  !>
   !> Reads a whole ASCII file and loads its contents into an allocatable `character` variable.
   !> The function handles error states and optionally deletes the file after reading.
-  subroutine get_file_char(filename,file,err,delete) 
+  subroutine get_file_char(filename,file,err,delete)
       !> Input file name
       character(*), intent(in) :: filename
       !> Output string variable
@@ -647,7 +691,7 @@ contains
       type(state_type), optional, intent(out) :: err
       !> [optional] Delete file after reading? Default: do not delete
       logical, optional, intent(in) :: delete
-        
+
       ! Local variables
       type(state_type) :: err0
       character(len=512) :: iomsg
@@ -656,10 +700,10 @@ contains
       logical :: is_present,want_deleted
 
       !> Check if the file should be deleted after reading
-      if (present(delete)) then 
+      if (present(delete)) then
          want_deleted = delete
       else
-         want_deleted = .false.   
+         want_deleted = .false.
       end if
 
       !> Check file existing
@@ -670,57 +714,57 @@ contains
          call err0%handle(err)
          return
       end if
-      
+
       !> Retrieve file size
       inquire(file=filename,size=file_size)
-      
-      invalid_size: if (file_size<0) then 
+
+      invalid_size: if (file_size<0) then
 
           allocate(character(len=0) :: file)
           err0 = state_type('get_file',STDLIB_IO_ERROR,filename,'has invalid size=',file_size)
           call err0%handle(err)
-          return            
-            
-      endif invalid_size  
-            
+          return
+
+      endif invalid_size
+
       ! Read file
       open(newunit=lun,file=filename, &
            form='unformatted',action='read',access='stream',status='old', &
            iostat=iostat,iomsg=iomsg)
-             
-      if (iostat/=0) then 
+
+      if (iostat/=0) then
          allocate(character(len=0) :: file)
          err0 = state_type('get_file',STDLIB_IO_ERROR,'Cannot open',filename,'for read:',iomsg)
          call err0%handle(err)
          return
-      end if     
-        
+      end if
+
       allocate(character(len=file_size) :: file)
-        
-      read_data: if (file_size>0) then 
-            
+
+      read_data: if (file_size>0) then
+
           read(lun, pos=1, iostat=iostat, iomsg=iomsg) file
-            
+
           ! Read error
-          if (iostat/=0) then 
-                
-              inquire(unit=lun,pos=errpos)                    
+          if (iostat/=0) then
+
+              inquire(unit=lun,pos=errpos)
               err0 = state_type('get_file',STDLIB_IO_ERROR,iomsg,'(',filename,'at byte',errpos,')')
               call err0%handle(err)
               return
 
           endif
-            
+
       end if read_data
-                   
-      if (want_deleted) then 
+
+      if (want_deleted) then
          close(lun,iostat=iostat,status='delete')
          if (iostat/=0) err0 = state_type('get_file',STDLIB_IO_ERROR,'Cannot delete',filename,'after reading')
       else
          close(lun,iostat=iostat)
          if (iostat/=0) err0 = state_type('get_file',STDLIB_IO_ERROR,'Cannot close',filename,'after reading')
-      endif 
-      
+      endif
+
       ! Process output
       call err0%handle(err)
 

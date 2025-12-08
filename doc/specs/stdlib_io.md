@@ -247,6 +247,31 @@ Read a whole line from a formatted unit into a string variable
 {!example/io/example_get_line.f90!}
 ```
 
+## `input` — convenience prompt + read from standard input
+
+### Status
+
+Experimental / convenience
+
+### Description
+
+`input(prompt)` displays `prompt` (if provided) on the same line and returns the full user input as a string. Trailing spaces and tabs are preserved. Optionally the call can provide an `iostat`-like integer to capture the status.
+
+### Syntax
+
+`s = input(prompt [, iostat])`
+
+### Example
+
+```fortran
+use stdlib_io, only: input
+character(len=:), allocatable :: name
+integer :: st
+
+name = input('Enter your name: ')
+name = input('Enter name (with status): ', st)
+```
+
 ## Formatting constants
 
 ### Status

@@ -51,3 +51,4 @@ API-doc/
 scratch.txt
 *.dat
 *.stream
+.venv/
