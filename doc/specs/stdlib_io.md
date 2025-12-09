@@ -263,13 +263,15 @@ Experimental / convenience
 
 ### Arguments
 
-- `prompt` (optional, `character(len=*)`, intent(in)) — Optional prompt printed without a newline before reading.
-- `iostat` (optional, `integer`, intent(out)) — Optional I/O status. `0` means success, non-zero indicates an I/O error or EOF.
-- **Return value:** `character(len=:), allocatable` — Deferred-length character string with the entire line read. Trailing spaces and tabs are preserved.
+`prompt`: Optional character input for the prompt message.
+          This argument is `intent(in)`.
+
+`iostat`: Optional integer output for the status.
+          This argument is `intent(out)`.
 
 ### Return value
 
-Returns a deferred-length character string with the entire line read. Trailing spaces and tabs are preserved.
+Deferred-length character string containing the input.
 
 ### Example
 
