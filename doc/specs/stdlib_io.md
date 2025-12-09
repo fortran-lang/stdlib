@@ -261,15 +261,23 @@ Experimental / convenience
 
 `s = input(prompt [, iostat])`
 
+### Arguments
+
+- `prompt` (optional, `character(len=*)`, intent(in)) — Optional prompt printed without a newline before reading.
+- `iostat` (optional, `integer`, intent(out)) — Optional I/O status. `0` means success, non-zero indicates an I/O error or EOF.
+- **Return value:** `character(len=:), allocatable` — Deferred-length character string with the entire line read. Trailing spaces and tabs are preserved.
+
+### Return value
+
+Returns a deferred-length character string with the entire line read. Trailing spaces and tabs are preserved.
+
 ### Example
 
 ```fortran
 use stdlib_io, only: input
 character(len=:), allocatable :: name
-integer :: st
-
-name = input('Enter your name: ')
-name = input('Enter name (with status): ', st)
+integer :: iostat
+name = input('Enter your name: ', iostat)
 ```
 
 ## Formatting constants

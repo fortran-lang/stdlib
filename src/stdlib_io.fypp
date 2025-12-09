@@ -617,16 +617,16 @@ contains
     call get_line(input_unit, line, iostat, iomsg)
   end subroutine get_line_input_string
 
-    !> Version: experimental
+  !> Version: experimental
   !> Minimal Python-like input function.
   !> Usage:
   !>   s = input("Enter name: ")
-  !>   s = input("Prompt: ", stat) ! if you want status (optional)
-  impure function input_character(prompt, stat) result(str)
+  !>   s = input("Prompt: ", iostat) ! if you want status (optional)
+  impure function input_character(prompt, iostat) result(str)
     !> Optional prompt displayed before reading. If present, printed on same line.
     character(len=*), intent(in), optional :: prompt
     !> Optional iostat-like status output (0 success, non-zero indicates error/EOF)
-    integer, intent(out), optional :: stat
+    integer, intent(out), optional :: iostat
     !> Result: deferred-length character string preserving trailing spaces/tabs
     character(len=:), allocatable :: str
 
@@ -642,8 +642,8 @@ contains
     call get_line_input_char(str, iostat_local, iomsg_local)
 
     ! Propagate iostat if requested, otherwise follow stdlib_io error semantics
-    if (present(stat)) then
-      stat = iostat_local
+    if (present(iostat)) then
+      iostat = iostat_local
     else if (iostat_local /= 0) then
       if (allocated(iomsg_local)) then
         call error_stop(trim(iomsg_local))
