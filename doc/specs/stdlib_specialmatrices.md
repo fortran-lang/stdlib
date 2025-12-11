@@ -90,7 +90,7 @@ Experimental
 
 With the exception of `extended precision` and `quadruple precision`, all the types provided by `stdlib_specialmatrices` benefit from specialized kernels for matrix-vector products accessible via the common `spmv` interface.
 
-- For `tridiagonal` matrices, the LAPACK `lagtm` backend is being used.
+- For `tridiagonal` matrices, the backend is either LAPACK `lagtm` or the generalized routine `glagtm`, depending on the values and types of `alpha` and `beta`.
 
 #### Syntax
 
@@ -109,10 +109,6 @@ With the exception of `extended precision` and `quadruple precision`, all the ty
 - `beta` (optional) : Scalar value of the same type as `y`. It is an `intent(in)` argument. By default `beta = 0`.
 
 - `op` (optional) : In-place operator identifier. Shall be a character(1) argument. It can have any of the following values: `N`: no transpose, `T`: transpose, `H`: hermitian or complex transpose.
-
-@warning
-Due to limitations of the underlying `lapack` driver, currently `alpha` and `beta` can only take one of the values `[-1, 0, 1]` for `tridiagonal` and `symtridiagonal` matrices. See `lagtm` for more details.
-@endwarning
 
 #### Examples
 
