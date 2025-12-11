@@ -12,7 +12,7 @@ module stdlib_specialmatrices
     use stdlib_constants
     use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
         LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
-    use stdlib_extended_lapack_base
+    use stdlib_lapack_extended_base
     implicit none
     private
     public :: tridiagonal

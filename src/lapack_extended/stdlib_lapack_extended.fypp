@@ -3,7 +3,7 @@
 #:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
 #:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
 
-submodule(stdlib_extended_lapack_base) stdlib_extended_lapack
+submodule(stdlib_lapack_extended_base) stdlib_lapack_extended
     implicit none
 contains
     #:for ik,it,ii in LINALG_INT_KINDS_TYPES
@@ -37,7 +37,7 @@ contains
                     b(1_${ik}$, j) = b(1_${ik}$, j) + alpha * temp
                     do i = 2, n - 1
                         temp = dl(i - 1) * x(i - 1, j) + d(i) * x(i, j) + du(i) * x(i + 1, j)
-                        b(i, j) = b (i, j) + alpha * temp
+                        b(i, j) = b(i, j) + alpha * temp
                     end do
                     temp = dl(n - 1) * x(n - 1, j) + d(n) * x(n, j)
                     b(n, j) = b(n, j) + alpha * temp

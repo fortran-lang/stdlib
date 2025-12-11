@@ -163,7 +163,9 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         ${t1}$ :: alpha_, beta_
         integer(ilp) :: n, nrhs, ldx, ldy
         character(1) :: op_
+        #:if t1.startswith('real')
         logical :: is_alpha_special, is_beta_special
+        #:endif
 
         #:if rank == 1
         ${t1}$, pointer :: xmat(:, :), ymat(:, :)
@@ -173,9 +175,10 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         alpha_ = 1.0_${k1}$ ; if (present(alpha)) alpha_ = alpha
         beta_  = 0.0_${k1}$ ; if (present(beta))  beta_  = beta
         op_    = "N"        ; if (present(op))    op_    = op
-
+        #:if t1.startswith('real')
         is_alpha_special = (alpha_ ==  1.0_${k1}$  .or. alpha_ ==  0.0_${k1}$  .or. alpha_ == -1.0_${k1}$)
         is_beta_special  = (beta_  ==  1.0_${k1}$  .or. beta_  ==  0.0_${k1}$  .or. beta_  == -1.0_${k1}$)
+        #:endif
 
         ! Prepare Lapack arguments.
         n = A%n ; ldx = n ; ldy = n ;
