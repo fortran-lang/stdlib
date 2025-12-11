@@ -1,11 +1,11 @@
+if (NOT STDLIB_NO_BITSET)
+  add_subdirectory(bitsets)
+endif()
 add_subdirectory(blas)
 add_subdirectory(lapack)
 
 set(fppFiles
     stdlib_ascii.fypp
-    stdlib_bitsets.fypp
-    stdlib_bitsets_64.fypp
-    stdlib_bitsets_large.fypp
     stdlib_codata_type.fypp
     stdlib_constants.fypp
     stdlib_error.fypp
@@ -52,10 +52,6 @@ set(fppFiles
     stdlib_linalg_matrix_functions.fypp
     stdlib_optval.fypp
     stdlib_selection.fypp
-    stdlib_sorting.fypp
-    stdlib_sorting_ord_sort.fypp
-    stdlib_sorting_sort.fypp
-    stdlib_sorting_sort_adjoint.fypp
     stdlib_sparse_constants.fypp
     stdlib_sparse_conversion.fypp
     stdlib_sparse_kinds.fypp
@@ -82,7 +78,6 @@ set(fppFiles
     stdlib_quadrature_trapz.fypp
     stdlib_quadrature_simps.fypp
     stdlib_random.fypp
-    stdlib_math.fypp
     stdlib_math_linspace.fypp
     stdlib_math_logspace.fypp
     stdlib_math_arange.fypp
@@ -97,7 +92,13 @@ set(fppFiles
     stdlib_strings.fypp
     stdlib_version.fypp
 )
-set(cppFiles stdlib_linalg_constants.fypp)
+set(cppFiles stdlib_linalg_constants.fypp
+    stdlib_math.fypp
+    stdlib_sorting.fypp
+    stdlib_sorting_ord_sort.fypp
+    stdlib_sorting_sort.fypp
+    stdlib_sorting_sort_adjoint.fypp
+    )
 set(f90Files
     stdlib_ansi.f90
     stdlib_ansi_operator.f90
@@ -124,4 +125,6 @@ set(f90Files
 
 configure_stdlib_target(${PROJECT_NAME} f90Files fppFiles cppFiles)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC blas lapack)
+target_link_libraries(${PROJECT_NAME} PUBLIC
+  $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>
+  blas lapack)

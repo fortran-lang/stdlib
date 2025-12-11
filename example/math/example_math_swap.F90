@@ -1,3 +1,4 @@
+#include "macros.inc"
 program example_math_swap
     use stdlib_math, only: swap
     implicit none
@@ -43,6 +44,7 @@ program example_math_swap
         call swap(x,y)
     end block
 
+#if STDLIB_BITSET == 1
     block
         use stdlib_bitsets
         type(bitset_64) :: x, y
@@ -50,5 +52,6 @@ program example_math_swap
         call y%from_string('1111')
         call swap(x,y)
     end block
+#endif
 
 end program example_math_swap  

@@ -1,10 +1,11 @@
+#include "macros.inc"
 #:include "common.fypp"
 
-#:set INT_TYPES_ALT_NAME = list(zip(INT_TYPES, INT_TYPES, INT_KINDS))
-#:set REAL_TYPES_ALT_NAME = list(zip(REAL_TYPES, REAL_TYPES, REAL_KINDS))
-#:set STRING_TYPES_ALT_NAME = list(zip(STRING_TYPES, STRING_TYPES, STRING_KINDS))
-#:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"], ["character(len=len(array))"], ["char"]))
-#:set BITSET_TYPES_ALT_NAME = list(zip(BITSET_TYPES, BITSET_TYPES, BITSET_KINDS))
+#:set INT_TYPES_ALT_NAME = list(zip(INT_TYPES, INT_TYPES, INT_KINDS, INT_CPPS))
+#:set REAL_TYPES_ALT_NAME = list(zip(REAL_TYPES, REAL_TYPES, REAL_KINDS, REAL_CPPS))
+#:set STRING_TYPES_ALT_NAME = list(zip(STRING_TYPES, STRING_TYPES, STRING_KINDS, STRING_CPPS))
+#:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"], ["character(len=len(array))"], ["char"], [""]))
+#:set BITSET_TYPES_ALT_NAME = list(zip(BITSET_TYPES, BITSET_TYPES, BITSET_KINDS, BITSET_CPPS))
 
 #:set INT_INDEX_TYPES_ALT_NAME = list(zip(["int_index", "int_index_low"], ["integer(int_index)", "integer(int_index_low)"], ["default", "low"]))
 
@@ -134,8 +135,10 @@ module stdlib_sorting
     use stdlib_string_type, only: string_type, assignment(=), operator(>), &
         operator(>=), operator(<), operator(<=)
 
+#if STDLIB_BITSET == 1
     use stdlib_bitsets, only: bitset_64, bitset_large, &
         assignment(=), operator(>), operator(>=), operator(<), operator(<=)
+#endif
 
     implicit none
     private
@@ -493,7 +496,8 @@ module stdlib_sorting
 !! sorted data, having O(N) performance on uniformly non-increasing or
 !! non-decreasing data.
 
-#:for t1, t2, name1 in IRSCB_TYPES_ALT_NAME
+#:for t1, t2, name1, cpp1 in IRSCB_TYPES_ALT_NAME
+#:block generate_cpp(cpp_var=cpp1)
         module subroutine ${name1}$_ord_sort( array, work, reverse )
 !! Version: experimental
 !!
@@ -504,6 +508,7 @@ module stdlib_sorting
             logical, intent(in), optional :: reverse
         end subroutine ${name1}$_ord_sort
 
+#:endblock
 #:endfor
 
     end interface ord_sort
@@ -559,7 +564,8 @@ module stdlib_sorting
 !! on the `introsort` of David Musser.
 !! ([Specification](../page/specs/stdlib_sorting.html#sort-sorts-an-input-array))
 
-#:for t1, t2, name1 in IRSCB_TYPES_ALT_NAME
+#:for t1, t2, name1, cpp1 in IRSCB_TYPES_ALT_NAME
+#:block generate_cpp(cpp_var=cpp1)
         pure module subroutine ${name1}$_sort( array, reverse )
 !! Version: experimental
 !!
@@ -572,6 +578,7 @@ module stdlib_sorting
             logical, intent(in), optional :: reverse
         end subroutine ${name1}$_sort
 
+#:endblock
 #:endfor
 
     end interface sort
@@ -591,7 +598,8 @@ module stdlib_sorting
 !! with a value of `.TRUE.` the indices correspond to a non-increasing sort.
 
 #:for ti, tii, namei in IR_INDEX_TYPES_ALT_NAME
-    #:for t1, t2, name1 in IRSCB_TYPES_ALT_NAME
+    #:for t1, t2, name1, cpp1 in IRSCB_TYPES_ALT_NAME
+    #:block generate_cpp(cpp_var=cpp1)
         module subroutine ${name1}$_${namei}$_sort_adjoint( array, adjoint_array, work, iwork, &
             reverse )
 !! Version: experimental
@@ -608,6 +616,7 @@ module stdlib_sorting
             logical, intent(in), optional             :: reverse
         end subroutine ${name1}$_${namei}$_sort_adjoint
 
+    #:endblock
     #:endfor
 #:endfor
 
@@ -628,7 +637,8 @@ module stdlib_sorting
 !! with a value of `.TRUE.` the indices correspond to a non-increasing sort.
 
 #:for ki, ti, namei in INT_INDEX_TYPES_ALT_NAME
-    #:for t1, t2, name1 in IRSCB_TYPES_ALT_NAME
+    #:for t1, t2, name1, cpp1 in IRSCB_TYPES_ALT_NAME
+    #:block generate_cpp(cpp_var=cpp1)
 !> Version: experimental
 !>
 !> `${name1}$_sort_index_${namei}$( array, index[, work, iwork, reverse] )` sorts
@@ -637,6 +647,7 @@ module stdlib_sorting
 !> and returns the sorted `ARRAY` and an array `INDEX` of indices in the
 !> order that would sort the input `ARRAY` in the desired direction.
         module procedure ${name1}$_sort_index_${namei}$
+    #:endblock
     #:endfor
 #:endfor
 
@@ -645,7 +656,8 @@ module stdlib_sorting
 contains
 
 #:for ki, ti, namei in INT_INDEX_TYPES_ALT_NAME
-    #:for t1, t2, name1 in IRSCB_TYPES_ALT_NAME
+    #:for t1, t2, name1, cpp1 in IRSCB_TYPES_ALT_NAME
+    #:block generate_cpp(cpp_var=cpp1)
         subroutine ${name1}$_sort_index_${namei}$( array, index, work, iwork, &
             reverse )
 !! Version: experimental
@@ -681,6 +693,7 @@ contains
 
         end subroutine ${name1}$_sort_index_${namei}$
 
+    #:endblock
     #:endfor
 #:endfor
 
