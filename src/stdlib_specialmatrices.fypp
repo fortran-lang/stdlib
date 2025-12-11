@@ -12,6 +12,7 @@ module stdlib_specialmatrices
     use stdlib_constants
     use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
         LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
+    use stdlib_lapack_extended_base
     implicit none
     private
     public :: tridiagonal
@@ -99,7 +100,7 @@ module stdlib_specialmatrices
             !! Matrix dimension.
             type(tridiagonal_${s1}$_type) :: A
             !! Corresponding Tridiagonal matrix.
-        end function   
+        end function
 
         module function initialize_tridiagonal_impure_${s1}$(dl, dv, du, err) result(A)
             !! Construct a `tridiagonal` matrix from the rank-1 arrays
@@ -122,7 +123,7 @@ module stdlib_specialmatrices
             !! Error handling.
             type(tridiagonal_${s1}$_type) :: A
             !! Corresponding Tridiagonal matrix.
-        end function   
+        end function
         #:endfor
     end interface
 
@@ -145,8 +146,8 @@ module stdlib_specialmatrices
          type(tridiagonal_${s1}$_type), intent(in) :: A
             ${t1}$, intent(in), contiguous, target :: x${ranksuffix(rank)}$
             ${t1}$, intent(inout), contiguous, target :: y${ranksuffix(rank)}$
-            real(${k1}$), intent(in), optional :: alpha
-            real(${k1}$), intent(in), optional :: beta
+            ${t1}$, intent(in), optional :: alpha
+            ${t1}$, intent(in), optional :: beta
             character(1), intent(in), optional :: op
         end subroutine
         #:endfor

@@ -3,6 +3,7 @@ if (NOT STDLIB_NO_BITSET)
 endif()
 add_subdirectory(blas)
 add_subdirectory(lapack)
+add_subdirectory(lapack_extended)
 
 set(fppFiles
     stdlib_ascii.fypp
@@ -124,4 +125,4 @@ configure_stdlib_target(${PROJECT_NAME} f90Files fppFiles cppFiles)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
   $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>
-  blas lapack)
+  blas lapack lapack_extended)
