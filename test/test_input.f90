@@ -1,7 +1,6 @@
 module test_input
-  use testdrive, only : new_unittest, unittest_type, error_type, assert_equal
+  use testdrive, only : new_unittest, unittest_type, error_type, check
   use stdlib_io, only : input
-  use stdlib_test_utils, only : write_test_input
   implicit none
   private
   public :: collect
@@ -25,7 +24,7 @@ contains
     type(error_type), allocatable, intent(out) :: error
     character(len=:), allocatable :: s
 
-    call write_test_input("  abc  ")
+    call feed_stdin("  abc  ")
     s = input()
     call assert_equal(error, s, "  abc  ")
   end subroutine test_input_whitespace

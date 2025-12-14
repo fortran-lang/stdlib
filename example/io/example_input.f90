@@ -1,6 +1,6 @@
 program example_input
   use stdlib_io, only : input
-  implicit none
+  implicit none(type, external)
 
   character(len=:), allocatable :: name
 

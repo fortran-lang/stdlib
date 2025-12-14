@@ -6,7 +6,7 @@ module stdlib_io
   !! Provides a support for file handling
   !! ([Specification](../page/specs/stdlib_io.html))
 
-  use, intrinsic :: iso_fortran_env, only : input_unit
+  use, intrinsic :: iso_fortran_env, only : input_unit, output_unit
   use stdlib_kinds, only: sp, dp, xdp, qp, &
       int8, int16, int32, int64
   use stdlib_error, only: error_stop, state_type, STDLIB_IO_ERROR
@@ -607,14 +607,12 @@ contains
   !> Version: experimental
   !>
   !> Read a line from standard input with an optional prompt.
-  !! Similar to Python's input().
   !!
   !! - Preserves trailing whitespace
   !! - Returns allocatable character string
-  !! - Does not perform type conversion
-  !! - Does not stop on error unless caller chooses to
+  !! - Does not perform any type conversion; the input is returned as character data
+  !! - If `iostat` is present, errors are reported via `iostat`/`iomsg` instead of triggering `error_stop`
   function input_char(prompt, iostat, iomsg) result(line)
-    use, intrinsic :: iso_fortran_env, only : output_unit
     character(len=*), intent(in), optional :: prompt
     integer, intent(out), optional :: iostat
     character(len=:), allocatable, optional :: iomsg
@@ -627,7 +625,7 @@ contains
       write(output_unit, '(a)', advance='no') prompt
     end if
 
-    ! Read line from stdin
+    ! Read line from standard input
     call get_line_input_char(line, stat, iomsg)
 
     if (present(iostat)) then
