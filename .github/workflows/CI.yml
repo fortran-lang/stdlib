@@ -26,6 +26,7 @@ jobs:
           - {compiler: gcc, version: 12}
           - {compiler: gcc, version: 13}
           - {compiler: gcc, version: 14}
+          - {compiler: gcc, version: 15}
           - {compiler: intel, version: '2024.1'}          
         build: [cmake]        
         include:
