@@ -16,7 +16,7 @@ module stdlib_io
   implicit none
   private
   ! Public API
-  public :: loadtxt, savetxt, open, get_line, get_file , input
+  public :: loadtxt, savetxt, open, get_line, get_file, input
 
   !! version: experimental 
   !!
@@ -636,7 +636,6 @@ contains
       call error_stop("input: error reading from standard input")
     end if
   end function input_char
-
 
   !> Version: experimental
   !>

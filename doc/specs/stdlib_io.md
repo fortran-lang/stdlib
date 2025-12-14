@@ -268,14 +268,17 @@ No numeric conversion is performed.
 ### Arguments
 
 `prompt` (optional):  
-A character expression containing a prompt to be displayed before reading input.
+A character expression containing a prompt to be displayed before reading input.  
+This argument is `intent(in)`.
 
 `iostat` (optional):  
 Default integer, contains status of reading from standard input.
 Zero indicates success.
+This argument is `intent(out)`.
 
 `iomsg` (optional):  
 Deferred-length character variable containing an error message if `iostat` is non-zero.
+This argument is `intent(out)`.
 
 ### Return value
 
