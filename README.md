@@ -88,7 +88,7 @@ The following combinations are tested on the default branch of stdlib:
 Name | Version | Platform | Architecture
 --- | --- | --- | ---
 GCC Fortran | 10, 11, 12, 13, 14 | Ubuntu 24.04.3 LTS | x86_64
-GCC Fortran | 11, 12, 13, 14 | macOS 14.8.2 (23J126) | Arm64
+GCC Fortran | 11, 12, 13, 14, 15 | macOS 14.8.2 (23J126) | Arm64
 GCC Fortran (MSYS) | 13 | Windows Server 2022 (10.0.20348 Build 1547) | x86_64
 GCC Fortran (MinGW) | 13 | Windows Server 2022 (10.0.20348 Build 1547) | x86_64
 Intel oneAPI LLVM | 2024.1 | Ubuntu 24.04.3 LTS | x86_64
