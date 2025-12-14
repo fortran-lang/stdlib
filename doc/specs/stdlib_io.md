@@ -246,6 +246,52 @@ Read a whole line from a formatted unit into a string variable
 ```fortran
 {!example/io/example_get_line.f90!}
 ```
+## `input` — read a line from standard input
+
+### Status
+
+Experimental
+
+### Description
+
+Reads a line from standard input, optionally displaying a prompt.
+This is similar to Python’s `input()` function.
+
+The function returns the input as an allocatable character string.
+Trailing spaces and tabs are preserved.
+No numeric conversion is performed.
+
+### Syntax
+
+`line = ` [[stdlib_io(module):input(function)]] `([prompt][, iostat][, iomsg])`
+
+### Arguments
+
+`prompt` (optional):  
+A character expression containing a prompt to be displayed before reading input.
+
+`iostat` (optional):  
+Default integer, contains status of reading from standard input.
+Zero indicates success.
+
+`iomsg` (optional):  
+Deferred-length character variable containing an error message if `iostat` is non-zero.
+
+### Return value
+
+Returns a deferred-length allocatable `character` variable containing the input line.
+
+### Notes
+
+- Trailing spaces and tabs are preserved
+- No type conversion is performed
+- To convert to numbers, use `read(line, *)`
+
+### Example
+
+```fortran
+{!example/io/example_input.f90!}
+```
 
 ## Formatting constants
 

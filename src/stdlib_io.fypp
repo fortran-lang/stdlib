@@ -16,7 +16,7 @@ module stdlib_io
   implicit none
   private
   ! Public API
-  public :: loadtxt, savetxt, open, get_line, get_file
+  public :: loadtxt, savetxt, open, get_line, get_file , input
 
   !! version: experimental 
   !!
@@ -81,6 +81,13 @@ module stdlib_io
     module procedure :: get_line_input_char
     module procedure :: get_line_input_string
   end interface get_line
+
+  !> Version: experimental
+  !>
+  !> Read a line from standard input with an optional prompt
+  interface input
+    module procedure :: input_char
+  end interface input
 
   interface loadtxt
     !! version: experimental
@@ -596,6 +603,40 @@ contains
 
     call get_line(input_unit, line, iostat, iomsg)
   end subroutine get_line_input_char
+
+  !> Version: experimental
+  !>
+  !> Read a line from standard input with an optional prompt.
+  !! Similar to Python's input().
+  !!
+  !! - Preserves trailing whitespace
+  !! - Returns allocatable character string
+  !! - Does not perform type conversion
+  !! - Does not stop on error unless caller chooses to
+  function input_char(prompt, iostat, iomsg) result(line)
+    use, intrinsic :: iso_fortran_env, only : output_unit
+    character(len=*), intent(in), optional :: prompt
+    integer, intent(out), optional :: iostat
+    character(len=:), allocatable, optional :: iomsg
+    character(len=:), allocatable :: line
+
+    integer :: stat
+
+    ! Print prompt without newline
+    if (present(prompt)) then
+      write(output_unit, '(a)', advance='no') prompt
+    end if
+
+    ! Read line from stdin
+    call get_line_input_char(line, stat, iomsg)
+
+    if (present(iostat)) then
+      iostat = stat
+    else if (stat /= 0) then
+      call error_stop("input: error reading from standard input")
+    end if
+  end function input_char
+
 
   !> Version: experimental
   !>
