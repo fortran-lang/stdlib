@@ -56,6 +56,13 @@ if(STDLIB_NO_BITSET)
   add_compile_definitions(STDLIB_NO_BITSET)
 endif() 
 
+option(STDLIB_NO_STATS "Does not compile STDLIB STATS" OFF)
+
+if(STDLIB_NO_STATS)
+  message(STATUS "Disable stdlib stats module")
+  add_compile_definitions(STDLIB_NO_STATS)
+endif() 
+
 option(FIND_BLAS "Find external BLAS and LAPACK" ON)
 
 # --- find external BLAS and LAPACK
