@@ -1,5 +1,5 @@
 module test_input
-  use testdrive, only : new_unittest, unittest_type, error_type, check
+  use testdrive, only : new_unittest, unittest_type, error_type, assert_equal
   use stdlib_io, only : input
   implicit none
   private
@@ -19,6 +19,14 @@ contains
     ]
   end subroutine collect
 
+  subroutine feed_stdin(text)
+    use, intrinsic :: iso_fortran_env, only : input_unit
+    character(len=*), intent(in) :: text
+
+    open(unit=input_unit, status="scratch", action="readwrite")
+    write(input_unit, '(a)') text
+    rewind(input_unit)
+  end subroutine feed_stdin
 
   subroutine test_input_whitespace(error)
     type(error_type), allocatable, intent(out) :: error
@@ -34,7 +42,7 @@ contains
     type(error_type), allocatable, intent(out) :: error
     character(len=:), allocatable :: s
 
-    call write_test_input("abc")
+    call feed_stdin("abc")
     s = input("Enter value: ")
     call assert_equal(error, s, "abc")
   end subroutine test_input_prompt
@@ -45,7 +53,7 @@ contains
     character(len=:), allocatable :: s
     integer :: ios
 
-    call write_test_input("abc")
+    call feed_stdin("abc")
     s = input(iostat=ios)
     call assert_equal(error, ios, 0)
     call assert_equal(error, s, "abc")
@@ -57,7 +65,7 @@ contains
     character(len=:), allocatable :: s
     character(len=:), allocatable :: msg
 
-    call write_test_input("abc")
+    call feed_stdin("abc")
     s = input(iomsg=msg)
     call assert_equal(error, s, "abc")
   end subroutine test_input_iomsg
@@ -67,7 +75,7 @@ contains
     type(error_type), allocatable, intent(out) :: error
     character(len=:), allocatable :: s
 
-    call write_test_input("abc")
+    call feed_stdin("abc")
     s = input()
     call assert_equal(error, s, "abc")
   end subroutine test_input_no_args
