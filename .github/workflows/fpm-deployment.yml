@@ -104,7 +104,6 @@ jobs:
       - run: | # Use fpm gnu ci to check xdp and qp
           python config/fypp_deployment.py --with_xdp --with_qp
           fpm test --profile release --flag '-DWITH_XDP -DWITH_QP -coverage'
-          fpm run --example --profile release --flag '-DWITH_XDP -DWITH_QP -coverage'
 
       - name: Create coverage report
         run: |
@@ -113,6 +112,7 @@ jobs:
           lcov --capture --initial --base-directory . --directory ${{ env.COV_DIR }} --output-file ${{ env.COV_DIR }}/coverage.base --ignore-errors mismatch
           lcov --capture           --base-directory . --directory ${{ env.COV_DIR }} --output-file ${{ env.COV_DIR }}/coverage.capture --ignore-errors mismatch
           lcov --add-tracefile ${{ env.COV_DIR }}/coverage.base --add-tracefile ${{ env.COV_DIR }}/coverage.capture --output-file ${{ env.COV_DIR }}/coverage.info --ignore-errors mismatch
+          lcov --remove ${{ env.COV_DIR }}/coverage.info '*/example/*' --output-file ${{ env.COV_DIR }}/coverage.info
         env:
             COV_DIR: build/coverage
 
