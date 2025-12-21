@@ -71,6 +71,28 @@ contains
                     if (allocated(error)) return
                 end do
             end do
+
+            ! Test y = A @ x for random values of alpha and beta
+            y1 = 0.0_wp
+            call random_number(alpha)
+            call random_number(beta)
+            call random_number(y2)
+            y1 = alpha * matmul(Amat, x) + beta * y2
+            call spmv(A, x, y2, alpha=alpha, beta=beta)
+            call check(error, all_close(y1, y2), .true.)
+            if (allocated(error)) return
+
+            ! Test y = A.T @ x for random values of alpha and beta
+            y1 = 0.0_wp
+            call random_number(alpha)
+            call random_number(beta)
+            call random_number(y2)
+            y1 = alpha * matmul(transpose(Amat), x) + beta * y2
+            call spmv(A, x, y2, alpha=alpha, beta=beta, op="T")
+            call check(error, all_close(y1, y2), .true.)
+            if (allocated(error)) return
+
+
         end block
         block
             integer, parameter :: wp = dp
@@ -119,6 +141,28 @@ contains
                     if (allocated(error)) return
                 end do
             end do
+
+            ! Test y = A @ x for random values of alpha and beta
+            y1 = 0.0_wp
+            call random_number(alpha)
+            call random_number(beta)
+            call random_number(y2)
+            y1 = alpha * matmul(Amat, x) + beta * y2
+            call spmv(A, x, y2, alpha=alpha, beta=beta)
+            call check(error, all_close(y1, y2), .true.)
+            if (allocated(error)) return
+
+            ! Test y = A.T @ x for random values of alpha and beta
+            y1 = 0.0_wp
+            call random_number(alpha)
+            call random_number(beta)
+            call random_number(y2)
+            y1 = alpha * matmul(transpose(Amat), x) + beta * y2
+            call spmv(A, x, y2, alpha=alpha, beta=beta, op="T")
+            call check(error, all_close(y1, y2), .true.)
+            if (allocated(error)) return
+
+
         end block
     end subroutine
 
