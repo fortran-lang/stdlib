@@ -3,7 +3,6 @@ submodule(stdlib_linalg_iterative_solvers) stdlib_linalg_iterative_cg
     use stdlib_kinds
     use stdlib_sparse
     use stdlib_constants
-    use stdlib_linalg_iterative_solvers
     use stdlib_optval, only: optval
     implicit none
 
