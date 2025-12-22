@@ -63,6 +63,7 @@ set(fppFiles
     stdlib_specialfunctions.fypp
     stdlib_specialmatrices.fypp
     stdlib_specialmatrices_tridiagonal.fypp
+    stdlib_specialmatrices_sym_tridiagonal.fypp
     stdlib_quadrature.fypp
     stdlib_quadrature_trapz.fypp
     stdlib_quadrature_simps.fypp
