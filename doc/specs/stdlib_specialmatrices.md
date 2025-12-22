@@ -12,7 +12,7 @@ The `stdlib_specialmatrices` module provides derived types and specialized drive
 These include:
 
 - Tridiagonal matrices
-- Symmetric Tridiagonal matrices (not yet supported)
+- Symmetric tridiagonal matrices
 - Circulant matrices (not yet supported)
 - Toeplitz matrices (not yet supported)
 - Hankel matrices (not yet supported)
@@ -32,7 +32,7 @@ Experimental
 
 #### Description
 
-Tridiagonal matrices are ubiquituous in scientific computing and often appear when discretizing 1D differential operators.
+Tridiagonal matrices are ubiquitous in scientific computing and often appear when discretizing 1D differential operators.
 A generic tridiagonal matrix has the following structure:
 $$
     A
@@ -76,6 +76,58 @@ Tridiagonal matrices are available with all supported data types as `tridiagonal
 {!example/specialmatrices/example_tridiagonal_dp_type.f90!}
 ```
 
+### Symmetric tridiagonal matrices {#Sym_tridiagonal}
+
+#### Status
+
+Experimental
+
+#### Description
+
+Symmetric tridiagonal matrices are a special case of tridiagonal matrices in which the subdiagonal and superdiagonal are identical.
+A generic symmetric tridiagonal matrix has the following structure:
+$$
+    A
+    =
+    \begin{bmatrix}
+        a_1 &  b_1  \\
+        b_1 &  a_2      &  b_2  \\
+            &  \ddots   &  \ddots   &  \ddots   \\
+            &           &  b_{n-2} &  a_{n-1}  &  b_{n-1} \\
+            &           &           &  b_{n-1} &  a_n
+    \end{bmatrix}.
+$$
+Hence, only one vector of size `n` and one vector of size `n-1` need to be stored to fully represent the matrix.
+Interfaces to the most common ones will soon be provided by `stdlib_specialmatrices`.
+Symmetric tridiagonal matrices are available with all supported data types as `sym_tridiagonal_<kind>_type`, for example:
+
+- `sym_tridiagonal_sp_type`   : Symmetric tridiagonal matrix of size `n` with `real`/`single precision` data.
+- `sym_tridiagonal_dp_type`   : Symmetric tridiagonal matrix of size `n` with `real`/`double precision` data.
+- `sym_tridiagonal_xdp_type`  : Symmetric tridiagonal matrix of size `n` with `real`/`extended precision` data.
+- `sym_tridiagonal_qp_type`   : Symmetric tridiagonal matrix of size `n` with `real`/`quadruple precision` data.
+- `sym_tridiagonal_csp_type`  : Symmetric tridiagonal matrix of size `n` with `complex`/`single precision` data.
+- `sym_tridiagonal_cdp_type`  : Symmetric tridiagonal matrix of size `n` with `complex`/`double precision` data.
+- `sym_tridiagonal_cxdp_type` : Symmetric tridiagonal matrix of size `n` with `complex`/`extended precision` data.
+- `sym_tridiagonal_cqp_type`  : Symmetric tridiagonal matrix of size `n` with `complex`/`quadruple precision` data.
+
+
+#### Syntax
+
+- To construct a symmetric tridiagonal matrix from already allocated arrays `du` (off-diagonal, size `n-1`) and `dv` (main diagonal, size `n`):
+
+`A = ` [[stdlib_specialmatrices(module):sym_tridiagonal(interface)]] `(du, dv)`
+
+- To construct a symmetric tridiagonal matrix of size `n x n` with constant diagonal elements `du` and `dv`:
+
+`A = ` [[stdlib_specialmatrices(module):sym_tridiagonal(interface)]] `(du, dv, n)`
+
+#### Example
+
+```fortran
+{!example/specialmatrices/example_sym_tridiagonal_dp_type.f90!}
+```
+
+
 ## Specialized drivers for linear algebra tasks
 
 Below is a list of all the specialized drivers for linear algebra tasks currently provided by the `stdlib_specialmatrices` module.
@@ -90,7 +142,7 @@ Experimental
 
 With the exception of `extended precision` and `quadruple precision`, all the types provided by `stdlib_specialmatrices` benefit from specialized kernels for matrix-vector products accessible via the common `spmv` interface.
 
-- For `tridiagonal` matrices, the backend is either LAPACK `lagtm` or the generalized routine `glagtm`, depending on the values and types of `alpha` and `beta`.
+- For `tridiagonal` and `symmetric tridiagonal` matrices, the backend is either LAPACK `lagtm` or the generalized routine `glagtm`, depending on the values and types of `alpha` and `beta`.
 
 #### Syntax
 
@@ -114,6 +166,9 @@ With the exception of `extended precision` and `quadruple precision`, all the ty
 
 ```fortran
 {!example/specialmatrices/example_specialmatrices_dp_spmv.f90!}
+```
+```fortran
+{!example/specialmatrices/example_specialmatrices_cdp_spmv.f90!}
 ```
 
 ## Utility functions
@@ -186,7 +241,7 @@ Experimental
 
 #### Description
 
-The definition of all standard artihmetic operators have been overloaded to be applicable for the matrix types defined by `stdlib_specialmatrices`:
+The definition of all standard arithmetic operators have been overloaded to be applicable for the matrix types defined by `stdlib_specialmatrices`:
 
 - Overloading the `+` operator for adding two matrices of the same type and kind.
 - Overloading the `-` operator for subtracting two matrices of the same type and kind.
