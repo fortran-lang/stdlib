@@ -254,7 +254,7 @@ contains
 
 
   #:for k1, t1 in KINDS_TYPES
-    subroutine savetxt_${t1[0]}$${k1}$(filename, d, delimiter)
+    subroutine savetxt_${t1[0]}$${k1}$(filename, d, delimiter, header, footer, comment)
       !! version: experimental
       !!
       !! Saves a 2D array into a text file.
