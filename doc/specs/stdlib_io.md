@@ -106,7 +106,7 @@ Saves a rank-2 `array` into a text file.
 
 ### Syntax
 
-`call ` [[stdlib_io(module):savetxt(interface)]] `(array [, filename | unit] [,  delimiter] [, fmt] [, comments] [, header])`
+`call ` [[stdlib_io(module):savetxt(interface)]] `(array [, filename | unit] [,  delimiter] [, fmt] [, header] [, footer] [, comments])`
 
 ### Arguments
 
