@@ -306,11 +306,11 @@ contains
         footer_ = optval(footer, '')
   
         #:if 'real' in t1
-          default_fmt = FMT_REAL_${k1}$(1:len(FMT_REAL_${k1}$)-1)
+          default_fmt = FMT_REAL_${k1}$(2:len(FMT_REAL_${k1}$)-1)
         #:elif 'complex' in t1
-          default_fmt = FMT_COMPLEX_${k1}$(1:11)//delim_str//FMT_COMPLEX_${k1}$(14:23)
+          default_fmt = FMT_COMPLEX_${k1}$(2:11)//delim_str//FMT_COMPLEX_${k1}$(14:23)
         #:elif 'integer' in t1
-          default_fmt = FMT_INT(1:len(FMT_INT)-1)
+          default_fmt = FMT_INT(2:len(FMT_INT)-1)
         #:endif
         fmt_ = "(*("//optval(fmt, default_fmt)//",:,"//delim_str//"))"
   
