@@ -264,7 +264,7 @@ contains
       !!
       character(len=*), intent(in) :: filename  ! File to save the array to
       ${t1}$, intent(in) :: d(:,:)           ! The 2D array to save
-      character(len=1), intent(in), optional :: delimiter  ! Column delimiter. Default is a space.
+      character(len=*), intent(in), optional :: delimiter  ! Column delimiter. Default is a space.
       character(len=*), intent(in), optional :: header  !< If present, text to write before data.
       character(len=*), intent(in), optional :: footer  !< If present, text to write after data.
       character(len=1), intent(in), optional :: comment  !< Comment character. Default "#"
@@ -279,8 +279,8 @@ contains
       !!```
       !!
       integer :: s, i, ios
-      character(len=1) :: delimiter_
-      character(len=3) :: delim_str
+      character(len=:), allocatable :: delimiter_
+      character(len=:), allocatable :: delim_str
       character(len=:), allocatable :: fmt_
       character(len=1024) :: iomsg, msgout
       character(len=1), allocatable :: comment_
