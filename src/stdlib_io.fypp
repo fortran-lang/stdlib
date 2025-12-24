@@ -98,9 +98,11 @@ module stdlib_io
     !!
     !! Saves a 2D array into a text file
     !! ([Specification](../page/specs/stdlib_io.html#description_2))
+  #:for a1 in ['f', 'u']
     #:for k1, t1 in KINDS_TYPES
-      module procedure savetxt_${t1[0]}$${k1}$
+      module procedure savetxt_${t1[0]}$${k1}$${a1}$
     #:endfor
+  #:endfor
   end interface
 
 contains
@@ -252,85 +254,100 @@ contains
     end subroutine loadtxt_${t1[0]}$${k1}$
   #:endfor
 
-
-  #:for k1, t1 in KINDS_TYPES
-    subroutine savetxt_${t1[0]}$${k1}$(filename, d, delimiter, fmt, header, footer, comment)
-      !! version: experimental
-      !!
-      !! Saves a 2D array into a text file.
-      !!
-      !! Arguments
-      !! ---------
-      !!
-      character(len=*), intent(in) :: filename  ! File to save the array to
-      ${t1}$, intent(in) :: d(:,:)           ! The 2D array to save
-      character(len=*), intent(in), optional :: delimiter  ! Column delimiter. Default is a space.
-      character(len=*), intent(in), optional :: header  !< If present, text to write before data.
-      character(len=*), intent(in), optional :: footer  !< If present, text to write after data.
-      character(len=1), intent(in), optional :: comment  !< Comment character. Default "#"
-      character(len=*), intent(in), optional :: fmt  !< Comment character. Default "#"
-
-      !!
-      !! Example
-      !! -------
-      !!
-      !!```fortran
-      !! ${t1}$ :: data(3, 2)
-      !! call savetxt("log.txt", data)
-      !!```
-      !!
-      integer :: s, i, ios
-      character(len=:), allocatable :: delimiter_
-      character(len=:), allocatable :: delim_str
-      character(len=:), allocatable :: default_fmt
-      character(len=:), allocatable :: fmt_
-      character(len=1024) :: iomsg, msgout
-      character(len=1), allocatable :: comment_
-      character(len=:), allocatable :: header_
-      character(len=:), allocatable :: footer_
-
-      delimiter_ = optval(delimiter, delimiter_default)
-      delim_str = "'"//delimiter_//"'"
-
-      comment_ = optval(comment, comment_default)
-      header_ = optval(header, '')
-      footer_ = optval(footer, '')
-
-      #:if 'real' in t1
-        default_fmt = FMT_REAL_${k1}$(1:len(FMT_REAL_${k1}$)-1)
-      #:elif 'complex' in t1
-        default_fmt = FMT_COMPLEX_${k1}$(1:11)//delim_str//FMT_COMPLEX_${k1}$(14:23)
-      #:elif 'integer' in t1
-        default_fmt = FMT_INT(1:len(FMT_INT)-1)
-      #:endif
-      ! fmt_ = "(*("//fmt_//",:,"//delimiter_//"))"
-      fmt_ = "(*("//optval(fmt, default_fmt)//",:,"//delim_str//"))"
-
-      s = open(filename, "w")
-      if (header_ /= '') write (s, '(A)') comment_//" "//header_
-      do i = 1, size(d, 1)
-        #:if 'real' in t1 or 'complex' in t1 or 'integer' in t1
-          write(s, fmt_, &
-        #:else
-          write(s, *, &
+  #:for arg1 in ['filename', 'unit']
+    #:for k1, t1 in KINDS_TYPES
+      subroutine savetxt_${t1[0]}$${k1}$${arg1[0]}$(${arg1}$, d, delimiter, fmt, header, footer, comment)
+        !! version: experimental
+        !!
+        !! Saves a 2D array into a text file.
+        !!
+        !! Arguments
+        !! ---------
+        !!
+        #:if 'filename' in arg1
+        character(len=*), intent(in) :: filename  ! File to save the array to
+        #:elif 'unit' in arg1
+        integer, intent(in) :: unit
         #:endif
-                iostat=ios,iomsg=iomsg) d(i, :)
+        ${t1}$, intent(in) :: d(:,:)           ! The 2D array to save
+        character(len=*), intent(in), optional :: delimiter  ! Column delimiter. Default is a space.
+        character(len=*), intent(in), optional :: header  !< If present, text to write before data.
+        character(len=*), intent(in), optional :: footer  !< If present, text to write after data.
+        character(len=1), intent(in), optional :: comment  !< Comment character. Default "#"
+        character(len=*), intent(in), optional :: fmt  !< Comment character. Default "#"
+  
+        !!
+        !! Example
+        !! -------
+        !!
+        !!```fortran
+        !! ${t1}$ :: data(3, 2)
+        !! call savetxt("log.txt", data)
+        !!```
+        !!
+        integer :: i, ios
+        character(len=:), allocatable :: delimiter_
+        character(len=:), allocatable :: delim_str
+        character(len=:), allocatable :: default_fmt
+        character(len=:), allocatable :: fmt_
+        character(len=1024) :: iomsg, msgout
+        character(len=1), allocatable :: comment_
+        character(len=:), allocatable :: header_
+        character(len=:), allocatable :: footer_
+        #:if 'filename' in arg1
+        integer :: unit
+        #:endif
+  
+        delimiter_ = optval(delimiter, delimiter_default)
+        delim_str = "'"//delimiter_//"'"
+  
+        comment_ = optval(comment, comment_default)
+        header_ = optval(header, '')
+        footer_ = optval(footer, '')
+  
+        #:if 'real' in t1
+          default_fmt = FMT_REAL_${k1}$(1:len(FMT_REAL_${k1}$)-1)
+        #:elif 'complex' in t1
+          default_fmt = FMT_COMPLEX_${k1}$(1:11)//delim_str//FMT_COMPLEX_${k1}$(14:23)
+        #:elif 'integer' in t1
+          default_fmt = FMT_INT(1:len(FMT_INT)-1)
+        #:endif
+        fmt_ = "(*("//optval(fmt, default_fmt)//",:,"//delim_str//"))"
+  
+        #:if 'filename' in arg1
+        unit = open(filename, "w")
+        #:endif
+        if (header_ /= '') write (unit, '(A)') comment_//" "//header_
+        do i = 1, size(d, 1)
+          #:if 'real' in t1 or 'complex' in t1 or 'integer' in t1
+            write(unit, fmt_, &
+          #:else
+            write(unit, *, &
+          #:endif
+                  iostat=ios,iomsg=iomsg) d(i, :)
+  
+          if (ios/=0) then 
+             write(msgout,1) trim(iomsg),size(d,2),i,&
+               #:if 'filename' in arg1
+                 trim(filename)
+               #:else
+                 unit
+               #:endif
+             call error_stop(msg=trim(msgout))
+          end if           
+  
+        end do
+        if (footer_ /= '') write (unit, '(A)') comment_//" "//footer_
+  
+        #:if 'filename' in arg1
+        close(unit)
+        #:endif
 
-        if (ios/=0) then 
-           write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
-           call error_stop(msg=trim(msgout))
-        end if           
-
-      end do
-      if (footer_ /= '') write (s, '(A)') comment_//" "//footer_
-
-      close(s)
-
-      1 format('savetxt: error <',a,'> writing ',i0,' values to line ',i0,' of ',a,'.')
-
-    end subroutine savetxt_${t1[0]}$${k1}$
+        1 format('savetxt: error <',a,'> writing ',i0,' values to line ',i0,' of ',a,'.')
+  
+      end subroutine savetxt_${t1[0]}$${k1}$${arg1[0]}$
+    #:endfor
   #:endfor
-
 
   integer function number_of_columns(s, skiprows, delimiter)
     !! version: experimental
