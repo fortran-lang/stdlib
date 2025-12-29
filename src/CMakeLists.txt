@@ -3,6 +3,10 @@ if (NOT STDLIB_NO_BITSET)
 endif()
 add_subdirectory(blas)
 add_subdirectory(lapack)
+add_subdirectory(lapack_extended)
+if (NOT STDLIB_NO_STATS)
+  add_subdirectory(stats)
+endif()
 
 set(fppFiles
     stdlib_ascii.fypp
@@ -61,19 +65,6 @@ set(fppFiles
     stdlib_specialfunctions.fypp
     stdlib_specialmatrices.fypp
     stdlib_specialmatrices_tridiagonal.fypp
-    stdlib_stats.fypp
-    stdlib_stats_corr.fypp
-    stdlib_stats_cov.fypp
-    stdlib_stats_mean.fypp
-    stdlib_stats_median.fypp
-    stdlib_stats_moment.fypp
-    stdlib_stats_moment_all.fypp
-    stdlib_stats_moment_mask.fypp
-    stdlib_stats_moment_scalar.fypp
-    stdlib_stats_distribution_uniform.fypp
-    stdlib_stats_distribution_normal.fypp
-    stdlib_stats_distribution_exponential.fypp
-    stdlib_stats_var.fypp
     stdlib_quadrature.fypp
     stdlib_quadrature_trapz.fypp
     stdlib_quadrature_simps.fypp
@@ -127,4 +118,5 @@ configure_stdlib_target(${PROJECT_NAME} f90Files fppFiles cppFiles)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
   $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>
-  blas lapack)
+  $<$<NOT:$<BOOL:${STDLIB_NO_STATS}>>:stats>
+  blas lapack lapack_extended)
