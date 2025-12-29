@@ -34,7 +34,7 @@ void process_create_windows(const char* cmd, const char* stdin_stream,
                                                   
     STARTUPINFO si;
     PROCESS_INFORMATION pi;
-    HANDLE hStdout = NULL, hStderr = NULL;
+    HANDLE hStdout = NULL, hStderr = NULL, hStdin = NULL;
     SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES), NULL, TRUE };
     FILE* stdin_fp = NULL;
     
@@ -57,6 +57,23 @@ void process_create_windows(const char* cmd, const char* stdin_stream,
         fputs(stdin_stream, stdin_fp);
         fclose(stdin_fp);
     }
+
+    // Open stdin file if provided, otherwise use the null device
+    if (stdin_file) {
+        hStdin = CreateFile(stdin_file, GENERIC_READ, 0, &sa, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+        if (hStdin == INVALID_HANDLE_VALUE) {
+            fprintf(stderr, "Failed to open stdin file for reading\n");
+            return;
+        }
+    } else {
+        hStdin = CreateFile("NUL", GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+        if (hStdin == INVALID_HANDLE_VALUE) {
+            fprintf(stderr, "Failed to open null device for stdin\n");
+            return;
+        }
+    }
+    si.hStdInput = hStdin;
+    si.dwFlags |= STARTF_USESTDHANDLES;
 
     // Open stdout file if provided, otherwise use the null device
     if (stdout_file) {
@@ -92,11 +109,10 @@ void process_create_windows(const char* cmd, const char* stdin_stream,
     si.hStdError = hStderr;
     si.dwFlags |= STARTF_USESTDHANDLES;
     
-    // Prepare the command line with redirected stdin
+    // Prepare the command line
     char* full_cmd;
     size_t cmd_len = strlen(cmd);
-    size_t stdin_len = stdin_file ? strlen(stdin_file) : 0;    
-    size_t full_cmd_len = cmd_len + stdin_len + 5;
+    size_t full_cmd_len = cmd_len + 1;
     full_cmd = (char*)malloc(full_cmd_len);
     if (!full_cmd) {
         fprintf(stderr, "Failed to allocate memory for full_cmd\n");
@@ -104,11 +120,8 @@ void process_create_windows(const char* cmd, const char* stdin_stream,
     }
     
     // Use full_cmd as needed (e.g., pass to CreateProcess)    
-    if (stdin_file) {
-        snprintf(full_cmd, full_cmd_len, "%s < %s", cmd, stdin_file);
-    } else {
-        snprintf(full_cmd, full_cmd_len, "%s", cmd);
-    }
+    snprintf(full_cmd, full_cmd_len, "%s", cmd);
+
 
     // Create the process
     BOOL success = CreateProcess(
@@ -133,6 +146,7 @@ void process_create_windows(const char* cmd, const char* stdin_stream,
     }
 
     // Close unneeded handles
+    if (hStdin) CloseHandle(hStdin);
     if (hStdout) CloseHandle(hStdout);
     if (hStderr) CloseHandle(hStderr);
 
