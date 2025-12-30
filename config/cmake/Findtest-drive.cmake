@@ -88,17 +88,19 @@ foreach(method ${${_pkg}_FIND_METHOD})
     if("${_pkg}_FOUND")
       message(STATUS "Found ${_lib} via pkg-config")
 
-      add_library("${_lib}::${_lib}" INTERFACE IMPORTED)
-      target_link_libraries(
-        "${_lib}::${_lib}"
-        INTERFACE
-        "${${_pkg}_LINK_LIBRARIES}"
-        )
-      target_include_directories(
-        "${_lib}::${_lib}"
-        INTERFACE
-        "${${_pkg}_INCLUDE_DIRS}"
-        )
+      if(NOT TARGET "${_lib}::${_lib}")
+        add_library("${_lib}::${_lib}" INTERFACE IMPORTED)
+        target_link_libraries(
+          "${_lib}::${_lib}"
+          INTERFACE
+          "${${_pkg}_LINK_LIBRARIES}"
+          )
+        target_include_directories(
+          "${_lib}::${_lib}"
+          INTERFACE
+          "${${_pkg}_INCLUDE_DIRS}"
+          )
+      endif()
 
       break()
     endif()
@@ -118,8 +120,10 @@ foreach(method ${${_pkg}_FIND_METHOD})
         "${${_pkg}_BINARY_DIR}"
       )
 
-      add_library("${_lib}::${_lib}" INTERFACE IMPORTED)
-      target_link_libraries("${_lib}::${_lib}" INTERFACE "${_lib}")
+      if(NOT TARGET "${_lib}::${_lib}")
+        add_library("${_lib}::${_lib}" INTERFACE IMPORTED)
+        target_link_libraries("${_lib}::${_lib}" INTERFACE "${_lib}")
+      endif()
 
       # We need the module directory in the subproject before we finish the configure stage
       if(NOT EXISTS "${${_pkg}_BINARY_DIR}/include")
@@ -140,8 +144,10 @@ foreach(method ${${_pkg}_FIND_METHOD})
       )
     FetchContent_MakeAvailable("${_lib}")
 
-    add_library("${_lib}::${_lib}" INTERFACE IMPORTED)
-    target_link_libraries("${_lib}::${_lib}" INTERFACE "${_lib}")
+    if(NOT TARGET "${_lib}::${_lib}")
+      add_library("${_lib}::${_lib}" INTERFACE IMPORTED)
+      target_link_libraries("${_lib}::${_lib}" INTERFACE "${_lib}")
+    endif()
 
     # We need the module directory in the subproject before we finish the configure stage
     FetchContent_GetProperties("${_lib}" SOURCE_DIR "${_pkg}_SOURCE_DIR")
