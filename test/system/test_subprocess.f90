@@ -15,7 +15,8 @@ contains
             new_unittest('test_run_synchronous', test_run_synchronous), &
             new_unittest('test_run_asynchronous', test_run_asynchronous), &
             new_unittest('test_process_kill', test_process_kill), &
-            new_unittest('test_process_state', test_process_state) &
+            new_unittest('test_process_state', test_process_state), &
+            new_unittest('test_input_redirection', test_input_redirection) &
         ]
     end subroutine collect_suite
 
@@ -115,6 +116,34 @@ contains
         call check(error, trim(process%stdout) == "Testing", "stdout=<"//trim(process%stdout)//">, expected <Testing>")
         if (allocated(error)) return
     end subroutine test_process_state
+
+    !> Test input redirection
+    subroutine test_input_redirection(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(process_type) :: process
+        character(len=*), parameter :: input_string = "Hello Stdin"
+        
+        if (is_windows()) then 
+             ! findstr "^" echoes input lines. 
+             ! Note: We need complex quoting because of how arguments are parsed.
+             ! Actually, sticking to something simpler if possible. 
+             ! "more" implies paging which might hang. "sort" is usually safe.
+             process = run("sort", stdin=input_string, want_stdout=.true.)
+        else
+             process = run("cat", stdin=input_string, want_stdout=.true.)
+        endif
+
+        call check(error, process%completed, "Process did not complete")
+        if (allocated(error)) return
+
+        call check(error, process%exit_code == 0, "Process failed with non-zero exit code")
+        if (allocated(error)) return
+
+        ! Check if output matches input (sort of "Hello Stdin" is "Hello Stdin")
+        call check(error, index(process%stdout, input_string) > 0, &
+                   "Output <"//trim(process%stdout)//"> should contain <"//input_string//">")
+        
+    end subroutine test_input_redirection
 
 end module test_subprocess
 
