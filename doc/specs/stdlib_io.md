@@ -122,7 +122,7 @@ Saves a rank-2 `array` into a text file.
 
 `footer`: (optional) Shall be a character expression that will be written at the end of the file.
 
-`comments`: (optional) : Shall  be a character expression of(length 1 that will be prepended to the ``header`` and ``footer`` strings to mark them as comments. Default: `# `.
+`comments`: (optional) : Shall  be a character expression of length 1 that will be prepended to the ``header`` and ``footer`` strings to mark them as comments. Default: `# `.
 
 
 
