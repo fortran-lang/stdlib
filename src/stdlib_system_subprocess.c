@@ -34,9 +34,10 @@ void process_create_windows(const char* cmd, const char* stdin_stream,
                                                   
     STARTUPINFO si;
     PROCESS_INFORMATION pi;
-    HANDLE hStdout = NULL, hStderr = NULL;
+    HANDLE hStdout = NULL, hStderr = NULL, hStdin = NULL;
     SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES), NULL, TRUE };
     FILE* stdin_fp = NULL;
+    char* full_cmd = NULL;
     
     // Initialize null handle
     (*pid) = 0;
@@ -44,9 +45,6 @@ void process_create_windows(const char* cmd, const char* stdin_stream,
     ZeroMemory(&si, sizeof(si));
     si.cb = sizeof(STARTUPINFO);
     
-    // If possible, we redirect stdout/stderr to file handles directly. 
-    // This will override any cmd redirection settings (<>). For stdin
-
     // Write stdin_stream to stdin_file if provided
     if (stdin_stream && stdin_file) {
         stdin_fp = fopen(stdin_file, "w");
@@ -58,57 +56,68 @@ void process_create_windows(const char* cmd, const char* stdin_stream,
         fclose(stdin_fp);
     }
 
+    // Open stdin file if provided, otherwise use the null device
+    if (stdin_file) {
+        hStdin = CreateFile(stdin_file, GENERIC_READ, 0, &sa, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    } else {
+        hStdin = CreateFile("NUL", GENERIC_READ, 0, &sa, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    }
+
+    if (hStdin == INVALID_HANDLE_VALUE) {
+        fprintf(stderr, "Failed to open input source (file or null)\n");
+        // No handles to close yet
+        return;
+    }
+
+    si.hStdInput = hStdin;
+    si.dwFlags |= STARTF_USESTDHANDLES;
+
     // Open stdout file if provided, otherwise use the null device
     if (stdout_file) {
         hStdout = CreateFile(stdout_file, GENERIC_WRITE, 0, &sa, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-        if (hStdout == INVALID_HANDLE_VALUE) {
-            fprintf(stderr, "Failed to open stdout file\n");
-            return;
-        }
     } else {
-        hStdout = CreateFile("NUL", GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-        if (hStdout == INVALID_HANDLE_VALUE) {
-            fprintf(stderr, "Failed to open null device for stdout\n");
-            return;
-        }
+        hStdout = CreateFile("NUL", GENERIC_WRITE, 0, &sa, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     }
+
+    if (hStdout == INVALID_HANDLE_VALUE) {
+        fprintf(stderr, "Failed to open stdout sink\n");
+        CloseHandle(hStdin);
+        return;
+    }
+
     si.hStdOutput = hStdout;
-    si.dwFlags |= STARTF_USESTDHANDLES;
 
     // Open stderr file if provided, otherwise use the null device
     if (stderr_file) {
         hStderr = CreateFile(stderr_file, GENERIC_WRITE, 0, &sa, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-        if (hStderr == INVALID_HANDLE_VALUE) {
-            fprintf(stderr, "Failed to open stderr file\n");
-            return;
-        }
     } else {
-        hStderr = CreateFile("NUL", GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-        if (hStderr == INVALID_HANDLE_VALUE) {
-            fprintf(stderr, "Failed to open null device for stderr\n");
-            return;
-        }
+        hStderr = CreateFile("NUL", GENERIC_WRITE, 0, &sa, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     }
+
+    if (hStderr == INVALID_HANDLE_VALUE) {
+        fprintf(stderr, "Failed to open stderr sink\n");
+        CloseHandle(hStdin);
+        CloseHandle(hStdout);
+        return;
+    }
+
     si.hStdError = hStderr;
-    si.dwFlags |= STARTF_USESTDHANDLES;
     
-    // Prepare the command line with redirected stdin
-    char* full_cmd;
+    // Prepare the command line
     size_t cmd_len = strlen(cmd);
-    size_t stdin_len = stdin_file ? strlen(stdin_file) : 0;    
-    size_t full_cmd_len = cmd_len + stdin_len + 5;
+    size_t full_cmd_len = cmd_len + 1;
     full_cmd = (char*)malloc(full_cmd_len);
     if (!full_cmd) {
         fprintf(stderr, "Failed to allocate memory for full_cmd\n");
+        CloseHandle(hStdin);
+        CloseHandle(hStdout);
+        CloseHandle(hStderr);
         return;
     }
     
     // Use full_cmd as needed (e.g., pass to CreateProcess)    
-    if (stdin_file) {
-        snprintf(full_cmd, full_cmd_len, "%s < %s", cmd, stdin_file);
-    } else {
-        snprintf(full_cmd, full_cmd_len, "%s", cmd);
-    }
+    snprintf(full_cmd, full_cmd_len, "%s", cmd);
+
 
     // Create the process
     BOOL success = CreateProcess(
@@ -129,12 +138,16 @@ void process_create_windows(const char* cmd, const char* stdin_stream,
     
     if (!success) {
         fprintf(stderr, "CreateProcess failed (%lu).\n", GetLastError());
+        CloseHandle(hStdin);
+        CloseHandle(hStdout);
+        CloseHandle(hStderr);
         return;
     }
 
-    // Close unneeded handles
-    if (hStdout) CloseHandle(hStdout);
-    if (hStderr) CloseHandle(hStderr);
+    // Close unneeded handles (the child has its own duplicates now)
+    CloseHandle(hStdin);
+    CloseHandle(hStdout);
+    CloseHandle(hStderr);
 
     // Return the process handle for status queries
     CloseHandle(pi.hThread);  // Close the thread handle
