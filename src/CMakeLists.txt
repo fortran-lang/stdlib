@@ -15,6 +15,7 @@ add_subdirectory(intrinsics)
 
 add_subdirectory(lapack)
 add_subdirectory(lapack_extended)
+add_subdirectory(math)
 
 if (NOT STDLIB_NO_STATS)
   add_subdirectory(stats)
@@ -64,13 +65,6 @@ set(fppFiles
     stdlib_quadrature_trapz.fypp
     stdlib_quadrature_simps.fypp
     stdlib_random.fypp
-    stdlib_math_linspace.fypp
-    stdlib_math_logspace.fypp
-    stdlib_math_arange.fypp
-    stdlib_math_is_close.fypp
-    stdlib_math_all_close.fypp
-    stdlib_math_diff.fypp
-    stdlib_math_meshgrid.fypp
     stdlib_str2num.fypp
     stdlib_string_type.fypp
     stdlib_string_type_constructor.fypp
@@ -79,7 +73,6 @@ set(fppFiles
     stdlib_version.fypp
 )
 set(cppFiles stdlib_linalg_constants.fypp
-    stdlib_math.fypp
     stdlib_sorting.fypp
     stdlib_sorting_ord_sort.fypp
     stdlib_sorting_sort.fypp
@@ -106,12 +99,13 @@ set(f90Files
 configure_stdlib_target(${PROJECT_NAME} f90Files fppFiles cppFiles)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
+  constants
   $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>
   hash
   $<$<NOT:$<BOOL:${STDLIB_NO_HASHMAPS}>>:hashmaps>
   intrinsics
   $<$<NOT:$<BOOL:${STDLIB_NO_STATS}>>:stats>
-  constants
-  blas lapack lapack_extended
+  math
   specialfunctions
+  blas lapack lapack_extended
   )
