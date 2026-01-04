@@ -56,6 +56,13 @@ if(STDLIB_NO_BITSET)
   add_compile_definitions(STDLIB_NO_BITSET)
 endif() 
 
+option(STDLIB_NO_HASHMAPS "Does not compile STDLIB HASHMAPS" OFF)
+
+if(STDLIB_NO_HASHMAPS)
+  message(STATUS "Disable stdlib hashmaps module")
+  add_compile_definitions(STDLIB_NO_HASHMAPS)
+endif()
+
 option(STDLIB_NO_STATS "Does not compile STDLIB STATS" OFF)
 
 if(STDLIB_NO_STATS)

@@ -1,9 +1,16 @@
 if (NOT STDLIB_NO_BITSET)
   add_subdirectory(bitsets)
 endif()
+
 add_subdirectory(blas)
+
+if (NOT STDLIB_NO_HASHMAPS)
+  add_subdirectory(hashmaps)
+endif()
+
 add_subdirectory(lapack)
 add_subdirectory(lapack_extended)
+
 if (NOT STDLIB_NO_STATS)
   add_subdirectory(stats)
 endif()
@@ -93,10 +100,6 @@ set(f90Files
     stdlib_ansi_to_string.f90
     stdlib_array.f90
     stdlib_codata.f90
-    stdlib_hashmap_wrappers.f90
-    stdlib_hashmaps.f90
-    stdlib_hashmap_chaining.f90
-    stdlib_hashmap_open.f90
     stdlib_logger.f90
     stdlib_sorting_radix_sort.f90
     stdlib_system_subprocess.c
@@ -115,5 +118,6 @@ configure_stdlib_target(${PROJECT_NAME} f90Files fppFiles cppFiles)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
   $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>
+  $<$<NOT:$<BOOL:${STDLIB_NO_HASHMAPS}>>:hashmaps>
   $<$<NOT:$<BOOL:${STDLIB_NO_STATS}>>:stats>
   blas lapack lapack_extended)

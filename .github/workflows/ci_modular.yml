@@ -24,6 +24,7 @@ jobs:
           - {compiler: gcc, version: 14}
         build: [cmake]        
         with_bitset: [On, Off]
+        with_hashmaps: [On, Off]
         with_stats: [On, Off]
     env:
       BUILD_DIR: ${{ matrix.build == 'cmake' && 'build' || '.' }}
