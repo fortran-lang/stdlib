@@ -5,6 +5,8 @@ endif()
 add_subdirectory(blas)
 add_subdirectory(constants)
 
+add_subdirectory(hash)
+
 if (NOT STDLIB_NO_HASHMAPS)
   add_subdirectory(hashmaps)
 endif()
@@ -21,14 +23,6 @@ endif()
 set(fppFiles
     stdlib_ascii.fypp
     stdlib_error.fypp
-    stdlib_hash_32bit.fypp
-    stdlib_hash_32bit_fnv.fypp
-    stdlib_hash_32bit_nm.fypp
-    stdlib_hash_32bit_water.fypp
-    stdlib_hash_64bit.fypp
-    stdlib_hash_64bit_fnv.fypp
-    stdlib_hash_64bit_pengy.fypp
-    stdlib_hash_64bit_spookyv2.fypp
     stdlib_io.fypp
     stdlib_io_npy.fypp
     stdlib_io_npy_load.fypp
@@ -115,6 +109,7 @@ configure_stdlib_target(${PROJECT_NAME} f90Files fppFiles cppFiles)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
   $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>
+  hash
   $<$<NOT:$<BOOL:${STDLIB_NO_HASHMAPS}>>:hashmaps>
   intrinsics
   $<$<NOT:$<BOOL:${STDLIB_NO_STATS}>>:stats>
