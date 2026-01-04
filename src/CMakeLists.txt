@@ -8,6 +8,10 @@ if (NOT STDLIB_NO_HASHMAPS)
   add_subdirectory(hashmaps)
 endif()
 
+if (NOT STDLIB_NO_INTRINSICS)
+  add_subdirectory(intrinsics)
+endif()
+
 add_subdirectory(lapack)
 add_subdirectory(lapack_extended)
 
@@ -28,9 +32,6 @@ set(fppFiles
     stdlib_hash_64bit_fnv.fypp
     stdlib_hash_64bit_pengy.fypp
     stdlib_hash_64bit_spookyv2.fypp
-    stdlib_intrinsics_dot_product.fypp
-    stdlib_intrinsics_sum.fypp
-    stdlib_intrinsics.fypp
     stdlib_io.fypp
     stdlib_io_npy.fypp
     stdlib_io_npy_load.fypp
@@ -119,5 +120,6 @@ configure_stdlib_target(${PROJECT_NAME} f90Files fppFiles cppFiles)
 target_link_libraries(${PROJECT_NAME} PUBLIC
   $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>
   $<$<NOT:$<BOOL:${STDLIB_NO_HASHMAPS}>>:hashmaps>
+  $<$<NOT:$<BOOL:${STDLIB_NO_INTRINSICS}>>:intrinsics>
   $<$<NOT:$<BOOL:${STDLIB_NO_STATS}>>:stats>
   blas lapack lapack_extended)
