@@ -20,6 +20,8 @@ if (NOT STDLIB_NO_STATS)
   add_subdirectory(stats)
 endif()
 
+add_subdirectory(specialfunctions)
+
 set(fppFiles
     stdlib_ascii.fypp
     stdlib_error.fypp
@@ -56,9 +58,6 @@ set(fppFiles
     stdlib_sparse_conversion.fypp
     stdlib_sparse_kinds.fypp
     stdlib_sparse_spmv.fypp
-    stdlib_specialfunctions_activations.fypp
-    stdlib_specialfunctions_gamma.fypp
-    stdlib_specialfunctions.fypp
     stdlib_specialmatrices.fypp
     stdlib_specialmatrices_tridiagonal.fypp
     stdlib_quadrature.fypp
@@ -99,7 +98,6 @@ set(f90Files
     stdlib_system.c
     stdlib_system.F90
     stdlib_sparse.f90
-    stdlib_specialfunctions_legendre.f90
     stdlib_quadrature_gauss.f90
     stdlib_stringlist_type.f90
     $<IF:$<BOOL:${f18errorstop}>,f18estop.f90,f08estop.f90>
@@ -114,4 +112,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   intrinsics
   $<$<NOT:$<BOOL:${STDLIB_NO_STATS}>>:stats>
   constants
-  blas lapack lapack_extended)
+  blas lapack lapack_extended
+  specialfunctions
+  )
