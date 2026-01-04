@@ -63,6 +63,13 @@ if(STDLIB_NO_HASHMAPS)
   add_compile_definitions(STDLIB_NO_HASHMAPS)
 endif()
 
+option(STDLIB_NO_INTRINSICS "Does not compile STDLIB INTRINSICS" OFF)
+
+if(STDLIB_NO_INTRINSICS)
+  message(STATUS "Disable stdlib intrinsics module")
+  add_compile_definitions(STDLIB_NO_INTRINSICS)
+endif()
+
 option(STDLIB_NO_STATS "Does not compile STDLIB STATS" OFF)
 
 if(STDLIB_NO_STATS)
