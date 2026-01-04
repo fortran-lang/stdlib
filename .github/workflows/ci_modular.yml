@@ -25,7 +25,6 @@ jobs:
         build: [cmake]        
         with_bitset: [On, Off]
         with_hashmaps: [On, Off]
-        with_intrinsics: [On, Off]
         with_stats: [On, Off]
     env:
       BUILD_DIR: ${{ matrix.build == 'cmake' && 'build' || '.' }}
@@ -60,7 +59,6 @@ jobs:
         -DFIND_BLAS:STRING=FALSE
         -DSTDLIB_NO_BITSET:STRING=${{ matrix.with_bitset }}
         -DSTDLIB_NO_HASHMAPS:STRING=${{ matrix.with_hashmaps }}
-        -DSTDLIB_NO_INTRINSICS:STRING=${{ matrix.with_intrinsics }}
         -DSTDLIB_NO_STATS:STRING=${{ matrix.with_stats }}
         -S . -B ${{ env.BUILD_DIR }}
 

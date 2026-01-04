@@ -9,9 +9,7 @@ if (NOT STDLIB_NO_HASHMAPS)
   add_subdirectory(hashmaps)
 endif()
 
-if (NOT STDLIB_NO_INTRINSICS)
-  add_subdirectory(intrinsics)
-endif()
+add_subdirectory(intrinsics)
 
 add_subdirectory(lapack)
 add_subdirectory(lapack_extended)
@@ -118,7 +116,7 @@ configure_stdlib_target(${PROJECT_NAME} f90Files fppFiles cppFiles)
 target_link_libraries(${PROJECT_NAME} PUBLIC
   $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>
   $<$<NOT:$<BOOL:${STDLIB_NO_HASHMAPS}>>:hashmaps>
-  $<$<NOT:$<BOOL:${STDLIB_NO_INTRINSICS}>>:intrinsics>
+  intrinsics
   $<$<NOT:$<BOOL:${STDLIB_NO_STATS}>>:stats>
   constants
   blas lapack lapack_extended)
