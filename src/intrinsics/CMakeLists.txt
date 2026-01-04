@@ -1,7 +1,11 @@
 set(intrinsics_fppFiles
+    ../stdlib_ascii.fypp
     ../stdlib_kinds.fypp
     ../stdlib_constants.fypp
     ../stdlib_codata_type.fypp
+    ../stdlib_error.fypp
+    ../stdlib_io.fypp
+    ../stdlib_optval.fypp
     stdlib_intrinsics_dot_product.fypp
     stdlib_intrinsics.fypp
     stdlib_intrinsics_sum.fypp
