@@ -3,6 +3,7 @@ if (NOT STDLIB_NO_BITSET)
 endif()
 
 add_subdirectory(blas)
+add_subdirectory(constants)
 
 if (NOT STDLIB_NO_HASHMAPS)
   add_subdirectory(hashmaps)
@@ -17,8 +18,6 @@ endif()
 
 set(fppFiles
     stdlib_ascii.fypp
-    stdlib_codata_type.fypp
-    stdlib_constants.fypp
     stdlib_error.fypp
     stdlib_hash_32bit.fypp
     stdlib_hash_32bit_fnv.fypp
@@ -99,7 +98,6 @@ set(f90Files
     stdlib_ansi_operator.f90
     stdlib_ansi_to_string.f90
     stdlib_array.f90
-    stdlib_codata.f90
     stdlib_logger.f90
     stdlib_sorting_radix_sort.f90
     stdlib_system_subprocess.c
@@ -120,4 +118,5 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>
   $<$<NOT:$<BOOL:${STDLIB_NO_HASHMAPS}>>:hashmaps>
   $<$<NOT:$<BOOL:${STDLIB_NO_STATS}>>:stats>
+  constants
   blas lapack lapack_extended)
