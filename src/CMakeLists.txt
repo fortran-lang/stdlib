@@ -1,3 +1,7 @@
+if (NOT STDLIB_NO_ANSI)
+  add_subdirectory(ansi)
+endif()
+
 if (NOT STDLIB_NO_BITSET)
   add_subdirectory(bitsets)
 endif()
@@ -79,9 +83,6 @@ set(cppFiles stdlib_linalg_constants.fypp
     stdlib_sorting_sort_adjoint.fypp
     )
 set(f90Files
-    stdlib_ansi.f90
-    stdlib_ansi_operator.f90
-    stdlib_ansi_to_string.f90
     stdlib_array.f90
     stdlib_logger.f90
     stdlib_sorting_radix_sort.f90
@@ -100,6 +101,7 @@ configure_stdlib_target(${PROJECT_NAME} f90Files fppFiles cppFiles)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
   constants
+  $<$<NOT:$<BOOL:${STDLIB_NO_ANSI}>>:ansi>
   $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>
   hash
   $<$<NOT:$<BOOL:${STDLIB_NO_HASHMAPS}>>:hashmaps>

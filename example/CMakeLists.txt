@@ -16,7 +16,9 @@ endmacro(ADD_EXAMPLEPP)
 
 
 
-add_subdirectory(ansi)
+if (NOT STDLIB_NO_ANSI)
+  add_subdirectory(ansi)
+endif()
 add_subdirectory(array)
 add_subdirectory(ascii)
 if (NOT STDLIB_NO_BITSET)

@@ -1,0 +1,12 @@
+set(ansi_f90Files
+    stdlib_ansi.f90
+    stdlib_ansi_operator.f90
+    stdlib_ansi_to_string.f90
+    )
+
+set(ansi_fppFiles
+    ../stdlib_kinds.fypp
+    ../stdlib_string_type.fypp
+    )
+
+configure_stdlib_target(ansi ansi_f90Files ansi_fppFiles "")

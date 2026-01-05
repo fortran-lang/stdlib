@@ -49,6 +49,13 @@ if(NOT DEFINED CMAKE_MAXIMUM_RANK)
   set(CMAKE_MAXIMUM_RANK 4 CACHE STRING "Maximum array rank for generated procedures")
 endif()
 
+option(STDLIB_NO_ANSI "Does not compile STDLIB ANSI" OFF)
+
+if(STDLIB_NO_ANSI)
+  message(STATUS "Disable stdlib ansi module")
+  add_compile_definitions(STDLIB_NO_ANSI)
+endif() 
+
 option(STDLIB_NO_BITSET "Does not compile STDLIB BITSET" OFF)
 
 if(STDLIB_NO_BITSET)

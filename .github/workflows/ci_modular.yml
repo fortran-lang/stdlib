@@ -23,6 +23,7 @@ jobs:
         toolchain:
           - {compiler: gcc, version: 14}
         build: [cmake]        
+        with_ansi: [On, Off]
         with_bitset: [On, Off]
         with_hashmaps: [On, Off]
         with_stats: [On, Off]
@@ -57,6 +58,7 @@ jobs:
         -DCMAKE_MAXIMUM_RANK:String=4
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
         -DFIND_BLAS:STRING=FALSE
+        -DSTDLIB_NO_ANSI:STRING=${{ matrix.with_ansi }}
         -DSTDLIB_NO_BITSET:STRING=${{ matrix.with_bitset }}
         -DSTDLIB_NO_HASHMAPS:STRING=${{ matrix.with_hashmaps }}
         -DSTDLIB_NO_STATS:STRING=${{ matrix.with_stats }}
