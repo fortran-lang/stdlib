@@ -273,7 +273,7 @@ The table below lists all *fypp* preprocessing macros and flags currently used b
 | `WITH_QP` |  Enables quadruple precision code generation (`real(qp)`, `complex(qp)`). CMake auto-detects this and passes it to fypp; can be overridden at configure time with `-DWITH_QP=ON/OFF`; fypp deployment script: `--with_qp`. |
 | `WITH_XDP` |  Enables extended double precision code generation (`real(xdp)`, `complex(xdp)`). CMake auto-detects this and passes it to fypp; can be overridden at configure time with `-DWITH_XDP=ON/OFF`; fypp deployment script: `--with_xdp`. |
 | `WITH_ILP64` |  Enables generation of 64-bit integer (ILP64) size interfaces for BLAS and LAPACK (in addition to the default 32-bit interface). Set via CMake `-DWITH_ILP64=True` or via  fypp deployment script `--with_ilp64`. |
-| `PROJECT_VERSION_MAJOR` |  Part of the version string passed into fypp templates. Set automatically by CMake from the file `VERSION`. Can be overridden by passing `-DPROJECT_VERSION_MAJOR=<n>`. |
+| `PROJECT_VERSION_MAJOR` |  Part of the version string passed into fypp templates. Set automatically by CMake from the file `VERSION`. Can be overridden by passing `-DPROJECT_VERSION_MAJOR=<n>`, or via fypp deployment script `--vmajor <n>`. |
 | `PROJECT_VERSION_MINOR` |  See `PROJECT_VERSION_MAJOR`. |
 | `PROJECT_VERSION_PATCH` |  See `PROJECT_VERSION_MAJOR`. |
 
