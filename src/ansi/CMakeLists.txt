@@ -5,7 +5,9 @@ set(ansi_f90Files
     )
 
 set(ansi_fppFiles
+    ../stdlib_ascii.fypp
     ../stdlib_kinds.fypp
+    ../stdlib_optval.fypp
     ../stdlib_string_type.fypp
     )
 

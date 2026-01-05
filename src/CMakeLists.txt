@@ -20,12 +20,12 @@ add_subdirectory(intrinsics)
 add_subdirectory(lapack)
 add_subdirectory(lapack_extended)
 add_subdirectory(math)
+add_subdirectory(sorting)
+add_subdirectory(specialfunctions)
 
 if (NOT STDLIB_NO_STATS)
   add_subdirectory(stats)
 endif()
-
-add_subdirectory(specialfunctions)
 
 set(fppFiles
     stdlib_ascii.fypp
@@ -77,15 +77,10 @@ set(fppFiles
     stdlib_version.fypp
 )
 set(cppFiles stdlib_linalg_constants.fypp
-    stdlib_sorting.fypp
-    stdlib_sorting_ord_sort.fypp
-    stdlib_sorting_sort.fypp
-    stdlib_sorting_sort_adjoint.fypp
     )
 set(f90Files
     stdlib_array.f90
     stdlib_logger.f90
-    stdlib_sorting_radix_sort.f90
     stdlib_system_subprocess.c
     stdlib_system_subprocess.F90
     stdlib_system_path.f90
@@ -109,5 +104,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   $<$<NOT:$<BOOL:${STDLIB_NO_STATS}>>:stats>
   math
   specialfunctions
+  sorting
   blas lapack lapack_extended
   )
