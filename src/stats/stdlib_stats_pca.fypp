@@ -1,5 +1,9 @@
 #:include "common.fypp"
-#:set REAL_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES))
+#! Note: PCA uses SVD and EIGH which rely on LAPACK. LAPACK backends do not support extended (xdp) or
+#! quad precision (qp). Therefore, PCA is limited to single (sp) and double (dp) precision only.
+#:set PCA_REAL_KINDS = ["sp", "dp"]
+#:set PCA_REAL_TYPES = ["real(sp)", "real(dp)"]
+#:set REAL_KINDS_TYPES = list(zip(PCA_REAL_KINDS, PCA_REAL_TYPES))
 submodule (stdlib_stats) stdlib_stats_pca
   use stdlib_error, only: error_stop
   use stdlib_optval, only: optval
