@@ -3,6 +3,8 @@
 submodule (stdlib_stats) stdlib_stats_pca
   use stdlib_error, only: error_stop
   use stdlib_optval, only: optval
+  use stdlib_linalg, only: svd, eigh
+  use stdlib_linalg_constants, only: ilp
   use stdlib_linalg_state, only: LINALG_SUCCESS, LINALG_ERROR, linalg_state_type
   implicit none
 
@@ -19,9 +21,102 @@ contains
       logical, intent(in), optional :: overwrite_x
       type(linalg_state_type), intent(out), optional :: err
 
-      ! Placeholder implementation
-      if (present(err)) err = linalg_state_type("pca", LINALG_ERROR, "Not implemented yet")
-      call error_stop("PCA not implemented yet")
+      type(linalg_state_type) :: err0
+      integer(ilp) :: n, p, i, k
+      ${t1}$, allocatable :: mu(:)
+      character(16) :: method_
+      
+      n = size(x, 1, kind=ilp)
+      p = size(x, 2, kind=ilp)
+      k = size(components, 1, kind=ilp)
+      
+      method_ = optval(method, "svd")
+      
+      ! 1. Calculate and optionally return mean
+      allocate(mu(p))
+      mu = mean(x, dim=1)
+      if (present(mean)) mean = mu
+      
+      err0 = linalg_state_type("pca", LINALG_SUCCESS)
+
+      if (method_ == "svd") then
+         ! 2. Center data and call SVD with temporaries for robustness
+         block
+            ${t1}$, allocatable :: s_tmp(:), vt_tmp(:,:)
+            integer(ilp) :: n_s
+            n_s = min(n, p)
+            allocate(s_tmp(n_s), vt_tmp(n_s, p))
+
+            if (optval(overwrite_x, .false.)) then
+               do i = 1, n
+                  x(i, :) = x(i, :) - mu
+               end do
+               call svd(x, s_tmp, vt=vt_tmp, overwrite_a=.true., full_matrices=.false., err=err0)
+            else
+               block
+                  ${t1}$, allocatable :: x_centered(:,:)
+                  allocate(x_centered(n, p))
+                  do i = 1, n
+                     x_centered(i, :) = x(i, :) - mu
+                  end do
+                  call svd(x_centered, s_tmp, vt=vt_tmp, overwrite_a=.true., full_matrices=.false., err=err0)
+               end block
+            end if
+
+            if (err0%ok()) then
+               i = min(size(components, 1, kind=ilp), n_s)
+               components(:i, :) = vt_tmp(:i, :)
+               i = min(size(singular_values, 1, kind=ilp), n_s)
+               singular_values(:i) = s_tmp(:i)
+            end if
+         end block
+      else if (method_ == "eig" .or. method_ == "cov") then
+         ! 3. Eigendecomposition of covariance matrix
+         block
+            ${t1}$, allocatable :: c(:,:)
+            ${t1}$, allocatable :: vectors(:,:)
+            real(${k1}$), allocatable :: lambda(:)
+            integer(ilp), allocatable :: idx(:)
+            integer(ilp) :: j, m
+            real(${k1}$) :: tmp_val
+
+            allocate(lambda(p), idx(p), vectors(p, p))
+            c = cov(x, dim=1)
+            call eigh(c, lambda, vectors=vectors, err=err0)
+            
+            if (err0%ok()) then
+               ! Sort eigenvalues and vectors in descending order
+               do j = 1, p
+                  idx(j) = j
+               end do
+               ! Simple bubble sort
+               do i = 1, p-1
+                  do j = i+1, p
+                     if (lambda(idx(i)) < lambda(idx(j))) then
+                        m = idx(i)
+                        idx(i) = idx(j)
+                        idx(j) = m
+                     end if
+                  end do
+               end do
+               
+               ! Assign sorted results
+               m = min(size(components, 1, kind=ilp), p)
+               do i = 1, m
+                  components(i, :) = vectors(:, idx(i))
+                  if (lambda(idx(i)) > 0.0_${k1}$) then
+                     singular_values(i) = sqrt(lambda(idx(i)) * real(n-1, ${k1}$))
+                  else
+                     singular_values(i) = 0.0_${k1}$
+                  end if
+               end do
+            end if
+         end block
+      else
+         err0 = linalg_state_type("pca", LINALG_ERROR, "Unknown method: "//method_)
+      end if
+      
+      if (present(err)) err = err0
       
     end subroutine pca_${k1}$
   #:endfor
@@ -32,9 +127,22 @@ contains
       ${t1}$, intent(in) :: x(:,:)
       ${t1}$, intent(in) :: components(:,:)
       ${t1}$, intent(in), optional :: mean(:)
-      ${t1}$ :: res(size(x,1), size(components,2))
+      ${t1}$ :: res(size(x,1), size(components,1))
 
-      res = 0.0_${k1}$ ! Placeholder implementation
+      integer(ilp) :: i, n
+      ${t1}$, allocatable :: x_centered(:,:)
+      
+      n = size(x, 1, kind=ilp)
+      allocate(x_centered(n, size(x, 2, kind=ilp)))
+      if (present(mean)) then
+         do i = 1, n
+            x_centered(i, :) = x(i, :) - mean
+         end do
+      else
+         x_centered = x
+      end if
+      
+      res = matmul(x_centered, transpose(components))
     end function pca_transform_${k1}$
   #:endfor
 
@@ -44,9 +152,16 @@ contains
       ${t1}$, intent(in) :: x_reduced(:,:)
       ${t1}$, intent(in) :: components(:,:)
       ${t1}$, intent(in), optional :: mean(:)
-      ${t1}$ :: res(size(x_reduced,1), size(components,1))
+      ${t1}$ :: res(size(x_reduced,1), size(components,2))
 
-      res = 0.0_${k1}$ ! Placeholder implementation
+      integer(ilp) :: i, n
+      n = size(x_reduced, 1, kind=ilp)
+      res = matmul(x_reduced, components)
+      if (present(mean)) then
+         do i = 1, n
+            res(i, :) = res(i, :) + mean
+         end do
+      end if
     end function pca_inverse_transform_${k1}$
   #:endfor
 
