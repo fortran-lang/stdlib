@@ -257,7 +257,7 @@ with `prog` being the name of the example program (e.g., `example_sort`).
 `stdlib` uses two preprocessing steps:
 
 - *fypp* for meta-programming (templating and feature selection)
-- *C* preprocessing (compiler flag `-cpp`/`-fpp`) for conditional compilation
+- *C* preprocessing (activated through compiler flags like `-cpp`(GNU) or `-fpp`(Intel) or use of uppercase file suffix .F90) for conditional compilation
 
 *fypp* preprocessing macros and flags are supported through `CMake` or the `python` script `config/fypp_deployment.py`.
 *C* preprocessing macros and flags are supported through `CMake` and `fpm`.
