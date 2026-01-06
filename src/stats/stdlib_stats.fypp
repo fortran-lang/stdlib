@@ -639,6 +639,9 @@ module stdlib_stats
         end function ${RName}$
       #:endfor
     #:endfor
+  end interface moment
+
+
   interface pca
     !! version: experimental
     !!
