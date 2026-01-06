@@ -23,7 +23,7 @@ contains
         x = reshape([1.0_sp, 3.0_sp, 5.0_sp, 2.0_sp, 4.0_sp, 6.0_sp], [3, 2])
 
         ! Test SVD method
-        call pca(x, components, s, mean=mu, method="svd", err=err)
+        call pca(x, components, s, x_mean=mu, method="svd", err=err)
         call check(err%ok(), "pca_sp svd err")
         call check(all(abs(mu - [3.0_sp, 4.0_sp]) < sptol), "pca_sp svd mean")
         ! First component should be approx [0.707, 0.707] (or negative)
@@ -55,7 +55,7 @@ contains
         x = reshape([1.0_dp, 3.0_dp, 5.0_dp, 2.0_dp, 4.0_dp, 6.0_dp], [3, 2])
 
         ! Test SVD method
-        call pca(x, components, s, mean=mu, method="svd", err=err)
+        call pca(x, components, s, x_mean=mu, method="svd", err=err)
         call check(err%ok(), "pca_dp svd err")
         call check(all(abs(mu - [3.0_dp, 4.0_dp]) < dptol), "pca_dp svd mean")
         call check(abs(abs(components(1,1)) - 1.0_dp/sqrt(2.0_dp)) < dptol, "pca_dp svd comp1")

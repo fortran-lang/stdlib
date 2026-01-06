@@ -11,12 +11,12 @@ submodule (stdlib_stats) stdlib_stats_pca
 contains
 
   #:for k1, t1 in REAL_KINDS_TYPES
-    module subroutine pca_${k1}$(x, components, singular_values, mean, &
+    module subroutine pca_${k1}$(x, components, singular_values, x_mean, &
                                 method, overwrite_x, err)
       ${t1}$, intent(inout), target :: x(:,:)
       ${t1}$, intent(out) :: components(:,:)
       real(${k1}$), intent(out) :: singular_values(:)
-      ${t1}$, intent(out), optional :: mean(:)
+      ${t1}$, intent(out), optional :: x_mean(:)
       character(*), intent(in), optional :: method
       logical, intent(in), optional :: overwrite_x
       type(linalg_state_type), intent(out), optional :: err
@@ -35,7 +35,7 @@ contains
       ! 1. Calculate and optionally return mean
       allocate(mu(p))
       mu = mean(x, dim=1)
-      if (present(mean)) mean = mu
+      if (present(x_mean)) x_mean = mu
       
       err0 = linalg_state_type("pca", LINALG_SUCCESS)
 
@@ -123,10 +123,10 @@ contains
 
 
   #:for k1, t1 in REAL_KINDS_TYPES
-    module function pca_transform_${k1}$(x, components, mean) result(res)
+    module function pca_transform_${k1}$(x, components, x_mean) result(res)
       ${t1}$, intent(in) :: x(:,:)
       ${t1}$, intent(in) :: components(:,:)
-      ${t1}$, intent(in), optional :: mean(:)
+      ${t1}$, intent(in), optional :: x_mean(:)
       ${t1}$ :: res(size(x,1), size(components,1))
 
       integer(ilp) :: i, n
@@ -134,9 +134,9 @@ contains
       
       n = size(x, 1, kind=ilp)
       allocate(x_centered(n, size(x, 2, kind=ilp)))
-      if (present(mean)) then
+      if (present(x_mean)) then
          do i = 1, n
-            x_centered(i, :) = x(i, :) - mean
+            x_centered(i, :) = x(i, :) - x_mean
          end do
       else
          x_centered = x
@@ -148,18 +148,18 @@ contains
 
 
   #:for k1, t1 in REAL_KINDS_TYPES
-    module function pca_inverse_transform_${k1}$(x_reduced, components, mean) result(res)
+    module function pca_inverse_transform_${k1}$(x_reduced, components, x_mean) result(res)
       ${t1}$, intent(in) :: x_reduced(:,:)
       ${t1}$, intent(in) :: components(:,:)
-      ${t1}$, intent(in), optional :: mean(:)
+      ${t1}$, intent(in), optional :: x_mean(:)
       ${t1}$ :: res(size(x_reduced,1), size(components,2))
 
       integer(ilp) :: i, n
       n = size(x_reduced, 1, kind=ilp)
       res = matmul(x_reduced, components)
-      if (present(mean)) then
+      if (present(x_mean)) then
          do i = 1, n
-            res(i, :) = res(i, :) + mean
+            res(i, :) = res(i, :) + x_mean
          end do
       end if
     end function pca_inverse_transform_${k1}$
