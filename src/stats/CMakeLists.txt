@@ -16,6 +16,7 @@ set(stats_fppFiles
     ../stdlib_string_type.fypp
     stdlib_stats_corr.fypp
     stdlib_stats_cov.fypp
+    stdlib_stats_pca.fypp
     stdlib_stats_distribution_exponential.fypp
     stdlib_stats_distribution_normal.fypp
     stdlib_stats_distribution_uniform.fypp

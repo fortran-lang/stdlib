@@ -1,0 +1,53 @@
+#:include "common.fypp"
+#:set REAL_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES))
+submodule (stdlib_stats) stdlib_stats_pca
+  use stdlib_error, only: error_stop
+  use stdlib_optval, only: optval
+  use stdlib_linalg_state, only: LINALG_SUCCESS, LINALG_ERROR, linalg_state_type
+  implicit none
+
+contains
+
+  #:for k1, t1 in REAL_KINDS_TYPES
+    module subroutine pca_${k1}$(x, components, singular_values, mean, &
+                                method, overwrite_x, err)
+      ${t1}$, intent(inout), target :: x(:,:)
+      ${t1}$, intent(out) :: components(:,:)
+      real(${k1}$), intent(out) :: singular_values(:)
+      ${t1}$, intent(out), optional :: mean(:)
+      character(*), intent(in), optional :: method
+      logical, intent(in), optional :: overwrite_x
+      type(linalg_state_type), intent(out), optional :: err
+
+      ! Placeholder implementation
+      if (present(err)) err = linalg_state_type("pca", LINALG_ERROR, "Not implemented yet")
+      call error_stop("PCA not implemented yet")
+      
+    end subroutine pca_${k1}$
+  #:endfor
+
+
+  #:for k1, t1 in REAL_KINDS_TYPES
+    module function pca_transform_${k1}$(x, components, mean) result(res)
+      ${t1}$, intent(in) :: x(:,:)
+      ${t1}$, intent(in) :: components(:,:)
+      ${t1}$, intent(in), optional :: mean(:)
+      ${t1}$ :: res(size(x,1), size(components,2))
+
+      res = 0.0_${k1}$ ! Placeholder implementation
+    end function pca_transform_${k1}$
+  #:endfor
+
+
+  #:for k1, t1 in REAL_KINDS_TYPES
+    module function pca_inverse_transform_${k1}$(x_reduced, components, mean) result(res)
+      ${t1}$, intent(in) :: x_reduced(:,:)
+      ${t1}$, intent(in) :: components(:,:)
+      ${t1}$, intent(in), optional :: mean(:)
+      ${t1}$ :: res(size(x_reduced,1), size(components,1))
+
+      res = 0.0_${k1}$ ! Placeholder implementation
+    end function pca_inverse_transform_${k1}$
+  #:endfor
+
+end submodule stdlib_stats_pca
