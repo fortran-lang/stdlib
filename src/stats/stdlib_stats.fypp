@@ -642,8 +642,10 @@ module stdlib_stats
   end interface moment
 
 
-  #! Note: PCA uses SVD and EIGH which rely on LAPACK. LAPACK backends do not support extended (xdp) or
-  #! quad precision (qp). Therefore, PCA is limited to single (sp) and double (dp) precision only.
+  #! Note: PCA uses SVD and EIGH which rely on LAPACK. External optimized BLAS/LAPACK backends
+  #! (e.g., OpenBLAS, MKL) do not support extended precision (xdp). While stdlib's internal LAPACK
+  #! implementations do provide quadruple precision (qp) routines, PCA is limited to single (sp)
+  #! and double (dp) precision for consistency with external optimized backends.
   #:set PCA_REAL_KINDS = ["sp", "dp"]
   #:set PCA_REAL_TYPES = ["real(sp)", "real(dp)"]
   #:set PCA_KINDS_TYPES = list(zip(PCA_REAL_KINDS, PCA_REAL_TYPES))
