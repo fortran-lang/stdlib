@@ -31,3 +31,4 @@ set(stats_fppFiles
 )
 
 configure_stdlib_target(stats "" stats_fppFiles stats_cppFiles)
+target_link_libraries(stats PUBLIC blas lapack)
