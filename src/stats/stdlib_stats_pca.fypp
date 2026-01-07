@@ -27,7 +27,7 @@ contains
       type(linalg_state_type), intent(out), optional :: err
 
       type(linalg_state_type) :: err0
-      integer(ilp) :: n, p, i, k, m, n_s
+      integer(ilp) :: n, p, i, j, k, m, n_s
       ${t1}$, allocatable :: mu(:)
       character(16) :: method_
       
@@ -37,9 +37,11 @@ contains
       
       method_ = optval(method, "svd")
       
-      ! 1. Calculate and optionally return mean
+      ! 1. Calculate mean using intrinsic sum (avoids submodule dependency issues)
       allocate(mu(p))
-      mu = mean(x, dim=1)
+      do j = 1, p
+         mu(j) = sum(x(:, j)) / real(n, ${k1}$)
+      end do
       if (present(x_mean)) x_mean = mu
 
       if (method_ == "svd") then
@@ -73,14 +75,29 @@ contains
             end if
          end block
       else if (method_ == "eig" .or. method_ == "cov") then
-         ! 3. Eigendecomposition of covariance matrix
+         ! 3. Eigendecomposition of covariance matrix (computed inline)
          block
-            ${t1}$, allocatable :: c(:,:), vectors(:,:)
+            ${t1}$, allocatable :: c(:,:), vectors(:,:), x_centered(:,:)
             real(${k1}$), allocatable :: lambda(:), lambda_copy(:)
             integer(ilp), allocatable :: idx(:)
+            real(${k1}$) :: scale_factor
 
-            allocate(lambda(p), lambda_copy(p), idx(p), vectors(p, p))
-            c = cov(x, dim=1)
+            allocate(c(p, p), lambda(p), lambda_copy(p), idx(p), vectors(p, p))
+            allocate(x_centered(n, p))
+            
+            ! Center data
+            do i = 1, n
+               x_centered(i, :) = x(i, :) - mu
+            end do
+            
+            ! Compute covariance matrix: C = X^T * X / (n-1)
+            scale_factor = 1.0_${k1}$ / real(max(n-1, 1), ${k1}$)
+            do i = 1, p
+               do j = 1, p
+                  c(i, j) = dot_product(x_centered(:, i), x_centered(:, j)) * scale_factor
+               end do
+            end do
+            
             call eigh(c, lambda, vectors=vectors, err=err0)
             
             if (err0%ok()) then
