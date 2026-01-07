@@ -1,7 +1,7 @@
 #:include "common.fypp"
 program test_pca
     use stdlib_error, only: check
-    use stdlib_kinds, only: sp, dp, xdp, qp
+    use stdlib_kinds, only: sp, dp
     use stdlib_stats, only: pca, pca_transform, pca_inverse_transform
     use stdlib_linalg_state, only: linalg_state_type
     implicit none
