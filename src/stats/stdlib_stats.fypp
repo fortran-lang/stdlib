@@ -676,12 +676,12 @@ module stdlib_stats
     !! Projects data into the reduced dimensional space
     !! ([Specification](../page/specs/stdlib_stats.html#pca_transform))
     #:for k1, t1 in PCA_KINDS_TYPES
-      module function pca_transform_${k1}$(x, components, x_mean) result(res)
+      module subroutine pca_transform_${k1}$(x, components, x_mean, x_transformed)
         ${t1}$, intent(in) :: x(:,:)
         ${t1}$, intent(in) :: components(:,:)
         ${t1}$, intent(in), optional :: x_mean(:)
-        ${t1}$ :: res(size(x,1), size(components,1))
-      end function pca_transform_${k1}$
+        ${t1}$, intent(out) :: x_transformed(:,:)
+      end subroutine pca_transform_${k1}$
     #:endfor
   end interface pca_transform
 
@@ -692,12 +692,12 @@ module stdlib_stats
     !! Reconstructs original data from the reduced space
     !! ([Specification](../page/specs/stdlib_stats.html#pca_inverse_transform))
     #:for k1, t1 in PCA_KINDS_TYPES
-      module function pca_inverse_transform_${k1}$(x_reduced, components, x_mean) result(res)
+      module subroutine pca_inverse_transform_${k1}$(x_reduced, components, x_mean, x_reconstructed)
         ${t1}$, intent(in) :: x_reduced(:,:)
         ${t1}$, intent(in) :: components(:,:)
         ${t1}$, intent(in), optional :: x_mean(:)
-        ${t1}$ :: res(size(x_reduced,1), size(components,2))
-      end function pca_inverse_transform_${k1}$
+        ${t1}$, intent(out) :: x_reconstructed(:,:)
+      end subroutine pca_inverse_transform_${k1}$
     #:endfor
   end interface pca_inverse_transform
 

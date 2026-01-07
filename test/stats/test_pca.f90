@@ -32,12 +32,12 @@ contains
         call check(abs(s(2)) < sptol, "pca_sp svd s2")
 
         ! Test Transform
-        x_trans = pca_transform(x, components, mu)
+        call pca_transform(x, components, mu, x_trans)
         ! Second dimension should be zero
         call check(all(abs(x_trans(:, 2)) < sptol), "pca_sp transform")
 
         ! Test Inverse Transform
-        x_inv = pca_inverse_transform(x_trans, components, mu)
+        call pca_inverse_transform(x_trans, components, mu, x_inv)
         call check(all(abs(x_inv - x) < sptol), "pca_sp inverse")
 
         ! Test EIG method
@@ -62,8 +62,8 @@ contains
         call check(abs(s(1) - 4.0_dp) < dptol, "pca_dp svd s1")
         
         ! Test Transform/Inverse
-        x_trans = pca_transform(x, components, mu)
-        x_inv = pca_inverse_transform(x_trans, components, mu)
+        call pca_transform(x, components, mu, x_trans)
+        call pca_inverse_transform(x_trans, components, mu, x_inv)
         call check(all(abs(x_inv - x) < dptol), "pca_dp inverse")
 
         ! Test EIG method

@@ -129,17 +129,22 @@ contains
 
 
   #:for k1, t1 in REAL_KINDS_TYPES
-    module function pca_transform_${k1}$(x, components, x_mean) result(res)
+    module subroutine pca_transform_${k1}$(x, components, x_mean, x_transformed)
+      use stdlib_linalg_blas, only: gemm
       ${t1}$, intent(in) :: x(:,:)
       ${t1}$, intent(in) :: components(:,:)
       ${t1}$, intent(in), optional :: x_mean(:)
-      ${t1}$ :: res(size(x,1), size(components,1))
+      ${t1}$, intent(out) :: x_transformed(:,:)
 
-      integer(ilp) :: i, n
+      integer(ilp) :: i, n, p, k
       ${t1}$, allocatable :: x_centered(:,:)
+      ${t1}$, parameter :: alpha = 1.0_${k1}$, beta = 0.0_${k1}$
       
-      n = size(x, 1, kind=ilp)
-      allocate(x_centered(n, size(x, 2, kind=ilp)))
+      n = size(x, 1, kind=ilp)        ! number of samples
+      p = size(x, 2, kind=ilp)        ! number of features
+      k = size(components, 1, kind=ilp)  ! number of components
+      
+      allocate(x_centered(n, p))
       if (present(x_mean)) then
          do i = 1, n
             x_centered(i, :) = x(i, :) - x_mean
@@ -148,27 +153,40 @@ contains
          x_centered = x
       end if
       
-      res = matmul(x_centered, transpose(components))
-    end function pca_transform_${k1}$
+      ! x_transformed = x_centered * components^T
+      ! GEMM: C = alpha * A * B^T + beta * C
+      ! x_transformed(n,k) = x_centered(n,p) * components(k,p)^T
+      call gemm('N', 'T', n, k, p, alpha, x_centered, n, components, k, beta, x_transformed, n)
+    end subroutine pca_transform_${k1}$
   #:endfor
 
 
   #:for k1, t1 in REAL_KINDS_TYPES
-    module function pca_inverse_transform_${k1}$(x_reduced, components, x_mean) result(res)
+    module subroutine pca_inverse_transform_${k1}$(x_reduced, components, x_mean, x_reconstructed)
+      use stdlib_linalg_blas, only: gemm
       ${t1}$, intent(in) :: x_reduced(:,:)
       ${t1}$, intent(in) :: components(:,:)
       ${t1}$, intent(in), optional :: x_mean(:)
-      ${t1}$ :: res(size(x_reduced,1), size(components,2))
+      ${t1}$, intent(out) :: x_reconstructed(:,:)
 
-      integer(ilp) :: i, n
-      n = size(x_reduced, 1, kind=ilp)
-      res = matmul(x_reduced, components)
+      integer(ilp) :: i, n, k, p
+      ${t1}$, parameter :: alpha = 1.0_${k1}$, beta = 0.0_${k1}$
+      
+      n = size(x_reduced, 1, kind=ilp)    ! number of samples
+      k = size(x_reduced, 2, kind=ilp)    ! number of components
+      p = size(components, 2, kind=ilp)   ! number of features
+      
+      ! x_reconstructed = x_reduced * components
+      ! GEMM: C = alpha * A * B + beta * C
+      ! x_reconstructed(n,p) = x_reduced(n,k) * components(k,p)
+      call gemm('N', 'N', n, p, k, alpha, x_reduced, n, components, k, beta, x_reconstructed, n)
+      
       if (present(x_mean)) then
          do i = 1, n
-            res(i, :) = res(i, :) + x_mean
+            x_reconstructed(i, :) = x_reconstructed(i, :) + x_mean
          end do
       end if
-    end function pca_inverse_transform_${k1}$
+    end subroutine pca_inverse_transform_${k1}$
   #:endfor
 
 end submodule stdlib_stats_pca
