@@ -5,7 +5,7 @@
 #! performance for single (sp) and double (dp) precision.
 #:set REAL_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES))
 submodule (stdlib_stats) stdlib_stats_pca
-  use stdlib_kinds, only: sp, dp
+  use stdlib_kinds, only: sp, dp, xdp, qp
   use stdlib_error, only: error_stop
   use stdlib_optval, only: optval
   use stdlib_linalg, only: svd, eigh
