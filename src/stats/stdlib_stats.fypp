@@ -642,11 +642,10 @@ module stdlib_stats
   end interface moment
 
 
-  #! Note: PCA uses SVD and EIGH which rely on LAPACK/BLAS. stdlib provides internal
-  #! BLAS/LAPACK backends that support all real kinds (sp, dp, xdp, qp). Linking against
-  #! external optimized libraries (e.g., OpenBLAS, MKL) is optional and can improve
-  #! performance for single (sp) and double (dp) precision.
-  #:set PCA_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES))
+  #! Note: PCA is limited to single (sp) and double (dp) precision because external
+  #! optimized BLAS/LAPACK libraries (OpenBLAS, MKL) only support these precisions.
+  #! Extended (xdp) and quadruple (qp) precision are not supported for PCA.
+  #:set PCA_KINDS_TYPES = [("sp", "real(sp)"), ("dp", "real(dp)")]
 
   interface pca
     !! version: experimental
