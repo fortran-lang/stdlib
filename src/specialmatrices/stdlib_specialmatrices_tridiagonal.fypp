@@ -163,6 +163,8 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         ${t1}$ :: alpha_, beta_
         integer(ilp) :: n, nrhs, ldx, ldy
         character(1) :: op_
+
+        type(linalg_state_type) :: err0
         #:if t1.startswith('real')
         logical :: is_alpha_special, is_beta_special
         #:endif
@@ -170,6 +172,14 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         #:if rank == 1
         ${t1}$, pointer :: xmat(:, :), ymat(:, :)
         #:endif
+
+        if(present(op)) then
+            if(.not.(op == "N" .or. op == "T" .or. op == "C")) then
+                err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Invalid matrix operation: '" &
+                // op // "'; expected 'N', 'T', or 'C'.")
+                call linalg_error_handling(err0)
+            end if
+        end if
 
         ! Deal with optional arguments.
         alpha_ = 1.0_${k1}$ ; if (present(alpha)) alpha_ = alpha
