@@ -12,7 +12,9 @@ submodule (stdlib_stats) stdlib_stats_pca
   use stdlib_optval, only: optval
   use stdlib_linalg, only: svd, eigh
   use stdlib_linalg_constants, only: ilp
-  use stdlib_linalg_state, only: LINALG_SUCCESS, LINALG_ERROR, linalg_state_type
+  use stdlib_linalg_blas, only: gemm
+  use stdlib_linalg_state, only: linalg_state_type, LINALG_ERROR
+  use stdlib_sorting, only: sort_index
   implicit none
 
 contains
@@ -29,7 +31,7 @@ contains
       type(linalg_state_type), intent(out), optional :: err
 
       type(linalg_state_type) :: err0
-      integer(ilp) :: n, p, i, k
+      integer(ilp) :: n, p, i, k, m, n_s
       ${t1}$, allocatable :: mu(:)
       character(16) :: method_
       
@@ -43,14 +45,11 @@ contains
       allocate(mu(p))
       mu = mean(x, dim=1)
       if (present(x_mean)) x_mean = mu
-      
-      err0 = linalg_state_type("pca", LINALG_SUCCESS)
 
       if (method_ == "svd") then
          ! 2. Center data and call SVD with temporaries for robustness
          block
             ${t1}$, allocatable :: s_tmp(:), vt_tmp(:,:)
-            integer(ilp) :: n_s
             n_s = min(n, p)
             allocate(s_tmp(n_s), vt_tmp(n_s, p))
 
@@ -71,41 +70,28 @@ contains
             end if
 
             if (err0%ok()) then
-               i = min(size(components, 1, kind=ilp), n_s)
-               components(:i, :) = vt_tmp(:i, :)
-               i = min(size(singular_values, 1, kind=ilp), n_s)
-               singular_values(:i) = s_tmp(:i)
+               m = min(size(components, 1, kind=ilp), n_s)
+               components(:m, :) = vt_tmp(:m, :)
+               m = min(size(singular_values, 1, kind=ilp), n_s)
+               singular_values(:m) = s_tmp(:m)
             end if
          end block
       else if (method_ == "eig" .or. method_ == "cov") then
          ! 3. Eigendecomposition of covariance matrix
          block
-            ${t1}$, allocatable :: c(:,:)
-            ${t1}$, allocatable :: vectors(:,:)
-            real(${k1}$), allocatable :: lambda(:)
+            ${t1}$, allocatable :: c(:,:), vectors(:,:)
+            real(${k1}$), allocatable :: lambda(:), lambda_copy(:)
             integer(ilp), allocatable :: idx(:)
-            integer(ilp) :: j, m
-            real(${k1}$) :: tmp_val
 
-            allocate(lambda(p), idx(p), vectors(p, p))
+            allocate(lambda(p), lambda_copy(p), idx(p), vectors(p, p))
             c = cov(x, dim=1)
             call eigh(c, lambda, vectors=vectors, err=err0)
             
             if (err0%ok()) then
-               ! Sort eigenvalues and vectors in descending order
-               do j = 1, p
-                  idx(j) = j
-               end do
-               ! Simple bubble sort
-               do i = 1, p-1
-                  do j = i+1, p
-                     if (lambda(idx(i)) < lambda(idx(j))) then
-                        m = idx(i)
-                        idx(i) = idx(j)
-                        idx(j) = m
-                     end if
-                  end do
-               end do
+               ! Sort eigenvalues in descending order using stdlib_sorting
+               ! sort_index sorts in ascending order, so we negate values
+               lambda_copy = -lambda
+               call sort_index(lambda_copy, idx)
                
                ! Assign sorted results
                m = min(size(components, 1, kind=ilp), p)
@@ -123,7 +109,8 @@ contains
          err0 = linalg_state_type("pca", LINALG_ERROR, "Unknown method: "//method_)
       end if
       
-      if (present(err)) err = err0
+      ! Handle error state: return error or stop if err not present
+      call err0%handle(err)
       
     end subroutine pca_${k1}$
   #:endfor
@@ -136,11 +123,13 @@ contains
       ${t1}$, intent(in), optional :: x_mean(:)
       ${t1}$, intent(out) :: x_transformed(:,:)
 
-      integer(ilp) :: i, n, p
+      integer(ilp) :: i, n, p, nc
       ${t1}$, allocatable :: x_centered(:,:)
+      ${t1}$, parameter :: alpha = 1.0_${k1}$, beta = 0.0_${k1}$
       
       n = size(x, 1, kind=ilp)
       p = size(x, 2, kind=ilp)
+      nc = size(components, 1, kind=ilp)
       
       allocate(x_centered(n, p))
       if (present(x_mean)) then
@@ -151,8 +140,10 @@ contains
          x_centered = x
       end if
       
-      ! x_transformed = x_centered * components^T
-      x_transformed = matmul(x_centered, transpose(components))
+      ! x_transformed = x_centered * components^T using GEMM
+      ! GEMM: C = alpha * op(A) * op(B) + beta * C
+      ! x_transformed(n, nc) = x_centered(n, p) * components(nc, p)^T
+      call gemm('N', 'T', n, nc, p, alpha, x_centered, n, components, nc, beta, x_transformed, n)
     end subroutine pca_transform_${k1}$
   #:endfor
 
@@ -164,12 +155,17 @@ contains
       ${t1}$, intent(in), optional :: x_mean(:)
       ${t1}$, intent(out) :: x_reconstructed(:,:)
 
-      integer(ilp) :: i, n
+      integer(ilp) :: i, n, nc, p
+      ${t1}$, parameter :: alpha = 1.0_${k1}$, beta = 0.0_${k1}$
       
       n = size(x_reduced, 1, kind=ilp)
+      nc = size(x_reduced, 2, kind=ilp)
+      p = size(components, 2, kind=ilp)
       
-      ! x_reconstructed = x_reduced * components
-      x_reconstructed = matmul(x_reduced, components)
+      ! x_reconstructed = x_reduced * components using GEMM
+      ! GEMM: C = alpha * op(A) * op(B) + beta * C
+      ! x_reconstructed(n, p) = x_reduced(n, nc) * components(nc, p)
+      call gemm('N', 'N', n, p, nc, alpha, x_reduced, n, components, nc, beta, x_reconstructed, n)
       
       if (present(x_mean)) then
          do i = 1, n
