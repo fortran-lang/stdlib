@@ -175,8 +175,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
 
         if(present(op)) then
             if(.not.(op == "N" .or. op == "T" .or. op == "C")) then
-                err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Invalid matrix operation: '" &
-                // op // "'; expected 'N', 'T', or 'C'.")
+                err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Invalid matrix operation; expected 'N', 'T', or 'C'.")
                 call linalg_error_handling(err0)
             end if
         end if
