@@ -43,21 +43,12 @@ module test_linalg_pivoting_qr
         ${rt}$, allocatable :: work(:)
         type(linalg_state_type) :: state
         
-        ! call random_number(rea)
-        ! #:if rt.startswith('complex')
-        ! call random_number(ima)
-        ! a = cmplx(rea,ima,kind=${rk}$)
-        ! #:else
-        ! a = rea
-        ! #:endif
+        call random_number(rea)
         #:if rt.startswith('complex')
-        do concurrent(i=1:m, j=1:n)
-            a(i, j) = cmplx(i**(j-1), 0.0_${rk}$, kind=${rk}$)
-        enddo
+        call random_number(ima)
+        a = cmplx(rea,ima,kind=${rk}$)
         #:else
-        do concurrent(i=1:m, j=1:n)
-            a(i, j) = i ** (j-1)
-        enddo
+        a = rea
         #:endif
         aorig = a
         
