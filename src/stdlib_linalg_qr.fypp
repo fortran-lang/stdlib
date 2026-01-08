@@ -283,7 +283,7 @@ submodule (stdlib_linalg) stdlib_linalg_qr
                   
     end subroutine get_pivoting_qr_${ri}$_workspace 
 
-    pure module subroutine stdlib_linalg_${ri}$_pivoting_qr(a, q, r, pivots, overwrite_a, storage, err)
+    module subroutine stdlib_linalg_${ri}$_pivoting_qr(a, q, r, pivots, overwrite_a, storage, err)
         !> Input matrix a[m, n]
         ${rt}$, intent(inout), target :: a(:, :)
         !> Orthogonal matrix Q ([m, m] or [m, k] if reduced)
@@ -379,6 +379,7 @@ submodule (stdlib_linalg) stdlib_linalg_qr
             call geqp3(m, n, amat, m, pivots, tau, work, lwork, info)
             #:endif
             call handle_geqp3_info(this, info, m, n, lwork, err0)
+            print *, "GEQP3 INFO FLAG :", info
 
             if (err0%ok()) then
                 ! Get R matrix out before overwritten.
@@ -392,6 +393,11 @@ submodule (stdlib_linalg) stdlib_linalg_qr
                 call #{if rt.startswith('complex')}# ungqr #{else}# orgqr #{endif}#  &
                     (q1,q2,k,amat,lda,tau,work,lwork,info)
                 call handle_orgqr_info(this,info,m,n,k,lwork,err0)      
+                #:if rt.startswith("complex")
+                print *, "UNGQR INFO FLAG :", info
+                #:else
+                print *, "ORGQR INFO FLAG :", info
+                #:endif
                   
                 ! Copy result back to Q
                 if (.not.use_q_matrix) q = amat(:q1,:q2) 
