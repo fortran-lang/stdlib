@@ -659,7 +659,7 @@ module stdlib_linalg
          type(linalg_state_type), optional, intent(out) :: err
       end subroutine get_qr_${ri}$_workspace
 
-      pure module subroutine get_pivoting_qr_${ri}$_workspace(a, lwork, pivoting, err)
+      module subroutine get_pivoting_qr_${ri}$_workspace(a, lwork, pivoting, err)
         !> Input matrix a[m, n]
         ${rt}$, intent(in), target :: a(:, :)
         !> Minimum workspace size for both operations.
