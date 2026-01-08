@@ -37,7 +37,7 @@ module test_linalg_pivoting_qr
         integer(ilp), parameter :: k   = min(m,n)
         real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
         ${rt}$ :: a(m,n),aorig(m,n),q(m,m),r(m,n),qred(m,k),rred(k,n),qerr(m,6),rerr(6,n)
-        real(${rk}$) :: rea(m,n),ima(m,n)
+        real(${rk}$) :: rea(m,n),ima(m,n), G(n, n)
         integer(ilp) :: pivots(n), i, j
         integer(ilp) :: lwork
         ${rt}$, allocatable :: work(:)
@@ -57,6 +57,7 @@ module test_linalg_pivoting_qr
         ! r = ieee_value(0.0_${rk}$,ieee_quiet_nan)
         q = 0.0_${rk}$
         r = 0.0_${rk}$
+        G = 0.0_${rk}$
         pivots = [(i, i=1, n)]
         call qr(a, q, r, pivots, err=state)
         
@@ -65,7 +66,16 @@ module test_linalg_pivoting_qr
         if (allocated(error)) return        
         
         ! Check solution
+        print *, "Reconstruction error :"
         print *, maxval(abs(a(:, pivots) - matmul(q, r))), tol
+        do concurrent(i=1:n, j=1:n)
+            G(i, j) = dot_product(q(:, i), q(:, j))
+        enddo
+        print *
+        print *, "Orthogonality:"
+        do i = 1, n
+            print *, G(i, :)
+        enddo
         call check(error, all(abs(a(:, pivots)-matmul(q,r))<tol), 'converged solution (full)')
         if (allocated(error)) return        
 
