@@ -1,5 +1,9 @@
 set(stats_cppFiles
     ../stdlib_linalg_constants.fypp
+    ../stdlib_sorting.fypp
+    ../stdlib_sorting_ord_sort.fypp
+    ../stdlib_sorting_sort_adjoint.fypp
+    ../stdlib_sorting_sort.fypp
     )
 
 set(stats_fppFiles
@@ -10,10 +14,11 @@ set(stats_fppFiles
     ../stdlib_error.fypp
     ../stdlib_linalg.fypp
     ../stdlib_linalg_diag.fypp
+    ../stdlib_linalg_eigenvalues.fypp
     ../stdlib_linalg_state.fypp
+    ../stdlib_linalg_svd.fypp
     ../stdlib_random.fypp
     ../stdlib_selection.fypp
-    ../stdlib_sorting.fypp
     ../stdlib_string_type.fypp
     stdlib_stats_corr.fypp
     stdlib_stats_cov.fypp
@@ -31,5 +36,9 @@ set(stats_fppFiles
     stdlib_stats_var.fypp
 )
 
+set(f90Files
+    ../stdlib_sorting_radix_sort.f90
+    )
+
 configure_stdlib_target(stats "" stats_fppFiles stats_cppFiles)
-target_link_libraries(stats PUBLIC blas lapack)
+target_link_libraries(stats PUBLIC blas lapack $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>)
