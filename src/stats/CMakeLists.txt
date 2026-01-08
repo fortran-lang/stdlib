@@ -13,6 +13,7 @@ set(stats_fppFiles
     ../stdlib_linalg_state.fypp
     ../stdlib_random.fypp
     ../stdlib_selection.fypp
+    ../stdlib_sorting.fypp
     ../stdlib_string_type.fypp
     stdlib_stats_corr.fypp
     stdlib_stats_cov.fypp
