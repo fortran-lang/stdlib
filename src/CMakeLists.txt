@@ -75,7 +75,7 @@ set(fppFiles
 set(cppFiles stdlib_linalg_constants.fypp
     )
 set(f90Files
-    stdlib_io_constants.f90
+    stdlib_io_aux.f90
     stdlib_sparse.f90
     $<IF:$<BOOL:${f18errorstop}>,f18estop.f90,f08estop.f90>
 )

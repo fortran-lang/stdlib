@@ -1,4 +1,4 @@
-module stdlib_io_constants
+module stdlib_io_aux
   implicit none(type, external)
   private
   public :: FMT_INT, FMT_REAL_SP, FMT_REAL_DP, FMT_REAL_XDP, FMT_REAL_QP
@@ -28,4 +28,4 @@ module stdlib_io_constants
     !> Format string for quadruple precision complex numbers
     FMT_COMPLEX_QP = '(es44.35e4,1x,es44.35e4)'
 
-end module stdlib_io_constants
+end module stdlib_io_aux

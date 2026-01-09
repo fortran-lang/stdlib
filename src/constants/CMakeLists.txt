@@ -6,7 +6,7 @@ set(constants_fppFiles
     )
 
 set(constants_f90Files
-    ../stdlib_io_constants.f90
+    ../stdlib_io_aux.f90
     stdlib_codata.f90
     )
 

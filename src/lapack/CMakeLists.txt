@@ -64,7 +64,7 @@ set(lapack_cppFiles
 )
 set(lapack_f90Files
     $<IF:$<BOOL:${f18errorstop}>,../f18estop.f90,../f08estop.f90>
-    ../stdlib_io_constants.f90
+    ../stdlib_io_aux.f90
 )
 
 configure_stdlib_target(lapack lapack_f90Files lapack_fppFiles lapack_cppFiles)
