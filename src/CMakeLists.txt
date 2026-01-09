@@ -10,6 +10,7 @@ endif()
 
 add_subdirectory(blas)
 add_subdirectory(constants)
+add_subdirectory(core)
 
 add_subdirectory(hash)
 
@@ -75,7 +76,6 @@ set(fppFiles
     stdlib_string_type_constructor.fypp
     stdlib_strings_to_string.fypp
     stdlib_strings.fypp
-    stdlib_version.fypp
 )
 set(cppFiles stdlib_linalg_constants.fypp
     )
@@ -92,6 +92,7 @@ configure_stdlib_target(${PROJECT_NAME} f90Files fppFiles cppFiles)
 target_link_libraries(${PROJECT_NAME} PUBLIC
   array
   constants
+  core
   $<$<NOT:$<BOOL:${STDLIB_NO_ANSI}>>:ansi>
   $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>
   hash
