@@ -18,6 +18,7 @@ if (NOT STDLIB_NO_HASHMAPS)
 endif()
 
 add_subdirectory(intrinsics)
+add_subdirectory(io)
 
 add_subdirectory(lapack)
 add_subdirectory(lapack_extended)
@@ -35,10 +36,6 @@ endif()
 set(fppFiles
     stdlib_ascii.fypp
     stdlib_error.fypp
-    stdlib_io.fypp
-    stdlib_io_npy.fypp
-    stdlib_io_npy_load.fypp
-    stdlib_io_npy_save.fypp
     stdlib_kinds.fypp
     stdlib_linalg.fypp
     stdlib_linalg_diag.fypp
@@ -100,6 +97,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   hash
   $<$<NOT:$<BOOL:${STDLIB_NO_HASHMAPS}>>:hashmaps>
   intrinsics
+  io
   logger
   $<$<NOT:$<BOOL:${STDLIB_NO_STATS}>>:stats>
   math
