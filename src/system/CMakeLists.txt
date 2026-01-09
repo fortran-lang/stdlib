@@ -1,5 +1,4 @@
 set(system_fppFiles
-    ../stdlib_string_type.fypp
     ../stdlib_linalg_state.fypp
     )
 

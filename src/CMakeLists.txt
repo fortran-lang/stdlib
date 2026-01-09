@@ -66,7 +66,6 @@ set(fppFiles
     stdlib_sparse_spmv.fypp
     stdlib_specialmatrices.fypp
     stdlib_specialmatrices_tridiagonal.fypp
-    stdlib_string_type_constructor.fypp
 )
 set(cppFiles stdlib_linalg_constants.fypp
     )

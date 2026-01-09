@@ -1,8 +1,6 @@
 
 set(lapack_fppFiles
     ../stdlib_linalg_state.fypp
-    ../stdlib_string_type.fypp
-    ../stdlib_string_type_constructor.fypp
     stdlib_lapack_base.fypp
     stdlib_lapack_solve.fypp
     stdlib_lapack_others.fypp

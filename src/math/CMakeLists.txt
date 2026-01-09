@@ -1,5 +1,4 @@
 set(math_fppFiles
-    ../stdlib_string_type.fypp
     stdlib_math_all_close.fypp
     stdlib_math_arange.fypp
     stdlib_math_diff.fypp
@@ -15,4 +14,4 @@ set(math_cppFiles
 
 configure_stdlib_target(math "" math_fppFiles math_cppFiles)
 
-target_link_libraries(math PUBLIC core $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>)
+target_link_libraries(math PUBLIC core strings $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>)

@@ -5,9 +5,8 @@ set(ansi_f90Files
     )
 
 set(ansi_fppFiles
-    ../stdlib_string_type.fypp
     )
 
 configure_stdlib_target(ansi ansi_f90Files ansi_fppFiles "")
 
-target_link_libraries(ansi PUBLIC core)
+target_link_libraries(ansi PUBLIC core strings)
