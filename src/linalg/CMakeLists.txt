@@ -24,8 +24,6 @@ set(linalg_fppFiles
     stdlib_sparse_conversion.fypp
     stdlib_sparse_kinds.fypp
     stdlib_sparse_spmv.fypp
-    stdlib_specialmatrices.fypp
-    stdlib_specialmatrices_tridiagonal.fypp
     )
 
 set(linalg_cppFiles
