@@ -38,9 +38,6 @@ if (NOT STDLIB_NO_STATS)
 endif()
 
 set(fppFiles
-    core/stdlib_ascii.fypp
-    core/stdlib_error.fypp
-    core/stdlib_kinds.fypp
     stdlib_linalg.fypp
     stdlib_linalg_diag.fypp
     stdlib_linalg_least_squares.fypp
@@ -63,7 +60,6 @@ set(fppFiles
     stdlib_linalg_cholesky.fypp
     stdlib_linalg_schur.fypp
     stdlib_linalg_matrix_functions.fypp
-    core/stdlib_optval.fypp
     stdlib_sparse_constants.fypp
     stdlib_sparse_conversion.fypp
     stdlib_sparse_kinds.fypp
