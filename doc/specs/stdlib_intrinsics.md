@@ -156,3 +156,41 @@ The output is a scalar of the same type and kind as to that of `x` and `y`.
 ```fortran
 {!example/intrinsics/example_dot_product.f90!}
 ```
+
+### `stdlib_matmul` function
+
+#### Description
+
+The extension of the intrinsic function `matmul` to handle more than 2 and less than or equal to 5 matrices, with error handling using `linalg_state_type`.
+The optimal parenthesization to minimize the number of scalar multiplications is done using the Algorithm as outlined in Cormen, "Introduction to Algorithms", 4ed, ch-14, section-2.
+The actual matrix multiplication is performed using the `gemm` interfaces.
+It supports only `real` and `complex` matrices.
+
+#### Syntax
+
+`res = ` [[stdlib_intrinsics(module):stdlib_matmul(interface)]] ` (m1, m2, m3, m4, m5, err)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Function.
+
+#### Argument(s)
+
+`m1`, `m2`: 2D arrays of the same kind and type. `intent(in)` arguments.
+`m3`,`m4`,`m5`: 2D arrays of the same kind and type as the other matrices. `intent(in), optional` arguments.
+`err`: `type(linalg_state_type), intent(out), optional` argument. Can be used for elegant error handling. It is assigned `LINALG_VALUE_ERROR` 
+        in case the matrices are not of compatible sizes.
+
+#### Result
+
+The output is a matrix of the appropriate size.
+
+#### Example
+
+```fortran
+{!example/intrinsics/example_matmul.f90!}
+```
