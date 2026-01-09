@@ -1,5 +1,4 @@
 set(quadrature_fppFiles
-    ../stdlib_kinds.fypp
     ../stdlib_error.fypp
     stdlib_quadrature.fypp
     stdlib_quadrature_trapz.fypp
@@ -15,4 +14,4 @@ set(quadrature_f90Files
 
 configure_stdlib_target(quadrature quadrature_f90Files quadrature_fppFiles quadrature_cppFiles)
 
-target_link_libraries(quadrature PUBLIC specialfunctions)
+target_link_libraries(quadrature PUBLIC core specialfunctions)

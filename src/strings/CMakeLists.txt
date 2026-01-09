@@ -1,7 +1,4 @@
 set(strings_fppFiles
-    ../stdlib_ascii.fypp
-    ../stdlib_kinds.fypp
-    ../stdlib_optval.fypp
     ../stdlib_string_type.fypp
     ../stdlib_string_type_constructor.fypp
     stdlib_str2num.fypp
@@ -17,4 +14,4 @@ set(strings_f90Files
 
 configure_stdlib_target(strings strings_f90Files strings_fppFiles strings_cppFiles)
 
-#target_link_libraries(strings PUBLIC $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>)
+target_link_libraries(strings PUBLIC core)

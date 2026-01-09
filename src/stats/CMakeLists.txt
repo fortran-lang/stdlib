@@ -3,9 +3,6 @@ set(stats_cppFiles
     )
 
 set(stats_fppFiles
-    ../stdlib_ascii.fypp
-    ../stdlib_kinds.fypp
-    ../stdlib_optval.fypp
     ../stdlib_error.fypp
     ../stdlib_linalg.fypp
     ../stdlib_linalg_diag.fypp
@@ -33,4 +30,4 @@ set(stats_f90Files
 
 configure_stdlib_target(stats stats_f90Files stats_fppFiles stats_cppFiles)
 
-target_link_libraries(stats PUBLIC selection)
+target_link_libraries(stats PUBLIC core selection)

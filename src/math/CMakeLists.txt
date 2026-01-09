@@ -1,7 +1,4 @@
 set(math_fppFiles
-    ../stdlib_ascii.fypp
-    ../stdlib_kinds.fypp
-    ../stdlib_optval.fypp
     ../stdlib_error.fypp
     ../stdlib_string_type.fypp
     stdlib_math_all_close.fypp
@@ -19,4 +16,4 @@ set(math_cppFiles
 
 configure_stdlib_target(math "" math_fppFiles math_cppFiles)
 
-target_link_libraries(math PUBLIC $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>)
+target_link_libraries(math PUBLIC core $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>)

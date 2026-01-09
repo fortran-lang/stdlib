@@ -1,8 +1,5 @@
 set(system_fppFiles
-    ../stdlib_ascii.fypp
     ../stdlib_error.fypp
-    ../stdlib_kinds.fypp
-    ../stdlib_optval.fypp
     ../stdlib_string_type.fypp
     ../stdlib_linalg_state.fypp
     )
@@ -22,4 +19,4 @@ set(system_f90Files
 
 configure_stdlib_target(system system_f90Files system_fppFiles system_cppFiles)
 
-target_link_libraries(system PUBLIC strings)
+target_link_libraries(system PUBLIC core strings)

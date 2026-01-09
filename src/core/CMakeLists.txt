@@ -1,5 +1,8 @@
 set(core_fppFiles
+    stdlib_ascii.fypp
     stdlib_version.fypp
+    stdlib_kinds.fypp
+    stdlib_optval.fypp
     )
 
 set(core_cppFiles

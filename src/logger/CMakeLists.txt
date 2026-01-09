@@ -1,7 +1,4 @@
 set(logger_fppFiles
-    ../stdlib_ascii.fypp
-    ../stdlib_kinds.fypp
-    ../stdlib_optval.fypp
     )
 
 set(logger_cppFiles
@@ -12,3 +9,5 @@ set(logger_f90Files
     )
 
 configure_stdlib_target(logger logger_f90Files logger_fppFiles logger_cppFiles)
+
+target_link_libraries(logger PUBLIC core)

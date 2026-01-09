@@ -1,5 +1,4 @@
 set(hash_fppFiles
-    ../stdlib_kinds.fypp
     stdlib_hash_32bit_fnv.fypp
     stdlib_hash_32bit.fypp
     stdlib_hash_32bit_nm.fypp
@@ -11,3 +10,5 @@ set(hash_fppFiles
     )
 
 configure_stdlib_target(hash "" hash_fppFiles "")
+
+target_link_libraries(hash PUBLIC core)

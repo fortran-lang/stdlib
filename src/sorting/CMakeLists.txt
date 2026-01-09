@@ -1,7 +1,4 @@
 set(sorting_fppFiles
-    ../stdlib_ascii.fypp
-    ../stdlib_kinds.fypp
-    ../stdlib_optval.fypp
     ../stdlib_string_type.fypp
     )
 
@@ -18,4 +15,4 @@ set(sorting_f90Files
 
 configure_stdlib_target(sorting sorting_f90Files sorting_fppFiles sorting_cppFiles)
 
-target_link_libraries(sorting PUBLIC $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>)
+target_link_libraries(sorting PUBLIC core $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>)
