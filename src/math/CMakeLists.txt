@@ -1,5 +1,4 @@
 set(math_fppFiles
-    ../stdlib_error.fypp
     ../stdlib_string_type.fypp
     stdlib_math_all_close.fypp
     stdlib_math_arange.fypp

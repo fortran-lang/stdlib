@@ -1,7 +1,6 @@
 
 set(lapack_fppFiles
     ../stdlib_linalg_state.fypp
-    ../stdlib_error.fypp
     ../stdlib_string_type.fypp
     ../stdlib_string_type_constructor.fypp
     stdlib_lapack_base.fypp
@@ -63,7 +62,6 @@ set(lapack_cppFiles
     ../stdlib_linalg_lapack.fypp
 )
 set(lapack_f90Files
-    $<IF:$<BOOL:${f18errorstop}>,../f18estop.f90,../f08estop.f90>
     ../stdlib_io_aux.f90
 )
 

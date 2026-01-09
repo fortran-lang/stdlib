@@ -39,7 +39,7 @@ endif()
 
 set(fppFiles
     core/stdlib_ascii.fypp
-    stdlib_error.fypp
+    core/stdlib_error.fypp
     core/stdlib_kinds.fypp
     stdlib_linalg.fypp
     stdlib_linalg_diag.fypp
@@ -77,7 +77,6 @@ set(cppFiles stdlib_linalg_constants.fypp
 set(f90Files
     stdlib_io_aux.f90
     stdlib_sparse.f90
-    $<IF:$<BOOL:${f18errorstop}>,f18estop.f90,f08estop.f90>
 )
 
 configure_stdlib_target(${PROJECT_NAME} f90Files fppFiles cppFiles)

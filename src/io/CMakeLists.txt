@@ -1,6 +1,4 @@
 set(io_fppFiles
-    #../stdlib_string_type.fypp
-    ../stdlib_error.fypp
     stdlib_io.fypp
     stdlib_io_npy.fypp
     stdlib_io_npy_load.fypp

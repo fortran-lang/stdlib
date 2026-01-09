@@ -1,5 +1,4 @@
 set(quadrature_fppFiles
-    ../stdlib_error.fypp
     stdlib_quadrature.fypp
     stdlib_quadrature_trapz.fypp
     stdlib_quadrature_simps.fypp

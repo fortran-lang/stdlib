@@ -1,5 +1,4 @@
 set(constants_fppFiles
-    ../stdlib_error.fypp
     ../stdlib_string_type.fypp
     stdlib_codata_type.fypp
     stdlib_constants.fypp

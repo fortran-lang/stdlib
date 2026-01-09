@@ -3,7 +3,6 @@ set(stats_cppFiles
     )
 
 set(stats_fppFiles
-    ../stdlib_error.fypp
     ../stdlib_linalg.fypp
     ../stdlib_linalg_diag.fypp
     ../stdlib_linalg_state.fypp
