@@ -2,6 +2,8 @@ if (NOT STDLIB_NO_ANSI)
   add_subdirectory(ansi)
 endif()
 
+add_subdirectory(array)
+
 if (NOT STDLIB_NO_BITSET)
   add_subdirectory(bitsets)
 endif()
@@ -21,6 +23,7 @@ add_subdirectory(lapack)
 add_subdirectory(lapack_extended)
 add_subdirectory(logger)
 add_subdirectory(math)
+add_subdirectory(selection)
 add_subdirectory(sorting)
 add_subdirectory(specialfunctions)
 add_subdirectory(system)
@@ -60,7 +63,6 @@ set(fppFiles
     stdlib_linalg_schur.fypp
     stdlib_linalg_matrix_functions.fypp
     stdlib_optval.fypp
-    stdlib_selection.fypp
     stdlib_sparse_constants.fypp
     stdlib_sparse_conversion.fypp
     stdlib_sparse_kinds.fypp
@@ -81,7 +83,6 @@ set(fppFiles
 set(cppFiles stdlib_linalg_constants.fypp
     )
 set(f90Files
-    stdlib_array.f90
     stdlib_sparse.f90
     stdlib_quadrature_gauss.f90
     stdlib_stringlist_type.f90
@@ -91,6 +92,7 @@ set(f90Files
 configure_stdlib_target(${PROJECT_NAME} f90Files fppFiles cppFiles)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
+  array
   constants
   $<$<NOT:$<BOOL:${STDLIB_NO_ANSI}>>:ansi>
   $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>
@@ -100,6 +102,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   logger
   $<$<NOT:$<BOOL:${STDLIB_NO_STATS}>>:stats>
   math
+  selection
   specialfunctions
   sorting
   system
