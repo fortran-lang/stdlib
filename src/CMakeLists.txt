@@ -19,9 +19,11 @@ add_subdirectory(intrinsics)
 
 add_subdirectory(lapack)
 add_subdirectory(lapack_extended)
+add_subdirectory(logger)
 add_subdirectory(math)
 add_subdirectory(sorting)
 add_subdirectory(specialfunctions)
+add_subdirectory(system)
 
 if (NOT STDLIB_NO_STATS)
   add_subdirectory(stats)
@@ -80,12 +82,6 @@ set(cppFiles stdlib_linalg_constants.fypp
     )
 set(f90Files
     stdlib_array.f90
-    stdlib_logger.f90
-    stdlib_system_subprocess.c
-    stdlib_system_subprocess.F90
-    stdlib_system_path.f90
-    stdlib_system.c
-    stdlib_system.F90
     stdlib_sparse.f90
     stdlib_quadrature_gauss.f90
     stdlib_stringlist_type.f90
@@ -101,9 +97,11 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   hash
   $<$<NOT:$<BOOL:${STDLIB_NO_HASHMAPS}>>:hashmaps>
   intrinsics
+  logger
   $<$<NOT:$<BOOL:${STDLIB_NO_STATS}>>:stats>
   math
   specialfunctions
   sorting
+  system
   blas lapack lapack_extended
   )
