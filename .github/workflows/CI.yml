@@ -26,6 +26,7 @@ jobs:
           - {compiler: gcc, version: 12}
           - {compiler: gcc, version: 13}
           - {compiler: gcc, version: 14}
+          - {compiler: gcc, version: 15}
           - {compiler: intel, version: '2024.1'}          
         build: [cmake]        
         include:
@@ -43,6 +44,8 @@ jobs:
             toolchain: {compiler: intel, version: '2024.1'}
           - os: macos-14
             toolchain: {compiler: gcc, version: 10}
+          - os: ubuntu-latest
+            toolchain: {compiler: gcc, version: 15}
     env:
       BUILD_DIR: ${{ matrix.build == 'cmake' && 'build' || '.' }}
 

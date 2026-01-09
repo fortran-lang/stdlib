@@ -1,0 +1,85 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
+
+submodule(stdlib_lapack_extended_base) stdlib_lapack_extended
+    implicit none
+contains
+    #:for ik,it,ii in LINALG_INT_KINDS_TYPES
+    #:for k1,t1,s1 in KINDS_TYPES
+    pure module subroutine stdlib${ii}$_glagtm_${s1}$(trans, n, nrhs, alpha, dl, d, du, x, ldx, beta, b, ldb)
+        character, intent(in) :: trans
+        integer(${ik}$), intent(in) :: ldb, ldx, n, nrhs
+        ${t1}$, intent(in) :: alpha, beta
+        ${t1}$, intent(inout) :: b(ldb,*)
+        ${t1}$, intent(in) :: d(*), dl(*), du(*), x(ldx,*)
+
+        ! Internal variables.
+        integer(${ik}$) :: i, j
+        ${t1}$ :: temp
+        if(n == 0) then
+            return
+        endif
+        if(beta == 0.0_${k1}$) then
+            b(1:n, 1:nrhs) = 0.0_${k1}$
+        else
+            b(1:n, 1:nrhs) = beta * b(1:n, 1:nrhs)
+        end if
+
+        if(trans == 'N') then
+            do j = 1, nrhs
+                if(n == 1_${ik}$) then
+                    temp = d(1_${ik}$) * x(1_${ik}$, j)
+                    b(1_${ik}$, j) = b(1_${ik}$, j) + alpha * temp
+                else
+                    temp = d(1_${ik}$) * x(1_${ik}$, j) + du(1_${ik}$) * x(2_${ik}$, j)
+                    b(1_${ik}$, j) = b(1_${ik}$, j) + alpha * temp
+                    do i = 2, n - 1
+                        temp = dl(i - 1) * x(i - 1, j) + d(i) * x(i, j) + du(i) * x(i + 1, j)
+                        b(i, j) = b(i, j) + alpha * temp
+                    end do
+                    temp = dl(n - 1) * x(n - 1, j) + d(n) * x(n, j)
+                    b(n, j) = b(n, j) + alpha * temp
+                end if
+            end do
+        #:if t1.startswith('complex')
+        else if(trans == 'C') then
+            do j = 1, nrhs
+                if(n == 1_${ik}$) then
+                    temp = conjg(d(1_${ik}$)) * x(1_${ik}$, j)
+                    b(1_${ik}$, j) = b(1_${ik}$, j) + alpha * temp
+                else
+                    temp = conjg(d(1_${ik}$)) * x(1_${ik}$, j) + conjg(dl(1_${ik}$)) * x(2_${ik}$, j)
+                    b(1_${ik}$, j) = b(1_${ik}$, j) + alpha * temp
+                    do i = 2, n - 1
+                        temp = conjg(du(i - 1)) * x(i - 1, j) + conjg(d(i)) * x(i, j) + conjg(dl(i)) * x(i + 1, j)
+                        b(i, j) = b(i, j) + alpha * temp
+                    end do
+                    temp = conjg(du(n - 1)) * x(n - 1, j) + conjg(d(n)) * x(n, j)
+                    b(n, j) = b(n, j) + alpha * temp
+                end if
+            end do
+        #:endif
+        else
+            do j = 1, nrhs
+                if(n == 1_${ik}$) then
+                    temp = d(1_${ik}$) * x(1_${ik}$, j)
+                    b(1_${ik}$, j) = b(1_${ik}$, j) + alpha * temp
+                else
+                    temp = d(1_${ik}$) * x(1_${ik}$, j) + dl(1_${ik}$) * x(2_${ik}$, j)
+                    b(1_${ik}$, j) = b(1_${ik}$, j) + alpha * temp
+                    do i = 2, n - 1
+                        temp = du(i - 1) * x(i - 1, j) + d(i) * x(i, j) + dl(i) * x(i + 1, j)
+                        b(i, j) = b(i, j) + alpha * temp
+                    end do
+                    temp = du(n - 1) * x(n - 1, j) + d(n) * x(n, j)
+                    b(n, j) = b(n, j) + alpha * temp
+                end if
+            end do
+        end if
+    end subroutine stdlib${ii}$_glagtm_${s1}$
+    #:endfor
+    #:endfor
+
+end submodule
