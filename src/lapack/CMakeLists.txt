@@ -7,8 +7,6 @@ set(lapack_fppFiles
     ../stdlib_ascii.fypp
     ../stdlib_string_type.fypp
     ../stdlib_string_type_constructor.fypp
-    ../stdlib_strings.fypp
-    ../stdlib_strings_to_string.fypp
     stdlib_lapack_base.fypp
     stdlib_lapack_solve.fypp
     stdlib_lapack_others.fypp
@@ -75,6 +73,6 @@ set(lapack_f90Files
 configure_stdlib_target(lapack lapack_f90Files lapack_fppFiles lapack_cppFiles)
 
 if(LAPACK_FOUND)
-    target_link_libraries(lapack PUBLIC "LAPACK::LAPACK")
+    target_link_libraries(lapack PUBLIC "LAPACK::LAPACK" strings)
 endif()
-target_link_libraries(lapack PUBLIC blas)
+target_link_libraries(lapack PUBLIC blas strings)

@@ -5,7 +5,6 @@ set(system_fppFiles
     ../stdlib_optval.fypp
     ../stdlib_string_type.fypp
     ../stdlib_linalg_state.fypp
-    ../stdlib_strings.fypp
     )
 
 set(system_cppFiles
@@ -22,3 +21,5 @@ set(system_f90Files
     )
 
 configure_stdlib_target(system system_f90Files system_fppFiles system_cppFiles)
+
+target_link_libraries(system PUBLIC strings)
