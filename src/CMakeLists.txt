@@ -29,6 +29,7 @@ add_subdirectory(quadrature)
 add_subdirectory(selection)
 add_subdirectory(sorting)
 add_subdirectory(specialfunctions)
+add_subdirectory(stringlist)
 add_subdirectory(strings)
 add_subdirectory(system)
 
@@ -69,7 +70,6 @@ set(fppFiles
     stdlib_sparse_spmv.fypp
     stdlib_specialmatrices.fypp
     stdlib_specialmatrices_tridiagonal.fypp
-    stdlib_string_type.fypp
     stdlib_string_type_constructor.fypp
 )
 set(cppFiles stdlib_linalg_constants.fypp
@@ -77,7 +77,6 @@ set(cppFiles stdlib_linalg_constants.fypp
 set(f90Files
     stdlib_io_constants.f90
     stdlib_sparse.f90
-    stdlib_stringlist_type.f90
     $<IF:$<BOOL:${f18errorstop}>,f18estop.f90,f08estop.f90>
 )
 
@@ -100,6 +99,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   selection
   specialfunctions
   sorting
+  stringlist
   strings
   system
   blas lapack lapack_extended
