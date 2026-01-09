@@ -3,6 +3,7 @@ module stdlib_intrinsics
     !!Alternative implementations of some Fortran intrinsic functions offering either faster and/or more accurate evaluation.
     !! ([Specification](../page/specs/stdlib_intrinsics.html))
     use stdlib_kinds
+    use stdlib_linalg_state, only: linalg_state_type
     implicit none
     private
 
@@ -659,6 +660,99 @@ module stdlib_intrinsics
         module procedure :: kahan_kernel_m_cdp
     end interface
     public :: kahan_kernel
+
+    interface stdlib_matmul
+        !! version: experimental
+        !!
+        !!### Summary
+        !! compute the matrix multiplication of more than two matrices with a single function call.
+        !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_matmul))
+        !!
+        !!### Description
+        !!
+        !! matrix multiply more than two matrices with a single function call
+        !! the multiplication with the optimal parenthesization for efficiency of computation is done automatically
+        !! Supported data types are `real` and `complex`.
+        !!
+        !! Note: The matrices must be of compatible shapes to be multiplied
+            pure module function stdlib_matmul_pure_sp (m1, m2, m3, m4, m5) result(r)
+                real(sp), intent(in) :: m1(:,:), m2(:,:)
+                real(sp), intent(in), optional :: m3(:,:), m4(:,:), m5(:,:)
+                real(sp), allocatable :: r(:,:)
+            end function stdlib_matmul_pure_sp
+
+            module function stdlib_matmul_sp (m1, m2, m3, m4, m5, err) result(r)
+                real(sp), intent(in) :: m1(:,:), m2(:,:)
+                real(sp), intent(in), optional :: m3(:,:), m4(:,:), m5(:,:)
+                type(linalg_state_type), intent(out) :: err
+                real(sp), allocatable :: r(:,:)
+            end function stdlib_matmul_sp
+            pure module function stdlib_matmul_pure_dp (m1, m2, m3, m4, m5) result(r)
+                real(dp), intent(in) :: m1(:,:), m2(:,:)
+                real(dp), intent(in), optional :: m3(:,:), m4(:,:), m5(:,:)
+                real(dp), allocatable :: r(:,:)
+            end function stdlib_matmul_pure_dp
+
+            module function stdlib_matmul_dp (m1, m2, m3, m4, m5, err) result(r)
+                real(dp), intent(in) :: m1(:,:), m2(:,:)
+                real(dp), intent(in), optional :: m3(:,:), m4(:,:), m5(:,:)
+                type(linalg_state_type), intent(out) :: err
+                real(dp), allocatable :: r(:,:)
+            end function stdlib_matmul_dp
+            pure module function stdlib_matmul_pure_csp (m1, m2, m3, m4, m5) result(r)
+                complex(sp), intent(in) :: m1(:,:), m2(:,:)
+                complex(sp), intent(in), optional :: m3(:,:), m4(:,:), m5(:,:)
+                complex(sp), allocatable :: r(:,:)
+            end function stdlib_matmul_pure_csp
+
+            module function stdlib_matmul_csp (m1, m2, m3, m4, m5, err) result(r)
+                complex(sp), intent(in) :: m1(:,:), m2(:,:)
+                complex(sp), intent(in), optional :: m3(:,:), m4(:,:), m5(:,:)
+                type(linalg_state_type), intent(out) :: err
+                complex(sp), allocatable :: r(:,:)
+            end function stdlib_matmul_csp
+            pure module function stdlib_matmul_pure_cdp (m1, m2, m3, m4, m5) result(r)
+                complex(dp), intent(in) :: m1(:,:), m2(:,:)
+                complex(dp), intent(in), optional :: m3(:,:), m4(:,:), m5(:,:)
+                complex(dp), allocatable :: r(:,:)
+            end function stdlib_matmul_pure_cdp
+
+            module function stdlib_matmul_cdp (m1, m2, m3, m4, m5, err) result(r)
+                complex(dp), intent(in) :: m1(:,:), m2(:,:)
+                complex(dp), intent(in), optional :: m3(:,:), m4(:,:), m5(:,:)
+                type(linalg_state_type), intent(out) :: err
+                complex(dp), allocatable :: r(:,:)
+            end function stdlib_matmul_cdp
+    end interface stdlib_matmul
+    public :: stdlib_matmul
+
+    ! internal interface
+    interface stdlib_matmul_sub
+            pure module subroutine stdlib_matmul_sub_sp (res, m1, m2, m3, m4, m5, err)
+                real(sp), intent(out), allocatable :: res(:,:)
+                real(sp), intent(in) :: m1(:,:), m2(:,:)
+                real(sp), intent(in), optional :: m3(:,:), m4(:,:), m5(:,:)
+                type(linalg_state_type), intent(out), optional :: err
+            end subroutine stdlib_matmul_sub_sp
+            pure module subroutine stdlib_matmul_sub_dp (res, m1, m2, m3, m4, m5, err)
+                real(dp), intent(out), allocatable :: res(:,:)
+                real(dp), intent(in) :: m1(:,:), m2(:,:)
+                real(dp), intent(in), optional :: m3(:,:), m4(:,:), m5(:,:)
+                type(linalg_state_type), intent(out), optional :: err
+            end subroutine stdlib_matmul_sub_dp
+            pure module subroutine stdlib_matmul_sub_csp (res, m1, m2, m3, m4, m5, err)
+                complex(sp), intent(out), allocatable :: res(:,:)
+                complex(sp), intent(in) :: m1(:,:), m2(:,:)
+                complex(sp), intent(in), optional :: m3(:,:), m4(:,:), m5(:,:)
+                type(linalg_state_type), intent(out), optional :: err
+            end subroutine stdlib_matmul_sub_csp
+            pure module subroutine stdlib_matmul_sub_cdp (res, m1, m2, m3, m4, m5, err)
+                complex(dp), intent(out), allocatable :: res(:,:)
+                complex(dp), intent(in) :: m1(:,:), m2(:,:)
+                complex(dp), intent(in), optional :: m3(:,:), m4(:,:), m5(:,:)
+                type(linalg_state_type), intent(out), optional :: err
+            end subroutine stdlib_matmul_sub_cdp
+    end interface stdlib_matmul_sub
     
 contains
 
