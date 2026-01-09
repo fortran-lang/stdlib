@@ -25,6 +25,7 @@ add_subdirectory(lapack)
 add_subdirectory(lapack_extended)
 add_subdirectory(logger)
 add_subdirectory(math)
+add_subdirectory(quadrature)
 add_subdirectory(selection)
 add_subdirectory(sorting)
 add_subdirectory(specialfunctions)
@@ -67,9 +68,6 @@ set(fppFiles
     stdlib_sparse_spmv.fypp
     stdlib_specialmatrices.fypp
     stdlib_specialmatrices_tridiagonal.fypp
-    stdlib_quadrature.fypp
-    stdlib_quadrature_trapz.fypp
-    stdlib_quadrature_simps.fypp
     stdlib_random.fypp
     stdlib_str2num.fypp
     stdlib_string_type.fypp
@@ -82,7 +80,6 @@ set(cppFiles stdlib_linalg_constants.fypp
 set(f90Files
     stdlib_io_constants.f90
     stdlib_sparse.f90
-    stdlib_quadrature_gauss.f90
     stdlib_stringlist_type.f90
     $<IF:$<BOOL:${f18errorstop}>,f18estop.f90,f08estop.f90>
 )
@@ -102,6 +99,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   logger
   $<$<NOT:$<BOOL:${STDLIB_NO_STATS}>>:stats>
   math
+  quadrature
   selection
   specialfunctions
   sorting
