@@ -40,6 +40,8 @@ if (NOT STDLIB_NO_STATS)
   add_subdirectory(stats)
 endif()
 
+add_subdirectory(unsorted)
+
 set(fppFiles
     stdlib_version.fypp
 )
@@ -74,4 +76,5 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   strings
   system
   blas lapack lapack_extended
+  unsorted
   )
