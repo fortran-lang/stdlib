@@ -282,10 +282,6 @@ The table below lists all *C preprocessing* macros and flags currently used by `
 
 | Macro/flag Name | Comments |
 | --- | --- |
-| `STDLIB_NO_BITSET` |  Disables compilation of the bitsets component. Set via CMake `-DSTDLIB_NO_BITSET=ON` or `fpm` `preprocess.cpp.macros=["STDLIB_NO_BITSET"]`; or define for the compiler preprocessor (`-DSTDLIB_NO_BITSET`). This makes `STDLIB_BITSET` evaluate to 0 via `include/macros.inc`. |
-| `STDLIB_BITSET` |  Internal numeric macro (0/1) derived from `STDLIB_NO_BITSET` in `include/macros.inc`. Prefer setting `STDLIB_NO_BITSET` rather than defining `STDLIB_BITSET` directly. |
-| `STDLIB_NO_STATS` |  Disables compilation of the statistics component. Set via CMake: `-DSTDLIB_NO_STATS=ON` or `fpm` `preprocess.cpp.macros=["STDLIB_NO_STATS"]`; or define for the compiler preprocessor (`-DSTDLIB_NO_STATS`). This makes `STDLIB_STATS` evaluate to 0 via `include/macros.inc`. |
-| `STDLIB_STATS` |  Internal numeric macro (0/1) derived from `STDLIB_NO_STATS` in `include/macros.inc`. Prefer setting `STDLIB_NO_STATS` rather than defining `STDLIB_STATS` directly. |
 | `STDLIB_EXTERNAL_BLAS` |  Links against an external BLAS (32-bit integer interface). Set automatically by CMake when external BLAS/LAPACK are found, or manually via `add_compile_definitions(STDLIB_EXTERNAL_BLAS)`. In fpm: `preprocess.cpp.macros=["STDLIB_EXTERNAL_BLAS"]`. |
 | `STDLIB_EXTERNAL_LAPACK` |  Links against an external LAPACK (32-bit integer interface). Usually paired with `STDLIB_EXTERNAL_BLAS`. |
 | `STDLIB_EXTERNAL_BLAS_I64` |  Links against an external BLAS with ILP64 (64-bit integer) interfaces. Usually paired with `STDLIB_EXTERNAL_LAPACK_I64`. |
