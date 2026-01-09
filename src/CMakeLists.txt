@@ -23,6 +23,7 @@ set(fppFiles
     stdlib_hash_64bit_spookyv2.fypp
     stdlib_intrinsics_dot_product.fypp
     stdlib_intrinsics_sum.fypp
+    stdlib_intrinsics_matmul.fypp
     stdlib_intrinsics.fypp
     stdlib_io.fypp
     stdlib_io_mm.fypp
