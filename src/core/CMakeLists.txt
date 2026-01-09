@@ -1,7 +1,6 @@
 set(core_fppFiles
     stdlib_ascii.fypp
     stdlib_error.fypp
-    stdlib_version.fypp
     stdlib_kinds.fypp
     stdlib_optval.fypp
     )

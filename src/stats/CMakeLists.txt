@@ -2,8 +2,6 @@ set(stats_cppFiles
     )
 
 set(stats_fppFiles
-    ../stdlib_linalg.fypp
-    ../stdlib_linalg_diag.fypp
     stdlib_random.fypp
     stdlib_stats_corr.fypp
     stdlib_stats_cov.fypp
@@ -25,4 +23,4 @@ set(stats_f90Files
 
 configure_stdlib_target(stats stats_f90Files stats_fppFiles stats_cppFiles)
 
-target_link_libraries(stats PUBLIC core linalg_core selection strings)
+target_link_libraries(stats PUBLIC core linalg_core linalg selection strings)
