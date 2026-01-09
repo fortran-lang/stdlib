@@ -4,12 +4,12 @@ set(constants_fppFiles
     ../stdlib_optval.fypp
     ../stdlib_ascii.fypp
     ../stdlib_string_type.fypp
-    ../stdlib_io.fypp
     stdlib_codata_type.fypp
     stdlib_constants.fypp
     )
 
 set(constants_f90Files
+    ../stdlib_io_constants.f90
     stdlib_codata.f90
     )
 

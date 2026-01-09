@@ -4,7 +4,6 @@ set(stats_cppFiles
 
 set(stats_fppFiles
     ../stdlib_ascii.fypp
-    ../stdlib_io.fypp
     ../stdlib_kinds.fypp
     ../stdlib_optval.fypp
     ../stdlib_error.fypp
@@ -28,6 +27,10 @@ set(stats_fppFiles
     stdlib_stats_var.fypp
 )
 
-configure_stdlib_target(stats "" stats_fppFiles stats_cppFiles)
+set(stats_f90Files
+    ../stdlib_io_constants.f90
+    )
+
+configure_stdlib_target(stats stats_f90Files stats_fppFiles stats_cppFiles)
 
 target_link_libraries(stats PUBLIC selection)

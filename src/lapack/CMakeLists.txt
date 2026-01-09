@@ -4,7 +4,6 @@ set(lapack_fppFiles
     ../stdlib_linalg_state.fypp
     ../stdlib_error.fypp
     ../stdlib_optval.fypp
-    ../stdlib_io.fypp
     ../stdlib_ascii.fypp
     ../stdlib_string_type.fypp
     ../stdlib_string_type_constructor.fypp
@@ -70,6 +69,7 @@ set(lapack_cppFiles
 )
 set(lapack_f90Files
     $<IF:$<BOOL:${f18errorstop}>,../f18estop.f90,../f08estop.f90>
+    ../stdlib_io_constants.f90
 )
 
 configure_stdlib_target(lapack lapack_f90Files lapack_fppFiles lapack_cppFiles)

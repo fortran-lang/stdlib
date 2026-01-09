@@ -83,6 +83,7 @@ set(fppFiles
 set(cppFiles stdlib_linalg_constants.fypp
     )
 set(f90Files
+    stdlib_io_constants.f90
     stdlib_sparse.f90
     stdlib_quadrature_gauss.f90
     stdlib_stringlist_type.f90
