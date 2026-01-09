@@ -14,7 +14,7 @@ set(blas_fppFiles
 )
 set(blas_cppFiles
     ../stdlib_linalg_constants.fypp
-    ../stdlib_linalg_blas.fypp
+    stdlib_linalg_blas.fypp
 )
 
 configure_stdlib_target(blas "" blas_fppFiles blas_cppFiles)

@@ -7,7 +7,6 @@ set(intrinsics_fppFiles
     )
 
 set(intrinsics_cppFiles
-    ../stdlib_linalg_blas.fypp
     ../stdlib_linalg_constants.fypp
     )
 
