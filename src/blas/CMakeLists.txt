@@ -13,7 +13,6 @@ set(blas_fppFiles
     stdlib_linalg_blas_aux.fypp
 )
 set(blas_cppFiles
-    ../stdlib_linalg_constants.fypp
     stdlib_linalg_blas.fypp
 )
 
@@ -22,4 +21,4 @@ configure_stdlib_target(blas "" blas_fppFiles blas_cppFiles)
 if(BLAS_FOUND)
     target_link_libraries(blas PUBLIC "BLAS::BLAS")
 endif()
-target_link_libraries(blas PUBLIC core)
+target_link_libraries(blas PUBLIC core linalg_core)

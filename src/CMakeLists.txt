@@ -23,6 +23,7 @@ add_subdirectory(io)
 
 add_subdirectory(lapack)
 add_subdirectory(lapack_extended)
+add_subdirectory(linalg_core)
 add_subdirectory(logger)
 add_subdirectory(math)
 add_subdirectory(quadrature)
@@ -55,7 +56,6 @@ set(fppFiles
     stdlib_linalg_iterative_solvers_pcg.fypp
     stdlib_linalg_pinv.fypp
     stdlib_linalg_norms.fypp
-    stdlib_linalg_state.fypp
     stdlib_linalg_svd.fypp
     stdlib_linalg_cholesky.fypp
     stdlib_linalg_schur.fypp
@@ -67,7 +67,7 @@ set(fppFiles
     stdlib_specialmatrices.fypp
     stdlib_specialmatrices_tridiagonal.fypp
 )
-set(cppFiles stdlib_linalg_constants.fypp
+set(cppFiles
     )
 set(f90Files
     stdlib_sparse.f90
@@ -85,6 +85,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   $<$<NOT:$<BOOL:${STDLIB_NO_HASHMAPS}>>:hashmaps>
   intrinsics
   io
+  linalg_core
   logger
   $<$<NOT:$<BOOL:${STDLIB_NO_STATS}>>:stats>
   math

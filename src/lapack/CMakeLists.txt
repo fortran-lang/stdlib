@@ -1,6 +1,5 @@
 
 set(lapack_fppFiles
-    ../stdlib_linalg_state.fypp
     stdlib_lapack_base.fypp
     stdlib_lapack_solve.fypp
     stdlib_lapack_others.fypp
@@ -56,7 +55,6 @@ set(lapack_fppFiles
     stdlib_lapack_svd_comp2.fypp
 )
 set(lapack_cppFiles
-    ../stdlib_linalg_constants.fypp
     stdlib_linalg_lapack.fypp
 )
 set(lapack_f90Files
@@ -67,4 +65,4 @@ configure_stdlib_target(lapack lapack_f90Files lapack_fppFiles lapack_cppFiles)
 if(LAPACK_FOUND)
     target_link_libraries(lapack PUBLIC "LAPACK::LAPACK")
 endif()
-target_link_libraries(lapack PUBLIC core blas strings)
+target_link_libraries(lapack PUBLIC core linalg_core blas strings)

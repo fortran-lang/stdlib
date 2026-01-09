@@ -1,9 +1,7 @@
 set(system_fppFiles
-    ../stdlib_linalg_state.fypp
     )
 
 set(system_cppFiles
-    ../stdlib_linalg_constants.fypp
     )
 
 set(system_f90Files
@@ -16,4 +14,4 @@ set(system_f90Files
 
 configure_stdlib_target(system system_f90Files system_fppFiles system_cppFiles)
 
-target_link_libraries(system PUBLIC core strings)
+target_link_libraries(system PUBLIC core linalg_core strings)
