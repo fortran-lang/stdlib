@@ -57,7 +57,7 @@ set(lapack_fppFiles
 )
 set(lapack_cppFiles
     ../stdlib_linalg_constants.fypp
-    ../stdlib_linalg_lapack.fypp
+    stdlib_linalg_lapack.fypp
 )
 set(lapack_f90Files
 )
