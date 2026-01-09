@@ -60,7 +60,6 @@ set(lapack_cppFiles
     ../stdlib_linalg_lapack.fypp
 )
 set(lapack_f90Files
-    ../stdlib_io_aux.f90
 )
 
 configure_stdlib_target(lapack lapack_f90Files lapack_fppFiles lapack_cppFiles)

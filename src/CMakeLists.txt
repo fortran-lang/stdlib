@@ -70,7 +70,6 @@ set(fppFiles
 set(cppFiles stdlib_linalg_constants.fypp
     )
 set(f90Files
-    stdlib_io_aux.f90
     stdlib_sparse.f90
 )
 

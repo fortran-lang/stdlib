@@ -23,7 +23,6 @@ set(stats_fppFiles
 )
 
 set(stats_f90Files
-    ../stdlib_io_aux.f90
     )
 
 configure_stdlib_target(stats stats_f90Files stats_fppFiles stats_cppFiles)

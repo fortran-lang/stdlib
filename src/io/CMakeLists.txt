@@ -9,7 +9,6 @@ set(io_cppFiles
     )
 
 set(io_f90Files
-    ../stdlib_io_aux.f90
     )
 
 configure_stdlib_target(io io_f90Files io_fppFiles io_cppFiles)

@@ -7,7 +7,6 @@ set(system_cppFiles
     )
 
 set(system_f90Files
-    ../stdlib_io_aux.f90
     stdlib_system_subprocess.c
     stdlib_system_subprocess.F90
     stdlib_system_path.f90
