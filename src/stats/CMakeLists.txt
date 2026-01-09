@@ -10,8 +10,8 @@ set(stats_fppFiles
     ../stdlib_linalg.fypp
     ../stdlib_linalg_diag.fypp
     ../stdlib_linalg_state.fypp
-    ../stdlib_random.fypp
     ../stdlib_string_type.fypp
+    stdlib_random.fypp
     stdlib_stats_corr.fypp
     stdlib_stats_cov.fypp
     stdlib_stats_distribution_exponential.fypp

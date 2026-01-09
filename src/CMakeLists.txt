@@ -68,7 +68,6 @@ set(fppFiles
     stdlib_sparse_spmv.fypp
     stdlib_specialmatrices.fypp
     stdlib_specialmatrices_tridiagonal.fypp
-    stdlib_random.fypp
     stdlib_str2num.fypp
     stdlib_string_type.fypp
     stdlib_string_type_constructor.fypp
