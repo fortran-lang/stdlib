@@ -5,11 +5,13 @@
 #:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
 #:set RC_KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES
 
-!> Implementation of saving multidimensional arrays to Matrix Market files
+!> Implementation for saving multidimensional arrays to Matrix Market files
 submodule (stdlib_io_mm) stdlib_io_mm_save
     use stdlib_error, only : error_stop
     use stdlib_strings, only : to_string
     use stdlib_io, only : open
+    use stdlib_ascii, only : to_lower
+    use stdlib_constants, only : #{for k, t, s in RC_KINDS_TYPES[:-1]}#zero_${k}$, #{endfor}#zero_${RC_KINDS_TYPES[-1][0]}$
     implicit none
 
     ! Matrix Market format constants
@@ -43,13 +45,15 @@ submodule (stdlib_io_mm) stdlib_io_mm_save
 contains
 
     #:for k, t, s in RC_KINDS_TYPES
-    module subroutine save_mm_dense_${s}$(filename, matrix, header_info, iostat, iomsg)
+    module subroutine save_mm_dense_${s}$(filename, matrix, comment, symmetry, iostat, iomsg)
         !> Name of the Matrix Market file to save to
         character(len=*), intent(in) :: filename
         !> Matrix to be saved to the Matrix Market file
         ${t}$, intent(in) :: matrix(:,:)
-        !> Optional header information (comments, format preference)
-        character(len=*), intent(in), optional :: header_info
+        !> Optional comment information
+        character(len=*), intent(in), optional :: comment
+        !> Symmetry type of the matrix (general, symmetric, skew-symmetric, hermitian)
+        character(len=*), intent(in), optional :: symmetry
         !> Error status of saving, zero on success
         integer, intent(out), optional :: iostat
         !> Associated error message in case of non-zero status code
@@ -57,8 +61,8 @@ contains
 
         integer :: io, stat, i, j, nnz
         character(len=:), allocatable :: msg
-        character(len=32) :: field_type, symmetry_type
-        logical :: save_as_coordinate
+        character(len=32) :: field_type
+        character(len=32) :: symmetry_
         #:if t.startswith('complex') 
         real(${k}$) :: real_part, imag_part
         #:endif
@@ -74,90 +78,29 @@ contains
             end if
         end if
 
+        ! Determine symmetry type
+        symmetry_ = "general"
+        if (present(symmetry)) then
+            symmetry_ = to_lower(trim(symmetry))
+        end if
+
+        ! Determine field type based on matrix type
+        #:if t.startswith('real')
+        field_type = MM_REAL
+        #:elif t.startswith('complex')
+        field_type = MM_COMPLEX
+        #:elif t.startswith('integer')
+        field_type = MM_INTEGER
+        #:endif
+
         catch: block
-            ! Determine field type based on matrix type
-            #:if t.startswith('real')
-            field_type = MM_REAL
-            #:elif t.startswith('complex')
-            field_type = MM_COMPLEX
-            #:elif t.startswith('integer')
-            field_type = MM_INTEGER
-            #:endif
-
-            ! For now, assume general symmetry (could be enhanced to detect symmetry)
-            symmetry_type = MM_GENERAL
-
-            ! Count non-zero elements to decide format
-            nnz = 0
-            do j = 1, size(matrix, 2)
-                do i = 1, size(matrix, 1)
-                    #:if t.startswith('real') or t.startswith('integer')
-                    if (matrix(i, j) /= 0) nnz = nnz + 1
-                    #:elif t.startswith('complex')
-                    if (abs(matrix(i, j)) /= 0) nnz = nnz + 1
-                    #:endif
-                end do
-            end do
-
-            ! Decide format based on sparsity (save as coordinate if < 50% non-zero)
-            save_as_coordinate = (real(nnz) / real(size(matrix)) < 0.5)
-            
-            ! Allow override via header_info (simple implementation)
-            if (present(header_info)) then
-                if (index(header_info, "array") > 0) save_as_coordinate = .false.
-                if (index(header_info, "coordinate") > 0) save_as_coordinate = .true.
-            end if
-
             ! Write header
-            if (save_as_coordinate) then
-                call write_mm_header(io, MM_COORDINATE, field_type, symmetry_type, &
-                                   size(matrix, 1), size(matrix, 2), nnz, header_info, stat, msg)
-            else
-                call write_mm_header(io, MM_ARRAY, field_type, symmetry_type, &
-                                   size(matrix, 1), size(matrix, 2), 0, header_info, stat, msg)
-            end if
+            call write_mm_header(io, MM_ARRAY, field_type, symmetry_, &
+                                size(matrix, 1), size(matrix, 2), nnz, comment, stat, msg)
             if (stat /= 0) exit catch
 
-            ! Write data
-            if (save_as_coordinate) then
-                ! Write coordinate format
-                do j = 1, size(matrix, 2)
-                    do i = 1, size(matrix, 1)
-                        #:if t.startswith('real')
-                        if (matrix(i, j) /= 0) then
-                            write(io, '(I0,1X,I0,1X,ES24.16E3)', iostat=stat) i, j, matrix(i, j)
-                            if (stat /= 0) then
-                                msg = "Error writing coordinate entry (" // &
-                                      to_string(i) // "," // to_string(j) // ")"
-                                exit catch
-                            end if
-                        end if
-                        #:elif t.startswith('complex')
-                        if (abs(matrix(i, j)) /= 0) then
-                            real_part = real(matrix(i, j), kind=${k}$)
-                            imag_part = aimag(matrix(i, j))
-                            write(io, '(I0,1X,I0,1X,ES24.16E3,1X,ES24.16E3)', iostat=stat) &
-                                  i, j, real_part, imag_part
-                            if (stat /= 0) then
-                                msg = "Error writing coordinate entry (" // &
-                                      to_string(i) // "," // to_string(j) // ")"
-                                exit catch
-                            end if
-                        end if
-                        #:elif t.startswith('integer')
-                        if (matrix(i, j) /= 0) then
-                            write(io, '(I0,1X,I0,1X,I0)', iostat=stat) i, j, matrix(i, j)
-                            if (stat /= 0) then
-                                msg = "Error writing coordinate entry (" // &
-                                      to_string(i) // "," // to_string(j) // ")"
-                                exit catch
-                            end if
-                        end if
-                        #:endif
-                    end do
-                end do
-            else
-                ! Write array format (column-major order)
+            ! Write array format (column-major order)
+            if(symmetry_ == MM_GENERAL) then
                 do j = 1, size(matrix, 2)
                     do i = 1, size(matrix, 1)
                         #:if t.startswith('real')
@@ -171,7 +114,28 @@ contains
                         #:endif
                         if (stat /= 0) then
                             msg = "Error writing array element (" // &
-                                  to_string(i) // "," // to_string(j) // ")"
+                                to_string(i) // "," // to_string(j) // ")"
+                            exit catch
+                        end if
+                    end do
+                end do
+            else
+                ! For symmetric, skew-symmetric, hermitian matrices, only write the
+                ! lower triangle (including diagonal)
+                do j = 1, size(matrix, 2)
+                    do i = j, size(matrix, 1)
+                        #:if t.startswith('real')
+                        write(io, '(ES24.16E3)', iostat=stat) matrix(i, j)
+                        #:elif t.startswith('complex')
+                        real_part = real(matrix(i, j), kind=${k}$)
+                        imag_part = aimag(matrix(i, j))
+                        write(io, '(ES24.16E3,1X,ES24.16E3)', iostat=stat) real_part, imag_part
+                        #:elif t.startswith('integer')
+                        write(io, '(I0)', iostat=stat) matrix(i, j)
+                        #:endif
+                        if (stat /= 0) then
+                            msg = "Error writing array element (" // &
+                                to_string(i) // "," // to_string(j) // ")"
                             exit catch
                         end if
                     end do
@@ -195,13 +159,123 @@ contains
     end subroutine 
     #:endfor
 
+    #:for k, t, s in RC_KINDS_TYPES
+    module subroutine save_mm_coo_${s}$(filename, matrix, comment, symmetry, iostat, iomsg)
+        !> Name of the Matrix Market file to save to
+        character(len=*), intent(in) :: filename
+        !> Matrix to be saved to the Matrix Market file
+        type(COO_${s}$_type), intent(in) :: matrix
+        !> Optional comment information
+        character(len=*), intent(in), optional :: comment
+        !> Symmetry type of the matrix (general, symmetric, skew-symmetric, hermitian)
+        character(len=*), intent(in), optional :: symmetry
+        !> Error status of saving, zero on success
+        integer, intent(out), optional :: iostat
+        !> Associated error message in case of non-zero status code
+        character(len=:), allocatable, intent(out), optional :: iomsg
+
+        integer :: io, stat, i, j, nnz
+        character(len=:), allocatable :: msg
+        character(len=32) :: field_type
+        character(len=32) :: symmetry_
+        #:if t.startswith('complex') 
+        real(${k}$) :: real_part, imag_part
+        #:endif
+
+        io = open(filename, "w", iostat=stat)
+        if (stat /= 0) then
+            if (present(iostat)) then
+                iostat = stat
+                if (present(iomsg)) iomsg = "Could not create file: " // filename
+                return
+            else
+                call error_stop("Could not create file: " // filename)
+            end if
+        end if
+
+        ! Determine symmetry type
+        symmetry_ = "general"
+        if (present(symmetry)) then
+            symmetry_ = to_lower(trim(symmetry)) 
+        end if
+
+        ! Determine field type based on matrix type
+        #:if t.startswith('real')
+        field_type = MM_REAL
+        #:elif t.startswith('complex')
+        field_type = MM_COMPLEX
+        #:elif t.startswith('integer')
+        field_type = MM_INTEGER
+        #:endif
+
+        catch: block
+            ! Write header
+            call write_mm_header(io, MM_COORDINATE, field_type, symmetry_, &
+                                matrix%nrows, matrix%ncols, matrix%nnz, comment, stat, msg)
+            if (stat /= 0) exit catch
+
+            ! Write array format (column-major order)
+            if(symmetry_ == MM_GENERAL) then
+                do i = 1, matrix%nnz
+                    #:if t.startswith('real')
+                    write(io, '(ES24.16E3)', iostat=stat) matrix%data(i)
+                    #:elif t.startswith('complex')
+                    real_part = real(matrix%data(i), kind=${k}$)
+                    imag_part = aimag(matrix%data(i))
+                    write(io, '(ES24.16E3,1X,ES24.16E3)', iostat=stat) real_part, imag_part
+                    #:elif t.startswith('integer')
+                    write(io, '(I0)', iostat=stat) matrix%data(i)
+                    #:endif
+                    if (stat /= 0) then
+                        msg = "Error writing array element (" // to_string(i) // ")"
+                        exit catch
+                    end if
+                end do
+            else
+                ! For symmetric, skew-symmetric, hermitian matrices, only write the
+                ! lower triangle (including diagonal)
+                do i = 1, matrix%nnz
+                    if(matrix%index(1,i) > matrix%index(2,i)) cycle
+                    #:if t.startswith('real')
+                    write(io, '(ES24.16E3)', iostat=stat) matrix%data(i)
+                    #:elif t.startswith('complex')
+                    real_part = real(matrix%data(i), kind=${k}$)
+                    imag_part = aimag(matrix%data(i))
+                    write(io, '(ES24.16E3,1X,ES24.16E3)', iostat=stat) real_part, imag_part
+                    #:elif t.startswith('integer')
+                    write(io, '(I0)', iostat=stat) matrix%data(i)
+                    #:endif
+                    if (stat /= 0) then
+                        msg = "Error writing array element (" // to_string(i) // ")"
+                        exit catch
+                    end if
+                end do
+            end if
+        end block catch
+        
+        close(io)
+
+        if (present(iostat)) then
+            iostat = stat
+        else if (stat /= 0) then
+            if (allocated(msg)) then
+                call error_stop("Failed to save Matrix Market file '" // filename // "': " // msg)
+            else
+                call error_stop("Failed to save Matrix Market file '" // filename // "'")
+            end if
+        end if
+
+        if (present(iomsg) .and. allocated(msg)) call move_alloc(msg, iomsg)
+    end subroutine 
+    #:endfor
+
     !> Write Matrix Market header
     subroutine write_mm_header(io, format, field, symmetry, nrows, ncols, nnz, &
-                              header_info, iostat, iomsg)
+                              comment, iostat, iomsg)
         integer, intent(in) :: io
         character(len=*), intent(in) :: format, field, symmetry
         integer, intent(in) :: nrows, ncols, nnz
-        character(len=*), intent(in), optional :: header_info
+        character(len=*), intent(in), optional :: comment
         integer, intent(out) :: iostat
         character(len=:), allocatable, intent(out) :: iomsg
 
@@ -232,12 +306,14 @@ contains
             return
         end if
 
-        if (present(header_info) .and. len_trim(header_info) > 0) then
-            write(io, '(A)', iostat=stat) "% " // trim(header_info)
-            if (stat /= 0) then
-                iostat = stat
-                iomsg = "Error writing header info"
-                return
+        if (present(comment)) then
+            if(len_trim(comment) > 0) then
+                write(io, '(A)', iostat=stat) "% " // trim(comment)
+                if (stat /= 0) then
+                    iostat = stat
+                    iomsg = "Error writing header info"
+                    return
+                end if
             end if
         end if
 
