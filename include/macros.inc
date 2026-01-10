@@ -1,5 +1,5 @@
 !Default: compile the ansi module
-#if !define STDLIB_ANSI
+#if !defined STDLIB_ANSI
 #define STDLIB_ANSI 1
 #endif
 
@@ -9,7 +9,7 @@
 #endif
 
 !Default: compile the hashmaps module
-#if !define STDLIB_HASHMAPS
+#if !defined STDLIB_HASHMAPS
 #define STDLIB_HASHMAPS 1
 #endif
 
