@@ -1,4 +1,4 @@
-set(unsorted_fppFiles
+set(sparse_fppFiles
     stdlib_linalg_iterative_solvers_bicgstab.fypp
     stdlib_linalg_iterative_solvers_cg.fypp
     stdlib_linalg_iterative_solvers.fypp
@@ -9,14 +9,14 @@ set(unsorted_fppFiles
     stdlib_sparse_spmv.fypp
     )
 
-set(unsorted_cppFiles
+set(sparse_cppFiles
     )
 
-set(unsorted_f90Files
+set(sparse_f90Files
     stdlib_sparse.f90
     )
 
 
-configure_stdlib_target(unsorted unsorted_f90Files unsorted_fppFiles unsorted_cppFiles)
+configure_stdlib_target(sparse sparse_f90Files sparse_fppFiles sparse_cppFiles)
 
-target_link_libraries(unsorted PUBLIC linalg)
+target_link_libraries(sparse PUBLIC linalg)
