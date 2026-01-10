@@ -24,6 +24,7 @@ add_subdirectory(io)
 add_subdirectory(lapack)
 add_subdirectory(lapack_extended)
 add_subdirectory(linalg_core)
+add_subdirectory(linalg_iterative)
 add_subdirectory(linalg)
 add_subdirectory(logger)
 add_subdirectory(math)
@@ -63,6 +64,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   intrinsics
   io
   linalg_core
+  linalg_iterative
   linalg
   logger
   $<$<BOOL:${STDLIB_STATS}>:stats>
