@@ -16,7 +16,7 @@ endmacro(ADD_EXAMPLEPP)
 
 
 
-if (NOT STDLIB_NO_ANSI)
+if (STDLIB_ANSI)
   add_subdirectory(ansi)
 endif()
 add_subdirectory(array)
@@ -26,7 +26,7 @@ if (STDLIB_BITSET)
 endif()
 add_subdirectory(constants)
 add_subdirectory(error)
-if (NOT STDLIB_NO_HASHMAPS)
+if (STDLIB_HASHMAPS)
   add_subdirectory(hashmaps)
 endif()
 add_subdirectory(hash_procedures)

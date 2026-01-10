@@ -1,4 +1,4 @@
-if (NOT STDLIB_NO_ANSI)
+if (STDLIB_ANSI)
   add_subdirectory(ansi)
 endif()
 
@@ -14,7 +14,7 @@ add_subdirectory(core)
 
 add_subdirectory(hash)
 
-if (NOT STDLIB_NO_HASHMAPS)
+if (STDLIB_HASHMAPS)
   add_subdirectory(hashmaps)
 endif()
 
@@ -56,10 +56,10 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   array
   constants
   core
-  $<$<NOT:$<BOOL:${STDLIB_NO_ANSI}>>:ansi>
+  $<$<BOOL:${STDLIB_ANSI}>:ansi>
   $<$<BOOL:${STDLIB_BITSET}>:bitsets>
   hash
-  $<$<NOT:$<BOOL:${STDLIB_NO_HASHMAPS}>>:hashmaps>
+  $<$<BOOL:${STDLIB_HASHMAPS}>:hashmaps>
   intrinsics
   io
   linalg_core
