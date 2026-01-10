@@ -4,7 +4,7 @@ endif()
 
 add_subdirectory(array)
 
-if (NOT STDLIB_NO_BITSET)
+if (STDLIB_BITSET)
   add_subdirectory(bitsets)
 endif()
 
@@ -36,7 +36,7 @@ add_subdirectory(stringlist)
 add_subdirectory(strings)
 add_subdirectory(system)
 
-if (NOT STDLIB_NO_STATS)
+if (STDLIB_STATS)
   add_subdirectory(stats)
 endif()
 
@@ -57,7 +57,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   constants
   core
   $<$<NOT:$<BOOL:${STDLIB_NO_ANSI}>>:ansi>
-  $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>
+  $<$<BOOL:${STDLIB_BITSET}>:bitsets>
   hash
   $<$<NOT:$<BOOL:${STDLIB_NO_HASHMAPS}>>:hashmaps>
   intrinsics
@@ -65,7 +65,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   linalg_core
   linalg
   logger
-  $<$<NOT:$<BOOL:${STDLIB_NO_STATS}>>:stats>
+  $<$<BOOL:${STDLIB_STATS}>:stats>
   math
   quadrature
   selection

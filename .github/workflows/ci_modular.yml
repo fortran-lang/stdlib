@@ -59,9 +59,9 @@ jobs:
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
         -DFIND_BLAS:STRING=FALSE
         -DSTDLIB_NO_ANSI:STRING=${{ matrix.with_ansi }}
-        -DSTDLIB_NO_BITSET:STRING=${{ matrix.with_bitset }}
+        -DSTDLIB_BITSET:STRING=${{ matrix.with_bitset }}
         -DSTDLIB_NO_HASHMAPS:STRING=${{ matrix.with_hashmaps }}
-        -DSTDLIB_NO_STATS:STRING=${{ matrix.with_stats }}
+        -DSTDLIB_STATS:STRING=${{ matrix.with_stats }}
         -S . -B ${{ env.BUILD_DIR }}
 
     - name: Build and compile
