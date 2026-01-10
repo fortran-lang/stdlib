@@ -2,7 +2,7 @@
 module stdlib_math
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
     use stdlib_optval, only: optval
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
     use stdlib_bitsets, only: bitset_64, bitset_large
 #endif
 
@@ -49,10 +49,10 @@ module stdlib_math
       module procedure :: swap_int64
       module procedure :: swap_sp
       module procedure :: swap_dp
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
       module procedure :: swap_bitset_64
 #endif
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
       module procedure :: swap_bitset_large
 #endif
       module procedure :: swap_csp
@@ -1266,7 +1266,7 @@ contains
         temp = lhs; lhs = rhs; rhs = temp
     end subroutine
 
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
     elemental subroutine swap_bitset_64(lhs, rhs)
         type(bitset_64), intent(inout) :: lhs, rhs
         type(bitset_64) :: temp
@@ -1274,7 +1274,7 @@ contains
     end subroutine
 
 #endif
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
     elemental subroutine swap_bitset_large(lhs, rhs)
         type(bitset_large), intent(inout) :: lhs, rhs
         type(bitset_large) :: temp

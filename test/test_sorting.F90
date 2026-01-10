@@ -8,7 +8,7 @@ module test_sorting
     use stdlib_sorting, only: sort, sort_index, sort_adjoint, ord_sort, radix_sort, int_index, int_index_low
     use stdlib_string_type, only: string_type, assignment(=), operator(>), &
         operator(<), write(formatted)
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
     use stdlib_bitsets, only: bitset_64, bitset_large, &
         assignment(=), operator(>), operator(<)
 #endif
@@ -21,7 +21,7 @@ module test_sorting
     integer(int32), parameter :: test_size = 2_int32**test_power
     integer(int32), parameter :: char_size = char_set_size**4
     integer(int32), parameter :: string_size = char_set_size**3
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
     integer(int32), parameter :: bitset_size = char_set_size**3
 #endif
     integer(int32), parameter :: block_size = test_size/6
@@ -46,7 +46,7 @@ module test_sorting
         string_decrease(0:string_size-1), &
         string_increase(0:string_size-1), &
         string_rand(0:string_size-1)
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
     type(bitset_large) ::                  &
         bitsetl_decrease(0:bitset_size-1), &
         bitsetl_increase(0:bitset_size-1), &
@@ -61,7 +61,7 @@ module test_sorting
     real(sp)                :: real_dummy(0:test_size-1)
     character(len=4)        :: char_dummy(0:char_size-1)
     type(string_type)       :: string_dummy(0:string_size-1)
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
     type(bitset_large)      :: bitsetl_dummy(0:bitset_size-1)
     type(bitset_64)         :: bitset64_dummy(0:bitset_size-1)
 #endif
@@ -70,7 +70,7 @@ module test_sorting
     integer(int32)          :: work(0:test_size/2-1)
     character(len=4)        :: char_work(0:char_size/2-1)
     type(string_type)       :: string_work(0:string_size/2-1)
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
     type(bitset_large)      :: bitsetl_work(0:bitset_size/2-1)
     type(bitset_64)         :: bitset64_work(0:bitset_size/2-1)
 #endif
@@ -84,7 +84,7 @@ module test_sorting
     integer                 :: lun
     character(len=4)        :: char_temp
     type(string_type)       :: string_temp
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
     type(bitset_large)      :: bitsetl_temp
     type(bitset_64)         :: bitset64_temp
 #endif
@@ -102,7 +102,7 @@ contains
         testsuite = [ &
             new_unittest('char_ord_sorts', test_char_ord_sorts), &
             new_unittest('string_ord_sorts', test_string_ord_sorts), &
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
             new_unittest('bitset_large_ord_sorts', test_bitsetl_ord_sorts), &
             new_unittest('bitset_64_ord_sorts', test_bitset64_ord_sorts), &
 #endif
@@ -111,49 +111,49 @@ contains
             new_unittest('int_sorts', test_int_sorts), &
             new_unittest('char_sorts', test_char_sorts), &
             new_unittest('string_sorts', test_string_sorts), &
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
             new_unittest('bitset_large_sorts', test_bitsetl_sorts), &
             new_unittest('bitset_64_sorts', test_bitset64_sorts), &
 #endif
             new_unittest('int_sort_indexes_default', test_int_sort_indexes_default), &
             new_unittest('char_sort_indexes_default', test_char_sort_indexes_default), &
             new_unittest('string_sort_indexes_default', test_string_sort_indexes_default), &
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
             new_unittest('bitset_large_sort_indexes_default', test_bitsetl_sort_indexes_default), &
             new_unittest('bitset_64_sort_indexes_default', test_bitset64_sort_indexes_default), &
 #endif
             new_unittest('int_sort_indexes_low', test_int_sort_indexes_low), &
             new_unittest('char_sort_indexes_low', test_char_sort_indexes_low), &
             new_unittest('string_sort_indexes_low', test_string_sort_indexes_low), &
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
             new_unittest('bitset_large_sort_indexes_low', test_bitsetl_sort_indexes_low), &
             new_unittest('bitset_64_sort_indexes_low', test_bitset64_sort_indexes_low), &
 #endif
             new_unittest('int_sort_adjointes_int8', test_int_sort_adjointes_int8), &
             new_unittest('char_sort_adjointes_int8', test_char_sort_adjointes_int8), &
             new_unittest('string_sort_adjointes_int8', test_string_sort_adjointes_int8), &
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
             new_unittest('bitset_large_sort_adjointes_int8', test_bitsetl_sort_adjointes_int8), &
             new_unittest('bitset_64_sort_adjointes_int8', test_bitset64_sort_adjointes_int8), &
 #endif
             new_unittest('int_sort_adjointes_int16', test_int_sort_adjointes_int16), &
             new_unittest('char_sort_adjointes_int16', test_char_sort_adjointes_int16), &
             new_unittest('string_sort_adjointes_int16', test_string_sort_adjointes_int16), &
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
             new_unittest('bitset_large_sort_adjointes_int16', test_bitsetl_sort_adjointes_int16), &
             new_unittest('bitset_64_sort_adjointes_int16', test_bitset64_sort_adjointes_int16), &
 #endif
             new_unittest('int_sort_adjointes_int32', test_int_sort_adjointes_int32), &
             new_unittest('char_sort_adjointes_int32', test_char_sort_adjointes_int32), &
             new_unittest('string_sort_adjointes_int32', test_string_sort_adjointes_int32), &
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
             new_unittest('bitset_large_sort_adjointes_int32', test_bitsetl_sort_adjointes_int32), &
             new_unittest('bitset_64_sort_adjointes_int32', test_bitset64_sort_adjointes_int32), &
 #endif
             new_unittest('int_sort_adjointes_int64', test_int_sort_adjointes_int64), &
             new_unittest('char_sort_adjointes_int64', test_char_sort_adjointes_int64), &
             new_unittest('string_sort_adjointes_int64', test_string_sort_adjointes_int64), &
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
             new_unittest('bitset_large_sort_adjointes_int64', test_bitsetl_sort_adjointes_int64), &
             new_unittest('bitset_64_sort_adjointes_int64', test_bitset64_sort_adjointes_int64), &
 #endif
@@ -259,7 +259,7 @@ contains
             string_rand(index1) = string_temp
         end do
 
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
         do i = 0, bitset_size-1
             write(bin32,'(b32.32)') i
             call bitsetl_increase(i)%from_string(bin32)
@@ -575,7 +575,7 @@ contains
 
     end subroutine test_string_ord_sort
 
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
     subroutine test_bitsetl_ord_sorts(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
@@ -1132,7 +1132,7 @@ contains
 
     end subroutine test_string_sort
 
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
     subroutine test_bitsetl_sorts(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
@@ -1485,7 +1485,7 @@ contains
 
     end subroutine test_string_sort_index_default
 
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
     subroutine test_bitsetl_sort_indexes_default(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
@@ -1811,7 +1811,7 @@ contains
 
     end subroutine test_string_sort_index_low
 
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
     subroutine test_bitsetl_sort_indexes_low(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
@@ -2149,7 +2149,7 @@ contains
 
     end subroutine test_string_sort_adjoint_int8
 
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
     subroutine test_bitsetl_sort_adjointes_int8(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
@@ -2492,7 +2492,7 @@ contains
 
     end subroutine test_string_sort_adjoint_int16
 
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
     subroutine test_bitsetl_sort_adjointes_int16(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
@@ -2835,7 +2835,7 @@ contains
 
     end subroutine test_string_sort_adjoint_int32
 
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
     subroutine test_bitsetl_sort_adjointes_int32(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
@@ -3178,7 +3178,7 @@ contains
 
     end subroutine test_string_sort_adjoint_int64
 
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
     subroutine test_bitsetl_sort_adjointes_int64(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
@@ -3586,7 +3586,7 @@ contains
 
     end subroutine verify_string_sort
 
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
     subroutine verify_bitsetl_sort( a, valid, i )
         type(bitset_large), intent(in) :: a(0:)
         logical, intent(out) :: valid
@@ -3700,7 +3700,7 @@ contains
 
     end subroutine verify_string_reverse_sort
 
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSET
     subroutine verify_bitsetl_reverse_sort( a, valid, i )
         type(bitset_large), intent(in) :: a(0:)
         logical, intent(out) :: valid
