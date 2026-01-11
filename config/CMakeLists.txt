@@ -45,7 +45,6 @@ if (NOT DEFINED WITH_ILP64)
   set(WITH_ILP64 ${WITH_ILP64} PARENT_SCOPE)
 endif()
 
-
 # Export CMake package file
 include(CMakePackageConfigHelpers)
 configure_package_config_file(
