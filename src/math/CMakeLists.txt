@@ -14,4 +14,8 @@ set(math_cppFiles
 
 configure_stdlib_target(math "" math_fppFiles math_cppFiles)
 
-target_link_libraries(math PUBLIC core strings $<$<BOOL:${STDLIB_BITSET}>:${PROJECT_NAME}::bitsets>)
+if(STDLIB_BITSET)
+  target_link_libraries(math PUBLIC bitsets)
+endif()
+
+target_link_libraries(math PUBLIC core strings)
