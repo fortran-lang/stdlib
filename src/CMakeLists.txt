@@ -83,4 +83,3 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   sparse
   ${OPTIONAL_LIB}
   )
-
