@@ -181,3 +181,6 @@ install(EXPORT ${PROJECT_NAME}-targets
         NAMESPACE ${PROJECT_NAME}::
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
 )
+
+# Export a pkg-config file
+include(${PROJECT_SOURCE_DIR}/config/export_pc.cmake)
