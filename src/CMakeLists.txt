@@ -57,17 +57,17 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   array
   constants
   core
-  $<$<BOOL:${STDLIB_ANSI}>:ansi>
-  $<$<BOOL:${STDLIB_BITSET}>:bitsets>
+  $<$<BOOL:${STDLIB_ANSI}>:${PROJECT_NAME}::ansi>
+  $<$<BOOL:${STDLIB_BITSET}>:${PROJECT_NAME}::bitsets>
   hash
-  $<$<BOOL:${STDLIB_HASHMAPS}>:hashmaps>
+  $<$<BOOL:${STDLIB_HASHMAPS}>:${PROJECT_NAME}::hashmaps>
   intrinsics
   io
   linalg_core
   linalg_iterative
   linalg
   logger
-  $<$<BOOL:${STDLIB_STATS}>:stats>
+  $<$<BOOL:${STDLIB_STATS}>:${PROJECT_NAME}::stats>
   math
   quadrature
   selection
