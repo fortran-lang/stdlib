@@ -14,4 +14,4 @@ set(sparse_f90Files
 
 configure_stdlib_target(sparse sparse_f90Files sparse_fppFiles sparse_cppFiles)
 
-target_link_libraries(sparse PUBLIC linalg)
+target_link_libraries(sparse PUBLIC constants sorting)

@@ -9,4 +9,4 @@ set(constants_f90Files
 
 configure_stdlib_target(constants constants_f90Files constants_fppFiles "")
 
-target_link_libraries(constants PUBLIC core strings)
+target_link_libraries(constants PUBLIC core)
