@@ -181,3 +181,82 @@ install(EXPORT ${PROJECT_NAME}-targets
         NAMESPACE ${PROJECT_NAME}::
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
 )
+
+# Export a pkg-config file
+
+
+# Inspect linked libraries
+get_target_property(linked_libs ${PROJECT_NAME} LINK_LIBRARIES)
+
+message(STATUS "Libraries linked to myapp: ${linked_libs}")
+
+
+function(get_target_dependencies target dependencies)
+    get_target_property(target_type ${target} TYPE)
+    if(NOT target_type STREQUAL "STATIC_LIBRARY" AND NOT target_type STREQUAL "SHARED_LIBRARY")
+        return()
+    endif()
+
+    get_target_property(target_link_libs ${target} LINK_LIBRARIES)
+    foreach(lib ${target_link_libs})
+        if(TARGET ${lib})
+            list(APPEND dependencies ${lib})
+            get_target_dependencies(${lib} dependencies)
+        else()
+            list(APPEND dependencies ${lib})
+        endif()
+    endforeach()
+    set(${dependencies} ${${dependencies}} PARENT_SCOPE)
+endfunction()
+
+
+set(lib_dependencies)
+foreach(lib_target ${linked_libs})
+#    get_target_property(lib_include_dirs ${lib_target} INTERFACE_INCLUDE_DIRECTORIES)
+#    string(REPLACE ";" " " lib_include_dirs_spaced "${lib_include_dirs}")
+
+    # Get dependencies for the current library
+    get_target_dependencies(${lib_target} tmp_lib_dependencies)
+    if (tmp_lib_dependencies)
+      list(APPEND lib_dependencies ${lib_target} ${tmp_lib_dependencies} )
+    else()
+      list(APPEND lib_dependencies ${lib_target})
+    endif()
+    list(REMOVE_DUPLICATES lib_dependencies)
+    message(STATUS "Libraries linked to ${lib_target}: ${lib_dependencies}")
+    #set(lib_dependencies "")
+#    string(REPLACE ";" " " lib_dependencies_spaced "${lib_dependencies}")
+
+#    # Add library-specific information
+#    set(pc_content "${pc_content}Name: ${lib_target}\n")
+#    set(pc_content "${pc_content}Description: Description of ${lib_target}\n")
+#    set(pc_content "${pc_content}Version: ${PROJECT_VERSION}\n")
+#    set(pc_content "${pc_content}Libs: -L\${libdir} -l${lib_target} ${lib_dependencies_spaced}\n")
+#    set(pc_content "${pc_content}Cflags: -I\${includedir} ${lib_include_dirs_spaced}\n\n")
+endforeach()
+    list(REVERSE lib_dependencies)
+
+
+
+set(PC_CONTENT_TMP "")
+foreach(lib_target ${lib_dependencies})
+    list(APPEND PC_CONTENT_TMP "-l${lib_target}")
+endforeach()
+list(APPEND PC_CONTENT_TMP "-l${PROJECT_NAME}")
+
+message(WARNING ${PC_CONTENT_TMP})
+
+string(REPLACE ";" " " PC_CONTENT "${PC_CONTENT_TMP}")
+
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/config/template.pc"
+  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc"
+  @ONLY
+)
+install(
+  FILES
+  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc"
+  DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig"
+)
+
+

@@ -6,5 +6,5 @@ moduledir=${prefix}/@CMAKE_INSTALL_MODULEDIR@
 Name: @PROJECT_NAME@
 Description: @PROJECT_DESCRIPTION@
 Version: @PROJECT_VERSION@
-Libs: -L${libdir} -l@PROJECT_NAME@
+Libs: -L${libdir} @PC_CONTENT@
 Cflags: -I${includedir} -I${moduledir}

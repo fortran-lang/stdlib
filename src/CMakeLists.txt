@@ -1,11 +1,15 @@
+set(OPTIONAL_LIB)
+
 if (STDLIB_ANSI)
   add_subdirectory(ansi)
+  list(APPEND OPTIONAL_LIB ansi)
 endif()
 
 add_subdirectory(array)
 
 if (STDLIB_BITSET)
   add_subdirectory(bitsets)
+  list(APPEND OPTIONAL_LIB bitsets)
 endif()
 
 add_subdirectory(blas)
@@ -16,6 +20,7 @@ add_subdirectory(hash)
 
 if (STDLIB_HASHMAPS)
   add_subdirectory(hashmaps)
+  list(APPEND OPTIONAL_LIB hashmaps)
 endif()
 
 add_subdirectory(intrinsics)
@@ -39,6 +44,7 @@ add_subdirectory(system)
 
 if (STDLIB_STATS)
   add_subdirectory(stats)
+  list(APPEND OPTIONAL_LIB stats)
 endif()
 
 add_subdirectory(sparse)
@@ -57,17 +63,13 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   array
   constants
   core
-  $<$<BOOL:${STDLIB_ANSI}>:${PROJECT_NAME}::ansi>
-  $<$<BOOL:${STDLIB_BITSET}>:${PROJECT_NAME}::bitsets>
   hash
-  $<$<BOOL:${STDLIB_HASHMAPS}>:${PROJECT_NAME}::hashmaps>
   intrinsics
   io
   linalg_core
   linalg_iterative
   linalg
   logger
-  $<$<BOOL:${STDLIB_STATS}>:${PROJECT_NAME}::stats>
   math
   quadrature
   selection
@@ -79,4 +81,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   system
   blas lapack lapack_extended
   sparse
+  ${OPTIONAL_LIB}
   )
+
