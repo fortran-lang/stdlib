@@ -20,10 +20,11 @@ contains
     pure subroutine center_data_${k1}$(x, mu)
       ${t1}$, intent(inout) :: x(:,:)
       ${t1}$, intent(in) :: mu(:)
-      integer(ilp) :: i, n
+      integer(ilp) :: i, j, n, m
       n = size(x, 1, kind=ilp)
-      do i = 1, n
-         x(i, :) = x(i, :) - mu
+      m = size(x, 2, kind=ilp)
+      do concurrent( j=1:m, i=1:n )
+         x(i, j) = x(i, j) - mu(j)
       end do
     end subroutine center_data_${k1}$
   #:endfor
@@ -196,7 +197,7 @@ contains
       ${t1}$, intent(in), optional :: x_mean(:)
       ${t1}$, intent(out) :: x_reconstructed(:,:)
 
-      integer(ilp) :: i, n, nc, p
+      integer(ilp) :: i, j, n, nc, p
       ${t1}$ :: alpha, beta
       
       n = size(x_reduced, 1, kind=ilp)
@@ -209,8 +210,8 @@ contains
       call gemm('N', 'N', n, p, nc, alpha, x_reduced, n, components, nc, beta, x_reconstructed, n)
       
       if (present(x_mean)) then
-         do i = 1, n
-            x_reconstructed(i, :) = x_reconstructed(i, :) + x_mean
+         do concurrent( j=1:p, i=1:n )
+            x_reconstructed(i, j) = x_reconstructed(i, j) + x_mean(j)
          end do
       end if
     end subroutine pca_inverse_transform_${k1}$
