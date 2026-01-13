@@ -1,10 +1,10 @@
-if (NOT STDLIB_NO_BITSET)
+if (STDLIB_BITSET)
   add_subdirectory(bitsets)
 endif()
 add_subdirectory(blas)
 add_subdirectory(lapack)
 add_subdirectory(lapack_extended)
-if (NOT STDLIB_NO_STATS)
+if (STDLIB_STATS)
   add_subdirectory(stats)
 endif()
 
@@ -118,6 +118,6 @@ set(f90Files
 configure_stdlib_target(${PROJECT_NAME} f90Files fppFiles cppFiles)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
-  $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>
-  $<$<NOT:$<BOOL:${STDLIB_NO_STATS}>>:stats>
+  $<$<BOOL:${STDLIB_BITSET}>:bitsets>
+  $<$<BOOL:${STDLIB_STATS}>:stats>
   blas lapack lapack_extended)
