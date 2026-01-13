@@ -58,6 +58,9 @@ contains
         #:else 
         ${t}$ :: mold
         #:endif
+
+        if (present(iostat)) iostat = 0
+        if (present(iomsg)) iomsg  = ''
         !-----------------------------------------------------------------------------
         ! Open file for regular reading
         open( newunit = u , file=filename, status = 'old' , access='stream', action="read", iostat=err  )
@@ -85,12 +88,12 @@ contains
         !----------------------------------------- 
         ! Skip comments
         eol_position = shift_to_eol(ffp)
-        ffp => ffp(eol_position:)
+        ffp => ffp(eol_position+1:)
         do while( iachar(ffp(1:1))==PP )
             eol_position = shift_to_eol(ffp)
             ffp => ffp(eol_position+1:)
         end do
-        
+
         !----------------------------------------- 
         ! Read matrix dimensions
         nrows = to_num_from_stream(ffp, nrows, stat)
@@ -135,11 +138,17 @@ contains
         integer(int8) :: stat
         character(:), allocatable, target :: ff
         character(len=:), pointer :: ffp
+        integer, allocatable :: rows(:), cols(:)
+        ${t}$, allocatable :: vals(:)
+        integer :: n_diag
         #:if t.startswith('complex') 
         real(${k}$) :: mold, val_r, val_i
         #:else 
         ${t}$ :: mold
         #:endif
+
+        if (present(iostat)) iostat = 0
+        if (present(iomsg)) iomsg  = ''
         !-----------------------------------------------------------------------------
         ! Open file for regular reading
         open( newunit = u , file=filename, status = 'old' , access='stream', action="read", iostat=err  )
@@ -167,7 +176,7 @@ contains
         !----------------------------------------- 
         ! Skip comments
         eol_position = shift_to_eol(ffp)
-        ffp => ffp(eol_position:)
+        ffp => ffp(eol_position+1:)
         do while( iachar(ffp(1:1))==PP )
             eol_position = shift_to_eol(ffp)
             ffp => ffp(eol_position+1:)
@@ -182,28 +191,42 @@ contains
         nnz = to_num_from_stream(ffp, nnz, stat)
         if( stat /= 0 ) return
         
+        allocate(rows(nnz))
+        allocate(cols(nnz))
+        allocate(vals(nnz))
+
+        !-----------------------------------------
+        ! Read actual matrix data and store inside temporary arrays
+        n_diag = 0
+        do i = 1, nnz ! read entries from file
+            rows(i) = to_num_from_stream(ffp, rows(i), stat)
+            cols(i) = to_num_from_stream(ffp, cols(i), stat)
+            if(rows(i) == cols(i)) n_diag = n_diag + 1
+            #:if t.startswith('complex')
+            val_r = to_num_from_stream(ffp, mold, stat)
+            val_i = to_num_from_stream(ffp, mold, stat)
+            vals(i) = complex( val_r, val_i)
+            #:else
+            vals(i) = to_num_from_stream(ffp, mold, stat)
+            #:endif
+        end do
+
         !----------------------------------------- 
         ! check storage hypothesis
         matrix%nnz = nnz
-        if(header%symmetry == MS_symmetric) then 
-            matrix%nnz = 2*nnz - matrix%nrows
+        if(header%symmetry == MS_symmetric .or. header%symmetry == MS_hermitian) then
+            matrix%nnz = 2*nnz - n_diag
         elseif(header%symmetry == MS_skew_symmetric) then 
             matrix%nnz = 2*nnz
         end if
 
         !----------------------------------------- 
-        ! Read actual matrix data
+        ! Fill in matrix entries from temporary arrays
         call matrix%malloc( matrix%nrows, matrix%ncols, matrix%nnz )
-        do i = 1, nnz ! read entries from file
-            matrix%index(1,i) = to_num_from_stream(ffp, matrix%index(1,i), stat)
-            matrix%index(2,i) = to_num_from_stream(ffp, matrix%index(2,i), stat)
-            #:if t.startswith('complex') 
-            val_r = to_num_from_stream(ffp, mold, stat)
-            val_i = to_num_from_stream(ffp, mold, stat)
-            matrix%data(i) = complex( val_r, val_i )
-            #:else 
-            matrix%data(i) = to_num_from_stream(ffp, mold, stat)
-            #:endif
+        do i = 1, nnz
+            matrix%index(1,i) = rows(i)
+            matrix%index(2,i) = cols(i)
+            matrix%data(i) = vals(i)
         end do
 
         !----------------------------------------- 
@@ -294,8 +317,12 @@ contains
       do while( p<len(s) .and. .not.(iachar(s(p:p))==LF .or. iachar(s(p:p))==CR) ) 
           p = p + 1
       end do
-      ! skip both characters CRLF pair
-      if( p<len(s) .and. (iachar(s(p:p))==LF .or. iachar(s(p:p))==CR) ) p = p + 1
+      ! If CRLF, move to LF
+      if (p < len(s)) then
+        if (iachar(s(p:p)) == CR .and. iachar(s(p+1:p+1)) == LF) then
+            p = p + 1
+        end if
+      end if
     end function
 
 end submodule stdlib_io_mm_load
