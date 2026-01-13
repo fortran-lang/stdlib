@@ -65,17 +65,14 @@ contains
             allocate(s_tmp(n_s), vt_tmp(n_s, p))
 
             if (optval(overwrite_x, .false.)) then
-               do i = 1, n
-                  x(i, :) = x(i, :) - mu
-               end do
+               call center_data_${k1}$(x, mu)
                call svd(x, s_tmp, vt=vt_tmp, overwrite_a=.true., full_matrices=.false., err=err0)
             else
                block
                   ${t1}$, allocatable :: x_centered(:,:)
                   allocate(x_centered(n, p))
-                  do i = 1, n
-                     x_centered(i, :) = x(i, :) - mu
-                  end do
+                  x_centered = x
+                  call center_data_${k1}$(x_centered, mu)
                   call svd(x_centered, s_tmp, vt=vt_tmp, overwrite_a=.true., full_matrices=.false., err=err0)
                end block
             end if
@@ -99,9 +96,8 @@ contains
             allocate(x_centered(n, p))
             
             ! Center data
-            do i = 1, n
-               x_centered(i, :) = x(i, :) - mu
-            end do
+            x_centered = x
+            call center_data_${k1}$(x_centered, mu)
             
             ! Compute covariance matrix: C = X^T * X / (n-1)
             scale_factor = 1.0_${k1}$ / real(max(n-1, 1), ${k1}$)
