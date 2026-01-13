@@ -8,7 +8,7 @@ submodule (stdlib_stats) stdlib_stats_pca
   use stdlib_optval, only: optval
   use stdlib_linalg, only: svd, eigh
   use stdlib_linalg_constants, only: ilp
-  use stdlib_linalg_blas, only: gemm
+  use stdlib_linalg_blas, only: gemm, syrk
   use stdlib_linalg_state, only: linalg_state_type, LINALG_ERROR
   use stdlib_sorting, only: sort_index
   implicit none
@@ -99,11 +99,15 @@ contains
             x_centered = x
             call center_data_${k1}$(x_centered, mu)
             
-            ! Compute covariance matrix: C = X^T * X / (n-1)
+            ! Compute covariance matrix using BLAS syrk: C = (1/(n-1)) * X^T * X
+            ! syrk computes C := alpha*A**T*A + beta*C (upper triangle only)
             scale_factor = 1.0_${k1}$ / real(max(n-1, 1), ${k1}$)
-            do i = 1, p
-               do j = 1, p
-                  c(i, j) = dot_product(x_centered(:, i), x_centered(:, j)) * scale_factor
+            c = 0.0_${k1}$
+            call syrk('U', 'T', p, n, scale_factor, x_centered, n, 0.0_${k1}$, c, p)
+            ! Fill lower triangle from upper triangle (syrk only fills upper)
+            do j = 1, p-1
+               do i = j+1, p
+                  c(i, j) = c(j, i)
                end do
             end do
             
