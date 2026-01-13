@@ -65,6 +65,7 @@ contains
 
       integer(ilp) :: i, j, m
       integer(ilp), allocatable :: idx(:)
+      ${t1}$ :: alpha, beta
       real(${k1}$) :: scale_factor
       real(${k1}$), allocatable :: lambda(:), lambda_copy(:)
       ${t1}$, allocatable :: c(:,:), vectors(:,:)
@@ -73,9 +74,11 @@ contains
 
       ! Compute covariance matrix using BLAS syrk: C = (1/(n-1)) * X^T * X
       scale_factor = 1.0_${k1}$ / real(max(n-1, 1), ${k1}$)
+      alpha = real(scale_factor, ${k1}$)
+      beta = 0.0_${k1}$
       c = 0.0_${k1}$
-      call syrk('U', 'T', p, n, scale_factor, x_centered, n, 0.0_${k1}$, c, p)
-      ! Fill lower triangle from upper triangle
+      call syrk('U', 'T', p, n, alpha, x_centered, n, beta, c, p)
+      ! Fill lower triangle from upper triangle (syrk only fills upper)
       do j = 1, p-1
          do i = j+1, p
             c(i, j) = c(j, i)
@@ -89,8 +92,9 @@ contains
          lambda_copy = -lambda
          call sort_index(lambda_copy, idx)
 
-         ! Assign sorted results
+         ! Assign sorted results with safety bounds checks
          m = min(size(components, 1, kind=ilp), p)
+         m = min(m, size(singular_values, 1, kind=ilp))
          do i = 1, m
             components(i, :) = vectors(:, idx(i))
             if (lambda(idx(i)) > 0.0_${k1}$) then
@@ -121,14 +125,14 @@ contains
 
       n = size(x, 1, kind=ilp)
       p = size(x, 2, kind=ilp)
-      method_ = optval(method, "svd")
+      method_ = adjustl(optval(method, "svd"))
 
       ! Calculate mean along dimension 1 (column means)
       allocate(mu(p))
       mu = sum(x, dim=1) / real(n, ${k1}$)
       if (present(x_mean)) x_mean = mu
 
-      ! Method dispatch
+      ! Method dispatch using trimmed string for robustness
       select case (trim(method_))
       case ("svd")
          if (optval(overwrite_x, .false.)) then
@@ -165,26 +169,21 @@ contains
       ${t1}$, intent(in), optional :: x_mean(:)
       ${t1}$, intent(out) :: x_transformed(:,:)
 
-      integer(ilp) :: i, n, p, nc
+      integer(ilp) :: n, p, nc
+      ${t1}$ :: alpha, beta
       ${t1}$, allocatable :: x_centered(:,:)
-      ${t1}$, parameter :: alpha = 1.0_${k1}$, beta = 0.0_${k1}$
       
       n = size(x, 1, kind=ilp)
       p = size(x, 2, kind=ilp)
       nc = size(components, 1, kind=ilp)
       
       allocate(x_centered(n, p))
-      if (present(x_mean)) then
-         do i = 1, n
-            x_centered(i, :) = x(i, :) - x_mean
-         end do
-      else
-         x_centered = x
-      end if
+      x_centered = x
+      if (present(x_mean)) call center_data_${k1}$(x_centered, x_mean)
       
       ! x_transformed = x_centered * components^T using GEMM
-      ! GEMM: C = alpha * op(A) * op(B) + beta * C
-      ! x_transformed(n, nc) = x_centered(n, p) * components(nc, p)^T
+      alpha = 1.0_${k1}$
+      beta = 0.0_${k1}$
       call gemm('N', 'T', n, nc, p, alpha, x_centered, n, components, nc, beta, x_transformed, n)
     end subroutine pca_transform_${k1}$
   #:endfor
@@ -198,15 +197,15 @@ contains
       ${t1}$, intent(out) :: x_reconstructed(:,:)
 
       integer(ilp) :: i, n, nc, p
-      ${t1}$, parameter :: alpha = 1.0_${k1}$, beta = 0.0_${k1}$
+      ${t1}$ :: alpha, beta
       
       n = size(x_reduced, 1, kind=ilp)
       nc = size(x_reduced, 2, kind=ilp)
       p = size(components, 2, kind=ilp)
       
       ! x_reconstructed = x_reduced * components using GEMM
-      ! GEMM: C = alpha * op(A) * op(B) + beta * C
-      ! x_reconstructed(n, p) = x_reduced(n, nc) * components(nc, p)
+      alpha = 1.0_${k1}$
+      beta = 0.0_${k1}$
       call gemm('N', 'N', n, p, nc, alpha, x_reduced, n, components, nc, beta, x_reconstructed, n)
       
       if (present(x_mean)) then
