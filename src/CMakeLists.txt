@@ -1,10 +1,5 @@
 if (NOT STDLIB_NO_BITSET)
   add_subdirectory(bitsets)
-else()
-  # Provide a dummy INTERFACE target so other targets can link to "bitsets"
-  # without causing the linker to be passed unresolved -lbitsets flags.
-  add_library(bitsets INTERFACE)
-  target_compile_definitions(bitsets INTERFACE STDLIB_NO_BITSET=1)
 endif()
 add_subdirectory(blas)
 add_subdirectory(lapack)
