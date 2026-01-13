@@ -42,13 +42,3 @@ set(f90Files
 
 configure_stdlib_target(stats "" stats_fppFiles stats_cppFiles)
 target_link_libraries(stats PUBLIC blas lapack $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>)
-
-# Workaround for Intel Fortran compiler ICE (Internal Compiler Error) in stdlib_stats_pca.f90
-# The Intel ifx compiler (2024.1) triggers a segmentation violation during optimization.
-# Compiling with -O0 avoids the optimizer codepath that causes the ICE.
-if(CMAKE_Fortran_COMPILER_ID MATCHES "Intel")
-  set_source_files_properties(
-    ${CMAKE_CURRENT_BINARY_DIR}/stdlib_stats_pca.f90
-    PROPERTIES COMPILE_FLAGS "-O0 -g"
-  )
-endif()
