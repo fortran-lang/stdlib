@@ -8,12 +8,100 @@ submodule (stdlib_stats) stdlib_stats_pca
   use stdlib_optval, only: optval
   use stdlib_linalg, only: svd, eigh
   use stdlib_linalg_constants, only: ilp
-  use stdlib_linalg_blas, only: gemm
+  use stdlib_linalg_blas, only: gemm, syrk
   use stdlib_linalg_state, only: linalg_state_type, LINALG_ERROR
   use stdlib_sorting, only: sort_index
   implicit none
 
 contains
+
+  ! Helper subroutine: Centers data in-place by subtracting the mean from each row
+  #:for k1, t1 in PCA_KINDS_TYPES
+    pure subroutine center_data_${k1}$(x, mu)
+      ${t1}$, intent(inout) :: x(:,:)
+      ${t1}$, intent(in) :: mu(:)
+      integer(ilp) :: i, n
+      n = size(x, 1, kind=ilp)
+      do i = 1, n
+         x(i, :) = x(i, :) - mu
+      end do
+    end subroutine center_data_${k1}$
+  #:endfor
+
+  ! SVD-based PCA driver: computes principal components via SVD of centered data
+  #:for k1, t1 in PCA_KINDS_TYPES
+    subroutine pca_svd_driver_${k1}$(x_centered, n, p, components, singular_values, err)
+      ${t1}$, intent(inout) :: x_centered(:,:)
+      integer(ilp), intent(in) :: n, p
+      ${t1}$, intent(out) :: components(:,:)
+      real(${k1}$), intent(out) :: singular_values(:)
+      type(linalg_state_type), intent(out) :: err
+
+      integer(ilp) :: n_s, m
+      ${t1}$, allocatable :: s_tmp(:), vt_tmp(:,:)
+
+      n_s = min(n, p)
+      allocate(s_tmp(n_s), vt_tmp(n_s, p))
+
+      call svd(x_centered, s_tmp, vt=vt_tmp, overwrite_a=.true., full_matrices=.false., err=err)
+
+      if (err%ok()) then
+         m = min(size(components, 1, kind=ilp), n_s)
+         components(:m, :) = vt_tmp(:m, :)
+         m = min(size(singular_values, 1, kind=ilp), n_s)
+         singular_values(:m) = s_tmp(:m)
+      end if
+    end subroutine pca_svd_driver_${k1}$
+  #:endfor
+
+  ! Eigendecomposition-based PCA driver: computes principal components via covariance matrix
+  #:for k1, t1 in PCA_KINDS_TYPES
+    subroutine pca_eigh_driver_${k1}$(x_centered, n, p, components, singular_values, err)
+      ${t1}$, intent(in) :: x_centered(:,:)
+      integer(ilp), intent(in) :: n, p
+      ${t1}$, intent(out) :: components(:,:)
+      real(${k1}$), intent(out) :: singular_values(:)
+      type(linalg_state_type), intent(out) :: err
+
+      integer(ilp) :: i, j, m
+      integer(ilp), allocatable :: idx(:)
+      real(${k1}$) :: scale_factor
+      real(${k1}$), allocatable :: lambda(:), lambda_copy(:)
+      ${t1}$, allocatable :: c(:,:), vectors(:,:)
+
+      allocate(c(p, p), lambda(p), lambda_copy(p), idx(p), vectors(p, p))
+
+      ! Compute covariance matrix using BLAS syrk: C = (1/(n-1)) * X^T * X
+      scale_factor = 1.0_${k1}$ / real(max(n-1, 1), ${k1}$)
+      c = 0.0_${k1}$
+      call syrk('U', 'T', p, n, scale_factor, x_centered, n, 0.0_${k1}$, c, p)
+      ! Fill lower triangle from upper triangle
+      do j = 1, p-1
+         do i = j+1, p
+            c(i, j) = c(j, i)
+         end do
+      end do
+
+      call eigh(c, lambda, vectors=vectors, err=err)
+
+      if (err%ok()) then
+         ! Sort eigenvalues in descending order
+         lambda_copy = -lambda
+         call sort_index(lambda_copy, idx)
+
+         ! Assign sorted results
+         m = min(size(components, 1, kind=ilp), p)
+         do i = 1, m
+            components(i, :) = vectors(:, idx(i))
+            if (lambda(idx(i)) > 0.0_${k1}$) then
+               singular_values(i) = sqrt(lambda(idx(i)) * real(n-1, ${k1}$))
+            else
+               singular_values(i) = 0.0_${k1}$
+            end if
+         end do
+      end if
+    end subroutine pca_eigh_driver_${k1}$
+  #:endfor
 
   #:for k1, t1 in PCA_KINDS_TYPES
     module subroutine pca_${k1}$(x, components, singular_values, x_mean, &
@@ -27,104 +115,45 @@ contains
       type(linalg_state_type), intent(out), optional :: err
 
       type(linalg_state_type) :: err0
-      integer(ilp) :: n, p, i, j, k, m, n_s
-      ${t1}$, allocatable :: mu(:)
+      integer(ilp) :: n, p
+      ${t1}$, allocatable :: mu(:), x_centered(:,:)
       character(16) :: method_
-      
+
       n = size(x, 1, kind=ilp)
       p = size(x, 2, kind=ilp)
-      k = size(components, 1, kind=ilp)
-      
       method_ = optval(method, "svd")
-      
-      ! 1. Calculate mean using intrinsic sum (avoids submodule dependency issues)
+
+      ! Calculate mean along dimension 1 (column means)
       allocate(mu(p))
-      do j = 1, p
-         mu(j) = sum(x(:, j)) / real(n, ${k1}$)
-      end do
+      mu = sum(x, dim=1) / real(n, ${k1}$)
       if (present(x_mean)) x_mean = mu
 
-      if (method_ == "svd") then
-         ! 2. Center data and call SVD with temporaries for robustness
-         block
-            ${t1}$, allocatable :: s_tmp(:), vt_tmp(:,:)
-            n_s = min(n, p)
-            allocate(s_tmp(n_s), vt_tmp(n_s, p))
-
-            if (optval(overwrite_x, .false.)) then
-               do i = 1, n
-                  x(i, :) = x(i, :) - mu
-               end do
-               call svd(x, s_tmp, vt=vt_tmp, overwrite_a=.true., full_matrices=.false., err=err0)
-            else
-               block
-                  ${t1}$, allocatable :: x_centered(:,:)
-                  allocate(x_centered(n, p))
-                  do i = 1, n
-                     x_centered(i, :) = x(i, :) - mu
-                  end do
-                  call svd(x_centered, s_tmp, vt=vt_tmp, overwrite_a=.true., full_matrices=.false., err=err0)
-               end block
-            end if
-
-            if (err0%ok()) then
-               m = min(size(components, 1, kind=ilp), n_s)
-               components(:m, :) = vt_tmp(:m, :)
-               m = min(size(singular_values, 1, kind=ilp), n_s)
-               singular_values(:m) = s_tmp(:m)
-            end if
-         end block
-      else if (method_ == "eig" .or. method_ == "cov") then
-         ! 3. Eigendecomposition of covariance matrix (computed inline)
-         block
-            ${t1}$, allocatable :: c(:,:), vectors(:,:), x_centered(:,:)
-            real(${k1}$), allocatable :: lambda(:), lambda_copy(:)
-            integer(ilp), allocatable :: idx(:)
-            real(${k1}$) :: scale_factor
-
-            allocate(c(p, p), lambda(p), lambda_copy(p), idx(p), vectors(p, p))
+      ! Method dispatch
+      select case (trim(method_))
+      case ("svd")
+         if (optval(overwrite_x, .false.)) then
+            call center_data_${k1}$(x, mu)
+            call pca_svd_driver_${k1}$(x, n, p, components, singular_values, err0)
+         else
             allocate(x_centered(n, p))
-            
-            ! Center data
-            do i = 1, n
-               x_centered(i, :) = x(i, :) - mu
-            end do
-            
-            ! Compute covariance matrix: C = X^T * X / (n-1)
-            scale_factor = 1.0_${k1}$ / real(max(n-1, 1), ${k1}$)
-            do i = 1, p
-               do j = 1, p
-                  c(i, j) = dot_product(x_centered(:, i), x_centered(:, j)) * scale_factor
-               end do
-            end do
-            
-            call eigh(c, lambda, vectors=vectors, err=err0)
-            
-            if (err0%ok()) then
-               ! Sort eigenvalues in descending order using stdlib_sorting
-               ! sort_index sorts in ascending order, so we negate values
-               lambda_copy = -lambda
-               call sort_index(lambda_copy, idx)
-               
-               ! Assign sorted results
-               m = min(size(components, 1, kind=ilp), p)
-               do i = 1, m
-                  components(i, :) = vectors(:, idx(i))
-                  if (lambda(idx(i)) > 0.0_${k1}$) then
-                     singular_values(i) = sqrt(lambda(idx(i)) * real(n-1, ${k1}$))
-                  else
-                     singular_values(i) = 0.0_${k1}$
-                  end if
-               end do
-            end if
-         end block
-      else
-         err0 = linalg_state_type("pca", LINALG_ERROR, "Unknown method: "//method_)
-      end if
-      
-      ! Handle error state: return error or stop if err not present
+            x_centered = x
+            call center_data_${k1}$(x_centered, mu)
+            call pca_svd_driver_${k1}$(x_centered, n, p, components, singular_values, err0)
+         end if
+
+      case ("eig", "cov")
+         allocate(x_centered(n, p))
+         x_centered = x
+         call center_data_${k1}$(x_centered, mu)
+         call pca_eigh_driver_${k1}$(x_centered, n, p, components, singular_values, err0)
+
+      case default
+         err0 = linalg_state_type("pca", LINALG_ERROR, "Unknown method: "//trim(method_))
+      end select
+
+      ! Handle error state
       call err0%handle(err)
-      
+
     end subroutine pca_${k1}$
   #:endfor
 
