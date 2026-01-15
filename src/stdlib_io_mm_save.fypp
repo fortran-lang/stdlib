@@ -214,17 +214,20 @@ contains
                                 matrix%nrows, matrix%ncols, matrix%nnz, comment, stat, msg)
             if (stat /= 0) exit catch
 
-            ! Write array format (column-major order)
+            ! Write coordinate format (row, column, value)
             if(symmetry_ == MM_GENERAL) then
                 do i = 1, matrix%nnz
                     #:if t.startswith('real')
-                    write(io, '(ES24.16E3)', iostat=stat) matrix%data(i)
+                    write(io, '(I0,1X,I0,1X,ES24.16E3)', iostat=stat) &
+                        matrix%index(1,i), matrix%index(2,i), matrix%data(i)
                     #:elif t.startswith('complex')
                     real_part = real(matrix%data(i), kind=${k}$)
                     imag_part = aimag(matrix%data(i))
-                    write(io, '(ES24.16E3,1X,ES24.16E3)', iostat=stat) real_part, imag_part
+                    write(io, '(I0,1X,I0,1X,ES24.16E3,1X,ES24.16E3)', iostat=stat) &
+                        matrix%index(1,i), matrix%index(2,i), real_part, imag_part
                     #:elif t.startswith('integer')
-                    write(io, '(I0)', iostat=stat) matrix%data(i)
+                    write(io, '(I0,1X,I0,1X,I0)', iostat=stat) &
+                        matrix%index(1,i), matrix%index(2,i), matrix%data(i)
                     #:endif
                     if (stat /= 0) then
                         msg = "Error writing array element (" // to_string(i) // ")"
@@ -235,15 +238,18 @@ contains
                 ! For symmetric, skew-symmetric, hermitian matrices, only write the
                 ! lower triangle (including diagonal)
                 do i = 1, matrix%nnz
-                    if(matrix%index(1,i) > matrix%index(2,i)) cycle
+                    if(matrix%index(1,i) < matrix%index(2,i)) cycle
                     #:if t.startswith('real')
-                    write(io, '(ES24.16E3)', iostat=stat) matrix%data(i)
+                    write(io, '(I0,1X,I0,1X,ES24.16E3)', iostat=stat) &
+                        matrix%index(1,i), matrix%index(2,i), matrix%data(i)
                     #:elif t.startswith('complex')
                     real_part = real(matrix%data(i), kind=${k}$)
                     imag_part = aimag(matrix%data(i))
-                    write(io, '(ES24.16E3,1X,ES24.16E3)', iostat=stat) real_part, imag_part
+                    write(io, '(I0,1X,I0,1X,ES24.16E3,1X,ES24.16E3)', iostat=stat) &
+                        matrix%index(1,i), matrix%index(2,i), real_part, imag_part
                     #:elif t.startswith('integer')
-                    write(io, '(I0)', iostat=stat) matrix%data(i)
+                    write(io, '(I0,1X,I0,1X,I0)', iostat=stat) &
+                        matrix%index(1,i), matrix%index(2,i), matrix%data(i)
                     #:endif
                     if (stat /= 0) then
                         msg = "Error writing array element (" // to_string(i) // ")"

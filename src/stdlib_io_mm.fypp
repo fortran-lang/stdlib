@@ -74,7 +74,7 @@ module stdlib_io_mm
         #:endfor
 
         #:for k, t, s in RC_KINDS_TYPES
-        module subroutine save_coo_${s}$(filename, matrix, comment, symmetry, iostat, iomsg)
+        module subroutine save_mm_coo_${s}$(filename, matrix, comment, symmetry, iostat, iomsg)
         character(len=*), intent(in) :: filename
         type(COO_${s}$_type), intent(in) :: matrix
         character(len=*), intent(in), optional :: comment
