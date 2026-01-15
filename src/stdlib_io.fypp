@@ -325,8 +325,8 @@ contains
       #:endif
 
       !! Write the header if non-empty
-      ! prepend function may be replaced by use of replace_all but currently stdlib_strings
-      ! is being compiled after stdlib_io
+      ! prepend function may eventually be replaced by use of replace_all 
+      ! but currently stdlib_strings is being compiled after stdlib_io
       ! if (header_ /= '') write (unit, '(A)') comments_//replace_all(header_, nl, nl//comments_)
       if (header_ /= '') write (unit, '(A)', iostat=ios, iomsg=iomsg) prepend(header_, comments_)
       do i = 1, size(d, 1)
