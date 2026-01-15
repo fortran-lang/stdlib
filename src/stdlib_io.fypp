@@ -13,7 +13,6 @@ module stdlib_io
   use stdlib_optval, only: optval
   use stdlib_ascii, only: is_blank
   use stdlib_string_type, only : string_type, assignment(=), move
-  ! use stdlib_strings, only: replace_all
   implicit none
   private
   ! Public API
@@ -275,8 +274,8 @@ contains
       character(len=*), intent(in), optional :: delimiter  ! Column delimiter. Default is a space.
       character(len=*), intent(in), optional :: header  !< If present, text to write before data.
       character(len=*), intent(in), optional :: footer  !< If present, text to write after data.
-      character(len=1), intent(in), optional :: comments  !< Comment character. Default "#"
-      character(len=*), intent(in), optional :: fmt  !< Comment character. Default "#"
+      character(len=*), intent(in), optional :: comments  !< Comment character. Default "#".
+      character(len=*), intent(in), optional :: fmt  !< Fortran format specifier.  Defaults to the write format for the data type.
       !!
       !! Example
       !! -------
@@ -291,12 +290,14 @@ contains
       character(len=3) :: delim_str
       character(len=:), allocatable :: default_fmt
       character(len=:), allocatable :: fmt_
-      character(len=1), allocatable :: comments_
+      character(len=:), allocatable :: comments_
       character(len=:), allocatable :: header_
       character(len=:), allocatable :: footer_
       character(len=1024) :: iomsg, msgout
       #:if 'filename' in arg1
       integer :: unit
+      #:else
+      logical :: opened
       #:endif
 
       delimiter_ = optval(delimiter, delimiter_default)
@@ -316,6 +317,11 @@ contains
 
       #:if 'filename' in arg1
       unit = open (filename, "w")
+      #:else
+      inquire (unit=unit, opened=opened)
+      if(.not. opened) then
+           write (msgout,'(a,i0,a)') 'savetxt error: unit ',unit,' not open'
+      end if
       #:endif
 
       !! Write the header if non-empty
@@ -348,8 +354,11 @@ contains
       close (unit)
       #:endif
 
-      
+      #:if 'filename' in arg1
       1 format('savetxt: error <',a,'> writing ',i0,' values to line ',i0,' of ',a,'.')
+      #:else
+      1 format('savetxt: error <',a,'> writing ',i0,' values to line ',i0,' of unit ',i0,'.')
+      #:endif
       
     end subroutine savetxt_${t1[0]}$${k1}$${arg1[0]}$
   #:endfor
@@ -357,8 +366,8 @@ contains
   pure function prepend(Sin, comment) result(Sout)
     character(len=*), intent(in) :: Sin
     character(len=:), allocatable :: Sout
-    character(len=1), intent(in) :: comment 
-    character(len=3) :: com_
+    character(len=*), intent(in) :: comment 
+    character(len=len(comment)+2) :: com_
     integer :: bol, eol       ! indexes of beginning and end of line
 
     ! IF (trim(Sin) == '') return

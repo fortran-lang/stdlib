@@ -110,19 +110,19 @@ Saves a rank-2 `array` into a text file.
 
 ### Arguments
 
+`filename or unit`: Shall be either a character expression containing the name of the file or an integer containing the unit of an already open file, that will contain the 2D `array`. Setting the two of them shall give an error.
+
 `array`: Shall be a rank-2 array of type `real`, `complex` or `integer`.
 
-`filename or unit`: Shall be either a character expression containing the name of the file or an integer containing the unit of an already open file, that will contain the 2D `array`. Setting the two of them shall give an error
+`fmt`: (optional): Fortran format specifier for the text save. Defaults to the write format for the data type.
 
 `delimiter` (optional): Shall be a character expression of any length that contains the delimiter used to separate the columns. The default is a single space `' '`.
-
-`fmt`: (optional): Fortran format specifier for the text save. Defaults to the write format for the data type.
 
 `header`: (optional) Shall be a character expression that will be written at the beginning of the file.
 
 `footer`: (optional) Shall be a character expression that will be written at the end of the file.
 
-`comments`: (optional) : Shall  be a character expression of length 1 that will be prepended to the ``header`` and ``footer`` strings to mark them as comments. Default: `# `.
+`comments`: (optional) : Shall  be a character expression that will be prepended to the ``header`` and ``footer`` strings to mark them as comments. Default: `#`.
 
 
 
