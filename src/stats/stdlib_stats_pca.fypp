@@ -17,7 +17,7 @@ contains
 
   ! Helper subroutine: Centers data in-place by subtracting the mean from each row
   #:for k1, t1 in PCA_KINDS_TYPES
-    pure subroutine center_data_${k1}$(x, mu)
+    subroutine center_data_${k1}$(x, mu)
       ${t1}$, intent(inout) :: x(:,:)
       ${t1}$, intent(in) :: mu(:)
       integer(ilp) :: i, j, n, m
@@ -40,19 +40,27 @@ contains
       real(${k1}$), intent(out) :: singular_values(:)
       type(linalg_state_type), intent(out) :: err
 
-      integer(ilp) :: n_s, m
+      integer(ilp) :: n_s, m, i
       ${t1}$, allocatable :: s_tmp(:), vt_tmp(:,:)
 
       n_s = min(n, p)
-      allocate(s_tmp(n_s), vt_tmp(n_s, p))
+      allocate(s_tmp(n_s))
+      allocate(vt_tmp(n_s, p))
 
       call svd(x_centered, s_tmp, vt=vt_tmp, overwrite_a=.true., full_matrices=.false., err=err)
 
       if (err%ok()) then
-         m = min(size(components, 1, kind=ilp), n_s)
-         components(:m, :) = vt_tmp(:m, :)
-         m = min(size(singular_values, 1, kind=ilp), n_s)
-         singular_values(:m) = s_tmp(:m)
+         m = size(components, 1, kind=ilp)
+         if (n_s < m) m = n_s
+         do i = 1, m
+            components(i, :) = vt_tmp(i, :)
+         end do
+         
+         m = size(singular_values, 1, kind=ilp)
+         if (n_s < m) m = n_s
+         do i = 1, m
+            singular_values(i) = s_tmp(i)
+         end do
       end if
     end subroutine pca_svd_driver_${k1}$
   #:endfor
@@ -73,7 +81,11 @@ contains
       real(${k1}$), allocatable :: lambda(:), lambda_copy(:)
       ${t1}$, allocatable :: c(:,:), vectors(:,:)
 
-      allocate(c(p, p), lambda(p), lambda_copy(p), idx(p), vectors(p, p))
+      allocate(c(p, p))
+      allocate(lambda(p))
+      allocate(lambda_copy(p))
+      allocate(idx(p))
+      allocate(vectors(p, p))
 
       ! Compute covariance matrix using BLAS syrk: C = (1/(n-1)) * X^T * X
       scale_factor = 1.0_${k1}$ / real(max(n-1, 1), ${k1}$)
@@ -113,7 +125,7 @@ contains
   #:for k1, t1 in PCA_KINDS_TYPES
     module subroutine pca_${k1}$(x, components, singular_values, x_mean, &
                                 method, overwrite_x, err)
-      ${t1}$, intent(inout), target :: x(:,:)
+      ${t1}$, intent(inout) :: x(:,:)
       ${t1}$, intent(out) :: components(:,:)
       real(${k1}$), intent(out) :: singular_values(:)
       ${t1}$, intent(out), optional :: x_mean(:)
@@ -135,9 +147,8 @@ contains
       mu = sum(x, dim=1) / real(n, ${k1}$)
       if (present(x_mean)) x_mean = mu
 
-      ! Method dispatch using trimmed string for robustness
-      select case (trim(method_))
-      case ("svd")
+      ! Method dispatch using if-else for maximum compiler stability
+      if (trim(method_) == "svd") then
          if (optval(overwrite_x, .false.)) then
             call center_data_${k1}$(x, mu)
             call pca_svd_driver_${k1}$(x, n, p, components, singular_values, err0)
@@ -148,18 +159,20 @@ contains
             call pca_svd_driver_${k1}$(x_centered, n, p, components, singular_values, err0)
          end if
 
-      case ("eig", "cov")
+      else if (trim(method_) == "eig" .or. trim(method_) == "cov") then
          allocate(x_centered(n, p))
          x_centered = x
          call center_data_${k1}$(x_centered, mu)
          call pca_eigh_driver_${k1}$(x_centered, n, p, components, singular_values, err0)
 
-      case default
+      else
          err0 = linalg_state_type("pca", LINALG_ERROR, "Unknown method: "//trim(method_))
-      end select
+      end if
 
-      ! Handle error state
-      call err0%handle(err)
+      ! Handle error state explicitly
+      if (present(err)) then
+         err = err0
+      end if
 
     end subroutine pca_${k1}$
   #:endfor
