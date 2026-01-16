@@ -23,8 +23,10 @@ contains
       integer(ilp) :: i, j, n, m
       n = size(x, 1, kind=ilp)
       m = size(x, 2, kind=ilp)
-      do concurrent( j=1:m, i=1:n )
-         x(i, j) = x(i, j) - mu(j)
+      do j = 1, m
+         do i = 1, n
+            x(i, j) = x(i, j) - mu(j)
+         end do
       end do
     end subroutine center_data_${k1}$
   #:endfor
@@ -210,8 +212,10 @@ contains
       call gemm('N', 'N', n, p, nc, alpha, x_reduced, n, components, nc, beta, x_reconstructed, n)
       
       if (present(x_mean)) then
-         do concurrent( j=1:p, i=1:n )
-            x_reconstructed(i, j) = x_reconstructed(i, j) + x_mean(j)
+         do j = 1, p
+            do i = 1, n
+               x_reconstructed(i, j) = x_reconstructed(i, j) + x_mean(j)
+            end do
          end do
       end if
     end subroutine pca_inverse_transform_${k1}$
