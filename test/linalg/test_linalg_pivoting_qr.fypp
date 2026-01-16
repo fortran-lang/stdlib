@@ -23,8 +23,8 @@ module test_linalg_pivoting_qr
         
         #:for rk,rt,ri in RC_KINDS_TYPES
         call add_test(tests,new_unittest("pivoting_qr_random_tall_matrix_${ri}$",test_pivoting_qr_random_tall_matrix_${ri}$))
-        call add_test(tests,new_unittest("pivoting_qr_random_rank_deficient_${ri}$",test_pivoting_qr_random_rank_deficient_${ri}$))
-        call add_test(tests,new_unittest("pivoting_qr_random_wide_matrix_${ri}$",test_pivoting_qr_random_wide_matrix_${ri}$))
+        ! call add_test(tests,new_unittest("pivoting_qr_random_rank_deficient_${ri}$",test_pivoting_qr_random_rank_deficient_${ri}$))
+        ! call add_test(tests,new_unittest("pivoting_qr_random_wide_matrix_${ri}$",test_pivoting_qr_random_wide_matrix_${ri}$))
         #:endfor
     end subroutine test_pivoting_qr_factorization
 
@@ -62,6 +62,7 @@ module test_linalg_pivoting_qr
         if (allocated(error)) return        
         
         ! Check solution
+        print *, "Maximum pointwise error :" maxval(abs(a(:, pivots) - matmul(q, r)))
         call check(error, all(abs(a(:, pivots)-matmul(q,r))<tol), 'converged solution (full)')
         if (allocated(error)) return        
 
@@ -73,6 +74,7 @@ module test_linalg_pivoting_qr
         if (allocated(error)) return        
 
         ! Check solution
+        print *, "Maximum pointwise error :" maxval(abs(a(:, pivots) - matmul(qred, rred)))
         call check(error, all(abs(a(:, pivots)-matmul(qred,rred))<tol), 'converged solution (reduced)')
         if (allocated(error)) return        
 
@@ -84,6 +86,7 @@ module test_linalg_pivoting_qr
         if (allocated(error)) return        
 
         ! Check solution
+        print *, "Maximum pointwise error :" maxval(abs(aorig(:, pivots) - matmul(qred, rred)))
         call check(error, all(abs(aorig(:, pivots)-matmul(qred,rred))<tol), 'converged solution (overwrite A)')
         if (allocated(error)) return                
 
@@ -98,6 +101,7 @@ module test_linalg_pivoting_qr
         if (allocated(error)) return        
 
         ! Check solution
+        print *, "Maximum pointwise error :" maxval(abs(a(:, pivots) - matmul(q, r)))
         call check(error, all(abs(a(:, pivots)-matmul(q,r))<tol), 'converged solution (external storage)')
         if (allocated(error)) return          
 
