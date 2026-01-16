@@ -23,8 +23,8 @@ module test_linalg_pivoting_qr
         
         #:for rk,rt,ri in RC_KINDS_TYPES
         call add_test(tests,new_unittest("pivoting_qr_random_tall_matrix_${ri}$",test_pivoting_qr_random_tall_matrix_${ri}$))
-        ! call add_test(tests,new_unittest("pivoting_qr_random_rank_deficient_${ri}$",test_pivoting_qr_random_rank_deficient_${ri}$))
-        ! call add_test(tests,new_unittest("pivoting_qr_random_wide_matrix_${ri}$",test_pivoting_qr_random_wide_matrix_${ri}$))
+        call add_test(tests,new_unittest("pivoting_qr_random_rank_deficient_${ri}$",test_pivoting_qr_random_rank_deficient_${ri}$))
+        call add_test(tests,new_unittest("pivoting_qr_random_wide_matrix_${ri}$",test_pivoting_qr_random_wide_matrix_${ri}$))
         #:endfor
     end subroutine test_pivoting_qr_factorization
 
