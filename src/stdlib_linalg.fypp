@@ -615,7 +615,7 @@ module stdlib_linalg
          type(linalg_state_type), optional, intent(out) :: err
       end subroutine stdlib_linalg_${ri}$_qr
 
-      pure module subroutine stdlib_linalg_${ri}$_pivoting_qr(a, q, r, pivots, overwrite_a, storage, err)
+      module subroutine stdlib_linalg_${ri}$_pivoting_qr(a, q, r, pivots, overwrite_a, storage, err)
           !> Input matrix a[m, n]
           ${rt}$, intent(inout), target :: a(:, :)
           !> Orthogonal matrix Q ([m, m] or [m, k] if reduced)
