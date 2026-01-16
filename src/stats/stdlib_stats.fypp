@@ -655,7 +655,7 @@ module stdlib_stats
     #:for k1, t1 in PCA_KINDS_TYPES
       module subroutine pca_${k1}$(x, components, singular_values, x_mean, &
                                   method, overwrite_x, err)
-        ${t1}$, intent(inout), target :: x(:,:)
+        ${t1}$, intent(inout) :: x(:,:)
         ${t1}$, intent(out) :: components(:,:)
         real(${k1}$), intent(out) :: singular_values(:)
         ${t1}$, intent(out), optional :: x_mean(:)
