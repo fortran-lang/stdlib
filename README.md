@@ -333,6 +333,8 @@ The recommended way to do this is using the [pkg-config](https://www.freedesktop
 # Necessary if the installation directory is not in PKG_CONFIG_PATH
 install_dir := path/to/install_dir
 export PKG_CONFIG_PATH := $(install_dir)/lib/pkgconfig:$(PKG_CONFIG_PATH)
+# On some OS the pkgconfig file could be installed in lib64 instead of lib
+# export PKG_CONFIG_PATH := $(install_dir)/lib64/pkgconfig:$(PKG_CONFIG_PATH)
 
 STDLIB_CFLAGS := `pkg-config --cflags fortran_stdlib`
 STDLIB_LIBS := `pkg-config --libs fortran_stdlib`
