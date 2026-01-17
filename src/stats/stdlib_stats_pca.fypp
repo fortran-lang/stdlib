@@ -10,7 +10,6 @@
 #:endif
 submodule (stdlib_stats) stdlib_stats_pca
   use stdlib_kinds, only: sp, dp, xdp, qp
-  use stdlib_error, only: error_stop
   use stdlib_optval, only: optval
   use stdlib_linalg, only: svd, eigh
   use stdlib_linalg_constants, only: ilp
