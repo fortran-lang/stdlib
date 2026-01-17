@@ -39,6 +39,7 @@ contains
   ! SVD-based PCA driver: computes principal components via SVD of centered data
   #:for k1, t1 in PCA_KINDS_TYPES
     subroutine pca_svd_driver_${k1}$(x_centered, n, p, components, singular_values, err)
+      use stdlib_blas_constants_${k1}$, only: zero
       ${t1}$, intent(inout) :: x_centered(:,:)
       integer(ilp), intent(in) :: n, p
       ${t1}$, intent(out) :: components(:,:)
@@ -47,6 +48,10 @@ contains
 
       integer(ilp) :: n_s, m
       ${t1}$, allocatable :: s_tmp(:), vt_tmp(:,:)
+
+      ! Initialize outputs to zero to prevent uninitialized memory access
+      components = zero
+      singular_values = zero
 
       n_s = min(n, p)
       allocate(s_tmp(n_s))
@@ -80,11 +85,16 @@ contains
       real(${k1}$), allocatable :: lambda(:), lambda_copy(:)
       ${t1}$, allocatable :: c(:,:), vectors(:,:)
 
+      ! Initialize outputs to zero to prevent uninitialized memory access
+      components = zero
+      singular_values = zero
+
       ! Compute covariance matrix using BLAS syrk: C = (1/(n-1)) * X^T * X
       scale_factor = 1.0_${k1}$ / real(max(n-1, 1), ${k1}$)
       alpha = scale_factor
       beta = zero
-      allocate(c(p, p), source=zero)
+      allocate(c(p, p))
+      c = zero
       call syrk('U', 'T', p, n, alpha, x_centered, n, beta, c, p)
 
       ! Fill lower triangle from upper triangle (syrk only fills upper)
@@ -100,7 +110,8 @@ contains
 
       if (err%ok()) then
          ! Sort eigenvalues in descending order
-         allocate(lambda_copy, source=-lambda)
+         allocate(lambda_copy(p))
+         lambda_copy = -lambda
          allocate(idx(p))
          call sort_index(lambda_copy, idx)
 
@@ -140,7 +151,8 @@ contains
       method_ = trim(adjustl(optval(method, "svd")))
 
       ! Calculate mean along dimension 1 (column means) using stdlib mean
-      allocate(mu, source=mean(x, 1))
+      allocate(mu(p))
+      mu = mean(x, 1)
 
       ! Validate and assign x_mean if present
       if (present(x_mean)) then
