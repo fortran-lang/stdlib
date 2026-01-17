@@ -1,30 +1,36 @@
 #:include "common.fypp"
-#! Note: PCA is limited to single (sp) and double (dp) precision because external
-#! optimized BLAS/LAPACK libraries (OpenBLAS, MKL) only support these precisions.
+#! PCA supports all real kinds available in stdlib's internal BLAS/LAPACK.
+#! When WITH_XDP or WITH_QP are enabled, extended precision is also supported.
 #:set PCA_KINDS_TYPES = [("sp", "real(sp)"), ("dp", "real(dp)")]
+#:if WITH_XDP
+#:set PCA_KINDS_TYPES = PCA_KINDS_TYPES + [("xdp", "real(xdp)")]
+#:endif
+#:if WITH_QP
+#:set PCA_KINDS_TYPES = PCA_KINDS_TYPES + [("qp", "real(qp)")]
+#:endif
 submodule (stdlib_stats) stdlib_stats_pca
-  use stdlib_kinds, only: sp, dp
+  use stdlib_kinds, only: sp, dp, xdp, qp
   use stdlib_error, only: error_stop
   use stdlib_optval, only: optval
   use stdlib_linalg, only: svd, eigh
   use stdlib_linalg_constants, only: ilp
   use stdlib_linalg_blas, only: gemm, syrk
-  use stdlib_linalg_state, only: linalg_state_type, LINALG_ERROR
+  use stdlib_linalg_state, only: linalg_state_type, LINALG_ERROR, LINALG_VALUE_ERROR
   use stdlib_sorting, only: sort_index
   implicit none
 
 contains
 
-  ! Helper subroutine: Centers data in-place by subtracting the mean from each row
+  ! Helper subroutine: Centers data in-place by subtracting the mean from each column
   #:for k1, t1 in PCA_KINDS_TYPES
     subroutine center_data_${k1}$(x, mu)
       ${t1}$, intent(inout) :: x(:,:)
       ${t1}$, intent(in) :: mu(:)
-      integer(ilp) :: i, j, n, m
-      n = size(x, 1, kind=ilp)
-      m = size(x, 2, kind=ilp)
-      do j = 1, m
-         do i = 1, n
+      integer(ilp) :: i, j, m, n
+      m = size(x, 1, kind=ilp)
+      n = size(x, 2, kind=ilp)
+      do j = 1, n
+         do i = 1, m
             x(i, j) = x(i, j) - mu(j)
          end do
       end do
@@ -34,13 +40,14 @@ contains
   ! SVD-based PCA driver: computes principal components via SVD of centered data
   #:for k1, t1 in PCA_KINDS_TYPES
     subroutine pca_svd_driver_${k1}$(x_centered, n, p, components, singular_values, err)
+      use stdlib_blas_constants_${k1}$, only: one, zero
       ${t1}$, intent(inout) :: x_centered(:,:)
       integer(ilp), intent(in) :: n, p
       ${t1}$, intent(out) :: components(:,:)
       real(${k1}$), intent(out) :: singular_values(:)
       type(linalg_state_type), intent(out) :: err
 
-      integer(ilp) :: n_s, m, i
+      integer(ilp) :: n_s, m
       ${t1}$, allocatable :: s_tmp(:), vt_tmp(:,:)
 
       n_s = min(n, p)
@@ -50,17 +57,10 @@ contains
       call svd(x_centered, s_tmp, vt=vt_tmp, overwrite_a=.true., full_matrices=.false., err=err)
 
       if (err%ok()) then
-         m = size(components, 1, kind=ilp)
-         if (n_s < m) m = n_s
-         do i = 1, m
-            components(i, :) = vt_tmp(i, :)
-         end do
-         
-         m = size(singular_values, 1, kind=ilp)
-         if (n_s < m) m = n_s
-         do i = 1, m
-            singular_values(i) = s_tmp(i)
-         end do
+         m = min(size(components, 1, kind=ilp), n_s)
+         components(1:m, :) = vt_tmp(1:m, :)
+         m = min(size(singular_values, 1, kind=ilp), n_s)
+         singular_values(1:m) = s_tmp(1:m)
       end if
     end subroutine pca_svd_driver_${k1}$
   #:endfor
@@ -68,6 +68,7 @@ contains
   ! Eigendecomposition-based PCA driver: computes principal components via covariance matrix
   #:for k1, t1 in PCA_KINDS_TYPES
     subroutine pca_eigh_driver_${k1}$(x_centered, n, p, components, singular_values, err)
+      use stdlib_blas_constants_${k1}$, only: one, zero
       ${t1}$, intent(in) :: x_centered(:,:)
       integer(ilp), intent(in) :: n, p
       ${t1}$, intent(out) :: components(:,:)
@@ -81,18 +82,13 @@ contains
       real(${k1}$), allocatable :: lambda(:), lambda_copy(:)
       ${t1}$, allocatable :: c(:,:), vectors(:,:)
 
-      allocate(c(p, p))
-      allocate(lambda(p))
-      allocate(lambda_copy(p))
-      allocate(idx(p))
-      allocate(vectors(p, p))
-
       ! Compute covariance matrix using BLAS syrk: C = (1/(n-1)) * X^T * X
       scale_factor = 1.0_${k1}$ / real(max(n-1, 1), ${k1}$)
-      alpha = real(scale_factor, ${k1}$)
-      beta = 0.0_${k1}$
-      c = 0.0_${k1}$
+      alpha = scale_factor
+      beta = zero
+      allocate(c(p, p), source=zero)
       call syrk('U', 'T', p, n, alpha, x_centered, n, beta, c, p)
+
       ! Fill lower triangle from upper triangle (syrk only fills upper)
       do j = 1, p-1
          do i = j+1, p
@@ -100,11 +96,14 @@ contains
          end do
       end do
 
+      allocate(lambda(p))
+      allocate(vectors(p, p))
       call eigh(c, lambda, vectors=vectors, err=err)
 
       if (err%ok()) then
          ! Sort eigenvalues in descending order
-         lambda_copy = -lambda
+         allocate(lambda_copy, source=-lambda)
+         allocate(idx(p))
          call sort_index(lambda_copy, idx)
 
          ! Assign sorted results with safety bounds checks
@@ -136,43 +135,49 @@ contains
       type(linalg_state_type) :: err0
       integer(ilp) :: n, p
       ${t1}$, allocatable :: mu(:), x_centered(:,:)
-      character(16) :: method_
+      character(len=:), allocatable :: method_
 
       n = size(x, 1, kind=ilp)
       p = size(x, 2, kind=ilp)
-      method_ = adjustl(optval(method, "svd"))
+      method_ = trim(adjustl(optval(method, "svd")))
 
-      ! Calculate mean along dimension 1 (column means)
-      allocate(mu(p))
-      mu = sum(x, dim=1) / real(n, ${k1}$)
-      if (present(x_mean)) x_mean = mu
+      ! Calculate mean along dimension 1 (column means) using stdlib mean
+      allocate(mu, source=mean(x, 1))
 
-      ! Method dispatch using if-else for maximum compiler stability
-      if (trim(method_) == "svd") then
+      ! Validate and assign x_mean if present
+      if (present(x_mean)) then
+         if (size(x_mean) < p) then
+            err0 = linalg_state_type("pca", LINALG_VALUE_ERROR, &
+                   "x_mean array has insufficient size:", size(x_mean), ", expected:", p)
+            call err0%handle(err)
+            return
+         end if
+         x_mean(1:p) = mu
+      end if
+
+      ! Method dispatch
+      select case (method_)
+      case ("svd")
          if (optval(overwrite_x, .false.)) then
             call center_data_${k1}$(x, mu)
             call pca_svd_driver_${k1}$(x, n, p, components, singular_values, err0)
          else
-            allocate(x_centered(n, p))
-            x_centered = x
+            allocate(x_centered, source=x)
             call center_data_${k1}$(x_centered, mu)
             call pca_svd_driver_${k1}$(x_centered, n, p, components, singular_values, err0)
          end if
 
-      else if (trim(method_) == "eig" .or. trim(method_) == "cov") then
-         allocate(x_centered(n, p))
-         x_centered = x
+      case ("eig", "cov")
+         allocate(x_centered, source=x)
          call center_data_${k1}$(x_centered, mu)
          call pca_eigh_driver_${k1}$(x_centered, n, p, components, singular_values, err0)
 
-      else
-         err0 = linalg_state_type("pca", LINALG_ERROR, "Unknown method: "//trim(method_))
-      end if
+      case default
+         err0 = linalg_state_type("pca", LINALG_ERROR, "Unknown method: "//method_)
+      end select
 
-      ! Handle error state explicitly
-      if (present(err)) then
-         err = err0
-      end if
+      ! Handle error state
+      call err0%handle(err)
 
     end subroutine pca_${k1}$
   #:endfor
@@ -180,49 +185,44 @@ contains
 
   #:for k1, t1 in PCA_KINDS_TYPES
     module subroutine pca_transform_${k1}$(x, components, x_mean, x_transformed)
+      use stdlib_blas_constants_${k1}$, only: one, zero
       ${t1}$, intent(in) :: x(:,:)
       ${t1}$, intent(in) :: components(:,:)
       ${t1}$, intent(in), optional :: x_mean(:)
       ${t1}$, intent(out) :: x_transformed(:,:)
 
       integer(ilp) :: n, p, nc
-      ${t1}$ :: alpha, beta
       ${t1}$, allocatable :: x_centered(:,:)
       
       n = size(x, 1, kind=ilp)
       p = size(x, 2, kind=ilp)
       nc = size(components, 1, kind=ilp)
       
-      allocate(x_centered(n, p))
-      x_centered = x
+      allocate(x_centered, source=x)
       if (present(x_mean)) call center_data_${k1}$(x_centered, x_mean)
       
       ! x_transformed = x_centered * components^T using GEMM
-      alpha = 1.0_${k1}$
-      beta = 0.0_${k1}$
-      call gemm('N', 'T', n, nc, p, alpha, x_centered, n, components, nc, beta, x_transformed, n)
+      call gemm('N', 'T', n, nc, p, one, x_centered, n, components, nc, zero, x_transformed, n)
     end subroutine pca_transform_${k1}$
   #:endfor
 
 
   #:for k1, t1 in PCA_KINDS_TYPES
     module subroutine pca_inverse_transform_${k1}$(x_reduced, components, x_mean, x_reconstructed)
+      use stdlib_blas_constants_${k1}$, only: one, zero
       ${t1}$, intent(in) :: x_reduced(:,:)
       ${t1}$, intent(in) :: components(:,:)
       ${t1}$, intent(in), optional :: x_mean(:)
       ${t1}$, intent(out) :: x_reconstructed(:,:)
 
       integer(ilp) :: i, j, n, nc, p
-      ${t1}$ :: alpha, beta
       
       n = size(x_reduced, 1, kind=ilp)
       nc = size(x_reduced, 2, kind=ilp)
       p = size(components, 2, kind=ilp)
       
       ! x_reconstructed = x_reduced * components using GEMM
-      alpha = 1.0_${k1}$
-      beta = 0.0_${k1}$
-      call gemm('N', 'N', n, p, nc, alpha, x_reduced, n, components, nc, beta, x_reconstructed, n)
+      call gemm('N', 'N', n, p, nc, one, x_reduced, n, components, nc, zero, x_reconstructed, n)
       
       if (present(x_mean)) then
          do j = 1, p
