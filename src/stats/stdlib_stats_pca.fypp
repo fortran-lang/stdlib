@@ -40,7 +40,6 @@ contains
   ! SVD-based PCA driver: computes principal components via SVD of centered data
   #:for k1, t1 in PCA_KINDS_TYPES
     subroutine pca_svd_driver_${k1}$(x_centered, n, p, components, singular_values, err)
-      use stdlib_blas_constants_${k1}$, only: one, zero
       ${t1}$, intent(inout) :: x_centered(:,:)
       integer(ilp), intent(in) :: n, p
       ${t1}$, intent(out) :: components(:,:)
@@ -68,7 +67,7 @@ contains
   ! Eigendecomposition-based PCA driver: computes principal components via covariance matrix
   #:for k1, t1 in PCA_KINDS_TYPES
     subroutine pca_eigh_driver_${k1}$(x_centered, n, p, components, singular_values, err)
-      use stdlib_blas_constants_${k1}$, only: one, zero
+      use stdlib_blas_constants_${k1}$, only: zero
       ${t1}$, intent(in) :: x_centered(:,:)
       integer(ilp), intent(in) :: n, p
       ${t1}$, intent(out) :: components(:,:)
