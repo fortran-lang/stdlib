@@ -642,10 +642,15 @@ module stdlib_stats
   end interface moment
 
 
-  #! Note: PCA is limited to single (sp) and double (dp) precision because external
-  #! optimized BLAS/LAPACK libraries (OpenBLAS, MKL) only support these precisions.
-  #! Extended (xdp) and quadruple (qp) precision are not supported for PCA.
+  #! PCA supports all real kinds available in stdlib's internal BLAS/LAPACK.
+  #! When WITH_XDP or WITH_QP are enabled, extended precision is also supported.
   #:set PCA_KINDS_TYPES = [("sp", "real(sp)"), ("dp", "real(dp)")]
+  #:if WITH_XDP
+  #:set PCA_KINDS_TYPES = PCA_KINDS_TYPES + [("xdp", "real(xdp)")]
+  #:endif
+  #:if WITH_QP
+  #:set PCA_KINDS_TYPES = PCA_KINDS_TYPES + [("qp", "real(qp)")]
+  #:endif
 
   interface pca
     !! version: experimental

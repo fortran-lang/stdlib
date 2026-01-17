@@ -41,4 +41,4 @@ set(f90Files
     )
 
 configure_stdlib_target(stats "" stats_fppFiles stats_cppFiles)
-target_link_libraries(stats PUBLIC blas lapack $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>)
+target_link_libraries(stats PUBLIC blas lapack $<$<BOOL:${STDLIB_BITSET}>:bitsets>)

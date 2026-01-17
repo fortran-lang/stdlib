@@ -1,8 +1,14 @@
 #:include "common.fypp"
 #:set PCA_KINDS = ["sp", "dp"]
+#:if WITH_XDP
+#:set PCA_KINDS = PCA_KINDS + ["xdp"]
+#:endif
+#:if WITH_QP
+#:set PCA_KINDS = PCA_KINDS + ["qp"]
+#:endif
 program test_pca
     use stdlib_error, only: check
-    use stdlib_kinds, only: sp, dp
+    use stdlib_kinds, only: sp, dp, xdp, qp
     use stdlib_stats, only: pca, pca_transform, pca_inverse_transform
     use stdlib_linalg_state, only: linalg_state_type
     implicit none
