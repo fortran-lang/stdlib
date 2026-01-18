@@ -278,7 +278,7 @@ contains
             & nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage, &
             br => matrix%block_shape(1), bc => matrix%block_shape(2) )
 
-            nbrow = size(rowptr) - 1
+            nbrow = nrows / br**2
             #:if rank == 2
             nrhs = size(vec_x,dim=2)
             #:endif
@@ -353,7 +353,6 @@ contains
             #:if t1.startswith('complex')
             case(sparse_op_hermitian)
                 if (storage == sparse_full) then
-                    trans_blas = 'C'
                     do bi = 1, nbrow
                         row_i_start = (bi - 1) * br + 1
                         if (row_i_start > nrows) cycle
@@ -365,7 +364,7 @@ contains
                             j_max_j = min(bc, ncols - col_j_start + 1)
 
                             #:if rank == 1
-                            call gemv(trans_blas, m=i_max_i, n=j_max_j, alpha=alpha_, a=data(1:,1:,p), lda=br, &
+                            call gemv('C', m=i_max_i, n=j_max_j, alpha=alpha_, a=data(1:,1:,p), lda=br, &
                                 x=vec_x(row_i_start:), incx=1, beta=one_${s1}$, &
                                 y=vec_y(col_j_start:), incy=1)
                             #:else
