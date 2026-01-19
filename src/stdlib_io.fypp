@@ -257,7 +257,7 @@ contains
 
   #:for arg1 in ['filename', 'unit']
   #:for k1, t1 in KINDS_TYPES
-    subroutine savetxt_${t1[0]}$${k1}$${arg1[0]}$ (${arg1}$, d, delimiter, fmt, header, footer, comments)
+    subroutine savetxt_${t1[0]}$${k1}$${arg1[0]}$ (${arg1}$, d, delimiter, newline, fmt, header, footer, comments)
       !! version: experimental
       !!
       !! Saves a 2D array into a text file.
@@ -271,11 +271,12 @@ contains
       integer, intent(in) :: unit
       #:endif
       ${t1}$, intent(in) :: d(:,:)           ! The 2D array to save
-      character(len=*), intent(in), optional :: delimiter  ! Column delimiter. Default is a space.
+      character(len=*), intent(in), optional :: delimiter  ! Column delimiter. Default is a space ' '.
+      character(len=*), intent(in), optional :: newline  ! Characters separating lines. Default is new_line('a').
+      character(len=*), intent(in), optional :: fmt  !< Fortran format specifier. Defaults to the write format for the data type.
       character(len=*), intent(in), optional :: header  !< If present, text to write before data.
       character(len=*), intent(in), optional :: footer  !< If present, text to write after data.
       character(len=*), intent(in), optional :: comments  !< Comment character. Default "#".
-      character(len=*), intent(in), optional :: fmt  !< Fortran format specifier.  Defaults to the write format for the data type.
       !!
       !! Example
       !! -------
@@ -289,6 +290,7 @@ contains
       character(len=1) :: delimiter_
       character(len=3) :: delim_str
       character(len=:), allocatable :: default_fmt
+      character(len=:), allocatable :: nl_
       character(len=:), allocatable :: fmt_
       character(len=:), allocatable :: comments_
       character(len=:), allocatable :: header_
@@ -301,6 +303,7 @@ contains
       #:endif
 
       delimiter_ = optval(delimiter, delimiter_default)
+      nl_ = optval(newline, nl)
       delim_str = "'"//delimiter_//"'"
       comments_ = optval(comments, comment_default)
       header_ = optval(header, '')
@@ -313,7 +316,7 @@ contains
       #:elif 'integer' in t1
         default_fmt = FMT_INT(2:len(FMT_INT)-1)
       #:endif
-      fmt_ = "(*("//optval(fmt, default_fmt)//",:,"//delim_str//"))"
+      fmt_ = "(*("//optval(fmt, default_fmt)//",:,"//delim_str//"),a)"
 
       #:if 'filename' in arg1
       unit = open (filename, "w")
@@ -335,7 +338,7 @@ contains
         #:else
           write(unit, *, &
         #:endif
-                iostat=ios,iomsg=iomsg) d(i, :)
+                advance='no',iostat=ios,iomsg=iomsg) d(i, :), nl_
         
         if (ios/=0) then 
             write (msgout,1) trim(iomsg),size(d,2),i,&

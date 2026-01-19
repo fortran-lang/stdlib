@@ -106,9 +106,9 @@ Saves a rank-2 `array` into a text file.
 
 ### Syntax
 
-`call ` [[stdlib_io(module):savetxt(interface)]] `(filename, array [,  delimiter] [, fmt] [, header] [, footer] [, comments])`
+`call ` [[stdlib_io(module):savetxt(interface)]] `(filename, array [,  delimiter] [, newline] [, fmt] [, header] [, footer] [, comments])`
 
-`call ` [[stdlib_io(module):savetxt(interface)]] `(unit, array[,  delimiter] [, fmt] [, header] [, footer] [, comments])`
+`call ` [[stdlib_io(module):savetxt(interface)]] `(unit, array[,  delimiter] [, newline] [, fmt] [, header] [, footer] [, comments])`
 
 ### Arguments
 
@@ -116,18 +116,17 @@ Saves a rank-2 `array` into a text file.
 
 `array`: Shall be a rank-2 array of type `real`, `complex` or `integer`.
 
-`fmt`: (optional): Fortran format specifier for the text save. Defaults to the write format for the data type.
-
 `delimiter` (optional): Shall be a character expression of any length that contains the delimiter used to separate the columns. The default is a single space `' '`.
+
+`newline` (optional): Shall be a character expression of any length that contains the delimiter used to separate the rows. The default is a newline (line feed).
+
+`fmt`: (optional): Fortran format specifier for the text save. Defaults to the write format for the data type.
 
 `header`: (optional) Shall be a character expression that will be written at the beginning of the file.
 
 `footer`: (optional) Shall be a character expression that will be written at the end of the file.
 
 `comments`: (optional) : Shall  be a character expression that will be prepended to the ``header`` and ``footer`` strings to mark them as comments. Default: `#`.
-
-
-
 
 ### Output
 
