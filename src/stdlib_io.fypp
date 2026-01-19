@@ -271,11 +271,11 @@ contains
       integer, intent(in) :: unit
       #:endif
       ${t1}$, intent(in) :: d(:,:)           ! The 2D array to save
-      character(len=*), intent(in), optional :: delimiter  ! Column delimiter. Default is a space.
+      character(len=*), intent(in), optional :: delimiter  ! Column delimiter. Default is a space ' '.
+      character(len=*), intent(in), optional :: fmt  !< Fortran format specifier. Defaults to the write format for the data type.
       character(len=*), intent(in), optional :: header  !< If present, text to write before data.
       character(len=*), intent(in), optional :: footer  !< If present, text to write after data.
       character(len=*), intent(in), optional :: comments  !< Comment character. Default "#".
-      character(len=*), intent(in), optional :: fmt  !< Fortran format specifier.  Defaults to the write format for the data type.
       !!
       !! Example
       !! -------
@@ -325,8 +325,8 @@ contains
       #:endif
 
       !! Write the header if non-empty
-      ! prepend function may eventually be replaced by use of replace_all 
-      ! but currently stdlib_strings is being compiled after stdlib_io
+      ! prepend function may be replaced by use of replace_all but currently stdlib_strings
+      ! is being compiled after stdlib_io
       ! if (header_ /= '') write (unit, '(A)') comments_//replace_all(header_, nl, nl//comments_)
       if (header_ /= '') write (unit, '(A)', iostat=ios, iomsg=iomsg) prepend(header_, comments_)
       do i = 1, size(d, 1)
