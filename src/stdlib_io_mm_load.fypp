@@ -229,6 +229,10 @@ contains
             matrix%data(i) = vals(i)
         end do
 
+        if(allocated(rows)) deallocate(rows)
+        if(allocated(cols)) deallocate(cols)
+        if(allocated(vals)) deallocate(vals)
+
         !----------------------------------------- 
         ! Fill in symmetric entries if needed
         if(header%symmetry==MS_general) return

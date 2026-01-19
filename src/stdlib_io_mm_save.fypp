@@ -61,8 +61,8 @@ contains
 
         integer :: io, stat, i, j, nnz
         character(len=:), allocatable :: msg
-        character(len=32) :: field_type
-        character(len=32) :: symmetry_
+        character(len=:), allocatable :: field_type
+        character(len=:), allocatable :: symmetry_
         #:if t.startswith('complex') 
         real(${k}$) :: real_part, imag_part
         #:endif
@@ -174,13 +174,14 @@ contains
         !> Associated error message in case of non-zero status code
         character(len=:), allocatable, intent(out), optional :: iomsg
 
-        integer :: io, stat, i, j, nnz
+        integer :: io, stat, i, j, nnz_to_write
         character(len=:), allocatable :: msg
-        character(len=32) :: field_type
-        character(len=32) :: symmetry_
+        character(len=:), allocatable :: field_type
+        character(len=:), allocatable :: symmetry_
         #:if t.startswith('complex') 
         real(${k}$) :: real_part, imag_part
         #:endif
+        logical :: expand = .false.
 
         io = open(filename, "w", iostat=stat)
         if (stat /= 0) then
@@ -209,9 +210,24 @@ contains
         #:endif
 
         catch: block
+            ! Calculate the nnz to write inside mtx file
+            if (symmetry_ == MM_GENERAL) then
+                if (matrix%storage == sparse_lower .or. matrix%storage == sparse_upper) then
+                    nnz_to_write = 2*matrix%nnz - count(matrix%index(1,:) == matrix%index(2,:))
+                    expand = .true.
+                else
+                    nnz_to_write = matrix%nnz
+                end if
+            else
+                if (matrix%storage == sparse_full) then
+                    nnz_to_write = count(matrix%index(1,:) >= matrix%index(2,:))
+                else
+                    nnz_to_write = matrix%nnz
+                end if
+            end if
             ! Write header
             call write_mm_header(io, MM_COORDINATE, field_type, symmetry_, &
-                                matrix%nrows, matrix%ncols, matrix%nnz, comment, stat, msg)
+                                matrix%nrows, matrix%ncols, nnz_to_write, comment, stat, msg)
             if (stat /= 0) exit catch
 
             ! Write coordinate format (row, column, value)
@@ -229,6 +245,23 @@ contains
                     write(io, '(I0,1X,I0,1X,I0)', iostat=stat) &
                         matrix%index(1,i), matrix%index(2,i), matrix%data(i)
                     #:endif
+
+                    ! For sparse_lower or sparse_upper matrices with general as symmetry argument, expand the other half assuming symmetry
+                    if (expand) then
+                        if(matrix%index(1,i) /= matrix%index(2,i)) then
+                            #:if t.startswith('real')
+                            write(io, '(I0,1X,I0,1X,ES24.16E3)', iostat=stat) &
+                                matrix%index(2,i), matrix%index(1,i), matrix%data(i)
+                            #:elif t.startswith('complex')
+                            write(io, '(I0,1X,I0,1X,ES24.16E3,1X,ES24.16E3)', iostat=stat) &
+                                matrix%index(2,i), matrix%index(1,i), &
+                                real(matrix%data(i), kind=${k}$), aimag(matrix%data(i))
+                            #:elif t.startswith('integer')
+                            write(io, '(I0,1X,I0,1X,I0)', iostat=stat) &
+                                matrix%index(2,i), matrix%index(1,i), matrix%data(i)
+                            #:endif
+                        end if
+                    end if
                     if (stat /= 0) then
                         msg = "Error writing array element (" // to_string(i) // ")"
                         exit catch
