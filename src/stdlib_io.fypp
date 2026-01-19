@@ -271,7 +271,7 @@ contains
       integer, intent(in) :: unit
       #:endif
       ${t1}$, intent(in) :: d(:,:)           ! The 2D array to save
-      character(len=*), intent(in), optional :: delimiter  ! Column delimiter. Default is a space ' '.
+      character(len=1), intent(in), optional :: delimiter  ! Column delimiter. Default is a space ' '.
       character(len=*), intent(in), optional :: fmt  !< Fortran format specifier. Defaults to the write format for the data type.
       character(len=*), intent(in), optional :: header  !< If present, text to write before data.
       character(len=*), intent(in), optional :: footer  !< If present, text to write after data.
@@ -349,7 +349,7 @@ contains
         
       end do
       ! if (footer_ /= '') write (unit, '(A)') comments_//replace_all(footer_, nl, nl//comments_)
-      if (footer_ /= '') write (unit, '(A)') prepend(footer_, nl//comments_)
+      if (footer_ /= '') write (unit, '(A)') prepend(footer_, comments_)
       #:if 'filename' in arg1
       close (unit)
       #:endif

@@ -48,15 +48,15 @@ contains
         outpath = get_outpath() // "/tmp_test_iint32.dat"
 
         d = reshape([1, 2, 3, 4, 5, 6], [3, 2])
-        call savetxt(outpath, d)
-        call loadtxt(outpath, d2)
+        call savetxt(outpath, d, delimiter=',')
+        call loadtxt(outpath, d2, delimiter=',')
         call check(error, all(shape(d2) == [3, 2]))
         if (allocated(error)) return
         call check(error, all(d == d2))
         if (allocated(error)) return
 
         e = reshape([1, 2, 3, 4, 5, 6], [2, 3])
-        call savetxt(outpath, e)
+        call savetxt(outpath, e, fmt='(I2)')
         call loadtxt(outpath, d2)
         call check(error, all(shape(d2) == [2, 3]))
         if (allocated(error)) return
@@ -110,8 +110,8 @@ contains
         if (allocated(error)) return
 
         e = reshape([1, 2, 3, 4, 5, 6], [2, 3])
-        call savetxt(outpath, e)
-        call loadtxt(outpath, d2)
+        call savetxt(outpath, e, fmt='(g0.7)', header="Three values per line", footer="Total size = 6", comments='#!')
+        call loadtxt(outpath, d2, fmt='*', skiprows=1, max_rows=2)
         call check(error, all(shape(d2) == [2, 3]))
         if (allocated(error)) return
         call check(error, all(e == d2))
