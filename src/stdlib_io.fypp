@@ -376,7 +376,7 @@ contains
     Sout = com_              ! Initialize to comment the first line
     do
       eol = index(Sin(bol:), nl) + bol - 1 ! position of end of line in original string
-      IF (eol == bol - 1) exit             ! index returned 0
+      if (eol == bol - 1) exit             ! index returned 0
       Sout = Sout//Sin(bol:eol)//com_
       bol = eol + 1
     end do
