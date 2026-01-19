@@ -183,7 +183,7 @@ contains
          call pca_eigh_driver_${k1}$(x_centered, n, p, components, singular_values, err0)
 
       case default
-         err0 = linalg_state_type("pca", LINALG_ERROR, "Unknown method: "//method_)
+         err0 = linalg_state_type("pca", LINALG_ERROR, "Unknown method: ", method_)
       end select
 
       ! Handle error state
