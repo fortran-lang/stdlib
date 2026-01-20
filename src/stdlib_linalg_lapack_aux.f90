@@ -48,6 +48,7 @@ module stdlib_linalg_lapack_aux
      public :: handle_gesv_info
      public :: handle_gees_info
      public :: handle_geqrf_info
+     public :: handle_geqp3_info
      public :: handle_orgqr_info
      public :: handle_gelsd_info
      public :: handle_geev_info
@@ -1739,6 +1740,27 @@ module stdlib_linalg_lapack_aux
          end select
 
      end subroutine handle_geqrf_info
+
+    elemental subroutine handle_geqp3_info(this, info, m, n, lwork, err)
+        character(len=*), intent(in) :: this
+        integer(ilp), intent(in) :: info, m, n, lwork
+        type(linalg_state_type), intent(out) :: err
+        ! Process output
+        select case (info)
+            case(0)
+                ! Success
+            case(-1)
+                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'invalid matrix size m=', m)
+            case(-2)
+                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'invalid matrix size n=', n)
+            case(-4)
+                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'invalid matrix shape a=', [m, n])
+            case(-7)
+                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'invalid input for lwork=', lwork)
+            case default
+                err = linalg_state_type(this, LINALG_INTERNAL_ERROR, 'catastrophic error')
+        end select
+    end subroutine handle_geqp3_info
 
      elemental subroutine handle_orgqr_info(this,info,m,n,k,lwork,err)
          character(len=*), intent(in) :: this
