@@ -1,10 +1,10 @@
-if (NOT STDLIB_NO_BITSET)
+if (STDLIB_BITSET)
   add_subdirectory(bitsets)
 endif()
 add_subdirectory(blas)
 add_subdirectory(lapack)
 add_subdirectory(lapack_extended)
-if (NOT STDLIB_NO_STATS)
+if (STDLIB_STATS)
   add_subdirectory(stats)
 endif()
 
@@ -23,6 +23,7 @@ set(fppFiles
     stdlib_hash_64bit_spookyv2.fypp
     stdlib_intrinsics_dot_product.fypp
     stdlib_intrinsics_sum.fypp
+    stdlib_intrinsics_matmul.fypp
     stdlib_intrinsics.fypp
     stdlib_io.fypp
     stdlib_io_npy.fypp
@@ -114,6 +115,6 @@ set(f90Files
 configure_stdlib_target(${PROJECT_NAME} f90Files fppFiles cppFiles)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
-  $<$<NOT:$<BOOL:${STDLIB_NO_BITSET}>>:bitsets>
-  $<$<NOT:$<BOOL:${STDLIB_NO_STATS}>>:stats>
+  $<$<BOOL:${STDLIB_BITSET}>:bitsets>
+  $<$<BOOL:${STDLIB_STATS}>:stats>
   blas lapack lapack_extended)

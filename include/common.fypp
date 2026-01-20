@@ -151,7 +151,7 @@ $:"s" if cmplx=="c" else "d" if cmplx=="z" else "x" if cmplx=="y" else "q" if cm
 #:set BITSET_INIT = ["" for k in BITSET_KINDS]
 
 #! Bitset CPP directive to be considered during templating
-#:set BITSET_CPPS = ["STDLIB_BITSET == 1" for k in BITSET_KINDS]
+#:set BITSET_CPPS = ["STDLIB_BITSET" for k in BITSET_KINDS]
 
 #! Collected (kind, type) tuples for bitset types
 #:set BITSET_KINDS_TYPES = list(zip(BITSET_KINDS, BITSET_TYPES, BITSET_INIT, BITSET_CPPS))
