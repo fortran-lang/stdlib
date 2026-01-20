@@ -1,6 +1,8 @@
 module test_path
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
-    use stdlib_system, only: join_path, operator(/), split_path, OS_TYPE, OS_WINDOWS
+    use stdlib_system, only: join_path, operator(/), split_path, OS_TYPE, OS_WINDOWS, &
+        is_abs_path, abs_path, get_cwd
+    use stdlib_error, only: state_type
     implicit none
 contains
     !> Collect all exported unit tests
@@ -11,7 +13,9 @@ contains
         testsuite = [ &
             new_unittest('test_join_path', test_join_path), &
             new_unittest('test_join_path_operator', test_join_path_op), &
-            new_unittest('test_split_path', test_split_path) &
+            new_unittest('test_split_path', test_split_path), &
+            new_unittest('test_is_abs_path', test_is_abs_path), &
+            new_unittest('test_abs_path', test_abs_path) &
         ]
     end subroutine collect_suite
 
@@ -117,6 +121,101 @@ contains
             if (allocated(error)) return
         end if
     end subroutine test_split_path
+
+    subroutine test_is_abs_path(error)
+        type(error_type), allocatable, intent(out) :: error
+        character(:), allocatable :: p
+        logical :: res
+
+        character(*), parameter :: msg = "is_abs_path: "
+
+        if (OS_TYPE() == OS_WINDOWS) then
+            p = '.'
+            res = is_abs_path(p)
+            call check(error, .not. res, msg // p // " returns incorrect result")
+            if (allocated(error)) return
+
+            p = '..'
+            res = is_abs_path(p)
+            call check(error, .not. res, msg // p // " returns incorrect result")
+            if (allocated(error)) return
+
+            p = 'C:\Windows'
+            res = is_abs_path(p)
+            call check(error, res, msg // p // " returns incorrect result")
+            if (allocated(error)) return
+
+            ! a relative path pointing to the `Windows` folder
+            ! in the current working directory in the drive C
+            p = 'C:Windows'
+            res = is_abs_path(p)
+            call check(error, .not. res, msg // p // " returns incorrect result")
+            if (allocated(error)) return
+
+            ! UNC paths
+            p = '\\server_name\share_name\path'
+            res = is_abs_path(p)
+            call check(error, res, msg // p // " returns incorrect result")
+            if (allocated(error)) return
+        else
+            p = '.'
+            res = is_abs_path(p)
+            call check(error, .not. res, msg // p // " returns incorrect result")
+            if (allocated(error)) return
+
+            p = '..'
+            res = is_abs_path(p)
+            call check(error, .not. res, msg // p // " returns incorrect result")
+            if (allocated(error)) return
+
+            p = '/'
+            res = is_abs_path(p)
+            call check(error, res, msg // p // " returns incorrect result")
+            if (allocated(error)) return
+
+            p = '/home/Alice'
+            res = is_abs_path(p)
+            call check(error, res, msg // p // " returns incorrect result")
+            if (allocated(error)) return
+
+            p = './home/Alice'
+            res = is_abs_path(p)
+            call check(error, .not. res, msg // p // " returns incorrect result")
+            if (allocated(error)) return
+        end if
+    end subroutine test_is_abs_path
+
+    subroutine test_abs_path(error)
+        type(error_type), allocatable, intent(out) :: error
+        character(:), allocatable :: rel_path, absolute_path, cwd, absolute_path0
+        type(state_type) :: err
+
+        if (OS_TYPE() == OS_WINDOWS) then
+            rel_path = ".\Folder\File"
+        else
+            rel_path = "./Folder/File"
+        end if
+
+        absolute_path = abs_path(rel_path, err)
+
+        call check(error, err%ok(), "Could not get absolute path: " // err%print())
+        if (allocated(error)) return
+
+        call check(error, is_abs_path(absolute_path), "absolute path created is not absolute")
+        if (allocated(error)) return
+
+        call get_cwd(cwd, err)
+
+        ! ideally shouldn't error out but just in case it does
+        call check(error, err%ok(), "Could not get CWD: " // err%print())
+        if (allocated(error)) return
+
+        absolute_path0 = cwd / rel_path
+
+        call check(error, absolute_path == absolute_path0, "absolute path != (CWD / relative path)" &
+        // "absolute_path: " // absolute_path // " and (CWD / relative path): " // absolute_path0)
+        if (allocated(error)) return
+    end subroutine test_abs_path
 
 end module test_path
 
