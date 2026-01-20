@@ -1,13 +1,4 @@
 #:include "common.fypp"
-#! PCA supports all real kinds available in stdlib's internal BLAS/LAPACK.
-#! When WITH_XDP or WITH_QP are enabled, extended precision is also supported.
-#:set PCA_KINDS_TYPES = [("sp", "real(sp)"), ("dp", "real(dp)")]
-#:if WITH_XDP
-#:set PCA_KINDS_TYPES = PCA_KINDS_TYPES + [("xdp", "real(xdp)")]
-#:endif
-#:if WITH_QP
-#:set PCA_KINDS_TYPES = PCA_KINDS_TYPES + [("qp", "real(qp)")]
-#:endif
 submodule (stdlib_stats) stdlib_stats_pca
   use stdlib_kinds, only: sp, dp, xdp, qp
   use stdlib_optval, only: optval
@@ -21,7 +12,7 @@ submodule (stdlib_stats) stdlib_stats_pca
 contains
 
   ! Helper subroutine: Centers data in-place by subtracting the mean from each column
-  #:for k1, t1 in PCA_KINDS_TYPES
+  #:for k1, t1, ri, cpp in REAL_KINDS_TYPES
     subroutine center_data_${k1}$(x, mu)
       ${t1}$, intent(inout) :: x(:,:)
       ${t1}$, intent(in) :: mu(:)
@@ -37,7 +28,7 @@ contains
   #:endfor
 
   ! SVD-based PCA driver: computes principal components via SVD of centered data
-  #:for k1, t1 in PCA_KINDS_TYPES
+  #:for k1, t1, ri, cpp in REAL_KINDS_TYPES
     subroutine pca_svd_driver_${k1}$(x_centered, n, p, components, singular_values, err)
       use stdlib_blas_constants_${k1}$, only: zero
       ${t1}$, intent(inout) :: x_centered(:,:)
@@ -69,7 +60,7 @@ contains
   #:endfor
 
   ! Eigendecomposition-based PCA driver: computes principal components via covariance matrix
-  #:for k1, t1 in PCA_KINDS_TYPES
+  #:for k1, t1, ri, cpp in REAL_KINDS_TYPES
     subroutine pca_eigh_driver_${k1}$(x_centered, n, p, components, singular_values, err)
       use stdlib_blas_constants_${k1}$, only: zero
       ${t1}$, intent(in) :: x_centered(:,:)
@@ -130,7 +121,7 @@ contains
     end subroutine pca_eigh_driver_${k1}$
   #:endfor
 
-  #:for k1, t1 in PCA_KINDS_TYPES
+  #:for k1, t1, ri, cpp in REAL_KINDS_TYPES
     module subroutine pca_${k1}$(x, components, singular_values, x_mean, &
                                 method, overwrite_x, err)
       ${t1}$, intent(inout) :: x(:,:)
@@ -193,7 +184,7 @@ contains
   #:endfor
 
 
-  #:for k1, t1 in PCA_KINDS_TYPES
+  #:for k1, t1, ri, cpp in REAL_KINDS_TYPES
     module subroutine pca_transform_${k1}$(x, components, x_mean, x_transformed)
       use stdlib_blas_constants_${k1}$, only: one, zero
       ${t1}$, intent(in) :: x(:,:)
@@ -217,7 +208,7 @@ contains
   #:endfor
 
 
-  #:for k1, t1 in PCA_KINDS_TYPES
+  #:for k1, t1, ri, cpp in REAL_KINDS_TYPES
     module subroutine pca_inverse_transform_${k1}$(x_reduced, components, x_mean, x_reconstructed)
       use stdlib_blas_constants_${k1}$, only: one, zero
       ${t1}$, intent(in) :: x_reduced(:,:)

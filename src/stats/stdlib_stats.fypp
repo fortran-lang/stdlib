@@ -642,22 +642,12 @@ module stdlib_stats
   end interface moment
 
 
-  #! PCA supports all real kinds available in stdlib's internal BLAS/LAPACK.
-  #! When WITH_XDP or WITH_QP are enabled, extended precision is also supported.
-  #:set PCA_KINDS_TYPES = [("sp", "real(sp)"), ("dp", "real(dp)")]
-  #:if WITH_XDP
-  #:set PCA_KINDS_TYPES = PCA_KINDS_TYPES + [("xdp", "real(xdp)")]
-  #:endif
-  #:if WITH_QP
-  #:set PCA_KINDS_TYPES = PCA_KINDS_TYPES + [("qp", "real(qp)")]
-  #:endif
-
   interface pca
     !! version: experimental
     !!
     !! Principal Component Analysis (PCA)
     !! ([Specification](../page/specs/stdlib_stats.html#pca))
-    #:for k1, t1 in PCA_KINDS_TYPES
+    #:for k1, t1, ri, cpp in REAL_KINDS_TYPES
       module subroutine pca_${k1}$(x, components, singular_values, x_mean, &
                                   method, overwrite_x, err)
         ${t1}$, intent(inout) :: x(:,:)
@@ -677,7 +667,7 @@ module stdlib_stats
     !!
     !! Projects data into the reduced dimensional space
     !! ([Specification](../page/specs/stdlib_stats.html#pca_transform))
-    #:for k1, t1 in PCA_KINDS_TYPES
+    #:for k1, t1, ri, cpp in REAL_KINDS_TYPES
       module subroutine pca_transform_${k1}$(x, components, x_mean, x_transformed)
         ${t1}$, intent(in) :: x(:,:)
         ${t1}$, intent(in) :: components(:,:)
@@ -693,7 +683,7 @@ module stdlib_stats
     !!
     !! Reconstructs original data from the reduced space
     !! ([Specification](../page/specs/stdlib_stats.html#pca_inverse_transform))
-    #:for k1, t1 in PCA_KINDS_TYPES
+    #:for k1, t1, ri, cpp in REAL_KINDS_TYPES
       module subroutine pca_inverse_transform_${k1}$(x_reduced, components, x_mean, x_reconstructed)
         ${t1}$, intent(in) :: x_reduced(:,:)
         ${t1}$, intent(in) :: components(:,:)
