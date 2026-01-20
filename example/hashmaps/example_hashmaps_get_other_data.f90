@@ -12,7 +12,7 @@ program example_get_other_data
   type(dummy_type) :: dummy
   class(*), allocatable       :: data
   integer(int8), allocatable  :: key_array(:)
-  integer                     :: int_scalar
+  integer                     :: int_scalar, unsupported_key(3,3)
   
   ! Hashmap functions are setup to store scalar value types (other).  Use a dervied
   ! type wrapper to store arrays.
@@ -36,8 +36,7 @@ program example_get_other_data
     print *, 'Invalid data type in other'
   end select
   
-! Also can use map_entry and get_other_data generic key interfaces.   
-! This is an exmple with integer arrays.  
+! Can also just provide key values direct to most hashmap routines.    
   call map%map_entry( [2,3], dummy, conflict)
   if (.not. conflict) then
     call map%get_other_data( [2,3], data)
@@ -46,26 +45,26 @@ program example_get_other_data
   end if
   
   select type (data)
-  type is (dummy_type)
-    print *, 'Other data % value = ', data%value
-  class default
-    print *, 'Invalid data type in other'
+    type is (dummy_type)
+      print *, 'Other data % value = ', data%value
+    class default
+      print *, 'Invalid data type in other'
   end select
   
-  ! Integer scalar keys need to be passed as an array.   
+  ! Scalar and rank one objects of any type can be used as keys.     
   int_scalar = 2
-  call map%map_entry( [int_scalar], dummy, conflict)
+  call map%map_entry( int_scalar, dummy, conflict)
   if (.not. conflict) then
-    call map%get_other_data( [int_scalar], data)
+    call map%get_other_data( int_scalar, data)
   else
     error stop 'Key is already present in the map.'
   end if
   
   select type (data)
-  type is (dummy_type)
-    print *, 'Other data % value = ', data%value
-  class default
-    print *, 'Invalid data type in other'
+    type is (dummy_type)
+      print *, 'Other data % value = ', data%value
+    class default
+      print *, 'Invalid data type in other'
   end select
   
   ! Example using character type key interface
@@ -77,26 +76,26 @@ program example_get_other_data
   end if
   
   select type (data)
-  type is (dummy_type)
-    print *, 'Other data % value = ', data%value
-  class default
-    print *, 'Invalid data type in other'
+    type is (dummy_type)
+      print *, 'Other data % value = ', data%value
+    class default
+      print *, 'Invalid data type in other'
   end select
   
-! Transfer to int8 arrays to generate key for unsupported types.  
-  key_array = transfer( [0_int64, 1_int64], [0_int8] )
-  call map%map_entry( key_array, dummy, conflict)
+! Rank 2 or higher keys not directly supported.  Transfer to int8 arrays to generate keys.  
+  call set(key, transfer(unsupported_key,[0_int8]))
+  call map%map_entry( key, dummy, conflict)
   if (.not. conflict) then
-    call map%get_other_data( key_array, data)
+    call map%get_other_data( key, data)
   else
     error stop 'Key is already present in the map.'
   end if
   
   select type (data)
-  type is (dummy_type)
-    print *, 'Other data % value = ', data%value
-  class default
-    print *, 'Invalid data type in other'
+    type is (dummy_type)
+      print *, 'Other data % value = ', data%value
+    class default
+      print *, 'Invalid data type in other'
   end select
   
 end program example_get_other_data
