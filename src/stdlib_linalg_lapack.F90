@@ -4908,6 +4908,125 @@ module stdlib_linalg_lapack
 #endif
           end interface geqrt3
 
+          interface geqp3
+          !! GEQP3 computes a QR factorization with column pivoting of a real or complex
+          !! M-by-N matrix A:
+          !!
+          !!    A * P = Q * R,
+          !!
+          !! where:
+          !! Q is an M-by-min(M, N) orthogonal matrix
+          !! R is an min(M, N)-by-N upper triangular matrix;
+#ifdef STDLIB_EXTERNAL_LAPACK
+            pure subroutine sgeqp3(m, n, a, lda, jpvt, tau, work, lwork, info)
+                import sp, dp, qp, ilp, lk
+                implicit none
+                integer(ilp), intent(in) :: m, n, lda, lwork
+                integer(ilp), intent(out) :: info
+                integer(ilp), intent(inout) :: jpvt(*)
+                real(sp), intent(inout) :: a(lda, *)
+                real(sp), intent(out) :: tau(*), work(*)
+            end subroutine sgeqp3
+#else
+            module procedure stdlib_sgeqp3
+#endif
+#ifdef STDLIB_EXTERNAL_LAPACK
+            pure subroutine dgeqp3(m, n, a, lda, jpvt, tau, work, lwork, info)
+                import sp, dp, qp, ilp, lk
+                implicit none
+                integer(ilp), intent(in) :: m, n, lda, lwork
+                integer(ilp), intent(out) :: info
+                integer(ilp), intent(inout) :: jpvt(*)
+                real(dp), intent(inout) :: a(lda, *)
+                real(dp), intent(out) :: tau(*), work(*)
+            end subroutine dgeqp3
+#else
+            module procedure stdlib_dgeqp3
+#endif
+#ifdef STDLIB_EXTERNAL_LAPACK
+            pure subroutine cgeqp3(m, n, a, lda, jpvt, tau, work, lwork, rwork, info)
+                import sp, dp, qp, ilp, lk
+                implicit none
+                integer(ilp), intent(in) :: m, n, lda, lwork
+                integer(ilp), intent(out) :: info
+                integer(ilp), intent(inout) :: jpvt(*)
+                complex(sp), intent(inout) :: a(lda, *)
+                complex(sp), intent(out) :: tau(*), work(*)
+                real(sp), intent(out) :: rwork(*)
+            end subroutine cgeqp3
+#else
+            module procedure stdlib_cgeqp3
+#endif
+#ifdef STDLIB_EXTERNAL_LAPACK
+            pure subroutine zgeqp3(m, n, a, lda, jpvt, tau, work, lwork, rwork, info)
+                import sp, dp, qp, ilp, lk
+                implicit none
+                integer(ilp), intent(in) :: m, n, lda, lwork
+                integer(ilp), intent(out) :: info
+                integer(ilp), intent(inout) :: jpvt(*)
+                complex(dp), intent(inout) :: a(lda, *)
+                complex(dp), intent(out) :: tau(*), work(*)
+                real(dp), intent(out) :: rwork(*)
+            end subroutine zgeqp3
+#else
+            module procedure stdlib_zgeqp3
+#endif
+#ifdef STDLIB_EXTERNAL_LAPACK_I64
+            pure subroutine sgeqp3(m, n, a, lda, jpvt, tau, work, lwork, info)
+                import sp, dp, qp, ilp64, lk
+                implicit none
+                integer(ilp64), intent(in) :: m, n, lda, lwork
+                integer(ilp64), intent(out) :: info
+                integer(ilp64), intent(inout) :: jpvt(*)
+                real(sp), intent(inout) :: a(lda, *)
+                real(sp), intent(out) :: tau(*), work(*)
+            end subroutine sgeqp3
+#else
+            module procedure stdlib_I64_sgeqp3
+#endif
+#ifdef STDLIB_EXTERNAL_LAPACK_I64
+            pure subroutine dgeqp3(m, n, a, lda, jpvt, tau, work, lwork, info)
+                import sp, dp, qp, ilp64, lk
+                implicit none
+                integer(ilp64), intent(in) :: m, n, lda, lwork
+                integer(ilp64), intent(out) :: info
+                integer(ilp64), intent(inout) :: jpvt(*)
+                real(dp), intent(inout) :: a(lda, *)
+                real(dp), intent(out) :: tau(*), work(*)
+            end subroutine dgeqp3
+#else
+            module procedure stdlib_I64_dgeqp3
+#endif
+#ifdef STDLIB_EXTERNAL_LAPACK_I64
+            pure subroutine cgeqp3(m, n, a, lda, jpvt, tau, work, lwork, rwork, info)
+                import sp, dp, qp, ilp64, lk
+                implicit none
+                integer(ilp64), intent(in) :: m, n, lda, lwork
+                integer(ilp64), intent(out) :: info
+                integer(ilp64), intent(inout) :: jpvt(*)
+                complex(sp), intent(inout) :: a(lda, *)
+                complex(sp), intent(out) :: tau(*), work(*)
+                real(sp), intent(out) :: rwork(*)
+            end subroutine cgeqp3
+#else
+            module procedure stdlib_I64_cgeqp3
+#endif
+#ifdef STDLIB_EXTERNAL_LAPACK_I64
+            pure subroutine zgeqp3(m, n, a, lda, jpvt, tau, work, lwork, rwork, info)
+                import sp, dp, qp, ilp64, lk
+                implicit none
+                integer(ilp64), intent(in) :: m, n, lda, lwork
+                integer(ilp64), intent(out) :: info
+                integer(ilp64), intent(inout) :: jpvt(*)
+                complex(dp), intent(inout) :: a(lda, *)
+                complex(dp), intent(out) :: tau(*), work(*)
+                real(dp), intent(out) :: rwork(*)
+            end subroutine zgeqp3
+#else
+            module procedure stdlib_I64_zgeqp3
+#endif
+          end interface geqp3
+
           interface gerfs
           !! GERFS improves the computed solution to a system of linear
           !! equations and provides error bounds and backward error estimates for
