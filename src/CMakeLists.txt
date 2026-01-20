@@ -29,6 +29,7 @@ set(fppFiles
     stdlib_io_npy.fypp
     stdlib_io_npy_load.fypp
     stdlib_io_npy_save.fypp
+    stdlib_io_print_array.fypp
     stdlib_kinds.fypp
     stdlib_linalg.fypp
     stdlib_linalg_diag.fypp

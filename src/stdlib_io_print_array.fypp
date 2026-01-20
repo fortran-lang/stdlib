@@ -1,0 +1,88 @@
+#:include "common.fypp"
+#:set KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES + INT_KINDS_TYPES
+submodule(stdlib_io) stdlib_io_print_array
+
+    use, intrinsic :: iso_fortran_env, only: output_unit
+    implicit none
+
+contains
+
+    #:for k1, t1 in KINDS_TYPES
+    module subroutine print_array_${t1[0]}$${k1}$(array, unit, fmt, delimiter, brief)
+        ${t1}$, intent(in) :: array(:, :)
+        integer, intent(in), optional :: unit
+        character(len=*), intent(in), optional :: fmt
+        character(len=*), intent(in), optional :: delimiter
+        logical, intent(in), optional :: brief
+
+        integer :: i, j, unit_, shape_(2)
+        character(len=:), allocatable :: fmt_
+        character(len=:), allocatable :: delimiter_
+        character(len=:), allocatable :: delim_str
+        logical :: brief_
+
+        shape_ = shape(array)
+        if (any(shape_ == 0)) return
+        unit_ = optval(unit, output_unit)
+        delimiter_ = optval(delimiter, delimiter_default)
+        delim_str = "'"//delimiter_//"'"
+        brief_ = optval(brief, .true.)
+        if (present(fmt)) then
+            fmt_ = "(*"//fmt(1:len(fmt) - 1)//",:,"//delim_str//"))"
+        else
+            #:if 'real' in t1
+                fmt_ = "(*"//FMT_REAL_${k1}$ (1:len(FMT_REAL_${k1}$) - 1)//",:,"//delim_str//"))"
+            #:elif 'complex' in t1
+                fmt_ = "(*"//FMT_COMPLEX_${k1}$ (1:11)//delim_str//FMT_COMPLEX_${k1}$ (14:23)//",:,"//delim_str//"))"
+            #:elif 'integer' in t1
+                fmt_ = "(*"//FMT_INT(1:len(FMT_INT) - 1)//",:,"//delim_str//"))"
+            #:endif
+        end if
+
+        if (brief_) then
+
+            if (shape_(1) > 5) then
+                if (shape_(2) > 5) then
+                    do i = 1, 3
+                        write (unit_, fmt=fmt_, advance='no') array(i, :3)
+                        write (unit_, fmt='(a)', advance='no') delimiter_//"..."//delimiter_
+                        write (unit_, fmt=fmt_) array(i, shape_(2))
+                    end do
+                    write (unit_, fmt='(a)') "..."
+                    write (unit_, fmt=fmt_, advance='no') array(shape_(1), :3)
+                    write (unit_, fmt='(a)', advance='no') delimiter_//"..."//delimiter_
+                    write (unit_, fmt=fmt_) array(shape_(1), shape_(2))
+                else
+                    do i = 1, 3
+                        write (unit_, fmt=fmt_) array(i, :)
+                    end do
+                    write (unit_, fmt='(a)') "..."
+                    write (unit_, fmt=fmt_) array(shape_(1), :)
+
+                end if
+            else
+                if (shape_(2) > 5) then
+                    do i = 1, shape_(1)
+                        write (unit_, fmt=fmt_, advance='no') array(i, :3)
+                        write (unit_, fmt='(a)', advance='no') delimiter_//"..."//delimiter_
+                        write (unit_, fmt=fmt_) array(i, shape_(2))
+                    end do
+                else
+                    do i = 1, shape_(1)
+                        write (unit_, fmt=fmt_) array(i, :)
+                    end do
+                end if
+            end if
+
+        else
+
+            do i = 1, shape_(1)
+                write (unit_, fmt=fmt_) array(i, :)
+            end do
+
+        end if
+
+    end subroutine print_array_${t1[0]}$${k1}$
+    #:endfor
+
+end submodule stdlib_io_print_array
