@@ -92,6 +92,7 @@ set(f90Files
     stdlib_ansi.f90
     stdlib_ansi_operator.f90
     stdlib_ansi_to_string.f90
+    stdlib_ansi_cursor.f90
     stdlib_array.f90
     stdlib_codata.f90
     stdlib_hashmap_wrappers.f90
