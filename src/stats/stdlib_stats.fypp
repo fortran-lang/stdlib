@@ -652,7 +652,7 @@ module stdlib_stats
                                   method, overwrite_x, err)
         ${t1}$, intent(inout) :: x(:,:)
         ${t1}$, intent(out) :: components(:,:)
-        real(${k1}$), intent(out) :: singular_values(:)
+        ${t1}$, intent(out) :: singular_values(:)
         ${t1}$, intent(out), optional :: x_mean(:)
         character(*), intent(in), optional :: method
         logical, intent(in), optional :: overwrite_x

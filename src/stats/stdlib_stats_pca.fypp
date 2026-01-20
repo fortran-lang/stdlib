@@ -34,7 +34,7 @@ contains
       ${t1}$, intent(inout) :: x_centered(:,:)
       integer(ilp), intent(in) :: n, p
       ${t1}$, intent(out) :: components(:,:)
-      real(${k1}$), intent(out) :: singular_values(:)
+      ${t1}$, intent(out) :: singular_values(:)
       type(linalg_state_type), intent(out) :: err
 
       integer(ilp) :: n_s, m
@@ -66,7 +66,7 @@ contains
       ${t1}$, intent(in) :: x_centered(:,:)
       integer(ilp), intent(in) :: n, p
       ${t1}$, intent(out) :: components(:,:)
-      real(${k1}$), intent(out) :: singular_values(:)
+      ${t1}$, intent(out) :: singular_values(:)
       type(linalg_state_type), intent(out) :: err
 
       integer(ilp) :: i, j, m
@@ -126,7 +126,7 @@ contains
                                 method, overwrite_x, err)
       ${t1}$, intent(inout) :: x(:,:)
       ${t1}$, intent(out) :: components(:,:)
-      real(${k1}$), intent(out) :: singular_values(:)
+      ${t1}$, intent(out) :: singular_values(:)
       ${t1}$, intent(out), optional :: x_mean(:)
       character(*), intent(in), optional :: method
       logical, intent(in), optional :: overwrite_x
