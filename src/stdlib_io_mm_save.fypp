@@ -181,8 +181,9 @@ contains
         #:if t.startswith('complex') 
         real(${k}$) :: real_part, imag_part
         #:endif
-        logical :: expand = .false.
+        logical :: expand
 
+        expand = .false.
         io = open(filename, "w", iostat=stat)
         if (stat /= 0) then
             if (present(iostat)) then
