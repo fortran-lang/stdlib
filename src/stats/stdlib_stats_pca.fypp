@@ -72,7 +72,7 @@ contains
       integer(ilp) :: i, j, m
       integer(ilp), allocatable :: idx(:)
       ${t1}$ :: alpha, beta
-      real(${k1}$), allocatable :: lambda(:), lambda_copy(:)
+      real(${k1}$), allocatable :: lambda(:)
       ${t1}$, allocatable :: c(:,:), vectors(:,:)
 
       ! Initialize outputs to zero to prevent uninitialized memory access
@@ -82,8 +82,7 @@ contains
       ! Compute covariance matrix using BLAS syrk: C = (1/(n-1)) * X^T * X
       alpha = 1.0_${k1}$ / real(max(n-1, 1), ${k1}$)
       beta = zero
-      allocate(c(p, p))
-      c = zero
+      allocate(c(p, p), source=zero)
       call syrk('U', 'T', p, n, alpha, x_centered, n, beta, c, p)
 
       ! Fill lower triangle from upper triangle (syrk only fills upper)
@@ -99,18 +98,16 @@ contains
 
       if (err%ok()) then
          ! Sort eigenvalues in descending order
-         allocate(lambda_copy(p))
-         lambda_copy = -lambda
          allocate(idx(p))
-         call sort_index(lambda_copy, idx)
+         call sort_index(lambda, idx, reverse=.true.)
 
          ! Assign sorted results with safety bounds checks
          m = min(size(components, 1, kind=ilp), p)
          m = min(m, size(singular_values, 1, kind=ilp))
          do i = 1, m
             components(i, :) = vectors(:, idx(i))
-            if (lambda(idx(i)) > 0.0_${k1}$) then
-               singular_values(i) = sqrt(lambda(idx(i)) * real(n-1, ${k1}$))
+            if (lambda(i) > 0.0_${k1}$) then
+               singular_values(i) = sqrt(lambda(i) * real(n-1, ${k1}$))
             else
                singular_values(i) = 0.0_${k1}$
             end if

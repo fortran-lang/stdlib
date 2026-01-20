@@ -1,11 +1,4 @@
 #:include "common.fypp"
-#:set PCA_KINDS = ["sp", "dp"]
-#:if WITH_XDP
-#:set PCA_KINDS = PCA_KINDS + ["xdp"]
-#:endif
-#:if WITH_QP
-#:set PCA_KINDS = PCA_KINDS + ["qp"]
-#:endif
 program test_pca
     use stdlib_error, only: check
     use stdlib_kinds, only: sp, dp, xdp, qp
@@ -13,17 +6,17 @@ program test_pca
     use stdlib_linalg_state, only: linalg_state_type
     implicit none
 
-    #:for k1 in PCA_KINDS
+    #:for k1 in REAL_KINDS
     real(${k1}$), parameter :: ${k1}$tol = 1000 * epsilon(1._${k1}$)
     #:endfor
 
-    #:for k1 in PCA_KINDS
+    #:for k1 in REAL_KINDS
     call test_pca_${k1}$()
     #:endfor
 
 contains
 
-    #:for k1 in PCA_KINDS
+    #:for k1 in REAL_KINDS
     subroutine test_pca_${k1}$()
         real(${k1}$) :: x(3, 2), components(2, 2), s(2), mu(2)
         real(${k1}$) :: x_trans(3, 2), x_inv(3, 2)
