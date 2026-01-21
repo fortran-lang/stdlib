@@ -77,18 +77,19 @@ submodule (stdlib_linalg) stdlib_linalg_matrix_factorizations
         !> Upper-triangular matrix.
 
         !----- Internal variables -----
-        integer(ilp) :: i, j, m, n
+        integer(ilp) :: i, j, k, m, n
         ${rt}$, parameter :: zero = #{if rt.startswith("r")}# 0.0_${rk}$#{else}#cmplx(0.0_${rk}$, 0.0_${rk}$, kind=${rk}$) #{endif}#
 
         !> Matrix size.
         m = size(self%data, 1)
         n = size(self%data, 2)
+        k = min(m, n)
 
         !> Allocate R matrix.
-        allocate(R(m, n), source=zero)
+        allocate(R(k, n), source=zero)
 
         !> Fill-in matrix.
-        do concurrent(i=1:m, j=1:n, i <= j)
+        do concurrent(i=1:k, j=1:n, i <= j)
             R(i, j) = self%data(i, j)
         enddo
     end function get_rfactor_${rt[0]}$${rk}$
