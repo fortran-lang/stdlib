@@ -54,10 +54,10 @@ module stdlib_linalg_lapack_aux
      public :: handle_geev_info
      public :: handle_ggev_info
      public :: handle_heev_info
-    public :: handle_gglse_info
-    public :: handle_ggglm_info
-    
-    ! SELCTG is a LOGICAL FUNCTION of three DOUBLE PRECISION arguments 
+     public :: handle_gglse_info
+     public :: handle_geqrt_info
+     
+     ! SELCTG is a LOGICAL FUNCTION of three DOUBLE PRECISION arguments 
      ! used to select eigenvalues to sort to the top left of the Schur form. 
      ! An eigenvalue (ALPHAR(j)+ALPHAI(j))/BETA(j) is selected if SELCTG is true, i.e., 
      abstract interface 
@@ -1716,7 +1716,7 @@ module stdlib_linalg_lapack_aux
         end select
     end subroutine handle_gglse_info
 
-   elemental subroutine handle_ggglm_info(this, info, m, n, p, lda, ldb, err)
+    elemental subroutine handle_ggglm_info(this, info, m, n, p, lda, ldb, err)
         character(len=*), intent(in) :: this
         integer(ilp), intent(in) :: info, m, n, p, lda, ldb
         type(linalg_state_type), intent(out) :: err
@@ -1746,6 +1746,27 @@ module stdlib_linalg_lapack_aux
             case default
                 err = linalg_state_type(this, LINALG_INTERNAL_ERROR, 'catastrophic error.')
         end select
-   end subroutine handle_ggglm_info
+    end subroutine handle_ggglm_info
+
+    elemental subroutine handle_geqrt_info(this, info, m, n, nb, ldt, err)
+        character(len=*), intent(in) :: this
+        integer(ilp), intent(in) :: info, m, n, nb, ldt
+        type(linalg_state_type), intent(out) :: err
+        select case (info)
+            case(0)
+                err%state = LINALG_SUCCESS
+            case(-1, -2)
+                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'invalid matrix size a=', [m, n])
+            case(-3)
+                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'invalid block size nb=', nb)
+            case(-5)
+                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'invalid lda=', m)
+            case(-7)
+                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'invalid ldt=', ldt)
+            case default
+                err = linalg_state_type(this, LINALG_INTERNAL_ERROR, 'catastrophic error.')
+        end select
+    end subroutine handle_geqrt_info
+>>>>>>> 1241e5c0 (Working implementation for qrfact.)
 
 end module stdlib_linalg_lapack_aux
