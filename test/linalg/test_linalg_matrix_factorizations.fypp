@@ -68,7 +68,7 @@ module test_linalg_matrix_factorizations
         if (allocated(error)) return
 
         ! Check the Q matrix with reference.
-        call check(error, all_close(Q, F%Q()))
+        call check(error, all_close(Q, F%Q(), rel_tol=rel_tol_${rk}$))
         if (allocated(error)) return
         
     end subroutine test_qr_random_tall_matrix_${ri}$
@@ -107,7 +107,7 @@ module test_linalg_matrix_factorizations
         if (allocated(error)) return
 
         ! Check the Q matrix with reference.
-        call check(error, all_close(Q, F%Q()))
+        call check(error, all_close(Q, F%Q(), rel_tol=rel_tol_${rk}$))
         if (allocated(error)) return
         
     end subroutine test_qr_random_wide_matrix_${ri}$
