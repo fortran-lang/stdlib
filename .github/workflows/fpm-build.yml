@@ -3,7 +3,7 @@ name: fpm-build
 on: [push, pull_request]
 
 jobs:
-  Build:
+  fpm-build:
     name: Run tests the fpm branches
     runs-on: ${{ matrix.os }}
     strategy:
