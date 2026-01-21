@@ -9,8 +9,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ubuntu-latest
-        toolchain: {compiler: gcc, version: '13' }
+        os: [ubuntu-latest]
+        toolchain: [{compiler: gcc, version: '13' }]
         fpm_versions: [v0.12.0, current]
 
     steps:
