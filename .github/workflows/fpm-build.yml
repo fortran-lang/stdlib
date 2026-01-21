@@ -1,0 +1,42 @@
+name: fpm-build
+
+on: [push, pull_request]
+
+jobs:
+  deploy:
+    name: Run tests the fpm branches
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        fpm_versions: {v0.12.0, current}
+        include:
+          - os: ubuntu-latest
+            toolchain: {compiler: gcc, version: '13' }
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2.3.1
+
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.x
+
+      - name: Install requirements
+        run: pip install --upgrade -r config/requirements.txt
+
+      - uses: fortran-lang/setup-fortran@main
+        id: setup-fortran
+        with:
+          compiler: ${{ matrix.toolchain.compiler }}
+          version: ${{ matrix.toolchain.version }}
+
+      - name: Setup Fortran Package Manager
+        uses: fortran-lang/setup-fpm@v8
+        with:
+          fpm-version: ${{ matrix.fpm_versions }}
+
+      - run: | # Use fpm gnu ci to check xdp and qp
+          python config/fypp_deployment.py --with_xdp --with_qp
+          fpm test --profile release --flag '-DWITH_XDP -DWITH_QP'
