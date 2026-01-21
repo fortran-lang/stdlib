@@ -1929,6 +1929,8 @@ module stdlib_linalg
         !> Block size and leading dimension of the array T.
         ${rt}$, allocatable :: t(:, :)
         !> Upper triangular block reflectors stored in compact format.
+        ${rt}$, allocatable :: work(:)
+        !> Allocatable workspace.
         contains
             private
             procedure, pass(self) :: get_qfactor_${rt[0]}$${rk}$ 
@@ -1940,8 +1942,8 @@ module stdlib_linalg
     end type
 
     interface
-        pure module function get_qfactor_${rt[0]}$${rk}$(self) result(Q)
-            class(qr_${rt[0]}$${rk}$_type), intent(in) :: self
+        module function get_qfactor_${rt[0]}$${rk}$(self) result(Q)
+            class(qr_${rt[0]}$${rk}$_type), intent(inout) :: self
             ${rt}$, allocatable :: Q(:, :)
         end function get_qfactor_${rt[0]}$${rk}$
 
@@ -1955,7 +1957,7 @@ module stdlib_linalg
 
     interface qrfact
     #:for rk, rt, ri in RC_KINDS_TYPES
-        module function stdlib_qrfact_${ri}$(A) result(F)
+        pure module function stdlib_qrfact_${ri}$(A) result(F)
             ${rt}$, intent(in) :: A(:, :)
             !> Matrix to be factorized.
             type(qr_${rt[0]}$${rk}$_type) :: F

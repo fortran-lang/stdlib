@@ -10,8 +10,12 @@ submodule (stdlib_linalg) stdlib_linalg_matrix_factorizations
 
     contains
 
+    !-----------------------------------------------------
+    !-----     DERIVED-TYPE FOR QR FACTORIZATION     -----
+    !-----------------------------------------------------
+
     #:for rk, rt, ri in RC_KINDS_TYPES
-    module function stdlib_qrfact_${ri}$(A) result(F)
+    pure module function stdlib_qrfact_${ri}$(A) result(F)
         ${rt}$, intent(in) :: A(:, :)
         !> Matrix to be factorized.
         type(qr_${rt[0]}$${rk}$_type) :: F
@@ -32,17 +36,16 @@ submodule (stdlib_linalg) stdlib_linalg_matrix_factorizations
         F%ldt = nb
 
         !> Allocate data.
-        allocate(F%t(F%ldt, min(m, n)))
-        allocate(work(nb*n))
+        allocate(F%t(F%ldt, min(m, n)), F%work(nb*max(m, n)))
 
         !> QR factorization.
-        call geqrt(m, n, nb, F%data, m, F%t, F%ldt, work, info)
+        call geqrt(m, n, nb, F%data, m, F%t, F%ldt, F%work, info)
         call handle_geqrt_info(this, info, m, n, nb, F%ldt, err)
         call linalg_error_handling(err)
     end function stdlib_qrfact_${ri}$
 
-    pure module function get_qfactor_${rt[0]}$${rk}$(self) result(Q)
-        class(qr_${rt[0]}$${rk}$_type), intent(in) :: self
+    module function get_qfactor_${rt[0]}$${rk}$(self) result(Q)
+        class(qr_${rt[0]}$${rk}$_type), intent(inout) :: self
         !> Compact representation of the QR factorization.
         ${rt}$, allocatable :: Q(:, :)
         !> Orthogonal matrix.
@@ -50,7 +53,6 @@ submodule (stdlib_linalg) stdlib_linalg_matrix_factorizations
         !----- Internal variables -----
         integer(ilp) :: i, j, k, m, n, info
         character(len=1), parameter :: side='L', trans='N'
-        ${rt}$, allocatable :: work(:)
         ${rt}$, parameter :: zero = #{if rt.startswith("r")}# 0.0_${rk}$#{else}#cmplx(0.0_${rk}$, 0.0_${rk}$, kind=${rk}$) #{endif}#
         
         !> Matrix size.
@@ -58,13 +60,10 @@ submodule (stdlib_linalg) stdlib_linalg_matrix_factorizations
         n = size(self%data, 2)
         k = min(m, n)
 
-        !> Allocate workspace
-        allocate(work(n*self%ldt), source=zero)
-
         !> Compute the Q matrix.
         Q = eye(m, k, mold=zero)
         call gemqrt(side, trans, m, k, k, &
-                    self%ldt, self%data(:, :k), m, self%t, self%ldt, Q, m, work, info)
+                    self%ldt, self%data(:, :k), m, self%t, self%ldt, Q, m, self%work, info)
     end function get_qfactor_${rt[0]}$${rk}$
 
     pure module function get_rfactor_${rt[0]}$${rk}$(self) result(R)
