@@ -65,6 +65,8 @@ module stdlib_linalg
   public :: is_hermitian
   public :: is_triangular
   public :: is_hessenberg
+  ! Derived-types for matrix factorizations.
+  public :: qrfact
   
   ! Export linalg error handling
   public :: linalg_state_type, linalg_error_handling
@@ -1911,6 +1913,57 @@ module stdlib_linalg
     end subroutine stdlib_linalg_${ri}$_expm
     #:endfor
   end interface matrix_exp
+
+    !----------------------------------------------
+    !-----     DISCIPLINED LINEAR ALGEBRA     -----
+    !----------------------------------------------
+
+    #:for rk, rt, ri in RC_KINDS_TYPES
+    type, public :: qr_${rt[0]}$${rk}$_type
+        private
+        integer(ilp) :: m, n
+        !> Matrix dimensions.
+        ${rt}$, allocatable :: data(:, :)
+        !> Compact WY representation of the QR factorization.
+        integer(ilp) :: nb, ldt
+        !> Block size and leading dimension of the array T.
+        ${rt}$, allocatable :: t(:, :)
+        !> Upper triangular block reflectors stored in compact format.
+        contains
+            private
+            procedure, pass(self) :: get_qfactor_${rt[0]}$${rk}$ 
+            generic, public :: Q => get_qfactor_${rt[0]}$${rk}$
+            !> Construct the Q matrix from the compact representation.
+            procedure, pass(self) :: get_rfactor_${rt[0]}$${rk}$
+            generic, public :: R => get_rfactor_${rt[0]}$${rk}$
+            !> Extract upper triangular R matrix from the compact representation.
+    end type
+
+    interface
+        pure module function get_qfactor_${rt[0]}$${rk}$(self) result(Q)
+            class(qr_${rt[0]}$${rk}$_type), intent(in) :: self
+            ${rt}$, allocatable :: Q(:, :)
+        end function get_qfactor_${rt[0]}$${rk}$
+
+        pure module function get_rfactor_${rt[0]}$${rk}$(self) result(R)
+            class(qr_${rt[0]}$${rk}$_type), intent(in) :: self
+            ${rt}$, allocatable :: R(:, :)
+        end function get_rfactor_${rt[0]}$${rk}$
+    end interface
+
+    #:endfor
+
+    interface qrfact
+    #:for rk, rt, ri in RC_KINDS_TYPES
+        module function stdlib_qrfact_${ri}$(A) result(F)
+            ${rt}$, intent(in) :: A(:, :)
+            !> Matrix to be factorized.
+            type(qr_${rt[0]}$${rk}$_type) :: F
+            !> Derived-type for the QR factorization of A.
+        end function stdlib_qrfact_${ri}$
+    #:endfor
+    end interface
+
 contains
 
 

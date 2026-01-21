@@ -20,6 +20,7 @@ set(
   "test_linalg_specialmatrices.fypp"
   "test_linalg_cholesky.fypp"
   "test_linalg_expm.fypp"
+  "test_linalg_matrix_factorizations.fypp"
 )
 
 # Preprocessed files to contain preprocessor directives -> .F90
@@ -51,4 +52,5 @@ ADDTEST(linalg_solve_iterative)
 ADDTEST(linalg_svd)
 ADDTEST(linalg_sparse)
 ADDTEST(linalg_specialmatrices)
+ADDTEST(linalg_matrix_factorizations)
 ADDTESTPP(blas_lapack)
