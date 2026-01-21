@@ -13,6 +13,10 @@ module test_linalg_matrix_factorizations
     
     public :: test_qr_factorization
 
+    #:for rk, rt, ri in REAL_KINDS_TYPES
+    ${rt}$, parameter :: rel_tol_${rk}$ = sqrt(epsilon(1.0_${rk}$))
+    #:endfor
+
     contains
 
     !> QR factorization tests
@@ -60,7 +64,8 @@ module test_linalg_matrix_factorizations
         F = qrfact(A)
 
         ! Check the R matrix with reference.
-        call check(error, all_close(R, F%R()))
+        print *, "MAXIMUM DIFFERENCE :", maxval(abs(R - F%R())), sqrt(epsilon(1.0_${rk}$))
+        call check(error, all_close(R, F%R(), rel_tol=rel_tol_${rk}$))
         if (allocated(error)) return
 
         ! Check the Q matrix with reference.
