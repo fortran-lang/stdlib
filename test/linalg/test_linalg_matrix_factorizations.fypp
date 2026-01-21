@@ -28,6 +28,7 @@ module test_linalg_matrix_factorizations
         
         #:for rk,rt,ri in RC_KINDS_TYPES
         call add_test(tests,new_unittest("qr_random_tall_matrix_${ri}$",test_qr_random_tall_matrix_${ri}$))
+        call add_test(tests,new_unittest("qr_random_wide_matrix_${ri}$",test_qr_random_wide_matrix_${ri}$))
         #:endfor
     end subroutine test_qr_factorization
 
@@ -39,7 +40,6 @@ module test_linalg_matrix_factorizations
         integer(ilp), parameter :: m   = 15_ilp
         integer(ilp), parameter :: n   =  4_ilp
         integer(ilp), parameter :: k   = min(m,n)
-        real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
         ${rt}$ :: a(m,n), q(m, k), r(k, n)
         real(${rk}$) :: rea(m,n),ima(m,n)
         type(linalg_state_type) :: state
@@ -64,7 +64,6 @@ module test_linalg_matrix_factorizations
         F = qrfact(A)
 
         ! Check the R matrix with reference.
-        print *, "MAXIMUM DIFFERENCE :", maxval(abs(R - F%R())), sqrt(epsilon(1.0_${rk}$))
         call check(error, all_close(R, F%R(), rel_tol=rel_tol_${rk}$))
         if (allocated(error)) return
 
@@ -73,6 +72,45 @@ module test_linalg_matrix_factorizations
         if (allocated(error)) return
         
     end subroutine test_qr_random_tall_matrix_${ri}$
+
+    subroutine test_qr_random_wide_matrix_${ri}$(error)
+        use stdlib_linalg, only: hermitian, qr_${rt[0]}$${rk}$_type
+        type(error_type), allocatable, intent(out) :: error
+        integer(ilp), parameter :: m   = 4_ilp
+        integer(ilp), parameter :: n   = 15_ilp
+        integer(ilp), parameter :: k   = min(m,n)
+        ${rt}$ :: a(m, n), q(m, k), r(k, n)
+        real(${rk}$) :: rea(m, n),ima(m, n)
+        type(linalg_state_type) :: state
+        type(qr_${rt[0]}$${rk}$_type) :: F
+        
+        call random_number(rea)
+        #:if rt.startswith('complex')
+        call random_number(ima)
+        a = cmplx(rea,ima,kind=${rk}$)
+        #:else
+        a = rea
+        #:endif
+        
+        ! Reference QR decomposition.
+        q = ieee_value(0.0_${rk}$,ieee_quiet_nan)
+        r = ieee_value(0.0_${rk}$,ieee_quiet_nan)
+        call qr(a, q, r, err=state)
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return
+
+        ! Instantiate derived-type for the QR.
+        F = qrfact(A)
+
+        ! Check the R matrix with reference.
+        call check(error, all_close(R, F%R(), rel_tol=rel_tol_${rk}$))
+        if (allocated(error)) return
+
+        ! Check the Q matrix with reference.
+        call check(error, all_close(Q, F%Q()))
+        if (allocated(error)) return
+        
+    end subroutine test_qr_random_wide_matrix_${ri}$
     #:endfor
 
     ! gcc-15 bugfix utility
