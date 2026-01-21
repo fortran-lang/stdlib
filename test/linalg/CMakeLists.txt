@@ -11,6 +11,7 @@ set(
   "test_linalg_mnorm.fypp"
   "test_linalg_determinant.fypp"
   "test_linalg_qr.fypp"
+  "test_linalg_pivoting_qr.fypp"
   "test_linalg_schur.fypp"
   "test_linalg_solve_iterative.fypp"
   "test_linalg_svd.fypp"
@@ -44,6 +45,7 @@ ADDTEST(linalg_solve)
 ADDTEST(linalg_lstsq)
 ADDTEST(linalg_constrained_lstsq)
 ADDTEST(linalg_qr)
+ADDTEST(linalg_pivoting_qr)
 ADDTEST(linalg_schur)
 ADDTEST(linalg_solve_iterative)
 ADDTEST(linalg_svd)
