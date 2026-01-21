@@ -58,14 +58,11 @@ submodule (stdlib_linalg) stdlib_linalg_matrix_factorizations
         n = size(self%data, 2)
         k = min(m, n)
 
-        !> Allocate matrix.
-        allocate(Q(m, k), source=zero)
-        do concurrent(i=1:k)
-            Q(i, i) = 1.0_${rk}$
-        enddo
+        !> Allocate workspace
+        allocate(work(n*self%ldt), source=zero)
 
         !> Compute the Q matrix.
-        allocate(work(n*self%ldt), source=zero)
+        Q = eye(m, k, mold=zero)
         call gemqrt(side, trans, m, k, k, &
                     self%ldt, self%data(:, :k), m, self%t, self%ldt, Q, m, work, info)
     end function get_qfactor_${rt[0]}$${rk}$
