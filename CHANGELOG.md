@@ -96,6 +96,7 @@ Summary of the most relevant pull requests (more than 100 total)
     [#1033](https://github.com/fortran-lang/stdlib/pull/1033)
     [#1050](https://github.com/fortran-lang/stdlib/pull/1050)
     [#1066](https://github.com/fortran-lang/stdlib/pull/1066)
+    [#1081](https://github.com/fortran-lang/stdlib/pull/1081)
 
 - changes in documentation
   - Added tables summarizing preprocessing macros and flags
