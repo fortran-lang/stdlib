@@ -110,7 +110,7 @@ contains
                 #:if t.startswith('complex') 
                 val_r = to_num_from_stream(ffp, mold, stat)
                 val_i = to_num_from_stream(ffp, mold, stat)
-                matrix(i,j) = complex( val_r, val_i )
+                matrix(i,j) = cmplx(val_r, val_i, kind = ${k}$)
                 #:else 
                 matrix(i,j) = to_num_from_stream(ffp, mold, stat)
                 #:endif
@@ -205,7 +205,7 @@ contains
             #:if t.startswith('complex')
             val_r = to_num_from_stream(ffp, mold, stat)
             val_i = to_num_from_stream(ffp, mold, stat)
-            vals(i) = complex( val_r, val_i)
+            vals(i) = cmplx(val_r, val_i, kind = ${k}$)
             #:else
             vals(i) = to_num_from_stream(ffp, mold, stat)
             #:endif
