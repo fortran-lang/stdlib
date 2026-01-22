@@ -139,7 +139,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Preprocess stdlib source files.')
     # fypp arguments
     parser.add_argument("--vmajor", type=int, default=0, help="Project Version Major")
-    parser.add_argument("--vminor", type=int, default=5, help="Project Version Minor")
+    parser.add_argument("--vminor", type=int, default=8, help="Project Version Minor")
     parser.add_argument("--vpatch", type=int, default=0, help="Project Version Patch")
 
     parser.add_argument("--njob", type=int, default=4, help="Number of parallel jobs for preprocessing")
