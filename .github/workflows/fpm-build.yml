@@ -32,7 +32,7 @@ jobs:
           version: ${{ matrix.toolchain.version }}
 
       - name: Setup Fortran Package Manager
-        uses: fortran-lang/setup-fpm@v8
+        uses: fortran-lang/setup-fpm@v9
         with:
           fpm-version: ${{ matrix.fpm_versions }}
 
