@@ -1,3 +1,131 @@
+# Version 0.8.0
+
+Full release notes available at [v0.8.0] tag.
+
+[v0.8.0]: https://github.com/fortran-lang/stdlib/releases/tag/v0.8.0
+
+## What's Changed
+* linalg: enable 80-bit extended precision for whole library, `xdp` by @perazz in https://github.com/fortran-lang/stdlib/pull/839
+* Update author picture in API documentation webpage by @jvdp1 in https://github.com/fortran-lang/stdlib/pull/842
+* linalg: Matrix Inverse by @perazz in https://github.com/fortran-lang/stdlib/pull/828
+* Rewrite fypp directive to avoid the use of removesuffix in stdlib_math_meshgrip by @jvdp1 in https://github.com/fortran-lang/stdlib/pull/847
+* Conversion functions from degrees to radians and vice-versa. by @MilanSkocic in https://github.com/fortran-lang/stdlib/pull/845
+* `sort_index`: use of only `int_index` iterators inside `sort_index` by @jvdp1 in https://github.com/fortran-lang/stdlib/pull/848
+* linalg: Cholesky factorization by @perazz in https://github.com/fortran-lang/stdlib/pull/840
+* Remove `msys` from CI and install `fypp` via msys2 package by @minhqdao in https://github.com/fortran-lang/stdlib/pull/854
+* CI: upgrade to upload-artifact@v4 by @perazz in https://github.com/fortran-lang/stdlib/pull/872
+* API: make LAPACK-backed APIs since Release <=0.7.0 `stable` by @perazz in https://github.com/fortran-lang/stdlib/pull/873
+* linalg: QR factorization by @perazz in https://github.com/fortran-lang/stdlib/pull/832
+* Swap by @jalvesz in https://github.com/fortran-lang/stdlib/pull/869
+* Fix missing argument to linalg_invert_inplace_ call in linalg_invert_split by @cyrilgandon in https://github.com/fortran-lang/stdlib/pull/880
+* fix(factorial): result should be of the default kind, not double default kind by @cyrilgandon in https://github.com/fortran-lang/stdlib/pull/876
+* linalg: vector norms by @perazz in https://github.com/fortran-lang/stdlib/pull/871
+* `loadtxt/savetxt`: do not require space after last entry by @perazz in https://github.com/fortran-lang/stdlib/pull/877
+* svd - check the size of storage space by @jvdp1 in https://github.com/fortran-lang/stdlib/pull/881
+* fix fypp_deployment build and set maxrank default to 4 as in cmake by @jalvesz in https://github.com/fortran-lang/stdlib/pull/882
+* Fix warnings [-Wunused-xxx] from compilation by @cyrilgandon in https://github.com/fortran-lang/stdlib/pull/879
+* Sparse algebra support with OOP API by @jalvesz in https://github.com/fortran-lang/stdlib/pull/760
+* Fix Gaussian distribution formula in documentation by @moriglia in https://github.com/fortran-lang/stdlib/pull/889
+* loadtxt: increase length of internal buffers by @perazz in https://github.com/fortran-lang/stdlib/pull/893
+* Revert "`call error_stop` -> `error stop`" by @perazz in https://github.com/fortran-lang/stdlib/pull/894
+* promote ascii functions to elemental by @jalvesz in https://github.com/fortran-lang/stdlib/pull/886
+* linalg: Matrix norms by @perazz in https://github.com/fortran-lang/stdlib/pull/885
+* CI: deprecate macos-12 by @perazz in https://github.com/fortran-lang/stdlib/pull/905
+* Add `[install]` section to `fpm.toml` by @moriglia in https://github.com/fortran-lang/stdlib/pull/906
+* linalg `eye`: allow generalized return type and kind by @perazz in https://github.com/fortran-lang/stdlib/pull/902
+* linalg: `hermitian` by @perazz in https://github.com/fortran-lang/stdlib/pull/896
+* linalg: Moore-Penrose pseudo-inverse (`pinv`) by @perazz in https://github.com/fortran-lang/stdlib/pull/899
+* linalg: introduce 64-bit integer size BLAS/LAPACK implementation (`ilp64`) by @perazz in https://github.com/fortran-lang/stdlib/pull/888
+* linalg: Schur decomposition by @perazz in https://github.com/fortran-lang/stdlib/pull/892
+* sparse linalg: simplify SELLC spmv kernel by @jalvesz in https://github.com/fortran-lang/stdlib/pull/912
+* linalg `eig`: generalized eigenvalue problem  by @perazz in https://github.com/fortran-lang/stdlib/pull/909
+* Remove mingw32 by @chuckyvt in https://github.com/fortran-lang/stdlib/pull/914
+* Remove unused by @jalvesz in https://github.com/fortran-lang/stdlib/pull/917
+* linalg: refactor blas/lapack modules by @jalvesz in https://github.com/fortran-lang/stdlib/pull/913
+* Proposition for fixing CMake procedure by @jvdp1 in https://github.com/fortran-lang/stdlib/pull/923
+* limit Intel Classic CI to Ubuntu 22.04 by @perazz in https://github.com/fortran-lang/stdlib/pull/925
+* Fix output format in sparse example by @jalvesz in https://github.com/fortran-lang/stdlib/pull/928
+* Proposal to upgrade `number_of_columns` by @perazz in https://github.com/fortran-lang/stdlib/pull/926
+* Fix generalized `eig` rwork size by @perazz in https://github.com/fortran-lang/stdlib/pull/929
+* `ieeeck`: use `ieee_arithmetic` intrinsics  by @perazz in https://github.com/fortran-lang/stdlib/pull/933
+* Removed unused variables by @jvdp1 in https://github.com/fortran-lang/stdlib/pull/935
+* strings: `join`, `to_c_char` by @perazz in https://github.com/fortran-lang/stdlib/pull/936
+* error: implement general `state_type` handler by @perazz in https://github.com/fortran-lang/stdlib/pull/938
+* system: subprocessing interface by @perazz in https://github.com/fortran-lang/stdlib/pull/911
+* Remove other derived type from hashmap by @chuckyvt in https://github.com/fortran-lang/stdlib/pull/843
+* intrinsics module with alternative implementations by @jalvesz in https://github.com/fortran-lang/stdlib/pull/915
+* io: `getfile` by @perazz in https://github.com/fortran-lang/stdlib/pull/939
+* fix: gamma functions by @wassup05 in https://github.com/fortran-lang/stdlib/pull/943
+* system: OS type query by @perazz in https://github.com/fortran-lang/stdlib/pull/942
+* system: `null_device` by @perazz in https://github.com/fortran-lang/stdlib/pull/945
+* small fix for `loadtxt` by @wassup05 in https://github.com/fortran-lang/stdlib/pull/949
+* fix: hbar value by @wassup05 in https://github.com/fortran-lang/stdlib/pull/950
+* replaced make_directory with file(MAKE_DIRECTORY ...) by @jfdev001 in https://github.com/fortran-lang/stdlib/pull/956
+* remove unnecessary `merge(.true.,.false.,)` by @perazz in https://github.com/fortran-lang/stdlib/pull/959
+* system: `is_directory` by @perazz in https://github.com/fortran-lang/stdlib/pull/946
+* Support csv file reading and writing in loadtxt and savetxt. by @zoziha in https://github.com/fortran-lang/stdlib/pull/958
+* system: `delete_file` by @perazz in https://github.com/fortran-lang/stdlib/pull/966
+* specialfunctions: generalize `gamma` precision by @perazz in https://github.com/fortran-lang/stdlib/pull/969
+* hashmap-init-update by @chuckyvt in https://github.com/fortran-lang/stdlib/pull/974
+* stdlib_linalg: declare the `diag` function as pure by @zoziha in https://github.com/fortran-lang/stdlib/pull/980
+* `linalg`: slightly increase test tolerance by @perazz in https://github.com/fortran-lang/stdlib/pull/985
+* Add findBLAS support to CMakeLists.txt by @zoziha in https://github.com/fortran-lang/stdlib/pull/844
+* feat: Add github collaboration script and workflow documentation by @jalvesz in https://github.com/fortran-lang/stdlib/pull/987
+* feat: activation intrinsics for neural networks by @jalvesz in https://github.com/fortran-lang/stdlib/pull/860
+* modified stats exponential distribution procedures to use  `loc` and `scale`  by @sebastian-mutz in https://github.com/fortran-lang/stdlib/pull/991
+* fix: collab diagram layout fix by @jalvesz in https://github.com/fortran-lang/stdlib/pull/996
+* fix: make ansi examples from documentation executable by @jalvesz in https://github.com/fortran-lang/stdlib/pull/997
+* fix: do-concurrent syntax by @wassup05 in https://github.com/fortran-lang/stdlib/pull/998
+* fix: to_num_from_stream pointer position correction by @jalvesz in https://github.com/fortran-lang/stdlib/pull/1000
+* GCC 15.1 fixes by @perazz in https://github.com/fortran-lang/stdlib/pull/1008
+* docs: correct header level in rad2deg by @stigh in https://github.com/fortran-lang/stdlib/pull/1010
+* Regrouped lapack handling functions by @loiseaujc in https://github.com/fortran-lang/stdlib/pull/1013
+* fix: index handling in `chomp` by @wassup05 in https://github.com/fortran-lang/stdlib/pull/1012
+* fix: windows compilation of hash maps tests and increase stack size avoiding segfaults by @jalvesz in https://github.com/fortran-lang/stdlib/pull/988
+* Tridagonal matrices and associated spmv kernel by @loiseaujc in https://github.com/fortran-lang/stdlib/pull/957
+* `stdlib_system`: essential path functionality by @wassup05 in https://github.com/fortran-lang/stdlib/pull/999
+* helper functions for Filesystem error handling by @wassup05 in https://github.com/fortran-lang/stdlib/pull/1015
+* fix: complex dot_product formulation by @jalvesz in https://github.com/fortran-lang/stdlib/pull/1017
+* Make collaboration script executable by @wassup05 in https://github.com/fortran-lang/stdlib/pull/1018
+* promote other ascii functions to elemental by @wassup05 in https://github.com/fortran-lang/stdlib/pull/977
+* feat: creating and removing empty directories by @wassup05 in https://github.com/fortran-lang/stdlib/pull/1011
+* feat: `get_cwd` and `set_cwd` by @wassup05 in https://github.com/fortran-lang/stdlib/pull/1014
+* Addition of `sort_adj` to sort an rank 1 array in the same order as an input array by @jvdp1 in https://github.com/fortran-lang/stdlib/pull/849
+* feat: `exists` to return the type of a path by @wassup05 in https://github.com/fortran-lang/stdlib/pull/1026
+* feat: [linalg] add iterative solvers by @jalvesz in https://github.com/fortran-lang/stdlib/pull/994
+* Modularize BLAS and LAPACK modules in CMake to make it easier to use in external projects by @eduardz1 in https://github.com/fortran-lang/stdlib/pull/1033
+* feat : [linalg] add bi-conjugate gradient stabilized method by @jalvesz in https://github.com/fortran-lang/stdlib/pull/1034
+* submodule procedures declaration made compatible with older cmake version by @BhoomishGupta in https://github.com/fortran-lang/stdlib/pull/1041
+* Matrix exponential by @loiseaujc in https://github.com/fortran-lang/stdlib/pull/1038
+* Migration from macOS 13 to macOS 14 by @jvdp1 in https://github.com/fortran-lang/stdlib/pull/1042
+* Addition of Cmake 3.14 in Github CI by @jvdp1 in https://github.com/fortran-lang/stdlib/pull/1043
+* Added code_coverage support. by @loiseaujc in https://github.com/fortran-lang/stdlib/pull/1039
+* Upgrade of doc deploymenent CI/CD by @jvdp1 in https://github.com/fortran-lang/stdlib/pull/1052
+* Update macOS architecture and OS version in README.md by @edvinolo in https://github.com/fortran-lang/stdlib/pull/1059
+* Fix(tridiagonal_matrices): spmv y vector overwrite and missing error check in impure init functions by @Mahmood-Sinan in https://github.com/fortran-lang/stdlib/pull/1054
+* Modularized bitset cpp by @jvdp1 in https://github.com/fortran-lang/stdlib/pull/1050
+* fix: define S_ISREG on Windows by @LaplaceSoda in https://github.com/fortran-lang/stdlib/pull/1061
+* Fix: include the directory include in stdlib-fpm by @jvdp1 in https://github.com/fortran-lang/stdlib/pull/1062
+* fix Issue #1063 by @perazz in https://github.com/fortran-lang/stdlib/pull/1064
+* Add default (mold, array_size) overloads for rvs_normal by @gururaj1512 in https://github.com/fortran-lang/stdlib/pull/1056
+* Equality-constrained least-squares solver by @loiseaujc in https://github.com/fortran-lang/stdlib/pull/1046
+* Support of GCC 15 in the CI/CD by @jvdp1 in https://github.com/fortran-lang/stdlib/pull/1072
+* Modularized stdlib_stats by @jvdp1 in https://github.com/fortran-lang/stdlib/pull/1066
+* Fix: remove example folder from coverage by @jalvesz in https://github.com/fortran-lang/stdlib/pull/1074
+* feat: Add generalized lagtm routine supporting arbitrary values for alpha and beta by @Mahmood-Sinan in https://github.com/fortran-lang/stdlib/pull/1068
+* fix: remove parent module use statement in iterative solver submodules by @edvinolo in https://github.com/fortran-lang/stdlib/pull/1073
+* fix: (system) Fix buffer overflow in stdlib_get_cwd and improve const correctness by @JAi-SATHVIK in https://github.com/fortran-lang/stdlib/pull/1078
+* fix(stdlib_system): use STARTUPINFO for windows stdin redirection by @JAi-SATHVIK in https://github.com/fortran-lang/stdlib/pull/1079
+* feat: extend intrinsic `matmul` by @wassup05 in https://github.com/fortran-lang/stdlib/pull/951
+* Addition of tables summarizing preprocessing macros and flags by @jvdp1 in https://github.com/fortran-lang/stdlib/pull/1083
+* Simplification of CPP macros for modularizing stdlib by @jvdp1 in https://github.com/fortran-lang/stdlib/pull/1088
+* Modified README.md to warn on PKG_CONFIG_PATH on different OS by @fiolj in https://github.com/fortran-lang/stdlib/pull/1089
+* Pivoting QR decomposition by @loiseaujc in https://github.com/fortran-lang/stdlib/pull/1045
+* CI: addition of fpm-build for testing the latest version of fpm by @jvdp1 in https://github.com/fortran-lang/stdlib/pull/1094
+
+
+
+
 # Version 0.7.0
 
 Full release notes available at [v0.7.0] tag.
