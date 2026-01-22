@@ -2,7 +2,7 @@ module stdlib_codata_type
     !! Codata constant type
     !! ([Specification](../page/specs/stdlib_constants.html))
     use stdlib_kinds, only: sp, dp
-    use stdlib_io, only: FMT_REAL_DP
+    use stdlib_io_aux, only: FMT_REAL_DP
     use stdlib_optval, only: optval 
     private
 
