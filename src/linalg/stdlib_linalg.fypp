@@ -703,8 +703,8 @@ module stdlib_linalg
     !!
     #:for rk,rt,ri in RC_KINDS_TYPES
     module function stdlib_linalg_${ri}$_weighted_lstsq(w,a,b,cond,overwrite_a,rank,err) result(x)
-        !> Weight vector (must be positive)
-        ${rt}$, intent(in) :: w(:)
+        !> Weight vector (must be positive, always real)
+        real(${rk}$), intent(in) :: w(:)
         !> Input matrix a[m,n]
         ${rt}$, intent(inout), target :: a(:,:)
         !> Right hand side vector b[m]

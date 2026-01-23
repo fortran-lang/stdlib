@@ -156,7 +156,8 @@ module test_linalg_least_squares
         type(linalg_state_type) :: state
         integer(ilp), parameter :: m = 4, n = 2
         real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
-        ${rt}$ :: A(m,n), b(m), w(m)
+        ${rt}$ :: A(m,n), b(m)
+        real(${rk}$) :: w(m)
         ${rt}$, allocatable :: x(:)
 
         ! Simple test case
@@ -186,7 +187,8 @@ module test_linalg_least_squares
         type(linalg_state_type) :: state
         integer(ilp), parameter :: m = 4, n = 2
         real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
-        ${rt}$ :: A(m,n), b(m), w_uniform(m), w_nonuniform(m)
+        ${rt}$ :: A(m,n), b(m)
+        real(${rk}$) :: w_uniform(m), w_nonuniform(m)
         ${rt}$, allocatable :: x_uniform(:), x_weighted(:)
 
         ! Setup problem
@@ -217,7 +219,8 @@ module test_linalg_least_squares
         type(error_type), allocatable, intent(out) :: error
 
         type(linalg_state_type) :: state
-        ${rt}$ :: A(3,2), b(3), w(3)
+        ${rt}$ :: A(3,2), b(3)
+        real(${rk}$) :: w(3)
         ${rt}$, allocatable :: x(:)
 
         A = 1.0_${rk}$

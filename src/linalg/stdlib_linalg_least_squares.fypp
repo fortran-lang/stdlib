@@ -571,8 +571,8 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
     #:for rk,rt,ri in RC_KINDS_TYPES
     ! Weighted least-squares: minimize ||D(Ax - b)||^2 where D = diag(sqrt(w))
     module function stdlib_linalg_${ri}$_weighted_lstsq(w,a,b,cond,overwrite_a,rank,err) result(x)
-        !> Weight vector (must be positive)
-        ${rt}$, intent(in) :: w(:)
+        !> Weight vector (must be positive, always real)
+        real(${rk}$), intent(in) :: w(:)
         !> Input matrix a[m,n]
         ${rt}$, intent(inout), target :: a(:,:)
         !> Right hand side vector b[m]
@@ -593,11 +593,14 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
         integer(ilp) :: m, n, i
         logical(lk) :: copy_a
         ${rt}$, allocatable :: a_scaled(:,:), b_scaled(:)
-        real(${rk}$) :: sqrt_w(size(w))
+        real(${rk}$), allocatable :: sqrt_w(:)
         character(*), parameter :: this = 'weighted_lstsq'
 
         m = size(a, 1, kind=ilp)
         n = size(a, 2, kind=ilp)
+
+        ! Allocate result (even on error, to prevent segfault on return)
+        allocate(x(n))
 
         ! Validate inputs
         if (size(w, kind=ilp) /= m) then
@@ -608,7 +611,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
             return
         end if
 
-        if (any(w <= 0)) then
+        if (any(w <= 0.0_${rk}$)) then
             err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'Weights must be positive')
             call linalg_error_handling(err0, err)
             if (present(rank)) rank = 0
@@ -623,7 +626,8 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
         end if
 
         ! Compute sqrt of weights
-        sqrt_w = sqrt(real(w, ${rk}$))
+        allocate(sqrt_w(m))
+        sqrt_w = sqrt(w)
 
         ! Scale A and b
         if (copy_a) then
@@ -678,8 +682,8 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
         integer(ilp) :: m, n, p, lda, ldb, lwork, info
         logical(lk) :: copy_a, is_prefactored
         ${rt}$, pointer :: amat(:,:)
-        ${rt}$, allocatable :: amat_alloc(:,:), lmat(:,:)
-        ${rt}$, allocatable :: d(:), y(:), work(:)
+        ${rt}$, allocatable, target :: amat_alloc(:,:)
+        ${rt}$, allocatable :: lmat(:,:), d(:), y(:), work(:)
         character(*), parameter :: this = 'generalized_lstsq'
 
         m = size(a, 1, kind=ilp)
