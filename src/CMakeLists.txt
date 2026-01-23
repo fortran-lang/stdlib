@@ -1,123 +1,85 @@
-if (STDLIB_BITSET)
-  add_subdirectory(bitsets)
-endif()
-add_subdirectory(blas)
-add_subdirectory(lapack)
-add_subdirectory(lapack_extended)
-if (STDLIB_STATS)
-  add_subdirectory(stats)
+set(OPTIONAL_LIB)
+
+if (STDLIB_ANSI)
+  add_subdirectory(ansi)
+  list(APPEND OPTIONAL_LIB ansi)
 endif()
 
+add_subdirectory(array)
+
+if (STDLIB_BITSET)
+  add_subdirectory(bitsets)
+  list(APPEND OPTIONAL_LIB bitsets)
+endif()
+
+add_subdirectory(blas)
+add_subdirectory(constants)
+add_subdirectory(core)
+
+add_subdirectory(hash)
+
+if (STDLIB_HASHMAPS)
+  add_subdirectory(hashmaps)
+  list(APPEND OPTIONAL_LIB hashmaps)
+endif()
+
+add_subdirectory(intrinsics)
+add_subdirectory(io)
+
+add_subdirectory(lapack)
+add_subdirectory(lapack_extended)
+add_subdirectory(linalg_core)
+add_subdirectory(linalg_iterative)
+add_subdirectory(linalg)
+add_subdirectory(logger)
+add_subdirectory(math)
+add_subdirectory(quadrature)
+add_subdirectory(selection)
+add_subdirectory(sorting)
+add_subdirectory(specialfunctions)
+add_subdirectory(specialmatrices)
+add_subdirectory(stringlist)
+add_subdirectory(strings)
+add_subdirectory(system)
+
+if (STDLIB_STATS)
+  add_subdirectory(stats)
+  list(APPEND OPTIONAL_LIB stats)
+endif()
+
+add_subdirectory(sparse)
+
 set(fppFiles
-    stdlib_ascii.fypp
-    stdlib_codata_type.fypp
-    stdlib_constants.fypp
-    stdlib_error.fypp
-    stdlib_hash_32bit.fypp
-    stdlib_hash_32bit_fnv.fypp
-    stdlib_hash_32bit_nm.fypp
-    stdlib_hash_32bit_water.fypp
-    stdlib_hash_64bit.fypp
-    stdlib_hash_64bit_fnv.fypp
-    stdlib_hash_64bit_pengy.fypp
-    stdlib_hash_64bit_spookyv2.fypp
-    stdlib_intrinsics_dot_product.fypp
-    stdlib_intrinsics_sum.fypp
-    stdlib_intrinsics_matmul.fypp
-    stdlib_intrinsics.fypp
-    stdlib_io.fypp
-    stdlib_io_mm.fypp
-    stdlib_io_mm_load.fypp
-    stdlib_io_mm_save.fypp
-    stdlib_io_npy.fypp
-    stdlib_io_npy_load.fypp
-    stdlib_io_npy_save.fypp
-    stdlib_kinds.fypp
-    stdlib_linalg.fypp
-    stdlib_linalg_diag.fypp
-    stdlib_linalg_least_squares.fypp
-    stdlib_linalg_outer_product.fypp
-    stdlib_linalg_kronecker.fypp
-    stdlib_linalg_cross_product.fypp
-    stdlib_linalg_eigenvalues.fypp
-    stdlib_linalg_solve.fypp
-    stdlib_linalg_determinant.fypp
-    stdlib_linalg_qr.fypp
-    stdlib_linalg_inverse.fypp
-    stdlib_linalg_iterative_solvers.fypp
-    stdlib_linalg_iterative_solvers_bicgstab.fypp
-    stdlib_linalg_iterative_solvers_cg.fypp
-    stdlib_linalg_iterative_solvers_pcg.fypp
-    stdlib_linalg_pinv.fypp
-    stdlib_linalg_norms.fypp
-    stdlib_linalg_state.fypp
-    stdlib_linalg_svd.fypp
-    stdlib_linalg_cholesky.fypp
-    stdlib_linalg_schur.fypp
-    stdlib_linalg_matrix_functions.fypp
-    stdlib_optval.fypp
-    stdlib_selection.fypp
-    stdlib_sparse_constants.fypp
-    stdlib_sparse_conversion.fypp
-    stdlib_sparse_kinds.fypp
-    stdlib_sparse_spmv.fypp
-    stdlib_specialfunctions_activations.fypp
-    stdlib_specialfunctions_gamma.fypp
-    stdlib_specialfunctions.fypp
-    stdlib_specialmatrices.fypp
-    stdlib_specialmatrices_tridiagonal.fypp
-    stdlib_quadrature.fypp
-    stdlib_quadrature_trapz.fypp
-    stdlib_quadrature_simps.fypp
-    stdlib_random.fypp
-    stdlib_math_linspace.fypp
-    stdlib_math_logspace.fypp
-    stdlib_math_arange.fypp
-    stdlib_math_is_close.fypp
-    stdlib_math_all_close.fypp
-    stdlib_math_diff.fypp
-    stdlib_math_meshgrid.fypp
-    stdlib_str2num.fypp
-    stdlib_string_type.fypp
-    stdlib_string_type_constructor.fypp
-    stdlib_strings_to_string.fypp
-    stdlib_strings.fypp
     stdlib_version.fypp
 )
-set(cppFiles stdlib_linalg_constants.fypp
-    stdlib_math.fypp
-    stdlib_sorting.fypp
-    stdlib_sorting_ord_sort.fypp
-    stdlib_sorting_sort.fypp
-    stdlib_sorting_sort_adjoint.fypp
+set(cppFiles
     )
 set(f90Files
-    stdlib_ansi.f90
-    stdlib_ansi_operator.f90
-    stdlib_ansi_to_string.f90
-    stdlib_array.f90
-    stdlib_codata.f90
-    stdlib_hashmap_wrappers.f90
-    stdlib_hashmaps.f90
-    stdlib_hashmap_chaining.f90
-    stdlib_hashmap_open.f90
-    stdlib_logger.f90
-    stdlib_sorting_radix_sort.f90
-    stdlib_system_subprocess.c
-    stdlib_system_subprocess.F90
-    stdlib_system_path.f90
-    stdlib_system.c
-    stdlib_system.F90
-    stdlib_sparse.f90
-    stdlib_specialfunctions_legendre.f90
-    stdlib_quadrature_gauss.f90
-    stdlib_stringlist_type.f90
-    $<IF:$<BOOL:${f18errorstop}>,f18estop.f90,f08estop.f90>
 )
 
 configure_stdlib_target(${PROJECT_NAME} f90Files fppFiles cppFiles)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
-  $<$<BOOL:${STDLIB_BITSET}>:bitsets>
-  $<$<BOOL:${STDLIB_STATS}>:stats>
-  blas lapack lapack_extended)
+  array
+  constants
+  core
+  hash
+  intrinsics
+  io
+  linalg_core
+  linalg_iterative
+  linalg
+  logger
+  math
+  quadrature
+  selection
+  specialfunctions
+  specialmatrices
+  sorting
+  stringlist
+  strings
+  system
+  blas lapack lapack_extended
+  sparse
+  ${OPTIONAL_LIB}
+  )
