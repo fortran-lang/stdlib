@@ -6,7 +6,6 @@ submodule (stdlib_stats) stdlib_stats_pca
   use stdlib_linalg_constants, only: ilp
   use stdlib_linalg_blas, only: gemm, syrk
   use stdlib_linalg_state, only: linalg_state_type, LINALG_ERROR, LINALG_VALUE_ERROR
-  use stdlib_sorting, only: sort_index
   implicit none
 
 contains
@@ -69,8 +68,7 @@ contains
       ${t1}$, intent(out) :: singular_values(:)
       type(linalg_state_type), intent(out) :: err
 
-      integer(ilp) :: i, j, m
-      integer(ilp), allocatable :: idx(:)
+      integer(ilp) :: m
       ${t1}$ :: alpha, beta
       real(${k1}$), allocatable :: lambda(:)
       ${t1}$, allocatable :: c(:,:), vectors(:,:)
@@ -85,33 +83,22 @@ contains
       allocate(c(p, p), source=zero)
       call syrk('U', 'T', p, n, alpha, x_centered, n, beta, c, p)
 
-      ! Fill lower triangle from upper triangle (syrk only fills upper)
-      do j = 1, p-1
-         do i = j+1, p
-            c(i, j) = c(j, i)
-         end do
-      end do
-
       allocate(lambda(p))
       allocate(vectors(p, p))
-      call eigh(c, lambda, vectors=vectors, err=err)
+      call eigh(c, lambda, vectors=vectors, lower=.false., err=err)
 
       if (err%ok()) then
-         ! Sort eigenvalues in descending order
-         allocate(idx(p))
-         call sort_index(lambda, idx, reverse=.true.)
+         ! LAPACK returns eigenvalues in ascending order.
+         ! Flip them to get descending order for PCA.
+         lambda = lambda(p:1:-1)
+         vectors = vectors(:, p:1:-1)
 
-         ! Assign sorted results with safety bounds checks
+         ! Assign results with safety bounds checks
          m = min(size(components, 1, kind=ilp), p)
          m = min(m, size(singular_values, 1, kind=ilp))
-         do i = 1, m
-            components(i, :) = vectors(:, idx(i))
-            if (lambda(i) > 0.0_${k1}$) then
-               singular_values(i) = sqrt(lambda(i) * real(n-1, ${k1}$))
-            else
-               singular_values(i) = 0.0_${k1}$
-            end if
-         end do
+         
+         components(1:m, :) = transpose(vectors(:, 1:m))
+         singular_values(1:m) = sqrt(max(lambda(1:m) * real(n-1, ${k1}$), 0.0_${k1}$))
       end if
     end subroutine pca_eigh_driver_${k1}$
   #:endfor
