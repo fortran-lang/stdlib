@@ -1,4 +1,4 @@
-name: CI
+name: ci_modular
 
 on: [push, pull_request]
 

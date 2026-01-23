@@ -32,7 +32,7 @@ jobs:
           version: ${{ matrix.toolchain.version }}
 
       - name: Setup Fortran Package Manager
-        uses: fortran-lang/setup-fpm@v8
+        uses: fortran-lang/setup-fpm@v9
         with:
           fpm-version: v0.12.0
 
@@ -92,7 +92,7 @@ jobs:
         run: pip install --upgrade -r config/requirements.txt
 
       - name: Setup Fortran Package Manager
-        uses: fortran-lang/setup-fpm@v8
+        uses: fortran-lang/setup-fpm@v9
         with:
           fpm-version: v0.12.0
 
