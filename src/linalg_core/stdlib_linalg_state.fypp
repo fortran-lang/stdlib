@@ -10,7 +10,7 @@ module stdlib_linalg_state
      use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp, lk
      use stdlib_error, only: state_type, operator(==), operator(/=), operator(<), operator(>), &
          operator(<=), operator(>=), STDLIB_SUCCESS, STDLIB_VALUE_ERROR, STDLIB_LINALG_ERROR, STDLIB_INTERNAL_ERROR
-     use stdlib_io, only: FMT_REAL_SP, FMT_REAL_DP, FMT_REAL_QP, FMT_COMPLEX_SP, FMT_COMPLEX_DP, &
+     use stdlib_io_aux, only: FMT_REAL_SP, FMT_REAL_DP, FMT_REAL_QP, FMT_COMPLEX_SP, FMT_COMPLEX_DP, &
          FMT_COMPLEX_QP, FMT_REAL_XDP, FMT_COMPLEX_XDP
      implicit none
      private
