@@ -1,0 +1,244 @@
+#:include "common.fypp"
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+! Test solve_chol and cholesky_solve
+module test_linalg_solve_chol
+    use testdrive, only: error_type, check, new_unittest, unittest_type
+    use stdlib_linalg_constants
+    use stdlib_linalg, only: cholesky, solve_chol, cholesky_solve
+    use stdlib_linalg_state, only: linalg_state_type
+
+    implicit none (type,external)
+    private
+    
+    public :: test_solve_chol_factorization
+
+    contains
+
+    !> Cholesky solve tests
+    subroutine test_solve_chol_factorization(tests)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: tests(:)
+
+        allocate(tests(0))
+        
+        #:for rk,rt,ri in RC_KINDS_TYPES
+        call add_test(tests,new_unittest("solve_chol_${ri}$",test_solve_chol_${ri}$))
+        call add_test(tests,new_unittest("cholesky_solve_${ri}$",test_cholesky_solve_${ri}$))
+        call add_test(tests,new_unittest("cholesky_solve_overwrite_${ri}$",test_cholesky_solve_overwrite_${ri}$))
+        call add_test(tests,new_unittest("solve_chol_multi_rhs_${ri}$",test_solve_chol_multi_rhs_${ri}$))
+        #:endfor
+
+    end subroutine test_solve_chol_factorization
+
+    !> Test solve_chol with pre-computed Cholesky factors
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    subroutine test_solve_chol_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer(ilp), parameter :: n = 3_ilp
+        real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$ :: a(n,n), l(n,n), b(n), x(n), x_expected(n)
+        type(linalg_state_type) :: state
+        
+        ! Set symmetric positive definite matrix
+        a(1,:) = [4, 2, 2]
+        a(2,:) = [2, 5, 1]
+        a(3,:) = [2, 1, 6]
+        
+        ! Known solution
+        x_expected = [1, 2, 3]
+        
+        ! Compute RHS: b = A * x_expected
+        b = matmul(a, x_expected)
+        
+        ! Compute Cholesky factorization
+        call cholesky(a, l, lower=.true., err=state)
+        
+        call check(error, state%ok(), 'cholesky factorization failed: '//state%print())
+        if (allocated(error)) return
+        
+        ! Solve using Cholesky factors
+        call solve_chol(l, b, x, lower=.true., err=state)
+        
+        call check(error, state%ok(), 'solve_chol failed: '//state%print())
+        if (allocated(error)) return
+        
+        ! Check solution
+        call check(error, all(abs(x - x_expected) < tol), 'solve_chol: solution mismatch')
+        if (allocated(error)) return
+        
+    end subroutine test_solve_chol_${ri}$
+    
+    #:endfor
+
+    !> Test cholesky_solve (one-shot) - default preserves A
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    subroutine test_cholesky_solve_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer(ilp), parameter :: n = 3_ilp
+        real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$ :: a(n,n), a_copy(n,n), b(n), x(n), x_expected(n)
+        type(linalg_state_type) :: state
+        
+        ! Set symmetric positive definite matrix
+        a(1,:) = [4, 2, 2]
+        a(2,:) = [2, 5, 1]
+        a(3,:) = [2, 1, 6]
+        a_copy = a
+        
+        ! Known solution
+        x_expected = [1, 2, 3]
+        
+        ! Compute RHS: b = A * x_expected
+        b = matmul(a, x_expected)
+        
+        ! One-shot solve with default overwrite_a=.false. (A should be preserved)
+        call cholesky_solve(a, b, x, lower=.true., err=state)
+        
+        call check(error, state%ok(), 'cholesky_solve failed: '//state%print())
+        if (allocated(error)) return
+        
+        ! Check solution
+        call check(error, all(abs(x - x_expected) < tol), 'cholesky_solve: solution mismatch')
+        if (allocated(error)) return
+        
+        ! Check that A is preserved (default behavior)
+        call check(error, all(abs(a - a_copy) < tol), 'cholesky_solve: A should be preserved by default')
+        if (allocated(error)) return
+        
+    end subroutine test_cholesky_solve_${ri}$
+    
+    #:endfor
+
+    !> Test cholesky_solve with overwrite_a=.true.
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    subroutine test_cholesky_solve_overwrite_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer(ilp), parameter :: n = 3_ilp
+        real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$ :: a(n,n), a_copy(n,n), b(n), x(n), x_expected(n)
+        type(linalg_state_type) :: state
+        
+        ! Set symmetric positive definite matrix
+        a(1,:) = [4, 2, 2]
+        a(2,:) = [2, 5, 1]
+        a(3,:) = [2, 1, 6]
+        a_copy = a
+        
+        ! Known solution
+        x_expected = [1, 2, 3]
+        
+        ! Compute RHS: b = A * x_expected
+        b = matmul(a, x_expected)
+        
+        ! One-shot solve with overwrite_a=.true. (A will be destroyed)
+        call cholesky_solve(a, b, x, lower=.true., overwrite_a=.true., err=state)
+        
+        call check(error, state%ok(), 'cholesky_solve overwrite failed: '//state%print())
+        if (allocated(error)) return
+        
+        ! Check solution
+        call check(error, all(abs(x - x_expected) < tol), 'cholesky_solve overwrite: solution mismatch')
+        if (allocated(error)) return
+        
+        ! Check that A was overwritten (not equal to original)
+        call check(error, any(abs(a - a_copy) > tol), 'cholesky_solve: A should be overwritten with overwrite_a=.true.')
+        if (allocated(error)) return
+        
+    end subroutine test_cholesky_solve_overwrite_${ri}$
+    
+    #:endfor
+
+    !> Test solve_chol with multiple RHS
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    subroutine test_solve_chol_multi_rhs_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer(ilp), parameter :: n = 3_ilp
+        integer(ilp), parameter :: nrhs = 2_ilp
+        real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$ :: a(n,n), l(n,n), b(n,nrhs), x(n,nrhs), x_expected(n,nrhs)
+        type(linalg_state_type) :: state
+        
+        ! Set symmetric positive definite matrix
+        a(1,:) = [4, 2, 2]
+        a(2,:) = [2, 5, 1]
+        a(3,:) = [2, 1, 6]
+        
+        ! Known solutions (two RHS)
+        x_expected(:,1) = [1, 2, 3]
+        x_expected(:,2) = [4, 5, 6]
+        
+        ! Compute RHS: B = A * X_expected
+        b = matmul(a, x_expected)
+        
+        ! Compute Cholesky factorization
+        call cholesky(a, l, lower=.true., err=state)
+        
+        call check(error, state%ok(), 'cholesky factorization failed: '//state%print())
+        if (allocated(error)) return
+        
+        ! Solve using Cholesky factors
+        call solve_chol(l, b, x, lower=.true., err=state)
+        
+        call check(error, state%ok(), 'solve_chol multi-rhs failed: '//state%print())
+        if (allocated(error)) return
+        
+        ! Check solution
+        call check(error, all(abs(x - x_expected) < tol), 'solve_chol multi-rhs: solution mismatch')
+        if (allocated(error)) return
+        
+    end subroutine test_solve_chol_multi_rhs_${ri}$
+    
+    #:endfor
+
+    ! gcc-15 bugfix utility
+    subroutine add_test(tests,new_test)
+        type(unittest_type), allocatable, intent(inout) :: tests(:)    
+        type(unittest_type), intent(in) :: new_test
+        
+        integer :: n
+        type(unittest_type), allocatable :: new_tests(:)
+        
+        if (allocated(tests)) then 
+            n = size(tests)
+        else
+            n = 0
+        end if
+        
+        allocate(new_tests(n+1))
+        if (n>0) new_tests(1:n) = tests(1:n)
+                 new_tests(1+n) = new_test
+        call move_alloc(from=new_tests,to=tests)        
+        
+    end subroutine add_test
+
+end module test_linalg_solve_chol
+
+program test_solve_chol
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_linalg_solve_chol, only : test_solve_chol_factorization
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("linalg_solve_chol", test_solve_chol_factorization) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program test_solve_chol
