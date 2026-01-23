@@ -23,7 +23,9 @@ module test_linalg_solve_chol
         
         #:for rk,rt,ri in RC_KINDS_TYPES
         call add_test(tests,new_unittest("solve_chol_${ri}$",test_solve_chol_${ri}$))
+        call add_test(tests,new_unittest("solve_chol_upper_${ri}$",test_solve_chol_upper_${ri}$))
         call add_test(tests,new_unittest("cholesky_solve_${ri}$",test_cholesky_solve_${ri}$))
+        call add_test(tests,new_unittest("cholesky_solve_upper_${ri}$",test_cholesky_solve_upper_${ri}$))
         call add_test(tests,new_unittest("cholesky_solve_overwrite_${ri}$",test_cholesky_solve_overwrite_${ri}$))
         call add_test(tests,new_unittest("solve_chol_multi_rhs_${ri}$",test_solve_chol_multi_rhs_${ri}$))
         #:endfor
@@ -71,6 +73,47 @@ module test_linalg_solve_chol
     
     #:endfor
 
+    !> Test solve_chol with upper triangular factors (lower=.false.)
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    subroutine test_solve_chol_upper_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer(ilp), parameter :: n = 3_ilp
+        real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$ :: a(n,n), u(n,n), b(n), x(n), x_expected(n)
+        type(linalg_state_type) :: state
+        
+        ! Set symmetric positive definite matrix
+        a(1,:) = [4, 2, 2]
+        a(2,:) = [2, 5, 1]
+        a(3,:) = [2, 1, 6]
+        
+        ! Known solution
+        x_expected = [1, 2, 3]
+        
+        ! Compute RHS: b = A * x_expected
+        b = matmul(a, x_expected)
+        
+        ! Compute Cholesky factorization (upper triangular: A = U^T * U)
+        call cholesky(a, u, lower=.false., err=state)
+        
+        call check(error, state%ok(), 'cholesky factorization (upper) failed: '//state%print())
+        if (allocated(error)) return
+        
+        ! Solve using upper Cholesky factors
+        call solve_chol(u, b, x, lower=.false., err=state)
+        
+        call check(error, state%ok(), 'solve_chol (upper) failed: '//state%print())
+        if (allocated(error)) return
+        
+        ! Check solution
+        call check(error, all(abs(x - x_expected) < tol), 'solve_chol (upper): solution mismatch')
+        if (allocated(error)) return
+        
+    end subroutine test_solve_chol_upper_${ri}$
+    
+    #:endfor
+
     !> Test cholesky_solve (one-shot) - default preserves A
     #:for rk,rt,ri in RC_KINDS_TYPES
     subroutine test_cholesky_solve_${ri}$(error)
@@ -108,6 +151,46 @@ module test_linalg_solve_chol
         if (allocated(error)) return
         
     end subroutine test_cholesky_solve_${ri}$
+    
+    #:endfor
+
+    !> Test cholesky_solve with upper triangular (lower=.false.)
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    subroutine test_cholesky_solve_upper_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer(ilp), parameter :: n = 3_ilp
+        real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$ :: a(n,n), a_copy(n,n), b(n), x(n), x_expected(n)
+        type(linalg_state_type) :: state
+        
+        ! Set symmetric positive definite matrix
+        a(1,:) = [4, 2, 2]
+        a(2,:) = [2, 5, 1]
+        a(3,:) = [2, 1, 6]
+        a_copy = a
+        
+        ! Known solution
+        x_expected = [1, 2, 3]
+        
+        ! Compute RHS: b = A * x_expected
+        b = matmul(a, x_expected)
+        
+        ! One-shot solve with upper triangular (A should be preserved by default)
+        call cholesky_solve(a, b, x, lower=.false., err=state)
+        
+        call check(error, state%ok(), 'cholesky_solve (upper) failed: '//state%print())
+        if (allocated(error)) return
+        
+        ! Check solution
+        call check(error, all(abs(x - x_expected) < tol), 'cholesky_solve (upper): solution mismatch')
+        if (allocated(error)) return
+        
+        ! Check that A is preserved (default behavior)
+        call check(error, all(abs(a - a_copy) < tol), 'cholesky_solve (upper): A should be preserved')
+        if (allocated(error)) return
+        
+    end subroutine test_cholesky_solve_upper_${ri}$
     
     #:endfor
 
