@@ -1,4 +1,5 @@
 set(stats_cppFiles
+<<<<<<< HEAD
     ../stdlib_linalg_constants.fypp
     ../stdlib_sorting.fypp
     ../stdlib_sorting_ord_sort.fypp
@@ -20,6 +21,12 @@ set(stats_fppFiles
     ../stdlib_random.fypp
     ../stdlib_selection.fypp
     ../stdlib_string_type.fypp
+=======
+    )
+
+set(stats_fppFiles
+    stdlib_random.fypp
+>>>>>>> b32b42a5f862026461df895140646de38928c4d7
     stdlib_stats_corr.fypp
     stdlib_stats_cov.fypp
     stdlib_stats_pca.fypp
@@ -36,9 +43,18 @@ set(stats_fppFiles
     stdlib_stats_var.fypp
 )
 
+<<<<<<< HEAD
 set(f90Files
     ../stdlib_sorting_radix_sort.f90
     )
 
 configure_stdlib_target(stats "" stats_fppFiles stats_cppFiles)
 target_link_libraries(stats PUBLIC blas lapack $<$<BOOL:${STDLIB_BITSET}>:bitsets>)
+=======
+set(stats_f90Files
+    )
+
+configure_stdlib_target(stats stats_f90Files stats_fppFiles stats_cppFiles)
+
+target_link_libraries(stats PUBLIC core linalg_core linalg selection strings)
+>>>>>>> b32b42a5f862026461df895140646de38928c4d7

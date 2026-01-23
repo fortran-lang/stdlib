@@ -49,6 +49,16 @@ if(NOT DEFINED CMAKE_MAXIMUM_RANK)
   set(CMAKE_MAXIMUM_RANK 4 CACHE STRING "Maximum array rank for generated procedures")
 endif()
 
+option(STDLIB_ANSI "Compile STDLIB ANSI" ON)
+
+if(STDLIB_ANSI)
+  message(STATUS "Enable stdlib ansi module")
+  add_compile_definitions(STDLIB_ANSI=1)
+else()
+  message(STATUS "Disable stdlib ansi module")
+  add_compile_definitions(STDLIB_ANSI=0)
+endif() 
+
 option(STDLIB_BITSET "Compile STDLIB BITSET" ON)
 
 if(STDLIB_BITSET)
@@ -58,6 +68,16 @@ else()
   message(STATUS "Disable stdlib bitset module")
   add_compile_definitions(STDLIB_BITSET=0)
 endif() 
+
+option(STDLIB_HASHMAPS "Compile STDLIB HASHMAPS" ON)
+
+if(STDLIB_HASHMAPS)
+  message(STATUS "Enable stdlib hashmaps module")
+  add_compile_definitions(STDLIB_HASHMAPS=1)
+else()
+  message(STATUS "Disable stdlib hashmaps module")
+  add_compile_definitions(STDLIB_HASHMAPS=0)
+endif()
 
 option(STDLIB_STATS "Compile STDLIB STATS" ON)
 
@@ -161,3 +181,6 @@ install(EXPORT ${PROJECT_NAME}-targets
         NAMESPACE ${PROJECT_NAME}::
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
 )
+
+# Export a pkg-config file
+include(${PROJECT_SOURCE_DIR}/config/export_pc.cmake)
