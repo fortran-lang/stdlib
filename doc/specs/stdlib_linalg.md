@@ -976,6 +976,96 @@ call [stdlib_linalg(module):constrained_lstsq_space(interface)]`(a,  c,  lwork [
 `c`: Shall be a rank-2 `real` or `complex` array of the same kind as `a` defining the linear equality constraints. It is an `intent(in)` argument.
 `lwork`: Shall be an `integer` scalar returning the optimal size required for the workspace array to solve the constrained least-squares problem.
 
+## `weighted_lstsq` - Computes the weighted least squares solution to a linear matrix equation {#weighted-lstsq}
+
+### Status
+
+Experimental
+
+### Description
+
+This function computes the weighted least-squares solution to a linear matrix equation \( A \cdot x = b \) where each observation has a different weight.
+
+The solver minimizes the weighted 2-norm \( \| D(Ax - b) \|_2^2 \) where \( D = \mathrm{diag}(\sqrt{w}) \) is a diagonal matrix formed from the square roots of the weight vector. This is equivalent to transforming the problem to ordinary least-squares through row scaling. The solver is based on LAPACK's `*GELSD` backends.
+
+### Syntax
+
+`x = ` [[stdlib_linalg(module):weighted_lstsq(interface)]] `(w, a, b [, cond, overwrite_a, rank, err])`
+
+### Arguments
+
+`w`: Shall be a rank-1 `real` or `complex` array containing the weight vector. All weights must be positive. It is an `intent(in)` argument.
+
+`a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix. It is an `intent(inout)` argument.
+
+`b`: Shall be a rank-1 array of the same kind as `a`, containing the right-hand-side vector. It is an `intent(in)` argument.
+
+`cond` (optional): Shall be a scalar `real` value cut-off threshold for rank evaluation: `s_i >= cond*maxval(s), i=1:rank`. Shall be a scalar, `intent(in)` argument.
+
+`overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
+
+`rank` (optional): Shall be an `integer` scalar value, that contains the rank of input matrix `a`. This is an `intent(out)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Returns an array value of the same kind as `a`, containing the weighted least-squares solution.
+
+Raises `LINALG_VALUE_ERROR` if any weight is non-positive or if the matrix and weight/right-hand-side have incompatible sizes.
+Raises `LINALG_ERROR` if the underlying Singular Value Decomposition process did not converge.
+Exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_weighted_lstsq.f90!}
+```
+
+## `generalized_lstsq` - Computes the generalized least squares solution {#generalized-lstsq}
+
+### Status
+
+Experimental
+
+### Description
+
+This function computes the generalized least-squares (GLS) solution to a linear matrix equation \( A \cdot x = b \) with correlated errors described by a covariance matrix \( W \).
+
+The solver minimizes the Mahalanobis distance \( (Ax - b)^T W^{-1} (Ax - b) \) where \( W \) is a symmetric positive definite covariance matrix. This is useful when observations have correlated errors. The solver is based on LAPACK's `*GGGLM` backends.
+
+### Syntax
+
+`x = ` [[stdlib_linalg(module):generalized_lstsq(interface)]] `(w, a, b [, prefactored_w, overwrite_a, err])`
+
+### Arguments
+
+`w`: Shall be a rank-2 `real` or `complex` symmetric positive definite array containing the covariance matrix, or its lower triangular Cholesky factor if `prefactored_w=.true.`. It is an `intent(in)` argument.
+
+`a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix. The matrix must have full column rank. It is an `intent(inout)` argument.
+
+`b`: Shall be a rank-1 array of the same kind as `a`, containing the right-hand-side vector. It is an `intent(in)` argument.
+
+`prefactored_w` (optional): Shall be an input `logical` flag. If `.true.`, `w` is assumed to contain the lower triangular Cholesky factor of the covariance matrix rather than the covariance matrix itself. Default: `.false.`. This is an `intent(in)` argument.
+
+`overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Returns an array value of the same kind as `a`, containing the generalized least-squares solution.
+
+Raises `LINALG_VALUE_ERROR` if the covariance matrix is not square or has incompatible dimensions.
+Raises `LINALG_ERROR` if the covariance matrix is not positive definite or if the design matrix does not have full column rank.
+Exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_generalized_lstsq.f90!}
+```
+
 ## `det` - Computes the determinant of a square matrix
 
 ### Status
