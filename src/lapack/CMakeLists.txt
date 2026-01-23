@@ -1,15 +1,5 @@
 
 set(lapack_fppFiles
-    ../stdlib_kinds.fypp
-    ../stdlib_linalg_state.fypp
-    ../stdlib_error.fypp
-    ../stdlib_optval.fypp
-    ../stdlib_io.fypp
-    ../stdlib_ascii.fypp
-    ../stdlib_string_type.fypp
-    ../stdlib_string_type_constructor.fypp
-    ../stdlib_strings.fypp
-    ../stdlib_strings_to_string.fypp
     stdlib_lapack_base.fypp
     stdlib_lapack_solve.fypp
     stdlib_lapack_others.fypp
@@ -65,11 +55,9 @@ set(lapack_fppFiles
     stdlib_lapack_svd_comp2.fypp
 )
 set(lapack_cppFiles
-    ../stdlib_linalg_constants.fypp
-    ../stdlib_linalg_lapack.fypp
+    stdlib_linalg_lapack.fypp
 )
 set(lapack_f90Files
-    $<IF:$<BOOL:${f18errorstop}>,../f18estop.f90,../f08estop.f90>
 )
 
 configure_stdlib_target(lapack lapack_f90Files lapack_fppFiles lapack_cppFiles)
@@ -77,4 +65,4 @@ configure_stdlib_target(lapack lapack_f90Files lapack_fppFiles lapack_cppFiles)
 if(LAPACK_FOUND)
     target_link_libraries(lapack PUBLIC "LAPACK::LAPACK")
 endif()
-target_link_libraries(lapack PUBLIC blas)
+target_link_libraries(lapack PUBLIC core linalg_core blas strings)
