@@ -806,7 +806,7 @@ Expert (`Pure`) interface:
 
 ### Arguments
 
-`a`: Shall be a rank-2 `real` or `complex` square array containing the coefficient matrix. It is normally an `intent(in)` argument. If `overwrite_a=.true.`, it is an `intent(inout)` argument and is destroyed by the call. 
+`a`: Shall be a rank-2 `real` or `complex` square array containing the coefficient matrix. It is an `intent(inout)` argument. By default (`overwrite_a=.false.`) its contents are preserved; if `overwrite_a=.true.`, it is used as temporary storage and its contents are destroyed by the call.
 
 `b`: Shall be a rank-1 or rank-2 array of the same kind as `a`, containing the right-hand-side vector(s). It is an `intent(in)` argument.
 
