@@ -1,19 +1,11 @@
-!Default: compile the ansi module
-#if !defined STDLIB_ANSI
-#define STDLIB_ANSI 1
+! Helper macro: define a feature flag with default value 1
+! This will enable the compulation of the correspond module
+#define STDLIB_DEFAULT(name) \
+#if !defined name          \
+#define name 1              \
 #endif
 
-!Default: compile the bitset module
-#if !defined STDLIB_BITSET
-#define STDLIB_BITSET 1
-#endif
-
-!Default: compile the hashmaps module
-#if !defined STDLIB_HASHMAPS
-#define STDLIB_HASHMAPS 1
-#endif
-
-!Default: compile the stats module
-#if !defined STDLIB_STATS
-#define STDLIB_STATS 1
-#endif
+STDLIB_DEFAULT(STDLIB_ANSI)
+STDLIB_DEFAULT(STDLIB_BITSET)
+STDLIB_DEFAULT(STDLIB_HASHMAPS)
+STDLIB_DEFAULT(STDLIB_STATS)
