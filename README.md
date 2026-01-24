@@ -282,11 +282,14 @@ The table below lists all *C preprocessing* macros and flags currently used by `
 
 | Macro/flag Name | Comments |
 | --- | --- |
+| `STDLIB_ANSI` | Enables compilation of the `stdlib_ansi` module when set to 1 (default). Set via CMake with `-DSTDLIB_ANSI=On/Off`. |
+| `STDLIB_BITSETS` | Enables compilation of the `stdlib_bitsets` module when set to 1 (default). Set via CMake with `-DSTDLIB_BITSETS=On/Off`. |
 | `STDLIB_EXTERNAL_BLAS` |  Links against an external BLAS (32-bit integer interface). Set automatically by CMake when external BLAS/LAPACK are found, or manually via `add_compile_definitions(STDLIB_EXTERNAL_BLAS)`. In fpm: `preprocess.cpp.macros=["STDLIB_EXTERNAL_BLAS"]`. |
 | `STDLIB_EXTERNAL_LAPACK` |  Links against an external LAPACK (32-bit integer interface). Usually paired with `STDLIB_EXTERNAL_BLAS`. |
 | `STDLIB_EXTERNAL_BLAS_I64` |  Links against an external BLAS with ILP64 (64-bit integer) interfaces. Usually paired with `STDLIB_EXTERNAL_LAPACK_I64`. |
 | `STDLIB_EXTERNAL_LAPACK_I64` |  Links against an external LAPACK with ILP64 (64-bit integer) interfaces. |
-
+| `STDLIB_HASHMAPS` | Enables compilation of the `stdlib_hashmaps` module when set to 1 (default). Set via CMake with `-DSTDLIB_HASHMAPS=On/Off`. |
+| `STDLIB_STATS` | Enables compilation of the `stdlib_stats` module when set to 1 (default). Set via CMake with `-DSTDLIB_STATS=On/Off`. |
 
 ## Using stdlib in your project
 
