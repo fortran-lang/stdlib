@@ -111,3 +111,26 @@ function(configure_stdlib_target target_name regular_sources_var fypp_files_var 
     )
     install(DIRECTORY ${LIB_MOD_DIR} DESTINATION "${INSTALL_MOD_DIR}")
 endfunction()
+
+# Determine if a module will be compiled
+#
+# Defines a CMake function that creates an ON/OFF option for a given stdlib module,
+#sets a compile definition accordingly, and prints its enabled/disabled status.
+#
+# Args:
+#     module [in]: Name of the module to be compiled
+#
+function(check_modular module)
+    string(TOUPPER "${module}" umodule)
+
+    option(STDLIB_${umodule} "Compile STDLIB ${umodule}" ON)
+
+    if(STDLIB_${umodule})
+        message(STATUS "Enable stdlib module ${umodule}")
+        add_compile_definitions(STDLIB_${umodule}=1)
+    else()
+        message(STATUS "Disable stdlib module ${umodule}")
+        add_compile_definitions(STDLIB_${umodule}=0)
+    endif()
+
+endfunction()

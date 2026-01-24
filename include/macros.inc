@@ -3,9 +3,9 @@
 #define STDLIB_ANSI 1
 #endif
 
-!Default: compile the bitset module
-#if !defined STDLIB_BITSET
-#define STDLIB_BITSET 1
+!Default: compile the bitsets module
+#if !defined STDLIB_BITSETS
+#define STDLIB_BITSETS 1
 #endif
 
 !Default: compile the hashmaps module
