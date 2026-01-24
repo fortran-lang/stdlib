@@ -51,7 +51,7 @@ endif()
 
 # --- determine if the following modules will be compiled
 check_modular("ANSI")
-check_modular("BITSET")
+check_modular("BITSETS")
 check_modular("HASHMAPS")
 check_modular("STATS")
 

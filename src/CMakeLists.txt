@@ -7,7 +7,7 @@ endif()
 
 add_subdirectory(array)
 
-if (STDLIB_BITSET)
+if (STDLIB_BITSETS)
   add_subdirectory(bitsets)
   list(APPEND OPTIONAL_LIB bitsets)
 endif()
