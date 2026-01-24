@@ -590,9 +590,11 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
         ! Local variables
         type(linalg_state_type) :: err0
-        integer(ilp) :: m, n, i
+        integer(ilp) :: m, n, j
         logical(lk) :: copy_a
-        ${rt}$, allocatable :: a_scaled(:,:), b_scaled(:)
+        ${rt}$, pointer :: amat(:,:)
+        ${rt}$, allocatable, target :: amat_alloc(:,:)
+        ${rt}$, allocatable :: b_scaled(:)
         real(${rk}$), allocatable :: sqrt_w(:)
         character(*), parameter :: this = 'weighted_lstsq'
 
@@ -602,10 +604,26 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
         ! Allocate result (even on error, to prevent segfault on return)
         allocate(x(n))
 
+        ! Validate matrix dimensions
+        if (m < 1 .or. n < 1) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid matrix size a(m, n) =', [m, n])
+            call linalg_error_handling(err0, err)
+            if (present(rank)) rank = 0
+            return
+        end if
+
         ! Validate inputs
         if (size(w, kind=ilp) /= m) then
             err0 = linalg_state_type(this, LINALG_VALUE_ERROR, &
                    'Weight vector size must match number of rows:', size(w, kind=ilp), '/=', m)
+            call linalg_error_handling(err0, err)
+            if (present(rank)) rank = 0
+            return
+        end if
+
+        if (size(b, kind=ilp) /= m) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, &
+                   'Right-hand side size must match rows of A:', size(b, kind=ilp), '/=', m)
             call linalg_error_handling(err0, err)
             if (present(rank)) rank = 0
             return
@@ -629,28 +647,29 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
         allocate(sqrt_w(m))
         sqrt_w = sqrt(w)
 
-        ! Scale A and b
+        ! Handle A matrix: either copy or use original
         if (copy_a) then
-            ! Allocate and scale into copy (preserves original A)
-            allocate(a_scaled(m, n))
-            do i = 1, m
-                a_scaled(i, :) = sqrt_w(i) * a(i, :)
-            end do
+            allocate(amat_alloc(m, n))
+            amat => amat_alloc
         else
-            ! Scale A in-place (destroys original A)
-            allocate(a_scaled(m, n))
-            do i = 1, m
-                a_scaled(i, :) = sqrt_w(i) * a(i, :)
-                a(i, :) = a_scaled(i, :)
-            end do
+            amat => a
         end if
+
+        ! Scale A column-wise (cache-friendly: column-major order)
+        do j = 1, n
+            amat(:, j) = sqrt_w(:) * a(:, j)
+        end do
 
         ! Scale b
         allocate(b_scaled(m))
         b_scaled = sqrt_w * b
 
         ! Solve transformed OLS problem
-        x = stdlib_linalg_${ri}$_lstsq_one(a_scaled, b_scaled, cond=cond, overwrite_a=.true., rank=rank, err=err)
+        x = stdlib_linalg_${ri}$_lstsq_one(amat, b_scaled, cond=cond, overwrite_a=.true., rank=rank, err=err)
+
+        ! Cleanup
+        if (copy_a) deallocate(amat_alloc)
+        deallocate(b_scaled, sqrt_w)
 
     end function stdlib_linalg_${ri}$_weighted_lstsq
     #:endfor
@@ -679,7 +698,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
         ! Local variables
         type(linalg_state_type) :: err0
-        integer(ilp) :: m, n, p, lda, ldb, lwork, info
+        integer(ilp) :: m, n, p, lda, ldb, lwork, info, i, j
         logical(lk) :: copy_a, is_prefactored
         ${rt}$, pointer :: amat(:,:)
         ${rt}$, allocatable, target :: amat_alloc(:,:)
@@ -690,10 +709,34 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
         n = size(a, 2, kind=ilp)
         p = m  ! For GLS, B is m×m
 
+        ! Allocate result early (prevents segfault on error return)
+        allocate(x(n))
+
+        ! Validate matrix dimensions
+        if (m < 1 .or. n < 1) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid matrix size a(m, n) =', [m, n])
+            call linalg_error_handling(err0, err)
+            return
+        end if
+
         ! Validate sizes
         if (size(w, 1, kind=ilp) /= m .or. size(w, 2, kind=ilp) /= m) then
             err0 = linalg_state_type(this, LINALG_VALUE_ERROR, &
                    'Covariance matrix must be square m×m:', [size(w, 1, kind=ilp), size(w, 2, kind=ilp)])
+            call linalg_error_handling(err0, err)
+            return
+        end if
+
+        if (size(b, kind=ilp) /= m) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, &
+                   'Right-hand side size must match rows of A:', size(b, kind=ilp), '/=', m)
+            call linalg_error_handling(err0, err)
+            return
+        end if
+
+        if (m < n) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, &
+                   'GGGLM requires m >= n (overdetermined or square):', m, '<', n)
             call linalg_error_handling(err0, err)
             return
         end if
@@ -707,9 +750,6 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
         else
             copy_a = .true._lk
         end if
-
-        ! Allocate result
-        allocate(x(n))
 
         ! Handle A matrix
         if (copy_a) then
@@ -734,6 +774,9 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
                     err0 = linalg_state_type(this, LINALG_VALUE_ERROR, &
                            'Invalid argument to POTRF at position', -info)
                 end if
+                ! Cleanup before early return
+                if (copy_a) deallocate(amat_alloc)
+                deallocate(lmat)
                 call linalg_error_handling(err0, err)
                 return
             end if
@@ -746,10 +789,18 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
         lda = m
         ldb = m
 
+        ! Zero out upper triangle of lmat (GGGLM reads full matrix, 
+        ! but potrf only sets lower triangle)
+        do j = 1, m
+            do i = 1, j - 1
+                lmat(i, j) = 0.0_${rk}$
+            end do
+        end do
+
         ! Workspace query
         allocate(work(1))
         call ggglm(m, n, p, amat, lda, lmat, ldb, d, x, y, work, -1_ilp, info)
-        lwork = int(real(work(1), ${rk}$), ilp)
+        lwork = ceiling(real(work(1), kind=${rk}$), kind=ilp)
         deallocate(work)
         allocate(work(lwork))
 
@@ -758,6 +809,11 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
         ! Handle errors
         call handle_ggglm_info(this, info, m, n, p, err0)
+
+        ! Cleanup
+        if (copy_a) deallocate(amat_alloc)
+        deallocate(lmat, d, y, work)
+
         call linalg_error_handling(err0, err)
 
     end function stdlib_linalg_${ri}$_generalized_lstsq
