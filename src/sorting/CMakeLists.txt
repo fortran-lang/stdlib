@@ -12,10 +12,10 @@ set(sorting_f90Files
     stdlib_sorting_radix_sort.f90
     )
 
-configure_stdlib_target(sorting sorting_f90Files sorting_fppFiles sorting_cppFiles)
+configure_stdlib_target(${PROJECT_NAME}_sorting sorting_f90Files sorting_fppFiles sorting_cppFiles)
 
 if(STDLIB_BITSET)
-  target_link_libraries(sorting PUBLIC bitsets)
+  target_link_libraries(${PROJECT_NAME}_sorting PUBLIC ${PROJECT_NAME}_bitsets)
 endif()
 
-target_link_libraries(sorting PUBLIC core strings)
+target_link_libraries(${PROJECT_NAME}_sorting PUBLIC ${PROJECT_NAME}_core ${PROJECT_NAME}_strings)
