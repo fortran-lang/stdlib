@@ -43,6 +43,11 @@
 #define STDLIB_STRINGLIST 1
 #endif
 
+!Default: compile the system module
+#if !defined STDLIB_SYSTEM
+#define STDLIB_SYSTEM 1
+#endif
+
 !Default: compile the stats module
 #if !defined STDLIB_STATS
 #define STDLIB_STATS 1

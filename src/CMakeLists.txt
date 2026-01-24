@@ -39,7 +39,7 @@ add_subdirectory(specialfunctions)
 ADD_SUBDIR(specialmatrices)
 ADD_SUBDIR(stringlist)
 add_subdirectory(strings)
-add_subdirectory(system)
+ADD_SUBDIR(system)
 
 ADD_SUBDIR(stats)
 
@@ -68,7 +68,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   specialfunctions
   sorting
   strings
-  system
   blas lapack lapack_extended
   sparse
   ${OPTIONAL_LIB}

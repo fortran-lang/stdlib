@@ -60,6 +60,7 @@ check_modular("QUADRATURE")
 check_modular("SPECIALMATRICES")
 check_modular("STRINGLIST")
 check_modular("STATS")
+check_modular("SYSTEM")
 
 option(FIND_BLAS "Find external BLAS and LAPACK" ON)
 
