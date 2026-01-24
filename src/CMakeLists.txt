@@ -32,7 +32,7 @@ ADD_SUBDIR(linalg_iterative)
 add_subdirectory(linalg)
 ADD_SUBDIR(logger)
 add_subdirectory(math)
-add_subdirectory(quadrature)
+ADD_SUBDIR(quadrature)
 add_subdirectory(selection)
 add_subdirectory(sorting)
 add_subdirectory(specialfunctions)
@@ -64,7 +64,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   linalg_core
   linalg
   math
-  quadrature
   selection
   specialfunctions
   specialmatrices

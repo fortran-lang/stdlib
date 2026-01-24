@@ -18,16 +18,20 @@
 #define STDLIB_IO 1
 #endif
 
-!Default: compile the logger module
-#if !defined STDLIB_LOGGER
-#define STDLIB_LOGGER 1
-#endif
-
 !Default: compile the linalg_iterative module
 #if !defined STDLIB_LINALG_ITERATIVE
 #define STDLIB_LINALG_ITERATIVE 1
 #endif
 
+!Default: compile the logger module
+#if !defined STDLIB_LOGGER
+#define STDLIB_LOGGER 1
+#endif
+
+!Default: compile the quadrature module
+#if !defined STDLIB_QUADRATURE
+#define STDLIB_QUADRATURE 1
+#endif
 
 !Default: compile the stats module
 #if !defined STDLIB_STATS
