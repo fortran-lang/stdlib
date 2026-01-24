@@ -472,7 +472,7 @@ contains
         if (allocated(error)) return
     end subroutine test_swap_stt
 
-#if STDLIB_BITSET
+#if STDLIB_BITSETS
     subroutine test_swap_bitset_64(error)
         use stdlib_bitsets
         type(error_type), allocatable, intent(out) :: error

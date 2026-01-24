@@ -3345,7 +3345,7 @@ contains
 
     end subroutine char_int8_sort_adjoint
 
-#if STDLIB_BITSET
+#if STDLIB_BITSETS
 
 
     module subroutine bitset_64_int8_sort_adjoint( array, adjoint_array, work, iwork, reverse )
@@ -3758,7 +3758,7 @@ contains
     end subroutine bitset_64_int8_sort_adjoint
 
 #endif
-#if STDLIB_BITSET
+#if STDLIB_BITSETS
 
 
     module subroutine bitset_large_int8_sort_adjoint( array, adjoint_array, work, iwork, reverse )
@@ -7460,7 +7460,7 @@ contains
 
     end subroutine char_int16_sort_adjoint
 
-#if STDLIB_BITSET
+#if STDLIB_BITSETS
 
 
     module subroutine bitset_64_int16_sort_adjoint( array, adjoint_array, work, iwork, reverse )
@@ -7873,7 +7873,7 @@ contains
     end subroutine bitset_64_int16_sort_adjoint
 
 #endif
-#if STDLIB_BITSET
+#if STDLIB_BITSETS
 
 
     module subroutine bitset_large_int16_sort_adjoint( array, adjoint_array, work, iwork, reverse )
@@ -11575,7 +11575,7 @@ contains
 
     end subroutine char_int32_sort_adjoint
 
-#if STDLIB_BITSET
+#if STDLIB_BITSETS
 
 
     module subroutine bitset_64_int32_sort_adjoint( array, adjoint_array, work, iwork, reverse )
@@ -11988,7 +11988,7 @@ contains
     end subroutine bitset_64_int32_sort_adjoint
 
 #endif
-#if STDLIB_BITSET
+#if STDLIB_BITSETS
 
 
     module subroutine bitset_large_int32_sort_adjoint( array, adjoint_array, work, iwork, reverse )
@@ -15690,7 +15690,7 @@ contains
 
     end subroutine char_int64_sort_adjoint
 
-#if STDLIB_BITSET
+#if STDLIB_BITSETS
 
 
     module subroutine bitset_64_int64_sort_adjoint( array, adjoint_array, work, iwork, reverse )
@@ -16103,7 +16103,7 @@ contains
     end subroutine bitset_64_int64_sort_adjoint
 
 #endif
-#if STDLIB_BITSET
+#if STDLIB_BITSETS
 
 
     module subroutine bitset_large_int64_sort_adjoint( array, adjoint_array, work, iwork, reverse )
@@ -19805,7 +19805,7 @@ contains
 
     end subroutine char_sp_sort_adjoint
 
-#if STDLIB_BITSET
+#if STDLIB_BITSETS
 
 
     module subroutine bitset_64_sp_sort_adjoint( array, adjoint_array, work, iwork, reverse )
@@ -20218,7 +20218,7 @@ contains
     end subroutine bitset_64_sp_sort_adjoint
 
 #endif
-#if STDLIB_BITSET
+#if STDLIB_BITSETS
 
 
     module subroutine bitset_large_sp_sort_adjoint( array, adjoint_array, work, iwork, reverse )
@@ -23920,7 +23920,7 @@ contains
 
     end subroutine char_dp_sort_adjoint
 
-#if STDLIB_BITSET
+#if STDLIB_BITSETS
 
 
     module subroutine bitset_64_dp_sort_adjoint( array, adjoint_array, work, iwork, reverse )
@@ -24333,7 +24333,7 @@ contains
     end subroutine bitset_64_dp_sort_adjoint
 
 #endif
-#if STDLIB_BITSET
+#if STDLIB_BITSETS
 
 
     module subroutine bitset_large_dp_sort_adjoint( array, adjoint_array, work, iwork, reverse )
