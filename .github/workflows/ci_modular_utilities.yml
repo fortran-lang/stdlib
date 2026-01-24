@@ -1,4 +1,4 @@
-name: ci_modular
+name: CI - Utilities modules
 
 on: [push, pull_request]
 
@@ -23,17 +23,8 @@ jobs:
         toolchain:
           - {compiler: gcc, version: 14}
         build: [cmake]        
-        with_ansi: [On, Off]
         with_bitset: [On, Off]
         with_hashmaps: [On, Off]
-        with_io: [On, Off]
-        with_linalg_iterative: [On, Off]
-        with_logger: [On, Off]
-        with_quadrature: [On, Off]
-        with_specialmatrices: [On, Off]
-        with_stringlist: [On, Off]
-        with_stats: [On, Off]
-        with_system: [On, Off]
     env:
       BUILD_DIR: ${{ matrix.build == 'cmake' && 'build' || '.' }}
 
@@ -65,17 +56,8 @@ jobs:
         -DCMAKE_MAXIMUM_RANK:String=4
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
         -DFIND_BLAS:STRING=FALSE
-        -DSTDLIB_ANSI:STRING=${{ matrix.with_ansi }}
         -DSTDLIB_BITSET:STRING=${{ matrix.with_bitset }}
         -DSTDLIB_HASHMAPS:STRING=${{ matrix.with_hashmaps }}
-        -DSTDLIB_IO:STRING=${{ matrix.with_io }}
-        -DSTDLIB_LINALG_ITERATIVE:STRING=${{ matrix.with_linalg_iterative }}
-        -DSTDLIB_LOGGER:STRING=${{ matrix.with_logger }}
-        -DSTDLIB_QUADRATURE:STRING=${{ matrix.with_quadrature }}
-        -DSTDLIB_SPECIALMATRICES:STRING=${{ matrix.with_specialmatrices }}
-        -DSTDLIB_STRINGLIST:STRING=${{ matrix.with_stringlist }}
-        -DSTDLIB_STATS:STRING=${{ matrix.with_stats }}
-        -DSTDLIB_SYSTEM:STRING=${{ matrix.with_system }}
         -S . -B ${{ env.BUILD_DIR }}
 
     - name: Build and compile
