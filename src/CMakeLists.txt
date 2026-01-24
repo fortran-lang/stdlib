@@ -1,16 +1,18 @@
+macro(ADD_SUBDIR name)
+  string(TOUPPER "${name}" uname)
+  if (STDLIB_${uname})
+    add_subdirectory(${name})
+    list(APPEND OPTIONAL_LIB ${name})
+  endif()
+endmacro()
+
 set(OPTIONAL_LIB)
 
-if (STDLIB_ANSI)
-  add_subdirectory(ansi)
-  list(APPEND OPTIONAL_LIB ansi)
-endif()
+ADD_SUBDIR(ansi)
 
 add_subdirectory(array)
 
-if (STDLIB_BITSETS)
-  add_subdirectory(bitsets)
-  list(APPEND OPTIONAL_LIB bitsets)
-endif()
+ADD_SUBDIR(bitsets)
 
 add_subdirectory(blas)
 add_subdirectory(constants)
@@ -18,10 +20,7 @@ add_subdirectory(core)
 
 add_subdirectory(hash)
 
-if (STDLIB_HASHMAPS)
-  add_subdirectory(hashmaps)
-  list(APPEND OPTIONAL_LIB hashmaps)
-endif()
+ADD_SUBDIR(hashmaps)
 
 add_subdirectory(intrinsics)
 add_subdirectory(io)
@@ -42,10 +41,7 @@ add_subdirectory(stringlist)
 add_subdirectory(strings)
 add_subdirectory(system)
 
-if (STDLIB_STATS)
-  add_subdirectory(stats)
-  list(APPEND OPTIONAL_LIB stats)
-endif()
+ADD_SUBDIR(stats)
 
 add_subdirectory(sparse)
 
