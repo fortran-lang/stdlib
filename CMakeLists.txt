@@ -57,6 +57,7 @@ check_modular("IO")
 check_modular("LINALG_ITERATIVE")
 check_modular("LOGGER")
 check_modular("QUADRATURE")
+check_modular("SPECIALMATRICES")
 check_modular("STATS")
 
 option(FIND_BLAS "Find external BLAS and LAPACK" ON)

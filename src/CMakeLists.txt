@@ -36,7 +36,7 @@ ADD_SUBDIR(quadrature)
 add_subdirectory(selection)
 add_subdirectory(sorting)
 add_subdirectory(specialfunctions)
-add_subdirectory(specialmatrices)
+ADD_SUBDIR(specialmatrices)
 add_subdirectory(stringlist)
 add_subdirectory(strings)
 add_subdirectory(system)
@@ -66,7 +66,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   math
   selection
   specialfunctions
-  specialmatrices
   sorting
   stringlist
   strings

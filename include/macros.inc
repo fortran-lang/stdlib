@@ -33,6 +33,11 @@
 #define STDLIB_QUADRATURE 1
 #endif
 
+!Default: compile the specialmatrices module
+#if !defined STDLIB_SPECIALMATRICES
+#define STDLIB_SPECIALMATRICES 1
+#endif
+
 !Default: compile the stats module
 #if !defined STDLIB_STATS
 #define STDLIB_STATS 1
