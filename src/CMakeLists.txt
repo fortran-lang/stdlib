@@ -30,7 +30,7 @@ add_subdirectory(lapack_extended)
 add_subdirectory(linalg_core)
 add_subdirectory(linalg_iterative)
 add_subdirectory(linalg)
-add_subdirectory(logger)
+ADD_SUBDIR(logger)
 add_subdirectory(math)
 add_subdirectory(quadrature)
 add_subdirectory(selection)
@@ -64,7 +64,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   linalg_core
   linalg_iterative
   linalg
-  logger
   math
   quadrature
   selection

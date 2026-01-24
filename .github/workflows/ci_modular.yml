@@ -27,6 +27,7 @@ jobs:
         with_bitset: [On, Off]
         with_hashmaps: [On, Off]
         with_io: [On, Off]
+        with_logger: [On, Off]
         with_stats: [On, Off]
     env:
       BUILD_DIR: ${{ matrix.build == 'cmake' && 'build' || '.' }}
@@ -63,6 +64,7 @@ jobs:
         -DSTDLIB_BITSET:STRING=${{ matrix.with_bitset }}
         -DSTDLIB_HASHMAPS:STRING=${{ matrix.with_hashmaps }}
         -DSTDLIB_IO:STRING=${{ matrix.with_io }}
+        -DSTDLIB_LOGGER:STRING=${{ matrix.with_logger }}
         -DSTDLIB_STATS:STRING=${{ matrix.with_stats }}
         -S . -B ${{ env.BUILD_DIR }}
 

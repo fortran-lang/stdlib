@@ -18,6 +18,11 @@
 #define STDLIB_IO 1
 #endif
 
+!Default: compile the logger module
+#if !defined STDLIB_LOGGER
+#define STDLIB_LOGGER 1
+#endif
+
 !Default: compile the stats module
 #if !defined STDLIB_STATS
 #define STDLIB_STATS 1
