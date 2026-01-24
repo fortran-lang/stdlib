@@ -31,6 +31,7 @@ jobs:
         with_logger: [On, Off]
         with_quadrature: [On, Off]
         with_specialmatrices: [On, Off]
+        with_stringlist: [On, Off]
         with_stats: [On, Off]
     env:
       BUILD_DIR: ${{ matrix.build == 'cmake' && 'build' || '.' }}
@@ -71,6 +72,7 @@ jobs:
         -DSTDLIB_LOGGER:STRING=${{ matrix.with_logger }}
         -DSTDLIB_QUADRATURE:STRING=${{ matrix.with_quadrature }}
         -DSTDLIB_SPECIALMATRICES:STRING=${{ matrix.with_specialmatrices }}
+        -DSTDLIB_STRINGLIST:STRING=${{ matrix.with_stringlist }}
         -DSTDLIB_STATS:STRING=${{ matrix.with_stats }}
         -S . -B ${{ env.BUILD_DIR }}
 

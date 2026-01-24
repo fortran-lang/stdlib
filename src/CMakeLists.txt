@@ -37,7 +37,7 @@ add_subdirectory(selection)
 add_subdirectory(sorting)
 add_subdirectory(specialfunctions)
 ADD_SUBDIR(specialmatrices)
-add_subdirectory(stringlist)
+ADD_SUBDIR(stringlist)
 add_subdirectory(strings)
 add_subdirectory(system)
 
@@ -67,7 +67,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   selection
   specialfunctions
   sorting
-  stringlist
   strings
   system
   blas lapack lapack_extended
