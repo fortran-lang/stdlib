@@ -14,7 +14,7 @@ set(sorting_f90Files
 
 configure_stdlib_target(sorting sorting_f90Files sorting_fppFiles sorting_cppFiles)
 
-if(STDLIB_BITSET)
+if(STDLIB_BITSETS)
   target_link_libraries(sorting PUBLIC bitsets)
 endif()
 

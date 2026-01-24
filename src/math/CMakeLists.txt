@@ -14,7 +14,7 @@ set(math_cppFiles
 
 configure_stdlib_target(math "" math_fppFiles math_cppFiles)
 
-if(STDLIB_BITSET)
+if(STDLIB_BITSETS)
   target_link_libraries(math PUBLIC bitsets)
 endif()
 

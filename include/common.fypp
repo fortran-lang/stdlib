@@ -142,19 +142,19 @@ $:"s" if cmplx=="c" else "d" if cmplx=="z" else "x" if cmplx=="y" else "q" if cm
 #:set STRING_KINDS_TYPES = list(zip(STRING_KINDS, STRING_TYPES))
 
 #! Derived type bitsets
-#:set BITSET_KINDS = ["bitset_64", "bitset_large"]
+#:set BITSETS_KINDS = ["bitset_64", "bitset_large"]
 
 #! Bitset types to be considered during templating
-#:set BITSET_TYPES = ["type({})".format(k) for k in BITSET_KINDS]
+#:set BITSETS_TYPES = ["type({})".format(k) for k in BITSETS_KINDS]
 
 #! Bitset abbreviations directive to be considered during templating
-#:set BITSET_INIT = ["" for k in BITSET_KINDS]
+#:set BITSETS_INIT = ["" for k in BITSETS_KINDS]
 
 #! Bitset CPP directive to be considered during templating
-#:set BITSET_CPPS = ["STDLIB_BITSET" for k in BITSET_KINDS]
+#:set BITSETS_CPPS = ["STDLIB_BITSETS" for k in BITSETS_KINDS]
 
 #! Collected (kind, type) tuples for bitset types
-#:set BITSET_KINDS_TYPES = list(zip(BITSET_KINDS, BITSET_TYPES, BITSET_INIT, BITSET_CPPS))
+#:set BITSETS_KINDS_TYPES = list(zip(BITSETS_KINDS, BITSETS_TYPES, BITSETS_INIT, BITSETS_CPPS))
 
 #! Sparse types to be considered during templating
 #:set SPARSE_KINDS = ["COO", "CSR", "CSC", "ELL"]
