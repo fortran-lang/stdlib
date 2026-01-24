@@ -27,6 +27,7 @@ jobs:
         with_bitset: [On, Off]
         with_hashmaps: [On, Off]
         with_io: [On, Off]
+        with_linalg_iterative: [On, Off]
         with_logger: [On, Off]
         with_stats: [On, Off]
     env:
@@ -64,6 +65,7 @@ jobs:
         -DSTDLIB_BITSET:STRING=${{ matrix.with_bitset }}
         -DSTDLIB_HASHMAPS:STRING=${{ matrix.with_hashmaps }}
         -DSTDLIB_IO:STRING=${{ matrix.with_io }}
+        -DSTDLIB_LINALG_ITERATIVE:STRING=${{ matrix.with_linalg_iterative }}
         -DSTDLIB_LOGGER:STRING=${{ matrix.with_logger }}
         -DSTDLIB_STATS:STRING=${{ matrix.with_stats }}
         -S . -B ${{ env.BUILD_DIR }}

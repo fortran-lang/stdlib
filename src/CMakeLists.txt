@@ -28,7 +28,7 @@ ADD_SUBDIR(io)
 add_subdirectory(lapack)
 add_subdirectory(lapack_extended)
 add_subdirectory(linalg_core)
-add_subdirectory(linalg_iterative)
+ADD_SUBDIR(linalg_iterative)
 add_subdirectory(linalg)
 ADD_SUBDIR(logger)
 add_subdirectory(math)
@@ -62,7 +62,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   hash
   intrinsics
   linalg_core
-  linalg_iterative
   linalg
   math
   quadrature

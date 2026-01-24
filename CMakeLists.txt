@@ -54,6 +54,7 @@ check_modular("ANSI")
 check_modular("BITSETS")
 check_modular("HASHMAPS")
 check_modular("IO")
+check_modular("LINALG_ITERATIVE")
 check_modular("LOGGER")
 check_modular("STATS")
 

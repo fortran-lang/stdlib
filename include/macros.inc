@@ -23,6 +23,12 @@
 #define STDLIB_LOGGER 1
 #endif
 
+!Default: compile the linalg_iterative module
+#if !defined STDLIB_LINALG_ITERATIVE
+#define STDLIB_LINALG_ITERATIVE 1
+#endif
+
+
 !Default: compile the stats module
 #if !defined STDLIB_STATS
 #define STDLIB_STATS 1
