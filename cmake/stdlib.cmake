@@ -114,11 +114,11 @@ endfunction()
 
 # Determine if a module will be compiled
 #
-#Defines a CMake function that creates an ON/OFF option for a given stdlib module,
+# Defines a CMake function that creates an ON/OFF option for a given stdlib module,
 #sets a compile definition accordingly, and prints its enabled/disabled status.
 #
 # Args:
-#     module [in]: Name of the module to be compile
+#     module [in]: Name of the module to be compiled
 #
 function(check_modular module)
     string(TOUPPER "${module}" umodule)
@@ -131,6 +131,6 @@ function(check_modular module)
     else()
         message(STATUS "Disable stdlib module ${umodule}")
         add_compile_definitions(STDLIB_${umodule}=0)
-    endif() 
+    endif()
 
 endfunction()
