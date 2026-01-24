@@ -52,9 +52,10 @@ module stdlib_linalg_lapack_aux
      public :: handle_geev_info
      public :: handle_ggev_info
      public :: handle_heev_info
-     public :: handle_gglse_info
-     
-     ! SELCTG is a LOGICAL FUNCTION of three DOUBLE PRECISION arguments 
+    public :: handle_gglse_info
+    public :: handle_ggglm_info
+    
+    ! SELCTG is a LOGICAL FUNCTION of three DOUBLE PRECISION arguments 
      ! used to select eigenvalues to sort to the top left of the Schur form. 
      ! An eigenvalue (ALPHAR(j)+ALPHAI(j))/BETA(j) is selected if SELCTG is true, i.e., 
      abstract interface 
@@ -1653,5 +1654,25 @@ module stdlib_linalg_lapack_aux
                 err = linalg_state_type(this, LINALG_INTERNAL_ERROR, 'catastrophic error.')
         end select
     end subroutine handle_gglse_info
+
+    elemental subroutine handle_ggglm_info(this, info, m, n, p, err)
+        character(len=*), intent(in) :: this
+        integer(ilp), intent(in) :: info, m, n, p
+        type(linalg_state_type), intent(out) :: err
+        ! Process output.
+        select case (info)
+            case (0)
+                ! Success.
+                err%state = LINALG_SUCCESS
+            case (:-1)
+                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid argument at position', -info)
+            case (1:)
+                ! From LAPACK: the upper triangular factor R of A does not have full rank
+                err = linalg_state_type(this, LINALG_ERROR, &
+                      'Design matrix A does not have full column rank (rank-deficient)')
+            case default
+                err = linalg_state_type(this, LINALG_INTERNAL_ERROR, 'catastrophic error.')
+        end select
+    end subroutine handle_ggglm_info
 
 end module stdlib_linalg_lapack_aux

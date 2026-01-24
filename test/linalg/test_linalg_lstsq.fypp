@@ -4,7 +4,7 @@
 module test_linalg_least_squares
     use testdrive, only: error_type, check, new_unittest, unittest_type
     use stdlib_linalg_constants
-    use stdlib_linalg, only: lstsq,solve_lstsq
+    use stdlib_linalg, only: lstsq, solve_lstsq, generalized_lstsq
     use stdlib_linalg_state, only: linalg_state_type
 
     implicit none (type,external)
@@ -26,6 +26,8 @@ module test_linalg_least_squares
         #:for rk,rt,ri in REAL_KINDS_TYPES
         call add_test(tests,new_unittest("least_squares_${ri}$",test_lstsq_one_${ri}$))
         call add_test(tests,new_unittest("least_squares_randm_${ri}$",test_lstsq_random_${ri}$))
+        call add_test(tests,new_unittest("generalized_lstsq_${ri}$",test_generalized_lstsq_${ri}$))
+        call add_test(tests,new_unittest("generalized_lstsq_identity_${ri}$",test_generalized_lstsq_identity_${ri}$))
         #:endfor
 
     end subroutine test_least_squares
@@ -138,6 +140,82 @@ module test_linalg_least_squares
         if (allocated(error)) return
 
     end subroutine test_issue_823
+
+    #:for rk,rt,ri in REAL_KINDS_TYPES
+    !> Test basic generalized least-squares with correlated errors
+    subroutine test_generalized_lstsq_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+        integer(ilp), parameter :: m = 3, n = 2
+        real(${rk}$), parameter :: tol = 1000*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$ :: A(m,n), b(m), W(m,m)
+        ${rt}$, allocatable :: x(:)
+
+        ! Design matrix
+        A(:,1) = 1.0_${rk}$
+        A(:,2) = [1.0_${rk}$, 2.0_${rk}$, 3.0_${rk}$]
+
+        ! Observations
+        b = [1.0_${rk}$, 2.1_${rk}$, 2.9_${rk}$]
+
+        ! SPD covariance matrix (correlated errors)
+        W(1,:) = [2.0_${rk}$, 1.0_${rk}$, 0.5_${rk}$]
+        W(2,:) = [1.0_${rk}$, 2.0_${rk}$, 1.0_${rk}$]
+        W(3,:) = [0.5_${rk}$, 1.0_${rk}$, 2.0_${rk}$]
+
+        x = generalized_lstsq(W, A, b, err=state)
+
+        call check(error, state%ok(), 'generalized_lstsq failed: '//state%print())
+        if (allocated(error)) return
+
+        call check(error, size(x)==n, 'generalized_lstsq: wrong solution size')
+        if (allocated(error)) return
+
+        ! Solution should be finite
+        call check(error, all(abs(x) < huge(0.0_${rk}$)), 'generalized_lstsq: solution not finite')
+        if (allocated(error)) return
+
+    end subroutine test_generalized_lstsq_${ri}$
+
+    !> Test GLS with identity covariance = OLS
+    subroutine test_generalized_lstsq_identity_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+        integer(ilp), parameter :: m = 4, n = 2
+        integer(ilp) :: i
+        real(${rk}$), parameter :: tol = 1000*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$ :: A(m,n), b(m), W(m,m)
+        ${rt}$, allocatable :: x_gls(:), x_ols(:)
+
+        ! Design matrix
+        A(:,1) = 1.0_${rk}$
+        A(:,2) = [1.0_${rk}$, 2.0_${rk}$, 3.0_${rk}$, 4.0_${rk}$]
+        b = [2.0_${rk}$, 4.0_${rk}$, 5.0_${rk}$, 4.0_${rk}$]
+
+        ! Identity covariance
+        W = 0.0_${rk}$
+        do i = 1, m
+            W(i,i) = 1.0_${rk}$
+        end do
+
+        x_gls = generalized_lstsq(W, A, b, err=state)
+        call check(error, state%ok(), 'generalized_lstsq with I failed')
+        if (allocated(error)) return
+
+        x_ols = lstsq(A, b, err=state)
+        call check(error, state%ok(), 'lstsq failed')
+        if (allocated(error)) return
+
+        ! GLS with identity should equal OLS
+        call check(error, all(abs(x_gls - x_ols) < tol), &
+                   'generalized_lstsq with identity should equal lstsq')
+        if (allocated(error)) return
+
+    end subroutine test_generalized_lstsq_identity_${ri}$
+
+    #:endfor
 
     ! gcc-15 bugfix utility
     subroutine add_test(tests,new_test)

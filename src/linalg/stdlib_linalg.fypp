@@ -40,6 +40,7 @@ module stdlib_linalg
   public :: lstsq_space
   public :: constrained_lstsq
   public :: constrained_lstsq_space
+  public :: generalized_lstsq
   public :: norm
   public :: mnorm
   public :: get_norm
@@ -678,6 +679,44 @@ module stdlib_linalg
     end subroutine stdlib_linalg_${ri}$_constrained_lstsq_space
     #:endfor
   end interface
+
+  interface generalized_lstsq
+    !! version: experimental
+    !!
+    !! Computes the generalized least-squares solution to \( \min_x (Ax-b)^T W^{-1} (Ax-b) \)
+    !! ([Specification](../page/specs/stdlib_linalg.html#generalized-lstsq))
+    !!
+    !!### Summary
+    !! Function interface for computing generalized least-squares via GGGLM.
+    !!
+    !!### Description
+    !!
+    !! This interface provides methods for computing generalized least-squares
+    !! with a symmetric positive definite covariance matrix.
+    !! Supported data types include `real` and `complex`.
+    !!
+    !!@note The solution is based on LAPACK's `*GGGLM` routine.
+    !!@note The covariance matrix W is always preserved (copied internally).
+    !!
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    module function stdlib_linalg_${ri}$_generalized_lstsq(w,a,b,prefactored_w,overwrite_a,err) result(x)
+        !> Covariance matrix W[m,m] (SPD) or its lower triangular Cholesky factor
+        ${rt}$, intent(in) :: w(:,:)
+        !> Input matrix a[m,n]
+        ${rt}$, intent(inout), target :: a(:,:)
+        !> Right hand side vector b[m]
+        ${rt}$, intent(in) :: b(:)
+        !> [optional] Is W already Cholesky-factored? Default: .false.
+        logical(lk), optional, intent(in) :: prefactored_w
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+        !> Result array x[n]
+        ${rt}$, allocatable :: x(:)
+    end function stdlib_linalg_${ri}$_generalized_lstsq
+    #:endfor
+  end interface generalized_lstsq
 
   ! QR factorization of rank-2 array A
   interface qr
