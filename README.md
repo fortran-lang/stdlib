@@ -1,5 +1,6 @@
 # Fortran Standard Library
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18346789.svg)](https://doi.org/10.5281/zenodo.18346789)
 [![Actions Status](https://github.com/fortran-lang/stdlib/workflows/CI/badge.svg)](https://github.com/fortran-lang/stdlib/actions)
 [![Actions Status](https://github.com/fortran-lang/stdlib/workflows/CI_windows/badge.svg)](https://github.com/fortran-lang/stdlib/actions)
 
