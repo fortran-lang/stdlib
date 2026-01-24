@@ -1,0 +1,267 @@
+#:set WITH_QP = False
+#:set WITH_XDP = False
+#:include "common.fypp"
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+program test_distribution_gamma
+    use stdlib_kinds, only : sp, dp, xdp, qp
+    use stdlib_error, only : check
+    use stdlib_random, only : random_seed
+    use stdlib_stats_distribution_gamma, only : rgamma => rvs_gamma,           &
+                              gamma_pdf => pdf_gamma, gamma_cdf => cdf_gamma
+
+    implicit none
+    #:for k1, t1 in REAL_KINDS_TYPES
+    ${t1}$, parameter :: ${k1}$tol = 1000 * epsilon(1.0_${k1}$)
+    #:endfor
+    logical ::  warn = .true.
+    integer :: put, get
+
+    put = 12345678
+    call random_seed(put, get)
+
+    call test_gamma_random_generator
+
+    #:for k1, t1 in RC_KINDS_TYPES
+    call test_gamma_rvs_${t1[0]}$${k1}$
+    #:endfor
+
+    #:for k1, t1 in RC_KINDS_TYPES
+    call test_gamma_pdf_${t1[0]}$${k1}$
+    #:endfor
+
+    #:for k1, t1 in RC_KINDS_TYPES
+    call test_gamma_cdf_${t1[0]}$${k1}$
+    #:endfor
+
+contains
+
+    subroutine test_gamma_random_generator
+        integer, parameter :: num = 10000000, array_size = 1000
+        integer :: i, j, freq(0:array_size)
+        real(dp) :: chisq, expct
+
+        print *, ""
+        print *, "Test gamma random generator with chi-squared"
+
+        freq = 0
+        do i = 1, num
+            j = 1000 * gamma_cdf(rgamma(2.0_dp, 1.5_dp), 2.0_dp, 1.5_dp)
+            freq(j) = freq(j) + 1
+        end do
+
+        chisq = 0.0_dp
+        expct = num / array_size
+
+        do i = 0, array_size - 1
+           chisq = chisq + (freq(i) - expct) ** 2 / expct
+        end do
+
+        write(*,*) "The critical values for chi-squared with 1000 d. of f. is" &
+            //" 1143.92"
+        write(*,*) "Chi-squared for gamma random generator is : ", chisq
+        call check((chisq < 1143.9), &
+            msg="gamma randomness failed chi-squared test", warn=warn)
+
+    end subroutine test_gamma_random_generator
+
+    #:for k1, t1 in RC_KINDS_TYPES
+    subroutine test_gamma_rvs_${t1[0]}$${k1}$
+        integer, parameter :: k = 5, n = 10
+        ${t1}$ :: res(n), gshape, scale
+        integer :: i
+        integer :: seed, get
+    #:if t1[0] == "r"
+      #! for real type
+        ${t1}$ :: ans(n) = [0.85758907497718884_${k1}$,                        &
+                            1.0206623865526090_${k1}$,                         &
+                            0.99753931024198650_${k1}$,                        &
+                            0.97653359790345839_${k1}$,                        &
+                            0.41853482638322043_${k1}$,                        &
+                            2.2012288073086310_${k1}$,                         &
+                            2.0639542613306592_${k1}$,                         &
+                            3.1794669730880192_${k1}$,                         &
+                            1.9329744662223280_${k1}$,                         &
+                            1.0257959670932111_${k1}$]
+    #:else
+      #! for complex type
+        ${t1}$ :: ans(n) =                                                     &
+                     [(1.0719863437214860_${k1}$, 0.46775532101393819_${k1}$), &
+                     (0.42382516926807201_${k1}$, 0.96340496644915230_${k1}$), &
+                      (2.7515360091357888_${k1}$, 0.14837198853150388_${k1}$), &
+                      (1.4536367104245524_${k1}$, 0.56852736336951559_${k1}$), &
+                (0.34559143458416125_${k1}$, 4.96217685362488267E-002_${k1}$), &
+                      (1.9657884897696516_${k1}$,  3.1124314799641013_${k1}$), &
+                 (3.4155160623540453_${k1}$, 5.04948933894018709E-002_${k1}$), &
+                     (0.94594398345216302_${k1}$, 0.45691588305890624_${k1}$), &
+                      (1.1493158751025965_${k1}$, 0.12944763723941669_${k1}$), &
+                      (2.9691469633592282_${k1}$, 1.1617408197125874_${k1}$)]
+    #:endif
+
+        print *, "Test gamma_distribution_rvs_${t1[0]}$${k1}$"
+        seed = 639741825
+        call random_seed(seed, get)
+
+    #:if t1[0] == "r"
+      #! for real type
+        gshape = 2.0_${k1}$; scale = 1.0_${k1}$
+    #:else
+      #! for complex type
+        gshape = (2.0_${k1}$, 0.7_${k1}$); scale = (0.8_${k1}$, 1.2_${k1}$)
+    #:endif
+
+        do i = 1, k
+            res(i) = rgamma(gshape, scale)
+        end do
+
+        res(k + 1 : n) = rgamma(gshape, scale, k)
+
+        do i = 1, n
+            call check(abs(res(i) - ans(i)) < ${k1}$tol,                      &
+                       msg="gamma_distribution_rvs_${t1[0]}$${k1}$ failed", &
+                       warn=warn)
+        end do
+    end subroutine test_gamma_rvs_${t1[0]}$${k1}$
+
+    #:endfor
+
+    #:for k1, t1 in RC_KINDS_TYPES
+    subroutine test_gamma_pdf_${t1[0]}$${k1}$
+        ${t1}$ :: x1, x2(3,4), gshape, scale
+        integer :: i
+        integer :: seed, get
+        real(${k1}$) :: res(15)
+    #:if t1[0] == "r"
+      #! for real type
+        real(${k1}$), parameter :: ans(15) =                                   &
+                                   [3.4495412572168718E-002_${k1}$,            &
+                                    3.4495412572168718E-002_${k1}$,            &
+                                    3.4495412572168718E-002_${k1}$,            &
+                                    0.29116634347089576_${k1}$,                &
+                                    0.28338290850731412_${k1}$,                &
+                                    0.27922270935613586_${k1}$,                &
+                                    0.36440665523348270_${k1}$,                &
+                                    0.24379209619143699_${k1}$,                &
+                                    6.3815638087140858E-002_${k1}$,            &
+                                    0.25844600948718588_${k1}$,                &
+                                    0.17268118913523497_${k1}$,                &
+                                    0.31181223194308200_${k1}$,                &
+                                    0.24027095040543087_${k1}$,                &
+                                    0.36765502365831570_${k1}$,                &
+                                    9.9011714088769673E-002_${k1}$]
+    #:else
+      #! for complex type
+        real(${k1}$), parameter :: ans(15) =                                   &
+                                   [0.11554282574059289_${k1}$,                &
+                                    0.11554282574059289_${k1}$,                &
+                                    0.11554282574059289_${k1}$,                &
+                                    9.2682318951901529E-002_${k1}$,            &
+                                    0.40166849087286088_${k1}$,                &
+                                    0.37468980496232701_${k1}$,                &
+                                    0.14712363446345342_${k1}$,                &
+                                    0.22561628567985184_${k1}$,                &
+                                    0.12765403024301181_${k1}$,                &
+                                    3.9182498867847360E-002_${k1}$,            &
+                                    2.5873533461032859E-003_${k1}$,            &
+                                    0.10105832622792968_${k1}$,                &
+                                    0.24044091896609490_${k1}$,                &
+                                    4.9885356046115948E-003_${k1}$,            &
+                                    0.11085827028639164_${k1}$]
+    #:endif
+
+        print *, "Test gamma_distribution_pdf_${t1[0]}$${k1}$"
+        seed = 345987126
+        call random_seed(seed, get)
+    #:if t1[0] == "r"
+      #! for real type
+        gshape = 2.0_${k1}$; scale = 1.0_${k1}$
+    #:else
+      #! for complex type
+        gshape = (2.0_${k1}$, 0.7_${k1}$); scale = (0.8_${k1}$, 1.2_${k1}$)
+    #:endif
+
+        x1 = rgamma(gshape, scale)
+        x2 = reshape(rgamma(gshape, scale, 12), [3,4])
+
+        res(1:3) = gamma_pdf(x1, gshape, scale)
+        res(4:15) = reshape(gamma_pdf(x2, gshape, scale), [12])
+
+        do i = 1, 15
+            call check(abs(res(i) - ans(i)) < ${k1}$tol,                      &
+                       msg="gamma_distribution_pdf_${t1[0]}$${k1}$ failed", &
+                       warn=warn)
+        end do
+    end subroutine test_gamma_pdf_${t1[0]}$${k1}$
+
+    #:endfor
+
+    #:for k1, t1 in RC_KINDS_TYPES
+    subroutine test_gamma_cdf_${t1[0]}$${k1}$
+        ${t1}$ :: x1, x2(3,4), gshape, scale
+        integer :: i
+        integer :: seed, get
+        real(${k1}$) :: res(15)
+    #:if t1[0] == "r"
+      #! for real type
+        real(${k1}$), parameter :: ans(15) =                                   &
+                                   [0.14616451332312537_${k1}$,                &
+                                    0.14616451332312537_${k1}$,                &
+                                    0.14616451332312537_${k1}$,                &
+                                    0.65659267488407371_${k1}$,                &
+                                    0.60964815134398197_${k1}$,                &
+                                    0.59750757512835858_${k1}$,                &
+                                    0.69018498665337554_${k1}$,                &
+                                    0.52070621772130649_${k1}$,                &
+                                    0.23208261199896811_${k1}$,                &
+                                    0.57395848656344925_${k1}$,                &
+                                    0.50556401081889642_${k1}$,                &
+                                    0.60050726865093853_${k1}$,                &
+                                    0.52521835876447772_${k1}$,                &
+                                    0.74358834194807097_${k1}$,                &
+                                    0.35588223028193658_${k1}$]
+    #:else
+      #! for complex type
+        real(${k1}$), parameter :: ans(15) =                                   &
+                                   [0.70448339487949867_${k1}$,                &
+                                    0.70448339487949867_${k1}$,                &
+                                    0.70448339487949867_${k1}$,                &
+                                    0.58326189602977894_${k1}$,                &
+                                    0.64528366310108972_${k1}$,                &
+                                    0.64940551894231044_${k1}$,                &
+                                    0.90124666284311420_${k1}$,                &
+                                    0.84345913462074950_${k1}$,                &
+                                    0.85089208702762014_${k1}$,                &
+                                    0.77705700206310725_${k1}$,                &
+                                    0.80494892292159898_${k1}$,                &
+                                    0.87781094911086321_${k1}$,                &
+                                    0.87456078103386559_${k1}$,                &
+                                    0.88580959491539949_${k1}$,                &
+                                    0.94240247435575605_${k1}$]
+    #:endif
+
+        print *, "Test gamma_distribution_cdf_${t1[0]}$${k1}$"
+        seed = 345987126
+        call random_seed(seed, get)
+    #:if t1[0] == "r"
+      #! for real type
+        gshape = 2.0_${k1}$; scale = 1.0_${k1}$
+    #:else
+      #! for complex type
+        gshape = (2.0_${k1}$, 0.7_${k1}$); scale = (0.8_${k1}$, 1.2_${k1}$)
+    #:endif
+
+        x1 = rgamma(gshape, scale)
+        x2 = reshape(rgamma(gshape, scale, 12), [3,4])
+
+        res(1:3) = gamma_cdf(x1, gshape, scale)
+        res(4:15) = reshape(gamma_cdf(x2, gshape, scale), [12])
+
+        do i = 1, 15
+            call check(abs(res(i) - ans(i)) < ${k1}$tol,                      &
+                       msg="gamma_distribution_cdf_${t1[0]}$${k1}$ failed", &
+                       warn=warn)
+        end do
+    end subroutine test_gamma_cdf_${t1[0]}$${k1}$
+
+    #:endfor
+
+end program test_distribution_gamma
