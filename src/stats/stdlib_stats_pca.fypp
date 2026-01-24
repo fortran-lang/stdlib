@@ -86,7 +86,7 @@ contains
       ! Fill lower triangle from upper triangle (syrk only fills upper)
       allocate(lambda(p))
       allocate(vectors(p, p))
-      call eigh(c, lambda, vectors=vectors, lower=.false., err=err)
+      call eigh(c, lambda, vectors=vectors, upper_a=.true., err=err)
 
       if (err%ok()) then
          ! LAPACK returns eigenvalues in ascending order.
