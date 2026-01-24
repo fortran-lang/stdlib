@@ -26,6 +26,7 @@ jobs:
         with_ansi: [On, Off]
         with_bitset: [On, Off]
         with_hashmaps: [On, Off]
+        with_io: [On, Off]
         with_stats: [On, Off]
     env:
       BUILD_DIR: ${{ matrix.build == 'cmake' && 'build' || '.' }}
@@ -61,6 +62,7 @@ jobs:
         -DSTDLIB_ANSI:STRING=${{ matrix.with_ansi }}
         -DSTDLIB_BITSET:STRING=${{ matrix.with_bitset }}
         -DSTDLIB_HASHMAPS:STRING=${{ matrix.with_hashmaps }}
+        -DSTDLIB_IO:STRING=${{ matrix.with_io }}
         -DSTDLIB_STATS:STRING=${{ matrix.with_stats }}
         -S . -B ${{ env.BUILD_DIR }}
 

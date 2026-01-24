@@ -23,7 +23,7 @@ add_subdirectory(hash)
 ADD_SUBDIR(hashmaps)
 
 add_subdirectory(intrinsics)
-add_subdirectory(io)
+ADD_SUBDIR(io)
 
 add_subdirectory(lapack)
 add_subdirectory(lapack_extended)
@@ -61,7 +61,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   core
   hash
   intrinsics
-  io
   linalg_core
   linalg_iterative
   linalg

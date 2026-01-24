@@ -13,6 +13,11 @@
 #define STDLIB_HASHMAPS 1
 #endif
 
+!Default: compile the io module
+#if !defined STDLIB_IO
+#define STDLIB_IO 1
+#endif
+
 !Default: compile the stats module
 #if !defined STDLIB_STATS
 #define STDLIB_STATS 1

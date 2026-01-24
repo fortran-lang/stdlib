@@ -53,6 +53,7 @@ endif()
 check_modular("ANSI")
 check_modular("BITSETS")
 check_modular("HASHMAPS")
+check_modular("IO")
 check_modular("STATS")
 
 option(FIND_BLAS "Find external BLAS and LAPACK" ON)
