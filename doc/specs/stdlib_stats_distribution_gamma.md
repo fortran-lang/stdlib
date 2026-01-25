@@ -74,10 +74,10 @@ program demo_gamma_rvs
 !  1.39297554E-04  0.296419382  0.352113068  2.80515051  3.65264394E-04 
 !  0.197743446  5.54569438E-02  9.30598825E-02  1.02596343  1.85311246
     shape = (3.0, 4.0)
-    scale = (2.0, 0.7)
+    rate = (2.0, 0.7)
     print *, rgamma(shape, rate)
     !single complex gamma random variate with real part of shape = 3.0,
-    !rate=2.0; imagainary part of shape=4.0, rate=0.7
+    !rate=2.0; imaginary part of shape=4.0, rate=0.7
 ! (0.826188326,3.54749799)
 end program demo_gamma_rvs
 ```
