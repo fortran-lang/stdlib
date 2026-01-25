@@ -45,18 +45,6 @@ if (NOT DEFINED WITH_ILP64)
   set(WITH_ILP64 ${WITH_ILP64} PARENT_SCOPE)
 endif()
 
-# Export a pkg-config file
-configure_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/template.pc"
-  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc"
-  @ONLY
-)
-install(
-  FILES
-  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc"
-  DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig"
-)
-
 # Export CMake package file
 include(CMakePackageConfigHelpers)
 configure_package_config_file(

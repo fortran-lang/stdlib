@@ -49,25 +49,11 @@ if(NOT DEFINED CMAKE_MAXIMUM_RANK)
   set(CMAKE_MAXIMUM_RANK 4 CACHE STRING "Maximum array rank for generated procedures")
 endif()
 
-option(STDLIB_BITSET "Compile STDLIB BITSET" ON)
-
-if(STDLIB_BITSET)
-  message(STATUS "Enable stdlib bitset module")
-  add_compile_definitions(STDLIB_BITSET=1)
-else()
-  message(STATUS "Disable stdlib bitset module")
-  add_compile_definitions(STDLIB_BITSET=0)
-endif() 
-
-option(STDLIB_STATS "Compile STDLIB STATS" ON)
-
-if(STDLIB_STATS)
-  message(STATUS "Enable stdlib stats module")
-  add_compile_definitions(STDLIB_STATS=1)
-else()
-  message(STATUS "Disable stdlib stats module")
-  add_compile_definitions(STDLIB_STATS=0)
-endif() 
+# --- determine if the following modules will be compiled
+check_modular("ANSI")
+check_modular("BITSETS")
+check_modular("HASHMAPS")
+check_modular("STATS")
 
 option(FIND_BLAS "Find external BLAS and LAPACK" ON)
 
@@ -161,3 +147,6 @@ install(EXPORT ${PROJECT_NAME}-targets
         NAMESPACE ${PROJECT_NAME}::
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
 )
+
+# Export a pkg-config file
+include(${PROJECT_SOURCE_DIR}/config/export_pc.cmake)
