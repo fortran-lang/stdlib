@@ -49,9 +49,9 @@ contains
         end do
 
         chisq = 0.0_dp
-        expct = num / array_size
+        expct = real(num, dp) / real(array_size + 1, dp)
 
-        do i = 0, array_size - 1
+        do i = 0, array_size
            chisq = chisq + (freq(i) - expct) ** 2 / expct
         end do
 
