@@ -64,7 +64,7 @@ submodule (stdlib_specialmatrices) sym_tridiagonal_matrices
         call build_sym_tridiagonal_from_constants_${s1}$(du, dv, n, A, err)
         end function
     #:endfor
-    
+
     !-----------------------------------------
     !-----                               -----
     !-----     MATRIX-VECTOR PRODUCT     -----
