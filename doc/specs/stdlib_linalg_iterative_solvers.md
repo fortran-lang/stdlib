@@ -57,7 +57,7 @@ Proxy procedure for the `dot_product`.
 
 ###### Class
 
-Pure function
+function
 
 ###### Argument(s)
 
