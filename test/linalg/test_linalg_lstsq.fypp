@@ -128,7 +128,7 @@ module test_linalg_least_squares
         b = [2.0_${rk}$, 4.0_${rk}$, 5.0_${rk}$, 4.0_${rk}$]
         w = 1.0_${rk}$  ! Uniform weights = OLS
         A_original = A  ! Save original to verify A is preserved
-        A_copy = A      ! Save copy for lstsq comparison (lstsq may overwrite)
+        A_copy = A      ! Save copy for lstsq comparison
 
         x_weighted = weighted_lstsq(w, A, b, err=state)
 
