@@ -23,7 +23,7 @@ submodule (stdlib_specialmatrices) sym_tridiagonal_matrices
         type(sym_tridiagonal_${s1}$_type) :: A
         !! Corresponding symmetric tridiagonal matrix.
 
-        call build_sym_tridiagonal_from_arrays_${s1}$(du, dv, A)
+        call build_sym_tridiagonal(du, dv, A)
     end function
 
     pure module function initialize_constant_sym_tridiagonal_pure_${s1}$(du, dv, n) result(A)
@@ -35,7 +35,7 @@ submodule (stdlib_specialmatrices) sym_tridiagonal_matrices
         type(sym_tridiagonal_${s1}$_type) :: A
         !! Corresponding symmetric tridiagonal matrix.
 
-        call build_sym_tridiagonal_from_constants_${s1}$(du, dv, n, A)
+        call build_sym_tridiagonal(du, dv, n, A)
     end function
 
     module function initialize_sym_tridiagonal_impure_${s1}$(du, dv, err) result(A)
@@ -47,7 +47,7 @@ submodule (stdlib_specialmatrices) sym_tridiagonal_matrices
         type(sym_tridiagonal_${s1}$_type) :: A
         !! Corresponding symmetric tridiagonal matrix.
 
-        call build_sym_tridiagonal_from_arrays_${s1}$(du, dv, A, err)
+        call build_sym_tridiagonal(du, dv, A, err)
     end function
 
     module function initialize_constant_sym_tridiagonal_impure_${s1}$(du, dv, n, err) result(A)
@@ -61,8 +61,73 @@ submodule (stdlib_specialmatrices) sym_tridiagonal_matrices
         type(sym_tridiagonal_${s1}$_type) :: A
         !! Corresponding symmetric tridiagonal matrix.
 
-        call build_sym_tridiagonal_from_constants_${s1}$(du, dv, n, A, err)
+        call build_sym_tridiagonal(du, dv, n, A, err)
         end function
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    pure module subroutine build_sym_tridiagonal_from_arrays_${s1}$(du, dv, A, err)
+        ${t1}$, intent(in) :: du(:), dv(:)
+        type(sym_tridiagonal_${s1}$_type), intent(out) :: A
+        type(linalg_state_type), intent(out), optional :: err
+
+        ! Internal variables.
+        integer(ilp) :: n
+        type(linalg_state_type) :: err0
+
+        ! Sanity check.
+        n = size(dv, kind=ilp)
+        if (n <= 0) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Matrix size needs to be positive, n = ", n, ".")
+            if(present(err)) then
+                call linalg_error_handling(err0, err)
+            else
+                call linalg_error_handling(err0)
+            end if
+        endif
+        if (size(du, kind=ilp) /= n-1) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Vector du does not have the correct length.")
+            if(present(err)) then
+                call linalg_error_handling(err0, err)
+            else
+                call linalg_error_handling(err0)
+            end if
+        endif
+
+        if(err0%ok()) then
+            ! Description of the matrix.
+            A%n = n
+            ! Matrix elements.
+            A%du = du ; A%dv = dv
+        endif
+    end subroutine
+
+    pure module subroutine build_sym_tridiagonal_from_constants_${s1}$(du, dv, n, A, err)
+        ${t1}$, intent(in) :: du, dv
+        integer(ilp), intent(in) :: n
+        type(sym_tridiagonal_${s1}$_type), intent(out) :: A
+        type(linalg_state_type), intent(out), optional :: err
+
+        ! Internal variables.
+        type(linalg_state_type) :: err0
+
+        if (n <= 0) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Matrix size needs to be positive, n = ", n, ".")
+            if(present(err)) then
+                call linalg_error_handling(err0, err)
+            else
+                call linalg_error_handling(err0)
+            end if
+        endif
+
+        if(err0%ok()) then
+            ! Description of the matrix.
+            A%n = n
+            ! Matrix elements.
+            allocate( A%du(n-1), source = du )
+            allocate( A%dv(n), source= dv )
+        endif
+    end subroutine
     #:endfor
 
     !-----------------------------------------
@@ -223,71 +288,6 @@ submodule (stdlib_specialmatrices) sym_tridiagonal_matrices
         C = sym_tridiagonal(A%du, A%dv)
         C%du = C%du - B%du; C%dv = C%dv - B%dv
     end function
-    #:endfor
-
-    #:for k1, t1, s1 in (KINDS_TYPES)
-    pure module subroutine build_sym_tridiagonal_from_arrays_${s1}$(du, dv, A, err)
-        ${t1}$, intent(in) :: du(:), dv(:)
-        type(sym_tridiagonal_${s1}$_type), intent(out) :: A
-        type(linalg_state_type), intent(out), optional :: err
-
-        ! Internal variables.
-        integer(ilp) :: n
-        type(linalg_state_type) :: err0
-
-        ! Sanity check.
-        n = size(dv, kind=ilp)
-        if (n <= 0) then
-            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Matrix size needs to be positive, n = ", n, ".")
-            if(present(err)) then
-                call linalg_error_handling(err0, err)
-            else
-                call linalg_error_handling(err0)
-            end if
-        endif
-        if (size(du, kind=ilp) /= n-1) then
-            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Vector du does not have the correct length.")
-            if(present(err)) then
-                call linalg_error_handling(err0, err)
-            else
-                call linalg_error_handling(err0)
-            end if
-        endif
-
-        if(err0%ok()) then
-            ! Description of the matrix.
-            A%n = n
-            ! Matrix elements.
-            A%du = du ; A%dv = dv
-        endif
-    end subroutine
-
-    pure module subroutine build_sym_tridiagonal_from_constants_${s1}$(du, dv, n, A, err)
-        ${t1}$, intent(in) :: du, dv
-        integer(ilp), intent(in) :: n
-        type(sym_tridiagonal_${s1}$_type), intent(out) :: A
-        type(linalg_state_type), intent(out), optional :: err
-
-        ! Internal variables.
-        type(linalg_state_type) :: err0
-
-        if (n <= 0) then
-            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Matrix size needs to be positive, n = ", n, ".")
-            if(present(err)) then
-                call linalg_error_handling(err0, err)
-            else
-                call linalg_error_handling(err0)
-            end if
-        endif
-
-        if(err0%ok()) then
-            ! Description of the matrix.
-            A%n = n
-            ! Matrix elements.
-            allocate( A%du(n-1), source = du )
-            allocate( A%dv(n), source= dv )
-        endif
-    end subroutine
     #:endfor
 
 end submodule

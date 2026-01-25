@@ -219,6 +219,54 @@ module stdlib_specialmatrices
     #:endfor
     end interface
 
+    interface build_tridiagonal
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    pure module subroutine build_tridiagonal_from_arrays_${s1}$(dl, dv, du, A, err)
+        ${t1}$, intent(in) :: dl(:), dv(:), du(:)
+        type(tridiagonal_${s1}$_type), intent(out) :: A
+        type(linalg_state_type), intent(out), optional :: err
+
+        ! Internal variables.
+        integer(ilp) :: n
+        type(linalg_state_type) :: err0
+    end subroutine
+
+    pure module subroutine build_tridiagonal_from_constants_${s1}$(dl, dv, du, n, A, err)
+        ${t1}$, intent(in) :: dl, dv, du
+        integer(ilp), intent(in) :: n
+        type(tridiagonal_${s1}$_type), intent(out) :: A
+        type(linalg_state_type), intent(out), optional :: err
+
+        ! Internal variables.
+        type(linalg_state_type) :: err0
+    end subroutine
+    #:endfor
+    end interface
+
+    interface build_sym_tridiagonal
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    pure module subroutine build_sym_tridiagonal_from_arrays_${s1}$(du, dv, A, err)
+        ${t1}$, intent(in) :: du(:), dv(:)
+        type(sym_tridiagonal_${s1}$_type), intent(out) :: A
+        type(linalg_state_type), intent(out), optional :: err
+
+        ! Internal variables.
+        integer(ilp) :: n
+        type(linalg_state_type) :: err0
+    end subroutine
+
+    pure module subroutine build_sym_tridiagonal_from_constants_${s1}$(du, dv, n, A, err)
+        ${t1}$, intent(in) :: du, dv
+        integer(ilp), intent(in) :: n
+        type(sym_tridiagonal_${s1}$_type), intent(out) :: A
+        type(linalg_state_type), intent(out), optional :: err
+
+        ! Internal variables.
+        type(linalg_state_type) :: err0
+    end subroutine
+    #:endfor
+    end interface
+
     !----------------------------------
     !-----                        -----
     !-----     LINEAR ALGEBRA     -----
