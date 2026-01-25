@@ -148,7 +148,6 @@ module test_linalg_least_squares
 
         type(linalg_state_type) :: state
         integer(ilp), parameter :: m = 3, n = 2
-        real(${rk}$), parameter :: tol = 1000*sqrt(epsilon(0.0_${rk}$))
         ${rt}$ :: A(m,n), b(m), W(m,m)
         ${rt}$, allocatable :: x(:)
 
