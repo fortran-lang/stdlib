@@ -31,6 +31,10 @@ module test_linalg_least_squares
         call add_test(tests,new_unittest("weighted_lstsq_negative_${ri}$",test_weighted_lstsq_negative_${ri}$))
         #:endfor
 
+        #:for rk,rt,ri in CMPLX_KINDS_TYPES
+        call add_test(tests,new_unittest("weighted_lstsq_${ri}$",test_weighted_lstsq_${ri}$))
+        #:endfor
+
     end subroutine test_least_squares
     
     #:for rk,rt,ri in REAL_KINDS_TYPES
@@ -205,6 +209,48 @@ module test_linalg_least_squares
 
     end subroutine test_weighted_lstsq_negative_${ri}$
 
+    #:endfor
+
+    #:for rk,rt,ri in CMPLX_KINDS_TYPES
+    !> Test weighted least-squares with complex data: uniform weights must match lstsq
+    subroutine test_weighted_lstsq_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+        integer(ilp), parameter :: m = 4, n = 2
+        real(${rk}$), parameter :: tol = 100*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$ :: A(m,n), A_copy(m,n), b(m)
+        real(${rk}$) :: w(m)
+        ${rt}$, allocatable :: x_weighted(:), x_ols(:)
+
+        ! Complex test case
+        A(:,1) = cmplx(1.0_${rk}$, 0.5_${rk}$, kind=${rk}$)
+        A(:,2) = cmplx([1.0_${rk}$, 2.0_${rk}$, 3.0_${rk}$, 4.0_${rk}$], &
+                       [0.1_${rk}$, 0.2_${rk}$, 0.3_${rk}$, 0.4_${rk}$], kind=${rk}$)
+        b = cmplx([2.0_${rk}$, 4.0_${rk}$, 5.0_${rk}$, 4.0_${rk}$], &
+                  [1.0_${rk}$, 1.5_${rk}$, 2.0_${rk}$, 1.0_${rk}$], kind=${rk}$)
+        w = 1.0_${rk}$  ! Uniform weights = OLS (weights are always real)
+        A_copy = A
+
+        x_weighted = weighted_lstsq(w, A, b, err=state)
+
+        call check(error, state%ok(), 'complex weighted_lstsq failed: '//state%print())
+        if (allocated(error)) return
+        
+        call check(error, size(x_weighted)==n, 'complex weighted_lstsq: wrong solution size')
+        if (allocated(error)) return
+
+        ! KEY TEST: Uniform weights should match ordinary least squares
+        x_ols = lstsq(A_copy, b, err=state)
+
+        call check(error, state%ok(), 'complex lstsq failed: '//state%print())
+        if (allocated(error)) return
+
+        call check(error, all(abs(x_weighted - x_ols) < tol), &
+                   'complex weighted_lstsq with uniform weights must match lstsq')
+        if (allocated(error)) return
+
+    end subroutine test_weighted_lstsq_${ri}$
     #:endfor
     
     ! Test issue #823

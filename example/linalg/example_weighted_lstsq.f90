@@ -21,6 +21,6 @@ program example_weighted_lstsq
   x = weighted_lstsq(w, A, b)
 
   print '("Weighted fit: intercept = ",f8.4,", slope = ",f8.4)', x(1), x(2)
-  ! Weighted fit: intercept =   0.0667, slope =   1.9556
+  ! Weighted fit: intercept =   0.1500, slope =   1.9911
 
 end program example_weighted_lstsq
