@@ -283,7 +283,7 @@ contains
         real(${k1}$) :: res
 
         if(rate <= 0.0_${k1}$) call error_stop("Error(gamma_dist_cdf): Gamma"  &
-            //" distribution rate parameter must be greaeter than zero")
+            //" distribution rate parameter must be greater than zero")
 
         if(shape <= 0.0_${k1}$) call error_stop("Error(gamma_dist_cdf): Gamma" &
             //" distribution shape parameter must be greater than zero")
