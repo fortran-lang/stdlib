@@ -1,5 +1,4 @@
 #:set WITH_QP = False
-#:set WITH_XDP = False
 #:include "common.fypp"
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 program test_distribution_gamma
