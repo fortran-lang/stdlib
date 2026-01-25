@@ -12,10 +12,10 @@ set(math_cppFiles
     stdlib_math.fypp
     )
 
-configure_stdlib_target(math "" math_fppFiles math_cppFiles)
+configure_stdlib_target(${PROJECT_NAME}_math "" math_fppFiles math_cppFiles)
 
 if(STDLIB_BITSETS)
-  target_link_libraries(math PUBLIC bitsets)
+  target_link_libraries(${PROJECT_NAME}_math PUBLIC ${PROJECT_NAME}_bitsets)
 endif()
 
-target_link_libraries(math PUBLIC core strings)
+target_link_libraries(${PROJECT_NAME}_math PUBLIC ${PROJECT_NAME}_core ${PROJECT_NAME}_strings)

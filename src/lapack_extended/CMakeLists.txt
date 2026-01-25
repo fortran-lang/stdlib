@@ -5,6 +5,6 @@ set(lapack_extended_fppFiles
 set(lapack_extended_cppFiles
 )
 
-configure_stdlib_target(lapack_extended "" lapack_extended_fppFiles lapack_extended_cppFiles)
+configure_stdlib_target(${PROJECT_NAME}_lapack_extended "" lapack_extended_fppFiles lapack_extended_cppFiles)
 
-target_link_libraries(lapack_extended PUBLIC core linalg_core)
+target_link_libraries(${PROJECT_NAME}_lapack_extended PUBLIC ${PROJECT_NAME}_core ${PROJECT_NAME}_linalg_core)

@@ -2,7 +2,7 @@ macro(ADD_SUBDIR name)
   string(TOUPPER "${name}" uname)
   if (STDLIB_${uname})
     add_subdirectory(${name})
-    list(APPEND OPTIONAL_LIB ${name})
+    list(APPEND OPTIONAL_LIB ${PROJECT_NAME}_${name})
   endif()
 endmacro()
 
@@ -56,19 +56,21 @@ set(f90Files
 configure_stdlib_target(${PROJECT_NAME} f90Files fppFiles cppFiles)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
-  array
-  constants
-  core
-  hash
-  intrinsics
-  linalg_core
-  linalg
-  math
-  selection
-  specialfunctions
-  sorting
-  strings
-  blas lapack lapack_extended
-  sparse
+  ${PROJECT_NAME}_array
+  ${PROJECT_NAME}_constants
+  ${PROJECT_NAME}_core
+  ${PROJECT_NAME}_hash
+  ${PROJECT_NAME}_intrinsics
+  ${PROJECT_NAME}_linalg_core
+  ${PROJECT_NAME}_linalg_iterative
+  ${PROJECT_NAME}_linalg
+  ${PROJECT_NAME}_math
+  ${PROJECT_NAME}_selection
+  ${PROJECT_NAME}_specialfunctions
+  ${PROJECT_NAME}_sorting
+  ${PROJECT_NAME}_strings
+  ${PROJECT_NAME}_system
+  ${PROJECT_NAME}_blas ${PROJECT_NAME}_lapack ${PROJECT_NAME}_lapack_extended
+  ${PROJECT_NAME}_sparse
   ${OPTIONAL_LIB}
   )
