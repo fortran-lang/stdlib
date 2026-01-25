@@ -62,14 +62,12 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   ${PROJECT_NAME}_hash
   ${PROJECT_NAME}_intrinsics
   ${PROJECT_NAME}_linalg_core
-  ${PROJECT_NAME}_linalg_iterative
   ${PROJECT_NAME}_linalg
   ${PROJECT_NAME}_math
   ${PROJECT_NAME}_selection
   ${PROJECT_NAME}_specialfunctions
   ${PROJECT_NAME}_sorting
   ${PROJECT_NAME}_strings
-  ${PROJECT_NAME}_system
   ${PROJECT_NAME}_blas ${PROJECT_NAME}_lapack ${PROJECT_NAME}_lapack_extended
   ${PROJECT_NAME}_sparse
   ${OPTIONAL_LIB}
