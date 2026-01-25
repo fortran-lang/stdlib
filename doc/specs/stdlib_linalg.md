@@ -986,7 +986,7 @@ Experimental
 
 This function computes the generalized least-squares (GLS) solution to a linear matrix equation \( A \cdot x = b \) with correlated errors described by a covariance matrix \( W \).
 
-The solver minimizes the Mahalanobis distance \( (Ax - b)^T W^{-1} (Ax - b) \) where \( W \) is a symmetric positive definite covariance matrix. This is useful when observations have correlated errors. The solver is based on LAPACK's `*GGGLM` backends.
+The solver minimizes the Mahalanobis distance \( (Ax - b)^T W^{-1} (Ax - b) \) where \( W \) is a symmetric (real) or Hermitian (complex) positive definite covariance matrix. This is useful when observations have correlated errors. The solver is based on LAPACK's `*GGGLM` backends.
 
 ### Syntax
 
@@ -994,7 +994,7 @@ The solver minimizes the Mahalanobis distance \( (Ax - b)^T W^{-1} (Ax - b) \) w
 
 ### Arguments
 
-`w`: Shall be a rank-2 `real` or `complex` symmetric positive definite array containing the covariance matrix, or its lower triangular Cholesky factor if `prefactored_w=.true.`. It is an `intent(in)` argument.
+`w`: Shall be a rank-2 `real` or `complex` symmetric (real) or Hermitian (complex) positive definite array containing the covariance matrix, or its lower triangular Cholesky factor if `prefactored_w=.true.`. It is an `intent(in)` argument.
 
 `a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix. The matrix must have full column rank. It is an `intent(inout)` argument.
 
