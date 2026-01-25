@@ -665,7 +665,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
         b_scaled = sqrt_w * b
 
         ! Solve transformed OLS problem
-        x = stdlib_linalg_${ri}$_lstsq_one(amat, b_scaled, cond=cond, overwrite_a=.true., rank=rank, err=err)
+        call stdlib_linalg_${ri}$_solve_lstsq_one(amat, b_scaled, x, cond=cond, overwrite_a=.true., rank=rank, err=err)
 
         ! Cleanup
         if (copy_a) deallocate(amat_alloc)
