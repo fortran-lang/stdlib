@@ -569,9 +569,9 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
     !-------------------------------------------------------------
 
     #:for rk,rt,ri in RC_KINDS_TYPES
-    ! Generalized least-squares: minimize (Ax-b)^T W^{-1} (Ax-b) where W is SPD
+    ! Generalized least-squares: minimize (Ax-b)^T W^{-1} (Ax-b) where W is symmetric/Hermitian positive definite
     module function stdlib_linalg_${ri}$_generalized_lstsq(w,a,b,prefactored_w,overwrite_a,err) result(x)
-        !> Covariance matrix W[m,m] (SPD) or its lower triangular Cholesky factor
+        !> Covariance matrix W[m,m] (symmetric/Hermitian positive definite) or its lower triangular Cholesky factor
         ${rt}$, intent(in) :: w(:,:)
         !> Input matrix a[m,n]
         ${rt}$, intent(inout), target :: a(:,:)
