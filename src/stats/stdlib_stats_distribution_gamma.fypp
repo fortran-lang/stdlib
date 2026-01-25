@@ -1,9 +1,8 @@
 #:set WITH_QP = False
-#:set WITH_XDP = False
 #:include "common.fypp"
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 Module stdlib_stats_distribution_gamma
-    use stdlib_kinds, only : sp, dp
+    use stdlib_kinds, only : sp, dp, xdp
     use stdlib_error, only : error_stop
     use stdlib_stats_distribution_uniform, only : uni=>rvs_uniform
     use stdlib_stats_distribution_normal, only : rnor=>rvs_normal
