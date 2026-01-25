@@ -16,9 +16,9 @@ set(blas_cppFiles
     stdlib_linalg_blas.fypp
 )
 
-configure_stdlib_target(blas "" blas_fppFiles blas_cppFiles)
+configure_stdlib_target(${PROJECT_NAME}_blas "" blas_fppFiles blas_cppFiles)
 
 if(BLAS_FOUND)
-    target_link_libraries(blas PUBLIC "BLAS::BLAS")
+    target_link_libraries(${PROJECT_NAME}_blas PUBLIC "BLAS::BLAS")
 endif()
-target_link_libraries(blas PUBLIC core linalg_core)
+target_link_libraries(${PROJECT_NAME}_blas PUBLIC ${PROJECT_NAME}_core ${PROJECT_NAME}_linalg_core)
