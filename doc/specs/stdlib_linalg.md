@@ -1000,7 +1000,7 @@ The solver minimizes the weighted 2-norm \( \| D(Ax - b) \|_2^2 \) where \( D = 
 
 `b`: Shall be a rank-1 array of the same kind as `a`, containing the right-hand-side vector. It is an `intent(in)` argument.
 
-`cond` (optional): Shall be a scalar `real` value cut-off threshold for rank evaluation: `s_i >= cond*maxval(s), i=1:rank`. Shall be a scalar, `intent(in)` argument.
+`cond` (optional): Shall be a scalar `real` value cut-off threshold for rank evaluation: singular values with `s_i <= cond*maxval(s)` are treated as zero, and the rank counts values with `s_i > cond*maxval(s), i=1:rank`. Shall be a scalar, `intent(in)` argument.
 
 `overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
 
