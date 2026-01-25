@@ -287,8 +287,10 @@ contains
         if(shape <= 0.0_${k1}$) call error_stop("Error(gamma_dist_cdf): Gamma" &
             //" distribution shape parameter must be greater than zero")
 
-        if(x <= 0.0_${k1}$) call error_stop("Error(gamma_dist_cdf): Gamma"     &
-            //" distribution variate x must be greater than zero")
+        if(x <= 0.0_${k1}$) then
+            res = 0.0_${k1}$
+            return
+        end if
 
         res = real(lincgam(shape, x * rate) / gamma(shape), kind=${k1}$)
     end function gamma_dist_cdf_${t1[0]}$${k1}$
