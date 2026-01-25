@@ -56,7 +56,7 @@ Module stdlib_stats_distribution_gamma
     !!
     !! Gamma Distribution Cumulative Distribution Function
     !! ([Specification](../page/specs/stdlib_stats_distribution_gamma.html#
-    !! cdf_gamma_gamma-distribution-cumulative-density-function))
+    !! cdf_gamma-gamma-distribution-cumulative-distribution-function))
     !!
         #:for k1, t1 in RC_KINDS_TYPES
         module procedure gamma_dist_cdf_${t1[0]}$${k1}$
