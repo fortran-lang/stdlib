@@ -149,7 +149,7 @@ program demo_gamma_pdf
     shape = (1.0, 1.5)
     rate  = (1.0, 2.)
     print *, gamma_pdf((1.5,1.0), shape, rate)
-    ! a complex expon probability density function at (1.5,1.0) with real part
+    ! a complex gamma probability density function at (1.5,1.0) with real part
     !of shape=1.0, rate=1.0 and imaginary part of shape=1.5, rate=2.0
 ! 9.63761061E-02
 end program demo_gamma_pdf
