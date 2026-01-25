@@ -994,7 +994,7 @@ The solver minimizes the weighted 2-norm \( \| D(Ax - b) \|_2^2 \) where \( D = 
 
 ### Arguments
 
-`w`: Shall be a rank-1 `real` or `complex` array containing the weight vector. All weights must be positive. It is an `intent(in)` argument.
+`w`: Shall be a rank-1 `real` array containing the weight vector. For complex `a` and `b`, `w` shall use the same real kind as the components of `a`. All weights must be positive. It is an `intent(in)` argument.
 
 `a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix. It is an `intent(inout)` argument.
 
