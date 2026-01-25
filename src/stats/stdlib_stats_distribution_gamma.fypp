@@ -2,11 +2,11 @@
 #:include "common.fypp"
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 Module stdlib_stats_distribution_gamma
-    use stdlib_kinds, only : sp, dp, xdp
+    use stdlib_kinds, only : sp, dp, xdp, qp
     use stdlib_error, only : error_stop
     use stdlib_stats_distribution_uniform, only : uni=>rvs_uniform
     use stdlib_stats_distribution_normal, only : rnor=>rvs_normal
-    use stdlib_specialfunctions_gamma, only : lincgam => lower_incomplete_gamma
+    use stdlib_specialfunctions_gamma, only : regamma_p => regularized_gamma_p
 
     implicit none
     private
@@ -282,7 +282,7 @@ contains
         real(${k1}$) :: res
 
         if(rate <= 0.0_${k1}$) call error_stop("Error(gamma_dist_cdf): Gamma"  &
-            //" distribution rate parameter must be greater than zero")
+            //" distribution rate parameter must be greaeter than zero")
 
         if(shape <= 0.0_${k1}$) call error_stop("Error(gamma_dist_cdf): Gamma" &
             //" distribution shape parameter must be greater than zero")
@@ -292,7 +292,7 @@ contains
             return
         end if
 
-        res = real(lincgam(shape, x * rate) / gamma(shape), kind=${k1}$)
+        res = real(regamma_p(shape, x * rate), kind=${k1}$)
     end function gamma_dist_cdf_${t1[0]}$${k1}$
 
     #:endfor
