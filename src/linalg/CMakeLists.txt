@@ -24,6 +24,6 @@ set(linalg_cppFiles
 set(linalg_f90Files
     )
 
-configure_stdlib_target(linalg linalg_f90Files linalg_fppFiles linalg_cppFiles)
+configure_stdlib_target(${PROJECT_NAME}_linalg linalg_f90Files linalg_fppFiles linalg_cppFiles)
 
-target_link_libraries(linalg PUBLIC core linalg_core constants lapack lapack_extended sorting intrinsics)
+target_link_libraries(${PROJECT_NAME}_linalg PUBLIC ${PROJECT_NAME}_core ${PROJECT_NAME}_linalg_core ${PROJECT_NAME}_constants ${PROJECT_NAME}_lapack ${PROJECT_NAME}_lapack_extended ${PROJECT_NAME}_sorting ${PROJECT_NAME}_intrinsics)

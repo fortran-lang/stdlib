@@ -11,6 +11,6 @@ set(quadrature_f90Files
     stdlib_quadrature_gauss.f90
     )
 
-configure_stdlib_target(quadrature quadrature_f90Files quadrature_fppFiles quadrature_cppFiles)
+configure_stdlib_target(${PROJECT_NAME}_quadrature quadrature_f90Files quadrature_fppFiles quadrature_cppFiles)
 
-target_link_libraries(quadrature PUBLIC core specialfunctions)
+target_link_libraries(${PROJECT_NAME}_quadrature PUBLIC ${PROJECT_NAME}_core ${PROJECT_NAME}_specialfunctions)
