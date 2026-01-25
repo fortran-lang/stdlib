@@ -6,7 +6,8 @@ Module stdlib_stats_distribution_gamma
     use stdlib_error, only : error_stop
     use stdlib_stats_distribution_uniform, only : uni=>rvs_uniform
     use stdlib_stats_distribution_normal, only : rnor=>rvs_normal
-    use stdlib_specialfunctions_gamma, only : regamma_p => regularized_gamma_p
+    use stdlib_specialfunctions_gamma, only : regamma_p => regularized_gamma_p, &
+        lgamma => log_gamma
 
     implicit none
     private
@@ -225,7 +226,7 @@ contains
         real(${k1}$) :: res
 
         if(rate <= 0.0_${k1}$) call error_stop("Error(gamma_dist_pdf): Gamma"  &
-            //" distribution rate parameter must be greater than zero")
+            //" distribution rate parameter must be greaeter than zero")
 
         if(shape <= 0.0_${k1}$) call error_stop("Error(gamma_dist_pdf): Gamma" &
             //" distribution shape parameter must be greater than zero")
@@ -248,7 +249,7 @@ contains
         else
 
             res = exp((shape - 1._${k1}$) * log(x) - x * rate + shape *        &
-                log(rate)) / gamma(shape)
+                log(rate) - lgamma(shape))
 
         endif
     end function gamma_dist_pdf_${t1[0]}$${k1}$
