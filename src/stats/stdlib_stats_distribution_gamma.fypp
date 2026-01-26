@@ -228,14 +228,17 @@ contains
 
         if(x == 0.0_${k1}$) then
 
-            if(shape <= 1.0_${k1}$) then
+            if(shape == 1.0_${k1}$) then
 
-                res = 1.0_${k1}$
+                res = rate
 
-            else
+            else if(shape > 1.0_${k1}$) then
 
                 res = 0.0_${k1}$
 
+            else
+
+                res = huge(res)
             endif
 
         else if(x < 0.0_${k1}$) then
