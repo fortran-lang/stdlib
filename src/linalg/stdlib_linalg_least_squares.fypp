@@ -7,7 +7,7 @@
 submodule (stdlib_linalg) stdlib_linalg_least_squares
 !! Least-squares solution to Ax=b
      use stdlib_linalg_constants
-     use stdlib_linalg_lapack, only: gelsd, gglse, ggglm, potrf, stdlib_ilaenv
+     use stdlib_linalg_lapack, only: gelsd, gglse, ggglm, stdlib_ilaenv
      use stdlib_linalg_lapack_aux, only: handle_gelsd_info, handle_gglse_info, handle_ggglm_info
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR, LINALG_SUCCESS
@@ -633,14 +633,9 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
         end if
 
         ! Process options
-        is_prefactored = .false._lk
-        if (present(prefactored_w)) is_prefactored = prefactored_w
+        is_prefactored = optval(prefactored_w, .false._lk)
 
-        if (present(overwrite_a)) then
-            copy_a = .not.overwrite_a
-        else
-            copy_a = .true._lk
-        end if
+        copy_a = .not. optval(overwrite_a, .false._lk)
 
         ! Handle A matrix
         if (copy_a) then
@@ -656,21 +651,19 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
         if (.not. is_prefactored) then
             ! Compute Cholesky factorization: W = L * L^T (real) or W = L * L^H (complex)
-            call potrf('L', m, lmat, m, info)
-            if (info /= 0) then
-                if (info > 0) then
-                    err0 = linalg_state_type(this, LINALG_ERROR, &
-                           'Covariance matrix is not positive definite at position', info)
-                else
-                    err0 = linalg_state_type(this, LINALG_VALUE_ERROR, &
-                           'Invalid argument to POTRF at position', -info)
-                end if
+            call cholesky(lmat, lower=.true._lk, other_zeroed=.true._lk, err=err0)
+            if (err0%error()) then
                 ! Cleanup before early return
                 if (copy_a) deallocate(amat_alloc)
                 deallocate(lmat)
                 call linalg_error_handling(err0, err)
                 return
             end if
+        else
+            ! User provided pre-factored L: zero out upper triangle for GGGLM
+            do concurrent(i=1:m, j=1:m, i < j)
+                lmat(i, j) = zero
+            end do
         end if
 
         ! Prepare for GGGLM
@@ -679,14 +672,6 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
         lda = m
         ldb = m
-
-        ! Zero out upper triangle of lmat (GGGLM reads full matrix, 
-        ! but potrf only sets lower triangle)
-        do j = 1, m
-            do i = 1, j - 1
-                lmat(i, j) = zero
-            end do
-        end do
 
         ! Workspace query
         allocate(work(1))
