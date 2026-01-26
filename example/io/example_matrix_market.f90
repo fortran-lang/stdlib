@@ -1,11 +1,11 @@
 program example_matrix_market
     use stdlib_io_mm, only : load_mm, save_mm, mm_header_type
     use stdlib_kinds, only : dp
-    use stdlib_sparse_kinds, only : COO_dp_type
     implicit none
 
     real(dp), allocatable :: matrix(:,:), matrix2(:,:)
-    type(COO_dp_type) :: sparse_matrix
+    integer, allocatable  :: index(:,:)
+    real(dp), allocatable :: data(:)
     character(len=*), parameter :: dense_filename = "test_dense.mtx"
     character(len=*), parameter :: sparse_filename = "test_sparse.mtx"
     integer :: iostat, i
@@ -47,18 +47,16 @@ program example_matrix_market
     print *, "Loading sparse matrix from ", sparse_filename
 
     ! Load sparse matrix from Matrix Market file
-    call load_mm(sparse_filename, sparse_matrix, iostat=iostat, iomsg=iomsg)
+    call load_mm(sparse_filename, index, data, iostat=iostat, iomsg=iomsg)
     if (iostat /= 0) then
         print *, "Error loading sparse matrix: ", iomsg
         stop 1
     end if
 
     print *, "Loaded sparse matrix (COO format):"
-    print *, "Dimensions: ", sparse_matrix%nrows, "x", sparse_matrix%ncols
-    print *, "Non-zeros: ", sparse_matrix%nnz
     print *, "Data (row, col, value):"
-    do i = 1, sparse_matrix%nnz
-        print *, sparse_matrix%index(1,i), sparse_matrix%index(2,i), sparse_matrix%data(i)
+    do i = 1, size(data)
+        print *, index(1,i), index(2,i), data(i)
     end do
 
 contains

@@ -121,11 +121,14 @@ contains
     #:endfor
 
     #:for k, t, s in RC_KINDS_TYPES
-    module subroutine load_mm_coo_${s}$(filename, matrix, iostat, iomsg)
+    module subroutine load_mm_coo_${s}$(filename, index, data, iostat, iomsg)
         !> Name of the Matrix Market file to load from
         character(len=*), intent(in) :: filename
-        !> Matrix to be loaded from the Matrix Market file
-        type(COO_${s}$_type), intent(out) :: matrix
+        !> Matrix indices in COO format read from the file:
+        !> index(1, :) = row indices, index(2, :) = column indices
+        integer, allocatable, intent(out) :: index(:, :)
+        !> Nonzero matrix values corresponding to each (row, column) index pair
+        ${t}$, allocatable, intent(out) :: data(:)
         !> Error status of loading, zero on success
         integer, intent(out), optional :: iostat
         !> Associated error message in case of non-zero status code
@@ -134,13 +137,13 @@ contains
         ! Internal variables
         type(mm_header_type) :: header
         integer :: u , fsze, err, eol_position
-        integer :: i, j, nnz, adr
+        integer :: i, nnz, adr
         integer(int8) :: stat
         character(:), allocatable, target :: ff
         character(len=:), pointer :: ffp
         integer, allocatable :: rows(:), cols(:)
         ${t}$, allocatable :: vals(:)
-        integer :: n_diag
+        integer :: nrows, ncols, n_diag
         #:if t.startswith('complex') 
         real(${k}$) :: mold, val_r, val_i
         #:else 
@@ -184,13 +187,15 @@ contains
         
         !----------------------------------------- 
         ! Read matrix dimensions
-        matrix%nrows = to_num_from_stream(ffp, matrix%nrows, stat)
+        nrows = to_num_from_stream(ffp, nrows, stat)
         if( stat /= 0 ) return
-        matrix%ncols = to_num_from_stream(ffp, matrix%ncols, stat)
+        ncols = to_num_from_stream(ffp, ncols, stat)
         if( stat /= 0 ) return
         nnz = to_num_from_stream(ffp, nnz, stat)
         if( stat /= 0 ) return
         
+        !-----------------------------------------
+        ! Allocate temporary arrays to hold the file data
         allocate(rows(nnz))
         allocate(cols(nnz))
         allocate(vals(nnz))
@@ -213,20 +218,24 @@ contains
 
         !----------------------------------------- 
         ! check storage hypothesis
-        matrix%nnz = nnz
         if(header%symmetry == MS_symmetric .or. header%symmetry == MS_hermitian) then
-            matrix%nnz = 2*nnz - n_diag
-        elseif(header%symmetry == MS_skew_symmetric) then 
-            matrix%nnz = 2*nnz
+            allocate(index(2, 2*nnz-n_diag))
+            allocate(data(2*nnz-n_diag))
+        else if(header%symmetry == MS_skew_symmetric) then
+            allocate(index(2, 2*nnz))
+            allocate(data(2*nnz))
+        else
+            allocate(index(2, nnz))
+            allocate(data(nnz))
         end if
+
 
         !----------------------------------------- 
         ! Fill in matrix entries from temporary arrays
-        call matrix%malloc( matrix%nrows, matrix%ncols, matrix%nnz )
         do i = 1, nnz
-            matrix%index(1,i) = rows(i)
-            matrix%index(2,i) = cols(i)
-            matrix%data(i) = vals(i)
+            index(1,i) = rows(i)
+            index(2,i) = cols(i)
+            data(i) = vals(i)
         end do
 
         if(allocated(rows)) deallocate(rows)
@@ -236,19 +245,18 @@ contains
         !----------------------------------------- 
         ! Fill in symmetric entries if needed
         if(header%symmetry==MS_general) return
-        adr = 1
-        do i = 1, nnz
-            if(matrix%index(1,i)==matrix%index(2,i)) cycle 
-            matrix%index(1,nnz+adr) = matrix%index(2,i)
-            matrix%index(2,nnz+adr) = matrix%index(1,i)
-            matrix%data(nnz+adr) = matrix%data(i)
-            if(header%symmetry==MS_skew_symmetric) matrix%data(nnz+adr) = -matrix%data(i)
-            #:if t.startswith('complex') 
-            if(header%symmetry==MS_hermitian) matrix%data(nnz+adr) = conjg(matrix%data(i))
-            #:endif
-            adr = adr + 1
-        end do
-
+            adr = 1
+            do i = 1, nnz
+                if(index(1,i)==index(2,i)) cycle
+                index(1,nnz+adr) = index(2,i)
+                index(2,nnz+adr) = index(1,i)
+                data(nnz+adr) = data(i)
+                if(header%symmetry==MS_skew_symmetric) data(nnz+adr) = -data(i)
+                #:if t.startswith('complex')
+                if(header%symmetry==MS_hermitian) data(nnz+adr) = conjg(data(i))
+                #:endif
+                adr = adr + 1
+            end do
     end subroutine
     #:endfor
 

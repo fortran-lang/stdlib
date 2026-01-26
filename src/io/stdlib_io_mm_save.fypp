@@ -160,11 +160,14 @@ contains
     #:endfor
 
     #:for k, t, s in RC_KINDS_TYPES
-    module subroutine save_mm_coo_${s}$(filename, matrix, comment, symmetry, iostat, iomsg)
+    module subroutine save_mm_coo_${s}$(filename, index, data, comment, symmetry, iostat, iomsg)
         !> Name of the Matrix Market file to save to
         character(len=*), intent(in) :: filename
-        !> Matrix to be saved to the Matrix Market file
-        type(COO_${s}$_type), intent(in) :: matrix
+        !> Matrix indices in COO format to be written to the file:
+        !> index(1, :) = row indices, index(2, :) = column indices
+        integer, intent(in) :: index(:, :)
+        !> Nonzero matrix values corresponding to each (row, column) index pair
+        ${t}$, intent(in) :: data(:)
         !> Optional comment information
         character(len=*), intent(in), optional :: comment
         !> Symmetry type of the matrix (general, symmetric, skew-symmetric, hermitian)
@@ -174,16 +177,13 @@ contains
         !> Associated error message in case of non-zero status code
         character(len=:), allocatable, intent(out), optional :: iomsg
 
-        integer :: io, stat, i, j, nnz_to_write
+        integer :: io, stat, i, nnz_to_write
         character(len=:), allocatable :: msg
         character(len=:), allocatable :: field_type
         character(len=:), allocatable :: symmetry_
         #:if t.startswith('complex') 
         real(${k}$) :: real_part, imag_part
         #:endif
-        logical :: expand
-
-        expand = .false.
         io = open(filename, "w", iostat=stat)
         if (stat /= 0) then
             if (present(iostat)) then
@@ -194,6 +194,8 @@ contains
                 call error_stop("Could not create file: " // filename)
             end if
         end if
+
+        if(size(index, dim=1)/=2) return
 
         ! Determine symmetry type
         symmetry_ = "general"
@@ -213,56 +215,32 @@ contains
         catch: block
             ! Calculate the nnz to write inside mtx file
             if (symmetry_ == MM_GENERAL) then
-                if (matrix%storage == sparse_lower .or. matrix%storage == sparse_upper) then
-                    nnz_to_write = 2*matrix%nnz - count(matrix%index(1,:) == matrix%index(2,:))
-                    expand = .true.
-                else
-                    nnz_to_write = matrix%nnz
-                end if
+                nnz_to_write = size(index, dim=2)
+            else if(symmetry_ == MM_SKEW_SYMMETRIC) then
+                nnz_to_write = count(index(1,:) > index(2,:))
             else
-                if (matrix%storage == sparse_full) then
-                    nnz_to_write = count(matrix%index(1,:) >= matrix%index(2,:))
-                else
-                    nnz_to_write = matrix%nnz
-                end if
+                nnz_to_write = count(index(1,:) >= index(2,:))
             end if
             ! Write header
             call write_mm_header(io, MM_COORDINATE, field_type, symmetry_, &
-                                matrix%nrows, matrix%ncols, nnz_to_write, comment, stat, msg)
+                                maxval(index(1,:)), maxval(index(2,:)), nnz_to_write, comment, stat, msg)
             if (stat /= 0) exit catch
 
             ! Write coordinate format (row, column, value)
             if(symmetry_ == MM_GENERAL) then
-                do i = 1, matrix%nnz
+                do i = 1, nnz_to_write
                     #:if t.startswith('real')
                     write(io, '(I0,1X,I0,1X,ES24.16E3)', iostat=stat) &
-                        matrix%index(1,i), matrix%index(2,i), matrix%data(i)
+                        index(1,i), index(2,i), data(i)
                     #:elif t.startswith('complex')
-                    real_part = real(matrix%data(i), kind=${k}$)
-                    imag_part = aimag(matrix%data(i))
+                    real_part = real(data(i), kind=${k}$)
+                    imag_part = aimag(data(i))
                     write(io, '(I0,1X,I0,1X,ES24.16E3,1X,ES24.16E3)', iostat=stat) &
-                        matrix%index(1,i), matrix%index(2,i), real_part, imag_part
+                        index(1,i), index(2,i), real_part, imag_part
                     #:elif t.startswith('integer')
                     write(io, '(I0,1X,I0,1X,I0)', iostat=stat) &
-                        matrix%index(1,i), matrix%index(2,i), matrix%data(i)
+                        index(1,i), index(2,i), data(i)
                     #:endif
-
-                    ! For sparse_lower or sparse_upper matrices with general as symmetry argument, expand the other half assuming symmetry
-                    if (expand) then
-                        if(matrix%index(1,i) /= matrix%index(2,i)) then
-                            #:if t.startswith('real')
-                            write(io, '(I0,1X,I0,1X,ES24.16E3)', iostat=stat) &
-                                matrix%index(2,i), matrix%index(1,i), matrix%data(i)
-                            #:elif t.startswith('complex')
-                            write(io, '(I0,1X,I0,1X,ES24.16E3,1X,ES24.16E3)', iostat=stat) &
-                                matrix%index(2,i), matrix%index(1,i), &
-                                real(matrix%data(i), kind=${k}$), aimag(matrix%data(i))
-                            #:elif t.startswith('integer')
-                            write(io, '(I0,1X,I0,1X,I0)', iostat=stat) &
-                                matrix%index(2,i), matrix%index(1,i), matrix%data(i)
-                            #:endif
-                        end if
-                    end if
                     if (stat /= 0) then
                         msg = "Error writing array element (" // to_string(i) // ")"
                         exit catch
@@ -270,20 +248,21 @@ contains
                 end do
             else
                 ! For symmetric, skew-symmetric, hermitian matrices, only write the
-                ! lower triangle (including diagonal)
-                do i = 1, matrix%nnz
-                    if(matrix%index(1,i) < matrix%index(2,i)) cycle
+                ! lower triangle
+                do i = 1, size(index, dim=2)
+                    if(index(1,i) < index(2,i)) cycle
+                    if(symmetry_ == MM_SKEW_SYMMETRIC .and. index(1,i) == index(2,i)) cycle
                     #:if t.startswith('real')
                     write(io, '(I0,1X,I0,1X,ES24.16E3)', iostat=stat) &
-                        matrix%index(1,i), matrix%index(2,i), matrix%data(i)
+                        index(1,i), index(2,i), data(i)
                     #:elif t.startswith('complex')
-                    real_part = real(matrix%data(i), kind=${k}$)
-                    imag_part = aimag(matrix%data(i))
+                    real_part = real(data(i), kind=${k}$)
+                    imag_part = aimag(data(i))
                     write(io, '(I0,1X,I0,1X,ES24.16E3,1X,ES24.16E3)', iostat=stat) &
-                        matrix%index(1,i), matrix%index(2,i), real_part, imag_part
+                        index(1,i), index(2,i), real_part, imag_part
                     #:elif t.startswith('integer')
                     write(io, '(I0,1X,I0,1X,I0)', iostat=stat) &
-                        matrix%index(1,i), matrix%index(2,i), matrix%data(i)
+                        index(1,i), index(2,i), data(i)
                     #:endif
                     if (stat /= 0) then
                         msg = "Error writing array element (" // to_string(i) // ")"
