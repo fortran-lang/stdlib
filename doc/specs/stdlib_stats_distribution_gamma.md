@@ -192,7 +192,7 @@ All arguments must have the same type.
 
 ### Return value
 
-The result is a scalar of type `real` with the same kind of input arguments.
+The result is of type `real` with the same kind as the input arguments. It is a scalar if all arguments are scalars; otherwise, it is an array with shape conformable to the array arguments.
 
 ### Example
 
