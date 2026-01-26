@@ -77,8 +77,7 @@ contains
     !
         ${t1}$, intent(in) :: shape
         ${t1}$ :: res
-        ${t1}$ :: x, v, u, zz
-        ${t1}$, save :: alpha = 0._${k1}$, d, c
+        ${t1}$ :: x, v, u, zz, d, c
         ${t1}$, parameter :: sq = 0.0331_${k1}$, tol = 1000 * epsilon(1.0_${k1}$)
 
 
@@ -89,13 +88,8 @@ contains
 
         if(zz < 1._${k1}$) zz = 1._${k1}$ + zz
         !shift shape parameter > 1
-        if(abs(zz - alpha) > tol) then
-        !initial run
-            alpha = zz
-            d = alpha - 1._${k1}$ / 3._${k1}$
-            c = 1._${k1}$ / (3._${k1}$ * sqrt(d))
-
-        endif
+        d = zz - 1._${k1}$ / 3._${k1}$
+        c = 1._${k1}$ / (3._${k1}$ * sqrt(d))
 
         do
             do
