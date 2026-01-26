@@ -3,7 +3,8 @@
 #:include "common.fypp"
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
 #:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
-#:set RC_KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES
+#:set I_KINDS_TYPES  = list(zip(INT_KINDS,   INT_TYPES, INT_KINDS))
+#:set RCI_KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES + I_KINDS_TYPES
 
 !> The Matrix Market (MM) format is a simple, human-readable, ASCII format for sparse 
 !> and dense matrices. The format was developed at NIST (National Institute of Standards 
@@ -29,7 +30,7 @@ module stdlib_io_mm
     !> Load a matrix from a Matrix Market file
     !> ([Specification](../page/specs/stdlib_io.html#load_mm))
     interface load_mm
-        #:for k, t, s in RC_KINDS_TYPES
+        #:for k, t, s in RCI_KINDS_TYPES
         module subroutine load_mm_dense_${s}$(filename, matrix, iostat, iomsg)
             !> Name of the Matrix Market file to load from
             character(len=*), intent(in) :: filename
@@ -41,7 +42,7 @@ module stdlib_io_mm
             character(len=:), allocatable, intent(out), optional :: iomsg
         end subroutine
         #:endfor
-        #:for k, t, s in RC_KINDS_TYPES
+        #:for k, t, s in RCI_KINDS_TYPES
         module subroutine load_mm_coo_${s}$(filename, index, data, iostat, iomsg)
             !> Name of the Matrix Market file to load from
             character(len=*), intent(in) :: filename
@@ -63,23 +64,25 @@ module stdlib_io_mm
     !> Save a matrix to a Matrix Market file
     !> ([Specification](../page/specs/stdlib_io.html#save_mm))
     interface save_mm
-        #:for k, t, s in RC_KINDS_TYPES
-        module subroutine save_mm_dense_${s}$(filename, matrix, comment, symmetry, iostat, iomsg)
+        #:for k, t, s in RCI_KINDS_TYPES
+        module subroutine save_mm_dense_${s}$(filename, matrix, comment, format, symmetry, iostat, iomsg)
         character(len=*), intent(in) :: filename
         ${t}$, intent(in) :: matrix(:,:)
         character(len=*), intent(in), optional :: comment
+        character(len=*), intent(in), optional :: format
         character(len=*), intent(in), optional :: symmetry
         integer, intent(out), optional :: iostat
         character(len=:), allocatable, intent(out), optional :: iomsg
         end subroutine 
         #:endfor
 
-        #:for k, t, s in RC_KINDS_TYPES
-        module subroutine save_mm_coo_${s}$(filename, index, data, comment, symmetry, iostat, iomsg)
+        #:for k, t, s in RCI_KINDS_TYPES
+        module subroutine save_mm_coo_${s}$(filename, index, data, comment, format, symmetry, iostat, iomsg)
         character(len=*), intent(in) :: filename
         integer, intent(in) :: index(:,:)
         ${t}$, intent(in) :: data(:)
         character(len=*), intent(in), optional :: comment
+        character(len=*), intent(in), optional :: format
         character(len=*), intent(in), optional :: symmetry
         integer, intent(out), optional :: iostat
         character(len=:), allocatable, intent(out), optional :: iomsg

@@ -3,7 +3,8 @@
 #:include "common.fypp"
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
 #:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
-#:set RC_KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES
+#:set I_KINDS_TYPES  = list(zip(INT_KINDS,   INT_TYPES, INT_KINDS))
+#:set RCI_KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES + I_KINDS_TYPES
 
 !> Implementation for saving multidimensional arrays to Matrix Market files
 submodule (stdlib_io_mm) stdlib_io_mm_save
@@ -11,7 +12,7 @@ submodule (stdlib_io_mm) stdlib_io_mm_save
     use stdlib_strings, only : to_string
     use stdlib_io, only : open
     use stdlib_ascii, only : to_lower
-    use stdlib_constants, only : #{for k, t, s in RC_KINDS_TYPES[:-1]}#zero_${k}$, #{endfor}#zero_${RC_KINDS_TYPES[-1][0]}$
+    use stdlib_constants, only : #{for k, t, s in RCI_KINDS_TYPES[:-1]}#zero_${k}$, #{endfor}#zero_${RCI_KINDS_TYPES[-1][0]}$
     implicit none
 
     ! Matrix Market format constants
@@ -44,14 +45,16 @@ submodule (stdlib_io_mm) stdlib_io_mm_save
 
 contains
 
-    #:for k, t, s in RC_KINDS_TYPES
-    module subroutine save_mm_dense_${s}$(filename, matrix, comment, symmetry, iostat, iomsg)
+    #:for k, t, s in RCI_KINDS_TYPES
+    module subroutine save_mm_dense_${s}$(filename, matrix, comment, format, symmetry, iostat, iomsg)
         !> Name of the Matrix Market file to save to
         character(len=*), intent(in) :: filename
         !> Matrix to be saved to the Matrix Market file
         ${t}$, intent(in) :: matrix(:,:)
         !> Optional comment information
         character(len=*), intent(in), optional :: comment
+        !> Format in which matrix data needs to be stored
+        character(len=*), intent(in), optional :: format
         !> Symmetry type of the matrix (general, symmetric, skew-symmetric, hermitian)
         character(len=*), intent(in), optional :: symmetry
         !> Error status of saving, zero on success
@@ -62,9 +65,25 @@ contains
         integer :: io, stat, i, j, nnz
         character(len=:), allocatable :: msg
         character(len=:), allocatable :: field_type
+        character(len=:), allocatable :: fmt_
         character(len=:), allocatable :: symmetry_
         #:if t.startswith('complex') 
         real(${k}$) :: real_part, imag_part
+        #:endif
+
+        #:if t.startswith('integer')
+            fmt_ = "I0"
+        #:else
+            fmt_ = "ES24.16E3"
+        #:endif
+        if(present(format)) fmt_ = format
+
+        #:if t.startswith('real')
+        fmt_ = '(' // fmt_ //')'
+        #:elif t.startswith('complex')
+        fmt_ = '(' // fmt_ //',1X,'// fmt_ //')'
+        #:elif t.startswith('integer')
+        fmt_ = '('// fmt_ //')'
         #:endif
 
         io = open(filename, "w", iostat=stat)
@@ -104,13 +123,13 @@ contains
                 do j = 1, size(matrix, 2)
                     do i = 1, size(matrix, 1)
                         #:if t.startswith('real')
-                        write(io, '(ES24.16E3)', iostat=stat) matrix(i, j)
+                        write(io, fmt=fmt_, iostat=stat) matrix(i, j)
                         #:elif t.startswith('complex')
                         real_part = real(matrix(i, j), kind=${k}$)
                         imag_part = aimag(matrix(i, j))
-                        write(io, '(ES24.16E3,1X,ES24.16E3)', iostat=stat) real_part, imag_part
+                        write(io, fmt=fmt_, iostat=stat) real_part, imag_part
                         #:elif t.startswith('integer')
-                        write(io, '(I0)', iostat=stat) matrix(i, j)
+                        write(io, fmt=fmt_, iostat=stat) matrix(i, j)
                         #:endif
                         if (stat /= 0) then
                             msg = "Error writing array element (" // &
@@ -125,13 +144,13 @@ contains
                 do j = 1, size(matrix, 2)
                     do i = j, size(matrix, 1)
                         #:if t.startswith('real')
-                        write(io, '(ES24.16E3)', iostat=stat) matrix(i, j)
+                        write(io, fmt=fmt_, iostat=stat) matrix(i, j)
                         #:elif t.startswith('complex')
                         real_part = real(matrix(i, j), kind=${k}$)
                         imag_part = aimag(matrix(i, j))
-                        write(io, '(ES24.16E3,1X,ES24.16E3)', iostat=stat) real_part, imag_part
+                        write(io, fmt=fmt_, iostat=stat) real_part, imag_part
                         #:elif t.startswith('integer')
-                        write(io, '(I0)', iostat=stat) matrix(i, j)
+                        write(io, fmt=fmt_, iostat=stat) matrix(i, j)
                         #:endif
                         if (stat /= 0) then
                             msg = "Error writing array element (" // &
@@ -159,8 +178,8 @@ contains
     end subroutine 
     #:endfor
 
-    #:for k, t, s in RC_KINDS_TYPES
-    module subroutine save_mm_coo_${s}$(filename, index, data, comment, symmetry, iostat, iomsg)
+    #:for k, t, s in RCI_KINDS_TYPES
+    module subroutine save_mm_coo_${s}$(filename, index, data, comment, format, symmetry, iostat, iomsg)
         !> Name of the Matrix Market file to save to
         character(len=*), intent(in) :: filename
         !> Matrix indices in COO format to be written to the file:
@@ -170,6 +189,8 @@ contains
         ${t}$, intent(in) :: data(:)
         !> Optional comment information
         character(len=*), intent(in), optional :: comment
+        !> Format in which matrix data needs to be stored
+        character(len=*), intent(in), optional :: format
         !> Symmetry type of the matrix (general, symmetric, skew-symmetric, hermitian)
         character(len=*), intent(in), optional :: symmetry
         !> Error status of saving, zero on success
@@ -180,10 +201,27 @@ contains
         integer :: io, stat, i, nnz_to_write
         character(len=:), allocatable :: msg
         character(len=:), allocatable :: field_type
+        character(len=:), allocatable :: fmt_
         character(len=:), allocatable :: symmetry_
         #:if t.startswith('complex') 
         real(${k}$) :: real_part, imag_part
         #:endif
+
+        #:if t.startswith('integer')
+            fmt_ = "I0"
+        #:else
+            fmt_ = "ES24.16E3"
+        #:endif
+        if(present(format)) fmt_ = format
+
+        #:if t.startswith('real')
+        fmt_ = '(I0,1X,I0,1X,' // fmt_ //')'
+        #:elif t.startswith('complex')
+        fmt_ = '(I0,1X,I0,1X,' // fmt_//',1X,'//fmt_//')'
+        #:elif t.startswith('integer')
+        fmt_ = '(I0,1X,I0,1X,'// fmt_ //')'
+        #:endif
+
         io = open(filename, "w", iostat=stat)
         if (stat /= 0) then
             if (present(iostat)) then
@@ -230,15 +268,15 @@ contains
             if(symmetry_ == MM_GENERAL) then
                 do i = 1, nnz_to_write
                     #:if t.startswith('real')
-                    write(io, '(I0,1X,I0,1X,ES24.16E3)', iostat=stat) &
+                    write(io, fmt=fmt_, iostat=stat) &
                         index(1,i), index(2,i), data(i)
                     #:elif t.startswith('complex')
                     real_part = real(data(i), kind=${k}$)
                     imag_part = aimag(data(i))
-                    write(io, '(I0,1X,I0,1X,ES24.16E3,1X,ES24.16E3)', iostat=stat) &
+                    write(io, fmt=fmt_, iostat=stat) &
                         index(1,i), index(2,i), real_part, imag_part
                     #:elif t.startswith('integer')
-                    write(io, '(I0,1X,I0,1X,I0)', iostat=stat) &
+                    write(io, fmt=fmt_, iostat=stat) &
                         index(1,i), index(2,i), data(i)
                     #:endif
                     if (stat /= 0) then
@@ -253,15 +291,15 @@ contains
                     if(index(1,i) < index(2,i)) cycle
                     if(symmetry_ == MM_SKEW_SYMMETRIC .and. index(1,i) == index(2,i)) cycle
                     #:if t.startswith('real')
-                    write(io, '(I0,1X,I0,1X,ES24.16E3)', iostat=stat) &
+                    write(io, fmt=fmt_, iostat=stat) &
                         index(1,i), index(2,i), data(i)
                     #:elif t.startswith('complex')
                     real_part = real(data(i), kind=${k}$)
                     imag_part = aimag(data(i))
-                    write(io, '(I0,1X,I0,1X,ES24.16E3,1X,ES24.16E3)', iostat=stat) &
+                    write(io, fmt=fmt_, iostat=stat) &
                         index(1,i), index(2,i), real_part, imag_part
                     #:elif t.startswith('integer')
-                    write(io, '(I0,1X,I0,1X,I0)', iostat=stat) &
+                    write(io, fmt=fmt_, iostat=stat) &
                         index(1,i), index(2,i), data(i)
                     #:endif
                     if (stat /= 0) then

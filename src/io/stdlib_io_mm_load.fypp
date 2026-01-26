@@ -3,7 +3,8 @@
 #:include "common.fypp"
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
 #:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
-#:set RC_KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES
+#:set I_KINDS_TYPES  = list(zip(INT_KINDS,   INT_TYPES, INT_KINDS))
+#:set RCI_KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES + I_KINDS_TYPES
 
 submodule (stdlib_io_mm) stdlib_io_mm_load
     use stdlib_error, only : error_stop
@@ -35,7 +36,7 @@ submodule (stdlib_io_mm) stdlib_io_mm_load
 
 contains
 
-    #:for k, t, s in RC_KINDS_TYPES
+    #:for k, t, s in RCI_KINDS_TYPES
     module subroutine load_mm_dense_${s}$(filename, matrix, iostat, iomsg)
         !> Name of the Matrix Market file to load from
         character(len=*), intent(in) :: filename
@@ -120,7 +121,7 @@ contains
     end subroutine
     #:endfor
 
-    #:for k, t, s in RC_KINDS_TYPES
+    #:for k, t, s in RCI_KINDS_TYPES
     module subroutine load_mm_coo_${s}$(filename, index, data, iostat, iomsg)
         !> Name of the Matrix Market file to load from
         character(len=*), intent(in) :: filename
