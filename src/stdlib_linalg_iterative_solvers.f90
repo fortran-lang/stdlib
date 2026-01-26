@@ -60,7 +60,7 @@ module stdlib_linalg_iterative_solvers
             real(sp), intent(in) :: beta
             character(1), intent(in) :: op
         end subroutine
-        pure real(sp) function reduction_sub_sp(x,y) result(r)
+        real(sp) function reduction_sub_sp(x,y) result(r)
             import :: sp
             real(sp), intent(in) :: x(:)
             real(sp), intent(in) :: y(:)
@@ -79,7 +79,7 @@ module stdlib_linalg_iterative_solvers
             real(dp), intent(in) :: beta
             character(1), intent(in) :: op
         end subroutine
-        pure real(dp) function reduction_sub_dp(x,y) result(r)
+        real(dp) function reduction_sub_dp(x,y) result(r)
             import :: dp
             real(dp), intent(in) :: x(:)
             real(dp), intent(in) :: y(:)
@@ -360,14 +360,14 @@ contains
     !------------------------------------------------------------------
     ! defaults
     !------------------------------------------------------------------
-    pure real(sp) function default_dot_sp(x,y) result(r)
+    real(sp) function default_dot_sp(x,y) result(r)
         use stdlib_intrinsics, only: stdlib_dot_product
         real(sp), intent(in) :: x(:)
         real(sp), intent(in) :: y(:)
         r = stdlib_dot_product(x,y)
     end function
 
-    pure real(dp) function default_dot_dp(x,y) result(r)
+    real(dp) function default_dot_dp(x,y) result(r)
         use stdlib_intrinsics, only: stdlib_dot_product
         real(dp), intent(in) :: x(:)
         real(dp), intent(in) :: y(:)
