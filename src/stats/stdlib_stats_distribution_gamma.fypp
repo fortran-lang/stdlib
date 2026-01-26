@@ -79,7 +79,7 @@ contains
         ${t1}$, intent(in) :: shape
         ${t1}$ :: res
         ${t1}$ :: x, v, u, zz, d, c
-        ${t1}$, parameter :: sq = 0.0331_${k1}$, tol = 1000 * epsilon(1.0_${k1}$)
+        ${t1}$, parameter :: sq = 0.0331_${k1}$
 
 
         if(shape <= 0.0_${k1}$) call error_stop("Error(gamma_dist_rvs): Gamma"  &
