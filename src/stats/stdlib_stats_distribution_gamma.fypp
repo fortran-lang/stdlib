@@ -1,6 +1,7 @@
-#:set WITH_QP = False
 #:include "common.fypp"
-#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+#:set GAMMA_REAL_KINDS_TYPES = [item for item in REAL_KINDS_TYPES if item[0] in ('sp', 'dp', 'xdp')]
+#:set GAMMA_CMPLX_KINDS_TYPES = [item for item in CMPLX_KINDS_TYPES if item[0] in ('sp', 'dp', 'xdp')]
+#:set RC_KINDS_TYPES = GAMMA_REAL_KINDS_TYPES + GAMMA_CMPLX_KINDS_TYPES
 Module stdlib_stats_distribution_gamma
     use stdlib_kinds, only : sp, dp, xdp, qp
     use stdlib_error, only : error_stop
@@ -68,7 +69,7 @@ Module stdlib_stats_distribution_gamma
 
 contains
 
-    #:for k1, t1 in REAL_KINDS_TYPES
+    #:for k1, t1 in GAMMA_REAL_KINDS_TYPES
     impure elemental function gamma_dist_rvs_1_${t1[0]}$${k1}$(shape) result(res)
     ! Gamma distribution random variate. "A Simple Method for Generating Gamma
     ! Variables", G. Marsaglia & W. W. Tsang, ACM Transactions on Mathematical
@@ -128,7 +129,7 @@ contains
     #:endfor
 
 
-    #:for k1, t1 in CMPLX_KINDS_TYPES
+    #:for k1, t1 in GAMMA_CMPLX_KINDS_TYPES
     impure elemental function gamma_dist_rvs_1_${t1[0]}$${k1}$(shape) result(res)
     ! Complex parameter gamma distributed. The real part and imaginary part are
     ! independent of each other.
@@ -143,7 +144,7 @@ contains
     #:endfor
 
 
-    #:for k1, t1 in REAL_KINDS_TYPES
+    #:for k1, t1 in GAMMA_REAL_KINDS_TYPES
     impure elemental function gamma_dist_rvs_${t1[0]}$${k1}$(shape, rate)      &
         result(res)
     !
@@ -159,7 +160,7 @@ contains
     #:endfor
 
 
-    #:for k1, t1 in CMPLX_KINDS_TYPES
+    #:for k1, t1 in GAMMA_CMPLX_KINDS_TYPES
     impure elemental function gamma_dist_rvs_${t1[0]}$${k1}$(shape, rate)      &
         result(res)
     ! Complex parameter gamma distributed. The real part and imaginary part are           &
@@ -175,7 +176,7 @@ contains
     #:endfor
 
 
-    #:for k1, t1 in REAL_KINDS_TYPES
+    #:for k1, t1 in GAMMA_REAL_KINDS_TYPES
     function gamma_dist_rvs_array_${t1[0]}$${k1}$(shape, rate, array_size)     &
         result(res)
     !
@@ -194,7 +195,7 @@ contains
     #:endfor
 
 
-    #:for k1, t1 in CMPLX_KINDS_TYPES
+    #:for k1, t1 in GAMMA_CMPLX_KINDS_TYPES
     function gamma_dist_rvs_array_${t1[0]}$${k1}$(shape, rate, array_size)     &
         result(res)
     ! Complex parameter gamma distributed. The real part and imaginary part are           &
@@ -217,7 +218,7 @@ contains
     #:endfor
 
 
-    #:for k1, t1 in REAL_KINDS_TYPES
+    #:for k1, t1 in GAMMA_REAL_KINDS_TYPES
     impure elemental function gamma_dist_pdf_${t1[0]}$${k1}$(x, shape, rate)   &
         result(res)
     ! Gamma distribution probability density function
@@ -257,7 +258,7 @@ contains
     #:endfor
 
 
-    #:for k1, t1 in CMPLX_KINDS_TYPES
+    #:for k1, t1 in GAMMA_CMPLX_KINDS_TYPES
     impure elemental function gamma_dist_pdf_${t1[0]}$${k1}$(x, shape, rate)   &
         result(res)
     ! Complex parameter gamma distributed. The real part and imaginary part are           &
@@ -274,7 +275,7 @@ contains
     #:endfor
 
 
-    #:for k1, t1 in REAL_KINDS_TYPES
+    #:for k1, t1 in GAMMA_REAL_KINDS_TYPES
     impure elemental function gamma_dist_cdf_${t1[0]}$${k1}$(x, shape, rate)   &
         result(res)
     ! Gamma distribution cumulative distribution function
@@ -299,7 +300,7 @@ contains
     #:endfor
 
 
-    #:for k1, t1 in CMPLX_KINDS_TYPES
+    #:for k1, t1 in GAMMA_CMPLX_KINDS_TYPES
     impure elemental function gamma_dist_cdf_${t1[0]}$${k1}$(x, shape, rate)   &
         result(res)
     ! Complex parameter gamma distributed. The real part and imaginary part are           &
