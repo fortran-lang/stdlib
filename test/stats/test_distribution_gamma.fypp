@@ -1,15 +1,16 @@
-#:set WITH_QP = False
 #:include "common.fypp"
-#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+#:set GAMMA_REAL_KINDS_TYPES = [item for item in REAL_KINDS_TYPES if item[0] in ('sp', 'dp', 'xdp')]
+#:set GAMMA_CMPLX_KINDS_TYPES = [item for item in CMPLX_KINDS_TYPES if item[0] in ('sp', 'dp', 'xdp')]
+#:set RC_KINDS_TYPES = GAMMA_REAL_KINDS_TYPES + GAMMA_CMPLX_KINDS_TYPES
 program test_distribution_gamma
-    use stdlib_kinds, only : sp, dp, xdp, qp
+    use stdlib_kinds, only : sp, dp, xdp
     use stdlib_error, only : check
     use stdlib_random, only : random_seed
     use stdlib_stats_distribution_gamma, only : rgamma => rvs_gamma,           &
                               gamma_pdf => pdf_gamma, gamma_cdf => cdf_gamma
 
     implicit none
-    #:for k1, t1 in REAL_KINDS_TYPES
+    #:for k1, t1 in GAMMA_REAL_KINDS_TYPES
     ${t1}$, parameter :: ${k1}$tol = 1000 * epsilon(1.0_${k1}$)
     #:endfor
     logical ::  warn = .true.
@@ -36,7 +37,7 @@ contains
 
     subroutine test_gamma_random_generator
         integer, parameter :: num = 10000000, array_size = 1000
-        integer :: i, j, freq(0:array_size)
+        integer :: i, j, freq(0:array_size-1)
         real(dp) :: chisq, expct
 
         print *, ""
@@ -44,14 +45,14 @@ contains
 
         freq = 0
         do i = 1, num
-            j = 1000 * gamma_cdf(rgamma(2.0_dp, 1.5_dp), 2.0_dp, 1.5_dp)
+            j = min(array_size - 1, int(array_size * gamma_cdf(rgamma(2.0_dp, 1.5_dp), 2.0_dp, 1.5_dp)))
             freq(j) = freq(j) + 1
         end do
 
         chisq = 0.0_dp
-        expct = real(num, dp) / real(array_size + 1, dp)
+        expct = num / array_size
 
-        do i = 0, array_size
+        do i = 0, array_size - 1
            chisq = chisq + (freq(i) - expct) ** 2 / expct
         end do
 
