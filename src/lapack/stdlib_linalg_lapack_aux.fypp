@@ -1664,8 +1664,18 @@ module stdlib_linalg_lapack_aux
             case (0)
                 ! Success.
                 err%state = LINALG_SUCCESS
-            case (:-1)
-                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid argument at position', -info)
+            case (-1)
+                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid number of rows for A and B, m=', m)
+            case (-2)
+                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid number of columns for A, n=', n)
+            case (-3)
+                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid number of columns for B, p=', p)
+            case (-5)
+                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid leading dimension for A, lda < m=', m)
+            case (-7)
+                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid leading dimension for B, ldb < m=', m)
+            case (-12)
+                err = linalg_state_type(this, LINALG_INTERNAL_ERROR, 'Insufficient workspace size.')
             case (1:)
                 ! From LAPACK: the upper triangular factor R of A does not have full rank
                 err = linalg_state_type(this, LINALG_ERROR, &
