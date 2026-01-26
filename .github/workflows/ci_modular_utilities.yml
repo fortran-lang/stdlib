@@ -1,4 +1,4 @@
-name: ci_modular
+name: CI - Utilities modules
 
 on: [push, pull_request]
 
@@ -23,10 +23,8 @@ jobs:
         toolchain:
           - {compiler: gcc, version: 14}
         build: [cmake]        
-        with_ansi: [On, Off]
         with_bitset: [On, Off]
         with_hashmaps: [On, Off]
-        with_stats: [On, Off]
     env:
       BUILD_DIR: ${{ matrix.build == 'cmake' && 'build' || '.' }}
 
@@ -58,10 +56,8 @@ jobs:
         -DCMAKE_MAXIMUM_RANK:String=4
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
         -DFIND_BLAS:STRING=FALSE
-        -DSTDLIB_ANSI:STRING=${{ matrix.with_ansi }}
         -DSTDLIB_BITSET:STRING=${{ matrix.with_bitset }}
         -DSTDLIB_HASHMAPS:STRING=${{ matrix.with_hashmaps }}
-        -DSTDLIB_STATS:STRING=${{ matrix.with_stats }}
         -S . -B ${{ env.BUILD_DIR }}
 
     - name: Build and compile
