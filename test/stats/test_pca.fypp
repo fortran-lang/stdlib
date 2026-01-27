@@ -1,0 +1,54 @@
+#:include "common.fypp"
+program test_pca
+    use stdlib_error, only: check
+    use stdlib_kinds, only: sp, dp, xdp, qp
+    use stdlib_stats, only: pca, pca_transform, pca_inverse_transform
+    use stdlib_linalg_state, only: linalg_state_type
+    implicit none
+
+    #:for k1 in REAL_KINDS
+    real(${k1}$), parameter :: ${k1}$tol = 1000 * epsilon(1._${k1}$)
+    #:endfor
+
+    #:for k1 in REAL_KINDS
+    call test_pca_${k1}$()
+    #:endfor
+
+contains
+
+    #:for k1 in REAL_KINDS
+    subroutine test_pca_${k1}$()
+        real(${k1}$) :: x(3, 2), components(2, 2), s(2), mu(2)
+        real(${k1}$) :: x_trans(3, 2), x_inv(3, 2)
+        type(linalg_state_type) :: err
+
+        ! Data: [1, 2], [3, 4], [5, 6]
+        x = reshape([1.0_${k1}$, 3.0_${k1}$, 5.0_${k1}$, 2.0_${k1}$, 4.0_${k1}$, 6.0_${k1}$], [3, 2])
+
+        ! Test SVD method
+        call pca(x, components, s, x_mean=mu, method="svd", err=err)
+        call check(err%ok(), "pca_${k1}$ svd err")
+        call check(all(abs(mu - [3.0_${k1}$, 4.0_${k1}$]) < ${k1}$tol), "pca_${k1}$ svd mean")
+        ! First component should be approx [0.707, 0.707] (or negative)
+        call check(abs(abs(components(1,1)) - 1.0_${k1}$/sqrt(2.0_${k1}$)) < ${k1}$tol, "pca_${k1}$ svd comp1")
+        call check(abs(s(1) - 4.0_${k1}$) < ${k1}$tol, "pca_${k1}$ svd s1")
+        call check(abs(s(2)) < ${k1}$tol, "pca_${k1}$ svd s2")
+
+        ! Test Transform
+        call pca_transform(x, components, mu, x_trans)
+        ! Second dimension should be zero
+        call check(all(abs(x_trans(:, 2)) < ${k1}$tol), "pca_${k1}$ transform")
+
+        ! Test Inverse Transform
+        call pca_inverse_transform(x_trans, components, mu, x_inv)
+        call check(all(abs(x_inv - x) < ${k1}$tol), "pca_${k1}$ inverse")
+
+        ! Test EIG method
+        call pca(x, components, s, method="eig", err=err)
+        call check(err%ok(), "pca_${k1}$ eig err")
+        call check(abs(s(1) - 4.0_${k1}$) < ${k1}$tol, "pca_${k1}$ eig s1")
+
+    end subroutine test_pca_${k1}$
+    #:endfor
+
+end program test_pca
