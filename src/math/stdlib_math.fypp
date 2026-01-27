@@ -5,7 +5,7 @@
 module stdlib_math
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
     use stdlib_optval, only: optval
-#if STDLIB_BITSET
+#if STDLIB_BITSETS
     use stdlib_bitsets, only: bitset_64, bitset_large
 #endif
 
@@ -50,7 +50,7 @@ module stdlib_math
     !>
     !> Version: experimental
     interface swap
-      #:for k1, t1, a1, cpp1 in INT_KINDS_TYPES + REAL_KINDS_TYPES + BITSET_KINDS_TYPES
+      #:for k1, t1, a1, cpp1 in INT_KINDS_TYPES + REAL_KINDS_TYPES + BITSETS_KINDS_TYPES
       #:block generate_cpp(cpp_var=cpp1)
       module procedure :: swap_${k1}$
       #:endblock
@@ -531,7 +531,7 @@ contains
 
     #:endfor
 
-    #:for k1, t1, a1, cpp1 in INT_KINDS_TYPES + REAL_KINDS_TYPES + BITSET_KINDS_TYPES
+    #:for k1, t1, a1, cpp1 in INT_KINDS_TYPES + REAL_KINDS_TYPES + BITSETS_KINDS_TYPES
     #:block generate_cpp(cpp_var=cpp1)
     elemental subroutine swap_${k1}$(lhs, rhs)
         ${t1}$, intent(inout) :: lhs, rhs

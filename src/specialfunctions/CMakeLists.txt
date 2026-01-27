@@ -8,6 +8,6 @@ set(specialfunctions_fppFiles
     stdlib_specialfunctions_gamma.fypp
    )
 
-configure_stdlib_target(specialfunctions specialfunctions_f90Files specialfunctions_fppFiles "")
+configure_stdlib_target(${PROJECT_NAME}_specialfunctions specialfunctions_f90Files specialfunctions_fppFiles "")
 
-target_link_libraries(specialfunctions PUBLIC intrinsics)
+target_link_libraries(${PROJECT_NAME}_specialfunctions PUBLIC ${PROJECT_NAME}_intrinsics)

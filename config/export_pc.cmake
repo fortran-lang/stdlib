@@ -41,9 +41,11 @@ function(resolve_pc_libs out_var root_target)
 
     _resolve("${root_target}")
 
+    # Remove the duplicates by keeping the first occurrence
+    list(REMOVE_DUPLICATES _result)
+
     # Reverse the order
     list(REVERSE _result)
-    #list(REMOVE_DUPLICATES _result)
 
     set(${out_var} "${_result}" PARENT_SCOPE)
 endfunction()

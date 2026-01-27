@@ -60,9 +60,9 @@ set(lapack_cppFiles
 set(lapack_f90Files
 )
 
-configure_stdlib_target(lapack lapack_f90Files lapack_fppFiles lapack_cppFiles)
+configure_stdlib_target(${PROJECT_NAME}_lapack lapack_f90Files lapack_fppFiles lapack_cppFiles)
 
 if(LAPACK_FOUND)
-    target_link_libraries(lapack PUBLIC "LAPACK::LAPACK")
+    target_link_libraries(${PROJECT_NAME}_lapack PUBLIC "LAPACK::LAPACK")
 endif()
-target_link_libraries(lapack PUBLIC core linalg_core blas strings)
+target_link_libraries(${PROJECT_NAME}_lapack PUBLIC ${PROJECT_NAME}_core ${PROJECT_NAME}_linalg_core ${PROJECT_NAME}_blas ${PROJECT_NAME}_strings)
