@@ -65,11 +65,55 @@ module test_linalg_matrix_factorizations
 
         ! Check the R matrix with reference.
         call check(error, all_close(R, F%R(), rel_tol=rel_tol_${rk}$))
-        if (allocated(error)) return
+        if (allocated(error)) then
+            block
+            integer(ilp) :: i, j
+            ${rt}$, allocatable :: rnew(:, :)
+            print *, "Reference R matrix. shape(R) =", shape(R)
+            do i = 1, m
+                print *, (R(i, j), j = 1, n)
+            enddo
+            print *
+            print *, "New R matrix. shape(R) =", shape(F%R())
+            rnew = F%R()
+            do i = 1, m
+                print *, (rnew(i, j), j = 1, n)
+            enddo
+            print *
+            print *, "Difference between the two."
+            rnew = rnew - r
+            do i = 1, m
+                print *, (rnew(i, j), j=1, n)
+            enddo
+            end block
+            return
+        endif
 
         ! Check the Q matrix with reference.
         call check(error, all_close(Q, F%Q(), rel_tol=rel_tol_${rk}$))
-        if (allocated(error)) return
+        if (allocated(error)) then
+            block
+            integer(ilp) :: i, j
+            ${rt}$, allocatable :: qnew(:, :)
+            print *, "Reference Q matrix. shape(Q) =", shape(Q)
+            do i = 1, m
+                print *, (Q(i, j), j = 1, m)
+            enddo
+            print *
+            print *, "New Q matrix. shape(Q) =", shape(F%Q())
+            qnew = F%Q()
+            do i = 1, m
+                print *, (qnew(i, j), j = 1, m)
+            enddo
+            print *
+            print *, "Difference between the two."
+            qnew = qnew - q
+            do i = 1, m
+                print *, (qnew(i, j), j=1, m)
+            enddo
+            end block
+            return
+        endif
         
     end subroutine test_qr_random_tall_matrix_${ri}$
 
