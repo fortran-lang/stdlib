@@ -1,3 +1,138 @@
+# Version 0.8.1
+
+Full release notes available at [v0.8.1] tag.
+
+[v0.8.1]: https://github.com/fortran-lang/stdlib/releases/tag/v0.8.1
+
+Changes to the existing build system
+  - Changes in the build system
+    - Completed refactoring of `stdlib` into modular components using CMake
+      [#1098](https://github.com/fortran-lang/stdlib/pull/1098)
+      [#1100](https://github.com/fortran-lang/stdlib/pull/1100)
+      [#1102](https://github.com/fortran-lang/stdlib/pull/1102)
+    - Resolve race condition in parallel FYPP preprocessing
+      [#1103](https://github.com/fortran-lang/stdlib/pull/1103)
+
+Changes to the existing modules
+  - Change in module `stdlib_lingal_iterative_solvers`
+    - Remove pure attribute from `stdlib_linop` `inner_product`
+      [#1106](https://github.com/fortran-lang/stdlib/pull/1106)
+
+Changes to the existing documentation
+  - Change in README
+    - Addition of a DOI badge
+      [#1097](https://github.com/fortran-lang/stdlib/pull/1097)
+    - Update of the table with flags for modularizing `stdlib`
+      [#1098](https://github.com/fortran-lang/stdlib/pull/1098)
+
+# Version 0.8.0
+
+Full release notes available at [v0.8.0] tag.
+
+[v0.8.0]: https://github.com/fortran-lang/stdlib/releases/tag/v0.8.0
+
+Summary of the most relevant pull requests (more than 100 total)
+- changes in module `stdlib_linalg` and related
+  - Matrix Inverse
+    [#828](https://github.com/fortran-lang/stdlib/pull/828)
+  - Vector norms
+    [#871](https://github.com/fortran-lang/stdlib/pull/871)
+  - Matrix norms
+    [#885](https://github.com/fortran-lang/stdlib/pull/885)
+  - Cholesky factorization
+    [#840](https://github.com/fortran-lang/stdlib/pull/840)
+  - QR factorization
+    [#832](https://github.com/fortran-lang/stdlib/pull/832)
+  - Generalized eigenvalue problem
+    [#909](https://github.com/fortran-lang/stdlib/pull/909)
+  - Moore-Penrose pseudo-inverse
+    [#899](https://github.com/fortran-lang/stdlib/pull/899)
+  - Schur decomposition
+    [#892](https://github.com/fortran-lang/stdlib/pull/892)
+  - Matrix exponential
+    [#1038](https://github.com/fortran-lang/stdlib/pull/1038)
+  - Hermitian matrices
+    [#896](https://github.com/fortran-lang/stdlib/pull/896)
+  - Iterative solvers
+    [#994](https://github.com/fortran-lang/stdlib/pull/994)
+  - Bi-conjugate gradient stabilized method
+    [#1034](https://github.com/fortran-lang/stdlib/pull/1034)
+  - Pivoting QR decomposition
+    [#1045](https://github.com/fortran-lang/stdlib/pull/1045)
+  - Equality-constrained least-squares solver
+    [#1046](https://github.com/fortran-lang/stdlib/pull/1046)
+  - Generalized lagtm routine with support for arbitrary alpha and beta
+    [#1068](https://github.com/fortran-lang/stdlib/pull/1068)
+
+- changes in module `stdlib_system`
+  - `delete_file`
+    [#966](https://github.com/fortran-lang/stdlib/pull/966)
+  - `is_directory`
+    [#946](https://github.com/fortran-lang/stdlib/pull/946)
+  - `get_cwd` and `set_cwd`
+    [#1014](https://github.com/fortran-lang/stdlib/pull/1014)
+  - `exists`
+    [#1026](https://github.com/fortran-lang/stdlib/pull/1026)
+  - `null_device`
+    [#945](https://github.com/fortran-lang/stdlib/pull/945)
+  - `subprocessing` interface
+    [#911](https://github.com/fortran-lang/stdlib/pull/911)
+
+- changes in module `stdlib_math`
+  - Conversion functions: degrees-to-radians and vice versa
+    [#845](https://github.com/fortran-lang/stdlib/pull/845)
+
+- changes in module `stdlib_intrinsics`
+  - Extended intrinsic `matmul` for additional flexibility
+    [#951](https://github.com/fortran-lang/stdlib/pull/951)
+
+- changes in module `stdlib_io`
+  - Changes to `loadtxt`/`savetxt`
+    [#877](https://github.com/fortran-lang/stdlib/pull/877)
+    [#958](https://github.com/fortran-lang/stdlib/pull/958)
+
+- changes in module `stdlib_sorting`
+  - `sort_index`: use only `int_index` iterators
+    [#848](https://github.com/fortran-lang/stdlib/pull/848)
+  - Addition of `sort_adj`
+    [#849](https://github.com/fortran-lang/stdlib/pull/849)
+
+- improvements and fixes to existing modules
+  - Fixes for factorial results, warnings, argument alignment, etc.
+    [#876](https://github.com/fortran-lang/stdlib/pull/876)
+    [#880](https://github.com/fortran-lang/stdlib/pull/880)
+    [#879](https://github.com/fortran-lang/stdlib/pull/879)
+    [#929](https://github.com/fortran-lang/stdlib/pull/929)
+  - Fix sparse algebra support and examples
+    [#760](https://github.com/fortran-lang/stdlib/pull/760)
+    [#928](https://github.com/fortran-lang/stdlib/pull/928)
+
+- changes in CI/CD configurations
+  - Upgrade CI/CD configurations
+    [#854](https://github.com/fortran-lang/stdlib/pull/854)
+    [#925](https://github.com/fortran-lang/stdlib/pull/925)
+    [#1052](https://github.com/fortran-lang/stdlib/pull/1052)
+    [#1072](https://github.com/fortran-lang/stdlib/pull/1072)
+    [#1094](https://github.com/fortran-lang/stdlib/pull/1094)
+
+- build improvements
+  - Changes in CMake configurations
+    [#844](https://github.com/fortran-lang/stdlib/pull/844)
+    [#923](https://github.com/fortran-lang/stdlib/pull/923)
+  - Modularization
+    [#1033](https://github.com/fortran-lang/stdlib/pull/1033)
+    [#1050](https://github.com/fortran-lang/stdlib/pull/1050)
+    [#1066](https://github.com/fortran-lang/stdlib/pull/1066)
+    [#1081](https://github.com/fortran-lang/stdlib/pull/1081)
+
+- changes in documentation
+  - Added tables summarizing preprocessing macros and flags
+    [#1083](https://github.com/fortran-lang/stdlib/pull/1083)
+  - Updated macOS architecture in README
+    [#1059](https://github.com/fortran-lang/stdlib/pull/1059)
+  - Added code coverage support
+    [#1039](https://github.com/fortran-lang/stdlib/pull/1039)
+
 # Version 0.7.0
 
 Full release notes available at [v0.7.0] tag.
