@@ -9,6 +9,6 @@ set(specialmatrices_cppFiles
 set(specialmatrices_f90Files
     )
 
-configure_stdlib_target(specialmatrices specialmatrices_f90Files specialmatrices_fppFiles specialmatrices_cppFiles)
+configure_stdlib_target(${PROJECT_NAME}_specialmatrices specialmatrices_f90Files specialmatrices_fppFiles specialmatrices_cppFiles)
 
-target_link_libraries(specialmatrices PUBLIC constants linalg_core linalg lapack lapack_extended)
+target_link_libraries(${PROJECT_NAME}_specialmatrices PUBLIC ${PROJECT_NAME}_constants ${PROJECT_NAME}_linalg_core ${PROJECT_NAME}_linalg ${PROJECT_NAME}_lapack ${PROJECT_NAME}_lapack_extended)

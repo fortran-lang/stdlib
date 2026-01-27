@@ -1,16 +1,18 @@
+macro(ADD_SUBDIR name)
+  string(TOUPPER "${name}" uname)
+  if (STDLIB_${uname})
+    add_subdirectory(${name})
+    list(APPEND OPTIONAL_LIB ${PROJECT_NAME}_${name})
+  endif()
+endmacro()
+
 set(OPTIONAL_LIB)
 
-if (STDLIB_ANSI)
-  add_subdirectory(ansi)
-  list(APPEND OPTIONAL_LIB ansi)
-endif()
+ADD_SUBDIR(ansi)
 
 add_subdirectory(array)
 
-if (STDLIB_BITSET)
-  add_subdirectory(bitsets)
-  list(APPEND OPTIONAL_LIB bitsets)
-endif()
+ADD_SUBDIR(bitsets)
 
 add_subdirectory(blas)
 add_subdirectory(constants)
@@ -18,34 +20,28 @@ add_subdirectory(core)
 
 add_subdirectory(hash)
 
-if (STDLIB_HASHMAPS)
-  add_subdirectory(hashmaps)
-  list(APPEND OPTIONAL_LIB hashmaps)
-endif()
+ADD_SUBDIR(hashmaps)
 
 add_subdirectory(intrinsics)
-add_subdirectory(io)
+ADD_SUBDIR(io)
 
 add_subdirectory(lapack)
 add_subdirectory(lapack_extended)
 add_subdirectory(linalg_core)
-add_subdirectory(linalg_iterative)
+ADD_SUBDIR(linalg_iterative)
 add_subdirectory(linalg)
-add_subdirectory(logger)
+ADD_SUBDIR(logger)
 add_subdirectory(math)
-add_subdirectory(quadrature)
+ADD_SUBDIR(quadrature)
 add_subdirectory(selection)
 add_subdirectory(sorting)
 add_subdirectory(specialfunctions)
-add_subdirectory(specialmatrices)
-add_subdirectory(stringlist)
+ADD_SUBDIR(specialmatrices)
+ADD_SUBDIR(stringlist)
 add_subdirectory(strings)
-add_subdirectory(system)
+ADD_SUBDIR(system)
 
-if (STDLIB_STATS)
-  add_subdirectory(stats)
-  list(APPEND OPTIONAL_LIB stats)
-endif()
+ADD_SUBDIR(stats)
 
 add_subdirectory(sparse)
 
@@ -60,26 +56,19 @@ set(f90Files
 configure_stdlib_target(${PROJECT_NAME} f90Files fppFiles cppFiles)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
-  array
-  constants
-  core
-  hash
-  intrinsics
-  io
-  linalg_core
-  linalg_iterative
-  linalg
-  logger
-  math
-  quadrature
-  selection
-  specialfunctions
-  specialmatrices
-  sorting
-  stringlist
-  strings
-  system
-  blas lapack lapack_extended
-  sparse
+  ${PROJECT_NAME}_array
+  ${PROJECT_NAME}_constants
+  ${PROJECT_NAME}_core
+  ${PROJECT_NAME}_hash
+  ${PROJECT_NAME}_intrinsics
+  ${PROJECT_NAME}_linalg_core
+  ${PROJECT_NAME}_linalg
+  ${PROJECT_NAME}_math
+  ${PROJECT_NAME}_selection
+  ${PROJECT_NAME}_specialfunctions
+  ${PROJECT_NAME}_sorting
+  ${PROJECT_NAME}_strings
+  ${PROJECT_NAME}_blas ${PROJECT_NAME}_lapack ${PROJECT_NAME}_lapack_extended
+  ${PROJECT_NAME}_sparse
   ${OPTIONAL_LIB}
   )
