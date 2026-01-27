@@ -637,14 +637,9 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
         end if
 
         ! Can A be overwritten? By default, do not overwrite
-        if (present(overwrite_a)) then
-            copy_a = .not.overwrite_a
-        else
-            copy_a = .true._lk
-        end if
+        copy_a = .not. optval(overwrite_a, .false._lk)
 
         ! Compute sqrt of weights
-        allocate(sqrt_w(m))
         sqrt_w = sqrt(w)
 
         ! Handle A matrix: either copy or use original
@@ -661,7 +656,6 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
         end do
 
         ! Scale b
-        allocate(b_scaled(m))
         b_scaled = sqrt_w * b
 
         ! Solve transformed OLS problem
