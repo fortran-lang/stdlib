@@ -165,7 +165,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
         ! Local variables
         type(linalg_state_type) :: err0
         integer(ilp) :: lda,n,ldb,ldx,nrhs,nrhsx,info
-        character :: triangle
+        character :: uplo
         ${rt}$, pointer :: xmat(:,:)
 
         ! Problem sizes
@@ -176,8 +176,8 @@ submodule (stdlib_linalg) stdlib_linalg_solve
         ldx   = size(x,1,kind=ilp)
         nrhsx = size(x,kind=ilp)/ldx
         
-        ! Set triangle based on lower flag (REQUIRED argument)
-        triangle = merge('L','U',lower)
+        ! Set uplo based on lower flag (REQUIRED argument)
+        uplo = merge('L','U',lower)
         
         ! Validate dimensions
         if (any([lda,n,ldb]<1) .or. any([lda,ldb,ldx]/=n) .or. nrhsx/=nrhs) then
@@ -194,10 +194,10 @@ submodule (stdlib_linalg) stdlib_linalg_solve
         xmat(1:n,1:nrhs) => x
         
         ! Solve the system using LAPACK POTRS
-        call potrs(triangle,n,nrhs,a,lda,xmat,n,info)
+        call potrs(uplo,n,nrhs,a,lda,xmat,n,info)
         
         ! Handle errors using standard handler
-        call handle_potrs_info(this,info,triangle,n,nrhs,lda,n,err0)
+        call handle_potrs_info(this,info,uplo,n,nrhs,lda,n,err0)
         
         ! Process output and return
         call linalg_error_handling(err0,err)
@@ -232,7 +232,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
         type(linalg_state_type) :: err0
         integer(ilp) :: lda,n,ldb,ldx,nrhs,nrhsx,info
         logical(lk) :: lower_,copy_a
-        character :: triangle
+        character :: uplo
         ${rt}$, pointer :: xmat(:,:),amat(:,:)
 
         ! Problem sizes
@@ -244,16 +244,11 @@ submodule (stdlib_linalg) stdlib_linalg_solve
         nrhsx = size(x,kind=ilp)/ldx
         
         ! Default: use lower triangular
-        lower_ = .true._lk
-        if (present(lower)) lower_ = lower
-        triangle = merge('L','U',lower_)
+        lower_ = optval(lower, .true._lk)
+        uplo = merge('L','U',lower_)
         
         ! Can A be overwritten? By default, do not overwrite
-        if (present(overwrite_a)) then
-           copy_a = .not.overwrite_a
-        else
-           copy_a = .true._lk
-        endif
+        copy_a = .not. optval(overwrite_a, .false._lk)
         
         ! Validate dimensions
         if (any([lda,n,ldb]<1) .or. any([lda,ldb,ldx]/=n) .or. nrhsx/=nrhs) then
@@ -277,10 +272,10 @@ submodule (stdlib_linalg) stdlib_linalg_solve
         xmat(1:n,1:nrhs) => x
         
         ! Factorize AND solve using LAPACK POSV
-        call posv(triangle,n,nrhs,amat,lda,xmat,n,info)
+        call posv(uplo,n,nrhs,amat,lda,xmat,n,info)
         
         ! Handle errors using standard handler
-        call handle_posv_info(this,info,triangle,n,nrhs,lda,n,err0)
+        call handle_posv_info(this,info,uplo,n,nrhs,lda,n,err0)
         
         if (copy_a) deallocate(amat)
         

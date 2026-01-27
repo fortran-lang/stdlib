@@ -28,6 +28,8 @@ module test_linalg_solve_chol
         call add_test(tests,new_unittest("cholesky_solve_upper_${ri}$",test_cholesky_solve_upper_${ri}$))
         call add_test(tests,new_unittest("cholesky_solve_overwrite_${ri}$",test_cholesky_solve_overwrite_${ri}$))
         call add_test(tests,new_unittest("solve_chol_multi_rhs_${ri}$",test_solve_chol_multi_rhs_${ri}$))
+        call add_test(tests,new_unittest("cholesky_solve_indefinite_${ri}$",test_cholesky_solve_indefinite_${ri}$))
+        call add_test(tests,new_unittest("cholesky_solve_semidefinite_${ri}$",test_cholesky_solve_semidefinite_${ri}$))
         #:endfor
 
     end subroutine test_solve_chol_factorization
@@ -274,6 +276,60 @@ module test_linalg_solve_chol
         if (allocated(error)) return
         
     end subroutine test_solve_chol_multi_rhs_${ri}$
+    
+    #:endfor
+
+    !> Test cholesky_solve with symmetric indefinite matrix (should fail)
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    subroutine test_cholesky_solve_indefinite_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer(ilp), parameter :: n = 2_ilp
+        ${rt}$ :: a(n,n), b(n), x(n)
+        type(linalg_state_type) :: state
+        
+        ! Set symmetric INDEFINITE matrix (eigenvalues: 3, -1)
+        a(1,:) = [1, 2]
+        a(2,:) = [2, 1]
+        
+        ! Arbitrary RHS
+        b = [1, 1]
+        
+        ! cholesky_solve should fail for indefinite matrix
+        call cholesky_solve(a, b, x, lower=.true., err=state)
+        
+        ! Check that it failed (not positive definite)
+        call check(error, state%error(), 'cholesky_solve should fail for indefinite matrix')
+        if (allocated(error)) return
+        
+    end subroutine test_cholesky_solve_indefinite_${ri}$
+    
+    #:endfor
+
+    !> Test cholesky_solve with symmetric positive semi-definite matrix (should fail)
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    subroutine test_cholesky_solve_semidefinite_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        integer(ilp), parameter :: n = 2_ilp
+        ${rt}$ :: a(n,n), b(n), x(n)
+        type(linalg_state_type) :: state
+        
+        ! Set symmetric positive SEMI-DEFINITE matrix (eigenvalues: 2, 0 - singular)
+        a(1,:) = [1, 1]
+        a(2,:) = [1, 1]
+        
+        ! Arbitrary RHS
+        b = [1, 1]
+        
+        ! cholesky_solve should fail for semi-definite (singular) matrix
+        call cholesky_solve(a, b, x, lower=.true., err=state)
+        
+        ! Check that it failed (not strictly positive definite)
+        call check(error, state%error(), 'cholesky_solve should fail for positive semi-definite matrix')
+        if (allocated(error)) return
+        
+    end subroutine test_cholesky_solve_semidefinite_${ri}$
     
     #:endfor
 
