@@ -16,4 +16,4 @@ set(io_f90Files
 
 configure_stdlib_target(io io_f90Files io_fppFiles io_cppFiles)
 
-target_link_libraries(io PUBLIC core strings sparse)
+target_link_libraries(io PUBLIC core constants strings)
