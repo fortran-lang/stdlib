@@ -1,0 +1,94 @@
+#:include "common.fypp"
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+! Cholesky factorization of a matrix, based on LAPACK *POTRF functions
+submodule (stdlib_linalg) stdlib_linalg_matrix_factorizations
+    use stdlib_linalg_lapack, only: geqrt, gemqrt
+    use stdlib_linalg_lapack_aux, only: handle_geqrt_info
+    implicit none
+
+    character(len=*), parameter :: this = 'matrix_factorizations'
+
+    contains
+
+    !-----------------------------------------------------
+    !-----     DERIVED-TYPE FOR QR FACTORIZATION     -----
+    !-----------------------------------------------------
+
+    #:for rk, rt, ri in RC_KINDS_TYPES
+    pure module function stdlib_qrfact_${ri}$(A) result(F)
+        ${rt}$, intent(in) :: A(:, :)
+        !> Matrix to be factorized.
+        type(qr_${rt[0]}$${rk}$_type) :: F
+
+        !----- Internal variables -----
+        integer(ilp), parameter :: min_nb = 36 ! Minimum block size.
+        integer(ilp) :: m, n, nb, info
+        ${rt}$, allocatable :: work(:)
+        type(linalg_state_type) :: err
+
+        !> Problem dimensions.
+        m  = size(A, 1)         ! Number of rows.
+        n  = size(A, 2)         ! Number of columns.
+        nb = min(m, n, min_nb)  ! Block size.
+
+        !> Copy matrix.
+        F%data = A
+        F%ldt = nb
+
+        !> Allocate data.
+        allocate(F%t(F%ldt, min(m, n)), F%work(nb*max(m, n)))
+
+        !> QR factorization.
+        call geqrt(m, n, nb, F%data, m, F%t, F%ldt, F%work, info)
+        call handle_geqrt_info(this, info, m, n, nb, F%ldt, err)
+        call linalg_error_handling(err)
+    end function stdlib_qrfact_${ri}$
+
+    module function get_qfactor_${rt[0]}$${rk}$(self) result(Q)
+        class(qr_${rt[0]}$${rk}$_type), intent(inout) :: self
+        !> Compact representation of the QR factorization.
+        ${rt}$, allocatable :: Q(:, :)
+        !> Orthogonal matrix.
+
+        !----- Internal variables -----
+        integer(ilp) :: i, j, k, m, n, info
+        character(len=1), parameter :: side='L', trans='N'
+        ${rt}$, parameter :: zero = #{if rt.startswith("r")}# 0.0_${rk}$#{else}#cmplx(0.0_${rk}$, 0.0_${rk}$, kind=${rk}$) #{endif}#
+        
+        !> Matrix size.
+        m = size(self%data, 1)
+        n = size(self%data, 2)
+        k = min(m, n)
+
+        !> Compute the Q matrix.
+        Q = eye(m, k, mold=zero)
+        call gemqrt(side, trans, m, k, k, &
+                    self%ldt, self%data(:, :k), m, self%t, self%ldt, Q, m, self%work, info)
+    end function get_qfactor_${rt[0]}$${rk}$
+
+    pure module function get_rfactor_${rt[0]}$${rk}$(self) result(R)
+        class(qr_${rt[0]}$${rk}$_type), intent(in) :: self
+        !> Compact representation of the QR factorization.
+        ${rt}$, allocatable :: R(:, :)
+        !> Upper-triangular matrix.
+
+        !----- Internal variables -----
+        integer(ilp) :: i, j, k, m, n
+        ${rt}$, parameter :: zero = #{if rt.startswith("r")}# 0.0_${rk}$#{else}#cmplx(0.0_${rk}$, 0.0_${rk}$, kind=${rk}$) #{endif}#
+
+        !> Matrix size.
+        m = size(self%data, 1)
+        n = size(self%data, 2)
+        k = min(m, n)
+
+        !> Allocate R matrix.
+        allocate(R(k, n), source=zero)
+
+        !> Fill-in matrix.
+        do concurrent(i=1:k, j=1:n, i <= j)
+            R(i, j) = self%data(i, j)
+        enddo
+    end function get_rfactor_${rt[0]}$${rk}$
+    #:endfor
+end submodule stdlib_linalg_matrix_factorizations
+
