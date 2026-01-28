@@ -736,50 +736,7 @@ If `err` is not present, exceptions trigger an `error stop`.
 {!example/linalg/example_solve3.f90!}
 ```
 
-## `solve_chol` - Solves a linear system using pre-computed Cholesky factors (subroutine interface). 
-
-### Status
-
-Experimental
-
-### Description
-
-This subroutine computes the solution to a linear matrix equation \( A \cdot x = b \), where \( A \) is a symmetric (or Hermitian) positive definite matrix that has been **previously factorized** using the Cholesky decomposition (via `cholesky`).
-
-Result vector or array `x` returns the exact solution to within numerical precision, provided that the factorization is correct.
-An error is returned if the matrix and right-hand-side have incompatible sizes.
-The solver is based on LAPACK's `*POTRS` backends.
-
-### Syntax
-
-`call ` [[stdlib_linalg(module):solve_chol(interface)]] `(a, b, x, lower [, err])`
-
-### Arguments
-
-`a`: Shall be a rank-2 `real` or `complex` square array containing the Cholesky-factorized matrix (output of `cholesky`). It is an `intent(in)` argument.
-
-`b`: Shall be a rank-1 or rank-2 array of the same kind as `a`, containing the right-hand-side vector(s). It is an `intent(in)` argument.
-
-`x`: Shall be a rank-1 or rank-2 array of the same kind and size as `b`, that returns the solution(s) to the system. It is an `intent(inout)` argument, and must have the `contiguous` property. 
-
-`lower`: Shall be an input `logical` flag. If `.true.`, the lower triangular Cholesky factor (`L`) is stored in `a`. If `.false.`, the upper triangular factor (`U`) is stored. This must match the `lower` flag used during the Cholesky factorization. It is a **required** `intent(in)` argument.
-
-`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
-
-### Return value
-
-For a correctly factorized matrix, returns an array value that represents the solution to the linear system of equations.
-
-Raises `LINALG_VALUE_ERROR` if the matrix and rhs vectors have invalid/incompatible sizes.
-If `err` is not present, exceptions trigger an `error stop`.
-
-### Example
-
-```fortran
-{!example/linalg/example_solve_chol.f90!}
-```
-
-## `cholesky_solve` - Solves a linear matrix equation using Cholesky factorization (subroutine interface). 
+## `solve_chol` - Solves a linear system using Cholesky factorization (one-shot interface). 
 
 ### Status
 
@@ -791,18 +748,18 @@ This subroutine computes the solution to a linear matrix equation \( A \cdot x =
 
 Result vector or array `x` returns the exact solution to within numerical precision, provided that the matrix is positive definite.
 An error is returned if the matrix is not positive definite or has incompatible sizes with the right-hand-side.
-Use this routine for one-time solves. For repeated solves with the same matrix but different right-hand sides, use `cholesky` followed by `solve_chol` for better performance.
+Use this routine for one-time solves. For repeated solves with the same matrix but different right-hand sides, use `cholesky` followed by `solve_lower_chol`/`solve_upper_chol` for better performance.
 The solver is based on LAPACK's `*POSV` backends.
 
 ### Syntax
 
 Simple (`Pure`) interface:
 
-`call ` [[stdlib_linalg(module):cholesky_solve(interface)]] `(a, b, x)`
+`call ` [[stdlib_linalg(module):solve_chol(interface)]] `(a, b, x)`
 
 Expert (`Pure`) interface:
 
-`call ` [[stdlib_linalg(module):cholesky_solve(interface)]] `(a, b, x [, lower, overwrite_a, err])`
+`call ` [[stdlib_linalg(module):solve_chol(interface)]] `(a, b, x [, lower, overwrite_a, err])`
 
 ### Arguments
 
@@ -829,8 +786,84 @@ If `err` is not present, exceptions trigger an `error stop`.
 ### Example
 
 ```fortran
+{!example/linalg/example_solve_chol.f90!}
+```
+
+## `solve_lower_chol` - Solves a linear system using pre-computed lower Cholesky factor. 
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the solution to a linear matrix equation \( A \cdot x = b \), where \( A \) is a symmetric (or Hermitian) positive definite matrix that has been **previously factorized** using the Cholesky decomposition (via `cholesky` with `lower=.true.`).
+
+Result vector or array `x` returns the exact solution to within numerical precision, provided that the factorization is correct.
+An error is returned if the matrix and right-hand-side have incompatible sizes.
+The solver is based on LAPACK's `*POTRS` backends.
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):solve_lower_chol(interface)]] `(a, b, x [, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` square array containing the **lower** Cholesky factor `L` (output of `cholesky(..., lower=.true.)`). It is an `intent(in)` argument.
+
+`b`: Shall be a rank-1 or rank-2 array of the same kind as `a`, containing the right-hand-side vector(s). It is an `intent(in)` argument.
+
+`x`: Shall be a rank-1 or rank-2 array of the same kind and size as `b`, that returns the solution(s) to the system. It is an `intent(inout)` argument, and must have the `contiguous` property. 
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+For a correctly factorized matrix, returns an array value that represents the solution to the linear system of equations.
+
+Raises `LINALG_VALUE_ERROR` if the matrix and rhs vectors have invalid/incompatible sizes.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
 {!example/linalg/example_cholesky_solve.f90!}
 ```
+
+## `solve_upper_chol` - Solves a linear system using pre-computed upper Cholesky factor. 
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the solution to a linear matrix equation \( A \cdot x = b \), where \( A \) is a symmetric (or Hermitian) positive definite matrix that has been **previously factorized** using the Cholesky decomposition (via `cholesky` with `lower=.false.`).
+
+Result vector or array `x` returns the exact solution to within numerical precision, provided that the factorization is correct.
+An error is returned if the matrix and right-hand-side have incompatible sizes.
+The solver is based on LAPACK's `*POTRS` backends.
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):solve_upper_chol(interface)]] `(a, b, x [, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` square array containing the **upper** Cholesky factor `U` (output of `cholesky(..., lower=.false.)`). It is an `intent(in)` argument.
+
+`b`: Shall be a rank-1 or rank-2 array of the same kind as `a`, containing the right-hand-side vector(s). It is an `intent(in)` argument.
+
+`x`: Shall be a rank-1 or rank-2 array of the same kind and size as `b`, that returns the solution(s) to the system. It is an `intent(inout)` argument, and must have the `contiguous` property. 
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+For a correctly factorized matrix, returns an array value that represents the solution to the linear system of equations.
+
+Raises `LINALG_VALUE_ERROR` if the matrix and rhs vectors have invalid/incompatible sizes.
+If `err` is not present, exceptions trigger an `error stop`.
 
 ## `lstsq` - Computes the least squares solution to a linear matrix equation. 
 

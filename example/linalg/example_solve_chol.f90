@@ -1,9 +1,9 @@
 program example_solve_chol
   use stdlib_linalg_constants, only: dp
-  use stdlib_linalg, only: cholesky, solve_chol, linalg_state_type
+  use stdlib_linalg, only: solve_chol, linalg_state_type
   implicit none
 
-  real(dp) :: A(3,3), L(3,3), b(3), x(3)
+  real(dp) :: A(3,3), b(3), x(3)
   type(linalg_state_type) :: state
 
   ! Symmetric positive definite matrix
@@ -14,14 +14,14 @@ program example_solve_chol
   ! Right-hand side
   b = [1.0_dp, 2.0_dp, 3.0_dp]
 
-  ! Compute Cholesky factorization: A = L * L^T
-  call cholesky(A, L, lower=.true., err=state)
-  if (state%error()) error stop state%print()
-
-  ! Solve using pre-computed Cholesky factors
-  call solve_chol(L, b, x, lower=.true., err=state)
+  ! One-shot Cholesky factorization and solve (A is preserved by default)
+  call solve_chol(A, b, x, lower=.true., err=state)
   if (state%error()) error stop state%print()
 
   print '("Solution: ",*(f8.4,1x))', x
+
+  ! For performance-critical code, use overwrite_a=.true.
+  ! to avoid internal allocation (but A will be destroyed)
+  ! call solve_chol(A, b, x, lower=.true., overwrite_a=.true., err=state)
 
 end program example_solve_chol
