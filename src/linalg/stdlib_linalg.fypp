@@ -1966,6 +1966,49 @@ module stdlib_linalg
     #:endfor
     end interface
 
+    interface qrmv
+    #:for rk, rt, ri in RC_KINDS_TYPES
+        module subroutine stdlib_qrmv_${ri}$(A, x, y, side, op, err)
+            type(qr_${rt[0]}$${rk}$_type), intent(in) :: A
+            !> QR-factorized matrix.
+            ${rt}$, intent(inout) :: x(:)
+            !> Vector to be multiplied with (either from left or right).
+            !> If y is not passed, the matrix-vector product is performed in-place.
+            ${rt}$, optional, intent(out) :: y(:, :)
+            !> [optional] Resulting vector for out-of-place computations.
+            character(len=*), intent(in) :: side
+            !> From which side to multiply (side = "L" or "R", "L" being the default).
+            character(len=*), intent(in) :: op
+            !> Whether we multiply by A or A.T (A.H for complex matrices).
+            !> Choose from op = "N", op = "T" (real matrices) or op = "H" (complex matrices).
+            !> Default is op = "N".
+            type(linalg_state_type), optional, intent(out) :: err
+            !> 
+        end subroutine stdlib_qrmv_${ri}$
+    #:endfor
+    end interface qrmv
+
+    interface qrmm
+    #:for rk, rt, ri in RC_KINDS_TYPES
+        module subroutine stdlib_qrmm_${ri}$(A, X, Y, side, op, err)
+            type(qr_${rt[0]}$${rk}$_type), intent(in) :: A
+            !> QR-factorized matrix.
+            ${rt}$, intent(inout) :: X(:, :)
+            !> Matrix to be multiplied with (either from left or right).
+            !> If Y is not passed, the matrix-matrix product is performed in-place.
+            ${rt}$, optional, intent(out) :: Y(:, :)
+            !> [optional] Resulting matrix for out-of-place computations.
+            character(len=*), intent(in) :: side
+            !> From which side to multiply (side = "L" or "R", "L" being the default).
+            character(len=*), intent(in) :: op
+            !> Whether we multiply by A or A.T (A.H for complex matrices).
+            !> Choose from op = "N", op = "T" (real matrices) or op = "H" (complex matrices).
+            !> Default is op = "N".
+            type(linalg_state_type), optional, intent(out) :: err
+        end subroutine stdlib_qrmm_${ri}$
+    #:endfor
+    end interface qrmm
+
 contains
 
 
