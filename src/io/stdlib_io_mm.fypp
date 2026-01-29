@@ -46,9 +46,9 @@ module stdlib_io_mm
         module subroutine load_mm_coo_${s}$(filename, index, data, iostat, iomsg)
             !> Name of the Matrix Market file to load from
             character(len=*), intent(in) :: filename
-            !> Matrix indices to be read to the Matrix Market file
+            !> Matrix indices to be read from the Matrix Market file
             integer, allocatable, intent(out) :: index(:,:)
-            !> Matrix data to be read to the Matrix Market file
+            !> Matrix data to be read from the Matrix Market file
             ${t}$, allocatable, intent(out) :: data(:)
             !> Error status of loading, zero on success
             integer, intent(out), optional :: iostat
