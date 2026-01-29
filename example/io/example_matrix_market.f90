@@ -1,5 +1,5 @@
 program example_matrix_market
-    use stdlib_io_mm, only : load_mm, save_mm, mm_header_type
+    use stdlib_io_mm, only : load_mm, save_mm
     use stdlib_kinds, only : dp
     implicit none
 
