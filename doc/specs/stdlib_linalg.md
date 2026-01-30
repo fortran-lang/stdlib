@@ -990,19 +990,21 @@ The solver minimizes the Mahalanobis distance \( (Ax - b)^T W^{-1} (Ax - b) \) w
 
 ### Syntax
 
-`x = ` [[stdlib_linalg(module):generalized_lstsq(interface)]] `(w, a, b [, prefactored_w, overwrite_a, err])`
+`x = ` [[stdlib_linalg(module):generalized_lstsq(interface)]] `(w, a, b [, prefactored_w, overwrite_a, overwrite_w, err])`
 
 ### Arguments
 
-`w`: Shall be a rank-2 `real` or `complex` symmetric (real) or Hermitian (complex) positive definite array containing the covariance matrix, or its lower triangular Cholesky factor if `prefactored_w=.true.`. It is an `intent(in)` argument.
+`w`: Shall be a rank-2 `real` or `complex` symmetric (real) or Hermitian (complex) positive definite array containing the covariance matrix, or a valid matrix square root (e.g., Cholesky factor, SVD-based) if `prefactored_w=.true.`. It is an `intent(inout)` argument.
 
 `a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix. The matrix must have full column rank. It is an `intent(inout)` argument.
 
 `b`: Shall be a rank-1 array of the same kind as `a`, containing the right-hand-side vector. It is an `intent(in)` argument.
 
-`prefactored_w` (optional): Shall be an input `logical` flag. If `.true.`, `w` is assumed to contain the lower triangular Cholesky factor of the covariance matrix rather than the covariance matrix itself. Default: `.false.`. This is an `intent(in)` argument.
+`prefactored_w` (optional): Shall be an input `logical` flag. If `.true.`, `w` is assumed to contain a matrix square root \( B \) such that \( W = B \cdot B^T \). This can be a Cholesky factor or any other valid square root (e.g., SVD-based). Default: `.false.`. This is an `intent(in)` argument.
 
-`overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
+`overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. Default: `.false.`. This is an `intent(in)` argument.
+
+`overwrite_w` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `w` will be used as temporary storage and overwritten. This avoids internal data allocation. Default: `.false.`. This is an `intent(in)` argument.
 
 `err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
 

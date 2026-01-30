@@ -696,20 +696,21 @@ module stdlib_linalg
     !! Supported data types include `real` and `complex`.
     !!
     !!@note The solution is based on LAPACK's `*GGGLM` routine.
-    !!@note The covariance matrix W is always preserved (copied internally).
     !!
     #:for rk,rt,ri in RC_KINDS_TYPES
-    module function stdlib_linalg_${ri}$_generalized_lstsq(w,a,b,prefactored_w,overwrite_a,err) result(x)
-        !> Covariance matrix W[m,m] (symmetric/Hermitian positive definite) or its lower triangular Cholesky factor
-        ${rt}$, intent(in) :: w(:,:)
+    module function stdlib_linalg_${ri}$_generalized_lstsq(w,a,b,prefactored_w,overwrite_a,overwrite_w,err) result(x)
+        !> Covariance matrix W[m,m] (symmetric/Hermitian positive definite) or its matrix square root
+        ${rt}$, intent(inout), target :: w(:,:)
         !> Input matrix a[m,n]
         ${rt}$, intent(inout), target :: a(:,:)
         !> Right hand side vector b[m]
         ${rt}$, intent(in) :: b(:)
-        !> [optional] Is W already Cholesky-factored? Default: .false.
+        !> [optional] Is W already a matrix square root (e.g., Cholesky factor)? Default: .false.
         logical(lk), optional, intent(in) :: prefactored_w
         !> [optional] Can A data be overwritten and destroyed?
         logical(lk), optional, intent(in) :: overwrite_a
+        !> [optional] Can W data be overwritten and destroyed? Default: .false.
+        logical(lk), optional, intent(in) :: overwrite_w
         !> [optional] state return flag. On error if not requested, the code will stop
         type(linalg_state_type), optional, intent(out) :: err
         !> Result array x[n]

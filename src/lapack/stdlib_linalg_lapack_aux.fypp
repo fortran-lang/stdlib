@@ -1655,9 +1655,9 @@ module stdlib_linalg_lapack_aux
         end select
     end subroutine handle_gglse_info
 
-    elemental subroutine handle_ggglm_info(this, info, m, n, p, err)
+   elemental subroutine handle_ggglm_info(this, info, m, n, p, lda, ldb, err)
         character(len=*), intent(in) :: this
-        integer(ilp), intent(in) :: info, m, n, p
+        integer(ilp), intent(in) :: info, m, n, p, lda, ldb
         type(linalg_state_type), intent(out) :: err
         ! Process output.
         select case (info)
@@ -1671,9 +1671,11 @@ module stdlib_linalg_lapack_aux
             case (-3)
                 err = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid number of columns for B, p=', p)
             case (-5)
-                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid leading dimension for A, lda < m=', m)
+                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid leading dimension for A, lda=', lda, &
+                      ' is < m=', m)
             case (-7)
-                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid leading dimension for B, ldb < m=', m)
+                err = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid leading dimension for B, ldb=', ldb, &
+                      ' is < m=', m)
             case (-12)
                 err = linalg_state_type(this, LINALG_INTERNAL_ERROR, 'Insufficient workspace size.')
             case (1:)
@@ -1683,6 +1685,6 @@ module stdlib_linalg_lapack_aux
             case default
                 err = linalg_state_type(this, LINALG_INTERNAL_ERROR, 'catastrophic error.')
         end select
-    end subroutine handle_ggglm_info
+   end subroutine handle_ggglm_info
 
 end module stdlib_linalg_lapack_aux
