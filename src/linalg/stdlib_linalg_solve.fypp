@@ -224,26 +224,28 @@ submodule (stdlib_linalg) stdlib_linalg_solve
     #:endfor
 
     !---------------------------------------------------------------------------
-    !> solve_lower_chol: Solve using PRE-COMPUTED LOWER Cholesky factor (POTRS)
+    !> Private driver: Solve using pre-computed Cholesky factor (POTRS)
+    !> Not exported - used internally by solve_lower_chol and solve_upper_chol
     !---------------------------------------------------------------------------
     
     #:for nd,ndsuf,nde in ALL_RHS
     #:for rk,rt,ri in RC_KINDS_TYPES
-    !> Solve the linear system A*x = b using pre-computed lower Cholesky factor
-    pure module subroutine stdlib_linalg_${ri}$_solve_lower_chol_${ndsuf}$(a,b,x,err)
-        !> Lower Cholesky factor L[n,n] from cholesky(...,lower=.true.)
+    !> Low-level driver for solving A*x = b using pre-computed Cholesky factor
+    pure subroutine solve_chol_${ri}$_${ndsuf}$_driver(a,b,x,uplo,err)
+        !> Cholesky factor (L or U)[n,n] from cholesky(...)
         ${rt}$, intent(in) :: a(:,:)
         !> Right hand side vector or array, b[n] or b[n,nrhs]
         ${rt}$, intent(in) :: b${nd}$
         !> Result array/matrix x[n] or x[n,nrhs]
         ${rt}$, intent(inout), contiguous, target :: x${nd}$
+        !> Triangle selector: 'L' for lower, 'U' for upper
+        character, intent(in) :: uplo
         !> [optional] State return flag. On error if not requested, the code will stop
         type(linalg_state_type), optional, intent(out) :: err
         
         ! Local variables
         type(linalg_state_type) :: err0
         integer(ilp) :: lda,n,ldb,ldx,nrhs,nrhsx,info
-        character, parameter :: uplo = 'L'
         ${rt}$, pointer :: xmat(:,:)
 
         ! Problem sizes
@@ -268,7 +270,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
         ! Create 2D pointer for LAPACK call
         xmat(1:n,1:nrhs) => x
         
-        ! Solve the system using LAPACK POTRS with lower triangular factor
+        ! Solve the system using LAPACK POTRS
         call potrs(uplo,n,nrhs,a,lda,xmat,n,info)
         
         ! Handle errors using standard handler
@@ -276,6 +278,30 @@ submodule (stdlib_linalg) stdlib_linalg_solve
         
         ! Process output and return
         call linalg_error_handling(err0,err)
+
+    end subroutine solve_chol_${ri}$_${ndsuf}$_driver
+    
+    #:endfor
+    #:endfor
+
+    !---------------------------------------------------------------------------
+    !> solve_lower_chol: Solve using PRE-COMPUTED LOWER Cholesky factor (POTRS)
+    !---------------------------------------------------------------------------
+    
+    #:for nd,ndsuf,nde in ALL_RHS
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    !> Solve the linear system A*x = b using pre-computed lower Cholesky factor
+    pure module subroutine stdlib_linalg_${ri}$_solve_lower_chol_${ndsuf}$(a,b,x,err)
+        !> Lower Cholesky factor L[n,n] from cholesky(...,lower=.true.)
+        ${rt}$, intent(in) :: a(:,:)
+        !> Right hand side vector or array, b[n] or b[n,nrhs]
+        ${rt}$, intent(in) :: b${nd}$
+        !> Result array/matrix x[n] or x[n,nrhs]
+        ${rt}$, intent(inout), contiguous, target :: x${nd}$
+        !> [optional] State return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+        
+        call solve_chol_${ri}$_${ndsuf}$_driver(a,b,x,'L',err)
 
     end subroutine stdlib_linalg_${ri}$_solve_lower_chol_${ndsuf}$
     
@@ -299,42 +325,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
         !> [optional] State return flag. On error if not requested, the code will stop
         type(linalg_state_type), optional, intent(out) :: err
         
-        ! Local variables
-        type(linalg_state_type) :: err0
-        integer(ilp) :: lda,n,ldb,ldx,nrhs,nrhsx,info
-        character, parameter :: uplo = 'U'
-        ${rt}$, pointer :: xmat(:,:)
-
-        ! Problem sizes
-        lda   = size(a,1,kind=ilp)
-        n     = size(a,2,kind=ilp)
-        ldb   = size(b,1,kind=ilp)
-        nrhs  = size(b,kind=ilp)/ldb
-        ldx   = size(x,1,kind=ilp)
-        nrhsx = size(x,kind=ilp)/ldx
-        
-        ! Validate dimensions
-        if (any([lda,n,ldb]<1) .or. any([lda,ldb,ldx]/=n) .or. nrhsx/=nrhs) then
-            err0 = linalg_state_type(this,LINALG_VALUE_ERROR,'invalid sizes: a=',[lda,n], &
-                                                             'b=',[ldb,nrhs],' x=',[ldx,nrhsx])
-            call linalg_error_handling(err0,err)
-            return
-        end if
-        
-        ! Copy RHS to solution array (POTRS overwrites with solution)
-        x = b
-        
-        ! Create 2D pointer for LAPACK call
-        xmat(1:n,1:nrhs) => x
-        
-        ! Solve the system using LAPACK POTRS with upper triangular factor
-        call potrs(uplo,n,nrhs,a,lda,xmat,n,info)
-        
-        ! Handle errors using standard handler
-        call handle_potrs_info(this,info,uplo,n,nrhs,lda,n,err0)
-        
-        ! Process output and return
-        call linalg_error_handling(err0,err)
+        call solve_chol_${ri}$_${ndsuf}$_driver(a,b,x,'U',err)
 
     end subroutine stdlib_linalg_${ri}$_solve_upper_chol_${ndsuf}$
     

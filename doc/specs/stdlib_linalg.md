@@ -827,7 +827,7 @@ If `err` is not present, exceptions trigger an `error stop`.
 ### Example
 
 ```fortran
-{!example/linalg/example_cholesky_solve.f90!}
+{!example/linalg/example_solve_lower_chol.f90!}
 ```
 
 ## `solve_upper_chol` - Solves a linear system using pre-computed upper Cholesky factor. 
@@ -864,6 +864,12 @@ For a correctly factorized matrix, returns an array value that represents the so
 
 Raises `LINALG_VALUE_ERROR` if the matrix and rhs vectors have invalid/incompatible sizes.
 If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_solve_upper_chol.f90!}
+```
 
 ## `lstsq` - Computes the least squares solution to a linear matrix equation. 
 
