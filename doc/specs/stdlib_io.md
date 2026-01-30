@@ -118,13 +118,13 @@ Saves a rank-2 `array` into a text file.
 
 `delimiter` (optional): Shall be a character expression of any length that contains the delimiter used to separate the columns. The default is a single space `' '`.
 
-`fmt`: (optional): Fortran format specifier for the text save. Defaults to the write format for the data type.
+`fmt` (optional): Fortran format specifier for the text save. Defaults to the write format for the data type as defined in the [formatting constants]{formatting-constants}.
 
-`header`: (optional) Shall be a character expression that will be written at the beginning of the file.
+`header` (optional): Shall be a character expression that will be written at the beginning of the file.
 
-`footer`: (optional) Shall be a character expression that will be written at the end of the file.
+`footer` (optional): Shall be a character expression that will be written at the end of the file.
 
-`comments`: (optional) : Shall  be a character expression that will be prepended to the ``header`` and ``footer`` strings to mark them as comments. Default: `#`.
+`comments` (optional): Shall  be a character expression of any length that will be prepended to the ``header`` and ``footer`` strings to mark them as comments. Default: `#`.
 
 ### Output
 
@@ -257,7 +257,7 @@ Read a whole line from a formatted unit into a string variable
 {!example/io/example_get_line.f90!}
 ```
 
-## Formatting constants
+## Formatting constants {formatting-constants}
 
 ### Status
 

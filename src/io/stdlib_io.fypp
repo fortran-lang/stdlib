@@ -13,7 +13,7 @@ module stdlib_io
                                  FMT_COMPLEX_SP, FMT_COMPLEX_DP, FMT_COMPLEX_XDP, FMT_COMPLEX_QP
   use stdlib_error, only: error_stop, state_type, STDLIB_IO_ERROR
   use stdlib_optval, only: optval
-  use stdlib_ascii, only: is_blank
+  use stdlib_ascii, only: is_blank, whitespace, CR,LF,VT,FF
   use stdlib_string_type, only : string_type, assignment(=), move
   implicit none
   private
@@ -250,7 +250,7 @@ contains
       integer, intent(in) :: unit
       #:endif
       ${t1}$, intent(in) :: d(:,:)           ! The 2D array to save
-      character(len=1), intent(in), optional :: delimiter  ! Column delimiter. Default is a space ' '.
+      character(len=*), intent(in), optional :: delimiter  ! Column delimiter. Default is a space ' '.
       character(len=*), intent(in), optional :: fmt  !< Fortran format specifier. Defaults to the write format for the data type.
       character(len=*), intent(in), optional :: header  !< If present, text to write before data.
       character(len=*), intent(in), optional :: footer  !< If present, text to write after data.
@@ -265,14 +265,15 @@ contains
       !!```
       !!
       integer :: s, i, ios
-      character(len=1) :: delimiter_
-      character(len=3) :: delim_str
+      character(len=:), allocatable :: delimiter_
+      character(len=:), allocatable :: delim_str
       character(len=:), allocatable :: default_fmt
       character(len=:), allocatable :: fmt_
       character(len=:), allocatable :: comments_
       character(len=:), allocatable :: header_
       character(len=:), allocatable :: footer_
-      character(len=1024) :: iomsg, msgout
+      character(len=1024) :: iomsg, msgout, fout
+
       #:if 'filename' in arg1
       integer :: unit
       #:else
@@ -285,10 +286,26 @@ contains
       header_ = optval(header, '')
       footer_ = optval(footer, '')
 
+      if(index(delimiter_, comments_) /= 0) then
+          write (msgout,'(a)') 'savetxt error: delimiter string cannot include the comments string'
+          call error_stop(msg=trim(msgout))
+      end if
+
+      if(scan(whitespace, comments_) /= 0) then
+          write (msgout,'(a)') 'savetxt error: comments string cannot include whitespaces'
+          call error_stop(msg=trim(msgout))
+      end if
+        
+      if(scan(LF//CR//VT//FF, delimiter_ ) /= 0) then
+          write (msgout,'(a)') 'savetxt error: delimiter cannot include newline'
+          call error_stop(msg=trim(msgout))
+      end if
+        
+
       #:if 'real' in t1
         default_fmt = FMT_REAL_${k1}$(2:len(FMT_REAL_${k1}$)-1)
       #:elif 'complex' in t1
-        default_fmt = FMT_COMPLEX_${k1}$(2:11)//delim_str//FMT_COMPLEX_${k1}$ (14:23)
+        default_fmt = FMT_COMPLEX_${k1}$(2:11)//delim_str//FMT_COMPLEX_${k1}$(14:23)
       #:elif 'integer' in t1
         default_fmt = FMT_INT(2:len(FMT_INT)-1)
       #:endif
@@ -296,8 +313,11 @@ contains
 
       #:if 'filename' in arg1
       unit = open (filename, "w")
+      fout = filename
       #:else
       inquire (unit=unit, opened=opened)
+      write(fout,'(i0)') unit
+      fout = adjustl(fout)
       if(.not. opened) then
            write (msgout,'(a,i0,a)') 'savetxt error: unit ',unit,' not open'
       end if
@@ -307,7 +327,14 @@ contains
       ! prepend function may be replaced by use of replace_all but currently stdlib_strings
       ! is being compiled after stdlib_io
       ! if (header_ /= '') write (unit, '(A)') comments_//replace_all(header_, nl, nl//comments_)
-      if (header_ /= '') write (unit, '(A)', iostat=ios, iomsg=iomsg) prepend(header_, comments_)
+      if (header_ /= '') then
+          write (unit, '(A)', iostat=ios, iomsg=iomsg) prepend(header_, comments_)
+          if (ios/=0) then
+              write (msgout,'(a)') 'savetxt: error <'//trim(iomsg)//"> header to "//trim(fout)
+              call error_stop(msg=trim(msgout))
+          end if           
+      end if
+        
       do i = 1, size(d, 1)
         #:if 'real' in t1 or 'complex' in t1 or 'integer' in t1
           write(unit, fmt_, &
@@ -317,27 +344,24 @@ contains
                 iostat=ios,iomsg=iomsg) d(i, :)
         
         if (ios/=0) then 
-            write (msgout,1) trim(iomsg),size(d,2),i,&
-            #:if 'filename' in arg1
-              trim(filename)
-            #:else
-              unit
-            #:endif
-           call error_stop(msg=trim(msgout))
+            write (msgout,1) trim(iomsg),size(d,2),i,trim(fout)
+            call error_stop(msg=trim(msgout))
         end if           
-        
       end do
       ! if (footer_ /= '') write (unit, '(A)') comments_//replace_all(footer_, nl, nl//comments_)
-      if (footer_ /= '') write (unit, '(A)') prepend(footer_, comments_)
+      if (footer_ /= '') then
+          write (unit, '(A)', iostat=ios, iomsg=iomsg) prepend(footer_, comments_)
+          if (ios/=0) then
+              write (msgout,'(a)') 'savetxt: error <'//trim(iomsg)//"> footer to "//trim(fout)
+              call error_stop(msg=trim(msgout))
+          end if           
+      end if
+
       #:if 'filename' in arg1
       close (unit)
       #:endif
 
-      #:if 'filename' in arg1
       1 format('savetxt: error <',a,'> writing ',i0,' values to line ',i0,' of ',a,'.')
-      #:else
-      1 format('savetxt: error <',a,'> writing ',i0,' values to line ',i0,' of unit ',i0,'.')
-      #:endif
       
     end subroutine savetxt_${t1[0]}$${k1}$${arg1[0]}$
   #:endfor
@@ -346,10 +370,14 @@ contains
     character(len=*), intent(in) :: Sin
     character(len=:), allocatable :: Sout
     character(len=*), intent(in) :: comment 
-    character(len=len(comment)+2) :: com_
+    character(len=len(comment)+1) :: com_
     integer :: bol, eol       ! indexes of beginning and end of line
 
-    ! IF (trim(Sin) == '') return
+    if (trim(Sin) == '') then
+        Sout = ''
+        return
+    end if
+    
     com_ = comment//" "
     bol = 1
     Sout = com_              ! Initialize to comment the first line

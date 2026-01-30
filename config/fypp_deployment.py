@@ -133,7 +133,7 @@ if __name__ == "__main__":
     # fypp arguments
     parser.add_argument("--vmajor", type=int, default=0, help="Project Version Major")
     parser.add_argument("--vminor", type=int, default=8, help="Project Version Minor")
-    parser.add_argument("--vpatch", type=int, default=0, help="Project Version Patch")
+    parser.add_argument("--vpatch", type=int, default=1, help="Project Version Patch")
 
     parser.add_argument("--njob", type=int, default=4, help="Number of parallel jobs for preprocessing")
     parser.add_argument("--maxrank",type=int, default=4, help="Set the maximum allowed rank for arrays")
