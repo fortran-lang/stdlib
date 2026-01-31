@@ -143,9 +143,7 @@ submodule (stdlib_specialmatrices) sym_tridiagonal_matrices
         logical :: is_alpha_special, is_beta_special
         #:endif
 
-        #:if rank == 1
         ${t1}$, pointer :: xmat(:, :), ymat(:, :)
-        #:endif
 
         ! Deal with optional arguments.
         alpha_ = 1.0_${k1}$ ; if (present(alpha)) alpha_ = alpha
@@ -160,7 +158,6 @@ submodule (stdlib_specialmatrices) sym_tridiagonal_matrices
         n = A%n ; ldx = n ; ldy = n ;
         nrhs = #{if rank==1}# 1 #{else}# size(x, dim=2, kind=ilp) #{endif}#
 
-        #:if rank == 1
         ! Pointer trick.
         xmat(1:n, 1:nrhs) => x ; ymat(1:n, 1:nrhs) => y
         #:if t1.startswith('complex')
@@ -171,17 +168,6 @@ submodule (stdlib_specialmatrices) sym_tridiagonal_matrices
         else
             call glagtm(op_, n, nrhs, alpha_, A%du, A%dv, A%du, xmat, ldx, beta_, ymat, ldy)
         end if
-        #:endif
-        #:else
-        #:if t1.startswith('complex')
-        call glagtm(op_, n, nrhs, alpha_, A%du, A%dv, A%du, x, ldx, beta_, y, ldy)
-        #:else
-        if(is_alpha_special .and. is_beta_special) then
-            call lagtm(op_, n, nrhs, alpha_, A%du, A%dv, A%du, x, ldx, beta_, y, ldy)
-        else
-            call glagtm(op_, n, nrhs, alpha_, A%du, A%dv, A%du, x, ldx, beta_, y, ldy)
-        end if
-        #:endif
         #:endif
     end subroutine
     #:endfor
