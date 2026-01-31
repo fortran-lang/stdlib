@@ -82,8 +82,10 @@ contains
         ${t1}$, parameter :: sq = 0.0331_${k1}$
 
 
-        if(shape <= 0.0_${k1}$) call error_stop("Error(gamma_dist_rvs): Gamma"  &
-            //" distribution shape parameter must be greater than zero")
+        if(shape <= 0.0_${k1}$) then
+            res = ieee_value(1.0_${k1}$, ieee_quiet_nan)
+            return
+        end if
 
         zz = shape
 
