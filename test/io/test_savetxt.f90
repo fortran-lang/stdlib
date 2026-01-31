@@ -1,6 +1,6 @@
 module test_savetxt
     use stdlib_kinds, only: int32, sp, dp
-    use stdlib_io, only: loadtxt, savetxt
+    use stdlib_io, only: loadtxt, savetxt, get_line
     use testdrive, only: new_unittest, unittest_type, error_type, check
     implicit none
 
@@ -18,7 +18,11 @@ contains
             new_unittest("rsp", test_rsp), &
             new_unittest("rdp", test_rdp), &
             new_unittest("csp", test_csp), &
-            new_unittest("cdp", test_cdp) &
+            new_unittest("cdp", test_cdp), &
+            new_unittest("delim", test_delim), &
+            new_unittest("fmt", test_fmt), &
+            new_unittest("fmt", test_unit), &
+            new_unittest("headfoot", test_headfoot) &
         ]
 
     end subroutine collect_savetxt
@@ -118,6 +122,105 @@ contains
         if (allocated(error)) return
     end subroutine test_rdp
 
+    subroutine test_delim(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        real(dp) :: d(3, 2)
+        real(dp), allocatable :: d2(:, :)
+        character(:), allocatable :: outpath
+
+        outpath = get_outpath() // "/tmp_test_delim.dat"
+
+        d = reshape([1, 2, 3, 4, 5, 6], [3, 2])
+        call savetxt(outpath, d, delimiter=',')
+        call loadtxt(outpath, d2, delimiter=',')
+        call check(error, all(shape(d2) == [3, 2]))
+        if (allocated(error)) return
+        call check(error, all(d == d2))
+        if (allocated(error)) return
+    end subroutine test_delim
+
+    subroutine test_unit(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        real(dp) :: d(3, 2)
+        real(dp), allocatable :: d2(:, :)
+        character(:), allocatable :: outpath
+        integer :: unit
+
+        outpath = get_outpath() // "/tmp_test_fmt.dat"
+
+
+        d = reshape([1, 2, 3, 4, 5, 6], [3, 2])
+        open(newunit=unit, file=outpath)
+        call savetxt(unit, d, fmt='(g0.7)')
+        close(unit)
+        call loadtxt(outpath, d2, fmt='*')
+        call check(error, all(shape(d2) == [3, 2]))
+        if (allocated(error)) return
+        call check(error, all(d == d2))
+        if (allocated(error)) return
+    end subroutine test_unit
+
+    subroutine test_fmt(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        real(dp) :: d(3, 2)
+        real(dp), allocatable :: d2(:, :)
+        character(:), allocatable :: outpath
+
+        outpath = get_outpath() // "/tmp_test_fmt.dat"
+
+        d = reshape([1, 2, 3, 4, 5, 6], [3, 2])
+        call savetxt(outpath, d, fmt='(g0.7)')
+        call loadtxt(outpath, d2, fmt='*')
+        call check(error, all(shape(d2) == [3, 2]))
+        if (allocated(error)) return
+        call check(error, all(d == d2))
+        if (allocated(error)) return
+    end subroutine test_fmt
+
+    subroutine test_headfoot(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        real(dp) :: d(3, 2)
+        character(:), allocatable :: outpath
+        !
+        character(len=1), parameter :: nl = new_line('a')
+        character(len=*), parameter :: header1 = "Three values per line"
+        character(len=*), parameter :: header2 = "Other header"
+        character(len=*), parameter :: footer = "Total size = 6"
+        character(len=*), parameter :: comments = '#!'
+        character(len=:), allocatable :: line
+        integer :: unit
+
+        outpath = get_outpath() // "/tmp_test_headfoot.dat"
+
+        d = reshape([1, 2, 3, 4, 5, 6], [3, 2])
+        call savetxt(outpath, d, header=header1//nl//header2, footer=footer, comments=comments)
+        open (newunit=unit, file=outpath)
+        ! Check header, first line
+        call get_line(unit, line)
+        call check(error, line == comments//" "//header1)
+        if (allocated(error)) return
+
+        ! Check header, second line
+        call get_line(unit, line)
+        call check(error, line == comments//" "//header2)
+        if (allocated(error)) return
+
+        ! Read the two data rows
+        call get_line(unit, line)
+        call get_line(unit, line)
+        call get_line(unit, line)
+
+        ! Check footer, second line
+        call get_line(unit, line)
+        call check(error, line == comments//" "//footer)
+        if (allocated(error)) return
+
+        close(unit)
+    end subroutine test_headfoot
 
     subroutine test_csp(error)
         !> Error handling
