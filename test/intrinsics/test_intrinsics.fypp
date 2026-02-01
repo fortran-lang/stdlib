@@ -7,6 +7,7 @@ module test_intrinsics
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
     use stdlib_intrinsics
+    use stdlib_linalg, only: mnorm
     use stdlib_linalg_state, only: linalg_state_type, LINALG_VALUE_ERROR, operator(==)
     use stdlib_math, only: swap
     implicit none
@@ -284,29 +285,42 @@ subroutine test_matmul(error)
 
     #:for k, t, s in R_KINDS_TYPES
     block
-        ${t}$ :: x(10,15), y(15,20), z(20,10), r(10,10), r1(10,10)
+        integer, parameter :: l = 10, m = 15, n = 20
+        ${t}$ :: x(l,m), y(m,n), z(n,l), r(l,l), r1(l,l)
         call random_number(x)
         call random_number(y)
         call random_number(z)
 
+        ! Normalize matrices.
+        x = x / mnorm(x, 1)
+        y = y / mnorm(y, 1)
+        z = z / mnorm(z, 1)
+
         r = stdlib_matmul(x, y, z) ! the optimal ordering would be (x(yz))
         r1 = matmul(matmul(x, y), z) ! the opposite order to induce a difference
 
-        call check(error, all(abs(r-r1) <= epsilon(0._${k}$) * 150), "real, ${k}$, 3 args: error too large")
+        call check(error, mnorm(r-r1, 1) <= n*epsilon(0._${k}$), "real, ${k}$, 3 args: error too large")
         if (allocated(error)) return
     end block
 
     block
-        ${t}$ :: x(10,15), y(15,20), z(20,10), w(10, 15), r(10,15), r1(10,15)
+        integer, parameter :: l = 10, m = 15, n = 20
+        ${t}$ :: x(l,m), y(m,n), z(n,l), w(l, m), r(l,m), r1(l,m)
         call random_number(x)
         call random_number(y)
         call random_number(z)
         call random_number(w)
 
+        ! Normalize matrices.
+        x = x / mnorm(x, 1)
+        y = y / mnorm(y, 1)
+        z = z / mnorm(z, 1)
+        w = w / mnorm(w, 1)
+
         r = stdlib_matmul(x, y, z, w) ! the optimal order would be ((x(yz))w)
         r1 = matmul(matmul(x, y), matmul(z, w))
 
-        call check(error, all(abs(r-r1) <= epsilon(0._${k}$) * 800), "real, ${k}$, 4 args: error too large")
+        call check(error, mnorm(r-r1, 1) <= n*epsilon(0._${k}$), "real, ${k}$, 4 args: error too large")
         if (allocated(error)) return
     end block
     #:endfor
@@ -326,7 +340,7 @@ program tester
     stat = 0
 
     testsuites = [ &
-        new_testsuite("sparse", collect_suite) &
+        new_testsuite("intrinsic", collect_suite) &
         ]
 
     do is = 1, size(testsuites)
