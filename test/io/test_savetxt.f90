@@ -21,7 +21,7 @@ contains
             new_unittest("cdp", test_cdp), &
             new_unittest("delim", test_delim), &
             new_unittest("fmt", test_fmt), &
-            new_unittest("fmt", test_unit), &
+            new_unittest("unit", test_unit), &
             new_unittest("headfoot", test_headfoot) &
         ]
 
@@ -148,14 +148,14 @@ contains
         character(:), allocatable :: outpath
         integer :: unit
 
-        outpath = get_outpath() // "/tmp_test_fmt.dat"
+        outpath = get_outpath() // "/tmp_test_unit.dat"
 
 
         d = reshape([1, 2, 3, 4, 5, 6], [3, 2])
         open(newunit=unit, file=outpath)
-        call savetxt(unit, d, fmt='(g0.7)')
+        call savetxt(unit, d)
         close(unit)
-        call loadtxt(outpath, d2, fmt='*')
+        call loadtxt(outpath, d2)
         call check(error, all(shape(d2) == [3, 2]))
         if (allocated(error)) return
         call check(error, all(d == d2))
