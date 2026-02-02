@@ -529,9 +529,9 @@ module stdlib_linalg
      !!        
      #:for nd,ndsuf,nde in ALL_RHS
      #:for rk,rt,ri in RC_KINDS_TYPES
-     pure module subroutine stdlib_linalg_${ri}$_solve_lower_chol_${ndsuf}$(a,b,x,err)     
-         !> Input matrix a[n,n] containing lower Cholesky factor L from cholesky(...,lower=.true.)
-         ${rt}$, intent(in) :: a(:,:)
+     pure module subroutine stdlib_linalg_${ri}$_solve_lower_chol_${ndsuf}$(l,b,x,err)     
+         !> Input matrix l[n,n] containing lower Cholesky factor L from cholesky(...,lower=.true.)
+         ${rt}$, intent(in) :: l(:,:)
          !> Right hand side vector or array, b[n] or b[n,nrhs]
          ${rt}$, intent(in) :: b${nd}$
          !> Result array/matrix x[n] or x[n,nrhs]     
@@ -565,9 +565,9 @@ module stdlib_linalg
      !!        
      #:for nd,ndsuf,nde in ALL_RHS
      #:for rk,rt,ri in RC_KINDS_TYPES
-     pure module subroutine stdlib_linalg_${ri}$_solve_upper_chol_${ndsuf}$(a,b,x,err)     
-         !> Input matrix a[n,n] containing upper Cholesky factor U from cholesky(...,lower=.false.)
-         ${rt}$, intent(in) :: a(:,:)
+     pure module subroutine stdlib_linalg_${ri}$_solve_upper_chol_${ndsuf}$(u,b,x,err)     
+         !> Input matrix u[n,n] containing upper Cholesky factor U from cholesky(...,lower=.false.)
+         ${rt}$, intent(in) :: u(:,:)
          !> Right hand side vector or array, b[n] or b[n,nrhs]
          ${rt}$, intent(in) :: b${nd}$
          !> Result array/matrix x[n] or x[n,nrhs]     

@@ -805,13 +805,13 @@ The solver is based on LAPACK's `*POTRS` backends.
 
 ### Syntax
 
-`call ` [[stdlib_linalg(module):solve_lower_chol(interface)]] `(a, b, x [, err])`
+`call ` [[stdlib_linalg(module):solve_lower_chol(interface)]] `(l, b, x [, err])`
 
 ### Arguments
 
-`a`: Shall be a rank-2 `real` or `complex` square array containing the **lower** Cholesky factor `L` (output of `cholesky(..., lower=.true.)`). It is an `intent(in)` argument.
+`l`: Shall be a rank-2 `real` or `complex` square array containing the **lower** Cholesky factor `L` (output of `cholesky(..., lower=.true.)`). It is an `intent(in)` argument.
 
-`b`: Shall be a rank-1 or rank-2 array of the same kind as `a`, containing the right-hand-side vector(s). It is an `intent(in)` argument.
+`b`: Shall be a rank-1 or rank-2 array of the same kind as `l`, containing the right-hand-side vector(s). It is an `intent(in)` argument.
 
 `x`: Shall be a rank-1 or rank-2 array of the same kind and size as `b`, that returns the solution(s) to the system. It is an `intent(inout)` argument, and must have the `contiguous` property. 
 
@@ -846,13 +846,13 @@ The solver is based on LAPACK's `*POTRS` backends.
 
 ### Syntax
 
-`call ` [[stdlib_linalg(module):solve_upper_chol(interface)]] `(a, b, x [, err])`
+`call ` [[stdlib_linalg(module):solve_upper_chol(interface)]] `(u, b, x [, err])`
 
 ### Arguments
 
-`a`: Shall be a rank-2 `real` or `complex` square array containing the **upper** Cholesky factor `U` (output of `cholesky(..., lower=.false.)`). It is an `intent(in)` argument.
+`u`: Shall be a rank-2 `real` or `complex` square array containing the **upper** Cholesky factor `U` (output of `cholesky(..., lower=.false.)`). It is an `intent(in)` argument.
 
-`b`: Shall be a rank-1 or rank-2 array of the same kind as `a`, containing the right-hand-side vector(s). It is an `intent(in)` argument.
+`b`: Shall be a rank-1 or rank-2 array of the same kind as `u`, containing the right-hand-side vector(s). It is an `intent(in)` argument.
 
 `x`: Shall be a rank-1 or rank-2 array of the same kind and size as `b`, that returns the solution(s) to the system. It is an `intent(inout)` argument, and must have the `contiguous` property. 
 

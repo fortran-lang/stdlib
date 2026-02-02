@@ -291,9 +291,9 @@ submodule (stdlib_linalg) stdlib_linalg_solve
     #:for nd,ndsuf,nde in ALL_RHS
     #:for rk,rt,ri in RC_KINDS_TYPES
     !> Solve the linear system A*x = b using pre-computed lower Cholesky factor
-    pure module subroutine stdlib_linalg_${ri}$_solve_lower_chol_${ndsuf}$(a,b,x,err)
-        !> Lower Cholesky factor L[n,n] from cholesky(...,lower=.true.)
-        ${rt}$, intent(in) :: a(:,:)
+    pure module subroutine stdlib_linalg_${ri}$_solve_lower_chol_${ndsuf}$(l,b,x,err)
+        !> Lower Cholesky factor l[n,n] from cholesky(...,lower=.true.)
+        ${rt}$, intent(in) :: l(:,:)
         !> Right hand side vector or array, b[n] or b[n,nrhs]
         ${rt}$, intent(in) :: b${nd}$
         !> Result array/matrix x[n] or x[n,nrhs]
@@ -301,7 +301,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
         !> [optional] State return flag. On error if not requested, the code will stop
         type(linalg_state_type), optional, intent(out) :: err
         
-        call solve_chol_${ri}$_${ndsuf}$_driver(a,b,x,'L',err)
+        call solve_chol_${ri}$_${ndsuf}$_driver(l,b,x,'L',err)
 
     end subroutine stdlib_linalg_${ri}$_solve_lower_chol_${ndsuf}$
     
@@ -315,9 +315,9 @@ submodule (stdlib_linalg) stdlib_linalg_solve
     #:for nd,ndsuf,nde in ALL_RHS
     #:for rk,rt,ri in RC_KINDS_TYPES
     !> Solve the linear system A*x = b using pre-computed upper Cholesky factor
-    pure module subroutine stdlib_linalg_${ri}$_solve_upper_chol_${ndsuf}$(a,b,x,err)
-        !> Upper Cholesky factor U[n,n] from cholesky(...,lower=.false.)
-        ${rt}$, intent(in) :: a(:,:)
+    pure module subroutine stdlib_linalg_${ri}$_solve_upper_chol_${ndsuf}$(u,b,x,err)
+        !> Upper Cholesky factor u[n,n] from cholesky(...,lower=.false.)
+        ${rt}$, intent(in) :: u(:,:)
         !> Right hand side vector or array, b[n] or b[n,nrhs]
         ${rt}$, intent(in) :: b${nd}$
         !> Result array/matrix x[n] or x[n,nrhs]
@@ -325,7 +325,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
         !> [optional] State return flag. On error if not requested, the code will stop
         type(linalg_state_type), optional, intent(out) :: err
         
-        call solve_chol_${ri}$_${ndsuf}$_driver(a,b,x,'U',err)
+        call solve_chol_${ri}$_${ndsuf}$_driver(u,b,x,'U',err)
 
     end subroutine stdlib_linalg_${ri}$_solve_upper_chol_${ndsuf}$
     
