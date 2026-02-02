@@ -41,7 +41,8 @@ submodule (stdlib_io_mm) stdlib_io_mm_save
         MM_GENERAL = "general", &
         MM_SYMMETRIC = "symmetric", &
         MM_SKEW_SYMMETRIC = "skew-symmetric", &
-        MM_HERMITIAN = "hermitian"
+        MM_HERMITIAN = "hermitian", &
+        MM_AUTO = "auto"
 
 contains
 
@@ -62,7 +63,7 @@ contains
         !> Associated error message in case of non-zero status code
         character(len=:), allocatable, intent(out), optional :: iomsg
 
-        integer :: io, stat, i, j, nnz
+        integer :: io, stat, i, j, nnz, nrows, ncols
         character(len=:), allocatable :: msg
         character(len=:), allocatable :: field_type
         character(len=:), allocatable :: fmt_
@@ -97,10 +98,65 @@ contains
             end if
         end if
 
+        nrows = size(matrix, 1)
+        ncols = size(matrix, 2)
         ! Determine symmetry type
         symmetry_ = MM_GENERAL
         if (present(symmetry)) then
             symmetry_ = to_lower(trim(symmetry))
+            if (symmetry_ == MM_AUTO) then
+
+                symmetry_block: block
+                    ! Non-square matrices cannot be symmetric/skew/hermitian
+                    if (nrows /= ncols) then
+                        symmetry_ = MM_GENERAL
+                        exit symmetry_block
+                    end if
+
+                    ! Try symmetric
+                    symmetry_ = MM_SYMMETRIC
+                    do j = 1, ncols
+                        do i = j+1, nrows
+                            if (matrix(i,j) /= matrix(j,i)) then
+                                symmetry_ = MM_GENERAL
+                                exit
+                            end if
+                        end do
+                        if (symmetry_ == MM_GENERAL) exit
+                    end do
+                    if (symmetry_ == MM_SYMMETRIC) exit symmetry_block
+
+                    ! Try skew-symmetric
+                    symmetry_ = MM_SKEW_SYMMETRIC
+                    do j = 1, ncols
+                        do i = j, nrows
+                            if (matrix(i,j) /= -matrix(j,i)) then
+                                symmetry_ = MM_GENERAL
+                                exit
+                            end if
+                        end do
+                        if (symmetry_ == MM_GENERAL) exit
+                    end do
+                    if (symmetry_ == MM_SKEW_SYMMETRIC) exit symmetry_block
+
+                    #:if t.startswith('complex')
+                    ! Try hermitian
+                    symmetry_ = MM_HERMITIAN
+                    do j = 1, ncols
+                        do i = j, nrows
+                            if (matrix(i,j) /= conjg(matrix(j,i))) then
+                                symmetry_ = MM_GENERAL
+                                exit
+                            end if
+                        end do
+                        if (symmetry_ == MM_GENERAL) exit
+                    end do
+                    if (symmetry_ == MM_HERMITIAN) exit symmetry_block
+                    #:endif
+
+                    symmetry_ = MM_GENERAL
+                end block symmetry_block
+            end if
         end if
 
         ! Determine field type based on matrix type
