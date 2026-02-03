@@ -3,12 +3,12 @@
 #:set GAMMA_CMPLX_KINDS_TYPES = [item for item in CMPLX_KINDS_TYPES if item[0] in ('sp', 'dp', 'xdp')]
 #:set RC_KINDS_TYPES = GAMMA_REAL_KINDS_TYPES + GAMMA_CMPLX_KINDS_TYPES
 Module stdlib_stats_distribution_gamma    
-    use ieee_arithmetic, only: ieee_value, ieee_quiet_nan    
+    use ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
     use stdlib_kinds, only : sp, dp, xdp
     use stdlib_error, only : error_stop
     use stdlib_stats_distribution_uniform, only : uni=>rvs_uniform
     use stdlib_stats_distribution_normal, only : rnor=>rvs_normal
-    use stdlib_specialfunctions_gamma, only : regamma_p => regularized_gamma_p
+    use stdlib_specialfunctions_gamma, only : regamma_p=>regularized_gamma_p
 
     implicit none
     intrinsic :: log_gamma
@@ -50,6 +50,10 @@ Module stdlib_stats_distribution_gamma
         #:for k1, t1 in RC_KINDS_TYPES
         module procedure gamma_dist_pdf_${t1[0]}$${k1}$
         #:endfor
+
+        #:for k1, t1 in RC_KINDS_TYPES
+        module procedure gamma_dist_pdf_impure_${t1[0]}$${k1}$
+        #:endfor
     end interface pdf_gamma
 
 
@@ -62,6 +66,10 @@ Module stdlib_stats_distribution_gamma
     !!
         #:for k1, t1 in RC_KINDS_TYPES
         module procedure gamma_dist_cdf_${t1[0]}$${k1}$
+        #:endfor
+
+        #:for k1, t1 in RC_KINDS_TYPES
+        module procedure gamma_dist_cdf_impure_${t1[0]}$${k1}$
         #:endfor
     end interface cdf_gamma
 
@@ -80,7 +88,6 @@ contains
         ${t1}$ :: res
         ${t1}$ :: x, v, u, zz, d, c
         ${t1}$, parameter :: sq = 0.0331_${k1}$
-
 
         if(shape <= 0.0_${k1}$) then
             res = ieee_value(1.0_${k1}$, ieee_quiet_nan)
@@ -216,7 +223,7 @@ contains
 
 
     #:for k1, t1 in GAMMA_REAL_KINDS_TYPES
-    impure elemental function gamma_dist_pdf_${t1[0]}$${k1}$(x, shape, rate)   &
+    elemental function gamma_dist_pdf_${t1[0]}$${k1}$(x, shape, rate)          &
         result(res)
     ! Gamma distribution probability density function
     !
@@ -259,8 +266,25 @@ contains
     #:endfor
 
 
+    #:for k1, t1 in GAMMA_REAL_KINDS_TYPES
+    impure elemental function gamma_dist_pdf_impure_${t1[0]}$${k1}$(x, shape, rate, err) &
+        result(res)
+    ! Gamma distribution probability density function (impure wrapper)
+    !
+        ${t1}$, intent(in) :: x, shape, rate
+        integer, intent(out) :: err
+        real(${k1}$) :: res
+
+        res = gamma_dist_pdf_r${k1}$(x, shape, rate)
+        err = 0
+        if(ieee_is_nan(res)) err = 1
+    end function gamma_dist_pdf_impure_${t1[0]}$${k1}$
+
+    #:endfor
+
+
     #:for k1, t1 in GAMMA_CMPLX_KINDS_TYPES
-    impure elemental function gamma_dist_pdf_${t1[0]}$${k1}$(x, shape, rate)   &
+    elemental function gamma_dist_pdf_${t1[0]}$${k1}$(x, shape, rate)          &
         result(res)
     ! Complex parameter gamma distributed. The real part and imaginary part are           &
     ! independent of each other.
@@ -272,6 +296,25 @@ contains
 
         res = res * gamma_dist_pdf_r${k1}$(x%im, shape%im, rate%im)
     end function gamma_dist_pdf_${t1[0]}$${k1}$
+
+    #:endfor
+
+
+    #:for k1, t1 in GAMMA_CMPLX_KINDS_TYPES
+    impure elemental function gamma_dist_pdf_impure_${t1[0]}$${k1}$(x, shape, rate, err) &
+        result(res)
+    ! Complex parameter gamma distributed. The real part and imaginary part are           &
+    ! independent of each other.
+    !
+        ${t1}$, intent(in) :: x, shape, rate
+        integer, intent(out) :: err
+        real(${k1}$) :: res
+
+        res = gamma_dist_pdf_r${k1}$(x%re, shape%re, rate%re)
+        res = res * gamma_dist_pdf_r${k1}$(x%im, shape%im, rate%im)
+        err = 0
+        if(ieee_is_nan(res)) err = 1
+    end function gamma_dist_pdf_impure_${t1[0]}$${k1}$
 
     #:endfor
 
@@ -300,6 +343,23 @@ contains
     #:endfor
 
 
+    #:for k1, t1 in GAMMA_REAL_KINDS_TYPES
+    impure elemental function gamma_dist_cdf_impure_${t1[0]}$${k1}$(x, shape, rate, err) &
+        result(res)
+    ! Gamma distribution cumulative distribution function (impure wrapper)
+    !
+        ${t1}$, intent(in) :: x, shape, rate
+        integer, intent(out) :: err
+        real(${k1}$) :: res
+
+        res = gamma_dist_cdf_r${k1}$(x, shape, rate)
+        err = 0
+        if(ieee_is_nan(res)) err = 1
+    end function gamma_dist_cdf_impure_${t1[0]}$${k1}$
+
+    #:endfor
+
+
     #:for k1, t1 in GAMMA_CMPLX_KINDS_TYPES
     impure elemental function gamma_dist_cdf_${t1[0]}$${k1}$(x, shape, rate)   &
         result(res)
@@ -313,6 +373,25 @@ contains
 
         res = res * gamma_dist_cdf_r${k1}$(x%im, shape%im, rate%im)
     end function gamma_dist_cdf_${t1[0]}$${k1}$
+
+    #:endfor
+
+
+    #:for k1, t1 in GAMMA_CMPLX_KINDS_TYPES
+    impure elemental function gamma_dist_cdf_impure_${t1[0]}$${k1}$(x, shape, rate, err) &
+        result(res)
+    ! Complex parameter gamma distributed. The real part and imaginary part are           &
+    ! independent of each other.
+    !
+        ${t1}$, intent(in) :: x, shape, rate
+        integer, intent(out) :: err
+        real(${k1}$) :: res
+
+        res = gamma_dist_cdf_r${k1}$(x%re, shape%re, rate%re)
+        res = res * gamma_dist_cdf_r${k1}$(x%im, shape%im, rate%im)
+        err = 0
+        if(ieee_is_nan(res)) err = 1
+    end function gamma_dist_cdf_impure_${t1[0]}$${k1}$
 
     #:endfor
 
