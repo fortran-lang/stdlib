@@ -1,0 +1,164 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
+submodule(stdlib_spatial) stdlib_spatial_kabsch
+
+contains
+    #:for k, t, s in (KINDS_TYPES)
+    #:if k!="xdp"
+    module subroutine kabsch_${s}$(P, Q, scale, R, t, c, rmsd, W)
+        ${t}$, intent(in) :: P(:, :)
+        ${t}$, intent(in) :: Q(:, :)
+        logical, intent(in) :: scale
+        ${t}$, intent(out) :: R(:,:)
+        ${t}$, intent(out) :: t(:)
+        real(${k}$), intent(out) :: c
+        real(${k}$), intent(out) :: rmsd
+        real(${k}$), intent(in), optional :: W(:)
+
+        ! Internal variables.
+        integer(ilp) :: i, j, k, d, N
+        ${t}$, allocatable :: c_P(:), c_Q(:), covariance(:,:), U(:,:), Vt(:,:), B(:,:), vec(:)
+        real(${k}$) :: sum_w, vp, vq, variance_p
+        real(${k}$), allocatable :: S(:)
+        #:if t.startswith('complex')
+        ${t}$ :: detR
+        #:endif
+        
+        if(size(P,dim=1)/=size(Q,dim=1) .or. size(P,dim=1)/=size(R,dim=1) .or. size(P,dim=1)/=size(R,dim=2) &
+                    .or. size(P,dim=1)/=size(t)) then
+            error stop "array sizes do not match"
+        end if
+        if(size(P,dim=2)/=size(Q,dim=2)) then
+            error stop "array sizes do not match"
+        end if
+        if (present(W)) then
+            if (size(W) /= size(P,dim=2)) then
+                error stop "array sizes do not match"
+            end if
+        end if
+        d = size(P,dim=1)
+        N = size(P,dim=2)
+
+        ! Compute centroid
+        sum_w = 1.0_${k}$ / N
+        if(present(W)) sum_w = 1.0_${k}$ / stdlib_sum(W)
+
+        #:if t.startswith('complex')
+        allocate(c_P(d), source=zero_c${k}$)
+        allocate(c_Q(d), source=zero_c${k}$)
+        #:else
+        allocate(c_P(d), source=zero_${k}$)
+        allocate(c_Q(d), source=zero_${k}$)
+        #:endif
+
+        if(present(W)) then
+            do k = 1, N
+                c_P(1:d) = c_P(1:d) + P(1:d,k)*W(k)
+                c_Q(1:d) = c_Q(1:d) + Q(1:d,k)*W(k)
+            end do
+        else
+            do k = 1, N
+                c_P(1:d) = c_P(1:d) + P(1:d,k)
+                c_Q(1:d) = c_Q(1:d) + Q(1:d,k)
+            end do
+        end if
+        c_P = c_P * sum_w
+        c_Q = c_Q * sum_w
+
+        ! Compute covariance matrix.
+        #:if t.startswith('complex')
+        allocate(covariance(d,d), source=zero_c${k}$)
+        #:else
+        allocate(covariance(d,d), source=zero_${k}$)
+        #:endif
+        variance_p = zero_${k}$
+
+        if (present(W)) then
+            do i = 1, N
+                do j = 1, d
+                    vq = Q(j,i) - c_Q(j)
+                    do k = 1, d
+                        vp = P(k,i) - c_P(k)
+                        covariance(k,j) = covariance(k,j) + vp * vq * W(i)
+                    end do
+                end do
+                do k = 1, d
+                    vp = P(k,i) - c_P(k)
+                    variance_p = variance_p + vp*vp * W(i)
+                end do
+            end do
+        else
+            do i = 1, N
+                do j = 1, d
+                    vq = Q(j,i) - c_Q(j)
+                    do k = 1, d
+                        vp = P(k,i) - c_P(k)
+                        covariance(k,j) = covariance(k,j) + vp * vq
+                    end do
+                end do
+                do k = 1, d
+                    vp = P(k,i) - c_P(k)
+                    variance_p = variance_p + vp*vp
+                end do
+            end do
+        end if
+        covariance = covariance * sum_w
+        variance_p = variance_p * sum_w
+        
+        #:if t.startswith('complex')
+        allocate(U(d,d), source=zero_c${k}$)
+        allocate(Vt(d,d), source=zero_c${k}$)
+        #:else
+        allocate(U(d,d), source=zero_${k}$)
+        allocate(Vt(d,d), source=zero_${k}$)
+        #:endif
+        allocate(S(d), source=zero_${k}$)
+        
+        ! SVD
+        call svd(covariance, S, U, Vt)
+        
+        #:if t.startswith('complex')
+        allocate(B(d,d), source=zero_c${k}$)
+        #:else
+        allocate(B(d,d), source=zero_${k}$)
+        #:endif
+
+        ! Validate right-handed coordinate system
+        R = matmul(U, Vt)
+        B = eye(d,d)
+        #:if t.startswith('complex')
+        detR = det(R)
+        B(d,d) = detR / abs(detR)
+        #:else
+        B(d,d) = sign(one_${k}$, det(R))
+        #:endif
+
+        ! Optimal rotation matrix.
+        R = matmul(U,matmul(B,Vt))
+
+        ! Scaling factor
+        c = (sum(S(1:d-1))+B(d,d)*S(d)) /variance_p
+        if (.not. scale) c = 1.0_${k}$
+
+        ! Translation vector
+        t = c_P - c*matmul(R , c_Q )
+
+        #:if t.startswith('complex')
+        allocate(vec(d), source=zero_c${k}$)
+        #:else
+        allocate(vec(d), source=zero_${k}$)
+        #:endif
+        rmsd = 0.0_${k}$
+        do i = 1, N
+            vec(1:d) = c * matmul(R , Q(1:d,i) )
+            vec(1:d) = vec(1:d) + t(1:d)
+            vec(1:d) = vec(1:d) - P(1:d,i)
+            rmsd = rmsd + dot_product(vec,vec)
+        end do
+        rmsd = sqrt( rmsd * sum_w )
+    end subroutine
+    #:endif
+    #:endfor
+end submodule stdlib_spatial_kabsch

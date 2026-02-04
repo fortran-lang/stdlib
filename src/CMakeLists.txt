@@ -44,6 +44,7 @@ ADD_SUBDIR(system)
 ADD_SUBDIR(stats)
 
 add_subdirectory(sparse)
+add_subdirectory(spatial)
 
 set(fppFiles
     stdlib_version.fypp
@@ -70,5 +71,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   ${PROJECT_NAME}_strings
   ${PROJECT_NAME}_blas ${PROJECT_NAME}_lapack ${PROJECT_NAME}_lapack_extended
   ${PROJECT_NAME}_sparse
+  ${PROJECT_NAME}_spatial
   ${OPTIONAL_LIB}
   )
