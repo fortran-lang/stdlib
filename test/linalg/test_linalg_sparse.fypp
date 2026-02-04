@@ -443,10 +443,10 @@ contains
                 call CSC_low%add(locdof,locdof,mat)
             end do
 
-            call check(error, all(CSR_full%data == COO_full%data) , "error in full CSR data" )
+            call check(error, all(CSR_full%data == COO_full%data) , "error in full CSR ${s1}$ data" )
             if (allocated(error)) return
 
-            call check(error, all(CSR_low%data == COO_low%data) , "error in low CSR data" )
+            call check(error, all(CSR_low%data == COO_low%data) , "error in low CSR ${s1}$ data" )
             if (allocated(error)) return
 
             x = 1._wp
@@ -454,22 +454,22 @@ contains
 
             y = 0._wp
             call spmv( CSR_full, x, y )
-            call check(error, all(y == y_ref) , "error in full CSR spmv" )
+            call check(error, all(y == y_ref) , "error in full CSR ${s1}$ spmv" )
             if (allocated(error)) return
             
             y = 0._wp
             call spmv( CSR_low, x, y ) 
-            call check(error, all(y == y_ref) , "error in low CSR spmv" )
+            call check(error, all(y == y_ref) , "error in low CSR ${s1}$ spmv" )
             if (allocated(error)) return
 
             y = 0._wp
             call spmv( CSC_full, x, y )
-            call check(error, all(y == y_ref) , "error in full CSC spmv" )
+            call check(error, all(y == y_ref) , "error in full CSC ${s1}$ spmv" )
             if (allocated(error)) return
             
             y = 0._wp
             call spmv( CSC_low, x, y ) 
-            call check(error, all(y == y_ref) , "error in low CSC spmv" )
+            call check(error, all(y == y_ref) , "error in low CSC ${s1}$ spmv" )
             if (allocated(error)) return
 
         end block
