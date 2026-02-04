@@ -369,7 +369,6 @@ contains
 
             call check(error, all(CSR%data == COO%data) )
             if (allocated(error)) return
-            
             err = 0._wp
             do i = 1, 5
                 do j = 1, 5
