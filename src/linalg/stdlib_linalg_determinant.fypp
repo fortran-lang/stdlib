@@ -15,7 +15,6 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
 
      ! BLAS/LAPACK backends do not currently support xdp
      #:for rk,rt in RC_KINDS_TYPES
-     #:if rk!="xdp" 
      pure module function stdlib_linalg_pure_${rt[0]}$${rk}$determinant(a) result(det)     
      !!### Summary
      !! Compute determinant of a real square matrix (pure interface).
@@ -233,7 +232,6 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
 
      end function stdlib_linalg_${rt[0]}$${rk}$determinant
 
-     #:endif
      #:endfor
 
 end submodule stdlib_linalg_determinant
