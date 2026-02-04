@@ -876,8 +876,7 @@ module stdlib_linalg
     !! This interface provides methods for computing the determinant of a matrix.
     !! Supported data types include `real` and `complex`.
     !! 
-    !!@note The provided functions are intended for square matrices only.          
-    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
+    !!@note The provided functions are intended for square matrices only.
     !! 
     !!### Example
     !!
@@ -918,7 +917,6 @@ module stdlib_linalg
     !! Supported data types include real and complex.
     !!
     !!@note The provided functions are intended for square matrices.
-    !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
     !!
     !!### Example
     !!
@@ -1210,7 +1208,6 @@ module stdlib_linalg
      !! Preallocated space for both eigenvalues `lambda` and the eigenvector matrices must be user-provided.      
      !! 
      !!@note The solution is based on LAPACK's general eigenproblem solvers `*GEEV`.
-     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
      !!       
     #:for rk,rt,ri in RC_KINDS_TYPES
     #:for ep,ei in EIG_PROBLEM_LIST
@@ -1288,7 +1285,6 @@ module stdlib_linalg
      !! as an optional `type(linalg_state_type)` output flag. 
      !! 
      !!@note The solution is based on LAPACK's general eigenproblem solvers `*GEEV`.
-     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
      !!       
     #:for rk,rt,ri in RC_KINDS_TYPES
     #:for ep,ei in EIG_PROBLEM_LIST
@@ -1343,7 +1339,6 @@ module stdlib_linalg
      !! Preallocated space for both eigenvalues `lambda` and the eigenvector matrix must be user-provided.      
      !! 
      !!@note The solution is based on LAPACK's eigenproblem solvers `*SYEV`/`*HEEV`.
-     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
      !!      
     #:for rk,rt,ri in RC_KINDS_TYPES
     module subroutine stdlib_linalg_eigh_${ri}$(a,lambda,vectors,upper_a,overwrite_a,err)
@@ -1386,7 +1381,6 @@ module stdlib_linalg
      !! as an optional `type(linalg_state_type)` output flag. 
      !! 
      !!@note The solution is based on LAPACK's eigenproblem solvers `*SYEV`/`*HEEV`.
-     !!@note BLAS/LAPACK backends do not currently support extended precision (``xdp``).
      !!         
     #:for rk,rt,ri in RC_KINDS_TYPES
     module function stdlib_linalg_eigvalsh_${ri}$(a,upper_a,err) result(lambda)

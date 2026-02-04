@@ -13,7 +13,6 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
 
      contains
 
-     ! BLAS/LAPACK backends do not currently support xdp
      #:for rk,rt in RC_KINDS_TYPES
      pure module function stdlib_linalg_pure_${rt[0]}$${rk}$determinant(a) result(det)     
      !!### Summary
