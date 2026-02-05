@@ -1,6 +1,7 @@
 program example_kabsch
     use stdlib_linalg_constants, only: dp
     use stdlib_spatial
+    use stdlib_math, only: all_close
     implicit none
 
     integer, parameter :: d = 3, N = 4
@@ -12,19 +13,15 @@ program example_kabsch
     integer :: i
 
     ! Reference point set P (columns are points)
-    P(:,1) = [0.0_dp, 0.0_dp, 0.0_dp]
-    P(:,2) = [1.0_dp, 0.0_dp, 0.0_dp]
-    P(:,3) = [0.0_dp, 1.0_dp, 0.0_dp]
-    P(:,4) = [0.0_dp, 0.0_dp, 1.0_dp]
+Q(:,1) = [0.0_dp, 0.0_dp, 0.0_dp]
+Q(:,2) = [1.0_dp, 0.0_dp, 0.0_dp]
+Q(:,3) = [0.0_dp, 1.0_dp, 0.0_dp]
+Q(:,4) = [0.0_dp, 0.0_dp, 1.0_dp]
 
-    ! Target point set Q
-    ! Here Q is a rotated + translated + scaled version of P
-    ! Target point set Q = 2 * Rz * P + [1, 2, 3]
-
-Q(:,1) = [1.0_dp, 2.0_dp, 3.0_dp]   ! P1 = (0,0,0)
-Q(:,2) = [1.0_dp, 4.0_dp, 3.0_dp]   ! P2 = (1,0,0) -> (0,1,0)
-Q(:,3) = [-1.0_dp, 2.0_dp, 3.0_dp]  ! P3 = (0,1,0) -> (-1,0,0)
-Q(:,4) = [1.0_dp, 2.0_dp, 5.0_dp]   ! P4 = (0,0,1)
+P(:,1) = [2.0_dp, 0.0_dp, 1.0_dp]
+P(:,2) = [2.0_dp, 1.0_dp, 1.0_dp]
+P(:,3) = [1.0_dp, 0.0_dp, 2.0_dp]
+P(:,4) = [3.0_dp, 0.0_dp, 1.0_dp]
 
 
     scale = .true.
@@ -62,6 +59,8 @@ Q(:,4) = [1.0_dp, 2.0_dp, 5.0_dp]   ! P4 = (0,0,1)
     do i = 1, d
         print "(4F10.5)", Q_1(i,:)
     end do
+
+    print*, "Check P and RQ + t: ", all_close(P, Q_1, rel_tol=1.0e-6_dp, abs_tol=1.0e-12_dp)
 
     print *, ""
     print *, "Scale factor c:", c

@@ -18,7 +18,7 @@ contains
         real(${k}$), intent(in), optional :: W(:)
 
         ! Internal variables.
-        integer(ilp) :: i, j, k, d, N
+        integer(ilp) :: i, j, point, d, N
         ${t}$, allocatable :: c_P(:), c_Q(:), covariance(:,:), U(:,:), Vt(:,:), B(:,:), vec(:)
         real(${k}$) :: sum_w, vp, vq, variance_p
         real(${k}$), allocatable :: S(:)
@@ -41,9 +41,8 @@ contains
         d = size(P,dim=1)
         N = size(P,dim=2)
 
-        ! Compute centroid
-        sum_w = 1.0_${k}$ / N
-        if(present(W)) sum_w = 1.0_${k}$ / stdlib_sum(W)
+        sum_w = one_${k}$ / N
+        if(present(W)) sum_w = one_${k}$ / stdlib_sum(W)
 
         #:if t.startswith('complex')
         allocate(c_P(d), source=zero_c${k}$)
@@ -53,15 +52,16 @@ contains
         allocate(c_Q(d), source=zero_${k}$)
         #:endif
 
+        ! Compute centroid
         if(present(W)) then
-            do k = 1, N
-                c_P(1:d) = c_P(1:d) + P(1:d,k)*W(k)
-                c_Q(1:d) = c_Q(1:d) + Q(1:d,k)*W(k)
+            do point = 1, N
+                c_P(1:d) = c_P(1:d) + P(1:d,point)*W(point)
+                c_Q(1:d) = c_Q(1:d) + Q(1:d,point)*W(point)
             end do
         else
-            do k = 1, N
-                c_P(1:d) = c_P(1:d) + P(1:d,k)
-                c_Q(1:d) = c_Q(1:d) + Q(1:d,k)
+            do point = 1, N
+                c_P(1:d) = c_P(1:d) + P(1:d,point)
+                c_Q(1:d) = c_Q(1:d) + Q(1:d,point)
             end do
         end if
         c_P = c_P * sum_w
@@ -76,37 +76,38 @@ contains
         variance_p = zero_${k}$
 
         if (present(W)) then
-            do i = 1, N
-                do j = 1, d
-                    vq = Q(j,i) - c_Q(j)
-                    do k = 1, d
-                        vp = P(k,i) - c_P(k)
-                        covariance(k,j) = covariance(k,j) + vp * vq * W(i)
-                    end do
+            do point = 1, N
+                do i = 1, d
+                    vp = P(i,point) - c_P(i)
+                    variance_p = variance_p + vp*vp * W(point)
                 end do
-                do k = 1, d
-                    vp = P(k,i) - c_P(k)
-                    variance_p = variance_p + vp*vp * W(i)
+                do j = 1, d
+                    vq = Q(j,point) - c_Q(j)
+                    do i = 1, d
+                        vp = P(i,point) - c_P(i)
+                        covariance(i,j) = covariance(i,j) + vp*vq * W(point)
+                    end do
                 end do
             end do
         else
-            do i = 1, N
-                do j = 1, d
-                    vq = Q(j,i) - c_Q(j)
-                    do k = 1, d
-                        vp = P(k,i) - c_P(k)
-                        covariance(k,j) = covariance(k,j) + vp * vq
-                    end do
-                end do
-                do k = 1, d
-                    vp = P(k,i) - c_P(k)
+            do point = 1, N
+                do i = 1, d
+                    vp = P(i,point) - c_P(i)
                     variance_p = variance_p + vp*vp
+                end do
+                do j = 1, d
+                    vq = Q(j,point) - c_Q(j)
+                    do i = 1, d
+                        vp = P(i,point) - c_P(i)
+                        covariance(i,j) = covariance(i,j) + vp*vq
+                    end do
                 end do
             end do
         end if
+
         covariance = covariance * sum_w
         variance_p = variance_p * sum_w
-        
+
         #:if t.startswith('complex')
         allocate(U(d,d), source=zero_c${k}$)
         allocate(Vt(d,d), source=zero_c${k}$)
@@ -139,8 +140,8 @@ contains
         R = matmul(U,matmul(B,Vt))
 
         ! Scaling factor
-        c = (sum(S(1:d-1))+B(d,d)*S(d)) /variance_p
-        if (.not. scale) c = 1.0_${k}$
+        c = variance_p / (sum(S(1:d-1))+B(d,d)*S(d))
+        if (.not. scale) c = one_${k}$
 
         ! Translation vector
         t = c_P - c*matmul(R , c_Q )
@@ -150,7 +151,7 @@ contains
         #:else
         allocate(vec(d), source=zero_${k}$)
         #:endif
-        rmsd = 0.0_${k}$
+        rmsd = zero_${k}$
         do i = 1, N
             vec(1:d) = c * matmul(R , Q(1:d,i) )
             vec(1:d) = vec(1:d) + t(1:d)
