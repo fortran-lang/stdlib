@@ -1,4 +1,4 @@
-program example_tridiagonal_matrix
+program example_sym_tridiagonal_matrix
    use stdlib_linalg_constants, only: dp
    use stdlib_specialmatrices
    implicit none
@@ -14,4 +14,4 @@ program example_tridiagonal_matrix
    ! Create the corresponding Tridiagonal matrix.
    A = sym_tridiagonal(du, dv)
 
-end program example_tridiagonal_matrix
+end program example_sym_tridiagonal_matrix
