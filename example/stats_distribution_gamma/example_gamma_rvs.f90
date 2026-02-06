@@ -3,8 +3,8 @@ program example_gamma_rvs
   use stdlib_stats_distribution_gamma, only: rgamma => rvs_gamma
 
   implicit none
-  real :: g(2, 3, 4)
-  complex :: shape, rate
+  real :: shape_arr(2, 3, 4)
+  complex :: cloc, cshape, crate
   integer :: seed_put, seed_get
 
   seed_put = 1234567
@@ -19,8 +19,8 @@ program example_gamma_rvs
   ! 1.30591583
 
   ! a rank-3 array of 60 standard gamma random variates with shape=0.5
-  g(:, :, :) = 0.5
-  print *, rgamma(g)
+  shape_arr(:, :, :) = 0.5
+  print *, rgamma(shape_arr)
   ! 1.03841162  1.33044529  0.912742674  0.131288037  0.638593793
   ! 1.03565669E-02  0.624804378  1.12179172  4.91380468E-02  6.69969944E-03
   ! 6.67014271E-02  0.132111162  0.101102419  0.648416579  1.14922595
@@ -32,11 +32,12 @@ program example_gamma_rvs
   ! 1.39297554E-04  0.296419382  0.352113068  2.80515051  3.65264394E-04
   ! 0.197743446  5.54569438E-02  9.30598825E-02  1.02596343  1.85311246
 
-  shape = (3.0, 4.0)
-  rate = (2.0, 0.7)
+  cloc = (0.0, 0.0)
+  cshape = (3.0, 4.0)
+  crate = (2.0, 0.7)
   ! single complex gamma random variate with real part of shape=3.0, rate=2.0;
   ! imaginary part of shape=4.0, rate=0.7
-  print *, rgamma((0.0, 0.0), shape, rate)
+  print *, rgamma(cloc, cshape, crate)
   ! (0.826188326,3.54749799)
 
 end program example_gamma_rvs
