@@ -24,29 +24,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         type(tridiagonal_${s1}$_type) :: A
         !! Corresponding tridiagonal matrix.
 
-        ! Internal variables.
-        integer(ilp) :: n
-        type(linalg_state_type) :: err0
-
-        ! Sanity check.
-        n = size(dv, kind=ilp)
-        if (n <= 0) then
-            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Matrix size needs to be positive, n = ", n, ".")
-            call linalg_error_handling(err0)
-        endif
-        if (size(dl, kind=ilp) /= n-1) then
-            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Vector dl does not have the correct length.")
-            call linalg_error_handling(err0)
-        endif
-        if (size(du, kind=ilp) /= n-1) then
-            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Vector du does not have the correct length.")
-            call linalg_error_handling(err0)
-        endif
-
-        ! Description of the matrix.
-        A%n = n
-        ! Matrix elements.
-        A%dl = dl ; A%dv = dv ; A%du = du
+        call build_tridiagonal(dl, dv, du, A)
     end function
 
     pure module function initialize_constant_tridiagonal_pure_${s1}$(dl, dv, du, n) result(A)
@@ -58,20 +36,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         type(tridiagonal_${s1}$_type) :: A
         !! Corresponding tridiagonal matrix.
 
-        ! Internal variables.
-        integer(ilp) :: i
-        type(linalg_state_type) :: err0
-
-        ! Description of the matrix.
-        A%n = n
-        if (n <= 0) then
-            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Matrix size needs to be positive, n = ", n, ".")
-            call linalg_error_handling(err0)
-        endif
-        ! Matrix elements.
-        allocate( A%dl(n-1), source = dl )
-        allocate( A%dv(n), source= dv )
-        allocate( A%du(n-1), source = du )
+        call build_tridiagonal(dl, dv, du, n, A)
     end function
 
     module function initialize_tridiagonal_impure_${s1}$(dl, dv, du, err) result(A)
@@ -83,6 +48,30 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         !! Error handling.
         type(tridiagonal_${s1}$_type) :: A
         !! Corresponding tridiagonal matrix.
+
+        call build_tridiagonal(dl, dv, du, A, err)
+    end function
+
+    module function initialize_constant_tridiagonal_impure_${s1}$(dl, dv, du, n, err) result(A)
+        !! Construct a `tridiagonal` matrix with constant elements.
+        ${t1}$, intent(in) :: dl, dv, du
+        !! tridiagonal matrix elements.
+        integer(ilp), intent(in) :: n
+        !! Matrix dimension.
+        type(linalg_state_type), intent(out) :: err
+        !! Error handling
+        type(tridiagonal_${s1}$_type) :: A
+        !! Corresponding tridiagonal matrix.
+
+        call build_tridiagonal(dl, dv, du, n, A, err)
+    end function
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    pure module subroutine build_tridiagonal_from_arrays_${s1}$(dl, dv, du, A, err)
+        ${t1}$, intent(in) :: dl(:), dv(:), du(:)
+        type(tridiagonal_${s1}$_type), intent(out) :: A
+        type(linalg_state_type), intent(out), optional :: err
 
         ! Internal variables.
         integer(ilp) :: n
@@ -109,21 +98,15 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
             ! Matrix elements.
             A%dl = dl ; A%dv = dv ; A%du = du
         endif
-    end function
+    end subroutine
 
-    module function initialize_constant_tridiagonal_impure_${s1}$(dl, dv, du, n, err) result(A)
-        !! Construct a `tridiagonal` matrix with constant elements.
+    pure module subroutine build_tridiagonal_from_constants_${s1}$(dl, dv, du, n, A, err)
         ${t1}$, intent(in) :: dl, dv, du
-        !! tridiagonal matrix elements.
         integer(ilp), intent(in) :: n
-        !! Matrix dimension.
-        type(linalg_state_type), intent(out) :: err
-        !! Error handling
-        type(tridiagonal_${s1}$_type) :: A
-        !! Corresponding tridiagonal matrix.
+        type(tridiagonal_${s1}$_type), intent(out) :: A
+        type(linalg_state_type), intent(out), optional :: err
 
         ! Internal variables.
-        integer(ilp) :: i
         type(linalg_state_type) :: err0
 
         if (n <= 0) then
@@ -139,7 +122,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
             allocate( A%dv(n), source= dv )
             allocate( A%du(n-1), source = du )
         endif
-    end function
+    end subroutine
     #:endfor
 
     !-----------------------------------------
@@ -167,9 +150,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         logical :: is_alpha_special, is_beta_special
         #:endif
 
-        #:if rank == 1
         ${t1}$, pointer :: xmat(:, :), ymat(:, :)
-        #:endif
 
         ! Deal with optional arguments.
         alpha_ = 1.0_${k1}$ ; if (present(alpha)) alpha_ = alpha
@@ -184,7 +165,6 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         n = A%n ; ldx = n ; ldy = n ;
         nrhs = #{if rank==1}# 1 #{else}# size(x, dim=2, kind=ilp) #{endif}#
 
-        #:if rank == 1
         ! Pointer trick.
         xmat(1:n, 1:nrhs) => x ; ymat(1:n, 1:nrhs) => y
         #:if t1.startswith('complex')
@@ -195,17 +175,6 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         else
             call glagtm(op_, n, nrhs, alpha_, A%dl, A%dv, A%du, xmat, ldx, beta_, ymat, ldy)
         end if
-        #:endif
-        #:else
-        #:if t1.startswith('complex')
-        call glagtm(op_, n, nrhs, alpha_, A%dl, A%dv, A%du, x, ldx, beta_, y, ldy)
-        #:else
-        if(is_alpha_special .and. is_beta_special) then
-            call lagtm(op_, n, nrhs, alpha_, A%dl, A%dv, A%du, x, ldx, beta_, y, ldy)
-        else
-            call glagtm(op_, n, nrhs, alpha_, A%dl, A%dv, A%du, x, ldx, beta_, y, ldy)
-        end if
-        #:endif
         #:endif
     end subroutine
     #:endfor
