@@ -11,7 +11,6 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
 
      contains
 
-     ! BLAS/LAPACK backends do not currently support xdp
      pure module function stdlib_linalg_pure_rspdeterminant(a) result(det)     
      !!### Summary
      !! Compute determinant of a real square matrix (pure interface).
