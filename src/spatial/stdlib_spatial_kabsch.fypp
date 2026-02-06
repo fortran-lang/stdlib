@@ -6,26 +6,36 @@ submodule(stdlib_spatial) stdlib_spatial_kabsch
 
 contains
     #:for k, t, s in (KINDS_TYPES)
-    #:if k!="xdp"
-    module subroutine kabsch_${s}$(P, Q, scale, R, t, c, rmsd, W)
+    module subroutine kabsch_${s}$(P, Q, R, t, c, rmsd, W, scale)
+        !> Reference point set (d × N)
         ${t}$, intent(in) :: P(:, :)
+        !> Target point set (d × N)
         ${t}$, intent(in) :: Q(:, :)
-        logical, intent(in) :: scale
+        !> Optimal rotation matrix (d × d)
         ${t}$, intent(out) :: R(:,:)
+        !> Translation vector (d)
         ${t}$, intent(out) :: t(:)
+        !> Scale factor
         real(${k}$), intent(out) :: c
+        !> Root-mean-square deviation
         real(${k}$), intent(out) :: rmsd
+        !> Optional weights
         real(${k}$), intent(in), optional :: W(:)
+        !> Enable scaling
+        logical, intent(in), optional :: scale
 
         ! Internal variables.
         integer(ilp) :: i, j, point, d, N
         ${t}$, allocatable :: c_P(:), c_Q(:), covariance(:,:), U(:,:), Vt(:,:), B(:,:), vec(:)
-        real(${k}$) :: sum_w, vp, vq, variance_p
+        ${t}$ ::  vp, vq
+        real(${k}$) :: sum_w, variance_p
         real(${k}$), allocatable :: S(:)
+        logical :: scale_
         #:if t.startswith('complex')
         ${t}$ :: detR
         #:endif
-        
+
+        ! Dimension checks
         if(size(P,dim=1)/=size(Q,dim=1) .or. size(P,dim=1)/=size(R,dim=1) .or. size(P,dim=1)/=size(R,dim=2) &
                     .or. size(P,dim=1)/=size(t)) then
             error stop "array sizes do not match"
@@ -40,6 +50,8 @@ contains
         end if
         d = size(P,dim=1)
         N = size(P,dim=2)
+        scale_ = .true.
+        if(present(scale)) scale_ = scale
 
         sum_w = one_${k}$ / N
         if(present(W)) sum_w = one_${k}$ / stdlib_sum(W)
@@ -52,7 +64,7 @@ contains
         allocate(c_Q(d), source=zero_${k}$)
         #:endif
 
-        ! Compute centroid
+        ! Compute centroids of P and Q
         if(present(W)) then
             do point = 1, N
                 c_P(1:d) = c_P(1:d) + P(1:d,point)*W(point)
@@ -67,7 +79,7 @@ contains
         c_P = c_P * sum_w
         c_Q = c_Q * sum_w
 
-        ! Compute covariance matrix.
+        ! Compute covariance matrix H = (P - c_P)^T (Q - c_Q) and variance of P
         #:if t.startswith('complex')
         allocate(covariance(d,d), source=zero_c${k}$)
         #:else
@@ -79,13 +91,21 @@ contains
             do point = 1, N
                 do i = 1, d
                     vp = P(i,point) - c_P(i)
+                    #:if t.startswith('complex')
+                    variance_p = variance_p + conjg(vp)*vp * W(point)
+                    #:else
                     variance_p = variance_p + vp*vp * W(point)
+                    #:endif
                 end do
                 do j = 1, d
                     vq = Q(j,point) - c_Q(j)
                     do i = 1, d
                         vp = P(i,point) - c_P(i)
+                        #:if t.startswith('complex')
+                        covariance(i,j) = covariance(i,j) + vp*conjg(vq) * W(point)
+                        #:else
                         covariance(i,j) = covariance(i,j) + vp*vq * W(point)
+                        #:endif
                     end do
                 end do
             end do
@@ -93,13 +113,21 @@ contains
             do point = 1, N
                 do i = 1, d
                     vp = P(i,point) - c_P(i)
+                    #:if t.startswith('complex')
+                    variance_p = variance_p + conjg(vp)*vp
+                    #:else
                     variance_p = variance_p + vp*vp
+                    #:endif
                 end do
                 do j = 1, d
                     vq = Q(j,point) - c_Q(j)
                     do i = 1, d
                         vp = P(i,point) - c_P(i)
+                        #:if t.startswith('complex')
+                        covariance(i,j) = covariance(i,j) + vp*conjg(vq)
+                        #:else
                         covariance(i,j) = covariance(i,j) + vp*vq
+                        #:endif
                     end do
                 end do
             end do
@@ -116,10 +144,10 @@ contains
         allocate(Vt(d,d), source=zero_${k}$)
         #:endif
         allocate(S(d), source=zero_${k}$)
-        
-        ! SVD
+
+        ! SVD of covariance matrix H -> H = U * S * Vt
         call svd(covariance, S, U, Vt)
-        
+
         #:if t.startswith('complex')
         allocate(B(d,d), source=zero_c${k}$)
         #:else
@@ -141,11 +169,12 @@ contains
 
         ! Scaling factor
         c = variance_p / (sum(S(1:d-1))+B(d,d)*S(d))
-        if (.not. scale) c = one_${k}$
+        if (.not. scale_) c = one_${k}$
 
         ! Translation vector
         t = c_P - c*matmul(R , c_Q )
 
+        ! Compute RMSD
         #:if t.startswith('complex')
         allocate(vec(d), source=zero_c${k}$)
         #:else
@@ -153,13 +182,16 @@ contains
         #:endif
         rmsd = zero_${k}$
         do i = 1, N
-            vec(1:d) = c * matmul(R , Q(1:d,i) )
+            vec(1:d) = c * matmul(R , Q(1:d,i))
             vec(1:d) = vec(1:d) + t(1:d)
             vec(1:d) = vec(1:d) - P(1:d,i)
-            rmsd = rmsd + dot_product(vec,vec)
+            #:if t.startswith('complex')
+            rmsd = rmsd + real(dot_product(vec, vec), kind=${k}$)
+            #:else
+            rmsd = rmsd + dot_product(vec, vec)
+            #:endif
         end do
-        rmsd = sqrt( rmsd * sum_w )
+        rmsd = sqrt(rmsd * sum_w)
     end subroutine
-    #:endif
     #:endfor
 end submodule stdlib_spatial_kabsch
