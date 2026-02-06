@@ -15,7 +15,7 @@ Experimental
 
 ### Description
 
-The gamma distribution is a continuous probability distribution widely used in modeling waiting times, queue lengths, and other non-negative quantities. It is parameterized by a shape parameter (\\(k\\) or \\(\\alpha\\)) that controls the distribution's form and a rate parameter (\\(\\lambda\\) or \\(\\beta\\)) that controls its scale. The location parameter (\\(\\text{loc}\\)) shifts the distribution.
+The gamma distribution is a continuous probability distribution widely used in modeling waiting times, queue lengths, and other non-negative quantities. It is defined by a shape parameter (\\(k\\) or \\(\\alpha\\)) that controls the distribution's form and a rate parameter (\\(\\lambda\\)) that controls its scale. The location parameter (\\(\\text{loc}\\)) shifts the distribution.
 
 With a single argument for shape parameter, the function returns a random sample from the standard gamma distribution with rate = 1.0 and loc = 0.0.
 
@@ -74,7 +74,7 @@ The probability density function (pdf) of the single real variable gamma distrib
 
 $$ f(x)= \frac{\lambda^{k}}{\Gamma (k)}(x-\text{loc})^{k-1}e^{-\lambda (x-\text{loc})} ,\quad x>\text{loc},\ k>0,\ \lambda>0 $$
 
-where \\(k\\) is the shape parameter, \\(\\lambda\\) is the rate parameter, and \\(\\Gamma(k)\\) is the gamma function.
+where \\(k\\) is the shape parameter, \\(\\lambda\\) is the rate parameter, \\(\\text{loc}\\) is the location parameter, and \\(\\Gamma(k)\\) is the gamma function.
 
 For a complex variable \\(z=(x + y i)\\) with independent real \\(x\\) and imaginary \\(y\\) parts, the joint probability density function is the product of the corresponding real and imaginary marginal pdfs:[^2]
 
@@ -124,7 +124,7 @@ Cumulative distribution function (cdf) of the single real variable gamma distrib
 
 $$ F(x)= \frac{\gamma (k, \lambda (x-\text{loc}))}{\Gamma (k)},\quad x>\text{loc},\ k>0,\ \lambda>0 $$
 
-where \\(\\gamma(k, z)\\) is the lower incomplete gamma function and \\(\\Gamma(k)\\) is the gamma function. This is often referred to as the regularized gamma P function.
+where \\(\\text{loc}\\) is the location parameter, \\(\\gamma(k, z)\\) is the lower incomplete gamma function, and \\(\\Gamma(k)\\) is the gamma function. This is often referred to as the regularized gamma P function.
 
 For a complex variable \\(z=(x + y i)\\) with independent real \\(x\\) and imaginary \\(y\\) parts, the joint cumulative distribution function is the product of the corresponding real and imaginary marginal cdfs:[^2]
 
