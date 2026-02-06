@@ -22,21 +22,16 @@ module test_linalg_determinant
         allocate(tests(0))
 
         #:for rk,rt in RC_KINDS_TYPES
-        #:if rk!="xdp"
         call add_test(tests,new_unittest("$eye_det_${rt[0]}$${rk}$",test_${rt[0]}$${rk}$_eye_determinant))
         call add_test(tests,new_unittest("$eye_det_multiple_${rt[0]}$${rk}$",test_${rt[0]}$${rk}$_eye_multiple))
-        #:endif
         #:endfor
         #:for ck,ct in CMPLX_KINDS_TYPES
-        #:if ck!="xdp"
         call add_test(tests,new_unittest("$complex_det_${rt[0]}$${rk}$",test_${ct[0]}$${ck}$_complex_determinant))
-        #:endif
         #: endfor
 
     end subroutine test_matrix_determinant
 
     #:for rk,rt in RC_KINDS_TYPES
-    #:if rk!="xdp"
     !> Determinant of identity matrix
     subroutine test_${rt[0]}$${rk}$_eye_determinant(error)
         type(error_type), allocatable, intent(out) :: error
@@ -96,12 +91,10 @@ module test_linalg_determinant
                          'det(0.01*eye(n))==0.01^n')
 
     end subroutine test_${rt[0]}$${rk}$_eye_multiple
-    #:endif
     #:endfor
 
     !> Determinant of complex identity matrix
     #:for ck,ct in CMPLX_KINDS_TYPES
-    #:if ck!="xdp"
     subroutine test_${ct[0]}$${ck}$_complex_determinant(error)
         type(error_type), allocatable, intent(out) :: error
 
@@ -141,7 +134,6 @@ module test_linalg_determinant
 
     end subroutine test_${ct[0]}$${ck}$_complex_determinant
 
-    #:endif
     #:endfor
     
     ! gcc-15 bugfix utility
