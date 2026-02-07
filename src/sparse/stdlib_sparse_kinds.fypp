@@ -296,7 +296,7 @@ contains
     ! data accessors
     !==================================================================
 
-    logical(int8) elemental function skip(sym,row,col)
+    logical(lk8) elemental function skip(sym,row,col)
         integer(ilp), intent(in) :: sym, row, col
         skip = (sym == sparse_lower .and. row < col) .or. (sym == sparse_upper .and. row > col)
     end function
@@ -306,7 +306,7 @@ contains
         class(COO_${s1}$_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
-        logical :: transpose
+        logical(lk8) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._${k1}$ , ieee_quiet_nan)
@@ -368,7 +368,7 @@ contains
         class(CSR_${s1}$_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
-        logical :: transpose
+        logical(lk8) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._${k1}$ , ieee_quiet_nan)
@@ -430,7 +430,7 @@ contains
         class(CSC_${s1}$_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
-        logical :: transpose
+        logical(lk8) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._${k1}$ , ieee_quiet_nan)
@@ -492,7 +492,7 @@ contains
         class(ELL_${s1}$_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
-        logical :: transpose
+        logical(lk8) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._${k1}$ , ieee_quiet_nan)
@@ -554,7 +554,7 @@ contains
         class(SELLC_${s1}$_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_, idx
-        logical :: transpose
+        logical(lk8) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._${k1}$ , ieee_quiet_nan)

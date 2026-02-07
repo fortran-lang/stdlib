@@ -8,6 +8,7 @@ module stdlib_kinds
   implicit none
   private
   public :: sp, dp, xdp, qp, int8, int16, int32, int64, lk, c_bool, c_char
+  public :: lk8, lk16, lk32, lk64
 
   !> Single precision real numbers
   integer, parameter :: sp = selected_real_kind(6)
@@ -23,5 +24,11 @@ module stdlib_kinds
 
   !> Default logical kind parameter
   integer, parameter :: lk = kind(.true.)
+  
+  !> Logical kind parameters (selected_logical_kind was introduced in Fortran 2023, it is not available in all compilers yet, so we provide fallbacks)
+  integer, parameter :: lk8  = 1 ! selected_logical_kind(8) 
+  integer, parameter :: lk16 = 2 ! selected_logical_kind(16)
+  integer, parameter :: lk32 = 4 ! selected_logical_kind(32)
+  integer, parameter :: lk64 = 8 ! selected_logical_kind(64)
 
 end module stdlib_kinds
