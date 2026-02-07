@@ -2,7 +2,7 @@
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
 #:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
 module stdlib_sparse_constants
-    use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
+    use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp, lk8
     use stdlib_constants
     implicit none
     public
