@@ -4,7 +4,7 @@
 module test_linalg_least_squares
     use testdrive, only: error_type, check, new_unittest, unittest_type
     use stdlib_linalg_constants
-    use stdlib_linalg, only: lstsq, solve_lstsq, generalized_lstsq, eigh, diag
+    use stdlib_linalg, only: lstsq, solve_lstsq, generalized_lstsq, eigh, diag, eye, hermitian
     use stdlib_linalg_state, only: linalg_state_type
 
     implicit none (type,external)
@@ -185,7 +185,6 @@ module test_linalg_least_squares
 
         type(linalg_state_type) :: state
         integer(ilp), parameter :: m = 4, n = 2
-        integer(ilp) :: i
         real(${rk}$), parameter :: tol = 1000*sqrt(epsilon(0.0_${rk}$))
         ${rt}$ :: A(m,n), b(m), W(m,m)
         ${rt}$, allocatable :: x_gls(:), x_ols(:)
@@ -196,10 +195,7 @@ module test_linalg_least_squares
         b = [2.0_${rk}$, 4.0_${rk}$, 5.0_${rk}$, 4.0_${rk}$]
 
         ! Identity covariance
-        W = 0.0_${rk}$
-        do i = 1, m
-            W(i,i) = 1.0_${rk}$
-        end do
+        W = eye(m, mold=0.0_${rk}$)
 
         x_gls = generalized_lstsq(W, A, b, err=state)
         call check(error, state%ok(), 'generalized_lstsq with I failed')
@@ -223,7 +219,6 @@ module test_linalg_least_squares
 
         type(linalg_state_type) :: state
         integer(ilp), parameter :: m = 3, n = 2
-        integer(ilp) :: i
         real(${rk}$), parameter :: tol = 1000*sqrt(epsilon(0.0_${rk}$))
         ${rt}$ :: A(m,n), b(m), W(m,m), sqrt_W(m,m), U(m,m)
         real(${rk}$) :: lambda(m)
@@ -251,9 +246,10 @@ module test_linalg_least_squares
         call check(error, state%ok(), 'eigh failed: '//state%print())
         if (allocated(error)) return
 
-        ! Compute matrix square root: sqrt(W) = U * diag(sqrt(lambda)) * U^T
+        ! Compute matrix square root: sqrt(W) = U * diag(sqrt(lambda)) * U^H
         ! This is a DENSE matrix (not triangular like Cholesky factor)
-        sqrt_W = matmul(U, matmul(diag(sqrt(lambda)), transpose(U)))
+        ! Using hermitian() instead of transpose() for complex-safety
+        sqrt_W = matmul(U, matmul(diag(sqrt(lambda)), hermitian(U)))
 
         ! Solve using eigendecomposition-based square root (prefactored)
         x_sqrt = generalized_lstsq(sqrt_W, A, b, prefactored_w=.true., err=state)
