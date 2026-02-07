@@ -1,6 +1,7 @@
 #:include "common.fypp"
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
-#:set KINDS_TYPES = R_KINDS_TYPES
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
 module stdlib_spatial
     use stdlib_linalg_constants
     use stdlib_constants

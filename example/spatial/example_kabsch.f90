@@ -1,4 +1,4 @@
-program example_kabsch_real
+program example_kabsch
     use stdlib_linalg_constants, only: dp
     use stdlib_spatial
     use stdlib_math, only: all_close
@@ -6,76 +6,78 @@ program example_kabsch_real
     implicit none
 
     integer, parameter :: d = 3, N = 4
-    real(dp) :: P(d, N), Q(d, N), Q_1(d, N)
-    real(dp) :: R(d, d), R_original(d, d)
-    real(dp) :: t(d), t_original(d)
-    real(dp) :: c, c_original
-    real(dp) :: rmsd
+    complex(dp) :: P_original(d, N), Q_original(d, N), P_recovered(d, N)
+    complex(dp) :: R_recovered(d, d), R_original(d, d)
+    complex(dp) :: t_recovered(d), t_original(d)
+    complex(dp)    :: c_recovered, c_original
+    real(dp)    :: rmsd
 
     integer :: i, j
-    real(dp) :: r1
+    real(dp) :: r1, r2
 
     call random_seed()
 
     ! ----------------------------
-    ! Random reference points Q
+    ! Random complex reference points Q
     ! ----------------------------
     do j = 1, N
         do i = 1, d
             call random_number(r1)
-            Q(i,j) = r1
+            call random_number(r2)
+            Q_original(i,j) = cmplx(r1, r2, kind=dp)
         end do
     end do
 
     ! ------------------------------------------------
-    ! Random proper rotation matrix R_original
-    ! Constructed via SVD: R = U * V^T
+    ! Random complex unitary matrix R_original
+    ! Constructed via SVD: R = U * V^H
     ! ------------------------------------------------
     do i = 1, d
         do j = 1, d
             call random_number(r1)
-            R_original(i,j) = r1
+            call random_number(r2)
+            R_original(i,j) = cmplx(r1, r2, kind=dp)
         end do
     end do
 
     block
-        real(dp) :: U(d,d), Vt(d,d), S(d)
+        complex(dp) :: U(d,d), Vt(d,d)
+        real(dp)    :: S(d)
 
         call svd(R_original, S, U, Vt)
-        R_original = matmul(U, Vt)
+        R_original = matmul(U, Vt)   ! unitary
 
-        ! Enforce det = +1 (no reflection)
-        if (det(R_original) < 0.0_dp) then
-            U(:,d) = -U(:,d)
-            R_original = matmul(U, Vt)
-        end if
     end block
-    R_original(:,1) = -R_original(:,1)
+    
+    ! Complex reflection of pi phase flip
+    R_original(:, 1) = -R_original(:,1)
 
-    print *, "det(R_original):", det(R_original)
+    print *, "abs(det(R_original)):", abs(det(R_original))
 
     ! ----------------------------
     ! Random scale and translation
     ! ----------------------------
     call random_number(r1)
-    c_original = 0.5_dp + 2.0_dp * r1
+    call random_number(r2)
+    c_original = cmplx(r1, r2)
 
     do i = 1, d
         call random_number(r1)
-        t_original(i) = r1
+        call random_number(r2)
+        t_original(i) = cmplx(r1, r2, kind=dp)
     end do
 
     ! ----------------------------
     ! Construct P = c*R*Q + t
     ! ----------------------------
     do j = 1, N
-        P(:,j) = c_original * matmul(R_original, Q(:,j)) + t_original
+        P_original(:,j) = c_original * matmul(R_original, Q_original(:,j)) + t_original
     end do
 
     ! ----------------------------
-    ! Call Kabsch–Umeyama
+    ! Call complex Kabsch–Umeyama
     ! ----------------------------
-    call kabsch(P, Q, R, t, c, rmsd)
+    call kabsch(P_original, Q_original, R_recovered, t_recovered, c_recovered, rmsd)
 
     print *, ""
     print *, "Original rotation R_original:"
@@ -86,7 +88,7 @@ program example_kabsch_real
     print *, ""
     print *, "Recovered rotation R:"
     do i = 1, d
-        print *, R(i,:)
+        print *, R_recovered(i,:)
     end do
 
     print *, ""
@@ -95,28 +97,28 @@ program example_kabsch_real
 
     print *, ""
     print *, "Recovered translation t:"
-    print *, t
+    print *, t_recovered
 
     ! ----------------------------
     ! Apply recovered transform
     ! ----------------------------
     do j = 1, N
-        Q_1(:,j) = c * matmul(R, Q(:,j)) + t
+        P_recovered(:,j) = c_recovered * matmul(R_recovered, Q_original(:,j)) + t_recovered
     end do
 
     print *, ""
-    print *, "Check P ≈ c*R*Q + t: ", &
-        all_close(P, Q_1, rel_tol=1.0e-10_dp, abs_tol=1.0e-12_dp)
+    print *, "Check P_original ≈ P_recovered: ", &
+        all_close(P_original, P_recovered)
 
     print *, ""
     print *, "Original scale c_original:", c_original
-    print *, "Recovered scale c:", c
+    print *, "Recovered scale c:", c_recovered
 
     print *, ""
     print *, "RMSD:", rmsd
 
     print *, ""
-    print *, "Check R ≈ R_original: ", &
-        all_close(R, R_original, rel_tol=1.0e-10_dp, abs_tol=1.0e-12_dp)
+    print *, "Check c_recovered * R_recovered ≈ c_original * R_original: ", &
+        all_close(c_recovered*R_recovered, c_original*R_original)
 
-end program example_kabsch_real
+end program example_kabsch
