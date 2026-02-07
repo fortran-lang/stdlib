@@ -33,9 +33,6 @@ contains
         real(${k}$) :: sum_w, variance_p
         real(${k}$), allocatable :: S(:)
         logical :: scale_
-        #:if t.startswith('complex')
-        ${t}$ :: detR
-        #:endif
 
         ! Dimension checks
         if(size(P,dim=1)/=size(Q,dim=1) .or. size(P,dim=1)/=size(R,dim=1) .or. size(P,dim=1)/=size(R,dim=2) &
@@ -58,13 +55,8 @@ contains
         sum_w = one_${s}$ / N
         if(present(W)) sum_w = one_${s}$ / stdlib_sum(W)
 
-        #:if t.startswith('complex')
         allocate(c_P(d), source=zero_${s}$)
         allocate(c_Q(d), source=zero_${s}$)
-        #:else
-        allocate(c_P(d), source=zero_${s}$)
-        allocate(c_Q(d), source=zero_${s}$)
-        #:endif
 
         ! Compute centroids of P and Q
         if(present(W)) then
@@ -82,11 +74,7 @@ contains
         c_Q = c_Q * sum_w
 
         ! Compute covariance matrix H = (P - c_P) * (Q - c_Q)^T and variance of P
-        #:if t.startswith('complex')
         allocate(covariance(d,d), source=zero_${s}$)
-        #:else
-        allocate(covariance(d,d), source=zero_${s}$)
-        #:endif
         variance_p = zero_${s}$
 
         if (present(W)) then
@@ -138,23 +126,14 @@ contains
         covariance = covariance * sum_w
         variance_p = variance_p * sum_w
 
-        #:if t.startswith('complex')
         allocate(U(d,d), source=zero_${s}$)
         allocate(Vt(d,d), source=zero_${s}$)
-        #:else
-        allocate(U(d,d), source=zero_${s}$)
-        allocate(Vt(d,d), source=zero_${s}$)
-        #:endif
         allocate(S(d), source=zero_${k}$)
 
         ! SVD of covariance matrix H -> H = U * S * Vt
         call svd(covariance, S, U, Vt)
 
-        #:if t.startswith('complex')
         allocate(B(d,d), source=zero_${s}$)
-        #:else
-        allocate(B(d,d), source=zero_${s}$)
-        #:endif
 
         ! Optimal rotation matrix.
         R = matmul(U, Vt)
@@ -167,11 +146,7 @@ contains
         t = c_P - c*matmul(R , c_Q )
 
         ! Compute RMSD
-        #:if t.startswith('complex')
         allocate(vec(d), source=zero_${s}$)
-        #:else
-        allocate(vec(d), source=zero_${s}$)
-        #:endif
         rmsd = zero_${s}$
         do i = 1, N
             vec(1:d) = c * matmul(R , Q(1:d,i))
