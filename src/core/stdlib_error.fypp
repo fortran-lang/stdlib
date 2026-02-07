@@ -81,6 +81,9 @@ module stdlib_error
            
            !> Handle optional error message 
            procedure :: handle    => error_handling
+           
+           !> Update the location of the error message
+           procedure :: update_location => state_update_location
 
     end type state_type
 
@@ -251,6 +254,15 @@ contains
          end if
 
     end subroutine error_handling
+
+    !> Update the location of the error message
+    pure subroutine state_update_location(this, where_at)
+         class(state_type), intent(inout) :: this
+         character(len=*), intent(in) :: where_at
+         
+         if (len_trim(where_at) > 0) this%where_at = adjustl(where_at)
+         
+    end subroutine state_update_location
 
     !> Produce a nice error string
     pure function state_print(this) result(msg)
