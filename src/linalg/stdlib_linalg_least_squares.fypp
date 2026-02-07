@@ -7,7 +7,7 @@
 submodule (stdlib_linalg) stdlib_linalg_least_squares
 !! Least-squares solution to Ax=b
      use stdlib_linalg_constants
-     use stdlib_linalg_lapack, only: gelsd, gglse, stdlib_ilaenv
+     use stdlib_linalg_lapack, only: gelsd, gglse, stdlib_ilaenv, lascl2
      use stdlib_linalg_lapack_aux, only: handle_gelsd_info, handle_gglse_info
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
@@ -590,7 +590,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
         ! Local variables
         type(linalg_state_type) :: err0
-        integer(ilp) :: m, n, j
+        integer(ilp) :: m, n
         logical(lk) :: copy_a
         ${rt}$, pointer :: amat(:,:)
         ${rt}$, allocatable, target :: amat_alloc(:,:)
@@ -644,22 +644,23 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
         ! Handle A matrix: either copy or use original
         if (copy_a) then
-            allocate(amat_alloc(m, n))
+            allocate(amat_alloc(m, n), source=a)
             amat => amat_alloc
         else
             amat => a
         end if
 
-        ! Scale A column-wise (cache-friendly: column-major order)
-        do j = 1, n
-            amat(:, j) = sqrt_w(:) * a(:, j)
-        end do
+        ! Scale rows of A by sqrt(w) using LAPACK's lascl2
+        call lascl2(m, n, sqrt_w, amat, m)
 
         ! Scale b
         b_scaled = sqrt_w * b
 
-        ! Solve transformed OLS problem
-        call stdlib_linalg_${ri}$_solve_lstsq_one(amat, b_scaled, x, cond=cond, overwrite_a=.true., rank=rank, err=err)
+        ! Solve transformed OLS problem using local error state
+        call stdlib_linalg_${ri}$_solve_lstsq_one(amat, b_scaled, x, cond=cond, overwrite_a=.true., rank=rank, err=err0)
+        
+        ! Propagate error with updated location
+        call linalg_error_handling(err0, err, where_at=this)
 
         ! Cleanup
         if (copy_a) deallocate(amat_alloc)
