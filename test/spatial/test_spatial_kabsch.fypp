@@ -142,16 +142,10 @@ contains
                 P_recovered(:,j) = c_recovered * matmul(R_recovered, Q_original(:,j)) + t_recovered
             end do
             call check(error, all_close(P_recovered, P_original), .true.)
-            if (allocated(error)) print*, "return after P: "
-            if (allocated(error)) print*, "rmsd: ", rmsd
             if (allocated(error)) return
             call check(error, all_close(c_recovered * R_recovered, c_original * R_original), .true.)
-            if (allocated(error)) print*, "return after cR: "
-            if (allocated(error)) print*, "rmsd: ", rmsd
             if (allocated(error)) return
             call check(error, all_close(t_recovered, t_original), .true.)
-            if (allocated(error)) print*, "return after t: "
-            if (allocated(error)) print*, "rmsd: ", rmsd
             if (allocated(error)) return
         end block
         #:endfor
