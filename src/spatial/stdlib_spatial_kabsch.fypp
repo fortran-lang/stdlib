@@ -3,6 +3,8 @@
 #:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
 #:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
 submodule(stdlib_spatial) stdlib_spatial_kabsch
+    use stdlib_linalg, only: svd, det, eye
+    use stdlib_intrinsics, only: stdlib_sum
 
 contains
     #:for k, t, s in (KINDS_TYPES)
@@ -38,14 +40,14 @@ contains
         ! Dimension checks
         if(size(P,dim=1)/=size(Q,dim=1) .or. size(P,dim=1)/=size(R,dim=1) .or. size(P,dim=1)/=size(R,dim=2) &
                     .or. size(P,dim=1)/=size(t)) then
-            error stop "array sizes do not match"
+            call error_stop("array sizes do not match")
         end if
         if(size(P,dim=2)/=size(Q,dim=2)) then
-            error stop "array sizes do not match"
+            call error_stop("array sizes do not match")
         end if
         if (present(W)) then
             if (size(W) /= size(P,dim=2)) then
-                error stop "array sizes do not match"
+                call error_stop("array sizes do not match")
             end if
         end if
         d = size(P,dim=1)
@@ -53,15 +55,15 @@ contains
         scale_ = .true.
         if(present(scale)) scale_ = scale
 
-        sum_w = one_${k}$ / N
-        if(present(W)) sum_w = one_${k}$ / stdlib_sum(W)
+        sum_w = one_${s}$ / N
+        if(present(W)) sum_w = one_${s}$ / stdlib_sum(W)
 
         #:if t.startswith('complex')
-        allocate(c_P(d), source=zero_c${k}$)
-        allocate(c_Q(d), source=zero_c${k}$)
+        allocate(c_P(d), source=zero_${s}$)
+        allocate(c_Q(d), source=zero_${s}$)
         #:else
-        allocate(c_P(d), source=zero_${k}$)
-        allocate(c_Q(d), source=zero_${k}$)
+        allocate(c_P(d), source=zero_${s}$)
+        allocate(c_Q(d), source=zero_${s}$)
         #:endif
 
         ! Compute centroids of P and Q
@@ -81,11 +83,11 @@ contains
 
         ! Compute covariance matrix H = (P - c_P) * (Q - c_Q)^T and variance of P
         #:if t.startswith('complex')
-        allocate(covariance(d,d), source=zero_c${k}$)
+        allocate(covariance(d,d), source=zero_${s}$)
         #:else
-        allocate(covariance(d,d), source=zero_${k}$)
+        allocate(covariance(d,d), source=zero_${s}$)
         #:endif
-        variance_p = zero_${k}$
+        variance_p = zero_${s}$
 
         if (present(W)) then
             do point = 1, N
@@ -137,11 +139,11 @@ contains
         variance_p = variance_p * sum_w
 
         #:if t.startswith('complex')
-        allocate(U(d,d), source=zero_c${k}$)
-        allocate(Vt(d,d), source=zero_c${k}$)
+        allocate(U(d,d), source=zero_${s}$)
+        allocate(Vt(d,d), source=zero_${s}$)
         #:else
-        allocate(U(d,d), source=zero_${k}$)
-        allocate(Vt(d,d), source=zero_${k}$)
+        allocate(U(d,d), source=zero_${s}$)
+        allocate(Vt(d,d), source=zero_${s}$)
         #:endif
         allocate(S(d), source=zero_${k}$)
 
@@ -149,9 +151,9 @@ contains
         call svd(covariance, S, U, Vt)
 
         #:if t.startswith('complex')
-        allocate(B(d,d), source=zero_c${k}$)
+        allocate(B(d,d), source=zero_${s}$)
         #:else
-        allocate(B(d,d), source=zero_${k}$)
+        allocate(B(d,d), source=zero_${s}$)
         #:endif
 
         ! Optimal rotation matrix.
@@ -159,18 +161,18 @@ contains
 
         ! Scaling factor
         c = variance_p / (sum(S(1:d)))
-        if (.not. scale_) c = one_${k}$
+        if (.not. scale_) c = one_${s}$
 
         ! Translation vector
         t = c_P - c*matmul(R , c_Q )
 
         ! Compute RMSD
         #:if t.startswith('complex')
-        allocate(vec(d), source=zero_c${k}$)
+        allocate(vec(d), source=zero_${s}$)
         #:else
-        allocate(vec(d), source=zero_${k}$)
+        allocate(vec(d), source=zero_${s}$)
         #:endif
-        rmsd = zero_${k}$
+        rmsd = zero_${s}$
         do i = 1, N
             vec(1:d) = c * matmul(R , Q(1:d,i))
             vec(1:d) = vec(1:d) + t(1:d)

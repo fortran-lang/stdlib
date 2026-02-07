@@ -5,8 +5,7 @@
 module stdlib_spatial
     use stdlib_linalg_constants
     use stdlib_constants
-    use stdlib_linalg, only: svd, det, eye, trace
-    use stdlib_intrinsics, only: stdlib_sum
+    use stdlib_error, only: error_stop
     implicit none
     private
     public :: kabsch
