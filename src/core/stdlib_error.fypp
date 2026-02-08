@@ -258,9 +258,11 @@ contains
     !> Update the location of the error message
     pure subroutine state_update_location(this, where_at)
          class(state_type), intent(inout) :: this
-         character(len=*), intent(in) :: where_at
+         character(len=*), optional, intent(in) :: where_at
          
-         if (len_trim(where_at) > 0) this%where_at = adjustl(where_at)
+         if (present(where_at)) then
+            if (len_trim(where_at) > 0) this%where_at = adjustl(where_at)
+         end if
          
     end subroutine state_update_location
 

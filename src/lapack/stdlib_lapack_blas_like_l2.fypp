@@ -5698,10 +5698,8 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_l2
            ! Local Scalars
            integer(${ik}$) :: i, j
            ! Executable Statements
-           do j = 1, n
-              do i = 1, m
-                 x(i,j) = d(i) * x(i,j)
-              end do
+           do concurrent(j=1:n, i=1:m)
+              x(i,j) = d(i) * x(i,j)
            end do
            return
      end subroutine stdlib${ii}$_${ri}$lascl2
@@ -5721,10 +5719,8 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_l2
            ! Local Scalars
            integer(${ik}$) :: i, j
            ! Executable Statements
-           do j = 1, n
-              do i = 1, m
-                 x(i,j) = d(i) * x(i,j)
-              end do
+           do concurrent(j=1:n, i=1:m)
+              x(i,j) = d(i) * x(i,j)
            end do
            return
      end subroutine stdlib${ii}$_${ci}$lascl2
