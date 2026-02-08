@@ -39,7 +39,7 @@ module stdlib_spatial
             !> Root-mean-square deviation
             real(${k}$), intent(out) :: rmsd
             !> Optional weights
-            real(${k}$), intent(in), optional :: W(:)
+            ${t}$, intent(in), optional :: W(:)
             !> Enable scaling
             logical, intent(in), optional :: scale
         end subroutine

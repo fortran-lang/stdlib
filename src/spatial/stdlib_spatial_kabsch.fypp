@@ -4,7 +4,7 @@
 #:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
 submodule(stdlib_spatial) stdlib_spatial_kabsch
     use stdlib_linalg, only: svd, det, eye
-    use stdlib_intrinsics, only: stdlib_sum
+    use stdlib_intrinsics, only: stdlib_sum_kahan, stdlib_dot_product_kahan, stdlib_matmul, stdlib_sum, kahan_kernel
 
 contains
     #:for k, t, s in (KINDS_TYPES)
@@ -22,17 +22,19 @@ contains
         !> Root-mean-square deviation
         real(${k}$), intent(out) :: rmsd
         !> Optional weights
-        real(${k}$), intent(in), optional :: W(:)
+        ${t}$, intent(in), optional :: W(:)
         !> Enable scaling
         logical, intent(in), optional :: scale
 
         ! Internal variables.
         integer(ilp) :: i, j, point, d, N
-        ${t}$, allocatable :: c_P(:), c_Q(:), covariance(:,:), U(:,:), Vt(:,:), B(:,:), vec(:)
+        ${t}$, allocatable :: covariance(:,:), U(:,:), Vt(:,:), B(:,:), vec(:), tmp_N(:), tmp_d(:), c_P(:), c_Q(:)
         ${t}$ ::  vp, vq
         real(${k}$) :: sum_w, variance_p
         real(${k}$), allocatable :: S(:)
         logical :: scale_
+        real(${k}$) :: rmsd_err
+
 
         ! Dimension checks
         if(size(P,dim=1)/=size(Q,dim=1) .or. size(P,dim=1)/=size(R,dim=1) .or. size(P,dim=1)/=size(R,dim=2) &
@@ -53,21 +55,21 @@ contains
         if(present(scale)) scale_ = scale
 
         sum_w = one_${s}$ / N
-        if(present(W)) sum_w = one_${s}$ / stdlib_sum(W)
+        if(present(W)) sum_w = one_${s}$ / stdlib_sum_kahan(W)
 
         allocate(c_P(d), source=zero_${s}$)
         allocate(c_Q(d), source=zero_${s}$)
 
         ! Compute centroids of P and Q
         if(present(W)) then
-            do point = 1, N
-                c_P(1:d) = c_P(1:d) + P(1:d,point)*W(point)
-                c_Q(1:d) = c_Q(1:d) + Q(1:d,point)*W(point)
+            do i = 1, d
+                c_P(i) = stdlib_dot_product_kahan(w,P(i, :))
+                c_Q(i) = stdlib_dot_product_kahan(w,Q(i, :))
             end do
         else
-            do point = 1, N
-                c_P(1:d) = c_P(1:d) + P(1:d,point)
-                c_Q(1:d) = c_Q(1:d) + Q(1:d,point)
+            do i = 1, d
+                c_P(i) = stdlib_sum_kahan(P(i, :))
+                c_Q(i) = stdlib_sum_kahan(Q(i, :))
             end do
         end if
         c_P = c_P * sum_w
@@ -75,50 +77,42 @@ contains
 
         ! Compute covariance matrix H = (P - c_P) * (Q - c_Q)^T and variance of P
         allocate(covariance(d,d), source=zero_${s}$)
+        allocate(tmp_N(N), source=zero_${s}$)
+        allocate(tmp_d(d), source=zero_${s}$)
         variance_p = zero_${s}$
 
         if (present(W)) then
             do point = 1, N
+                tmp_d = P(:, point) - c_P(:)
+                tmp_N(point) = stdlib_dot_product_kahan(tmp_d, tmp_d)
+            end do
+            variance_p = stdlib_dot_product_kahan(w, tmp_N)
+            do j = 1, d
                 do i = 1, d
-                    vp = P(i,point) - c_P(i)
                     #:if t.startswith('complex')
-                    variance_p = variance_p + conjg(vp)*vp * W(point)
+                    tmp_N(:) = (P(i,:) - c_P(i)) * conjg(Q(j,:) - c_Q(j))
+                    covariance(i,j) = stdlib_dot_product_kahan(w, tmp_N)
                     #:else
-                    variance_p = variance_p + vp*vp * W(point)
+                    tmp_N(:) = (P(i,:) - c_P(i)) * (Q(j,:) - c_Q(j))
+                    covariance(i,j) = stdlib_dot_product_kahan(w, tmp_N)
                     #:endif
-                end do
-                do j = 1, d
-                    vq = Q(j,point) - c_Q(j)
-                    do i = 1, d
-                        vp = P(i,point) - c_P(i)
-                        #:if t.startswith('complex')
-                        covariance(i,j) = covariance(i,j) + vp*conjg(vq) * W(point)
-                        #:else
-                        covariance(i,j) = covariance(i,j) + vp*vq * W(point)
-                        #:endif
-                    end do
                 end do
             end do
         else
             do point = 1, N
+                tmp_d = P(:, point) - c_P(:)
+                tmp_N(point) = stdlib_dot_product_kahan(tmp_d, tmp_d)
+            end do
+            variance_p = stdlib_sum_kahan(tmp_N)
+            do j = 1, d
                 do i = 1, d
-                    vp = P(i,point) - c_P(i)
                     #:if t.startswith('complex')
-                    variance_p = variance_p + conjg(vp)*vp
+                    tmp_N(:) = (P(i,:) - c_P(i)) * conjg(Q(j,:) - c_Q(j))
+                    covariance(i,j) = stdlib_sum_kahan(tmp_N)
                     #:else
-                    variance_p = variance_p + vp*vp
+                    tmp_N(:) = (P(i,:) - c_P(i)) * (Q(j,:) - c_Q(j))
+                    covariance(i,j) = stdlib_sum_kahan(tmp_N)
                     #:endif
-                end do
-                do j = 1, d
-                    vq = Q(j,point) - c_Q(j)
-                    do i = 1, d
-                        vp = P(i,point) - c_P(i)
-                        #:if t.startswith('complex')
-                        covariance(i,j) = covariance(i,j) + vp*conjg(vq)
-                        #:else
-                        covariance(i,j) = covariance(i,j) + vp*vq
-                        #:endif
-                    end do
                 end do
             end do
         end if
@@ -136,27 +130,44 @@ contains
         allocate(B(d,d), source=zero_${s}$)
 
         ! Optimal rotation matrix.
-        R = matmul(U, Vt)
+        do i = 1,d
+            do j = 1,d
+                #:if t.startswith('complex')
+                R(i,j) = stdlib_dot_product_kahan(conjg(U(i,:)), Vt(:, j))
+                #:else
+                R(i,j) = stdlib_dot_product_kahan(U(i,:), Vt(:, j))
+                #:endif
+            end do
+        end do
 
         ! Scaling factor
         c = variance_p / (sum(S(1:d)))
         if (.not. scale_) c = one_${s}$
 
-        ! Translation vector
-        t = c_P - c*matmul(R , c_Q )
+        ! Translation vector t = c_P - c*R*c_Q
+        do i = 1, d
+            #:if t.startswith('complex')
+            t(i) = c_P(i) - c * stdlib_dot_product_kahan(conjg(R(i,1:d)), c_Q(1:d))
+            #:else
+            t(i) = c_P(i) - c * stdlib_dot_product_kahan(R(i,1:d), c_Q(1:d))
+            #:endif
+        end do
 
         ! Compute RMSD
         allocate(vec(d), source=zero_${s}$)
         rmsd = zero_${s}$
-        do i = 1, N
-            vec(1:d) = c * matmul(R , Q(1:d,i))
-            vec(1:d) = vec(1:d) + t(1:d)
-            vec(1:d) = vec(1:d) - P(1:d,i)
-            #:if t.startswith('complex')
-            rmsd = rmsd + real(dot_product(vec, vec), kind=${k}$)
-            #:else
-            rmsd = rmsd + dot_product(vec, vec)
-            #:endif
+        rmsd_err = zero_${s}$
+        do point = 1, N
+            ! Calculate the k^th difference vector by the formula vec_k = c*R*Q_k + t - P_k
+            do i = 1, d
+                #:if t.startswith('complex')
+                vec(i) = c * stdlib_dot_product_kahan(conjg(R(i,1:d)), Q(1:d,point))
+                #:else
+                vec(i) = c * stdlib_dot_product_kahan(R(i,1:d), Q(1:d,point))
+                #:endif
+            end do
+            vec(1:d) = vec(1:d) + t(1:d) - P(1:d,point)
+            call kahan_kernel(real(stdlib_dot_product_kahan(vec,vec), kind=${k}$), rmsd, rmsd_err)
         end do
         rmsd = sqrt(rmsd * sum_w)
     end subroutine
