@@ -3,6 +3,10 @@
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
 #:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
 #:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
+#:set OP_NAMES = ["add","sub","mul","div"]
+#:set OP_SYMBOLS = ["+","-","*","/"]
+#:set OPERATORS = list(zip(OP_NAMES, OP_SYMBOLS))
+
 !! The `stdlib_sparse_kinds` module provides derived type definitions for different sparse matrices
 !!
 ! This code was modified from https://github.com/jalvesz/FSPARSE by its author: Alves Jose
@@ -13,6 +17,8 @@ module stdlib_sparse_kinds
     private
     public :: sparse_full, sparse_lower, sparse_upper
     public :: sparse_op_none, sparse_op_transpose, sparse_op_hermitian
+    public :: operator(+), operator(-), operator(*), operator(/)
+
     !! version: experimental
     !!
     !! Base sparse type holding the meta data related to the storage capacity of a matrix.
@@ -126,6 +132,34 @@ module stdlib_sparse_kinds
         procedure, non_overridable :: add_block => add_block_sellc_${s1}$
         generic :: add => add_value, add_block
     end type
+    #:endfor
+
+    #:for op, sym in OPERATORS
+    !! Overload the `${sym}$` operator for sparse matrices
+    !! [Specifications](../page/specs/stdlib_sparse.html#operators)    
+    interface operator(${sym}$)
+        #:for matrix in SPARSE_KINDS
+        #:for k, t, s in (KINDS_TYPES)
+        pure module function sparse_${op}$_${matrix}$_${s}$(a, b) result(c)
+        type(${matrix}$_${s}$_type), intent(in) :: a, b
+        type(${matrix}$_${s}$_type) :: c
+        end function
+
+        pure module function sparse_${op}$_${matrix}$_scalar_${s}$(a, b) result(c)
+        ${t}$, intent(in) :: a
+        type(${matrix}$_${s}$_type), intent(in) :: b
+        type(${matrix}$_${s}$_type) :: c
+        end function
+
+        pure module function sparse_${op}$_scalar_${matrix}$_${s}$(a, b) result(c)
+        type(${matrix}$_${s}$_type), intent(in) :: a
+        ${t}$, intent(in) :: b
+        type(${matrix}$_${s}$_type) :: c
+        end function
+        #:endfor
+        #:endfor
+    end interface
+
     #:endfor
 
 contains
