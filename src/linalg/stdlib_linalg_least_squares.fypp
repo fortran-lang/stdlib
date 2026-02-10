@@ -661,7 +661,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
                 ! Cleanup before early return
                 if (copy_a) deallocate(amat_alloc)
                 if (copy_w) deallocate(lmat_alloc)
-                call linalg_error_handling(err0, err, where_at=this)
+                call linalg_error_handling(err0, err)
                 return
             end if
         end if
