@@ -3,8 +3,8 @@
 #:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
 #:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
 submodule(stdlib_spatial) stdlib_spatial_kabsch
-    use stdlib_linalg, only: svd, det, eye
-    use stdlib_intrinsics, only: stdlib_sum_kahan, stdlib_dot_product_kahan, stdlib_matmul, stdlib_sum, kahan_kernel
+    use stdlib_linalg, only: svd
+    use stdlib_intrinsics, only: stdlib_sum_kahan, stdlib_dot_product_kahan, kahan_kernel
 
 contains
     #:for k, t, s in (KINDS_TYPES)

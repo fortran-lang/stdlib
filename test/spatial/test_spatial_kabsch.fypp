@@ -7,7 +7,7 @@ module test_kabsch
     use stdlib_math, only: all_close, is_close
     use stdlib_linalg, only: svd
     use stdlib_spatial
-    use stdlib_intrinsics, only: stdlib_sum_kahan, stdlib_dot_product_kahan, stdlib_matmul, stdlib_sum, kahan_kernel
+    use stdlib_intrinsics, only: stdlib_dot_product_kahan
     implicit none
 
     #:for k, t, s in (R_KINDS_TYPES)
@@ -117,9 +117,9 @@ contains
             t_recovered = (0.0_${k}$, 0.0_${k}$)
             c_recovered = (0.0_${k}$, 0.0_${k}$)
             U = (0.0_${k}$, 0.0_${k}$)
-            S = (0.0_${k}$, 0.0_${k}$)
+            S = 0.0_${k}$
             Vt = (0.0_${k}$, 0.0_${k}$)
-            rmsd = (0.0_${k}$, 0.0_${k}$)
+            rmsd = 0.0_${k}$
 
             ! Random complex reference points Q
             do j = 1, N
