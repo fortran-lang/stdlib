@@ -89,10 +89,8 @@ contains
             end do
 
             call check(error, all_close(P_recovered, P_original, abs_tol = ${k}$tol), .true.)
-            if (allocated(error)) print*, "P did not match in real", ", recovered: ", P_recovered, "original: ", P_original
             if (allocated(error)) return
             call check(error, is_close(rmsd, 0.0_${k}$, abs_tol = ${k}$tol), .true.)
-            if(allocated(error)) print*, "RMSD: ",rmsd
             if(allocated(error)) return
         end block
         #:endfor
@@ -181,10 +179,8 @@ contains
             end do
 
             call check(error, all_close(P_recovered, P_original, abs_tol = ${k}$tol), .true.)
-            if (allocated(error)) print*, "P did not match in complex", ", recovered: ", P_recovered, "original: ", P_original
             if (allocated(error)) return
             call check(error, is_close(rmsd, 0.0_${k}$, abs_tol = ${k}$tol), .true.)
-            if(allocated(error)) print*, "RMSD: ",rmsd
             if(allocated(error)) return
         end block
         #:endfor
