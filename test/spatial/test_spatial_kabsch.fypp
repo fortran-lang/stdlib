@@ -43,6 +43,14 @@ contains
             integer :: i, j
             ${t}$ :: r1
 
+            R_recovered = 0.0_${k}$
+            t_recovered = 0.0_${k}$
+            c_recovered = 0.0_${k}$
+            U = 0.0_${k}$
+            S = 0.0_${k}$
+            Vt = 0.0_${k}$
+            rmsd = 0.0_${k}$
+
             ! Random reference points Q
             call random_number(Q_original)
 
@@ -106,6 +114,14 @@ contains
 
             integer :: i, j
             real(${k}$) :: r1, r2
+
+            R_recovered = (0.0_${k}$, 0.0_${k}$)
+            t_recovered = (0.0_${k}$, 0.0_${k}$)
+            c_recovered = (0.0_${k}$, 0.0_${k}$)
+            U = (0.0_${k}$, 0.0_${k}$)
+            S = (0.0_${k}$, 0.0_${k}$)
+            Vt = (0.0_${k}$, 0.0_${k}$)
+            rmsd = (0.0_${k}$, 0.0_${k}$)
 
             ! Random complex reference points Q
             do j = 1, N
