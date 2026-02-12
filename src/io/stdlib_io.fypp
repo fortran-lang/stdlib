@@ -78,9 +78,9 @@ module stdlib_io
     !!
     !! Saves a 2D array into a text file
     !! ([Specification](../page/specs/stdlib_io.html#description_2))
-    #:for a1 in ['f', 'u']
+    #:for arg1 in ['filename', 'unit']
     #:for k1, t1 in KINDS_TYPES
-      module procedure savetxt_${t1[0]}$${k1}$${a1}$
+      module procedure savetxt_${t1[0]}$${k1}$${arg1[0]}$
     #:endfor
     #:endfor
   end interface
@@ -313,20 +313,18 @@ contains
 
       #:if 'filename' in arg1
       unit = open (filename, "w")
-      fout = filename
+      fout = filename           ! fout is used for unified error message later
       #:else
       inquire (unit=unit, opened=opened)
       write(fout,'(i0)') unit
-      fout = adjustl(fout)
+      fout = adjustl(fout)  ! fout is used for unified error message later
       if(.not. opened) then
            write (msgout,'(a,i0,a)') 'savetxt error: unit ',unit,' not open'
+           call error_stop(msg=trim(msgout))
       end if
       #:endif
 
       !! Write the header if non-empty
-      ! prepend function may be replaced by use of replace_all but currently stdlib_strings
-      ! is being compiled after stdlib_io
-      ! if (header_ /= '') write (unit, '(A)') comments_//replace_all(header_, nl, nl//comments_)
       if (header_ /= '') then
           write (unit, '(A)', iostat=ios, iomsg=iomsg) prepend(header_, comments_)
           if (ios/=0) then
