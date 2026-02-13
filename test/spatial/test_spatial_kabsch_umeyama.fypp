@@ -11,10 +11,6 @@ module test_kabsch_umeyama
     use stdlib_constants
     implicit none
 
-    #:for k, t, s in (R_KINDS_TYPES)
-    real(${k}$), parameter :: ${s}$tol = 100 * epsilon(one_${k}$)
-    #:endfor
-
 contains
 
 
@@ -43,6 +39,7 @@ contains
 
             integer :: i, j
             ${t}$ :: r1
+            real(${k}$), parameter :: ${k}$tol = 100 * epsilon(one_${k}$)
 
             R_recovered = zero_${s}$
             t_recovered = zero_${s}$
@@ -113,6 +110,7 @@ contains
 
             integer :: i, j
             real(${k}$) :: r1, r2
+            real(${k}$), parameter :: ${k}$tol = 100 * epsilon(one_${k}$)
 
             R_recovered = zero_${s}$
             t_recovered = zero_${s}$
