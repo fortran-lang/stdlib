@@ -291,7 +291,7 @@ The function provides an optional error-handling mechanism via the `state_type` 
 
 ### Syntax
 
-`call [[stdlib_io(module):get_file(subroutine)]] (filename, file [, err] [, delete=.false.])`
+`call ` [[stdlib_io(module):get_file(subroutine)]] ` (filename, file [, err] [, delete=.false.])`
 
 ### Class
 Function
