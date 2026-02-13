@@ -8,9 +8,9 @@ module stdlib_spatial
     use stdlib_error, only: error_stop
     implicit none
     private
-    public :: kabsch
+    public :: kabsch_umeyama
 
-    interface kabsch
+    interface kabsch_umeyama
         !-----------------------------------------------------------------------
         !> Compute the optimal similarity transform (Kabsch–Umeyama):
         !>
@@ -25,7 +25,7 @@ module stdlib_spatial
         !> of P and Q, optionally using weights.
         !-----------------------------------------------------------------------
         #:for k, t, s in (KINDS_TYPES)
-        module subroutine kabsch_${s}$(P, Q, R, t, c, rmsd, W, scale)
+        module subroutine kabsch_umeyama_${s}$(P, Q, R, t, c, rmsd, W, scale)
             !> Reference point set (d × N)
             ${t}$, intent(in) :: P(:, :)
             !> Target point set (d × N)

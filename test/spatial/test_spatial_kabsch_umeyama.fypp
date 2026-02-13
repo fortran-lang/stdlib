@@ -1,7 +1,7 @@
 #:include "common.fypp"
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
 #:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
-module test_kabsch
+module test_kabsch_umeyama
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_kinds
     use stdlib_math, only: all_close, is_close
@@ -23,12 +23,12 @@ contains
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
-            new_unittest('kabsch_real', test_kabsch_real), &
-            new_unittest('kabsch_complex', test_kabsch_complex) &
+            new_unittest('kabsch_umeyama_real', test_kabsch_umeyama_real), &
+            new_unittest('kabsch_umeyama_complex', test_kabsch_umeyama_complex) &
         ]
     end subroutine
 
-    subroutine test_kabsch_real(error)
+    subroutine test_kabsch_umeyama_real(error)
         type(error_type), allocatable, intent(out) :: error
         #:for k, t, s in (R_KINDS_TYPES)
         block
@@ -77,7 +77,7 @@ contains
             end do
 
             ! Call Kabsch–Umeyama
-            call kabsch(P_original, Q_original, R_recovered, t_recovered, c_recovered, rmsd)
+            call kabsch_umeyama(P_original, Q_original, R_recovered, t_recovered, c_recovered, rmsd)
 
             ! Apply recovered transform
             do j = 1, N
@@ -96,7 +96,7 @@ contains
         #:endfor
     end subroutine
 
-    subroutine test_kabsch_complex(error)
+    subroutine test_kabsch_umeyama_complex(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
         #:for k, t, s in (C_KINDS_TYPES)
@@ -167,7 +167,7 @@ contains
             end do
 
             ! Call Kabsch–Umeyama
-            call kabsch(P_original, Q_original, R_recovered, t_recovered, c_recovered, rmsd)
+            call kabsch_umeyama(P_original, Q_original, R_recovered, t_recovered, c_recovered, rmsd)
 
             ! Apply recovered transform
             do j = 1, N
@@ -192,7 +192,7 @@ end module
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
     use testdrive, only : run_testsuite, new_testsuite, testsuite_type
-    use test_kabsch, only : collect_suite
+    use test_kabsch_umeyama, only : collect_suite
     implicit none
     integer :: stat, is
     type(testsuite_type), allocatable :: testsuites(:)
@@ -201,7 +201,7 @@ program tester
     stat = 0
 
     testsuites = [ &
-        new_testsuite("kabsch", collect_suite) &
+        new_testsuite("kabsch_umeyama", collect_suite) &
         ]
 
     do is = 1, size(testsuites)

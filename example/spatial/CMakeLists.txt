@@ -1,1 +1,1 @@
-ADD_EXAMPLE(kabsch)
+ADD_EXAMPLE(kabsch_umeyama)

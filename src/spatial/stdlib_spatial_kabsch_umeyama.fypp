@@ -2,13 +2,13 @@
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
 #:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
 #:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
-submodule(stdlib_spatial) stdlib_spatial_kabsch
+submodule(stdlib_spatial) stdlib_spatial_kabsch_umeyama
     use stdlib_linalg, only: svd
     use stdlib_intrinsics, only: stdlib_sum_kahan, stdlib_dot_product_kahan, kahan_kernel
 
 contains
     #:for k, t, s in (KINDS_TYPES)
-    module subroutine kabsch_${s}$(P, Q, R, t, c, rmsd, W, scale)
+    module subroutine kabsch_umeyama_${s}$(P, Q, R, t, c, rmsd, W, scale)
         !> Reference point set (d × N)
         ${t}$, intent(in) :: P(:, :)
         !> Target point set (d × N)
@@ -170,4 +170,4 @@ contains
         rmsd = sqrt(rmsd * sum_w)
     end subroutine
     #:endfor
-end submodule stdlib_spatial_kabsch
+end submodule stdlib_spatial_kabsch_umeyama

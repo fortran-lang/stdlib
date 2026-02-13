@@ -1,6 +1,6 @@
-program example_kabsch
+program example_kabsch_umeyama
     use stdlib_linalg_constants, only: dp
-    use stdlib_spatial, only: kabsch
+    use stdlib_spatial, only: kabsch_umeyama
     implicit none
 
     integer, parameter :: d = 2, N = 3
@@ -16,7 +16,7 @@ program example_kabsch
     Q(:,2) = [-1.0_dp, 5.0_dp]
     Q(:,3) = [1.0_dp, 4.0_dp]
 
-    call kabsch(P, Q, R, t, c, rmsd)
+    call kabsch_umeyama(P, Q, R, t, c, rmsd)
 
     print *, ""
     print *, "Recovered rotation R:"
@@ -33,4 +33,4 @@ program example_kabsch
     print *, ""
     print *, "RMSD:", rmsd
 
-end program example_kabsch
+end program example_kabsch_umeyama

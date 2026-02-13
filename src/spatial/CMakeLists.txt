@@ -1,6 +1,6 @@
 set(spatial_fppFiles
     stdlib_spatial.fypp
-    stdlib_spatial_kabsch.fypp
+    stdlib_spatial_kabsch_umeyama.fypp
     )
 
 set(spatial_cppFiles
