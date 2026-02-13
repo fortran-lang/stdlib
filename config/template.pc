@@ -7,4 +7,6 @@ Name: @PROJECT_NAME@
 Description: @PROJECT_DESCRIPTION@
 Version: @PROJECT_VERSION@
 Libs: -L${libdir} @PC_CONTENT@
+Libs.private: @PC_LIBS_PRIVATE@
 Cflags: -I${includedir} -I${moduledir}
+Requires.private: @PC_REQUIRES_PRIVATE@
