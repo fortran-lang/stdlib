@@ -104,6 +104,10 @@ Experimental
 ### Description
 Saves a rank-2 `array` into a text file.
 
+If the text file already exists:
+ - When called with a character expression `filename` as the first argument it will overwrite the file.
+ - When called with an integer number `unit` to an open file as the first argument, it will append data to the file.
+
 ### Syntax
 
 `call ` [[stdlib_io(module):savetxt(interface)]] `(filename, array [,  delimiter] [, fmt] [, header] [, footer] [, comments])`
