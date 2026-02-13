@@ -1,7 +1,7 @@
 ## Unreleased
 
 Changes to the existing build system
-- Fixed absolute paths in generated pkg-config file for external BLAS/LAPACK 
+  - Fixed absolute paths in generated pkg-config file for external BLAS/LAPACK 
     [#1109](https://github.com/fortran-lang/stdlib/issues/1109)
 
 # Version 0.8.1

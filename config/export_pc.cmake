@@ -60,14 +60,18 @@ function(resolve_pc_libs out_var root_target)
 endfunction()
 
 # Convert absolute library paths to -l flags
-# e.g. /usr/lib/libopenblas.so -> -lopenblas
-#      /usr/lib/libopenblas.dll.a -> -lopenblas
+# e.g. /usr/lib/libopenblas.so       -> -lopenblas
+#      /usr/lib/libopenblas.so.0.3   -> -lopenblas
+#      /usr/lib/libopenblas.dll.a    -> -lopenblas
 function(libs_to_linker_flags out_var libs)
     set(_flags "")
     foreach(lib IN LISTS libs)
         if(IS_ABSOLUTE "${lib}")
-            # Extract the library name from the absolute path
-            get_filename_component(_name "${lib}" NAME_WE)
+            # Extract the full filename, then strip everything from the first dot
+            # onwards. Using NAME_WE would only strip the last extension, which
+            # breaks for versioned libraries (e.g. libopenblas.so.0.3 -> libopenblas.so.0).
+            get_filename_component(_name "${lib}" NAME)
+            string(REGEX REPLACE "\\..*$" "" _name "${_name}")
             # Strip leading "lib" prefix if present
             string(REGEX REPLACE "^lib" "" _name "${_name}")
             list(APPEND _flags "-l${_name}")
@@ -112,7 +116,20 @@ if(BLAS_FOUND OR LAPACK_FOUND)
         lapack-netlib      # Netlib LAPACK
     )
 
+    # BLAS packages that are known to also provide LAPACK
+    set(_blas_includes_lapack_list
+        openblas
+        blas-openblas
+        mkl-dynamic-lp64-seq
+        mkl-dynamic-ilp64-seq
+        mkl-dynamic-lp64-iomp
+        mkl-dynamic-ilp64-iomp
+        mkl-static-lp64-seq
+        mkl-static-ilp64-seq
+    )
+
     set(_blas_pc_found FALSE)
+    set(_blas_includes_lapack FALSE)
     set(_lapack_pc_found FALSE)
 
     if(PKG_CONFIG_FOUND)
@@ -123,6 +140,9 @@ if(BLAS_FOUND OR LAPACK_FOUND)
                 if(_BLAS_PC_${_pkg}_FOUND)
                     list(APPEND PC_REQUIRES_PRIVATE "${_pkg}")
                     set(_blas_pc_found TRUE)
+                    if(_pkg IN_LIST _blas_includes_lapack_list)
+                        set(_blas_includes_lapack TRUE)
+                    endif()
                     message(STATUS "pkg-config: using '${_pkg}' for BLAS")
                     break()
                 endif()
@@ -130,9 +150,9 @@ if(BLAS_FOUND OR LAPACK_FOUND)
         endif()
 
         # --- Detect LAPACK pkg-config package ---
-        # OpenBLAS typically includes LAPACK, so skip separate LAPACK detection
-        # if we already found an OpenBLAS .pc file
-        if(LAPACK_FOUND AND NOT _blas_pc_found)
+        # Skip separate LAPACK detection if the BLAS package already includes LAPACK
+        # (e.g. OpenBLAS, MKL). Standalone BLAS packages like netlib still need this.
+        if(LAPACK_FOUND AND NOT _blas_includes_lapack)
             foreach(_pkg IN LISTS _lapack_pc_names)
                 pkg_check_modules(_LAPACK_PC_${_pkg} QUIET "${_pkg}")
                 if(_LAPACK_PC_${_pkg}_FOUND)
@@ -152,7 +172,7 @@ if(BLAS_FOUND OR LAPACK_FOUND)
         message(STATUS "pkg-config: no .pc file found for BLAS, using linker flags: ${_blas_flags}")
     endif()
 
-    if(LAPACK_FOUND AND NOT _lapack_pc_found AND NOT _blas_pc_found)
+    if(LAPACK_FOUND AND NOT _lapack_pc_found AND NOT _blas_includes_lapack)
         libs_to_linker_flags(_lapack_flags "${LAPACK_LIBRARIES}")
         list(APPEND PC_LIBS_PRIVATE ${_lapack_flags})
         message(STATUS "pkg-config: no .pc file found for LAPACK, using linker flags: ${_lapack_flags}")
