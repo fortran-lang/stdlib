@@ -8,10 +8,11 @@ module test_kabsch_umeyama
     use stdlib_linalg, only: svd
     use stdlib_spatial
     use stdlib_intrinsics, only: stdlib_dot_product_kahan
+    use stdlib_constants
     implicit none
 
     #:for k, t, s in (R_KINDS_TYPES)
-    real(${k}$), parameter :: ${s}$tol = 100 * epsilon(1._${k}$)
+    real(${k}$), parameter :: ${s}$tol = 100 * epsilon(one_${k}$)
     #:endfor
 
 contains
@@ -43,13 +44,13 @@ contains
             integer :: i, j
             ${t}$ :: r1
 
-            R_recovered = 0.0_${k}$
-            t_recovered = 0.0_${k}$
-            c_recovered = 0.0_${k}$
-            U = 0.0_${k}$
-            S = 0.0_${k}$
-            Vt = 0.0_${k}$
-            rmsd = 0.0_${k}$
+            R_recovered = zero_${s}$
+            t_recovered = zero_${s}$
+            c_recovered = zero_${s}$
+            U = zero_${s}$
+            S = zero_${k}$
+            Vt = zero_${s}$
+            rmsd = zero_${k}$
 
             ! Random reference points Q
             call random_number(Q_original)
@@ -90,7 +91,7 @@ contains
 
             call check(error, all_close(P_recovered, P_original, abs_tol = ${k}$tol), .true.)
             if (allocated(error)) return
-            call check(error, is_close(rmsd, 0.0_${k}$, abs_tol = ${k}$tol), .true.)
+            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true.)
             if(allocated(error)) return
         end block
         #:endfor
@@ -113,13 +114,13 @@ contains
             integer :: i, j
             real(${k}$) :: r1, r2
 
-            R_recovered = (0.0_${k}$, 0.0_${k}$)
-            t_recovered = (0.0_${k}$, 0.0_${k}$)
-            c_recovered = (0.0_${k}$, 0.0_${k}$)
-            U = (0.0_${k}$, 0.0_${k}$)
-            S = 0.0_${k}$
-            Vt = (0.0_${k}$, 0.0_${k}$)
-            rmsd = 0.0_${k}$
+            R_recovered = zero_${s}$
+            t_recovered = zero_${s}$
+            c_recovered = zero_${s}$
+            U = zero_${s}$
+            S = zero_${k}$
+            Vt = zero_${s}$
+            rmsd = zero_${k}$
 
             ! Random complex reference points Q
             do j = 1, N
@@ -180,7 +181,7 @@ contains
 
             call check(error, all_close(P_recovered, P_original, abs_tol = ${k}$tol), .true.)
             if (allocated(error)) return
-            call check(error, is_close(rmsd, 0.0_${k}$, abs_tol = ${k}$tol), .true.)
+            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true.)
             if(allocated(error)) return
         end block
         #:endfor
