@@ -41,6 +41,7 @@ module stdlib_linalg
   public :: constrained_lstsq
   public :: constrained_lstsq_space
   public :: weighted_lstsq
+  public :: solve_weighted_lstsq
   public :: norm
   public :: mnorm
   public :: get_norm
@@ -717,10 +718,52 @@ module stdlib_linalg
         !> [optional] state return flag. On error if not requested, the code will stop
         type(linalg_state_type), optional, intent(out) :: err
         !> Result array x[n]
-        ${rt}$, allocatable :: x(:)
+        ${rt}$, allocatable, target :: x(:)
     end function stdlib_linalg_${ri}$_weighted_lstsq
     #:endfor
   end interface weighted_lstsq
+
+  ! Weighted least-squares subroutine: minimize ||D(Ax - b)||^2 where D = diag(sqrt(w))
+  interface solve_weighted_lstsq
+    !! version: experimental
+    !!
+    !! Computes the weighted least-squares solution to \( \min_x \|D(Ax - b)\|_2^2 \)
+    !! ([Specification](../page/specs/stdlib_linalg.html#solve-weighted-lstsq-compute-the-weighted-least-squares-solution-to-a-linear-matrix-equation-subroutine-interface))
+    !!
+    !!### Summary
+    !! Subroutine interface for computing weighted least-squares via row scaling.
+    !!
+    !!### Description
+    !!
+    !! This interface provides methods for computing weighted least-squares by
+    !! transforming to ordinary least-squares through row scaling, using a subroutine.
+    !! Supported data types include `real` and `complex`.
+    !!
+    !!@note The solution is based on LAPACK's `*GELSD` after applying diagonal weights.
+    !!@warning Avoid extreme weight ratios (e.g., max(w)/min(w) > 1e6) as this may
+    !!         cause loss of precision in the SVD-based solver.
+    !!
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    module subroutine stdlib_linalg_${ri}$_solve_weighted_lstsq(w,a,b,x,cond,overwrite_a,rank,err)
+        !> Weight vector (must be positive, always real)
+        real(${rk}$), intent(in) :: w(:)
+        !> Input matrix a[m,n]
+        ${rt}$, intent(inout), target :: a(:,:)
+        !> Right hand side vector b[m]
+        ${rt}$, intent(in) :: b(:)
+        !> Result array x[n]
+        ${rt}$, intent(inout), contiguous, target :: x(:)
+        !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+        real(${rk}$), optional, intent(in) :: cond
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> [optional] Return rank of A
+        integer(ilp), optional, intent(out) :: rank
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_${ri}$_solve_weighted_lstsq
+    #:endfor
+  end interface solve_weighted_lstsq
 
   ! QR factorization of rank-2 array A
   interface qr
