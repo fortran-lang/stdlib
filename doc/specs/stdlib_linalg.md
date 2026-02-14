@@ -1010,7 +1010,7 @@ The solver minimizes the Mahalanobis distance \( (Ax - b)^T W^{-1} (Ax - b) \) w
 
 ### Return value
 
-Returns an array value of the same kind as `a`, containing the generalized least-squares solution.
+Returns a rank-1 array of the same kind as `a`, containing the generalized least-squares solution.
 
 Raises `LINALG_VALUE_ERROR` if the covariance matrix is not square or has incompatible dimensions.
 Raises `LINALG_ERROR` if the covariance matrix is not positive definite or if the design matrix does not have full column rank.
@@ -1020,6 +1020,54 @@ Exceptions trigger an `error stop`.
 
 ```fortran
 {!example/linalg/example_generalized_lstsq.f90!}
+```
+
+## `solve_generalized_lstsq` - Solves the generalized least squares problem (subroutine) {#solve-generalized-lstsq}
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the generalized least-squares (GLS) solution to a linear matrix equation \( A \cdot x = b \) with correlated errors described by a covariance matrix \( W \).
+
+The solver minimizes the Mahalanobis distance \( (Ax - b)^T W^{-1} (Ax - b) \) where \( W \) is a symmetric (real) or Hermitian (complex) positive definite covariance matrix. Unlike `generalized_lstsq`, this subroutine interface allows the user to provide a pre-allocated solution vector `x`. The solver is based on LAPACK's `*GGGLM` backends.
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):solve_generalized_lstsq(interface)]] `(w, a, b, x [, prefactored_w, overwrite_a, overwrite_w, err])`
+
+### Arguments
+
+`w`: Shall be a rank-2 `real` or `complex` symmetric (real) or Hermitian (complex) positive definite array containing the covariance matrix, or a valid matrix square root (e.g., Cholesky factor, SVD-based) if `prefactored_w=.true.`. It is an `intent(inout)` argument.
+
+`a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix. The matrix must have full column rank. It is an `intent(inout)` argument.
+
+`b`: Shall be a rank-1 array of the same kind as `a`, containing the right-hand-side vector. It is an `intent(in)` argument.
+
+`x`: Shall be a rank-1 array of the same kind as `a`, containing the solution vector. It is an `intent(out)` argument.
+
+`prefactored_w` (optional): Shall be an input `logical` flag. If `.true.`, `w` is assumed to contain a matrix square root \( B \) such that \( W = B \cdot B^T \). This can be a Cholesky factor or any other valid square root (e.g., SVD-based). Default: `.false.`. This is an `intent(in)` argument.
+
+`overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. Default: `.false.`. This is an `intent(in)` argument.
+
+`overwrite_w` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `w` will be used as temporary storage and overwritten. This avoids internal data allocation. Default: `.false.`. This is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Returns the generalized least-squares solution in the pre-allocated rank-1 array `x`.
+
+Raises `LINALG_VALUE_ERROR` if the covariance matrix is not square or has incompatible dimensions.
+Raises `LINALG_ERROR` if the covariance matrix is not positive definite or if the design matrix does not have full column rank.
+Exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_solve_generalized_lstsq.f90!}
 ```
 
 ## `det` - Computes the determinant of a square matrix

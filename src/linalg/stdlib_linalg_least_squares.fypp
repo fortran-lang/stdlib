@@ -569,7 +569,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
     !-------------------------------------------------------------
 
     #:for rk,rt,ri in RC_KINDS_TYPES
-    ! Generalized least-squares: minimize (Ax-b)^T W^{-1} (Ax-b) where W is symmetric/Hermitian positive definite
+    ! Generalized least-squares function: thin wrapper that allocates x and delegates to subroutine
     module function stdlib_linalg_${ri}$_generalized_lstsq(w,a,b,prefactored_w,overwrite_a,overwrite_w,err) result(x)
         !> Covariance matrix W[m,m] (symmetric/Hermitian positive definite) or its matrix square root
         ${rt}$, intent(inout), target :: w(:,:)
@@ -586,7 +586,36 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
         !> [optional] state return flag. On error if not requested, the code will stop
         type(linalg_state_type), optional, intent(out) :: err
         !> Result array x[n]
-        ${rt}$, allocatable :: x(:)
+        ${rt}$, allocatable, target :: x(:)
+
+        integer(ilp) :: n
+
+        n = size(a, 2, kind=ilp)
+        allocate(x(n))
+        call stdlib_linalg_${ri}$_solve_generalized_lstsq(w, a, b, x, &
+             prefactored_w=prefactored_w, overwrite_a=overwrite_a, overwrite_w=overwrite_w, err=err)
+    end function stdlib_linalg_${ri}$_generalized_lstsq
+    #:endfor
+
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    ! Generalized least-squares subroutine: minimize (Ax-b)^T W^{-1} (Ax-b)
+    module subroutine stdlib_linalg_${ri}$_solve_generalized_lstsq(w,a,b,x,prefactored_w,overwrite_a,overwrite_w,err)
+        !> Covariance matrix W[m,m] (symmetric/Hermitian positive definite) or its matrix square root
+        ${rt}$, intent(inout), target :: w(:,:)
+        !> Input matrix a[m,n]
+        ${rt}$, intent(inout), target :: a(:,:)
+        !> Right hand side vector b[m]
+        ${rt}$, intent(in) :: b(:)
+        !> Solution vector x[n]
+        ${rt}$, intent(out) :: x(:)
+        !> [optional] Is W already a matrix square root (e.g., Cholesky factor)? Default: .false.
+        logical(lk), optional, intent(in) :: prefactored_w
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> [optional] Can W data be overwritten and destroyed? Default: .false.
+        logical(lk), optional, intent(in) :: overwrite_w
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
 
         ! Local variables
         type(linalg_state_type) :: err0
@@ -600,9 +629,6 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
         m = size(a, 1, kind=ilp)
         n = size(a, 2, kind=ilp)
         p = m  ! For GLS, B is m×m
-
-        ! Allocate result early (prevents segfault on error return)
-        allocate(x(n))
 
         ! Validate matrix dimensions
         if (m < 1 .or. n < 1) then
@@ -670,7 +696,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
         ! We do not modify the user's input.
 
         ! Prepare for GGGLM
-        allocate(d(m), source=b)
+        allocate(d, source=b)
         allocate(y(p))
 
         lda = m
@@ -696,7 +722,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
         call linalg_error_handling(err0, err)
 
-    end function stdlib_linalg_${ri}$_generalized_lstsq
+    end subroutine stdlib_linalg_${ri}$_solve_generalized_lstsq
     #:endfor
 
 end submodule stdlib_linalg_least_squares

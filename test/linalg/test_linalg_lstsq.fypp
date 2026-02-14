@@ -4,7 +4,8 @@
 module test_linalg_least_squares
     use testdrive, only: error_type, check, new_unittest, unittest_type
     use stdlib_linalg_constants
-    use stdlib_linalg, only: lstsq, solve_lstsq, generalized_lstsq, eigh, diag, eye, hermitian
+    use stdlib_linalg, only: lstsq, solve_lstsq, generalized_lstsq, solve_generalized_lstsq, &
+                             eigh, diag, eye, hermitian
     use stdlib_linalg_state, only: linalg_state_type
 
     implicit none (type,external)
@@ -30,6 +31,7 @@ module test_linalg_least_squares
         call add_test(tests,new_unittest("generalized_lstsq_identity_${ri}$",test_generalized_lstsq_identity_${ri}$))
         call add_test(tests,new_unittest("generalized_lstsq_svd_sqrt_${ri}$",test_generalized_lstsq_svd_sqrt_${ri}$))
         call add_test(tests,new_unittest("generalized_lstsq_overwrite_${ri}$",test_generalized_lstsq_overwrite_${ri}$))
+        call add_test(tests,new_unittest("solve_generalized_lstsq_${ri}$",test_solve_generalized_lstsq_${ri}$))
         #:endfor
 
     end subroutine test_least_squares
@@ -302,6 +304,44 @@ module test_linalg_least_squares
         if (allocated(error)) return
 
     end subroutine test_generalized_lstsq_overwrite_${ri}$
+
+    !> Test solve_generalized_lstsq matches generalized_lstsq
+    subroutine test_solve_generalized_lstsq_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+        integer(ilp), parameter :: m = 4, n = 2
+        real(${rk}$), parameter :: tol = 1000*sqrt(epsilon(0.0_${rk}$))
+        ${rt}$ :: A(m,n), b(m), W(m,m), x_sub(n)
+        ${rt}$, allocatable :: x_fun(:)
+
+        ! Design matrix
+        A(:,1) = 1.0_${rk}$
+        A(:,2) = [1.0_${rk}$, 2.0_${rk}$, 3.0_${rk}$, 4.0_${rk}$]
+        b = [2.0_${rk}$, 4.0_${rk}$, 5.0_${rk}$, 4.0_${rk}$]
+
+        ! SPD covariance matrix
+        W(1,:) = [2.0_${rk}$, 1.0_${rk}$, 0.5_${rk}$, 0.25_${rk}$]
+        W(2,:) = [1.0_${rk}$, 2.0_${rk}$, 1.0_${rk}$, 0.5_${rk}$]
+        W(3,:) = [0.5_${rk}$, 1.0_${rk}$, 2.0_${rk}$, 1.0_${rk}$]
+        W(4,:) = [0.25_${rk}$, 0.5_${rk}$, 1.0_${rk}$, 2.0_${rk}$]
+
+        ! Function form
+        x_fun = generalized_lstsq(W, A, b, err=state)
+        call check(error, state%ok(), 'generalized_lstsq (function) failed: '//state%print())
+        if (allocated(error)) return
+
+        ! Subroutine form
+        call solve_generalized_lstsq(W, A, b, x_sub, err=state)
+        call check(error, state%ok(), 'solve_generalized_lstsq failed: '//state%print())
+        if (allocated(error)) return
+
+        ! Both should give the same solution
+        call check(error, all(abs(x_fun - x_sub) < tol), &
+                   'solve_generalized_lstsq should match generalized_lstsq')
+        if (allocated(error)) return
+
+    end subroutine test_solve_generalized_lstsq_${ri}$
 
     #:endfor
 
