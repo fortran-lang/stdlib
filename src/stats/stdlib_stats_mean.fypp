@@ -106,6 +106,11 @@ contains
         logical, intent(in) :: mask${ranksuffix(rank)}$
         ${t1}$ :: res
 
+        if (count(mask) == 0) then
+          res = ieee_value(1._${k1}$, ieee_quiet_nan)
+          return
+        end if
+
         res = sum(x, mask) / real(count(mask, kind = int64), ${k1}$)
 
       end function ${RName}$
@@ -120,6 +125,11 @@ contains
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         logical, intent(in) :: mask${ranksuffix(rank)}$
         real(dp) :: res
+
+        if (count(mask) == 0) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
 
         res = sum(real(x, dp), mask) / real(count(mask, kind = int64), dp)
 
@@ -137,7 +147,11 @@ contains
         ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
 
         if (dim >= 1 .and. dim <= ${rank}$) then
-          res = sum(x, dim, mask) / real(count(mask, dim), ${k1}$)
+          where (count(mask, dim) > 0)
+            res = sum(x, dim, mask) / real(count(mask, dim), ${k1}$)
+          elsewhere
+            res = ieee_value(1._${k1}$, ieee_quiet_nan)
+          end where
         else
           call error_stop("ERROR (mean): wrong dimension")
         end if
@@ -157,7 +171,11 @@ contains
         real(dp) :: res${reduced_shape('x', rank, 'dim')}$
 
         if (dim >= 1 .and. dim <= ${rank}$) then
-          res = sum(real(x, dp), dim, mask) / real(count(mask, dim), dp)
+          where (count(mask, dim) > 0)
+            res = sum(real(x, dp), dim, mask) / real(count(mask, dim), dp)
+          elsewhere
+            res = ieee_value(1._dp, ieee_quiet_nan)
+          end where
         else
           call error_stop("ERROR (mean): wrong dimension")
         end if
