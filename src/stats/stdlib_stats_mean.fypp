@@ -147,11 +147,19 @@ contains
         ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
 
         if (dim >= 1 .and. dim <= ${rank}$) then
-          where (count(mask, dim) > 0)
-            res = sum(x, dim, mask) / real(count(mask, dim), ${k1}$)
-          elsewhere
-            res = ieee_value(1._${k1}$, ieee_quiet_nan)
-          end where
+          #:if rank == 1
+            if (count(mask) == 0) then
+              res = ieee_value(1._${k1}$, ieee_quiet_nan)
+            else
+              res = sum(x, dim, mask) / real(count(mask, dim), ${k1}$)
+            end if
+          #:else
+            where (count(mask, dim) > 0)
+              res = sum(x, dim, mask) / real(count(mask, dim), ${k1}$)
+            elsewhere
+              res = ieee_value(1._${k1}$, ieee_quiet_nan)
+            end where
+          #:endif
         else
           call error_stop("ERROR (mean): wrong dimension")
         end if
@@ -171,11 +179,19 @@ contains
         real(dp) :: res${reduced_shape('x', rank, 'dim')}$
 
         if (dim >= 1 .and. dim <= ${rank}$) then
-          where (count(mask, dim) > 0)
-            res = sum(real(x, dp), dim, mask) / real(count(mask, dim), dp)
-          elsewhere
-            res = ieee_value(1._dp, ieee_quiet_nan)
-          end where
+          #:if rank == 1
+            if (count(mask) == 0) then
+              res = ieee_value(1._dp, ieee_quiet_nan)
+            else
+              res = sum(real(x, dp), dim, mask) / real(count(mask, dim), dp)
+            end if
+          #:else
+            where (count(mask, dim) > 0)
+              res = sum(real(x, dp), dim, mask) / real(count(mask, dim), dp)
+            elsewhere
+              res = ieee_value(1._dp, ieee_quiet_nan)
+            end where
+          #:endif
         else
           call error_stop("ERROR (mean): wrong dimension")
         end if
