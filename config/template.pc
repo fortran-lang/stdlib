@@ -6,5 +6,7 @@ moduledir=${prefix}/@CMAKE_INSTALL_MODULEDIR@
 Name: @PROJECT_NAME@
 Description: @PROJECT_DESCRIPTION@
 Version: @PROJECT_VERSION@
-Libs: -L${libdir} @PC_CONTENT@
+Requires.private: @PC_REQUIRES_PRIVATE@
 Cflags: -I${includedir} -I${moduledir}
+Libs: -L${libdir} @PC_CONTENT@
+Libs.private: @PC_LIBS_PRIVATE@
