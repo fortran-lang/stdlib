@@ -183,6 +183,27 @@ endif()
 string(REPLACE ";" " " PC_REQUIRES_PRIVATE "${PC_REQUIRES_PRIVATE}")
 string(REPLACE ";" " " PC_LIBS_PRIVATE "${PC_LIBS_PRIVATE}")
 
+# Handle absolute vs relative install paths for libdir
+if(IS_ABSOLUTE "${CMAKE_INSTALL_LIBDIR}")
+    set(PC_LIBDIR "${CMAKE_INSTALL_LIBDIR}")
+else()
+    set(PC_LIBDIR "\${prefix}/${CMAKE_INSTALL_LIBDIR}")
+endif()
+
+# Handle absolute vs relative install paths for includedir
+if(IS_ABSOLUTE "${CMAKE_INSTALL_INCLUDEDIR}")
+    set(PC_INCLUDEDIR "${CMAKE_INSTALL_INCLUDEDIR}")
+else()
+    set(PC_INCLUDEDIR "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
+endif()
+
+# Handle absolute vs relative install paths for moduledir
+if(IS_ABSOLUTE "${CMAKE_INSTALL_MODULEDIR}")
+    set(PC_MODULEDIR "${CMAKE_INSTALL_MODULEDIR}")
+else()
+    set(PC_MODULEDIR "\${prefix}/${CMAKE_INSTALL_MODULEDIR}")
+endif()
+
 configure_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/config/template.pc"
   "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc"
