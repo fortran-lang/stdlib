@@ -106,12 +106,13 @@ contains
         logical, intent(in) :: mask${ranksuffix(rank)}$
         ${t1}$ :: res
 
-        if (count(mask) == 0) then
+        n = real(count(mask, kind = int64), ${k1}$)
+        if (n == 0._${k1}$) then
           res = ieee_value(1._${k1}$, ieee_quiet_nan)
           return
         end if
 
-        res = sum(x, mask) / real(count(mask, kind = int64), ${k1}$)
+        res = sum(x, mask) / n
 
       end function ${RName}$
     #:endfor
@@ -126,12 +127,13 @@ contains
         logical, intent(in) :: mask${ranksuffix(rank)}$
         real(dp) :: res
 
-        if (count(mask) == 0) then
+        n = real(count(mask, kind = int64), dp)
+        if (n == 0._dp) then
           res = ieee_value(1._dp, ieee_quiet_nan)
           return
         end if
 
-        res = sum(real(x, dp), mask) / real(count(mask, kind = int64), dp)
+        res = sum(real(x, dp), mask) / n
 
       end function ${RName}$
     #:endfor
@@ -145,17 +147,20 @@ contains
         integer, intent(in) :: dim
         logical, intent(in) :: mask${ranksuffix(rank)}$
         ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
+        real(${k1}$) :: n${reduced_shape('x', rank, 'dim')}$
 
         if (dim >= 1 .and. dim <= ${rank}$) then
           #:if rank == 1
-            if (count(mask) == 0) then
+            n = real(count(mask), ${k1}$)
+            if (n == 0._${k1}$) then
               res = ieee_value(1._${k1}$, ieee_quiet_nan)
             else
-              res = sum(x, dim, mask) / real(count(mask, dim), ${k1}$)
+              res = sum(x, dim, mask) / n
             end if
           #:else
-            where (count(mask, dim) > 0)
-              res = sum(x, dim, mask) / real(count(mask, dim), ${k1}$)
+            n = real(count(mask, dim), ${k1}$)
+            where (n > 0._${k1}$)
+              res = sum(x, dim, mask) / n
             elsewhere
               res = ieee_value(1._${k1}$, ieee_quiet_nan)
             end where
@@ -177,17 +182,20 @@ contains
         integer, intent(in) :: dim
         logical, intent(in) :: mask${ranksuffix(rank)}$
         real(dp) :: res${reduced_shape('x', rank, 'dim')}$
+        real(dp) :: n${reduced_shape('x', rank, 'dim')}$
 
         if (dim >= 1 .and. dim <= ${rank}$) then
           #:if rank == 1
-            if (count(mask) == 0) then
+            n = real(count(mask), dp)
+            if (n == 0._dp) then
               res = ieee_value(1._dp, ieee_quiet_nan)
             else
-              res = sum(real(x, dp), dim, mask) / real(count(mask, dim), dp)
+              res = sum(real(x, dp), dim, mask) / n
             end if
           #:else
-            where (count(mask, dim) > 0)
-              res = sum(real(x, dp), dim, mask) / real(count(mask, dim), dp)
+            n = real(count(mask, dim), dp)
+            where (n > 0._dp)
+              res = sum(real(x, dp), dim, mask) / n
             elsewhere
               res = ieee_value(1._dp, ieee_quiet_nan)
             end where
