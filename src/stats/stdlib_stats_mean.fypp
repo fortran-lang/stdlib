@@ -105,6 +105,7 @@ contains
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         logical, intent(in) :: mask${ranksuffix(rank)}$
         ${t1}$ :: res
+        real(${k1}$) :: n
 
         n = real(count(mask, kind = int64), ${k1}$)
         if (n == 0._${k1}$) then
@@ -126,6 +127,7 @@ contains
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         logical, intent(in) :: mask${ranksuffix(rank)}$
         real(dp) :: res
+        real(dp) :: n
 
         n = real(count(mask, kind = int64), dp)
         if (n == 0._dp) then
