@@ -484,6 +484,7 @@ contains
 
         end block
         #:endfor
+        #:endfor
 
     end subroutine
 
@@ -574,8 +575,9 @@ contains
             y = 0._wp
             call spmv( CSC_low, x, y ) 
             call check(error, all(y == y_ref) , "error in low CSC ${s1}$ spmv" )
-        #:endfor
         end block
+        #:endfor
+        
     end subroutine
     
 end module
