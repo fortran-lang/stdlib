@@ -575,6 +575,7 @@ contains
             call spmv( CSC_low, x, y ) 
             call check(error, all(y == y_ref) , "error in low CSC ${s1}$ spmv" )
         #:endfor
+        end block
     end subroutine
     
 end module
