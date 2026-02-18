@@ -15,13 +15,17 @@ Experimental
 
 ### Description
 
-The gamma distribution is a continuous probability distribution widely used in modeling waiting times, queue lengths, and other non-negative quantities. It is defined by a shape parameter (\\(k\\) or \\(\\alpha\\)) that controls the distribution's form and a rate parameter (\\(\\lambda\\)) that controls its scale. The location parameter (\\(\\text{loc}\\)) shifts the distribution.
+The gamma distribution is a continuous probability distribution widely used in modeling waiting times, queue lengths, and other non-negative quantities. It is defined by a shape parameter (\\(k\\) or \\(\\alpha\\)) that controls the distribution's form and a rate parameter (\\(\\lambda\\)) that controls its scale.
 
-With a single argument for shape parameter, the function returns a random sample from the standard gamma distribution with rate = 1.0 and loc = 0.0.
+Without arguments, the function returns a random sample from the standard gamma distribution \\(\\Gamma(k=1, \\lambda=1)\\).
 
-With three arguments (loc, shape, rate), the function returns a random sample from the shifted gamma distribution.
+With a single argument for shape parameter, the function returns a random sample from the gamma distribution \\(\\Gamma(k=\\text{shape}, \\lambda=1)\\).
 
-With four arguments (loc, shape, rate, array_size), the function returns a rank-1 array of gamma distributed random variates.
+With two arguments (shape, rate), the function returns a random sample from the gamma distribution \\(\\Gamma(k=\\text{shape}, \\lambda=\\text{rate})\\).
+
+The optional `loc` parameter specifies the location (shift) of the distribution.
+
+With three or more arguments including `array_size`, the function returns a rank-1 array of gamma distributed random variates.
 
 For complex shape and rate parameters, the real and imaginary parts are sampled independently of each other.
 
@@ -31,9 +35,7 @@ The algorithm used for generating gamma random variates is fundamentally limited
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_gamma(module):rvs_gamma(interface)]](shape)`
-
-`result = [[stdlib_stats_distribution_gamma(module):rvs_gamma(interface)]](loc, shape, rate [, array_size])`
+`result = [[stdlib_stats_distribution_gamma(module):rvs_gamma(interface)]]([[shape] [[, rate]] [[, loc]] [[, array_size]]])`
 
 ### Class
 
@@ -41,14 +43,14 @@ Impure elemental function
 
 ### Arguments
 
-`shape`: has `intent(in)` and is a scalar of type `real` or `complex`. 
-If `shape` is `real`, its value must be positive. If `shape` is `complex`, both the real and imaginary components must be positive. This is the shape (or "form") parameter \\(k\\) of the distribution.
+`shape`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`. 
+If `shape` is `real`, its value must be positive. If `shape` is `complex`, both the real and imaginary components must be positive. This is the shape (or "form") parameter \\(k\\) of the distribution. Default value is 1.0.
 
-`loc`: has `intent(in)` and is a scalar of type `real` or `complex`. 
-Specifies the location (shift) of the distribution. The distribution support is x > loc.
+`rate`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`. 
+If `rate` is `real`, its value must be positive. If `rate` is `complex`, both the real and imaginary components must be positive. This is the rate parameter \(\\lambda\) (inverse of scale). Default value is 1.0.
 
-`rate`: has `intent(in)` and is a scalar of type `real` or `complex`. 
-If `rate` is `real`, its value must be positive. If `rate` is `complex`, both the real and imaginary components must be positive. This is the rate parameter \\(\\lambda\\) (inverse of scale).
+`loc`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`. 
+Specifies the location (shift) of the distribution with default value 0.0. The distribution support is x > loc.
 
 `array_size`: optional argument has `intent(in)` and is a scalar of type `integer` with default kind.
 
@@ -72,9 +74,9 @@ Experimental
 
 The probability density function (pdf) of the single real variable gamma distribution is:
 
-$$ f(x)= \frac{\lambda^{k}}{\Gamma (k)}(x-\text{loc})^{k-1}e^{-\lambda (x-\text{loc})} ,\quad x>\text{loc},\ k>0,\ \lambda>0 $$
+$$ f(x)= \frac{\lambda^{k}}{\Gamma (k)}x^{k-1}e^{-\lambda x} ,\quad x>0,\ k>0,\ \lambda>0 $$
 
-where \\(k\\) is the shape parameter, \\(\\lambda\\) is the rate parameter, \\(\\text{loc}\\) is the location parameter, and \\(\\Gamma(k)\\) is the gamma function.
+where \\(k\\) is the shape parameter, \\(\\lambda\\) is the rate parameter, and \\(\\Gamma(k)\\) is the gamma function.
 
 For a complex variable \\(z=(x + y i)\\) with independent real \\(x\\) and imaginary \\(y\\) parts, the joint probability density function is the product of the corresponding real and imaginary marginal pdfs:[^2]
 
@@ -82,7 +84,7 @@ $$f(x+\mathit{i}y)=f(x)f(y)$$
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_gamma(module):pdf_gamma(interface)]](x, loc, shape, rate)`
+`result = [[stdlib_stats_distribution_gamma(module):pdf_gamma(interface)]](x, shape, rate [[, loc]])`
 
 ### Class
 
@@ -92,13 +94,13 @@ Impure elemental function
 
 `x`: has `intent(in)` and is a scalar of type `real` or `complex`. The point at which to evaluate the pdf.
 
-`loc`: has `intent(in)` and is a scalar of type `real` or `complex`. The location (shift) parameter.
-
 `shape`: has `intent(in)` and is a scalar of type `real` or `complex`. The shape parameter \\(k\\). 
 If `shape` is `real`, its value must be positive. If `shape` is `complex`, both the real and imaginary components must be positive.
 
 `rate`: has `intent(in)` and is a scalar of type `real` or `complex`. The rate parameter \\(\\lambda\\). 
 If `rate` is `real`, its value must be positive. If `rate` is `complex`, both the real and imaginary components must be positive.
+
+`loc`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`. The location (shift) parameter with default value 0.0.
 
 All arguments must have the same type.
 
@@ -122,9 +124,9 @@ Experimental
 
 Cumulative distribution function (cdf) of the single real variable gamma distribution:
 
-$$ F(x)= \frac{\gamma (k, \lambda (x-\text{loc}))}{\Gamma (k)},\quad x>\text{loc},\ k>0,\ \lambda>0 $$
+$$ F(x)= \frac{\gamma (k, \lambda x)}{\Gamma (k)},\quad x>0,\ k>0,\ \lambda>0 $$
 
-where \\(\\text{loc}\\) is the location parameter, \\(\\gamma(k, z)\\) is the lower incomplete gamma function, and \\(\\Gamma(k)\\) is the gamma function. This is often referred to as the regularized gamma P function.
+where \\(\\gamma(k, z)\\) is the lower incomplete gamma function, and \\(\\Gamma(k)\\) is the gamma function. This is often referred to as the regularized gamma P function.
 
 For a complex variable \\(z=(x + y i)\\) with independent real \\(x\\) and imaginary \\(y\\) parts, the joint cumulative distribution function is the product of the corresponding real and imaginary marginal cdfs:[^2]
 
@@ -132,7 +134,7 @@ $$F(x+\mathit{i}y)=F(x)F(y)$$
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_gamma(module):cdf_gamma(interface)]](x, loc, shape, rate)`
+`result = [[stdlib_stats_distribution_gamma(module):cdf_gamma(interface)]](x, shape, rate [[, loc]])`
 
 ### Class
 
@@ -142,13 +144,13 @@ Impure elemental function
 
 `x`: has `intent(in)` and is a scalar of type `real` or `complex`. The point at which to evaluate the cdf.
 
-`loc`: has `intent(in)` and is a scalar of type `real` or `complex`. The location (shift) parameter.
-
-`shape`: has `intent(in)` and is a scalar of type `real` or `complex`. The shape parameter \\(k\\). 
+`shape`: has `intent(in)` and is a scalar of type `real` or `complex`. The shape parameter \(k\). 
 If `shape` is `real`, its value must be positive. If `shape` is `complex`, both the real and imaginary components must be positive.
 
-`rate`: has `intent(in)` and is a scalar of type `real` or `complex`. The rate parameter \\(\\lambda\\). 
+`rate`: has `intent(in)` and is a scalar of type `real` or `complex`. The rate parameter \(\lambda\). 
 If `rate` is `real`, its value must be positive. If `rate` is `complex`, both the real and imaginary components must be positive.
+
+`loc`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`. The location (shift) parameter with default value 0.0.
 
 All arguments must have the same type.
 
