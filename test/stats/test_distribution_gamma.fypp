@@ -45,7 +45,7 @@ contains
 
         freq = 0
         do i = 1, num
-            j = min(array_size - 1, int(array_size * gamma_cdf(rgamma(0.0_dp, 2.0_dp, 1.5_dp), 0.0_dp, 2.0_dp, 1.5_dp)))
+            j = min(array_size - 1, int(array_size * gamma_cdf(rgamma(2.0_dp, 1.5_dp, 0.0_dp), 2.0_dp, 1.5_dp, 0.0_dp)))
             freq(j) = freq(j) + 1
         end do
 
@@ -110,10 +110,10 @@ contains
     #:endif
 
         do i = 1, k
-            res(i) = rgamma(loc, gshape, rate)
+            res(i) = rgamma(gshape, rate, loc)
         end do
 
-        res(k + 1 : n) = rgamma(loc, gshape, rate, k)
+        res(k + 1 : n) = rgamma(gshape, rate, k, loc)
 
         do i = 1, n
             call check(abs(res(i) - ans(i)) < ${k1}$tol,                      &
@@ -179,11 +179,11 @@ contains
         gshape = (2.0_${k1}$, 0.7_${k1}$); rate = (0.8_${k1}$, 1.2_${k1}$); loc = (0._${k1}$, 0._${k1}$)
     #:endif
 
-        x1 = rgamma(loc, gshape, rate)
-        x2 = reshape(rgamma(loc, gshape, rate, 12), [3,4])
+        x1 = rgamma(gshape, rate, loc)
+        x2 = reshape(rgamma(gshape, rate, 12, loc), [3,4])
 
-        res(1:3) = gamma_pdf(x1, loc, gshape, rate)
-        res(4:15) = reshape(gamma_pdf(x2, loc, gshape, rate), [12])
+        res(1:3) = gamma_pdf(x1, gshape, rate, loc)
+        res(4:15) = reshape(gamma_pdf(x2, gshape, rate, loc), [12])
 
         do i = 1, 15
             call check(abs(res(i) - ans(i)) < ${k1}$tol,                      &
@@ -249,11 +249,11 @@ contains
         gshape = (2.0_${k1}$, 0.7_${k1}$); rate = (0.8_${k1}$, 1.2_${k1}$); loc = (0._${k1}$, 0._${k1}$)
     #:endif
 
-        x1 = rgamma(loc, gshape, rate)
-        x2 = reshape(rgamma(loc, gshape, rate, 12), [3,4])
+        x1 = rgamma(gshape, rate, loc)
+        x2 = reshape(rgamma(gshape, rate, 12, loc), [3,4])
 
-        res(1:3) = gamma_cdf(x1, loc, gshape, rate)
-        res(4:15) = reshape(gamma_cdf(x2, loc, gshape, rate), [12])
+        res(1:3) = gamma_cdf(x1, gshape, rate, loc)
+        res(4:15) = reshape(gamma_cdf(x2, gshape, rate, loc), [12])
 
         do i = 1, 15
             call check(abs(res(i) - ans(i)) < ${k1}$tol,                      &
