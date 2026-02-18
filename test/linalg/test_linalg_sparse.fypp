@@ -1,6 +1,9 @@
 #:include "common.fypp"
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
 #:set KINDS_TYPES = R_KINDS_TYPES
+#:set OP_NAMES = ["add","sub","mul","div"]
+#:set OP_SYMBOLS = ["+","-","*","/"]
+#:set OPERATORS = list(zip(OP_NAMES, OP_SYMBOLS))
 module test_sparse_spmv
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
@@ -25,7 +28,8 @@ contains
             new_unittest('sellc', test_sellc),  &
             new_unittest('symmetries', test_symmetries), &
             new_unittest('diagonal', test_diagonal), &
-            new_unittest('add_get_values', test_add_get_values), &
+            new_unittest('add_get_values', test_add_get_values),  &
+            new_unittest('sparse_operators', test_sparse_operators), &
             new_unittest('add_block_symmetric_skip', test_add_block_symmetric_skip) &
         ]
     end subroutine
@@ -333,6 +337,7 @@ contains
             diagonal = 0.0
             call coo2csc( COO, CSC )
             call diag( CSC , diagonal )
+            print *, 'diagonal csc:', diagonal
             call check(error, all(diagonal == [1,2,3,4]) )
             if (allocated(error)) return
         end block
@@ -381,6 +386,105 @@ contains
             if (allocated(error)) return
         end block
         #:endfor
+    end subroutine
+
+    subroutine test_sparse_operators(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for matrix in ["COO","CSR","CSC"] # ELL and SELLC are supported but since they have explicit zeros in data array, the tests are less straightforward
+        #:for k, t, s in (KINDS_TYPES)
+        block
+            integer, parameter :: wp = ${k}$
+            real(wp), parameter :: tol = 1000*epsilon(0._wp)
+            real(wp) :: scalar
+            integer :: row(10), col(10)
+            real(wp) :: data(10)
+            type(${matrix}$_${s}$_type) :: a, b, c
+            ${t}$:: err
+
+            data(:)   = real([9,-3,4,7,8,-1,8,4,5,6],kind=wp)
+            col(:)    = [1,5,1,2,2,3,4,1,3,4]
+            row(:)    = [1,1,2,2,3,3,3,4,4,4]
+            
+            call from_ijv(a, row, col, data)
+            call from_ijv(b, row, col, data)
+            scalar = 2.0_wp
+            
+            ! Test sparse + sparse
+            c = a + b
+            err = sum( abs( c%data - 2.0_wp*a%data ) ) / size(data)
+            call check(error, err <= tol, "error in sparse + sparse" )
+            if (allocated(error)) return
+
+            ! Test scalar + sparse
+            c = scalar + a
+            err = sum( abs( c%data - (scalar + a%data) ) ) / size(data)
+            call check(error, err <= tol, "error in scalar + sparse" )
+            if (allocated(error)) return
+
+            ! Test sparse + scalar
+            c = a + scalar
+            err = sum( abs( c%data - (a%data + scalar) ) ) / size(data)
+            call check(error, err <= tol, "error in sparse + scalar" )
+            if (allocated(error)) return
+
+            ! Test sparse * sparse
+            c = a * b
+            err = sum( abs( c%data - a%data*b%data ) ) / size(data)
+            call check(error, err <= tol, "error in sparse * sparse" )
+            if (allocated(error)) return
+
+            ! Test scalar * sparse
+            c = scalar * a
+            err = sum( abs( c%data - (scalar*a%data) ) ) / size(data)
+            call check(error, err <= tol, "error in scalar * sparse" )
+            if (allocated(error)) return
+
+            ! Test sparse * scalar
+            c = a * scalar
+            err = sum( abs( c%data - (a%data*scalar) ) ) / size(data)
+            call check(error, err <= tol, "error in sparse * scalar" )
+            if (allocated(error)) return
+
+            ! Test sparse - sparse
+            c = a - b
+            err = sum( abs( c%data ) ) / size(data)
+            call check(error, err <= tol, "error in sparse - sparse" )
+            if (allocated(error)) return
+
+            ! Test scalar - sparse
+            c = scalar - a
+            err = sum( abs( c%data - (scalar - a%data) ) ) / size(data)
+            call check(error, err <= tol, "error in scalar - sparse" )
+            if (allocated(error)) return
+
+            ! Test sparse - scalar
+            c = a - scalar
+            err = sum( abs( c%data - (a%data - scalar) ) ) / size(data)
+            call check(error, err <= tol, "error in sparse - scalar" )
+            if (allocated(error)) return
+
+            ! Test sparse / sparse
+            c = a / b
+            err = sum( abs( c%data - 1.0_wp ) ) / size(data)
+            call check(error, err <= tol, "error in sparse / sparse" )
+            if (allocated(error)) return
+
+            ! Test scalar / sparse
+            c = scalar / a
+            err = sum( abs( c%data - (scalar / a%data) ) ) / size(data)
+            call check(error, err <= tol, "error in scalar / sparse" )
+            if (allocated(error)) return
+
+            ! Test sparse / scalar
+            c = a / scalar
+            err = sum( abs( c%data - (a%data / scalar) ) ) / size(data)
+            call check(error, err <= tol, "error in sparse / scalar" )
+            if (allocated(error)) return
+
+        end block
+        #:endfor
+
     end subroutine
 
     subroutine test_add_block_symmetric_skip(error)
@@ -470,11 +574,9 @@ contains
             y = 0._wp
             call spmv( CSC_low, x, y ) 
             call check(error, all(y == y_ref) , "error in low CSC ${s1}$ spmv" )
-            if (allocated(error)) return
-
-        end block
         #:endfor
     end subroutine
+    
 end module
 
 
