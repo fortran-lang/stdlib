@@ -747,7 +747,6 @@ contains
   !> Version: experimental
   !>
   !> Reads user input with an optional prompt into a string variable of type `string_type`
-  !> This function provides a Python-like input() interface for Fortran
   recursive function input_string(prompt, iostat) result(str)
     !> Optional prompt to display before reading input
     character(len=*), intent(in), optional :: prompt
