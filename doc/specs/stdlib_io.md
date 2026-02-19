@@ -329,7 +329,7 @@ The prompt, if provided, is displayed on the same line as where the input will b
 
 ### Return value
 
-Returns a deferred-length allocatable character string containing the line read from standard input.
+Returns a deferred-length allocatable `character` string containing the line read from standard input.
 Trailing newline characters are automatically removed.
 
 ### Notes
