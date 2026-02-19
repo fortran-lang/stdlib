@@ -63,7 +63,7 @@ module stdlib_io
 
   !> Version: experimental
   !>
-  !> Read user input with an optional prompt (Python-like input() function)
+  !> Reads user input with an optional prompt
   !> Returns a deferred length character string
   interface input
     module procedure :: input_char
