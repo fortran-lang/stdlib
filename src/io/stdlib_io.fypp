@@ -716,7 +716,6 @@ contains
   !> Version: experimental
   !>
   !> Reads user input with an optional prompt into a deferred-length character variable
-  !> This function provides a Python-like input() interface for Fortran
   function input_char(prompt, iostat) result(str)
     !> Optional prompt to display before reading input
     character(len=*), intent(in), optional :: prompt
