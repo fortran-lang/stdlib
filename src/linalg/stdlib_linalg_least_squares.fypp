@@ -586,7 +586,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
         !> [optional] state return flag. On error if not requested, the code will stop
         type(linalg_state_type), optional, intent(out) :: err
         !> Result array x[n]
-        ${rt}$, allocatable, target :: x(:)
+        ${rt}$, allocatable :: x(:)
 
         integer(ilp) :: n
 
