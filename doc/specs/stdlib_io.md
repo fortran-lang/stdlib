@@ -309,7 +309,7 @@ Experimental
 
 ### Description
 
-Read a line of user input from standard input with an optional prompt, similar to Python's `input()` function.
+Reads a line of user input from standard input with an optional prompt.
 The prompt, if provided, is displayed on the same line as where the input will be entered.
 
 ### Syntax
