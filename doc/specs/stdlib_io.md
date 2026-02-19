@@ -318,7 +318,7 @@ The prompt, if provided, is displayed on the same line as where the input will b
 
 ### Arguments
 
-`prompt` (optional): Shall be a character expression containing the prompt text to display before reading input.
+`prompt` (optional): Shall be a `character` expression containing the prompt text to be displayed before reading input.
                      The prompt is displayed without a trailing newline, allowing input on the same line.
                      This argument is `intent(in)`.
 
