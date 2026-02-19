@@ -64,7 +64,7 @@ module stdlib_io
   !> Version: experimental
   !>
   !> Reads user input with an optional prompt
-  !> Returns a deferred length character string
+  !> Returns a deferred-length character string
   interface input
     module procedure :: input_char
   end interface input
