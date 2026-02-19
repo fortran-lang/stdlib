@@ -718,7 +718,7 @@ module stdlib_linalg
         !> [optional] state return flag. On error if not requested, the code will stop
         type(linalg_state_type), optional, intent(out) :: err
         !> Result array x[n]
-        ${rt}$, allocatable, target :: x(:)
+        ${rt}$, allocatable :: x(:)
     end function stdlib_linalg_${ri}$_weighted_lstsq
     #:endfor
   end interface weighted_lstsq
