@@ -325,7 +325,7 @@ The prompt, if provided, is displayed on the same line as where the input will b
 `iostat` (optional): Shall be a scalar of type `integer` that receives the I/O status.
                      Zero indicates success, non-zero indicates an error or end-of-file condition.
                      This argument is `intent(out)`.
-                     If not provided, an error will cause the program to stop.
+                     If not provided, an error will cause trigger an `error stop`.
 
 ### Return value
 
