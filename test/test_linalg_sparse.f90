@@ -23,7 +23,8 @@ contains
             new_unittest('symmetries', test_symmetries), &
             new_unittest('diagonal', test_diagonal), &
             new_unittest('add_get_values', test_add_get_values),  &
-            new_unittest('sparse_operators', test_sparse_operators) &
+            new_unittest('sparse_operators', test_sparse_operators), &
+            new_unittest('add_block_symmetric_skip', test_add_block_symmetric_skip) &
         ]
     end subroutine
 
@@ -584,7 +585,6 @@ contains
 
             call check(error, all(CSR%data == COO%data) )
             if (allocated(error)) return
-
             err = 0._wp
             do i = 1, 5
                 do j = 1, 5
@@ -622,7 +622,6 @@ contains
 
             call check(error, all(CSR%data == COO%data) )
             if (allocated(error)) return
-
             err = 0._wp
             do i = 1, 5
                 do j = 1, 5
@@ -1179,8 +1178,183 @@ contains
             if (allocated(error)) return
 
         end block
+
     end subroutine
 
+    subroutine test_add_block_symmetric_skip(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        block
+            integer, parameter :: wp = sp
+            integer :: connectivity(3,3)
+
+            real(wp) :: dense(5,5), dense_low(5,5), mat(3,3)
+            type(COO_sp_type) :: COO_full, COO_low
+            type(CSR_sp_type) :: CSR_full, CSR_low
+            type(CSC_sp_type) :: CSC_full, CSC_low
+            real(wp)  :: x(5), y(5), y_ref(5)
+            real(sp):: err
+            integer :: i, j, locdof(3)
+
+            connectivity(1:3,1) = [1,2,3]
+            connectivity(1:3,2) = [2,3,4]
+            connectivity(1:3,3) = [3,4,5]
+
+            mat(:,1) = [1,2,3]
+            mat(:,2) = [2,1,4]
+            mat(:,3) = [3,4,1]
+
+            dense = 0._wp
+            do i = 1, 3
+                locdof(1:3) = connectivity(1:3,i)
+                dense(locdof,locdof) = dense(locdof,locdof) + mat
+            end do
+
+            call dense2coo(dense,COO_full)
+            call coo2csr(COO_full,CSR_full)
+            call coo2csc(COO_full,CSC_full)
+            dense_low = dense
+            do i = 1, 5
+                do j = i+1, 5
+                    dense_low(i,j) = 0._wp
+                end do
+            end do
+            call dense2coo(dense_low,COO_low)
+            COO_low%storage = sparse_lower
+            call coo2csr(COO_low,CSR_low)
+            call coo2csc(COO_low,CSC_low)
+
+            COO_full%data = 0._wp
+            COO_low%data = 0._wp
+            CSR_full%data = 0._wp
+            CSR_low%data = 0._wp
+            CSC_full%data = 0._wp
+            CSC_low%data = 0._wp
+            do i = 1, 3
+                locdof(1:3) = connectivity(1:3,i)
+                call COO_full%add(locdof,locdof,mat)
+                call COO_low%add(locdof,locdof,mat)
+                call CSR_full%add(locdof,locdof,mat)
+                call CSR_low%add(locdof,locdof,mat)
+                call CSC_full%add(locdof,locdof,mat)
+                call CSC_low%add(locdof,locdof,mat)
+            end do
+
+            call check(error, all(CSR_full%data == COO_full%data) , "error in full CSR sp data" )
+            if (allocated(error)) return
+
+            call check(error, all(CSR_low%data == COO_low%data) , "error in low CSR sp data" )
+            if (allocated(error)) return
+
+            x = 1._wp
+            y_ref = matmul(dense,x)
+
+            y = 0._wp
+            call spmv( CSR_full, x, y )
+            call check(error, all(y == y_ref) , "error in full CSR sp spmv" )
+            if (allocated(error)) return
+            
+            y = 0._wp
+            call spmv( CSR_low, x, y ) 
+            call check(error, all(y == y_ref) , "error in low CSR sp spmv" )
+            if (allocated(error)) return
+
+            y = 0._wp
+            call spmv( CSC_full, x, y )
+            call check(error, all(y == y_ref) , "error in full CSC sp spmv" )
+            if (allocated(error)) return
+            
+            y = 0._wp
+            call spmv( CSC_low, x, y ) 
+            call check(error, all(y == y_ref) , "error in low CSC sp spmv" )
+        end block
+        block
+            integer, parameter :: wp = dp
+            integer :: connectivity(3,3)
+
+            real(wp) :: dense(5,5), dense_low(5,5), mat(3,3)
+            type(COO_dp_type) :: COO_full, COO_low
+            type(CSR_dp_type) :: CSR_full, CSR_low
+            type(CSC_dp_type) :: CSC_full, CSC_low
+            real(wp)  :: x(5), y(5), y_ref(5)
+            real(dp):: err
+            integer :: i, j, locdof(3)
+
+            connectivity(1:3,1) = [1,2,3]
+            connectivity(1:3,2) = [2,3,4]
+            connectivity(1:3,3) = [3,4,5]
+
+            mat(:,1) = [1,2,3]
+            mat(:,2) = [2,1,4]
+            mat(:,3) = [3,4,1]
+
+            dense = 0._wp
+            do i = 1, 3
+                locdof(1:3) = connectivity(1:3,i)
+                dense(locdof,locdof) = dense(locdof,locdof) + mat
+            end do
+
+            call dense2coo(dense,COO_full)
+            call coo2csr(COO_full,CSR_full)
+            call coo2csc(COO_full,CSC_full)
+            dense_low = dense
+            do i = 1, 5
+                do j = i+1, 5
+                    dense_low(i,j) = 0._wp
+                end do
+            end do
+            call dense2coo(dense_low,COO_low)
+            COO_low%storage = sparse_lower
+            call coo2csr(COO_low,CSR_low)
+            call coo2csc(COO_low,CSC_low)
+
+            COO_full%data = 0._wp
+            COO_low%data = 0._wp
+            CSR_full%data = 0._wp
+            CSR_low%data = 0._wp
+            CSC_full%data = 0._wp
+            CSC_low%data = 0._wp
+            do i = 1, 3
+                locdof(1:3) = connectivity(1:3,i)
+                call COO_full%add(locdof,locdof,mat)
+                call COO_low%add(locdof,locdof,mat)
+                call CSR_full%add(locdof,locdof,mat)
+                call CSR_low%add(locdof,locdof,mat)
+                call CSC_full%add(locdof,locdof,mat)
+                call CSC_low%add(locdof,locdof,mat)
+            end do
+
+            call check(error, all(CSR_full%data == COO_full%data) , "error in full CSR dp data" )
+            if (allocated(error)) return
+
+            call check(error, all(CSR_low%data == COO_low%data) , "error in low CSR dp data" )
+            if (allocated(error)) return
+
+            x = 1._wp
+            y_ref = matmul(dense,x)
+
+            y = 0._wp
+            call spmv( CSR_full, x, y )
+            call check(error, all(y == y_ref) , "error in full CSR dp spmv" )
+            if (allocated(error)) return
+            
+            y = 0._wp
+            call spmv( CSR_low, x, y ) 
+            call check(error, all(y == y_ref) , "error in low CSR dp spmv" )
+            if (allocated(error)) return
+
+            y = 0._wp
+            call spmv( CSC_full, x, y )
+            call check(error, all(y == y_ref) , "error in full CSC dp spmv" )
+            if (allocated(error)) return
+            
+            y = 0._wp
+            call spmv( CSC_low, x, y ) 
+            call check(error, all(y == y_ref) , "error in low CSC dp spmv" )
+        end block
+        
+    end subroutine
+    
 end module
 
 
