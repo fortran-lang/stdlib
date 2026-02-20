@@ -1,3 +1,36 @@
+## Unreleased
+
+Changes to the existing build system
+  - Fixed absolute paths in generated pkg-config file for external BLAS/LAPACK 
+    [#1109](https://github.com/fortran-lang/stdlib/issues/1109)
+
+# Version 0.8.1
+
+Full release notes available at [v0.8.1] tag.
+
+[v0.8.1]: https://github.com/fortran-lang/stdlib/releases/tag/v0.8.1
+
+Changes to the existing build system
+  - Changes in the build system
+    - Completed refactoring of `stdlib` into modular components using CMake
+      [#1098](https://github.com/fortran-lang/stdlib/pull/1098)
+      [#1100](https://github.com/fortran-lang/stdlib/pull/1100)
+      [#1102](https://github.com/fortran-lang/stdlib/pull/1102)
+    - Resolve race condition in parallel FYPP preprocessing
+      [#1103](https://github.com/fortran-lang/stdlib/pull/1103)
+
+Changes to the existing modules
+  - Change in module `stdlib_lingal_iterative_solvers`
+    - Remove pure attribute from `stdlib_linop` `inner_product`
+      [#1106](https://github.com/fortran-lang/stdlib/pull/1106)
+
+Changes to the existing documentation
+  - Change in README
+    - Addition of a DOI badge
+      [#1097](https://github.com/fortran-lang/stdlib/pull/1097)
+    - Update of the table with flags for modularizing `stdlib`
+      [#1098](https://github.com/fortran-lang/stdlib/pull/1098)
+
 # Version 0.8.0
 
 Full release notes available at [v0.8.0] tag.

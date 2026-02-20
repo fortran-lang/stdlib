@@ -105,8 +105,15 @@ contains
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         logical, intent(in) :: mask${ranksuffix(rank)}$
         ${t1}$ :: res
+        real(${k1}$) :: n
 
-        res = sum(x, mask) / real(count(mask, kind = int64), ${k1}$)
+        n = real(count(mask, kind = int64), ${k1}$)
+        if (n == 0._${k1}$) then
+          res = ieee_value(1._${k1}$, ieee_quiet_nan)
+          return
+        end if
+
+        res = sum(x, mask) / n
 
       end function ${RName}$
     #:endfor
@@ -120,8 +127,15 @@ contains
         ${t1}$, intent(in) :: x${ranksuffix(rank)}$
         logical, intent(in) :: mask${ranksuffix(rank)}$
         real(dp) :: res
+        real(dp) :: n
 
-        res = sum(real(x, dp), mask) / real(count(mask, kind = int64), dp)
+        n = real(count(mask, kind = int64), dp)
+        if (n == 0._dp) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
+        res = sum(real(x, dp), mask) / n
 
       end function ${RName}$
     #:endfor
@@ -135,9 +149,24 @@ contains
         integer, intent(in) :: dim
         logical, intent(in) :: mask${ranksuffix(rank)}$
         ${t1}$ :: res${reduced_shape('x', rank, 'dim')}$
+        real(${k1}$) :: n${reduced_shape('x', rank, 'dim')}$
 
         if (dim >= 1 .and. dim <= ${rank}$) then
-          res = sum(x, dim, mask) / real(count(mask, dim), ${k1}$)
+          #:if rank == 1
+            n = real(count(mask), ${k1}$)
+            if (n == 0._${k1}$) then
+              res = ieee_value(1._${k1}$, ieee_quiet_nan)
+            else
+              res = sum(x, dim, mask) / n
+            end if
+          #:else
+            n = real(count(mask, dim), ${k1}$)
+            where (n > 0._${k1}$)
+              res = sum(x, dim, mask) / n
+            elsewhere
+              res = ieee_value(1._${k1}$, ieee_quiet_nan)
+            end where
+          #:endif
         else
           call error_stop("ERROR (mean): wrong dimension")
         end if
@@ -155,9 +184,24 @@ contains
         integer, intent(in) :: dim
         logical, intent(in) :: mask${ranksuffix(rank)}$
         real(dp) :: res${reduced_shape('x', rank, 'dim')}$
+        real(dp) :: n${reduced_shape('x', rank, 'dim')}$
 
         if (dim >= 1 .and. dim <= ${rank}$) then
-          res = sum(real(x, dp), dim, mask) / real(count(mask, dim), dp)
+          #:if rank == 1
+            n = real(count(mask), dp)
+            if (n == 0._dp) then
+              res = ieee_value(1._dp, ieee_quiet_nan)
+            else
+              res = sum(real(x, dp), dim, mask) / n
+            end if
+          #:else
+            n = real(count(mask, dim), dp)
+            where (n > 0._dp)
+              res = sum(real(x, dp), dim, mask) / n
+            elsewhere
+              res = ieee_value(1._dp, ieee_quiet_nan)
+            end where
+          #:endif
         else
           call error_stop("ERROR (mean): wrong dimension")
         end if

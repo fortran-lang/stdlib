@@ -162,6 +162,12 @@ contains
         ${t1}$ :: mean
 
         n = real(count(mask, kind = int64), ${k1}$)
+
+        if (n == 0._${k1}$) then
+          res = ieee_value(1._${k1}$, ieee_quiet_nan)
+          return
+        end if
+
         mean = sum(x, mask) / n
 
         #:if t1[0] == 'r'
@@ -188,6 +194,12 @@ contains
         real(dp) :: n, mean
 
         n = real(count(mask, kind = int64), dp)
+
+        if (n == 0._dp) then
+          res = ieee_value(1._dp, ieee_quiet_nan)
+          return
+        end if
+
         mean = sum(real(x, dp), mask) / n
 
         res = sum((real(x, dp) - mean)**2, mask) / (n -&
@@ -217,7 +229,19 @@ contains
           #:for fi in range(1, rank+1)
           case(${fi}$)
             n = count(mask, dim)
-            mean = sum(x, dim, mask) / n
+            #:if rank == 1
+              if (n > 0) then
+                mean = sum(x, dim, mask) / n
+              else
+                mean = 0
+              end if
+            #:else
+              where (n > 0)
+                mean = sum(x, dim, mask) / n
+              elsewhere
+                mean = 0
+              end where
+            #:endif
             do i = 1, size(x, dim)
               #:if t1[0] == 'r'
                 res = res + merge( (x${select_subarray(rank, [(fi, 'i')])}$ - mean)**2,&
@@ -257,7 +281,19 @@ contains
           #:for fi in range(1, rank+1)
           case(${fi}$)
             n = count(mask, dim)
-            mean = sum(real(x, dp), dim, mask) / n
+            #:if rank == 1
+              if (n > 0) then
+                mean = sum(real(x, dp), dim, mask) / n
+              else
+                mean = 0
+              end if
+            #:else
+              where (n > 0)
+                mean = sum(real(x, dp), dim, mask) / n
+              elsewhere
+                mean = 0
+              end where
+            #:endif
             do i = 1, size(x, dim)
               res = res + merge((real(x${select_subarray(rank, [(fi, 'i')])}$, dp) - mean)**2,&
                                   0._dp, mask${select_subarray(rank, [(fi, 'i')])}$)
