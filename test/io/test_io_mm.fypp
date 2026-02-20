@@ -1,0 +1,97 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+! #:set C_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+! #:set I_KINDS_TYPES  = list(zip(INT_KINDS,   INT_TYPES, INT_KINDS))
+! #:set KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES + I_KINDS_TYPES
+#:set KINDS_TYPES = R_KINDS_TYPES
+module test_io_mm
+    use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
+    use stdlib_kinds
+    use stdlib_math, only: all_close
+    use stdlib_io_mm
+    implicit none
+
+contains
+
+
+    !> Collect all exported unit tests
+    subroutine collect_suite(testsuite)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [ &
+            new_unittest('io_mm_array', test_io_mm_array), &
+            new_unittest('io_mm_coordinate', test_io_mm_coordinate) &
+        ]
+    end subroutine
+
+    subroutine test_io_mm_array(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for k, t, s in (KINDS_TYPES)
+        block
+            integer, parameter :: wp = ${k}$
+            integer, parameter :: n = 5
+            ${t}$, allocatable :: matrix_save(:, :), matrix_load(:, :)
+            integer :: i,j
+            allocate(matrix_save(n,n), source=0.0_wp)
+            call random_number(matrix_save)
+            call save_mm("test_mmio_dense.mtx", matrix_save)
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            do i = 1,n; do j = 1,n
+                if(matrix_save(i,j) /= matrix_load(i,j)) then
+                    print*, "save: ", matrix_save(i,j), " load: ", matrix_load(i,j)
+                end if
+            end do; end do
+            call check(error, all_close(matrix_save, matrix_load), .true.)
+            if(allocated(error)) return
+        end block
+        #:endfor
+    end subroutine
+
+    subroutine test_io_mm_coordinate(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for k, t, s in (KINDS_TYPES)
+        block
+            integer, parameter :: n = 5
+            ${t}$, allocatable :: index_save(:), index_load(:)
+            integer, allocatable :: data_save(:, :), data_load(:,:)
+            ! allocate(matrix_save(n,n))
+            ! call random_number(matrix_save)
+            ! call save_mm("test_mmio_dense.mtx", matrix_save)
+            ! call load_mm("test_mmio_dense.mtx", matrix_load)
+            ! call check(error, all_close(matrix_save, matrix_load), .true.)
+            ! if(allocated(error)) return
+        end block
+        #:endfor
+    end subroutine
+
+end module
+
+
+program tester
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_io_mm, only : collect_suite
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("io_mm", collect_suite) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program

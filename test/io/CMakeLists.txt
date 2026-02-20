@@ -2,6 +2,7 @@ set(
   fppFiles
   "test_loadtxt_qp.fypp"
   "test_savetxt_qp.fypp"
+  "test_io_mm.fypp"
 )
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
