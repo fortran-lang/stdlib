@@ -44,28 +44,38 @@ contains
 
             ! Initialize matrix.
             allocate(dl(n-1), dv(n), du(n-1))
-            call random_number(dl) ; call random_number(dv) ; call random_number(du)
-            A = tridiagonal(dl, dv, du) ; Amat = dense(A)
+            call random_number(dl)
+            call random_number(dv)
+            call random_number(du)
+            A = tridiagonal(dl, dv, du)
+            Amat = dense(A)
 
             ! Random vectors.
-            allocate(x(n), source = 0.0_wp)   ; call random_number(x)
-            allocate(y1(n), source = 0.0_wp)  ; allocate(y2(n), source=0.0_wp)
+            allocate(x(n), source = 0.0_wp)
+            call random_number(x)
+            allocate(y1(n), source = 0.0_wp)
+            allocate(y2(n), source=0.0_wp)
 
             ! Test y = A @ x
-            y1 = matmul(Amat, x) ; call spmv(A, x, y2)
+            y1 = matmul(Amat, x)
+            call spmv(A, x, y2)
             call check(error, all_close(y1, y2), .true.)
             if (allocated(error)) return
 
             ! Test y = A.T @ x
-            y1 = 0.0_wp ; y2 = 0.0_wp
-            y1 = matmul(transpose(Amat), x) ; call spmv(A, x, y2, op="T")
+            y1 = 0.0_wp
+            y2 = 0.0_wp
+            y1 = matmul(transpose(Amat), x)
+            call spmv(A, x, y2, op="T")
             call check(error, all_close(y1, y2), .true.)
             if (allocated(error)) return
 
             #:if t1.startswith('complex')
             ! Test y = A.H @ x
-            y1 = 0.0_wp ; y2 = 0.0_wp
-            y1 = matmul(hermitian(Amat), x) ; call spmv(A, x, y2, op="H")
+            y1 = 0.0_wp
+            y2 = 0.0_wp
+            y1 = matmul(hermitian(Amat), x)
+            call spmv(A, x, y2, op="H")
             call check(error, all_close(y1, y2), .true.)
             if (allocated(error)) return
             #:endif
@@ -139,28 +149,37 @@ contains
 
             ! Initialize matrix.
             allocate(du(n-1), dv(n))
-            call random_number(du) ; call random_number(dv)
-            A = sym_tridiagonal(du, dv) ; Amat = dense(A)
+            call random_number(du)
+            call random_number(dv)
+            A = sym_tridiagonal(du, dv)
+            Amat = dense(A)
 
             ! Random vectors.
-            allocate(x(n), source = 0.0_wp)   ; call random_number(x)
-            allocate(y1(n), source = 0.0_wp)  ; allocate(y2(n), source=0.0_wp)
+            allocate(x(n), source = 0.0_wp)
+            call random_number(x)
+            allocate(y1(n), source = 0.0_wp)
+            allocate(y2(n), source=0.0_wp)
 
             ! Test y = A @ x
-            y1 = matmul(Amat, x) ; call spmv(A, x, y2)
+            y1 = matmul(Amat, x)
+            call spmv(A, x, y2)
             call check(error, all_close(y1, y2), .true.)
             if (allocated(error)) return
 
             ! Test y = A.T @ x
-            y1 = 0.0_wp ; y2 = 0.0_wp
-            y1 = matmul(transpose(Amat), x) ; call spmv(A, x, y2, op="T")
+            y1 = 0.0_wp
+            y2 = 0.0_wp
+            y1 = matmul(transpose(Amat), x)
+            call spmv(A, x, y2, op="T")
             call check(error, all_close(y1, y2), .true.)
             if (allocated(error)) return
 
             #:if t1.startswith('complex')
             ! Test y = A.H @ x
-            y1 = 0.0_wp ; y2 = 0.0_wp
-            y1 = matmul(hermitian(Amat), x) ; call spmv(A, x, y2, op="H")
+            y1 = 0.0_wp
+            y2 = 0.0_wp
+            y1 = matmul(hermitian(Amat), x)
+            call spmv(A, x, y2, op="H")
             call check(error, all_close(y1, y2), .true.)
             if (allocated(error)) return
             #:endif
@@ -229,7 +248,8 @@ contains
             integer :: i
 
             !> Test constructor from arrays.
-            dl = [(1.0_wp, i = 1, n-2)] ; du = dl
+            dl = [(1.0_wp, i = 1, n-2)]
+            du = dl
             dv = [(2.0_wp, i = 1, n)]
             A = tridiagonal(dl, dv, du, state)
             call check(error, state%ok(), .false.)
