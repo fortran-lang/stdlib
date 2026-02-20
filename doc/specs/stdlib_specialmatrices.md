@@ -66,9 +66,28 @@ Tridiagonal matrices are available with all supported data types as `tridiagonal
 
 `A = ` [[stdlib_specialmatrices(module):tridiagonal(interface)]] `(dl, dv, du)`
 
-- To construct a tridiagonal matrix of size `n x n` with constant diagonal elements `dl`, `dv`, and `du`:
+- To construct a tridiagonal matrix of size `n x n` with constant diagonal elements `dl` (lower diagonal), `dv` (main diagonal), and `du` (upper diagonal):
 
 `A = ` [[stdlib_specialmatrices(module):tridiagonal(interface)]] `(dl, dv, du, n)`
+
+#### Arguments
+
+##### Constructing from arrays
+
+`A = tridiagonal(dl, dv, du)`
+
+- `dl`: Shall be a rank-1 array of type `real` or `complex` with the same kind as the resulting matrix. It is an `intent(in)` argument.
+- `dv`: Shall be a rank-1 array of type `real` or `complex` with the same kind as the resulting matrix. It is an `intent(in)` argument.
+- `du`: Shall be a rank-1 array of type `real` or `complex` with the same kind as the resulting matrix. It is an `intent(in)` argument.
+
+##### Constructing from constant diagonal values
+
+`A = tridiagonal(dl, dv, du, n)`
+
+- `dl`: Shall be a scalar of type `real` or `complex` with the same kind as the resulting matrix. It is an `intent(in)` argument.
+- `dv`: Shall be a scalar of type `real` or `complex` with the same kind as the resulting matrix. It is an `intent(in)` argument.
+- `du`: Shall be a scalar of type `real` or `complex` with the same kind as the resulting matrix. It is an `intent(in)` argument.
+`n`: Shall be a positive `integer`. It is an `intent(in)` argument.
 
 #### Example
 
@@ -98,6 +117,7 @@ $$
     \end{bmatrix}.
 $$
 Hence, only one vector of size `n` and one vector of size `n-1` need to be stored to fully represent the matrix.
+This particular structure also lends itself to specialized implementations for many linear algebra tasks.
 Interfaces to the most common ones will soon be provided by `stdlib_specialmatrices`.
 Symmetric tridiagonal matrices are available with all supported data types as `sym_tridiagonal_<kind>_type`, for example:
 
@@ -117,9 +137,26 @@ Symmetric tridiagonal matrices are available with all supported data types as `s
 
 `A = ` [[stdlib_specialmatrices(module):sym_tridiagonal(interface)]] `(du, dv)`
 
-- To construct a symmetric tridiagonal matrix of size `n x n` with constant diagonal elements `du` and `dv`:
+- To construct a symmetric tridiagonal matrix of size `n x n` with constant diagonal elements `du` (off-diagonal) and `dv` (main diagonal):
 
 `A = ` [[stdlib_specialmatrices(module):sym_tridiagonal(interface)]] `(du, dv, n)`
+
+#### Arguments
+
+##### Constructing from arrays
+
+`A = sym_tridiagonal(du, dv)`
+
+- `du`: Shall be a rank-1 array of type `real` or `complex` with the same kind as the resulting matrix. It is an `intent(in)` argument.
+- `dv`: Shall be a rank-1 array of type `real` or `complex` with the same kind as the resulting matrix. It is an `intent(in)` argument.
+
+##### Constructing from constant diagonal values
+
+`A = sym_tridiagonal(du, dv, n)`
+
+- `du`: Shall be a scalar of type `real` or `complex` with the same kind as the resulting matrix. It is an `intent(in)` argument.
+- `dv`: Shall be a scalar of type `real` or `complex` with the same kind as the resulting matrix. It is an `intent(in)` argument.
+- `n`: Shall be a positive `integer`. It is an `intent(in)` argument.
 
 #### Example
 
