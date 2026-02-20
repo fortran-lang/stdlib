@@ -15,7 +15,7 @@ submodule (stdlib_specialmatrices) sym_tridiagonal_matrices
     !-----                      -----
     !--------------------------------
 
-    #:for k1, t1, s1 in (KINDS_TYPES)
+    #:for k1, t1, s1 in KINDS_TYPES
     pure module function initialize_sym_tridiagonal_pure_${s1}$(du, dv) result(A)
         !! Construct a `symmetric tridiagonal` matrix from the rank-1 arrays `du` and `dv`.
         ${t1}$, intent(in) :: du(:), dv(:)
@@ -65,7 +65,7 @@ submodule (stdlib_specialmatrices) sym_tridiagonal_matrices
         end function
     #:endfor
 
-    #:for k1, t1, s1 in (KINDS_TYPES)
+    #:for k1, t1, s1 in KINDS_TYPES
     pure module subroutine build_sym_tridiagonal_from_arrays_${s1}$(du, dv, A, err)
         ${t1}$, intent(in) :: du(:), dv(:)
         type(sym_tridiagonal_${s1}$_type), intent(out) :: A
@@ -90,7 +90,8 @@ submodule (stdlib_specialmatrices) sym_tridiagonal_matrices
             ! Description of the matrix.
             A%n = n
             ! Matrix elements.
-            A%du = du ; A%dv = dv
+            A%du = du
+            A%dv = dv
         endif
     end subroutine
 
@@ -125,7 +126,7 @@ submodule (stdlib_specialmatrices) sym_tridiagonal_matrices
     !-----------------------------------------
 
     !! spmv_sym_tridiag
-    #:for k1, t1, s1 in (KINDS_TYPES)
+    #:for k1, t1, s1 in KINDS_TYPES
     #:for rank in RANKS
     module subroutine spmv_sym_tridiag_${rank}$d_${s1}$(A, x, y, alpha, beta, op)
         type(sym_tridiagonal_${s1}$_type), intent(in) :: A
@@ -189,7 +190,7 @@ submodule (stdlib_specialmatrices) sym_tridiagonal_matrices
     !-----     UTILITY FUNCTIONS     -----
     !-----                           -----
     !-------------------------------------
-    #:for k1, t1, s1 in (KINDS_TYPES)
+    #:for k1, t1, s1 in KINDS_TYPES
     pure module function sym_tridiagonal_to_dense_${s1}$(A) result(B)
         !! Convert a `symmetric tridiagonal` matrix to its dense representation.
         type(sym_tridiagonal_${s1}$_type), intent(in) :: A
@@ -217,7 +218,7 @@ submodule (stdlib_specialmatrices) sym_tridiagonal_matrices
     end function
     #:endfor
 
-    #:for k1, t1, s1 in (KINDS_TYPES)
+    #:for k1, t1, s1 in KINDS_TYPES
     pure module function transpose_sym_tridiagonal_${s1}$(A) result(B)
         type(sym_tridiagonal_${s1}$_type), intent(in) :: A
         !! Input matrix.
@@ -226,7 +227,7 @@ submodule (stdlib_specialmatrices) sym_tridiagonal_matrices
     end function
     #:endfor
 
-    #:for k1, t1, s1 in (KINDS_TYPES)
+    #:for k1, t1, s1 in KINDS_TYPES
     pure module function hermitian_sym_tridiagonal_${s1}$(A) result(B)
         type(sym_tridiagonal_${s1}$_type), intent(in) :: A
         !! Input matrix.
@@ -239,7 +240,7 @@ submodule (stdlib_specialmatrices) sym_tridiagonal_matrices
     end function
     #:endfor
 
-    #:for k1, t1, s1 in (KINDS_TYPES)
+    #:for k1, t1, s1 in KINDS_TYPES
     pure module function scalar_multiplication_sym_tridiagonal_${s1}$(alpha, A) result(B)
         ${t1}$, intent(in) :: alpha
         type(sym_tridiagonal_${s1}$_type), intent(in) :: A
@@ -257,7 +258,7 @@ submodule (stdlib_specialmatrices) sym_tridiagonal_matrices
     end function
     #:endfor
 
-    #:for k1, t1, s1 in (KINDS_TYPES)
+    #:for k1, t1, s1 in KINDS_TYPES
     pure module function matrix_add_sym_tridiagonal_${s1}$(A, B) result(C)
         type(sym_tridiagonal_${s1}$_type), intent(in) :: A
         type(sym_tridiagonal_${s1}$_type), intent(in) :: B
