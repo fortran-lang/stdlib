@@ -89,13 +89,9 @@ contains
 
         io = open(filename, "w", iostat=stat)
         if (stat /= 0) then
-            if (present(iostat)) then
-                iostat = stat
-                if (present(iomsg)) iomsg = "Could not create file: " // filename
-                return
-            else
-                call error_stop("Could not create file: " // filename)
-            end if
+            call mm_fail_process(iostat = iostat, iomsg = iomsg, code = stat,&
+                message = "Could not create file: " // filename)
+            return
         end if
 
         nrows = size(matrix, 1)
@@ -223,15 +219,10 @@ contains
         end block catch
         
         close(io)
-
-        if (present(iostat)) then
-            iostat = stat
-        else if (stat /= 0) then
-            if (allocated(msg)) then
-                call error_stop("Failed to save Matrix Market file '" // filename // "': " // msg)
-            else
-                call error_stop("Failed to save Matrix Market file '" // filename // "'")
-            end if
+        if(stat/=0) then
+            call mm_fail_process(iostat = iostat, iomsg = iomsg, code = stat,&
+                message = "Failed to save Matrix Market file '" // filename // "': " // msg)
+            return
         end if
 
         if (present(iomsg) .and. allocated(msg)) call move_alloc(msg, iomsg)
@@ -284,16 +275,14 @@ contains
 
         io = open(filename, "w", iostat=stat)
         if (stat /= 0) then
-            if (present(iostat)) then
-                iostat = stat
-                if (present(iomsg)) iomsg = "Could not create file: " // filename
-                return
-            else
-                call error_stop("Could not create file: " // filename)
-            end if
+            call mm_fail_process(iostat = iostat, iomsg = iomsg, code = stat,&
+                message = "Could not create file: " // filename)
         end if
 
-        if(size(index, dim=1)/=2) return
+        if(size(index, dim=1)/=2) then
+            call mm_fail_process(iostat = iostat, iomsg = iomsg, code = stat,&
+                message = "Invalid index dimensions: first dimension must be 2")
+        end if
 
         ! Determine symmetry type
         symmetry_ = MM_GENERAL
@@ -375,14 +364,9 @@ contains
         
         close(io)
 
-        if (present(iostat)) then
-            iostat = stat
-        else if (stat /= 0) then
-            if (allocated(msg)) then
-                call error_stop("Failed to save Matrix Market file '" // filename // "': " // msg)
-            else
-                call error_stop("Failed to save Matrix Market file '" // filename // "'")
-            end if
+        if(stat/=0) then
+            call mm_fail_process(iostat = iostat, iomsg = iomsg, code = stat,&
+                message = "Failed to save Matrix Market file '" // filename // "': " // msg)
         end if
 
         if (present(iomsg) .and. allocated(msg)) call move_alloc(msg, iomsg)
@@ -394,7 +378,8 @@ contains
                               comment, iostat, iomsg)
         integer, intent(in) :: io
         character(len=*), intent(in) :: format, field, symmetry
-        integer, intent(in) :: nrows, ncols, nnz
+        integer, intent(in) :: nrows, ncols
+        integer, intent(in), optional :: nnz
         character(len=*), intent(in), optional :: comment
         integer, intent(out) :: iostat
         character(len=:), allocatable, intent(out) :: iomsg
@@ -450,5 +435,19 @@ contains
             return
         end if
     end subroutine write_mm_header
+
+    subroutine mm_fail_process(iostat, iomsg, code, message)
+        integer, intent(out), optional :: iostat
+        character(len=:), allocatable, intent(out), optional :: iomsg
+        integer, intent(in) :: code
+        character(*), intent(in) :: message
+
+        if (present(iostat)) iostat = code
+        if (present(iomsg)) then
+            iomsg = message
+        else
+            call error_stop(message)
+        end if
+    end subroutine
 
 end submodule stdlib_io_mm_save

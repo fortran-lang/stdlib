@@ -11,6 +11,8 @@ program example_matrix_market
     integer :: iostat, i
     character(len=:), allocatable :: iomsg
 
+    iostat = 0
+    iomsg = ''
     ! Create a test dense matrix
     allocate(matrix(3,3))
     matrix = reshape([1.0_dp, 2.0_dp, 3.0_dp, &

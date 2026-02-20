@@ -64,7 +64,11 @@ contains
         !-----------------------------------------------------------------------------
         ! Open file for regular reading
         open( newunit = u , file=filename, status = 'old' , access='stream', action="read", iostat=err  )
-        if( err /= 0 ) return
+        if( err /= 0 ) then
+            call mm_fail_process(iostat = iostat, iomsg = iomsg, code = err,&
+                message = 'Error opening matrix market file')
+            return
+        end if
         err = 1
 
         !----------------------------------------- 
@@ -78,11 +82,16 @@ contains
         !----------------------------------------- 
         ! Read header
         call read_mm_header(ffp, header, err)
-        if( err /= 0 ) return
+        if( err /= 0 ) then
+            call mm_fail_process(iostat = iostat, iomsg = iomsg, code = err,&
+                message = 'Error reading mm header')
+            return
+        end if
         if( header%format /= MF_array ) then
-          err = 2
-          print *, "warning: a dense matrix is expected for the current file"
-          return
+            err = 2
+            call mm_fail_process(iostat = iostat, iomsg = iomsg, code = err, &
+                message = 'warning: a dense matrix is expected for the current file')
+            return
         end if
 
         !----------------------------------------- 
@@ -97,15 +106,27 @@ contains
         !----------------------------------------- 
         ! Read matrix dimensions
         nrows = to_num_from_stream(ffp, nrows, stat)
-        if( stat /= 0 ) return
+        if( stat /= 0 ) then
+            call mm_fail_process(iostat = iostat, iomsg = iomsg, code = int(stat),&
+                message = 'Error reading number of rows')
+            return
+        end if
         ncols = to_num_from_stream(ffp, ncols, stat)
-        if( stat /= 0 ) return
+        if( stat /= 0 ) then
+            call mm_fail_process(iostat = iostat, iomsg = iomsg, code = int(stat),&
+                message = 'Error reading number of columns')
+            return
+        end if
 
         !----------------------------------------- 
         ! Read actual matrix data
         allocate(matrix(nrows, ncols), stat=err)
         matrix = 0
-        if( err /= 0 ) return
+        if( err /= 0 ) then
+            call mm_fail_process(iostat = iostat, iomsg = iomsg, code = err,&
+                message = 'Error allocating matrix')
+            return
+        end if
         if(header%symmetry==MS_general) then
             do j = 1, ncols
                 do i = 1, nrows
@@ -116,7 +137,11 @@ contains
                     #:else
                     matrix(i,j) = to_num_from_stream(ffp, mold, stat)
                     #:endif
-                    if( stat /= 0 ) return
+                    if( stat /= 0 ) then
+                        call mm_fail_process(iostat = iostat, iomsg = iomsg, code = int(stat),&
+                            message = 'Error reading matrix value')
+                        return
+                    end if
                 end do
             end do
         else
@@ -131,7 +156,11 @@ contains
                     #:else
                     matrix(i,j) = to_num_from_stream(ffp, mold, stat)
                     #:endif
-                    if( stat /= 0 ) return
+                    if( stat /= 0 ) then
+                        call mm_fail_process(iostat = iostat, iomsg = iomsg, code = int(stat),&
+                            message = 'Error reading matrix value')
+                        return
+                    end if
                     ! Assign transpose of the current element
                     matrix(j, i) = matrix(i, j)
                     if(header%symmetry==MS_skew_symmetric) matrix(j, i) = -matrix(j, i)
@@ -179,7 +208,11 @@ contains
         !-----------------------------------------------------------------------------
         ! Open file for regular reading
         open( newunit = u , file=filename, status = 'old' , access='stream', action="read", iostat=err  )
-        if( err /= 0 ) return
+        if( err /= 0 ) then
+            call mm_fail_process(iostat = iostat, iomsg = iomsg, code = err,&
+                message = 'Error opening matrix market file')
+            return
+        end if
         err = 1
 
         !----------------------------------------- 
@@ -193,11 +226,16 @@ contains
         !----------------------------------------- 
         ! Read header
         call read_mm_header(ffp, header, err)
-        if( err /= 0 ) return
+        if( err /= 0 ) then
+            call mm_fail_process(iostat = iostat, iomsg = iomsg, code = err,&
+                message = 'Error reading mm header')
+            return
+        end if
         if( header%format /= MF_coordinate ) then
-          err = 2
-          print *, "warning: a coordinate matrix is expected for the current file"
-          return
+            err = 2
+            call mm_fail_process(iostat = iostat, iomsg = iomsg, code = err, &
+                message = 'warning: a coordinate matrix is expected for the current file')
+            return
         end if
 
         !----------------------------------------- 
@@ -212,11 +250,23 @@ contains
         !----------------------------------------- 
         ! Read matrix dimensions
         nrows = to_num_from_stream(ffp, nrows, stat)
-        if( stat /= 0 ) return
+        if( stat /= 0 ) then
+            call mm_fail_process(iostat = iostat, iomsg = iomsg, code = int(stat),&
+                message = 'Error reading nrows')
+            return
+        end if
         ncols = to_num_from_stream(ffp, ncols, stat)
-        if( stat /= 0 ) return
+        if( stat /= 0 ) then
+            call mm_fail_process(iostat = iostat, iomsg = iomsg, code = int(stat),&
+                message = 'Error reading ncols')
+            return
+        end if
         nnz = to_num_from_stream(ffp, nnz, stat)
-        if( stat /= 0 ) return
+        if( stat /= 0 ) then
+            call mm_fail_process(iostat = iostat, iomsg = iomsg, code = int(stat),&
+                message = 'Error reading nnz')
+            return
+        end if
         
         !-----------------------------------------
         ! Allocate temporary arrays to hold the file data
@@ -238,6 +288,11 @@ contains
             #:else
             vals(i) = to_num_from_stream(ffp, mold, stat)
             #:endif
+            if(stat /= 0) then
+                call mm_fail_process(iostat = iostat, iomsg = iomsg, code = int(stat), &
+                    message = 'Error reading the Matrix Market coordinate data')
+                return
+            end if
         end do
 
         !----------------------------------------- 
@@ -269,18 +324,18 @@ contains
         !----------------------------------------- 
         ! Fill in symmetric entries if needed
         if(header%symmetry==MS_general) return
-            adr = 1
-            do i = 1, nnz
-                if(index(1,i)==index(2,i)) cycle
-                index(1,nnz+adr) = index(2,i)
-                index(2,nnz+adr) = index(1,i)
-                data(nnz+adr) = data(i)
-                if(header%symmetry==MS_skew_symmetric) data(nnz+adr) = -data(i)
-                #:if t.startswith('complex')
-                if(header%symmetry==MS_hermitian) data(nnz+adr) = conjg(data(i))
-                #:endif
-                adr = adr + 1
-            end do
+        adr = 1
+        do i = 1, nnz
+            if(index(1,i)==index(2,i)) cycle
+            index(1,nnz+adr) = index(2,i)
+            index(2,nnz+adr) = index(1,i)
+            data(nnz+adr) = data(i)
+            if(header%symmetry==MS_skew_symmetric) data(nnz+adr) = -data(i)
+            #:if t.startswith('complex')
+            if(header%symmetry==MS_hermitian) data(nnz+adr) = conjg(data(i))
+            #:endif
+            adr = adr + 1
+        end do
     end subroutine
     #:endfor
 
@@ -290,11 +345,17 @@ contains
         integer, intent(out) :: err
         !----------------------------------------------
         err = 0
-        if( .not. starts_with(ffp, "%%MatrixMarket ") ) return
+        if( .not. starts_with(ffp, "%%MatrixMarket ") ) then
+            err = 1
+            return
+        end if
         ffp => ffp(16:)
         
         ! Read object type: matrix
-        if( .not. starts_with(ffp, "matrix ") ) return
+        if( .not. starts_with(ffp, "matrix ") ) then
+            err = 1
+            return
+        end if
         ffp => ffp(8:)
         header%object = 1 ! matrix
         
@@ -306,6 +367,7 @@ contains
             ffp => ffp(12:) ! coordinate
             header%format = MF_coordinate
         else
+            err = 1
             return
         end if
 
@@ -323,6 +385,7 @@ contains
             ffp => ffp(9:) ! pattern
             header%qualifier = MQ_pattern
         else
+            err = 1
             return
         end if
 
@@ -340,6 +403,7 @@ contains
             ffp => ffp(11:) ! hermitian
             header%symmetry = MS_hermitian
         else
+            err = 1
             return
         end if
     end subroutine
@@ -360,5 +424,19 @@ contains
         end if
       end if
     end function
+
+    subroutine mm_fail_process(iostat, iomsg, code, message)
+        integer, intent(out), optional :: iostat
+        character(len=:), allocatable, intent(out), optional :: iomsg
+        integer, intent(in) :: code
+        character(*), intent(in) :: message
+
+        if (present(iostat)) iostat = code
+        if (present(iomsg)) then
+            iomsg = message
+        else
+            call error_stop(message)
+        end if
+    end subroutine
 
 end submodule stdlib_io_mm_load
