@@ -1561,11 +1561,16 @@ contains
     ! data accessors
     !==================================================================
 
+    logical(c_bool) elemental function skip(sym,row,col)
+        integer(ilp), intent(in) :: sym, row, col
+        skip = (sym == sparse_lower .and. row < col) .or. (sym == sparse_upper .and. row > col)
+    end function
+
     pure real(sp) function at_value_coo_sp(self,ik,jk) result(val)
         class(COO_sp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
-        logical :: transpose
+        logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._sp , ieee_quiet_nan)
@@ -1603,14 +1608,18 @@ contains
         class(COO_sp_type), intent(inout) :: self
         real(sp), intent(in) :: val(:,:)
         integer(ilp), intent(in) :: ik(:), jk(:)
-        integer(ilp) :: k, i, j
+        integer(ilp) :: k, i, j, row, col
         ! naive implementation
         do k = 1, self%nnz
             do i = 1, size(ik)
-                if( ik(i) /= self%index(1,k) ) cycle
+                row = ik(i)
+                if( row /= self%index(1,k) ) cycle
                 do j = 1, size(jk)
-                    if( jk(j) /= self%index(2,k) ) cycle
+                    col = jk(j)
+                    if( skip(self%storage,row,col) ) cycle
+                    if( col /= self%index(2,k) ) cycle
                     self%data(k) = self%data(k) + val(i,j)
+                    exit
                 end do
             end do
         end do
@@ -1620,7 +1629,7 @@ contains
         class(COO_dp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
-        logical :: transpose
+        logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._dp , ieee_quiet_nan)
@@ -1658,14 +1667,18 @@ contains
         class(COO_dp_type), intent(inout) :: self
         real(dp), intent(in) :: val(:,:)
         integer(ilp), intent(in) :: ik(:), jk(:)
-        integer(ilp) :: k, i, j
+        integer(ilp) :: k, i, j, row, col
         ! naive implementation
         do k = 1, self%nnz
             do i = 1, size(ik)
-                if( ik(i) /= self%index(1,k) ) cycle
+                row = ik(i)
+                if( row /= self%index(1,k) ) cycle
                 do j = 1, size(jk)
-                    if( jk(j) /= self%index(2,k) ) cycle
+                    col = jk(j)
+                    if( skip(self%storage,row,col) ) cycle
+                    if( col /= self%index(2,k) ) cycle
                     self%data(k) = self%data(k) + val(i,j)
+                    exit
                 end do
             end do
         end do
@@ -1675,7 +1688,7 @@ contains
         class(COO_csp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
-        logical :: transpose
+        logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._sp , ieee_quiet_nan)
@@ -1713,14 +1726,18 @@ contains
         class(COO_csp_type), intent(inout) :: self
         complex(sp), intent(in) :: val(:,:)
         integer(ilp), intent(in) :: ik(:), jk(:)
-        integer(ilp) :: k, i, j
+        integer(ilp) :: k, i, j, row, col
         ! naive implementation
         do k = 1, self%nnz
             do i = 1, size(ik)
-                if( ik(i) /= self%index(1,k) ) cycle
+                row = ik(i)
+                if( row /= self%index(1,k) ) cycle
                 do j = 1, size(jk)
-                    if( jk(j) /= self%index(2,k) ) cycle
+                    col = jk(j)
+                    if( skip(self%storage,row,col) ) cycle
+                    if( col /= self%index(2,k) ) cycle
                     self%data(k) = self%data(k) + val(i,j)
+                    exit
                 end do
             end do
         end do
@@ -1730,7 +1747,7 @@ contains
         class(COO_cdp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
-        logical :: transpose
+        logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._dp , ieee_quiet_nan)
@@ -1768,14 +1785,18 @@ contains
         class(COO_cdp_type), intent(inout) :: self
         complex(dp), intent(in) :: val(:,:)
         integer(ilp), intent(in) :: ik(:), jk(:)
-        integer(ilp) :: k, i, j
+        integer(ilp) :: k, i, j, row, col
         ! naive implementation
         do k = 1, self%nnz
             do i = 1, size(ik)
-                if( ik(i) /= self%index(1,k) ) cycle
+                row = ik(i)
+                if( row /= self%index(1,k) ) cycle
                 do j = 1, size(jk)
-                    if( jk(j) /= self%index(2,k) ) cycle
+                    col = jk(j)
+                    if( skip(self%storage,row,col) ) cycle
+                    if( col /= self%index(2,k) ) cycle
                     self%data(k) = self%data(k) + val(i,j)
+                    exit
                 end do
             end do
         end do
@@ -1786,7 +1807,7 @@ contains
         class(CSR_sp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
-        logical :: transpose
+        logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._sp , ieee_quiet_nan)
@@ -1824,13 +1845,17 @@ contains
         class(CSR_sp_type), intent(inout) :: self
         real(sp), intent(in) :: val(:,:)
         integer(ilp), intent(in) :: ik(:), jk(:)
-        integer(ilp) :: k, i, j
+        integer(ilp) :: k, i, j, row, col
         ! naive implementation
         do i = 1, size(ik)
-            do k = self%rowptr(ik(i)), self%rowptr(ik(i)+1)-1
+            row = ik(i)
+            do k = self%rowptr(row), self%rowptr(row+1)-1
                 do j = 1, size(jk)
-                    if( jk(j) == self%col(k) ) then
+                    col = jk(j)
+                    if( skip(self%storage,row,col) ) cycle
+                    if( col == self%col(k) ) then
                         self%data(k) = self%data(k) + val(i,j)
+                        exit
                     end if
                 end do
             end do
@@ -1841,7 +1866,7 @@ contains
         class(CSR_dp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
-        logical :: transpose
+        logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._dp , ieee_quiet_nan)
@@ -1879,13 +1904,17 @@ contains
         class(CSR_dp_type), intent(inout) :: self
         real(dp), intent(in) :: val(:,:)
         integer(ilp), intent(in) :: ik(:), jk(:)
-        integer(ilp) :: k, i, j
+        integer(ilp) :: k, i, j, row, col
         ! naive implementation
         do i = 1, size(ik)
-            do k = self%rowptr(ik(i)), self%rowptr(ik(i)+1)-1
+            row = ik(i)
+            do k = self%rowptr(row), self%rowptr(row+1)-1
                 do j = 1, size(jk)
-                    if( jk(j) == self%col(k) ) then
+                    col = jk(j)
+                    if( skip(self%storage,row,col) ) cycle
+                    if( col == self%col(k) ) then
                         self%data(k) = self%data(k) + val(i,j)
+                        exit
                     end if
                 end do
             end do
@@ -1896,7 +1925,7 @@ contains
         class(CSR_csp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
-        logical :: transpose
+        logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._sp , ieee_quiet_nan)
@@ -1934,13 +1963,17 @@ contains
         class(CSR_csp_type), intent(inout) :: self
         complex(sp), intent(in) :: val(:,:)
         integer(ilp), intent(in) :: ik(:), jk(:)
-        integer(ilp) :: k, i, j
+        integer(ilp) :: k, i, j, row, col
         ! naive implementation
         do i = 1, size(ik)
-            do k = self%rowptr(ik(i)), self%rowptr(ik(i)+1)-1
+            row = ik(i)
+            do k = self%rowptr(row), self%rowptr(row+1)-1
                 do j = 1, size(jk)
-                    if( jk(j) == self%col(k) ) then
+                    col = jk(j)
+                    if( skip(self%storage,row,col) ) cycle
+                    if( col == self%col(k) ) then
                         self%data(k) = self%data(k) + val(i,j)
+                        exit
                     end if
                 end do
             end do
@@ -1951,7 +1984,7 @@ contains
         class(CSR_cdp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
-        logical :: transpose
+        logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._dp , ieee_quiet_nan)
@@ -1989,13 +2022,17 @@ contains
         class(CSR_cdp_type), intent(inout) :: self
         complex(dp), intent(in) :: val(:,:)
         integer(ilp), intent(in) :: ik(:), jk(:)
-        integer(ilp) :: k, i, j
+        integer(ilp) :: k, i, j, row, col
         ! naive implementation
         do i = 1, size(ik)
-            do k = self%rowptr(ik(i)), self%rowptr(ik(i)+1)-1
+            row = ik(i)
+            do k = self%rowptr(row), self%rowptr(row+1)-1
                 do j = 1, size(jk)
-                    if( jk(j) == self%col(k) ) then
+                    col = jk(j)
+                    if( skip(self%storage,row,col) ) cycle
+                    if( col == self%col(k) ) then
                         self%data(k) = self%data(k) + val(i,j)
+                        exit
                     end if
                 end do
             end do
@@ -2007,7 +2044,7 @@ contains
         class(CSC_sp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
-        logical :: transpose
+        logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._sp , ieee_quiet_nan)
@@ -2045,13 +2082,17 @@ contains
         class(CSC_sp_type), intent(inout) :: self
         real(sp), intent(in) :: val(:,:)
         integer(ilp), intent(in)  :: ik(:), jk(:)
-        integer(ilp) :: k, i, j
+        integer(ilp) :: k, i, j, row, col
         ! naive implementation
         do j = 1, size(jk)
-            do k = self%colptr(jk(j)), self%colptr(jk(j)+1)-1
+            col = jk(j)
+            do k = self%colptr(col), self%colptr(col+1)-1
                 do i = 1, size(ik)
-                    if( ik(i) == self%row(k) ) then
+                    row = ik(i)
+                    if( skip(self%storage,row,col) ) cycle
+                    if( row == self%row(k) ) then
                         self%data(k) = self%data(k) + val(i,j)
+                        exit
                     end if
                 end do
             end do
@@ -2062,7 +2103,7 @@ contains
         class(CSC_dp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
-        logical :: transpose
+        logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._dp , ieee_quiet_nan)
@@ -2100,13 +2141,17 @@ contains
         class(CSC_dp_type), intent(inout) :: self
         real(dp), intent(in) :: val(:,:)
         integer(ilp), intent(in)  :: ik(:), jk(:)
-        integer(ilp) :: k, i, j
+        integer(ilp) :: k, i, j, row, col
         ! naive implementation
         do j = 1, size(jk)
-            do k = self%colptr(jk(j)), self%colptr(jk(j)+1)-1
+            col = jk(j)
+            do k = self%colptr(col), self%colptr(col+1)-1
                 do i = 1, size(ik)
-                    if( ik(i) == self%row(k) ) then
+                    row = ik(i)
+                    if( skip(self%storage,row,col) ) cycle
+                    if( row == self%row(k) ) then
                         self%data(k) = self%data(k) + val(i,j)
+                        exit
                     end if
                 end do
             end do
@@ -2117,7 +2162,7 @@ contains
         class(CSC_csp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
-        logical :: transpose
+        logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._sp , ieee_quiet_nan)
@@ -2155,13 +2200,17 @@ contains
         class(CSC_csp_type), intent(inout) :: self
         complex(sp), intent(in) :: val(:,:)
         integer(ilp), intent(in)  :: ik(:), jk(:)
-        integer(ilp) :: k, i, j
+        integer(ilp) :: k, i, j, row, col
         ! naive implementation
         do j = 1, size(jk)
-            do k = self%colptr(jk(j)), self%colptr(jk(j)+1)-1
+            col = jk(j)
+            do k = self%colptr(col), self%colptr(col+1)-1
                 do i = 1, size(ik)
-                    if( ik(i) == self%row(k) ) then
+                    row = ik(i)
+                    if( skip(self%storage,row,col) ) cycle
+                    if( row == self%row(k) ) then
                         self%data(k) = self%data(k) + val(i,j)
+                        exit
                     end if
                 end do
             end do
@@ -2172,7 +2221,7 @@ contains
         class(CSC_cdp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
-        logical :: transpose
+        logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._dp , ieee_quiet_nan)
@@ -2210,13 +2259,17 @@ contains
         class(CSC_cdp_type), intent(inout) :: self
         complex(dp), intent(in) :: val(:,:)
         integer(ilp), intent(in)  :: ik(:), jk(:)
-        integer(ilp) :: k, i, j
+        integer(ilp) :: k, i, j, row, col
         ! naive implementation
         do j = 1, size(jk)
-            do k = self%colptr(jk(j)), self%colptr(jk(j)+1)-1
+            col = jk(j)
+            do k = self%colptr(col), self%colptr(col+1)-1
                 do i = 1, size(ik)
-                    if( ik(i) == self%row(k) ) then
+                    row = ik(i)
+                    if( skip(self%storage,row,col) ) cycle
+                    if( row == self%row(k) ) then
                         self%data(k) = self%data(k) + val(i,j)
+                        exit
                     end if
                 end do
             end do
@@ -2228,7 +2281,7 @@ contains
         class(ELL_sp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
-        logical :: transpose
+        logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._sp , ieee_quiet_nan)
@@ -2266,13 +2319,17 @@ contains
         class(ELL_sp_type), intent(inout) :: self
         real(sp), intent(in) :: val(:,:)
         integer(ilp), intent(in)  :: ik(:), jk(:)
-        integer(ilp) :: k, i, j
+        integer(ilp) :: k, i, j, row, col
         ! naive implementation
         do k = 1 , self%K
             do j = 1, size(jk)
+                col = jk(j)
                 do i = 1, size(ik)
-                    if( jk(j) == self%index(ik(i),k) ) then
-                        self%data(ik(i),k) = self%data(ik(i),k) + val(i,j)
+                    row = ik(i)
+                    if( skip(self%storage,row,col) ) cycle
+                    if( col == self%index(row,k) ) then
+                        self%data(row,k) = self%data(row,k) + val(i,j)
+                        exit
                     end if
                 end do
             end do
@@ -2283,7 +2340,7 @@ contains
         class(ELL_dp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
-        logical :: transpose
+        logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._dp , ieee_quiet_nan)
@@ -2321,13 +2378,17 @@ contains
         class(ELL_dp_type), intent(inout) :: self
         real(dp), intent(in) :: val(:,:)
         integer(ilp), intent(in)  :: ik(:), jk(:)
-        integer(ilp) :: k, i, j
+        integer(ilp) :: k, i, j, row, col
         ! naive implementation
         do k = 1 , self%K
             do j = 1, size(jk)
+                col = jk(j)
                 do i = 1, size(ik)
-                    if( jk(j) == self%index(ik(i),k) ) then
-                        self%data(ik(i),k) = self%data(ik(i),k) + val(i,j)
+                    row = ik(i)
+                    if( skip(self%storage,row,col) ) cycle
+                    if( col == self%index(row,k) ) then
+                        self%data(row,k) = self%data(row,k) + val(i,j)
+                        exit
                     end if
                 end do
             end do
@@ -2338,7 +2399,7 @@ contains
         class(ELL_csp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
-        logical :: transpose
+        logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._sp , ieee_quiet_nan)
@@ -2376,13 +2437,17 @@ contains
         class(ELL_csp_type), intent(inout) :: self
         complex(sp), intent(in) :: val(:,:)
         integer(ilp), intent(in)  :: ik(:), jk(:)
-        integer(ilp) :: k, i, j
+        integer(ilp) :: k, i, j, row, col
         ! naive implementation
         do k = 1 , self%K
             do j = 1, size(jk)
+                col = jk(j)
                 do i = 1, size(ik)
-                    if( jk(j) == self%index(ik(i),k) ) then
-                        self%data(ik(i),k) = self%data(ik(i),k) + val(i,j)
+                    row = ik(i)
+                    if( skip(self%storage,row,col) ) cycle
+                    if( col == self%index(row,k) ) then
+                        self%data(row,k) = self%data(row,k) + val(i,j)
+                        exit
                     end if
                 end do
             end do
@@ -2393,7 +2458,7 @@ contains
         class(ELL_cdp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_
-        logical :: transpose
+        logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._dp , ieee_quiet_nan)
@@ -2431,13 +2496,17 @@ contains
         class(ELL_cdp_type), intent(inout) :: self
         complex(dp), intent(in) :: val(:,:)
         integer(ilp), intent(in)  :: ik(:), jk(:)
-        integer(ilp) :: k, i, j
+        integer(ilp) :: k, i, j, row, col
         ! naive implementation
         do k = 1 , self%K
             do j = 1, size(jk)
+                col = jk(j)
                 do i = 1, size(ik)
-                    if( jk(j) == self%index(ik(i),k) ) then
-                        self%data(ik(i),k) = self%data(ik(i),k) + val(i,j)
+                    row = ik(i)
+                    if( skip(self%storage,row,col) ) cycle
+                    if( col == self%index(row,k) ) then
+                        self%data(row,k) = self%data(row,k) + val(i,j)
+                        exit
                     end if
                 end do
             end do
@@ -2449,7 +2518,7 @@ contains
         class(SELLC_sp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_, idx
-        logical :: transpose
+        logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._sp , ieee_quiet_nan)
@@ -2490,14 +2559,18 @@ contains
         class(SELLC_sp_type), intent(inout) :: self
         real(sp), intent(in) :: val(:,:)
         integer(ilp), intent(in)  :: ik(:), jk(:)
-        integer(ilp) :: k, i, j, idx
+        integer(ilp) :: k, i, j, idx, row, col
         ! naive implementation
         do k = 1 , self%chunk_size
             do j = 1, size(jk)
+                col = jk(j)
                 do i = 1, size(ik)
-                    idx = self%rowptr((ik(i) - 1)/self%chunk_size + 1)
-                    if( jk(j) == self%col(k,idx) ) then
+                    row = ik(i)
+                    idx = self%rowptr((row - 1)/self%chunk_size + 1)
+                    if( skip(self%storage,row,col) ) cycle
+                    if( col == self%col(k,idx) ) then
                         self%data(k,idx) = self%data(k,idx) + val(i,j)
+                        exit
                     end if
                 end do
             end do
@@ -2508,7 +2581,7 @@ contains
         class(SELLC_dp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_, idx
-        logical :: transpose
+        logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._dp , ieee_quiet_nan)
@@ -2549,14 +2622,18 @@ contains
         class(SELLC_dp_type), intent(inout) :: self
         real(dp), intent(in) :: val(:,:)
         integer(ilp), intent(in)  :: ik(:), jk(:)
-        integer(ilp) :: k, i, j, idx
+        integer(ilp) :: k, i, j, idx, row, col
         ! naive implementation
         do k = 1 , self%chunk_size
             do j = 1, size(jk)
+                col = jk(j)
                 do i = 1, size(ik)
-                    idx = self%rowptr((ik(i) - 1)/self%chunk_size + 1)
-                    if( jk(j) == self%col(k,idx) ) then
+                    row = ik(i)
+                    idx = self%rowptr((row - 1)/self%chunk_size + 1)
+                    if( skip(self%storage,row,col) ) cycle
+                    if( col == self%col(k,idx) ) then
                         self%data(k,idx) = self%data(k,idx) + val(i,j)
+                        exit
                     end if
                 end do
             end do
@@ -2567,7 +2644,7 @@ contains
         class(SELLC_csp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_, idx
-        logical :: transpose
+        logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._sp , ieee_quiet_nan)
@@ -2608,14 +2685,18 @@ contains
         class(SELLC_csp_type), intent(inout) :: self
         complex(sp), intent(in) :: val(:,:)
         integer(ilp), intent(in)  :: ik(:), jk(:)
-        integer(ilp) :: k, i, j, idx
+        integer(ilp) :: k, i, j, idx, row, col
         ! naive implementation
         do k = 1 , self%chunk_size
             do j = 1, size(jk)
+                col = jk(j)
                 do i = 1, size(ik)
-                    idx = self%rowptr((ik(i) - 1)/self%chunk_size + 1)
-                    if( jk(j) == self%col(k,idx) ) then
+                    row = ik(i)
+                    idx = self%rowptr((row - 1)/self%chunk_size + 1)
+                    if( skip(self%storage,row,col) ) cycle
+                    if( col == self%col(k,idx) ) then
                         self%data(k,idx) = self%data(k,idx) + val(i,j)
+                        exit
                     end if
                 end do
             end do
@@ -2626,7 +2707,7 @@ contains
         class(SELLC_cdp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, ik_, jk_, idx
-        logical :: transpose
+        logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._dp , ieee_quiet_nan)
@@ -2667,14 +2748,18 @@ contains
         class(SELLC_cdp_type), intent(inout) :: self
         complex(dp), intent(in) :: val(:,:)
         integer(ilp), intent(in)  :: ik(:), jk(:)
-        integer(ilp) :: k, i, j, idx
+        integer(ilp) :: k, i, j, idx, row, col
         ! naive implementation
         do k = 1 , self%chunk_size
             do j = 1, size(jk)
+                col = jk(j)
                 do i = 1, size(ik)
-                    idx = self%rowptr((ik(i) - 1)/self%chunk_size + 1)
-                    if( jk(j) == self%col(k,idx) ) then
+                    row = ik(i)
+                    idx = self%rowptr((row - 1)/self%chunk_size + 1)
+                    if( skip(self%storage,row,col) ) cycle
+                    if( col == self%col(k,idx) ) then
                         self%data(k,idx) = self%data(k,idx) + val(i,j)
+                        exit
                     end if
                 end do
             end do

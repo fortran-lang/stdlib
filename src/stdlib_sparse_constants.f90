@@ -1,5 +1,5 @@
 module stdlib_sparse_constants
-    use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp
+    use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp, c_bool
     use stdlib_constants
     implicit none
     public
