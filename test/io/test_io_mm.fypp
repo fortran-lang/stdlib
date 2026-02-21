@@ -1,9 +1,8 @@
 #:include "common.fypp"
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
-! #:set C_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
-! #:set I_KINDS_TYPES  = list(zip(INT_KINDS,   INT_TYPES, INT_KINDS))
-! #:set KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES + I_KINDS_TYPES
-#:set KINDS_TYPES = R_KINDS_TYPES
+#:set C_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES
+
 module test_io_mm
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_kinds
@@ -31,14 +30,100 @@ contains
         #:for k, t, s in (KINDS_TYPES)
         block
             integer, parameter :: n = 5
-            ${t}$, allocatable :: matrix_save(:, :), matrix_load(:, :)
-            integer :: i,j
+            ${t}$, allocatable :: matrix_save(:, :), matrix_load(:, :), R(:, :), A(:, :)
+            #:if t.startswith('complex')
+            ${t}$, allocatable :: I(:,:)
+            #:endif
             allocate(matrix_save(n,n))
+            allocate(R(n,n))
+            allocate(A(n,n))
+            #:if t.startswith('complex')
+            allocate(I(n,n))
+            #:endif
+
+            ! General matrix
+            #:if t.startswith('complex')
+            call random_number(R)
+            call random_number(I)
+            matrix_save = cmplx(R, I, kind=${k}$)
+            #:else
             call random_number(matrix_save)
+            #:endif
             call save_mm("test_mmio_dense.mtx", matrix_save, format = "G0")
             call load_mm("test_mmio_dense.mtx", matrix_load)
-            call check(error, all_close(matrix_save, matrix_load), .true.)
+            call check(error, all_close(matrix_save, matrix_load), .true.,&
+                "MM array test failed: matrix=general, symmetry_arg=unspecified")
             if(allocated(error)) return
+            ! Check if symmetry = auto
+            call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "auto", format = "G0")
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            call check(error, all_close(matrix_save, matrix_load), .true.,&
+                "MM array test failed: matrix=general, symmetry_arg=auto")
+            if(allocated(error)) return
+
+            ! Symmetric matrix
+            #:if t.startswith('complex')
+            call random_number(R)
+            call random_number(I)
+            A = cmplx(R, I, kind=${k}$)
+            #:else
+            call random_number(A)
+            #:endif
+            ! Construct symmetric matrix using (A + A.T)
+            matrix_save = A + transpose(A)
+            call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "symmetric", format = "G0")
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            call check(error, all_close(matrix_save, matrix_load), .true.,&
+                "MM array test failed: matrix=symmetric, symmetry_arg=symmetric")
+            if(allocated(error)) return
+            ! Check if symmetry = auto
+            call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "auto", format = "G0")
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            call check(error, all_close(matrix_save, matrix_load), .true.,&
+                "MM array test failed: matrix=symmetric, symmetry_arg=auto")
+            if(allocated(error)) return
+
+            ! Skew-symmetric matrix
+            #:if t.startswith('complex')
+            call random_number(R)
+            call random_number(I)
+            A = cmplx(R, I, kind=${k}$)
+            #:else
+            call random_number(A)
+            #:endif
+            ! Construct symmetric matrix using (A - A.T)
+            matrix_save = A - transpose(A)
+            call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "skew-symmetric", format = "G0")
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            call check(error, all_close(matrix_save, matrix_load), .true.,&
+                "MM array test failed: matrix=skew-symmetric, symmetry_arg=skew-symmetric")
+            if(allocated(error)) return
+            ! Check if symmetry = auto
+            call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "auto", format = "G0")
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            call check(error, all_close(matrix_save, matrix_load), .true.,&
+                "MM array test failed: matrix=skew-symmetric, symmetry_arg=auto")
+            if(allocated(error)) return
+
+            ! Hermitian matrix
+            #:if t.startswith('complex')
+            call random_number(R)
+            call random_number(I)
+            A = cmplx(R, I, kind=${k}$)
+            ! Construct symmetric matrix using (A + A.H)
+            matrix_save = A + transpose(conjg(A))
+            call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "hermitian", format = "G0")
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            call check(error, all_close(matrix_save, matrix_load), .true.,&
+                "MM array test failed: matrix=hermitian, symmetry_arg=hermitian")
+            if(allocated(error)) return
+            ! Check if symmetry = auto
+            call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "auto", format = "G0")
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            call check(error, all_close(matrix_save, matrix_load), .true.,&
+                "MM array test failed: matrix=hermitian, symmetry_arg=auto")
+            if(allocated(error)) return
+            #:endif
         end block
         #:endfor
     end subroutine
@@ -51,12 +136,6 @@ contains
             integer, parameter :: n = 5
             ${t}$, allocatable :: index_save(:), index_load(:)
             integer, allocatable :: data_save(:, :), data_load(:,:)
-            ! allocate(matrix_save(n,n))
-            ! call random_number(matrix_save)
-            ! call save_mm("test_mmio_dense.mtx", matrix_save)
-            ! call load_mm("test_mmio_dense.mtx", matrix_load)
-            ! call check(error, all_close(matrix_save, matrix_load), .true.)
-            ! if(allocated(error)) return
         end block
         #:endfor
     end subroutine
