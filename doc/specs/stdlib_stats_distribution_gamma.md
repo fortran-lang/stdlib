@@ -78,6 +78,8 @@ $$ f(x)= \frac{\lambda^{k}}{\Gamma (k)}x^{k-1}e^{-\lambda x} ,\quad x>0,\ k>0,\ 
 
 where \\(k\\) is the shape parameter, \\(\\lambda\\) is the rate parameter, and \\(\\Gamma(k)\\) is the gamma function.
 
+An optional `loc` parameter specifies the location (shift) of the distribution.
+
 For a complex variable \\(z=(x + y i)\\) with independent real \\(x\\) and imaginary \\(y\\) parts, the joint probability density function is the product of the corresponding real and imaginary marginal pdfs:[^2]
 
 $$f(x+\mathit{i}y)=f(x)f(y)$$
@@ -127,6 +129,8 @@ Cumulative distribution function (cdf) of the single real variable gamma distrib
 $$ F(x)= \frac{\gamma (k, \lambda x)}{\Gamma (k)},\quad x>0,\ k>0,\ \lambda>0 $$
 
 where \\(\\gamma(k, z)\\) is the lower incomplete gamma function, and \\(\\Gamma(k)\\) is the gamma function. This is often referred to as the regularized gamma P function.
+
+An optional `loc` parameter specifies the location (shift) of the distribution.
 
 For a complex variable \\(z=(x + y i)\\) with independent real \\(x\\) and imaginary \\(y\\) parts, the joint cumulative distribution function is the product of the corresponding real and imaginary marginal cdfs:[^2]
 
