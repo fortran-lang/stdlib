@@ -30,19 +30,13 @@ contains
         type(error_type), allocatable, intent(out) :: error
         #:for k, t, s in (KINDS_TYPES)
         block
-            integer, parameter :: wp = ${k}$
             integer, parameter :: n = 5
             ${t}$, allocatable :: matrix_save(:, :), matrix_load(:, :)
             integer :: i,j
-            allocate(matrix_save(n,n), source=0.0_wp)
+            allocate(matrix_save(n,n))
             call random_number(matrix_save)
-            call save_mm("test_mmio_dense.mtx", matrix_save)
+            call save_mm("test_mmio_dense.mtx", matrix_save, format = "G0")
             call load_mm("test_mmio_dense.mtx", matrix_load)
-            do i = 1,n; do j = 1,n
-                if(matrix_save(i,j) /= matrix_load(i,j)) then
-                    print*, "save: ", matrix_save(i,j), " load: ", matrix_load(i,j)
-                end if
-            end do; end do
             call check(error, all_close(matrix_save, matrix_load), .true.)
             if(allocated(error)) return
         end block
