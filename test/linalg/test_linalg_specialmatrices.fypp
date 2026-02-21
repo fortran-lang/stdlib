@@ -8,6 +8,7 @@ module test_specialmatrices
     use stdlib_linalg_state, only: linalg_state_type
     use stdlib_math, only: all_close
     use stdlib_specialmatrices
+    use stdlib_strings, only: to_string
     implicit none
 
 contains
@@ -59,7 +60,8 @@ contains
             ! Test y = A @ x
             y1 = matmul(Amat, x)
             call spmv(A, x, y2)
-            call check(error, all_close(y1, y2), .true.)
+            call check(error, all_close(y1, y2), .true.,&
+                "spmv(fail): y = A*x")
             if (allocated(error)) return
 
             ! Test y = A.T @ x
@@ -67,7 +69,8 @@ contains
             y2 = 0.0_wp
             y1 = matmul(transpose(Amat), x)
             call spmv(A, x, y2, op="T")
-            call check(error, all_close(y1, y2), .true.)
+            call check(error, all_close(y1, y2), .true.,&
+                "spmv(fail): y = A.T*x")
             if (allocated(error)) return
 
             #:if t1.startswith('complex')
@@ -76,7 +79,8 @@ contains
             y2 = 0.0_wp
             y1 = matmul(hermitian(Amat), x)
             call spmv(A, x, y2, op="H")
-            call check(error, all_close(y1, y2), .true.)
+            call check(error, all_close(y1, y2), .true.,&
+                "spmv(fail): y = A.H*x")
             if (allocated(error)) return
             #:endif
 
@@ -90,40 +94,44 @@ contains
                     call random_number(y2)
                     y1 = alpha * matmul(Amat, x) + beta * y2
                     call spmv(A, x, y2, alpha=alpha, beta=beta)
-                    call check(error, all_close(y1, y2), .true.)
+                    call check(error, all_close(y1, y2), .true.,&
+                        "spmv(fail): y = alpha*A*x + beta*y, alpha: "//to_string(alpha)//", beta: "//to_string(beta))
                     if (allocated(error)) return
                 end do
             end do
 
-            ! Test y = A @ x for random values of alpha and beta
+            ! Test y = alpha * A @ x + beta * y for random values of alpha and beta
             y1 = 0.0_wp
             call random_number(alpha)
             call random_number(beta)
             call random_number(y2)
             y1 = alpha * matmul(Amat, x) + beta * y2
             call spmv(A, x, y2, alpha=alpha, beta=beta)
-            call check(error, all_close(y1, y2), .true.)
+            call check(error, all_close(y1, y2), .true.,&
+                "spmv(fail): y = alpha*A*x + beta*y, alpha: "//to_string(alpha)//", beta: "//to_string(beta))
             if (allocated(error)) return
 
-            ! Test y = A.T @ x for random values of alpha and beta
+            ! Test y = alpha * A.T @ x beta * y for random values of alpha and beta
             y1 = 0.0_wp
             call random_number(alpha)
             call random_number(beta)
             call random_number(y2)
             y1 = alpha * matmul(transpose(Amat), x) + beta * y2
             call spmv(A, x, y2, alpha=alpha, beta=beta, op="T")
-            call check(error, all_close(y1, y2), .true.)
+            call check(error, all_close(y1, y2), .true.,&
+                "spmv(fail): y = alpha*A.T*x + beta*y, alpha: "//to_string(alpha)//", beta: "//to_string(beta))
             if (allocated(error)) return
 
             #:if t1.startswith('complex')
-            ! Test y = A.H @ x for random values of alpha and beta
+            ! Test y = alpha * A.H @ x + beta * y for random values of alpha and beta
             y1 = 0.0_wp
             call random_number(alpha)
             call random_number(beta)
             call random_number(y2)
             y1 = alpha * matmul(transpose(conjg((Amat))), x) + beta * y2
             call spmv(A, x, y2, alpha=alpha, beta=beta, op="H")
-            call check(error, all_close(y1, y2), .true.)
+            call check(error, all_close(y1, y2), .true.,&
+                "spmv(fail): y = alpha*A.H*x + beta*y, alpha: "//to_string(alpha)//", beta: "//to_string(beta))
             if (allocated(error)) return
             #:endif
 
@@ -163,7 +171,8 @@ contains
             ! Test y = A @ x
             y1 = matmul(Amat, x)
             call spmv(A, x, y2)
-            call check(error, all_close(y1, y2), .true.)
+            call check(error, all_close(y1, y2), .true.,&
+                "spmv(fail): y = A*x")
             if (allocated(error)) return
 
             ! Test y = A.T @ x
@@ -171,7 +180,8 @@ contains
             y2 = 0.0_wp
             y1 = matmul(transpose(Amat), x)
             call spmv(A, x, y2, op="T")
-            call check(error, all_close(y1, y2), .true.)
+            call check(error, all_close(y1, y2), .true.,&
+                "spmv(fail): y = A.T*x")
             if (allocated(error)) return
 
             #:if t1.startswith('complex')
@@ -180,7 +190,8 @@ contains
             y2 = 0.0_wp
             y1 = matmul(hermitian(Amat), x)
             call spmv(A, x, y2, op="H")
-            call check(error, all_close(y1, y2), .true.)
+            call check(error, all_close(y1, y2), .true.,&
+                "spmv(fail): y = A.H*x")
             if (allocated(error)) return
             #:endif
 
@@ -194,40 +205,44 @@ contains
                     call random_number(y2)
                     y1 = alpha * matmul(Amat, x) + beta * y2
                     call spmv(A, x, y2, alpha=alpha, beta=beta)
-                    call check(error, all_close(y1, y2), .true.)
+                    call check(error, all_close(y1, y2), .true.,&
+                        "spmv(fail): y = alpha*A*x + beta*y, alpha: "//to_string(alpha)//", beta: "//to_string(beta))
                     if (allocated(error)) return
                 end do
             end do
 
-            ! Test y = A @ x for random values of alpha and beta
+            ! Test y = alpha * A @ x + beta * y for random values of alpha and beta
             y1 = 0.0_wp
             call random_number(alpha)
             call random_number(beta)
             call random_number(y2)
             y1 = alpha * matmul(Amat, x) + beta * y2
             call spmv(A, x, y2, alpha=alpha, beta=beta)
-            call check(error, all_close(y1, y2), .true.)
+            call check(error, all_close(y1, y2), .true.,&
+                "spmv(fail): y = alpha*A*x + beta*y, alpha: "//to_string(alpha)//", beta: "//to_string(beta))
             if (allocated(error)) return
 
-            ! Test y = A.T @ x for random values of alpha and beta
+            ! Test y = alpha * A.T @ x + beta * y for random values of alpha and beta
             y1 = 0.0_wp
             call random_number(alpha)
             call random_number(beta)
             call random_number(y2)
             y1 = alpha * matmul(transpose(Amat), x) + beta * y2
             call spmv(A, x, y2, alpha=alpha, beta=beta, op="T")
-            call check(error, all_close(y1, y2), .true.)
+            call check(error, all_close(y1, y2), .true.,&
+                "spmv(fail): y = alpha*A.T*x + beta*y, alpha: "//to_string(alpha)//", beta: "//to_string(beta))
             if (allocated(error)) return
 
             #:if t1.startswith('complex')
-            ! Test y = A.H @ x for random values of alpha and beta
+            ! Test y = alpha * A.H @ x + beta * y for random values of alpha and beta
             y1 = 0.0_wp
             call random_number(alpha)
             call random_number(beta)
             call random_number(y2)
             y1 = alpha * matmul(transpose(conjg((Amat))), x) + beta * y2
             call spmv(A, x, y2, alpha=alpha, beta=beta, op="H")
-            call check(error, all_close(y1, y2), .true.)
+            call check(error, all_close(y1, y2), .true.,&
+                "spmv(fail): y = alpha*A.H*x + beta*y, alpha: "//to_string(alpha)//", beta: "//to_string(beta))
             if (allocated(error)) return
             #:endif
 
@@ -252,12 +267,12 @@ contains
             du = dl
             dv = [(2.0_wp, i = 1, n)]
             A = tridiagonal(dl, dv, du, state)
-            call check(error, state%ok(), .false.)
+            call check(error, state%ok(), .false., "Tridiagonal constructor from arrays failed")
             if (allocated(error)) return
 
-            !> Test contructor from constants.
+            !> Test constructor from scalars.
             A = tridiagonal(dl(1), dv(1), du(1), -n, state)
-            call check(error, state%ok(), .false.)
+            call check(error, state%ok(), .false., "Tridiagonal constructor from scalars failed")
             if (allocated(error)) return
         end block
         #:endfor
@@ -279,12 +294,14 @@ contains
             du = [(1.0_wp, i = 1, n-2)]
             dv = [(2.0_wp, i = 1, n)]
             A = sym_tridiagonal(du, dv, state)
-            call check(error, state%ok(), .false.)
+            call check(error, state%ok(), .false.,&
+                "Symmetric tridiagonal constructor from arrays failed")
             if (allocated(error)) return
 
-            !> Test contructor from constants.
+            !> Test constructor from scalars.
             A = sym_tridiagonal(du(1), dv(1), -n, state)
-            call check(error, state%ok(), .false.)
+            call check(error, state%ok(), .false.,&
+                "Symmetric tridiagonal constructor from scalars failed")
             if (allocated(error)) return
         end block
         #:endfor
