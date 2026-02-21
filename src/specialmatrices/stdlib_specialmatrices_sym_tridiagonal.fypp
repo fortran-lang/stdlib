@@ -5,6 +5,7 @@
 #:set KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES
 submodule (stdlib_specialmatrices) sym_tridiagonal_matrices
     use stdlib_linalg_lapack, only: lagtm
+    use stdlib_optval, only: optval
 
     character(len=*), parameter :: this = "symmetric tridiagonal matrices"
     contains
@@ -156,12 +157,9 @@ submodule (stdlib_specialmatrices) sym_tridiagonal_matrices
         end if
 
         ! Deal with optional arguments.
-        alpha_ = 1.0_${k1}$
-        if (present(alpha)) alpha_ = alpha
-        beta_ = 0.0_${k1}$
-        if (present(beta)) beta_ = beta
-        op_ = "N"
-        if (present(op)) op_ = op
+        alpha_ = optval(alpha, one_${s1}$)
+        beta_ = optval(beta, zero_${s1}$)
+        op_ = optval(op, "N")
         if (op_ == "H") op_ = "C"
 
         #:if t1.startswith('real')
