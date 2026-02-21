@@ -29,12 +29,13 @@ contains
     #:for k1 in REAL_KINDS
     subroutine test_pca_${k1}$(error)
         type(error_type), allocatable, intent(out) :: error
-        real(${k1}$) :: x(3, 2), components(2, 2), s(2), mu(2)
+        real(${k1}$) :: x(3, 2), x_copy(3, 2), components(2, 2), s(2), mu(2)
         real(${k1}$) :: x_trans(3, 2), x_inv(3, 2)
         type(linalg_state_type) :: err
 
         ! Data: [1, 2], [3, 4], [5, 6]
         x = reshape([1.0_${k1}$, 3.0_${k1}$, 5.0_${k1}$, 2.0_${k1}$, 4.0_${k1}$, 6.0_${k1}$], [3, 2])
+        x_copy = x
 
         ! Test SVD method
         call pca(x, components, s, x_mean=mu, method="svd", err=err)
@@ -47,10 +48,10 @@ contains
         ! First component should be approx [0.707, 0.707] (or negative)
         call check(error, abs(abs(components(1,1)) - 1.0_${k1}$/sqrt(2.0_${k1}$)) < ${k1}$tol, "pca_${k1}$ svd comp1")
         if (allocated(error)) return
-        
+
         call check(error, abs(s(1) - 4.0_${k1}$) < ${k1}$tol, "pca_${k1}$ svd s1")
         if (allocated(error)) return
-        
+
         call check(error, abs(s(2)) < ${k1}$tol, "pca_${k1}$ svd s2")
         if (allocated(error)) return
 
@@ -58,6 +59,11 @@ contains
         call pca_transform(x, components, mu, x_trans)
         ! Second dimension should be zero
         call check(error, all(abs(x_trans(:, 2)) < ${k1}$tol), "pca_${k1}$ transform")
+        if (allocated(error)) return
+
+        ! Test Transform without x_mean (keyword-based call)
+        call pca_transform(x, components, x_transformed=x_trans)
+        call check(error, size(x_trans, 1) == 3 .and. size(x_trans, 2) == 2, "pca_${k1}$ transform_no_mean shape")
         if (allocated(error)) return
 
         ! Test Inverse Transform
@@ -71,6 +77,28 @@ contains
         if (allocated(error)) return
 
         call check(error, abs(s(1) - 4.0_${k1}$) < ${k1}$tol, "pca_${k1}$ eig s1")
+        if (allocated(error)) return
+
+        ! Test COV method (alias for EIG)
+        call pca(x, components, s, method="cov", err=err)
+        call check(error, err%ok(), "pca_${k1}$ cov err")
+        if (allocated(error)) return
+
+        call check(error, abs(s(1) - 4.0_${k1}$) < ${k1}$tol, "pca_${k1}$ cov s1")
+        if (allocated(error)) return
+
+        ! Test overwrite_x=.true.
+        x_copy = x
+        call pca(x_copy, components, s, method="svd", overwrite_x=.true., err=err)
+        call check(error, err%ok(), "pca_${k1}$ overwrite err")
+        if (allocated(error)) return
+
+        call check(error, abs(s(1) - 4.0_${k1}$) < ${k1}$tol, "pca_${k1}$ overwrite s1")
+        if (allocated(error)) return
+
+        ! Test case-insensitivity
+        call pca(x, components, s, method="SVD", err=err)
+        call check(error, err%ok(), "pca_${k1}$ case_insensitive err")
         if (allocated(error)) return
 
     end subroutine test_pca_${k1}$
