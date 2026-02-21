@@ -105,8 +105,8 @@ contains
                 "MM array test failed: matrix=skew-symmetric, symmetry_arg=auto")
             if(allocated(error)) return
 
-            ! Hermitian matrix
             #:if t.startswith('complex')
+            ! Hermitian matrix
             call random_number(R)
             call random_number(I)
             A = cmplx(R, I, kind=${k}$)
