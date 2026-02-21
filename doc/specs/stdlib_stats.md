@@ -342,7 +342,12 @@ The transformation is defined as `x_transformed = (x - x_mean) * components^T`.
 
 ### Syntax
 
-`call ` [[stdlib_stats(module):pca_transform(interface)]] `(x, components [, x_mean], x_transformed)`
+`call ` [[stdlib_stats(module):pca_transform(interface)]] `(x, components, x_mean, x_transformed)`
+
+If `x_mean` is omitted, the non-trailing optional argument rule in Fortran requires
+`x_transformed` to be passed by keyword, for example:
+
+`call ` [[stdlib_stats(module):pca_transform(interface)]] `(x, components, x_transformed=x_transformed)`
 
 ### Class
 
@@ -371,7 +376,12 @@ The reconstruction is defined as `x_reconstructed = x_reduced * components + x_m
 
 ### Syntax
 
-`call ` [[stdlib_stats(module):pca_inverse_transform(interface)]] `(x_reduced, components [, x_mean], x_reconstructed)`
+`call ` [[stdlib_stats(module):pca_inverse_transform(interface)]] `(x_reduced, components, x_mean, x_reconstructed)`
+
+If `x_mean` is omitted, the non-trailing optional argument rule in Fortran requires
+`x_reconstructed` to be passed by keyword, for example:
+
+`call ` [[stdlib_stats(module):pca_inverse_transform(interface)]] `(x_reduced, components, x_reconstructed=x_reconstructed)`
 
 ### Class
 
