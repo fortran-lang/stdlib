@@ -61,14 +61,14 @@ contains
         call check(error, all(abs(x_trans(:, 2)) < ${k1}$tol), "pca_${k1}$ transform")
         if (allocated(error)) return
 
+        ! Test Inverse Transform (must run before the no-mean transform overwrites x_trans)
+        call pca_inverse_transform(x_trans, components, mu, x_inv)
+        call check(error, all(abs(x_inv - x) < ${k1}$tol), "pca_${k1}$ inverse")
+        if (allocated(error)) return
+
         ! Test Transform without x_mean (keyword-based call)
         call pca_transform(x, components, x_transformed=x_trans)
         call check(error, size(x_trans, 1) == 3 .and. size(x_trans, 2) == 2, "pca_${k1}$ transform_no_mean shape")
-        if (allocated(error)) return
-
-        ! Test Inverse Transform
-        call pca_inverse_transform(x_trans, components, mu, x_inv)
-        call check(error, all(abs(x_inv - x) < ${k1}$tol), "pca_${k1}$ inverse")
         if (allocated(error)) return
 
         ! Test EIG method
