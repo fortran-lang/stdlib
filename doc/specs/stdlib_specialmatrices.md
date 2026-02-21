@@ -66,7 +66,7 @@ Tridiagonal matrices are available with all supported data types as `tridiagonal
 
 `A = ` [[stdlib_specialmatrices(module):tridiagonal(interface)]] `(dl, dv, du)`
 
-- To construct a tridiagonal matrix of size `n x n` with constant diagonal elements `dl` (lower diagonal), `dv` (main diagonal), and `du` (upper diagonal):
+- To construct a tridiagonal matrix of size `n x n` with scalar diagonal elements `dl` (lower diagonal), `dv` (main diagonal), and `du` (upper diagonal):
 
 `A = ` [[stdlib_specialmatrices(module):tridiagonal(interface)]] `(dl, dv, du, n)`
 
@@ -137,7 +137,7 @@ Symmetric tridiagonal matrices are available with all supported data types as `s
 
 `A = ` [[stdlib_specialmatrices(module):sym_tridiagonal(interface)]] `(du, dv)`
 
-- To construct a symmetric tridiagonal matrix of size `n x n` with constant diagonal elements `du` (off-diagonal) and `dv` (main diagonal):
+- To construct a symmetric tridiagonal matrix of size `n x n` with scalar diagonal elements `du` (off-diagonal) and `dv` (main diagonal):
 
 `A = ` [[stdlib_specialmatrices(module):sym_tridiagonal(interface)]] `(du, dv, n)`
 
