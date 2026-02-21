@@ -28,7 +28,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
     end function
 
     pure module function initialize_constant_tridiagonal_pure_${s1}$(dl, dv, du, n) result(A)
-        !! Construct a `tridiagonal` matrix with constant elements.
+        !! Construct a `tridiagonal` matrix with scalar elements.
         ${t1}$, intent(in) :: dl, dv, du
         !! tridiagonal matrix elements.
         integer(ilp), intent(in) :: n
@@ -53,7 +53,7 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
     end function
 
     module function initialize_constant_tridiagonal_impure_${s1}$(dl, dv, du, n, err) result(A)
-        !! Construct a `tridiagonal` matrix with constant elements.
+        !! Construct a `tridiagonal` matrix with scalar elements.
         ${t1}$, intent(in) :: dl, dv, du
         !! tridiagonal matrix elements.
         integer(ilp), intent(in) :: n
