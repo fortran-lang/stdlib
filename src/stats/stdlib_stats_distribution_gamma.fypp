@@ -6,6 +6,7 @@ Module stdlib_stats_distribution_gamma
     use ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
     use stdlib_kinds, only : sp, dp, xdp
     use stdlib_error, only : error_stop
+    use stdlib_optval, only : optval
     use stdlib_stats_distribution_uniform, only : uni=>rvs_uniform
     use stdlib_stats_distribution_normal, only : rnor=>rvs_normal
     use stdlib_specialfunctions_gamma, only : regamma_p=>regularized_gamma_p
@@ -157,11 +158,7 @@ contains
         ${t1}$ :: res
         ${t1}$ :: loc_
 
-        if(present(loc)) then
-            loc_ = loc
-        else
-            loc_ = 0.0_${k1}$
-        end if
+        loc_ = optval(loc, 0.0_${k1}$)
 
         if(rate <= 0.0_${k1}$) call error_stop("Error(gamma_dist_rvs): Gamma" &
         //" distribution rate parameter must be greater than zero")
@@ -183,11 +180,7 @@ contains
         ${t1}$ :: res
         ${t1}$ :: loc_
 
-        if(present(loc)) then
-            loc_ = loc
-        else
-            loc_ = cmplx(0.0_${k1}$, 0.0_${k1}$, kind=${k1}$)
-        end if
+        loc_ = optval(loc, cmplx(0.0_${k1}$, 0.0_${k1}$, kind=${k1}$))
 
         res = cmplx(gamma_dist_rvs_r${k1}$(shape%re, rate%re) + loc_%re,                 &
                     gamma_dist_rvs_r${k1}$(shape%im, rate%im) + loc_%im, kind=${k1}$)
@@ -207,11 +200,7 @@ contains
         integer :: i
         ${t1}$ :: loc_
 
-        if(present(loc)) then
-            loc_ = loc
-        else
-            loc_ = 0.0_${k1}$
-        end if
+        loc_ = optval(loc, 0.0_${k1}$)
 
         do i = 1, array_size
 
@@ -236,11 +225,7 @@ contains
         integer :: i
         ${t1}$ :: loc_
 
-        if(present(loc)) then
-            loc_ = loc
-        else
-            loc_ = cmplx(0.0_${k1}$, 0.0_${k1}$, kind=${k1}$)
-        end if
+        loc_ = optval(loc, cmplx(0.0_${k1}$, 0.0_${k1}$, kind=${k1}$))
 
         do i = 1, array_size
 
@@ -263,11 +248,7 @@ contains
         ${t1}$ :: xs
         ${t1}$ :: loc_
 
-        if(present(loc)) then
-            loc_ = loc
-        else
-            loc_ = 0.0_${k1}$
-        end if
+        loc_ = optval(loc, 0.0_${k1}$)
 
         xs = x - loc_
 
@@ -336,11 +317,7 @@ contains
         real(${k1}$) :: res
         ${t1}$ :: loc_
 
-        if(present(loc)) then
-            loc_ = loc
-        else
-            loc_ = cmplx(0.0_${k1}$, 0.0_${k1}$, kind=${k1}$)
-        end if
+        loc_ = optval(loc, cmplx(0.0_${k1}$, 0.0_${k1}$, kind=${k1}$))
 
         res = gamma_dist_pdf_r${k1}$(x%re, shape%re, rate%re, loc_%re)
         res = res * gamma_dist_pdf_r${k1}$(x%im, shape%im, rate%im, loc_%im)
@@ -361,11 +338,7 @@ contains
         real(${k1}$) :: res
         ${t1}$ :: loc_
 
-        if(present(loc)) then
-            loc_ = loc
-        else
-            loc_ = cmplx(0.0_${k1}$, 0.0_${k1}$, kind=${k1}$)
-        end if
+        loc_ = optval(loc, cmplx(0.0_${k1}$, 0.0_${k1}$, kind=${k1}$))
 
         res = gamma_dist_pdf_r${k1}$(x%re, shape%re, rate%re, loc_%re)
         res = res * gamma_dist_pdf_r${k1}$(x%im, shape%im, rate%im, loc_%im)
@@ -386,11 +359,7 @@ contains
         real(${k1}$) :: res, xs
         ${t1}$ :: loc_
 
-        if(present(loc)) then
-            loc_ = loc
-        else
-            loc_ = 0.0_${k1}$
-        end if
+        loc_ = optval(loc, 0.0_${k1}$)
 
         if(rate <= 0.0_${k1}$ .or. shape <= 0.0_${k1}$) then
             res = ieee_value(1.0_${k1}$, ieee_quiet_nan)
@@ -438,11 +407,7 @@ contains
         real(${k1}$) :: res
         ${t1}$ :: loc_
 
-        if(present(loc)) then
-            loc_ = loc
-        else
-            loc_ = cmplx(0.0_${k1}$, 0.0_${k1}$, kind=${k1}$)
-        end if
+        loc_ = optval(loc, cmplx(0.0_${k1}$, 0.0_${k1}$, kind=${k1}$))
 
         res = gamma_dist_cdf_r${k1}$(x%re, shape%re, rate%re, loc_%re)
 
@@ -464,11 +429,7 @@ contains
         real(${k1}$) :: res
         ${t1}$ :: loc_
 
-        if(present(loc)) then
-            loc_ = loc
-        else
-            loc_ = cmplx(0.0_${k1}$, 0.0_${k1}$, kind=${k1}$)
-        end if
+        loc_ = optval(loc, cmplx(0.0_${k1}$, 0.0_${k1}$, kind=${k1}$))
 
         res = gamma_dist_cdf_${t1[0]}$${k1}$(x, shape, rate, loc_)
         err = 0
