@@ -64,30 +64,40 @@ Tridiagonal matrices are available with all supported data types as `tridiagonal
 
 - To construct a tridiagonal matrix from already allocated arrays `dl` (lower diagonal, size `n-1`), `dv` (main diagonal, size `n`) and `du` (upper diagonal, size `n-1`):
 
-`A = ` [[stdlib_specialmatrices(module):tridiagonal(interface)]] `(dl, dv, du)`
+`A = ` [[stdlib_specialmatrices(module):tridiagonal(interface)]] `(dl, dv, du [, err])`
 
 - To construct a tridiagonal matrix of size `n x n` with scalar diagonal elements `dl` (lower diagonal), `dv` (main diagonal), and `du` (upper diagonal):
 
-`A = ` [[stdlib_specialmatrices(module):tridiagonal(interface)]] `(dl, dv, du, n)`
+`A = ` [[stdlib_specialmatrices(module):tridiagonal(interface)]] `(dl, dv, du, n [, err])`
 
 #### Arguments
 
 ##### Constructing from arrays
 
-`A = tridiagonal(dl, dv, du)`
+`A = tridiagonal(dl, dv, du [, err])`
 
 - `dl`: Shall be a rank-1 array of type `real` or `complex` with the same kind as the resulting matrix. It is an `intent(in)` argument.
 - `dv`: Shall be a rank-1 array of type `real` or `complex` with the same kind as the resulting matrix. It is an `intent(in)` argument.
 - `du`: Shall be a rank-1 array of type `real` or `complex` with the same kind as the resulting matrix. It is an `intent(in)` argument.
+- `err` (optional): Shall be a `type(linalg_state_type)` variable. It is an `intent(out)` argument.
+If the input arrays are not of compatible sizes, the routine calls `linalg_error_handling`.
+If `err` is present, it is assigned `LINALG_VALUE_ERROR`.
+If `err` is not present, the program terminates via `error stop`.
+In either case, the elements of the resulting matrix `A` are unassigned.
 
 ##### Constructing from constant diagonal values
 
-`A = tridiagonal(dl, dv, du, n)`
+`A = tridiagonal(dl, dv, du, n [, err])`
 
 - `dl`: Shall be a scalar of type `real` or `complex` with the same kind as the resulting matrix. It is an `intent(in)` argument.
 - `dv`: Shall be a scalar of type `real` or `complex` with the same kind as the resulting matrix. It is an `intent(in)` argument.
 - `du`: Shall be a scalar of type `real` or `complex` with the same kind as the resulting matrix. It is an `intent(in)` argument.
-`n`: Shall be a positive `integer`. It is an `intent(in)` argument.
+- `n`: Shall be a positive `integer`. It is an `intent(in)` argument.
+- `err` (optional): Shall be a `type(linalg_state_type)` variable. It is an `intent(out)` argument.
+If a non-positive matrix size is provided, the routine calls `linalg_error_handling`.
+If `err` is present, it is assigned `LINALG_VALUE_ERROR`.
+If `err` is not present, the program terminates via `error stop`.
+In either case, the elements of the resulting matrix `A` are unassigned.
 
 #### Example
 
@@ -135,28 +145,38 @@ Symmetric tridiagonal matrices are available with all supported data types as `s
 
 - To construct a symmetric tridiagonal matrix from already allocated arrays `du` (off-diagonal, size `n-1`) and `dv` (main diagonal, size `n`):
 
-`A = ` [[stdlib_specialmatrices(module):sym_tridiagonal(interface)]] `(du, dv)`
+`A = ` [[stdlib_specialmatrices(module):sym_tridiagonal(interface)]] `(du, dv [, err])`
 
 - To construct a symmetric tridiagonal matrix of size `n x n` with scalar diagonal elements `du` (off-diagonal) and `dv` (main diagonal):
 
-`A = ` [[stdlib_specialmatrices(module):sym_tridiagonal(interface)]] `(du, dv, n)`
+`A = ` [[stdlib_specialmatrices(module):sym_tridiagonal(interface)]] `(du, dv, n [, err])`
 
 #### Arguments
 
 ##### Constructing from arrays
 
-`A = sym_tridiagonal(du, dv)`
+`A = sym_tridiagonal(du, dv [, err])`
 
 - `du`: Shall be a rank-1 array of type `real` or `complex` with the same kind as the resulting matrix. It is an `intent(in)` argument.
 - `dv`: Shall be a rank-1 array of type `real` or `complex` with the same kind as the resulting matrix. It is an `intent(in)` argument.
+- `err` (optional): Shall be a `type(linalg_state_type)` variable. It is an `intent(out)` argument.
+If the input arrays are not of compatible sizes, the routine calls `linalg_error_handling`.
+If `err` is present, it is assigned `LINALG_VALUE_ERROR`.
+If `err` is not present, the program terminates via `error stop`.
+In either case, the elements of the resulting matrix `A` are unassigned.
 
 ##### Constructing from constant diagonal values
 
-`A = sym_tridiagonal(du, dv, n)`
+`A = sym_tridiagonal(du, dv, n [, err])`
 
 - `du`: Shall be a scalar of type `real` or `complex` with the same kind as the resulting matrix. It is an `intent(in)` argument.
 - `dv`: Shall be a scalar of type `real` or `complex` with the same kind as the resulting matrix. It is an `intent(in)` argument.
 - `n`: Shall be a positive `integer`. It is an `intent(in)` argument.
+- `err` (optional): Shall be a `type(linalg_state_type)` variable. It is an `intent(out)` argument.
+If a non-positive matrix size is provided, the routine calls `linalg_error_handling`.
+If `err` is present, it is assigned `LINALG_VALUE_ERROR`.
+If `err` is not present, the program terminates via `error stop`.
+In either case, the elements of the resulting matrix `A` are unassigned.
 
 #### Example
 
