@@ -71,6 +71,9 @@ contains
         #:if t.startswith('complex') 
         real(${k}$) :: real_part, imag_part
         #:endif
+        if(present(iostat)) iostat = 0
+        if(present(iomsg)) iomsg = ''
+        stat = 0
 
         #:if t.startswith('integer')
             fmt_ = "I0"
@@ -257,6 +260,9 @@ contains
         #:if t.startswith('complex') 
         real(${k}$) :: real_part, imag_part
         #:endif
+        if(present(iostat)) iostat = 0
+        if(present(iomsg)) iomsg = ''
+        stat = 0
 
         #:if t.startswith('integer')
             fmt_ = "I0"

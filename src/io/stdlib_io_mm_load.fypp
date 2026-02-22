@@ -61,6 +61,8 @@ contains
 
         if (present(iostat)) iostat = 0
         if (present(iomsg)) iomsg  = ''
+        stat = 0
+        err = 0
         !-----------------------------------------------------------------------------
         ! Open file for regular reading
         open( newunit = u , file=filename, status = 'old' , access='stream', action="read", iostat=err  )
@@ -205,6 +207,8 @@ contains
 
         if (present(iostat)) iostat = 0
         if (present(iomsg)) iomsg  = ''
+        stat = 0
+        err = 0
         !-----------------------------------------------------------------------------
         ! Open file for regular reading
         open( newunit = u , file=filename, status = 'old' , access='stream', action="read", iostat=err  )
