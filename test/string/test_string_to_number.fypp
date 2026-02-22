@@ -166,6 +166,9 @@ contains
         call check(error, ucheck("78  "))
         if (allocated(error)) return
 
+        call check(error, ucheck("   -42   "))
+        if (allocated(error)) return
+
         write(s,'(i0)') huge(0_wp)
         call check(error, ucheck(trim(s)))
         if (allocated(error)) return
