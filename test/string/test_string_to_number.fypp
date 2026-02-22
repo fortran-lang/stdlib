@@ -1,6 +1,6 @@
 #: include "common.fypp"
 module test_string_to_number
-    use stdlib_kinds, only: sp, dp, xdp, qp
+    use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
     use stdlib_str2num, only: to_num
     use testdrive, only : new_unittest, unittest_type, error_type, check
     implicit none
@@ -21,6 +21,9 @@ contains
 #:if WITH_XDP
             , new_unittest("to_xdp", test_to_xdp) &
 #:endif
+#:for k1, t1 in INT_KINDS_TYPES
+            , new_unittest("to_${k1}$", test_to_${k1}$) &
+#:endfor
             ]
     end subroutine collect_string_to_number
 
@@ -131,6 +134,62 @@ contains
         end function
     end subroutine
 
+    #:endfor
+
+    #:for k1, t1 in INT_KINDS_TYPES
+    subroutine test_to_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: wp = ${k1}$
+        character(len=64) :: s
+
+        call check(error, ucheck("0"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("-0"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("123"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("-123"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("   99"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("0005"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("-0008"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("78  "))
+        if (allocated(error)) return
+
+        write(s,'(i0)') huge(0_wp)
+        call check(error, ucheck(trim(s)))
+        if (allocated(error)) return
+
+        write(s,'(i0)') -huge(0_wp)-1
+        call check(error, ucheck(trim(s)))
+        if (allocated(error)) return
+
+    contains
+        logical function ucheck(s)
+            character(*), intent(in) :: s
+            integer(${k1}$) :: formatted_read_out
+            integer(${k1}$) :: to_num_out
+
+            ucheck = .true.
+            read(s,*) formatted_read_out
+            to_num_out = to_num(s, to_num_out)
+            if(to_num_out /= formatted_read_out) then
+                write(*,"('formatted read : ', i0)") formatted_read_out
+                write(*,"('to_num         : ', i0)") to_num_out
+                ucheck = .false.
+            end if
+        end function
+    end subroutine
     #:endfor
     
 end module test_string_to_number
