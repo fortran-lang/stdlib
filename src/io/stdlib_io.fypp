@@ -236,7 +236,11 @@ contains
 
   #:for arg1 in ['filename', 'unit']
   #:for k1, t1 in KINDS_TYPES
-    subroutine savetxt_${t1[0]}$${k1}$${arg1[0]}$ (${arg1}$, d, delimiter, fmt, header, footer, comments)
+    subroutine savetxt_${t1[0]}$${k1}$${arg1[0]}$ (${arg1}$, d, delimiter, fmt, header, footer, comments&
+      #:if 'filename' in arg1
+      , append&
+      #:endif
+      )
       !! version: experimental
       !!
       !! Saves a 2D array into a text file.
@@ -246,6 +250,7 @@ contains
       !!
       #:if 'filename' in arg1
       character(len=*), intent(in) :: filename  ! File to save the array to
+      logical, intent(in), optional :: append
       #:elif 'unit' in arg1
       integer, intent(in) :: unit
       #:endif
@@ -272,19 +277,23 @@ contains
       character(len=:), allocatable :: comments_
       character(len=:), allocatable :: header_
       character(len=:), allocatable :: footer_
-      character(len=1024) :: iomsg, msgout, fout
-
+      !
       #:if 'filename' in arg1
+      logical :: append_
       integer :: unit
       #:else
       logical :: opened
       #:endif
+      character(len=1024) :: iomsg, msgout, fout
 
       delimiter_ = optval(delimiter, delimiter_default)
       delim_str = "'"//delimiter_//"'"
       comments_ = optval(comments, comment_default)
-      header_ = optval(header, '')
-      footer_ = optval(footer, '')
+      header_ = optval(trim(header), '')
+      footer_ = optval(trim(footer), '')
+      #:if 'filename' in arg1
+      append_ = optval(append, .False.)
+      #:endif
 
       if(index(delimiter_, comments_) /= 0) then
           write (msgout,'(a)') 'savetxt error: delimiter string cannot include the comments string'
@@ -312,19 +321,24 @@ contains
       fmt_ = "(*("//optval(fmt, default_fmt)//",:,"//delim_str//"))"
 
       #:if 'filename' in arg1
-      unit = open (filename, "w")
+      if(append_) then
+          unit = open (filename, "a+")
+          else
+          unit = open (filename, "w")
+      end if
       fout = filename           ! fout is used for unified error message later
       #:else
       inquire (unit=unit, opened=opened)
-      write(fout,'(i0)') unit
-      fout = adjustl(fout)  ! fout is used for unified error message later
       if(.not. opened) then
            write (msgout,'(a,i0,a)') 'savetxt error: unit ',unit,' not open'
            call error_stop(msg=trim(msgout))
       end if
+      !
+      write(fout,'(i0)') unit
+      fout = adjustl(fout)  ! fout is used for unified error message later
       #:endif
 
-      !! Write the header if non-empty
+      ! Write the header if non-empty
       if (header_ /= '') then
           write (unit, '(A)', iostat=ios, iomsg=iomsg) prepend(header_, comments_)
           if (ios/=0) then
@@ -346,7 +360,7 @@ contains
             call error_stop(msg=trim(msgout))
         end if           
       end do
-      ! if (footer_ /= '') write (unit, '(A)') comments_//replace_all(footer_, nl, nl//comments_)
+
       if (footer_ /= '') then
           write (unit, '(A)', iostat=ios, iomsg=iomsg) prepend(footer_, comments_)
           if (ios/=0) then

@@ -110,7 +110,7 @@ If the text file already exists:
 
 ### Syntax
 
-`call ` [[stdlib_io(module):savetxt(interface)]] `(filename, array [,  delimiter] [, fmt] [, header] [, footer] [, comments])`
+`call ` [[stdlib_io(module):savetxt(interface)]] `(filename, array [,  delimiter] [, fmt] [, header] [, footer] [, comments] [, append])`
 
 `call ` [[stdlib_io(module):savetxt(interface)]] `(unit, array[,  delimiter] [, fmt] [, header] [, footer] [, comments])`
 
@@ -129,6 +129,8 @@ If the text file already exists:
 `footer` (optional): Shall be a character expression that will be written at the end of the file.
 
 `comments` (optional): Shall  be a character expression of any length that will be prepended to the ``header`` and ``footer`` strings to mark them as comments. Default: `#`.
+
+`append` (optional): Shall be a logical flag indicating if data will be appended at the end of the file. If `.false.` file will be overwritten. Cannot be present with `unit`. Default: `.false.`
 
 ### Output
 
