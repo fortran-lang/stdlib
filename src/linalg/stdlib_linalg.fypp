@@ -44,7 +44,10 @@ module stdlib_linalg
   public :: mnorm
   public :: get_norm
   public :: solve
-  public :: solve_lu  
+  public :: solve_lu
+  public :: solve_chol
+  public :: solve_lower_chol
+  public :: solve_upper_chol
   public :: solve_lstsq
   public :: solve_constrained_lstsq
   public :: trace
@@ -457,9 +460,124 @@ module stdlib_linalg
          !> [optional] state return flag. On error if not requested, the code will stop
          type(linalg_state_type), optional, intent(out) :: err
      end subroutine stdlib_linalg_${ri}$_solve_lu_${ndsuf}$
+    #:endfor
+    #:endfor    
+  end interface solve_lu     
+
+  ! One-shot Cholesky factorization and solve (uses POSV)
+  interface solve_chol
+     !! version: experimental 
+     !!
+     !! Solves the linear system \( A \cdot x = b \) for the unknown vector \( x \) from a 
+     !! symmetric positive definite matrix \( A \). Combines factorization and solve in one call.
+     !! ([Specification](../page/specs/stdlib_linalg.html#solve_chol-solve-spd-system-with-cholesky-factorization))
+     !!
+     !!### Summary 
+     !! One-shot factorization and solve for SPD systems (wraps LAPACK POSV).
+     !!
+     !!### Description
+     !! 
+     !! This interface computes both the Cholesky factorization and solves the linear system
+     !! in a single call. Use this for one-time solves. For repeated solves with the same 
+     !! matrix but different RHS, use `cholesky` + `solve_lower_chol`/`solve_upper_chol` for 
+     !! better performance.
+     !! Supported data types include `real` and `complex`.
+     !! By default, A is not overwritten. Set `overwrite_a=.true.` to allow in-place 
+     !! factorization for better performance.
+     !! 
+     !!@note The solution is based on LAPACK's `*POSV` routines.
+     !!        
+     #:for nd,ndsuf,nde in ALL_RHS
+     #:for rk,rt,ri in RC_KINDS_TYPES
+     pure module subroutine stdlib_linalg_${ri}$_solve_chol_${ndsuf}$(a,b,x,lower,overwrite_a,err)     
+         !> Input SPD matrix a[n,n]
+         ${rt}$, intent(inout), target :: a(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$
+         !> Result array/matrix x[n] or x[n,nrhs]     
+         ${rt}$, intent(inout), contiguous, target :: x${nd}$
+         !> [optional] Use lower triangular factorization? Default = .true.
+         logical(lk), optional, intent(in) :: lower
+         !> [optional] Can A data be overwritten and destroyed? Default = .false.
+         logical(lk), optional, intent(in) :: overwrite_a
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+     end subroutine stdlib_linalg_${ri}$_solve_chol_${ndsuf}$
      #:endfor
      #:endfor    
-  end interface solve_lu     
+  end interface solve_chol
+
+  ! Solve linear system using pre-computed LOWER Cholesky factor (subroutine interface)
+  interface solve_lower_chol
+     !! version: experimental 
+     !!
+     !! Solves the linear system \( A \cdot x = b \) for the unknown vector \( x \) from a 
+     !! symmetric positive definite matrix \( A \) using pre-computed LOWER Cholesky factor \( L \).
+     !! ([Specification](../page/specs/stdlib_linalg.html#solve_lower_chol-solve-using-lower-cholesky-factor))
+     !!
+     !!### Summary 
+     !! Subroutine interface for solving a linear system using pre-computed lower Cholesky factor.
+     !!
+     !!### Description
+     !! 
+     !! This interface solves a linear system using a pre-computed lower triangular Cholesky
+     !! factor \( L \) where \( A = L \cdot L^T \). The input matrix must come from a prior 
+     !! call to `cholesky` with `lower=.true.`.
+     !! Supported data types include `real` and `complex`.
+     !! 
+     !!@note The solution is based on LAPACK's `*POTRS` routines.
+     !!        
+     #:for nd,ndsuf,nde in ALL_RHS
+     #:for rk,rt,ri in RC_KINDS_TYPES
+     pure module subroutine stdlib_linalg_${ri}$_solve_lower_chol_${ndsuf}$(l,b,x,err)     
+         !> Input matrix l[n,n] containing lower Cholesky factor L from cholesky(...,lower=.true.)
+         ${rt}$, intent(in) :: l(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$
+         !> Result array/matrix x[n] or x[n,nrhs]     
+         ${rt}$, intent(inout), contiguous, target :: x${nd}$
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+     end subroutine stdlib_linalg_${ri}$_solve_lower_chol_${ndsuf}$
+     #:endfor
+     #:endfor    
+  end interface solve_lower_chol
+
+  ! Solve linear system using pre-computed UPPER Cholesky factor (subroutine interface)
+  interface solve_upper_chol
+     !! version: experimental 
+     !!
+     !! Solves the linear system \( A \cdot x = b \) for the unknown vector \( x \) from a 
+     !! symmetric positive definite matrix \( A \) using pre-computed UPPER Cholesky factor \( U \).
+     !! ([Specification](../page/specs/stdlib_linalg.html#solve_upper_chol-solve-using-upper-cholesky-factor))
+     !!
+     !!### Summary 
+     !! Subroutine interface for solving a linear system using pre-computed upper Cholesky factor.
+     !!
+     !!### Description
+     !! 
+     !! This interface solves a linear system using a pre-computed upper triangular Cholesky
+     !! factor \( U \) where \( A = U^T \cdot U \). The input matrix must come from a prior 
+     !! call to `cholesky` with `lower=.false.`.
+     !! Supported data types include `real` and `complex`.
+     !! 
+     !!@note The solution is based on LAPACK's `*POTRS` routines.
+     !!        
+     #:for nd,ndsuf,nde in ALL_RHS
+     #:for rk,rt,ri in RC_KINDS_TYPES
+     pure module subroutine stdlib_linalg_${ri}$_solve_upper_chol_${ndsuf}$(u,b,x,err)     
+         !> Input matrix u[n,n] containing upper Cholesky factor U from cholesky(...,lower=.false.)
+         ${rt}$, intent(in) :: u(:,:)
+         !> Right hand side vector or array, b[n] or b[n,nrhs]
+         ${rt}$, intent(in) :: b${nd}$
+         !> Result array/matrix x[n] or x[n,nrhs]     
+         ${rt}$, intent(inout), contiguous, target :: x${nd}$
+         !> [optional] state return flag. On error if not requested, the code will stop
+         type(linalg_state_type), optional, intent(out) :: err
+     end subroutine stdlib_linalg_${ri}$_solve_upper_chol_${ndsuf}$
+     #:endfor
+     #:endfor    
+  end interface solve_upper_chol
      
   ! Least squares solution to system Ax=b, i.e. such that the 2-norm abs(b-Ax) is minimized.
   interface lstsq
