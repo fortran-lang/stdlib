@@ -335,7 +335,7 @@ Trailing newline characters are automatically removed.
 ### Notes
 
 - If no prompt is provided, the function will wait for user input without displaying any text.
-- Empty input (just pressing Enter) returns an empty string `""`.
+- Empty input (just pressing Enter) returns an empty string `""` of length equal to 0.
 - The function reads a complete line of input, including any whitespace.
 - For error handling, use the optional `iostat` parameter to detect end-of-file or other I/O exceptions.
 - The function uses `get_line` internally for consistency with other stdlib I/O operations.
