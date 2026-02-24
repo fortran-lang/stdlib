@@ -12,7 +12,6 @@ submodule (stdlib_io_mm) stdlib_io_mm_save
     use stdlib_strings, only : to_string
     use stdlib_io, only : open
     use stdlib_ascii, only : to_lower
-    use stdlib_constants, only : #{for k, t, s in RCI_KINDS_TYPES[:-1]}#zero_${k}$, #{endfor}#zero_${RCI_KINDS_TYPES[-1][0]}$
     implicit none
 
     ! Matrix Market format constants
