@@ -22,7 +22,8 @@ contains
             new_unittest("delim", test_delim), &
             new_unittest("fmt", test_fmt), &
             new_unittest("unit", test_unit), &
-            new_unittest("headfoot", test_headfoot) &
+            new_unittest("headfoot", test_headfoot), &
+            new_unittest("append", test_append) &
         ]
 
     end subroutine collect_savetxt
@@ -161,6 +162,28 @@ contains
         call check(error, all(d == d2))
         if (allocated(error)) return
     end subroutine test_unit
+
+    subroutine test_append(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        real(dp) :: d(3, 2)
+        real(dp), dimension(:, :), allocatable :: d2, d3
+        character(:), allocatable :: outpath
+        integer :: unit
+
+        outpath = get_outpath() // "/tmp_test_append.dat"
+
+
+        d = reshape([1, 2, 3, 4, 5, 6], [3, 2])
+        d3 = reshape([transpose(d),transpose(d)], [6,2], order=[2,1])
+        call savetxt(outpath, d)
+        call savetxt(outpath, d, append=.True.)
+        call loadtxt(outpath, d2)
+        call check(error, all(shape(d2) == shape(d3)))
+        if (allocated(error)) return
+        call check(error, all(d2 == d3))
+        if (allocated(error)) return
+    end subroutine test_append
 
     subroutine test_fmt(error)
         !> Error handling
