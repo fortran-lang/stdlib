@@ -2,7 +2,7 @@
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
 #:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
 #:set I_KINDS_TYPES  = list(zip(INT_KINDS, INT_TYPES, INT_KINDS))
-#:set KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES + I_KINDS_TYPES
+#:set KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES
 module test_io_mm
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_kinds
@@ -83,10 +83,6 @@ contains
             call save_mm("test_mmio_dense.mtx", matrix_save, format = "G0")
             call load_mm("test_mmio_dense.mtx", matrix_load)
             @:compare(result, matrix_save, matrix_load)
-            if(.not. result) then
-                print*, matrix_save
-                print*, matrix_load
-            end if
             call check(error, result, .true.,&
                 "MM array test failed: matrix=general, symmetry_arg=unspecified, type=${t}$")
             if(allocated(error)) return

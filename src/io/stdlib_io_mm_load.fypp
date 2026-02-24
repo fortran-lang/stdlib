@@ -292,7 +292,7 @@ contains
             #:else
             vals(i) = to_num_from_stream(ffp, mold, stat)
             #:endif
-            if(stat /= 0) then
+            if(stat /= 0 ) then
                 call mm_fail_process(iostat = iostat, iomsg = iomsg, code = int(stat), &
                     message = 'Error reading the Matrix Market coordinate data')
                 return
