@@ -130,7 +130,7 @@ If the text file already exists:
 
 `comments` (optional): Shall  be a character expression of any length that will be prepended to the ``header`` and ``footer`` strings to mark them as comments. Default: `#`.
 
-`append` (optional): Shall be a logical flag indicating if data will be appended at the end of the file. If `.false.` file will be overwritten. Cannot be present with `unit`. Default: `.false.`
+`append` (optional): Shall be a logical flag indicating if data will be appended at the end of the file. If `.false.` file will be overwritten. This flag shall be ignored if the file is already opened. Cannot be present with `unit`. Default: `.false.`
 
 ### Output
 
