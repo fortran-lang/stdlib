@@ -19,8 +19,21 @@ static inline uint64_t _watermum(const uint64_t A, const uint64_t B) {
 }
 
 static inline uint64_t _waterr08(const uint8_t *p){ uint8_t  v; memcpy(&v, p, 1); return v; }
-static inline uint64_t _waterr16(const uint8_t *p){ uint16_t v; memcpy(&v, p, 2); return v; }
-static inline uint64_t _waterr32(const uint8_t *p){ uint32_t v; memcpy(&v, p, 4); return v; }
+static inline uint64_t _waterr16(const uint8_t *p){
+    uint16_t v; memcpy(&v, p, 2);
+#if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+    v = (uint16_t)((v << 8) | (v >> 8));
+#endif
+    return v;
+}
+static inline uint64_t _waterr32(const uint8_t *p){
+    uint32_t v; memcpy(&v, p, 4);
+#if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+    v = ((v >> 24) & 0xff) | ((v >> 8) & 0xff00) |
+        ((v << 8) & 0xff0000) | ((v << 24) & 0xff000000u);
+#endif
+    return v;
+}
 static inline uint32_t waterhash(const void* key, uint32_t len, uint64_t seed){
     const uint8_t *p = (const uint8_t*)key;
     uint32_t i;
