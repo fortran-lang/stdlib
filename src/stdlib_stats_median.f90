@@ -2030,7 +2030,7 @@ contains
                   if (any(ieee_is_nan(x_tmp))) then
                     res(j2) = &
                       ieee_value(1._sp, ieee_quiet_nan)
-                      return
+                      cycle
                   end if
 
                 call select(x_tmp, c, val)
@@ -2102,7 +2102,7 @@ contains
                   if (any(ieee_is_nan(x_tmp))) then
                     res(j2, j3) = &
                       ieee_value(1._sp, ieee_quiet_nan)
-                      return
+                      cycle
                   end if
 
                 call select(x_tmp, c, val)
@@ -2203,7 +2203,7 @@ contains
                   if (any(ieee_is_nan(x_tmp))) then
                     res(j2, j3, j4) = &
                       ieee_value(1._sp, ieee_quiet_nan)
-                      return
+                      cycle
                   end if
 
                 call select(x_tmp, c, val)
@@ -2374,7 +2374,7 @@ contains
                   if (any(ieee_is_nan(x_tmp))) then
                     res(j2) = &
                       ieee_value(1._dp, ieee_quiet_nan)
-                      return
+                      cycle
                   end if
 
                 call select(x_tmp, c, val)
@@ -2446,7 +2446,7 @@ contains
                   if (any(ieee_is_nan(x_tmp))) then
                     res(j2, j3) = &
                       ieee_value(1._dp, ieee_quiet_nan)
-                      return
+                      cycle
                   end if
 
                 call select(x_tmp, c, val)
@@ -2547,7 +2547,7 @@ contains
                   if (any(ieee_is_nan(x_tmp))) then
                     res(j2, j3, j4) = &
                       ieee_value(1._dp, ieee_quiet_nan)
-                      return
+                      cycle
                   end if
 
                 call select(x_tmp, c, val)
@@ -3543,7 +3543,7 @@ contains
                 if (n == 0) then
                     res = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      return
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -3593,7 +3593,7 @@ contains
                 if (n == 0) then
                     res(j2) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -3622,7 +3622,7 @@ contains
                 if (n == 0) then
                     res(j1) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -3675,7 +3675,7 @@ contains
                 if (n == 0) then
                     res(j2, j3) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -3706,7 +3706,7 @@ contains
                 if (n == 0) then
                     res(j1, j3) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -3737,7 +3737,7 @@ contains
                 if (n == 0) then
                     res(j1, j2) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -3794,7 +3794,7 @@ contains
                 if (n == 0) then
                     res(j2, j3, j4) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -3827,7 +3827,7 @@ contains
                 if (n == 0) then
                     res(j1, j3, j4) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -3860,7 +3860,7 @@ contains
                 if (n == 0) then
                     res(j1, j2, j4) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -3893,7 +3893,7 @@ contains
                 if (n == 0) then
                     res(j1, j2, j3) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -3943,7 +3943,7 @@ contains
                 if (n == 0) then
                     res = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      return
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -3993,7 +3993,7 @@ contains
                 if (n == 0) then
                     res(j2) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4022,7 +4022,7 @@ contains
                 if (n == 0) then
                     res(j1) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4075,7 +4075,7 @@ contains
                 if (n == 0) then
                     res(j2, j3) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4106,7 +4106,7 @@ contains
                 if (n == 0) then
                     res(j1, j3) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4137,7 +4137,7 @@ contains
                 if (n == 0) then
                     res(j1, j2) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4194,7 +4194,7 @@ contains
                 if (n == 0) then
                     res(j2, j3, j4) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4227,7 +4227,7 @@ contains
                 if (n == 0) then
                     res(j1, j3, j4) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4260,7 +4260,7 @@ contains
                 if (n == 0) then
                     res(j1, j2, j4) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4293,7 +4293,7 @@ contains
                 if (n == 0) then
                     res(j1, j2, j3) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4343,7 +4343,7 @@ contains
                 if (n == 0) then
                     res = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      return
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4393,7 +4393,7 @@ contains
                 if (n == 0) then
                     res(j2) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4422,7 +4422,7 @@ contains
                 if (n == 0) then
                     res(j1) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4475,7 +4475,7 @@ contains
                 if (n == 0) then
                     res(j2, j3) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4506,7 +4506,7 @@ contains
                 if (n == 0) then
                     res(j1, j3) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4537,7 +4537,7 @@ contains
                 if (n == 0) then
                     res(j1, j2) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4594,7 +4594,7 @@ contains
                 if (n == 0) then
                     res(j2, j3, j4) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4627,7 +4627,7 @@ contains
                 if (n == 0) then
                     res(j1, j3, j4) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4660,7 +4660,7 @@ contains
                 if (n == 0) then
                     res(j1, j2, j4) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4693,7 +4693,7 @@ contains
                 if (n == 0) then
                     res(j1, j2, j3) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4743,7 +4743,7 @@ contains
                 if (n == 0) then
                     res = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      return
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4793,7 +4793,7 @@ contains
                 if (n == 0) then
                     res(j2) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4822,7 +4822,7 @@ contains
                 if (n == 0) then
                     res(j1) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4875,7 +4875,7 @@ contains
                 if (n == 0) then
                     res(j2, j3) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4906,7 +4906,7 @@ contains
                 if (n == 0) then
                     res(j1, j3) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4937,7 +4937,7 @@ contains
                 if (n == 0) then
                     res(j1, j2) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -4994,7 +4994,7 @@ contains
                 if (n == 0) then
                     res(j2, j3, j4) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -5027,7 +5027,7 @@ contains
                 if (n == 0) then
                     res(j1, j3, j4) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -5060,7 +5060,7 @@ contains
                 if (n == 0) then
                     res(j1, j2, j4) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -5093,7 +5093,7 @@ contains
                 if (n == 0) then
                     res(j1, j2, j3) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -5148,7 +5148,7 @@ contains
                 if (n == 0) then
                     res = &
                         ieee_value(1._sp, ieee_quiet_nan)
-                    return
+                      return
                 end if
 
                 c = floor( (n + 1) / 2._sp, kind=int64 )
@@ -5203,7 +5203,7 @@ contains
                 if (n == 0) then
                     res(j2) = &
                         ieee_value(1._sp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._sp, kind=int64 )
@@ -5237,7 +5237,7 @@ contains
                 if (n == 0) then
                     res(j1) = &
                         ieee_value(1._sp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._sp, kind=int64 )
@@ -5295,7 +5295,7 @@ contains
                 if (n == 0) then
                     res(j2, j3) = &
                         ieee_value(1._sp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._sp, kind=int64 )
@@ -5331,7 +5331,7 @@ contains
                 if (n == 0) then
                     res(j1, j3) = &
                         ieee_value(1._sp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._sp, kind=int64 )
@@ -5367,7 +5367,7 @@ contains
                 if (n == 0) then
                     res(j1, j2) = &
                         ieee_value(1._sp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._sp, kind=int64 )
@@ -5429,7 +5429,7 @@ contains
                 if (n == 0) then
                     res(j2, j3, j4) = &
                         ieee_value(1._sp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._sp, kind=int64 )
@@ -5467,7 +5467,7 @@ contains
                 if (n == 0) then
                     res(j1, j3, j4) = &
                         ieee_value(1._sp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._sp, kind=int64 )
@@ -5505,7 +5505,7 @@ contains
                 if (n == 0) then
                     res(j1, j2, j4) = &
                         ieee_value(1._sp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._sp, kind=int64 )
@@ -5543,7 +5543,7 @@ contains
                 if (n == 0) then
                     res(j1, j2, j3) = &
                         ieee_value(1._sp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._sp, kind=int64 )
@@ -5598,7 +5598,7 @@ contains
                 if (n == 0) then
                     res = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      return
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -5653,7 +5653,7 @@ contains
                 if (n == 0) then
                     res(j2) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -5687,7 +5687,7 @@ contains
                 if (n == 0) then
                     res(j1) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -5745,7 +5745,7 @@ contains
                 if (n == 0) then
                     res(j2, j3) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -5781,7 +5781,7 @@ contains
                 if (n == 0) then
                     res(j1, j3) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -5817,7 +5817,7 @@ contains
                 if (n == 0) then
                     res(j1, j2) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -5879,7 +5879,7 @@ contains
                 if (n == 0) then
                     res(j2, j3, j4) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -5917,7 +5917,7 @@ contains
                 if (n == 0) then
                     res(j1, j3, j4) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -5955,7 +5955,7 @@ contains
                 if (n == 0) then
                     res(j1, j2, j4) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
@@ -5993,7 +5993,7 @@ contains
                 if (n == 0) then
                     res(j1, j2, j3) = &
                         ieee_value(1._dp, ieee_quiet_nan)
-                    return
+                      cycle
                 end if
 
                 c = floor( (n + 1) / 2._dp, kind=int64 )
