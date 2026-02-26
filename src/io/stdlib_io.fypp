@@ -6,7 +6,7 @@ module stdlib_io
   !! Provides a support for file handling
   !! ([Specification](../page/specs/stdlib_io.html))
 
-  use, intrinsic :: iso_fortran_env, only : input_unit
+  use, intrinsic :: iso_fortran_env, only : input_unit, output_unit
   use stdlib_kinds, only: sp, dp, xdp, qp, &
       int8, int16, int32, int64
   use stdlib_io_aux, only: FMT_INT, FMT_REAL_SP, FMT_REAL_DP, FMT_REAL_XDP, FMT_REAL_QP, &
@@ -18,7 +18,7 @@ module stdlib_io
   implicit none
   private
   ! Public API
-  public :: loadtxt, savetxt, open, get_line, get_file
+  public :: loadtxt, savetxt, open, get_line, get_file, input
 
   !! version: experimental 
   !!
@@ -60,6 +60,14 @@ module stdlib_io
     module procedure :: get_line_input_char
     module procedure :: get_line_input_string
   end interface get_line
+
+  !> Version: experimental
+  !>
+  !> Reads user input with an optional prompt
+  !> Returns a deferred-length character string
+  interface input
+    module procedure :: input_char
+  end interface input
 
   interface loadtxt
     !! version: experimental
@@ -704,5 +712,54 @@ contains
       call err0%handle(err)
 
   end subroutine get_file_char
+
+  !> Version: experimental
+  !>
+  !> Reads user input with an optional prompt into a deferred-length character variable
+  function input_char(prompt, iostat) result(str)
+    !> Optional prompt to display before reading input
+    character(len=*), intent(in), optional :: prompt
+    !> Optional status of operation
+    integer, intent(out), optional :: iostat
+    !> The input string read from the user
+    character(len=:), allocatable :: str
+
+    integer :: stat
+    character(len=:), allocatable :: iomsg
+
+    ! Display prompt if provided (without newline)
+    if (present(prompt)) then
+      write(output_unit, '(a)', advance='no') prompt
+      flush(output_unit)
+    end if
+
+    ! Read the input line
+    call get_line(input_unit, str, stat, iomsg)
+
+    ! Handle iostat
+    if (present(iostat)) then
+      iostat = stat
+    else if (stat /= 0) then
+      call error_stop(trim(iomsg))
+    end if
+  end function input_char
+
+  !> Version: experimental
+  !>
+  !> Reads user input with an optional prompt into a string variable of type `string_type`
+  recursive function input_string(prompt, iostat) result(str)
+    !> Optional prompt to display before reading input
+    character(len=*), intent(in), optional :: prompt
+    !> Optional status of operation
+    integer, intent(out), optional :: iostat
+    !> The input string read from the user
+    type(string_type) :: str
+
+    character(len=:), allocatable :: buffer
+
+    ! Use the character version and convert to string_type
+    buffer = input_char(prompt, iostat)
+    str = string_type(buffer)
+  end function input_string
 
 end module stdlib_io
