@@ -1,5 +1,5 @@
 module test_string_to_number
-    use stdlib_kinds, only: sp, dp, xdp, qp
+    use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
     use stdlib_str2num, only: to_num
     use testdrive, only : new_unittest, unittest_type, error_type, check
     implicit none
@@ -14,6 +14,10 @@ contains
         testsuite = [ &
             new_unittest("to_sp", test_to_sp), &
             new_unittest("to_dp", test_to_dp) &
+            , new_unittest("to_int8", test_to_int8) &
+            , new_unittest("to_int16", test_to_int16) &
+            , new_unittest("to_int32", test_to_int32) &
+            , new_unittest("to_int64", test_to_int64) &
             ]
     end subroutine collect_string_to_number
 
@@ -213,6 +217,231 @@ contains
         end function
     end subroutine
 
+
+    subroutine test_to_int8(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: wp = int8
+        character(len=64) :: s
+
+        call check(error, ucheck("0"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("-0"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("123"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("-123"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("   99"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("0005"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("-0008"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("78  "))
+        if (allocated(error)) return
+
+        call check(error, ucheck("   -42   "))
+        if (allocated(error)) return
+
+        write(s,'(i0)') huge(0_wp)
+        call check(error, ucheck(trim(s)))
+        if (allocated(error)) return
+
+        write(s,'(i0)') -huge(0_wp)-1
+        call check(error, ucheck(trim(s)))
+        if (allocated(error)) return
+
+    contains
+        logical function ucheck(s)
+            character(*), intent(in) :: s
+            integer(int8) :: formatted_read_out
+            integer(int8) :: to_num_out
+
+            ucheck = .true.
+            read(s,*) formatted_read_out
+            to_num_out = to_num(s, to_num_out)
+            if(to_num_out /= formatted_read_out) then
+                write(*,"('formatted read : ', i0)") formatted_read_out
+                write(*,"('to_num         : ', i0)") to_num_out
+                ucheck = .false.
+            end if
+        end function
+    end subroutine
+    subroutine test_to_int16(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: wp = int16
+        character(len=64) :: s
+
+        call check(error, ucheck("0"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("-0"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("123"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("-123"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("   99"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("0005"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("-0008"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("78  "))
+        if (allocated(error)) return
+
+        call check(error, ucheck("   -42   "))
+        if (allocated(error)) return
+
+        write(s,'(i0)') huge(0_wp)
+        call check(error, ucheck(trim(s)))
+        if (allocated(error)) return
+
+        write(s,'(i0)') -huge(0_wp)-1
+        call check(error, ucheck(trim(s)))
+        if (allocated(error)) return
+
+    contains
+        logical function ucheck(s)
+            character(*), intent(in) :: s
+            integer(int16) :: formatted_read_out
+            integer(int16) :: to_num_out
+
+            ucheck = .true.
+            read(s,*) formatted_read_out
+            to_num_out = to_num(s, to_num_out)
+            if(to_num_out /= formatted_read_out) then
+                write(*,"('formatted read : ', i0)") formatted_read_out
+                write(*,"('to_num         : ', i0)") to_num_out
+                ucheck = .false.
+            end if
+        end function
+    end subroutine
+    subroutine test_to_int32(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: wp = int32
+        character(len=64) :: s
+
+        call check(error, ucheck("0"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("-0"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("123"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("-123"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("   99"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("0005"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("-0008"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("78  "))
+        if (allocated(error)) return
+
+        call check(error, ucheck("   -42   "))
+        if (allocated(error)) return
+
+        write(s,'(i0)') huge(0_wp)
+        call check(error, ucheck(trim(s)))
+        if (allocated(error)) return
+
+        write(s,'(i0)') -huge(0_wp)-1
+        call check(error, ucheck(trim(s)))
+        if (allocated(error)) return
+
+    contains
+        logical function ucheck(s)
+            character(*), intent(in) :: s
+            integer(int32) :: formatted_read_out
+            integer(int32) :: to_num_out
+
+            ucheck = .true.
+            read(s,*) formatted_read_out
+            to_num_out = to_num(s, to_num_out)
+            if(to_num_out /= formatted_read_out) then
+                write(*,"('formatted read : ', i0)") formatted_read_out
+                write(*,"('to_num         : ', i0)") to_num_out
+                ucheck = .false.
+            end if
+        end function
+    end subroutine
+    subroutine test_to_int64(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: wp = int64
+        character(len=64) :: s
+
+        call check(error, ucheck("0"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("-0"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("123"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("-123"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("   99"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("0005"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("-0008"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("78  "))
+        if (allocated(error)) return
+
+        call check(error, ucheck("   -42   "))
+        if (allocated(error)) return
+
+        write(s,'(i0)') huge(0_wp)
+        call check(error, ucheck(trim(s)))
+        if (allocated(error)) return
+
+        write(s,'(i0)') -huge(0_wp)-1
+        call check(error, ucheck(trim(s)))
+        if (allocated(error)) return
+
+    contains
+        logical function ucheck(s)
+            character(*), intent(in) :: s
+            integer(int64) :: formatted_read_out
+            integer(int64) :: to_num_out
+
+            ucheck = .true.
+            read(s,*) formatted_read_out
+            to_num_out = to_num(s, to_num_out)
+            if(to_num_out /= formatted_read_out) then
+                write(*,"('formatted read : ', i0)") formatted_read_out
+                write(*,"('to_num         : ', i0)") to_num_out
+                ucheck = .false.
+            end if
+        end function
+    end subroutine
     
 end module test_string_to_number
 
