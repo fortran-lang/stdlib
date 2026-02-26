@@ -1,0 +1,178 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
+submodule(stdlib_spatial) stdlib_spatial_kabsch_umeyama
+    use stdlib_linalg, only: svd
+    use stdlib_intrinsics, only: stdlib_sum_kahan, stdlib_dot_product_kahan, kahan_kernel
+
+contains
+    #:for k, t, s in (KINDS_TYPES)
+    module subroutine kabsch_umeyama_${s}$(P, Q, R, t, c, rmsd, W, scale)
+        !> Reference point set (d × N)
+        ${t}$, intent(in) :: P(:, :)
+        !> Target point set (d × N)
+        ${t}$, intent(in) :: Q(:, :)
+        !> Optimal rotation matrix (d × d)
+        ${t}$, intent(out) :: R(:,:)
+        !> Translation vector (d)
+        ${t}$, intent(out) :: t(:)
+        !> Scale factor
+        ${t}$, intent(out) :: c
+        !> Root-mean-square deviation
+        real(${k}$), intent(out) :: rmsd
+        !> Optional weights
+        real(${k}$), intent(in), optional :: W(:)
+        !> Enable scaling
+        logical, intent(in), optional :: scale
+
+        ! Internal variables.
+        integer(ilp) :: i, j, point, d, N
+        ${t}$, allocatable :: covariance(:,:), U(:,:), Vt(:,:), vec(:), tmp_N(:), tmp_d(:), c_P(:), c_Q(:)
+        real(${k}$) :: sum_w, variance_p
+        real(${k}$), allocatable :: S(:)
+        logical :: scale_
+        real(${k}$) :: rmsd_err
+
+
+        ! Dimension checks
+        if(size(P,dim=1)/=size(Q,dim=1) .or. size(P,dim=1)/=size(R,dim=1) .or. size(P,dim=1)/=size(R,dim=2) &
+                    .or. size(P,dim=1)/=size(t)) then
+            call error_stop("array sizes do not match")
+        end if
+        if(size(P,dim=2)/=size(Q,dim=2)) then
+            call error_stop("array sizes do not match")
+        end if
+        if (present(W)) then
+            if (size(W) /= size(P,dim=2)) then
+                call error_stop("array sizes do not match")
+            end if
+        end if
+        d = size(P,dim=1)
+        N = size(P,dim=2)
+        scale_ = .true.
+        if(present(scale)) scale_ = scale
+
+        sum_w = one_${k}$ / N
+        if(present(W)) sum_w = one_${k}$ / stdlib_sum_kahan(W)
+
+        allocate(c_P(d), source=zero_${s}$)
+        allocate(c_Q(d), source=zero_${s}$)
+        allocate(tmp_N(N), source=zero_${s}$)
+
+        ! Compute centroids of P and Q
+        if(present(W)) then
+            do i = 1, d
+                tmp_N(:) = W(:) * P(i,:)
+                c_P(i) = stdlib_sum_kahan(tmp_N)
+                tmp_N(:) = W(:) * Q(i,:)
+                c_Q(i) = stdlib_sum_kahan(tmp_N)
+            end do
+        else
+            do i = 1, d
+                c_P(i) = stdlib_sum_kahan(P(i, :))
+                c_Q(i) = stdlib_sum_kahan(Q(i, :))
+            end do
+        end if
+        c_P = c_P * sum_w
+        c_Q = c_Q * sum_w
+
+        ! Compute covariance matrix H = (P - c_P) * (Q - c_Q)^T and variance of P
+        allocate(covariance(d,d), source=zero_${s}$)
+        allocate(tmp_d(d), source=zero_${s}$)
+        variance_p = zero_${k}$
+
+        if (present(W)) then
+            do point = 1, N
+                tmp_d = P(:, point) - c_P(:)
+                tmp_N(point) = stdlib_dot_product_kahan(tmp_d, tmp_d)
+            end do
+            tmp_N(:) = W(:) * tmp_N(:)
+            variance_p = stdlib_sum_kahan(tmp_N)
+            do j = 1, d
+                do i = 1, d
+                    #:if t.startswith('complex')
+                    tmp_N(:) = W(:) * (P(i,:) - c_P(i)) * conjg(Q(j,:) - c_Q(j))
+                    covariance(i,j) = stdlib_sum_kahan(tmp_N)
+                    #:else
+                    tmp_N(:) = W(:) * (P(i,:) - c_P(i)) * (Q(j,:) - c_Q(j))
+                    covariance(i,j) = stdlib_sum_kahan(tmp_N)
+                    #:endif
+                end do
+            end do
+        else
+            do point = 1, N
+                tmp_d = P(:, point) - c_P(:)
+                tmp_N(point) = stdlib_dot_product_kahan(tmp_d, tmp_d)
+            end do
+            variance_p = stdlib_sum_kahan(tmp_N)
+            do j = 1, d
+                do i = 1, d
+                    #:if t.startswith('complex')
+                    tmp_N(:) = (P(i,:) - c_P(i)) * conjg(Q(j,:) - c_Q(j))
+                    covariance(i,j) = stdlib_sum_kahan(tmp_N)
+                    #:else
+                    tmp_N(:) = (P(i,:) - c_P(i)) * (Q(j,:) - c_Q(j))
+                    covariance(i,j) = stdlib_sum_kahan(tmp_N)
+                    #:endif
+                end do
+            end do
+        end if
+
+        covariance = covariance * sum_w
+        variance_p = variance_p * sum_w
+
+        allocate(U(d,d), source=zero_${s}$)
+        allocate(Vt(d,d), source=zero_${s}$)
+        allocate(S(d), source=zero_${k}$)
+
+        ! SVD of covariance matrix H -> H = U * S * Vt
+        call svd(covariance, S, U, Vt)
+
+        ! Optimal rotation matrix.
+        do i = 1,d
+            do j = 1,d
+                #:if t.startswith('complex')
+                R(i,j) = stdlib_dot_product_kahan(conjg(U(i,:)), Vt(:, j))
+                #:else
+                R(i,j) = stdlib_dot_product_kahan(U(i,:), Vt(:, j))
+                #:endif
+            end do
+        end do
+
+        ! Scaling factor
+        if(scale_) then
+            c = variance_p / (sum(S(1:d)))
+        else
+            c = one_${s}$
+        end if
+
+        ! Translation vector t = c_P - c*R*c_Q
+        do i = 1, d
+            #:if t.startswith('complex')
+            t(i) = c_P(i) - c * stdlib_dot_product_kahan(conjg(R(i,1:d)), c_Q(1:d))
+            #:else
+            t(i) = c_P(i) - c * stdlib_dot_product_kahan(R(i,1:d), c_Q(1:d))
+            #:endif
+        end do
+
+        ! Compute RMSD
+        allocate(vec(d), source=zero_${s}$)
+        rmsd = zero_${k}$
+        rmsd_err = zero_${k}$
+        do point = 1, N
+            ! Calculate the k^th difference vector by the formula vec_k = c*R*Q_k + t - P_k
+            do i = 1, d
+                #:if t.startswith('complex')
+                vec(i) = c * stdlib_dot_product_kahan(conjg(R(i,1:d)), Q(1:d,point))
+                #:else
+                vec(i) = c * stdlib_dot_product_kahan(R(i,1:d), Q(1:d,point))
+                #:endif
+            end do
+            vec(1:d) = vec(1:d) + t(1:d) - P(1:d,point)
+            call kahan_kernel(real(stdlib_dot_product_kahan(vec,vec), kind=${k}$), rmsd, rmsd_err)
+        end do
+        rmsd = sqrt(rmsd * sum_w)
+    end subroutine
+    #:endfor
+end submodule stdlib_spatial_kabsch_umeyama
