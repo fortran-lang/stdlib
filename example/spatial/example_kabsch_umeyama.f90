@@ -24,6 +24,7 @@ program example_kabsch_umeyama
         print *, R(i,:)
     end do
 
+    print *, ""
     print *, "Recovered scale c:", c
 
     print *, ""

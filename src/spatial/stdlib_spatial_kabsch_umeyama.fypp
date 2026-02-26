@@ -22,7 +22,7 @@ contains
         !> Root-mean-square deviation
         real(${k}$), intent(out) :: rmsd
         !> Optional weights
-        ${t}$, intent(in), optional :: W(:)
+        real(${k}$), intent(in), optional :: W(:)
         !> Enable scaling
         logical, intent(in), optional :: scale
 
@@ -59,12 +59,15 @@ contains
 
         allocate(c_P(d), source=zero_${s}$)
         allocate(c_Q(d), source=zero_${s}$)
+        allocate(tmp_N(N), source=zero_${s}$)
 
         ! Compute centroids of P and Q
         if(present(W)) then
             do i = 1, d
-                c_P(i) = stdlib_dot_product_kahan(w,P(i, :))
-                c_Q(i) = stdlib_dot_product_kahan(w,Q(i, :))
+                tmp_N(:) = W(:) * P(i,:)
+                c_P(i) = stdlib_sum_kahan(tmp_N)
+                tmp_N(:) = W(:) * Q(i,:)
+                c_Q(i) = stdlib_sum_kahan(tmp_N)
             end do
         else
             do i = 1, d
@@ -77,7 +80,6 @@ contains
 
         ! Compute covariance matrix H = (P - c_P) * (Q - c_Q)^T and variance of P
         allocate(covariance(d,d), source=zero_${s}$)
-        allocate(tmp_N(N), source=zero_${s}$)
         allocate(tmp_d(d), source=zero_${s}$)
         variance_p = zero_${s}$
 
@@ -86,15 +88,16 @@ contains
                 tmp_d = P(:, point) - c_P(:)
                 tmp_N(point) = stdlib_dot_product_kahan(tmp_d, tmp_d)
             end do
-            variance_p = stdlib_dot_product_kahan(w, tmp_N)
+            tmp_N(:) = W(:) * tmp_N(:)
+            variance_p = stdlib_sum_kahan(tmp_N)
             do j = 1, d
                 do i = 1, d
                     #:if t.startswith('complex')
-                    tmp_N(:) = (P(i,:) - c_P(i)) * conjg(Q(j,:) - c_Q(j))
-                    covariance(i,j) = stdlib_dot_product_kahan(w, tmp_N)
+                    tmp_N(:) = W(:) * (P(i,:) - c_P(i)) * conjg(Q(j,:) - c_Q(j))
+                    covariance(i,j) = stdlib_sum_kahan(tmp_N)
                     #:else
-                    tmp_N(:) = (P(i,:) - c_P(i)) * (Q(j,:) - c_Q(j))
-                    covariance(i,j) = stdlib_dot_product_kahan(w, tmp_N)
+                    tmp_N(:) = W(:) * (P(i,:) - c_P(i)) * (Q(j,:) - c_Q(j))
+                    covariance(i,j) = stdlib_sum_kahan(tmp_N)
                     #:endif
                 end do
             end do
@@ -139,8 +142,11 @@ contains
         end do
 
         ! Scaling factor
-        c = variance_p / (sum(S(1:d)))
-        if (.not. scale_) c = one_${s}$
+        if(scale_) then
+            c = variance_p / (sum(S(1:d)))
+        else
+            c = one_${s}$
+        end if
 
         ! Translation vector t = c_P - c*R*c_Q
         do i = 1, d
