@@ -1,0 +1,199 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set I_KINDS_TYPES  = list(zip(INT_KINDS, INT_TYPES, INT_KINDS))
+#:set KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES
+module test_io_mm
+    use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
+    use stdlib_kinds
+    use stdlib_math, only: all_close
+    use stdlib_io_mm
+    implicit none
+
+contains
+
+
+    !> Collect all exported unit tests
+    subroutine collect_suite(testsuite)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [ &
+            new_unittest('io_mm_array', test_io_mm_array), &
+            new_unittest('io_mm_coordinate', test_io_mm_coordinate) &
+        ]
+    end subroutine
+
+    subroutine test_io_mm_array(error)
+        #:def generate_random_for_real(A)
+            #:if t.startswith('real')
+            call random_number(${A}$)
+            #:endif
+        #:enddef
+        #:def generate_random_for_complex(A, R, I)
+            #:if t.startswith('complex')
+            call random_number(${R}$)
+            call random_number(${I}$)
+            ${A}$ = cmplx(${R}$, ${I}$, kind=${k}$)
+            #:endif
+        #:enddef
+        #:def generate_random_for_int(A, i, j, n, rnd)
+            #:if t.startswith('integer')
+            do ${j}$ = 1, ${n}$
+                do ${i}$ = 1,${n}$
+                    call random_number(${rnd}$)
+                    ${A}$(${i}$,${j}$) = int(${rnd}$ * 100, kind=${k}$)
+                end do
+            end do
+            #:endif
+        #:enddef
+        #:def compare(result ,A, B)
+        #:if t.startswith('integer')
+            ${result}$ = all(${A}$==${B}$)
+        #:else
+            ${result}$ = all_close(${A}$, ${B}$)
+        #:endif
+        #:enddef
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for k, t, s in (KINDS_TYPES)
+        block
+            integer, parameter :: n = 5
+            ${t}$, allocatable :: matrix_save(:, :), matrix_load(:, :), A(:, :)
+            #:if t.startswith('complex')
+            real(${k}$), allocatable :: R(:, :)
+            real(${k}$), allocatable :: I(:,:)
+            #:endif
+            #:if t.startswith('integer')
+            real :: rnd
+            integer :: i, j
+            #:endif
+            logical :: result
+            allocate(matrix_save(n,n))
+            allocate(A(n,n))
+            #:if t.startswith('complex')
+            allocate(R(n,n))
+            allocate(I(n,n))
+            #:endif
+
+            ! General matrix
+            @:generate_random_for_real(matrix_save)
+            @:generate_random_for_complex(matrix_save, R, I)
+            @:generate_random_for_int(matrix_save, i, j, n, rnd)
+            call save_mm("test_mmio_dense.mtx", matrix_save, format = "G0")
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            @:compare(result, matrix_save, matrix_load)
+            call check(error, result, .true.,&
+                "MM array test failed: matrix=general, symmetry_arg=unspecified, type=${t}$")
+            if(allocated(error)) return
+            ! Check if symmetry = auto
+            call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "auto", format = "G0")
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            @:compare(result, matrix_save, matrix_load)
+            call check(error, result, .true.,&
+                "MM array test failed: matrix=general, symmetry_arg=auto, type=${t}$")
+            if(allocated(error)) return
+
+            ! Symmetric matrix
+            @:generate_random_for_real(A)
+            @:generate_random_for_complex(A, R, I)
+            @:generate_random_for_int(A, i, j, n, rnd)
+            ! Construct symmetric matrix using (A + A.T)
+            matrix_save = A + transpose(A)
+            call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "symmetric", format = "G0")
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            @:compare(result, matrix_save, matrix_load)
+            call check(error, result, .true.,&
+                "MM array test failed: matrix=symmetric, symmetry_arg=symmetric, type=${t}$")
+            if(allocated(error)) return
+            ! Check if symmetry = auto
+            call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "auto", format = "G0")
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            @:compare(result, matrix_save, matrix_load)
+            call check(error, result, .true.,&
+                "MM array test failed: matrix=symmetric, symmetry_arg=auto, type=${t}$")
+            if(allocated(error)) return
+
+            ! Skew-symmetric matrix
+            @:generate_random_for_real(A)
+            @:generate_random_for_complex(A, R, I)
+            @:generate_random_for_int(A, i, j, n, rnd)
+            ! Construct symmetric matrix using (A - A.T)
+            matrix_save = A - transpose(A)
+            call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "skew-symmetric", format = "G0")
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            @:compare(result, matrix_save, matrix_load)
+            call check(error, result, .true.,&
+                "MM array test failed: matrix=skew-symmetric, symmetry_arg=skew-symmetric, type=${t}$")
+            if(allocated(error)) return
+            ! Check if symmetry = auto
+            call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "auto", format = "G0")
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            @:compare(result, matrix_save, matrix_load)
+            call check(error, result, .true.,&
+                "MM array test failed: matrix=skew-symmetric, symmetry_arg=auto, type=${t}$")
+            if(allocated(error)) return
+
+            #:if t.startswith('complex')
+            ! Hermitian matrix
+            @:generate_random_for_complex(A, R, I)
+            ! Construct symmetric matrix using (A + A.H)
+            matrix_save = A + transpose(conjg(A))
+            call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "hermitian", format = "G0")
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            @:compare(result, matrix_save, matrix_load)
+            call check(error, result, .true.,&
+                "MM array test failed: matrix=hermitian, symmetry_arg=hermitian, type=${t}$")
+            if(allocated(error)) return
+            ! Check if symmetry = auto
+            call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "auto", format = "G0")
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            @:compare(result, matrix_save, matrix_load)
+            call check(error, result, .true.,&
+                "MM array test failed: matrix=hermitian, symmetry_arg=auto, type=${t}$")
+            if(allocated(error)) return
+            #:endif
+        end block
+        #:endfor
+    end subroutine
+
+    subroutine test_io_mm_coordinate(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for k, t, s in (KINDS_TYPES)
+        block
+            integer, parameter :: n = 5
+            ${t}$, allocatable :: index_save(:), index_load(:)
+            integer, allocatable :: data_save(:, :), data_load(:,:)
+        end block
+        #:endfor
+    end subroutine
+
+end module
+
+
+program tester
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_io_mm, only : collect_suite
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("io_mm", collect_suite) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program

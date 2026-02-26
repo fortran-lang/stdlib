@@ -305,3 +305,70 @@ Exceptions trigger an `error stop` unless the optional `err` argument is provide
 {!example/io/example_get_file.f90!}
 ```
 
+## Matrix Market Format I/O
+
+### Status
+
+Experimental
+
+### Description
+
+The Matrix Market I/O module provides support for reading and writing matrices in the Matrix Market format, a simple ASCII format for sparse and dense matrices developed at NIST. The format supports real, complex, and integer matrices with various symmetry properties.
+
+### `load_mm` - load a matrix from Matrix Market file
+
+#### Syntax
+
+`call ` [[stdlib_io_mm(module):load_mm(interface)]] `(filename, matrix [, iostat] [, iomsg])`
+
+#### Arguments
+
+`filename`: Shall be a character expression containing the Matrix Market file name to read from.
+
+`matrix`: Shall be an allocatable rank-2 array of type `real`, `complex`, or `integer` that will contain the loaded matrix.
+
+`iostat` (optional): Shall be a scalar of type `integer` that receives the error status. Zero indicates success.
+
+`iomsg` (optional): Shall be an allocatable character string that receives the error message if iostat is non-zero.
+
+#### Description
+
+Loads a 2D matrix from a Matrix Market format file. The routine automatically detects the data type, format (coordinate or array), and symmetry properties from the file header. For coordinate format files, symmetric matrices are expanded to full storage.
+
+### `save_mm` - save a matrix to Matrix Market file
+
+#### Syntax
+
+`call ` [[stdlib_io_mm(module):save_mm(interface)]] `(filename, matrix [, header_info] [, iostat] [, iomsg])`
+
+#### Arguments
+
+`filename`: Shall be a character expression containing the Matrix Market file name to write to.
+
+`matrix`: Shall be a rank-2 array of type `real`, `complex`, or `integer` to save.
+
+`header_info` (optional): Shall be a character expression containing additional comments for the file header. Can also specify format preference ('coordinate' or 'array').
+
+`iostat` (optional): Shall be a scalar of type `integer` that receives the error status. Zero indicates success.
+
+`iomsg` (optional): Shall be an allocatable character string that receives the error message if iostat is non-zero.
+
+#### Description
+
+Saves a 2D matrix to Matrix Market format file. The routine automatically chooses coordinate format for sparse matrices (< 50% non-zero) and array format for dense matrices, unless overridden in `header_info`.
+
+### Matrix Market Format Details
+
+The Matrix Market format supports:
+
+- **Object types**: Currently only `matrix` is supported
+- **Formats**: `coordinate` (sparse) and `array` (dense)  
+- **Data types**: `real`, `complex`, `integer` (pattern not yet supported)
+- **Symmetry**: `general`, `symmetric`, `skew-symmetric`, `hermitian`
+
+### Example
+
+```fortran
+{!example/io/example_matrix_market.f90!}
+```
+
