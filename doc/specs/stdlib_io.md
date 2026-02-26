@@ -104,17 +104,33 @@ Experimental
 ### Description
 Saves a rank-2 `array` into a text file.
 
+If the text file already exists:
+ - When called with a character expression `filename` as the first argument it will overwrite the file.
+ - When called with an integer number `unit` to an open file as the first argument, it will append data to the file.
+
 ### Syntax
 
-`call ` [[stdlib_io(module):savetxt(interface)]] `(filename, array [, delimiter])`
+`call ` [[stdlib_io(module):savetxt(interface)]] `(filename, array [,  delimiter] [, fmt] [, header] [, footer] [, comments] [, append])`
+
+`call ` [[stdlib_io(module):savetxt(interface)]] `(unit, array[,  delimiter] [, fmt] [, header] [, footer] [, comments])`
 
 ### Arguments
 
-`filename`: Shall be  a character expression containing the name of the file that will contain the 2D `array`.
+`filename or unit`: Shall be either a character expression containing the name of the file or an integer containing the unit of an already open file, that will contain the 2D `array`.
 
 `array`: Shall be a rank-2 array of type `real`, `complex` or `integer`.
 
-`delimiter` (optional): Shall be a character expression of length 1 that contains the delimiter used to separate the columns. The default is `' '`.
+`delimiter` (optional): Shall be a character expression of any length that contains the delimiter used to separate the columns. The default is a single space `' '`.
+
+`fmt` (optional): Fortran format specifier for the text save. Defaults to the write format for the data type as defined in the [formatting constants]{formatting-constants}.
+
+`header` (optional): Shall be a character expression that will be written at the beginning of the file.
+
+`footer` (optional): Shall be a character expression that will be written at the end of the file.
+
+`comments` (optional): Shall  be a character expression of any length that will be prepended to the ``header`` and ``footer`` strings to mark them as comments. Default: `#`.
+
+`append` (optional): Shall be a logical flag indicating if data will be appended at the end of the file. If `.false.` file will be overwritten. This flag shall be ignored if the file is already opened. Cannot be present with `unit`. Default: `.false.`
 
 ### Output
 
@@ -247,7 +263,7 @@ Read a whole line from a formatted unit into a string variable
 {!example/io/example_get_line.f90!}
 ```
 
-## Formatting constants
+## Formatting constants {formatting-constants}
 
 ### Status
 
@@ -277,7 +293,7 @@ The function provides an optional error-handling mechanism via the `state_type` 
 
 ### Syntax
 
-`call [[stdlib_io(module):get_file(subroutine)]] (filename, file [, err] [, delete=.false.])`
+`call ` [[stdlib_io(module):get_file(subroutine)]] ` (filename, file [, err] [, delete=.false.])`
 
 ### Class
 Function

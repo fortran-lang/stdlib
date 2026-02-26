@@ -13,7 +13,7 @@ module stdlib_io
                                  FMT_COMPLEX_SP, FMT_COMPLEX_DP, FMT_COMPLEX_XDP, FMT_COMPLEX_QP
   use stdlib_error, only: error_stop, state_type, STDLIB_IO_ERROR
   use stdlib_optval, only: optval
-  use stdlib_ascii, only: is_blank
+  use stdlib_ascii, only: is_blank, whitespace, CR,LF,VT,FF
   use stdlib_string_type, only : string_type, assignment(=), move
   implicit none
   private
@@ -47,6 +47,8 @@ module stdlib_io
 
   !> Default delimiter for loadtxt, savetxt and number_of_columns
   character(len=1), parameter :: delimiter_default = " "
+  character(len=1), parameter :: comment_default = "#"
+  character(len=1), parameter :: nl = new_line('a')
 
   public :: FMT_INT, FMT_REAL_SP, FMT_REAL_DP, FMT_REAL_XDP, FMT_REAL_QP
   public :: FMT_COMPLEX_SP, FMT_COMPLEX_DP, FMT_COMPLEX_XDP, FMT_COMPLEX_QP
@@ -76,8 +78,10 @@ module stdlib_io
     !!
     !! Saves a 2D array into a text file
     !! ([Specification](../page/specs/stdlib_io.html#description_2))
+    #:for arg1 in ['filename', 'unit']
     #:for k1, t1 in KINDS_TYPES
-      module procedure savetxt_${t1[0]}$${k1}$
+      module procedure savetxt_${t1[0]}$${k1}$${arg1[0]}$
+    #:endfor
     #:endfor
   end interface
 
@@ -230,9 +234,13 @@ contains
     end subroutine loadtxt_${t1[0]}$${k1}$
   #:endfor
 
-
+  #:for arg1 in ['filename', 'unit']
   #:for k1, t1 in KINDS_TYPES
-    subroutine savetxt_${t1[0]}$${k1}$(filename, d, delimiter)
+    subroutine savetxt_${t1[0]}$${k1}$${arg1[0]}$ (${arg1}$, d, delimiter, fmt, header, footer, comments&
+      #:if 'filename' in arg1
+      , append&
+      #:endif
+      )
       !! version: experimental
       !!
       !! Saves a 2D array into a text file.
@@ -240,9 +248,18 @@ contains
       !! Arguments
       !! ---------
       !!
+      #:if 'filename' in arg1
       character(len=*), intent(in) :: filename  ! File to save the array to
+      logical, intent(in), optional :: append
+      #:elif 'unit' in arg1
+      integer, intent(in) :: unit
+      #:endif
       ${t1}$, intent(in) :: d(:,:)           ! The 2D array to save
-      character(len=1), intent(in), optional :: delimiter  ! Column delimiter. Default is a space.
+      character(len=*), intent(in), optional :: delimiter  ! Column delimiter. Default is a space ' '.
+      character(len=*), intent(in), optional :: fmt  !< Fortran format specifier. Defaults to the write format for the data type.
+      character(len=*), intent(in), optional :: header  !< If present, text to write before data.
+      character(len=*), intent(in), optional :: footer  !< If present, text to write after data.
+      character(len=*), intent(in), optional :: comments  !< Comment character. Default "#".
       !!
       !! Example
       !! -------
@@ -252,43 +269,149 @@ contains
       !! call savetxt("log.txt", data)
       !!```
       !!
-      integer :: s, i, ios
-      character(len=1) :: delimiter_
-      character(len=3) :: delim_str
+      integer :: i, ios
+      character(len=:), allocatable :: delimiter_
+      character(len=:), allocatable :: delim_str
+      character(len=:), allocatable :: default_fmt
       character(len=:), allocatable :: fmt_
-      character(len=1024) :: iomsg, msgout
+      character(len=:), allocatable :: comments_
+      character(len=:), allocatable :: header_
+      character(len=:), allocatable :: footer_
+      !
+      #:if 'filename' in arg1
+      logical :: append_
+      integer :: unit
+      #:endif
+      logical :: opened
+      character(len=7) :: writable
+      character(len=1024) :: iomsg, msgout, fout
 
       delimiter_ = optval(delimiter, delimiter_default)
       delim_str = "'"//delimiter_//"'"
-      #:if 'real' in t1
-        fmt_ = "(*"//FMT_REAL_${k1}$(1:len(FMT_REAL_${k1}$)-1)//",:,"//delim_str//"))"
-      #:elif 'complex' in t1
-        fmt_ = "(*"//FMT_COMPLEX_${k1}$(1:11)//delim_str//FMT_COMPLEX_${k1}$(14:23)//",:,"//delim_str//"))"
-      #:elif 'integer' in t1
-        fmt_ = "(*"//FMT_INT(1:len(FMT_INT)-1)//",:,"//delim_str//"))"
+      comments_ = optval(comments, comment_default)
+      header_ = optval(trim(header), '')
+      footer_ = optval(trim(footer), '')
+      #:if 'filename' in arg1
+      append_ = optval(append, .False.)
       #:endif
 
-      s = open(filename, "w")
+      if(index(delimiter_, comments_) /= 0) then
+          write (msgout,'(a)') 'savetxt error: delimiter string cannot include the comments string'
+          call error_stop(msg=trim(msgout))
+      end if
+
+      if(scan(whitespace, comments_) /= 0) then
+          write (msgout,'(a)') 'savetxt error: comments string cannot include whitespaces'
+          call error_stop(msg=trim(msgout))
+      end if
+        
+      if(scan(LF//CR//VT//FF, delimiter_ ) /= 0) then
+          write (msgout,'(a)') 'savetxt error: delimiter cannot include newline'
+          call error_stop(msg=trim(msgout))
+      end if
+        
+
+      #:if 'real' in t1
+        default_fmt = FMT_REAL_${k1}$(2:len(FMT_REAL_${k1}$)-1)
+      #:elif 'complex' in t1
+        default_fmt = FMT_COMPLEX_${k1}$(2:11)//delim_str//FMT_COMPLEX_${k1}$(14:23)
+      #:elif 'integer' in t1
+        default_fmt = FMT_INT(2:len(FMT_INT)-1)
+      #:endif
+      fmt_ = "(*("//optval(fmt, default_fmt)//",:,"//delim_str//"))"
+
+      #:if 'filename' in arg1
+      ! Check if it is opened 
+      inquire (file=filename, opened=opened)
+      if(.not. opened) then
+          if(append_) then
+              unit = open (filename, "a+")
+          else
+              unit = open (filename, "w")
+          end if
+      else
+          inquire(file=filename, number=unit, write=writable)
+          if ((unit == -1) .or. (writable(1:1) /= 'Y')) then
+              write (msgout,'(a)') 'savetxt error: file '//filename//' not open for writing'
+              call error_stop(msg=trim(msgout))
+          end if
+      end if
+      fout = filename           ! fout is used for unified error message later
+      #:else
+      inquire (unit=unit, opened=opened, write=writable)
+      if((.not. opened) .or. (writable(1:1) /= 'Y')) then
+          write (msgout,'(a,i0,a)') 'savetxt error: unit ',unit,' not open for writing'
+          call error_stop(msg=trim(msgout))
+      end if
+      !
+      write(fout,'(i0)') unit
+      fout = adjustl(fout)  ! fout is used for unified error message later
+      #:endif
+
+      ! Write the header if non-empty
+      if (header_ /= '') then
+          write (unit, '(A)', iostat=ios, iomsg=iomsg) prepend(header_, comments_)
+          if (ios/=0) then
+              write (msgout,'(a)') 'savetxt: error <'//trim(iomsg)//"> header to "//trim(fout)
+              call error_stop(msg=trim(msgout))
+          end if           
+      end if
+        
       do i = 1, size(d, 1)
         #:if 'real' in t1 or 'complex' in t1 or 'integer' in t1
-          write(s, fmt_, &
+          write(unit, fmt_, &
         #:else
-          write(s, *, &
+          write(unit, *, &
         #:endif
                 iostat=ios,iomsg=iomsg) d(i, :)
         
         if (ios/=0) then 
-           write(msgout,1) trim(iomsg),size(d,2),i,trim(filename) 
-           call error_stop(msg=trim(msgout))
+            write (msgout,1) trim(iomsg),size(d,2),i,trim(fout)
+            call error_stop(msg=trim(msgout))
         end if           
-        
       end do
-      close(s)
-      
+
+      if (footer_ /= '') then
+          write (unit, '(A)', iostat=ios, iomsg=iomsg) prepend(footer_, comments_)
+          if (ios/=0) then
+              write (msgout,'(a)') 'savetxt: error <'//trim(iomsg)//"> footer to "//trim(fout)
+              call error_stop(msg=trim(msgout))
+          end if           
+      end if
+
+      #:if 'filename' in arg1
+      if (.not. opened)  close(unit) ! Only close if opened in the routine
+      #:endif
+
       1 format('savetxt: error <',a,'> writing ',i0,' values to line ',i0,' of ',a,'.')
       
-    end subroutine savetxt_${t1[0]}$${k1}$
+    end subroutine savetxt_${t1[0]}$${k1}$${arg1[0]}$
   #:endfor
+  #:endfor
+  pure function prepend(Sin, comment) result(Sout)
+    character(len=*), intent(in) :: Sin
+    character(len=:), allocatable :: Sout
+    character(len=*), intent(in) :: comment 
+    character(len=len(comment)+1) :: com_
+    integer :: bol, eol       ! indexes of beginning and end of line
+
+    if (trim(Sin) == '') then
+        Sout = ''
+        return
+    end if
+    
+    com_ = comment//" "
+    bol = 1
+    Sout = com_              ! Initialize to comment the first line
+    do
+      eol = index(Sin(bol:), nl) + bol - 1 ! position of end of line in original string
+      if (eol == bol - 1) exit             ! index returned 0
+      Sout = Sout//Sin(bol:eol)//com_
+      bol = eol + 1
+    end do
+    if (eol < len(Sin)) Sout = Sout//Sin(eol + 1:) ! Add last line if not newline present
+
+  end function prepend
 
 
   integer function number_of_columns(s, skiprows, delimiter)
