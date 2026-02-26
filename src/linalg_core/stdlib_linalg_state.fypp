@@ -73,17 +73,25 @@ module stdlib_linalg_state
      end function linalg_message
 
      !> Flow control: on output flag present, return it; otherwise, halt on error
-     pure subroutine linalg_error_handling(ierr,ierr_out)
+     !> If where_at is provided, update the error location before returning/stopping
+     pure subroutine linalg_error_handling(ierr,ierr_out,where_at)
          type(linalg_state_type),intent(in) :: ierr
          type(linalg_state_type),optional,intent(out) :: ierr_out
+         character(len=*),optional,intent(in) :: where_at
 
          character(len=:),allocatable :: err_msg
+         type(linalg_state_type) :: local_err
 
          if (present(ierr_out)) then
              ! Return error flag
              ierr_out = ierr
+             ! Update location if requested (update_location handles optional internally)
+             call ierr_out%update_location(where_at)
          elseif (ierr%error()) then
-             err_msg = ierr%print()
+             ! Use local copy to update location, then print
+             local_err = ierr
+             call local_err%update_location(where_at)
+             err_msg = local_err%print()
              error stop err_msg
          end if
 
