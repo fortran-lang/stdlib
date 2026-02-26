@@ -28,8 +28,7 @@ contains
 
         ! Internal variables.
         integer(ilp) :: i, j, point, d, N
-        ${t}$, allocatable :: covariance(:,:), U(:,:), Vt(:,:), B(:,:), vec(:), tmp_N(:), tmp_d(:), c_P(:), c_Q(:)
-        ${t}$ ::  vp, vq
+        ${t}$, allocatable :: covariance(:,:), U(:,:), Vt(:,:), vec(:), tmp_N(:), tmp_d(:), c_P(:), c_Q(:)
         real(${k}$) :: sum_w, variance_p
         real(${k}$), allocatable :: S(:)
         logical :: scale_
@@ -54,8 +53,8 @@ contains
         scale_ = .true.
         if(present(scale)) scale_ = scale
 
-        sum_w = one_${s}$ / N
-        if(present(W)) sum_w = one_${s}$ / stdlib_sum_kahan(W)
+        sum_w = one_${k}$ / N
+        if(present(W)) sum_w = one_${k}$ / stdlib_sum_kahan(W)
 
         allocate(c_P(d), source=zero_${s}$)
         allocate(c_Q(d), source=zero_${s}$)
@@ -81,7 +80,7 @@ contains
         ! Compute covariance matrix H = (P - c_P) * (Q - c_Q)^T and variance of P
         allocate(covariance(d,d), source=zero_${s}$)
         allocate(tmp_d(d), source=zero_${s}$)
-        variance_p = zero_${s}$
+        variance_p = zero_${k}$
 
         if (present(W)) then
             do point = 1, N
@@ -159,8 +158,8 @@ contains
 
         ! Compute RMSD
         allocate(vec(d), source=zero_${s}$)
-        rmsd = zero_${s}$
-        rmsd_err = zero_${s}$
+        rmsd = zero_${k}$
+        rmsd_err = zero_${k}$
         do point = 1, N
             ! Calculate the k^th difference vector by the formula vec_k = c*R*Q_k + t - P_k
             do i = 1, d
