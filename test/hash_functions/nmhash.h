@@ -89,6 +89,29 @@ extern "C" {
 #  endif
 #endif
 
+/*
+ * Endian-correct 16-bit multiply for scalar code paths.
+ * On LE: u16[0] is the low half, u16[1] is the high half.
+ * On BE: u16[0] is the HIGH half, u16[1] is the LOW half.
+ * We need low_value *= low_constant, high_value *= high_constant,
+ * so on BE we swap which constant half goes to which index.
+ */
+#if NMHASH_LITTLE_ENDIAN
+#  define NMH_MULT16_SCALAR(u16_0, u16_1, m) do { \
+       (u16_0) *= (uint16_t)(m); \
+       (u16_1) *= (uint16_t)((m) >> 16); \
+   } while(0)
+#  define NMH_PACK_U16_HI(u16_arr, val) ((u16_arr)[1] = (val))
+#  define NMH_PACK_U16_LO(u16_arr, val) ((u16_arr)[0] = (val))
+#else
+#  define NMH_MULT16_SCALAR(u16_0, u16_1, m) do { \
+       (u16_0) *= (uint16_t)((m) >> 16); \
+       (u16_1) *= (uint16_t)(m); \
+   } while(0)
+#  define NMH_PACK_U16_HI(u16_arr, val) ((u16_arr)[0] = (val))
+#  define NMH_PACK_U16_LO(u16_arr, val) ((u16_arr)[1] = (val))
+#endif
+
 /* vector macros */
 #define NMH_SCALAR 0
 #define NMH_SSE2   1
@@ -206,15 +229,12 @@ NMHASH32_0to8(uint32_t const x, uint32_t const seed2)
 		union { uint32_t u32; uint16_t u16[2]; } vx;
 		vx.u32 = x;
 		vx.u32 ^= (vx.u32 >> 12) ^ (vx.u32 >> 6);
-		vx.u16[0] *= (uint16_t)m1;
-		vx.u16[1] *= (uint16_t)(m1 >> 16);
+		NMH_MULT16_SCALAR(vx.u16[0], vx.u16[1], m1);
 		vx.u32 ^= (vx.u32 << 11) ^ ( vx.u32 >> 19);
-		vx.u16[0] *= (uint16_t)m2;
-		vx.u16[1] *= (uint16_t)(m2 >> 16);
+		NMH_MULT16_SCALAR(vx.u16[0], vx.u16[1], m2);
 		vx.u32 ^= seed2;
 		vx.u32 ^= (vx.u32 >> 15) ^ ( vx.u32 >> 9);
-		vx.u16[0] *= (uint16_t)m3;
-		vx.u16[1] *= (uint16_t)(m3 >> 16);
+		NMH_MULT16_SCALAR(vx.u16[0], vx.u16[1], m3);
 		vx.u32 ^= (vx.u32 << 16) ^ ( vx.u32 >> 11);
 		return vx.u32;
 	}
@@ -290,21 +310,18 @@ NMHASH32_9to255(const uint8_t* const NMH_RESTRICT p, size_t const len, uint32_t 
 				for (j = 0; j < 4; ++j) x[j].u32 += y[j].u32;
 
 				for (j = 0; j < 4; ++j) {
-					x[j].u16[0] *= (uint16_t)(__NMH_M1 & 0xFFFF);
-					x[j].u16[1] *= (uint16_t)(__NMH_M1 >> 16);
+					NMH_MULT16_SCALAR(x[j].u16[0], x[j].u16[1], __NMH_M1);
 				}
 				for (j = 0; j < 4; ++j) x[j].u32 ^= (x[j].u32 << 5) ^ (x[j].u32 >> 13);
 				for (j = 0; j < 4; ++j) {
-					x[j].u16[0] *= (uint16_t)(__NMH_M2 & 0xFFFF);
-					x[j].u16[1] *= (uint16_t)(__NMH_M2 >> 16);
+					NMH_MULT16_SCALAR(x[j].u16[0], x[j].u16[1], __NMH_M2);
 				}
 
 				for (j = 0; j < 4; ++j) x[j].u32 ^= y[j].u32;
 
 				for (j = 0; j < 4; ++j) x[j].u32 ^= (x[j].u32 << 11) ^ (x[j].u32 >> 9);
 				for (j = 0; j < 4; ++j) {
-					x[j].u16[0] *= (uint16_t)(__NMH_M3 & 0xFFFF);
-					x[j].u16[1] *= (uint16_t)(__NMH_M3 >> 16);
+					NMH_MULT16_SCALAR(x[j].u16[0], x[j].u16[1], __NMH_M3);
 				}
 				for (j = 0; j < 4; ++j) x[j].u32 ^= (x[j].u32 >> 10) ^ (x[j].u32 >> 20);
 			}
@@ -326,21 +343,18 @@ NMHASH32_9to255(const uint8_t* const NMH_RESTRICT p, size_t const len, uint32_t 
 		for (j = 0; j < 4; ++j) y[j].u32 ^= (y[j].u32 << 17) ^ (y[j].u32 >> 6);
 
 		for (j = 0; j < 4; ++j) {
-			x[j].u16[0] *= (uint16_t)(__NMH_M1 & 0xFFFF);
-			x[j].u16[1] *= (uint16_t)(__NMH_M1 >> 16);
+			NMH_MULT16_SCALAR(x[j].u16[0], x[j].u16[1], __NMH_M1);
 		}
 		for (j = 0; j < 4; ++j) x[j].u32 ^= (x[j].u32 << 5) ^ (x[j].u32 >> 13);
 		for (j = 0; j < 4; ++j) {
-			x[j].u16[0] *= (uint16_t)(__NMH_M2 & 0xFFFF);
-			x[j].u16[1] *= (uint16_t)(__NMH_M2 >> 16);
+			NMH_MULT16_SCALAR(x[j].u16[0], x[j].u16[1], __NMH_M2);
 		}
 
 		for (j = 0; j < 4; ++j) x[j].u32 ^= y[j].u32;
 
 		for (j = 0; j < 4; ++j) x[j].u32 ^= (x[j].u32 << 11) ^ (x[j].u32 >> 9);
 		for (j = 0; j < 4; ++j) {
-			x[j].u16[0] *= (uint16_t)(__NMH_M3 & 0xFFFF);
-			x[j].u16[1] *= (uint16_t)(__NMH_M3 >> 16);
+			NMH_MULT16_SCALAR(x[j].u16[0], x[j].u16[1], __NMH_M3);
 		}
 		for (j = 0; j < 4; ++j) x[j].u32 ^= (x[j].u32 >> 10) ^ (x[j].u32 >> 20);
 
@@ -352,8 +366,7 @@ NMHASH32_9to255(const uint8_t* const NMH_RESTRICT p, size_t const len, uint32_t 
 		for (j = 1; j < 4; ++j) x[0].u32 += x[j].u32;
 
 		x[0].u32 ^= sl + (sl >> 5);
-		x[0].u16[0] *= (uint16_t)(__NMH_M3 & 0xFFFF);
-		x[0].u16[1] *= (uint16_t)(__NMH_M3 >> 16);
+		NMH_MULT16_SCALAR(x[0].u16[0], x[0].u16[1], __NMH_M3);
 		x[0].u32 ^= (x[0].u32 >> 10) ^ (x[0].u32 >> 20);
 
 		result = x[0].u32;
@@ -581,11 +594,9 @@ NMHASH32_avalanche32(uint32_t const x)
 	union { uint32_t u32; uint16_t u16[2]; } vx;
 	vx.u32    = x;
 	vx.u32   ^= (vx.u32 >> 8) ^ (vx.u32 >> 21);
-	vx.u16[0] = (uint16_t)(vx.u16[0] * (uint16_t)m1);
-	vx.u16[1] = (uint16_t)(vx.u16[1] * (uint16_t)(m1 >> 16));
+	NMH_MULT16_SCALAR(vx.u16[0], vx.u16[1], m1);
 	vx.u32   ^= (vx.u32 << 12) ^ (vx.u32 >> 7);
-	vx.u16[0] = (uint16_t)(vx.u16[0] * (uint16_t)m2);
-	vx.u16[1] = (uint16_t)(vx.u16[1] * (uint16_t)(m2 >> 16));
+	NMH_MULT16_SCALAR(vx.u16[0], vx.u16[1], m2);
 	return vx.u32 ^ (vx.u32 >> 8) ^ (vx.u32 >> 21);
 }
 
@@ -617,8 +628,8 @@ NMHASH32(const void* const NMH_RESTRICT input, size_t const len, uint32_t seed)
 					data.u32 = NMH_readLE16(p);
 					break;
 				case 3: seed += NMH_PRIME32_2 + (UINT32_C(3) << 24) + (3 << 1);
-					data.u16[1] = p[2];
-					data.u16[0] = NMH_readLE16(p);
+					NMH_PACK_U16_HI(data.u16, p[2]);
+					NMH_PACK_U16_LO(data.u16, NMH_readLE16(p));
 					break;
 				case 4: seed += NMH_PRIME32_3;
 					data.u32 = NMH_readLE32(p);
@@ -801,8 +812,8 @@ NMHASH32X(const void* const NMH_RESTRICT input, size_t const len, uint32_t seed)
 					data.u32 = NMH_readLE16(p);
 					break;
 				case 3: seed += NMH_PRIME32_2 + (UINT32_C(3) << 24) + (3 << 1);
-					data.u16[1] = p[2];
-					data.u16[0] = NMH_readLE16(p);
+					NMH_PACK_U16_HI(data.u16, p[2]);
+					NMH_PACK_U16_LO(data.u16, NMH_readLE16(p));
 					break;
 				case 4: seed += NMH_PRIME32_1;
 					data.u32 = NMH_readLE32(p);
