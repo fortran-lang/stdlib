@@ -1,0 +1,285 @@
+#:include "common.fypp"
+submodule (stdlib_stats) stdlib_stats_pca
+  use stdlib_kinds, only: sp, dp, xdp, qp
+  use stdlib_optval, only: optval
+  use stdlib_linalg, only: svd, eigh
+  use stdlib_linalg_constants, only: ilp
+  use stdlib_linalg_blas, only: gemm, syrk
+  use stdlib_linalg_state, only: linalg_state_type, LINALG_ERROR, LINALG_VALUE_ERROR
+  use stdlib_ascii, only: to_lower
+  use stdlib_error, only: error_stop
+  implicit none
+
+contains
+
+  ! Helper subroutine: Centers data in-place by subtracting the mean from each column
+  #:for k1, t1, ri, cpp in REAL_KINDS_TYPES
+    subroutine center_data_${k1}$(x, mu)
+      ${t1}$, intent(inout) :: x(:,:)
+      ${t1}$, intent(in) :: mu(:)
+      integer(ilp) :: i, j, m, n
+      m = size(x, 1, kind=ilp)
+      n = size(x, 2, kind=ilp)
+      do concurrent(i=1:m, j=1:n)
+         x(i, j) = x(i, j) - mu(j)
+      end do
+    end subroutine center_data_${k1}$
+  #:endfor
+
+  ! SVD-based PCA driver: computes principal components via SVD of centered data
+  #:for k1, t1, ri, cpp in REAL_KINDS_TYPES
+    subroutine pca_svd_driver_${k1}$(x_centered, n, p, components, singular_values, err)
+      use stdlib_blas_constants_${k1}$, only: zero
+      ${t1}$, intent(inout) :: x_centered(:,:)
+      integer(ilp), intent(in) :: n, p
+      ${t1}$, intent(out) :: components(:,:)
+      ${t1}$, intent(out) :: singular_values(:)
+      type(linalg_state_type), intent(out) :: err
+
+      integer(ilp) :: n_s, m
+      ${t1}$, allocatable :: s_tmp(:), vt_tmp(:,:)
+
+      ! Initialize outputs to zero to prevent uninitialized memory access
+      components = zero
+      singular_values = zero
+
+      n_s = min(n, p)
+      allocate(s_tmp(n_s), vt_tmp(n_s, p))
+
+      call svd(x_centered, s_tmp, vt=vt_tmp, overwrite_a=.true., full_matrices=.false., err=err)
+
+      if (err%ok()) then
+         m = min(size(components, 1, kind=ilp), n_s)
+         components(1:m, :) = vt_tmp(1:m, :)
+         m = min(size(singular_values, 1, kind=ilp), n_s)
+         singular_values(1:m) = s_tmp(1:m)
+      end if
+    end subroutine pca_svd_driver_${k1}$
+  #:endfor
+
+  ! Eigendecomposition-based PCA driver: computes principal components via covariance matrix
+  #:for k1, t1, ri, cpp in REAL_KINDS_TYPES
+    subroutine pca_eigh_driver_${k1}$(x_centered, n, p, components, singular_values, err)
+      use stdlib_blas_constants_${k1}$, only: zero
+      ${t1}$, intent(in) :: x_centered(:,:)
+      integer(ilp), intent(in) :: n, p
+      ${t1}$, intent(out) :: components(:,:)
+      ${t1}$, intent(out) :: singular_values(:)
+      type(linalg_state_type), intent(out) :: err
+
+      integer(ilp) :: m
+      ${t1}$ :: alpha, beta
+      real(${k1}$), allocatable :: lambda(:)
+      ${t1}$, allocatable :: c(:,:), vectors(:,:)
+
+      ! Initialize outputs to zero to prevent uninitialized memory access
+      components = zero
+      singular_values = zero
+
+      ! Compute covariance matrix using BLAS syrk: C = (1/(n-1)) * X^T * X
+      alpha = 1.0_${k1}$ / real(max(n-1, 1), ${k1}$)
+      beta = zero
+      allocate(c(p, p), source=zero)
+      call syrk('U', 'T', p, n, alpha, x_centered, n, beta, c, p)
+
+      allocate(lambda(p), vectors(p, p))
+      call eigh(c, lambda, vectors=vectors, upper_a=.true., err=err)
+
+      if (err%ok()) then
+         ! LAPACK returns eigenvalues in ascending order.
+         ! Flip them to get descending order for PCA.
+         lambda = lambda(p:1:-1)
+         vectors = vectors(:, p:1:-1)
+
+         ! Assign results with safety bounds checks
+         m = min(size(components, 1, kind=ilp), size(singular_values, 1, kind=ilp), p)
+         
+         ! Components are eigenvectors as rows (transpose of vectors columns)
+         components(1:m, :) = transpose(vectors(:, 1:m))
+         
+         ! Convert eigenvalues to singular values: s = sqrt(lambda * (n-1))
+         where (lambda(1:m) > 0.0_${k1}$) singular_values(1:m) = sqrt(lambda(1:m) * real(n-1, ${k1}$))
+      end if
+    end subroutine pca_eigh_driver_${k1}$
+  #:endfor
+
+  #:for k1, t1, ri, cpp in REAL_KINDS_TYPES
+    module subroutine pca_${k1}$(x, components, singular_values, x_mean, &
+                                method, overwrite_x, err)
+      use stdlib_blas_constants_${k1}$, only: zero
+      ${t1}$, intent(inout) :: x(:,:)
+      ${t1}$, intent(out) :: components(:,:)
+      ${t1}$, intent(out) :: singular_values(:)
+      ${t1}$, intent(out), optional :: x_mean(:)
+      character(*), intent(in), optional :: method
+      logical, intent(in), optional :: overwrite_x
+      type(linalg_state_type), intent(out), optional :: err
+
+      type(linalg_state_type) :: err0
+      integer(ilp) :: n, p, nc, ns
+      ${t1}$, allocatable :: mu(:), x_centered(:,:)
+      character(len=:), allocatable :: method_
+
+      n = size(x, 1, kind=ilp)
+      p = size(x, 2, kind=ilp)
+      nc = size(components, 1, kind=ilp)
+      ns = size(singular_values, 1, kind=ilp)
+
+      ! Initialize outputs to zero to prevent uninitialized values on error paths
+      components = zero
+      singular_values = zero
+
+      ! Input validation: check for empty arrays
+      if (n < 1 .or. p < 1) then
+         err0 = linalg_state_type("pca", LINALG_VALUE_ERROR, &
+                "Input array must have at least 1 observation and 1 feature")
+         call err0%handle(err)
+         return
+      end if
+
+      ! Validate output shapes
+      if (size(components, 2, kind=ilp) /= p) then
+         err0 = linalg_state_type("pca", LINALG_VALUE_ERROR, &
+                "components must have ", p, " columns, got: ", size(components, 2, kind=ilp))
+         call err0%handle(err)
+         return
+      end if
+
+      if (nc > min(n, p)) then
+         err0 = linalg_state_type("pca", LINALG_VALUE_ERROR, &
+                "Number of components (", nc, ") exceeds min(n,p) = ", min(n, p))
+         call err0%handle(err)
+         return
+      end if
+
+      if (ns < nc) then
+         err0 = linalg_state_type("pca", LINALG_VALUE_ERROR, &
+                "singular_values size (", ns, ") must be >= n_components (", nc, ")")
+         call err0%handle(err)
+         return
+      end if
+
+      ! Convert method to lowercase for case-insensitive comparison
+      method_ = to_lower(trim(adjustl(optval(method, "svd"))))
+
+      ! Calculate mean along dimension 1 (column means) using stdlib mean
+      mu = mean(x, 1)
+
+      ! Validate and assign x_mean if present
+      if (present(x_mean)) then
+         if (size(x_mean) < p) then
+            err0 = linalg_state_type("pca", LINALG_VALUE_ERROR, &
+                   "x_mean array has insufficient size:", size(x_mean), ", expected:", p)
+            call err0%handle(err)
+            return
+         end if
+         x_mean(1:p) = mu
+      end if
+
+      ! Method dispatch
+      select case (method_)
+      case ("svd")
+         if (optval(overwrite_x, .false.)) then
+            call center_data_${k1}$(x, mu)
+            call pca_svd_driver_${k1}$(x, n, p, components, singular_values, err0)
+         else
+            x_centered = x
+            call center_data_${k1}$(x_centered, mu)
+            call pca_svd_driver_${k1}$(x_centered, n, p, components, singular_values, err0)
+         end if
+
+      case ("eig", "cov")
+         x_centered = x
+         call center_data_${k1}$(x_centered, mu)
+         call pca_eigh_driver_${k1}$(x_centered, n, p, components, singular_values, err0)
+
+      case default
+         err0 = linalg_state_type("pca", LINALG_ERROR, "Unknown method: ", method_)
+         ! Outputs already initialized to zero above
+      end select
+
+      ! Handle error state
+      call err0%handle(err)
+
+    end subroutine pca_${k1}$
+  #:endfor
+
+
+  #:for k1, t1, ri, cpp in REAL_KINDS_TYPES
+    module subroutine pca_transform_${k1}$(x, components, x_mean, x_transformed)
+      use stdlib_blas_constants_${k1}$, only: one, zero
+      ${t1}$, intent(in) :: x(:,:)
+      ${t1}$, intent(in) :: components(:,:)
+      ${t1}$, intent(in), optional :: x_mean(:)
+      ${t1}$, intent(out) :: x_transformed(:,:)
+
+      integer(ilp) :: n, p, nc
+      ${t1}$, allocatable :: x_centered(:,:)
+
+      n = size(x, 1, kind=ilp)
+      p = size(x, 2, kind=ilp)
+      nc = size(components, 1, kind=ilp)
+
+      ! Validate dimensions
+      if (size(components, 2, kind=ilp) /= p) then
+         call error_stop("ERROR (pca_transform): components columns must match x columns")
+      end if
+      if (size(x_transformed, 1, kind=ilp) /= n .or. &
+          size(x_transformed, 2, kind=ilp) /= nc) then
+         call error_stop("ERROR (pca_transform): x_transformed shape must be [n, n_components]")
+      end if
+      if (present(x_mean)) then
+         if (size(x_mean, kind=ilp) /= p) then
+            call error_stop("ERROR (pca_transform): x_mean length must match x columns")
+         end if
+      end if
+
+      x_centered = x
+      if (present(x_mean)) call center_data_${k1}$(x_centered, x_mean)
+
+      ! x_transformed = x_centered * components^T using GEMM
+      call gemm('N', 'T', n, nc, p, one, x_centered, n, components, nc, zero, x_transformed, n)
+    end subroutine pca_transform_${k1}$
+  #:endfor
+
+
+  #:for k1, t1, ri, cpp in REAL_KINDS_TYPES
+    module subroutine pca_inverse_transform_${k1}$(x_reduced, components, x_mean, x_reconstructed)
+      use stdlib_blas_constants_${k1}$, only: one, zero
+      ${t1}$, intent(in) :: x_reduced(:,:)
+      ${t1}$, intent(in) :: components(:,:)
+      ${t1}$, intent(in), optional :: x_mean(:)
+      ${t1}$, intent(out) :: x_reconstructed(:,:)
+
+      integer(ilp) :: i, j, n, nc, p
+
+      n = size(x_reduced, 1, kind=ilp)
+      nc = size(x_reduced, 2, kind=ilp)
+      p = size(components, 2, kind=ilp)
+
+      ! Validate dimensions
+      if (size(components, 1, kind=ilp) /= nc) then
+         call error_stop("ERROR (pca_inverse_transform): components rows must match x_reduced columns")
+      end if
+      if (size(x_reconstructed, 1, kind=ilp) /= n .or. &
+          size(x_reconstructed, 2, kind=ilp) /= p) then
+         call error_stop("ERROR (pca_inverse_transform): x_reconstructed shape must be [n, p]")
+      end if
+      if (present(x_mean)) then
+         if (size(x_mean, kind=ilp) /= p) then
+            call error_stop("ERROR (pca_inverse_transform): x_mean length must match components columns")
+         end if
+      end if
+
+      ! x_reconstructed = x_reduced * components using GEMM
+      call gemm('N', 'N', n, p, nc, one, x_reduced, n, components, nc, zero, x_reconstructed, n)
+
+      if (present(x_mean)) then
+         do concurrent(i=1:n, j=1:p)
+            x_reconstructed(i, j) = x_reconstructed(i, j) + x_mean(j)
+         end do
+      end if
+    end subroutine pca_inverse_transform_${k1}$
+  #:endfor
+
+end submodule stdlib_stats_pca

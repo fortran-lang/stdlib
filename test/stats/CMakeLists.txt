@@ -8,12 +8,14 @@ set(fppFiles
     test_distribution_uniform.fypp
     test_distribution_normal.fypp
     test_distribution_exponential.fypp
+    test_pca.fypp
 )
 
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
 ADDTEST(corr)
 ADDTEST(cov)
+ADDTEST(pca)
 ADDTEST(mean)
 ADDTEST(median)
 ADDTEST(moment)
