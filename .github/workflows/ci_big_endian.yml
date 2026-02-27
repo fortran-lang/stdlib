@@ -39,7 +39,7 @@ jobs:
           # Install dependencies (cached in Docker image layer)
           install: |
             apt-get update -q -y
-            apt-get install -q -y gfortran gcc g++ cmake python3-pip ninja-build
+            apt-get install -q -y gfortran gcc g++ cmake python3-pip ninja-build git
             pip3 install --break-system-packages fypp
 
           # Build and run big-endian tests
