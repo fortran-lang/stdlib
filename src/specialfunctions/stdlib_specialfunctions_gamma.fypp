@@ -557,7 +557,7 @@ contains
     #! internal more accurate solver.
     #:for i, k1, t1, i1 in GAMMA_IDX_REAL_KINDS_TYPES
     #:set k2 = REAL_KINDS[i + 1] if k1 == "sp" else REAL_KINDS[-1]
-    #:set t2 = REAL_TYPES[i + 1]
+    #:set t2 = "real({})".format(k2)
     impure elemental function gpx_${t1[0]}$${k1}$(p, x) result(res)
     !
     ! Approximation of incomplete gamma G function with real argument p.
