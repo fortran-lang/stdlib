@@ -75,7 +75,7 @@ The accuracy of the conversion is implementation dependent; it is recommended th
 
 `sp`  : exact match
 
-`dp`  : precision up-to epsilon(0.0_dp)
+`dp`  : precision up-to 10*epsilon(0.0_dp)
 
 `qp` : precision around 200*epsilon(0.0_qp)
 

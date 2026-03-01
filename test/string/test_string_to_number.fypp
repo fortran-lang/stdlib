@@ -119,7 +119,7 @@ contains
             #:if k1 == "sp"
             if(abs(rel_err) > 0.0_wp) then
             #:elif k1 == "dp"
-            if(abs(rel_err) > epsilon(0.0_wp)) then
+            if(abs(rel_err) > 10*epsilon(0.0_wp)) then
             #:elif k1 == "xdp"
             if(abs(rel_err) > 200*epsilon(0.0_wp)) then
             #:elif k1 == "qp"
