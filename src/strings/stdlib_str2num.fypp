@@ -473,7 +473,7 @@ module stdlib_str2num
             end if
         else
             if(icount<=maxdpt) then
-                v = sign*(int_dp1 + int_dp2*fractional_base(icount-maxdpt)) *10._wp**(sige*i_exp-resp+1)
+                v = sign*(int_dp1) *10._wp**(sige*i_exp-resp+1)
             else
                 v = sign*(int_dp1 + int_dp2*fractional_base(icount-maxdpt)) *10._wp**(sige*i_exp-resp+1+icount-maxdpt)
             end if
@@ -590,7 +590,7 @@ module stdlib_str2num
             end if
         else
             if(icount<=maxdpt) then
-                v = sign*(int_dp1 + int_dp2*fractional_base(icount-maxdpt)) *10._wp**(sige*i_exp-resp+1)
+                v = sign*(int_dp1) *10._wp**(sige*i_exp-resp+1)
             else
                 v = sign*(int_dp1 + int_dp2*fractional_base(icount-maxdpt)) *10._wp**(sige*i_exp-resp+1+icount-maxdpt)
             end if
