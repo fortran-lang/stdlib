@@ -169,13 +169,13 @@ contains
         catch: block
             ! Write header
             call write_mm_header(io, MM_ARRAY, field_type, symmetry_, &
-                                size(matrix, 1), size(matrix, 2), nnz, comment, stat, msg)
+                                nrows, ncols, comment=comment, iostat=stat, iomsg=msg)
             if (stat /= 0) exit catch
 
             ! Write array format (column-major order)
             if(symmetry_ == MM_GENERAL) then
-                do j = 1, size(matrix, 2)
-                    do i = 1, size(matrix, 1)
+                do j = 1, ncols
+                    do i = 1, nrows
                         #:if t.startswith('real')
                         write(io, fmt=fmt_, iostat=stat) matrix(i, j)
                         #:elif t.startswith('complex')
@@ -197,8 +197,8 @@ contains
                 ! (including the diagonal) is written.
                 ! For skew-symmetric matrices, only the strictly lower triangle is written
                 ! (the diagonal is omitted and assumed zero).
-                do j = 1, size(matrix, 2)
-                    do i = j, size(matrix, 1)
+                do j = 1, ncols
+                    do i = j, nrows
                         if(symmetry_ == MM_SKEW_SYMMETRIC .and. i == j) cycle
                         #:if t.startswith('real')
                         write(io, fmt=fmt_, iostat=stat) matrix(i, j)
@@ -315,7 +315,8 @@ contains
             end if
             ! Write header
             call write_mm_header(io, MM_COORDINATE, field_type, symmetry_, &
-                                maxval(index(1,:)), maxval(index(2,:)), nnz_to_write, comment, stat, msg)
+                                maxval(index(1,:)), maxval(index(2,:)),&
+                                nnz=nnz_to_write, comment=comment, iostat=stat, iomsg=msg)
             if (stat /= 0) exit catch
 
             ! Write coordinate format (row, column, value)
