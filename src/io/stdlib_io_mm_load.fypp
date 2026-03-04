@@ -129,48 +129,51 @@ contains
                 message = 'Error allocating matrix')
             return
         end if
-        if(header%symmetry==MS_general) then
-            do j = 1, ncols
-                do i = 1, nrows
-                    #:if t.startswith('complex')
-                    val_r = to_num_from_stream(ffp, mold, stat)
-                    val_i = to_num_from_stream(ffp, mold, stat)
-                    matrix(i,j) = cmplx(val_r, val_i, kind = ${k}$)
-                    #:else
-                    matrix(i,j) = to_num_from_stream(ffp, mold, stat)
-                    #:endif
-                    if( stat /= 0 ) then
-                        call mm_fail_process(iostat = iostat, iomsg = iomsg, code = int(stat),&
-                            message = 'Error reading matrix value')
-                        return
-                    end if
+        read_vals: block
+            if(header%symmetry==MS_general) then
+                do j = 1, ncols
+                    do i = 1, nrows
+                        #:if t.startswith('complex')
+                        val_r = to_num_from_stream(ffp, mold, stat)
+                        if(stat/=0) exit read_vals
+                        val_i = to_num_from_stream(ffp, mold, stat)
+                        if(stat/=0) exit read_vals
+                        matrix(i,j) = cmplx(val_r, val_i, kind = ${k}$)
+                        #:else
+                        matrix(i,j) = to_num_from_stream(ffp, mold, stat)
+                        if(stat/=0) exit read_vals
+                        #:endif
+                    end do
                 end do
-            end do
-        else
-            do j = 1, ncols
-                do i = j, nrows
-                    ! Keep diagonal elements as zero incase of skew-symmetric cases
-                    if(header%symmetry==MS_skew_symmetric .and. i==j) cycle
-                    #:if t.startswith('complex')
-                    val_r = to_num_from_stream(ffp, mold, stat)
-                    val_i = to_num_from_stream(ffp, mold, stat)
-                    matrix(i,j) = cmplx(val_r, val_i, kind = ${k}$)
-                    #:else
-                    matrix(i,j) = to_num_from_stream(ffp, mold, stat)
-                    #:endif
-                    if( stat /= 0 ) then
-                        call mm_fail_process(iostat = iostat, iomsg = iomsg, code = int(stat),&
-                            message = 'Error reading matrix value')
-                        return
-                    end if
-                    ! Assign transpose of the current element
-                    matrix(j, i) = matrix(i, j)
-                    if(header%symmetry==MS_skew_symmetric) matrix(j, i) = -matrix(j, i)
-                    #:if t.startswith('complex')
-                    if(header%symmetry==MS_hermitian) matrix(j, i) = conjg(matrix(j, i))
-                    #:endif
+            else
+                do j = 1, ncols
+                    do i = j, nrows
+                        ! Keep diagonal elements as zero incase of skew-symmetric cases
+                        if(header%symmetry==MS_skew_symmetric .and. i==j) cycle
+                        #:if t.startswith('complex')
+                        val_r = to_num_from_stream(ffp, mold, stat)
+                        if(stat/=0) exit read_vals
+                        val_i = to_num_from_stream(ffp, mold, stat)
+                        if(stat/=0) exit read_vals
+                        matrix(i,j) = cmplx(val_r, val_i, kind = ${k}$)
+                        #:else
+                        matrix(i,j) = to_num_from_stream(ffp, mold, stat)
+                        if(stat/=0) exit read_vals
+                        #:endif
+                        ! Assign transpose of the current element
+                        matrix(j, i) = matrix(i, j)
+                        if(header%symmetry==MS_skew_symmetric) matrix(j, i) = -matrix(j, i)
+                        #:if t.startswith('complex')
+                        if(header%symmetry==MS_hermitian) matrix(j, i) = conjg(matrix(j, i))
+                        #:endif
+                    end do
                 end do
-            end do
+            end if
+        end block read_vals
+        if( stat /= 0 ) then
+            call mm_fail_process(iostat = iostat, iomsg = iomsg, code = int(stat),&
+                message = 'Error reading matrix value')
+            return
         end if
     end subroutine
     #:endfor
@@ -281,23 +284,30 @@ contains
         !-----------------------------------------
         ! Read actual matrix data and store inside temporary arrays
         n_diag = 0
-        do i = 1, nnz ! read entries from file
-            rows(i) = to_num_from_stream(ffp, rows(i), stat)
-            cols(i) = to_num_from_stream(ffp, cols(i), stat)
-            if(rows(i) == cols(i)) n_diag = n_diag + 1
-            #:if t.startswith('complex')
-            val_r = to_num_from_stream(ffp, mold, stat)
-            val_i = to_num_from_stream(ffp, mold, stat)
-            vals(i) = cmplx(val_r, val_i, kind = ${k}$)
-            #:else
-            vals(i) = to_num_from_stream(ffp, mold, stat)
-            #:endif
-            if(stat /= 0 ) then
-                call mm_fail_process(iostat = iostat, iomsg = iomsg, code = int(stat), &
-                    message = 'Error reading the Matrix Market coordinate data')
-                return
-            end if
-        end do
+        read_vals: block
+            do i = 1, nnz ! read entries from file
+                rows(i) = to_num_from_stream(ffp, rows(i), stat)
+                if(stat/=0) exit read_vals
+                cols(i) = to_num_from_stream(ffp, cols(i), stat)
+                if(stat/=0) exit read_vals
+                if(rows(i) == cols(i)) n_diag = n_diag + 1
+                #:if t.startswith('complex')
+                val_r = to_num_from_stream(ffp, mold, stat)
+                if(stat/=0) exit read_vals
+                val_i = to_num_from_stream(ffp, mold, stat)
+                if(stat/=0) exit read_vals
+                vals(i) = cmplx(val_r, val_i, kind = ${k}$)
+                #:else
+                vals(i) = to_num_from_stream(ffp, mold, stat)
+                if(stat/=0) exit read_vals
+                #:endif
+            end do
+        end block read_vals
+        if(stat /= 0 ) then
+            call mm_fail_process(iostat = iostat, iomsg = iomsg, code = int(stat), &
+                message = 'Error reading the Matrix Market coordinate data')
+            return
+        end if
 
         !----------------------------------------- 
         ! check storage hypothesis
