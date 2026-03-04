@@ -85,10 +85,8 @@ if(FIND_BLAS)
     # Detect ILP64 (common function)
     function(detect_ilp64 lib_name)
       set(${lib_name}_ILP64 False PARENT_SCOPE)
-      # Prefer checking BLA_SIZEOF_INTEGER (available in CMake >= 3.22)
       if(DEFINED BLA_SIZEOF_INTEGER AND BLA_SIZEOF_INTEGER EQUAL 8)
         set(${lib_name}_ILP64 True PARENT_SCOPE)
-      # Fallback: Check BLA_VENDOR manually for signs of ILP64
       elseif("${BLA_VENDOR}" MATCHES ".*(_ilp|ILP64).*")
         set(${lib_name}_ILP64 True PARENT_SCOPE)
       endif()
@@ -118,21 +116,18 @@ endif()
 find_program(FYPP fypp)
 if(NOT FYPP OR "${FYPP}" MATCHES "NOTFOUND")
   message(STATUS "Checking for fypp...")
-  # This enhanced error message provides specific technical guidance for common 
-  # environment hurdles, particularly on Windows systems.
+  # Revised diagnostic message following maintainer feedback for cross-platform 
+  # compatibility and separation of responsibilities.
   message(FATAL_ERROR 
     "\n [stdlib Build Error]: Preprocessor 'fypp' not found!\n"
     " ------------------------------------------------------------------------\n"
     " The fypp preprocessor is required to generate Fortran source from templates.\n\n"
-    " RECOMMENDED FIXES:\n"
-    " 1. Install via pip: 'pip install fypp'\n\n"
-    " 2. WINDOWS USERS: If already installed, ensure your Python Scripts folder \n"
-    "    is in your system PATH. It is often located at: \n"
-    "    C:/Users/<YourUser>/AppData/Roaming/Python/Python3xx/Scripts/\n\n"
-    " 3. MANUAL OVERRIDE: Re-run CMake with the direct path to the executable:\n"
-    "    cmake -B build -DFYPP_EXECUTABLE=\"C:/path/to/fypp.exe\"\n"
+    " To diagnose your installation, please run the following in your terminal:\n"
+    "   Windows:      'where fypp' and 'where python'\n"
+    "   Linux/macOS:  'which fypp' and 'which python'\n\n"
+    " Ensure the executable is in your PATH or set it manually during configuration:\n"
+    "   cmake -B build -DFYPP_EXECUTABLE=/path/to/fypp\n"
     " ------------------------------------------------------------------------\n"
-    " For more information, visit: https://fypp.readthedocs.io/en/stable/fypp.html\n"
   )
 endif()
 

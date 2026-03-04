@@ -135,7 +135,7 @@ function(check_modular module)
         message(STATUS "Enable stdlib module ${umodule}")
         add_compile_definitions(STDLIB_${umodule}=1)
     else()
-        message(STATUS "Enable stdlib module ${umodule}")
+        message(STATUS "Disable stdlib module ${umodule}")
         add_compile_definitions(STDLIB_${umodule}=0)
     endif()
 
