@@ -116,8 +116,6 @@ endif()
 find_program(FYPP fypp)
 if(NOT FYPP OR "${FYPP}" MATCHES "NOTFOUND")
   message(STATUS "Checking for fypp...")
-  # Revised diagnostic message following maintainer feedback for cross-platform 
-  # compatibility and separation of responsibilities.
   message(FATAL_ERROR 
     "\n [stdlib Build Error]: Preprocessor 'fypp' not found!\n"
     " ------------------------------------------------------------------------\n"
