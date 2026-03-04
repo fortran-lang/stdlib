@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 3.14.0)
 set(CMAKE_USER_MAKE_RULES_OVERRIDE ${CMAKE_CURRENT_SOURCE_DIR}/config/DefaultFlags.cmake)
 
 project(fortran_stdlib
-	LANGUAGES Fortran C
-        DESCRIPTION "Community driven and agreed upon de facto standard library for Fortran"
+  LANGUAGES Fortran C
+  DESCRIPTION "Community driven and agreed upon de facto standard library for Fortran"
 )
 
 # Read version from file
@@ -116,8 +116,24 @@ endif()
 
 # --- find preprocessor
 find_program(FYPP fypp)
-if(NOT FYPP)
-  message(FATAL_ERROR "Preprocessor fypp not found! Please install fypp following the instructions in https://fypp.readthedocs.io/en/stable/fypp.html#installing")
+if(NOT FYPP OR "${FYPP}" MATCHES "NOTFOUND")
+  message(STATUS "Checking for fypp...")
+  # This enhanced error message provides specific technical guidance for common 
+  # environment hurdles, particularly on Windows systems.
+  message(FATAL_ERROR 
+    "\n [stdlib Build Error]: Preprocessor 'fypp' not found!\n"
+    " ------------------------------------------------------------------------\n"
+    " The fypp preprocessor is required to generate Fortran source from templates.\n\n"
+    " RECOMMENDED FIXES:\n"
+    " 1. Install via pip: 'pip install fypp'\n\n"
+    " 2. WINDOWS USERS: If already installed, ensure your Python Scripts folder \n"
+    "    is in your system PATH. It is often located at: \n"
+    "    C:/Users/<YourUser>/AppData/Roaming/Python/Python3xx/Scripts/\n\n"
+    " 3. MANUAL OVERRIDE: Re-run CMake with the direct path to the executable:\n"
+    "    cmake -B build -DFYPP_EXECUTABLE=\"C:/path/to/fypp.exe\"\n"
+    " ------------------------------------------------------------------------\n"
+    " For more information, visit: https://fypp.readthedocs.io/en/stable/fypp.html\n"
+  )
 endif()
 
 # Custom preprocessor flags
