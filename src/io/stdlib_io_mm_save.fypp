@@ -314,6 +314,12 @@ contains
                 nnz_to_write = count(index(1,:) >= index(2,:))
             end if
             ! Write header
+            if(nnz_to_write == 0) then
+                call write_mm_header(io, MM_COORDINATE, field_type, symmetry_, &
+                                    0, 0,&
+                                    nnz=nnz_to_write, comment=comment, iostat=stat, iomsg=msg)
+                exit catch
+            end if
             call write_mm_header(io, MM_COORDINATE, field_type, symmetry_, &
                                 maxval(index(1,:)), maxval(index(2,:)),&
                                 nnz=nnz_to_write, comment=comment, iostat=stat, iomsg=msg)
