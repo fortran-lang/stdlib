@@ -40,6 +40,8 @@ module stdlib_linalg
   public :: lstsq_space
   public :: constrained_lstsq
   public :: constrained_lstsq_space
+  public :: generalized_lstsq
+  public :: solve_generalized_lstsq
   public :: norm
   public :: mnorm
   public :: get_norm
@@ -796,6 +798,84 @@ module stdlib_linalg
     end subroutine stdlib_linalg_${ri}$_constrained_lstsq_space
     #:endfor
   end interface
+
+  interface generalized_lstsq
+    !! version: experimental
+    !!
+    !! Computes the generalized least-squares solution to \( \min_x (Ax-b)^T W^{-1} (Ax-b) \)
+    !! ([Specification](../page/specs/stdlib_linalg.html#generalized-lstsq))
+    !!
+    !!### Summary
+    !! Function interface for computing generalized least-squares via GGGLM.
+    !!
+    !!### Description
+    !!
+    !! This interface provides methods for computing generalized least-squares
+    !! with a symmetric (real) or Hermitian (complex) positive definite covariance matrix.
+    !! Supported data types include `real` and `complex`.
+    !!
+    !!@note The solution is based on LAPACK's `*GGGLM` routine.
+    !!
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    module function stdlib_linalg_${ri}$_generalized_lstsq(w,a,b,prefactored_w,overwrite_a,overwrite_w,err) result(x)
+        !> Covariance matrix W[m,m] (symmetric/Hermitian positive definite) or its matrix square root
+        ${rt}$, intent(inout), target :: w(:,:)
+        !> Input matrix a[m,n]
+        ${rt}$, intent(inout), target :: a(:,:)
+        !> Right hand side vector b[m]
+        ${rt}$, intent(in) :: b(:)
+        !> [optional] Is W already a matrix square root (e.g., Cholesky factor)? Default: .false.
+        logical(lk), optional, intent(in) :: prefactored_w
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> [optional] Can W data be overwritten and destroyed? Default: .false.
+        logical(lk), optional, intent(in) :: overwrite_w
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+        !> Result array x[n]
+        ${rt}$, allocatable, target :: x(:)
+    end function stdlib_linalg_${ri}$_generalized_lstsq
+    #:endfor
+  end interface generalized_lstsq
+
+  interface solve_generalized_lstsq
+    !! version: experimental
+    !!
+    !! Computes the generalized least-squares solution to \( \min_x (Ax-b)^T W^{-1} (Ax-b) \)
+    !! ([Specification](../page/specs/stdlib_linalg.html#solve-generalized-lstsq))
+    !!
+    !!### Summary
+    !! Subroutine interface for computing generalized least-squares via GGGLM.
+    !!
+    !!### Description
+    !!
+    !! This interface provides methods for computing generalized least-squares
+    !! with a symmetric (real) or Hermitian (complex) positive definite covariance matrix.
+    !! Supported data types include `real` and `complex`.
+    !!
+    !!@note The solution is based on LAPACK's `*GGGLM` routine.
+    !!
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    module subroutine stdlib_linalg_${ri}$_solve_generalized_lstsq(w,a,b,x,prefactored_w,overwrite_a,overwrite_w,err)
+        !> Covariance matrix W[m,m] (symmetric/Hermitian positive definite) or its matrix square root
+        ${rt}$, intent(inout), target :: w(:,:)
+        !> Input matrix a[m,n]
+        ${rt}$, intent(inout), target :: a(:,:)
+        !> Right hand side vector b[m]
+        ${rt}$, intent(in) :: b(:)
+        !> Solution vector x[n]
+        ${rt}$, intent(out) :: x(:)
+        !> [optional] Is W already a matrix square root (e.g., Cholesky factor)? Default: .false.
+        logical(lk), optional, intent(in) :: prefactored_w
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> [optional] Can W data be overwritten and destroyed? Default: .false.
+        logical(lk), optional, intent(in) :: overwrite_w
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_${ri}$_solve_generalized_lstsq
+    #:endfor
+  end interface solve_generalized_lstsq
 
   ! QR factorization of rank-2 array A
   interface qr
