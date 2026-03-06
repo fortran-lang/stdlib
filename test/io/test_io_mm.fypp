@@ -2,7 +2,7 @@
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
 #:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
 #:set I_KINDS_TYPES  = list(zip(INT_KINDS, INT_TYPES, INT_KINDS))
-#:set KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES
+#:set KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES + I_KINDS_TYPES
 module test_io_mm
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_kinds
@@ -25,24 +25,24 @@ contains
     end subroutine
 
     subroutine test_io_mm_array(error)
-        #:def generate_random_for_real(A)
+        #:def generate_random_for_real_dense(A)
             #:if t.startswith('real')
             call random_number(${A}$)
             #:endif
         #:enddef
-        #:def generate_random_for_complex(A, R, I)
+        #:def generate_random_for_complex_dense(A, R, I)
             #:if t.startswith('complex')
             call random_number(${R}$)
             call random_number(${I}$)
             ${A}$ = cmplx(${R}$, ${I}$, kind=${k}$)
             #:endif
         #:enddef
-        #:def generate_random_for_int(A, i, j, n, rnd)
+        #:def generate_random_for_int_dense(A, i, j, n, rnd)
             #:if t.startswith('integer')
             do ${j}$ = 1, ${n}$
                 do ${i}$ = 1,${n}$
                     call random_number(${rnd}$)
-                    ${A}$(${i}$,${j}$) = int(${rnd}$ * 100, kind=${k}$)
+                    ${A}$(${i}$,${j}$) = int(${rnd}$ * 100 - 50, kind=${k}$)
                 end do
             end do
             #:endif
@@ -77,9 +77,9 @@ contains
             #:endif
 
             ! General matrix
-            @:generate_random_for_real(matrix_save)
-            @:generate_random_for_complex(matrix_save, R, I)
-            @:generate_random_for_int(matrix_save, i, j, n, rnd)
+            @:generate_random_for_real_dense(matrix_save)
+            @:generate_random_for_complex_dense(matrix_save, R, I)
+            @:generate_random_for_int_dense(matrix_save, i, j, n, rnd)
             call save_mm("test_mmio_dense.mtx", matrix_save, format = "G0")
             call load_mm("test_mmio_dense.mtx", matrix_load)
             @:compare(result, matrix_save, matrix_load)
@@ -95,9 +95,9 @@ contains
             if(allocated(error)) return
 
             ! Symmetric matrix
-            @:generate_random_for_real(A)
-            @:generate_random_for_complex(A, R, I)
-            @:generate_random_for_int(A, i, j, n, rnd)
+            @:generate_random_for_real_dense(A)
+            @:generate_random_for_complex_dense(A, R, I)
+            @:generate_random_for_int_dense(A, i, j, n, rnd)
             ! Construct symmetric matrix using (A + A.T)
             matrix_save = A + transpose(A)
             call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "symmetric", format = "G0")
@@ -115,9 +115,9 @@ contains
             if(allocated(error)) return
 
             ! Skew-symmetric matrix
-            @:generate_random_for_real(A)
-            @:generate_random_for_complex(A, R, I)
-            @:generate_random_for_int(A, i, j, n, rnd)
+            @:generate_random_for_real_dense(A)
+            @:generate_random_for_complex_dense(A, R, I)
+            @:generate_random_for_int_dense(A, i, j, n, rnd)
             ! Construct symmetric matrix using (A - A.T)
             matrix_save = A - transpose(A)
             call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "skew-symmetric", format = "G0")
@@ -136,7 +136,7 @@ contains
 
             #:if t.startswith('complex')
             ! Hermitian matrix
-            @:generate_random_for_complex(A, R, I)
+            @:generate_random_for_complex_dense(A, R, I)
             ! Construct symmetric matrix using (A + A.H)
             matrix_save = A + transpose(conjg(A))
             call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "hermitian", format = "G0")
@@ -158,13 +158,192 @@ contains
     end subroutine
 
     subroutine test_io_mm_coordinate(error)
+        #:def generate_random_for_real_coo(A, R, nnz_to_write)
+            #:if t.startswith('real')
+            call random_number(${R}$)
+            ${A}$(1:${nnz_to_write}$) = ${R}$(1:${nnz_to_write}$)
+            #:endif
+        #:enddef
+        #:def generate_random_for_complex_coo(A, R, I, nnz_to_write)
+            #:if t.startswith('complex')
+            call random_number(${R}$)
+            call random_number(${I}$)
+            ${A}$(1:${nnz_to_write}$) = cmplx(${R}$(1:${nnz_to_write}$), ${I}$(1:${nnz_to_write}$), kind=${k}$)
+            #:endif
+        #:enddef
+        #:def generate_random_for_int_coo(A, i, nnz_to_write, rnd)
+            #:if t.startswith('integer')
+            do ${i}$ = 1, ${nnz_to_write}$
+                call random_number(${rnd}$)
+                ${A}$(${i}$) = int(${rnd}$ * 100 - 50, kind=${k}$)
+            end do
+            #:endif
+        #:enddef
+        #:def generate_random_positions(pos, i, j, t_entries, rnd, temp)
+            do ${i}$ = 1, ${t_entries}$
+                ${pos}$(${i}$) = ${i}$
+            end do
+            call random_seed()
+            do ${i}$ = ${t_entries}$, 1, -1
+                call random_number(${rnd}$)
+                ${j}$ = ceiling(${t_entries}$*${rnd}$)
+                ${temp}$ = ${pos}$(${i}$)
+                ${pos}$(${i}$) = ${pos}$(${j}$)
+                ${pos}$(${j}$) = ${temp}$
+            end do
+        #:enddef
+        #:def fill_first_half_indices(index_save, pos, row, col, nnz, nrows, ncols, i, j, op)
+            ${j}$ = 1
+            do ${i}$ = 1, ${nnz}$
+                ${row}$ = mod(${pos}$(${i}$) - 1,${nrows}$) + 1
+                ${col}$ = (${pos}$(${i}$) - 1)/${ncols}$ + 1
+                if(${row}$ <${op}$ ${col}$) cycle
+                ${index_save}$(1,${j}$) = ${row}$
+                ${index_save}$(2,${j}$) = ${col}$
+                ${j}$ = ${j}$ + 1
+            end do
+        #:enddef
+        ! Generates t_entries - half_nnz elements
+        #:def fill_other_half(index_save, data_save, i, j, half_nnz, op)
+            do ${i}$ = 1, ${half_nnz}$
+                if(${index_save}$(1,${i}$) == ${index_save}$(2,${i}$)) cycle
+                ${index_save}$(1,${j}$) = ${index_save}$(2,${i}$)
+                ${index_save}$(2,${j}$) = ${index_save}$(1,${i}$)
+                ${data_save}$(${j}$) = ${op}$(${data_save}$(${i}$))
+                ${j}$=${j}$+1
+            end do
+        #:enddef
+        #:def compare(result , index_save, index_load, data_save, data_load)
+        #:if t.startswith('integer')
+            ${result}$ = all(${index_save}$ == ${index_load}$) .and. all(${data_save}$ == ${data_load}$)
+        #:else
+            ${result}$ = all(${index_save}$ == ${index_load}$) .and. all_close(${data_save}$, ${data_load}$)
+        #:endif
+        #:enddef
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
         #:for k, t, s in (KINDS_TYPES)
         block
-            integer, parameter :: n = 5
-            ${t}$, allocatable :: index_save(:), index_load(:)
-            integer, allocatable :: data_save(:, :), data_load(:,:)
+            integer :: nrows, ncols
+            ${t}$, allocatable :: data_save(:), data_load(:)
+            integer, allocatable :: index_save(:, :), index_load(:,:)
+            #:if t.startswith('int')
+            ${t}$, allocatable :: R(:)
+            #:else
+            real(${k}$), allocatable :: R(:)
+            #:endif
+            #:if t.startswith('complex')
+            real(${k}$), allocatable :: Img(:)
+            #:endif
+
+            integer :: row, col, t_entries, nnz, nnz_lower, nnz_diag
+            integer, allocatable :: pos(:)
+            integer :: i, j, temp, adr
+            #:if t.startswith('int')
+            real(dp) :: rnd, density
+            #:else
+            real(${k}$) :: rnd, density
+            #:endif
+            logical :: result
+
+            nrows = 5
+            ncols = 5
+            t_entries = nrows * ncols
+            allocate(R(t_entries))
+            #:if t.startswith('complex')
+            allocate(Img(t_entries))
+            #:endif
+            allocate(pos(t_entries))
+
+            ! General matrix
+            @:generate_random_positions(pos, i, j, t_entries, rnd, temp)
+            call random_number(density)
+            nnz = ceiling(density*t_entries)
+            allocate(index_save(2, nnz))
+            allocate(data_save(nnz))
+            do i = 1, nnz
+                index_save(1,i) = mod(pos(i) - 1,ncols) + 1
+                index_save(2,i) = (pos(i) - 1)/nrows + 1
+            end do
+            @:generate_random_for_real_coo(data_save, R, nnz)
+            @:generate_random_for_complex_coo(data_save, R, Img, nnz)
+            @:generate_random_for_int_coo(data_save, i, nnz, rnd)
+            call save_mm("test_mmio_sparse.mtx", index_save, data_save, format = "G0")
+            call load_mm("test_mmio_sparse.mtx", index_load, data_load)
+            @:compare(result, index_save, index_load, data_save, data_load)
+            call check(error, result, .true.,&
+                "MM coordinate test failed: symmetry_arg=unspecified, type=${t}$")
+            if(allocated(error)) return
+            if(allocated(index_save)) deallocate(index_save)
+            if(allocated(data_save)) deallocate(data_save)
+
+            ! Symmetric matrix
+            @:generate_random_positions(pos, i, j, t_entries, rnd, temp)
+            call random_number(density)
+            nnz = ceiling(density*t_entries)
+            nnz_lower = count(mod(pos(1:nnz) - 1,nrows) > (pos(1:nnz) - 1)/ncols) !! lower triangular part
+            nnz_diag = count(mod(pos(1:nnz) - 1,nrows) == (pos(1:nnz) - 1)/ncols) !! diagonal
+            allocate(index_save(2, 2*nnz_lower + nnz_diag))
+            allocate(data_save(2*nnz_lower + nnz_diag))
+            @:fill_first_half_indices(index_save, pos, row, col, nnz, nrows, ncols, i, j,)
+            @:generate_random_for_real_coo(data_save, R, nnz_diag + nnz_lower)
+            @:generate_random_for_complex_coo(data_save, R, Img, nnz_diag + nnz_lower)
+            @:generate_random_for_int_coo(data_save, i, nnz_diag + nnz_lower, rnd)
+            @:fill_other_half(index_save, data_save, i, j, nnz_lower+nnz_diag,)
+            call save_mm("test_mmio_sparse.mtx", index_save, data_save, symmetry = "symmetric", format = "G0")
+            call load_mm("test_mmio_sparse.mtx", index_load, data_load)
+            @:compare(result, index_save, index_load, data_save, data_load)
+            call check(error, result, .true.,&
+                "MM coordinate test failed: symmetry_arg=symmetric, type=${t}$")
+            if(allocated(error)) return
+            if(allocated(index_save)) deallocate(index_save)
+            if(allocated(data_save)) deallocate(data_save)
+
+            ! Skew-symmetric matrix
+            @:generate_random_positions(pos, i, j, t_entries, rnd, temp)
+            call random_number(density)
+            nnz = ceiling(density*t_entries)
+            nnz_lower = count(mod(pos(1:nnz) - 1,nrows) > (pos(1:nnz) - 1)/ncols) !! lower triangular part
+            allocate(index_save(2, 2*nnz_lower))
+            allocate(data_save(2*nnz_lower))
+            @:fill_first_half_indices(index_save, pos, row, col, nnz, nrows, ncols, i, j,=)
+            @:generate_random_for_real_coo(data_save, R, nnz_lower)
+            @:generate_random_for_complex_coo(data_save, R, Img, nnz_lower)
+            @:generate_random_for_int_coo(data_save, i, nnz_lower, rnd)
+            @:fill_other_half(index_save, data_save, i, j, nnz_lower, -)
+            call save_mm("test_mmio_sparse_skew.mtx", index_save, data_save, symmetry = "skew-symmetric", format = "G0")
+            call load_mm("test_mmio_sparse_skew.mtx", index_load, data_load)
+            @:compare(result, index_save, index_load, data_save, data_load)
+            call check(error, result, .true.,&
+                "MM coordinate test failed: symmetry_arg=skew-symmetric, type=${t}$")
+            if(allocated(error)) return
+            if(allocated(index_save)) deallocate(index_save)
+            if(allocated(data_save)) deallocate(data_save)
+            
+            #:if t.startswith('complex')
+            ! Hermitian matrix
+            @:generate_random_positions(pos, i, j, t_entries, rnd, temp)
+            call random_number(density)
+            nnz = ceiling(density*t_entries)
+            nnz_lower = count(mod(pos(1:nnz) - 1,nrows) > (pos(1:nnz) - 1)/ncols) !! lower triangular part
+            nnz_diag = count(mod(pos(1:nnz) - 1,nrows) == (pos(1:nnz) - 1)/ncols) !! diagonal
+            allocate(index_save(2, 2*nnz_lower + nnz_diag))
+            allocate(data_save(2*nnz_lower + nnz_diag))
+            @:fill_first_half_indices(index_save, pos, row, col, nnz, nrows, ncols, i, j,)
+            @:generate_random_for_complex_coo(data_save, R, Img, nnz_diag + nnz_lower)
+            do i = 1, nnz_lower + nnz_diag
+                if(index_save(1, i) == index_save(2,i)) data_save(i) = real(data_save(i))
+            end do
+            @:fill_other_half(index_save, data_save, i, j, nnz_lower+nnz_diag, conjg)
+            call save_mm("test_mmio_sparse.mtx", index_save, data_save, symmetry = "hermitian", format = "G0")
+            call load_mm("test_mmio_sparse.mtx", index_load, data_load)
+            @:compare(result, index_save, index_load, data_save, data_load)
+            call check(error, result, .true.,&
+                "MM coordinate test failed: symmetry_arg=hermitian, type=${t}$")
+            if(allocated(error)) return
+            if(allocated(index_save)) deallocate(index_save)
+            if(allocated(data_save)) deallocate(data_save)
+            #:endif
         end block
         #:endfor
     end subroutine
