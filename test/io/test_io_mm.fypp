@@ -10,6 +10,11 @@ module test_io_mm
     use stdlib_io_mm
     implicit none
 
+    integer, parameter :: MS_general = 1
+    integer, parameter :: MS_symmetric = 2
+    integer, parameter :: MS_skew_symmetric = 3
+    integer, parameter :: MS_hermitian = 4
+
 contains
 
 
@@ -223,29 +228,78 @@ contains
             pos(j) = temp
         end do
     end subroutine
+
+    subroutine fill_first_half_indices_${s}$(index_save, pos, nnz, nrows, ncols, symmetry, j)
+        integer, intent(out) :: index_save(:, :)
+        integer, intent(in) :: pos(:), nnz, nrows, ncols, symmetry
+        integer, intent(inout) :: j
+
+        ! Internal variables
+        integer :: i, row, col
+
+        if(symmetry == MS_symmetric .or. symmetry == MS_hermitian) then
+            j = 1
+            do i = 1, nnz
+                row = mod(pos(i) - 1,nrows) + 1
+                col = (pos(i) - 1)/ncols + 1
+                if(row < col) cycle
+                index_save(1,j) = row
+                index_save(2,j) = col
+                j = j + 1
+            end do
+        else
+            j = 1
+            do i = 1, nnz
+                row = mod(pos(i) - 1,nrows) + 1
+                col = (pos(i) - 1)/ncols + 1
+                if(row <= col) cycle
+                index_save(1,j) = row
+                index_save(2,j) = col
+                j = j + 1
+            end do
+        end if
+    end subroutine
+
+    subroutine fill_other_half_${s}$(index_save, data_save, j, half_nnz, symmetry)
+        integer, intent(out) :: index_save(:, :)
+        ${t}$, intent(out) :: data_save(:)
+        integer, intent(in) :: half_nnz, symmetry
+        integer, intent(inout) :: j
+
+        ! Internal variables.
+        integer :: i
+
+        if(symmetry == MS_symmetric) then
+            do i = 1, half_nnz
+                if(index_save(1,i) == index_save(2,i)) cycle
+                index_save(1,j) = index_save(2,i)
+                index_save(2,j) = index_save(1,i)
+                data_save(j) = data_save(i)
+                j=j+1
+            end do
+        #:if t.startswith('complex')
+        else if(symmetry == MS_hermitian) then
+            do i = 1, half_nnz
+                if(index_save(1,i) == index_save(2,i)) cycle
+                index_save(1,j) = index_save(2,i)
+                index_save(2,j) = index_save(1,i)
+                data_save(j) = conjg(data_save(i))
+                j=j+1
+            end do
+        #:endif
+        else
+            do i = 1, half_nnz
+                if(index_save(1,i) == index_save(2,i)) cycle
+                index_save(1,j) = index_save(2,i)
+                index_save(2,j) = index_save(1,i)
+                data_save(j) = -data_save(i)
+                j=j+1
+            end do
+        end if
+    end subroutine
     #:endfor
 
     subroutine test_io_mm_coordinate(error)
-        #:def fill_first_half_indices(index_save, pos, row, col, nnz, nrows, ncols, i, j, op)
-            ${j}$ = 1
-            do ${i}$ = 1, ${nnz}$
-                ${row}$ = mod(${pos}$(${i}$) - 1,${nrows}$) + 1
-                ${col}$ = (${pos}$(${i}$) - 1)/${ncols}$ + 1
-                if(${row}$ <${op}$ ${col}$) cycle
-                ${index_save}$(1,${j}$) = ${row}$
-                ${index_save}$(2,${j}$) = ${col}$
-                ${j}$ = ${j}$ + 1
-            end do
-        #:enddef
-        #:def fill_other_half(index_save, data_save, i, j, half_nnz, op)
-            do ${i}$ = 1, ${half_nnz}$
-                if(${index_save}$(1,${i}$) == ${index_save}$(2,${i}$)) cycle
-                ${index_save}$(1,${j}$) = ${index_save}$(2,${i}$)
-                ${index_save}$(2,${j}$) = ${index_save}$(1,${i}$)
-                ${data_save}$(${j}$) = ${op}$(${data_save}$(${i}$))
-                ${j}$=${j}$+1
-            end do
-        #:enddef
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
         #:for k, t, s in (KINDS_TYPES)
@@ -303,9 +357,9 @@ contains
             nnz_diag = count(mod(pos(1:nnz) - 1,nrows) == (pos(1:nnz) - 1)/ncols) !! diagonal
             allocate(index_save(2, 2*nnz_lower + nnz_diag))
             allocate(data_save(2*nnz_lower + nnz_diag))
-            @:fill_first_half_indices(index_save, pos, row, col, nnz, nrows, ncols, i, j,)
+            call fill_first_half_indices_${s}$(index_save, pos, nnz, nrows, ncols, MS_symmetric, j)
             call generate_random_for_${s}$_coo(data_save, nnz_lower + nnz_diag)
-            @:fill_other_half(index_save, data_save, i, j, nnz_lower+nnz_diag,)
+            call fill_other_half_${s}$(index_save, data_save, j, nnz_lower+nnz_diag, MS_symmetric)
             call save_mm("test_mmio_sparse.mtx", index_save, data_save, symmetry = "symmetric", format = "G0")
             call load_mm("test_mmio_sparse.mtx", index_load, data_load)
             result = compare_coo_${s}$(index_save, index_load, data_save, data_load)
@@ -322,9 +376,9 @@ contains
             nnz_lower = count(mod(pos(1:nnz) - 1,nrows) > (pos(1:nnz) - 1)/ncols) !! lower triangular part
             allocate(index_save(2, 2*nnz_lower))
             allocate(data_save(2*nnz_lower))
-            @:fill_first_half_indices(index_save, pos, row, col, nnz, nrows, ncols, i, j,=)
+            call fill_first_half_indices_${s}$(index_save, pos, nnz, nrows, ncols, MS_skew_symmetric, j)
             call generate_random_for_${s}$_coo(data_save, nnz_lower)
-            @:fill_other_half(index_save, data_save, i, j, nnz_lower, -)
+            call fill_other_half_${s}$(index_save, data_save, j, nnz_lower, MS_skew_symmetric)
             call save_mm("test_mmio_sparse.mtx", index_save, data_save, symmetry = "skew-symmetric", format = "G0")
             call load_mm("test_mmio_sparse.mtx", index_load, data_load)
             result = compare_coo_${s}$(index_save, index_load, data_save, data_load)
@@ -343,12 +397,12 @@ contains
             nnz_diag = count(mod(pos(1:nnz) - 1,nrows) == (pos(1:nnz) - 1)/ncols) !! diagonal
             allocate(index_save(2, 2*nnz_lower + nnz_diag))
             allocate(data_save(2*nnz_lower + nnz_diag))
-            @:fill_first_half_indices(index_save, pos, row, col, nnz, nrows, ncols, i, j,)
+            call fill_first_half_indices_${s}$(index_save, pos, nnz, nrows, ncols, MS_hermitian, j)
             call generate_random_for_${s}$_coo(data_save, nnz_lower+nnz_diag)
             do i = 1, nnz_lower + nnz_diag
                 if(index_save(1, i) == index_save(2,i)) data_save(i) = real(data_save(i))
             end do
-            @:fill_other_half(index_save, data_save, i, j, nnz_lower+nnz_diag, conjg)
+            call fill_other_half_${s}$(index_save, data_save, j, nnz_lower+nnz_diag, MS_hermitian)
             call save_mm("test_mmio_sparse.mtx", index_save, data_save, symmetry = "hermitian", format = "G0")
             call load_mm("test_mmio_sparse.mtx", index_load, data_load)
             result = compare_coo_${s}$(index_save, index_load, data_save, data_load)
