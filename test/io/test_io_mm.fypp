@@ -193,7 +193,7 @@ contains
             j = 1
             do i = 1, nnz
                 row = mod(pos(i) - 1,nrows) + 1
-                col = (pos(i) - 1)/ncols + 1
+                col = (pos(i) - 1)/nrows + 1
                 if(row < col) cycle
                 index_save(1,j) = row
                 index_save(2,j) = col
@@ -203,7 +203,7 @@ contains
             j = 1
             do i = 1, nnz
                 row = mod(pos(i) - 1,nrows) + 1
-                col = (pos(i) - 1)/ncols + 1
+                col = (pos(i) - 1)/nrows + 1
                 if(row <= col) cycle
                 index_save(1,j) = row
                 index_save(2,j) = col
@@ -256,8 +256,8 @@ contains
     end function
 
     subroutine fill_other_half_${s}$(index_save, data_save, j, half_nnz, symmetry)
-        integer, intent(out) :: index_save(:, :)
-        ${t}$, intent(out) :: data_save(:)
+        integer, intent(inout) :: index_save(:, :)
+        ${t}$, intent(inout) :: data_save(:)
         integer, intent(in) :: half_nnz, symmetry
         integer, intent(inout) :: j
 
@@ -316,13 +316,13 @@ contains
             allocate(index_save(2, nnz))
             allocate(data_save(nnz))
             do i = 1, nnz
-                index_save(1,i) = mod(pos(i) - 1,ncols) + 1
+                index_save(1,i) = mod(pos(i) - 1,nrows) + 1
                 index_save(2,i) = (pos(i) - 1)/nrows + 1
             end do
             call generate_random_data_for_${s}$_coo(data_save, nnz)
         else if(symmetry == MS_symmetric) then
-            nnz_lower = count(mod(pos(1:nnz) - 1,nrows) > (pos(1:nnz) - 1)/ncols) !! lower triangular part
-            nnz_diag = count(mod(pos(1:nnz) - 1,nrows) == (pos(1:nnz) - 1)/ncols) !! diagonal
+            nnz_lower = count(mod(pos(1:nnz) - 1,nrows) > (pos(1:nnz) - 1)/nrows) !! lower triangular part
+            nnz_diag = count(mod(pos(1:nnz) - 1,nrows) == (pos(1:nnz) - 1)/nrows) !! diagonal
             allocate(index_save(2, 2*nnz_lower + nnz_diag))
             allocate(data_save(2*nnz_lower + nnz_diag))
             call fill_first_half_indices(index_save, pos, nnz, nrows, ncols, MS_symmetric, j)
@@ -330,8 +330,8 @@ contains
             call fill_other_half_${s}$(index_save, data_save, j, nnz_lower+nnz_diag, MS_symmetric)
         #:if t.startswith('complex')
         else if(symmetry == MS_hermitian) then
-            nnz_lower = count(mod(pos(1:nnz) - 1,nrows) > (pos(1:nnz) - 1)/ncols) !! lower triangular part
-            nnz_diag = count(mod(pos(1:nnz) - 1,nrows) == (pos(1:nnz) - 1)/ncols) !! diagonal
+            nnz_lower = count(mod(pos(1:nnz) - 1,nrows) > (pos(1:nnz) - 1)/nrows) !! lower triangular part
+            nnz_diag = count(mod(pos(1:nnz) - 1,nrows) == (pos(1:nnz) - 1)/nrows) !! diagonal
             allocate(index_save(2, 2*nnz_lower + nnz_diag))
             allocate(data_save(2*nnz_lower + nnz_diag))
             call fill_first_half_indices(index_save, pos, nnz, nrows, ncols, MS_hermitian, j)
@@ -342,7 +342,7 @@ contains
             call fill_other_half_${s}$(index_save, data_save, j, nnz_lower+nnz_diag, MS_hermitian)
         #:endif
         else
-            nnz_lower = count(mod(pos(1:nnz) - 1,nrows) > (pos(1:nnz) - 1)/ncols) !! lower triangular part
+            nnz_lower = count(mod(pos(1:nnz) - 1,nrows) > (pos(1:nnz) - 1)/nrows) !! lower triangular part
             allocate(index_save(2, 2*nnz_lower))
             allocate(data_save(2*nnz_lower))
             call fill_first_half_indices(index_save, pos, nnz, nrows, ncols, MS_skew_symmetric, j)
