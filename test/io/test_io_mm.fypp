@@ -30,7 +30,7 @@ contains
     end subroutine
 
     #:for k, t, s in KINDS_TYPES
-    subroutine generate_random_for_${s}$_dense(A)
+    subroutine generate_random_${s}$_dense_matrix(A)
         ${t}$, intent(out) :: A(:, :)
 
         ! Internal variables
@@ -87,7 +87,7 @@ contains
             allocate(A(n,n))
 
             ! General matrix
-            call generate_random_for_${s}$_dense(matrix_save)
+            call generate_random_${s}$_dense_matrix(matrix_save)
             call save_mm("test_mmio_dense.mtx", matrix_save, format = "G0")
             call load_mm("test_mmio_dense.mtx", matrix_load)
             result = compare_dense_${s}$(matrix_save, matrix_load)
@@ -103,7 +103,7 @@ contains
             if(allocated(error)) return
 
             ! Symmetric matrix
-            call generate_random_for_${s}$_dense(A)
+            call generate_random_${s}$_dense_matrix(A)
             ! Construct symmetric matrix using (A + A.T)
             matrix_save = A + transpose(A)
             call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "symmetric", format = "G0")
@@ -121,7 +121,7 @@ contains
             if(allocated(error)) return
 
             ! Skew-symmetric matrix
-            call generate_random_for_${s}$_dense(A)
+            call generate_random_${s}$_dense_matrix(A)
             ! Construct symmetric matrix using (A - A.T)
             matrix_save = A - transpose(A)
             call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "skew-symmetric", format = "G0")
@@ -140,7 +140,7 @@ contains
 
             #:if t.startswith('complex')
             ! Hermitian matrix
-            call generate_random_for_${s}$_dense(A)
+            call generate_random_${s}$_dense_matrix(A)
             ! Construct symmetric matrix using (A + A.H)
             matrix_save = A + transpose(conjg(A))
             call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "hermitian", format = "G0")
@@ -161,8 +161,59 @@ contains
         #:endfor
     end subroutine
 
+    subroutine generate_random_positions(pos, t_entries)
+        integer, intent(inout) :: pos(:)
+        integer, intent(in) :: t_entries
+
+        ! Internal variables
+        integer :: i, j, temp
+        real(dp) :: rnd
+
+        do i = 1, t_entries
+            pos(i) = i
+        end do
+        do i = t_entries, 1, -1
+            call random_number(rnd)
+            j = ceiling(t_entries*rnd)
+            temp = pos(i)
+            pos(i) = pos(j)
+            pos(j) = temp
+        end do
+    end subroutine
+
+    subroutine fill_first_half_indices(index_save, pos, nnz, nrows, ncols, symmetry, j)
+        integer, intent(out) :: index_save(:, :)
+        integer, intent(in) :: pos(:), nnz, nrows, ncols, symmetry
+        integer, intent(out) :: j
+
+        ! Internal variables
+        integer :: i, row, col
+
+        if(symmetry == MS_symmetric .or. symmetry == MS_hermitian) then
+            j = 1
+            do i = 1, nnz
+                row = mod(pos(i) - 1,nrows) + 1
+                col = (pos(i) - 1)/ncols + 1
+                if(row < col) cycle
+                index_save(1,j) = row
+                index_save(2,j) = col
+                j = j + 1
+            end do
+        else
+            j = 1
+            do i = 1, nnz
+                row = mod(pos(i) - 1,nrows) + 1
+                col = (pos(i) - 1)/ncols + 1
+                if(row <= col) cycle
+                index_save(1,j) = row
+                index_save(2,j) = col
+                j = j + 1
+            end do
+        end if
+    end subroutine
+
     #:for k, t, s in KINDS_TYPES
-    subroutine generate_random_for_${s}$_coo(A, nnz_to_write)
+    subroutine generate_random_data_for_${s}$_coo(A, nnz_to_write)
         ${t}$, intent(out) :: A(:)
         integer, intent(in) :: nnz_to_write
 
@@ -193,72 +244,16 @@ contains
     end subroutine
 
     pure function compare_coo_${s}$(index_save, index_load, data_save, data_load) result(result)
-    ${t}$, intent(in) :: data_save(:), data_load(:)
-    integer, intent(in) :: index_save(:, :), index_load(:,:)
-    logical :: result
-    
-    #:if t.startswith('integer')
+        ${t}$, intent(in) :: data_save(:), data_load(:)
+        integer, intent(in) :: index_save(:, :), index_load(:,:)
+        logical :: result
+        
+        #:if t.startswith('integer')
         result = all(index_save == index_load) .and. all(data_save == data_load)
-    #:else
-        result = all(index_save == index_load) .and. all_close(data_save, data_load)
-    #:endif
-    end function
-
-    subroutine generate_random_positions_${s}$(pos, t_entries)
-        integer, intent(inout) :: pos(:)
-        integer, intent(in) :: t_entries
-
-        ! Internal variables
-        integer :: i, j, temp
-        #:if t.startswith('int')
-        real(dp) :: rnd
         #:else
-        real(${k}$) :: rnd
+        result = all(index_save == index_load) .and. all_close(data_save, data_load)
         #:endif
-
-        do i = 1, t_entries
-            pos(i) = i
-        end do
-        call random_seed()
-        do i = t_entries, 1, -1
-            call random_number(rnd)
-            j = ceiling(t_entries*rnd)
-            temp = pos(i)
-            pos(i) = pos(j)
-            pos(j) = temp
-        end do
-    end subroutine
-
-    subroutine fill_first_half_indices_${s}$(index_save, pos, nnz, nrows, ncols, symmetry, j)
-        integer, intent(out) :: index_save(:, :)
-        integer, intent(in) :: pos(:), nnz, nrows, ncols, symmetry
-        integer, intent(inout) :: j
-
-        ! Internal variables
-        integer :: i, row, col
-
-        if(symmetry == MS_symmetric .or. symmetry == MS_hermitian) then
-            j = 1
-            do i = 1, nnz
-                row = mod(pos(i) - 1,nrows) + 1
-                col = (pos(i) - 1)/ncols + 1
-                if(row < col) cycle
-                index_save(1,j) = row
-                index_save(2,j) = col
-                j = j + 1
-            end do
-        else
-            j = 1
-            do i = 1, nnz
-                row = mod(pos(i) - 1,nrows) + 1
-                col = (pos(i) - 1)/ncols + 1
-                if(row <= col) cycle
-                index_save(1,j) = row
-                index_save(2,j) = col
-                j = j + 1
-            end do
-        end if
-    end subroutine
+    end function
 
     subroutine fill_other_half_${s}$(index_save, data_save, j, half_nnz, symmetry)
         integer, intent(out) :: index_save(:, :)
@@ -297,6 +292,64 @@ contains
             end do
         end if
     end subroutine
+    
+    subroutine generate_random_${s}$_coo_matrix(index_save, data_save, nrows, ncols, symmetry)
+        ${t}$, allocatable, intent(out) :: data_save(:)
+        integer, allocatable, intent(out) :: index_save(:, :)
+        integer, intent(in) :: nrows, ncols, symmetry
+
+        ! Internal variables
+        integer, allocatable :: pos(:)
+        integer :: nnz, nnz_lower, nnz_diag, i, j
+        #:if t.startswith('integer')
+        real(dp) :: density
+        #:else
+        real(${k}$) :: density
+        #:endif
+
+        allocate(pos(nrows * ncols))
+        call generate_random_positions(pos, nrows * ncols)
+        call random_number(density)
+        nnz = ceiling(density*nrows*ncols)
+        
+        if(symmetry == MS_general) then
+            allocate(index_save(2, nnz))
+            allocate(data_save(nnz))
+            do i = 1, nnz
+                index_save(1,i) = mod(pos(i) - 1,ncols) + 1
+                index_save(2,i) = (pos(i) - 1)/nrows + 1
+            end do
+            call generate_random_data_for_${s}$_coo(data_save, nnz)
+        else if(symmetry == MS_symmetric) then
+            nnz_lower = count(mod(pos(1:nnz) - 1,nrows) > (pos(1:nnz) - 1)/ncols) !! lower triangular part
+            nnz_diag = count(mod(pos(1:nnz) - 1,nrows) == (pos(1:nnz) - 1)/ncols) !! diagonal
+            allocate(index_save(2, 2*nnz_lower + nnz_diag))
+            allocate(data_save(2*nnz_lower + nnz_diag))
+            call fill_first_half_indices(index_save, pos, nnz, nrows, ncols, MS_symmetric, j)
+            call generate_random_data_for_${s}$_coo(data_save, nnz_lower + nnz_diag)
+            call fill_other_half_${s}$(index_save, data_save, j, nnz_lower+nnz_diag, MS_symmetric)
+        #:if t.startswith('complex')
+        else if(symmetry == MS_hermitian) then
+            nnz_lower = count(mod(pos(1:nnz) - 1,nrows) > (pos(1:nnz) - 1)/ncols) !! lower triangular part
+            nnz_diag = count(mod(pos(1:nnz) - 1,nrows) == (pos(1:nnz) - 1)/ncols) !! diagonal
+            allocate(index_save(2, 2*nnz_lower + nnz_diag))
+            allocate(data_save(2*nnz_lower + nnz_diag))
+            call fill_first_half_indices(index_save, pos, nnz, nrows, ncols, MS_hermitian, j)
+            call generate_random_data_for_${s}$_coo(data_save, nnz_lower+nnz_diag)
+            do i = 1, nnz_lower + nnz_diag
+                if(index_save(1, i) == index_save(2,i)) data_save(i) = real(data_save(i))
+            end do
+            call fill_other_half_${s}$(index_save, data_save, j, nnz_lower+nnz_diag, MS_hermitian)
+        #:endif
+        else
+            nnz_lower = count(mod(pos(1:nnz) - 1,nrows) > (pos(1:nnz) - 1)/ncols) !! lower triangular part
+            allocate(index_save(2, 2*nnz_lower))
+            allocate(data_save(2*nnz_lower))
+            call fill_first_half_indices(index_save, pos, nnz, nrows, ncols, MS_skew_symmetric, j)
+            call generate_random_data_for_${s}$_coo(data_save, nnz_lower)
+            call fill_other_half_${s}$(index_save, data_save, j, nnz_lower, MS_skew_symmetric)
+        end if
+    end subroutine
     #:endfor
 
     subroutine test_io_mm_coordinate(error)
@@ -307,39 +360,14 @@ contains
             integer :: nrows, ncols
             ${t}$, allocatable :: data_save(:), data_load(:)
             integer, allocatable :: index_save(:, :), index_load(:,:)
-            #:if t.startswith('complex')
-            real(${k}$), allocatable :: R(:, :)
-            #:endif
-
-            integer :: row, col, t_entries, nnz, nnz_lower, nnz_diag
-            integer, allocatable :: pos(:)
-            integer :: i, j, temp, adr
-            #:if t.startswith('int')
-            real(dp) :: rnd, density
-            #:else
-            real(${k}$) :: rnd, density
-            #:endif
             logical :: result
 
             nrows = 5
             ncols = 5
-            t_entries = nrows * ncols
-            #:if t.startswith('complex')
-            allocate(R(t_entries, 2))
-            #:endif
-            allocate(pos(t_entries))
 
+            call random_seed()
             ! General matrix
-            call generate_random_positions_${s}$(pos, t_entries)
-            call random_number(density)
-            nnz = ceiling(density*t_entries)
-            allocate(index_save(2, nnz))
-            allocate(data_save(nnz))
-            do i = 1, nnz
-                index_save(1,i) = mod(pos(i) - 1,ncols) + 1
-                index_save(2,i) = (pos(i) - 1)/nrows + 1
-            end do
-            call generate_random_for_${s}$_coo(data_save, nnz)
+            call generate_random_${s}$_coo_matrix(index_save, data_save, nrows, ncols, MS_general)
             call save_mm("test_mmio_sparse.mtx", index_save, data_save, format = "G0")
             call load_mm("test_mmio_sparse.mtx", index_load, data_load)
             result = compare_coo_${s}$(index_save, index_load, data_save, data_load)
@@ -350,16 +378,7 @@ contains
             if(allocated(data_save)) deallocate(data_save)
 
             ! Symmetric matrix
-            call generate_random_positions_${s}$(pos, t_entries)
-            call random_number(density)
-            nnz = ceiling(density*t_entries)
-            nnz_lower = count(mod(pos(1:nnz) - 1,nrows) > (pos(1:nnz) - 1)/ncols) !! lower triangular part
-            nnz_diag = count(mod(pos(1:nnz) - 1,nrows) == (pos(1:nnz) - 1)/ncols) !! diagonal
-            allocate(index_save(2, 2*nnz_lower + nnz_diag))
-            allocate(data_save(2*nnz_lower + nnz_diag))
-            call fill_first_half_indices_${s}$(index_save, pos, nnz, nrows, ncols, MS_symmetric, j)
-            call generate_random_for_${s}$_coo(data_save, nnz_lower + nnz_diag)
-            call fill_other_half_${s}$(index_save, data_save, j, nnz_lower+nnz_diag, MS_symmetric)
+            call generate_random_${s}$_coo_matrix(index_save, data_save, nrows, ncols, MS_symmetric)
             call save_mm("test_mmio_sparse.mtx", index_save, data_save, symmetry = "symmetric", format = "G0")
             call load_mm("test_mmio_sparse.mtx", index_load, data_load)
             result = compare_coo_${s}$(index_save, index_load, data_save, data_load)
@@ -370,15 +389,7 @@ contains
             if(allocated(data_save)) deallocate(data_save)
 
             ! Skew-symmetric matrix
-            call generate_random_positions_${s}$(pos, t_entries)
-            call random_number(density)
-            nnz = ceiling(density*t_entries)
-            nnz_lower = count(mod(pos(1:nnz) - 1,nrows) > (pos(1:nnz) - 1)/ncols) !! lower triangular part
-            allocate(index_save(2, 2*nnz_lower))
-            allocate(data_save(2*nnz_lower))
-            call fill_first_half_indices_${s}$(index_save, pos, nnz, nrows, ncols, MS_skew_symmetric, j)
-            call generate_random_for_${s}$_coo(data_save, nnz_lower)
-            call fill_other_half_${s}$(index_save, data_save, j, nnz_lower, MS_skew_symmetric)
+            call generate_random_${s}$_coo_matrix(index_save, data_save, nrows, ncols, MS_skew_symmetric)
             call save_mm("test_mmio_sparse.mtx", index_save, data_save, symmetry = "skew-symmetric", format = "G0")
             call load_mm("test_mmio_sparse.mtx", index_load, data_load)
             result = compare_coo_${s}$(index_save, index_load, data_save, data_load)
@@ -390,19 +401,7 @@ contains
             
             #:if t.startswith('complex')
             ! Hermitian matrix
-            call generate_random_positions_${s}$(pos, t_entries)
-            call random_number(density)
-            nnz = ceiling(density*t_entries)
-            nnz_lower = count(mod(pos(1:nnz) - 1,nrows) > (pos(1:nnz) - 1)/ncols) !! lower triangular part
-            nnz_diag = count(mod(pos(1:nnz) - 1,nrows) == (pos(1:nnz) - 1)/ncols) !! diagonal
-            allocate(index_save(2, 2*nnz_lower + nnz_diag))
-            allocate(data_save(2*nnz_lower + nnz_diag))
-            call fill_first_half_indices_${s}$(index_save, pos, nnz, nrows, ncols, MS_hermitian, j)
-            call generate_random_for_${s}$_coo(data_save, nnz_lower+nnz_diag)
-            do i = 1, nnz_lower + nnz_diag
-                if(index_save(1, i) == index_save(2,i)) data_save(i) = real(data_save(i))
-            end do
-            call fill_other_half_${s}$(index_save, data_save, j, nnz_lower+nnz_diag, MS_hermitian)
+            call generate_random_${s}$_coo_matrix(index_save, data_save, nrows, ncols, MS_hermitian)
             call save_mm("test_mmio_sparse.mtx", index_save, data_save, symmetry = "hermitian", format = "G0")
             call load_mm("test_mmio_sparse.mtx", index_load, data_load)
             result = compare_coo_${s}$(index_save, index_load, data_save, data_load)
