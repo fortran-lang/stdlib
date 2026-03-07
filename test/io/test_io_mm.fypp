@@ -44,7 +44,7 @@ contains
         integer :: n
 
         n = size(A,dim=1)
-        
+
         #:if t.startswith('real')
         call random_number(A)
         #:endif
@@ -86,6 +86,7 @@ contains
             allocate(matrix_save(n,n))
             allocate(A(n,n))
 
+            call random_seed()
             ! General matrix
             call generate_random_${s}$_dense_matrix(matrix_save)
             call save_mm("test_mmio_dense.mtx", matrix_save, format = "G0")
@@ -162,19 +163,17 @@ contains
     end subroutine
 
     subroutine generate_random_positions(pos, t_entries)
-        integer, intent(inout) :: pos(:)
+        integer, intent(out) :: pos(:)
         integer, intent(in) :: t_entries
 
         ! Internal variables
         integer :: i, j, temp
         real(dp) :: rnd
 
-        do i = 1, t_entries
-            pos(i) = i
-        end do
-        do i = t_entries, 1, -1
+        pos = [(i,i=1,t_entries)]
+        do i = t_entries, 2, -1
             call random_number(rnd)
-            j = ceiling(t_entries*rnd)
+            j = int(i*rnd) + 1
             temp = pos(i)
             pos(i) = pos(j)
             pos(j) = temp
@@ -247,7 +246,7 @@ contains
         ${t}$, intent(in) :: data_save(:), data_load(:)
         integer, intent(in) :: index_save(:, :), index_load(:,:)
         logical :: result
-        
+
         #:if t.startswith('integer')
         result = all(index_save == index_load) .and. all(data_save == data_load)
         #:else
@@ -292,7 +291,7 @@ contains
             end do
         end if
     end subroutine
-    
+
     subroutine generate_random_${s}$_coo_matrix(index_save, data_save, nrows, ncols, symmetry)
         ${t}$, allocatable, intent(out) :: data_save(:)
         integer, allocatable, intent(out) :: index_save(:, :)
@@ -311,7 +310,7 @@ contains
         call generate_random_positions(pos, nrows * ncols)
         call random_number(density)
         nnz = ceiling(density*nrows*ncols)
-        
+
         if(symmetry == MS_general) then
             allocate(index_save(2, nnz))
             allocate(data_save(nnz))
@@ -349,6 +348,7 @@ contains
             call generate_random_data_for_${s}$_coo(data_save, nnz_lower)
             call fill_other_half_${s}$(index_save, data_save, j, nnz_lower, MS_skew_symmetric)
         end if
+        if(allocated(pos)) deallocate(pos)
     end subroutine
     #:endfor
 
@@ -398,7 +398,7 @@ contains
             if(allocated(error)) return
             if(allocated(index_save)) deallocate(index_save)
             if(allocated(data_save)) deallocate(data_save)
-            
+
             #:if t.startswith('complex')
             ! Hermitian matrix
             call generate_random_${s}$_coo_matrix(index_save, data_save, nrows, ncols, MS_hermitian)
