@@ -55,6 +55,7 @@ contains
 
         sum_w = one_${k}$ / N
         if(present(W)) sum_w = one_${k}$ / stdlib_sum_kahan(W)
+        if(sum_w<zero_${k}$) call error_stop("Invalid weights: sum of weights must be positive")
 
         allocate(c_P(d), source=zero_${s}$)
         allocate(c_Q(d), source=zero_${s}$)
