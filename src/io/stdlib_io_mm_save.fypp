@@ -17,24 +17,24 @@ submodule (stdlib_io_mm) stdlib_io_mm_save
     ! Matrix Market format constants
     character(len=*), parameter :: MM_BANNER = "%%MatrixMarket"
     character(len=*), parameter :: MM_COMMENT_CHAR = "%"
-    
+
     ! Matrix Market object types
     character(len=*), parameter :: &
         MM_MATRIX = "matrix", &
         MM_VECTOR = "vector"
-    
-    ! Matrix Market format types  
+
+    ! Matrix Market format types
     character(len=*), parameter :: &
         MM_COORDINATE = "coordinate", &
         MM_ARRAY = "array"
-    
+
     ! Matrix Market data types
     character(len=*), parameter :: &
         MM_REAL = "real", &
         MM_COMPLEX = "complex", &
         MM_INTEGER = "integer", &
         MM_PATTERN = "pattern"
-    
+
     ! Matrix Market storage schemes
     character(len=*), parameter :: &
         MM_GENERAL = "general", &
@@ -67,7 +67,7 @@ contains
         character(len=:), allocatable :: field_type
         character(len=:), allocatable :: fmt_
         character(len=:), allocatable :: symmetry_
-        #:if t.startswith('complex') 
+        #:if t.startswith('complex')
         real(${k}$) :: real_part, imag_part
         #:endif
         if(present(iostat)) iostat = 0
@@ -219,7 +219,7 @@ contains
                 end do
             end if
         end block catch
-        
+
         close(io)
         if(stat/=0) then
             call mm_fail_process(iostat = iostat, iomsg = iomsg, code = stat,&
@@ -228,7 +228,7 @@ contains
         end if
 
         if (present(iomsg) .and. allocated(msg)) call move_alloc(msg, iomsg)
-    end subroutine 
+    end subroutine
     #:endfor
 
     #:for k, t, s in RCI_KINDS_TYPES
@@ -256,7 +256,7 @@ contains
         character(len=:), allocatable :: field_type
         character(len=:), allocatable :: fmt_
         character(len=:), allocatable :: symmetry_
-        #:if t.startswith('complex') 
+        #:if t.startswith('complex')
         real(${k}$) :: real_part, imag_part
         #:endif
         if(present(iostat)) iostat = 0
@@ -292,7 +292,7 @@ contains
         ! Determine symmetry type
         symmetry_ = MM_GENERAL
         if (present(symmetry)) then
-            symmetry_ = to_lower(trim(symmetry)) 
+            symmetry_ = to_lower(trim(symmetry))
         end if
 
         ! Determine field type based on matrix type
@@ -373,7 +373,7 @@ contains
                 end do
             end if
         end block catch
-        
+
         close(io)
 
         if(stat/=0) then
@@ -382,7 +382,7 @@ contains
         end if
 
         if (present(iomsg) .and. allocated(msg)) call move_alloc(msg, iomsg)
-    end subroutine 
+    end subroutine
     #:endfor
 
     !> Write Matrix Market header
@@ -440,7 +440,7 @@ contains
         else
             write(io, '(I0,1X,I0)', iostat=stat) nrows, ncols
         end if
-        
+
         if (stat /= 0) then
             iostat = stat
             iomsg = "Error writing matrix dimensions"

@@ -6,9 +6,9 @@
 #:set I_KINDS_TYPES  = list(zip(INT_KINDS,   INT_TYPES, INT_KINDS))
 #:set RCI_KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES + I_KINDS_TYPES
 
-!> The Matrix Market (MM) format is a simple, human-readable, ASCII format for sparse 
-!> and dense matrices. The format was developed at NIST (National Institute of Standards 
-!> and Technology) for the Matrix Market, a repository of test matrices for use in 
+!> The Matrix Market (MM) format is a simple, human-readable, ASCII format for sparse
+!> and dense matrices. The format was developed at NIST (National Institute of Standards
+!> and Technology) for the Matrix Market, a repository of test matrices for use in
 !> comparative studies of algorithms for numerical linear algebra.
 !>
 !> For more information, see: https://math.nist.gov/MatrixMarket/formats.html
@@ -73,7 +73,7 @@ module stdlib_io_mm
         character(len=*), intent(in), optional :: symmetry
         integer, intent(out), optional :: iostat
         character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine 
+        end subroutine
         #:endfor
 
         #:for k, t, s in RCI_KINDS_TYPES
@@ -86,7 +86,7 @@ module stdlib_io_mm
         character(len=*), intent(in), optional :: symmetry
         integer, intent(out), optional :: iostat
         character(len=:), allocatable, intent(out), optional :: iomsg
-        end subroutine 
+        end subroutine
         #:endfor
     end interface save_mm
     public :: save_mm
