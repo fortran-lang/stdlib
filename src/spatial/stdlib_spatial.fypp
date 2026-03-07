@@ -1,0 +1,48 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
+module stdlib_spatial
+    use stdlib_linalg_constants
+    use stdlib_constants
+    use stdlib_error, only: error_stop
+    implicit none
+    private
+    public :: kabsch_umeyama
+
+    interface kabsch_umeyama
+        !-----------------------------------------------------------------------
+        !> Compute the optimal similarity transform (Kabsch–Umeyama):
+        !>
+        !>     P ≈ c * R * Q + t
+        !>
+        !> where:
+        !>   - R is an orthogonal rotation matrix
+        !>   - c is an optional scale factor
+        !>   - t is a translation vector
+        !>
+        !> The transformation minimizes the RMSD between corresponding columns
+        !> of P and Q, optionally using weights.
+        !-----------------------------------------------------------------------
+        #:for k, t, s in (KINDS_TYPES)
+        module subroutine kabsch_umeyama_${s}$(P, Q, R, t, c, rmsd, W, scale)
+            !> Reference point set (d × N)
+            ${t}$, intent(in) :: P(:, :)
+            !> Target point set (d × N)
+            ${t}$, intent(in) :: Q(:, :)
+            !> Optimal rotation matrix (d × d)
+            ${t}$, intent(out) :: R(:,:)
+            !> Translation vector (d)
+            ${t}$, intent(out) :: t(:)
+            !> Scale factor
+            ${t}$, intent(out) :: c
+            !> Root-mean-square deviation
+            real(${k}$), intent(out) :: rmsd
+            !> Optional weights
+            real(${k}$), intent(in), optional :: W(:)
+            !> Enable scaling
+            logical, intent(in), optional :: scale
+        end subroutine
+        #:endfor
+    end interface
+end module stdlib_spatial
