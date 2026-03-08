@@ -26,9 +26,9 @@ module stdlib_spatial
         !-----------------------------------------------------------------------
         #:for k, t, s in (KINDS_TYPES)
         module subroutine kabsch_umeyama_${s}$(P, Q, R, t, c, rmsd, W, scale)
-            !> Reference point set (d × N)
-            ${t}$, intent(in) :: P(:, :)
             !> Target point set (d × N)
+            ${t}$, intent(in) :: P(:, :)
+            !> Reference point set (d × N)
             ${t}$, intent(in) :: Q(:, :)
             !> Optimal rotation matrix (d × d)
             ${t}$, intent(out) :: R(:,:)
