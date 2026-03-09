@@ -736,6 +736,141 @@ If `err` is not present, exceptions trigger an `error stop`.
 {!example/linalg/example_solve3.f90!}
 ```
 
+## `solve_chol` - Solves a linear system using Cholesky factorization (one-shot interface). 
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the solution to a linear matrix equation \( A \cdot x = b \), where \( A \) is a symmetric (or Hermitian) positive definite matrix. It combines Cholesky factorization and the solve step in a single call.
+
+Result vector or array `x` returns the exact solution to within numerical precision, provided that the matrix is positive definite.
+An error is returned if the matrix is not positive definite or has incompatible sizes with the right-hand-side.
+Use this routine for one-time solves. For repeated solves with the same matrix but different right-hand sides, use `cholesky` followed by `solve_lower_chol`/`solve_upper_chol` for better performance.
+The solver is based on LAPACK's `*POSV` backends.
+
+### Syntax
+
+Simple (`Pure`) interface:
+
+`call ` [[stdlib_linalg(module):solve_chol(interface)]] `(a, b, x)`
+
+Expert (`Pure`) interface:
+
+`call ` [[stdlib_linalg(module):solve_chol(interface)]] `(a, b, x [, lower, overwrite_a, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` square array containing the coefficient matrix. It is an `intent(inout)` argument. By default (`overwrite_a=.false.`) its contents are preserved; if `overwrite_a=.true.`, it is used as temporary storage and its contents are destroyed by the call.
+
+`b`: Shall be a rank-1 or rank-2 array of the same kind as `a`, containing the right-hand-side vector(s). It is an `intent(in)` argument.
+
+`x`: Shall be a rank-1 or rank-2 array of the same kind and size as `b`, that returns the solution(s) to the system. It is an `intent(inout)` argument, and must have the `contiguous` property. 
+
+`lower` (optional): Shall be an input `logical` flag. If `.true.` (default), the lower triangular Cholesky factorization is computed. If `.false.`, the upper triangular factorization is computed. It is an `intent(in)` argument.
+
+`overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. This is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+For a positive definite matrix, returns an array value that represents the solution to the linear system of equations.
+
+Raises `LINALG_ERROR` if the matrix is not positive definite.
+Raises `LINALG_VALUE_ERROR` if the matrix and rhs vectors have invalid/incompatible sizes.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_solve_chol.f90!}
+```
+
+## `solve_lower_chol` - Solves a linear system using pre-computed lower Cholesky factor. 
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the solution to a linear matrix equation \( A \cdot x = b \), where \( A \) is a symmetric (or Hermitian) positive definite matrix that has been **previously factorized** using the Cholesky decomposition (via `cholesky` with `lower=.true.`).
+
+Result vector or array `x` returns the exact solution to within numerical precision, provided that the factorization is correct.
+An error is returned if the matrix and right-hand-side have incompatible sizes.
+The solver is based on LAPACK's `*POTRS` backends.
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):solve_lower_chol(interface)]] `(l, b, x [, err])`
+
+### Arguments
+
+`l`: Shall be a rank-2 `real` or `complex` square array containing the **lower** Cholesky factor `L` (output of `cholesky(..., lower=.true.)`). It is an `intent(in)` argument.
+
+`b`: Shall be a rank-1 or rank-2 array of the same kind as `l`, containing the right-hand-side vector(s). It is an `intent(in)` argument.
+
+`x`: Shall be a rank-1 or rank-2 array of the same kind and size as `b`, that returns the solution(s) to the system. It is an `intent(inout)` argument, and must have the `contiguous` property. 
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+For a correctly factorized matrix, returns an array value that represents the solution to the linear system of equations.
+
+Raises `LINALG_VALUE_ERROR` if the matrix and rhs vectors have invalid/incompatible sizes.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_solve_lower_chol.f90!}
+```
+
+## `solve_upper_chol` - Solves a linear system using pre-computed upper Cholesky factor. 
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the solution to a linear matrix equation \( A \cdot x = b \), where \( A \) is a symmetric (or Hermitian) positive definite matrix that has been **previously factorized** using the Cholesky decomposition (via `cholesky` with `lower=.false.`).
+
+Result vector or array `x` returns the exact solution to within numerical precision, provided that the factorization is correct.
+An error is returned if the matrix and right-hand-side have incompatible sizes.
+The solver is based on LAPACK's `*POTRS` backends.
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):solve_upper_chol(interface)]] `(u, b, x [, err])`
+
+### Arguments
+
+`u`: Shall be a rank-2 `real` or `complex` square array containing the **upper** Cholesky factor `U` (output of `cholesky(..., lower=.false.)`). It is an `intent(in)` argument.
+
+`b`: Shall be a rank-1 or rank-2 array of the same kind as `u`, containing the right-hand-side vector(s). It is an `intent(in)` argument.
+
+`x`: Shall be a rank-1 or rank-2 array of the same kind and size as `b`, that returns the solution(s) to the system. It is an `intent(inout)` argument, and must have the `contiguous` property. 
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+For a correctly factorized matrix, returns an array value that represents the solution to the linear system of equations.
+
+Raises `LINALG_VALUE_ERROR` if the matrix and rhs vectors have invalid/incompatible sizes.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_solve_upper_chol.f90!}
+```
+
 ## `lstsq` - Computes the least squares solution to a linear matrix equation. 
 
 ### Status
@@ -860,6 +995,122 @@ This subroutine computes the internal working space requirements for the least-s
 
 `lcwork` (`complex` `a`, `b`): For a `complex` system, shall be an `integer` scalar, that returns the minimum array size required for the `complex` working storage to this system.
 
+## `constrained_lstsq` - Compute the solution of the equality-constrained least-squares problem {#constrained-lstsq}
+
+### Status
+
+Experimental
+
+### Description
+
+This function computes the solution \(x\) of the equality-constrained linear least-squares problem
+$$
+\begin{aligned}
+    \mathrm{minimize}   &   \quad \| Ax - b \|^2 \\
+    \mathrm{subject~to} &   \quad   Cx = d,
+\end{aligned}
+$$
+where \(A\) is an \( m \times n \) matrix (with \(m \geq n\)) and \(C\) a \( p \times n\) matrix (with \(p \leq n\)). The solver is based on LAPACK's `*GLSE` backends.
+
+### Syntax
+
+`x = ` [[stdlib_linalg(module):constrained_lstsq(interface)]] `(A, b, C, d[, overwrite_matrices, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` array used in the definition of the least-squares cost. It is an `intent(inout)` argument.
+
+`b`: Shall be a rank-1 array of the same kind as `a` appearing in the definition of the least-squares cost. It is an `intent(inout)` argument.
+
+`c`: Shall be a rank-2 `real` or `complex` array of the same kind as `a` defining the linear equality constraints. It is an `intent(inout)` argument.
+
+`d`: Shall be a rank-1 array of the same kind as `a` appearing in the definition of the linear equality constraints.
+
+`overwrite_matrices` (optional): Shall be an input `logical` flag. If `.true.`, the input matrices and vectors will be overwritten during the computation of the solution. It is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Returns an array of the same kind as `a` containing the solution of the equality constrained least-squares problem.
+
+Raises `LINALG_ERROR` if the underlying constrained least-squares solver did not converge.
+Raises `LINALG_VALUE_ERROR` if the matrices and vectors have invalid/incompatible dimensions.
+Exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_constrained_lstsq1.f90!}
+```
+
+## `solve_constrained_lstsq` - Compute the solution of the equality-constrained least squares problem (subroutine interface) {#solve-constrained-lstsq}
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the solution \(x\) of the equality-constrained linear least-squares problem
+$$
+\begin{aligned}
+    \mathrm{minimize}   &   \quad \| Ax - b \|^2 \\
+    \mathrm{subject~to} &   \quad   Cx = d,
+\end{aligned}
+$$
+where \(A\) is an \( m \times n \) matrix (with \(m \geq n\)) and \(C\) a \( p \times n\) matrix (with \(p \leq n\)). The solver is based on LAPACK's `*GLSE` backends.
+
+### Syntax
+
+
+`call ` [[stdlib_linalg(module):solve_constrained_lstsq(interface)]] `(a, b, c, d, x [, storage, overwrite_matrices, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` array used in the definition of the least-squares cost. It is an `intent(inout)` argument.
+
+`b`: Shall be a rank-1 array of the same kind as `a` appearing in the definition of the least-squares cost. It is an `intent(inout)` argument.
+
+`c`: Shall be a rank-2 `real` or `complex` array of the same kind as `a` defining the linear equality constraints. It is an `intent(inout)` argument.
+
+`d`: Shall be a rank-1 array of the same kind as `a` appearing in the definition of the linear equality constraints.
+
+`x`: Shall be a rank-1 array of the same kind as `a`. On exit, it contains the solution of the constrained least-squares problem. It is an `intent(out)` argument.
+
+`storage` (optional): Shall be a rank-1 array of the same kind as `a` providing working storage for the solver. Its minimum size can be determined with a call to [stdlib_linalg(module):constrained_lstsq_space(interface)]. It is an `intent(out)` argument.
+
+`overwrite_matrices` (optional): Shall be an input `logical` flag. If `.true.`, the input matrices and vectors will be overwritten during the computation of the solution. It is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Example
+
+```fortran
+{!example/linalg/example_constrained_lstsq2.f90!}
+```
+
+## `constrained_lstsq_space` - Compute internal workspace requirements for the constrained least-square solver {#constrained-lstsq-space}
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the internal workspace requirements for the constrained least-squares solver, [stdlib_linalg(module):solve_constrained_lstsq(interface)].
+
+### Syntax
+
+call [stdlib_linalg(module):constrained_lstsq_space(interface)]`(a,  c,  lwork [, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` array used in the definition of the least-squares cost. It is an `intent(in)` argument.
+
+`c`: Shall be a rank-2 `real` or `complex` array of the same kind as `a` defining the linear equality constraints. It is an `intent(in)` argument.
+`lwork`: Shall be an `integer` scalar returning the optimal size required for the workspace array to solve the constrained least-squares problem.
+
 ## `det` - Computes the determinant of a square matrix
 
 ### Status
@@ -953,7 +1204,7 @@ the full problem is solved. On reduced matrices (`shape(Q)==[m,k]`, `shape(R)==[
 
 ### Syntax
 
-`call ` [[stdlib_linalg(module):qr(interface)]] `(a, q, r, [, storage] [, overwrite_a] [, err])`
+`call ` [[stdlib_linalg(module):qr(interface)]] `(a, q, r [, pivots] [, overwrite_a] [, storage] [, err])`
 
 ### Arguments
 
@@ -963,15 +1214,17 @@ the full problem is solved. On reduced matrices (`shape(Q)==[m,k]`, `shape(R)==[
 
 `r`: Shall be a rank-2 array of the same kind as `a`, containing the upper triangular matrix `r`. It is an `intent(out)` argument. It should have a shape equal to either `[m,n]` or `[k,n]`, whether the full or the reduced problem is sought for.
 
-`storage` (optional): Shall be a rank-1 array of the same type and kind as `a`, providing working storage for the solver. Its minimum size can be determined with a call to [[stdlib_linalg(module):qr_space(interface)]]. It is an `intent(out)` argument.
+`pivots` (optional): Shall be an `integer` array of size `n`. If provided, QR factorization with column-pivoting is being computed. It is an `intent(out)` argument.
 
 `overwrite_a` (optional): Shall be an input `logical` flag (default: `.false.`). If `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. It is an `intent(in)` argument.
+
+`storage` (optional): Shall be a rank-1 array of the same type and kind as `a`, providing working storage for the solver. Its minimum size can be determined with a call to [[stdlib_linalg(module):qr_space(interface)]]. It is an `intent(out)` argument.
 
 `err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument.
 
 ### Return value
 
-Returns the QR factorization matrices into the \( Q \) and \( R \) arguments. 
+Returns the QR factorization matrices into the \( Q \) and \( R \) arguments and the optional pivots in `pivots`.
 
 Raises `LINALG_VALUE_ERROR` if any of the matrices has invalid or unsuitable size for the full/reduced problem.
 Raises `LINALG_ERROR` on insufficient user storage space.
@@ -981,6 +1234,8 @@ If the state argument `err` is not present, exceptions trigger an `error stop`.
 
 ```fortran
 {!example/linalg/example_qr.f90!}
+
+{!example/linalg/example_pivoting_qr.f90!}
 ```
 
 ## `qr_space` - Compute internal working space requirements for the QR factorization.
@@ -995,7 +1250,7 @@ This subroutine computes the internal working space requirements for the QR fact
 
 ### Syntax
 
-`call ` [[stdlib_linalg(module):qr_space(interface)]] `(a, lwork, [, err])`
+`call ` [[stdlib_linalg(module):qr_space(interface)]] `(a, lwork, [, pivoting] [, err])`
 
 ### Arguments
 
@@ -1003,12 +1258,16 @@ This subroutine computes the internal working space requirements for the QR fact
 
 `lwork`: Shall be an `integer` scalar, that returns the minimum array size required for the working storage in [[stdlib_linalg(module):qr(interface)]] to factorize `a`.
 
+`pivoting` (optional): Shall a `logical` flag (default: `.false.`). If `.true.`, on exit `lwork` is the optimal workspace size for the QR factorization with column pivoting. If `.false.`, `lwork` is the optimal workspace size for the standard QR factorization. It is an `intent(in)` argument.
+
 `err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
 
 ### Example
 
 ```fortran
 {!example/linalg/example_qr_space.f90!}
+
+{!example/linalg/example_pivoting_qr_space.f90!}
 ```
 
 ## `schur` - Compute the Schur decomposition of a matrix
@@ -1882,5 +2141,74 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ```fortran
 {!example/linalg/example_mnorm.f90!}
+```
+
+## `expm` - Computes the matrix exponential {#expm}
+
+### Status
+
+Experimental
+
+### Description
+
+Given a matrix \(A\), this function computes its matrix exponential \(E = \exp(A)\) using a Pade approximation.
+
+### Syntax
+
+`E = ` [[stdlib_linalg(module):expm(interface)]] `(a [, order])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` array containing the data. It is an `intent(in)` argument.
+
+`order` (optional): Shall be a non-negative `integer` value specifying the order of the Pade approximation. By default `order=10`. It is an `intent(in)` argument. 
+
+### Return value
+
+The returned array `E` contains the Pade approximation of \(\exp(A)\).
+
+If `A` is non-square or `order` is negative, it raises a `LINALG_VALUE_ERROR`.
+
+### Example
+
+```fortran
+{!example/linalg/example_expm.f90!}
+```
+
+## `matrix_exp` - Computes the matrix exponential {#matrix_exp}
+
+### Status
+
+Experimental
+
+### Description
+
+Given a matrix \(A\), this function computes its matrix exponential \(E = \exp(A)\) using a Pade approximation.
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):matrix_exp(interface)]] `(a [, e, order, err])`
+
+### Arguments
+
+`a`: Shall be a rank-2 `real` or `complex` array containing the data. If `e` is not passed, it is an `intent(inout)` argument and is overwritten on exit by the matrix exponential. If `e` is passed, it is an `intent(in)` argument and is left unchanged.
+
+`e` (optional): Shall be a rank-2 `real` or `complex` array with the same dimensions as `a`. It is an `intent(out)` argument. On exit, it contains the matrix exponential of `a`.
+
+`order` (optional): Shall be a non-negative `integer` value specifying the order of the Pade approximation. By default `order=10`. It is an `intent(in)` argument. 
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument. 
+
+### Return value
+
+The returned array `A` (in-place) or `E` (out-of-place) contains the Pade approximation of \(\exp(A)\).
+
+If `A` is non-square or `order` is negative, it raises a `LINALG_VALUE_ERROR`.
+If `err` is not present, exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_matrix_exp.f90!}
 ```
 

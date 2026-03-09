@@ -1,180 +1,74 @@
-#### Pre-process: .fpp -> .f90 via Fypp
+macro(ADD_SUBDIR name)
+  string(TOUPPER "${name}" uname)
+  if (STDLIB_${uname})
+    add_subdirectory(${name})
+    list(APPEND OPTIONAL_LIB ${PROJECT_NAME}_${name})
+  endif()
+endmacro()
 
-# Create a list of the files to be preprocessed
-set(fppFiles
-    stdlib_ascii.fypp
-    stdlib_bitsets.fypp
-    stdlib_bitsets_64.fypp
-    stdlib_bitsets_large.fypp
-    stdlib_codata_type.fypp
-    stdlib_constants.fypp
-    stdlib_error.fypp
-    stdlib_hash_32bit.fypp
-    stdlib_hash_32bit_fnv.fypp
-    stdlib_hash_32bit_nm.fypp
-    stdlib_hash_32bit_water.fypp
-    stdlib_hash_64bit.fypp
-    stdlib_hash_64bit_fnv.fypp
-    stdlib_hash_64bit_pengy.fypp
-    stdlib_hash_64bit_spookyv2.fypp
-    stdlib_intrinsics_dot_product.fypp
-    stdlib_intrinsics_sum.fypp
-    stdlib_intrinsics.fypp
-    stdlib_io.fypp
-    stdlib_io_npy.fypp
-    stdlib_io_npy_load.fypp
-    stdlib_io_npy_save.fypp
-    stdlib_kinds.fypp
-    stdlib_linalg.fypp
-    stdlib_linalg_diag.fypp
-    stdlib_linalg_least_squares.fypp
-    stdlib_linalg_outer_product.fypp
-    stdlib_linalg_kronecker.fypp
-    stdlib_linalg_cross_product.fypp
-    stdlib_linalg_eigenvalues.fypp
-    stdlib_linalg_solve.fypp
-    stdlib_linalg_determinant.fypp
-    stdlib_linalg_qr.fypp
-    stdlib_linalg_inverse.fypp
-    stdlib_linalg_pinv.fypp
-    stdlib_linalg_norms.fypp
-    stdlib_linalg_state.fypp
-    stdlib_linalg_svd.fypp
-    stdlib_linalg_cholesky.fypp
-    stdlib_linalg_schur.fypp
-    stdlib_optval.fypp
-    stdlib_selection.fypp
-    stdlib_sorting.fypp
-    stdlib_sorting_ord_sort.fypp
-    stdlib_sorting_sort.fypp
-    stdlib_sorting_sort_index.fypp
-    stdlib_sparse_constants.fypp
-    stdlib_sparse_conversion.fypp
-    stdlib_sparse_kinds.fypp
-    stdlib_sparse_spmv.fypp
-    stdlib_specialfunctions_activations.fypp
-    stdlib_specialfunctions_gamma.fypp
-    stdlib_specialfunctions.fypp
-    stdlib_specialmatrices.fypp
-    stdlib_specialmatrices_tridiagonal.fypp
-    stdlib_stats.fypp
-    stdlib_stats_corr.fypp
-    stdlib_stats_cov.fypp
-    stdlib_stats_mean.fypp
-    stdlib_stats_median.fypp
-    stdlib_stats_moment.fypp
-    stdlib_stats_moment_all.fypp
-    stdlib_stats_moment_mask.fypp
-    stdlib_stats_moment_scalar.fypp
-    stdlib_stats_distribution_uniform.fypp
-    stdlib_stats_distribution_normal.fypp
-    stdlib_stats_distribution_exponential.fypp
-    stdlib_stats_var.fypp
-    stdlib_quadrature.fypp
-    stdlib_quadrature_trapz.fypp
-    stdlib_quadrature_simps.fypp
-    stdlib_random.fypp
-    stdlib_math.fypp
-    stdlib_math_linspace.fypp
-    stdlib_math_logspace.fypp
-    stdlib_math_arange.fypp
-    stdlib_math_is_close.fypp
-    stdlib_math_all_close.fypp
-    stdlib_math_diff.fypp
-    stdlib_math_meshgrid.fypp
-    stdlib_str2num.fypp
-    stdlib_string_type.fypp
-    stdlib_string_type_constructor.fypp
-    stdlib_strings_to_string.fypp
-    stdlib_strings.fypp
-    stdlib_version.fypp
-)
+set(OPTIONAL_LIB)
 
-# Preprocessed files to contain preprocessor directives -> .F90
-set(cppFiles
-    stdlib_linalg_constants.fypp
-    stdlib_linalg_blas.fypp
-    stdlib_linalg_lapack.fypp
-)
+ADD_SUBDIR(ansi)
+
+add_subdirectory(array)
+
+ADD_SUBDIR(bitsets)
 
 add_subdirectory(blas)
+add_subdirectory(constants)
+add_subdirectory(core)
+
+add_subdirectory(hash)
+
+ADD_SUBDIR(hashmaps)
+
+add_subdirectory(intrinsics)
+ADD_SUBDIR(io)
+
 add_subdirectory(lapack)
+add_subdirectory(lapack_extended)
+add_subdirectory(linalg_core)
+ADD_SUBDIR(linalg_iterative)
+add_subdirectory(linalg)
+ADD_SUBDIR(logger)
+add_subdirectory(math)
+ADD_SUBDIR(quadrature)
+add_subdirectory(selection)
+add_subdirectory(sorting)
+add_subdirectory(specialfunctions)
+ADD_SUBDIR(specialmatrices)
+ADD_SUBDIR(stringlist)
+add_subdirectory(strings)
+ADD_SUBDIR(system)
 
-fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
-fypp_f90pp("${fyppFlags}" "${cppFiles}" outPreprocFiles)
+ADD_SUBDIR(stats)
 
-set(SRC
-    stdlib_ansi.f90
-    stdlib_ansi_operator.f90
-    stdlib_ansi_to_string.f90
-    stdlib_array.f90
-    stdlib_codata.f90
-    stdlib_hashmap_wrappers.f90
-    stdlib_hashmaps.f90
-    stdlib_hashmap_chaining.f90
-    stdlib_hashmap_open.f90
-    stdlib_logger.f90
-    stdlib_sorting_radix_sort.f90
-    stdlib_system_subprocess.c
-    stdlib_system_subprocess.F90
-    stdlib_system_path.f90
-    stdlib_system.c
-    stdlib_system.F90
-    stdlib_sparse.f90
-    stdlib_specialfunctions_legendre.f90
-    stdlib_quadrature_gauss.f90
-    stdlib_stringlist_type.f90
-    ${outFiles}
-    ${outPreprocFiles}
+add_subdirectory(sparse)
+
+set(fppFiles
+    stdlib_version.fypp
+)
+set(cppFiles
+    )
+set(f90Files
 )
 
-add_library(${PROJECT_NAME} ${SRC})
+configure_stdlib_target(${PROJECT_NAME} f90Files fppFiles cppFiles)
 
-# Link to BLAS and LAPACK
-if(BLAS_FOUND AND LAPACK_FOUND)
-  target_link_libraries(${PROJECT_NAME} "BLAS::BLAS")
-  target_link_libraries(${PROJECT_NAME} "LAPACK::LAPACK")
-endif()
-
-set_target_properties(
-  ${PROJECT_NAME}
-  PROPERTIES
-  POSITION_INDEPENDENT_CODE ON
-  WINDOWS_EXPORT_ALL_SYMBOLS ON
-)
-
-if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU AND CMAKE_Fortran_COMPILER_VERSION VERSION_LESS 10.0)
-  target_compile_options(
-     ${PROJECT_NAME}
-     PRIVATE
-     $<$<COMPILE_LANGUAGE:Fortran>:-fno-range-check>
-   )
-endif()
-
-set(LIB_MOD_DIR ${CMAKE_CURRENT_BINARY_DIR}/mod_files/)
-# We need the module directory before we finish the configure stage since the
-# build interface might resolve before the module directory is generated by CMake
-if(NOT EXISTS "${LIB_MOD_DIR}")
-  file(MAKE_DIRECTORY "${LIB_MOD_DIR}")
-endif()
-
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    Fortran_MODULE_DIRECTORY ${LIB_MOD_DIR})
-target_include_directories(${PROJECT_NAME} PUBLIC
-    $<BUILD_INTERFACE:${LIB_MOD_DIR}>
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_MODULEDIR}>
-)
-
-if(f18errorstop)
-  target_sources(${PROJECT_NAME} PRIVATE f18estop.f90)
-else()
-  target_sources(${PROJECT_NAME} PRIVATE f08estop.f90)
-endif()
-
-install(TARGETS ${PROJECT_NAME}
-        EXPORT ${PROJECT_NAME}-targets
-        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
-        ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-        LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-)
-install(DIRECTORY ${LIB_MOD_DIR} DESTINATION "${CMAKE_INSTALL_MODULEDIR}")
+target_link_libraries(${PROJECT_NAME} PUBLIC
+  ${PROJECT_NAME}_array
+  ${PROJECT_NAME}_constants
+  ${PROJECT_NAME}_core
+  ${PROJECT_NAME}_hash
+  ${PROJECT_NAME}_intrinsics
+  ${PROJECT_NAME}_linalg_core
+  ${PROJECT_NAME}_linalg
+  ${PROJECT_NAME}_math
+  ${PROJECT_NAME}_selection
+  ${PROJECT_NAME}_specialfunctions
+  ${PROJECT_NAME}_sorting
+  ${PROJECT_NAME}_strings
+  ${PROJECT_NAME}_blas ${PROJECT_NAME}_lapack ${PROJECT_NAME}_lapack_extended
+  ${PROJECT_NAME}_sparse
+  ${OPTIONAL_LIB}
+  )

@@ -1,0 +1,220 @@
+#:include "common.fypp"
+#:set I_KINDS_TYPES = list(zip(INT_KINDS, INT_TYPES, INT_KINDS))
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set RANKS = range(2, MAXRANK + 1)
+
+module stdlib_intrinsics
+    !!Alternative implementations of some Fortran intrinsic functions offering either faster and/or more accurate evaluation.
+    !! ([Specification](../page/specs/stdlib_intrinsics.html))
+    use stdlib_kinds
+    use stdlib_linalg_state, only: linalg_state_type
+    implicit none
+    private
+
+    interface stdlib_sum
+        !! version: experimental 
+        !!
+        !!### Summary 
+        !! Sum elements of rank N arrays. 
+        !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_sum))
+        !!
+        !!### Description
+        !! 
+        !! This interface provides standard conforming call for sum of elements of any rank.
+        !! The 1-D base implementation follows a chunked approach for optimizing performance and increasing accuracy.
+        !! The `N-D` interfaces calls upon the `(N-1)-D` implementation. 
+        !! Supported data types include `real`, `complex` and `integer`.
+        !!
+        #:for k, t, s in I_KINDS_TYPES + R_KINDS_TYPES + C_KINDS_TYPES
+        pure module function stdlib_sum_1d_${s}$(a) result(s)
+            ${t}$, intent(in) :: a(:)
+            ${t}$ :: s
+        end function
+        pure module function stdlib_sum_1d_${s}$_mask(a,mask) result(s)
+            ${t}$, intent(in) :: a(:)
+            logical, intent(in) :: mask(:)
+            ${t}$ :: s
+        end function
+        #:for rank in RANKS
+        pure module function stdlib_sum_${rank}$d_${s}$( x, mask ) result( s )
+            ${t}$, intent(in) :: x${ranksuffix(rank)}$
+            logical, intent(in), optional :: mask${ranksuffix(rank)}$
+            ${t}$ :: s
+        end function
+        pure module function stdlib_sum_${rank}$d_dim_${s}$( x , dim, mask ) result( s )
+            ${t}$, intent(in) :: x${ranksuffix(rank)}$
+            integer, intent(in):: dim
+            logical, intent(in), optional :: mask${ranksuffix(rank)}$
+            ${t}$ :: s${reduced_shape('x', rank, 'dim')}$
+        end function
+        #:endfor
+        #:endfor
+    end interface
+    public :: stdlib_sum
+
+    interface stdlib_sum_kahan
+        !! version: experimental 
+        !!
+        !!### Summary 
+        !! Sum elements of rank N arrays. 
+        !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_sum_kahan))
+        !!
+        !!### Description
+        !! 
+        !! This interface provides standard conforming call for sum of elements of any rank.
+        !! The 1-D base implementation follows a chunked approach combined with a kahan kernel for optimizing performance and increasing accuracy.
+        !! The `N-D` interfaces calls upon the `(N-1)-D` implementation. 
+        !! Supported data types include `real` and `complex`.
+        !!
+        #:for k, t, s in R_KINDS_TYPES + C_KINDS_TYPES
+        pure module function stdlib_sum_kahan_1d_${s}$(a) result(s)
+            ${t}$, intent(in) :: a(:)
+            ${t}$ :: s
+        end function
+        pure module function stdlib_sum_kahan_1d_${s}$_mask(a,mask) result(s)
+            ${t}$, intent(in) :: a(:)
+            logical, intent(in) :: mask(:)
+            ${t}$ :: s
+        end function
+        #:for rank in RANKS
+        pure module function stdlib_sum_kahan_${rank}$d_${s}$( x, mask ) result( s )
+            ${t}$, intent(in) :: x${ranksuffix(rank)}$
+            logical, intent(in), optional :: mask${ranksuffix(rank)}$
+            ${t}$ :: s
+        end function
+        pure module function stdlib_sum_kahan_${rank}$d_dim_${s}$( x , dim, mask ) result( s )
+            ${t}$, intent(in) :: x${ranksuffix(rank)}$
+            integer, intent(in):: dim
+            logical, intent(in), optional :: mask${ranksuffix(rank)}$
+            ${t}$ :: s${reduced_shape('x', rank, 'dim')}$
+        end function
+        #:endfor
+        #:endfor
+    end interface
+    public :: stdlib_sum_kahan
+
+    interface stdlib_dot_product
+        !! version: experimental 
+        !!
+        !!### Summary 
+        !! dot_product of rank 1 arrays. 
+        !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_dot_product))
+        !!
+        !!### Description
+        !! 
+        !! compute the dot_product of rank 1 arrays.
+        !! The 1-D base implementation follows a chunked approach for optimizing performance and increasing accuracy.
+        !! Supported data types include `real`, `complex` and `integer`.
+        !!
+        #:for k, t, s in I_KINDS_TYPES + R_KINDS_TYPES + C_KINDS_TYPES
+        pure module function stdlib_dot_product_${s}$(a,b) result(p)
+            ${t}$, intent(in) :: a(:)
+            ${t}$, intent(in) :: b(:)
+            ${t}$ :: p
+        end function
+        #:endfor
+    end interface
+    public :: stdlib_dot_product
+
+    interface stdlib_dot_product_kahan
+        !! version: experimental 
+        !!
+        !!### Summary 
+        !! dot_product of rank 1 arrays. 
+        !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_dot_product_kahan))
+        !!
+        !!### Description
+        !! 
+        !! compute the dot_product of rank 1 arrays.
+        !! The implementation follows a chunked approach combined with a kahan kernel for optimizing performance and increasing accuracy.
+        !! Supported data types include `real` and `complex`.
+        !!
+        #:for k, t, s in R_KINDS_TYPES + C_KINDS_TYPES
+        pure module function stdlib_dot_product_kahan_${s}$(a,b) result(p)
+            ${t}$, intent(in) :: a(:)
+            ${t}$, intent(in) :: b(:)
+            ${t}$ :: p
+        end function
+        #:endfor
+    end interface
+    public :: stdlib_dot_product_kahan
+
+    interface kahan_kernel 
+        #:for k, t, s in R_KINDS_TYPES + C_KINDS_TYPES
+        module procedure :: kahan_kernel_${s}$
+        module procedure :: kahan_kernel_m_${s}$
+        #:endfor
+    end interface
+    public :: kahan_kernel
+
+    interface stdlib_matmul
+        !! version: experimental
+        !!
+        !!### Summary
+        !! compute the matrix multiplication of more than two matrices with a single function call.
+        !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_matmul))
+        !!
+        !!### Description
+        !!
+        !! matrix multiply more than two matrices with a single function call
+        !! the multiplication with the optimal parenthesization for efficiency of computation is done automatically
+        !! Supported data types are `real` and `complex`.
+        !!
+        !! Note: The matrices must be of compatible shapes to be multiplied
+        #:for k, t, s in R_KINDS_TYPES + C_KINDS_TYPES
+            pure module function stdlib_matmul_pure_${s}$ (m1, m2, m3, m4, m5) result(r)
+                ${t}$, intent(in) :: m1(:,:), m2(:,:)
+                ${t}$, intent(in), optional :: m3(:,:), m4(:,:), m5(:,:)
+                ${t}$, allocatable :: r(:,:)
+            end function stdlib_matmul_pure_${s}$
+
+            module function stdlib_matmul_${s}$ (m1, m2, m3, m4, m5, err) result(r)
+                ${t}$, intent(in) :: m1(:,:), m2(:,:)
+                ${t}$, intent(in), optional :: m3(:,:), m4(:,:), m5(:,:)
+                type(linalg_state_type), intent(out) :: err
+                ${t}$, allocatable :: r(:,:)
+            end function stdlib_matmul_${s}$
+        #:endfor
+    end interface stdlib_matmul
+    public :: stdlib_matmul
+
+    ! internal interface
+    interface stdlib_matmul_sub
+        #:for k, t, s in R_KINDS_TYPES + C_KINDS_TYPES
+            pure module subroutine stdlib_matmul_sub_${s}$ (res, m1, m2, m3, m4, m5, err)
+                ${t}$, intent(out), allocatable :: res(:,:)
+                ${t}$, intent(in) :: m1(:,:), m2(:,:)
+                ${t}$, intent(in), optional :: m3(:,:), m4(:,:), m5(:,:)
+                type(linalg_state_type), intent(out), optional :: err
+            end subroutine stdlib_matmul_sub_${s}$
+        #:endfor
+    end interface stdlib_matmul_sub
+    
+contains
+
+#:for k, t, s in R_KINDS_TYPES + C_KINDS_TYPES
+elemental subroutine kahan_kernel_${s}$(a,s,c)
+    ${t}$, intent(in) :: a
+    ${t}$, intent(inout) :: s
+    ${t}$, intent(inout) :: c
+    ${t}$ :: t, y
+    y = a - c
+    t = s + y
+    c = (t - s) - y
+    s = t
+end subroutine  
+elemental subroutine kahan_kernel_m_${s}$(a,s,c,m)
+    ${t}$, intent(in) :: a
+    ${t}$, intent(inout) :: s
+    ${t}$, intent(inout) :: c
+    logical, intent(in) :: m
+    ${t}$ :: t, y
+    y = a - c
+    t = s + y
+    c = (t - s) - y
+    s = merge( s , t , m )
+end subroutine 
+#:endfor
+
+end module stdlib_intrinsics

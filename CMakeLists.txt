@@ -49,6 +49,19 @@ if(NOT DEFINED CMAKE_MAXIMUM_RANK)
   set(CMAKE_MAXIMUM_RANK 4 CACHE STRING "Maximum array rank for generated procedures")
 endif()
 
+# --- determine if the following modules will be compiled
+check_modular("ANSI")
+check_modular("BITSETS")
+check_modular("HASHMAPS")
+check_modular("IO")
+check_modular("LINALG_ITERATIVE")
+check_modular("LOGGER")
+check_modular("QUADRATURE")
+check_modular("SPECIALMATRICES")
+check_modular("STRINGLIST")
+check_modular("STATS")
+check_modular("SYSTEM")
+
 option(FIND_BLAS "Find external BLAS and LAPACK" ON)
 
 # --- find external BLAS and LAPACK
@@ -128,6 +141,7 @@ list(
   "-I${PROJECT_SOURCE_DIR}/include"
 )
 
+include_directories(${PROJECT_SOURCE_DIR}/include)
 add_subdirectory(src)
 
 if(BUILD_TESTING)
@@ -140,3 +154,6 @@ install(EXPORT ${PROJECT_NAME}-targets
         NAMESPACE ${PROJECT_NAME}::
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
 )
+
+# Export a pkg-config file
+include(${PROJECT_SOURCE_DIR}/config/export_pc.cmake)

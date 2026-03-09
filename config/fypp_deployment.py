@@ -4,10 +4,18 @@ import argparse
 from joblib import Parallel, delayed
 
 C_PREPROCESSED = (
+    "example_math_swap",
     "stdlib_linalg_constants" ,
     "stdlib_linalg_blas" ,
     "stdlib_linalg_lapack",
-    "test_blas_lapack"
+    "stdlib_math",
+    "stdlib_sorting",
+    "stdlib_sorting_ord_sort",
+    "stdlib_sorting_sort",
+    "stdlib_sorting_sort_adjoint",
+    "test_blas_lapack",
+    "test_stdlib_math",
+    "test_sorting"
 )
 
 def pre_process_fypp(args):
@@ -39,11 +47,9 @@ def pre_process_fypp(args):
         options.line_numbering = True
     tool = fypp.Fypp(options)
 
-    # Check destination folder for preprocessing. if not 'stdlib-fpm', it is assumed to be the root folder.
-    if not os.path.exists('src'+os.sep+'temp'):
-        os.makedirs('src'+os.sep+'temp')
-    if not os.path.exists('test'+os.sep+'temp'):
-        os.makedirs('test'+os.sep+'temp')
+    # Create destination folders for preprocessing
+    os.makedirs('src'+os.sep+'temp', exist_ok=True)
+    os.makedirs('test'+os.sep+'temp', exist_ok=True)
 
     # Define the folders to search for *.fypp files
     folders = ['src','test']
@@ -55,8 +61,7 @@ def pre_process_fypp(args):
     def process_f(file):
         source_file = file
         root = os.path.dirname(file)
-        if not os.path.exists(root+os.sep+'temp'):
-            os.makedirs(root+os.sep+'temp')
+        os.makedirs(root+os.sep+'temp', exist_ok=True)
         basename = os.path.splitext(os.path.basename(source_file))[0]
         sfx = 'f90' if basename not in C_PREPROCESSED else 'F90'
         target_file = root+os.sep+'temp' + os.sep + basename + '.' + sfx
@@ -81,19 +86,18 @@ def deploy_stdlib_fpm(with_ilp64):
     else:
         base_folder = 'stdlib-fpm'        
 
-    if not os.path.exists(base_folder+os.sep+'src'):
-        os.makedirs(base_folder+os.sep+'src')
-    if not os.path.exists(base_folder+os.sep+'test'):
-        os.makedirs(base_folder+os.sep+'test')
-    if not os.path.exists(base_folder+os.sep+'example'):
-        os.makedirs(base_folder+os.sep+'example')
+    os.makedirs(base_folder+os.sep+'include', exist_ok=True)
+    os.makedirs(base_folder+os.sep+'src', exist_ok=True)
+    os.makedirs(base_folder+os.sep+'test', exist_ok=True)
+    os.makedirs(base_folder+os.sep+'example', exist_ok=True)
 
     def recursive_copy(folder):
         for root, _, files in os.walk(folder):
             for file in files:
                 if file not in prune:
-                    if file.endswith((".f90", ".F90", ".dat", ".npy", ".c", ".h")):
+                    if file.endswith((".f90", ".F90", ".dat", ".npy", ".c", ".h", ".inc")):
                         shutil.copy2(os.path.join(root, file), base_folder+os.sep+folder+os.sep+file)
+    recursive_copy('include')
     recursive_copy('src')
     recursive_copy('test')
     recursive_copy('example')
@@ -128,8 +132,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Preprocess stdlib source files.')
     # fypp arguments
     parser.add_argument("--vmajor", type=int, default=0, help="Project Version Major")
-    parser.add_argument("--vminor", type=int, default=5, help="Project Version Minor")
-    parser.add_argument("--vpatch", type=int, default=0, help="Project Version Patch")
+    parser.add_argument("--vminor", type=int, default=8, help="Project Version Minor")
+    parser.add_argument("--vpatch", type=int, default=1, help="Project Version Patch")
 
     parser.add_argument("--njob", type=int, default=4, help="Number of parallel jobs for preprocessing")
     parser.add_argument("--maxrank",type=int, default=4, help="Set the maximum allowed rank for arrays")
