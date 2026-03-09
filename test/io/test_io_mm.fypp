@@ -352,10 +352,17 @@ contains
     end subroutine
     #:endfor
 
+    pure function compare_coo_pattern(index_save, index_load) result(result)
+        integer, intent(in) :: index_save(:, :), index_load(:,:)
+        logical :: result
+
+        result = all(index_save == index_load)
+    end function
+
     subroutine test_io_mm_coordinate(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
-        #:for k, t, s in (KINDS_TYPES)
+        #:for k, t, s in KINDS_TYPES
         block
             integer :: nrows, ncols
             ${t}$, allocatable :: data_save(:), data_load(:)
@@ -374,6 +381,12 @@ contains
             call check(error, result, .true.,&
                 "MM coordinate test failed: symmetry_arg=unspecified, type=${t}$")
             if(allocated(error)) return
+            call save_mm("test_mmio_sparse.mtx", index_save, [0], format = "G0")
+            call load_mm("test_mmio_sparse.mtx", index_load, data_load)
+            result = compare_coo_pattern(index_save, index_load)
+            call check(error, result, .true.,&
+                "MM coordinate test failed: symmetry_arg=unspecified, type=pattern")
+            if(allocated(error)) return
             if(allocated(index_save)) deallocate(index_save)
             if(allocated(data_save)) deallocate(data_save)
 
@@ -384,6 +397,12 @@ contains
             result = compare_coo_${s}$(index_save, index_load, data_save, data_load)
             call check(error, result, .true.,&
                 "MM coordinate test failed: symmetry_arg=symmetric, type=${t}$")
+            if(allocated(error)) return
+            call save_mm("test_mmio_sparse.mtx", index_save, [0], symmetry = "symmetric", format = "G0")
+            call load_mm("test_mmio_sparse.mtx", index_load, data_load)
+            result = compare_coo_pattern(index_save, index_load)
+            call check(error, result, .true.,&
+                "MM coordinate test failed: symmetry_arg=symmetric, type=pattern")
             if(allocated(error)) return
             if(allocated(index_save)) deallocate(index_save)
             if(allocated(data_save)) deallocate(data_save)
@@ -396,6 +415,12 @@ contains
             call check(error, result, .true.,&
                 "MM coordinate test failed: symmetry_arg=skew-symmetric, type=${t}$")
             if(allocated(error)) return
+            call save_mm("test_mmio_sparse.mtx", index_save, [0], symmetry = "skew-symmetric", format = "G0")
+            call load_mm("test_mmio_sparse.mtx", index_load, data_load)
+            result = compare_coo_pattern(index_save, index_load)
+            call check(error, result, .true.,&
+                "MM coordinate test failed: symmetry_arg=skew-symmetric, type=pattern")
+            if(allocated(error)) return
             if(allocated(index_save)) deallocate(index_save)
             if(allocated(data_save)) deallocate(data_save)
 
@@ -407,6 +432,12 @@ contains
             result = compare_coo_${s}$(index_save, index_load, data_save, data_load)
             call check(error, result, .true.,&
                 "MM coordinate test failed: symmetry_arg=hermitian, type=${t}$")
+            if(allocated(error)) return
+            call save_mm("test_mmio_sparse.mtx", index_save, [0], symmetry = "hermitian", format = "G0")
+            call load_mm("test_mmio_sparse.mtx", index_load, data_load)
+            result = compare_coo_pattern(index_save, index_load)
+            call check(error, result, .true.,&
+                "MM coordinate test failed: symmetry_arg=hermitian, type=pattern")
             if(allocated(error)) return
             if(allocated(index_save)) deallocate(index_save)
             if(allocated(data_save)) deallocate(data_save)
