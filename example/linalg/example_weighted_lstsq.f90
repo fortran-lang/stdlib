@@ -1,10 +1,10 @@
-! Weighted least-squares solver
+! Weighted least-squares solver: function and subroutine interfaces
 program example_weighted_lstsq
   use stdlib_linalg_constants, only: dp
-  use stdlib_linalg, only: weighted_lstsq
+  use stdlib_linalg, only: weighted_lstsq, solve_weighted_lstsq
   implicit none
 
-  real(dp) :: A(4,2), b(4), w(4)
+  real(dp) :: A(4,2), b(4), w(4), x_sub(2)
   real(dp), allocatable :: x(:)
 
   ! Design matrix: intercept + slope
@@ -17,10 +17,16 @@ program example_weighted_lstsq
   ! Weights: downweight the outlier
   w = [1.0_dp, 1.0_dp, 0.1_dp, 1.0_dp]
 
-  ! Solve weighted least-squares
+  ! Solve weighted least-squares (function interface)
   x = weighted_lstsq(w, A, b)
 
-  print '("Weighted fit: intercept = ",f8.4,", slope = ",f8.4)', x(1), x(2)
-  ! Weighted fit: intercept =   0.1500, slope =   1.9911
+  print '("Function interface:  intercept = ",f8.4,", slope = ",f8.4)', x(1), x(2)
+  ! Function interface:  intercept =   0.1500, slope =   1.9911
+
+  ! Solve weighted least-squares (subroutine interface)
+  call solve_weighted_lstsq(w, A, b, x_sub)
+
+  print '("Subroutine interface: intercept = ",f8.4,", slope = ",f8.4)', x_sub(1), x_sub(2)
+  ! Subroutine interface: intercept =   0.1500, slope =   1.9911
 
 end program example_weighted_lstsq

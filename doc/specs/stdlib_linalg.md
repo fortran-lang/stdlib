@@ -1067,7 +1067,7 @@ Exceptions trigger an `error stop`.
 ### Example
 
 ```fortran
-{!example/linalg/example_solve_weighted_lstsq.f90!}
+{!example/linalg/example_weighted_lstsq.f90!}
 ```
 
 ## `det` - Computes the determinant of a square matrix
