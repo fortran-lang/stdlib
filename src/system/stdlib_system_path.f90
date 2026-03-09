@@ -198,6 +198,13 @@ contains
         type(state_type) :: err0
         character(:), allocatable :: cwd
 
+        ! if the path is absolute already, just return it unchanged
+        if (is_abs_path(p)) then
+            abs_p = p
+            return
+        end if
+
+        ! if the path is not absolute, then...
         ! get the current working directory
         call get_cwd(cwd, err0)
 
