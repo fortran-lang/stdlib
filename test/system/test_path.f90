@@ -190,6 +190,22 @@ contains
         character(:), allocatable :: rel_path, absolute_path, cwd, absolute_path0
         type(state_type) :: err
 
+        ! If the path is already absolute, should just return the same.
+        if (OS_TYPE() == OS_WINDOWS) then
+            rel_path = "C:\Folder\File"
+        else
+            rel_path = "/Folder/File"
+        end if
+
+        absolute_path = abs_path(rel_path, err)
+
+        call check(error, err%ok(), "Could not get absolute path: " // err%print())
+        if (allocated(error)) return
+
+        call check(error, absolute_path == rel_path, "absolute path is not the same as the relative path")
+        if (allocated(error)) return
+
+        ! If the path is relative..
         if (OS_TYPE() == OS_WINDOWS) then
             rel_path = ".\Folder\File"
         else
