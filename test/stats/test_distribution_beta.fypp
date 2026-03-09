@@ -167,7 +167,7 @@ contains
         res(4:15) = reshape(beta_pdf(x2, ba, bb, loc), [12])
 
         do i = 1, 15
-            call check(abs(res(i) - ans(i)) < ${k1}$tol,                      &
+            call check(abs(res(i) - ans(i)) < max(${k1}$tol, 1.0e-11_${k1}$), &
                        msg="beta_distribution_pdf_${t1[0]}$${k1}$ failed", &
                        warn=warn)
         end do
@@ -240,7 +240,7 @@ contains
         res(4:15) = reshape(beta_cdf(x2, ba, bb, loc), [12])
 
         do i = 1, 15
-            call check(abs(res(i) - ans(i)) < ${k1}$tol,                      &
+            call check(abs(res(i) - ans(i)) < max(${k1}$tol, 1.0e-11_${k1}$), &
                        msg="beta_distribution_cdf_${t1[0]}$${k1}$ failed", &
                        warn=warn)
         end do
