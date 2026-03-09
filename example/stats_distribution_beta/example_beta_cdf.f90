@@ -6,7 +6,7 @@ program example_beta_cdf
   implicit none
   real :: x, a, b
   real :: xarr(3, 4, 5)
-  integer :: seed_put, seed_get, i
+  integer :: seed_put, seed_get
 
   seed_put = 1234567
   call random_seed(seed_put, seed_get)
@@ -22,9 +22,7 @@ program example_beta_cdf
   ! 0.471808970
 
   ! generate random variates and compute their cdf
-  do i = 1, 60
-    xarr(i, 1, 1) = rbeta(a, b)
-  end do
+  xarr = reshape(rbeta(a, b, 60), [3, 4, 5])
 
   print *, beta_cdf(xarr, a, b)
   ! 0.374293357  0.136472717  0.153627276  0.166885555  0.535913110
