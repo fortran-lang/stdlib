@@ -1386,10 +1386,11 @@ contains
         ${t1}$, intent(in) :: x, a, b, eps
         integer, intent(in) :: maxit
         ${t1}$ :: res
-        ${t1}$ :: aa, c, d, del, h, qab, qam, qap
+        ${t1}$ :: aa, c, d, del, h, qab, qam, qap, fpmin
         integer :: m, m2
         ${t1}$, parameter :: one = 1.0_${k1}$
-        ${t1}$, parameter :: fpmin = tiny(1.0_${k1}$) / eps
+
+        fpmin = tiny(1.0_${k1}$) / eps
 
         qab = a + b
         qap = a + one
