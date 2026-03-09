@@ -1,11 +1,12 @@
 ! Generalized least-squares solver with correlated errors
 program example_generalized_lstsq
   use stdlib_linalg_constants, only: dp
-  use stdlib_linalg, only: generalized_lstsq
+  use stdlib_linalg, only: generalized_lstsq, solve_generalized_lstsq
   implicit none
 
-  real(dp) :: A(3,2), b(3), W(3,3)
-  real(dp), allocatable :: x(:)
+  integer, parameter :: m = 3
+  real(dp) :: A(m,2), b(m), W(m,m), x(2)
+  real(dp), allocatable :: x_fun(:)
 
   ! Design matrix: intercept + slope
   A(:,1) = 1.0_dp
@@ -15,14 +16,16 @@ program example_generalized_lstsq
   b = [1.0_dp, 2.1_dp, 2.9_dp]
 
   ! Covariance matrix (correlated errors)
-  W(1,:) = [1.0_dp, 0.5_dp, 0.25_dp]
-  W(2,:) = [0.5_dp, 1.0_dp, 0.5_dp]
-  W(3,:) = [0.25_dp, 0.5_dp, 1.0_dp]
+  W = reshape([1.0_dp,  0.5_dp,  0.25_dp, &
+               0.5_dp,  1.0_dp,  0.5_dp,  &
+               0.25_dp, 0.5_dp,  1.0_dp], [m, m])
 
-  ! Solve generalized least-squares
-  x = generalized_lstsq(W, A, b)
+  ! Function interface: allocates solution
+  x_fun = generalized_lstsq(W, A, b)
+  print '("GLS (function):   intercept = ",f8.4,", slope = ",f8.4)', x_fun(1), x_fun(2)
 
-  print '("GLS fit: intercept = ",f8.4,", slope = ",f8.4)', x(1), x(2)
-  ! GLS fit: intercept =   0.0500, slope =   0.9500
+  ! Subroutine interface: user-provided solution vector
+  call solve_generalized_lstsq(W, A, b, x)
+  print '("GLS (subroutine): intercept = ",f8.4,", slope = ",f8.4)', x(1), x(2)
 
 end program example_generalized_lstsq

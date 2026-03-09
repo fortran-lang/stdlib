@@ -571,11 +571,11 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
     #:for rk,rt,ri in RC_KINDS_TYPES
     ! Generalized least-squares function: thin wrapper that allocates x and delegates to subroutine
     module function stdlib_linalg_${ri}$_generalized_lstsq(w,a,b,prefactored_w,overwrite_a,overwrite_w,err) result(x)
-        !> Covariance matrix W[m,m] (symmetric/Hermitian positive definite) or its matrix square root
+        !> Covariance matrix W(m,m) (symmetric/Hermitian positive definite) or its matrix square root
         ${rt}$, intent(inout), target :: w(:,:)
-        !> Input matrix a[m,n]
+        !> Input matrix a(m,n)
         ${rt}$, intent(inout), target :: a(:,:)
-        !> Right hand side vector b[m]
+        !> Right hand side vector b(m)
         ${rt}$, intent(in) :: b(:)
         !> [optional] Is W already a matrix square root (e.g., Cholesky factor)? Default: .false.
         logical(lk), optional, intent(in) :: prefactored_w
@@ -585,8 +585,8 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
         logical(lk), optional, intent(in) :: overwrite_w
         !> [optional] state return flag. On error if not requested, the code will stop
         type(linalg_state_type), optional, intent(out) :: err
-        !> Result array x[n]
-        ${rt}$, allocatable, target :: x(:)
+        !> Result array x(n)
+        ${rt}$, allocatable :: x(:)
 
         integer(ilp) :: n
 
@@ -600,13 +600,13 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
     #:for rk,rt,ri in RC_KINDS_TYPES
     ! Generalized least-squares subroutine: minimize (Ax-b)^T W^{-1} (Ax-b)
     module subroutine stdlib_linalg_${ri}$_solve_generalized_lstsq(w,a,b,x,prefactored_w,overwrite_a,overwrite_w,err)
-        !> Covariance matrix W[m,m] (symmetric/Hermitian positive definite) or its matrix square root
+        !> Covariance matrix W(m,m) (symmetric/Hermitian positive definite) or its matrix square root
         ${rt}$, intent(inout), target :: w(:,:)
-        !> Input matrix a[m,n]
+        !> Input matrix a(m,n)
         ${rt}$, intent(inout), target :: a(:,:)
-        !> Right hand side vector b[m]
+        !> Right hand side vector b(m)
         ${rt}$, intent(in) :: b(:)
-        !> Solution vector x[n]
+        !> Solution vector x(n)
         ${rt}$, intent(out) :: x(:)
         !> [optional] Is W already a matrix square root (e.g., Cholesky factor)? Default: .false.
         logical(lk), optional, intent(in) :: prefactored_w
@@ -655,6 +655,13 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
         if (m < n) then
             err0 = linalg_state_type(this, LINALG_VALUE_ERROR, &
                    'GGGLM requires m >= n (overdetermined or square):', m, '<', n)
+            call linalg_error_handling(err0, err)
+            return
+        end if
+
+        if (size(x, kind=ilp) /= n) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, &
+                   'Solution vector size must match columns of A:', size(x, kind=ilp), '/=', n)
             call linalg_error_handling(err0, err)
             return
         end if

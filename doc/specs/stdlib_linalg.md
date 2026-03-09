@@ -1000,7 +1000,7 @@ The solver minimizes the Mahalanobis distance \( (Ax - b)^T W^{-1} (Ax - b) \) w
 
 `b`: Shall be a rank-1 array of the same kind as `a`, containing the right-hand-side vector. It is an `intent(in)` argument.
 
-`prefactored_w` (optional): Shall be an input `logical` flag. If `.true.`, `w` is assumed to contain a matrix square root \( B \) such that \( W = B \cdot B^T \). This can be a Cholesky factor or any other valid square root (e.g., SVD-based). If a Cholesky factor is used, the upper triangular part must be zeroed out. Default: `.false.`. This is an `intent(in)` argument.
+`prefactored_w` (optional): Shall be an input `logical` flag. If `.true.`, `w` is assumed to contain a matrix square root \( B \) such that \( W = B \cdot B^T \). This can be a Cholesky factor or any other valid square root (e.g., SVD-based). If a Cholesky factor is used, the upper triangular part must be zeroed out. It is the user's responsibility to ensure that the prefactored matrix is valid. Default: `.false.`. This is an `intent(in)` argument.
 
 `overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. Default: `.false.`. This is an `intent(in)` argument.
 
@@ -1048,7 +1048,7 @@ The solver minimizes the Mahalanobis distance \( (Ax - b)^T W^{-1} (Ax - b) \) w
 
 `x`: Shall be a rank-1 array of the same kind as `a`, containing the solution vector. It is an `intent(out)` argument.
 
-`prefactored_w` (optional): Shall be an input `logical` flag. If `.true.`, `w` is assumed to contain a matrix square root \( B \) such that \( W = B \cdot B^T \). This can be a Cholesky factor or any other valid square root (e.g., SVD-based). Default: `.false.`. This is an `intent(in)` argument.
+`prefactored_w` (optional): Shall be an input `logical` flag. If `.true.`, `w` is assumed to contain a matrix square root \( B \) such that \( W = B \cdot B^T \). This can be a Cholesky factor or any other valid square root (e.g., SVD-based). It is the user's responsibility to ensure that the prefactored matrix is valid. Default: `.false.`. This is an `intent(in)` argument.
 
 `overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. Default: `.false.`. This is an `intent(in)` argument.
 
@@ -1067,7 +1067,7 @@ Exceptions trigger an `error stop`.
 ### Example
 
 ```fortran
-{!example/linalg/example_solve_generalized_lstsq.f90!}
+{!example/linalg/example_generalized_lstsq.f90!}
 ```
 
 ## `det` - Computes the determinant of a square matrix

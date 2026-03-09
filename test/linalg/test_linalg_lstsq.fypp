@@ -163,9 +163,9 @@ module test_linalg_least_squares
         b = [1.0_${rk}$, 2.1_${rk}$, 2.9_${rk}$]
 
         ! SPD covariance matrix (correlated errors)
-        W(1,:) = [2.0_${rk}$, 1.0_${rk}$, 0.5_${rk}$]
-        W(2,:) = [1.0_${rk}$, 2.0_${rk}$, 1.0_${rk}$]
-        W(3,:) = [0.5_${rk}$, 1.0_${rk}$, 2.0_${rk}$]
+        W = reshape([2.0_${rk}$, 1.0_${rk}$, 0.5_${rk}$, &
+                     1.0_${rk}$, 2.0_${rk}$, 1.0_${rk}$, &
+                     0.5_${rk}$, 1.0_${rk}$, 2.0_${rk}$], [m, m])
 
         x = generalized_lstsq(W, A, b, err=state)
 
@@ -234,9 +234,9 @@ module test_linalg_least_squares
         b = [1.0_${rk}$, 2.1_${rk}$, 2.9_${rk}$]
 
         ! SPD covariance matrix
-        W(1,:) = [2.0_${rk}$, 1.0_${rk}$, 0.5_${rk}$]
-        W(2,:) = [1.0_${rk}$, 2.0_${rk}$, 1.0_${rk}$]
-        W(3,:) = [0.5_${rk}$, 1.0_${rk}$, 2.0_${rk}$]
+        W = reshape([2.0_${rk}$, 1.0_${rk}$, 0.5_${rk}$, &
+                     1.0_${rk}$, 2.0_${rk}$, 1.0_${rk}$, &
+                     0.5_${rk}$, 1.0_${rk}$, 2.0_${rk}$], [m, m])
 
         ! Solve using Cholesky (internal factorization)
         x_chol = generalized_lstsq(W, A, b, err=state)
@@ -283,9 +283,9 @@ module test_linalg_least_squares
         b = [1.0_${rk}$, 2.1_${rk}$, 2.9_${rk}$]
 
         ! SPD covariance matrix
-        W(1,:) = [2.0_${rk}$, 1.0_${rk}$, 0.5_${rk}$]
-        W(2,:) = [1.0_${rk}$, 2.0_${rk}$, 1.0_${rk}$]
-        W(3,:) = [0.5_${rk}$, 1.0_${rk}$, 2.0_${rk}$]
+        W = reshape([2.0_${rk}$, 1.0_${rk}$, 0.5_${rk}$, &
+                     1.0_${rk}$, 2.0_${rk}$, 1.0_${rk}$, &
+                     0.5_${rk}$, 1.0_${rk}$, 2.0_${rk}$], [m, m])
         W_copy = W
 
         ! Solve with copy (default)
@@ -321,10 +321,10 @@ module test_linalg_least_squares
         b = [2.0_${rk}$, 4.0_${rk}$, 5.0_${rk}$, 4.0_${rk}$]
 
         ! SPD covariance matrix
-        W(1,:) = [2.0_${rk}$, 1.0_${rk}$, 0.5_${rk}$, 0.25_${rk}$]
-        W(2,:) = [1.0_${rk}$, 2.0_${rk}$, 1.0_${rk}$, 0.5_${rk}$]
-        W(3,:) = [0.5_${rk}$, 1.0_${rk}$, 2.0_${rk}$, 1.0_${rk}$]
-        W(4,:) = [0.25_${rk}$, 0.5_${rk}$, 1.0_${rk}$, 2.0_${rk}$]
+        W = reshape([2.0_${rk}$,  1.0_${rk}$,  0.5_${rk}$,  0.25_${rk}$, &
+                     1.0_${rk}$,  2.0_${rk}$,  1.0_${rk}$,  0.5_${rk}$,  &
+                     0.5_${rk}$,  1.0_${rk}$,  2.0_${rk}$,  1.0_${rk}$,  &
+                     0.25_${rk}$, 0.5_${rk}$,  1.0_${rk}$,  2.0_${rk}$], [m, m])
 
         ! Function form
         x_fun = generalized_lstsq(W, A, b, err=state)
