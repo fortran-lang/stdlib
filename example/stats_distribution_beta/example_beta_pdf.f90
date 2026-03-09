@@ -6,7 +6,7 @@ program example_beta_pdf
   implicit none
   real :: x, a, b
   real :: xarr(3, 4, 5)
-  integer :: seed_put, seed_get, i
+  integer :: seed_put, seed_get
 
   seed_put = 1234567
   call random_seed(seed_put, seed_get)
@@ -22,9 +22,7 @@ program example_beta_pdf
   ! 1.32859993
 
   ! generate random variates and compute their pdf
-  do i = 1, 60
-    xarr(i, 1, 1) = rbeta(a, b)
-  end do
+  xarr = reshape(rbeta(a, b, 60), [3, 4, 5])
 
   print *, beta_pdf(xarr, a, b)
   ! 1.23914337  0.925268888  0.969913423  0.998693407  1.44889069
