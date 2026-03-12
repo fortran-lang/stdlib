@@ -404,6 +404,11 @@ contains
         end do
     end subroutine test_gamma_q_${t1[0]}$${k1}$${k2}$
 
+            #:endfor
+        #:endfor
+
+        #:for k1, t1 in REAL_KINDS_TYPES[:-1]
+
 
 
     subroutine test_beta_${t1[0]}$${k1}$(error)
@@ -471,14 +476,6 @@ contains
 
         end do
     end subroutine test_incomplete_beta_${t1[0]}$${k1}$
-
-    #:endfor
-end module test_specialfunctions_gamma
-    #:endfor
-
-
-
-    #:for k1, t1 in REAL_KINDS_TYPES[:-1]
 
     subroutine test_lincgamma_${t1[0]}$${k1}$(error)
         type(error_type), allocatable, intent(out) :: error
