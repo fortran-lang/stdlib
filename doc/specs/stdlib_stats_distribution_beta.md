@@ -44,7 +44,7 @@ If `a` is `real`, its value must be positive. If `a` is `complex`, both the real
 If `b` is `real`, its value must be positive. If `b` is `complex`, both the real and imaginary components must be positive. This is the second shape parameter of the distribution.
 
 `loc`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`. 
-Specifies the location (shift) of the distribution with default value 0.0.
+Specifies the location (shift) of the distribution with default value 0.0. The distribution support is loc < x < loc + 1.
 
 `array_size`: optional argument has `intent(in)` and is a scalar of type `integer` with default kind.
 
@@ -118,7 +118,7 @@ Experimental
 
 ### Description
 
-Cumulative distribution function (cdf) of the single real variable beta distribution:
+Cumulative distribution function (cdf) of the single real variable beta distribution is:
 
 $$ F(x)= I_x(a, b),\\quad 0<x<1,\\ a>0,\\ b>0 $$
 
