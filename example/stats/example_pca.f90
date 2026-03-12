@@ -29,7 +29,7 @@ program example_pca
         print "(2f6.3)", components(2, :)
 
         ! Transform data to principal components space
-        call pca_transform(x, components, mu, x_trans)
+        call pca_transform(x, components, x_trans, mu)
         print *, ""
         print *, "Transformed data (projected):"
         do i = 1, 3
@@ -37,7 +37,7 @@ program example_pca
         end do
 
         ! Inverse transform to reconstruct original data
-        call pca_inverse_transform(x_trans, components, mu, x_inv)
+        call pca_inverse_transform(x_trans, components, x_inv, mu)
         print *, ""
         print *, "Reconstructed data:"
         do i = 1, 3

@@ -301,7 +301,7 @@ Two methods are supported:
 
 ### Syntax
 
-`call ` [[stdlib_stats(module):pca(interface)]] `(x, components, singular_values [, x_mean [, method [, overwrite_x [, err]]]])`
+`call ` [[stdlib_stats(module):pca(interface)]] `(x, components, singular_values [, x_mean, method, overwrite_x, err])`
 
 ### Class
 
@@ -342,12 +342,7 @@ The transformation is defined as `x_transformed = (x - x_mean) * components^T`.
 
 ### Syntax
 
-`call ` [[stdlib_stats(module):pca_transform(interface)]] `(x, components, x_mean, x_transformed)`
-
-If `x_mean` is omitted, the non-trailing optional argument rule in Fortran requires
-`x_transformed` to be passed by keyword, for example:
-
-`call ` [[stdlib_stats(module):pca_transform(interface)]] `(x, components, x_transformed=x_transformed)`
+`call ` [[stdlib_stats(module):pca_transform(interface)]] `(x, components, x_transformed [, x_mean])`
 
 ### Class
 
@@ -359,9 +354,9 @@ Generic subroutine
 
 `components`: Shall be a rank-2 real array with shape `(nc, n)`. It stores the principal components as rows. It is an `intent(in)` argument.
 
-`x_mean` (optional): Shall be a rank-1 real array with shape `(n)`. It stores the feature means to subtract. It is an `intent(in)` argument.
-
 `x_transformed`: Shall be a rank-2 real array with shape `(m, nc)`. It stores the projected data. It is an `intent(out)` argument.
+
+`x_mean` (optional): Shall be a rank-1 real array with shape `(n)`. It stores the feature means to subtract. It is an `intent(in)` argument.
 
 ## `pca_inverse_transform` - Reconstructs original data from principal component space
 
@@ -376,12 +371,7 @@ The reconstruction is defined as `x_reconstructed = x_reduced * components + x_m
 
 ### Syntax
 
-`call ` [[stdlib_stats(module):pca_inverse_transform(interface)]] `(x_reduced, components, x_mean, x_reconstructed)`
-
-If `x_mean` is omitted, the non-trailing optional argument rule in Fortran requires
-`x_reconstructed` to be passed by keyword, for example:
-
-`call ` [[stdlib_stats(module):pca_inverse_transform(interface)]] `(x_reduced, components, x_reconstructed=x_reconstructed)`
+`call ` [[stdlib_stats(module):pca_inverse_transform(interface)]] `(x_reduced, components, x_reconstructed [, x_mean])`
 
 ### Class
 
@@ -393,9 +383,9 @@ Generic subroutine
 
 `components`: Shall be a rank-2 real array with shape `(nc, n)`. It stores the principal components as rows. It is an `intent(in)` argument.
 
-`x_mean` (optional): Shall be a rank-1 real array with shape `(n)`. It stores the feature means to add back. It is an `intent(in)` argument.
-
 `x_reconstructed`: Shall be a rank-2 real array with shape `(m, n)`. It stores the reconstructed data. It is an `intent(out)` argument.
+
+`x_mean` (optional): Shall be a rank-1 real array with shape `(n)`. It stores the feature means to add back. It is an `intent(in)` argument.
 
 ## `var` - variance of array elements
 
