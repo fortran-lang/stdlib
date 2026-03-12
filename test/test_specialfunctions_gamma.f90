@@ -55,6 +55,10 @@ contains
                            test_gamma_csp)                         &
             , new_unittest("log_gamma_csp",                        &
                            test_loggamma_csp)                      &
+            , new_unittest("gamma_cdp",                            &
+                           test_gamma_cdp)                         &
+            , new_unittest("log_gamma_cdp",                        &
+                           test_loggamma_cdp)                      &
 
             , new_unittest("lower_incomplete_gamma_iint8sp",     &
                            test_lincgamma_iint8sp)               &
@@ -68,6 +72,18 @@ contains
                            test_gamma_p_iint8sp)                 &
             , new_unittest("regularized_gamma_q_iint8sp",        &
                            test_gamma_q_iint8sp)                 &
+            , new_unittest("lower_incomplete_gamma_iint8dp",     &
+                           test_lincgamma_iint8dp)               &
+            , new_unittest("log_lower_incomplete_gamma_iint8dp", &
+                           test_log_lincgamma_iint8dp)           &
+            , new_unittest("upper_incomplete_gamma_iint8dp",     &
+                           test_uincgamma_iint8dp)               &
+            , new_unittest("log_upper_incomplete_gamma_iint8dp", &
+                           test_log_uincgamma_iint8dp)           &
+            , new_unittest("regularized_gamma_p_iint8dp",        &
+                           test_gamma_p_iint8dp)                 &
+            , new_unittest("regularized_gamma_q_iint8dp",        &
+                           test_gamma_q_iint8dp)                 &
             , new_unittest("lower_incomplete_gamma_iint16sp",     &
                            test_lincgamma_iint16sp)               &
             , new_unittest("log_lower_incomplete_gamma_iint16sp", &
@@ -80,6 +96,18 @@ contains
                            test_gamma_p_iint16sp)                 &
             , new_unittest("regularized_gamma_q_iint16sp",        &
                            test_gamma_q_iint16sp)                 &
+            , new_unittest("lower_incomplete_gamma_iint16dp",     &
+                           test_lincgamma_iint16dp)               &
+            , new_unittest("log_lower_incomplete_gamma_iint16dp", &
+                           test_log_lincgamma_iint16dp)           &
+            , new_unittest("upper_incomplete_gamma_iint16dp",     &
+                           test_uincgamma_iint16dp)               &
+            , new_unittest("log_upper_incomplete_gamma_iint16dp", &
+                           test_log_uincgamma_iint16dp)           &
+            , new_unittest("regularized_gamma_p_iint16dp",        &
+                           test_gamma_p_iint16dp)                 &
+            , new_unittest("regularized_gamma_q_iint16dp",        &
+                           test_gamma_q_iint16dp)                 &
             , new_unittest("lower_incomplete_gamma_iint32sp",     &
                            test_lincgamma_iint32sp)               &
             , new_unittest("log_lower_incomplete_gamma_iint32sp", &
@@ -92,6 +120,18 @@ contains
                            test_gamma_p_iint32sp)                 &
             , new_unittest("regularized_gamma_q_iint32sp",        &
                            test_gamma_q_iint32sp)                 &
+            , new_unittest("lower_incomplete_gamma_iint32dp",     &
+                           test_lincgamma_iint32dp)               &
+            , new_unittest("log_lower_incomplete_gamma_iint32dp", &
+                           test_log_lincgamma_iint32dp)           &
+            , new_unittest("upper_incomplete_gamma_iint32dp",     &
+                           test_uincgamma_iint32dp)               &
+            , new_unittest("log_upper_incomplete_gamma_iint32dp", &
+                           test_log_uincgamma_iint32dp)           &
+            , new_unittest("regularized_gamma_p_iint32dp",        &
+                           test_gamma_p_iint32dp)                 &
+            , new_unittest("regularized_gamma_q_iint32dp",        &
+                           test_gamma_q_iint32dp)                 &
             , new_unittest("lower_incomplete_gamma_iint64sp",     &
                            test_lincgamma_iint64sp)               &
             , new_unittest("log_lower_incomplete_gamma_iint64sp", &
@@ -104,6 +144,18 @@ contains
                            test_gamma_p_iint64sp)                 &
             , new_unittest("regularized_gamma_q_iint64sp",        &
                            test_gamma_q_iint64sp)                 &
+            , new_unittest("lower_incomplete_gamma_iint64dp",     &
+                           test_lincgamma_iint64dp)               &
+            , new_unittest("log_lower_incomplete_gamma_iint64dp", &
+                           test_log_lincgamma_iint64dp)           &
+            , new_unittest("upper_incomplete_gamma_iint64dp",     &
+                           test_uincgamma_iint64dp)               &
+            , new_unittest("log_upper_incomplete_gamma_iint64dp", &
+                           test_log_uincgamma_iint64dp)           &
+            , new_unittest("regularized_gamma_p_iint64dp",        &
+                           test_gamma_p_iint64dp)                 &
+            , new_unittest("regularized_gamma_q_iint64dp",        &
+                           test_gamma_q_iint64dp)                 &
 
             , new_unittest("lower_incomplete_gamma_rsp",           &
                            test_lincgamma_rsp)                     &
@@ -117,6 +169,18 @@ contains
                            test_gamma_p_rsp)                       &
             , new_unittest("regularized_gamma_q_rsp",              &
                            test_gamma_q_rsp)                       &
+            , new_unittest("lower_incomplete_gamma_rdp",           &
+                           test_lincgamma_rdp)                     &
+            , new_unittest("log_lower_incomplete_gamma_rdp",       &
+                           test_log_lincgamma_rdp)                 &
+            , new_unittest("upper_incomplete_gamma_rdp",           &
+                           test_uincgamma_rdp)                     &
+            , new_unittest("log_upper_incomplete_gamma_rdp",       &
+                           test_log_uincgamma_rdp)                 &
+            , new_unittest("regularized_gamma_p_rdp",              &
+                           test_gamma_p_rdp)                       &
+            , new_unittest("regularized_gamma_q_rdp",              &
+                           test_gamma_q_rdp)                       &
             ]
     end subroutine collect_specialfunctions_gamma
 
@@ -533,6 +597,80 @@ contains
     end subroutine test_loggamma_csp
 
 
+    subroutine test_gamma_cdp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 5
+        integer :: i
+        type(state_type) :: err
+
+
+        complex(dp), parameter :: x(n) = [(0.25_dp, 0.25_dp),               &
+                                     (0.5_dp, -0.5_dp),                &
+                                     (1.0_dp, 1.0_dp),                 &
+                                     (-1.254e1_dp, -9.87_dp),          &
+                                     (0.0_dp, 1.0_dp)                  &
+                                    ]
+
+        complex(dp), parameter :: ans(n) =                                          &
+                     [(1.6511332803889208_dp, -1.8378758749947890_dp), &
+                      (0.81816399954174739_dp, 0.76331382871398262_dp),&
+                     (0.49801566811835604_dp, -0.15494982830181069_dp),&
+             (-2.18767396709283064e-21_dp, 2.77577940846953455e-21_dp),&
+                    (-0.15494982830181067_dp, -0.49801566811835607_dp) &
+             ]
+
+
+
+        do i = 1, n
+            
+            err = state_type(STDLIB_VALUE_ERROR,'Complex dp failed: x=',x(i), &
+                             ' gamma=',gamma(x(i)), &
+                             'expected=',ans(i), &
+                             ' tol=',tol_dp)
+
+            call check(error, gamma(x(i)), ans(i), err%print(),&
+                       thr = tol_dp, rel = .true.)
+
+        end do
+        
+    end subroutine test_gamma_cdp
+
+
+
+    subroutine test_loggamma_cdp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer :: i
+        type(state_type) :: err
+        
+
+        complex(dp), parameter :: x(*) = [(0.25_dp, 0.25_dp),               &
+                                     (0.5_dp, -0.5_dp),                &
+                                     (1.0_dp, 1.0_dp),                 &
+                                     (-1.254e1_dp, -9.87_dp)]
+
+        complex(dp), parameter :: ans(*) =                                          &
+                    [(0.90447450949333889_dp, -0.83887024394321282_dp),&
+                     (0.11238724280962311_dp, 0.75072920212205074_dp), &
+                    (-0.65092319930185634_dp, -0.30164032046753320_dp),&
+                   (-4.7091788015763380e1_dp, 1.4804627819235690e1_dp)]
+        
+        integer, parameter :: n = size(x)
+
+        do i = 1, n
+
+            err = state_type(STDLIB_VALUE_ERROR,'Complex dp failed: x=',x(i), &
+                             ' log(gamma)=',log_gamma(x(i)), &
+                             'expected=',ans(i), &
+                             ' tol=',tol_dp)
+
+            call check(error, log_gamma(x(i)), ans(i), err%print(),&
+                       thr = tol_dp, rel = .true.)
+
+        end do
+
+    end subroutine test_loggamma_cdp
+
+
 
 
 
@@ -680,6 +818,149 @@ contains
     end subroutine test_gamma_q_iint8sp
 
 
+    subroutine test_lincgamma_iint8dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int8), parameter :: p(n) = [1_int8, 2_int8, 3_int8, 2_int8]
+        real(dp), parameter :: x(n) = [0.5_dp, 3.5_dp, -5.0_dp, -10.0_dp]
+
+        real(dp), parameter :: ans(n) = [0.3934693402873667_dp,              &
+                                       0.86411177459956675_dp,             &
+                                       -2.5210237047438023e3_dp,           &
+                                       1.9823919215326045e5_dp]
+
+        do i = 1, n
+
+            call check(error, lower_incomplete_gamma(p(i), x(i)), ans(i),      &
+              "Lower incomplete gamma function with p(kind=int8) and "       &
+              //"x(kind=dp) failed", thr = tol_dp, rel = .true.)
+
+        end do
+
+    end subroutine test_lincgamma_iint8dp
+
+
+
+    subroutine test_log_lincgamma_iint8dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int8) :: p(n) = [1_int8, 2_int8, 3_int8, 2_int8]
+        real(dp) :: x(n) = [0.5_dp, 3.5_dp, -5.0_dp, -10.0_dp]
+
+        real(dp), parameter :: ans(n) = [-0.93275212956718857_dp,            &
+                                       -0.14605314979599791_dp,            &
+                                        7.8324203300567640_dp,             &
+                                        1.2197229621760137e1_dp]
+
+        do i = 1, n
+
+            call check(error, log_lower_incomplete_gamma(p(i), x(i)), ans(i),  &
+              "Logarithm of lower incomplete gamma function with "             &
+              //"p(kind=int8) and x(kind=dp) failed", thr = tol_dp,  &
+              rel = .true.)
+
+        end do
+
+    end subroutine test_log_lincgamma_iint8dp
+
+
+
+    subroutine test_uincgamma_iint8dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int8) :: p(n) = [1_int8, 2_int8, 3_int8, 2_int8]
+        real(dp) :: x(n) = [0.5_dp, 3.5_dp, -5.0_dp, -10.0_dp]
+
+        real(dp), parameter :: ans(n) = [0.60653065971263342_dp,             &
+                                       0.13588822540043325_dp,             &
+                                       2.5230237047438022E3_dp,            &
+                                       -1.9823819215326045e5_dp]
+
+        do i = 1, n
+
+            call check(error, upper_incomplete_gamma(p(i), x(i)), ans(i),      &
+              "Logarithm of upper incomplete gamma function with "             &
+              //"p(kind=int8) and x(kind=dp) failed", thr = tol_dp,  &
+              rel = .true.)
+
+        end do
+
+    end subroutine test_uincgamma_iint8dp
+
+
+
+    subroutine test_log_uincgamma_iint8dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int8) :: p(n) = [1_int8, 2_int8, 3_int8, 2_int8]
+        real(dp) :: x(n) = [0.5_dp, 3.5_dp, -5.0_dp, -10.0_dp]
+
+        real(dp), parameter :: ans(n) = [-0.5_dp, -1.9959226032237259_dp,&
+                                       7.8332133440562161_dp,              &
+                                       1.2197224577336219e1_dp]
+
+        do i = 1, n
+
+            call check(error, log_upper_incomplete_gamma(p(i), x(i)), ans(i),  &
+              "Logarithm of upper incomplete gamma function with "             &
+              //"p(kind=int8) and x(kind=dp) failed", thr = tol_dp,  &
+              rel = .true.)
+
+        end do
+    end subroutine test_log_uincgamma_iint8dp
+
+
+
+
+    subroutine test_gamma_p_iint8dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int8) :: p(n) = [1_int8, 1_int8, 3_int8, 3_int8]
+        real(dp) :: x(n) = [0.5_dp, 1.5_dp, 0.5_dp, 3.5_dp]
+
+        real(dp), parameter :: ans(n) = [0.39346934028736658_dp,             &
+                                       0.77686983985157017_dp,             &
+                                       1.4387677966970687e-2_dp,           &
+                                       0.67915280113786593_dp]
+
+        do i = 1, n
+
+            call check(error, regularized_gamma_p(p(i), x(i)), ans(i),         &
+              "Regularized gamma P function with p(kind=int8) and "          &
+              //"x(kind=dp) failed", thr = tol_dp, rel = .true.)
+
+        end do
+    end subroutine test_gamma_p_iint8dp
+
+
+
+    subroutine test_gamma_q_iint8dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int8) :: p(n) = [1_int8, 1_int8, 3_int8, 3_int8]
+        real(dp) :: x(n) = [0.5_dp, 1.5_dp, 0.5_dp, 3.5_dp]
+
+        real(dp), parameter :: ans(n) = [0.60653065971263342_dp,             &
+                                       0.22313016014842983_dp,             &
+                                       0.98561232203302931_dp,             &
+                                       0.32084719886213407_dp]
+
+        do i = 1, n
+
+            call check(error, regularized_gamma_q(p(i), x(i)), ans(i),         &
+              "Regularized gamma Q function with p(kind=int8) and "          &
+              //"x(kind=dp) failed", thr = tol_dp, rel = .true.)
+
+        end do
+    end subroutine test_gamma_q_iint8dp
+
+
     subroutine test_lincgamma_iint16sp(error)
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: n = 4
@@ -821,6 +1102,149 @@ contains
 
         end do
     end subroutine test_gamma_q_iint16sp
+
+
+    subroutine test_lincgamma_iint16dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int16), parameter :: p(n) = [1_int16, 2_int16, 3_int16, 2_int16]
+        real(dp), parameter :: x(n) = [0.5_dp, 3.5_dp, -5.0_dp, -10.0_dp]
+
+        real(dp), parameter :: ans(n) = [0.3934693402873667_dp,              &
+                                       0.86411177459956675_dp,             &
+                                       -2.5210237047438023e3_dp,           &
+                                       1.9823919215326045e5_dp]
+
+        do i = 1, n
+
+            call check(error, lower_incomplete_gamma(p(i), x(i)), ans(i),      &
+              "Lower incomplete gamma function with p(kind=int16) and "       &
+              //"x(kind=dp) failed", thr = tol_dp, rel = .true.)
+
+        end do
+
+    end subroutine test_lincgamma_iint16dp
+
+
+
+    subroutine test_log_lincgamma_iint16dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int16) :: p(n) = [1_int16, 2_int16, 3_int16, 2_int16]
+        real(dp) :: x(n) = [0.5_dp, 3.5_dp, -5.0_dp, -10.0_dp]
+
+        real(dp), parameter :: ans(n) = [-0.93275212956718857_dp,            &
+                                       -0.14605314979599791_dp,            &
+                                        7.8324203300567640_dp,             &
+                                        1.2197229621760137e1_dp]
+
+        do i = 1, n
+
+            call check(error, log_lower_incomplete_gamma(p(i), x(i)), ans(i),  &
+              "Logarithm of lower incomplete gamma function with "             &
+              //"p(kind=int16) and x(kind=dp) failed", thr = tol_dp,  &
+              rel = .true.)
+
+        end do
+
+    end subroutine test_log_lincgamma_iint16dp
+
+
+
+    subroutine test_uincgamma_iint16dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int16) :: p(n) = [1_int16, 2_int16, 3_int16, 2_int16]
+        real(dp) :: x(n) = [0.5_dp, 3.5_dp, -5.0_dp, -10.0_dp]
+
+        real(dp), parameter :: ans(n) = [0.60653065971263342_dp,             &
+                                       0.13588822540043325_dp,             &
+                                       2.5230237047438022E3_dp,            &
+                                       -1.9823819215326045e5_dp]
+
+        do i = 1, n
+
+            call check(error, upper_incomplete_gamma(p(i), x(i)), ans(i),      &
+              "Logarithm of upper incomplete gamma function with "             &
+              //"p(kind=int16) and x(kind=dp) failed", thr = tol_dp,  &
+              rel = .true.)
+
+        end do
+
+    end subroutine test_uincgamma_iint16dp
+
+
+
+    subroutine test_log_uincgamma_iint16dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int16) :: p(n) = [1_int16, 2_int16, 3_int16, 2_int16]
+        real(dp) :: x(n) = [0.5_dp, 3.5_dp, -5.0_dp, -10.0_dp]
+
+        real(dp), parameter :: ans(n) = [-0.5_dp, -1.9959226032237259_dp,&
+                                       7.8332133440562161_dp,              &
+                                       1.2197224577336219e1_dp]
+
+        do i = 1, n
+
+            call check(error, log_upper_incomplete_gamma(p(i), x(i)), ans(i),  &
+              "Logarithm of upper incomplete gamma function with "             &
+              //"p(kind=int16) and x(kind=dp) failed", thr = tol_dp,  &
+              rel = .true.)
+
+        end do
+    end subroutine test_log_uincgamma_iint16dp
+
+
+
+
+    subroutine test_gamma_p_iint16dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int16) :: p(n) = [1_int16, 1_int16, 3_int16, 3_int16]
+        real(dp) :: x(n) = [0.5_dp, 1.5_dp, 0.5_dp, 3.5_dp]
+
+        real(dp), parameter :: ans(n) = [0.39346934028736658_dp,             &
+                                       0.77686983985157017_dp,             &
+                                       1.4387677966970687e-2_dp,           &
+                                       0.67915280113786593_dp]
+
+        do i = 1, n
+
+            call check(error, regularized_gamma_p(p(i), x(i)), ans(i),         &
+              "Regularized gamma P function with p(kind=int16) and "          &
+              //"x(kind=dp) failed", thr = tol_dp, rel = .true.)
+
+        end do
+    end subroutine test_gamma_p_iint16dp
+
+
+
+    subroutine test_gamma_q_iint16dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int16) :: p(n) = [1_int16, 1_int16, 3_int16, 3_int16]
+        real(dp) :: x(n) = [0.5_dp, 1.5_dp, 0.5_dp, 3.5_dp]
+
+        real(dp), parameter :: ans(n) = [0.60653065971263342_dp,             &
+                                       0.22313016014842983_dp,             &
+                                       0.98561232203302931_dp,             &
+                                       0.32084719886213407_dp]
+
+        do i = 1, n
+
+            call check(error, regularized_gamma_q(p(i), x(i)), ans(i),         &
+              "Regularized gamma Q function with p(kind=int16) and "          &
+              //"x(kind=dp) failed", thr = tol_dp, rel = .true.)
+
+        end do
+    end subroutine test_gamma_q_iint16dp
 
 
     subroutine test_lincgamma_iint32sp(error)
@@ -966,6 +1390,149 @@ contains
     end subroutine test_gamma_q_iint32sp
 
 
+    subroutine test_lincgamma_iint32dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int32), parameter :: p(n) = [1_int32, 2_int32, 3_int32, 2_int32]
+        real(dp), parameter :: x(n) = [0.5_dp, 3.5_dp, -5.0_dp, -10.0_dp]
+
+        real(dp), parameter :: ans(n) = [0.3934693402873667_dp,              &
+                                       0.86411177459956675_dp,             &
+                                       -2.5210237047438023e3_dp,           &
+                                       1.9823919215326045e5_dp]
+
+        do i = 1, n
+
+            call check(error, lower_incomplete_gamma(p(i), x(i)), ans(i),      &
+              "Lower incomplete gamma function with p(kind=int32) and "       &
+              //"x(kind=dp) failed", thr = tol_dp, rel = .true.)
+
+        end do
+
+    end subroutine test_lincgamma_iint32dp
+
+
+
+    subroutine test_log_lincgamma_iint32dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int32) :: p(n) = [1_int32, 2_int32, 3_int32, 2_int32]
+        real(dp) :: x(n) = [0.5_dp, 3.5_dp, -5.0_dp, -10.0_dp]
+
+        real(dp), parameter :: ans(n) = [-0.93275212956718857_dp,            &
+                                       -0.14605314979599791_dp,            &
+                                        7.8324203300567640_dp,             &
+                                        1.2197229621760137e1_dp]
+
+        do i = 1, n
+
+            call check(error, log_lower_incomplete_gamma(p(i), x(i)), ans(i),  &
+              "Logarithm of lower incomplete gamma function with "             &
+              //"p(kind=int32) and x(kind=dp) failed", thr = tol_dp,  &
+              rel = .true.)
+
+        end do
+
+    end subroutine test_log_lincgamma_iint32dp
+
+
+
+    subroutine test_uincgamma_iint32dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int32) :: p(n) = [1_int32, 2_int32, 3_int32, 2_int32]
+        real(dp) :: x(n) = [0.5_dp, 3.5_dp, -5.0_dp, -10.0_dp]
+
+        real(dp), parameter :: ans(n) = [0.60653065971263342_dp,             &
+                                       0.13588822540043325_dp,             &
+                                       2.5230237047438022E3_dp,            &
+                                       -1.9823819215326045e5_dp]
+
+        do i = 1, n
+
+            call check(error, upper_incomplete_gamma(p(i), x(i)), ans(i),      &
+              "Logarithm of upper incomplete gamma function with "             &
+              //"p(kind=int32) and x(kind=dp) failed", thr = tol_dp,  &
+              rel = .true.)
+
+        end do
+
+    end subroutine test_uincgamma_iint32dp
+
+
+
+    subroutine test_log_uincgamma_iint32dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int32) :: p(n) = [1_int32, 2_int32, 3_int32, 2_int32]
+        real(dp) :: x(n) = [0.5_dp, 3.5_dp, -5.0_dp, -10.0_dp]
+
+        real(dp), parameter :: ans(n) = [-0.5_dp, -1.9959226032237259_dp,&
+                                       7.8332133440562161_dp,              &
+                                       1.2197224577336219e1_dp]
+
+        do i = 1, n
+
+            call check(error, log_upper_incomplete_gamma(p(i), x(i)), ans(i),  &
+              "Logarithm of upper incomplete gamma function with "             &
+              //"p(kind=int32) and x(kind=dp) failed", thr = tol_dp,  &
+              rel = .true.)
+
+        end do
+    end subroutine test_log_uincgamma_iint32dp
+
+
+
+
+    subroutine test_gamma_p_iint32dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int32) :: p(n) = [1_int32, 1_int32, 3_int32, 3_int32]
+        real(dp) :: x(n) = [0.5_dp, 1.5_dp, 0.5_dp, 3.5_dp]
+
+        real(dp), parameter :: ans(n) = [0.39346934028736658_dp,             &
+                                       0.77686983985157017_dp,             &
+                                       1.4387677966970687e-2_dp,           &
+                                       0.67915280113786593_dp]
+
+        do i = 1, n
+
+            call check(error, regularized_gamma_p(p(i), x(i)), ans(i),         &
+              "Regularized gamma P function with p(kind=int32) and "          &
+              //"x(kind=dp) failed", thr = tol_dp, rel = .true.)
+
+        end do
+    end subroutine test_gamma_p_iint32dp
+
+
+
+    subroutine test_gamma_q_iint32dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int32) :: p(n) = [1_int32, 1_int32, 3_int32, 3_int32]
+        real(dp) :: x(n) = [0.5_dp, 1.5_dp, 0.5_dp, 3.5_dp]
+
+        real(dp), parameter :: ans(n) = [0.60653065971263342_dp,             &
+                                       0.22313016014842983_dp,             &
+                                       0.98561232203302931_dp,             &
+                                       0.32084719886213407_dp]
+
+        do i = 1, n
+
+            call check(error, regularized_gamma_q(p(i), x(i)), ans(i),         &
+              "Regularized gamma Q function with p(kind=int32) and "          &
+              //"x(kind=dp) failed", thr = tol_dp, rel = .true.)
+
+        end do
+    end subroutine test_gamma_q_iint32dp
+
+
     subroutine test_lincgamma_iint64sp(error)
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: n = 4
@@ -1107,6 +1674,149 @@ contains
 
         end do
     end subroutine test_gamma_q_iint64sp
+
+
+    subroutine test_lincgamma_iint64dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int64), parameter :: p(n) = [1_int64, 2_int64, 3_int64, 2_int64]
+        real(dp), parameter :: x(n) = [0.5_dp, 3.5_dp, -5.0_dp, -10.0_dp]
+
+        real(dp), parameter :: ans(n) = [0.3934693402873667_dp,              &
+                                       0.86411177459956675_dp,             &
+                                       -2.5210237047438023e3_dp,           &
+                                       1.9823919215326045e5_dp]
+
+        do i = 1, n
+
+            call check(error, lower_incomplete_gamma(p(i), x(i)), ans(i),      &
+              "Lower incomplete gamma function with p(kind=int64) and "       &
+              //"x(kind=dp) failed", thr = tol_dp, rel = .true.)
+
+        end do
+
+    end subroutine test_lincgamma_iint64dp
+
+
+
+    subroutine test_log_lincgamma_iint64dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int64) :: p(n) = [1_int64, 2_int64, 3_int64, 2_int64]
+        real(dp) :: x(n) = [0.5_dp, 3.5_dp, -5.0_dp, -10.0_dp]
+
+        real(dp), parameter :: ans(n) = [-0.93275212956718857_dp,            &
+                                       -0.14605314979599791_dp,            &
+                                        7.8324203300567640_dp,             &
+                                        1.2197229621760137e1_dp]
+
+        do i = 1, n
+
+            call check(error, log_lower_incomplete_gamma(p(i), x(i)), ans(i),  &
+              "Logarithm of lower incomplete gamma function with "             &
+              //"p(kind=int64) and x(kind=dp) failed", thr = tol_dp,  &
+              rel = .true.)
+
+        end do
+
+    end subroutine test_log_lincgamma_iint64dp
+
+
+
+    subroutine test_uincgamma_iint64dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int64) :: p(n) = [1_int64, 2_int64, 3_int64, 2_int64]
+        real(dp) :: x(n) = [0.5_dp, 3.5_dp, -5.0_dp, -10.0_dp]
+
+        real(dp), parameter :: ans(n) = [0.60653065971263342_dp,             &
+                                       0.13588822540043325_dp,             &
+                                       2.5230237047438022E3_dp,            &
+                                       -1.9823819215326045e5_dp]
+
+        do i = 1, n
+
+            call check(error, upper_incomplete_gamma(p(i), x(i)), ans(i),      &
+              "Logarithm of upper incomplete gamma function with "             &
+              //"p(kind=int64) and x(kind=dp) failed", thr = tol_dp,  &
+              rel = .true.)
+
+        end do
+
+    end subroutine test_uincgamma_iint64dp
+
+
+
+    subroutine test_log_uincgamma_iint64dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int64) :: p(n) = [1_int64, 2_int64, 3_int64, 2_int64]
+        real(dp) :: x(n) = [0.5_dp, 3.5_dp, -5.0_dp, -10.0_dp]
+
+        real(dp), parameter :: ans(n) = [-0.5_dp, -1.9959226032237259_dp,&
+                                       7.8332133440562161_dp,              &
+                                       1.2197224577336219e1_dp]
+
+        do i = 1, n
+
+            call check(error, log_upper_incomplete_gamma(p(i), x(i)), ans(i),  &
+              "Logarithm of upper incomplete gamma function with "             &
+              //"p(kind=int64) and x(kind=dp) failed", thr = tol_dp,  &
+              rel = .true.)
+
+        end do
+    end subroutine test_log_uincgamma_iint64dp
+
+
+
+
+    subroutine test_gamma_p_iint64dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int64) :: p(n) = [1_int64, 1_int64, 3_int64, 3_int64]
+        real(dp) :: x(n) = [0.5_dp, 1.5_dp, 0.5_dp, 3.5_dp]
+
+        real(dp), parameter :: ans(n) = [0.39346934028736658_dp,             &
+                                       0.77686983985157017_dp,             &
+                                       1.4387677966970687e-2_dp,           &
+                                       0.67915280113786593_dp]
+
+        do i = 1, n
+
+            call check(error, regularized_gamma_p(p(i), x(i)), ans(i),         &
+              "Regularized gamma P function with p(kind=int64) and "          &
+              //"x(kind=dp) failed", thr = tol_dp, rel = .true.)
+
+        end do
+    end subroutine test_gamma_p_iint64dp
+
+
+
+    subroutine test_gamma_q_iint64dp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        integer(int64) :: p(n) = [1_int64, 1_int64, 3_int64, 3_int64]
+        real(dp) :: x(n) = [0.5_dp, 1.5_dp, 0.5_dp, 3.5_dp]
+
+        real(dp), parameter :: ans(n) = [0.60653065971263342_dp,             &
+                                       0.22313016014842983_dp,             &
+                                       0.98561232203302931_dp,             &
+                                       0.32084719886213407_dp]
+
+        do i = 1, n
+
+            call check(error, regularized_gamma_q(p(i), x(i)), ans(i),         &
+              "Regularized gamma Q function with p(kind=int64) and "          &
+              //"x(kind=dp) failed", thr = tol_dp, rel = .true.)
+
+        end do
+    end subroutine test_gamma_q_iint64dp
 
 
 
@@ -1252,6 +1962,148 @@ contains
 
         end do
     end subroutine test_gamma_q_rsp
+
+
+    subroutine test_lincgamma_rdp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        real(dp) :: p(n) = [1.0_dp, 2.0_dp, 3.1_dp, 6.5_dp]
+        real(dp) :: x(n) = [0.5_dp, 3.5_dp, 5.0_dp, 3.2_dp]
+
+        real(dp), parameter :: ans(n) = [0.3934693402873667_dp,              &
+                                       0.86411177459956675_dp,             &
+                                       1.8980559470963281_dp,              &
+                                       2.0043549563092636e1_dp]
+
+        do i = 1, n
+
+            call check(error, lower_incomplete_gamma(p(i), x(i)), ans(i),      &
+              "Lower incomplete gamma function with p(kind=dp) and "       &
+              //"x(kind=dp) failed", thr = tol_dp, rel = .true.)
+
+        end do
+
+    end subroutine test_lincgamma_rdp
+
+
+
+    subroutine test_log_lincgamma_rdp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        real(dp) :: p(n) = [1.0_dp, 2.0_dp, 3.1_dp, 6.5_dp]
+        real(dp) :: x(n) = [0.5_dp, 3.5_dp, 5.0_dp, 3.2_dp]
+
+        real(dp), parameter :: ans(n) = [-0.93275212956718857_dp,            &
+                                       -0.14605314979599791_dp,            &
+                                        0.64083017662175706_dp,            &
+                                        2.9979073844388951_dp]
+
+        do i = 1, n
+
+            call check(error, log_lower_incomplete_gamma(p(i), x(i)), ans(i),  &
+              "Logarithm of lower incomplete gamma function with "             &
+              //"p(kind=dp) and x(kind=dp) failed", thr = tol_dp,  &
+              rel = .true.)
+
+        end do
+
+    end subroutine test_log_lincgamma_rdp
+
+
+
+    subroutine test_uincgamma_rdp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        real(dp) :: p(n) = [1.0_dp, 2.0_dp, 3.1_dp, 6.5_dp]
+        real(dp) :: x(n) = [0.5_dp, 3.5_dp, 5.0_dp, 3.2_dp]
+
+        real(dp), parameter :: ans(n) = [0.60653065971263342_dp,             &
+                                       0.13588822540043325_dp,             &
+                                       0.29956433129614910_dp,             &
+                                       2.6784172825195172e2_dp]
+
+        do i = 1, n
+
+            call check(error, upper_incomplete_gamma(p(i), x(i)), ans(i),      &
+              "Logarithm of upper incomplete gamma function with "             &
+              //"p(kind=dp) and x(kind=dp) failed", thr = tol_dp,  &
+              rel = .true.)
+
+        end do
+
+    end subroutine test_uincgamma_rdp
+
+
+
+    subroutine test_log_uincgamma_rdp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        real(dp) :: p(n) = [1.0_dp, 2.0_dp, 3.1_dp, 6.5_dp]
+        real(dp) :: x(n) = [0.5_dp, 3.5_dp, 5.0_dp, 3.2_dp]
+
+        real(dp), parameter :: ans(n) = [-0.5_dp, -1.9959226032237259_dp,&
+                                       -1.2054260888453405_dp,             &
+                                       5.5903962398338761_dp]
+
+        do i = 1, n
+
+            call check(error, log_upper_incomplete_gamma(p(i), x(i)), ans(i),  &
+              "Logarithm of upper incomplete gamma function with "             &
+              //"p(kind=dp) and x(kind=dp) failed", thr = tol_dp,  &
+              rel = .true.)
+
+        end do
+    end subroutine test_log_uincgamma_rdp
+
+
+
+    subroutine test_gamma_p_rdp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        real(dp) :: p(n) = [1.3_dp, 1.3_dp, 3.7_dp, 3.7_dp]
+        real(dp) :: x(n) = [0.5_dp, 2.1_dp, 2.6_dp, 5.1_dp]
+
+        real(dp), parameter :: ans(n) = [0.26487356764588505_dp,             &
+                                       0.81011791338807457_dp,             &
+                                       0.32198359288949589_dp,             &
+                                       0.79435732817518852_dp]
+
+        do i = 1, n
+
+            call check(error, regularized_gamma_p(p(i), x(i)), ans(i),         &
+              "Regularized gamma P function with p(kind=dp) and "          &
+              //"x(kind=dp) failed", thr = tol_dp, rel = .true.)
+
+        end do
+    end subroutine test_gamma_p_rdp
+
+
+
+    subroutine test_gamma_q_rdp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        real(dp) :: p(n) = [1.3_dp, 1.3_dp, 3.7_dp, 3.7_dp]
+        real(dp) :: x(n) = [0.5_dp, 2.1_dp, 2.6_dp, 5.1_dp]
+
+        real(dp), parameter :: ans(n) = [0.73512643235411495_dp,             &
+                                       0.18988208661192543_dp,             &
+                                       0.67801640711050411_dp,             &
+                                       0.20564267182481148_dp]
+
+        do i = 1, n
+
+            call check(error, regularized_gamma_q(p(i), x(i)), ans(i),         &
+              "Regularized gamma Q function with p(kind=dp) and "          &
+              //"x(kind=dp) failed", thr = tol_dp, rel = .true.)
+
+        end do
+    end subroutine test_gamma_q_rdp
 
 end module test_specialfunctions_gamma
 
