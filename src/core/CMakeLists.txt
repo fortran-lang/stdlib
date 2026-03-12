@@ -13,4 +13,4 @@ set(core_f90Files
     stdlib_io_aux.f90
     )
 
-configure_stdlib_target(core core_f90Files core_fppFiles core_cppFiles)
+configure_stdlib_target(${PROJECT_NAME}_core core_f90Files core_fppFiles core_cppFiles)

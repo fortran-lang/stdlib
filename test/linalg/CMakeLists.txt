@@ -19,6 +19,7 @@ set(
   "test_linalg_sparse.fypp"
   "test_linalg_specialmatrices.fypp"
   "test_linalg_cholesky.fypp"
+  "test_linalg_solve_chol.fypp"
   "test_linalg_expm.fypp"
 )
 
@@ -42,13 +43,18 @@ ADDTEST(linalg_pseudoinverse)
 ADDTEST(linalg_norm)
 ADDTEST(linalg_mnorm)
 ADDTEST(linalg_solve)
+ADDTEST(linalg_solve_chol)
 ADDTEST(linalg_lstsq)
 ADDTEST(linalg_constrained_lstsq)
 ADDTEST(linalg_qr)
 ADDTEST(linalg_pivoting_qr)
 ADDTEST(linalg_schur)
-ADDTEST(linalg_solve_iterative)
+if (STDLIB_LINALG_ITERATIVE)
+  ADDTEST(linalg_solve_iterative)
+endif()
 ADDTEST(linalg_svd)
 ADDTEST(linalg_sparse)
-ADDTEST(linalg_specialmatrices)
+if (STDLIB_SPECIALMATRICES)
+  ADDTEST(linalg_specialmatrices)
+endif()
 ADDTESTPP(blas_lapack)

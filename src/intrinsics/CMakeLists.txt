@@ -8,6 +8,6 @@ set(intrinsics_fppFiles
 set(intrinsics_cppFiles
     )
 
-configure_stdlib_target(intrinsics "" intrinsics_fppFiles intrinsics_cppFiles)
+configure_stdlib_target(${PROJECT_NAME}_intrinsics "" intrinsics_fppFiles intrinsics_cppFiles)
 
-target_link_libraries(intrinsics PUBLIC linalg_core blas constants)
+target_link_libraries(${PROJECT_NAME}_intrinsics PUBLIC ${PROJECT_NAME}_linalg_core ${PROJECT_NAME}_blas ${PROJECT_NAME}_constants)

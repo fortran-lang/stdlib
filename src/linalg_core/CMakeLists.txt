@@ -9,6 +9,6 @@ set(linalg_core_cppFiles
 set(linalg_core_f90Files
     )
 
-configure_stdlib_target(linalg_core linalg_core_f90Files linalg_core_fppFiles linalg_core_cppFiles)
+configure_stdlib_target(${PROJECT_NAME}_linalg_core linalg_core_f90Files linalg_core_fppFiles linalg_core_cppFiles)
 
-target_link_libraries(linalg_core PUBLIC core)
+target_link_libraries(${PROJECT_NAME}_linalg_core PUBLIC ${PROJECT_NAME}_core)

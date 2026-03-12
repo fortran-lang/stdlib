@@ -282,11 +282,21 @@ The table below lists all *C preprocessing* macros and flags currently used by `
 
 | Macro/flag Name | Comments |
 | --- | --- |
+| `STDLIB_ANSI` | Enables compilation of the `stdlib_ansi` module when set to 1 (default). Set via CMake with `-DSTDLIB_ANSI=On/Off`. |
+| `STDLIB_BITSETS` | Enables compilation of the `stdlib_bitsets` module when set to 1 (default). Set via CMake with `-DSTDLIB_BITSETS=On/Off`. |
 | `STDLIB_EXTERNAL_BLAS` |  Links against an external BLAS (32-bit integer interface). Set automatically by CMake when external BLAS/LAPACK are found, or manually via `add_compile_definitions(STDLIB_EXTERNAL_BLAS)`. In fpm: `preprocess.cpp.macros=["STDLIB_EXTERNAL_BLAS"]`. |
 | `STDLIB_EXTERNAL_LAPACK` |  Links against an external LAPACK (32-bit integer interface). Usually paired with `STDLIB_EXTERNAL_BLAS`. |
 | `STDLIB_EXTERNAL_BLAS_I64` |  Links against an external BLAS with ILP64 (64-bit integer) interfaces. Usually paired with `STDLIB_EXTERNAL_LAPACK_I64`. |
 | `STDLIB_EXTERNAL_LAPACK_I64` |  Links against an external LAPACK with ILP64 (64-bit integer) interfaces. |
-
+| `STDLIB_HASHMAPS` | Enables compilation of the `stdlib_hashmaps` module when set to 1 (default). Set via CMake with `-DSTDLIB_HASHMAPS=On/Off`. |
+| `STDLIB_IO` | Enables compilation of the `stdlib_io` module when set to 1 (default). Set via CMake with `-DSTDLIB_IO=On/Off`. |
+| `STDLIB_LINALG_ITERATIVE` | Enables compilation of the `stdlib_linalg_iterative_solvers` module when set to 1 (default). Set via CMake with `-DSTDLIB_LINALG_ITERATIVE=On/Off`. |
+| `STDLIB_LOGGER` | Enables compilation of the `stdlib_logger` module when set to 1 (default). Set via CMake with `-DSTDLIB_LOGGER=On/Off`. |
+| `STDLIB_QUADRATURE` | Enables compilation of the `stdlib_quadrature` module when set to 1 (default). Set via CMake with `-DSTDLIB_QUADRATURE=On/Off`. |
+| `STDLIB_SPECIALMATRICES` | Enables compilation of the `stdlib_specialmatrices` module when set to 1 (default). Set via CMake with `-DSTDLIB_SPECIALMATRICES=On/Off`. |
+| `STDLIB_STATS` | Enables compilation of the `stdlib_stats` module when set to 1 (default). Set via CMake with `-DSTDLIB_STATS=On/Off`. |
+| `STDLIB_STRINGLIST` | Enables compilation of the `stdlib_stringlist` module when set to 1 (default). Set via CMake with `-DSTDLIB_STRINGLIST=On/Off`. |
+| `STDLIB_SYSTEM` | Enables compilation of the `stdlib_system` module when set to 1 (default). Set via CMake with `-DSTDLIB_SYSTEM=On/Off`. |
 
 ## Using stdlib in your project
 

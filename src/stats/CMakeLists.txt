@@ -7,6 +7,7 @@ set(stats_fppFiles
     stdlib_stats_cov.fypp
     stdlib_stats_pca.fypp
     stdlib_stats_distribution_exponential.fypp
+    stdlib_stats_distribution_gamma.fypp
     stdlib_stats_distribution_normal.fypp
     stdlib_stats_distribution_uniform.fypp
     stdlib_stats.fypp
@@ -22,6 +23,6 @@ set(stats_fppFiles
 set(stats_f90Files
     )
 
-configure_stdlib_target(stats stats_f90Files stats_fppFiles stats_cppFiles)
+configure_stdlib_target(${PROJECT_NAME}_stats stats_f90Files stats_fppFiles stats_cppFiles)
 
-target_link_libraries(stats PUBLIC core linalg_core linalg selection strings)
+target_link_libraries(${PROJECT_NAME}_stats PUBLIC ${PROJECT_NAME}_core ${PROJECT_NAME}_linalg_core ${PROJECT_NAME}_linalg ${PROJECT_NAME}_selection ${PROJECT_NAME}_strings ${PROJECT_NAME}_specialfunctions)

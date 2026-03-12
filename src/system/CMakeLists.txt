@@ -12,6 +12,6 @@ set(system_f90Files
     stdlib_system.F90
     )
 
-configure_stdlib_target(system system_f90Files system_fppFiles system_cppFiles)
+configure_stdlib_target(${PROJECT_NAME}_system system_f90Files system_fppFiles system_cppFiles)
 
-target_link_libraries(system PUBLIC core linalg_core strings)
+target_link_libraries(${PROJECT_NAME}_system PUBLIC ${PROJECT_NAME}_core ${PROJECT_NAME}_linalg_core ${PROJECT_NAME}_strings)

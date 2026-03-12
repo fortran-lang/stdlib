@@ -61,7 +61,7 @@ module stdlib_linalg_iterative_solvers
             ${t}$, intent(in) :: beta
             character(1), intent(in) :: op
         end subroutine
-        pure ${t}$ function reduction_sub_${s}$(x,y) result(r)
+        ${t}$ function reduction_sub_${s}$(x,y) result(r)
             import :: ${k}$
             ${t}$, intent(in) :: x(:)
             ${t}$, intent(in) :: y(:)
@@ -225,7 +225,7 @@ contains
     ! defaults
     !------------------------------------------------------------------
     #:for k, t, s in R_KINDS_TYPES
-    pure ${t}$ function default_dot_${s}$(x,y) result(r)
+    ${t}$ function default_dot_${s}$(x,y) result(r)
         use stdlib_intrinsics, only: stdlib_dot_product
         ${t}$, intent(in) :: x(:)
         ${t}$, intent(in) :: y(:)
