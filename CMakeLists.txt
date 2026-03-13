@@ -85,6 +85,7 @@ if(FIND_BLAS)
     # Detect ILP64 (common function)
     function(detect_ilp64 lib_name)
       set(${lib_name}_ILP64 False PARENT_SCOPE)
+      # Prefer checking BLA_SIZEOF_INTEGER (available in CMake >= 3.22)
       if(DEFINED BLA_SIZEOF_INTEGER AND BLA_SIZEOF_INTEGER EQUAL 8)
         set(${lib_name}_ILP64 True PARENT_SCOPE)
       elseif("${BLA_VENDOR}" MATCHES ".*(_ilp|ILP64).*")
@@ -115,11 +116,11 @@ endif()
 # --- find preprocessor
 find_program(FYPP fypp)
 if(NOT FYPP OR "${FYPP}" MATCHES "NOTFOUND")
-  message(STATUS "Checking for fypp...")
   message(FATAL_ERROR 
     "\n [stdlib Build Error]: Preprocessor 'fypp' not found!\n"
     " ------------------------------------------------------------------------\n"
     " The fypp preprocessor is required to generate Fortran source from templates.\n\n"
+    " Please install fypp following the instructions at https://github.com/aradi/fypp\n\n"
     " To diagnose your installation, please run the following in your terminal:\n"
     "   Windows:      'where fypp' and 'where python'\n"
     "   Linux/macOS:  'which fypp' and 'which python'\n\n"
