@@ -1,0 +1,251 @@
+#:include "common.fypp"
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+! Test QR factorization 
+module test_linalg_matrix_factorizations
+    use testdrive, only: error_type, check, new_unittest, unittest_type
+    use stdlib_linalg_constants
+    use stdlib_linalg_state, only: LINALG_VALUE_ERROR,linalg_state_type
+    use stdlib_linalg, only: qrfact, qr, mnorm
+    use stdlib_math, only: all_close
+    use ieee_arithmetic, only: ieee_value,ieee_quiet_nan
+
+    implicit none (type,external)
+    
+    public :: test_qr_factorization
+
+    #:for rk, rt, ri in REAL_KINDS_TYPES
+    ${rt}$, parameter :: rel_tol_${rk}$ = sqrt(epsilon(1.0_${rk}$))
+    #:endfor
+
+    contains
+
+    !> QR factorization tests
+    subroutine test_qr_factorization(tests)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: tests(:)
+        
+        allocate(tests(0))
+        
+        #:for rk,rt,ri in RC_KINDS_TYPES
+        call add_test(tests,new_unittest("qr_random_tall_matrix_${ri}$",test_qr_random_tall_matrix_${ri}$))
+        call add_test(tests,new_unittest("qr_random_wide_matrix_${ri}$",test_qr_random_wide_matrix_${ri}$))
+        #:endfor
+    end subroutine test_qr_factorization
+
+    !> QR factorization of a random matrix
+    #:for rk,rt,ri in RC_KINDS_TYPES
+    subroutine test_qr_random_tall_matrix_${ri}$(error)
+        use stdlib_linalg, only: hermitian, qr_${rt[0]}$${rk}$_type
+        type(error_type), allocatable, intent(out) :: error
+        integer(ilp), parameter :: m   = 15_ilp
+        integer(ilp), parameter :: n   =  4_ilp
+        integer(ilp), parameter :: k   = min(m,n)
+        ${rt}$ :: a(m,n), q(m, k), r(k, n)
+        real(${rk}$) :: rea(m,n),ima(m,n)
+        type(linalg_state_type) :: state
+        type(qr_${rt[0]}$${rk}$_type) :: F
+        
+        call random_number(rea)
+        #:if rt.startswith('complex')
+        call random_number(ima)
+        a = cmplx(rea,ima,kind=${rk}$)
+        #:else
+        a = rea
+        #:endif
+        
+        ! Reference QR decomposition.
+        q = ieee_value(0.0_${rk}$,ieee_quiet_nan)
+        r = ieee_value(0.0_${rk}$,ieee_quiet_nan)
+        call qr(a, q, r, err=state)
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return
+
+        ! Instantiate derived-type for the QR.
+        F = qrfact(A)
+
+        ! Check the R matrix with reference.
+        call check(error, all(abs(R - F%R()) < rel_tol_${rk}$))
+        if (allocated(error)) then
+            block
+            integer(ilp) :: i, j
+            ${rt}$, allocatable :: rnew(:, :)
+            print *, "Reference R matrix. shape(R) =", shape(R)
+            do i = 1, k
+                print *, (R(i, j), j = 1, n)
+            enddo
+            print *
+            print *, "New R matrix. shape(R) =", shape(F%R())
+            rnew = F%R()
+            do i = 1, k
+                print *, (rnew(i, j), j = 1, n)
+            enddo
+            print *
+            print *, "Difference between the two."
+            rnew = rnew - r
+            do i = 1, k
+                print *, (abs(rnew(i, j)), j=1, n)
+            enddo
+            end block
+            return
+        endif
+
+        ! Check the Q matrix with reference.
+        call check(error, all(abs(Q - F%Q()) < rel_tol_${rk}$))
+        if (allocated(error)) then
+            block
+            integer(ilp) :: i, j
+            ${rt}$, allocatable :: qnew(:, :)
+            print *, "Reference Q matrix. shape(Q) =", shape(Q)
+            do i = 1, m
+                print *, (Q(i, j), j = 1, k)
+            enddo
+            print *
+            print *, "New Q matrix. shape(Q) =", shape(F%Q())
+            qnew = F%Q()
+            do i = 1, m
+                print *, (qnew(i, j), j = 1, k)
+            enddo
+            print *
+            print *, "Difference between the two."
+            qnew = qnew - q
+            do i = 1, m
+                print *, (abs(qnew(i, j)), j=1, k)
+            enddo
+            end block
+            return
+        endif
+        
+    end subroutine test_qr_random_tall_matrix_${ri}$
+
+    subroutine test_qr_random_wide_matrix_${ri}$(error)
+        use stdlib_linalg, only: hermitian, qr_${rt[0]}$${rk}$_type
+        type(error_type), allocatable, intent(out) :: error
+        integer(ilp), parameter :: m   = 4_ilp
+        integer(ilp), parameter :: n   = 15_ilp
+        integer(ilp), parameter :: k   = min(m,n)
+        ${rt}$ :: a(m, n), q(m, k), r(k, n)
+        real(${rk}$) :: rea(m, n),ima(m, n)
+        type(linalg_state_type) :: state
+        type(qr_${rt[0]}$${rk}$_type) :: F
+        
+        call random_number(rea)
+        #:if rt.startswith('complex')
+        call random_number(ima)
+        a = cmplx(rea,ima,kind=${rk}$)
+        #:else
+        a = rea
+        #:endif
+        
+        ! Reference QR decomposition.
+        q = ieee_value(0.0_${rk}$,ieee_quiet_nan)
+        r = ieee_value(0.0_${rk}$,ieee_quiet_nan)
+        call qr(a, q, r, err=state)
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return
+
+        ! Instantiate derived-type for the QR.
+        F = qrfact(A)
+
+        ! Check the R matrix with reference.
+        call check(error, all(abs(R - F%R()) < rel_tol_${rk}$))
+        if (allocated(error)) then
+            block
+            integer(ilp) :: i, j
+            ${rt}$, allocatable :: rnew(:, :)
+            print *, "Reference R matrix. shape(R) =", shape(R)
+            do i = 1, k
+                print *, (R(i, j), j = 1, n)
+            enddo
+            print *
+            print *, "New R matrix. shape(R) =", shape(F%R())
+            rnew = F%R()
+            do i = 1, k
+                print *, (rnew(i, j), j = 1, n)
+            enddo
+            print *
+            print *, "Difference between the two."
+            rnew = rnew - r
+            do i = 1, k
+                print *, (abs(rnew(i, j)), j=1, n)
+            enddo
+            end block
+            return
+        endif
+
+        ! Check the Q matrix with reference.
+        call check(error, all(abs(Q - F%Q()) < rel_tol_${rk}$))
+        if (allocated(error)) then
+            block
+            integer(ilp) :: i, j
+            ${rt}$, allocatable :: qnew(:, :)
+            print *, "Reference Q matrix. shape(Q) =", shape(Q)
+            do i = 1, m
+                print *, (Q(i, j), j = 1, k)
+            enddo
+            print *
+            print *, "New Q matrix. shape(Q) =", shape(F%Q())
+            qnew = F%Q()
+            do i = 1, m
+                print *, (qnew(i, j), j = 1, k)
+            enddo
+            print *
+            print *, "Difference between the two."
+            qnew = qnew - q
+            do i = 1, m
+                print *, (abs(qnew(i, j)), j=1, k)
+            enddo
+            end block
+            return
+        endif
+        
+    end subroutine test_qr_random_wide_matrix_${ri}$
+    #:endfor
+
+    ! gcc-15 bugfix utility
+    subroutine add_test(tests,new_test)
+        type(unittest_type), allocatable, intent(inout) :: tests(:)    
+        type(unittest_type), intent(in) :: new_test
+        
+        integer :: n
+        type(unittest_type), allocatable :: new_tests(:)
+        
+        if (allocated(tests)) then 
+            n = size(tests)
+        else
+            n = 0
+        end if
+        
+        allocate(new_tests(n+1))
+        if (n>0) new_tests(1:n) = tests(1:n)
+                 new_tests(1+n) = new_test
+        call move_alloc(from=new_tests,to=tests)        
+        
+    end subroutine add_test
+
+end module test_linalg_matrix_factorizations
+
+program test_matrix_factorizations
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_linalg_matrix_factorizations, only : test_qr_factorization
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("linalg_matrix_factorizations: qr", test_qr_factorization) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program test_matrix_factorizations
