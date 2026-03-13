@@ -94,7 +94,7 @@ contains
             character(1), intent(in) :: op
             y = merge( 0._dp, diagonal * x , di_ )
         end subroutine
-        pure real(dp) function my_dot(x,y) result(r)
+        real(dp) function my_dot(x,y) result(r)
             real(dp), intent(in) :: x(:)
             real(dp), intent(in) :: y(:)
             r = dot_product(x,y)

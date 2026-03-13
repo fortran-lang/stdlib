@@ -12,6 +12,6 @@ set(strings_cppFiles
 set(strings_f90Files
     )
 
-configure_stdlib_target(strings strings_f90Files strings_fppFiles strings_cppFiles)
+configure_stdlib_target(${PROJECT_NAME}_strings strings_f90Files strings_fppFiles strings_cppFiles)
 
-target_link_libraries(strings PUBLIC core)
+target_link_libraries(${PROJECT_NAME}_strings PUBLIC ${PROJECT_NAME}_core)

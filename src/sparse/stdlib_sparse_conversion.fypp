@@ -161,6 +161,7 @@ module stdlib_sparse_conversion
         #:for k1, t1, s1 in (KINDS_TYPES)
         module procedure :: coo_from_ijv_${s1}$
         module procedure :: csr_from_ijv_${s1}$
+        module procedure :: csc_from_ijv_${s1}$
         module procedure :: ell_from_ijv_${s1}$
         module procedure :: sellc_from_ijv_${s1}$
         #:endfor
@@ -258,8 +259,9 @@ contains
         temp(1,1:COO%nnz) = COO%index(2,1:COO%nnz)
         temp(2,1:COO%nnz) = COO%index(1,1:COO%nnz)
         allocate(data, source = COO%data )
+
         nnz = COO%nnz
-        call sort_coo_unique_${s1}$( temp, data, nnz, COO%nrows, COO%ncols )
+        call sort_coo_unique_${s1}$( temp, data, nnz, COO%ncols, COO%nrows )
 
         if( allocated(CSC%row) ) then
             CSC%row(1:COO%nnz)  = temp(2,1:COO%nnz)
@@ -736,6 +738,40 @@ contains
                 call from_ijv(COO,row,col,nrows=nrows_,ncols=ncols_)
             end if
             call coo2csr(COO,CSR)
+        end block
+    end subroutine
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    subroutine csc_from_ijv_${s1}$(CSC,row,col,data,nrows,ncols)
+        type(CSC_${s1}$_type), intent(inout) :: CSC
+        integer(ilp), intent(in) :: row(:)
+        integer(ilp), intent(in) :: col(:)
+        ${t1}$, intent(in), optional :: data(:)
+        integer(ilp), intent(in), optional :: nrows
+        integer(ilp), intent(in), optional :: ncols
+
+        integer(ilp) :: nrows_, ncols_
+        !---------------------------------------------------------
+        if(present(nrows)) then
+            nrows_ = nrows
+        else 
+            nrows_ = maxval(row)
+        end if
+        if(present(ncols)) then
+            ncols_ = ncols
+        else 
+            ncols_ = maxval(col)
+        end if
+        !---------------------------------------------------------
+        block
+            type(COO_${s1}$_type) :: COO
+            if(present(data)) then
+                call from_ijv(COO,row,col,data=data,nrows=nrows_,ncols=ncols_)
+            else 
+                call from_ijv(COO,row,col,nrows=nrows_,ncols=ncols_)
+            end if
+            call coo2csc(COO,CSC)
         end block
     end subroutine
     #:endfor

@@ -44,7 +44,7 @@ program example_math_swap
         call swap(x,y)
     end block
 
-#if STDLIB_BITSET == 1
+#if STDLIB_BITSETS == 1
     block
         use stdlib_bitsets
         type(bitset_64) :: x, y
