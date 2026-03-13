@@ -1,7 +1,7 @@
 submodule (stdlib_linalg) stdlib_linalg_least_squares
 !! Least-squares solution to Ax=b
      use stdlib_linalg_constants
-     use stdlib_linalg_lapack, only: gelsd, gglse, stdlib_ilaenv
+     use stdlib_linalg_lapack, only: gelsd, gglse, stdlib_ilaenv, lascl2
      use stdlib_linalg_lapack_aux, only: handle_gelsd_info, handle_gglse_info
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
          LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR
@@ -2868,5 +2868,582 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
         allocate(x(n))
         call stdlib_linalg_z_solve_constrained_lstsq(A, b, C, d, x, overwrite_matrices=overwrite_matrices, err=err)
     end function stdlib_linalg_z_constrained_lstsq
+
+    !-------------------------------------------------------------
+    !-----     Weighted Least-Squares Solver                 -----
+    !-------------------------------------------------------------
+
+    ! Weighted least-squares function: allocates result, delegates to subroutine
+    module function stdlib_linalg_s_weighted_lstsq(w,a,b,cond,overwrite_a,rank,err) result(x)
+        !> Weight vector (must be positive, always real)
+        real(sp), intent(in) :: w(:)
+        !> Input matrix a(m,n)
+        real(sp), intent(inout), target :: a(:,:)
+        !> Right hand side vector b(m)
+        real(sp), intent(in) :: b(:)
+        !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+        real(sp), optional, intent(in) :: cond
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> [optional] Return rank of A
+        integer(ilp), optional, intent(out) :: rank
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+        !> Result array x(n)
+        real(sp), allocatable :: x(:)
+
+        integer(ilp) :: n
+
+        n = size(a, 2, kind=ilp)
+
+        ! Allocate result (even on error, to prevent segfault on return)
+        allocate(x(n))
+
+        call stdlib_linalg_s_solve_weighted_lstsq(w,a,b,x, &
+             cond=cond,overwrite_a=overwrite_a,rank=rank,err=err)
+
+    end function stdlib_linalg_s_weighted_lstsq
+
+    ! Weighted least-squares subroutine: minimize ||D(Ax - b)||^2 where D = diag(sqrt(w))
+    module subroutine stdlib_linalg_s_solve_weighted_lstsq(w,a,b,x,cond,overwrite_a,rank,err)
+    !!### Summary
+    !! Compute weighted least-squares solution to a system of linear equations \( Ax = b \)
+    !!
+    !!### Description
+    !!
+    !! This subroutine computes the weighted least-squares solution of a linear matrix problem.
+    !!
+    !! param: w Weight vector of size (m) (must be positive, always real).
+    !! param: a Input matrix of size (m,n).
+    !! param: b Right-hand-side vector of size (m).
+    !! param: x Solution vector of size (n).
+    !! param: cond [optional] Real input threshold indicating that singular values `s_i <= cond*maxval(s)`
+    !!        do not contribute to the matrix rank.
+    !! param: overwrite_a [optional] Flag indicating if the input matrix can be overwritten.
+    !! param: rank [optional] integer flag returning matrix rank.
+    !! param: err [optional] State return flag.
+    !!
+        !> Weight vector (must be positive, always real)
+        real(sp), intent(in) :: w(:)
+        !> Input matrix a(m,n)
+        real(sp), intent(inout), target :: a(:,:)
+        !> Right hand side vector b(m)
+        real(sp), intent(in) :: b(:)
+        !> Result array x(n)
+        real(sp), intent(inout), contiguous, target :: x(:)
+        !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+        real(sp), optional, intent(in) :: cond
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> [optional] Return rank of A
+        integer(ilp), optional, intent(out) :: rank
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+
+        ! Local variables
+        type(linalg_state_type) :: err0
+        integer(ilp) :: m, n
+        logical(lk) :: copy_a
+        real(sp), pointer :: amat(:,:)
+        real(sp), allocatable, target :: amat_alloc(:,:)
+        real(sp), allocatable :: b_scaled(:)
+        real(sp), allocatable :: sqrt_w(:)
+        character(*), parameter :: this = 'weighted_lstsq'
+
+        m = size(a, 1, kind=ilp)
+        n = size(a, 2, kind=ilp)
+
+        ! Validate matrix dimensions
+        if (m < 1 .or. n < 1) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid matrix size a(m, n) =', [m, n])
+            call linalg_error_handling(err0, err)
+            if (present(rank)) rank = 0
+            return
+        end if
+
+        ! Validate inputs
+        if (size(w, kind=ilp) /= m) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, &
+                   'Weight vector size must match number of rows:', size(w, kind=ilp), '/=', m)
+            call linalg_error_handling(err0, err)
+            if (present(rank)) rank = 0
+            return
+        end if
+
+        if (size(b, kind=ilp) /= m) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, &
+                   'Right-hand side size must match rows of A:', size(b, kind=ilp), '/=', m)
+            call linalg_error_handling(err0, err)
+            if (present(rank)) rank = 0
+            return
+        end if
+
+        if (any(w <= 0.0_sp)) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'Weights must be positive')
+            call linalg_error_handling(err0, err)
+            if (present(rank)) rank = 0
+            return
+        end if
+
+        ! Can A be overwritten? By default, do not overwrite
+        copy_a = .not. optval(overwrite_a, .false._lk)
+
+        ! Compute sqrt of weights
+        sqrt_w = sqrt(w)
+
+        ! Handle A matrix: either copy or use original
+        if (copy_a) then
+            allocate(amat_alloc(m, n), source=a)
+            amat => amat_alloc
+        else
+            amat => a
+        end if
+
+        ! Scale rows of A by sqrt(w) using LAPACK's lascl2
+        call lascl2(m, n, sqrt_w, amat, m)
+
+        ! Scale b
+        b_scaled = sqrt_w * b
+
+        ! Solve transformed OLS problem using local error state
+        call stdlib_linalg_s_solve_lstsq_one(amat, b_scaled, x, cond=cond, overwrite_a=.true., rank=rank, err=err0)
+
+        ! Propagate error with updated location
+        call linalg_error_handling(err0, err, where_at=this)
+
+        ! Cleanup
+        if (copy_a) deallocate(amat_alloc)
+        deallocate(b_scaled, sqrt_w)
+
+    end subroutine stdlib_linalg_s_solve_weighted_lstsq
+    ! Weighted least-squares function: allocates result, delegates to subroutine
+    module function stdlib_linalg_d_weighted_lstsq(w,a,b,cond,overwrite_a,rank,err) result(x)
+        !> Weight vector (must be positive, always real)
+        real(dp), intent(in) :: w(:)
+        !> Input matrix a(m,n)
+        real(dp), intent(inout), target :: a(:,:)
+        !> Right hand side vector b(m)
+        real(dp), intent(in) :: b(:)
+        !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+        real(dp), optional, intent(in) :: cond
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> [optional] Return rank of A
+        integer(ilp), optional, intent(out) :: rank
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+        !> Result array x(n)
+        real(dp), allocatable :: x(:)
+
+        integer(ilp) :: n
+
+        n = size(a, 2, kind=ilp)
+
+        ! Allocate result (even on error, to prevent segfault on return)
+        allocate(x(n))
+
+        call stdlib_linalg_d_solve_weighted_lstsq(w,a,b,x, &
+             cond=cond,overwrite_a=overwrite_a,rank=rank,err=err)
+
+    end function stdlib_linalg_d_weighted_lstsq
+
+    ! Weighted least-squares subroutine: minimize ||D(Ax - b)||^2 where D = diag(sqrt(w))
+    module subroutine stdlib_linalg_d_solve_weighted_lstsq(w,a,b,x,cond,overwrite_a,rank,err)
+    !!### Summary
+    !! Compute weighted least-squares solution to a system of linear equations \( Ax = b \)
+    !!
+    !!### Description
+    !!
+    !! This subroutine computes the weighted least-squares solution of a linear matrix problem.
+    !!
+    !! param: w Weight vector of size (m) (must be positive, always real).
+    !! param: a Input matrix of size (m,n).
+    !! param: b Right-hand-side vector of size (m).
+    !! param: x Solution vector of size (n).
+    !! param: cond [optional] Real input threshold indicating that singular values `s_i <= cond*maxval(s)`
+    !!        do not contribute to the matrix rank.
+    !! param: overwrite_a [optional] Flag indicating if the input matrix can be overwritten.
+    !! param: rank [optional] integer flag returning matrix rank.
+    !! param: err [optional] State return flag.
+    !!
+        !> Weight vector (must be positive, always real)
+        real(dp), intent(in) :: w(:)
+        !> Input matrix a(m,n)
+        real(dp), intent(inout), target :: a(:,:)
+        !> Right hand side vector b(m)
+        real(dp), intent(in) :: b(:)
+        !> Result array x(n)
+        real(dp), intent(inout), contiguous, target :: x(:)
+        !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+        real(dp), optional, intent(in) :: cond
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> [optional] Return rank of A
+        integer(ilp), optional, intent(out) :: rank
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+
+        ! Local variables
+        type(linalg_state_type) :: err0
+        integer(ilp) :: m, n
+        logical(lk) :: copy_a
+        real(dp), pointer :: amat(:,:)
+        real(dp), allocatable, target :: amat_alloc(:,:)
+        real(dp), allocatable :: b_scaled(:)
+        real(dp), allocatable :: sqrt_w(:)
+        character(*), parameter :: this = 'weighted_lstsq'
+
+        m = size(a, 1, kind=ilp)
+        n = size(a, 2, kind=ilp)
+
+        ! Validate matrix dimensions
+        if (m < 1 .or. n < 1) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid matrix size a(m, n) =', [m, n])
+            call linalg_error_handling(err0, err)
+            if (present(rank)) rank = 0
+            return
+        end if
+
+        ! Validate inputs
+        if (size(w, kind=ilp) /= m) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, &
+                   'Weight vector size must match number of rows:', size(w, kind=ilp), '/=', m)
+            call linalg_error_handling(err0, err)
+            if (present(rank)) rank = 0
+            return
+        end if
+
+        if (size(b, kind=ilp) /= m) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, &
+                   'Right-hand side size must match rows of A:', size(b, kind=ilp), '/=', m)
+            call linalg_error_handling(err0, err)
+            if (present(rank)) rank = 0
+            return
+        end if
+
+        if (any(w <= 0.0_dp)) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'Weights must be positive')
+            call linalg_error_handling(err0, err)
+            if (present(rank)) rank = 0
+            return
+        end if
+
+        ! Can A be overwritten? By default, do not overwrite
+        copy_a = .not. optval(overwrite_a, .false._lk)
+
+        ! Compute sqrt of weights
+        sqrt_w = sqrt(w)
+
+        ! Handle A matrix: either copy or use original
+        if (copy_a) then
+            allocate(amat_alloc(m, n), source=a)
+            amat => amat_alloc
+        else
+            amat => a
+        end if
+
+        ! Scale rows of A by sqrt(w) using LAPACK's lascl2
+        call lascl2(m, n, sqrt_w, amat, m)
+
+        ! Scale b
+        b_scaled = sqrt_w * b
+
+        ! Solve transformed OLS problem using local error state
+        call stdlib_linalg_d_solve_lstsq_one(amat, b_scaled, x, cond=cond, overwrite_a=.true., rank=rank, err=err0)
+
+        ! Propagate error with updated location
+        call linalg_error_handling(err0, err, where_at=this)
+
+        ! Cleanup
+        if (copy_a) deallocate(amat_alloc)
+        deallocate(b_scaled, sqrt_w)
+
+    end subroutine stdlib_linalg_d_solve_weighted_lstsq
+    ! Weighted least-squares function: allocates result, delegates to subroutine
+    module function stdlib_linalg_c_weighted_lstsq(w,a,b,cond,overwrite_a,rank,err) result(x)
+        !> Weight vector (must be positive, always real)
+        real(sp), intent(in) :: w(:)
+        !> Input matrix a(m,n)
+        complex(sp), intent(inout), target :: a(:,:)
+        !> Right hand side vector b(m)
+        complex(sp), intent(in) :: b(:)
+        !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+        real(sp), optional, intent(in) :: cond
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> [optional] Return rank of A
+        integer(ilp), optional, intent(out) :: rank
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+        !> Result array x(n)
+        complex(sp), allocatable :: x(:)
+
+        integer(ilp) :: n
+
+        n = size(a, 2, kind=ilp)
+
+        ! Allocate result (even on error, to prevent segfault on return)
+        allocate(x(n))
+
+        call stdlib_linalg_c_solve_weighted_lstsq(w,a,b,x, &
+             cond=cond,overwrite_a=overwrite_a,rank=rank,err=err)
+
+    end function stdlib_linalg_c_weighted_lstsq
+
+    ! Weighted least-squares subroutine: minimize ||D(Ax - b)||^2 where D = diag(sqrt(w))
+    module subroutine stdlib_linalg_c_solve_weighted_lstsq(w,a,b,x,cond,overwrite_a,rank,err)
+    !!### Summary
+    !! Compute weighted least-squares solution to a system of linear equations \( Ax = b \)
+    !!
+    !!### Description
+    !!
+    !! This subroutine computes the weighted least-squares solution of a linear matrix problem.
+    !!
+    !! param: w Weight vector of size (m) (must be positive, always real).
+    !! param: a Input matrix of size (m,n).
+    !! param: b Right-hand-side vector of size (m).
+    !! param: x Solution vector of size (n).
+    !! param: cond [optional] Real input threshold indicating that singular values `s_i <= cond*maxval(s)`
+    !!        do not contribute to the matrix rank.
+    !! param: overwrite_a [optional] Flag indicating if the input matrix can be overwritten.
+    !! param: rank [optional] integer flag returning matrix rank.
+    !! param: err [optional] State return flag.
+    !!
+        !> Weight vector (must be positive, always real)
+        real(sp), intent(in) :: w(:)
+        !> Input matrix a(m,n)
+        complex(sp), intent(inout), target :: a(:,:)
+        !> Right hand side vector b(m)
+        complex(sp), intent(in) :: b(:)
+        !> Result array x(n)
+        complex(sp), intent(inout), contiguous, target :: x(:)
+        !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+        real(sp), optional, intent(in) :: cond
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> [optional] Return rank of A
+        integer(ilp), optional, intent(out) :: rank
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+
+        ! Local variables
+        type(linalg_state_type) :: err0
+        integer(ilp) :: m, n
+        logical(lk) :: copy_a
+        complex(sp), pointer :: amat(:,:)
+        complex(sp), allocatable, target :: amat_alloc(:,:)
+        complex(sp), allocatable :: b_scaled(:)
+        real(sp), allocatable :: sqrt_w(:)
+        character(*), parameter :: this = 'weighted_lstsq'
+
+        m = size(a, 1, kind=ilp)
+        n = size(a, 2, kind=ilp)
+
+        ! Validate matrix dimensions
+        if (m < 1 .or. n < 1) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid matrix size a(m, n) =', [m, n])
+            call linalg_error_handling(err0, err)
+            if (present(rank)) rank = 0
+            return
+        end if
+
+        ! Validate inputs
+        if (size(w, kind=ilp) /= m) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, &
+                   'Weight vector size must match number of rows:', size(w, kind=ilp), '/=', m)
+            call linalg_error_handling(err0, err)
+            if (present(rank)) rank = 0
+            return
+        end if
+
+        if (size(b, kind=ilp) /= m) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, &
+                   'Right-hand side size must match rows of A:', size(b, kind=ilp), '/=', m)
+            call linalg_error_handling(err0, err)
+            if (present(rank)) rank = 0
+            return
+        end if
+
+        if (any(w <= 0.0_sp)) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'Weights must be positive')
+            call linalg_error_handling(err0, err)
+            if (present(rank)) rank = 0
+            return
+        end if
+
+        ! Can A be overwritten? By default, do not overwrite
+        copy_a = .not. optval(overwrite_a, .false._lk)
+
+        ! Compute sqrt of weights
+        sqrt_w = sqrt(w)
+
+        ! Handle A matrix: either copy or use original
+        if (copy_a) then
+            allocate(amat_alloc(m, n), source=a)
+            amat => amat_alloc
+        else
+            amat => a
+        end if
+
+        ! Scale rows of A by sqrt(w) using LAPACK's lascl2
+        call lascl2(m, n, sqrt_w, amat, m)
+
+        ! Scale b
+        b_scaled = sqrt_w * b
+
+        ! Solve transformed OLS problem using local error state
+        call stdlib_linalg_c_solve_lstsq_one(amat, b_scaled, x, cond=cond, overwrite_a=.true., rank=rank, err=err0)
+
+        ! Propagate error with updated location
+        call linalg_error_handling(err0, err, where_at=this)
+
+        ! Cleanup
+        if (copy_a) deallocate(amat_alloc)
+        deallocate(b_scaled, sqrt_w)
+
+    end subroutine stdlib_linalg_c_solve_weighted_lstsq
+    ! Weighted least-squares function: allocates result, delegates to subroutine
+    module function stdlib_linalg_z_weighted_lstsq(w,a,b,cond,overwrite_a,rank,err) result(x)
+        !> Weight vector (must be positive, always real)
+        real(dp), intent(in) :: w(:)
+        !> Input matrix a(m,n)
+        complex(dp), intent(inout), target :: a(:,:)
+        !> Right hand side vector b(m)
+        complex(dp), intent(in) :: b(:)
+        !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+        real(dp), optional, intent(in) :: cond
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> [optional] Return rank of A
+        integer(ilp), optional, intent(out) :: rank
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+        !> Result array x(n)
+        complex(dp), allocatable :: x(:)
+
+        integer(ilp) :: n
+
+        n = size(a, 2, kind=ilp)
+
+        ! Allocate result (even on error, to prevent segfault on return)
+        allocate(x(n))
+
+        call stdlib_linalg_z_solve_weighted_lstsq(w,a,b,x, &
+             cond=cond,overwrite_a=overwrite_a,rank=rank,err=err)
+
+    end function stdlib_linalg_z_weighted_lstsq
+
+    ! Weighted least-squares subroutine: minimize ||D(Ax - b)||^2 where D = diag(sqrt(w))
+    module subroutine stdlib_linalg_z_solve_weighted_lstsq(w,a,b,x,cond,overwrite_a,rank,err)
+    !!### Summary
+    !! Compute weighted least-squares solution to a system of linear equations \( Ax = b \)
+    !!
+    !!### Description
+    !!
+    !! This subroutine computes the weighted least-squares solution of a linear matrix problem.
+    !!
+    !! param: w Weight vector of size (m) (must be positive, always real).
+    !! param: a Input matrix of size (m,n).
+    !! param: b Right-hand-side vector of size (m).
+    !! param: x Solution vector of size (n).
+    !! param: cond [optional] Real input threshold indicating that singular values `s_i <= cond*maxval(s)`
+    !!        do not contribute to the matrix rank.
+    !! param: overwrite_a [optional] Flag indicating if the input matrix can be overwritten.
+    !! param: rank [optional] integer flag returning matrix rank.
+    !! param: err [optional] State return flag.
+    !!
+        !> Weight vector (must be positive, always real)
+        real(dp), intent(in) :: w(:)
+        !> Input matrix a(m,n)
+        complex(dp), intent(inout), target :: a(:,:)
+        !> Right hand side vector b(m)
+        complex(dp), intent(in) :: b(:)
+        !> Result array x(n)
+        complex(dp), intent(inout), contiguous, target :: x(:)
+        !> [optional] cutoff for rank evaluation: singular values s(i)<=cond*maxval(s) are considered 0.
+        real(dp), optional, intent(in) :: cond
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> [optional] Return rank of A
+        integer(ilp), optional, intent(out) :: rank
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+
+        ! Local variables
+        type(linalg_state_type) :: err0
+        integer(ilp) :: m, n
+        logical(lk) :: copy_a
+        complex(dp), pointer :: amat(:,:)
+        complex(dp), allocatable, target :: amat_alloc(:,:)
+        complex(dp), allocatable :: b_scaled(:)
+        real(dp), allocatable :: sqrt_w(:)
+        character(*), parameter :: this = 'weighted_lstsq'
+
+        m = size(a, 1, kind=ilp)
+        n = size(a, 2, kind=ilp)
+
+        ! Validate matrix dimensions
+        if (m < 1 .or. n < 1) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'Invalid matrix size a(m, n) =', [m, n])
+            call linalg_error_handling(err0, err)
+            if (present(rank)) rank = 0
+            return
+        end if
+
+        ! Validate inputs
+        if (size(w, kind=ilp) /= m) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, &
+                   'Weight vector size must match number of rows:', size(w, kind=ilp), '/=', m)
+            call linalg_error_handling(err0, err)
+            if (present(rank)) rank = 0
+            return
+        end if
+
+        if (size(b, kind=ilp) /= m) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, &
+                   'Right-hand side size must match rows of A:', size(b, kind=ilp), '/=', m)
+            call linalg_error_handling(err0, err)
+            if (present(rank)) rank = 0
+            return
+        end if
+
+        if (any(w <= 0.0_dp)) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, 'Weights must be positive')
+            call linalg_error_handling(err0, err)
+            if (present(rank)) rank = 0
+            return
+        end if
+
+        ! Can A be overwritten? By default, do not overwrite
+        copy_a = .not. optval(overwrite_a, .false._lk)
+
+        ! Compute sqrt of weights
+        sqrt_w = sqrt(w)
+
+        ! Handle A matrix: either copy or use original
+        if (copy_a) then
+            allocate(amat_alloc(m, n), source=a)
+            amat => amat_alloc
+        else
+            amat => a
+        end if
+
+        ! Scale rows of A by sqrt(w) using LAPACK's lascl2
+        call lascl2(m, n, sqrt_w, amat, m)
+
+        ! Scale b
+        b_scaled = sqrt_w * b
+
+        ! Solve transformed OLS problem using local error state
+        call stdlib_linalg_z_solve_lstsq_one(amat, b_scaled, x, cond=cond, overwrite_a=.true., rank=rank, err=err0)
+
+        ! Propagate error with updated location
+        call linalg_error_handling(err0, err, where_at=this)
+
+        ! Cleanup
+        if (copy_a) deallocate(amat_alloc)
+        deallocate(b_scaled, sqrt_w)
+
+    end subroutine stdlib_linalg_z_solve_weighted_lstsq
 
 end submodule stdlib_linalg_least_squares

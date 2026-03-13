@@ -23943,6 +23943,20 @@ module stdlib_linalg_lapack
 #endif
           end interface lascl
 
+          interface lascl2
+          !! LASCL2 performs a diagonal scaling on a matrix:
+          !! X(i,j) = D(i) * X(i,j), for i = 1,...,M and j = 1,...,N.
+          !! D is a vector of length M containing the diagonal scaling factors.
+               module procedure stdlib_slascl2
+               module procedure stdlib_dlascl2
+               module procedure stdlib_clascl2
+               module procedure stdlib_zlascl2
+               module procedure stdlib_I64_slascl2
+               module procedure stdlib_I64_dlascl2
+               module procedure stdlib_I64_clascl2
+               module procedure stdlib_I64_zlascl2
+          end interface lascl2
+
           interface lasd0
           !! Using a divide and conquer approach, LASD0: computes the singular
           !! value decomposition (SVD) of a real upper bidiagonal N-by-M
