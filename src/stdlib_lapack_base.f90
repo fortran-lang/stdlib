@@ -766,6 +766,33 @@ interface
 
 end interface 
 
+! LASCL2 performs diagonal scaling: X(i,:) = D(i) * X(i,:)
+interface 
+     pure module subroutine stdlib_slascl2( m, n, d, x, ldx )
+           integer(ilp), intent(in) :: m, n, ldx
+           real(sp), intent(in) :: d(*)
+           real(sp), intent(inout) :: x(ldx,*)
+     end subroutine stdlib_slascl2
+
+     pure module subroutine stdlib_dlascl2( m, n, d, x, ldx )
+           integer(ilp), intent(in) :: m, n, ldx
+           real(dp), intent(in) :: d(*)
+           real(dp), intent(inout) :: x(ldx,*)
+     end subroutine stdlib_dlascl2
+
+     pure module subroutine stdlib_clascl2( m, n, d, x, ldx )
+           integer(ilp), intent(in) :: m, n, ldx
+           real(sp), intent(in) :: d(*)
+           complex(sp), intent(inout) :: x(ldx,*)
+     end subroutine stdlib_clascl2
+
+     pure module subroutine stdlib_zlascl2( m, n, d, x, ldx )
+           integer(ilp), intent(in) :: m, n, ldx
+           real(dp), intent(in) :: d(*)
+           complex(dp), intent(inout) :: x(ldx,*)
+     end subroutine stdlib_zlascl2
+
+end interface 
 
 interface 
      module subroutine stdlib_sla_geamv( trans, m, n, alpha, a, lda, x, incx, beta,y, incy )

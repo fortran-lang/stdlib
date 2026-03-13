@@ -3762,4 +3762,83 @@ submodule(stdlib_lapack_base) stdlib_lapack_blas_like_l2
 
 
 
+
+! LASCL2 performs diagonal scaling on a matrix: X(i,:) = D(i) * X(i,:)
+     pure module subroutine stdlib_slascl2( m, n, d, x, ldx )
+        !! LASCL2 performs a diagonal scaling on a matrix:
+        !! X(i,j) = D(i) * X(i,j), for i = 1,...,M and j = 1,...,N.
+        !! D is a vector of length M containing the diagonal scaling factors.
+           ! Scalar Arguments
+           integer(ilp), intent(in) :: m, n, ldx
+           ! Array Arguments
+           real(sp), intent(in) :: d(*)
+           real(sp), intent(inout) :: x(ldx,*)
+        ! =====================================================================
+           ! Local Scalars
+           integer(ilp) :: i, j
+           ! Executable Statements
+           do concurrent(j=1:n, i=1:m)
+              x(i,j) = d(i) * x(i,j)
+           end do
+           return
+     end subroutine stdlib_slascl2
+
+     pure module subroutine stdlib_dlascl2( m, n, d, x, ldx )
+        !! LASCL2 performs a diagonal scaling on a matrix:
+        !! X(i,j) = D(i) * X(i,j), for i = 1,...,M and j = 1,...,N.
+        !! D is a vector of length M containing the diagonal scaling factors.
+           ! Scalar Arguments
+           integer(ilp), intent(in) :: m, n, ldx
+           ! Array Arguments
+           real(dp), intent(in) :: d(*)
+           real(dp), intent(inout) :: x(ldx,*)
+        ! =====================================================================
+           ! Local Scalars
+           integer(ilp) :: i, j
+           ! Executable Statements
+           do concurrent(j=1:n, i=1:m)
+              x(i,j) = d(i) * x(i,j)
+           end do
+           return
+     end subroutine stdlib_dlascl2
+
+     pure module subroutine stdlib_clascl2( m, n, d, x, ldx )
+        !! LASCL2 performs a diagonal scaling on a matrix:
+        !! X(i,j) = D(i) * X(i,j), for i = 1,...,M and j = 1,...,N.
+        !! D is a vector of length M containing the diagonal scaling factors.
+           ! Scalar Arguments
+           integer(ilp), intent(in) :: m, n, ldx
+           ! Array Arguments
+           real(sp), intent(in) :: d(*)
+           complex(sp), intent(inout) :: x(ldx,*)
+        ! =====================================================================
+           ! Local Scalars
+           integer(ilp) :: i, j
+           ! Executable Statements
+           do concurrent(j=1:n, i=1:m)
+              x(i,j) = d(i) * x(i,j)
+           end do
+           return
+     end subroutine stdlib_clascl2
+
+     pure module subroutine stdlib_zlascl2( m, n, d, x, ldx )
+        !! LASCL2 performs a diagonal scaling on a matrix:
+        !! X(i,j) = D(i) * X(i,j), for i = 1,...,M and j = 1,...,N.
+        !! D is a vector of length M containing the diagonal scaling factors.
+           ! Scalar Arguments
+           integer(ilp), intent(in) :: m, n, ldx
+           ! Array Arguments
+           real(dp), intent(in) :: d(*)
+           complex(dp), intent(inout) :: x(ldx,*)
+        ! =====================================================================
+           ! Local Scalars
+           integer(ilp) :: i, j
+           ! Executable Statements
+           do concurrent(j=1:n, i=1:m)
+              x(i,j) = d(i) * x(i,j)
+           end do
+           return
+     end subroutine stdlib_zlascl2
+
+
 end submodule stdlib_lapack_blas_like_l2

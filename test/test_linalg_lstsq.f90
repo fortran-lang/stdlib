@@ -2,7 +2,7 @@
 module test_linalg_least_squares
     use testdrive, only: error_type, check, new_unittest, unittest_type
     use stdlib_linalg_constants
-    use stdlib_linalg, only: lstsq,solve_lstsq
+    use stdlib_linalg, only: lstsq, solve_lstsq, weighted_lstsq, solve_weighted_lstsq
     use stdlib_linalg_state, only: linalg_state_type
 
     implicit none (type,external)
@@ -23,8 +23,25 @@ module test_linalg_least_squares
 
         call add_test(tests,new_unittest("least_squares_s",test_lstsq_one_s))
         call add_test(tests,new_unittest("least_squares_randm_s",test_lstsq_random_s))
+        call add_test(tests,new_unittest("weighted_lstsq_s",test_weighted_lstsq_s))
+        call add_test(tests,new_unittest("weighted_lstsq_effect_s",test_weighted_lstsq_effect_s))
+        call add_test(tests,new_unittest("weighted_lstsq_negative_s",test_weighted_lstsq_negative_s))
+        call add_test(tests,new_unittest("solve_weighted_lstsq_s",test_solve_weighted_lstsq_s))
+        call add_test(tests,new_unittest("solve_weighted_lstsq_effect_s",test_solve_weighted_lstsq_effect_s))
+        call add_test(tests,new_unittest("solve_weighted_lstsq_negative_s",test_solve_weighted_lstsq_negative_s))
         call add_test(tests,new_unittest("least_squares_d",test_lstsq_one_d))
         call add_test(tests,new_unittest("least_squares_randm_d",test_lstsq_random_d))
+        call add_test(tests,new_unittest("weighted_lstsq_d",test_weighted_lstsq_d))
+        call add_test(tests,new_unittest("weighted_lstsq_effect_d",test_weighted_lstsq_effect_d))
+        call add_test(tests,new_unittest("weighted_lstsq_negative_d",test_weighted_lstsq_negative_d))
+        call add_test(tests,new_unittest("solve_weighted_lstsq_d",test_solve_weighted_lstsq_d))
+        call add_test(tests,new_unittest("solve_weighted_lstsq_effect_d",test_solve_weighted_lstsq_effect_d))
+        call add_test(tests,new_unittest("solve_weighted_lstsq_negative_d",test_solve_weighted_lstsq_negative_d))
+
+        call add_test(tests,new_unittest("weighted_lstsq_c",test_weighted_lstsq_c))
+        call add_test(tests,new_unittest("solve_weighted_lstsq_c",test_solve_weighted_lstsq_c))
+        call add_test(tests,new_unittest("weighted_lstsq_z",test_weighted_lstsq_z))
+        call add_test(tests,new_unittest("solve_weighted_lstsq_z",test_solve_weighted_lstsq_z))
 
     end subroutine test_least_squares
     
@@ -160,7 +177,551 @@ module test_linalg_least_squares
         
     end subroutine test_lstsq_random_d    
     
-    
+
+    !-------------------------------------------------------------
+    !-----     Weighted Least-Squares Tests                  -----
+    !-------------------------------------------------------------
+
+    !> Test basic weighted least-squares: uniform weights must match ordinary least-squares
+    subroutine test_weighted_lstsq_s(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+        integer(ilp), parameter :: m = 4, n = 2
+        real(sp), parameter :: tol = 100*sqrt(epsilon(0.0_sp))
+        real(sp) :: A(m,n), A_original(m,n), A_copy(m,n), b(m)
+        real(sp) :: w(m)
+        real(sp), allocatable :: x_weighted(:), x_ols(:)
+
+        ! Simple test case
+        A(:,1) = 1.0_sp
+        A(:,2) = [1.0_sp, 2.0_sp, 3.0_sp, 4.0_sp]
+        b = [2.0_sp, 4.0_sp, 5.0_sp, 4.0_sp]
+        w = 1.0_sp  ! Uniform weights = OLS
+        A_original = A  ! Save original to verify A is preserved
+        A_copy = A      ! Save copy for lstsq comparison
+
+        x_weighted = weighted_lstsq(w, A, b, err=state)
+
+        call check(error, state%ok(), 'weighted_lstsq failed: '//state%print())
+        if (allocated(error)) return
+        
+        call check(error, size(x_weighted)==n, 'weighted_lstsq: wrong solution size')
+        if (allocated(error)) return
+
+        ! Verify A is preserved by default (overwrite_a contract)
+        call check(error, all(A == A_original), &
+                   'weighted_lstsq must preserve A by default')
+        if (allocated(error)) return
+
+        ! KEY TEST: Uniform weights should match ordinary least squares exactly
+        x_ols = lstsq(A_copy, b, err=state)
+
+        call check(error, state%ok(), 'lstsq failed: '//state%print())
+        if (allocated(error)) return
+
+        call check(error, all(abs(x_weighted - x_ols) < tol), &
+                   'weighted_lstsq with uniform weights must match lstsq')
+        if (allocated(error)) return
+
+    end subroutine test_weighted_lstsq_s
+
+    !> Test that non-uniform weights change the solution
+    subroutine test_weighted_lstsq_effect_s(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+        integer(ilp), parameter :: m = 4, n = 2
+        real(sp), parameter :: tol = 100*sqrt(epsilon(0.0_sp))
+        real(sp) :: A(m,n), b(m)
+        real(sp) :: w_uniform(m), w_nonuniform(m)
+        real(sp), allocatable :: x_uniform(:), x_weighted(:)
+
+        ! Setup problem
+        A(:,1) = 1.0_sp
+        A(:,2) = [1.0_sp, 2.0_sp, 3.0_sp, 4.0_sp]
+        b = [1.0_sp, 3.0_sp, 2.0_sp, 5.0_sp]
+        
+        w_uniform = 1.0_sp
+        w_nonuniform = [10.0_sp, 1.0_sp, 1.0_sp, 10.0_sp]  ! Weight first and last more
+
+        x_uniform = weighted_lstsq(w_uniform, A, b, err=state)
+        call check(error, state%ok(), 'uniform weighted_lstsq failed')
+        if (allocated(error)) return
+
+        x_weighted = weighted_lstsq(w_nonuniform, A, b, err=state)
+        call check(error, state%ok(), 'non-uniform weighted_lstsq failed')
+        if (allocated(error)) return
+
+        ! Solutions should be different
+        call check(error, any(abs(x_uniform - x_weighted) > tol), &
+                   'weighted_lstsq: non-uniform weights should change solution')
+        if (allocated(error)) return
+
+    end subroutine test_weighted_lstsq_effect_s
+
+    !> Test error on negative weights
+    subroutine test_weighted_lstsq_negative_s(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+        real(sp) :: A(3,2), b(3)
+        real(sp) :: w(3)
+        real(sp), allocatable :: x(:)
+
+        A = 1.0_sp
+        b = 1.0_sp
+        w = [-1.0_sp, 1.0_sp, 1.0_sp]  ! Invalid: negative weight!
+
+        x = weighted_lstsq(w, A, b, err=state)
+
+        call check(error, state%error(), 'weighted_lstsq should fail on negative weights')
+        if (allocated(error)) return
+
+    end subroutine test_weighted_lstsq_negative_s
+
+    !> Test basic weighted least-squares: uniform weights must match ordinary least-squares
+    subroutine test_weighted_lstsq_d(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+        integer(ilp), parameter :: m = 4, n = 2
+        real(dp), parameter :: tol = 100*sqrt(epsilon(0.0_dp))
+        real(dp) :: A(m,n), A_original(m,n), A_copy(m,n), b(m)
+        real(dp) :: w(m)
+        real(dp), allocatable :: x_weighted(:), x_ols(:)
+
+        ! Simple test case
+        A(:,1) = 1.0_dp
+        A(:,2) = [1.0_dp, 2.0_dp, 3.0_dp, 4.0_dp]
+        b = [2.0_dp, 4.0_dp, 5.0_dp, 4.0_dp]
+        w = 1.0_dp  ! Uniform weights = OLS
+        A_original = A  ! Save original to verify A is preserved
+        A_copy = A      ! Save copy for lstsq comparison
+
+        x_weighted = weighted_lstsq(w, A, b, err=state)
+
+        call check(error, state%ok(), 'weighted_lstsq failed: '//state%print())
+        if (allocated(error)) return
+        
+        call check(error, size(x_weighted)==n, 'weighted_lstsq: wrong solution size')
+        if (allocated(error)) return
+
+        ! Verify A is preserved by default (overwrite_a contract)
+        call check(error, all(A == A_original), &
+                   'weighted_lstsq must preserve A by default')
+        if (allocated(error)) return
+
+        ! KEY TEST: Uniform weights should match ordinary least squares exactly
+        x_ols = lstsq(A_copy, b, err=state)
+
+        call check(error, state%ok(), 'lstsq failed: '//state%print())
+        if (allocated(error)) return
+
+        call check(error, all(abs(x_weighted - x_ols) < tol), &
+                   'weighted_lstsq with uniform weights must match lstsq')
+        if (allocated(error)) return
+
+    end subroutine test_weighted_lstsq_d
+
+    !> Test that non-uniform weights change the solution
+    subroutine test_weighted_lstsq_effect_d(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+        integer(ilp), parameter :: m = 4, n = 2
+        real(dp), parameter :: tol = 100*sqrt(epsilon(0.0_dp))
+        real(dp) :: A(m,n), b(m)
+        real(dp) :: w_uniform(m), w_nonuniform(m)
+        real(dp), allocatable :: x_uniform(:), x_weighted(:)
+
+        ! Setup problem
+        A(:,1) = 1.0_dp
+        A(:,2) = [1.0_dp, 2.0_dp, 3.0_dp, 4.0_dp]
+        b = [1.0_dp, 3.0_dp, 2.0_dp, 5.0_dp]
+        
+        w_uniform = 1.0_dp
+        w_nonuniform = [10.0_dp, 1.0_dp, 1.0_dp, 10.0_dp]  ! Weight first and last more
+
+        x_uniform = weighted_lstsq(w_uniform, A, b, err=state)
+        call check(error, state%ok(), 'uniform weighted_lstsq failed')
+        if (allocated(error)) return
+
+        x_weighted = weighted_lstsq(w_nonuniform, A, b, err=state)
+        call check(error, state%ok(), 'non-uniform weighted_lstsq failed')
+        if (allocated(error)) return
+
+        ! Solutions should be different
+        call check(error, any(abs(x_uniform - x_weighted) > tol), &
+                   'weighted_lstsq: non-uniform weights should change solution')
+        if (allocated(error)) return
+
+    end subroutine test_weighted_lstsq_effect_d
+
+    !> Test error on negative weights
+    subroutine test_weighted_lstsq_negative_d(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+        real(dp) :: A(3,2), b(3)
+        real(dp) :: w(3)
+        real(dp), allocatable :: x(:)
+
+        A = 1.0_dp
+        b = 1.0_dp
+        w = [-1.0_dp, 1.0_dp, 1.0_dp]  ! Invalid: negative weight!
+
+        x = weighted_lstsq(w, A, b, err=state)
+
+        call check(error, state%error(), 'weighted_lstsq should fail on negative weights')
+        if (allocated(error)) return
+
+    end subroutine test_weighted_lstsq_negative_d
+
+
+    !> Test weighted least-squares with complex data: uniform weights must match lstsq
+    subroutine test_weighted_lstsq_c(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+        integer(ilp), parameter :: m = 4, n = 2
+        real(sp), parameter :: tol = 100*sqrt(epsilon(0.0_sp))
+        complex(sp) :: A(m,n), A_copy(m,n), b(m)
+        real(sp) :: w(m)
+        complex(sp), allocatable :: x_weighted(:), x_ols(:)
+
+        ! Complex test case
+        A(:,1) = cmplx(1.0_sp, 0.5_sp, kind=sp)
+        A(:,2) = cmplx([1.0_sp, 2.0_sp, 3.0_sp, 4.0_sp], &
+                       [0.1_sp, 0.2_sp, 0.3_sp, 0.4_sp], kind=sp)
+        b = cmplx([2.0_sp, 4.0_sp, 5.0_sp, 4.0_sp], &
+                  [1.0_sp, 1.5_sp, 2.0_sp, 1.0_sp], kind=sp)
+        w = 1.0_sp  ! Uniform weights = OLS (weights are always real)
+        A_copy = A
+
+        x_weighted = weighted_lstsq(w, A, b, err=state)
+
+        call check(error, state%ok(), 'complex weighted_lstsq failed: '//state%print())
+        if (allocated(error)) return
+        
+        call check(error, size(x_weighted)==n, 'complex weighted_lstsq: wrong solution size')
+        if (allocated(error)) return
+
+        ! KEY TEST: Uniform weights should match ordinary least squares
+        x_ols = lstsq(A_copy, b, err=state)
+
+        call check(error, state%ok(), 'complex lstsq failed: '//state%print())
+        if (allocated(error)) return
+
+        call check(error, all(abs(x_weighted - x_ols) < tol), &
+                   'complex weighted_lstsq with uniform weights must match lstsq')
+        if (allocated(error)) return
+
+    end subroutine test_weighted_lstsq_c
+    !> Test weighted least-squares with complex data: uniform weights must match lstsq
+    subroutine test_weighted_lstsq_z(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+        integer(ilp), parameter :: m = 4, n = 2
+        real(dp), parameter :: tol = 100*sqrt(epsilon(0.0_dp))
+        complex(dp) :: A(m,n), A_copy(m,n), b(m)
+        real(dp) :: w(m)
+        complex(dp), allocatable :: x_weighted(:), x_ols(:)
+
+        ! Complex test case
+        A(:,1) = cmplx(1.0_dp, 0.5_dp, kind=dp)
+        A(:,2) = cmplx([1.0_dp, 2.0_dp, 3.0_dp, 4.0_dp], &
+                       [0.1_dp, 0.2_dp, 0.3_dp, 0.4_dp], kind=dp)
+        b = cmplx([2.0_dp, 4.0_dp, 5.0_dp, 4.0_dp], &
+                  [1.0_dp, 1.5_dp, 2.0_dp, 1.0_dp], kind=dp)
+        w = 1.0_dp  ! Uniform weights = OLS (weights are always real)
+        A_copy = A
+
+        x_weighted = weighted_lstsq(w, A, b, err=state)
+
+        call check(error, state%ok(), 'complex weighted_lstsq failed: '//state%print())
+        if (allocated(error)) return
+        
+        call check(error, size(x_weighted)==n, 'complex weighted_lstsq: wrong solution size')
+        if (allocated(error)) return
+
+        ! KEY TEST: Uniform weights should match ordinary least squares
+        x_ols = lstsq(A_copy, b, err=state)
+
+        call check(error, state%ok(), 'complex lstsq failed: '//state%print())
+        if (allocated(error)) return
+
+        call check(error, all(abs(x_weighted - x_ols) < tol), &
+                   'complex weighted_lstsq with uniform weights must match lstsq')
+        if (allocated(error)) return
+
+    end subroutine test_weighted_lstsq_z
+
+    !-------------------------------------------------------------
+    !-----     Weighted Least-Squares Subroutine Tests        -----
+    !-------------------------------------------------------------
+
+    !> Test basic solve_weighted_lstsq: uniform weights must match ordinary least-squares
+    subroutine test_solve_weighted_lstsq_s(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+        integer(ilp), parameter :: m = 4, n = 2
+        real(sp), parameter :: tol = 100*sqrt(epsilon(0.0_sp))
+        real(sp) :: A(m,n), A_original(m,n), A_copy(m,n), b(m), x_sub(n)
+        real(sp) :: w(m)
+        real(sp), allocatable :: x_ols(:)
+
+        ! Simple test case
+        A(:,1) = 1.0_sp
+        A(:,2) = [1.0_sp, 2.0_sp, 3.0_sp, 4.0_sp]
+        b = [2.0_sp, 4.0_sp, 5.0_sp, 4.0_sp]
+        w = 1.0_sp  ! Uniform weights = OLS
+        A_original = A
+        A_copy = A
+
+        call solve_weighted_lstsq(w, A, b, x_sub, err=state)
+
+        call check(error, state%ok(), 'solve_weighted_lstsq failed: '//state%print())
+        if (allocated(error)) return
+
+        ! Verify A is preserved by default (overwrite_a contract)
+        call check(error, all(A == A_original), &
+                   'solve_weighted_lstsq must preserve A by default')
+        if (allocated(error)) return
+
+        ! KEY TEST: Uniform weights should match ordinary least squares exactly
+        x_ols = lstsq(A_copy, b, err=state)
+
+        call check(error, state%ok(), 'lstsq failed: '//state%print())
+        if (allocated(error)) return
+
+        call check(error, all(abs(x_sub - x_ols) < tol), &
+                   'solve_weighted_lstsq with uniform weights must match lstsq')
+        if (allocated(error)) return
+
+    end subroutine test_solve_weighted_lstsq_s
+
+    !> Test that non-uniform weights change the solution (subroutine version)
+    subroutine test_solve_weighted_lstsq_effect_s(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+        integer(ilp), parameter :: m = 4, n = 2
+        real(sp), parameter :: tol = 100*sqrt(epsilon(0.0_sp))
+        real(sp) :: A(m,n), b(m), x_uniform(n), x_weighted(n)
+        real(sp) :: w_uniform(m), w_nonuniform(m)
+
+        ! Setup problem
+        A(:,1) = 1.0_sp
+        A(:,2) = [1.0_sp, 2.0_sp, 3.0_sp, 4.0_sp]
+        b = [1.0_sp, 3.0_sp, 2.0_sp, 5.0_sp]
+
+        w_uniform = 1.0_sp
+        w_nonuniform = [10.0_sp, 1.0_sp, 1.0_sp, 10.0_sp]  ! Weight first and last more
+
+        call solve_weighted_lstsq(w_uniform, A, b, x_uniform, err=state)
+        call check(error, state%ok(), 'uniform solve_weighted_lstsq failed')
+        if (allocated(error)) return
+
+        call solve_weighted_lstsq(w_nonuniform, A, b, x_weighted, err=state)
+        call check(error, state%ok(), 'non-uniform solve_weighted_lstsq failed')
+        if (allocated(error)) return
+
+        ! Solutions should be different
+        call check(error, any(abs(x_uniform - x_weighted) > tol), &
+                   'solve_weighted_lstsq: non-uniform weights should change solution')
+        if (allocated(error)) return
+
+    end subroutine test_solve_weighted_lstsq_effect_s
+
+    !> Test error on negative weights (subroutine version)
+    subroutine test_solve_weighted_lstsq_negative_s(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+        real(sp) :: A(3,2), b(3), x(2)
+        real(sp) :: w(3)
+
+        A = 1.0_sp
+        b = 1.0_sp
+        w = [-1.0_sp, 1.0_sp, 1.0_sp]  ! Invalid: negative weight!
+
+        call solve_weighted_lstsq(w, A, b, x, err=state)
+
+        call check(error, state%error(), 'solve_weighted_lstsq should fail on negative weights')
+        if (allocated(error)) return
+
+    end subroutine test_solve_weighted_lstsq_negative_s
+
+    !> Test basic solve_weighted_lstsq: uniform weights must match ordinary least-squares
+    subroutine test_solve_weighted_lstsq_d(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+        integer(ilp), parameter :: m = 4, n = 2
+        real(dp), parameter :: tol = 100*sqrt(epsilon(0.0_dp))
+        real(dp) :: A(m,n), A_original(m,n), A_copy(m,n), b(m), x_sub(n)
+        real(dp) :: w(m)
+        real(dp), allocatable :: x_ols(:)
+
+        ! Simple test case
+        A(:,1) = 1.0_dp
+        A(:,2) = [1.0_dp, 2.0_dp, 3.0_dp, 4.0_dp]
+        b = [2.0_dp, 4.0_dp, 5.0_dp, 4.0_dp]
+        w = 1.0_dp  ! Uniform weights = OLS
+        A_original = A
+        A_copy = A
+
+        call solve_weighted_lstsq(w, A, b, x_sub, err=state)
+
+        call check(error, state%ok(), 'solve_weighted_lstsq failed: '//state%print())
+        if (allocated(error)) return
+
+        ! Verify A is preserved by default (overwrite_a contract)
+        call check(error, all(A == A_original), &
+                   'solve_weighted_lstsq must preserve A by default')
+        if (allocated(error)) return
+
+        ! KEY TEST: Uniform weights should match ordinary least squares exactly
+        x_ols = lstsq(A_copy, b, err=state)
+
+        call check(error, state%ok(), 'lstsq failed: '//state%print())
+        if (allocated(error)) return
+
+        call check(error, all(abs(x_sub - x_ols) < tol), &
+                   'solve_weighted_lstsq with uniform weights must match lstsq')
+        if (allocated(error)) return
+
+    end subroutine test_solve_weighted_lstsq_d
+
+    !> Test that non-uniform weights change the solution (subroutine version)
+    subroutine test_solve_weighted_lstsq_effect_d(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+        integer(ilp), parameter :: m = 4, n = 2
+        real(dp), parameter :: tol = 100*sqrt(epsilon(0.0_dp))
+        real(dp) :: A(m,n), b(m), x_uniform(n), x_weighted(n)
+        real(dp) :: w_uniform(m), w_nonuniform(m)
+
+        ! Setup problem
+        A(:,1) = 1.0_dp
+        A(:,2) = [1.0_dp, 2.0_dp, 3.0_dp, 4.0_dp]
+        b = [1.0_dp, 3.0_dp, 2.0_dp, 5.0_dp]
+
+        w_uniform = 1.0_dp
+        w_nonuniform = [10.0_dp, 1.0_dp, 1.0_dp, 10.0_dp]  ! Weight first and last more
+
+        call solve_weighted_lstsq(w_uniform, A, b, x_uniform, err=state)
+        call check(error, state%ok(), 'uniform solve_weighted_lstsq failed')
+        if (allocated(error)) return
+
+        call solve_weighted_lstsq(w_nonuniform, A, b, x_weighted, err=state)
+        call check(error, state%ok(), 'non-uniform solve_weighted_lstsq failed')
+        if (allocated(error)) return
+
+        ! Solutions should be different
+        call check(error, any(abs(x_uniform - x_weighted) > tol), &
+                   'solve_weighted_lstsq: non-uniform weights should change solution')
+        if (allocated(error)) return
+
+    end subroutine test_solve_weighted_lstsq_effect_d
+
+    !> Test error on negative weights (subroutine version)
+    subroutine test_solve_weighted_lstsq_negative_d(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+        real(dp) :: A(3,2), b(3), x(2)
+        real(dp) :: w(3)
+
+        A = 1.0_dp
+        b = 1.0_dp
+        w = [-1.0_dp, 1.0_dp, 1.0_dp]  ! Invalid: negative weight!
+
+        call solve_weighted_lstsq(w, A, b, x, err=state)
+
+        call check(error, state%error(), 'solve_weighted_lstsq should fail on negative weights')
+        if (allocated(error)) return
+
+    end subroutine test_solve_weighted_lstsq_negative_d
+
+
+    !> Test solve_weighted_lstsq with complex data: uniform weights must match lstsq
+    subroutine test_solve_weighted_lstsq_c(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+        integer(ilp), parameter :: m = 4, n = 2
+        real(sp), parameter :: tol = 100*sqrt(epsilon(0.0_sp))
+        complex(sp) :: A(m,n), A_copy(m,n), b(m), x_sub(n)
+        real(sp) :: w(m)
+        complex(sp), allocatable :: x_ols(:)
+
+        ! Complex test case
+        A(:,1) = cmplx(1.0_sp, 0.5_sp, kind=sp)
+        A(:,2) = cmplx([1.0_sp, 2.0_sp, 3.0_sp, 4.0_sp], &
+                       [0.1_sp, 0.2_sp, 0.3_sp, 0.4_sp], kind=sp)
+        b = cmplx([2.0_sp, 4.0_sp, 5.0_sp, 4.0_sp], &
+                  [1.0_sp, 1.5_sp, 2.0_sp, 1.0_sp], kind=sp)
+        w = 1.0_sp  ! Uniform weights = OLS (weights are always real)
+        A_copy = A
+
+        call solve_weighted_lstsq(w, A, b, x_sub, err=state)
+
+        call check(error, state%ok(), 'complex solve_weighted_lstsq failed: '//state%print())
+        if (allocated(error)) return
+
+        ! KEY TEST: Uniform weights should match ordinary least squares
+        x_ols = lstsq(A_copy, b, err=state)
+
+        call check(error, state%ok(), 'complex lstsq failed: '//state%print())
+        if (allocated(error)) return
+
+        call check(error, all(abs(x_sub - x_ols) < tol), &
+                   'complex solve_weighted_lstsq with uniform weights must match lstsq')
+        if (allocated(error)) return
+
+    end subroutine test_solve_weighted_lstsq_c
+    !> Test solve_weighted_lstsq with complex data: uniform weights must match lstsq
+    subroutine test_solve_weighted_lstsq_z(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        type(linalg_state_type) :: state
+        integer(ilp), parameter :: m = 4, n = 2
+        real(dp), parameter :: tol = 100*sqrt(epsilon(0.0_dp))
+        complex(dp) :: A(m,n), A_copy(m,n), b(m), x_sub(n)
+        real(dp) :: w(m)
+        complex(dp), allocatable :: x_ols(:)
+
+        ! Complex test case
+        A(:,1) = cmplx(1.0_dp, 0.5_dp, kind=dp)
+        A(:,2) = cmplx([1.0_dp, 2.0_dp, 3.0_dp, 4.0_dp], &
+                       [0.1_dp, 0.2_dp, 0.3_dp, 0.4_dp], kind=dp)
+        b = cmplx([2.0_dp, 4.0_dp, 5.0_dp, 4.0_dp], &
+                  [1.0_dp, 1.5_dp, 2.0_dp, 1.0_dp], kind=dp)
+        w = 1.0_dp  ! Uniform weights = OLS (weights are always real)
+        A_copy = A
+
+        call solve_weighted_lstsq(w, A, b, x_sub, err=state)
+
+        call check(error, state%ok(), 'complex solve_weighted_lstsq failed: '//state%print())
+        if (allocated(error)) return
+
+        ! KEY TEST: Uniform weights should match ordinary least squares
+        x_ols = lstsq(A_copy, b, err=state)
+
+        call check(error, state%ok(), 'complex lstsq failed: '//state%print())
+        if (allocated(error)) return
+
+        call check(error, all(abs(x_sub - x_ols) < tol), &
+                   'complex solve_weighted_lstsq with uniform weights must match lstsq')
+        if (allocated(error)) return
+
+    end subroutine test_solve_weighted_lstsq_z
+
     ! Test issue #823
     subroutine test_issue_823(error)
         type(error_type), allocatable, intent(out) :: error
