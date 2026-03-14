@@ -466,7 +466,7 @@ contains
       end if
     end function
 
-    subroutine mm_fail_process(iostat, iomsg, code, message)
+    subroutine mm_fail_process(code, message, iostat, iomsg)
         integer, intent(out), optional :: iostat
         character(len=:), allocatable, intent(out), optional :: iomsg
         integer, intent(in) :: code
