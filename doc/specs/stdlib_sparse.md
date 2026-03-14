@@ -296,13 +296,15 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` [[stdlib_sparse_conversion(module):coo2csr(interface)]] `(coo,csr)`
+`call ` [[stdlib_sparse_conversion(module):coo2csr(interface)]] `(coo,csr[,sort_data])`
 
 ### Arguments
 
 `coo` : Shall be a `COO` type of `real` or `complex` type. It is an `intent(in)` argument.
 
 `csr` : Shall be a `CSR` type of `real` or `complex` type. It is an `intent(out)` argument.
+
+`sort_data`, `optional` : Shall be a `logical` argument to determine whether data in the COO graph should be sorted before obtaining the CSR representation, default `.false.`. It is an `intent(in)` argument.
 
 ### Syntax
 
