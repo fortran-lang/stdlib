@@ -254,48 +254,77 @@ contains
         #:endif
     end function
 
-    subroutine fill_other_half_${s}$(index_save, data_save, j, half_nnz, symmetry)
+    subroutine fill_other_half_${s}$(index_save, data_save, j, half_nnz, symmetry, is_pattern)
         integer, intent(inout) :: index_save(:, :)
         ${t}$, intent(inout) :: data_save(:)
         integer, intent(in) :: half_nnz, symmetry
         integer, intent(inout) :: j
+        logical, intent(in) :: is_pattern
 
         ! Internal variables.
         integer :: i
 
-        if(symmetry == MS_symmetric) then
-            do i = 1, half_nnz
-                if(index_save(1,i) == index_save(2,i)) cycle
-                index_save(1,j) = index_save(2,i)
-                index_save(2,j) = index_save(1,i)
-                data_save(j) = data_save(i)
-                j=j+1
-            end do
-        #:if t.startswith('complex')
-        else if(symmetry == MS_hermitian) then
-            do i = 1, half_nnz
-                if(index_save(1,i) == index_save(2,i)) cycle
-                index_save(1,j) = index_save(2,i)
-                index_save(2,j) = index_save(1,i)
-                data_save(j) = conjg(data_save(i))
-                j=j+1
-            end do
-        #:endif
+        if(.not. is_pattern) then
+            if(symmetry == MS_symmetric) then
+                do i = 1, half_nnz
+                    if(index_save(1,i) == index_save(2,i)) cycle
+                    index_save(1,j) = index_save(2,i)
+                    index_save(2,j) = index_save(1,i)
+                    data_save(j) = data_save(i)
+                    j=j+1
+                end do
+            #:if t.startswith('complex')
+            else if(symmetry == MS_hermitian) then
+                do i = 1, half_nnz
+                    if(index_save(1,i) == index_save(2,i)) cycle
+                    index_save(1,j) = index_save(2,i)
+                    index_save(2,j) = index_save(1,i)
+                    data_save(j) = conjg(data_save(i))
+                    j=j+1
+                end do
+            #:endif
+            else
+                do i = 1, half_nnz
+                    if(index_save(1,i) == index_save(2,i)) cycle
+                    index_save(1,j) = index_save(2,i)
+                    index_save(2,j) = index_save(1,i)
+                    data_save(j) = -data_save(i)
+                    j=j+1
+                end do
+            end if
         else
-            do i = 1, half_nnz
-                if(index_save(1,i) == index_save(2,i)) cycle
-                index_save(1,j) = index_save(2,i)
-                index_save(2,j) = index_save(1,i)
-                data_save(j) = -data_save(i)
-                j=j+1
-            end do
+            if(symmetry == MS_symmetric) then
+                do i = 1, half_nnz
+                    if(index_save(1,i) == index_save(2,i)) cycle
+                    index_save(1,j) = index_save(2,i)
+                    index_save(2,j) = index_save(1,i)
+                    j=j+1
+                end do
+            #:if t.startswith('complex')
+            else if(symmetry == MS_hermitian) then
+                do i = 1, half_nnz
+                    if(index_save(1,i) == index_save(2,i)) cycle
+                    index_save(1,j) = index_save(2,i)
+                    index_save(2,j) = index_save(1,i)
+                    j=j+1
+                end do
+            #:endif
+            else
+                do i = 1, half_nnz
+                    if(index_save(1,i) == index_save(2,i)) cycle
+                    index_save(1,j) = index_save(2,i)
+                    index_save(2,j) = index_save(1,i)
+                    j=j+1
+                end do
+            end if
         end if
     end subroutine
 
-    subroutine generate_random_${s}$_coo_matrix(index_save, data_save, nrows, ncols, symmetry)
+    subroutine generate_random_${s}$_coo_matrix(index_save, data_save, nrows, ncols, symmetry, is_pattern)
         ${t}$, allocatable, intent(out) :: data_save(:)
         integer, allocatable, intent(out) :: index_save(:, :)
         integer, intent(in) :: nrows, ncols, symmetry
+        logical, intent(in) :: is_pattern
 
         ! Internal variables
         integer, allocatable :: pos(:)
@@ -313,40 +342,42 @@ contains
 
         if(symmetry == MS_general) then
             allocate(index_save(2, nnz))
-            allocate(data_save(nnz))
+            if(.not. is_pattern) allocate(data_save(nnz))
             do i = 1, nnz
                 index_save(1,i) = mod(pos(i) - 1,nrows) + 1
                 index_save(2,i) = (pos(i) - 1)/nrows + 1
             end do
-            call generate_random_data_for_${s}$_coo(data_save, nnz)
+            if(.not. is_pattern) call generate_random_data_for_${s}$_coo(data_save, nnz)
         else if(symmetry == MS_symmetric) then
             nnz_lower = count(mod(pos(1:nnz) - 1,nrows) > (pos(1:nnz) - 1)/nrows) !! lower triangular part
             nnz_diag = count(mod(pos(1:nnz) - 1,nrows) == (pos(1:nnz) - 1)/nrows) !! diagonal
             allocate(index_save(2, 2*nnz_lower + nnz_diag))
-            allocate(data_save(2*nnz_lower + nnz_diag))
+            if(.not. is_pattern) allocate(data_save(2*nnz_lower + nnz_diag))
             call fill_first_half_indices(index_save, pos, nnz, nrows, ncols, MS_symmetric, j)
-            call generate_random_data_for_${s}$_coo(data_save, nnz_lower + nnz_diag)
-            call fill_other_half_${s}$(index_save, data_save, j, nnz_lower+nnz_diag, MS_symmetric)
+            if(.not. is_pattern) call generate_random_data_for_${s}$_coo(data_save, nnz_lower + nnz_diag)
+            call fill_other_half_${s}$(index_save, data_save, j, nnz_lower+nnz_diag, MS_symmetric, is_pattern)
         #:if t.startswith('complex')
         else if(symmetry == MS_hermitian) then
             nnz_lower = count(mod(pos(1:nnz) - 1,nrows) > (pos(1:nnz) - 1)/nrows) !! lower triangular part
             nnz_diag = count(mod(pos(1:nnz) - 1,nrows) == (pos(1:nnz) - 1)/nrows) !! diagonal
             allocate(index_save(2, 2*nnz_lower + nnz_diag))
-            allocate(data_save(2*nnz_lower + nnz_diag))
+            if(.not. is_pattern) allocate(data_save(2*nnz_lower + nnz_diag))
             call fill_first_half_indices(index_save, pos, nnz, nrows, ncols, MS_hermitian, j)
-            call generate_random_data_for_${s}$_coo(data_save, nnz_lower+nnz_diag)
-            do i = 1, nnz_lower + nnz_diag
-                if(index_save(1, i) == index_save(2,i)) data_save(i) = real(data_save(i))
-            end do
-            call fill_other_half_${s}$(index_save, data_save, j, nnz_lower+nnz_diag, MS_hermitian)
+            if(.not. is_pattern) call generate_random_data_for_${s}$_coo(data_save, nnz_lower+nnz_diag)
+            if(.not. is_pattern) then
+                do i = 1, nnz_lower + nnz_diag
+                    if(index_save(1, i) == index_save(2,i)) data_save(i) = real(data_save(i))
+                end do
+            end if
+            call fill_other_half_${s}$(index_save, data_save, j, nnz_lower+nnz_diag, MS_hermitian, is_pattern)
         #:endif
         else
             nnz_lower = count(mod(pos(1:nnz) - 1,nrows) > (pos(1:nnz) - 1)/nrows) !! lower triangular part
             allocate(index_save(2, 2*nnz_lower))
-            allocate(data_save(2*nnz_lower))
+            if(.not. is_pattern) allocate(data_save(2*nnz_lower))
             call fill_first_half_indices(index_save, pos, nnz, nrows, ncols, MS_skew_symmetric, j)
-            call generate_random_data_for_${s}$_coo(data_save, nnz_lower)
-            call fill_other_half_${s}$(index_save, data_save, j, nnz_lower, MS_skew_symmetric)
+            if(.not. is_pattern) call generate_random_data_for_${s}$_coo(data_save, nnz_lower)
+            call fill_other_half_${s}$(index_save, data_save, j, nnz_lower, MS_skew_symmetric, is_pattern)
         end if
         if(allocated(pos)) deallocate(pos)
     end subroutine
@@ -374,76 +405,104 @@ contains
 
             call random_seed()
             ! General matrix
-            call generate_random_${s}$_coo_matrix(index_save, data_save, nrows, ncols, MS_general)
+            call generate_random_${s}$_coo_matrix(index_save, data_save, nrows, ncols, MS_general, .false.)
             call save_mm("test_mmio_sparse.mtx", index_save, data_save, format = "G0")
             call load_mm("test_mmio_sparse.mtx", index_load, data_load)
             result = compare_coo_${s}$(index_save, index_load, data_save, data_load)
             call check(error, result, .true.,&
                 "MM coordinate test failed: symmetry_arg=unspecified, type=${t}$")
             if(allocated(error)) return
-            call save_mm("test_mmio_sparse.mtx", index_save, [0], format = "G0")
-            call load_mm("test_mmio_sparse.mtx", index_load, data_load)
-            result = compare_coo_pattern(index_save, index_load)
-            call check(error, result, .true.,&
-                "MM coordinate test failed: symmetry_arg=unspecified, type=pattern")
-            if(allocated(error)) return
             if(allocated(index_save)) deallocate(index_save)
             if(allocated(data_save)) deallocate(data_save)
 
             ! Symmetric matrix
-            call generate_random_${s}$_coo_matrix(index_save, data_save, nrows, ncols, MS_symmetric)
+            call generate_random_${s}$_coo_matrix(index_save, data_save, nrows, ncols, MS_symmetric, .false.)
             call save_mm("test_mmio_sparse.mtx", index_save, data_save, symmetry = "symmetric", format = "G0")
             call load_mm("test_mmio_sparse.mtx", index_load, data_load)
             result = compare_coo_${s}$(index_save, index_load, data_save, data_load)
             call check(error, result, .true.,&
                 "MM coordinate test failed: symmetry_arg=symmetric, type=${t}$")
             if(allocated(error)) return
-            call save_mm("test_mmio_sparse.mtx", index_save, [0], symmetry = "symmetric", format = "G0")
-            call load_mm("test_mmio_sparse.mtx", index_load, data_load)
-            result = compare_coo_pattern(index_save, index_load)
-            call check(error, result, .true.,&
-                "MM coordinate test failed: symmetry_arg=symmetric, type=pattern")
-            if(allocated(error)) return
             if(allocated(index_save)) deallocate(index_save)
             if(allocated(data_save)) deallocate(data_save)
 
             ! Skew-symmetric matrix
-            call generate_random_${s}$_coo_matrix(index_save, data_save, nrows, ncols, MS_skew_symmetric)
+            call generate_random_${s}$_coo_matrix(index_save, data_save, nrows, ncols, MS_skew_symmetric, .false.)
             call save_mm("test_mmio_sparse.mtx", index_save, data_save, symmetry = "skew-symmetric", format = "G0")
             call load_mm("test_mmio_sparse.mtx", index_load, data_load)
             result = compare_coo_${s}$(index_save, index_load, data_save, data_load)
             call check(error, result, .true.,&
                 "MM coordinate test failed: symmetry_arg=skew-symmetric, type=${t}$")
             if(allocated(error)) return
-            call save_mm("test_mmio_sparse.mtx", index_save, [0], symmetry = "skew-symmetric", format = "G0")
-            call load_mm("test_mmio_sparse.mtx", index_load, data_load)
-            result = compare_coo_pattern(index_save, index_load)
-            call check(error, result, .true.,&
-                "MM coordinate test failed: symmetry_arg=skew-symmetric, type=pattern")
-            if(allocated(error)) return
             if(allocated(index_save)) deallocate(index_save)
             if(allocated(data_save)) deallocate(data_save)
 
             #:if t.startswith('complex')
             ! Hermitian matrix
-            call generate_random_${s}$_coo_matrix(index_save, data_save, nrows, ncols, MS_hermitian)
+            call generate_random_${s}$_coo_matrix(index_save, data_save, nrows, ncols, MS_hermitian, .false.)
             call save_mm("test_mmio_sparse.mtx", index_save, data_save, symmetry = "hermitian", format = "G0")
             call load_mm("test_mmio_sparse.mtx", index_load, data_load)
             result = compare_coo_${s}$(index_save, index_load, data_save, data_load)
             call check(error, result, .true.,&
                 "MM coordinate test failed: symmetry_arg=hermitian, type=${t}$")
             if(allocated(error)) return
-            call save_mm("test_mmio_sparse.mtx", index_save, [0], symmetry = "hermitian", format = "G0")
-            call load_mm("test_mmio_sparse.mtx", index_load, data_load)
-            result = compare_coo_pattern(index_save, index_load)
-            call check(error, result, .true.,&
-                "MM coordinate test failed: symmetry_arg=hermitian, type=pattern")
-            if(allocated(error)) return
             if(allocated(index_save)) deallocate(index_save)
             if(allocated(data_save)) deallocate(data_save)
             #:endif
         end block
         #:endfor
+
+        ! Pattern tests
+        block
+            integer :: nrows, ncols
+            real(sp), allocatable :: dummy(:) ! Dummy data matrix
+            integer, allocatable :: index_save(:, :), index_load(:,:)
+            logical :: result
+
+            nrows = 5
+            ncols = 5
+
+            call random_seed()
+            ! General matrix
+            call generate_random_sp_coo_matrix(index_save, dummy, nrows, ncols, MS_general, .true.)
+            call save_mm("test_mmio_sparse.mtx", index_save, [0], format = "G0")
+            call load_mm("test_mmio_sparse.mtx", index_load, dummy)
+            result = compare_coo_pattern(index_save, index_load)
+            call check(error, result, .true.,&
+                "MM coordinate test failed: symmetry_arg=unspecified, type=pattern")
+            if(allocated(error)) return
+            if(allocated(index_save)) deallocate(index_save)
+
+            ! Symmetric matrix
+            call generate_random_sp_coo_matrix(index_save, dummy, nrows, ncols, MS_symmetric, .true.)
+            call save_mm("test_mmio_sparse.mtx", index_save, [0], symmetry = "symmetric", format = "G0")
+            call load_mm("test_mmio_sparse.mtx", index_load, dummy)
+            result = compare_coo_pattern(index_save, index_load)
+            call check(error, result, .true.,&
+                "MM coordinate test failed: symmetry_arg=symmetric, type=pattern")
+            if(allocated(error)) return
+            if(allocated(index_save)) deallocate(index_save)
+
+            ! Skew-symmetric matrix
+            call generate_random_sp_coo_matrix(index_save, dummy, nrows, ncols, MS_skew_symmetric, .true.)
+            call save_mm("test_mmio_sparse.mtx", index_save, [0], symmetry = "skew-symmetric", format = "G0")
+            call load_mm("test_mmio_sparse.mtx", index_load, dummy)
+            result = compare_coo_pattern(index_save, index_load)
+            call check(error, result, .true.,&
+                "MM coordinate test failed: symmetry_arg=skew-symmetric, type=pattern")
+            if(allocated(error)) return
+            if(allocated(index_save)) deallocate(index_save)
+
+            ! Hermitian matrix
+            call generate_random_sp_coo_matrix(index_save, dummy, nrows, ncols, MS_hermitian, .true.)
+            call save_mm("test_mmio_sparse.mtx", index_save, [0], symmetry = "hermitian", format = "G0")
+            call load_mm("test_mmio_sparse.mtx", index_load, dummy)
+            result = compare_coo_pattern(index_save, index_load)
+            call check(error, result, .true.,&
+                "MM coordinate test failed: symmetry_arg=hermitian, type=pattern")
+            if(allocated(error)) return
+            if(allocated(index_save)) deallocate(index_save)
+        end block
     end subroutine
 
 end module
