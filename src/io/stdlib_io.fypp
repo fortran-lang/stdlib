@@ -13,8 +13,11 @@ module stdlib_io
                                  FMT_COMPLEX_SP, FMT_COMPLEX_DP, FMT_COMPLEX_XDP, FMT_COMPLEX_QP
   use stdlib_error, only: error_stop, state_type, STDLIB_IO_ERROR
   use stdlib_optval, only: optval
-  use stdlib_ascii, only: is_blank
+  use stdlib_ascii, only: is_blank, CR, LF, TAB
   use stdlib_string_type, only : string_type, assignment(=), move
+  use stdlib_strings, only: starts_with
+  use stdlib_str2num, only: to_num_from_stream
+
   implicit none
   private
   ! Public API
@@ -47,6 +50,9 @@ module stdlib_io
 
   !> Default delimiter for loadtxt, savetxt and number_of_columns
   character(len=1), parameter :: delimiter_default = " "
+  character(len=1), parameter :: comment_default = "#"
+  character(len=2), parameter :: nl = CR//LF
+  character(len=*), parameter :: blanks = " "//TAB
 
   public :: FMT_INT, FMT_REAL_SP, FMT_REAL_DP, FMT_REAL_XDP, FMT_REAL_QP
   public :: FMT_COMPLEX_SP, FMT_COMPLEX_DP, FMT_COMPLEX_XDP, FMT_COMPLEX_QP
@@ -66,6 +72,7 @@ module stdlib_io
     !!
     !! Loads a 2D array from a text file
     !! ([Specification](../page/specs/stdlib_io.html#description))
+    ! # :for k1, t1 in REAL_KINDS_TYPES + INT_KINDS_TYPES
     #:for k1, t1 in KINDS_TYPES
       module procedure loadtxt_${t1[0]}$${k1}$
     #:endfor
@@ -83,18 +90,17 @@ module stdlib_io
 
 contains
 
-  #:for arg1 in ['filename', 'unit']
+  ! #  :for k1, t1 in REAL_KINDS_TYPES + INT_KINDS_TYPES
   #:for k1, t1 in KINDS_TYPES
-    ! subroutine  loadtxt_${t1[0]}$${k1}$(filename, d, skiprows, max_rows, fmt, delimiter)
-    subroutine loadtxt_${t1[0]}$${k1}$${arg1[0]}$(${arg1}$, d, comments, delimiter, skiplines, max_rows, usecols)
-      !! version: experimental
-      !!
-      !! Loads a 2D array from a text file.
-      !!
-      !! Arguments
-      !! ---------
-      !!
-      !! Filename to load the array from
+    subroutine loadtxt_${t1[0]}$${k1}$(filename, d, comments, delimiter, skiplines, max_rows, usecols)
+        !! version: experimental
+        !!
+        !! Loads a 2D array from a text file.
+        !!
+        !! Arguments
+        !! ---------
+        !!
+        !! Filename to load the array from
         character(len=*), intent(in) :: filename
         !! The array 'd' will be automatically allocated with the correct dimensions
         ${t1}$, allocatable, intent(out) :: d(:, :) 
@@ -103,16 +109,6 @@ contains
         character(len=*), intent(in), optional :: comments !! from comments symbol until line end everything else will be ignored. The default is '#'.
         character(len=*), intent(in), optional :: delimiter !! Character used to separate values in a line. The default is any number of spaces and or tabs.
         integer, intent(in), optional :: usecols(:) !! Array of column indices to read. If not provided, all columns are read.
-        integer :: skiplines_, max_rows_
-        integer :: u, fsze, nrows, nrows_effective, ncols, j, start_effective
-        character(:), allocatable, target :: ff
-        character(len=:), pointer :: ffp
-        integer :: line_start, line_end
-        character(len=:), allocatable :: delim_
-        character(len=:), allocatable :: comment_
-        integer :: row, row_effective, err
-        integer, allocatable ::  usecols_(:)
-        ${t1}$, allocatable :: cols(:)
         !!
         !! Example
         !! -------
@@ -130,25 +126,42 @@ contains
         !!     11 12 13
         !!     ...
         !!
-        integer :: s
-        integer :: nrow, ncol, i, j, ios, skiprows_, max_rows_, istart, iend
-        character(len=:), allocatable :: line, iomsg_
+        integer :: iostat
         character(len=1024) :: iomsg, msgout
+        integer :: skiplines_, max_rows_
+        integer :: unit, fsze, nrows, nrows_effective, ncols, j, start_effective
+        character(:), allocatable, target :: ff
+        character(len=:), pointer :: ffp
+        integer :: line_start, line_end
+        character(len=:), allocatable :: delim_
+        character(len=:), allocatable :: comment_
+        integer :: row, row_effective, err
+        integer, allocatable ::  usecols_(:)
+        ${t1}$, allocatable :: cols(:)
+      #:if 'complex' in t1
+        real(${k1}$) :: reval, imval
+      #:endif
 
         comment_ = optval(comments, comment_default)
         delim_ = optval(delimiter, delimiter_default)
         skiplines_ = optval(skiplines, 0)
         ! max_rows will be set later, after determining number of rows
         !----------------------------------------- Load file in a single string
-        open (newunit=u, file=filename, status='old', access='stream', action="read", iostat=err)
-        if (err /= 0) then
-            allocate (d(0, 0))
-            return
+        unit = open (filename, "rb", iostat=iostat)
+        if (iostat /= 0) then
+            write(msgout,'(a)') "loadtxt: error opening file "//trim(filename)
+            call error_stop(msg=trim(msgout))
         end if
-        inquire (unit=u, size=fsze)
+            
+        inquire (unit=unit, size=fsze)
         allocate (character(fsze) :: ff)
-        read (u) ff
-        close (u)
+        read (unit, iostat=iostat, iomsg=iomsg) ff
+        close (unit)
+        if (iostat /= 0) then
+            write(msgout,'(a)') "loadtxt: error reading file "//trim(filename)//"("//trim(iomsg)//")"
+            call error_stop(msg=trim(msgout))
+        end if
+
         ffp => ff
         start_effective = 1     ! Start after skiplines
 
@@ -180,6 +193,10 @@ contains
         end do
 
         !----------------------------------------- Allocate and read data
+      #:if 'complex' in t1
+        ncols = ncols / 2
+      #:endif
+
         max_rows_ = min(optval(max_rows, nrows_effective), nrows_effective)
         ! If there is no data we will return an empty array
         if ((max_rows_ <= 0) .or. (ncols == 0)) then
@@ -211,10 +228,23 @@ contains
 
             row_effective = row_effective + 1
             do j = 1, ncols     ! Read a row
+              #:if 'complex' in t1
+                reval = to_num_from_stream(ffp, reval)
+                if (in_delim(ffp, delim_)) then
+                    ffp => ffp(shift_to_nondelim(ffp, delim_):)
+                end if
+                imval = to_num_from_stream(ffp, imval)
+                if (in_delim(ffp, delim_)) then
+                    ffp => ffp(shift_to_nondelim(ffp, delim_):)
+                end if
+                cols(j) = complex(reval,imval)
+              #:else  
                 cols(j) = to_num_from_stream(ffp, cols(j))
                 if (in_delim(ffp, delim_)) then
                     ffp => ffp(shift_to_nondelim(ffp, delim_):)
                 end if
+              #:endif
+
                 if (scan(ffp(1:1), nl) /= 0) then ! If EOL => no more cols
                     exit
                 end if
@@ -229,7 +259,7 @@ contains
             ffp => ffp(line_end + 1:)
         end do
 
-    end subroutine loadtxt_${t1[0]}$${k1}$${arg1[0]}$
+    end subroutine loadtxt_${t1[0]}$${k1}$
   #:endfor
 
     function number_cols_line(row, delimiter, comment) result(ncols)
