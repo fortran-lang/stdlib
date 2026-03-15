@@ -23,7 +23,11 @@ contains
         return
       end if
 
-      res = 1
+      if (var(x, corrected=.false.) > 0._${k1}$) then
+        res = 1
+      else
+        res = ieee_value(1._${k1}$, ieee_quiet_nan)
+      end if
 
     end function ${RName}$
   #:endfor
@@ -42,7 +46,11 @@ contains
         return
       end if
 
-      res = 1
+      if (var(real(x, dp), corrected=.false.) > 0._dp) then
+        res = 1
+      else
+        res = ieee_value(1._dp, ieee_quiet_nan)
+      end if
 
     end function ${RName}$
   #:endfor
@@ -61,7 +69,11 @@ contains
         return
       end if
 
-      res = 1
+      if (var(x, mask=mask, corrected=.false.) > 0._${k1}$) then
+        res = 1
+      else
+        res = ieee_value(1._${k1}$, ieee_quiet_nan)
+      end if
 
     end function ${RName}$
   #:endfor
@@ -80,7 +92,11 @@ contains
         return
       end if
 
-      res = 1
+      if (var(real(x, dp), mask=mask, corrected=.false.) > 0._dp) then
+        res = 1
+      else
+        res = ieee_value(1._dp, ieee_quiet_nan)
+      end if
 
     end function ${RName}$
   #:endfor
@@ -128,7 +144,13 @@ contains
           call error_stop("ERROR (corr): wrong dimension")
       end select
 
-      mean_ = 1 / sqrt(diag(res))
+      do i = 1, size(mean_)
+        if (real(res(i, i), ${k1}$) > 0._${k1}$) then
+          mean_(i) = 1._${k1}$ / sqrt(real(res(i, i), ${k1}$))
+        else
+          mean_(i) = ieee_value(1._${k1}$, ieee_quiet_nan)
+        end if
+      end do
       do i = 1, size(res, 1)
         do j = 1, size(res, 2)
           res(j, i) = res(j, i) * mean_(i) * mean_(j)
@@ -173,7 +195,13 @@ contains
           call error_stop("ERROR (corr): wrong dimension")
       end select
 
-      mean_ = 1 / sqrt(diag(res))
+      do i = 1, size(mean_)
+        if (real(res(i, i), dp) > 0._dp) then
+          mean_(i) = 1._dp / sqrt(real(res(i, i), dp))
+        else
+          mean_(i) = ieee_value(1._dp, ieee_quiet_nan)
+        end if
+      end do
       do i = 1, size(res, 1)
         do j = 1, size(res, 2)
           res(j, i) = res(j, i) * mean_(i) * mean_(j)
@@ -194,6 +222,7 @@ contains
                           , merge(size(x, 1), size(x, 2), mask = 1<dim))
 
       integer :: i, j
+      real(${k1}$) :: n_
       ${t1}$ :: centeri_(merge(size(x, 2), size(x, 1), mask = 1<dim))
       ${t1}$ :: centerj_(merge(size(x, 2), size(x, 1), mask = 1<dim))
       logical :: mask_(merge(size(x, 2), size(x, 1), mask = 1<dim))
@@ -218,9 +247,13 @@ contains
               #:endif
                 mask_)
 
-              res(j, i) = dot_product( centerj_, centeri_)&
-               /sqrt(dot_product( centeri_, centeri_)*&
-                     dot_product( centerj_, centerj_))
+              n_ = real(dot_product(centeri_, centeri_), ${k1}$) * &
+                   real(dot_product(centerj_, centerj_), ${k1}$)
+              if (n_ > 0._${k1}$) then
+                res(j, i) = dot_product( centerj_, centeri_) / sqrt(n_)
+              else
+                res(j, i) = ieee_value(res(j, i), ieee_quiet_nan)
+              end if
 
             end do
           end do
@@ -243,9 +276,13 @@ contains
               #:endif
                 mask_)
 
-              res(j, i) = dot_product( centeri_, centerj_)&
-               /sqrt(dot_product( centeri_, centeri_)*&
-                     dot_product( centerj_, centerj_))
+              n_ = real(dot_product(centeri_, centeri_), ${k1}$) * &
+                   real(dot_product(centerj_, centerj_), ${k1}$)
+              if (n_ > 0._${k1}$) then
+                res(j, i) = dot_product( centeri_, centerj_) / sqrt(n_)
+              else
+                res(j, i) = ieee_value(res(j, i), ieee_quiet_nan)
+              end if
             end do
           end do
         case default
@@ -266,6 +303,7 @@ contains
                           , merge(size(x, 1), size(x, 2), mask = 1<dim))
 
       integer :: i, j
+      real(dp) :: n_
       real(dp) :: centeri_(merge(size(x, 2), size(x, 1), mask = 1<dim))
       real(dp) :: centerj_(merge(size(x, 2), size(x, 1), mask = 1<dim))
       logical :: mask_(merge(size(x, 2), size(x, 1), mask = 1<dim))
@@ -278,9 +316,12 @@ contains
              centeri_ = merge( x(:, i) - mean(x(:, i), mask = mask_),0._dp, mask_)
              centerj_ = merge( x(:, j) - mean(x(:, j), mask = mask_),0._dp, mask_)
 
-             res(j, i) = dot_product( centerj_, centeri_)&
-                 /sqrt(dot_product( centeri_, centeri_)*&
-                       dot_product( centerj_, centerj_))
+              n_ = dot_product(centeri_, centeri_) * dot_product(centerj_, centerj_)
+              if (n_ > 0._dp) then
+                res(j, i) = dot_product(centerj_, centeri_) / sqrt(n_)
+              else
+                res(j, i) = ieee_value(res(j, i), ieee_quiet_nan)
+              end if
 
             end do
           end do
@@ -291,9 +332,12 @@ contains
              centeri_ = merge( x(i, :) - mean(x(i, :), mask = mask_),0._dp, mask_)
              centerj_ = merge( x(j, :) - mean(x(j, :), mask = mask_),0._dp, mask_)
 
-             res(j, i) = dot_product( centeri_, centerj_)&
-                 /sqrt(dot_product( centeri_, centeri_)*&
-                       dot_product( centerj_, centerj_))
+              n_ = dot_product(centeri_, centeri_) * dot_product(centerj_, centerj_)
+              if (n_ > 0._dp) then
+                res(j, i) = dot_product(centeri_, centerj_) / sqrt(n_)
+              else
+                res(j, i) = ieee_value(res(j, i), ieee_quiet_nan)
+              end if
             end do
           end do
         case default
