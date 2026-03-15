@@ -225,8 +225,7 @@ contains
         real(${k1}$) :: res
 
         res = beta_dist_pdf_${t1[0]}$${k1}$(x, a, b, loc)
-        err = 0
-        if(ieee_is_nan(res)) err = 1
+        err = merge(1, 0, ieee_is_nan(res))
     end function beta_dist_pdf_impure_${t1[0]}$${k1}$
 
     #:endfor
@@ -268,15 +267,14 @@ contains
 
         res = beta_dist_pdf_r${k1}$(x%re, a%re, b%re, loc_%re)
         res = res * beta_dist_pdf_r${k1}$(x%im, a%im, b%im, loc_%im)
-        err = 0
-        if(ieee_is_nan(res)) err = 1
+        err = merge(1, 0, ieee_is_nan(res))
     end function beta_dist_pdf_impure_${t1[0]}$${k1}$
 
     #:endfor
 
 
     #:for k1, t1 in BETA_REAL_KINDS_TYPES
-    impure elemental function beta_dist_cdf_${t1[0]}$${k1}$(x, a, b, loc)   &
+    elemental function beta_dist_cdf_${t1[0]}$${k1}$(x, a, b, loc)   &
         result(res)
     ! Beta distribution cumulative distribution function
     !
@@ -322,15 +320,14 @@ contains
         real(${k1}$) :: res
 
         res = beta_dist_cdf_${t1[0]}$${k1}$(x, a, b, loc)
-        err = 0
-        if(ieee_is_nan(res)) err = 1
+        err = merge(1, 0, ieee_is_nan(res))
     end function beta_dist_cdf_impure_${t1[0]}$${k1}$
 
     #:endfor
 
 
     #:for k1, t1 in BETA_CMPLX_KINDS_TYPES
-    impure elemental function beta_dist_cdf_${t1[0]}$${k1}$(x, a, b, loc)   &
+    elemental function beta_dist_cdf_${t1[0]}$${k1}$(x, a, b, loc)   &
         result(res)
     ! Complex parameter beta distributed. The real part and imaginary part are
     ! independent of each other.
@@ -364,8 +361,7 @@ contains
         loc_ = optval(loc, cmplx(0.0_${k1}$, 0.0_${k1}$, kind=${k1}$))
 
         res = beta_dist_cdf_${t1[0]}$${k1}$(x, a, b, loc_)
-        err = 0
-        if(ieee_is_nan(res)) err = 1
+        err = merge(1, 0, ieee_is_nan(res))
     end function beta_dist_cdf_impure_${t1[0]}$${k1}$
 
     #:endfor
