@@ -250,7 +250,9 @@ contains
                                   0._${k1}$,&
                                   mask${select_subarray(rank, [(fi, 'i')])}$)
             end do
-            res = merge(res / (n - merge(1, 0, optval(corrected, .true.))), &
+            res = merge(res / merge(n - merge(1, 0, optval(corrected, .true.)), &
+                                    1._${k1}$, &
+                                    n > merge(1, 0, optval(corrected, .true.))), &
                         ieee_value(1._${k1}$, ieee_quiet_nan), &
                         n > merge(1, 0, optval(corrected, .true.)))
           #:endfor
@@ -287,7 +289,9 @@ contains
               res = res + merge((real(x${select_subarray(rank, [(fi, 'i')])}$, dp) - mean)**2,&
                                   0._dp, mask${select_subarray(rank, [(fi, 'i')])}$)
             end do
-            res = merge(res / (n - merge(1, 0, optval(corrected, .true.))), &
+            res = merge(res / merge(n - merge(1, 0, optval(corrected, .true.)), &
+                                    1._dp, &
+                                    n > merge(1, 0, optval(corrected, .true.))), &
                         ieee_value(1._dp, ieee_quiet_nan), &
                         n > merge(1, 0, optval(corrected, .true.)))
           #:endfor
