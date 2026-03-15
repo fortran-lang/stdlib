@@ -1,0 +1,79 @@
+#:include "common.fypp"
+#:set RANKS = range(1, 2+1)
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
+#! define ranks without parentheses
+#:def rksfx2(rank)
+#{if rank > 0}#${":," + ":," * (rank - 1)}$#{endif}#
+#:enddef
+submodule (stdlib_sparse_spmv) stdlib_sparse_spmv_ell
+contains
+
+    !! spmv_ell
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    #:for rank in RANKS
+    module subroutine spmv_ell_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta,op)
+        type(ELL_${s1}$_type), intent(in) :: matrix
+        ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
+        ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
+        ${t1}$, intent(in), optional :: alpha
+        ${t1}$, intent(in), optional :: beta
+        character(1), intent(in), optional :: op
+        ${t1}$ :: alpha_
+        character(1) :: op_
+        integer(ilp) :: i, j, k
+        
+        op_ = sparse_op_none; if(present(op)) op_ = op
+        alpha_ = one_${k1}$
+        if(present(alpha)) alpha_ = alpha
+        if(present(beta)) then
+            vec_y = beta * vec_y
+        else 
+            vec_y = zero_${s1}$
+        endif
+        associate( data => matrix%data, index => matrix%index, MNZ_P_ROW => matrix%K, &
+            & nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage )
+            if( storage == sparse_full .and. op_==sparse_op_none ) then
+                do concurrent (i = 1:nrows, k = 1:MNZ_P_ROW)
+                    j = index(i,k)
+                    if(j>0) vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_*data(i,k) * vec_x(${rksfx2(rank-1)}$j)
+                end do
+            else if( storage == sparse_full .and. op_==sparse_op_transpose ) then
+                do concurrent (i = 1:nrows, k = 1:MNZ_P_ROW)
+                    j = index(i,k)
+                    if(j>0) vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_*data(i,k) * vec_x(${rksfx2(rank-1)}$i)
+                end do
+            else if( storage /= sparse_full .and. op_/=sparse_op_hermitian ) then
+                do concurrent (i = 1:nrows, k = 1:MNZ_P_ROW)
+                    j = index(i,k)
+                    if(j>0) then
+                        vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_*data(i,k) * vec_x(${rksfx2(rank-1)}$j)
+                        if(i==j) cycle 
+                        vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_*data(i,k) * vec_x(${rksfx2(rank-1)}$i)
+                    end if
+                end do
+            #:if t1.startswith('complex')
+            else if( storage == sparse_full .and. op_==sparse_op_hermitian ) then
+                do concurrent (i = 1:nrows, k = 1:MNZ_P_ROW)
+                    j = index(i,k)
+                    if(j>0) vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_*conjg(data(i,k)) * vec_x(${rksfx2(rank-1)}$i)
+                end do
+            else if( storage /= sparse_full .and. op_==sparse_op_hermitian ) then
+                do concurrent (i = 1:nrows, k = 1:MNZ_P_ROW)
+                    j = index(i,k)
+                    if(j>0) then
+                        vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_*conjg(data(i,k)) * vec_x(${rksfx2(rank-1)}$j)
+                        if(i==j) cycle 
+                        vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_*conjg(data(i,k)) * vec_x(${rksfx2(rank-1)}$i)
+                    end if
+                end do
+            #:endif
+            end if
+        end associate
+    end subroutine
+    
+    #:endfor
+    #:endfor
+
+end submodule stdlib_sparse_spmv_ell
