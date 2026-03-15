@@ -1390,6 +1390,7 @@ contains
         ${t1}$ :: res
         ${t1}$ :: aa, c, d, del, h, qab, qam, qap, fpmin
         integer :: m, m2
+        logical :: converged
         ${t1}$, parameter :: one = 1.0_${k1}$
 
         fpmin = tiny(1.0_${k1}$) / eps
@@ -1402,6 +1403,7 @@ contains
         if(abs(d) < fpmin) d = fpmin
         d = one / d
         h = d
+        converged = .false.
 
         do m = 1, maxit
             m2 = 2 * m
@@ -1420,10 +1422,17 @@ contains
             d = one / d
             del = d * c
             h = h * del
-            if(abs(del - one) < eps) exit
+            if(abs(del - one) < eps) then
+                converged = .true.
+                exit
+            end if
         end do
 
-        res = h
+        if (converged) then
+            res = h
+        else
+            res = ieee_value(one, ieee_quiet_nan)
+        end if
     end function betacf_${t1[0]}$${k1}$
 
     #:endfor
