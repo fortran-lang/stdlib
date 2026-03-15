@@ -146,8 +146,17 @@ Type-bound procedures to enable adding data in a sparse matrix.
 
 ### Syntax
 
-`call matrix%add(i,j,v)` or
+* Add single value
+`call matrix%add(i,j,v)` 
+
+* Add a block of values
 `call matrix%add(i(:),j(:),v(:,:))`
+
+* BSR format: add a single block
+`call bsr_matrix%add(i,j,v(:,:))`
+
+* BSR format: add a block of blocks
+`call bsr_matrix%add(i(:),j(:),v(:,:,:,:))` 
 
 ### Arguments
 
@@ -155,7 +164,7 @@ Type-bound procedures to enable adding data in a sparse matrix.
 
 `j`: Shall be an integer value or rank-1 array. It is an `intent(in)` argument.
 
-`v`: Shall be a `real` or `complex` value or rank-2 array. The type shall be in accordance to the declared sparse matrix object. It is an `intent(in)` argument.
+`v`: Shall be a `real` or `complex` value or rank-2 array. For the `BSR` format type, the unit input is a single matrix block (rank-2 array), alternatively, a block of blocks can be added unsing a rank-4 array. The type shall be in accordance to the declared sparse matrix object. It is an `intent(in)` argument.
 
 ## `at`- sparse matrix data accessors
 
