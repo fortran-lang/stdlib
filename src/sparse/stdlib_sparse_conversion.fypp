@@ -217,8 +217,8 @@ contains
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     subroutine coo2csr_${s1}$(COO, CSR, sort_data)
-        type(COO_${s1}$_type), intent(in)  :: COO
-        type(CSR_${s1}$_type), intent(out) :: CSR
+        type(COO_${s1}$_type), intent(inout) :: COO
+        type(CSR_${s1}$_type), intent(out)   :: CSR
         logical, intent(in), optional :: sort_data
         logical :: sort_data_
         integer(ilp) :: i
