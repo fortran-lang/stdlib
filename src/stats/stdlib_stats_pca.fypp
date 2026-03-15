@@ -129,10 +129,10 @@ contains
       components = zero
       singular_values = zero
 
-      ! Input validation: check for empty arrays
-      if (n < 1 .or. p < 1) then
+      ! Input validation: check for empty arrays or non-positive dimensions
+      if (n < 1 .or. p < 1 .or. nc < 1) then
          err0 = linalg_state_type("pca", LINALG_VALUE_ERROR, &
-                "Input array must have at least 1 observation and 1 feature")
+                "Input array and output components must have at least 1 observation, feature, and component")
          call err0%handle(err)
          return
       end if
@@ -221,6 +221,9 @@ contains
       nc = size(components, 1, kind=ilp)
 
       ! Validate dimensions
+      if (nc < 1) then
+         call error_stop("ERROR (pca_transform): number of components must be at least 1")
+      end if
       if (size(components, 2, kind=ilp) /= p) then
          call error_stop("ERROR (pca_transform): components columns must match x columns")
       end if
@@ -258,6 +261,9 @@ contains
       p = size(components, 2, kind=ilp)
 
       ! Validate dimensions
+      if (nc < 1) then
+         call error_stop("ERROR (pca_inverse_transform): number of components must be at least 1")
+      end if
       if (size(components, 1, kind=ilp) /= nc) then
          call error_stop("ERROR (pca_inverse_transform): components rows must match x_reduced columns")
       end if
