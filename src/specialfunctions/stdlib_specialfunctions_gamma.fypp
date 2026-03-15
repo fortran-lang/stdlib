@@ -1287,6 +1287,8 @@ contains
       #:endfor
     #:endfor
 
+
+
     !
     ! Beta function implementations
     !
@@ -1329,7 +1331,7 @@ contains
 
 
     #:for k1, t1 in GAMMA_REAL_KINDS_TYPES
-    impure elemental function incomplete_beta_${t1[0]}$${k1}$(x, a, b) result(res)
+    elemental function incomplete_beta_${t1[0]}$${k1}$(x, a, b) result(res)
     ! Regularized incomplete beta function I_x(a,b)
     ! Uses continued fraction expansion for numerical accuracy
     !
