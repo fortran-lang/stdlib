@@ -43,6 +43,8 @@ contains
             , new_unittest("spooky_hash", test_spooky_hash) &
             , new_unittest("hash_determinism", test_hash_determinism) &
             , new_unittest("hash_distribution", test_hash_distribution) &
+            , new_unittest("nmhash32_kat", test_nmhash32_kat) &
+            , new_unittest("nmhash32x_kat", test_nmhash32x_kat) &
             ]
 
     end subroutine collect_hash_functions
@@ -67,6 +69,15 @@ contains
         integer(int8) :: key_array(size_key_array)
         integer(int32) :: c_hash(0:size_key_array)
 
+        ! The C reference implementation (nmhash.h) does not support
+        ! big-endian. Skip C-comparison on BE; value-correctness is
+        ! verified by the test_nmhash32_kat known-answer test instead.
+        if (.not. little_endian) then
+            call skip_test(error, &
+                "NMHASH32 C-comparison skipped on Big-Endian (see KAT test)")
+            return
+        end if
+
         call read_array("key_array.bin", key_array )
 
         ! Read hash array generated from key array by the C version of nmhash32
@@ -87,6 +98,15 @@ contains
         integer :: index
         integer(int8) :: key_array(size_key_array)
         integer(int32) :: c_hash(0:size_key_array)
+
+        ! The C reference implementation (nmhash.h) does not support
+        ! big-endian. Skip C-comparison on BE; value-correctness is
+        ! verified by the test_nmhash32x_kat known-answer test instead.
+        if (.not. little_endian) then
+            call skip_test(error, &
+                "NMHASH32X C-comparison skipped on Big-Endian (see KAT test)")
+            return
+        end if
 
         call read_array("key_array.bin", key_array )
 
@@ -267,6 +287,97 @@ contains
         if (allocated(error)) return
 
     end subroutine test_hash_distribution
+
+
+    !> Known-Answer Test for NMHASH32.
+    !> Verifies the Fortran implementation produces the exact canonical
+    !> LE-normalized hash values across all code paths. Reference values
+    !> were computed on a little-endian platform using the upstream C code.
+    !> This test runs on ALL platforms (LE and BE).
+    subroutine test_nmhash32_kat(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        ! Number of test vectors
+        integer, parameter :: num_kat = 14
+
+        ! Input lengths covering every code path:
+        ! 0=zero, 1/2/3/4=small, 7/8=5-8 path, 9/32=9-32 path,
+        ! 33/100/255=33-255 path, 256/300=long path (256+)
+        integer, parameter :: kat_lengths(num_kat) = [ &
+            0, 1, 2, 3, 4, 7, 8, &
+            9, 32, 33, 100, 255, 256, 300 ]
+
+        ! Reference NMHASH32 values (computed on LE with seed=0xDEADBEEF)
+        integer(int32), parameter :: kat_expected(num_kat) = [ &
+            int(z'B0D9C845', int32), int(z'D52AD23F', int32), &
+            int(z'E909FDFF', int32), int(z'FF1A009C', int32), &
+            int(z'097D4183', int32), int(z'55CC8BBF', int32), &
+            int(z'660D67B4', int32), int(z'CB939B94', int32), &
+            int(z'4CBE45F8', int32), int(z'2FD88BD0', int32), &
+            int(z'83AC6B02', int32), int(z'CC0E4E26', int32), &
+            int(z'567D6B58', int32), int(z'865F0BC9', int32) ]
+
+        ! Deterministic key: key(i) = IAND(i, 255)
+        integer(int8) :: key(300)
+        integer :: i
+        integer(int32) :: got
+
+        do i = 1, 300
+            key(i) = int(iand(i, 255), int8)
+        end do
+
+        do i = 1, num_kat
+            got = nmhash32(key(1:kat_lengths(i)), nm_seed)
+            call check(error, got == kat_expected(i), &
+                "NMHASH32 KAT failed")
+            if (allocated(error)) return
+        end do
+
+    end subroutine test_nmhash32_kat
+
+    !> Known-Answer Test for NMHASH32X.
+    !> Same approach as test_nmhash32_kat but for the NMHASH32X variant.
+    !> This test runs on ALL platforms (LE and BE).
+    subroutine test_nmhash32x_kat(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        ! Number of test vectors
+        integer, parameter :: num_kat = 14
+
+        ! Input lengths covering every code path
+        integer, parameter :: kat_lengths(num_kat) = [ &
+            0, 1, 2, 3, 4, 7, 8, &
+            9, 32, 33, 100, 255, 256, 300 ]
+
+        ! Reference NMHASH32X values (computed on LE with seed=0xDEADBEEF)
+        integer(int32), parameter :: kat_expected(num_kat) = [ &
+            int(z'76844735', int32), int(z'B7AE2C90', int32), &
+            int(z'EE2224FD', int32), int(z'BBE39609', int32), &
+            int(z'08467EE3', int32), int(z'10E572DA', int32), &
+            int(z'2570CFA8', int32), int(z'1A06128A', int32), &
+            int(z'EABBF1B8', int32), int(z'9B1B3428', int32), &
+            int(z'F6F0233D', int32), int(z'7EB7CAFC', int32), &
+            int(z'B34D6C45', int32), int(z'E89BEE9E', int32) ]
+
+        ! Deterministic key: key(i) = IAND(i, 255)
+        integer(int8) :: key(300)
+        integer :: i
+        integer(int32) :: got
+
+        do i = 1, 300
+            key(i) = int(iand(i, 255), int8)
+        end do
+
+        do i = 1, num_kat
+            got = nmhash32x(key(1:kat_lengths(i)), nm_seed)
+            call check(error, got == kat_expected(i), &
+                "NMHASH32X KAT failed")
+            if (allocated(error)) return
+        end do
+
+    end subroutine test_nmhash32x_kat
 
 
     subroutine generate_key_array()
