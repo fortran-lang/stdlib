@@ -125,7 +125,7 @@ contains
       if (n > merge(1, 0, optval(corrected, .true.))) then
         res = res / (n - merge(1, 0, optval(corrected, .true.)))
       else
-        res = ieee_value(res(1, 1), ieee_quiet_nan)
+        res = ieee_value(1._${k1}$, ieee_quiet_nan)
       end if
 
     end function ${RName}$
@@ -170,7 +170,7 @@ contains
       if (n > merge(1, 0, optval(corrected, .true.))) then
         res = res / (n - merge(1, 0, optval(corrected, .true.)))
       else
-        res = ieee_value(res(1, 1), ieee_quiet_nan)
+        res = ieee_value(1._dp, ieee_quiet_nan)
       end if
 
     end function ${RName}$
@@ -217,7 +217,7 @@ contains
                 res(j, i) = dot_product( centerj_, centeri_)&
                              / (n - merge(1, 0, optval(corrected, .true.)))
               else
-                res(j, i) = ieee_value(res(j, i), ieee_quiet_nan)
+                res(j, i) = ieee_value(1._${k1}$, ieee_quiet_nan)
               end if
             end do
           end do
@@ -245,7 +245,7 @@ contains
                 res(j, i) = dot_product( centeri_, centerj_)&
                              / (n - merge(1, 0, optval(corrected, .true.)))
               else
-                res(j, i) = ieee_value(res(j, i), ieee_quiet_nan)
+                res(j, i) = ieee_value(1._${k1}$, ieee_quiet_nan)
               end if
             end do
           end do
@@ -285,7 +285,7 @@ contains
                 res(j, i) = dot_product( centerj_, centeri_)&
                              / (n - merge(1, 0, optval(corrected, .true.)))
               else
-                res(j, i) = ieee_value(res(j, i), ieee_quiet_nan)
+                res(j, i) = ieee_value(1._dp, ieee_quiet_nan)
               end if
             end do
           end do
@@ -301,7 +301,7 @@ contains
                 res(j, i) = dot_product( centeri_, centerj_)&
                              / (n - merge(1, 0, optval(corrected, .true.)))
               else
-                res(j, i) = ieee_value(res(j, i), ieee_quiet_nan)
+                res(j, i) = ieee_value(1._dp, ieee_quiet_nan)
               end if
             end do
           end do

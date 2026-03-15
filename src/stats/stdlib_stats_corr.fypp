@@ -252,7 +252,7 @@ contains
               if (n_ > 0._${k1}$) then
                 res(j, i) = dot_product( centerj_, centeri_) / sqrt(n_)
               else
-                res(j, i) = ieee_value(res(j, i), ieee_quiet_nan)
+                res(j, i) = ieee_value(1._${k1}$, ieee_quiet_nan)
               end if
 
             end do
@@ -281,7 +281,7 @@ contains
               if (n_ > 0._${k1}$) then
                 res(j, i) = dot_product( centeri_, centerj_) / sqrt(n_)
               else
-                res(j, i) = ieee_value(res(j, i), ieee_quiet_nan)
+                res(j, i) = ieee_value(1._${k1}$, ieee_quiet_nan)
               end if
             end do
           end do
@@ -320,7 +320,7 @@ contains
               if (n_ > 0._dp) then
                 res(j, i) = dot_product(centerj_, centeri_) / sqrt(n_)
               else
-                res(j, i) = ieee_value(res(j, i), ieee_quiet_nan)
+                res(j, i) = ieee_value(1._dp, ieee_quiet_nan)
               end if
 
             end do
@@ -336,7 +336,7 @@ contains
               if (n_ > 0._dp) then
                 res(j, i) = dot_product(centeri_, centerj_) / sqrt(n_)
               else
-                res(j, i) = ieee_value(res(j, i), ieee_quiet_nan)
+                res(j, i) = ieee_value(1._dp, ieee_quiet_nan)
               end if
             end do
           end do
