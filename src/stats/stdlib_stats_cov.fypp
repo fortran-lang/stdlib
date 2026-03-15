@@ -89,7 +89,7 @@ contains
       ${t1}$ :: res(merge(size(x, 1), size(x, 2), mask = 1<dim)&
                           , merge(size(x, 1), size(x, 2), mask = 1<dim))
 
-      integer :: i
+      integer :: i, n
       ${t1}$ :: mean_(merge(size(x, 1), size(x, 2), mask = 1<dim))
       ${t1}$ :: center(size(x, 1),size(x, 2))
 
@@ -121,7 +121,12 @@ contains
         case default
           call error_stop("ERROR (cov): wrong dimension")
       end select
-      res = res / (size(x, dim) - merge(1, 0, optval(corrected, .true.)))
+      n = size(x, dim)
+      if (n > merge(1, 0, optval(corrected, .true.))) then
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+      else
+        res = ieee_value(res(1, 1), ieee_quiet_nan)
+      end if
 
     end function ${RName}$
   #:endfor
@@ -137,7 +142,7 @@ contains
       real(dp) :: res(merge(size(x, 1), size(x, 2), mask = 1<dim)&
                       , merge(size(x, 1), size(x, 2), mask = 1<dim))
 
-      integer :: i
+      integer :: i, n
       real(dp) :: mean_(merge(size(x, 1), size(x, 2), mask = 1<dim))
       real(dp) :: center(size(x, 1),size(x, 2))
 
@@ -161,7 +166,12 @@ contains
         case default
           call error_stop("ERROR (cov): wrong dimension")
       end select
-      res = res / (size(x, dim) - merge(1, 0, optval(corrected, .true.)))
+      n = size(x, dim)
+      if (n > merge(1, 0, optval(corrected, .true.))) then
+        res = res / (n - merge(1, 0, optval(corrected, .true.)))
+      else
+        res = ieee_value(res(1, 1), ieee_quiet_nan)
+      end if
 
     end function ${RName}$
   #:endfor
@@ -203,9 +213,12 @@ contains
                 mask_)
 
               n = count(mask_)
-              res(j, i) = dot_product( centerj_, centeri_)&
-                           / (n - merge(1, 0,&
-                            optval(corrected, .true.) .and. n > 0))
+              if (n > merge(1, 0, (optval(corrected, .true.) .and. n > 0))) then
+                res(j, i) = dot_product( centerj_, centeri_)&
+                             / (n - merge(1, 0, optval(corrected, .true.)))
+              else
+                res(j, i) = ieee_value(res(j, i), ieee_quiet_nan)
+              end if
             end do
           end do
         case(2)
@@ -228,9 +241,12 @@ contains
                 mask_)
 
               n = count(mask_)
-              res(j, i) = dot_product( centeri_, centerj_)&
-                           / (n - merge(1, 0,&
-                            optval(corrected, .true.) .and. n > 0))
+              if (n > merge(1, 0, (optval(corrected, .true.) .and. n > 0))) then
+                res(j, i) = dot_product( centeri_, centerj_)&
+                             / (n - merge(1, 0, optval(corrected, .true.)))
+              else
+                res(j, i) = ieee_value(res(j, i), ieee_quiet_nan)
+              end if
             end do
           end do
         case default
@@ -265,9 +281,12 @@ contains
               centerj_ = merge( x(:, j) - mean(x(:, j), mask = mask_),0._dp, mask_)
 
               n = count(mask_)
-              res(j, i) = dot_product( centerj_, centeri_)&
-                           / (n - merge(1, 0,&
-                            optval(corrected, .true.) .and. n > 0))
+              if (n > merge(1, 0, (optval(corrected, .true.) .and. n > 0))) then
+                res(j, i) = dot_product( centerj_, centeri_)&
+                             / (n - merge(1, 0, optval(corrected, .true.)))
+              else
+                res(j, i) = ieee_value(res(j, i), ieee_quiet_nan)
+              end if
             end do
           end do
         case(2)
@@ -278,9 +297,12 @@ contains
               centerj_ = merge( x(j, :) - mean(x(j, :), mask = mask_),0._dp, mask_)
 
               n = count(mask_)
-              res(j, i) = dot_product( centeri_, centerj_)&
-                           / (n - merge(1, 0,&
-                            optval(corrected, .true.) .and. n > 0))
+              if (n > merge(1, 0, (optval(corrected, .true.) .and. n > 0))) then
+                res(j, i) = dot_product( centeri_, centerj_)&
+                             / (n - merge(1, 0, optval(corrected, .true.)))
+              else
+                res(j, i) = ieee_value(res(j, i), ieee_quiet_nan)
+              end if
             end do
           end do
         case default
