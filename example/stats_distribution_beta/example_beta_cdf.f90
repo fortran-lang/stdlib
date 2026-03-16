@@ -13,17 +13,17 @@ program example_beta_cdf
 
   ! cumulative probability at x=0.3 for beta(2,5) distribution
   print *, beta_cdf(0.3, a, b)
-  ! 0.471808970
+  ! 0.579824865
 
   ! cumulative probability at x=1.3 with loc=1.0 for beta(2,5) distribution
   print *, beta_cdf(1.3, a, b, 1.0)
-  ! 0.471808970
+  ! 0.579824746
 
   ! generate random variates and compute their cdf
   xarr = reshape(rbeta(a, b, 10), [2, 5])
 
   print *, beta_cdf(xarr, a, b)
-  ! 0.374293357  0.136472717  0.153627276  0.166885555  0.535913110
-  ! 4.47619371E-02  0.161991328  0.524897814  7.37934634E-02  8.41872990E-02
+  ! 0.686331749  0.625633657  0.625057578  0.158218294  0.786031485
+  ! 7.17176571E-02  0.136123925  0.909627795  0.245356008  0.865481198
 
 end program example_beta_cdf
