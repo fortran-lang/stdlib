@@ -10,4 +10,5 @@ fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
 ADDTEST(specialfunctions_gamma)
 ADDTEST(specialfunctions_activations)
+
 target_link_libraries(specialfunctions_activations PRIVATE stdlib_io)
