@@ -8,6 +8,7 @@ set(fppFiles
     test_distribution_uniform.fypp
     test_distribution_normal.fypp
     test_distribution_exponential.fypp
+    test_distribution_beta.fypp
     test_distribution_gamma.fypp
 )
 
@@ -25,6 +26,7 @@ ADDTEST(random)
 ADDTEST(distribution_uniform)
 ADDTEST(distribution_normal)
 ADDTEST(distribution_exponential)
+ADDTEST(distribution_beta)
 ADDTEST(distribution_gamma)
 
 if(DEFINED CMAKE_MAXIMUM_RANK)
