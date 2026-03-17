@@ -16,6 +16,7 @@ ADD_SUBDIR(bitsets)
 
 add_subdirectory(blas)
 add_subdirectory(constants)
+add_subdirectory(datetime)
 add_subdirectory(core)
 
 add_subdirectory(hash)
@@ -58,6 +59,7 @@ configure_stdlib_target(${PROJECT_NAME} f90Files fppFiles cppFiles)
 target_link_libraries(${PROJECT_NAME} PUBLIC
   ${PROJECT_NAME}_array
   ${PROJECT_NAME}_constants
+  ${PROJECT_NAME}_datetime
   ${PROJECT_NAME}_core
   ${PROJECT_NAME}_hash
   ${PROJECT_NAME}_intrinsics
