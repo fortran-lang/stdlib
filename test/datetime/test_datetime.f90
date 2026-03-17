@@ -474,8 +474,8 @@ subroutine test_to_utc(error)
 end subroutine test_to_utc
 
 subroutine test_total_seconds(error)
-    type(error_type), allocatable, intent(out) :: error
     use stdlib_kinds, only: dp
+    type(error_type), allocatable, intent(out) :: error
     type(timedelta_type) :: td
     td = timedelta(days=1, hours=1)
     call check(error, &
