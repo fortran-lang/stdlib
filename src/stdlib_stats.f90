@@ -4,10 +4,12 @@ module stdlib_stats
   !! ([Specification](../page/specs/stdlib_stats.html))
   use stdlib_kinds, only: sp, dp, xdp, qp, &
       int8, int16, int32, int64
+  use stdlib_linalg_state, only: linalg_state_type
   implicit none
   private
   ! Public API
   public :: corr, cov, mean, median, moment, var
+  public :: pca, pca_transform, pca_inverse_transform
 
 
   interface corr
@@ -4067,5 +4069,74 @@ module stdlib_stats
               & size(x, 4), mask=3<dim))
         end function moment_mask_4_iint64_dp
   end interface moment
+
+
+  interface pca
+    !! version: experimental
+    !!
+    !! Principal Component Analysis (PCA)
+    !! ([Specification](../page/specs/stdlib_stats.html#pca))
+      module subroutine pca_sp(x, components, singular_values, x_mean, &
+                                  method, overwrite_x, err)
+        real(sp), intent(inout) :: x(:,:)
+        real(sp), intent(out) :: components(:,:)
+        real(sp), intent(out) :: singular_values(:)
+        real(sp), intent(out), optional :: x_mean(:)
+        character(*), intent(in), optional :: method
+        logical, intent(in), optional :: overwrite_x
+        type(linalg_state_type), intent(out), optional :: err
+      end subroutine pca_sp
+      module subroutine pca_dp(x, components, singular_values, x_mean, &
+                                  method, overwrite_x, err)
+        real(dp), intent(inout) :: x(:,:)
+        real(dp), intent(out) :: components(:,:)
+        real(dp), intent(out) :: singular_values(:)
+        real(dp), intent(out), optional :: x_mean(:)
+        character(*), intent(in), optional :: method
+        logical, intent(in), optional :: overwrite_x
+        type(linalg_state_type), intent(out), optional :: err
+      end subroutine pca_dp
+  end interface pca
+
+
+  interface pca_transform
+    !! version: experimental
+    !!
+    !! Projects data into the reduced dimensional space
+    !! ([Specification](../page/specs/stdlib_stats.html#pca_transform))
+      module subroutine pca_transform_sp(x, components, x_transformed, x_mean)
+        real(sp), intent(in) :: x(:,:)
+        real(sp), intent(in) :: components(:,:)
+        real(sp), intent(out) :: x_transformed(:,:)
+        real(sp), intent(in), optional :: x_mean(:)
+      end subroutine pca_transform_sp
+      module subroutine pca_transform_dp(x, components, x_transformed, x_mean)
+        real(dp), intent(in) :: x(:,:)
+        real(dp), intent(in) :: components(:,:)
+        real(dp), intent(out) :: x_transformed(:,:)
+        real(dp), intent(in), optional :: x_mean(:)
+      end subroutine pca_transform_dp
+  end interface pca_transform
+
+
+  interface pca_inverse_transform
+    !! version: experimental
+    !!
+    !! Reconstructs original data from the reduced space
+    !! ([Specification](../page/specs/stdlib_stats.html#pca_inverse_transform))
+      module subroutine pca_inverse_transform_sp(x_reduced, components, x_reconstructed, x_mean)
+        real(sp), intent(in) :: x_reduced(:,:)
+        real(sp), intent(in) :: components(:,:)
+        real(sp), intent(out) :: x_reconstructed(:,:)
+        real(sp), intent(in), optional :: x_mean(:)
+      end subroutine pca_inverse_transform_sp
+      module subroutine pca_inverse_transform_dp(x_reduced, components, x_reconstructed, x_mean)
+        real(dp), intent(in) :: x_reduced(:,:)
+        real(dp), intent(in) :: components(:,:)
+        real(dp), intent(out) :: x_reconstructed(:,:)
+        real(dp), intent(in), optional :: x_mean(:)
+      end subroutine pca_inverse_transform_dp
+  end interface pca_inverse_transform
+
 
 end module stdlib_stats
