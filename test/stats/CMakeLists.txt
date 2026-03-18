@@ -5,16 +5,18 @@ set(fppFiles
     test_mean.fypp
     test_mean_f03.fypp
     test_median.fypp
+    test_pca.fypp
     test_distribution_uniform.fypp
+    test_distribution_gamma.fypp
     test_distribution_normal.fypp
     test_distribution_exponential.fypp
-    test_distribution_gamma.fypp
 )
 
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
 ADDTEST(corr)
 ADDTEST(cov)
+ADDTEST(pca)
 ADDTEST(mean)
 ADDTEST(median)
 ADDTEST(moment)
