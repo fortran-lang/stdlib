@@ -156,6 +156,10 @@ Parses an ISO 8601 date/time string into a `datetime_type`.
 - `YYYY-MM-DDTHH:MM:SS.fffZ`
 - `YYYY-MM-DDTHH:MM:SS.fff+HH:MM`
 
+For the `YYYY-MM-DDTHH:MM:SS` form without a timezone designator, the value is interpreted
+as UTC and `utc_offset_minutes` is set to `0`. Forms with `Z` or an explicit offset use
+the specified UTC offset.
+
 ### `format_datetime` — Format as ISO 8601
 
 #### Description
@@ -231,5 +235,5 @@ Returns the total duration as `real(dp)`.
 ## Example
 
 ```fortran
-{!example/datetime/example_datetime.f90!}
+{!example/datetime/example_datetime_usage.f90!}
 ```

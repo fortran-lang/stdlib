@@ -16,8 +16,8 @@ ADD_SUBDIR(bitsets)
 
 add_subdirectory(blas)
 add_subdirectory(constants)
-add_subdirectory(datetime)
 add_subdirectory(core)
+add_subdirectory(datetime)
 
 add_subdirectory(hash)
 

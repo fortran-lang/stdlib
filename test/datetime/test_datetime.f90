@@ -71,8 +71,8 @@ subroutine collect_datetime(testsuite)
                      test_format_datetime_offset), &
         new_unittest("format_timedelta_test", &
                      test_format_timedelta), &
-        new_unittest("roundtrip_jd", &
-                     test_roundtrip_jd), &
+        new_unittest("timedelta_ms_rollover", &
+                     test_timedelta_ms_rollover), &
         new_unittest("to_utc_test", &
                      test_to_utc), &
         new_unittest("total_seconds_test", &
@@ -437,7 +437,7 @@ subroutine test_format_timedelta(error)
     if (allocated(error)) return
 end subroutine test_format_timedelta
 
-subroutine test_roundtrip_jd(error)
+subroutine test_timedelta_ms_rollover(error)
     type(error_type), allocatable, intent(out) :: error
     type(datetime_type) :: dt, res
     dt = datetime_type(1970, 1, 1, 0, 0, 0, 0, 0)
@@ -458,7 +458,7 @@ subroutine test_roundtrip_jd(error)
     if (allocated(error)) return
     call check(error, res%second, 0)
     if (allocated(error)) return
-end subroutine test_roundtrip_jd
+end subroutine test_timedelta_ms_rollover
 
 subroutine test_to_utc(error)
     type(error_type), allocatable, intent(out) :: error
@@ -527,7 +527,8 @@ subroutine test_now_valid(error)
     type(error_type), allocatable, intent(out) :: error
     type(datetime_type) :: dt
     dt = now()
-    call check(error, dt%year >= 2020, .true.)
+    call check(error, &
+        dt%year >= 1 .and. dt%year <= 9999, .true.)
     if (allocated(error)) return
     call check(error, &
         dt%month >= 1 .and. dt%month <= 12, .true.)

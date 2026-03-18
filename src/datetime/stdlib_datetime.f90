@@ -385,13 +385,21 @@ contains
         integer, intent(out), optional :: stat
         type(datetime_type) :: dt
         integer :: slen, ios, off_h, off_m, ms_end
+        integer :: max_day
         character(len=1) :: sign_ch
 
         if (present(stat)) stat = 0
         dt = datetime_type()
         slen = len_trim(str)
 
+        ! Require at least YYYY-MM-DD (10 characters)
         if (slen < 10) then
+            if (present(stat)) stat = 1
+            return
+        end if
+
+        ! Check required date separators for ISO 8601 (YYYY-MM-DD)
+        if (str(5:5) /= '-' .or. str(8:8) /= '-') then
             if (present(stat)) stat = 1
             return
         end if
@@ -406,8 +414,19 @@ contains
             if (present(stat)) stat = 1
             return
         end if
+        ! Validate month range [1,12]
+        if (dt%month < 1 .or. dt%month > 12) then
+            if (present(stat)) stat = 1
+            return
+        end if
         read(str(9:10), '(I2)', iostat=ios) dt%day
         if (ios /= 0) then
+            if (present(stat)) stat = 1
+            return
+        end if
+        ! Validate day range [1, days_in_month]
+        max_day = days_in_month(dt%month, dt%year)
+        if (dt%day < 1 .or. dt%day > max_day) then
             if (present(stat)) stat = 1
             return
         end if
@@ -426,8 +445,19 @@ contains
             return
         end if
 
+        ! Validate required time separators (HH:MM:SS)
+        if (str(14:14) /= ':' .or. str(17:17) /= ':') then
+            if (present(stat)) stat = 1
+            return
+        end if
+
         read(str(12:13), '(I2)', iostat=ios) dt%hour
         if (ios /= 0) then
+            if (present(stat)) stat = 1
+            return
+        end if
+        ! Validate hour range [0,23]
+        if (dt%hour < 0 .or. dt%hour > 23) then
             if (present(stat)) stat = 1
             return
         end if
@@ -436,8 +466,18 @@ contains
             if (present(stat)) stat = 1
             return
         end if
+        ! Validate minute range [0,59]
+        if (dt%minute < 0 .or. dt%minute > 59) then
+            if (present(stat)) stat = 1
+            return
+        end if
         read(str(18:19), '(I2)', iostat=ios) dt%second
         if (ios /= 0) then
+            if (present(stat)) stat = 1
+            return
+        end if
+        ! Validate second range [0,59]
+        if (dt%second < 0 .or. dt%second > 59) then
             if (present(stat)) stat = 1
             return
         end if
@@ -453,6 +493,12 @@ contains
             read(str(21:23), '(I3)', iostat=ios) &
                 dt%millisecond
             if (ios /= 0) then
+                if (present(stat)) stat = 1
+                return
+            end if
+            ! Validate millisecond range [0,999]
+            if (dt%millisecond < 0 .or. &
+                dt%millisecond > 999) then
                 if (present(stat)) stat = 1
                 return
             end if
@@ -475,9 +521,20 @@ contains
                 if (present(stat)) stat = 1
                 return
             end if
+            ! Require ':' between offset hours and minutes
+            if (str(ms_end+4:ms_end+4) /= ':') then
+                if (present(stat)) stat = 1
+                return
+            end if
             read(str(ms_end+5:ms_end+6), '(I2)', &
                  iostat=ios) off_m
             if (ios /= 0) then
+                if (present(stat)) stat = 1
+                return
+            end if
+            ! Validate timezone offset ranges
+            if (off_h < 0 .or. off_h > 23 .or. &
+                off_m < 0 .or. off_m > 59) then
                 if (present(stat)) stat = 1
                 return
             end if
@@ -547,6 +604,11 @@ contains
         integer :: doy
         integer, parameter :: cum(12) = &
             [0,31,59,90,120,151,181,212,243,273,304,334]
+        ! Guard against invalid month values
+        if (dt%month < 1 .or. dt%month > 12) then
+            doy = 0
+            return
+        end if
         doy = cum(dt%month) + dt%day
         if (dt%month > 2 .and. is_leap_year_int(dt%year))&
             doy = doy + 1
@@ -561,6 +623,11 @@ contains
         integer :: y, w
         integer, parameter :: t(12) = &
             [0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4]
+        ! Guard against invalid month values
+        if (dt%month < 1 .or. dt%month > 12) then
+            dow = 0
+            return
+        end if
         y = dt%year
         if (dt%month < 3) y = y - 1
         w = mod(y + y/4 - y/100 + y/400 &
