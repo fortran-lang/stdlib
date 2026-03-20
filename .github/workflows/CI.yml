@@ -113,3 +113,25 @@ jobs:
     - name: Install project
       if: ${{ contains(matrix.build, 'cmake') }}
       run: cmake --install ${{ env.BUILD_DIR }}
+
+    - name: Validate generated pkg-config file
+      if: ${{ contains(matrix.build, 'cmake') }}
+      shell: bash
+      run: |
+        # Ensure pkg-config is available
+        if ! command -v pkg-config &> /dev/null; then
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt-get update && sudo apt-get install -y pkg-config
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            brew install pkg-config
+          fi
+        fi
+        
+        # Point to the installation directory specified by CMAKE_INSTALL_PREFIX
+        export PKG_CONFIG_PATH="$PWD/_dist/lib/pkgconfig:$PWD/_dist/share/pkgconfig:$PKG_CONFIG_PATH"
+        
+        # Run the validation
+        pkg-config --validate fortran_stdlib
+        
+        # Test flags to ensure no errors are thrown
+        pkg-config --cflags --libs fortran_stdlib
