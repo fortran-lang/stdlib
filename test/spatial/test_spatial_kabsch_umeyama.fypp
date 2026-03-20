@@ -1,0 +1,341 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+module test_kabsch_umeyama
+    use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
+    use stdlib_kinds
+    use stdlib_math, only: all_close, is_close
+    use stdlib_linalg, only: svd, det, eye
+    use stdlib_spatial
+    use stdlib_intrinsics, only: stdlib_dot_product_kahan
+    use stdlib_constants
+    implicit none
+
+contains
+
+
+    !> Collect all exported unit tests
+    subroutine collect_suite(testsuite)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [ &
+            new_unittest('kabsch_umeyama_real', test_kabsch_umeyama_real), &
+            new_unittest('kabsch_umeyama_complex', test_kabsch_umeyama_complex) &
+        ]
+    end subroutine
+
+    #:for k, t, s in (R_KINDS_TYPES)
+    subroutine generate_random_set_real_${s}$(P, Q, d, N, scale)
+        integer, intent(in) :: d, N
+        ${t}$, intent(out) :: P(d, N), Q(d, N)
+        logical, intent(in) :: scale
+
+        ! Internal variables.
+        ${t}$ :: R(d, d)
+        ${t}$ :: U(d,d), Vt(d,d)
+        real(${k}$) :: S(d)
+        ${t}$ :: t(d)
+        ${t}$ :: c
+        integer :: i, j
+
+        c = one_${s}$
+        ! Random reference points Q
+        call random_number(Q)
+
+        ! Random proper rotation matrix R constructed via SVD: R = U * V^T
+        call random_number(R)
+        call svd(R, S, U, Vt)
+        do i = 1,d
+            do j = 1,d
+                R(i,j) = stdlib_dot_product_kahan(U(i,:), Vt(:, j))
+            end do
+        end do
+        if(det(R) < zero_${s}$) R(:, d) = -R(:, d)
+
+        ! Random scale and translation
+        if(scale) call random_number(c)
+        call random_number(t)
+
+        ! Construct P = c*R*Q + t
+        do j = 1, N
+            do i = 1, d
+                P(i,j) = c * &
+                    stdlib_dot_product_kahan(R(i,:), Q(:,j)) + &
+                    t(i)
+            end do
+        end do
+    end subroutine
+    #:endfor
+    #:for k, t, s in (C_KINDS_TYPES)
+    subroutine generate_random_set_complex_${s}$(P, Q, d, N, scale)
+        integer, intent(in) :: d, N
+        ${t}$, intent(out) :: P(d, N), Q(d, N)
+        logical, intent(in) :: scale
+
+        ! Internal variables.
+        ${t}$ :: R(d,d), t(d)
+        ${t}$ :: U(d,d), Vt(d,d)
+        real(${k}$) :: S(d)
+        ${t}$ :: c
+        real(${k}$) :: tempdn(d,N,2)
+        real(${k}$) :: tempdd(d,d,2)
+        real(${k}$) :: r1, r2
+        integer :: i, j
+
+        c = one_${s}$
+        ! Random reference points Q
+        call random_number(tempdn)
+        Q = cmplx(tempdn(:,:,1), tempdn(:,:,2), kind=${k}$)
+
+        ! Random proper rotation matrix R constructed via SVD: R = U * V^H
+        call random_number(tempdd)
+        R = cmplx(tempdd(:,:,1), tempdd(:,:,2), kind=${k}$)
+        call svd(R, S, U, Vt)
+        do i = 1,d
+            do j = 1,d
+                R(i,j) = stdlib_dot_product_kahan(U(i,:), Vt(:, j))
+            end do
+        end do
+
+        ! Random scale and translation
+        if(scale) then
+            call random_number(r1)
+            call random_number(r2)
+            c = cmplx(r1, r2, kind=${k}$)
+        end if
+        call random_number(tempdd)
+        t = cmplx(tempdd(:,1,1), tempdd(:,1,2), kind=${k}$)
+
+        ! Construct P = c*R*Q + t
+        do j = 1, N
+            do i = 1, d
+                P(i,j) = c * &
+                    stdlib_dot_product_kahan(R(i,:), Q(:,j)) + &
+                    t(i)
+            end do
+        end do
+    end subroutine
+    #:endfor
+
+    subroutine test_kabsch_umeyama_real(error)
+        type(error_type), allocatable, intent(out) :: error
+        #:for k, t, s in (R_KINDS_TYPES)
+        block
+            integer, parameter :: d = 3, N = 8
+            ${t}$ :: P_original(d, N), P_recovered(d, N), Q_original(d, N)
+            ${t}$ :: R_recovered(d, d)
+            ${t}$ :: t_recovered(d)
+            ${t}$ :: c_recovered
+            ${t}$ :: rmsd
+            ${t}$ :: Identity(d,d)
+            ${t}$ :: zero_t(d)
+            ${t}$ :: W(N)
+
+            integer :: i, j
+            real(${k}$), parameter :: ${k}$tol = 100 * epsilon(one_${k}$)
+
+            R_recovered = zero_${s}$
+            t_recovered = zero_${s}$
+            c_recovered = zero_${s}$
+            rmsd = zero_${k}$
+            Identity = eye(d,d)
+            zero_t = zero_${s}$
+
+            ! Random set of transformation
+            call generate_random_set_real_${s}$(P_original, Q_original, d, N, .true.)
+            ! Call Kabsch–Umeyama
+            call kabsch_umeyama(P_original, Q_original, R_recovered, t_recovered, c_recovered, rmsd)
+            ! Apply recovered transform
+            do j = 1, N
+                do i = 1, d
+                    P_recovered(i,j) = c_recovered * &
+                        stdlib_dot_product_kahan(R_recovered(i,:), Q_original(:,j)) + &
+                        t_recovered(i)
+                end do
+            end do
+            call check(error, all_close(P_recovered, P_original, abs_tol = ${k}$tol), .true.)
+            if (allocated(error)) return
+            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true.)
+            if(allocated(error)) return
+
+            ! Identity transformation (Q -> Q)
+            call random_number(Q_original)
+            ! Call Kabsch–Umeyama
+            call kabsch_umeyama(Q_original, Q_original, R_recovered, t_recovered, c_recovered, rmsd)
+            call check(error, all_close(R_recovered, Identity, abs_tol=${k}$tol), .true.)
+            if(allocated(error)) return
+            call check(error, all_close(t_recovered, zero_t, abs_tol = ${k}$tol), .true.)
+            if (allocated(error)) return
+            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true.)
+            if(allocated(error)) return
+
+            ! Random set of transformation but with scale disabled.
+            call generate_random_set_real_${s}$(P_original, Q_original, d, N, .false.)
+            ! Call Kabsch–Umeyama
+            call kabsch_umeyama(P_original, Q_original, R_recovered, t_recovered, c_recovered, rmsd, scale=.false.)
+            ! Apply recovered transform
+            do j = 1, N
+                do i = 1, d
+                    P_recovered(i,j) = c_recovered * &
+                        stdlib_dot_product_kahan(R_recovered(i,:), Q_original(:,j)) + &
+                        t_recovered(i)
+                end do
+            end do
+            call check(error, all_close(P_recovered, P_original, abs_tol = ${k}$tol), .true.)
+            if (allocated(error)) return
+            call check(error, is_close(c_recovered, one_${k}$, abs_tol = ${k}$tol), .true.)
+            if(allocated(error)) return
+            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true.)
+            if(allocated(error)) return
+
+            ! Random set of transformation but with weights. Since P = c*R*Q+t, weights should not matter
+            call random_number(W)
+            call generate_random_set_real_${s}$(P_original, Q_original, d, N, .true.)
+            ! Call Kabsch–Umeyama
+            call kabsch_umeyama(P_original, Q_original, R_recovered, t_recovered, c_recovered, rmsd, W=W)
+            ! Apply recovered transform
+            do j = 1, N
+                do i = 1, d
+                    P_recovered(i,j) = c_recovered * &
+                        stdlib_dot_product_kahan(R_recovered(i,:), Q_original(:,j)) + &
+                        t_recovered(i)
+                end do
+            end do
+            call check(error, is_close(det(R_recovered), one_${s}$, abs_tol=${k}$tol), .true.)
+            if(allocated(error)) return
+            call check(error, all_close(P_recovered, P_original, abs_tol = ${k}$tol), .true.)
+            if (allocated(error)) return
+            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true.)
+            if(allocated(error)) return
+        end block
+        #:endfor
+    end subroutine
+
+    subroutine test_kabsch_umeyama_complex(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for k, t, s in (C_KINDS_TYPES)
+        block
+            integer, parameter :: d = 3, N = 8
+            ${t}$ :: P_original(d, N), Q_original(d, N), P_recovered(d, N)
+            ${t}$ :: R_recovered(d, d)
+            ${t}$ :: t_recovered(d)
+            ${t}$ :: c_recovered
+            real(${k}$) :: rmsd
+            ${t}$ :: Identity(d,d)
+            ${t}$ :: zero_t(d)
+            real(${k}$) :: W(N)
+
+            integer :: i, j
+            real(${k}$), parameter :: ${k}$tol = 100 * epsilon(one_${k}$)
+
+            R_recovered = zero_${s}$
+            t_recovered = zero_${s}$
+            c_recovered = zero_${s}$
+            rmsd = zero_${k}$
+            Identity = eye(d,d)
+            zero_t = zero_${s}$
+
+            ! Random set of transformation
+            call generate_random_set_complex_${s}$(P_original, Q_original, d, N, .true.)
+            ! Call Kabsch–Umeyama
+            call kabsch_umeyama(P_original, Q_original, R_recovered, t_recovered, c_recovered, rmsd)
+            ! Apply recovered transform
+            do j = 1, N
+                do i = 1, d
+                    P_recovered(i,j) = c_recovered * &
+                        stdlib_dot_product_kahan(conjg(R_recovered(i,:)), Q_original(:,j)) + &
+                        t_recovered(i)
+                end do
+            end do
+            call check(error, is_close(abs(det(R_recovered)), one_${k}$, abs_tol=${k}$tol), .true.)
+            if(allocated(error)) return
+            call check(error, all_close(P_recovered, P_original, abs_tol = ${k}$tol), .true.)
+            if (allocated(error)) return
+            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true.)
+            if(allocated(error)) return
+
+            ! Identity transformation (Q -> Q)
+            call generate_random_set_complex_${s}$(P_original, Q_original, d, N, .true.)
+            ! Call Kabsch–Umeyama
+            call kabsch_umeyama(Q_original, Q_original, R_recovered, t_recovered, c_recovered, rmsd)
+            call check(error, all_close(R_recovered, Identity, abs_tol=${k}$tol), .true.)
+            if(allocated(error)) return
+            call check(error, all_close(t_recovered, zero_t, abs_tol = ${k}$tol), .true.)
+            if (allocated(error)) return
+            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true.)
+            if(allocated(error)) return
+
+            ! Random set of transformation but with scale disabled.
+            call generate_random_set_complex_${s}$(P_original, Q_original, d, N, .false.)
+            ! Call Kabsch–Umeyama
+            call kabsch_umeyama(P_original, Q_original, R_recovered, t_recovered, c_recovered, rmsd,scale=.false.)
+            ! Apply recovered transform
+            do j = 1, N
+                do i = 1, d
+                    P_recovered(i,j) = c_recovered * &
+                        stdlib_dot_product_kahan(conjg(R_recovered(i,:)), Q_original(:,j)) + &
+                        t_recovered(i)
+                end do
+            end do
+            call check(error, is_close(abs(det(R_recovered)), one_${k}$, abs_tol=${k}$tol), .true.)
+            if(allocated(error)) return
+            call check(error, all_close(P_recovered, P_original, abs_tol = ${k}$tol), .true.)
+            if (allocated(error)) return
+            call check(error, is_close(c_recovered, one_${s}$, abs_tol = ${k}$tol), .true.)
+            if(allocated(error)) return
+            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true.)
+            if(allocated(error)) return
+
+            ! Random set of transformation but with weights. Since P = c*R*Q+t, weights should not matter
+            call random_number(W)
+            call generate_random_set_complex_${s}$(P_original, Q_original, d, N, .true.)
+            ! Call Kabsch–Umeyama
+            call kabsch_umeyama(P_original, Q_original, R_recovered, t_recovered, c_recovered, rmsd, W=W)
+            ! Apply recovered transform
+            do j = 1, N
+                do i = 1, d
+                    P_recovered(i,j) = c_recovered * &
+                        stdlib_dot_product_kahan(conjg(R_recovered(i,:)), Q_original(:,j)) + &
+                        t_recovered(i)
+                end do
+            end do
+            call check(error, is_close(abs(det(R_recovered)), one_${k}$, abs_tol=${k}$tol), .true.)
+            if(allocated(error)) return
+            call check(error, all_close(P_recovered, P_original, abs_tol = ${k}$tol), .true.)
+            if (allocated(error)) return
+            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true.)
+            if(allocated(error)) return
+        end block
+        #:endfor
+    end subroutine
+
+end module
+
+
+program tester
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_kabsch_umeyama, only : collect_suite
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("kabsch_umeyama", collect_suite) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program
