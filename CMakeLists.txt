@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 3.14.0)
 set(CMAKE_USER_MAKE_RULES_OVERRIDE ${CMAKE_CURRENT_SOURCE_DIR}/config/DefaultFlags.cmake)
 
 project(fortran_stdlib
-	LANGUAGES Fortran C
-        DESCRIPTION "Community driven and agreed upon de facto standard library for Fortran"
+  LANGUAGES Fortran C
+  DESCRIPTION "Community driven and agreed upon de facto standard library for Fortran"
 )
 
 # Read version from file
@@ -88,7 +88,6 @@ if(FIND_BLAS)
       # Prefer checking BLA_SIZEOF_INTEGER (available in CMake >= 3.22)
       if(DEFINED BLA_SIZEOF_INTEGER AND BLA_SIZEOF_INTEGER EQUAL 8)
         set(${lib_name}_ILP64 True PARENT_SCOPE)
-      # Fallback: Check BLA_VENDOR manually for signs of ILP64
       elseif("${BLA_VENDOR}" MATCHES ".*(_ilp|ILP64).*")
         set(${lib_name}_ILP64 True PARENT_SCOPE)
       endif()
@@ -116,8 +115,19 @@ endif()
 
 # --- find preprocessor
 find_program(FYPP fypp)
-if(NOT FYPP)
-  message(FATAL_ERROR "Preprocessor fypp not found! Please install fypp following the instructions in https://fypp.readthedocs.io/en/stable/fypp.html#installing")
+if(NOT FYPP OR "${FYPP}" MATCHES "NOTFOUND")
+  message(FATAL_ERROR 
+    "\n [stdlib Build Error]: Preprocessor 'fypp' not found!\n"
+    " ------------------------------------------------------------------------\n"
+    " The fypp preprocessor is required to generate Fortran source from templates.\n\n"
+    " Please install fypp following the instructions at https://github.com/aradi/fypp\n\n"
+    " To diagnose your installation, please run the following in your terminal:\n"
+    "   Windows:      'where fypp' and 'where python'\n"
+    "   Linux/macOS:  'which fypp' and 'which python'\n\n"
+    " Ensure the executable is in your PATH or set it manually during configuration:\n"
+    "   cmake -B build -DFYPP_EXECUTABLE=/path/to/fypp\n"
+    " ------------------------------------------------------------------------\n"
+  )
 endif()
 
 # Custom preprocessor flags
