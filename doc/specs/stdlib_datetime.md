@@ -8,7 +8,7 @@ title: datetime
 
 The `stdlib_datetime` module provides types and procedures for date, time, and duration handling. It defines two primary derived types — `datetime_type` for representing specific points in time and `timedelta_type` for representing durations — along with arithmetic operators, comparison operators, ISO 8601 parsing/formatting, and calendar utilities.
 
-No C-bindings or parameterized derived types are required. The module is purely mathematical (calendar algorithms) and string manipulation, ensuring near-100% compiler compatibility.
+No C-bindings or parameterized derived types are required. The module uses only standard Fortran intrinsics, calendar arithmetic, and string manipulation.
 
 ### Status
 
@@ -29,25 +29,33 @@ Represents a specific point in time.
 | `minute` | `integer` | 0 | Minute (0–59) |
 | `second` | `integer` | 0 | Second (0–59) |
 | `millisecond` | `integer` | 0 | Millisecond (0–999) |
-| `utc_offset_minutes` | `integer` | 0 | UTC offset in minutes |
+| `utc_offset_minutes` | `integer` | 0 | UTC offset in minutes. Minutes are used because all real-world UTC offsets are whole multiples of minutes (ISO 8601 specifies offsets as `±HH:MM`). |
 
 ### `timedelta_type`
 
-Represents a duration or interval. Normalized so that `seconds` is in [0, 86399] and `milliseconds` is in [0, 999]. The `days` component can be negative for negative durations.
+Represents a duration or interval. After normalization, `seconds` is always in [0, 86399] and `milliseconds` is always in [0, 999] (i.e., they are never negative). For negative durations, only the `days` component is negative while `seconds` and `milliseconds` remain non-negative.
 
 | Component | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `days` | `integer` | 0 | Number of days (can be negative) |
-| `seconds` | `integer` | 0 | Seconds (0–86399) |
-| `milliseconds` | `integer` | 0 | Milliseconds (0–999) |
+| `days` | `integer` | 0 | Number of days (can be negative for negative durations) |
+| `seconds` | `integer` | 0 | Seconds, always in [0, 86399] after normalization |
+| `milliseconds` | `integer` | 0 | Milliseconds, always in [0, 999] after normalization |
 
 ## Constructors
 
 ### `datetime` — Create from components
 
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function.
+
 #### Description
 
-Creates a `datetime_type` from individual components. All arguments are optional and default to the type's defaults.
+Creates a `datetime_type` from individual components. All arguments are optional; if omitted, they default to the type's initial values: `year=1`, `month=1`, `day=1`, `hour=0`, `minute=0`, `second=0`, `millisecond=0`, `utc_offset_minutes=0`.
 
 #### Syntax
 
@@ -59,13 +67,21 @@ All arguments are optional with `intent(in)` and type `integer`.
 
 #### Return value
 
-A `datetime_type` value.
+A `datetime_type` value with components equal to those provided, or to the default ones.
 
 ### `timedelta` — Create from mixed units
 
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function.
+
 #### Description
 
-Creates a normalized `timedelta_type`. Accepts mixed units (days, hours, minutes, seconds, milliseconds) and normalizes them.
+Creates a normalized `timedelta_type`. Accepts mixed units (days, hours, minutes, seconds, milliseconds) and normalizes them. If no arguments are provided, all components default to `0`.
 
 #### Syntax
 
@@ -77,9 +93,17 @@ All arguments are optional with `intent(in)` and type `integer`.
 
 #### Return value
 
-A normalized `timedelta_type` value.
+A normalized `timedelta_type` value with `seconds` in [0, 86399] and `milliseconds` in [0, 999].
 
 ### `now` — Current local time
+
+#### Status
+
+Experimental
+
+#### Class
+
+Function (not `pure`; calls the intrinsic `date_and_time` which is impure).
 
 #### Description
 
@@ -91,6 +115,14 @@ Returns the current local date and time from the system clock.
 
 ### `now_utc` — Current UTC time
 
+#### Status
+
+Experimental
+
+#### Class
+
+Function (not `pure`; calls `now()` internally).
+
 #### Description
 
 Returns the current UTC date and time.
@@ -101,9 +133,17 @@ Returns the current UTC date and time.
 
 ### `epoch` — Unix epoch
 
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function.
+
 #### Description
 
-Returns the Unix epoch: `1970-01-01T00:00:00Z`.
+Returns the Unix epoch: `1970-01-01T00:00:00Z`. This is a mathematical constant (a fixed date) and does not depend on the operating system.
 
 #### Syntax
 
@@ -132,6 +172,14 @@ All six comparison operators are provided for both `datetime_type` and `timedelt
 ## Parsing and Formatting
 
 ### `parse_datetime` — Parse ISO 8601 string
+
+#### Status
+
+Experimental
+
+#### Class
+
+Function (not `pure`; uses internal `read` statements for parsing).
 
 #### Description
 
@@ -162,6 +210,14 @@ the specified UTC offset.
 
 ### `format_datetime` — Format as ISO 8601
 
+#### Status
+
+Experimental
+
+#### Class
+
+Function (not `pure`; uses internal `write` statements for formatting).
+
 #### Description
 
 Formats a `datetime_type` as an ISO 8601 string.
@@ -175,6 +231,14 @@ Formats a `datetime_type` as an ISO 8601 string.
 `character(:), allocatable` — e.g. `"2026-03-17T12:00:00Z"` or `"2026-03-17T23:05:15+05:30"`.
 
 ### `format_timedelta` — Format duration
+
+#### Status
+
+Experimental
+
+#### Class
+
+Function (not `pure`; uses internal `write` statements for formatting).
 
 #### Description
 
@@ -192,41 +256,123 @@ Formats a `timedelta_type` as a human-readable string.
 
 ### `is_leap_year`
 
+#### Status
+
+Experimental
+
+#### Class
+
+Pure elemental function / interface.
+
+#### Description
+
 Returns `.true.` if the given year (or datetime's year) is a leap year.
+
+#### Syntax
 
 `result = ` [[stdlib_datetime(module):is_leap_year(interface)]] `(year)` or `(dt)`
 
 ### `days_in_month`
 
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function.
+
+#### Description
+
 Returns the number of days in a given month and year.
+
+#### Syntax
 
 `d = ` [[stdlib_datetime(module):days_in_month(function)]] `(month, year)`
 
 ### `days_in_year`
 
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function.
+
+#### Description
+
 Returns 365 or 366.
+
+#### Syntax
 
 `d = ` [[stdlib_datetime(module):days_in_year(function)]] `(year)`
 
 ### `day_of_year`
 
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function.
+
+#### Description
+
 Returns the ordinal day (1–366).
+
+#### Syntax
 
 `doy = ` [[stdlib_datetime(module):day_of_year(function)]] `(dt)`
 
 ### `day_of_week`
 
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function.
+
+#### Description
+
 Returns the ISO weekday (1=Monday, ..., 7=Sunday).
+
+#### Syntax
 
 `dow = ` [[stdlib_datetime(module):day_of_week(function)]] `(dt)`
 
 ### `to_utc`
 
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function.
+
+#### Description
+
 Converts a `datetime_type` to UTC.
+
+#### Syntax
 
 `utc_dt = ` [[stdlib_datetime(module):to_utc(function)]] `(dt)`
 
 ### `total_seconds`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Pure function.
+
+#### Description
 
 Returns the total duration as `real(dp)`.
 

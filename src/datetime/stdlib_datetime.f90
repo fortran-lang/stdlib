@@ -3,8 +3,7 @@ module stdlib_datetime
     !!
     !! Date, time, and time interval handling for Fortran.
     !! ([Specification](../page/specs/stdlib_datetime.html))
-    use iso_fortran_env, only: int64
-    use stdlib_kinds, only: dp
+    use stdlib_kinds, only: dp, int64
     implicit none
     private
 
