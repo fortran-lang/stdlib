@@ -88,6 +88,7 @@ if(FIND_BLAS)
       # Prefer checking BLA_SIZEOF_INTEGER (available in CMake >= 3.22)
       if(DEFINED BLA_SIZEOF_INTEGER AND BLA_SIZEOF_INTEGER EQUAL 8)
         set(${lib_name}_ILP64 True PARENT_SCOPE)
+      # Fallback: Check BLA_VENDOR manually for signs of ILP64
       elseif("${BLA_VENDOR}" MATCHES ".*(_ilp|ILP64).*")
         set(${lib_name}_ILP64 True PARENT_SCOPE)
       endif()
