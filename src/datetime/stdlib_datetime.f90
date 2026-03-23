@@ -301,7 +301,7 @@ contains
         res = td_to_ms(td1) >= td_to_ms(td2)
     end function td_ge
 
-    function format_datetime(dt) result(str)
+    pure function format_datetime(dt) result(str)
         !! version: experimental
         !!
         !! Format a datetime_type as an ISO 8601 string.
@@ -349,7 +349,7 @@ contains
         str = buf(1:n)
     end function format_datetime
 
-    function format_timedelta(td) result(str)
+    pure function format_timedelta(td) result(str)
         !! version: experimental
         !!
         !! Format a timedelta_type as a readable string.

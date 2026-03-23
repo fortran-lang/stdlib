@@ -216,7 +216,7 @@ Experimental
 
 #### Class
 
-Function (not `pure`; uses internal `write` statements for formatting).
+Pure function.
 
 #### Description
 
@@ -238,7 +238,7 @@ Experimental
 
 #### Class
 
-Function (not `pure`; uses internal `write` statements for formatting).
+Pure function.
 
 #### Description
 
