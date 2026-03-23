@@ -102,6 +102,9 @@ contains
         &                        "175706828388979108268586060148663818836212158203125E-44"))
         if (allocated(error)) return
 
+        call check(error, ucheck("5.405355598523852356954817904851589E-0002"))
+        if (allocated(error)) return
+
     contains
         logical function ucheck(s)
             character(*), intent(in) :: s
@@ -119,11 +122,11 @@ contains
             #:if k1 == "sp"
             if(abs(rel_err) > 0.0_wp) then
             #:elif k1 == "dp"
-            if(abs(rel_err) > epsilon(0.0_wp)) then
+            if(abs(rel_err) > 10*epsilon(0.0_wp)) then
             #:elif k1 == "xdp"
-            if(abs(rel_err) > 200*epsilon(0.0_wp)) then
+            if(abs(rel_err) > 10*epsilon(0.0_wp)) then
             #:elif k1 == "qp"
-            if(abs(rel_err) > 200*epsilon(0.0_wp)) then
+            if(abs(rel_err) > 100*epsilon(0.0_wp)) then
             #:endif
                 write(*,"('formatted read : ', g0)") formatted_read_out
                 write(*,"('to_num         : ', g0)") to_num_out
