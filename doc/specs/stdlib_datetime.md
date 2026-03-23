@@ -179,7 +179,7 @@ Experimental
 
 #### Class
 
-Function (not `pure`; uses internal `read` statements for parsing).
+Pure function.
 
 #### Description
 
@@ -375,6 +375,8 @@ Pure function.
 #### Description
 
 Returns the total duration as `real(dp)`.
+
+#### Syntax
 
 `secs = ` [[stdlib_datetime(module):total_seconds(function)]] `(td)`
 
