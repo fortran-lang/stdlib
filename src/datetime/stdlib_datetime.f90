@@ -376,7 +376,7 @@ contains
         str = buf(1:n)
     end function format_timedelta
 
-    pure function parse_datetime(str, stat) result(dt)
+    function parse_datetime(str, stat) result(dt)
         !! version: experimental
         !!
         !! Parse an ISO 8601 date/time string.

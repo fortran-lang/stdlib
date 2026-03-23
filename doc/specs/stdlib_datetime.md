@@ -179,7 +179,7 @@ Experimental
 
 #### Class
 
-Pure function.
+Function (not `pure`; dummy arguments in a `pure function` must be `intent(in)`, which contradicts the `intent(out)` status argument `stat`).
 
 #### Description
 
