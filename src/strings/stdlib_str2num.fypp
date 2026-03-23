@@ -147,22 +147,26 @@ module stdlib_str2num
             return
         end if
         !----------------------------------------------
-        v = 0
+      v = 0
         do while( p<=len(s) )
             val = iachar(s(p:p))-digit_0
             if( val >= 0 .and. val <= 9 ) then
+                
+                
+                if (v > (huge(v) - int(val, kind(v))) / 10) then
+                    stat = -1 !! Indicates integer overflow
+                    return
+                end if
+                
                 v = v*10 + val
                 p = p + 1
             else
                 exit
             end if
         end do
-        if(v >= 0) then
-            v = sign * v
-            stat = 0
-        else
-            stat = -1 !! Indicates integer overflow
-        end if
+        
+        v = sign * v
+        stat = 0
     end subroutine
     #:endfor
 
