@@ -115,7 +115,7 @@ jobs:
       run: cmake --install ${{ env.BUILD_DIR }}
 
     - name: Validate generated pkg-config file
-      if: ${{ contains(matrix.build, 'cmake') }}
+      if: ${{ matrix.build == 'cmake' }}
       shell: bash
       run: |
         # 1. Dynamically find the directory containing the .pc file (handles lib vs lib64)
