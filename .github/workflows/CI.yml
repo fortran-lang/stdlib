@@ -118,20 +118,36 @@ jobs:
       if: ${{ contains(matrix.build, 'cmake') }}
       shell: bash
       run: |
-        # Ensure pkg-config is available
-        if ! command -v pkg-config &> /dev/null; then
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            sudo apt-get update && sudo apt-get install -y pkg-config
-          elif [ "$RUNNER_OS" == "macOS" ]; then
-            brew install pkg-config
-          fi
+        # 1. Dynamically find the directory containing the .pc file (handles lib vs lib64)
+        PC_FILE=$(find $PWD/_dist -name "fortran_stdlib.pc" | head -n 1)
+        
+        if [ -z "$PC_FILE" ]; then
+          echo "Error: fortran_stdlib.pc was not found in the installation directory!"
+          exit 1
         fi
         
-        # Point to the installation directory specified by CMAKE_INSTALL_PREFIX
-        export PKG_CONFIG_PATH="$PWD/_dist/lib/pkgconfig:$PWD/_dist/share/pkgconfig:$PKG_CONFIG_PATH"
+        PC_DIR=$(dirname "$PC_FILE")
+        export PKG_CONFIG_PATH="$PC_DIR:$PKG_CONFIG_PATH"
+        echo "Found pkg-config file in: $PC_DIR"
         
-        # Run the validation
+        # 2. Check if the module can be found and the syntax is valid
         pkg-config --validate fortran_stdlib
         
-        # Test flags to ensure no errors are thrown
-        pkg-config --cflags --libs fortran_stdlib
+        # 3. Extract the paths that pkg-config generated
+        LIB_DIR=$(pkg-config --variable=libdir fortran_stdlib)
+        INC_DIR=$(pkg-config --variable=includedir fortran_stdlib)
+        
+        # 4. Verify the paths actually exist to catch double-prefixing
+        if [ ! -d "$LIB_DIR" ]; then
+          echo "Error: Library directory '$LIB_DIR' does not exist."
+          exit 1
+        fi
+        
+        if [ ! -d "$INC_DIR" ]; then
+          echo "Error: Include directory '$INC_DIR' does not exist."
+          exit 1
+        fi
+        
+        # 5. Print flags for debugging CI logs
+        echo "Resolved CFLAGS: $(pkg-config --cflags fortran_stdlib)"
+        echo "Resolved LIBS: $(pkg-config --libs fortran_stdlib)"
