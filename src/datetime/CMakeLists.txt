@@ -4,4 +4,4 @@ set(datetime_f90Files
 
 configure_stdlib_target(${PROJECT_NAME}_datetime datetime_f90Files "" "")
 
-target_link_libraries(${PROJECT_NAME}_datetime PUBLIC ${PROJECT_NAME}_core)
+target_link_libraries(${PROJECT_NAME}_datetime PUBLIC ${PROJECT_NAME}_core ${PROJECT_NAME}_strings)

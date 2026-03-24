@@ -17,7 +17,7 @@ ADD_SUBDIR(bitsets)
 add_subdirectory(blas)
 add_subdirectory(constants)
 add_subdirectory(core)
-add_subdirectory(datetime)
+
 
 add_subdirectory(hash)
 
@@ -40,6 +40,7 @@ add_subdirectory(specialfunctions)
 ADD_SUBDIR(specialmatrices)
 ADD_SUBDIR(stringlist)
 add_subdirectory(strings)
+add_subdirectory(datetime)
 ADD_SUBDIR(system)
 
 ADD_SUBDIR(stats)

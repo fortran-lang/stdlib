@@ -57,6 +57,8 @@ Pure function.
 
 Creates a `datetime_type` from individual components. All arguments are optional; if omitted, they default to the type's initial values: `year=1`, `month=1`, `day=1`, `hour=0`, `minute=0`, `second=0`, `millisecond=0`, `utc_offset_minutes=0`.
 
+*Note:* Unlike `parse_datetime`, this constructor does not perform strict bounds checking on the provided values (e.g., passing `month=13` is not checked) to remain highly efficient in tight loops. The caller is responsible for ensuring the values form a valid date block.
+
 #### Syntax
 
 `dt = ` [[stdlib_datetime(module):datetime(function)]] `([year] [, month] [, day] [, hour] [, minute] [, second] [, millisecond] [, utc_offset_minutes])`
@@ -201,12 +203,10 @@ Parses an ISO 8601 date/time string into a `datetime_type`.
 - `YYYY-MM-DDTHH:MM:SS`
 - `YYYY-MM-DDTHH:MM:SSZ`
 - `YYYY-MM-DDTHH:MM:SS+HH:MM`
-- `YYYY-MM-DDTHH:MM:SS.fffZ`
-- `YYYY-MM-DDTHH:MM:SS.fff+HH:MM`
+- `YYYY-MM-DDTHH:MM:SS.fZ` (variable precision fractional seconds up to milliseconds)
+- `YYYY-MM-DDTHH:MM:SS.f+HH:MM`
 
-For the `YYYY-MM-DDTHH:MM:SS` form without a timezone designator, the value is interpreted
-as UTC and `utc_offset_minutes` is set to `0`. Forms with `Z` or an explicit offset use
-the specified UTC offset.
+For the `YYYY-MM-DDTHH:MM:SS` form without a timezone designator, the value is interpreted as UTC, and `utc_offset_minutes` is set to `0`. There is currently no cross-platform standard way to get a time zone offset for arbitrary past/future dates, so defaulting to UTC serves as an absolute, safe coordinate. Forms with `Z` or an explicit offset use the specified UTC offset.
 
 ### `format_datetime` — Format as ISO 8601
 

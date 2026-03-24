@@ -4,6 +4,7 @@ module stdlib_datetime
     !! Date, time, and time interval handling for Fortran.
     !! ([Specification](../page/specs/stdlib_datetime.html))
     use stdlib_kinds, only: dp, int64
+    use stdlib_strings, only: to_string
     implicit none
     private
 
@@ -307,46 +308,32 @@ contains
         !! Format a datetime_type as an ISO 8601 string.
         type(datetime_type), intent(in) :: dt
         character(:), allocatable :: str
-        character(len=29) :: buf
-        integer :: n, off_h, off_m
+        integer :: off_h, off_m
 
-        write(buf(1:4),  '(I4.4)') dt%year
-        buf(5:5) = '-'
-        write(buf(6:7),  '(I2.2)') dt%month
-        buf(8:8) = '-'
-        write(buf(9:10), '(I2.2)') dt%day
-        buf(11:11) = 'T'
-        write(buf(12:13), '(I2.2)') dt%hour
-        buf(14:14) = ':'
-        write(buf(15:16), '(I2.2)') dt%minute
-        buf(17:17) = ':'
-        write(buf(18:19), '(I2.2)') dt%second
-        n = 19
+        str = to_string(dt%year, '(I4.4)') // '-' // &
+              to_string(dt%month, '(I2.2)') // '-' // &
+              to_string(dt%day, '(I2.2)') // 'T' // &
+              to_string(dt%hour, '(I2.2)') // ':' // &
+              to_string(dt%minute, '(I2.2)') // ':' // &
+              to_string(dt%second, '(I2.2)')
 
         if (dt%millisecond /= 0) then
-            buf(n+1:n+1) = '.'
-            write(buf(n+2:n+4), '(I3.3)') dt%millisecond
-            n = n + 4
+            str = str // '.' // to_string(dt%millisecond, '(I3.3)')
         end if
 
         if (dt%utc_offset_minutes == 0) then
-            buf(n+1:n+1) = 'Z'
-            n = n + 1
+            str = str // 'Z'
         else
             off_h = abs(dt%utc_offset_minutes) / 60
             off_m = mod(abs(dt%utc_offset_minutes), 60)
             if (dt%utc_offset_minutes > 0) then
-                buf(n+1:n+1) = '+'
+                str = str // '+'
             else
-                buf(n+1:n+1) = '-'
+                str = str // '-'
             end if
-            write(buf(n+2:n+3), '(I2.2)') off_h
-            buf(n+4:n+4) = ':'
-            write(buf(n+5:n+6), '(I2.2)') off_m
-            n = n + 6
+            str = str // to_string(off_h, '(I2.2)') // ':' // &
+                  to_string(off_m, '(I2.2)')
         end if
-
-        str = buf(1:n)
     end function format_datetime
 
     pure function format_timedelta(td) result(str)
@@ -355,25 +342,20 @@ contains
         !! Format a timedelta_type as a readable string.
         type(timedelta_type), intent(in) :: td
         character(:), allocatable :: str
-        character(len=40) :: buf
-        integer :: h, m, s, n
+        integer :: h, m, s
 
         h = td%seconds / 3600
         m = mod(td%seconds, 3600) / 60
         s = mod(td%seconds, 60)
 
-        write(buf, &
-            '(I0," days, ",I2.2,":",I2.2,":",I2.2)') &
-            td%days, h, m, s
-        n = len_trim(buf)
+        str = to_string(td%days, '(I0)') // ' days, ' // &
+              to_string(h, '(I2.2)') // ':' // &
+              to_string(m, '(I2.2)') // ':' // &
+              to_string(s, '(I2.2)')
 
         if (td%milliseconds /= 0) then
-            write(buf(n+1:n+4), '(".",I3.3)') &
-                td%milliseconds
-            n = n + 4
+            str = str // '.' // to_string(td%milliseconds, '(I3.3)')
         end if
-
-        str = buf(1:n)
     end function format_timedelta
 
     function parse_datetime(str, stat) result(dt)
@@ -386,6 +368,8 @@ contains
         integer :: slen, ios, off_h, off_m, ms_end
         integer :: max_day
         character(len=1) :: sign_ch
+        character(len=32) :: tmp_str
+        real(dp) :: ms_frac
 
         if (present(stat)) stat = 0
         dt = datetime_type()
@@ -485,23 +469,27 @@ contains
 
         ms_end = 19
         if (str(20:20) == '.') then
-            if (slen < 23) then
+            ms_end = 20
+            do while (ms_end < slen)
+                sign_ch = str(ms_end+1:ms_end+1)
+                if (sign_ch >= '0' .and. sign_ch <= '9') then
+                    ms_end = ms_end + 1
+                else
+                    exit
+                end if
+            end do
+            if (ms_end == 20) then
+                ! "." without following digits
                 if (present(stat)) stat = 1
                 return
             end if
-            read(str(21:23), '(I3)', iostat=ios) &
-                dt%millisecond
+            tmp_str = '0' // str(20:ms_end)
+            read(tmp_str, *, iostat=ios) ms_frac
             if (ios /= 0) then
                 if (present(stat)) stat = 1
                 return
             end if
-            ! Validate millisecond range [0,999]
-            if (dt%millisecond < 0 .or. &
-                dt%millisecond > 999) then
-                if (present(stat)) stat = 1
-                return
-            end if
-            ms_end = 23
+            dt%millisecond = nint(ms_frac * 1000.0_dp)
         end if
 
         if (slen <= ms_end) return
