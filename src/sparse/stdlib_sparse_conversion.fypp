@@ -6,6 +6,7 @@
 !!
 ! This code was modified from https://github.com/jalvesz/FSPARSE by its author: Alves Jose
 module stdlib_sparse_conversion
+    use stdlib_optval, only: optval
     use stdlib_sorting, only: sort
     use stdlib_sparse_constants
     use stdlib_sparse_kinds
@@ -215,10 +216,19 @@ contains
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    subroutine coo2csr_${s1}$(COO,CSR)
-        type(COO_${s1}$_type), intent(in)  :: COO
-        type(CSR_${s1}$_type), intent(out) :: CSR
+    subroutine coo2csr_${s1}$(COO, CSR, sort_data)
+        type(COO_${s1}$_type), intent(inout) :: COO
+        type(CSR_${s1}$_type), intent(out)   :: CSR
+        logical, intent(in), optional :: sort_data
+        logical :: sort_data_
         integer(ilp) :: i
+
+        sort_data_ = optval(x=sort_data, default=.false.)
+
+        if(sort_data_) then
+            call sort_coo_unique_${s1}$( COO%index, COO%data, COO%nnz, COO%nrows, COO%ncols )
+            COO%is_sorted = .true.
+        end if
 
         CSR%nnz = COO%nnz; CSR%nrows = COO%nrows; CSR%ncols = COO%ncols
         CSR%storage = COO%storage
