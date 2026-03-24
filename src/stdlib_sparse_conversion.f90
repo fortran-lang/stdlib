@@ -2,6 +2,7 @@
 !!
 ! This code was modified from https://github.com/jalvesz/FSPARSE by its author: Alves Jose
 module stdlib_sparse_conversion
+    use stdlib_optval, only: optval
     use stdlib_sorting, only: sort
     use stdlib_sparse_constants
     use stdlib_sparse_kinds
@@ -350,10 +351,19 @@ contains
     end subroutine
 
 
-    subroutine coo2csr_sp(COO,CSR)
-        type(COO_sp_type), intent(in)  :: COO
-        type(CSR_sp_type), intent(out) :: CSR
+    subroutine coo2csr_sp(COO, CSR, sort_data)
+        type(COO_sp_type), intent(inout) :: COO
+        type(CSR_sp_type), intent(out)   :: CSR
+        logical, intent(in), optional :: sort_data
+        logical :: sort_data_
         integer(ilp) :: i
+
+        sort_data_ = optval(x=sort_data, default=.false.)
+
+        if(sort_data_) then
+            call sort_coo_unique_sp( COO%index, COO%data, COO%nnz, COO%nrows, COO%ncols )
+            COO%is_sorted = .true.
+        end if
 
         CSR%nnz = COO%nnz; CSR%nrows = COO%nrows; CSR%ncols = COO%ncols
         CSR%storage = COO%storage
@@ -377,10 +387,19 @@ contains
         end do
     end subroutine
 
-    subroutine coo2csr_dp(COO,CSR)
-        type(COO_dp_type), intent(in)  :: COO
-        type(CSR_dp_type), intent(out) :: CSR
+    subroutine coo2csr_dp(COO, CSR, sort_data)
+        type(COO_dp_type), intent(inout) :: COO
+        type(CSR_dp_type), intent(out)   :: CSR
+        logical, intent(in), optional :: sort_data
+        logical :: sort_data_
         integer(ilp) :: i
+
+        sort_data_ = optval(x=sort_data, default=.false.)
+
+        if(sort_data_) then
+            call sort_coo_unique_dp( COO%index, COO%data, COO%nnz, COO%nrows, COO%ncols )
+            COO%is_sorted = .true.
+        end if
 
         CSR%nnz = COO%nnz; CSR%nrows = COO%nrows; CSR%ncols = COO%ncols
         CSR%storage = COO%storage
@@ -404,10 +423,19 @@ contains
         end do
     end subroutine
 
-    subroutine coo2csr_csp(COO,CSR)
-        type(COO_csp_type), intent(in)  :: COO
-        type(CSR_csp_type), intent(out) :: CSR
+    subroutine coo2csr_csp(COO, CSR, sort_data)
+        type(COO_csp_type), intent(inout) :: COO
+        type(CSR_csp_type), intent(out)   :: CSR
+        logical, intent(in), optional :: sort_data
+        logical :: sort_data_
         integer(ilp) :: i
+
+        sort_data_ = optval(x=sort_data, default=.false.)
+
+        if(sort_data_) then
+            call sort_coo_unique_csp( COO%index, COO%data, COO%nnz, COO%nrows, COO%ncols )
+            COO%is_sorted = .true.
+        end if
 
         CSR%nnz = COO%nnz; CSR%nrows = COO%nrows; CSR%ncols = COO%ncols
         CSR%storage = COO%storage
@@ -431,10 +459,19 @@ contains
         end do
     end subroutine
 
-    subroutine coo2csr_cdp(COO,CSR)
-        type(COO_cdp_type), intent(in)  :: COO
-        type(CSR_cdp_type), intent(out) :: CSR
+    subroutine coo2csr_cdp(COO, CSR, sort_data)
+        type(COO_cdp_type), intent(inout) :: COO
+        type(CSR_cdp_type), intent(out)   :: CSR
+        logical, intent(in), optional :: sort_data
+        logical :: sort_data_
         integer(ilp) :: i
+
+        sort_data_ = optval(x=sort_data, default=.false.)
+
+        if(sort_data_) then
+            call sort_coo_unique_cdp( COO%index, COO%data, COO%nnz, COO%nrows, COO%ncols )
+            COO%is_sorted = .true.
+        end if
 
         CSR%nnz = COO%nnz; CSR%nrows = COO%nrows; CSR%ncols = COO%ncols
         CSR%storage = COO%storage
