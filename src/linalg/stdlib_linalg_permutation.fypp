@@ -118,24 +118,25 @@ contains
 
   !> Invert a finalized permutation
   !> If perm(i) = j, then inv(j) = i
-  recursive function permutation_invert(p) result(inv)
+  function permutation_invert(p) result(inv)
     type(permutation_t), intent(in) :: p
-    type(permutation_t) :: inv
+    type(permutation_t) :: inv, fp
     integer :: i
 
-    inv%n = p%n
-    inv%finalized = .true.
-    allocate(inv%perm(p%n))
-
     if (p%finalized) then
-      ! Direct inversion: swap keys and values
-      do i = 1, p%n
-        inv%perm(p%perm(i)) = i
-      end do
+      fp = p
     else
-      ! For LAPACK format: first finalize, then invert
-      inv = permutation_invert(permutation_finalize(p))
+      fp = permutation_finalize(p)
     end if
+
+    inv%n = fp%n
+    inv%finalized = .true.
+    allocate(inv%perm(fp%n))
+
+    ! Direct inversion: swap keys and values
+    do i = 1, fp%n
+      inv%perm(fp%perm(i)) = i
+    end do
   end function
 
   !> Convert LAPACK pivot vector (swap sequence) to finalized permutation
