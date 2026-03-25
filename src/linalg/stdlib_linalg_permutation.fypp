@@ -12,18 +12,19 @@
 !> Reference: Issue #891 (https://github.com/fortran-lang/stdlib/issues/891)
 
 #:include "common.fypp"
-#:set REAL_KINDS_TYPES = [("sp","real(sp)"), ("dp","real(dp)")]
-#:set INT_KINDS_TYPES = [("int32","integer(int32)"), ("int64","integer(int64)")]
+#:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
+#:set RCI_KINDS_TYPES = RC_KINDS_TYPES + INT_KINDS_TYPES
 
 module stdlib_linalg_permutation
-  use stdlib_kinds, only: sp, dp, int32, int64
+  use stdlib_kinds, only: xdp, int8, int16, int32, int64
+  use stdlib_linalg_constants, only: sp, dp, qp, lk, ilp
   implicit none
   private
 
   !> Permutation type: stores permutation as integer vector
-  type, public :: permutation_t
-    integer, allocatable :: perm(:)
-    integer :: n = 0
+  type, public :: permutation_type
+    integer(ilp), allocatable :: perm(:)
+    integer(ilp) :: n = 0
     logical :: finalized = .true.
   end type
 
@@ -41,26 +42,26 @@ module stdlib_linalg_permutation
 
   ! Generic interfaces for multi-type support
   interface permutation_apply_left
-#:for rk, rt in REAL_KINDS_TYPES
-    module procedure permutation_apply_left_${rk}$
+#:for k1, t1 in RCI_KINDS_TYPES
+      module procedure permutation_apply_left_${t1[0]}$${k1}$
 #:endfor
   end interface
 
   interface permutation_apply_right
-#:for rk, rt in REAL_KINDS_TYPES
-    module procedure permutation_apply_right_${rk}$
+#:for k1, t1 in RCI_KINDS_TYPES
+      module procedure permutation_apply_right_${t1[0]}$${k1}$
 #:endfor
   end interface
 
   interface permutation_apply_vector
-#:for rk, rt in REAL_KINDS_TYPES
-    module procedure permutation_apply_vector_${rk}$
+#:for k1, t1 in RCI_KINDS_TYPES
+      module procedure permutation_apply_vector_${t1[0]}$${k1}$
 #:endfor
   end interface
 
   interface permutation_to_matrix
-#:for rk, rt in REAL_KINDS_TYPES
-    module procedure permutation_to_matrix_${rk}$
+#:for k1, t1 in RCI_KINDS_TYPES
+      module procedure permutation_to_matrix_${t1[0]}$${k1}$
 #:endfor
   end interface
 
@@ -68,9 +69,9 @@ contains
 
   !> Create an identity permutation of size n
   function permutation_identity(n) result(p)
-    integer, intent(in) :: n
-    type(permutation_t) :: p
-    integer :: i
+    integer(ilp), intent(in) :: n
+    type(permutation_type) :: p
+    integer(ilp) :: i
 
     p%n = n
     p%finalized = .true.
@@ -82,9 +83,9 @@ contains
 
   !> Create a permutation from a given integer vector
   function permutation_init(perm_vec, finalized) result(p)
-    integer, intent(in) :: perm_vec(:)
+    integer(ilp), intent(in) :: perm_vec(:)
     logical, intent(in), optional :: finalized
-    type(permutation_t) :: p
+    type(permutation_type) :: p
 
     p%n = size(perm_vec)
     allocate(p%perm(p%n), source=perm_vec)
@@ -97,10 +98,10 @@ contains
 
   !> Check if a permutation is valid (each integer 1..n appears exactly once)
   function permutation_is_valid(p) result(valid)
-    type(permutation_t), intent(in) :: p
+    type(permutation_type), intent(in) :: p
     logical :: valid
     logical, allocatable :: seen(:)
-    integer :: i
+    integer(ilp) :: i
 
     valid = .false.
     if (.not. allocated(p%perm)) return
@@ -119,9 +120,9 @@ contains
   !> Invert a finalized permutation
   !> If perm(i) = j, then inv(j) = i
   function permutation_invert(p) result(inv)
-    type(permutation_t), intent(in) :: p
-    type(permutation_t) :: inv, fp
-    integer :: i
+    type(permutation_type), intent(in) :: p
+    type(permutation_type) :: inv, fp
+    integer(ilp) :: i
 
     if (p%finalized) then
       fp = p
@@ -142,10 +143,10 @@ contains
   !> Convert LAPACK pivot vector (swap sequence) to finalized permutation
   !> ipiv(i) = j means "swap rows i and j" applied at step i
   function permutation_from_lapack(ipiv, n) result(p)
-    integer, intent(in) :: ipiv(:)
-    integer, intent(in) :: n
-    type(permutation_t) :: p
-    integer :: i, tmp
+    integer(ilp), intent(in) :: ipiv(:)
+    integer(ilp), intent(in) :: n
+    type(permutation_type) :: p
+    integer(ilp) :: i, tmp
 
     p%n = n
     p%finalized = .true.
@@ -168,8 +169,8 @@ contains
 
   !> Convert nonfinalized (swap) to finalized (direct) permutation
   function permutation_finalize(p) result(fp)
-    type(permutation_t), intent(in) :: p
-    type(permutation_t) :: fp
+    type(permutation_type), intent(in) :: p
+    type(permutation_type) :: fp
 
     if (p%finalized) then
       fp = p
@@ -182,9 +183,9 @@ contains
   !> Compose two finalized permutations: result = p1 * p2
   !> Apply p2 first, then p1
   function permutation_compose(p1, p2) result(p)
-    type(permutation_t), intent(in) :: p1, p2
-    type(permutation_t) :: p
-    integer :: i
+    type(permutation_type), intent(in) :: p1, p2
+    type(permutation_type) :: p
+    integer(ilp) :: i
 
     p%n = p1%n
     p%finalized = .true.
@@ -197,15 +198,15 @@ contains
 
   !> ----- Templated operations for multiple real kinds -----
 
-#:for rk, rt in REAL_KINDS_TYPES
+#:for k1, t1 in RCI_KINDS_TYPES
 
   !> Apply permutation from the left: B = P * A (row permutation)
   !> Row i of B comes from row perm(i) of A
-  subroutine permutation_apply_left_${rk}$ (p, A, B)
-    type(permutation_t), intent(in) :: p
-    ${rt}$, intent(in) :: A(:,:)
-    ${rt}$, intent(out) :: B(:,:)
-    integer :: i
+  subroutine permutation_apply_left_${t1[0]}$${k1}$ (p, A, B)
+    type(permutation_type), intent(in) :: p
+    ${t1}$, intent(in) :: A(:,:)
+    ${t1}$, intent(out) :: B(:,:)
+    integer(ilp) :: i
 
     do i = 1, p%n
       B(i, :) = A(p%perm(i), :)
@@ -214,11 +215,11 @@ contains
 
   !> Apply permutation from the right: B = A * P (column permutation)
   !> Column perm(j) of B comes from column j of A
-  subroutine permutation_apply_right_${rk}$ (p, A, B)
-    type(permutation_t), intent(in) :: p
-    ${rt}$, intent(in) :: A(:,:)
-    ${rt}$, intent(out) :: B(:,:)
-    integer :: j
+  subroutine permutation_apply_right_${t1[0]}$${k1}$ (p, A, B)
+    type(permutation_type), intent(in) :: p
+    ${t1}$, intent(in) :: A(:,:)
+    ${t1}$, intent(out) :: B(:,:)
+    integer(ilp) :: j
 
     do j = 1, p%n
       B(:, p%perm(j)) = A(:, j)
@@ -227,11 +228,11 @@ contains
 
   !> Apply permutation to a vector: b = P * a
   !> b(i) = a(perm(i))
-  subroutine permutation_apply_vector_${rk}$ (p, a, b)
-    type(permutation_t), intent(in) :: p
-    ${rt}$, intent(in) :: a(:)
-    ${rt}$, intent(out) :: b(:)
-    integer :: i
+  subroutine permutation_apply_vector_${t1[0]}$${k1}$ (p, a, b)
+    type(permutation_type), intent(in) :: p
+    ${t1}$, intent(in) :: a(:)
+    ${t1}$, intent(out) :: b(:)
+    integer(ilp) :: i
 
     do i = 1, p%n
       b(i) = a(p%perm(i))
@@ -239,14 +240,14 @@ contains
   end subroutine
 
   !> Convert permutation to dense matrix (for testing / small cases)
-  subroutine permutation_to_matrix_${rk}$ (p, A)
-    type(permutation_t), intent(in) :: p
-    ${rt}$, intent(out) :: A(:,:)
-    integer :: i
+  subroutine permutation_to_matrix_${t1[0]}$${k1}$ (p, A)
+    type(permutation_type), intent(in) :: p
+    ${t1}$, intent(out) :: A(:,:)
+    integer(ilp) :: i
 
-    A = 0.0_${rk}$
+    A = 0
     do i = 1, p%n
-      A(i, p%perm(i)) = 1.0_${rk}$
+      A(i, p%perm(i)) = 1
     end do
   end subroutine
 

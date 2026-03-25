@@ -4,6 +4,7 @@
 module test_linalg_permutation
   use testdrive, only: new_unittest, unittest_type, error_type, check
   use stdlib_kinds, only: sp, dp, int32
+  use stdlib_linalg_constants, only: ilp
   use stdlib_linalg_permutation
   implicit none
   private
@@ -33,8 +34,8 @@ contains
   !> Test 1: Identity permutation
   subroutine test_identity(error)
     type(error_type), allocatable, intent(out) :: error
-    type(permutation_t) :: p
-    integer :: i
+    type(permutation_type) :: p
+    integer(ilp) :: i
 
     p = permutation_identity(5)
     call check(error, p%n == 5, "identity size")
@@ -49,7 +50,7 @@ contains
   !> Test 2: Valid permutation accepted
   subroutine test_is_valid(error)
     type(error_type), allocatable, intent(out) :: error
-    type(permutation_t) :: p
+    type(permutation_type) :: p
 
     p = permutation_init([3, 1, 4, 2])
     call check(error, permutation_is_valid(p), "valid permutation")
@@ -58,7 +59,7 @@ contains
   !> Test 3: Invalid permutations rejected
   subroutine test_invalid_rejects(error)
     type(error_type), allocatable, intent(out) :: error
-    type(permutation_t) :: p
+    type(permutation_type) :: p
 
     ! Duplicate entry
     p = permutation_init([1, 1, 3])
@@ -73,7 +74,7 @@ contains
   !> Test 4: Inversion correctness
   subroutine test_invert(error)
     type(error_type), allocatable, intent(out) :: error
-    type(permutation_t) :: p, inv
+    type(permutation_type) :: p, inv
 
     ! perm = [3,1,2] means: pos1->3, pos2->1, pos3->2
     ! inverse: pos3->1, pos1->2, pos2->3 => inv = [2,3,1]
@@ -89,8 +90,8 @@ contains
   !> Test 5: P * P^-1 = Identity (involution property)
   subroutine test_invert_involution(error)
     type(error_type), allocatable, intent(out) :: error
-    type(permutation_t) :: p, inv, composed
-    integer :: i
+    type(permutation_type) :: p, inv, composed
+    integer(ilp) :: i
 
     p = permutation_init([3, 1, 4, 2])
     inv = permutation_invert(p)
@@ -104,7 +105,7 @@ contains
   !> Test 6: Left multiplication (row permutation)
   subroutine test_apply_left(error)
     type(error_type), allocatable, intent(out) :: error
-    type(permutation_t) :: p
+    type(permutation_type) :: p
     real(dp) :: A(3,2), B(3,2)
 
     ! A = [[1,2],[3,4],[5,6]]
@@ -127,7 +128,7 @@ contains
   !> Test 7: Right multiplication (column permutation)
   subroutine test_apply_right(error)
     type(error_type), allocatable, intent(out) :: error
-    type(permutation_t) :: p
+    type(permutation_type) :: p
     real(dp) :: A(2,3), B(2,3)
 
     A(1,:) = [1.0_dp, 2.0_dp, 3.0_dp]
@@ -149,7 +150,7 @@ contains
   !> Test 8: Vector permutation
   subroutine test_apply_vector(error)
     type(error_type), allocatable, intent(out) :: error
-    type(permutation_t) :: p
+    type(permutation_type) :: p
     real(dp) :: a(4), b(4)
 
     a = [10.0_dp, 20.0_dp, 30.0_dp, 40.0_dp]
@@ -169,7 +170,7 @@ contains
   !> Test 9: Composition P1 * P2
   subroutine test_compose(error)
     type(error_type), allocatable, intent(out) :: error
-    type(permutation_t) :: p1, p2, composed
+    type(permutation_type) :: p1, p2, composed
     real(dp) :: a(3), b1(3), b2(3), b_composed(3)
 
     p1 = permutation_init([2, 3, 1])
@@ -192,7 +193,7 @@ contains
   !> Test 10: LAPACK pivot vector conversion
   subroutine test_from_lapack(error)
     type(error_type), allocatable, intent(out) :: error
-    type(permutation_t) :: p
+    type(permutation_type) :: p
 
     ! LAPACK pivot: [2, 3, 3]
     ! Step 1: swap rows 1,2 -> [2,1,3]
@@ -210,7 +211,7 @@ contains
   !> Test 11: Dense matrix matches permutation operations
   subroutine test_to_matrix(error)
     type(error_type), allocatable, intent(out) :: error
-    type(permutation_t) :: p
+    type(permutation_type) :: p
     real(dp) :: P_dense(3,3)
 
     p = permutation_init([3, 1, 2])
@@ -229,9 +230,9 @@ contains
   !> Test 12: Identity permutation is a no-op
   subroutine test_identity_noop(error)
     type(error_type), allocatable, intent(out) :: error
-    type(permutation_t) :: p
+    type(permutation_type) :: p
     real(dp) :: A(3,3), B(3,3)
-    integer :: i, j
+    integer(ilp) :: i, j
 
     p = permutation_identity(3)
     do i = 1, 3
@@ -241,12 +242,8 @@ contains
     end do
 
     call permutation_apply_left(p, A, B)
-    do i = 1, 3
-      do j = 1, 3
-        call check(error, abs(A(i,j) - B(i,j)) < 1.0e-10_dp, "identity noop")
-        if (allocated(error)) return
-      end do
-    end do
+    call check(error, all(abs(A - B) < 1.0e-10_dp), "identity noop")
+    if (allocated(error)) return
   end subroutine
 
 end module test_linalg_permutation
