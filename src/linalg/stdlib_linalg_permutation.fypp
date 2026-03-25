@@ -1,0 +1,254 @@
+!> Permutation matrix operations using efficient vector storage.
+!>
+!> Instead of storing permutations as dense n×n matrices (O(n²) memory),
+!> we represent them as integer vectors of length n (O(n) memory).
+!> All operations (inversion, left/right multiplication, composition)
+!> run in O(n) time per column/row rather than O(n²).
+!>
+!> Two formats are supported:
+!>   - Finalized: perm(i) = j means row i maps to row j (direct mapping)
+!>   - LAPACK pivot: ipiv(i) = j means swap rows i and j at step i
+!>
+!> Reference: Issue #891 (https://github.com/fortran-lang/stdlib/issues/891)
+
+#:include "common.fypp"
+#:set REAL_KINDS_TYPES = [("sp","real(sp)"), ("dp","real(dp)")]
+#:set INT_KINDS_TYPES = [("int32","integer(int32)"), ("int64","integer(int64)")]
+
+module stdlib_linalg_permutation
+  use stdlib_kinds, only: sp, dp, int32, int64
+  implicit none
+  private
+
+  !> Permutation type: stores permutation as integer vector
+  type, public :: permutation_t
+    integer, allocatable :: perm(:)
+    integer :: n = 0
+    logical :: finalized = .true.
+  end type
+
+  ! Public procedures
+  public :: permutation_identity
+  public :: permutation_init
+  public :: permutation_is_valid
+  public :: permutation_invert
+  public :: permutation_compose
+  public :: permutation_from_lapack
+  public :: permutation_to_matrix
+  public :: permutation_apply_left
+  public :: permutation_apply_right
+  public :: permutation_apply_vector
+
+  ! Generic interfaces for multi-type support
+  interface permutation_apply_left
+#:for rk, rt in REAL_KINDS_TYPES
+    module procedure permutation_apply_left_${rk}$
+#:endfor
+  end interface
+
+  interface permutation_apply_right
+#:for rk, rt in REAL_KINDS_TYPES
+    module procedure permutation_apply_right_${rk}$
+#:endfor
+  end interface
+
+  interface permutation_apply_vector
+#:for rk, rt in REAL_KINDS_TYPES
+    module procedure permutation_apply_vector_${rk}$
+#:endfor
+  end interface
+
+  interface permutation_to_matrix
+#:for rk, rt in REAL_KINDS_TYPES
+    module procedure permutation_to_matrix_${rk}$
+#:endfor
+  end interface
+
+contains
+
+  !> Create an identity permutation of size n
+  function permutation_identity(n) result(p)
+    integer, intent(in) :: n
+    type(permutation_t) :: p
+    integer :: i
+
+    p%n = n
+    p%finalized = .true.
+    allocate(p%perm(n))
+    do i = 1, n
+      p%perm(i) = i
+    end do
+  end function
+
+  !> Create a permutation from a given integer vector
+  function permutation_init(perm_vec, finalized) result(p)
+    integer, intent(in) :: perm_vec(:)
+    logical, intent(in), optional :: finalized
+    type(permutation_t) :: p
+
+    p%n = size(perm_vec)
+    allocate(p%perm(p%n), source=perm_vec)
+    if (present(finalized)) then
+      p%finalized = finalized
+    else
+      p%finalized = .true.
+    end if
+  end function
+
+  !> Check if a permutation is valid (each integer 1..n appears exactly once)
+  function permutation_is_valid(p) result(valid)
+    type(permutation_t), intent(in) :: p
+    logical :: valid
+    logical, allocatable :: seen(:)
+    integer :: i
+
+    valid = .false.
+    if (.not. allocated(p%perm)) return
+    if (p%n < 1) return
+    if (size(p%perm) /= p%n) return
+
+    allocate(seen(p%n), source=.false.)
+    do i = 1, p%n
+      if (p%perm(i) < 1 .or. p%perm(i) > p%n) return
+      if (seen(p%perm(i))) return
+      seen(p%perm(i)) = .true.
+    end do
+    valid = .true.
+  end function
+
+  !> Invert a finalized permutation
+  !> If perm(i) = j, then inv(j) = i
+  recursive function permutation_invert(p) result(inv)
+    type(permutation_t), intent(in) :: p
+    type(permutation_t) :: inv
+    integer :: i
+
+    inv%n = p%n
+    inv%finalized = .true.
+    allocate(inv%perm(p%n))
+
+    if (p%finalized) then
+      ! Direct inversion: swap keys and values
+      do i = 1, p%n
+        inv%perm(p%perm(i)) = i
+      end do
+    else
+      ! For LAPACK format: first finalize, then invert
+      inv = permutation_invert(permutation_finalize(p))
+    end if
+  end function
+
+  !> Convert LAPACK pivot vector (swap sequence) to finalized permutation
+  !> ipiv(i) = j means "swap rows i and j" applied at step i
+  function permutation_from_lapack(ipiv, n) result(p)
+    integer, intent(in) :: ipiv(:)
+    integer, intent(in) :: n
+    type(permutation_t) :: p
+    integer :: i, tmp
+
+    p%n = n
+    p%finalized = .true.
+    allocate(p%perm(n))
+
+    ! Start with identity
+    do i = 1, n
+      p%perm(i) = i
+    end do
+
+    ! Replay swap sequence forward
+    do i = 1, min(n, size(ipiv))
+      if (ipiv(i) /= i .and. ipiv(i) >= 1 .and. ipiv(i) <= n) then
+        tmp = p%perm(i)
+        p%perm(i) = p%perm(ipiv(i))
+        p%perm(ipiv(i)) = tmp
+      end if
+    end do
+  end function
+
+  !> Convert nonfinalized (swap) to finalized (direct) permutation
+  function permutation_finalize(p) result(fp)
+    type(permutation_t), intent(in) :: p
+    type(permutation_t) :: fp
+
+    if (p%finalized) then
+      fp = p
+      return
+    end if
+    ! Treat swap sequence as LAPACK pivots
+    fp = permutation_from_lapack(p%perm, p%n)
+  end function
+
+  !> Compose two finalized permutations: result = p1 * p2
+  !> Apply p2 first, then p1
+  function permutation_compose(p1, p2) result(p)
+    type(permutation_t), intent(in) :: p1, p2
+    type(permutation_t) :: p
+    integer :: i
+
+    p%n = p1%n
+    p%finalized = .true.
+    allocate(p%perm(p%n))
+
+    do i = 1, p%n
+      p%perm(i) = p1%perm(p2%perm(i))
+    end do
+  end function
+
+  !> ----- Templated operations for multiple real kinds -----
+
+#:for rk, rt in REAL_KINDS_TYPES
+
+  !> Apply permutation from the left: B = P * A (row permutation)
+  !> Row i of B comes from row perm(i) of A
+  subroutine permutation_apply_left_${rk}$ (p, A, B)
+    type(permutation_t), intent(in) :: p
+    ${rt}$, intent(in) :: A(:,:)
+    ${rt}$, intent(out) :: B(:,:)
+    integer :: i
+
+    do i = 1, p%n
+      B(i, :) = A(p%perm(i), :)
+    end do
+  end subroutine
+
+  !> Apply permutation from the right: B = A * P (column permutation)
+  !> Column perm(j) of B comes from column j of A
+  subroutine permutation_apply_right_${rk}$ (p, A, B)
+    type(permutation_t), intent(in) :: p
+    ${rt}$, intent(in) :: A(:,:)
+    ${rt}$, intent(out) :: B(:,:)
+    integer :: j
+
+    do j = 1, p%n
+      B(:, p%perm(j)) = A(:, j)
+    end do
+  end subroutine
+
+  !> Apply permutation to a vector: b = P * a
+  !> b(i) = a(perm(i))
+  subroutine permutation_apply_vector_${rk}$ (p, a, b)
+    type(permutation_t), intent(in) :: p
+    ${rt}$, intent(in) :: a(:)
+    ${rt}$, intent(out) :: b(:)
+    integer :: i
+
+    do i = 1, p%n
+      b(i) = a(p%perm(i))
+    end do
+  end subroutine
+
+  !> Convert permutation to dense matrix (for testing / small cases)
+  subroutine permutation_to_matrix_${rk}$ (p, A)
+    type(permutation_t), intent(in) :: p
+    ${rt}$, intent(out) :: A(:,:)
+    integer :: i
+
+    A = 0.0_${rk}$
+    do i = 1, p%n
+      A(i, p%perm(i)) = 1.0_${rk}$
+    end do
+  end subroutine
+
+#:endfor
+
+end module stdlib_linalg_permutation

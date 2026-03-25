@@ -11,6 +11,7 @@ set(linalg_fppFiles
     stdlib_linalg_matrix_functions.fypp
     stdlib_linalg_norms.fypp
     stdlib_linalg_outer_product.fypp
+    stdlib_linalg_permutation.fypp
     stdlib_linalg_pinv.fypp
     stdlib_linalg_qr.fypp
     stdlib_linalg_schur.fypp
