@@ -65,7 +65,7 @@ Creates a `datetime_type` from individual components. All arguments are optional
 
 #### Arguments
 
-All arguments are optional with `intent(in)` and type `integer`.
+All arguments are optional with `intent(in)` and type `integer`. If no arguments are provided, all components default to the type's initial values (`year=1`, `month=1`, `day=1`, `hour=0`, `minute=0`, `second=0`, `millisecond=0`, `utc_offset_minutes=0`).
 
 #### Return value
 
@@ -91,7 +91,7 @@ Creates a normalized `timedelta_type`. Accepts mixed units (days, hours, minutes
 
 #### Arguments
 
-All arguments are optional with `intent(in)` and type `integer`.
+All arguments are optional with `intent(in)` and type `integer`. If no arguments are provided, all components default to `0`.
 
 #### Return value
 
