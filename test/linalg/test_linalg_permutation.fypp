@@ -171,23 +171,19 @@ contains
   subroutine test_compose(error)
     type(error_type), allocatable, intent(out) :: error
     type(permutation_type) :: p1, p2, composed
-    real(dp) :: a(3), b1(3), b2(3), b_composed(3)
+    real(dp) :: a(4), b1(4), b2(4), b_composed(4)
 
     p1 = permutation_init([2, 3, 1])
     p2 = permutation_init([3, 1, 2])
     composed = permutation_compose(p1, p2)
 
     ! Verify: composed applied to vector = p1 applied to (p2 applied to vector)
-    a = [10.0_dp, 20.0_dp, 30.0_dp]
+    a = [10.0_dp, 20.0_dp, 30.0_dp, 40.0_dp]
     call permutation_apply_vector(p2, a, b1)       ! b1 = P2 * a
     call permutation_apply_vector(p1, b1, b2)      ! b2 = P1 * P2 * a
     call permutation_apply_vector(composed, a, b_composed) ! should equal b2
 
-    call check(error, abs(b2(1) - b_composed(1)) < 1.0e-10_dp, "compose(1)")
-    if (allocated(error)) return
-    call check(error, abs(b2(2) - b_composed(2)) < 1.0e-10_dp, "compose(2)")
-    if (allocated(error)) return
-    call check(error, abs(b2(3) - b_composed(3)) < 1.0e-10_dp, "compose(3)")
+    call check(error, all(abs(b2 - b_composed) < 1.0e-10_dp), "compose_matches_explicit")
   end subroutine
 
   !> Test 10: LAPACK pivot vector conversion
@@ -245,6 +241,30 @@ contains
     call check(error, all(abs(A - B) < 1.0e-10_dp), "identity noop")
     if (allocated(error)) return
   end subroutine
+
+
+  !> Test permutation with different generic data types (complex and integer)
+  subroutine test_types_support(error)
+    type(error_type), allocatable, intent(out) :: error
+    type(permutation_type) :: p
+    complex(dp) :: c_in(3), c_out(3)
+    integer(int32) :: i_in(3), i_out(3)
+
+    p = permutation_init([3_ilp, 1_ilp, 2_ilp])
+
+    ! Complex support
+    c_in = [(1.0_dp, -1.0_dp), (2.0_dp, -2.0_dp), (3.0_dp, -3.0_dp)]
+    call permutation_apply_vector(p, c_in, c_out)
+    call check(error, abs(c_out(1) - c_in(3)) < 1.0e-10_dp, "complex")
+    if (allocated(error)) return
+
+    ! Integer support
+    i_in = [10_int32, 20_int32, 30_int32]
+    call permutation_apply_vector(p, i_in, i_out)
+    call check(error, i_out(1) == i_in(3), "integer")
+    if (allocated(error)) return
+
+  end subroutine test_types_support
 
 end module test_linalg_permutation
 
