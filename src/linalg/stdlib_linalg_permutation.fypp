@@ -6,8 +6,9 @@
 !> run in O(n) time per column/row rather than O(n²).
 !>
 !> Two formats are supported:
-!>   - Finalized: perm(i) = j means row i maps to row j (direct mapping)
-!>   - LAPACK pivot: ipiv(i) = j means swap rows i and j at step i
+!>   - Finalized: perm(i) = j means that output row i is taken from input row j
+!>     (i.e., after applying the permutation on the left, B(i,:) = A(perm(i),:))
+!>   - LAPACK pivot: ipiv(i) = j means swap rows i and j at elimination step i
 !>
 !> Reference: Issue #891 (https://github.com/fortran-lang/stdlib/issues/891)
 
@@ -108,12 +109,19 @@ contains
     if (p%n < 1) return
     if (size(p%perm) /= p%n) return
 
-    allocate(seen(p%n), source=.false.)
-    do i = 1, p%n
-      if (p%perm(i) < 1 .or. p%perm(i) > p%n) return
-      if (seen(p%perm(i))) return
-      seen(p%perm(i)) = .true.
-    end do
+    if (p%finalized) then
+      allocate(seen(p%n), source=.false.)
+      do i = 1, p%n
+        if (p%perm(i) < 1 .or. p%perm(i) > p%n) return
+        if (seen(p%perm(i))) return
+        seen(p%perm(i)) = .true.
+      end do
+    else
+      ! For LAPACK pivots, just check bounds (duplicates are valid for swapping)
+      do i = 1, size(p%perm)
+        if (p%perm(i) < 1 .or. p%perm(i) > p%n) return
+      end do
+    end if
     valid = .true.
   end function
 
@@ -158,8 +166,9 @@ contains
     end do
 
     ! Replay swap sequence forward
-    do i = 1, min(n, size(ipiv))
-      if (ipiv(i) /= i .and. ipiv(i) >= 1 .and. ipiv(i) <= n) then
+    do i = 1, min(n, int(size(ipiv), ilp))
+      if (ipiv(i) < 1 .or. ipiv(i) > n) error stop "permutation_from_lapack: Invalid LAPACK pivot index out of bounds"
+      if (ipiv(i) /= i) then
         tmp = p%perm(i)
         p%perm(i) = p%perm(ipiv(i))
         p%perm(ipiv(i)) = tmp
@@ -192,7 +201,7 @@ contains
     allocate(p%perm(p%n))
 
     do i = 1, p%n
-      p%perm(i) = p1%perm(p2%perm(i))
+      p%perm(i) = p2%perm(p1%perm(i))
     end do
   end function
 
@@ -208,6 +217,7 @@ contains
     ${t1}$, intent(out) :: B(:,:)
     integer(ilp) :: i
 
+    if (.not. p%finalized) error stop "Permutation must be finalized before applying."
     do i = 1, p%n
       B(i, :) = A(p%perm(i), :)
     end do
@@ -221,6 +231,7 @@ contains
     ${t1}$, intent(out) :: B(:,:)
     integer(ilp) :: j
 
+    if (.not. p%finalized) error stop "Permutation must be finalized before applying."
     do j = 1, p%n
       B(:, p%perm(j)) = A(:, j)
     end do
@@ -234,6 +245,7 @@ contains
     ${t1}$, intent(out) :: b(:)
     integer(ilp) :: i
 
+    if (.not. p%finalized) error stop "Permutation must be finalized before applying."
     do i = 1, p%n
       b(i) = a(p%perm(i))
     end do
@@ -245,6 +257,7 @@ contains
     ${t1}$, intent(out) :: A(:,:)
     integer(ilp) :: i
 
+    if (.not. p%finalized) error stop "Permutation must be finalized to convert to matrix."
     A = 0
     do i = 1, p%n
       A(i, p%perm(i)) = 1

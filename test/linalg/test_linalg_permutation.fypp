@@ -76,8 +76,8 @@ contains
     type(error_type), allocatable, intent(out) :: error
     type(permutation_type) :: p, inv
 
-    ! perm = [3,1,2] means: pos1->3, pos2->1, pos3->2
-    ! inverse: pos3->1, pos1->2, pos2->3 => inv = [2,3,1]
+    ! perm = [3,1,2] means: dest1 <- src3, dest2 <- src1, dest3 <- src2
+    ! inverse: dest3 <- src1, dest1 <- src2, dest2 <- src3 => inv = [2,3,1]
     p = permutation_init([3, 1, 2])
     inv = permutation_invert(p)
     call check(error, inv%perm(1) == 2, "inv(1)")
