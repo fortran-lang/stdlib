@@ -173,12 +173,14 @@ contains
     type(permutation_type) :: p1, p2, composed
     real(dp) :: a(4), b1(4), b2(4), b_composed(4)
 
-    p1 = permutation_init([2, 3, 1])
-    p2 = permutation_init([3, 1, 2])
+    p1 = permutation_init([2_ilp, 3_ilp, 4_ilp, 1_ilp])
+    p2 = permutation_init([2_ilp, 1_ilp, 4_ilp, 3_ilp])
     composed = permutation_compose(p1, p2)
 
     ! Verify: composed applied to vector = p1 applied to (p2 applied to vector)
     a = [10.0_dp, 20.0_dp, 30.0_dp, 40.0_dp]
+    b1 = 0.0_dp; b2 = 0.0_dp; b_composed = 0.0_dp ! Initialize to avoid garbage
+
     call permutation_apply_vector(p2, a, b1)       ! b1 = P2 * a
     call permutation_apply_vector(p1, b1, b2)      ! b2 = P1 * P2 * a
     call permutation_apply_vector(composed, a, b_composed) ! should equal b2
