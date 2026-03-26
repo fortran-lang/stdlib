@@ -176,8 +176,10 @@ contains
 
         d = reshape([1, 2, 3, 4, 5, 6], [3, 2])
         d3 = reshape([transpose(d),transpose(d)], [6,2], order=[2,1])
-        call savetxt(outpath, d)
-        call savetxt(outpath, d, append=.True.)
+        open (newunit=unit, file=outpath)
+        call savetxt(unit, d)
+        call savetxt(unit, d)
+        close(unit)
         call loadtxt(outpath, d2)
         call check(error, all(shape(d2) == shape(d3)))
         if (allocated(error)) return
@@ -232,7 +234,7 @@ contains
         call check(error, line == comments//" "//header2)
         if (allocated(error)) return
 
-        ! Read the two data rows
+        ! Read the data rows
         call get_line(unit, line)
         call get_line(unit, line)
         call get_line(unit, line)

@@ -35,23 +35,11 @@ program example_savetxt
   ! 6.00000000E+00  1.20000000E+01
 
   ! Save data and then append some more:
-  call savetxt('example5.dat', x, header='x  (x-units)   y  (y-units)')
-  call savetxt('example5.dat', 2 * x, append=.True.)
-  ! Result in example5.dat:
-  ! # x  (x-units)   y  (y-units)
-  !  1.00000000E+00  4.00000000E+00
-  !  2.00000000E+00  5.00000000E+00
-  !  3.00000000E+00  6.00000000E+00
-  !  2.00000000E+00  8.00000000E+00
-  !  4.00000000E+00  1.00000000E+01
-  !  6.00000000E+00  1.20000000E+01
-
-  ! Save data and then append some more:
-  open (newunit=unit, file='example6.dat')
+  open (newunit=unit, file='example5.dat')
   call savetxt(unit, x, header='x  (x-units)   y  (y-units)')
   call savetxt(unit, 2 * x)
   close (unit)
-  ! Result in example6.dat:
+  ! Result in example5.dat:
   ! # x  (x-units)   y  (y-units)
   !  1.00000000E+00  4.00000000E+00
   !  2.00000000E+00  5.00000000E+00

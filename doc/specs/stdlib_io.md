@@ -106,17 +106,17 @@ Saves a rank-2 `array` into a text file.
 
 If the text file already exists:
  - When called with a character expression `filename` as the first argument it will overwrite the file.
- - When called with an integer number `unit` to an open file as the first argument, it will append data to the file.
+ - When called with an integer number `unit` to an open file as the first argument, it will save data to the file with no further manipulation.
 
 ### Syntax
 
-`call ` [[stdlib_io(module):savetxt(interface)]] `(filename, array [,  delimiter] [, fmt] [, header] [, footer] [, comments] [, append])`
+`call ` [[stdlib_io(module):savetxt(interface)]] `(filename, array [,  delimiter] [, fmt] [, header] [, footer] [, comments])`
 
 `call ` [[stdlib_io(module):savetxt(interface)]] `(unit, array[,  delimiter] [, fmt] [, header] [, footer] [, comments])`
 
 ### Arguments
 
-`filename or unit`: Shall be either a character expression containing the name of the file or an integer containing the unit of an already open file, that will contain the 2D `array`.
+`filename or unit`: Shall be either a character expression containing the name of the file or an integer containing the unit of an already open file, that will contain the 2D `array`. 
 
 `array`: Shall be a rank-2 array of type `real`, `complex` or `integer`.
 
@@ -130,11 +130,11 @@ If the text file already exists:
 
 `comments` (optional): Shall  be a character expression of any length that will be prepended to the ``header`` and ``footer`` strings to mark them as comments. Default: `#`.
 
-`append` (optional): Shall be a logical flag indicating if data will be appended at the end of the file. If `.false.` file will be overwritten. This flag shall be ignored if the file is already opened. Cannot be present with `unit`. Default: `.false.`
 
 ### Output
 
-Provides a text file called `filename` that contains the rank-2 `array`.
+Provides a text file called `filename` that contains the rank-2 `array` with optional `header` and `footer` lines.
+
 
 ### Example
 
