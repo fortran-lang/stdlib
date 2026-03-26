@@ -1,8 +1,12 @@
 module test_subprocess
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
-    use stdlib_system, only: process_type, run, runasync, is_running, wait, update, elapsed, is_windows, kill
+    use stdlib_system, only: process_type, run, runasync, is_running, wait, update, elapsed, is_windows, kill, process_ID
 
     implicit none
+
+    type :: payload_wrapper
+        character(len=20) :: payload(3) ! wrapper type for preserving type info
+    end type
 
 contains
 
@@ -16,7 +20,8 @@ contains
             new_unittest('test_run_asynchronous', test_run_asynchronous), &
             new_unittest('test_process_kill', test_process_kill), &
             new_unittest('test_process_state', test_process_state), &
-            new_unittest('test_input_redirection', test_input_redirection) &
+            new_unittest('test_input_redirection', test_input_redirection), &
+            new_unittest('test_callback', test_callback) &
         ]
     end subroutine collect_suite
 
@@ -145,6 +150,58 @@ contains
         
     end subroutine test_input_redirection
 
+    subroutine test_callback(error)
+    
+        type(error_type), allocatable, intent(out) :: error
+        type(process_type) :: process
+        character(len=:), allocatable :: command
+        type(payload_wrapper) :: payload_wrapper_
+        character(len=*), parameter :: input_string = "test input"
+
+        if (is_windows()) then 
+            command = "sort"
+        else
+            command = "cat"
+        endif
+
+        payload_wrapper_%payload = ""
+
+        process = run(command, stdin=input_string, want_stdout=.true., want_stderr=.true.,&
+                callback=callback_function, payload=payload_wrapper_)
+
+        call check(error, process%completed, "Process did not complete")
+        if (allocated(error)) return
+        call check(error, process%exit_code == 0, "Process exited with non-zero exit code")
+        if (allocated(error)) return
+        call check(error, process%stdout == input_string, "Process stdout does not match expected input")
+        if (allocated(error)) return
+        call check(error, len_trim(process%stderr) == 0, "Process stderr is not empty")
+        if (allocated(error)) return
+        call check(error, trim(payload_wrapper_%payload(1)) == input_string, "Callback stdin mismatch")
+        if (allocated(error)) return
+        call check(error, trim(payload_wrapper_%payload(2)) == input_string, "Callback stdout mismatch")
+        if (allocated(error)) return
+        call check(error, len_trim(payload_wrapper_%payload(3)) == 0, "Callback stderr is not empty")
+        if (allocated(error)) return
+
+    end subroutine test_callback
+
+    subroutine callback_function(pid, exitcode, stdin, stdout, stderr, payload)
+        integer(process_ID), intent(in) :: pid
+        integer, intent(in) :: exitcode
+        character(len=*), optional, intent(in) :: stdin, stdout, stderr
+        class(*), optional, intent(inout) :: payload
+
+        if(present(payload)) then
+            select type(p=>payload)
+            type is (payload_wrapper)
+                if (present(stdin))  p%payload(1) = stdin
+                if (present(stdout)) p%payload(2) = stdout
+                if (present(stderr)) p%payload(3) = stderr
+            end select
+        end if
+
+    end subroutine callback_function
 end module test_subprocess
 
 program tester
