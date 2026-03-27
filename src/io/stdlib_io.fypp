@@ -269,7 +269,7 @@ contains
                 if (in_delim(ffp, delim_)) then
                     ffp => ffp(shift_to_nondelim(ffp, delim_):)
                 end if
-                cols(j) = complex(reval,imval)
+                cols(j) = cmplx(reval, imval, kind(cols(j)))
               #:else  
                 cols(j) = to_num_from_stream(ffp, cols(j))
                 if (in_delim(ffp, delim_)) then
