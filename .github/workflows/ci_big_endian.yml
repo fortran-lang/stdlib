@@ -1,0 +1,68 @@
+name: CI - Big-Endian
+
+on:
+  # Always run on pushes to the main branch
+  push:
+    branches: [master, main]
+  # For PRs, ONLY run if the hash files or this workflow change
+  pull_request:
+    paths:
+      - '.github/workflows/ci_big_endian.yml'
+      - 'src/hash/**'
+      - 'test/hash_functions/**'
+  # Allow manual triggers from the GitHub Actions tab
+  workflow_dispatch:
+
+env:
+  CTEST_TIME_TIMEOUT: "5"  # some failures hang forever
+
+jobs:
+  test-big-endian:
+    runs-on: ubuntu-24.04
+    name: Test on s390x (big-endian)
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build and test on s390x
+        uses: uraimo/run-on-arch-action@v3
+        with:
+          arch: s390x
+          distro: ubuntu24.04
+
+          # Cache Docker image layer in GitHub Package Registry
+          githubToken: ${{ github.token }}
+
+          # Install dependencies (cached in Docker image layer)
+          install: |
+            apt-get update -q -y
+            apt-get install -q -y gfortran gcc g++ cmake python3-pip ninja-build git
+            pip3 install --break-system-packages fypp
+
+          # Build and run big-endian tests
+          run: |
+            echo "=== Architecture Info ==="
+            uname -m
+            echo "Byte order: $(python3 -c 'import sys; print(sys.byteorder)')"
+
+            echo "=== Compiler Version ==="
+            gfortran --version
+
+            echo "=== CMake Configure ==="
+            cmake -G Ninja \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DCMAKE_MAXIMUM_RANK:String=4 \
+              -DFIND_BLAS:STRING=FALSE \
+              -S . -B build
+
+            echo "=== Build (Targeted) ==="
+            cmake --build build --target test_hash_functions --parallel
+
+            echo "=== Run Big-Endian Tests ==="
+            ctest --test-dir build \
+              -R hash_functions \
+              --output-on-failure \
+              --no-tests=error
