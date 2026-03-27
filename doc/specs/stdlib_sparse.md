@@ -296,13 +296,15 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` [[stdlib_sparse_conversion(module):coo2csr(interface)]] `(coo,csr)`
+`call ` [[stdlib_sparse_conversion(module):coo2csr(interface)]] `(coo,csr[,sort_data])`
 
 ### Arguments
 
 `coo` : Shall be a `COO` type of `real` or `complex` type. It is an `intent(in)` argument.
 
 `csr` : Shall be a `CSR` type of `real` or `complex` type. It is an `intent(out)` argument.
+
+`sort_data`, `optional` : Shall be a `logical` argument to determine whether data in the COO graph should be sorted before obtaining the CSR representation. The transformation from COO to CSR depends on the former being sorted in row-major order and not having duplicate pairs. Using this boolean will call a sorting routine at the cost of extra runtime, default `.false.`. It is an `intent(in)` argument.
 
 ### Syntax
 
@@ -338,7 +340,7 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` [[stdlib_sparse_conversion(module):csr2sellc(interface)]] `(csr,ell[,num_nz_rows])`
+`call ` [[stdlib_sparse_conversion(module):csr2ell(interface)]] `(csr,ell[,num_nz_rows])`
 
 ### Arguments
 
@@ -362,3 +364,38 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 ```fortran
 {!example/linalg/example_sparse_spmv.f90!}
 ```
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+## Operator overloading (`+`, `-`, `*`, `/`) {#operators}
+
+### Status
+
+Experimental
+
+### Description
+
+The definition of all standard arithmetic operators have been overloaded to be applicable for the matrix types defined by `stdlib_sparse`. The operators have been overloaded to support the following tuple combinations of the left-hand-side of the operation: same type and kind matrix-matrix, matrix-scalar and scalar-matrix.
+
+### Syntax
+
+- Matrix-matrix operators :
+
+`C = A + B`
+
+`C = A - B`
+
+`C = A * B`
+
+`C = A / B`
+
+- Matrix scalar operators : 
+
+`B = A + alpha` or `B = alpha + A` 
+
+`B = A - alpha` or `B = alpha - A`
+
+`B = A * alpha` or `B = alpha * A`
+
+`B = A / alpha` or `B = alpha / A`
+
+*Note*: scalar addition and subtraction operators perform element-wise operations only on the stored (non-zero) values, not on the full mathematical matrix. Meaning, the sparsity pattern is preserved.

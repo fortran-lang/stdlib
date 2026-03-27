@@ -2,6 +2,7 @@ set(sparse_fppFiles
     stdlib_sparse_constants.fypp
     stdlib_sparse_conversion.fypp
     stdlib_sparse_kinds.fypp
+    stdlib_sparse_operators.fypp
     stdlib_sparse_spmv.fypp
     )
 
