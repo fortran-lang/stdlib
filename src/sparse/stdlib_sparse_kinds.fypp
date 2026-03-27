@@ -52,28 +52,6 @@ module stdlib_sparse_kinds
 
     !! version: experimental
     !!
-    !! BSR: Compressed sparse row or Yale format
-    type, public, extends(sparse_type) :: BSR_type  
-      integer(ilp) :: block_shape(2) = (/1,1/) !! shape of the blocks
-      integer(ilp), allocatable  :: col(:)    !! matrix column pointer
-      integer(ilp), allocatable  :: rowptr(:) !! matrix row pointer
-    contains
-      procedure :: malloc => malloc_bsr
-    end type
-  
-    #:for k1, t1, s1 in (KINDS_TYPES)
-    type, public, extends(BSR_type) :: BSR_${s1}$_type
-        ${t1}$, allocatable :: data(:,:,:) 
-    contains
-        procedure, non_overridable :: at => at_value_bsr_${s1}$
-        procedure, non_overridable :: add_value => add_bvalue_bsr_${s1}$
-        procedure, non_overridable :: add_block => add_block_bsr_${s1}$
-        generic :: add => add_value, add_block
-    end type
-    #:endfor
-
-    !! version: experimental
-    !!
     !! CSR: Compressed sparse row or Yale format
     type, public, extends(sparse_type) :: CSR_type  
       integer(ilp), allocatable  :: col(:)    !! matrix column pointer
@@ -341,55 +319,6 @@ contains
                     allocate(temp_data_${s1}$(num_rows,num_nz_rows) , source = zero_${s1}$ )
                 else
                     allocate(temp_data_${s1}$(num_rows,num_nz_rows) , source = self%data )
-                end if
-                call move_alloc(from=temp_data_${s1}$,to=self%data)
-                end block
-            #:endfor
-        end select
-    end subroutine
-
-    !! (re)Allocate matrix memory for the BSR type
-    subroutine malloc_bsr(self,block_shape,num_brows,num_bcols,bnnz)
-        class(BSR_type) :: self
-        integer(ilp), intent(in) :: block_shape(2) !! shape of the blocks
-        integer(ilp), intent(in) :: num_brows !! number of block rows
-        integer(ilp), intent(in) :: num_bcols !! number of block columns
-        integer(ilp), intent(in) :: bnnz      !! number of non-zero blocks
-        integer(ilp), allocatable :: temp_idx(:)
-        integer(ilp) :: br, bc
-        !-----------------------------------------------------
-
-        br = max(block_shape(1), 1)
-        bc = max(block_shape(2), 1)
-
-        self%block_shape = (/br,bc/)
-        self%nrows = num_brows * br
-        self%ncols = num_bcols * bc
-        self%nnz   = br*bc*bnnz
-
-        if(.not.allocated(self%col)) then
-            allocate(temp_idx(bnnz) , source = 0 )
-        else
-            allocate(temp_idx(bnnz) , source = self%col )
-        end if
-        call move_alloc(from=temp_idx,to=self%col)
-
-        if(.not.allocated(self%rowptr)) then
-            allocate(temp_idx(num_brows+1) , source = 0 )
-        else
-            allocate(temp_idx(num_brows+1) , source = self%rowptr )
-        end if
-        call move_alloc(from=temp_idx,to=self%rowptr)
-
-        select type(self)
-            #:for k1, t1, s1 in (KINDS_TYPES)
-            type is(BSR_${s1}$_type)
-                block
-                ${t1}$, allocatable :: temp_data_${s1}$(:,:,:)
-                if(.not.allocated(self%data)) then
-                    allocate(temp_data_${s1}$(br,bc,bnnz) , source = zero_${s1}$ )
-                else
-                    allocate(temp_data_${s1}$(br,bc,bnnz) , source = self%data )
                 end if
                 call move_alloc(from=temp_data_${s1}$,to=self%data)
                 end block
@@ -712,85 +641,6 @@ contains
                     if( col == self%col(k,idx) ) then
                         self%data(k,idx) = self%data(k,idx) + val(i,j)
                         exit
-                    end if
-                end do
-            end do
-        end do
-    end subroutine
-
-    #:endfor
-
-    #:for k1, t1, s1 in (KINDS_TYPES)
-    pure ${t1}$ function at_value_bsr_${s1}$(self,ik,jk) result(val)
-        class(BSR_${s1}$_type), intent(in) :: self
-        integer(ilp), intent(in) :: ik, jk
-        integer(ilp) :: k, br, bc, ib, jb, ii, jj, ik_, jk_
-        logical(c_bool) :: transpose
-
-        if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
-            val = ieee_value( 0._${k1}$ , ieee_quiet_nan)
-            return
-        end if
-
-        ik_ = ik; jk_ = jk
-        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
-        if(transpose) then
-            ik_ = jk; jk_ = ik
-        end if
-
-        br = self%block_shape(1)
-        bc = self%block_shape(2)
-
-        ib = (ik_ - 1) / br + 1
-        jb = (jk_ - 1) / bc + 1
-        ii = modulo(ik_ - 1, br) + 1
-        jj = modulo(jk_ - 1, bc) + 1
-
-        if(.not.allocated(self%rowptr) .or. ib < 1 .or. ib >= size(self%rowptr)) then
-            val = zero_${s1}$
-            return
-        end if
-
-        do k = self%rowptr(ib), self%rowptr(ib+1)-1
-            if( jb == self%col(k) ) then
-                val = self%data(ii,jj,k)
-                return
-            end if
-        end do
-        val = zero_${s1}$
-    end function
-
-    !> add a single block value to the BSR matrix
-    subroutine add_bvalue_bsr_${s1}$(self,ik,jk,val)
-        class(BSR_${s1}$_type), intent(inout) :: self
-        ${t1}$, intent(in) :: val(:,:)
-        integer(ilp), intent(in) :: ik, jk
-        integer(ilp) :: k
-        ! naive implementation
-        do k = self%rowptr(ik), self%rowptr(ik+1)-1
-            if( jk == self%col(k) ) then
-                self%data(:,:,k) = self%data(:,:,k) + val(:,:)
-                return
-            end if
-        end do
-
-    end subroutine
-
-    !> add a blocks matrices to the BSR matrix
-    subroutine add_block_bsr_${s1}$(self,ik,jk,val)
-        class(BSR_${s1}$_type), intent(inout) :: self
-        ${t1}$, intent(in) :: val(:,:,:,:) !> 4D array to hold multiple blocks
-        integer(ilp), intent(in) :: ik(:), jk(:)
-        integer(ilp) :: i, j, k, brow, bcol
-        ! naive implementation
-        do i = 1, size(ik)
-            brow = ik(i)
-            do k = self%rowptr(brow), self%rowptr(brow+1)-1
-                do j = 1, size(jk)
-                    bcol = jk(j)
-                    if( skip(self%storage,brow,bcol) ) cycle
-                    if( bcol == self%col(k) ) then
-                        self%data(:,:,k) = self%data(:,:,k) + val(:,:,i,j)
                     end if
                 end do
             end do
