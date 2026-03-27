@@ -49,7 +49,7 @@ module stdlib_io
   public :: parse_mode
 
   !> Default delimiter for loadtxt, savetxt and number_of_columns
-  character(len=1), parameter :: delimiter_default = " "
+  character(len=1), parameter :: delimiter_default = ""
   character(len=1), parameter :: comment_default = "#"
   character(len=2), parameter :: nl = CR//LF
   character(len=*), parameter :: blanks = " "//TAB
@@ -72,9 +72,10 @@ module stdlib_io
     !!
     !! Loads a 2D array from a text file
     !! ([Specification](../page/specs/stdlib_io.html#description))
-    ! # :for k1, t1 in REAL_KINDS_TYPES + INT_KINDS_TYPES
+    #:for arg1 in ['filename', 'unit']
     #:for k1, t1 in KINDS_TYPES
-      module procedure loadtxt_${t1[0]}$${k1}$
+      module procedure loadtxt_${t1[0]}$${k1}$${arg1[0]}$
+    #:endfor
     #:endfor
   end interface loadtxt
 
@@ -90,9 +91,9 @@ module stdlib_io
 
 contains
 
-  ! #  :for k1, t1 in REAL_KINDS_TYPES + INT_KINDS_TYPES
+  #:for arg1 in ['filename', 'unit']
   #:for k1, t1 in KINDS_TYPES
-    subroutine loadtxt_${t1[0]}$${k1}$(filename, d, comments, delimiter, skiplines, max_rows, usecols)
+    subroutine loadtxt_${t1[0]}$${k1}$${arg1[0]}$ (${arg1}$, d, comments, delimiter, skiplines, max_rows, usecols)
         !! version: experimental
         !!
         !! Loads a 2D array from a text file.
@@ -100,8 +101,13 @@ contains
         !! Arguments
         !! ---------
         !!
-        !! Filename to load the array from
-        character(len=*), intent(in) :: filename
+      #:if 'filename' in arg1
+        !! Filename with the array to load
+        character(len=*), intent(in) :: filename  ! File to save the array to
+      #:elif 'unit' in arg1
+        !! unit of an open file from where to load the array
+        integer, intent(in) :: unit
+      #:endif
         !! The array 'd' will be automatically allocated with the correct dimensions
         ${t1}$, allocatable, intent(out) :: d(:, :) 
         integer, intent(in), optional :: skiplines !! Skip the first `skiplines` lines. If skipping more rows than present, a 0-sized array will be returned. The default is 0.
@@ -127,40 +133,67 @@ contains
         !!     ...
         !!
         integer :: iostat
-        character(len=1024) :: iomsg, msgout
         integer :: skiplines_, max_rows_
-        integer :: unit, fsze, nrows, nrows_effective, ncols, j, start_effective
+        integer :: fsze, nrows, nrows_effective, ncols, j, start_effective
         character(:), allocatable, target :: ff
         character(len=:), pointer :: ffp
         integer :: line_start, line_end
         character(len=:), allocatable :: delim_
         character(len=:), allocatable :: comment_
-        integer :: row, row_effective, err
         integer, allocatable ::  usecols_(:)
+        character(len=1024) :: iomsg, msgout, fout
+        character(len=16) :: readable
+        logical :: opened
+        !
+        integer :: row, row_effective, err
         ${t1}$, allocatable :: cols(:)
       #:if 'complex' in t1
         real(${k1}$) :: reval, imval
+      #:endif
+      #:if 'filename' in arg1
+        integer :: unit
       #:endif
 
         comment_ = optval(comments, comment_default)
         delim_ = optval(delimiter, delimiter_default)
         skiplines_ = optval(skiplines, 0)
         ! max_rows will be set later, after determining number of rows
-        !----------------------------------------- Load file in a single string
+
+        !----------------------------------------- Check file
+      #:if 'filename' in arg1
         unit = open (filename, "rb", iostat=iostat)
         if (iostat /= 0) then
             write(msgout,'(a)') "loadtxt: error opening file "//trim(filename)
             call error_stop(msg=trim(msgout))
         end if
-            
-        inquire (unit=unit, size=fsze)
-        allocate (character(fsze) :: ff)
-        read (unit, iostat=iostat, iomsg=iomsg) ff
-        close (unit)
-        if (iostat /= 0) then
-            write(msgout,'(a)') "loadtxt: error reading file "//trim(filename)//"("//trim(iomsg)//")"
+        fout = filename           ! fout is used for unified error message later
+      #:else 
+        ! first argument is unit
+        inquire (unit=unit, opened=opened, action=readable) 
+        if((.not. opened) .or. (readable(1:1) /= 'R')) then
+            write (msgout,'(a,i0,a)') 'loadtxt error: unit ',unit,' not open for reading'
             call error_stop(msg=trim(msgout))
         end if
+        write(fout,'(i0)') unit
+        fout = adjustl(fout)  ! fout is used for unified error message later
+      #:endif
+            
+        !----------------------------------------- Load file in a single string
+        inquire (unit=unit, size=fsze)
+        if(fsze == 0) then
+            write (msgout,'(a,i0,a)') 'loadtxt error: file empty'
+            call error_stop(msg=trim(msgout))
+        else
+            allocate (character(fsze) :: ff)
+            read (unit, iostat=iostat, iomsg=iomsg) ff
+            if (iostat /= 0) then
+                write(msgout,'(a)') "loadtxt: error reading file "//trim(fout)//"("//trim(iomsg)//")"
+                call error_stop(msg=trim(msgout))
+            end if
+        end if
+      #:if 'filename' in arg1
+        close (unit)
+      #:endif
 
         ffp => ff
         start_effective = 1     ! Start after skiplines
@@ -180,8 +213,7 @@ contains
                 cycle
             end if
 
-            if (starts_with(ffp(line_start:), comment_) .or. &
-                (line_start == line_end)) then
+            if (starts_with(ffp(line_start:), comment_) .or. (line_start == line_end)) then
                 ffp => ffp(line_end + 1:) ! Skip comment lines and blank lines
                 cycle
             end if
@@ -204,9 +236,9 @@ contains
             return
         end if
 
-        if (present(usecols)) then
+        if (present(usecols)) then ! user set columns to extract
             usecols_ = usecols
-        else
+        else                    ! extract all columns
             usecols_ = [(j, j=1, ncols)]
         end if
         allocate (d(max_rows_, size(usecols_)))
@@ -259,7 +291,8 @@ contains
             ffp => ffp(line_end + 1:)
         end do
 
-    end subroutine loadtxt_${t1[0]}$${k1}$
+    end subroutine loadtxt_${t1[0]}$${k1}$${arg1[0]}$
+  #:endfor
   #:endfor
 
     function number_cols_line(row, delimiter, comment) result(ncols)
