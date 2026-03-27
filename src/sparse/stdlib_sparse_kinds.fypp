@@ -725,7 +725,7 @@ contains
         class(BSR_${s1}$_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k, br, bc, ib, jb, ii, jj, ik_, jk_
-        logical :: transpose
+        logical(c_bool) :: transpose
 
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
             val = ieee_value( 0._${k1}$ , ieee_quiet_nan)
@@ -766,12 +766,7 @@ contains
         ${t1}$, intent(in) :: val(:,:)
         integer(ilp), intent(in) :: ik, jk
         integer(ilp) :: k
-
-        if(size(val,1) /= self%block_shape(1) .or. size(val,2) /= self%block_shape(2)) then
-            print *, "Warning: block size mismatch in add_bvalue_bsr"
-            return
-        end if
-
+        ! naive implementation
         do k = self%rowptr(ik), self%rowptr(ik+1)-1
             if( jk == self%col(k) ) then
                 self%data(:,:,k) = self%data(:,:,k) + val(:,:)
@@ -784,19 +779,17 @@ contains
     !> add a blocks matrices to the BSR matrix
     subroutine add_block_bsr_${s1}$(self,ik,jk,val)
         class(BSR_${s1}$_type), intent(inout) :: self
-        ${t1}$, intent(in) :: val(:,:,:,:)
+        ${t1}$, intent(in) :: val(:,:,:,:) !> 4D array to hold multiple blocks
         integer(ilp), intent(in) :: ik(:), jk(:)
-        integer(ilp) :: i, j, k
-
-        if(size(val,1) /= self%block_shape(1) .or. size(val,2) /= self%block_shape(2)) then
-            print *, "Warning: block size mismatch in add_bvalue_bsr"
-            return
-        end if
-        
+        integer(ilp) :: i, j, k, brow, bcol
+        ! naive implementation
         do i = 1, size(ik)
-            do k = self%rowptr(ik(i)), self%rowptr(ik(i)+1)-1
+            brow = ik(i)
+            do k = self%rowptr(brow), self%rowptr(brow+1)-1
                 do j = 1, size(jk)
-                    if( jk(j) == self%col(k) ) then
+                    bcol = jk(j)
+                    if( skip(self%storage,brow,bcol) ) cycle
+                    if( bcol == self%col(k) ) then
                         self%data(:,:,k) = self%data(:,:,k) + val(:,:,i,j)
                     end if
                 end do

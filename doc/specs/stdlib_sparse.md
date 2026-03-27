@@ -146,8 +146,17 @@ Type-bound procedures to enable adding data in a sparse matrix.
 
 ### Syntax
 
-`call matrix%add(i,j,v)` or
+* Add single value
+`call matrix%add(i,j,v)` 
+
+* Add a block of values
 `call matrix%add(i(:),j(:),v(:,:))`
+
+* BSR format: add a single block
+`call bsr_matrix%add(i,j,v(:,:))`
+
+* BSR format: add a block of blocks
+`call bsr_matrix%add(i(:),j(:),v(:,:,:,:))` 
 
 ### Arguments
 
@@ -155,7 +164,7 @@ Type-bound procedures to enable adding data in a sparse matrix.
 
 `j`: Shall be an integer value or rank-1 array. It is an `intent(in)` argument.
 
-`v`: Shall be a `real` or `complex` value or rank-2 array. The type shall be in accordance to the declared sparse matrix object. It is an `intent(in)` argument.
+`v`: Shall be a `real` or `complex` value or rank-2 array. For the `BSR` format type, the unit input is a single matrix block (rank-2 array), alternatively, a block of blocks can be added unsing a rank-4 array. The type shall be in accordance to the declared sparse matrix object. It is an `intent(in)` argument.
 
 ## `at`- sparse matrix data accessors
 
@@ -296,13 +305,15 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` [[stdlib_sparse_conversion(module):coo2csr(interface)]] `(coo,csr)`
+`call ` [[stdlib_sparse_conversion(module):coo2csr(interface)]] `(coo,csr[,sort_data])`
 
 ### Arguments
 
 `coo` : Shall be a `COO` type of `real` or `complex` type. It is an `intent(in)` argument.
 
 `csr` : Shall be a `CSR` type of `real` or `complex` type. It is an `intent(out)` argument.
+
+`sort_data`, `optional` : Shall be a `logical` argument to determine whether data in the COO graph should be sorted before obtaining the CSR representation. The transformation from COO to CSR depends on the former being sorted in row-major order and not having duplicate pairs. Using this boolean will call a sorting routine at the cost of extra runtime, default `.false.`. It is an `intent(in)` argument.
 
 ### Syntax
 
