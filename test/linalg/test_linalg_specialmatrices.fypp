@@ -12,7 +12,6 @@ module test_specialmatrices
 
 contains
 
-
     !> Collect all exported unit tests
     subroutine collect_suite(testsuite)
         !> Collection of tests
@@ -20,7 +19,9 @@ contains
 
         testsuite = [ &
             new_unittest('tridiagonal', test_tridiagonal), &
-            new_unittest('tridiagonal error handling', test_tridiagonal_error_handling) &
+            new_unittest('tridiagonal error handling', test_tridiagonal_error_handling), &
+            new_unittest('tridiagonal 1x1 edge case', test_tridiagonal_1x1), &
+            new_unittest('tridiagonal arithmetic', test_tridiagonal_arithmetic) &
         ]
     end subroutine
 
@@ -146,8 +147,67 @@ contains
         #:endfor
     end subroutine
 
-end module
+    subroutine test_tridiagonal_1x1(error)
+        !> Test 1x1 matrix edge case for dense conversion
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        block
+            integer, parameter :: wp = ${k1}$
+            type(tridiagonal_${s1}$_type) :: A
+            ${t1}$, allocatable :: Amat(:,:), dl(:), dv(:), du(:)
+            
+            allocate(dl(0), dv(1), du(0))
+            dv(1) = 5.0_wp
+            A = tridiagonal(dl, dv, du) 
+            Amat = dense(A)
 
+            call check(error, size(Amat, 1) == 1, .true.)
+            if (allocated(error)) return
+            call check(error, all_close(Amat(1,1), 5.0_wp), .true.)
+            if (allocated(error)) return
+        end block
+        #:endfor
+    end subroutine
+
+    subroutine test_tridiagonal_arithmetic(error)
+
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        block
+            integer, parameter :: wp = ${k1}$
+            integer, parameter :: n = 3
+            type(tridiagonal_${s1}$_type) :: A, B, C
+            ${t1}$, allocatable :: dl1(:), dv1(:), du1(:)
+            ${t1}$, allocatable :: dl2(:), dv2(:), du2(:)
+            
+            allocate(dl1(n-1), dv1(n), du1(n-1))
+            allocate(dl2(n-1), dv2(n), du2(n-1))
+            
+            dl1 = 1.0_wp ; dv1 = 2.0_wp ; du1 = 3.0_wp
+            dl2 = 4.0_wp ; dv2 = 5.0_wp ; du2 = 6.0_wp
+            
+            A = tridiagonal(dl1, dv1, du1)
+            B = tridiagonal(dl2, dv2, du2)
+            
+            ! Addition test
+            C = A + B
+            call check(error, all_close(C%dv, dv1 + dv2), .true.)
+            if (allocated(error)) return
+            
+            ! Subtraction test
+            C = A - B
+            call check(error, all_close(C%du, du1 - du2), .true.)
+            if (allocated(error)) return
+            
+            ! Scalar multiplication test
+            C = 3.0_wp * A
+            call check(error, all_close(C%dl, 3.0_wp * dl1), .true.)
+            if (allocated(error)) return
+        end block
+        #:endfor
+    end subroutine
+
+end module
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
@@ -161,7 +221,7 @@ program tester
     stat = 0
 
     testsuites = [ &
-        new_testsuite("sparse", collect_suite) &
+        new_testsuite("special matrices", collect_suite) &
         ]
 
     do is = 1, size(testsuites)
