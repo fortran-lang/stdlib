@@ -6,7 +6,7 @@ module test_specialmatrices
     use stdlib_kinds
     use stdlib_linalg, only: hermitian
     use stdlib_linalg_state, only: linalg_state_type
-    use stdlib_math, only: all_close
+    use stdlib_math, only: all_close, is_close
     use stdlib_specialmatrices
     implicit none
 
@@ -156,21 +156,23 @@ contains
             type(tridiagonal_${s1}$_type) :: A
             ${t1}$, allocatable :: Amat(:,:), dl(:), dv(:), du(:)
             
+            ! 1x1 matrix has 0-sized off-diagonals and 1-sized diagonal
             allocate(dl(0), dv(1), du(0))
             dv(1) = 5.0_wp
             A = tridiagonal(dl, dv, du) 
             Amat = dense(A)
 
+            ! Check if it compiled and converted properly without segfaulting
             call check(error, size(Amat, 1) == 1, .true.)
             if (allocated(error)) return
-            call check(error, all_close(Amat(1,1), 5.0_wp), .true.)
+            call check(error, is_close(Amat(1,1), 5.0_wp), .true.)
             if (allocated(error)) return
         end block
         #:endfor
     end subroutine
 
     subroutine test_tridiagonal_arithmetic(error)
-
+        !> Test arithmetic operations and optimization
         type(error_type), allocatable, intent(out) :: error
         #:for k1, t1, s1 in (KINDS_TYPES)
         block
@@ -189,19 +191,19 @@ contains
             A = tridiagonal(dl1, dv1, du1)
             B = tridiagonal(dl2, dv2, du2)
             
-            ! Addition test
+            ! Addition test - use dense() to bypass private component restrictions
             C = A + B
-            call check(error, all_close(C%dv, dv1 + dv2), .true.)
+            call check(error, all_close(dense(C), dense(A) + dense(B)), .true.)
             if (allocated(error)) return
             
             ! Subtraction test
             C = A - B
-            call check(error, all_close(C%du, du1 - du2), .true.)
+            call check(error, all_close(dense(C), dense(A) - dense(B)), .true.)
             if (allocated(error)) return
             
             ! Scalar multiplication test
             C = 3.0_wp * A
-            call check(error, all_close(C%dl, 3.0_wp * dl1), .true.)
+            call check(error, all_close(dense(C), 3.0_wp * dense(A)), .true.)
             if (allocated(error)) return
         end block
         #:endfor
