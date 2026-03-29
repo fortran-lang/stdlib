@@ -35,15 +35,11 @@ contains
   subroutine test_identity(error)
     type(error_type), allocatable, intent(out) :: error
     type(permutation_type) :: p
-    integer(ilp) :: i
-
     p = permutation_identity(5)
     call check(error, p%n == 5, "identity size")
     if (allocated(error)) return
-    do i = 1, 5
-      call check(error, p%perm(i) == i, "identity element")
-      if (allocated(error)) return
-    end do
+    call check(error, all(p%perm == [1_ilp, 2_ilp, 3_ilp, 4_ilp, 5_ilp]), "identity elements")
+    if (allocated(error)) return
     call check(error, permutation_is_valid(p), "identity valid")
   end subroutine
 
@@ -80,71 +76,61 @@ contains
     ! inverse: dest3 <- src1, dest1 <- src2, dest2 <- src3 => inv = [2,3,1]
     p = permutation_init([3, 1, 2])
     inv = permutation_invert(p)
-    call check(error, inv%perm(1) == 2, "inv(1)")
-    if (allocated(error)) return
-    call check(error, inv%perm(2) == 3, "inv(2)")
-    if (allocated(error)) return
-    call check(error, inv%perm(3) == 1, "inv(3)")
+    call check(error, all(inv%perm == [2_ilp, 3_ilp, 1_ilp]), "inv(1:3)")
   end subroutine
 
   !> Test 5: P * P^-1 = Identity (involution property)
   subroutine test_invert_involution(error)
     type(error_type), allocatable, intent(out) :: error
     type(permutation_type) :: p, inv, composed
-    integer(ilp) :: i
-
-    p = permutation_init([3, 1, 4, 2])
+    p = permutation_init([3_ilp, 1_ilp, 4_ilp, 2_ilp])
     inv = permutation_invert(p)
     composed = permutation_compose(p, inv)
-    do i = 1, 4
-      call check(error, composed%perm(i) == i, "P*P_inv = I")
-      if (allocated(error)) return
-    end do
+    call check(error, all(composed%perm == [1_ilp, 2_ilp, 3_ilp, 4_ilp]), "P*P_inv = I")
   end subroutine
 
   !> Test 6: Left multiplication (row permutation)
   subroutine test_apply_left(error)
     type(error_type), allocatable, intent(out) :: error
     type(permutation_type) :: p
-    real(dp) :: A(3,2), B(3,2)
+    real(dp) :: A(3,2), B(3,2), B_ref(3,2)
 
     ! A = [[1,2],[3,4],[5,6]]
     A(1,:) = [1.0_dp, 2.0_dp]
     A(2,:) = [3.0_dp, 4.0_dp]
     A(3,:) = [5.0_dp, 6.0_dp]
 
+    ! B should be [[5,6],[1,2],[3,4]]
+    B_ref(1,:) = [5.0_dp, 6.0_dp]
+    B_ref(2,:) = [1.0_dp, 2.0_dp]
+    B_ref(3,:) = [3.0_dp, 4.0_dp]
+
     ! perm = [3,1,2]: row1 <- row3, row2 <- row1, row3 <- row2
     p = permutation_init([3, 1, 2])
     call permutation_apply_left(p, A, B)
 
-    ! B should be [[5,6],[1,2],[3,4]]
-    call check(error, abs(B(1,1) - 5.0_dp) < 1.0e-10_dp, "left(1,1)")
-    if (allocated(error)) return
-    call check(error, abs(B(2,1) - 1.0_dp) < 1.0e-10_dp, "left(2,1)")
-    if (allocated(error)) return
-    call check(error, abs(B(3,1) - 3.0_dp) < 1.0e-10_dp, "left(3,1)")
+    call check(error, all(abs(B - B_ref) < 1.0e-10_dp), "apply_left whole array")
   end subroutine
 
   !> Test 7: Right multiplication (column permutation)
   subroutine test_apply_right(error)
     type(error_type), allocatable, intent(out) :: error
     type(permutation_type) :: p
-    real(dp) :: A(2,3), B(2,3)
+    real(dp) :: A(2,3), B(2,3), B_ref(2,3)
 
     A(1,:) = [1.0_dp, 2.0_dp, 3.0_dp]
     A(2,:) = [4.0_dp, 5.0_dp, 6.0_dp]
+
+    ! B(:,2) = A(:,1) = [1,4], B(:,3) = A(:,2) = [2,5], B(:,1) = A(:,3) = [3,6]
+    B_ref(:,1) = [3.0_dp, 6.0_dp]
+    B_ref(:,2) = [1.0_dp, 4.0_dp]
+    B_ref(:,3) = [2.0_dp, 5.0_dp]
 
     ! perm = [2,3,1]: col_perm(2) <- col1, col_perm(3) <- col2, col_perm(1) <- col3
     p = permutation_init([2, 3, 1])
     call permutation_apply_right(p, A, B)
 
-    ! B(:, perm(j)) = A(:, j)
-    ! B(:,2) = A(:,1) = [1,4], B(:,3) = A(:,2) = [2,5], B(:,1) = A(:,3) = [3,6]
-    call check(error, abs(B(1,1) - 3.0_dp) < 1.0e-10_dp, "right(1,1)")
-    if (allocated(error)) return
-    call check(error, abs(B(1,2) - 1.0_dp) < 1.0e-10_dp, "right(1,2)")
-    if (allocated(error)) return
-    call check(error, abs(B(1,3) - 2.0_dp) < 1.0e-10_dp, "right(1,3)")
+    call check(error, all(abs(B - B_ref) < 1.0e-10_dp), "apply_right whole array")
   end subroutine
 
   !> Test 8: Vector permutation
@@ -158,13 +144,7 @@ contains
     call permutation_apply_vector(p, a, b)
 
     ! b(1) = a(3) = 30, b(2) = a(1) = 10, b(3) = a(4) = 40, b(4) = a(2) = 20
-    call check(error, abs(b(1) - 30.0_dp) < 1.0e-10_dp, "vec(1)")
-    if (allocated(error)) return
-    call check(error, abs(b(2) - 10.0_dp) < 1.0e-10_dp, "vec(2)")
-    if (allocated(error)) return
-    call check(error, abs(b(3) - 40.0_dp) < 1.0e-10_dp, "vec(3)")
-    if (allocated(error)) return
-    call check(error, abs(b(4) - 20.0_dp) < 1.0e-10_dp, "vec(4)")
+    call check(error, all(abs(b - [30.0_dp, 10.0_dp, 40.0_dp, 20.0_dp]) < 1.0e-10_dp), "apply_vector whole array")
   end subroutine
 
   !> Test 9: Composition P1 * P2
@@ -199,30 +179,24 @@ contains
     ! Step 3: swap rows 3,3 -> [2,3,1] (no-op)
     p = permutation_from_lapack([2, 3, 3], 3)
 
-    call check(error, p%perm(1) == 2, "lapack(1)")
-    if (allocated(error)) return
-    call check(error, p%perm(2) == 3, "lapack(2)")
-    if (allocated(error)) return
-    call check(error, p%perm(3) == 1, "lapack(3)")
+    call check(error, all(p%perm == [2_ilp, 3_ilp, 1_ilp]), "from_lapack whole array")
   end subroutine
 
   !> Test 11: Dense matrix matches permutation operations
   subroutine test_to_matrix(error)
     type(error_type), allocatable, intent(out) :: error
     type(permutation_type) :: p
-    real(dp) :: P_dense(3,3)
+    real(dp) :: P_dense(3,3), P_ref(3,3)
 
     p = permutation_init([3, 1, 2])
     call permutation_to_matrix(p, P_dense)
 
-    ! Row 1, col 3 should be 1 (perm(1)=3)
-    call check(error, abs(P_dense(1,3) - 1.0_dp) < 1.0e-10_dp, "dense(1,3)")
-    if (allocated(error)) return
-    ! Row 2, col 1 should be 1 (perm(2)=1)
-    call check(error, abs(P_dense(2,1) - 1.0_dp) < 1.0e-10_dp, "dense(2,1)")
-    if (allocated(error)) return
-    ! Row 1, col 1 should be 0
-    call check(error, abs(P_dense(1,1)) < 1.0e-10_dp, "dense(1,1)=0")
+    P_ref = 0.0_dp
+    P_ref(1,3) = 1.0_dp
+    P_ref(2,1) = 1.0_dp
+    P_ref(3,2) = 1.0_dp
+
+    call check(error, all(abs(P_dense - P_ref) < 1.0e-10_dp), "to_matrix whole array")
   end subroutine
 
   !> Test 12: Identity permutation is a no-op

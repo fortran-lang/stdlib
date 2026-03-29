@@ -43,27 +43,27 @@ module stdlib_linalg_permutation
 
   ! Generic interfaces for multi-type support
   interface permutation_apply_left
-#:for k1, t1 in RCI_KINDS_TYPES
-      module procedure permutation_apply_left_${t1[0]}$${k1}$
-#:endfor
+    #:for k1, t1 in RCI_KINDS_TYPES
+    module procedure permutation_apply_left_${t1[0]}$${k1}$
+    #:endfor
   end interface
 
   interface permutation_apply_right
-#:for k1, t1 in RCI_KINDS_TYPES
-      module procedure permutation_apply_right_${t1[0]}$${k1}$
-#:endfor
+    #:for k1, t1 in RCI_KINDS_TYPES
+    module procedure permutation_apply_right_${t1[0]}$${k1}$
+    #:endfor
   end interface
 
   interface permutation_apply_vector
-#:for k1, t1 in RCI_KINDS_TYPES
-      module procedure permutation_apply_vector_${t1[0]}$${k1}$
-#:endfor
+    #:for k1, t1 in RCI_KINDS_TYPES
+    module procedure permutation_apply_vector_${t1[0]}$${k1}$
+    #:endfor
   end interface
 
   interface permutation_to_matrix
-#:for k1, t1 in RCI_KINDS_TYPES
-      module procedure permutation_to_matrix_${t1[0]}$${k1}$
-#:endfor
+    #:for k1, t1 in RCI_KINDS_TYPES
+    module procedure permutation_to_matrix_${t1[0]}$${k1}$
+    #:endfor
   end interface
 
 contains
@@ -207,7 +207,7 @@ contains
 
   !> ----- Templated operations for multiple real kinds -----
 
-#:for k1, t1 in RCI_KINDS_TYPES
+  #:for k1, t1 in RCI_KINDS_TYPES
 
   !> Apply permutation from the left: B = P * A (row permutation)
   !> Row i of B comes from row perm(i) of A
@@ -264,6 +264,6 @@ contains
     end do
   end subroutine
 
-#:endfor
+  #:endfor
 
 end module stdlib_linalg_permutation
