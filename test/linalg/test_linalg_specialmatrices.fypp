@@ -23,7 +23,9 @@ contains
             new_unittest('tridiagonal', test_tridiagonal), &
             new_unittest('tridiagonal error handling', test_tridiagonal_error_handling), &
             new_unittest('sym_tridiagonal', test_sym_tridiagonal), &
-            new_unittest('sym_tridiagonal error handling', test_sym_tridiagonal_error_handling) &
+            new_unittest('sym_tridiagonal error handling', test_sym_tridiagonal_error_handling), &
+            new_unittest('symmetric tridiagonal 1x1 dense', test_sym_tridiagonal_1x1), &
+            new_unittest('symmetric tridiagonal arithmetic', test_sym_tridiagonal_arithmetic) &
         ]
     end subroutine
 
@@ -307,6 +309,65 @@ contains
         #:endfor
     end subroutine
 
+    subroutine test_sym_tridiagonal_1x1(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        block
+            integer, parameter :: wp = ${k1}$
+            type(sym_tridiagonal_${s1}$_type) :: A
+            ${t1}$, allocatable :: B(:, :)
+            ${t1}$, allocatable :: dv(:), du(:)
+            ${t1}$ :: C(1,1)
+
+            allocate(dv(1), du(0))
+            dv = [5.0_wp]
+
+            A = sym_tridiagonal(du, dv)
+            B = dense(A)
+            C(1,1) = 5.0_wp
+
+            call check(error, all_close(B, C), .true., &
+                "Symmetric tridiagonal dense function failed (n=1)")
+            if (allocated(error)) return
+        end block
+        #:endfor
+    end subroutine
+
+    subroutine test_sym_tridiagonal_arithmetic(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        block
+            integer, parameter :: wp = ${k1}$
+            type(sym_tridiagonal_${s1}$_type) :: A, B, C
+            ${t1}$, allocatable :: dv(:), du(:)
+
+            dv = [1.0_wp, 5.0_wp, 9.0_wp, 13.0_wp]
+            du = [2.0_wp, 6.0_wp, 10.0_wp]
+            A = sym_tridiagonal(du, dv)
+
+            dv = [3.0_wp, 7.0_wp, 11.0_wp, 14.0_wp]
+            du = [4.0_wp, 8.0_wp, 12.0_wp]
+            B = sym_tridiagonal(du, dv)
+
+            C = A + B
+            call check(error, all_close(dense(C), dense(A) + dense(B)), .true., &
+                "Symmetric tridiagonal operator + failed")
+            if (allocated(error)) return
+
+            C = A - B
+            call check(error, all_close(dense(C), dense(A) - dense(B)), .true., &
+                "Symmetric tridiagonal operator - failed")
+            if (allocated(error)) return
+
+            C = 5.0_wp * A
+            call check(error, all_close(dense(C), 5.0_wp * dense(A)), .true., &
+                "Symmetric tridiagonal operator * failed")
+            if (allocated(error)) return
+        end block
+        #:endfor
+    end subroutine
 end module
 
 
