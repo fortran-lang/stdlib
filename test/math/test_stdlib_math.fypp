@@ -583,7 +583,7 @@ contains
     end subroutine test_all_close_cmplx_${k1}$
     #:endfor
     
-    #:for k1, t1 in REAL_KINDS_TYPES
+   #:for k1, t1 in REAL_KINDS_TYPES
     subroutine test_diff_real_${k1}$(error)
         type(error_type), allocatable, intent(out) :: error
         ${t1}$ :: x(6) = [${t1}$ :: 0, 5, 15, 30, 50, 75]
@@ -626,6 +626,8 @@ contains
         call check(error, size(diff(B, 2)), 0, "size(diff(B, 2)) in test_diff_real_${k1}$ failed")
         if (allocated(error)) return
         call check(error, size(diff(B, 3)), 0, "size(diff(B, 3)) in test_diff_real_${k1}$ failed")
+        if (allocated(error)) return
+
         
     end subroutine test_diff_real_${k1}$
     #:endfor
