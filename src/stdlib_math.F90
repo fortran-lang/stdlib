@@ -444,8 +444,8 @@ module stdlib_math
       integer, intent(in) :: end
       integer, intent(in) :: n
       integer, intent(in) :: base
-      ! integer endpoints + integer base = integer result
-      integer :: res(max(n, 0))
+      ! integer endpoints + integer base = real(dp) result
+      real(dp) :: res(max(n, 0))
     end function logspace_1_iint32_n_ibase
 
 
