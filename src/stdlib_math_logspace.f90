@@ -109,32 +109,42 @@ contains
     ! of dp start and end. [base^start, ... , base^end]
     ! RName = logspace_1_cdp_n_ibase
     module procedure logspace_1_iint32_n_rspbase
-      integer :: exponents(max(n, 0))
-      exponents = linspace(start, end, n)
+      real(sp) :: exponents(max(n, 0))
+      exponents = linspace(real(start, kind=sp), real(end, kind=sp), n)
       res = base ** exponents
+      if (n > 1) res(1) = base ** start
+      if (n > 0) res(n) = base ** end
     end procedure
 
     module procedure logspace_1_iint32_n_cspbase
-      integer :: exponents(max(n, 0))
-      exponents = linspace(start, end, n)
+      complex(sp) :: exponents(max(n, 0))
+      exponents = cmplx(linspace(real(start, kind=sp), real(end, kind=sp), n), 0.0_sp)
       res = base ** exponents
+      if (n > 1) res(1) = base ** start
+      if (n > 0) res(n) = base ** end
     end procedure
     module procedure logspace_1_iint32_n_rdpbase
-      integer :: exponents(max(n, 0))
-      exponents = linspace(start, end, n)
+      real(dp) :: exponents(max(n, 0))
+      exponents = linspace(real(start, kind=dp), real(end, kind=dp), n)
       res = base ** exponents
+      if (n > 1) res(1) = base ** start
+      if (n > 0) res(n) = base ** end
     end procedure
 
     module procedure logspace_1_iint32_n_cdpbase
-      integer :: exponents(max(n, 0))
-      exponents = linspace(start, end, n)
+      complex(dp) :: exponents(max(n, 0))
+      exponents = cmplx(linspace(real(start, kind=dp), real(end, kind=dp), n), 0.0_dp)
       res = base ** exponents
+      if (n > 1) res(1) = base ** start
+      if (n > 0) res(n) = base ** end
     end procedure
 
     module procedure logspace_1_iint32_n_ibase
-      integer :: exponents(max(n, 0))
-      exponents = linspace(start, end, n)
+      real(dp) :: exponents(max(n, 0))
+      exponents = linspace(real(start, kind=dp), real(end, kind=dp), n)
       res = base ** exponents
+      if (n > 1) res(1) = base ** real(start, kind=dp)
+      if (n > 0) res(n) = base ** real(end, kind=dp)
     end procedure
 
 
