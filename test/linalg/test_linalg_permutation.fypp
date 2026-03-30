@@ -5,7 +5,10 @@ module test_linalg_permutation
   use testdrive, only: new_unittest, unittest_type, error_type, check
   use stdlib_kinds, only: sp, dp, int32
   use stdlib_linalg_constants, only: ilp
-  use stdlib_linalg_permutation
+  use stdlib_linalg, only: permutation_type, permutation_identity, permutation_init, &
+    permutation_is_valid, permutation_invert, permutation_compose, &
+    permutation_from_lapack, permutation_to_matrix, &
+    permutation_apply_left, permutation_apply_right, permutation_apply_vector
   implicit none
   private
 

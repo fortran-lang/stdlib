@@ -16,89 +16,37 @@
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
 #:set RCI_KINDS_TYPES = RC_KINDS_TYPES + INT_KINDS_TYPES
 
-module stdlib_linalg_permutation
-  use stdlib_kinds, only: xdp, int8, int16, int32, int64
-  use stdlib_linalg_constants, only: sp, dp, qp, lk, ilp
+submodule (stdlib_linalg) stdlib_linalg_permutation
+  use stdlib_math, only: arange
+  use stdlib_linalg_state, only: LINALG_VALUE_ERROR
   implicit none
-  private
-
-  !> Permutation type: stores permutation as integer vector
-  type, public :: permutation_type
-    integer(ilp), allocatable :: perm(:)
-    integer(ilp) :: n = 0
-    logical :: finalized = .true.
-  end type
-
-  ! Public procedures
-  public :: permutation_identity
-  public :: permutation_init
-  public :: permutation_is_valid
-  public :: permutation_invert
-  public :: permutation_compose
-  public :: permutation_from_lapack
-  public :: permutation_to_matrix
-  public :: permutation_apply_left
-  public :: permutation_apply_right
-  public :: permutation_apply_vector
-
-  ! Generic interfaces for multi-type support
-  interface permutation_apply_left
-    #:for k1, t1 in RCI_KINDS_TYPES
-    module procedure permutation_apply_left_${t1[0]}$${k1}$
-    #:endfor
-  end interface
-
-  interface permutation_apply_right
-    #:for k1, t1 in RCI_KINDS_TYPES
-    module procedure permutation_apply_right_${t1[0]}$${k1}$
-    #:endfor
-  end interface
-
-  interface permutation_apply_vector
-    #:for k1, t1 in RCI_KINDS_TYPES
-    module procedure permutation_apply_vector_${t1[0]}$${k1}$
-    #:endfor
-  end interface
-
-  interface permutation_to_matrix
-    #:for k1, t1 in RCI_KINDS_TYPES
-    module procedure permutation_to_matrix_${t1[0]}$${k1}$
-    #:endfor
-  end interface
 
 contains
 
   !> Create an identity permutation of size n
-  function permutation_identity(n) result(p)
+  module function permutation_identity(n) result(p)
     integer(ilp), intent(in) :: n
     type(permutation_type) :: p
-    integer(ilp) :: i
 
     p%n = n
     p%finalized = .true.
     allocate(p%perm(n))
-    do i = 1, n
-      p%perm(i) = i
-    end do
+    p%perm = arange(1_ilp, n)
   end function
 
   !> Create a permutation from a given integer vector
-  function permutation_init(perm_vec, finalized) result(p)
+  module function permutation_init(perm_vec, finalized) result(p)
     integer(ilp), intent(in) :: perm_vec(:)
     logical, intent(in), optional :: finalized
     type(permutation_type) :: p
 
     p%n = size(perm_vec)
     allocate(p%perm(p%n), source=perm_vec)
-    if (present(finalized)) then
-      p%finalized = finalized
-    else
-      p%finalized = .true.
-    end if
+    p%finalized = optval(finalized, .true.)
   end function
 
   !> Check if a permutation is valid (each integer 1..n appears exactly once)
-  function permutation_is_valid(p) result(valid)
+  module function permutation_is_valid(p) result(valid)
     type(permutation_type), intent(in) :: p
     logical :: valid
     logical, allocatable :: seen(:)
@@ -127,7 +75,7 @@ contains
 
   !> Invert a finalized permutation
   !> If perm(i) = j, then inv(j) = i
-  function permutation_invert(p) result(inv)
+  module function permutation_invert(p) result(inv)
     type(permutation_type), intent(in) :: p
     type(permutation_type) :: inv, fp
     integer(ilp) :: i
@@ -150,10 +98,12 @@ contains
 
   !> Convert LAPACK pivot vector (swap sequence) to finalized permutation
   !> ipiv(i) = j means "swap rows i and j" applied at step i
-  function permutation_from_lapack(ipiv, n) result(p)
+  module function permutation_from_lapack(ipiv, n, err) result(p)
     integer(ilp), intent(in) :: ipiv(:)
     integer(ilp), intent(in) :: n
+    type(linalg_state_type), intent(out), optional :: err
     type(permutation_type) :: p
+    type(linalg_state_type) :: err0
     integer(ilp) :: i, tmp
 
     p%n = n
@@ -161,19 +111,22 @@ contains
     allocate(p%perm(n))
 
     ! Start with identity
-    do i = 1, n
-      p%perm(i) = i
-    end do
+    p%perm = arange(1_ilp, n)
 
     ! Replay swap sequence forward
     do i = 1, min(n, int(size(ipiv), ilp))
-      if (ipiv(i) < 1 .or. ipiv(i) > n) error stop "permutation_from_lapack: Invalid LAPACK pivot index out of bounds"
+      if (ipiv(i) < 1 .or. ipiv(i) > n) then
+        err0 = linalg_state_type("permutation_from_lapack", LINALG_VALUE_ERROR, "Invalid LAPACK pivot index out of bounds")
+        call linalg_error_handling(err0, err)
+        return
+      end if
       if (ipiv(i) /= i) then
         tmp = p%perm(i)
         p%perm(i) = p%perm(ipiv(i))
         p%perm(ipiv(i)) = tmp
       end if
     end do
+    call linalg_error_handling(err0, err)
   end function
 
   !> Convert nonfinalized (swap) to finalized (direct) permutation
@@ -183,26 +136,23 @@ contains
 
     if (p%finalized) then
       fp = p
-      return
+    else
+      ! Treat swap sequence as LAPACK pivots
+      fp = permutation_from_lapack(p%perm, p%n)
     end if
-    ! Treat swap sequence as LAPACK pivots
-    fp = permutation_from_lapack(p%perm, p%n)
   end function
 
   !> Compose two finalized permutations: result = p1 * p2
   !> Apply p2 first, then p1
-  function permutation_compose(p1, p2) result(p)
+  module function permutation_compose(p1, p2) result(p)
     type(permutation_type), intent(in) :: p1, p2
     type(permutation_type) :: p
-    integer(ilp) :: i
 
     p%n = p1%n
     p%finalized = .true.
     allocate(p%perm(p%n))
 
-    do i = 1, p%n
-      p%perm(i) = p2%perm(p1%perm(i))
-    end do
+    p%perm = p2%perm(p1%perm)
   end function
 
   !> ----- Templated operations for multiple real kinds -----
@@ -211,59 +161,84 @@ contains
 
   !> Apply permutation from the left: B = P * A (row permutation)
   !> Row i of B comes from row perm(i) of A
-  subroutine permutation_apply_left_${t1[0]}$${k1}$ (p, A, B)
+  module subroutine permutation_apply_left_${t1[0]}$${k1}$ (p, A, B, err)
     type(permutation_type), intent(in) :: p
     ${t1}$, intent(in) :: A(:,:)
     ${t1}$, intent(out) :: B(:,:)
+    type(linalg_state_type), intent(out), optional :: err
+    type(linalg_state_type) :: err0
     integer(ilp) :: i
 
-    if (.not. p%finalized) error stop "Permutation must be finalized before applying."
-    do i = 1, p%n
+    if (.not. p%finalized) then
+      err0 = linalg_state_type("permutation_apply_left", LINALG_VALUE_ERROR, "Permutation must be finalized before applying.")
+      call linalg_error_handling(err0, err)
+      return
+    end if
+    do concurrent (i = 1:p%n)
       B(i, :) = A(p%perm(i), :)
     end do
+    call linalg_error_handling(err0, err)
   end subroutine
 
   !> Apply permutation from the right: B = A * P (column permutation)
   !> Column perm(j) of B comes from column j of A
-  subroutine permutation_apply_right_${t1[0]}$${k1}$ (p, A, B)
+  module subroutine permutation_apply_right_${t1[0]}$${k1}$ (p, A, B, err)
     type(permutation_type), intent(in) :: p
     ${t1}$, intent(in) :: A(:,:)
     ${t1}$, intent(out) :: B(:,:)
+    type(linalg_state_type), intent(out), optional :: err
+    type(linalg_state_type) :: err0
     integer(ilp) :: j
 
-    if (.not. p%finalized) error stop "Permutation must be finalized before applying."
-    do j = 1, p%n
+    if (.not. p%finalized) then
+      err0 = linalg_state_type("permutation_apply_right", LINALG_VALUE_ERROR, "Permutation must be finalized before applying.")
+      call linalg_error_handling(err0, err)
+      return
+    end if
+    do concurrent (j = 1:p%n)
       B(:, p%perm(j)) = A(:, j)
     end do
+    call linalg_error_handling(err0, err)
   end subroutine
 
   !> Apply permutation to a vector: b = P * a
   !> b(i) = a(perm(i))
-  subroutine permutation_apply_vector_${t1[0]}$${k1}$ (p, a, b)
+  module subroutine permutation_apply_vector_${t1[0]}$${k1}$ (p, a, b, err)
     type(permutation_type), intent(in) :: p
     ${t1}$, intent(in) :: a(:)
     ${t1}$, intent(out) :: b(:)
-    integer(ilp) :: i
+    type(linalg_state_type), intent(out), optional :: err
+    type(linalg_state_type) :: err0
 
-    if (.not. p%finalized) error stop "Permutation must be finalized before applying."
-    do i = 1, p%n
-      b(i) = a(p%perm(i))
-    end do
+    if (.not. p%finalized) then
+      err0 = linalg_state_type("permutation_apply_vector", LINALG_VALUE_ERROR, "Permutation must be finalized before applying.")
+      call linalg_error_handling(err0, err)
+      return
+    end if
+    b = a(p%perm)
+    call linalg_error_handling(err0, err)
   end subroutine
 
   !> Convert permutation to dense matrix (for testing / small cases)
-  subroutine permutation_to_matrix_${t1[0]}$${k1}$ (p, A)
+  module subroutine permutation_to_matrix_${t1[0]}$${k1}$ (p, A, err)
     type(permutation_type), intent(in) :: p
     ${t1}$, intent(out) :: A(:,:)
+    type(linalg_state_type), intent(out), optional :: err
+    type(linalg_state_type) :: err0
     integer(ilp) :: i
 
-    if (.not. p%finalized) error stop "Permutation must be finalized to convert to matrix."
+    if (.not. p%finalized) then
+      err0 = linalg_state_type("permutation_to_matrix", LINALG_VALUE_ERROR, "Permutation must be finalized to convert to matrix.")
+      call linalg_error_handling(err0, err)
+      return
+    end if
     A = 0
     do i = 1, p%n
       A(i, p%perm(i)) = 1
     end do
+    call linalg_error_handling(err0, err)
   end subroutine
 
   #:endfor
 
-end module stdlib_linalg_permutation
+end submodule stdlib_linalg_permutation
