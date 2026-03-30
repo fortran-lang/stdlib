@@ -1,6 +1,6 @@
 #:include "common.fypp"
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
-! Test QR factorization 
+! Test QR factorization
 module test_linalg_matrix_factorizations
     use testdrive, only: error_type, check, new_unittest, unittest_type
     use stdlib_linalg_constants
@@ -10,7 +10,7 @@ module test_linalg_matrix_factorizations
     use ieee_arithmetic, only: ieee_value,ieee_quiet_nan
 
     implicit none (type,external)
-    
+
     public :: test_qr_factorization
 
     #:for rk, rt, ri in REAL_KINDS_TYPES
@@ -23,9 +23,8 @@ module test_linalg_matrix_factorizations
     subroutine test_qr_factorization(tests)
         !> Collection of tests
         type(unittest_type), allocatable, intent(out) :: tests(:)
-        
+
         allocate(tests(0))
-        
         #:for rk,rt,ri in RC_KINDS_TYPES
         call add_test(tests,new_unittest("qr_random_tall_matrix_${ri}$",test_qr_random_tall_matrix_${ri}$))
         call add_test(tests,new_unittest("qr_random_wide_matrix_${ri}$",test_qr_random_wide_matrix_${ri}$))
@@ -44,7 +43,7 @@ module test_linalg_matrix_factorizations
         real(${rk}$) :: rea(m,n),ima(m,n)
         type(linalg_state_type) :: state
         type(qr_${rt[0]}$${rk}$_type) :: F
-        
+
         call random_number(rea)
         #:if rt.startswith('complex')
         call random_number(ima)
@@ -52,7 +51,7 @@ module test_linalg_matrix_factorizations
         #:else
         a = rea
         #:endif
-        
+
         ! Reference QR decomposition.
         q = ieee_value(0.0_${rk}$,ieee_quiet_nan)
         r = ieee_value(0.0_${rk}$,ieee_quiet_nan)
@@ -114,7 +113,6 @@ module test_linalg_matrix_factorizations
             end block
             return
         endif
-        
     end subroutine test_qr_random_tall_matrix_${ri}$
 
     subroutine test_qr_random_wide_matrix_${ri}$(error)
@@ -127,7 +125,7 @@ module test_linalg_matrix_factorizations
         real(${rk}$) :: rea(m, n),ima(m, n)
         type(linalg_state_type) :: state
         type(qr_${rt[0]}$${rk}$_type) :: F
-        
+
         call random_number(rea)
         #:if rt.startswith('complex')
         call random_number(ima)
@@ -135,7 +133,7 @@ module test_linalg_matrix_factorizations
         #:else
         a = rea
         #:endif
-        
+
         ! Reference QR decomposition.
         q = ieee_value(0.0_${rk}$,ieee_quiet_nan)
         r = ieee_value(0.0_${rk}$,ieee_quiet_nan)
@@ -197,29 +195,28 @@ module test_linalg_matrix_factorizations
             end block
             return
         endif
-        
     end subroutine test_qr_random_wide_matrix_${ri}$
     #:endfor
 
     ! gcc-15 bugfix utility
     subroutine add_test(tests,new_test)
-        type(unittest_type), allocatable, intent(inout) :: tests(:)    
+        type(unittest_type), allocatable, intent(inout) :: tests(:)
         type(unittest_type), intent(in) :: new_test
-        
+
         integer :: n
         type(unittest_type), allocatable :: new_tests(:)
-        
-        if (allocated(tests)) then 
+
+        if (allocated(tests)) then
             n = size(tests)
         else
             n = 0
         end if
-        
+
         allocate(new_tests(n+1))
         if (n>0) new_tests(1:n) = tests(1:n)
                  new_tests(1+n) = new_test
-        call move_alloc(from=new_tests,to=tests)        
-        
+        call move_alloc(from=new_tests,to=tests)
+
     end subroutine add_test
 
 end module test_linalg_matrix_factorizations
