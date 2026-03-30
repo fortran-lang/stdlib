@@ -601,7 +601,7 @@ contains
             call dense2coo( dense_original , COO )
             call coo2csc( COO, CSC )
 
-            ! 3. Execute your new csc2dense routine!
+            ! 3. Execute the csc2dense conversion
             call csc2dense( CSC, dense_converted )
 
             ! 4. Verify the converted matrix perfectly matches the original

@@ -85,7 +85,8 @@ module stdlib_sparse_conversion
         #:endfor
     end interface
     public :: csr2dense
-     !! version: experimental
+    
+    !! version: experimental
     !!
     !! Conversion from csc to dense
     !! Enables creating a dense 2D matrix from the non-zero values stored in a CSC format
