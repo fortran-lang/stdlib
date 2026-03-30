@@ -286,14 +286,16 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         ${t1}$, intent(in) :: alpha
         type(tridiagonal_${s1}$_type), intent(in) :: A
         type(tridiagonal_${s1}$_type) :: B
-        B = tridiagonal(alpha*A%dl, alpha*A%dv, alpha*A%du)
+        B = tridiagonal(A%dl, A%dv, A%du)
+        B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = alpha*B%du
     end function
 
     pure module function scalar_multiplication_bis_tridiagonal_${s1}$(A, alpha) result(B)
         type(tridiagonal_${s1}$_type), intent(in) :: A
         ${t1}$, intent(in) :: alpha
         type(tridiagonal_${s1}$_type) :: B
-        B = tridiagonal(alpha*A%dl, alpha*A%dv, alpha*A%du)
+        B = tridiagonal(A%dl, A%dv, A%du)
+        B%dl = alpha*B%dl; B%dv = alpha*B%dv; B%du = alpha*B%du
     end function
     #:endfor
 
@@ -303,9 +305,16 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         type(tridiagonal_${s1}$_type), intent(in) :: B
         type(tridiagonal_${s1}$_type) :: C
         
-        if (A%n /= B%n) error stop "ValueError: tridiagonal matrices must have the same dimension to be added"
+        ! Internal variables.
+        type(linalg_state_type) :: err0
         
-        C = tridiagonal(A%dl + B%dl, A%dv + B%dv, A%du + B%du)
+        if (A%n /= B%n) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "tridiagonal matrices must have the same dimension to be added")
+            call linalg_error_handling(err0)
+        end if
+        
+        C = tridiagonal(A%dl, A%dv, A%du)
+        C%dl = C%dl + B%dl; C%dv = C%dv + B%dv; C%du = C%du + B%du
     end function
 
     pure module function matrix_sub_tridiagonal_${s1}$(A, B) result(C)
@@ -313,9 +322,16 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         type(tridiagonal_${s1}$_type), intent(in) :: B
         type(tridiagonal_${s1}$_type) :: C
         
-        if (A%n /= B%n) error stop "ValueError: tridiagonal matrices must have the same dimension to be subtracted"
+        ! Internal variables. 
+        type(linalg_state_type) :: err0
         
-        C = tridiagonal(A%dl - B%dl, A%dv - B%dv, A%du - B%du)
+        if (A%n /= B%n) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "tridiagonal matrices must have the same dimension to be subtracted")
+            call linalg_error_handling(err0)
+        end if
+        
+        C = tridiagonal(A%dl, A%dv, A%du)
+        C%dl = C%dl - B%dl; C%dv = C%dv - B%dv; C%du = C%du - B%du
     end function
     #:endfor
 
