@@ -103,7 +103,6 @@ contains
     subroutine test_roundtrip_logical(error)
         type(error_type), allocatable, intent(out) :: error
         logical(lk) :: vals(5), got(5)
-        integer(int8) :: temp_bytes(5 * storage_size(.true._lk)/8) ! Buffer
         character(len=:), allocatable :: enc, dec
 
         vals = [.true._lk, .false._lk, .true._lk, .true._lk, .false._lk]
