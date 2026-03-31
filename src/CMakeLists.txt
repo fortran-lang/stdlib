@@ -42,6 +42,7 @@ add_subdirectory(strings)
 ADD_SUBDIR(system)
 
 ADD_SUBDIR(stats)
+ADD_SUBDIR(regex)
 
 add_subdirectory(sparse)
 
@@ -70,5 +71,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   ${PROJECT_NAME}_strings
   ${PROJECT_NAME}_blas ${PROJECT_NAME}_lapack ${PROJECT_NAME}_lapack_extended
   ${PROJECT_NAME}_sparse
+  ${PROJECT_NAME}_regex
   ${OPTIONAL_LIB}
   )
