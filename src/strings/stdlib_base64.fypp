@@ -1,0 +1,388 @@
+! SPDX-Identifier: MIT
+#:include "common.fypp"
+
+module stdlib_base64
+    use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64, lk, c_bool
+    implicit none
+    private
+
+    public :: base64_encode, base64_decode
+
+    character(len=*), parameter :: B64_ALPHABET = &
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+
+    interface base64_encode
+#:for k1, t1, _, _ in REAL_KINDS_TYPES
+        module procedure :: base64_encode_real_${k1}$
+#:endfor
+#:for k1, t1, _, _ in INT_KINDS_TYPES
+        module procedure :: base64_encode_int_${k1}$
+#:endfor
+#:for k1, t1, _ in CMPLX_KINDS_TYPES
+        module procedure :: base64_encode_cmplx_${k1}$
+#:endfor
+#:for k1, t1 in LOG_KINDS_TYPES
+        module procedure :: base64_encode_logical_${k1}$
+#:endfor
+    end interface base64_encode
+
+contains
+
+#:for k1, t1, _, _ in REAL_KINDS_TYPES
+    module function base64_encode_real_${k1}$(data) result(str)
+        ${t1}$, intent(in) :: data(..)
+        character(len=:), allocatable :: str
+
+        ${t1}$, allocatable :: flat(:)
+        integer(int8), allocatable :: bytes(:)
+        integer :: nbytes
+
+        select rank(d => data)
+        rank(0)
+            allocate(flat(1))
+            flat(1) = d
+        rank(1)
+            flat = d
+#:for r in range(2, MAXRANK + 1)
+        rank(${r}$)
+            flat = pack(d, .true.)
+#:endfor
+        rank default
+            str = ""
+            return
+        end select
+
+        if (size(flat) == 0) then
+            str = ""
+            return
+        end if
+
+        nbytes = size(flat) * storage_size(flat(1)) / 8
+        bytes = transfer(flat, [0_int8], nbytes)
+        str = base64_encode_bytes(bytes)
+    end function base64_encode_real_${k1}$
+
+#:endfor
+#:for k1, t1, _, _ in INT_KINDS_TYPES
+    module function base64_encode_int_${k1}$(data) result(str)
+        ${t1}$, intent(in) :: data(..)
+        character(len=:), allocatable :: str
+
+        ${t1}$, allocatable :: flat(:)
+        integer(int8), allocatable :: bytes(:)
+        integer :: nbytes
+
+        select rank(d => data)
+        rank(0)
+            allocate(flat(1))
+            flat(1) = d
+        rank(1)
+            flat = d
+#:for r in range(2, MAXRANK + 1)
+        rank(${r}$)
+            flat = pack(d, .true.)
+#:endfor
+        rank default
+            str = ""
+            return
+        end select
+
+        if (size(flat) == 0) then
+            str = ""
+            return
+        end if
+
+        nbytes = size(flat) * storage_size(flat(1)) / 8
+        bytes = transfer(flat, [0_int8], nbytes)
+        str = base64_encode_bytes(bytes)
+    end function base64_encode_int_${k1}$
+
+#:endfor
+#:for k1, t1, _ in CMPLX_KINDS_TYPES
+    module function base64_encode_cmplx_${k1}$(data) result(str)
+        ${t1}$, intent(in) :: data(..)
+        character(len=:), allocatable :: str
+
+        ${t1}$, allocatable :: flat(:)
+        integer(int8), allocatable :: bytes(:)
+        integer :: nbytes
+
+        select rank(d => data)
+        rank(0)
+            allocate(flat(1))
+            flat(1) = d
+        rank(1)
+            flat = d
+#:for r in range(2, MAXRANK + 1)
+        rank(${r}$)
+            flat = pack(d, .true.)
+#:endfor
+        rank default
+            str = ""
+            return
+        end select
+
+        if (size(flat) == 0) then
+            str = ""
+            return
+        end if
+
+        nbytes = size(flat) * storage_size(flat(1)) / 8
+        bytes = transfer(flat, [0_int8], nbytes)
+        str = base64_encode_bytes(bytes)
+    end function base64_encode_cmplx_${k1}$
+
+#:endfor
+#:for k1, t1 in LOG_KINDS_TYPES
+    module function base64_encode_logical_${k1}$(data) result(str)
+        ${t1}$, intent(in) :: data(..)
+        character(len=:), allocatable :: str
+
+        ${t1}$, allocatable :: flat(:)
+        integer(int8), allocatable :: bytes(:)
+        integer :: nbytes
+
+        select rank(d => data)
+        rank(0)
+            allocate(flat(1))
+            flat(1) = d
+        rank(1)
+            flat = d
+#:for r in range(2, MAXRANK + 1)
+        rank(${r}$)
+            flat = pack(d, .true.)
+#:endfor
+        rank default
+            str = ""
+            return
+        end select
+
+        if (size(flat) == 0) then
+            str = ""
+            return
+        end if
+
+        nbytes = size(flat) * storage_size(flat(1)) / 8
+        bytes = transfer(flat, [0_int8], nbytes)
+        str = base64_encode_bytes(bytes)
+    end function base64_encode_logical_${k1}$
+
+#:endfor
+    function base64_encode_bytes(bytes) result(str)
+        integer(int8), intent(in) :: bytes(:)
+        character(len=:), allocatable :: str
+
+        integer :: nbytes, out_len, i, o, rem
+        integer(int32) :: b0, b1, b2, s0, s1, s2, s3
+
+        nbytes = size(bytes)
+        if (nbytes == 0) then
+            str = ""
+            return
+        end if
+
+        out_len = 4 * ((nbytes + 2) / 3)
+        allocate(character(len=out_len) :: str)
+
+        i = 1
+        o = 1
+        do while (i <= nbytes)
+            rem = nbytes - i + 1
+
+            b0 = iand(int(bytes(i), int32), int(z'FF', int32))
+            if (rem >= 2) then
+                b1 = iand(int(bytes(i + 1), int32), int(z'FF', int32))
+            else
+                b1 = 0_int32
+            end if
+            if (rem >= 3) then
+                b2 = iand(int(bytes(i + 2), int32), int(z'FF', int32))
+            else
+                b2 = 0_int32
+            end if
+
+            s0 = ishft(b0, -2)
+            s1 = ior(ishft(iand(b0, 3_int32), 4), ishft(b1, -4))
+            s2 = ior(ishft(iand(b1, 15_int32), 2), ishft(b2, -6))
+            s3 = iand(b2, 63_int32)
+
+            str(o:o) = B64_ALPHABET(s0 + 1:s0 + 1)
+            str(o + 1:o + 1) = B64_ALPHABET(s1 + 1:s1 + 1)
+
+            if (rem == 1) then
+                str(o + 2:o + 2) = "="
+                str(o + 3:o + 3) = "="
+            else if (rem == 2) then
+                str(o + 2:o + 2) = B64_ALPHABET(s2 + 1:s2 + 1)
+                str(o + 3:o + 3) = "="
+            else
+                str(o + 2:o + 2) = B64_ALPHABET(s2 + 1:s2 + 1)
+                str(o + 3:o + 3) = B64_ALPHABET(s3 + 1:s3 + 1)
+            end if
+
+            i = i + 3
+            o = o + 4
+        end do
+    end function base64_encode_bytes
+
+    function base64_decode(str) result(res)
+        character(len=*), intent(in) :: str
+        character(len=:), allocatable :: res
+
+        character(len=:), allocatable :: packed
+        integer(int8), allocatable :: bytes(:)
+        integer :: n, i, p, pad, out_len
+        integer(int32) :: s0, s1, s2, s3, b0, b1, b2
+        character :: c2, c3, c4
+
+        n = 0
+        do i = 1, len(str)
+            if (.not. is_b64_whitespace(str(i:i))) n = n + 1
+        end do
+
+        if (n == 0) then
+            res = ""
+            return
+        end if
+
+        allocate(character(len=n) :: packed)
+        p = 0
+        do i = 1, len(str)
+            if (.not. is_b64_whitespace(str(i:i))) then
+                p = p + 1
+                packed(p:p) = str(i:i)
+            end if
+        end do
+
+        if (mod(n, 4) /= 0) then
+            res = ""
+            return
+        end if
+
+        pad = 0
+        if (packed(n:n) == "=") pad = pad + 1
+        if (packed(n - 1:n - 1) == "=") pad = pad + 1
+
+        if (n - pad > 0) then
+            if (index(packed(:n - pad), "=") /= 0) then
+                res = ""
+                return
+            end if
+        end if
+
+        out_len = 3 * (n / 4) - pad
+        if (out_len == 0) then
+            res = ""
+            return
+        end if
+
+        allocate(bytes(out_len))
+        p = 1
+
+        do i = 1, n, 4
+            s0 = b64_value(packed(i:i))
+            s1 = b64_value(packed(i + 1:i + 1))
+            c3 = packed(i + 2:i + 2)
+            c4 = packed(i + 3:i + 3)
+
+            if (s0 < 0 .or. s1 < 0) then
+                res = ""
+                return
+            end if
+
+            if (c3 == "=") then
+                if (c4 /= "=") then
+                    res = ""
+                    return
+                end if
+                if (i + 3 /= n) then
+                    res = ""
+                    return
+                end if
+
+                b0 = ior(ishft(s0, 2), ishft(s1, -4))
+                if (b0 > 127_int32) then
+                    bytes(p) = int(b0 - 256_int32, int8)
+                else
+                    bytes(p) = int(b0, int8)
+                end if
+                p = p + 1
+                cycle
+            end if
+
+            s2 = b64_value(c3)
+            if (s2 < 0) then
+                res = ""
+                return
+            end if
+
+            b0 = ior(ishft(s0, 2), ishft(s1, -4))
+            b1 = ior(ishft(iand(s1, 15_int32), 4), ishft(s2, -2))
+
+            if (b0 > 127_int32) then
+                bytes(p) = int(b0 - 256_int32, int8)
+            else
+                bytes(p) = int(b0, int8)
+            end if
+            p = p + 1
+            if (p <= out_len) then
+                if (b1 > 127_int32) then
+                    bytes(p) = int(b1 - 256_int32, int8)
+                else
+                    bytes(p) = int(b1, int8)
+                end if
+                p = p + 1
+            end if
+
+            if (c4 == "=") then
+                if (i + 3 /= n) then
+                    res = ""
+                    return
+                end if
+                cycle
+            end if
+
+            s3 = b64_value(c4)
+            if (s3 < 0) then
+                res = ""
+                return
+            end if
+
+            b2 = ior(ishft(iand(s2, 3_int32), 6), s3)
+            if (p <= out_len) then
+                if (b2 > 127_int32) then
+                    bytes(p) = int(b2 - 256_int32, int8)
+                else
+                    bytes(p) = int(b2, int8)
+                end if
+                p = p + 1
+            end if
+        end do
+
+        allocate(character(len=out_len) :: res)
+        do i = 1, out_len
+            ! Masking ensures we treat the byte as unsigned 0-255
+            res(i:i) = achar(iand(int(bytes(i), int32), 255_int32))
+        end do
+    end function base64_decode
+
+    elemental integer function b64_value(ch) result(val)
+        character, intent(in) :: ch
+        integer :: pos
+
+        pos = index(B64_ALPHABET, ch)
+        if (pos == 0) then
+            val = -1
+        else
+            val = pos - 1
+        end if
+    end function b64_value
+
+    elemental logical function is_b64_whitespace(ch) result(tf)
+        character, intent(in) :: ch
+
+        tf = ch == " " .or. ch == achar(9) .or. ch == achar(10) .or. &
+             ch == achar(13) .or. ch == achar(11) .or. ch == achar(12)
+    end function is_b64_whitespace
+
+end module stdlib_base64

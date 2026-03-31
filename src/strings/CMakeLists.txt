@@ -1,4 +1,5 @@
 set(strings_fppFiles
+    stdlib_base64.fypp
     stdlib_string_type.fypp
     stdlib_string_type_constructor.fypp
     stdlib_str2num.fypp
