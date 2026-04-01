@@ -14,7 +14,7 @@ contains
         !> Reference point set (d × N)
         ${t}$, intent(in) :: Q(:, :)
         !> Optimal rotation matrix (d × d)
-        ${t}$, intent(out) :: R(:,:)
+        ${t}$, intent(out) :: R(:, :)
         !> Translation vector (d)
         ${t}$, intent(out) :: t(:)
         !> Scale factor
@@ -105,6 +105,7 @@ contains
                 end do
             end do
         else
+            ! Calculate variance by the formula (1/n)*sigma(P - c_P)^2
             do point = 1, N
                 tmp_d = P(:, point) - c_P(:)
                 tmp_N(point) = stdlib_dot_product_kahan(tmp_d, tmp_d)

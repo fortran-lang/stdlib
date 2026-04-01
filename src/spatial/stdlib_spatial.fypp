@@ -31,7 +31,7 @@ module stdlib_spatial
             !> Reference point set (d × N)
             ${t}$, intent(in) :: Q(:, :)
             !> Optimal rotation matrix (d × d)
-            ${t}$, intent(out) :: R(:,:)
+            ${t}$, intent(out) :: R(:, :)
             !> Translation vector (d)
             ${t}$, intent(out) :: t(:)
             !> Scale factor
