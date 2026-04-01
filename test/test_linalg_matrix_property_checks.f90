@@ -666,10 +666,11 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
-        real(sp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+        real(sp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2), A_false_diag(2,2)
         A_true = reshape([0.,2.,-2.,0.],[2,2])
         A_false_1 = reshape([0.,2.,-3.,0.],[2,2])
         A_false_2 = reshape([0.,2.,3.,-2.,0.,6.],[3,2]) !nonsquare matrix
+        A_false_diag = reshape([1.,2.,-2.,0.],[2,2]) ! non-zero diagonal
 
         call check(error, is_skew_symmetric(A_true), &
             "is_skew_symmetric(A_true) failed.")
@@ -679,16 +680,20 @@ contains
         if (allocated(error)) return
         call check(error, (.not. is_skew_symmetric(A_false_2)), &
             "(.not. is_skew_symmetric(A_false_2)) failed.")
+        if (allocated(error)) return
+        call check(error, (.not. is_skew_symmetric(A_false_diag)), &
+            "(.not. is_skew_symmetric(A_false_diag)) failed.")
         if (allocated(error)) return
     end subroutine test_is_skew_symmetric_rsp
     subroutine test_is_skew_symmetric_rdp(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
-        real(dp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+        real(dp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2), A_false_diag(2,2)
         A_true = reshape([0.,2.,-2.,0.],[2,2])
         A_false_1 = reshape([0.,2.,-3.,0.],[2,2])
         A_false_2 = reshape([0.,2.,3.,-2.,0.,6.],[3,2]) !nonsquare matrix
+        A_false_diag = reshape([1.,2.,-2.,0.],[2,2]) ! non-zero diagonal
 
         call check(error, is_skew_symmetric(A_true), &
             "is_skew_symmetric(A_true) failed.")
@@ -698,19 +703,24 @@ contains
         if (allocated(error)) return
         call check(error, (.not. is_skew_symmetric(A_false_2)), &
             "(.not. is_skew_symmetric(A_false_2)) failed.")
+        if (allocated(error)) return
+        call check(error, (.not. is_skew_symmetric(A_false_diag)), &
+            "(.not. is_skew_symmetric(A_false_diag)) failed.")
         if (allocated(error)) return
     end subroutine test_is_skew_symmetric_rdp
     subroutine test_is_skew_symmetric_csp(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
-        complex(sp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+        complex(sp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2), A_false_diag(2,2)
         A_true = reshape([cmplx(0.,0.),cmplx(2.,1.), &
             -cmplx(2.,1.),cmplx(0.,0.)],[2,2])
         A_false_1 = reshape([cmplx(0.,0.),cmplx(2.,1.), &
             -cmplx(3.,1.),cmplx(0.,0.)],[2,2])
         A_false_2 = reshape([cmplx(0.,0.),cmplx(2.,1.),cmplx(3.,0.), &
             -cmplx(2.,1.),cmplx(0.,0.),cmplx(6.,0.)],[3,2]) !nonsquare matrix
+        A_false_diag = reshape([cmplx(0.,1.),cmplx(2.,1.), &
+            -cmplx(2.,1.),cmplx(0.,0.)],[2,2]) ! purely imaginary diagonal
 
         call check(error, is_skew_symmetric(A_true), &
             "is_skew_symmetric(A_true) failed.")
@@ -720,19 +730,24 @@ contains
         if (allocated(error)) return
         call check(error, (.not. is_skew_symmetric(A_false_2)), &
             "(.not. is_skew_symmetric(A_false_2)) failed.")
+        if (allocated(error)) return
+        call check(error, (.not. is_skew_symmetric(A_false_diag)), &
+            "(.not. is_skew_symmetric(A_false_diag)) failed.")
         if (allocated(error)) return
     end subroutine test_is_skew_symmetric_csp
     subroutine test_is_skew_symmetric_cdp(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
-        complex(dp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+        complex(dp) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2), A_false_diag(2,2)
         A_true = reshape([cmplx(0.,0.),cmplx(2.,1.), &
             -cmplx(2.,1.),cmplx(0.,0.)],[2,2])
         A_false_1 = reshape([cmplx(0.,0.),cmplx(2.,1.), &
             -cmplx(3.,1.),cmplx(0.,0.)],[2,2])
         A_false_2 = reshape([cmplx(0.,0.),cmplx(2.,1.),cmplx(3.,0.), &
             -cmplx(2.,1.),cmplx(0.,0.),cmplx(6.,0.)],[3,2]) !nonsquare matrix
+        A_false_diag = reshape([cmplx(0.,1.),cmplx(2.,1.), &
+            -cmplx(2.,1.),cmplx(0.,0.)],[2,2]) ! purely imaginary diagonal
 
         call check(error, is_skew_symmetric(A_true), &
             "is_skew_symmetric(A_true) failed.")
@@ -742,16 +757,20 @@ contains
         if (allocated(error)) return
         call check(error, (.not. is_skew_symmetric(A_false_2)), &
             "(.not. is_skew_symmetric(A_false_2)) failed.")
+        if (allocated(error)) return
+        call check(error, (.not. is_skew_symmetric(A_false_diag)), &
+            "(.not. is_skew_symmetric(A_false_diag)) failed.")
         if (allocated(error)) return
     end subroutine test_is_skew_symmetric_cdp
     subroutine test_is_skew_symmetric_int8(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
-        integer(int8) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+        integer(int8) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2), A_false_diag(2,2)
         A_true = reshape([0,2,-2,0],[2,2])
         A_false_1 = reshape([0,2,-3,0],[2,2])
         A_false_2 = reshape([0,2,3,-2,0,6],[3,2]) !nonsquare matrix
+        A_false_diag = reshape([1,2,-2,0],[2,2]) ! non-zero diagonal
 
         call check(error, is_skew_symmetric(A_true), &
             "is_skew_symmetric(A_true) failed.")
@@ -761,16 +780,20 @@ contains
         if (allocated(error)) return
         call check(error, (.not. is_skew_symmetric(A_false_2)), &
             "(.not. is_skew_symmetric(A_false_2)) failed.")
+        if (allocated(error)) return
+        call check(error, (.not. is_skew_symmetric(A_false_diag)), &
+            "(.not. is_skew_symmetric(A_false_diag)) failed.")
         if (allocated(error)) return
     end subroutine test_is_skew_symmetric_int8
     subroutine test_is_skew_symmetric_int16(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
-        integer(int16) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+        integer(int16) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2), A_false_diag(2,2)
         A_true = reshape([0,2,-2,0],[2,2])
         A_false_1 = reshape([0,2,-3,0],[2,2])
         A_false_2 = reshape([0,2,3,-2,0,6],[3,2]) !nonsquare matrix
+        A_false_diag = reshape([1,2,-2,0],[2,2]) ! non-zero diagonal
 
         call check(error, is_skew_symmetric(A_true), &
             "is_skew_symmetric(A_true) failed.")
@@ -780,16 +803,20 @@ contains
         if (allocated(error)) return
         call check(error, (.not. is_skew_symmetric(A_false_2)), &
             "(.not. is_skew_symmetric(A_false_2)) failed.")
+        if (allocated(error)) return
+        call check(error, (.not. is_skew_symmetric(A_false_diag)), &
+            "(.not. is_skew_symmetric(A_false_diag)) failed.")
         if (allocated(error)) return
     end subroutine test_is_skew_symmetric_int16
     subroutine test_is_skew_symmetric_int32(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
-        integer(int32) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+        integer(int32) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2), A_false_diag(2,2)
         A_true = reshape([0,2,-2,0],[2,2])
         A_false_1 = reshape([0,2,-3,0],[2,2])
         A_false_2 = reshape([0,2,3,-2,0,6],[3,2]) !nonsquare matrix
+        A_false_diag = reshape([1,2,-2,0],[2,2]) ! non-zero diagonal
 
         call check(error, is_skew_symmetric(A_true), &
             "is_skew_symmetric(A_true) failed.")
@@ -799,16 +826,20 @@ contains
         if (allocated(error)) return
         call check(error, (.not. is_skew_symmetric(A_false_2)), &
             "(.not. is_skew_symmetric(A_false_2)) failed.")
+        if (allocated(error)) return
+        call check(error, (.not. is_skew_symmetric(A_false_diag)), &
+            "(.not. is_skew_symmetric(A_false_diag)) failed.")
         if (allocated(error)) return
     end subroutine test_is_skew_symmetric_int32
     subroutine test_is_skew_symmetric_int64(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
-        integer(int64) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+        integer(int64) :: A_true(2,2), A_false_1(2,2), A_false_2(3,2), A_false_diag(2,2)
         A_true = reshape([0,2,-2,0],[2,2])
         A_false_1 = reshape([0,2,-3,0],[2,2])
         A_false_2 = reshape([0,2,3,-2,0,6],[3,2]) !nonsquare matrix
+        A_false_diag = reshape([1,2,-2,0],[2,2]) ! non-zero diagonal
 
         call check(error, is_skew_symmetric(A_true), &
             "is_skew_symmetric(A_true) failed.")
@@ -818,6 +849,9 @@ contains
         if (allocated(error)) return
         call check(error, (.not. is_skew_symmetric(A_false_2)), &
             "(.not. is_skew_symmetric(A_false_2)) failed.")
+        if (allocated(error)) return
+        call check(error, (.not. is_skew_symmetric(A_false_diag)), &
+            "(.not. is_skew_symmetric(A_false_diag)) failed.")
         if (allocated(error)) return
     end subroutine test_is_skew_symmetric_int64
 
