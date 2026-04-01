@@ -63,7 +63,7 @@ jobs:
 
     - name: Install cmake-3.14
       if: ${{ matrix.build == 'cmake-3.14' }}
-      run: pip install cmake==3.14.3
+      run: pip install  cmake==3.14.3.post1
 
     - name: Setup Fortran compiler
       uses: fortran-lang/setup-fortran@v1.6.2
@@ -72,7 +72,6 @@ jobs:
         compiler: ${{ matrix.toolchain.compiler }}
         version: ${{ matrix.toolchain.version }}
 
-    # Build and test with built-in BLAS and LAPACK
     - name: Configure with CMake
       if: ${{ contains(matrix.build, 'cmake')  && matrix.build != 'cmake-3.14' }}
       run: >-
