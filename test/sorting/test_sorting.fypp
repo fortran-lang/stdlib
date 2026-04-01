@@ -380,7 +380,7 @@ contains
         if ( .not. valid ) then
             write( *, * ) "ORD_SORT did not sort " // a_name // "."
             write(*,*) 'i = ', i
-            write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
+            write(*,'(a12, 2i7)') 'dummy(i-2:i-1) = ', dummy(i-2:i-1)
         end if
         write( lun, '("|      Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
@@ -395,7 +395,7 @@ contains
             write( *, * ) "reverse + work ORD_SORT did not sort " // a_name // &
                 "."
             write(*,*) 'i = ', i
-            write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
+            write(*,'(a12, 2i7)') 'dummy(i-2:i-1) = ', dummy(i-2:i-1)
         end if
 
         dummy = a
@@ -405,7 +405,7 @@ contains
         if ( .not. valid ) then
             write( *, * ) "reverse ORD_SORT did not sort " // a_name // "."
             write(*,*) 'i = ', i
-            write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
+            write(*,'(a12, 2i7)') 'dummy(i-2:i-1) = ', dummy(i-2:i-1)
         end if
 
     end subroutine test_int_ord_sort
@@ -617,8 +617,8 @@ contains
             write(*,*) 'i = ', i
             call bitsetl_dummy(i-1)%to_string(bin_im1)
             call bitsetl_dummy(i)%to_string(bin_i)
-            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
-                bin_im1, bin_i
+           write(*,'(a, 2(1x,a))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
         end if
         write( lun, '("| Bitset_large |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
@@ -636,8 +636,8 @@ contains
             write(*,*) 'i = ', i
             call bitsetl_dummy(i-1)%to_string(bin_im1)
             call bitsetl_dummy(i)%to_string(bin_i)
-            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
-                bin_im1, bin_i
+            write(*,'(a, 2(1x,a))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
         end if
 
         bitsetl_dummy = a
@@ -648,10 +648,10 @@ contains
         if ( .not. valid ) then
             write( *, * ) "reverse ORD_SORT did not sort " // a_name // "."
             write(*,*) 'i = ', i
-            call bitsetl_dummy(i-1)%to_string(bin_im1)
-            call bitsetl_dummy(i)%to_string(bin_i)
-            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
-                bin_im1, bin_i
+            bin_im1 = bitsetl_dummy(i-1)%to_string()
+            bin_i = bitsetl_dummy(i)%to_string()
+            write(*,'(a, 2(1x,a))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
         end if
 
     end subroutine test_bitsetl_ord_sort
@@ -822,7 +822,7 @@ contains
         if ( .not. valid ) then
             write( *, * ) "RADIX_SORT did not sort " // a_name // "."
             write(*,*) 'i = ', i
-            write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
+            write(*,'(a12, 2i7)') 'dummy(i-2:i-1) = ', dummy(i-2:i-1)
         end if
         write( lun, '("|      Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
@@ -836,7 +836,7 @@ contains
         if ( .not. valid ) then
             write( *, * ) "reverse RADIX_SORT did not sort " // a_name // "."
             write(*,*) 'i = ', i
-            write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
+            write(*,'(a12, 2i7)') 'dummy(i-2:i-1) = ', dummy(i-2:i-1)
         end if
 
     end subroutine test_int_radix_sort
@@ -975,7 +975,7 @@ contains
         if ( .not. valid ) then
             write( *, * ) "SORT did not sort " // a_name // "."
             write(*,*) 'i = ', i
-            write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
+            write(*,'(a12, 2i7)') 'dummy(i-2:i-1) = ', dummy(i-2:i-1)
         end if
         write( lun, '("|      Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
@@ -989,7 +989,7 @@ contains
         if ( .not. valid ) then
             write( *, * ) "reverse SORT did not sort " // a_name // "."
             write(*,*) 'i = ', i
-            write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
+            write(*,'(a12, 2i7)') 'dummy(i-2:i-1) = ', dummy(i-2:i-1)
         end if
 
     end subroutine test_int_sort
@@ -1174,8 +1174,8 @@ contains
             write(*,*) 'i = ', i
             call bitsetl_dummy(i-1)%to_string(bin_im1)
             call bitsetl_dummy(i)%to_string(bin_i)
-            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
-                bin_im1, bin_i
+            write(*,'(a, 2(1x,a))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
         end if
         write( lun, '("| Bitset_large |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
@@ -1191,8 +1191,8 @@ contains
             write(*,*) 'i = ', i
             call bitsetl_dummy(i-1)%to_string(bin_im1)
             call bitsetl_dummy(i)%to_string(bin_i)
-            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
-                bin_im1, bin_i
+           write(*,'(a, 2(1x,a))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
         end if
     end subroutine test_bitsetl_sort
 
@@ -1261,8 +1261,8 @@ contains
             write(*,*) 'i = ', i
             call bitset64_dummy(i-1)%to_string(bin_im1)
             call bitset64_dummy(i)%to_string(bin_i)
-            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
-                bin_im1, bin_i
+            write(*,'(a, 2(1x,a))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
         end if
     end subroutine test_bitset64_sort
 #endif
@@ -1400,7 +1400,7 @@ contains
 
         tdiff = 0
         do i = 1, repeat
-            char_dummy = a
+            char_dummy(0:size(a)-1) = a
             call system_clock( t0, rate )
 
             call sort_index( char_dummy, index_${namei}$, char_work, iwork_${namei}$ )
@@ -1528,8 +1528,8 @@ contains
             write(*,*) 'i = ', i
             call bitsetl_dummy(i-1)%to_string(bin_im1)
             call bitsetl_dummy(i)%to_string(bin_i)
-            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
-                bin_im1, bin_i
+            write(*,'(a, 2(1x,a))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
         end if
         write( lun, '("| Bitset_large |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
@@ -1659,9 +1659,9 @@ contains
         real(dp)                       :: rate
         ${ti}$                         :: adjoint(size(a))
         ${ti}$                         :: iwork(size(a))
-        integer(int64)                 :: i, j
-        logical                        :: valid
-
+        integer(int64)                 :: i, j
+        integer(int64)                 :: i_adj
+        logical                        :: valid, valid_adj
         ltest = .true.
 
         tdiff = 0
@@ -2009,8 +2009,8 @@ contains
             write(*,*) 'i = ', i
             call bitsetl_dummy(i-1)%to_string(bin_im1)
             call bitsetl_dummy(i)%to_string(bin_i)
-            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
-                bin_im1, bin_i
+            write(*,'(a, 2(1x,a))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
         end if
         write( lun, '("| Bitset_large |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
@@ -2166,7 +2166,7 @@ contains
     end subroutine test_real_sort_adjointes_${namei}$
 
     subroutine test_real_sort_adjoint_${namei}$( a, a_name, ltest )
-        integer(int32), intent(inout) :: a(:)
+        integer(${ki}$), intent(in) :: a(0:)
         character(*), intent(in)      :: a_name
         logical, intent(out)          :: ltest
 
@@ -2193,14 +2193,18 @@ contains
         tdiff = tdiff/repeat
 
         call verify_sort( dummy, valid, i )
-        call verify_adjoint(int(adjoint, kind=int32), dummy, valid_adj, i_adj )
-
-        ltest = (ltest .and. valid .and. valid_adj)
-        if ( .not. valid ) then
-            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
-            write(*,*) 'i = ', i
-            write(*,'(a18, 2i7)') 'a(i-1:i) = ', a(i-1:i)
-        end if
+        ! Check if original array indexed by adjoint matches the sorted dummy
+        call verify_adjoint( a(adjoint), dummy, valid_adj, i_adj )
+        ltest = (ltest .and. valid .and. valid_adj)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a18, 2i7)') 'a(i-1:i) = ', a(i-1:i)
+        end if
+        if ( .not. valid_adj ) then
+            write( *, * ) "SORT_ADJOINT adjoint mapping failed for " // a_name // "."
+            write(*,*) 'i_adj = ', i_adj
+        end if
         if ( .not. valid_adj ) then
             write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
             write(*,*) 'i_adj = ', i_adj
@@ -2215,15 +2219,20 @@ contains
         adjoint = real(dummy, kind=${namei}$)
         call sort_adjoint( dummy, adjoint, work, iwork, reverse=.true. )
 
-        call verify_reverse_sort( dummy, valid, i )
-        call verify_adjoint(int(adjoint, kind=int32), dummy, valid_adj, i_adj )
-        ltest = (ltest .and. valid .and. valid_adj)
-        if ( .not. valid ) then
-            write( *, * ) "SORT_ADJOINT did not reverse sort " // &
-                a_name // "."
-            write(*,*) 'i = ', i
-            write(*,'(a18, 2i7)') 'a(i-1:i) = ', a(i-1:i)
-        end if
+       call verify_reverse_sort( dummy, valid, i )
+        call verify_adjoint( a(adjoint), dummy, valid_adj, i_adj )
+        ltest = (ltest .and. valid .and. valid_adj)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not reverse sort " // &
+                a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a18, 2i7)') 'a(i-1:i) = ', a(i-1:i)
+        end if
+        if ( .not. valid_adj ) then
+            write( *, * ) "SORT_ADJOINT reverse adjoint mapping failed for " // a_name // "."
+            write(*,*) 'i_adj = ', i_adj
+        end if
+
         if ( .not. valid_adj ) then
             write( *, * ) "SORT_ADJOINT did not reverse sort " // &
                 a_name // "."
@@ -2266,6 +2275,50 @@ contains
         valid = .true.
 
     end subroutine verify_adjoint
+    subroutine verify_real_adjoint( a, true_arr, valid, i )
+        real(dp), intent(in) :: a(:)
+        real(dp), intent(in) :: true_arr(:)
+        logical, intent(out) :: valid
+        integer(int64), intent(out) :: i
+        integer(int64) :: n
+
+        n = size( a, kind=int64 )
+        valid = .false.
+        do i=1, n
+            if ( a(i) /= true_arr(i) ) return
+        end do
+        valid = .true.
+    end subroutine verify_real_adjoint
+
+    subroutine verify_char_adjoint( a, true_arr, valid, i )
+        character(len=*), intent(in) :: a(:)
+        character(len=*), intent(in) :: true_arr(:)
+        logical, intent(out) :: valid
+        integer(int64), intent(out) :: i
+        integer(int64) :: n
+
+        n = size( a, kind=int64 )
+        valid = .false.
+        do i=1, n
+            if ( a(i) /= true_arr(i) ) return
+        end do
+        valid = .true.
+    end subroutine verify_char_adjoint
+
+    subroutine verify_string_adjoint( a, true_arr, valid, i )
+        type(string_type), intent(in) :: a(:)
+        type(string_type), intent(in) :: true_arr(:)
+        logical, intent(out) :: valid
+        integer(int64), intent(out) :: i
+        integer(int64) :: n
+
+        n = size( a, kind=int64 )
+        valid = .false.
+        do i=1, n
+            if ( a(i) /= true_arr(i) ) return
+        end do
+        valid = .true.
+    end subroutine verify_string_adjoint
 
     subroutine verify_real_sort( a, valid, i )
         real(sp), intent(in) :: a(0:)
