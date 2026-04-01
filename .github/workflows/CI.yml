@@ -72,6 +72,7 @@ jobs:
         compiler: ${{ matrix.toolchain.compiler }}
         version: ${{ matrix.toolchain.version }}
 
+  # Build and test with built-in BLAS and LAPACK
     - name: Configure with CMake
       if: ${{ contains(matrix.build, 'cmake')  && matrix.build != 'cmake-3.14' }}
       run: >-
