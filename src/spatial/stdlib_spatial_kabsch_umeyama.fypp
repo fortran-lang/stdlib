@@ -5,6 +5,7 @@
 submodule(stdlib_spatial) stdlib_spatial_kabsch_umeyama
     use stdlib_linalg, only: svd, det
     use stdlib_intrinsics, only: stdlib_sum_kahan, stdlib_dot_product_kahan, kahan_kernel
+    use stdlib_error, only: error_stop
 
 contains
     #:for k, t, s in (KINDS_TYPES)
@@ -27,7 +28,7 @@ contains
         logical, intent(in), optional :: scale
 
         ! Internal variables.
-        integer(ilp) :: i, j, point, d, N
+        integer :: i, j, point, d, N
         ${t}$, allocatable :: covariance(:,:), U(:,:), Vt(:,:), vec(:), tmp_N(:), tmp_d(:), c_P(:), c_Q(:)
         real(${k}$) :: sum_w, variance_p
         real(${k}$), allocatable :: S(:)
