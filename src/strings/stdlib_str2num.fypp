@@ -128,12 +128,24 @@ module stdlib_str2num
         integer(int8), intent(out)  :: p !! position within the number
         integer(int8), intent(out)  :: stat !! status upon succes or failure to read
         ! -- Internal Variables
-        integer(int8)  :: val 
+        integer(int8)  :: val
+        integer(int8) :: sign
         !----------------------------------------------
         stat = 23 !! initialize error status with any number > 0
         !----------------------------------------------
         ! Find first non white space
         p = shift_to_nonwhitespace(s)
+        !----------------------------------------------
+        ! Verify leading negative
+        sign = 1
+        if(p<=len(s)) then
+            if(iachar(s(p:p)) == minus_sign+digit_0 ) then
+                sign = -1
+                p = p + 1
+            end if
+        else
+            return
+        end if
         !----------------------------------------------
         v = 0
         do while( p<=len(s) )
@@ -145,9 +157,13 @@ module stdlib_str2num
                 exit
             end if
         end do
-        stat = 0
+        if(v >= 0) then
+            v = sign * v
+            stat = 0
+        else
+            stat = -1 !! Indicates integer overflow
+        end if
     end subroutine
-
     #:endfor
 
     elemental subroutine to_sp_base(s,v,p,stat)
@@ -368,7 +384,7 @@ module stdlib_str2num
         real(wp), parameter :: expbase(nwnb+nfnb) = [whole_number_base, fractional_base]
 
         integer(int8)  :: sign, sige !! sign of integer number and exponential
-        integer, parameter :: maxdpt = 19 !! Maximum depth to read values on int_dp
+        integer, parameter :: maxdpt = 18 !! Maximum depth to read values on int_dp
         integer(dp) :: int_dp1, int_dp2 !! long integers to capture whole and fractional part
         integer     :: i_exp !! integer to capture exponent number
         integer     :: exp_aux
@@ -405,7 +421,7 @@ module stdlib_str2num
                 icount = icount + 1
                 if( icount<=maxdpt ) then
                     int_dp1 = int_dp1*10 + val
-                else if( icount<2*maxdpt ) then
+                else if( icount<=2*maxdpt ) then
                     int_dp2 = int_dp2*10 + val
                 end if
             else if( val == period ) then
@@ -453,10 +469,14 @@ module stdlib_str2num
             if( icount<=maxdpt ) then
                 v = sign*int_dp1*expbase(exp_aux)
             else
-                v = sign*(int_dp1 + int_dp2*fractional_base(maxdpt-1))*expbase(exp_aux-icount+maxdpt)
+                v = sign*(int_dp1 + int_dp2*fractional_base(icount-maxdpt)) *expbase(exp_aux-icount+maxdpt)
             end if
         else
-            v = sign*(int_dp1 + int_dp2*fractional_base(maxdpt-1))*10._wp**(sige*i_exp-resp+maxdpt+aux)
+            if(icount<=maxdpt) then
+                v = sign*(int_dp1) *10._wp**(sige*i_exp-resp+1)
+            else
+                v = sign*(int_dp1 + int_dp2*fractional_base(icount-maxdpt)) *10._wp**(sige*i_exp-resp+1+icount-maxdpt)
+            end if
         end if
         stat = 0
     end subroutine
@@ -481,7 +501,7 @@ module stdlib_str2num
         real(wp), parameter :: expbase(nwnb+nfnb) = [whole_number_base, fractional_base]
 
         integer(int8)  :: sign, sige !! sign of integer number and exponential
-        integer, parameter :: maxdpt = 19 !! Maximum depth to read values on int_dp
+        integer, parameter :: maxdpt = 18 !! Maximum depth to read values on int_dp
         integer(dp) :: int_dp1, int_dp2 !! long integers to capture whole and fractional part
         integer     :: i_exp !! integer to capture exponent number
         integer     :: exp_aux
@@ -518,7 +538,7 @@ module stdlib_str2num
                 icount = icount + 1
                 if( icount<=maxdpt ) then
                     int_dp1 = int_dp1*10 + val
-                else if( icount<2*maxdpt ) then
+                else if( icount<=2*maxdpt ) then
                     int_dp2 = int_dp2*10 + val
                 end if
             else if( val == period ) then
@@ -566,10 +586,14 @@ module stdlib_str2num
             if( icount<=maxdpt ) then
                 v = sign*int_dp1*expbase(exp_aux)
             else
-                v = sign*(int_dp1 + int_dp2*fractional_base(maxdpt-1))*expbase(exp_aux-icount+maxdpt)
+                v = sign*(int_dp1 + int_dp2*fractional_base(icount-maxdpt)) *expbase(exp_aux-icount+maxdpt)
             end if
         else
-            v = sign*(int_dp1 + int_dp2*fractional_base(maxdpt-1))*10._wp**(sige*i_exp-resp+maxdpt+aux)
+            if(icount<=maxdpt) then
+                v = sign*(int_dp1) *10._wp**(sige*i_exp-resp+1)
+            else
+                v = sign*(int_dp1 + int_dp2*fractional_base(icount-maxdpt)) *10._wp**(sige*i_exp-resp+1+icount-maxdpt)
+            end if
         end if
         stat = 0
     end subroutine

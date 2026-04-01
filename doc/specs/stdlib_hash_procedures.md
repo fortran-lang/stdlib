@@ -394,6 +394,16 @@ generating seeds for `universal_mult_hash`.
 All assume a two's complement sign bit, and no out of
 range checks.
 
+**Endianness note:** Both `pengy_hash` and `spooky_hash` will produce
+different hash values on big-endian processors (e.g., s390x, SPARC,
+PowerPC) compared to little-endian processors (e.g., x86, ARM, RISC-V)
+for the same input bytes. The hash quality is equally good on both
+architectures, but the outputs are not cross-architecture portable.
+Do not use these hashes for cross-architecture verification (e.g.,
+hashing a file on an x86 system and verifying the hash on an IBM
+mainframe). The 32-bit hashes `nmhash32`, `nmhash32x`, and
+`water_hash` produce identical results on all architectures.
+
 The `stdlib_hash_32bit_fnv` and `stdlib_hash_64bit_fnv`
 submodules each provide implementations of the FNV-1 and FNV-1A
 algorithms in the form of two separate overloaded functions: `FNV_1`
@@ -1366,6 +1376,9 @@ performance on long keys. It passes all the SMHasher tests, and has
 no known bad seeds.
 It is a *pure* function for integer arrays, and an *elemental*
 function for character strings.
+Note that `pengy_hash` will produce different hash values on
+big-endian and little-endian processors for the same input. The hash
+quality is equally good on both architectures.
 
 ##### Example
 

@@ -100,7 +100,7 @@ contains
                   if (any(ieee_is_nan(x_tmp))) then
                     res${reduce_subvector('j', rank, fi)}$ = &
                       ieee_value(1._${o1}$, ieee_quiet_nan)
-                    #:if fi == 1
+                    #:if rank == 1
                       return
                     #:else
                       cycle
@@ -234,7 +234,11 @@ contains
                 if (n == 0) then
                     res${reduce_subvector('j', rank, fi)}$ = &
                         ieee_value(1._${o1}$, ieee_quiet_nan)
-                    return
+                    #:if rank == 1
+                      return
+                    #:else
+                      cycle
+                    #:endif
                 end if
 
                 c = floor( (n + 1) / 2._${o1}$, kind=int64 )
