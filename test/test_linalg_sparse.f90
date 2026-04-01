@@ -7,7 +7,6 @@ module test_sparse_spmv
 
 contains
 
-
     !> Collect all exported unit tests
     subroutine collect_suite(testsuite)
         !> Collection of tests
@@ -24,7 +23,8 @@ contains
             new_unittest('diagonal', test_diagonal), &
             new_unittest('add_get_values', test_add_get_values),  &
             new_unittest('sparse_operators', test_sparse_operators), &
-            new_unittest('add_block_symmetric_skip', test_add_block_symmetric_skip) &
+            new_unittest('add_block_symmetric_skip', test_add_block_symmetric_skip), &
+            new_unittest('csc2dense', test_csc2dense) &
         ]
     end subroutine
 
@@ -1354,9 +1354,61 @@ contains
         end block
         
     end subroutine
+
+    subroutine test_csc2dense(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        block
+            integer, parameter :: wp = sp
+            type(COO_sp_type) :: COO
+            type(CSC_sp_type) :: CSC
+            real(sp), allocatable :: dense_original(:,:), dense_converted(:,:)
+
+            ! 1. Create a baseline dense 4x4 matrix
+            allocate( dense_original(4,4) , source = &
+                    reshape(real([1,0,0,5, &
+                                  0,2,0,0, &
+                                  0,6,3,0, &
+                                  0,0,7,4],kind=wp),[4,4]) )
+
+            ! 2. Convert Dense -> COO -> CSC (Standard pipeline)
+            call dense2coo( dense_original , COO )
+            call coo2csc( COO, CSC )
+
+            ! 3. Execute the csc2dense conversion
+            call csc2dense( CSC, dense_converted )
+
+            ! 4. Verify the converted matrix perfectly matches the original
+            call check(error, all(dense_original == dense_converted), "Error: csc2dense conversion failed for kind sp")
+            if (allocated(error)) return
+        end block
+        block
+            integer, parameter :: wp = dp
+            type(COO_dp_type) :: COO
+            type(CSC_dp_type) :: CSC
+            real(dp), allocatable :: dense_original(:,:), dense_converted(:,:)
+
+            ! 1. Create a baseline dense 4x4 matrix
+            allocate( dense_original(4,4) , source = &
+                    reshape(real([1,0,0,5, &
+                                  0,2,0,0, &
+                                  0,6,3,0, &
+                                  0,0,7,4],kind=wp),[4,4]) )
+
+            ! 2. Convert Dense -> COO -> CSC (Standard pipeline)
+            call dense2coo( dense_original , COO )
+            call coo2csc( COO, CSC )
+
+            ! 3. Execute the csc2dense conversion
+            call csc2dense( CSC, dense_converted )
+
+            ! 4. Verify the converted matrix perfectly matches the original
+            call check(error, all(dense_original == dense_converted), "Error: csc2dense conversion failed for kind dp")
+            if (allocated(error)) return
+        end block
+    end subroutine
     
 end module
-
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
