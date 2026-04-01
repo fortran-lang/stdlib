@@ -1,8 +1,11 @@
-# CMakeLists.txt for stdlib_regex
+set(regex_fppFiles
+    )
 
-set(srcs
-  stdlib_regex.f90
-)
+set(regex_cppFiles
+    )
 
-add_library(stdlib_regex ${srcs})
-target_link_libraries(stdlib_regex PRIVATE stdlib_kinds)
+set(regex_f90Files
+    stdlib_regex.f90
+    )
+
+configure_stdlib_target(${PROJECT_NAME}_regex regex_f90Files regex_fppFiles regex_cppFiles)

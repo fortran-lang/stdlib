@@ -1,5 +1,4 @@
 module stdlib_regex
-  use stdlib_kinds, only: dp, sp, int32
   implicit none
   private
 
@@ -73,8 +72,6 @@ module stdlib_regex
     integer :: state
     integer :: start_pos
   end type thread
-
-  type(out_node), allocatable :: out_pool(:)
 
 contains
 
@@ -479,8 +476,6 @@ contains
     
     call do_patch(states, f1%out_list, n_states, local_pool)
     start_state = f1%start
-    ! print *, "DEBUG build_nfa success. n_states=", n_states
-
 
   end subroutine build_nfa
 
