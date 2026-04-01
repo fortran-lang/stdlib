@@ -64,7 +64,7 @@ Tridiagonal matrices are available with all supported data types as `tridiagonal
 
 - To construct a tridiagonal matrix from already allocated arrays `dl` (lower diagonal, size `n-1`), `dv` (main diagonal, size `n`) and `du` (upper diagonal, size `n-1`):
 
-`A = ` [[stdlib_specialmatrices(module):tridiagonal(interface)]] `(dl, dv, du [, state])`
+`A = ` [[stdlib_specialmatrices(module):tridiagonal(interface)]] `(dl, dv, du [, err])`
 
 - To construct a tridiagonal matrix of size `n x n` with constant diagonal elements `dl`, `dv`, and `du`:
 
