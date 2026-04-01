@@ -70,7 +70,7 @@ Tridiagonal matrices are available with all supported data types as `tridiagonal
 
 `A = ` [[stdlib_specialmatrices(module):tridiagonal(interface)]] `(dl, dv, du, n [, err])`
 
-Where `err` is an optional `intent(out)` argument of type `linalg_state_type`. When `state` is not present, the corresponding `tridiagonal` call is `pure` and signals invalid sizes or array shape mismatches via an internal `error stop`. When `state` is present, the impure overload is used instead, and any such error is reported by setting the `state` variable rather than executing an `error stop`.
+Where `err` is an optional `intent(out)` argument of type `linalg_state_type`. When `err` is not present, the corresponding `tridiagonal` call is `pure` and signals invalid sizes or array shape mismatches via an internal `error stop`. When `err` is present, the impure overload is used instead, and any such error is reported by setting the `err` variable rather than executing an `error stop`.
 
 
 #### Example
