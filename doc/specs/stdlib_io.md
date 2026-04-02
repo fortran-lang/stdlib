@@ -116,7 +116,7 @@ If the text file already exists:
 
 ### Arguments
 
-`filename or unit`: Shall be either a character expression containing the name of the file or an integer containing the unit of an already open file, that will contain the 2D `array`. 
+`filename` or `unit`: Shall be either a character expression containing the name of the file or an integer containing the unit of an already open file, that will contain the 2D `array`. 
 
 `array`: Shall be a rank-2 array of type `real`, `complex` or `integer`.
 
