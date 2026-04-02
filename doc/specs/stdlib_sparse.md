@@ -299,6 +299,16 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
+`call ` [[stdlib_sparse_conversion(module):csc2dense(interface)]] `(csc,dense)`
+
+### Arguments
+
+`csc` : Shall be a `CSC` type of `real` or `complex` type. It is an `intent(in)` argument.
+
+`dense` : Shall be a rank-2 array of `real` or `complex` type. It is an `intent(out)` argument.
+
+### Syntax
+
 `call ` [[stdlib_sparse_conversion(module):coo2csr(interface)]] `(coo,csr[,sort_data])`
 
 ### Arguments
