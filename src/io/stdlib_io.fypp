@@ -13,7 +13,7 @@ module stdlib_io
                                  FMT_COMPLEX_SP, FMT_COMPLEX_DP, FMT_COMPLEX_XDP, FMT_COMPLEX_QP
   use stdlib_error, only: error_stop, state_type, STDLIB_IO_ERROR
   use stdlib_optval, only: optval
-  use stdlib_ascii, only: is_blank, whitespace, CR,LF,VT,FF
+  use stdlib_ascii, only: is_blank, whitespace, CR, LF, VT, FF
   use stdlib_string_type, only : string_type, assignment(=), move
   implicit none
   private
