@@ -205,12 +205,13 @@ contains
         type(error_type), allocatable, intent(out) :: error
 
       #! variable sizes independent of type/kind
-        ${t1}$ :: A_true(2,2), A_false_1(2,2), A_false_2(3,2)
+        ${t1}$ :: A_true(2,2), A_false_1(2,2), A_false_2(3,2), A_false_diag(2,2)
       #! populate variables dependent on type/kind
       #:if s1[0] == 'r'
         A_true = reshape([0.,2.,-2.,0.],[2,2])
         A_false_1 = reshape([0.,2.,-3.,0.],[2,2])
         A_false_2 = reshape([0.,2.,3.,-2.,0.,6.],[3,2]) !nonsquare matrix
+        A_false_diag = reshape([1.,2.,-2.,0.],[2,2]) ! non-zero diagonal
       #:elif s1[0] == 'c'
         A_true = reshape([cmplx(0.,0.),cmplx(2.,1.), &
             -cmplx(2.,1.),cmplx(0.,0.)],[2,2])
@@ -218,10 +219,13 @@ contains
             -cmplx(3.,1.),cmplx(0.,0.)],[2,2])
         A_false_2 = reshape([cmplx(0.,0.),cmplx(2.,1.),cmplx(3.,0.), &
             -cmplx(2.,1.),cmplx(0.,0.),cmplx(6.,0.)],[3,2]) !nonsquare matrix
+        A_false_diag = reshape([cmplx(0.,1.),cmplx(2.,1.), &
+            -cmplx(2.,1.),cmplx(0.,0.)],[2,2]) ! purely imaginary diagonal
       #:elif s1[0] == 'i'
         A_true = reshape([0,2,-2,0],[2,2])
         A_false_1 = reshape([0,2,-3,0],[2,2])
         A_false_2 = reshape([0,2,3,-2,0,6],[3,2]) !nonsquare matrix
+        A_false_diag = reshape([1,2,-2,0],[2,2]) ! non-zero diagonal
       #:endif
 
       #! error check calls are type/kind independent
@@ -233,6 +237,9 @@ contains
         if (allocated(error)) return
         call check(error, (.not. is_skew_symmetric(A_false_2)), &
             "(.not. is_skew_symmetric(A_false_2)) failed.")
+        if (allocated(error)) return
+        call check(error, (.not. is_skew_symmetric(A_false_diag)), &
+            "(.not. is_skew_symmetric(A_false_diag)) failed.")
         if (allocated(error)) return
     end subroutine test_is_skew_symmetric_${s1}$
   #:endfor

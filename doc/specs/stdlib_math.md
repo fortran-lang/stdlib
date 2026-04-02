@@ -234,7 +234,7 @@ For function calls where the `base` is specified, the `type` and `kind` of the r
 | "             " | "       " | `Integer` | `complex(KIND)` |
 | `Integer` | "        " | `real(KIND)` | `real(KIND)` |
 | "              " | "        " | `complex(KIND)` | `complex(KIND)` |
-| "              " | "        " | `Integer` | `Integer` |
+| "              " | "        " | `Integer` | `real(dp)` |
 
 #### Examples
 
