@@ -1,6 +1,6 @@
 module test_subprocess
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
-    use stdlib_system, only: process_type, run, runasync, is_running, wait, update, elapsed, is_windows, kill, process_ID
+    use stdlib_system, only: process_type, run, runasync, is_running, wait, update, elapsed, is_windows, kill, process_id
 
     implicit none
 
@@ -151,7 +151,6 @@ contains
     end subroutine test_input_redirection
 
     subroutine test_callback(error)
-    
         type(error_type), allocatable, intent(out) :: error
         type(process_type) :: process
         character(len=:), allocatable :: command
@@ -187,7 +186,7 @@ contains
     end subroutine test_callback
 
     subroutine callback_function(pid, exitcode, stdin, stdout, stderr, payload)
-        integer(process_ID), intent(in) :: pid
+        integer(process_id), intent(in) :: pid
         integer, intent(in) :: exitcode
         character(len=*), optional, intent(in) :: stdin, stdout, stderr
         class(*), optional, intent(inout) :: payload
