@@ -112,7 +112,7 @@ If the text file already exists:
 
 `call ` [[stdlib_io(module):savetxt(interface)]] `(filename, array [,  delimiter] [, fmt] [, header] [, footer] [, comments])`
 
-`call ` [[stdlib_io(module):savetxt(interface)]] `(unit, array[,  delimiter] [, fmt] [, header] [, footer] [, comments])`
+`call ` [[stdlib_io(module):savetxt(interface)]] `(unit, array [,  delimiter] [, fmt] [, header] [, footer] [, comments])`
 
 ### Arguments
 
