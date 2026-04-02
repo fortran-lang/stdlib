@@ -10,22 +10,22 @@ submodule(stdlib_spatial) stdlib_spatial_kabsch_umeyama
 contains
     #:for k, t, s in (KINDS_TYPES)
     module subroutine kabsch_umeyama_${s}$(P, Q, R, t, c, rmsd, W, scale)
-        !> Target point set (d × N)
         ${t}$, intent(in) :: P(:, :)
-        !> Reference point set (d × N)
+        !! Target point set (d × N)
         ${t}$, intent(in) :: Q(:, :)
-        !> Optimal rotation matrix (d × d)
+        !! Reference point set (d × N)
         ${t}$, intent(out) :: R(:, :)
-        !> Translation vector (d)
+        !! Optimal rotation matrix (d × d)
         ${t}$, intent(out) :: t(:)
-        !> Scale factor
+        !! Translation vector (d)
         ${t}$, intent(out) :: c
-        !> Root-mean-square deviation
+        !! Scale factor
         real(${k}$), intent(out) :: rmsd
-        !> Optional weights
+        !! Root-mean-square deviation
         real(${k}$), intent(in), optional :: W(:)
-        !> Enable scaling
+        !! Optional weights
         logical, intent(in), optional :: scale
+        !! Enable scaling
 
         ! Internal variables.
         integer :: i, j, point, d, N
