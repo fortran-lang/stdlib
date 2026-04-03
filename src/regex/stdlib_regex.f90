@@ -581,7 +581,7 @@ contains
       
       ! Always see if a new match can start here if we don't have one yet
       if (b_start == -1) then
-        call add_thread(nlist, n_cnt, re%start_state, i, step_index, re%states, str_len, visited)
+        call add_thread(nlist, n_cnt, re%start_state, i + 1, step_index, re%states, str_len, visited)
       end if
       
       do j = 1, c_cnt
