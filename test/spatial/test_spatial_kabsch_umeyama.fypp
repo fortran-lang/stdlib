@@ -155,20 +155,25 @@ contains
                         t_recovered(i)
                 end do
             end do
-            call check(error, all_close(P_recovered, P_original, abs_tol = ${k}$tol), .true.)
-            if (allocated(error)) return
-            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true.)
+            call check(error, all_close(P_recovered, P_original, abs_tol = ${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Random transformation, P_recovered not equal to P_original")
+            if(allocated(error)) return
+            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Random transformation, RMSD not equal to zero")
             if(allocated(error)) return
 
             ! Identity transformation (Q -> Q)
             call random_number(Q_original)
             ! Call Kabsch–Umeyama
             call kabsch_umeyama(Q_original, Q_original, R_recovered, t_recovered, c_recovered, rmsd)
-            call check(error, all_close(R_recovered, Identity, abs_tol=${k}$tol), .true.)
+            call check(error, all_close(R_recovered, Identity, abs_tol=${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Identity transformation, R_recovered not equal to Identity")
             if(allocated(error)) return
-            call check(error, all_close(t_recovered, zero_t, abs_tol = ${k}$tol), .true.)
-            if (allocated(error)) return
-            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true.)
+            call check(error, all_close(t_recovered, zero_t, abs_tol = ${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Identity transformation, t_recovered not equal to zero")
+            if(allocated(error)) return
+            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Identity transformation, RMSD not equal to zero")
             if(allocated(error)) return
 
             ! Random set of transformation but with scale disabled.
@@ -183,14 +188,17 @@ contains
                         t_recovered(i)
                 end do
             end do
-            call check(error, all_close(P_recovered, P_original, abs_tol = ${k}$tol), .true.)
-            if (allocated(error)) return
-            call check(error, is_close(c_recovered, one_${k}$, abs_tol = ${k}$tol), .true.)
+            call check(error, all_close(P_recovered, P_original, abs_tol = ${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Random transformation (scale disabled), P_recovered not equal to P_original")
             if(allocated(error)) return
-            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true.)
+            call check(error, is_close(c_recovered, one_${k}$, abs_tol = ${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Random transformation (scale disabled), c_recovered not equal to one")
+            if(allocated(error)) return
+            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Random transformation (scale disabled), RMSD not equal to zero")
             if(allocated(error)) return
 
-            ! Random set of transformation but with weights. Since P = c*R*Q+t, weights should not matter
+            ! Random set of transformation but with weights. Since P = c*R*Q + t, weights should not matter
             call random_number(W)
             call generate_random_set_real_${s}$(P_original, Q_original, d, N, .true.)
             ! Call Kabsch–Umeyama
@@ -203,11 +211,14 @@ contains
                         t_recovered(i)
                 end do
             end do
-            call check(error, is_close(det(R_recovered), one_${s}$, abs_tol=${k}$tol), .true.)
+            call check(error, is_close(det(R_recovered), one_${s}$, abs_tol=${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Random transformation (weighted), det(R_recovered) not equal to one")
             if(allocated(error)) return
-            call check(error, all_close(P_recovered, P_original, abs_tol = ${k}$tol), .true.)
-            if (allocated(error)) return
-            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true.)
+            call check(error, all_close(P_recovered, P_original, abs_tol = ${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Random transformation (weighted), P_recovered not equal to P_original")
+            if(allocated(error)) return
+            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Random transformation (weighted), RMSD not equal to zero")
             if(allocated(error)) return
         end block
         #:endfor
@@ -250,28 +261,34 @@ contains
                         t_recovered(i)
                 end do
             end do
-            call check(error, is_close(abs(det(R_recovered)), one_${k}$, abs_tol=${k}$tol), .true.)
+            call check(error, is_close(abs(det(R_recovered)), one_${k}$, abs_tol=${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Random transformation, abs(det(R_recovered)) not equal to one")
             if(allocated(error)) return
-            call check(error, all_close(P_recovered, P_original, abs_tol = ${k}$tol), .true.)
-            if (allocated(error)) return
-            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true.)
+            call check(error, all_close(P_recovered, P_original, abs_tol = ${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Random transformation, P_recovered not equal to P_original")
+            if(allocated(error)) return
+            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Random transformation, RMSD not equal to zero")
             if(allocated(error)) return
 
             ! Identity transformation (Q -> Q)
             call generate_random_set_complex_${s}$(P_original, Q_original, d, N, .true.)
             ! Call Kabsch–Umeyama
             call kabsch_umeyama(Q_original, Q_original, R_recovered, t_recovered, c_recovered, rmsd)
-            call check(error, all_close(R_recovered, Identity, abs_tol=${k}$tol), .true.)
+            call check(error, all_close(R_recovered, Identity, abs_tol=${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Identity transformation, R_recovered not equal to Identity")
             if(allocated(error)) return
-            call check(error, all_close(t_recovered, zero_t, abs_tol = ${k}$tol), .true.)
-            if (allocated(error)) return
-            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true.)
+            call check(error, all_close(t_recovered, zero_t, abs_tol = ${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Identity transformation, t_recovered not equal to zero")
+            if(allocated(error)) return
+            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Identity transformation, RMSD not equal to zero")
             if(allocated(error)) return
 
             ! Random set of transformation but with scale disabled.
             call generate_random_set_complex_${s}$(P_original, Q_original, d, N, .false.)
             ! Call Kabsch–Umeyama
-            call kabsch_umeyama(P_original, Q_original, R_recovered, t_recovered, c_recovered, rmsd,scale=.false.)
+            call kabsch_umeyama(P_original, Q_original, R_recovered, t_recovered, c_recovered, rmsd, scale=.false.)
             ! Apply recovered transform
             do j = 1, N
                 do i = 1, d
@@ -280,16 +297,20 @@ contains
                         t_recovered(i)
                 end do
             end do
-            call check(error, is_close(abs(det(R_recovered)), one_${k}$, abs_tol=${k}$tol), .true.)
+            call check(error, is_close(abs(det(R_recovered)), one_${k}$, abs_tol=${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Random transformation (scale disabled), abs(det(R_recovered)) not equal to one")
             if(allocated(error)) return
-            call check(error, all_close(P_recovered, P_original, abs_tol = ${k}$tol), .true.)
-            if (allocated(error)) return
-            call check(error, is_close(c_recovered, one_${s}$, abs_tol = ${k}$tol), .true.)
+            call check(error, all_close(P_recovered, P_original, abs_tol = ${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Random transformation (scale disabled), P_recovered not equal to P_original")
             if(allocated(error)) return
-            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true.)
+            call check(error, is_close(c_recovered, one_${s}$, abs_tol = ${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Random transformation (scale disabled), c_recovered not equal to one")
+            if(allocated(error)) return
+            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Random transformation (scale disabled), RMSD not equal to zero")
             if(allocated(error)) return
 
-            ! Random set of transformation but with weights. Since P = c*R*Q+t, weights should not matter
+            ! Random set of transformation but with weights. Since P = c*R*Q + t, weights should not matter
             call random_number(W)
             call generate_random_set_complex_${s}$(P_original, Q_original, d, N, .true.)
             ! Call Kabsch–Umeyama
@@ -302,11 +323,14 @@ contains
                         t_recovered(i)
                 end do
             end do
-            call check(error, is_close(abs(det(R_recovered)), one_${k}$, abs_tol=${k}$tol), .true.)
+            call check(error, is_close(abs(det(R_recovered)), one_${k}$, abs_tol=${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Random transformation (weighted), abs(det(R_recovered)) not equal to one")
             if(allocated(error)) return
-            call check(error, all_close(P_recovered, P_original, abs_tol = ${k}$tol), .true.)
-            if (allocated(error)) return
-            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true.)
+            call check(error, all_close(P_recovered, P_original, abs_tol = ${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Random transformation (weighted), P_recovered not equal to P_original")
+            if(allocated(error)) return
+            call check(error, is_close(rmsd, zero_${k}$, abs_tol = ${k}$tol), .true., &
+                        "Kabsch_Umeyama ${t}$ failed: Random transformation (weighted), RMSD not equal to zero")
             if(allocated(error)) return
         end block
         #:endfor
