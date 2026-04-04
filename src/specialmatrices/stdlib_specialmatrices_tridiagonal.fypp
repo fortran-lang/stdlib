@@ -36,31 +36,8 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         !! Matrix dimension.
         type(tridiagonal_${s1}$_type) :: A
         !! Corresponding tridiagonal matrix.
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 42054c9d7c11c427d6628bba5c236f0bf2fcdc97
-        ! Internal variables.
-        type(linalg_state_type) :: err0
-
-        ! Description of the matrix.
-        A%n = n
-        if (n <= 0) then
-            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "Matrix size needs to be positive, n = ", n, ".")
-            call linalg_error_handling(err0)
-        endif
-        ! Matrix elements.
-        allocate( A%dl(n-1), source = dl )
-        allocate( A%dv(n), source= dv )
-        allocate( A%du(n-1), source = du )
-<<<<<<< HEAD
-=======
+        
         call build_tridiagonal(dl, dv, du, n, A)
->>>>>>> 72698fd78241550f6d359b58ef08499d9c1ed030
-=======
-        call build_tridiagonal(dl, dv, du, n, A)
->>>>>>> 42054c9d7c11c427d6628bba5c236f0bf2fcdc97
     end function
 
     module function initialize_tridiagonal_impure_${s1}$(dl, dv, du, err) result(A)
@@ -243,10 +220,6 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         #:else
         allocate(B(n, n), source=zero_${k1}$)
         #:endif
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 42054c9d7c11c427d6628bba5c236f0bf2fcdc97
         
         if (n == 1) then
             B(1, 1) = A%dv(1)
@@ -261,24 +234,8 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
             B(n, n-1) = A%dl(n-1)
             B(n, n) = A%dv(n)
         end if
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 42054c9d7c11c427d6628bba5c236f0bf2fcdc97
-        B(1, 1) = A%dv(1)
-        B(1, 2) = A%du(1)
-        do concurrent (i=2:n-1)
-            B(i, i-1) = A%dl(i-1)
-            B(i, i) = A%dv(i)
-            B(i, i+1) = A%du(i)
-        enddo
-        B(n, n-1) = A%dl(n-1)
-        B(n, n) = A%dv(n)
-<<<<<<< HEAD
->>>>>>> 72698fd78241550f6d359b58ef08499d9c1ed030
-=======
->>>>>>> 42054c9d7c11c427d6628bba5c236f0bf2fcdc97
         end associate
+
     end function
     #:endfor
 
