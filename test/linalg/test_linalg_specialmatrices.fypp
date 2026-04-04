@@ -155,7 +155,7 @@ contains
     subroutine test_tridiagonal_1x1(error)
         !> Test 1x1 matrix edge case for dense conversion
         type(error_type), allocatable, intent(out) :: error
-        #:for k1, t1, s1 in (KINDS_TYPES)
+        #:for k1, t1, s1 in KINDS_TYPES
         block
             integer, parameter :: wp = ${k1}$
             type(tridiagonal_${s1}$_type) :: A
@@ -174,7 +174,7 @@ contains
             A = tridiagonal(dl, dv, du) 
             Amat = dense(A)
 
-            ! Check if it compiled and converted properly without segfaulting
+           ! Check if the 1x1 matrix converted properly at runtime without segfaulting
             call check(error, size(Amat, 1) == 1, .true.)
             if (allocated(error)) return
             call check(error, size(Amat, 2) == 1, .true.)
@@ -188,7 +188,7 @@ contains
     subroutine test_tridiagonal_arithmetic(error)
         !> Test arithmetic operations and optimization
         type(error_type), allocatable, intent(out) :: error
-        #:for k1, t1, s1 in (KINDS_TYPES)
+        #:for k1, t1, s1 in KINDS_TYPES
         block
             integer, parameter :: wp = ${k1}$
             integer, parameter :: n = 3
