@@ -161,7 +161,6 @@ contains
             type(tridiagonal_${s1}$_type) :: A
             ${t1}$, allocatable :: Amat(:,:)
             
-            ! Uses parameter with standard F2003 empty array syntax to satisfy maintainer
             #:if t1.startswith('complex')
             ${t1}$, parameter :: dl(0) = [${t1}$ ::]
             ${t1}$, parameter :: du(0) = [${t1}$ ::]
@@ -195,7 +194,6 @@ contains
             integer, parameter :: n = 3
             type(tridiagonal_${s1}$_type) :: A, B, C
             
-            ! Uses explicit parameter lists to satisfy maintainer and avoid 'i' compiler bug
             #:if t1.startswith('complex')
             ${t1}$, parameter :: dl1(n-1) = [cmplx(1.0_wp, 0.0_wp, kind=wp), cmplx(1.0_wp, 0.0_wp, kind=wp)]
             ${t1}$, parameter :: dv1(n)   = [cmplx(2.0_wp, 0.0_wp, kind=wp), cmplx(2.0_wp, 0.0_wp, kind=wp), cmplx(2.0_wp, 0.0_wp, kind=wp)]
