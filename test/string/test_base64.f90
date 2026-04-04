@@ -1,7 +1,7 @@
 ! SPDX-Identifier: MIT
 module test_base64
     use testdrive, only : new_unittest, unittest_type, error_type, check
-    use stdlib_base64, only : base64_encode, base64_decode
+    use stdlib_base64, only : base64_encode, base64_decode, base64_encode_into, base64_decode_into
     use stdlib_kinds, only : int8, int32, dp, lk
     implicit none
 
@@ -18,7 +18,9 @@ contains
             new_unittest("base64-roundtrip-real", test_roundtrip_real), &
             new_unittest("base64-roundtrip-complex", test_roundtrip_complex), &
             new_unittest("base64-roundtrip-logical", test_roundtrip_logical), &
-            new_unittest("base64-rank0", test_rank0_encode) &
+            new_unittest("base64-rank0", test_rank0_encode), &
+            new_unittest("base64-encode-into", test_encode_into), &
+            new_unittest("base64-decode-into", test_decode_into) &
             ]
     end subroutine collect_base64
 
@@ -47,9 +49,13 @@ contains
 
     subroutine test_decode_invalid(error)
         type(error_type), allocatable, intent(out) :: error
+        logical :: err_flag
 
-        call check(error, base64_decode("abc") == "")
+        call check(error, base64_decode("abc", err_flag) == "")
         if (allocated(error)) return
+        call check(error, err_flag)
+        if (allocated(error)) return
+
         call check(error, base64_decode("A===") == "")
         if (allocated(error)) return
         call check(error, base64_decode("AA=A") == "")
@@ -109,7 +115,6 @@ contains
 
         enc = base64_encode(vals)
         dec = base64_decode(enc)
-        
         got = transfer(dec, got)
 
         call check(error, all((vals .neqv. .false._lk) .eqv. (got .neqv. .false._lk)))
@@ -124,8 +129,56 @@ contains
         call check(error, len(base64_encode(v)) > 0)
     end subroutine test_rank0_encode
 
-end module test_base64
+    subroutine test_encode_into(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer(int8) :: bytes(3)
+        character(len=4) :: str
+        character(len=2) :: small_str
+        integer :: elen
+        logical :: err
 
+        bytes = [int(77, int8), int(97, int8), int(110, int8)]
+
+        ! Test successful zero-copy encode
+        call base64_encode_into(bytes, str, elen, err)
+        call check(error, .not. err)
+        if (allocated(error)) return
+        call check(error, elen == 4)
+        if (allocated(error)) return
+        call check(error, str == "TWFu")
+        if (allocated(error)) return
+
+        ! Test buffer too small (Expect Error)
+        call base64_encode_into(bytes, small_str, elen, err)
+        call check(error, err)
+        if (allocated(error)) return
+        call check(error, small_str == "")
+    end subroutine test_encode_into
+
+    subroutine test_decode_into(error)
+        type(error_type), allocatable, intent(out) :: error
+        character(len=4) :: str = "TWFu"
+        character(len=3) :: res
+        character(len=1) :: small_res
+        integer :: dlen
+        logical :: err
+
+        ! Test successful decode
+        call base64_decode_into(str, res, dlen, err)
+        call check(error, .not. err)
+        if (allocated(error)) return
+        call check(error, dlen == 3)
+        if (allocated(error)) return
+        call check(error, res == "Man")
+        if (allocated(error)) return
+
+        ! Test buffer too small (Expect Error)
+        call base64_decode_into(str, small_res, dlen, err)
+        call check(error, err)
+        if (allocated(error)) return
+    end subroutine test_decode_into
+
+end module test_base64
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit

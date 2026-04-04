@@ -60,12 +60,13 @@ contains
         integer(int8), allocatable :: filtered(:)
         logical :: clean_mode
         
-        integer(int32) :: v0, v1, v2, v3, c
+        integer(int32) :: v0, v1, v2, v3, c, raw_c
         integer :: i, j, slen, n_pad
-        integer(int32) :: error_accum
+        integer(int32) :: error_accum, unicode_accum
 
         error_flag = .false.
         decoded_len = 0
+        unicode_accum = 0
 
         if (len(str) == 0) return
 
@@ -88,17 +89,21 @@ contains
             allocate(filtered(len(str)))
             j = 0
             do i = 1, len(str)
-                c = iand(int(iachar(str(i:i)), int32), 255_int32)
+                raw_c = int(iachar(str(i:i)), int32)
+                unicode_accum = ior(unicode_accum, raw_c)
+                c = iand(raw_c, 255_int32)
                 
                 ! ALWAYS write the byte to the next available slot
                 filtered(j + 1) = int(c, int8)
-                
-                ! Add 0 (if space) or 1 (if valid) to the counter
                 j = j + IS_VAL(c)
             end do
             slen = j
             
-            if (slen == 0 .or. mod(slen, 4) /= 0) then; error_flag = .true.; return; end if
+            ! Catch Unicode overflow before proceeding
+            if (unicode_accum > 255_int32 .or. slen == 0 .or. mod(slen, 4) /= 0) then
+                error_flag = .true.
+                return
+            end if
 
             n_pad = 0
             if (filtered(slen) == 61_int8) then
@@ -115,10 +120,18 @@ contains
         ! Fortran Scalar Decoder Loop
         do i = 1, slen - 7, 4
             if (clean_mode) then
-                v0 = int(DT(iand(int(iachar(str(i:i)), int32), 255_int32)), int32)
-                v1 = int(DT(iand(int(iachar(str(i+1:i+1)), int32), 255_int32)), int32)
-                v2 = int(DT(iand(int(iachar(str(i+2:i+2)), int32), 255_int32)), int32)
-                v3 = int(DT(iand(int(iachar(str(i+3:i+3)), int32), 255_int32)), int32)
+                raw_c = int(iachar(str(i:i)), int32)
+                unicode_accum = ior(unicode_accum, raw_c)
+                v0 = int(DT(iand(raw_c, 255_int32)), int32)
+                raw_c = int(iachar(str(i+1:i+1)), int32)
+                unicode_accum = ior(unicode_accum, raw_c)
+                v1 = int(DT(iand(raw_c, 255_int32)), int32)
+                raw_c = int(iachar(str(i+2:i+2)), int32)
+                unicode_accum = ior(unicode_accum, raw_c)
+                v2 = int(DT(iand(raw_c, 255_int32)), int32)
+                raw_c = int(iachar(str(i+3:i+3)), int32)
+                unicode_accum = ior(unicode_accum, raw_c)
+                v3 = int(DT(iand(raw_c, 255_int32)), int32)
             else
                 v0 = int(DT(iand(int(filtered(i), int32), 255_int32)), int32)
                 v1 = int(DT(iand(int(filtered(i+1), int32), 255_int32)), int32)
@@ -134,7 +147,7 @@ contains
             res(j+2:j+2) = char(ior(ishft(iand(v2, 3_int32), 6), v3))
         end do
 
-        if (error_accum < 0) then
+        if (error_accum < 0 .or. unicode_accum > 255_int32) then
             error_flag = .true.
             decoded_len = 0
             return
@@ -145,13 +158,21 @@ contains
         j = (i - 1) / 4 * 3 + 1
 
         if (clean_mode) then
-            c  = iand(int(iachar(str(i:i)), int32), 255_int32)
+            raw_c = int(iachar(str(i:i)), int32)
+            unicode_accum = ior(unicode_accum, raw_c)
+            c = iand(raw_c, 255_int32)
             v0 = merge(-1_int32, int(DT(min(c,127)), int32), c > 127_int32)
-            c  = iand(int(iachar(str(i+1:i+1)), int32), 255_int32)
+            raw_c = int(iachar(str(i+1:i+1)), int32)
+            unicode_accum = ior(unicode_accum, raw_c)
+            c = iand(raw_c, 255_int32)
             v1 = merge(-1_int32, int(DT(min(c,127)), int32), c > 127_int32)
-            c  = iand(int(iachar(str(i+2:i+2)), int32), 255_int32)
+            raw_c = int(iachar(str(i+2:i+2)), int32)
+            unicode_accum = ior(unicode_accum, raw_c)
+            c = iand(raw_c, 255_int32)
             v2 = merge(-1_int32, int(DT(min(c,127)), int32), c > 127_int32)
-            c  = iand(int(iachar(str(i+3:i+3)), int32), 255_int32)
+            raw_c = int(iachar(str(i+3:i+3)), int32)
+            unicode_accum = ior(unicode_accum, raw_c)
+            c = iand(raw_c, 255_int32)
             v3 = merge(-1_int32, int(DT(min(c,127)), int32), c > 127_int32)
         else
             c  = iand(int(filtered(i),   int32), 255_int32)
@@ -164,7 +185,7 @@ contains
             v3 = merge(-1_int32, int(DT(min(c,127)), int32), c > 127_int32)
         end if
 
-        if (v0 < 0 .or. v1 < 0) then; error_flag = .true.; decoded_len = 0; return; end if
+        if (v0 < 0 .or. v1 < 0 .or. unicode_accum > 255_int32) then; error_flag = .true.; decoded_len = 0; return; end if
         res(j:j) = char(ior(ishft(v0, 2), ishft(v1, -4)))
 
         if (n_pad < 2) then
@@ -179,29 +200,33 @@ contains
     end subroutine base64_decode_into
 
     ! ERGONOMIC API (Returns allocatable strings)
-    function base64_decode(str) result(res)
+    function base64_decode(str, error_flag) result(res)
         character(len=*), intent(in)  :: str
+        logical, intent(out), optional :: error_flag
         character(len=:), allocatable :: res
         
         integer :: decoded_len
-        logical :: error_flag
+        logical :: err
         
         if (len(str) == 0) then
             allocate(character(len=0) :: res)
+            if (present(error_flag)) error_flag = .false.
             return
         end if
 
         ! Pre-allocate maximum possible size needed
         allocate(character(len=(len(str) / 4) * 3 + 3) :: res)
         
-        call base64_decode_into(str, res, decoded_len, error_flag)
+        call base64_decode_into(str, res, decoded_len, err)
         
-        if (error_flag) then
+        if (err) then
             deallocate(res)
             allocate(character(len=0) :: res)
         else
             res = res(1:decoded_len)
         end if
+
+        if (present(error_flag)) error_flag = err
     end function base64_decode
 
 end module stdlib_base64_decode

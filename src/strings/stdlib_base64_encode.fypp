@@ -3,7 +3,7 @@
 
 module stdlib_base64_encode
     use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64, lk
-    use, intrinsic :: iso_c_binding, only: c_ptr, c_f_pointer, c_loc, c_size_t, c_int8_t, c_bool
+    use, intrinsic :: iso_c_binding, only: c_size_t, c_bool
     implicit none
     private
 
@@ -28,190 +28,75 @@ module stdlib_base64_encode
 #:endfor
     end interface base64_encode
 
-
-    ! POWER-USER API (Zero-Copy Subroutines)
-    interface base64_encode_into
-#:for k1, t1, _, _ in REAL_KINDS_TYPES
-        module procedure :: base64_encode_into_real_${k1}$
-#:endfor
-#:for k1, t1, _, _ in INT_KINDS_TYPES
-        module procedure :: base64_encode_into_int_${k1}$
-#:endfor
-#:for k1, t1, _ in CMPLX_KINDS_TYPES
-        module procedure :: base64_encode_into_cmplx_${k1}$
-#:endfor
-#:for k1, t1 in LOG_KINDS_TYPES
-        module procedure :: base64_encode_into_logical_${k1}$
-#:endfor
-    end interface base64_encode_into
-
-
 contains
+
+#:set RANKS = range(16)
 
 #:for k1, t1, _, _ in REAL_KINDS_TYPES
     function base64_encode_real_${k1}$(data) result(str)
         ${t1}$, intent(in), target, contiguous :: data(..)
-        character(len=:), allocatable, target :: str
-        integer(int8), pointer :: raw(:)
+        character(len=:), allocatable :: str
         integer(int64) :: nbytes
         nbytes = int(size(data), int64) * storage_size(data) / 8
         if (nbytes == 0) then; str = ""; return; end if
-        call c_f_pointer(c_loc(data), raw, [nbytes])
-        str = base64_encode_bytes(raw)
+        ! Standard-compliant conversion using transfer
+        select rank(data)
+        #:for r in RANKS
+        rank(${r}$)
+            str = base64_encode_bytes(transfer(data, [0_int8], int(nbytes)))
+        #:endfor
+        end select
     end function base64_encode_real_${k1}$
 #:endfor
 
 #:for k1, t1, _, _ in INT_KINDS_TYPES
     function base64_encode_int_${k1}$(data) result(str)
         ${t1}$, intent(in), target, contiguous :: data(..)
-        character(len=:), allocatable, target :: str
-        integer(int8), pointer :: raw(:)
+        character(len=:), allocatable :: str
         integer(int64) :: nbytes
         nbytes = int(size(data), int64) * storage_size(data) / 8
         if (nbytes == 0) then; str = ""; return; end if
-        call c_f_pointer(c_loc(data), raw, [nbytes])
-        str = base64_encode_bytes(raw)
+        select rank(data)
+        #:for r in RANKS
+        rank(${r}$)
+            str = base64_encode_bytes(transfer(data, [0_int8], int(nbytes)))
+        #:endfor
+        end select
     end function base64_encode_int_${k1}$
 #:endfor
 
 #:for k1, t1, _ in CMPLX_KINDS_TYPES
     function base64_encode_cmplx_${k1}$(data) result(str)
         ${t1}$, intent(in), target, contiguous :: data(..)
-        character(len=:), allocatable, target :: str
-        integer(int8), pointer :: raw(:)
+        character(len=:), allocatable :: str
         integer(int64) :: nbytes
         nbytes = int(size(data), int64) * storage_size(data) / 8
         if (nbytes == 0) then; str = ""; return; end if
-        call c_f_pointer(c_loc(data), raw, [nbytes])
-        str = base64_encode_bytes(raw)
+        select rank(data)
+        #:for r in RANKS
+        rank(${r}$)
+            str = base64_encode_bytes(transfer(data, [0_int8], int(nbytes)))
+        #:endfor
+        end select
     end function base64_encode_cmplx_${k1}$
 #:endfor
 
 #:for k1, t1 in LOG_KINDS_TYPES
     function base64_encode_logical_${k1}$(data) result(str)
         ${t1}$, intent(in), target, contiguous :: data(..)
-        character(len=:), allocatable, target :: str
-        integer(int8), pointer :: raw(:)
+        character(len=:), allocatable :: str
         integer(int64) :: nbytes
         nbytes = int(size(data), int64) * storage_size(data) / 8
         if (nbytes == 0) then; str = ""; return; end if
-        call c_f_pointer(c_loc(data), raw, [nbytes])
-        str = base64_encode_bytes(raw)
+        select rank(data)
+        #:for r in RANKS
+        rank(${r}$)
+            str = base64_encode_bytes(transfer(data, [0_int8], int(nbytes)))
+        #:endfor
+        end select
     end function base64_encode_logical_${k1}$
 #:endfor
 
-#:for k1, t1, _, _ in REAL_KINDS_TYPES
-    subroutine base64_encode_into_real_${k1}$(data, str, encoded_len, error_flag)
-        ${t1}$, intent(in), target, contiguous :: data(..)
-        character(len=*), intent(out), target :: str
-        integer,          intent(out), optional :: encoded_len
-        logical,          intent(out), optional :: error_flag
-        
-        integer(int8), pointer :: raw(:)
-        integer(int64) :: nbytes
-        integer :: elen
-        logical :: err
-
-        nbytes = int(size(data), int64) * storage_size(data) / 8
-        if (nbytes == 0) then
-            str = ''
-            if (present(encoded_len)) encoded_len = 0
-            if (present(error_flag)) error_flag = .false.
-            return
-        end if
-        
-        call c_f_pointer(c_loc(data), raw, [nbytes])
-        call base64_encode_bytes_into(raw, str, elen, err)
-        
-        if (present(encoded_len)) encoded_len = elen
-        if (present(error_flag)) error_flag = err
-    end subroutine base64_encode_into_real_${k1}$
-#:endfor
-
-#:for k1, t1, _, _ in INT_KINDS_TYPES
-    subroutine base64_encode_into_int_${k1}$(data, str, encoded_len, error_flag)
-        ${t1}$, intent(in), target, contiguous :: data(..)
-        character(len=*), intent(out), target :: str
-        integer,          intent(out), optional :: encoded_len
-        logical,          intent(out), optional :: error_flag
-        
-        integer(int8), pointer :: raw(:)
-        integer(int64) :: nbytes
-        integer :: elen
-        logical :: err
-
-        nbytes = int(size(data), int64) * storage_size(data) / 8
-        if (nbytes == 0) then
-            str = ''
-            if (present(encoded_len)) encoded_len = 0
-            if (present(error_flag)) error_flag = .false.
-            return
-        end if
-        
-        call c_f_pointer(c_loc(data), raw, [nbytes])
-        call base64_encode_bytes_into(raw, str, elen, err)
-        
-        if (present(encoded_len)) encoded_len = elen
-        if (present(error_flag)) error_flag = err
-    end subroutine base64_encode_into_int_${k1}$
-#:endfor
-
-#:for k1, t1, _ in CMPLX_KINDS_TYPES
-    subroutine base64_encode_into_cmplx_${k1}$(data, str, encoded_len, error_flag)
-        ${t1}$, intent(in), target, contiguous :: data(..)
-        character(len=*), intent(out), target :: str
-        integer,          intent(out), optional :: encoded_len
-        logical,          intent(out), optional :: error_flag
-        
-        integer(int8), pointer :: raw(:)
-        integer(int64) :: nbytes
-        integer :: elen
-        logical :: err
-
-        nbytes = int(size(data), int64) * storage_size(data) / 8
-        if (nbytes == 0) then
-            str = ''
-            if (present(encoded_len)) encoded_len = 0
-            if (present(error_flag)) error_flag = .false.
-            return
-        end if
-        
-        call c_f_pointer(c_loc(data), raw, [nbytes])
-        call base64_encode_bytes_into(raw, str, elen, err)
-        
-        if (present(encoded_len)) encoded_len = elen
-        if (present(error_flag)) error_flag = err
-    end subroutine base64_encode_into_cmplx_${k1}$
-#:endfor
-
-#:for k1, t1 in LOG_KINDS_TYPES
-    subroutine base64_encode_into_logical_${k1}$(data, str, encoded_len, error_flag)
-        ${t1}$, intent(in), target, contiguous :: data(..)
-        character(len=*), intent(out), target :: str
-        integer,          intent(out), optional :: encoded_len
-        logical,          intent(out), optional :: error_flag
-        
-        integer(int8), pointer :: raw(:)
-        integer(int64) :: nbytes
-        integer :: elen
-        logical :: err
-
-        nbytes = int(size(data), int64) * storage_size(data) / 8
-        if (nbytes == 0) then
-            str = ''
-            if (present(encoded_len)) encoded_len = 0
-            if (present(error_flag)) error_flag = .false.
-            return
-        end if
-        
-        call c_f_pointer(c_loc(data), raw, [nbytes])
-        call base64_encode_bytes_into(raw, str, elen, err)
-        
-        if (present(encoded_len)) encoded_len = elen
-        if (present(error_flag)) error_flag = err
-    end subroutine base64_encode_into_logical_${k1}$
-#:endfor
-    
     function base64_encode_bytes(bytes) result(str)
         integer(int8), intent(in), target, contiguous :: bytes(:)
         character(len=:), allocatable, target :: str
@@ -255,7 +140,8 @@ contains
         
     end function base64_encode_bytes
 
-    subroutine base64_encode_bytes_into(bytes, str, encoded_len, error_flag)
+    ! POWER-USER API (Zero-Copy Subroutine)
+    subroutine base64_encode_into(bytes, str, encoded_len, error_flag)
         integer(int8), intent(in), target, contiguous :: bytes(:)
         character(len=*), intent(out), target :: str
         integer,          intent(out) :: encoded_len
@@ -266,16 +152,19 @@ contains
         integer :: i, j
         integer(int32) :: triplet 
 
-        str = ''
         encoded_len = 0
         error_flag = .false.
 
         nbytes = size(bytes, kind=c_size_t)
-        if (nbytes == 0) return
+        if (nbytes == 0) then
+            str = '' ! Blank-fill safely on edge case
+            return
+        end if
         
         str_len = 4 * ((int(nbytes) + 2) / 3)
         
         if (len(str) < str_len) then
+            str = '' ! Wipe partial data on error
             error_flag = .true.
             return 
         end if
@@ -309,6 +198,6 @@ contains
             str(j+3:j+3) = "="
         end if
         
-    end subroutine base64_encode_bytes_into
+    end subroutine base64_encode_into
 
 end module stdlib_base64_encode
