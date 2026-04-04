@@ -18,6 +18,7 @@ add_subdirectory(blas)
 add_subdirectory(constants)
 add_subdirectory(core)
 
+
 add_subdirectory(hash)
 
 ADD_SUBDIR(hashmaps)
@@ -39,6 +40,7 @@ add_subdirectory(specialfunctions)
 ADD_SUBDIR(specialmatrices)
 ADD_SUBDIR(stringlist)
 add_subdirectory(strings)
+add_subdirectory(datetime)
 ADD_SUBDIR(system)
 
 ADD_SUBDIR(stats)
@@ -58,6 +60,7 @@ configure_stdlib_target(${PROJECT_NAME} f90Files fppFiles cppFiles)
 target_link_libraries(${PROJECT_NAME} PUBLIC
   ${PROJECT_NAME}_array
   ${PROJECT_NAME}_constants
+  ${PROJECT_NAME}_datetime
   ${PROJECT_NAME}_core
   ${PROJECT_NAME}_hash
   ${PROJECT_NAME}_intrinsics
