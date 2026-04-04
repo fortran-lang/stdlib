@@ -30,6 +30,7 @@ This is an index/directory of the specifications (specs) for each new module/fea
  - [optval](./stdlib_optval.html) - Fallback value for optional arguments
  - [quadrature](./stdlib_quadrature.html) - Numerical integration
  - [random](./stdlib_random.html) - Probability Distributions random number generator
+ - [regex](./stdlib_regex.html) - Regular expression pattern matching
  - [sorting](./stdlib_sorting.html) - Sorting of rank one arrays
  - [stats](./stdlib_stats.html) - Descriptive Statistics
  - [stats_distributions_uniform](./stdlib_stats_distribution_uniform.html) - Uniform Probability Distribution
