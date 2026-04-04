@@ -296,13 +296,25 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` [[stdlib_sparse_conversion(module):coo2csr(interface)]] `(coo,csr)`
+`call ` [[stdlib_sparse_conversion(module):csc2dense(interface)]] `(csc,dense)`
+
+### Arguments
+
+`csc` : Shall be a `CSC` type of `real` or `complex` type. It is an `intent(in)` argument.
+
+`dense` : Shall be a rank-2 array of `real` or `complex` type. It is an `intent(out)` argument.
+
+### Syntax
+
+`call ` [[stdlib_sparse_conversion(module):coo2csr(interface)]] `(coo,csr[,sort_data])`
 
 ### Arguments
 
 `coo` : Shall be a `COO` type of `real` or `complex` type. It is an `intent(in)` argument.
 
 `csr` : Shall be a `CSR` type of `real` or `complex` type. It is an `intent(out)` argument.
+
+`sort_data`, `optional` : Shall be a `logical` argument to determine whether data in the COO graph should be sorted before obtaining the CSR representation. The transformation from COO to CSR depends on the former being sorted in row-major order and not having duplicate pairs. Using this boolean will call a sorting routine at the cost of extra runtime, default `.false.`. It is an `intent(in)` argument.
 
 ### Syntax
 
