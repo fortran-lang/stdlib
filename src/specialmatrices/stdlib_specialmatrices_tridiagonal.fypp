@@ -24,7 +24,6 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         !! tridiagonal matrix elements.
         type(tridiagonal_${s1}$_type) :: A
         !! Corresponding tridiagonal matrix.
-
         call build_tridiagonal(dl, dv, du, A)
     end function
 
@@ -36,7 +35,6 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         !! Matrix dimension.
         type(tridiagonal_${s1}$_type) :: A
         !! Corresponding tridiagonal matrix.
-
         call build_tridiagonal(dl, dv, du, n, A)
     end function
 
@@ -63,7 +61,6 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         !! Error handling
         type(tridiagonal_${s1}$_type) :: A
         !! Corresponding tridiagonal matrix.
-
         call build_tridiagonal(dl, dv, du, n, A, err)
     end function
     #:endfor
@@ -220,16 +217,22 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         #:else
         allocate(B(n, n), source=zero_${k1}$)
         #:endif
-        B(1, 1) = A%dv(1)
-        B(1, 2) = A%du(1)
-        do concurrent (i=2:n-1)
-            B(i, i-1) = A%dl(i-1)
-            B(i, i) = A%dv(i)
-            B(i, i+1) = A%du(i)
-        enddo
-        B(n, n-1) = A%dl(n-1)
-        B(n, n) = A%dv(n)
+        
+        if (n == 1) then
+            B(1, 1) = A%dv(1)
+        else
+            B(1, 1) = A%dv(1)
+            B(1, 2) = A%du(1)
+            do concurrent (i=2:n-1)
+                B(i, i-1) = A%dl(i-1)
+                B(i, i) = A%dv(i)
+                B(i, i+1) = A%du(i)
+            enddo
+            B(n, n-1) = A%dl(n-1)
+            B(n, n) = A%dv(n)
+        end if
         end associate
+
     end function
     #:endfor
 
@@ -282,6 +285,15 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         type(tridiagonal_${s1}$_type), intent(in) :: A
         type(tridiagonal_${s1}$_type), intent(in) :: B
         type(tridiagonal_${s1}$_type) :: C
+        
+        ! Internal variables.
+        type(linalg_state_type) :: err0
+        
+        if (A%n /= B%n) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "tridiagonal matrices must have the same dimension to be added")
+            call linalg_error_handling(err0)
+        end if
+        
         C = tridiagonal(A%dl, A%dv, A%du)
         C%dl = C%dl + B%dl
         C%dv = C%dv + B%dv
@@ -292,6 +304,15 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         type(tridiagonal_${s1}$_type), intent(in) :: A
         type(tridiagonal_${s1}$_type), intent(in) :: B
         type(tridiagonal_${s1}$_type) :: C
+        
+        ! Internal variables. 
+        type(linalg_state_type) :: err0
+        
+        if (A%n /= B%n) then
+            err0 = linalg_state_type(this, LINALG_VALUE_ERROR, "tridiagonal matrices must have the same dimension to be subtracted")
+            call linalg_error_handling(err0)
+        end if
+        
         C = tridiagonal(A%dl, A%dv, A%du)
         C%dl = C%dl - B%dl
         C%dv = C%dv - B%dv
