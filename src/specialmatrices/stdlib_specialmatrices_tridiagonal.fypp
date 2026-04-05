@@ -24,7 +24,6 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         !! tridiagonal matrix elements.
         type(tridiagonal_${s1}$_type) :: A
         !! Corresponding tridiagonal matrix.
-
         call build_tridiagonal(dl, dv, du, A)
     end function
 
@@ -36,7 +35,6 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         !! Matrix dimension.
         type(tridiagonal_${s1}$_type) :: A
         !! Corresponding tridiagonal matrix.
-        
         call build_tridiagonal(dl, dv, du, n, A)
     end function
 
@@ -63,7 +61,6 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
         !! Error handling
         type(tridiagonal_${s1}$_type) :: A
         !! Corresponding tridiagonal matrix.
-
         call build_tridiagonal(dl, dv, du, n, A, err)
     end function
     #:endfor
