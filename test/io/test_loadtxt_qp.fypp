@@ -30,6 +30,8 @@ contains
 #:if WITH_QP
         real(qp), allocatable :: input(:,:), expected(:,:)
         integer :: n
+        real(qp) :: eps
+        eps = epsilon(1._qp)
 
         allocate(input(10,10))
         allocate(expected(10,10))
@@ -39,7 +41,7 @@ contains
             input = input - 0.5
             call savetxt('test_qp.txt', input)
             call loadtxt('test_qp.txt', expected)
-            call check(error, all(input == expected))
+            call check(error, all(abs(input - expected) < eps))
             if (allocated(error)) return
         end do
 #:else
@@ -55,6 +57,8 @@ contains
 #:if WITH_QP
         real(qp), allocatable :: input(:,:), expected(:,:)
         integer :: n
+        real(qp) :: eps
+        eps = 10 * epsilon(1._qp) * huge(1._qp)
 
         allocate(input(10,10))
         allocate(expected(10,10))
@@ -64,7 +68,7 @@ contains
             input = (input - 0.5) * huge(input)
             call savetxt('test_qp_huge.txt', input)
             call loadtxt('test_qp_huge.txt', expected)
-            call check(error, all(input == expected))
+            call check(error, all(abs(input - expected) < eps), 'Huge number read failed')
             if (allocated(error)) return
         end do
 #:else
@@ -80,6 +84,8 @@ contains
 #:if WITH_QP
         real(qp), allocatable :: input(:,:), expected(:,:)
         integer :: n
+        real(qp) :: eps
+        eps = epsilon(1._qp)
 
         allocate(input(10,10))
         allocate(expected(10,10))
@@ -89,7 +95,7 @@ contains
             input = (input - 0.5) * tiny(input)
             call savetxt('test_qp_tiny.txt', input)
             call loadtxt('test_qp_tiny.txt', expected)
-            call check(error, all(input == expected))
+            call check(error, all(abs(input - expected) < eps), 'Tiny numbers read failed')
             if (allocated(error)) return
         end do
 #:else

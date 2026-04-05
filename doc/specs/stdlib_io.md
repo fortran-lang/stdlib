@@ -17,25 +17,30 @@ Loads a rank-2 `array` from a text file.
 
 ### Syntax
 
-`call ` [[stdlib_io(module):loadtxt(interface)]] `(filename, array [, skiprows] [, max_rows] [, fmt] [, delimiter])`
+`call ` [[stdlib_io(module):loadtxt(interface)]] `(filename, array  [, comments] [, delimiter] [, skiplines] [, max_rows]  [, usecols])`
+
+`call ` [[stdlib_io(module):loadtxt(interface)]] `(unit, array  [, comments] [, delimiter] [, skiplines] [, max_rows]  [, usecols])`
 
 ### Arguments
 
-`filename`: Shall be  a character expression containing the file name from which to load the rank-2 `array`.
+`filename or unit`: Shall be  a character expression containing the file name or an integer containing the unit of an already open file from which to load the rank-2 `array`.
 
 `array`: Shall be an allocatable rank-2 array of type `real`, `complex` or `integer`.
 
-`skiprows` (optional): Skip the first `skiprows` lines. If skipping more rows than present, a 0-sized array will be returned. The default is 0.
+`comments` (optional): Shall  be a character expression of any length used to indicate the start of a    comment. Default: `#`.
 
-`max_rows` (optional): Read `max_rows` lines of content after `skiprows` lines. A negative value results in reading all lines. A value of zero results in no lines to be read. The default value is -1.
+`delimiter` (optional): Shall be a character expression of length 1 that contains the delimiter used to separate the columns. The default is an empty string `''` indicating that any number of whitespace will be considered a delimiter.
 
-`fmt` (optional): Fortran format specifier for the text read.  Defaults to the write format for the data type.  Setting fmt='*' will specify list directed read.   
+`skiplines` (optional): Skip the first `skiplines` lines from file, including comments. If skipping more lines than present, a 0-sized array will be returned. The default is 0.
 
-`delimiter` (optional): Shall be a character expression of length 1 that contains the delimiter used to separate the columns. The default is `' '`.
+`max_rows` (optional): Shall be an integer indicating that `max_rows` **rows of data** after `skiprows` will be read. A negative value results in reading all data. The default is to read all lines of data.
+
+`usecols` (optional): Shall be an integer array indicating what columns will be read. For example, ``usecols = (1,3,5)`` will extract the first, third and fifth columns. The default is to read all columns.
+
 
 ### Return value
 
-Returns an allocated rank-2 `array` with the content of `filename`.
+Returns an allocated rank-2 `array` with the content of the file.
 
 ### Example
 
