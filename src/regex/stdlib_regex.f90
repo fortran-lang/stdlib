@@ -30,6 +30,19 @@ module stdlib_regex
   integer, parameter :: TOK_ALT    = 11
   integer, parameter :: TOK_CONCAT = 12
 
+  ! Ascii character constants
+  integer, parameter :: CHAR_ZERO = iachar('0')
+  integer, parameter :: CHAR_NINE = iachar('9')
+  integer, parameter :: CHAR_LOWER_A = iachar('a')
+  integer, parameter :: CHAR_LOWER_Z = iachar('z')
+  integer, parameter :: CHAR_UPPER_A = iachar('A')
+  integer, parameter :: CHAR_UPPER_Z = iachar('Z')
+  integer, parameter :: CHAR_SPACE = iachar(' ')
+  integer, parameter :: CHAR_TAB = 9
+  integer, parameter :: CHAR_LF = 10
+  integer, parameter :: CHAR_CR = 13
+  integer, parameter :: CHAR_UNDERSCORE = iachar('_')
+
   type :: state_type
     integer :: op
     character(len=1) :: c
@@ -75,7 +88,7 @@ module stdlib_regex
 
 contains
 
-  logical function is_term_ender(tag)
+  pure logical function is_term_ender(tag)
     integer, intent(in) :: tag
     is_term_ender = (tag == TOK_CHAR .or. tag == TOK_ANY .or. &
                      tag == TOK_CLASS .or. tag == TOK_STAR .or. &
@@ -84,14 +97,14 @@ contains
                      tag == TOK_START)
   end function is_term_ender
 
-  logical function is_term_starter(tag)
+  pure logical function is_term_starter(tag)
     integer, intent(in) :: tag
     is_term_starter = (tag == TOK_CHAR .or. tag == TOK_ANY .or. &
                        tag == TOK_CLASS .or. tag == TOK_LPAREN .or. &
                        tag == TOK_START .or. tag == TOK_END)
   end function is_term_starter
 
-  integer function prec(tag)
+  pure integer function prec(tag)
     integer, intent(in) :: tag
     if (tag == TOK_STAR .or. tag == TOK_PLUS .or. tag == TOK_QUEST) then
       prec = 3
@@ -137,19 +150,19 @@ contains
         t%c = c
         if (c == 'd') then
           t%tag = TOK_CLASS
-          do k = iachar('0'), iachar('9'); t%bmap(k) = .true.; end do
+          t%bmap(CHAR_ZERO:CHAR_NINE) = .true.
         else if (c == 's') then
           t%tag = TOK_CLASS
-          t%bmap(iachar(' ')) = .true.
-          t%bmap(iachar(char(9))) = .true.
-          t%bmap(iachar(char(10))) = .true.
-          t%bmap(iachar(char(13))) = .true.
+          t%bmap(CHAR_SPACE) = .true.
+          t%bmap(CHAR_TAB) = .true.
+          t%bmap(CHAR_LF) = .true.
+          t%bmap(CHAR_CR) = .true.
         else if (c == 'w') then
           t%tag = TOK_CLASS
-          do k = iachar('a'), iachar('z'); t%bmap(k) = .true.; end do
-          do k = iachar('A'), iachar('Z'); t%bmap(k) = .true.; end do
-          do k = iachar('0'), iachar('9'); t%bmap(k) = .true.; end do
-          t%bmap(iachar('_')) = .true.
+          t%bmap(CHAR_LOWER_A:CHAR_LOWER_Z) = .true.
+          t%bmap(CHAR_UPPER_A:CHAR_UPPER_Z) = .true.
+          t%bmap(CHAR_ZERO:CHAR_NINE) = .true.
+          t%bmap(CHAR_UNDERSCORE) = .true.
         end if
       else if (c == '.') then
         t%tag = TOK_ANY
@@ -185,9 +198,7 @@ contains
           if (i + 2 <= len_p .and. pattern(i+1:i+1) == '-') then
             if (pattern(i+2:i+2) /= ']') then
               c2 = pattern(i+2:i+2)
-              do k = iachar(c1), iachar(c2)
-                if (k >= 0 .and. k <= 127) t%bmap(k) = .true.
-              end do
+              t%bmap(max(0, iachar(c1)):min(127, iachar(c2))) = .true.
               i = i + 3
               cycle
             end if
@@ -291,16 +302,17 @@ contains
     end do
   end subroutine parse_to_postfix
 
-  integer function new_out(s, o, pool, p_size)
+  subroutine new_out(s, o, pool, p_size, return_idx)
     integer, intent(in) :: s, o
     type(out_node), intent(inout) :: pool(:)
     integer, intent(inout) :: p_size
+    integer, intent(out) :: return_idx
     p_size = p_size + 1
     pool(p_size)%s = s
     pool(p_size)%o = o
     pool(p_size)%next = 0
-    new_out = p_size
-  end function new_out
+    return_idx = p_size
+  end subroutine new_out
 
   subroutine merge_lists(l1, l2, res, pool)
     type(out_list_type), intent(in) :: l1, l2
@@ -317,11 +329,11 @@ contains
     end if
   end subroutine merge_lists
 
-  subroutine do_patch(states, list, target, pool)
-    type(state_type), intent(inout) :: states(:)
+  subroutine do_patch(list, target, pool, states)
     type(out_list_type), intent(in) :: list
     integer, intent(in) :: target
     type(out_node), intent(in) :: pool(:)
+    type(state_type), intent(inout) :: states(:)
     integer :: curr
     curr = list%head
     do while (curr /= 0)
@@ -390,7 +402,7 @@ contains
         
         top = top + 1
         stack(top)%start = n_states
-        out_idx = new_out(n_states, 1, local_pool, p_size)
+        call new_out(n_states, 1, local_pool, p_size, out_idx)
         stack(top)%out_list%head = out_idx
         stack(top)%out_list%tail = out_idx
         
@@ -399,7 +411,7 @@ contains
         f2 = stack(top); top = top - 1
         f1 = stack(top)
         
-        call do_patch(states, f1%out_list, f2%start, local_pool)
+        call do_patch(f1%out_list, f2%start, local_pool, states)
         stack(top)%start = f1%start
         stack(top)%out_list = f2%out_list
 
@@ -425,7 +437,7 @@ contains
         states(n_states)%out1 = f1%start
         states(n_states)%out2 = 0
         
-        out_idx = new_out(n_states, 2, local_pool, p_size)
+        call new_out(n_states, 2, local_pool, p_size, out_idx)
         t_list%head = out_idx
         t_list%tail = out_idx
         call merge_lists(t_list, f1%out_list, stack(top)%out_list, local_pool)
@@ -440,9 +452,9 @@ contains
         states(n_states)%out1 = f1%start
         states(n_states)%out2 = 0
         
-        call do_patch(states, f1%out_list, n_states, local_pool)
+        call do_patch(f1%out_list, n_states, local_pool, states)
         
-        out_idx = new_out(n_states, 2, local_pool, p_size)
+        call new_out(n_states, 2, local_pool, p_size, out_idx)
         stack(top)%out_list%head = out_idx
         stack(top)%out_list%tail = out_idx
         stack(top)%start = n_states
@@ -456,9 +468,9 @@ contains
         states(n_states)%out1 = f1%start
         states(n_states)%out2 = 0
         
-        call do_patch(states, f1%out_list, n_states, local_pool)
+        call do_patch(f1%out_list, n_states, local_pool, states)
         
-        out_idx = new_out(n_states, 2, local_pool, p_size)
+        call new_out(n_states, 2, local_pool, p_size, out_idx)
         stack(top)%out_list%head = out_idx
         stack(top)%out_list%tail = out_idx
         stack(top)%start = f1%start
@@ -474,7 +486,7 @@ contains
     states(n_states)%out1 = 0
     states(n_states)%out2 = 0
     
-    call do_patch(states, f1%out_list, n_states, local_pool)
+    call do_patch(f1%out_list, n_states, local_pool, states)
     start_state = f1%start
 
   end subroutine build_nfa
@@ -504,38 +516,51 @@ contains
     if (present(status)) status = stat
   end subroutine regcomp
 
-  recursive subroutine add_thread(list, count, state_idx, start_pos, step_index, states, str_len, visited)
-    type(thread), intent(inout) :: list(:)
-    integer, intent(inout) :: count
+  subroutine add_thread(state_idx, start_pos, step_index, states, str_len, list, count, visited)
     integer, intent(in) :: state_idx, start_pos, step_index
     type(state_type), intent(in) :: states(:)
     integer, intent(in) :: str_len
+    type(thread), intent(inout) :: list(:)
+    integer, intent(inout) :: count
     integer, intent(inout) :: visited(:)
-    integer :: op
-
-    if (state_idx == 0) return
-    if (visited(state_idx) == step_index) return
-    visited(state_idx) = step_index
     
-    op = states(state_idx)%op
-    if (op == OP_SPLIT) then
-      call add_thread(list, count, states(state_idx)%out1, start_pos, step_index, states, str_len, visited)
-      call add_thread(list, count, states(state_idx)%out2, start_pos, step_index, states, str_len, visited)
-    else if (op == OP_JMP) then
-      call add_thread(list, count, states(state_idx)%out1, start_pos, step_index, states, str_len, visited)
-    else if (op == OP_START) then
-      if (step_index == 0) then
-        call add_thread(list, count, states(state_idx)%out1, start_pos, step_index, states, str_len, visited)
+    integer :: op, curr_state, top
+    integer, allocatable :: stack(:)
+    
+    if (state_idx == 0) return
+    
+    allocate(stack(max(1, size(states) * 2)))
+    top = 1
+    stack(top) = state_idx
+    
+    do while (top > 0)
+      curr_state = stack(top)
+      top = top - 1
+      
+      if (curr_state == 0) cycle
+      if (visited(curr_state) == step_index) cycle
+      visited(curr_state) = step_index
+      
+      op = states(curr_state)%op
+      if (op == OP_SPLIT) then
+        top = top + 1; stack(top) = states(curr_state)%out1
+        top = top + 1; stack(top) = states(curr_state)%out2
+      else if (op == OP_JMP) then
+        top = top + 1; stack(top) = states(curr_state)%out1
+      else if (op == OP_START) then
+        if (step_index == 0) then
+          top = top + 1; stack(top) = states(curr_state)%out1
+        end if
+      else if (op == OP_END) then
+        if (step_index == str_len) then
+          top = top + 1; stack(top) = states(curr_state)%out1
+        end if
+      else
+        count = count + 1
+        list(count)%state = curr_state
+        list(count)%start_pos = start_pos
       end if
-    else if (op == OP_END) then
-      if (step_index == str_len) then
-        call add_thread(list, count, states(state_idx)%out1, start_pos, step_index, states, str_len, visited)
-      end if
-    else
-      count = count + 1
-      list(count)%state = state_idx
-      list(count)%start_pos = start_pos
-    end if
+    end do
   end subroutine add_thread
 
   subroutine regmatch(re, string, is_match, match_start, match_end)
@@ -565,7 +590,7 @@ contains
     ! Empty matches at the very beginning
     visited = -1
     c_cnt = 0
-    call add_thread(clist, c_cnt, re%start_state, 1, 0, re%states, str_len, visited)
+    call add_thread(re%start_state, 1, 0, re%states, str_len, clist, c_cnt, visited)
     
     do j = 1, c_cnt
       if (re%states(clist(j)%state)%op == OP_MATCH) then
@@ -578,11 +603,6 @@ contains
       step_index = i
       n_cnt = 0
       visited = -1
-      
-      ! Always see if a new match can start here if we don't have one yet
-      if (b_start == -1) then
-        call add_thread(nlist, n_cnt, re%start_state, i + 1, step_index, re%states, str_len, visited)
-      end if
       
       do j = 1, c_cnt
         t = clist(j)
@@ -603,9 +623,14 @@ contains
         end if
         
         if (match_char) then
-          call add_thread(nlist, n_cnt, re%states(t%state)%out1, t%start_pos, step_index, re%states, str_len, visited)
+          call add_thread(re%states(t%state)%out1, t%start_pos, step_index, re%states, str_len, nlist, n_cnt, visited)
         end if
       end do
+      
+      ! Always see if a new match can start here if we don't have one yet
+      if (b_start == -1) then
+        call add_thread(re%start_state, i + 1, step_index, re%states, str_len, nlist, n_cnt, visited)
+      end if
       
       do j = 1, n_cnt
          if (re%states(nlist(j)%state)%op == OP_MATCH) then
