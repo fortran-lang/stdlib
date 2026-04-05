@@ -1,0 +1,216 @@
+! SPDX-Identifier: MIT
+
+submodule(stdlib_base64) stdlib_base64_decode
+    use stdlib_error, only: state_type, STDLIB_SUCCESS, STDLIB_VALUE_ERROR
+
+contains
+
+    pure module subroutine base64_decode_into(str, res, decoded_len, err_state, skip_despace)
+        character(len=*), intent(in)  :: str
+        character(len=*), intent(out) :: res
+        integer, intent(out) :: decoded_len
+        type(state_type), intent(out) :: err_state
+        logical, intent(in), optional :: skip_despace
+
+        integer(int8), allocatable :: filtered(:)
+        logical :: clean_mode
+
+        integer(int32) :: v0, v1, v2, v3, c, raw_c
+        integer :: i, j, slen, n_pad
+        integer(int32) :: error_accum, unicode_accum
+
+        err_state = state_type(STDLIB_SUCCESS)
+        decoded_len = 0
+        unicode_accum = 0
+
+        if (len(str) == 0) return
+
+        clean_mode = .false.
+        if (present(skip_despace)) clean_mode = skip_despace
+
+        if (clean_mode) then
+            slen = len(str)
+            if (mod(slen, 4) /= 0) then
+                err_state = state_type("base64_decode_into", STDLIB_VALUE_ERROR, &
+                    "Input length must be a multiple of 4")
+                return
+            end if
+
+            n_pad = 0
+            if (str(slen:slen) == '=') then
+                n_pad = 1
+                if (str(slen-1:slen-1) == '=') n_pad = 2
+            end if
+
+            decoded_len = (slen / 4) * 3 - n_pad
+            if (len(res) < decoded_len) then
+                err_state = state_type("base64_decode_into", STDLIB_VALUE_ERROR, &
+                    "Output buffer too small")
+                decoded_len = 0
+                return
+            end if
+        else
+            allocate(filtered(len(str)))
+            j = 0
+            do i = 1, len(str)
+                raw_c = int(iachar(str(i:i)), int32)
+                unicode_accum = ior(unicode_accum, raw_c)
+                c = iand(raw_c, 255_int32)
+                filtered(j + 1) = int(c, int8)
+                j = j + IS_VAL(c)
+            end do
+            slen = j
+
+            if (unicode_accum > 255_int32 .or. slen == 0 .or. mod(slen, 4) /= 0) then
+                err_state = state_type("base64_decode_into", STDLIB_VALUE_ERROR, &
+                    "Invalid Base64 byte stream")
+                return
+            end if
+
+            n_pad = 0
+            if (filtered(slen) == 61_int8) then
+                n_pad = 1
+                if (filtered(slen-1) == 61_int8) n_pad = 2
+            end if
+
+            decoded_len = (slen / 4) * 3 - n_pad
+            if (len(res) < decoded_len) then
+                err_state = state_type("base64_decode_into", STDLIB_VALUE_ERROR, &
+                    "Output buffer too small")
+                decoded_len = 0
+                return
+            end if
+        end if
+
+        error_accum = 0
+
+        ! Fortran Scalar Decoder Loop
+        do i = 1, slen - 7, 4
+            if (clean_mode) then
+                raw_c = int(iachar(str(i:i)), int32)
+                unicode_accum = ior(unicode_accum, raw_c)
+                v0 = int(DT(iand(raw_c, 255_int32)), int32)
+                raw_c = int(iachar(str(i+1:i+1)), int32)
+                unicode_accum = ior(unicode_accum, raw_c)
+                v1 = int(DT(iand(raw_c, 255_int32)), int32)
+                raw_c = int(iachar(str(i+2:i+2)), int32)
+                unicode_accum = ior(unicode_accum, raw_c)
+                v2 = int(DT(iand(raw_c, 255_int32)), int32)
+                raw_c = int(iachar(str(i+3:i+3)), int32)
+                unicode_accum = ior(unicode_accum, raw_c)
+                v3 = int(DT(iand(raw_c, 255_int32)), int32)
+            else
+                v0 = int(DT(iand(int(filtered(i), int32), 255_int32)), int32)
+                v1 = int(DT(iand(int(filtered(i+1), int32), 255_int32)), int32)
+                v2 = int(DT(iand(int(filtered(i+2), int32), 255_int32)), int32)
+                v3 = int(DT(iand(int(filtered(i+3), int32), 255_int32)), int32)
+            end if
+
+            error_accum = ior(error_accum, ior(v0, ior(v1, ior(v2, v3))))
+
+            j = (i - 1) / 4 * 3 + 1
+            res(j:j)     = char(ior(ishft(v0, 2), ishft(v1, -4)))
+            res(j+1:j+1) = char(ior(ishft(iand(v1, 15_int32), 4), ishft(v2, -2)))
+            res(j+2:j+2) = char(ior(ishft(iand(v2, 3_int32), 6), v3))
+        end do
+
+        if (error_accum < 0 .or. unicode_accum > 255_int32) then
+            err_state = state_type("base64_decode_into", STDLIB_VALUE_ERROR, &
+                "Invalid Base64 alphabet or non-ASCII input")
+            decoded_len = 0
+            return
+        end if
+
+        ! Fortran Tail Padding Logic
+        i = slen - 3
+        j = (i - 1) / 4 * 3 + 1
+
+        if (clean_mode) then
+            raw_c = int(iachar(str(i:i)), int32)
+            unicode_accum = ior(unicode_accum, raw_c)
+            c = iand(raw_c, 255_int32)
+            v0 = int(DT(c), int32)
+            raw_c = int(iachar(str(i+1:i+1)), int32)
+            unicode_accum = ior(unicode_accum, raw_c)
+            c = iand(raw_c, 255_int32)
+            v1 = int(DT(c), int32)
+            raw_c = int(iachar(str(i+2:i+2)), int32)
+            unicode_accum = ior(unicode_accum, raw_c)
+            c = iand(raw_c, 255_int32)
+            v2 = int(DT(c), int32)
+            raw_c = int(iachar(str(i+3:i+3)), int32)
+            unicode_accum = ior(unicode_accum, raw_c)
+            c = iand(raw_c, 255_int32)
+            v3 = int(DT(c), int32)
+        else
+            c  = iand(int(filtered(i),   int32), 255_int32)
+            v0 = int(DT(c), int32)
+            c  = iand(int(filtered(i+1), int32), 255_int32)
+            v1 = int(DT(c), int32)
+            c  = iand(int(filtered(i+2), int32), 255_int32)
+            v2 = int(DT(c), int32)
+            c  = iand(int(filtered(i+3), int32), 255_int32)
+            v3 = int(DT(c), int32)
+        end if
+
+        if (v0 < 0 .or. v1 < 0 .or. unicode_accum > 255_int32) then
+            err_state = state_type("base64_decode_into", STDLIB_VALUE_ERROR, &
+                "Invalid final quartet")
+            decoded_len = 0
+            return
+        end if
+
+        res(j:j) = char(ior(ishft(v0, 2), ishft(v1, -4)))
+
+        if (n_pad < 2) then
+            if (v2 < 0) then
+                err_state = state_type("base64_decode_into", STDLIB_VALUE_ERROR, &
+                    "Invalid final quartet")
+                decoded_len = 0
+                return
+            end if
+            res(j+1:j+1) = char(ior(ishft(iand(v1, 15_int32), 4), ishft(v2, -2)))
+        end if
+
+        if (n_pad == 0) then
+            if (v3 < 0) then
+                err_state = state_type("base64_decode_into", STDLIB_VALUE_ERROR, &
+                    "Invalid final quartet")
+                decoded_len = 0
+                return
+            end if
+            res(j+2:j+2) = char(ior(ishft(iand(v2, 3_int32), 6), v3))
+        end if
+    end subroutine base64_decode_into
+
+    module function base64_decode(str, err_state) result(res)
+        character(len=*), intent(in) :: str
+        type(state_type), intent(out), optional :: err_state
+        character(len=:), allocatable :: res
+
+        integer :: decoded_len
+        type(state_type) :: local_state
+
+        if (len(str) == 0) then
+            allocate(character(len=0) :: res)
+            local_state = state_type(STDLIB_SUCCESS)
+            if (present(err_state)) err_state = local_state
+            return
+        end if
+
+        ! Pre-allocate maximum possible size needed
+        allocate(character(len=(len(str) / 4) * 3 + 3) :: res)
+
+        call base64_decode_into(str, res, decoded_len, local_state)
+
+        if (.not. local_state%ok()) then
+            deallocate(res)
+            allocate(character(len=0) :: res)
+        else
+            res = res(1:decoded_len)
+        end if
+
+        if (present(err_state)) err_state = local_state
+    end function base64_decode
+
+end submodule stdlib_base64_decode
