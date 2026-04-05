@@ -3,6 +3,7 @@ module test_base64
     use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_base64, only : base64_encode, base64_decode, base64_encode_into, base64_decode_into
     use stdlib_kinds, only : int8, int32, dp, lk
+    use stdlib_error, only : state_type
     implicit none
 
 contains
@@ -49,11 +50,11 @@ contains
 
     subroutine test_decode_invalid(error)
         type(error_type), allocatable, intent(out) :: error
-        logical :: err_flag
+        type(state_type) :: err_flag
 
         call check(error, base64_decode("abc", err_flag) == "")
         if (allocated(error)) return
-        call check(error, err_flag)
+        call check(error, .not. err_flag%ok())
         if (allocated(error)) return
 
         call check(error, base64_decode("A===") == "")
@@ -135,13 +136,13 @@ contains
         character(len=4) :: str
         character(len=2) :: small_str
         integer :: elen
-        logical :: err
+        type(state_type) :: err
 
         bytes = [int(77, int8), int(97, int8), int(110, int8)]
 
         ! Test successful zero-copy encode
         call base64_encode_into(bytes, str, elen, err)
-        call check(error, .not. err)
+        call check(error, err%ok())
         if (allocated(error)) return
         call check(error, elen == 4)
         if (allocated(error)) return
@@ -150,7 +151,7 @@ contains
 
         ! Test buffer too small (Expect Error)
         call base64_encode_into(bytes, small_str, elen, err)
-        call check(error, err)
+        call check(error, .not. err%ok())
         if (allocated(error)) return
         call check(error, small_str == "")
     end subroutine test_encode_into
@@ -161,11 +162,11 @@ contains
         character(len=3) :: res
         character(len=1) :: small_res
         integer :: dlen
-        logical :: err
+        type(state_type) :: err
 
         ! Test successful decode
         call base64_decode_into(str, res, dlen, err)
-        call check(error, .not. err)
+        call check(error, err%ok())
         if (allocated(error)) return
         call check(error, dlen == 3)
         if (allocated(error)) return
@@ -174,7 +175,7 @@ contains
 
         ! Test buffer too small (Expect Error)
         call base64_decode_into(str, small_res, dlen, err)
-        call check(error, err)
+        call check(error, .not. err%ok())
         if (allocated(error)) return
     end subroutine test_decode_into
 

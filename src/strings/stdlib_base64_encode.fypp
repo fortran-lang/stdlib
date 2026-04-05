@@ -1,44 +1,23 @@
 ! SPDX-Identifier: MIT
 #:include "common.fypp"
 
-module stdlib_base64_encode
-    use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64, lk
-    use, intrinsic :: iso_c_binding, only: c_size_t, c_bool
-    implicit none
-    private
-
-    public :: base64_encode, base64_encode_into
-
-    character(len=64), parameter :: ALPHABET = &
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-
-    ! ERGONOMIC API (Returns allocatable strings)
-    interface base64_encode
-#:for k1, t1, _, _ in REAL_KINDS_TYPES
-        module procedure :: base64_encode_real_${k1}$
-#:endfor
-#:for k1, t1, _, _ in INT_KINDS_TYPES
-        module procedure :: base64_encode_int_${k1}$
-#:endfor
-#:for k1, t1, _ in CMPLX_KINDS_TYPES
-        module procedure :: base64_encode_cmplx_${k1}$
-#:endfor
-#:for k1, t1 in LOG_KINDS_TYPES
-        module procedure :: base64_encode_logical_${k1}$
-#:endfor
-    end interface base64_encode
+submodule(stdlib_base64) stdlib_base64_encode
+    use stdlib_error, only: state_type, STDLIB_SUCCESS, STDLIB_VALUE_ERROR
 
 contains
 
 #:set RANKS = range(16)
 
 #:for k1, t1, _, _ in REAL_KINDS_TYPES
-    function base64_encode_real_${k1}$(data) result(str)
+    module function base64_encode_real_${k1}$(data) result(str)
         ${t1}$, intent(in), target, contiguous :: data(..)
         character(len=:), allocatable :: str
         integer(int64) :: nbytes
         nbytes = int(size(data), int64) * storage_size(data) / 8
-        if (nbytes == 0) then; str = ""; return; end if
+        if (nbytes == 0) then
+            str = ""
+            return
+        end if
         ! Standard-compliant conversion using transfer
         select rank(data)
         #:for r in RANKS
@@ -50,12 +29,15 @@ contains
 #:endfor
 
 #:for k1, t1, _, _ in INT_KINDS_TYPES
-    function base64_encode_int_${k1}$(data) result(str)
+    module function base64_encode_int_${k1}$(data) result(str)
         ${t1}$, intent(in), target, contiguous :: data(..)
         character(len=:), allocatable :: str
         integer(int64) :: nbytes
         nbytes = int(size(data), int64) * storage_size(data) / 8
-        if (nbytes == 0) then; str = ""; return; end if
+        if (nbytes == 0) then
+            str = ""
+            return
+        end if
         select rank(data)
         #:for r in RANKS
         rank(${r}$)
@@ -66,12 +48,15 @@ contains
 #:endfor
 
 #:for k1, t1, _ in CMPLX_KINDS_TYPES
-    function base64_encode_cmplx_${k1}$(data) result(str)
+    module function base64_encode_cmplx_${k1}$(data) result(str)
         ${t1}$, intent(in), target, contiguous :: data(..)
         character(len=:), allocatable :: str
         integer(int64) :: nbytes
         nbytes = int(size(data), int64) * storage_size(data) / 8
-        if (nbytes == 0) then; str = ""; return; end if
+        if (nbytes == 0) then
+            str = ""
+            return
+        end if
         select rank(data)
         #:for r in RANKS
         rank(${r}$)
@@ -82,12 +67,15 @@ contains
 #:endfor
 
 #:for k1, t1 in LOG_KINDS_TYPES
-    function base64_encode_logical_${k1}$(data) result(str)
+    module function base64_encode_logical_${k1}$(data) result(str)
         ${t1}$, intent(in), target, contiguous :: data(..)
         character(len=:), allocatable :: str
         integer(int64) :: nbytes
         nbytes = int(size(data), int64) * storage_size(data) / 8
-        if (nbytes == 0) then; str = ""; return; end if
+        if (nbytes == 0) then
+            str = ""
+            return
+        end if
         select rank(data)
         #:for r in RANKS
         rank(${r}$)
@@ -97,17 +85,17 @@ contains
     end function base64_encode_logical_${k1}$
 #:endfor
 
-    function base64_encode_bytes(bytes) result(str)
+    module function base64_encode_bytes(bytes) result(str)
         integer(int8), intent(in), target, contiguous :: bytes(:)
         character(len=:), allocatable, target :: str
         integer(c_size_t) :: nbytes
         integer :: str_len
         integer :: i, j
-        integer(int32) :: triplet 
+        integer(int32) :: triplet
 
         nbytes = size(bytes, kind=c_size_t)
         str_len = 4 * ((int(nbytes) + 2) / 3)
-        
+
         allocate(character(len=str_len) :: str)
         if (nbytes == 0) return
 
@@ -116,59 +104,67 @@ contains
             triplet = ior(ishft(iand(int(bytes(i), int32), 255_int32), 16_int32), &
                       ior(ishft(iand(int(bytes(i+1), int32), 255_int32), 8_int32), &
                           iand(int(bytes(i+2), int32), 255_int32)))
-            
-            str(j:j)     = ALPHABET(ishft(triplet, -18_int32) + 1 : ishft(triplet, -18_int32) + 1)
-            str(j+1:j+1) = ALPHABET(iand(ishft(triplet, -12_int32), 63_int32) + 1 : iand(ishft(triplet, -12_int32), 63_int32) + 1)
-            str(j+2:j+2) = ALPHABET(iand(ishft(triplet, -6_int32), 63_int32) + 1 : iand(ishft(triplet, -6_int32), 63_int32) + 1)
-            str(j+3:j+3) = ALPHABET(iand(triplet, 63_int32) + 1 : iand(triplet, 63_int32) + 1)
+
+            str(j:j) = base64_alphabet( &
+                ishft(triplet, -18_int32) + 1 : ishft(triplet, -18_int32) + 1)
+            str(j+1:j+1) = base64_alphabet( &
+                iand(ishft(triplet, -12_int32), 63_int32) + 1 : iand(ishft(triplet, -12_int32), 63_int32) + 1)
+            str(j+2:j+2) = base64_alphabet( &
+                iand(ishft(triplet, -6_int32), 63_int32) + 1 : iand(ishft(triplet, -6_int32), 63_int32) + 1)
+            str(j+3:j+3) = base64_alphabet(iand(triplet, 63_int32) + 1 : iand(triplet, 63_int32) + 1)
             j = j + 4
         end do
-        
+
         if (mod(nbytes, 3_c_size_t) == 1) then
             triplet = ishft(iand(int(bytes(int(nbytes)), int32), 255_int32), 16_int32)
-            str(j:j)     = ALPHABET(ishft(triplet, -18_int32) + 1 : ishft(triplet, -18_int32) + 1)
-            str(j+1:j+1) = ALPHABET(iand(ishft(triplet, -12_int32), 63_int32) + 1 : iand(ishft(triplet, -12_int32), 63_int32) + 1)
+            str(j:j) = base64_alphabet( &
+                ishft(triplet, -18_int32) + 1 : ishft(triplet, -18_int32) + 1)
+            str(j+1:j+1) = base64_alphabet( &
+                iand(ishft(triplet, -12_int32), 63_int32) + 1 : iand(ishft(triplet, -12_int32), 63_int32) + 1)
             str(j+2:j+3) = "=="
         else if (mod(nbytes, 3_c_size_t) == 2) then
             triplet = ior(ishft(iand(int(bytes(int(nbytes)-1), int32), 255_int32), 16_int32), &
                           ishft(iand(int(bytes(int(nbytes)), int32), 255_int32), 8_int32))
-            str(j:j)     = ALPHABET(ishft(triplet, -18_int32) + 1 : ishft(triplet, -18_int32) + 1)
-            str(j+1:j+1) = ALPHABET(iand(ishft(triplet, -12_int32), 63_int32) + 1 : iand(ishft(triplet, -12_int32), 63_int32) + 1)
-            str(j+2:j+2) = ALPHABET(iand(ishft(triplet, -6_int32), 63_int32) + 1 : iand(ishft(triplet, -6_int32), 63_int32) + 1)
+            str(j:j) = base64_alphabet( &
+                ishft(triplet, -18_int32) + 1 : ishft(triplet, -18_int32) + 1)
+            str(j+1:j+1) = base64_alphabet( &
+                iand(ishft(triplet, -12_int32), 63_int32) + 1 : iand(ishft(triplet, -12_int32), 63_int32) + 1)
+            str(j+2:j+2) = base64_alphabet( &
+                iand(ishft(triplet, -6_int32), 63_int32) + 1 : iand(ishft(triplet, -6_int32), 63_int32) + 1)
             str(j+3:j+3) = "="
         end if
-        
+
     end function base64_encode_bytes
 
-    ! POWER-USER API (Zero-Copy Subroutine)
-    subroutine base64_encode_into(bytes, str, encoded_len, error_flag)
+    pure module subroutine base64_encode_into(bytes, str, encoded_len, err_state)
         integer(int8), intent(in), target, contiguous :: bytes(:)
         character(len=*), intent(out), target :: str
-        integer,          intent(out) :: encoded_len
-        logical,          intent(out) :: error_flag
-        
+        integer, intent(out) :: encoded_len
+        type(state_type), intent(out) :: err_state
+
         integer(c_size_t) :: nbytes
         integer :: str_len
         integer :: i, j
-        integer(int32) :: triplet 
+        integer(int32) :: triplet
 
         encoded_len = 0
-        error_flag = .false.
+        err_state = state_type(STDLIB_SUCCESS)
 
         nbytes = size(bytes, kind=c_size_t)
         if (nbytes == 0) then
-            str = '' ! Blank-fill safely on edge case
+            str = ''
             return
         end if
-        
+
         str_len = 4 * ((int(nbytes) + 2) / 3)
-        
+
         if (len(str) < str_len) then
-            str = '' ! Wipe partial data on error
-            error_flag = .true.
-            return 
+            str = ''
+            err_state = state_type("base64_encode_into", STDLIB_VALUE_ERROR, &
+                "Output buffer too small")
+            return
         end if
-        
+
         encoded_len = str_len
 
         j = 1
@@ -176,28 +172,36 @@ contains
             triplet = ior(ishft(iand(int(bytes(i), int32), 255_int32), 16_int32), &
                       ior(ishft(iand(int(bytes(i+1), int32), 255_int32), 8_int32), &
                           iand(int(bytes(i+2), int32), 255_int32)))
-            
-            str(j:j)     = ALPHABET(ishft(triplet, -18_int32) + 1 : ishft(triplet, -18_int32) + 1)
-            str(j+1:j+1) = ALPHABET(iand(ishft(triplet, -12_int32), 63_int32) + 1 : iand(ishft(triplet, -12_int32), 63_int32) + 1)
-            str(j+2:j+2) = ALPHABET(iand(ishft(triplet, -6_int32), 63_int32) + 1 : iand(ishft(triplet, -6_int32), 63_int32) + 1)
-            str(j+3:j+3) = ALPHABET(iand(triplet, 63_int32) + 1 : iand(triplet, 63_int32) + 1)
+
+            str(j:j) = base64_alphabet( &
+                ishft(triplet, -18_int32) + 1 : ishft(triplet, -18_int32) + 1)
+            str(j+1:j+1) = base64_alphabet( &
+                iand(ishft(triplet, -12_int32), 63_int32) + 1 : iand(ishft(triplet, -12_int32), 63_int32) + 1)
+            str(j+2:j+2) = base64_alphabet( &
+                iand(ishft(triplet, -6_int32), 63_int32) + 1 : iand(ishft(triplet, -6_int32), 63_int32) + 1)
+            str(j+3:j+3) = base64_alphabet(iand(triplet, 63_int32) + 1 : iand(triplet, 63_int32) + 1)
             j = j + 4
         end do
-        
+
         if (mod(nbytes, 3_c_size_t) == 1) then
             triplet = ishft(iand(int(bytes(int(nbytes)), int32), 255_int32), 16_int32)
-            str(j:j)     = ALPHABET(ishft(triplet, -18_int32) + 1 : ishft(triplet, -18_int32) + 1)
-            str(j+1:j+1) = ALPHABET(iand(ishft(triplet, -12_int32), 63_int32) + 1 : iand(ishft(triplet, -12_int32), 63_int32) + 1)
+            str(j:j) = base64_alphabet( &
+                ishft(triplet, -18_int32) + 1 : ishft(triplet, -18_int32) + 1)
+            str(j+1:j+1) = base64_alphabet( &
+                iand(ishft(triplet, -12_int32), 63_int32) + 1 : iand(ishft(triplet, -12_int32), 63_int32) + 1)
             str(j+2:j+3) = "=="
         else if (mod(nbytes, 3_c_size_t) == 2) then
             triplet = ior(ishft(iand(int(bytes(int(nbytes)-1), int32), 255_int32), 16_int32), &
                           ishft(iand(int(bytes(int(nbytes)), int32), 255_int32), 8_int32))
-            str(j:j)     = ALPHABET(ishft(triplet, -18_int32) + 1 : ishft(triplet, -18_int32) + 1)
-            str(j+1:j+1) = ALPHABET(iand(ishft(triplet, -12_int32), 63_int32) + 1 : iand(ishft(triplet, -12_int32), 63_int32) + 1)
-            str(j+2:j+2) = ALPHABET(iand(ishft(triplet, -6_int32), 63_int32) + 1 : iand(ishft(triplet, -6_int32), 63_int32) + 1)
+            str(j:j) = base64_alphabet( &
+                ishft(triplet, -18_int32) + 1 : ishft(triplet, -18_int32) + 1)
+            str(j+1:j+1) = base64_alphabet( &
+                iand(ishft(triplet, -12_int32), 63_int32) + 1 : iand(ishft(triplet, -12_int32), 63_int32) + 1)
+            str(j+2:j+2) = base64_alphabet( &
+                iand(ishft(triplet, -6_int32), 63_int32) + 1 : iand(ishft(triplet, -6_int32), 63_int32) + 1)
             str(j+3:j+3) = "="
         end if
-        
+
     end subroutine base64_encode_into
 
-end module stdlib_base64_encode
+end submodule stdlib_base64_encode
