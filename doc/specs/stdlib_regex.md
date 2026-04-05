@@ -88,12 +88,7 @@ Returns 0 on success, or a non-zero value if the pattern is invalid
 ### Example
 
 ```fortran
-use stdlib_regex, only: regex_type, regcomp
-type(regex_type) :: re
-integer :: stat
-
-call regcomp(re, "(cat|dog)s?", stat)
-if (stat /= 0) error stop "Invalid regex pattern"
+{!example/regex/example_regex_regcomp.f90!}
 ```
 
 ## `regmatch` - Match a compiled regular expression
@@ -139,26 +134,5 @@ The 1-based index of the last character of the match.
 ### Example
 
 ```fortran
-use stdlib_regex, only: regex_type, regcomp, regmatch
-
-type(regex_type) :: re
-logical :: found
-integer :: stat, ms, me
-
-! Find a sequence of digits
-call regcomp(re, "[0-9]+", stat)
-call regmatch(re, "foo123bar", found, ms, me)
-! found = .true., ms = 4, me = 6
-
-! Anchored match
-call regcomp(re, "^hello", stat)
-call regmatch(re, "hello world", found)
-! found = .true.
-call regmatch(re, "say hello", found)
-! found = .false.
-
-! Alternation with optional suffix
-call regcomp(re, "(cat|dog)s?", stat)
-call regmatch(re, "I like cats", found, ms, me)
-! found = .true., ms = 8, me = 11
+{!example/regex/example_regex_regmatch.f90!}
 ```
