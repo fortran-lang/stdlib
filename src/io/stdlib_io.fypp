@@ -82,7 +82,7 @@ module stdlib_io
     #:for k1, t1 in KINDS_TYPES
       module procedure savetxt_${t1[0]}$${k1}$${arg1[0]}$
     #:endfor
-  #:endfor
+    #:endfor
   end interface
 
 contains
