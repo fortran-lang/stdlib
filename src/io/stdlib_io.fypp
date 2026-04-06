@@ -48,6 +48,7 @@ module stdlib_io
   !> Default delimiter for loadtxt, savetxt and number_of_columns
   character(len=1), parameter :: delimiter_default = " "
   character(len=1), parameter :: comment_default = "#"
+  character(len=1), parameter :: nl = new_line('a')
 
   public :: FMT_INT, FMT_REAL_SP, FMT_REAL_DP, FMT_REAL_XDP, FMT_REAL_QP
   public :: FMT_COMPLEX_SP, FMT_COMPLEX_DP, FMT_COMPLEX_XDP, FMT_COMPLEX_QP
@@ -136,28 +137,28 @@ contains
       max_rows_ = optval(max_rows, -1)
       delimiter_ = optval(delimiter, delimiter_default)
 
-      s = open (filename)
+      s = open(filename)
 
       ! determine number or rows
       nrow = number_of_rows(s)
       skiprows_ = min(skiprows_, nrow)
-      if (max_rows_ < 0 .or. max_rows_ > (nrow - skiprows_)) max_rows_ = nrow - skiprows_
+      if( max_rows_ < 0 .or. max_rows_ > (nrow - skiprows_) ) max_rows_ = nrow - skiprows_
 
       ! determine number of columns
       ncol = 0
-      if (skiprows_ < nrow) ncol = number_of_columns(s, skiprows=skiprows_, delimiter=delimiter_)
+      if(skiprows_ < nrow) ncol = number_of_columns(s, skiprows=skiprows_, delimiter=delimiter_)
       #:if 'complex' in t1
         ncol = ncol / 2
       #:endif
 
       allocate (d(max_rows_, ncol))
-      if (max_rows_ == 0 .or. ncol == 0) return
+      if(max_rows_ == 0 .or. ncol == 0) return
 
       do i = 1, skiprows_
-        read (s, *, iostat=ios, iomsg=iomsg)
+        read(s, *, iostat=ios, iomsg=iomsg)
 
-        if (ios /= 0) then
-          write (msgout, 1) trim(iomsg), i, trim(filename)
+        if(ios /= 0) then
+          write(msgout, 1) trim(iomsg), i, trim(filename)
 1         format('loadtxt: error <', a, '> skipping line ', i0, ' of ', a, '.')
           call error_stop(msg=trim(msgout))
         end if
@@ -173,14 +174,14 @@ contains
         fmt_ = optval(fmt, "*")
       #:endif
 
-      if (fmt_ == '*') then
+      if(fmt_ == '*') then
         ! Use list directed read if user has specified fmt='*'
-        if (is_blank(delimiter_) .or. delimiter_ == ",") then
+        if(is_blank(delimiter_) .or. delimiter_ == ",") then
           do i = 1, max_rows_
-            read (s, *, iostat=ios, iomsg=iomsg) d(i, :)
+            read(s, *, iostat=ios, iomsg=iomsg) d(i, :)
 
-            if (ios /= 0) then
-              write (msgout, 2) trim(iomsg), size(d, 2), i, trim(filename)
+            if(ios /= 0) then
+              write(msgout, 2) trim(iomsg), size(d, 2), i, trim(filename)
               call error_stop(msg=trim(msgout))
             end if
 
@@ -189,25 +190,25 @@ contains
         else
           do i = 1, max_rows_
             call get_line(s, line, ios, iomsg_)
-            if (ios /= 0) then
-              write (msgout, 2) trim(iomsg_), size(d, 2), i, trim(filename)
+            if(ios /= 0) then
+              write(msgout, 2) trim(iomsg_), size(d, 2), i, trim(filename)
               call error_stop(msg=trim(msgout))
             end if
 
             istart = 0
             do j = 1, ncol - 1
               iend = index(line(istart + 1:), delimiter_)
-              read (line(istart + 1:istart + iend - 1), *, iostat=ios, iomsg=iomsg) d(i, j)
-              if (ios /= 0) then
-                write (msgout, 2) trim(iomsg), size(d, 2), i, trim(filename)
+              read(line(istart + 1:istart + iend - 1), *, iostat=ios, iomsg=iomsg) d(i, j)
+              if(ios /= 0) then
+                write(msgout, 2) trim(iomsg), size(d, 2), i, trim(filename)
                 call error_stop(msg=trim(msgout))
               end if
               istart = istart + iend
             end do
 
-            read (line(istart + 1:), *, iostat=ios, iomsg=iomsg) d(i, ncol)
-            if (ios /= 0) then
-              write (msgout, 2) trim(iomsg), size(d, 2), i, trim(filename)
+            read(line(istart + 1:), *, iostat=ios, iomsg=iomsg) d(i, ncol)
+            if(ios /= 0) then
+              write(msgout, 2) trim(iomsg), size(d, 2), i, trim(filename)
               call error_stop(msg=trim(msgout))
             end if
 
@@ -216,10 +217,10 @@ contains
       else
         ! Otherwise pass default or user specified fmt string.
         do i = 1, max_rows_
-          read (s, fmt_, iostat=ios, iomsg=iomsg) d(i, :)
+          read(s, fmt_, iostat=ios, iomsg=iomsg) d(i, :)
 
-          if (ios /= 0) then
-            write (msgout, 2) trim(iomsg), size(d, 2), i, trim(filename)
+          if(ios /= 0) then
+            write(msgout, 2) trim(iomsg), size(d, 2), i, trim(filename)
             call error_stop(msg=trim(msgout))
           end if
 
@@ -286,17 +287,17 @@ contains
       footer_ = optval(trim(footer), '')
 
       if(index(delimiter_, comments_) /= 0) then
-          write (msgout,'(a)') 'savetxt error: delimiter string cannot include the comments string'
+          write(msgout,'(a)') 'savetxt error: delimiter string cannot include the comments string'
           call error_stop(msg=trim(msgout))
       end if
 
       if(scan(whitespace, comments_) /= 0) then
-          write (msgout,'(a)') 'savetxt error: comments string cannot include whitespaces'
+          write(msgout,'(a)') 'savetxt error: comments string cannot include whitespaces'
           call error_stop(msg=trim(msgout))
       end if
         
       if(scan(LF//CR//VT//FF, delimiter_ ) /= 0) then
-          write (msgout,'(a)') 'savetxt error: delimiter cannot include newline'
+          write(msgout,'(a)') 'savetxt error: delimiter cannot include newline'
           call error_stop(msg=trim(msgout))
       end if
         
@@ -313,21 +314,21 @@ contains
       ! !!! Check first argument (filename or unit) !!!!!!!!
       #:if 'filename' in arg1
       ! Check if it is open
-      inquire (file=filename, opened=opened)
+      inquire(file=filename, opened=opened)
       if(.not. opened) then
-          unit = open (filename, "w")
+          unit = open(filename, "w")
       else                      ! Check that it is writable
           inquire(file=filename, number=unit, write=writable)
-          if ((unit == -1) .or. (writable(1:1) /= 'Y')) then
-              write (msgout,'(a)') 'savetxt error: file '//filename//' not open for writing'
+          if((unit == -1) .or. (writable(1:1) /= 'Y')) then
+              write(msgout,'(a)') 'savetxt error: file '//filename//' not open for writing'
               call error_stop(msg=trim(msgout))
           end if
       end if
       fout = filename           ! fout is used for unified error message later
       #:else
-      inquire (unit=unit, opened=opened, write=writable) ! Check that was opened and is writable
+      inquire(unit=unit, opened=opened, write=writable) ! Check that was opened and is writable
       if((.not. opened) .or. (writable(1:1) /= 'Y')) then
-          write (msgout,'(a,i0,a)') 'savetxt error: unit ',unit,' not open for writing'
+          write(msgout,'(a,i0,a)') 'savetxt error: unit ',unit,' not open for writing'
           call error_stop(msg=trim(msgout))
       end if
       write(fout,'(i0)') unit
@@ -336,10 +337,10 @@ contains
       ! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
       ! Write the header if non-empty
-      if (header_ /= '') then
-          write (unit, '(A)', iostat=ios, iomsg=iomsg) prepend(header_, comments_)
-          if (ios/=0) then
-              write (msgout,'(a)') 'savetxt: error <'//trim(iomsg)//"> header to "//trim(fout)
+      if(header_ /= '') then
+          write(unit, '(A)', iostat=ios, iomsg=iomsg) prepend(header_, comments_)
+          if(ios/=0) then
+              write(msgout,'(a)') 'savetxt: error <'//trim(iomsg)//"> header to "//trim(fout)
               call error_stop(msg=trim(msgout))
           end if           
       end if
@@ -352,34 +353,54 @@ contains
         #:endif
                 iostat=ios,iomsg=iomsg) d(i, :)
         
-        if (ios/=0) then 
-            write (msgout,1) trim(iomsg),size(d,2),i,trim(fout)
+        if(ios/=0) then 
+            write(msgout,1) trim(iomsg),size(d,2),i,trim(fout)
             call error_stop(msg=trim(msgout))
         end if           
       end do
 
-      if (footer_ /= '') then
-          write (unit, '(A)', iostat=ios, iomsg=iomsg) prepend(footer_, comments_)
-          if (ios/=0) then
-              write (msgout,'(a)') 'savetxt: error <'//trim(iomsg)//"> footer to "//trim(fout)
+      if(footer_ /= '') then
+          write(unit, '(A)', iostat=ios, iomsg=iomsg) prepend(footer_, comments_)
+          if(ios/=0) then
+              write(msgout,'(a)') 'savetxt: error <'//trim(iomsg)//"> footer to "//trim(fout)
               call error_stop(msg=trim(msgout))
           end if           
-  
-        end do
-        if (footer_ /= '') write (unit, '(A)') comments_//" "//footer_
-  
-        #:if 'filename' in arg1
-        close(unit)
-        #:endif
+      end if
 
       #:if 'filename' in arg1
-      if (.not. opened)  close(unit) ! Only close if opened in the routine
+      if(.not. opened)  close(unit) ! Only close if opened in the routine
       #:endif
 
       1 format('savetxt: error <',a,'> writing ',i0,' values to line ',i0,' of ',a,'.')
       
     end subroutine savetxt_${t1[0]}$${k1}$${arg1[0]}$
   #:endfor
+  #:endfor
+  pure function prepend(Sin, comment) result(Sout)
+    character(len=*), intent(in) :: Sin
+    character(len=:), allocatable :: Sout
+    character(len=*), intent(in) :: comment 
+    character(len=len(comment)+1) :: com_
+    integer :: bol, eol       ! indexes of beginning and end of line
+
+    if(trim(Sin) == '') then
+        Sout = ''
+        return
+    end if
+    
+    com_ = comment//" "
+    bol = 1
+    Sout = com_              ! Initialize to comment the first line
+    do
+      eol = index(Sin(bol:), nl) + bol - 1 ! position of end of line in original string
+      if(eol == bol - 1) exit             ! index returned 0
+      Sout = Sout//Sin(bol:eol)//com_
+      bol = eol + 1
+    end do
+    if(eol < len(Sin)) Sout = Sout//Sin(eol + 1:) ! Add last line if not newline present
+
+  end function prepend
+
 
   integer function number_of_columns(s, skiprows, delimiter)
     !! version: experimental
@@ -398,30 +419,30 @@ contains
     skiprows_ = optval(skiprows, 0)
     delimiter_ = optval(delimiter, delimiter_default)
 
-    rewind (s)
+    rewind(s)
 
     do i = 1, skiprows_
-      read (s, *)
+      read(s, *)
     end do
     number_of_columns = 0
 
     ! Read first non-skipped line as a whole
     call get_line(s, line, ios)
-    if (ios /= 0 .or. .not. allocated(line)) return
+    if(ios /= 0 .or. .not. allocated(line)) return
 
     last_delim = .true.
-    if (delimiter_ == delimiter_default) then
+    if(delimiter_ == delimiter_default) then
       do i = 1, len(line)
         c = line(i:i)
-        if (last_delim .and. .not. is_blank(c)) number_of_columns = number_of_columns + 1
+        if(last_delim .and. .not. is_blank(c)) number_of_columns = number_of_columns + 1
         last_delim = is_blank(c)
       end do
     else
       do i = 1, len(line)
-        if (line(i:i) == delimiter_) number_of_columns = number_of_columns + 1
+        if(line(i:i) == delimiter_) number_of_columns = number_of_columns + 1
       end do
-      if (number_of_columns == 0) then
-        if (len_trim(line) /= 0) number_of_columns = 1
+      if(number_of_columns == 0) then
+        if(len_trim(line) /= 0) number_of_columns = 1
       else
         number_of_columns = number_of_columns + 1
       end if
@@ -440,8 +461,8 @@ contains
     rewind (s)
     nrows = 0
     do
-      read (s, *, iostat=ios)
-      if (ios /= 0) exit
+      read(s, *, iostat=ios)
+      if(ios /= 0) exit
       nrows = nrows + 1
     end do
 
@@ -449,7 +470,7 @@ contains
 
   end function number_of_rows
 
-  integer function open (filename, mode, iostat) result(u)
+  integer function open(filename, mode, iostat) result(u)
     !! version: experimental
     !!
     !! Opens a file
@@ -486,36 +507,36 @@ contains
 
     mode_ = parse_mode(optval(mode, ""))
 
-    select case (mode_(1:2))
-    case ('r')
+    select case(mode_(1:2))
+    case('r')
       action_ = 'read'
       position_ = 'asis'
       status_ = 'old'
-    case ('w')
+    case('w')
       action_ = 'write'
       position_ = 'asis'
       status_ = 'replace'
-    case ('a')
+    case('a')
       action_ = 'write'
       position_ = 'append'
       status_ = 'old'
-    case ('x')
+    case('x')
       action_ = 'write'
       position_ = 'asis'
       status_ = 'new'
-    case ('r+')
+    case('r+')
       action_ = 'readwrite'
       position_ = 'asis'
       status_ = 'old'
-    case ('w+')
+    case('w+')
       action_ = 'readwrite'
       position_ = 'asis'
       status_ = 'replace'
-    case ('a+')
+    case('a+')
       action_ = 'readwrite'
       position_ = 'append'
       status_ = 'old'
-    case ('x+')
+    case('x+')
       action_ = 'readwrite'
       position_ = 'asis'
       status_ = 'new'
@@ -523,24 +544,24 @@ contains
       call error_stop("Unsupported mode: "//mode_(1:2))
     end select
 
-    select case (mode_(3:3))
-    case ('t')
+    select case(mode_(3:3))
+    case('t')
       form_ = 'formatted'
       access_ = 'sequential'
-    case ('b')
+    case('b')
       form_ = 'unformatted'
       access_ = 'stream'
     case default
       call error_stop("Unsupported mode: "//mode_(3:3))
     end select
 
-    if (present(iostat)) then
-      open (newunit=u, file=filename, &
+    if(present(iostat)) then
+      open(newunit=u, file=filename, &
             action=action_, position=position_, status=status_, &
             access=access_, form=form_, &
             iostat=iostat)
     else
-      open (newunit=u, file=filename, &
+      open(newunit=u, file=filename, &
             action=action_, position=position_, status=status_, &
             access=access_, form=form_)
     end if
@@ -556,25 +577,25 @@ contains
 
     mode_ = 'r t'
 
-    if (len_trim(mode) == 0) return
+    if(len_trim(mode) == 0) return
     a = trim(adjustl(mode))
 
     lfirst = .true.
     do i = 1, len(a)
-      if (lfirst(1) &
+      if(lfirst(1) &
           .and. (a(i:i) == 'r' .or. a(i:i) == 'w' .or. a(i:i) == 'a' .or. a(i:i) == 'x') &
           ) then
         mode_(1:1) = a(i:i)
         lfirst(1) = .false.
-      else if (lfirst(2) .and. a(i:i) == '+') then
+      else if(lfirst(2) .and. a(i:i) == '+') then
         mode_(2:2) = a(i:i)
         lfirst(2) = .false.
-      else if (lfirst(3) .and. (a(i:i) == 't' .or. a(i:i) == 'b')) then
+      else if(lfirst(3) .and. (a(i:i) == 't' .or. a(i:i) == 'b')) then
         mode_(3:3) = a(i:i)
         lfirst(3) = .false.
-      else if (a(i:i) == ' ') then
+      else if(a(i:i) == ' ') then
         cycle
-      else if (any(.not. lfirst)) then
+      else if(any(.not. lfirst)) then
         call error_stop("Wrong mode: "//trim(a))
       else
         call error_stop("Wrong character: "//a(i:i))
@@ -601,14 +622,14 @@ contains
     integer :: chunk, stat
     logical :: opened
 
-    if (unit /= -1) then
-      inquire (unit=unit, opened=opened)
+    if(unit /= -1) then
+      inquire(unit=unit, opened=opened)
     else
       opened = .false.
     end if
 
-    if (opened) then
-      open (unit=unit, pad="yes", iostat=stat, iomsg=msg)
+    if(opened) then
+      open(unit=unit, pad="yes", iostat=stat, iomsg=msg)
     else
       stat = 1
       msg = "Unit is not connected"
@@ -616,16 +637,16 @@ contains
 
     line = ""
     do while (stat == 0)
-      read (unit, '(a)', advance='no', iostat=stat, iomsg=msg, size=chunk) buffer
-      if (stat > 0) exit
+      read(unit, '(a)', advance='no', iostat=stat, iomsg=msg, size=chunk) buffer
+      if(stat > 0) exit
       line = line//buffer(:chunk)
     end do
-    if (is_iostat_eor(stat)) stat = 0
+    if(is_iostat_eor(stat)) stat = 0
 
-    if (stat /= 0 .and. present(iomsg)) iomsg = trim(msg)
-    if (present(iostat)) then
+    if(stat /= 0 .and. present(iomsg)) iomsg = trim(msg)
+    if(present(iostat)) then
       iostat = stat
-    else if (stat /= 0) then
+    else if(stat /= 0) then
       call error_stop(trim(msg))
     end if
   end subroutine get_line_char
@@ -722,25 +743,25 @@ contains
     logical :: is_present, want_deleted
 
     !> Check if the file should be deleted after reading
-    if (present(delete)) then
+    if(present(delete)) then
       want_deleted = delete
     else
       want_deleted = .false.
     end if
 
     !> Check file existing
-    inquire (file=filename, exist=is_present)
-    if (.not. is_present) then
-      allocate (character(len=0) :: file)
+    inquire(file=filename, exist=is_present)
+    if(.not. is_present) then
+      allocate(character(len=0) :: file)
       err0 = state_type('get_file', STDLIB_IO_ERROR, 'File not present:', filename)
       call err0%handle(err)
       return
     end if
 
     !> Retrieve file size
-    inquire (file=filename, size=file_size)
+    inquire(file=filename, size=file_size)
 
-    invalid_size: if (file_size < 0) then
+    invalid_size: if(file_size < 0) then
 
       allocate (character(len=0) :: file)
       err0 = state_type('get_file', STDLIB_IO_ERROR, filename, 'has invalid size=', file_size)
@@ -750,27 +771,27 @@ contains
     end if invalid_size
 
     ! Read file
-    open (newunit=lun, file=filename, &
+    open(newunit=lun, file=filename, &
           form='unformatted', action='read', access='stream', status='old', &
           iostat=iostat, iomsg=iomsg)
 
-    if (iostat /= 0) then
+    if(iostat /= 0) then
       allocate (character(len=0) :: file)
       err0 = state_type('get_file', STDLIB_IO_ERROR, 'Cannot open', filename, 'for read:', iomsg)
       call err0%handle(err)
       return
     end if
 
-    allocate (character(len=file_size) :: file)
+    allocate(character(len=file_size) :: file)
 
-    read_data: if (file_size > 0) then
+    read_data: if(file_size > 0) then
 
-      read (lun, pos=1, iostat=iostat, iomsg=iomsg) file
+      read(lun, pos=1, iostat=iostat, iomsg=iomsg) file
 
       ! Read error
-      if (iostat /= 0) then
+      if(iostat /= 0) then
 
-        inquire (unit=lun, pos=errpos)
+        inquire(unit=lun, pos=errpos)
         err0 = state_type('get_file', STDLIB_IO_ERROR, iomsg, '(', filename, 'at byte', errpos, ')')
         call err0%handle(err)
         return
@@ -779,12 +800,12 @@ contains
 
     end if read_data
 
-    if (want_deleted) then
+    if(want_deleted) then
       close (lun, iostat=iostat, status='delete')
-      if (iostat /= 0) err0 = state_type('get_file', STDLIB_IO_ERROR, 'Cannot delete', filename, 'after reading')
+      if(iostat /= 0) err0 = state_type('get_file', STDLIB_IO_ERROR, 'Cannot delete', filename, 'after reading')
     else
       close (lun, iostat=iostat)
-      if (iostat /= 0) err0 = state_type('get_file', STDLIB_IO_ERROR, 'Cannot close', filename, 'after reading')
+      if(iostat /= 0) err0 = state_type('get_file', STDLIB_IO_ERROR, 'Cannot close', filename, 'after reading')
     end if
 
     ! Process output
