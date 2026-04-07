@@ -178,7 +178,7 @@ contains
         ! Use list directed read if user has specified fmt='*'
         if (is_blank(delimiter_) .or. delimiter_ == ",") then
           do i = 1, max_rows_
-            read (s,*,iostat=ios,iomsg=iomsg) d(i, :)
+            read(s,*,iostat=ios,iomsg=iomsg) d(i, :)
             
             if (ios/=0) then 
               write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
@@ -198,7 +198,7 @@ contains
             istart = 0
             do j = 1, ncol - 1
               iend = index(line(istart+1:), delimiter_)
-              read (line(istart+1:istart+iend-1),*,iostat=ios,iomsg=iomsg) d(i, j)
+              read(line(istart+1:istart+iend-1),*,iostat=ios,iomsg=iomsg) d(i, j)
               if (ios/=0) then 
                  write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
                  call error_stop(msg=trim(msgout))
@@ -206,7 +206,7 @@ contains
               istart = istart + iend
             end do
   
-            read (line(istart+1:),*,iostat=ios,iomsg=iomsg) d(i, ncol)
+            read(line(istart+1:),*,iostat=ios,iomsg=iomsg) d(i, ncol)
             if (ios/=0) then 
                write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
                call error_stop(msg=trim(msgout))
@@ -217,7 +217,7 @@ contains
       else
         ! Otherwise pass default or user specified fmt string.
         do i = 1, max_rows_
-          read (s,fmt_,iostat=ios,iomsg=iomsg) d(i, :)
+          read(s,fmt_,iostat=ios,iomsg=iomsg) d(i, :)
           
           if (ios/=0) then 
              write(msgout,2) trim(iomsg),size(d,2),i,trim(filename)
@@ -287,17 +287,17 @@ contains
       footer_ = optval(trim(footer), '')
 
       if(index(delimiter_, comments_) /= 0) then
-          write (msgout,'(a)') 'savetxt error: delimiter string cannot include the comments string'
+          write(msgout,'(a)') 'savetxt error: delimiter string cannot include the comments string'
           call error_stop(msg=trim(msgout))
       end if
 
       if(scan(whitespace, comments_) /= 0) then
-          write (msgout,'(a)') 'savetxt error: comments string cannot include whitespaces'
+          write(msgout,'(a)') 'savetxt error: comments string cannot include whitespaces'
           call error_stop(msg=trim(msgout))
       end if
         
       if(scan(LF//CR//VT//FF, delimiter_ ) /= 0) then
-          write (msgout,'(a)') 'savetxt error: delimiter cannot include newline'
+          write(msgout,'(a)') 'savetxt error: delimiter cannot include newline'
           call error_stop(msg=trim(msgout))
       end if
         
@@ -314,21 +314,21 @@ contains
       ! !!! Check first argument (filename or unit) !!!!!!!!
       #:if 'filename' in arg1
       ! Check if it is open
-      inquire (file=filename, opened=opened)
+      inquire(file=filename, opened=opened)
       if(.not. opened) then
-          unit = open (filename, "w")
+          unit = open(filename, "w")
       else                      ! Check that it is writable
           inquire(file=filename, number=unit, write=writable)
           if ((unit == -1) .or. (writable(1:1) /= 'Y')) then
-              write (msgout,'(a)') 'savetxt error: file '//filename//' not open for writing'
+              write(msgout,'(a)') 'savetxt error: file '//filename//' not open for writing'
               call error_stop(msg=trim(msgout))
           end if
       end if
       fout = filename           ! fout is used for unified error message later
       #:else
-      inquire (unit=unit, opened=opened, write=writable) ! Check that was opened and is writable
+      inquire(unit=unit, opened=opened, write=writable) ! Check that was opened and is writable
       if((.not. opened) .or. (writable(1:1) /= 'Y')) then
-          write (msgout,'(a,i0,a)') 'savetxt error: unit ',unit,' not open for writing'
+          write(msgout,'(a,i0,a)') 'savetxt error: unit ',unit,' not open for writing'
           call error_stop(msg=trim(msgout))
       end if
       write(fout,'(i0)') unit
@@ -338,9 +338,9 @@ contains
 
       ! Write the header if non-empty
       if (header_ /= '') then
-          write (unit, '(A)', iostat=ios, iomsg=iomsg) prepend(header_, comments_)
+          write(unit, '(A)', iostat=ios, iomsg=iomsg) prepend(header_, comments_)
           if (ios/=0) then
-              write (msgout,'(a)') 'savetxt: error <'//trim(iomsg)//"> header to "//trim(fout)
+              write(msgout,'(a)') 'savetxt: error <'//trim(iomsg)//"> header to "//trim(fout)
               call error_stop(msg=trim(msgout))
           end if           
       end if
@@ -354,15 +354,15 @@ contains
                 iostat=ios,iomsg=iomsg) d(i, :)
         
         if (ios/=0) then 
-            write (msgout,1) trim(iomsg),size(d,2),i,trim(fout)
+            write(msgout,1) trim(iomsg),size(d,2),i,trim(fout)
             call error_stop(msg=trim(msgout))
         end if           
       end do
 
       if (footer_ /= '') then
-          write (unit, '(A)', iostat=ios, iomsg=iomsg) prepend(footer_, comments_)
+          write(unit, '(A)', iostat=ios, iomsg=iomsg) prepend(footer_, comments_)
           if (ios/=0) then
-              write (msgout,'(a)') 'savetxt: error <'//trim(iomsg)//"> footer to "//trim(fout)
+              write(msgout,'(a)') 'savetxt: error <'//trim(iomsg)//"> footer to "//trim(fout)
               call error_stop(msg=trim(msgout))
           end if           
       end if

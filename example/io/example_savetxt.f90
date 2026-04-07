@@ -8,15 +8,15 @@ program example_savetxt
     x = reshape([1, 2, 3, 4, 5, 6], [3, 2])
 
     ! Output to file, default options
-    call savetxt('example1.dat', x)
-    ! Result in example1.dat:
+    call savetxt('example.dat', x)
+    ! Result in example.dat:
     !  1.00000000E+00  4.00000000E+00
     !  2.00000000E+00  5.00000000E+00
     !  3.00000000E+00  6.00000000E+00
     !
     ! Output to file, with custom delimiter
-    call savetxt('example1.csv', x, delimiter=',')
-    ! Result in example1.csv:
+    call savetxt('example.csv', x, delimiter=',')
+    ! Result in example.csv:
     ! 1.00000000E+00, 4.00000000E+00
     ! 2.00000000E+00, 5.00000000E+00
     ! 3.00000000E+00, 6.00000000E+00
