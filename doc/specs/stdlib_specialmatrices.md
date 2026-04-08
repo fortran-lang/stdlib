@@ -70,6 +70,8 @@ Tridiagonal matrices are available with all supported data types as `tridiagonal
 
 `A = ` [[stdlib_specialmatrices(module):tridiagonal(interface)]] `(dl, dv, du, n [, err])`
 
+Where `err` is an optional `intent(out)` argument of type `linalg_state_type`. When `err` is not present, the corresponding `tridiagonal` call is `pure` and signals invalid sizes or array shape mismatches via an internal `error stop`. When `err` is present, the impure overload is used instead, and any such error is reported by setting the `err` variable rather than executing an `error stop`.
+
 #### Arguments
 
 ##### Constructing from arrays
@@ -319,5 +321,5 @@ The definition of all standard arithmetic operators have been overloaded to be a
 `B = alpha` [[stdlib_specialmatrices(module):operator(*)(interface)]] `A`
 
 @note
-For addition (`+`) and subtraction (`-`), matrices `A`, `B` and `C` all need to be of the same type and kind. For scalar multiplication (`*`), `A` and `B` need to be of the same type and kind, while `alpha` is either `real` or `complex` (with the same kind again) depending on the type being used.
+For addition (`+`) and subtraction (`-`), the operand matrices `A` and `B` must be of the same type and kind and must have matching dimensions (`n`). The result `C` of the expression will then have the same dimensions as `A` (and `B`) when the operation is valid. For scalar multiplication (`*`), `A` and `B` need to be of the same type and kind, while `alpha` is either `real` or `complex` (with the same kind again) depending on the type being used.
 @endnote
