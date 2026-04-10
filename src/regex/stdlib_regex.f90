@@ -166,17 +166,29 @@ contains
         end if
       else if (c == '.') then
         t%tag = TOK_ANY
-      else if (c == '*') then
-        t%tag = TOK_STAR
-      else if (c == '+') then
-        t%tag = TOK_PLUS
-      else if (c == '?') then
-        t%tag = TOK_QUEST
+      else if (c == '*' .or. c == '+' .or. c == '?') then
+        if (num_tokens == 0) then
+           stat = 1
+        else
+           ! Valid repeatable tags: CHAR, ANY, CLASS, RPAREN
+           if (tmp_tokens(num_tokens)%tag /= TOK_CHAR .and. &
+               tmp_tokens(num_tokens)%tag /= TOK_ANY .and. &
+               tmp_tokens(num_tokens)%tag /= TOK_CLASS .and. &
+               tmp_tokens(num_tokens)%tag /= TOK_RPAREN) then
+              stat = 1
+           end if
+        end if
+        if (c == '*') t%tag = TOK_STAR
+        if (c == '+') t%tag = TOK_PLUS
+        if (c == '?') t%tag = TOK_QUEST
       else if (c == '|') then
         t%tag = TOK_ALT
       else if (c == '(') then
         t%tag = TOK_LPAREN
       else if (c == ')') then
+        if (num_tokens > 0) then
+           if (tmp_tokens(num_tokens)%tag == TOK_LPAREN) stat = 1
+        end if
         t%tag = TOK_RPAREN
       else if (c == '^') then
         t%tag = TOK_START
