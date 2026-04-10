@@ -3,13 +3,11 @@ module test_specialmatrices
     use stdlib_kinds
     use stdlib_linalg, only: hermitian
     use stdlib_linalg_state, only: linalg_state_type
-    use stdlib_math, only: all_close
+    use stdlib_math, only: all_close, is_close
     use stdlib_specialmatrices
     use stdlib_strings, only: to_string
     implicit none
-
 contains
-
 
     !> Collect all exported unit tests
     subroutine collect_suite(testsuite)
@@ -22,7 +20,9 @@ contains
             new_unittest('sym_tridiagonal', test_sym_tridiagonal), &
             new_unittest('sym_tridiagonal error handling', test_sym_tridiagonal_error_handling), &
             new_unittest('symmetric tridiagonal 1x1 dense', test_sym_tridiagonal_1x1), &
-            new_unittest('symmetric tridiagonal arithmetic', test_sym_tridiagonal_arithmetic) &
+            new_unittest('symmetric tridiagonal arithmetic', test_sym_tridiagonal_arithmetic), &
+            new_unittest('tridiagonal 1x1 edge case', test_tridiagonal_1x1), &
+            new_unittest('tridiagonal arithmetic', test_tridiagonal_arithmetic) &
         ]
     end subroutine
 
@@ -99,7 +99,7 @@ contains
                 "spmv(fail): y = alpha*A*x + beta*y, alpha: "//to_string(alpha)//", beta: "//to_string(beta))
             if (allocated(error)) return
 
-            ! Test y = alpha * A.T @ x beta * y for random values of alpha and beta
+            ! Test y = alpha * A.T @ x + beta * y for random values of alpha and beta
             y1 = 0.0_wp
             call random_number(alpha)
             call random_number(beta)
@@ -182,7 +182,7 @@ contains
                 "spmv(fail): y = alpha*A*x + beta*y, alpha: "//to_string(alpha)//", beta: "//to_string(beta))
             if (allocated(error)) return
 
-            ! Test y = alpha * A.T @ x beta * y for random values of alpha and beta
+            ! Test y = alpha * A.T @ x + beta * y for random values of alpha and beta
             y1 = 0.0_wp
             call random_number(alpha)
             call random_number(beta)
@@ -373,8 +373,9 @@ contains
             integer, parameter :: wp = sp
             integer, parameter :: n = 5
             type(tridiagonal_sp_type) :: A
-            real(sp), allocatable :: dl(:), dv(:), du(:)
             type(linalg_state_type) :: state
+            
+            real(sp), allocatable :: dl(:), du(:), dv(:)
             integer :: i
 
             !> Test constructor from arrays.
@@ -394,8 +395,9 @@ contains
             integer, parameter :: wp = dp
             integer, parameter :: n = 5
             type(tridiagonal_dp_type) :: A
-            real(dp), allocatable :: dl(:), dv(:), du(:)
             type(linalg_state_type) :: state
+            
+            real(dp), allocatable :: dl(:), du(:), dv(:)
             integer :: i
 
             !> Test constructor from arrays.
@@ -563,8 +565,120 @@ contains
             if (allocated(error)) return
         end block
     end subroutine
-end module
 
+    subroutine test_tridiagonal_1x1(error)
+        !> Test 1x1 matrix edge case for dense conversion
+        type(error_type), allocatable, intent(out) :: error
+        block
+            integer, parameter :: wp = sp
+            type(tridiagonal_sp_type) :: A
+            real(sp), allocatable :: Amat(:,:)
+            
+            real(sp), parameter :: dl(0) = [real(sp) ::]
+            real(sp), parameter :: du(0) = [real(sp) ::]
+            real(sp), parameter :: dv(1) = [5.0_wp]
+            
+            A = tridiagonal(dl, dv, du) 
+            Amat = dense(A)
+
+            ! Check if the 1x1 matrix converted properly at runtime without segfaulting
+            call check(error, size(Amat, 1) == 1, .true.)
+            if (allocated(error)) return
+            call check(error, size(Amat, 2) == 1, .true.)
+            if (allocated(error)) return
+            call check(error, is_close(Amat(1,1), 5.0_wp), .true.)
+            if (allocated(error)) return
+        end block
+        block
+            integer, parameter :: wp = dp
+            type(tridiagonal_dp_type) :: A
+            real(dp), allocatable :: Amat(:,:)
+            
+            real(dp), parameter :: dl(0) = [real(dp) ::]
+            real(dp), parameter :: du(0) = [real(dp) ::]
+            real(dp), parameter :: dv(1) = [5.0_wp]
+            
+            A = tridiagonal(dl, dv, du) 
+            Amat = dense(A)
+
+            ! Check if the 1x1 matrix converted properly at runtime without segfaulting
+            call check(error, size(Amat, 1) == 1, .true.)
+            if (allocated(error)) return
+            call check(error, size(Amat, 2) == 1, .true.)
+            if (allocated(error)) return
+            call check(error, is_close(Amat(1,1), 5.0_wp), .true.)
+            if (allocated(error)) return
+        end block
+    end subroutine
+
+    subroutine test_tridiagonal_arithmetic(error)
+        !> Test arithmetic operations and optimization
+        type(error_type), allocatable, intent(out) :: error
+        block
+            integer, parameter :: wp = sp
+            integer, parameter :: n = 3
+            type(tridiagonal_sp_type) :: A, B, C
+            
+            real(sp), parameter :: dl1(n-1) = [1.0_wp, 1.0_wp]
+            real(sp), parameter :: dv1(n)   = [2.0_wp, 2.0_wp, 2.0_wp]
+            real(sp), parameter :: du1(n-1) = [3.0_wp, 3.0_wp]
+            
+            real(sp), parameter :: dl2(n-1) = [4.0_wp, 4.0_wp]
+            real(sp), parameter :: dv2(n)   = [5.0_wp, 5.0_wp, 5.0_wp]
+            real(sp), parameter :: du2(n-1) = [6.0_wp, 6.0_wp]
+            
+            A = tridiagonal(dl1, dv1, du1)
+            B = tridiagonal(dl2, dv2, du2)
+            
+            ! Addition test - use dense() to bypass private component restrictions
+            C = A + B
+            call check(error, all_close(dense(C), dense(A) + dense(B)), .true.)
+            if (allocated(error)) return
+            
+            ! Subtraction test
+            C = A - B
+            call check(error, all_close(dense(C), dense(A) - dense(B)), .true.)
+            if (allocated(error)) return
+            
+            ! Scalar multiplication test
+            C = 3.0_wp * A
+            call check(error, all_close(dense(C), 3.0_wp * dense(A)), .true.)
+            if (allocated(error)) return
+        end block
+        block
+            integer, parameter :: wp = dp
+            integer, parameter :: n = 3
+            type(tridiagonal_dp_type) :: A, B, C
+            
+            real(dp), parameter :: dl1(n-1) = [1.0_wp, 1.0_wp]
+            real(dp), parameter :: dv1(n)   = [2.0_wp, 2.0_wp, 2.0_wp]
+            real(dp), parameter :: du1(n-1) = [3.0_wp, 3.0_wp]
+            
+            real(dp), parameter :: dl2(n-1) = [4.0_wp, 4.0_wp]
+            real(dp), parameter :: dv2(n)   = [5.0_wp, 5.0_wp, 5.0_wp]
+            real(dp), parameter :: du2(n-1) = [6.0_wp, 6.0_wp]
+            
+            A = tridiagonal(dl1, dv1, du1)
+            B = tridiagonal(dl2, dv2, du2)
+            
+            ! Addition test - use dense() to bypass private component restrictions
+            C = A + B
+            call check(error, all_close(dense(C), dense(A) + dense(B)), .true.)
+            if (allocated(error)) return
+            
+            ! Subtraction test
+            C = A - B
+            call check(error, all_close(dense(C), dense(A) - dense(B)), .true.)
+            if (allocated(error)) return
+            
+            ! Scalar multiplication test
+            C = 3.0_wp * A
+            call check(error, all_close(dense(C), 3.0_wp * dense(A)), .true.)
+            if (allocated(error)) return
+        end block
+    end subroutine
+
+end module
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
@@ -578,7 +692,7 @@ program tester
     stat = 0
 
     testsuites = [ &
-        new_testsuite("specialmatrices", collect_suite) &
+        new_testsuite("special_matrices", collect_suite) &
         ]
 
     do is = 1, size(testsuites)
