@@ -8,11 +8,14 @@ module stdlib_datetime
     implicit none
     private
 
-    public :: datetime_type, timedelta_type
-    public :: datetime, timedelta, now, now_utc, epoch
+    public :: datetime_type, timedelta_type, date_type, time_type
+    public :: datetime, timedelta, date, time_of_day
+    public :: now, now_utc, epoch, today, current_time
     public :: parse_datetime, format_datetime, format_timedelta
+    public :: parse_date, parse_time, format_date, format_time
     public :: is_leap_year, days_in_month, days_in_year
     public :: day_of_year, day_of_week, to_utc, total_seconds
+    public :: get_date, get_time
     public :: operator(+), operator(-)
     public :: operator(==), operator(/=)
     public :: operator(<), operator(<=)
@@ -43,15 +46,48 @@ module stdlib_datetime
         integer :: milliseconds = 0   !! Milliseconds (0-999)
     end type timedelta_type
 
+    type :: date_type
+        !! version: experimental
+        !!
+        !! Represents a calendar date (no time-of-day component).
+        integer :: year  = 1   !! Year (1-9999)
+        integer :: month = 1   !! Month (1-12)
+        integer :: day   = 1   !! Day (1-31)
+    end type date_type
+
+    type :: time_type
+        !! version: experimental
+        !!
+        !! Represents a clock time (no date component).
+        integer :: hour        = 0   !! Hour (0-23)
+        integer :: minute      = 0   !! Minute (0-59)
+        integer :: second      = 0   !! Second (0-59)
+        integer :: millisecond = 0   !! Millisecond (0-999)
+        integer :: utc_offset_minutes = 0 !! UTC offset in minutes
+    end type time_type
+
     integer(int64), parameter :: MS_PER_SEC  = 1000_int64
     integer(int64), parameter :: MS_PER_MIN  = 60000_int64
     integer(int64), parameter :: MS_PER_HOUR = 3600000_int64
     integer(int64), parameter :: MS_PER_DAY  = 86400000_int64
 
+    interface datetime
+        !! version: experimental
+        !!
+        !! Create a datetime_type from components or from
+        !! date_type and time_type.
+        module procedure datetime_from_components
+        module procedure datetime_from_date_time
+    end interface
+
     interface operator(+)
         module procedure dt_plus_td
         module procedure td_plus_dt
         module procedure td_plus_td
+        module procedure date_plus_td
+        module procedure td_plus_date
+        module procedure time_plus_td
+        module procedure td_plus_time
     end interface
 
     interface operator(-)
@@ -59,46 +95,88 @@ module stdlib_datetime
         module procedure dt_minus_dt
         module procedure td_minus_td
         module procedure td_negate
+        module procedure date_minus_td
+        module procedure date_minus_date
+        module procedure time_minus_td
+        module procedure time_minus_time
     end interface
 
     interface operator(==)
         module procedure dt_eq
         module procedure td_eq
+        module procedure date_eq
+        module procedure time_eq
     end interface
 
     interface operator(/=)
         module procedure dt_ne
         module procedure td_ne
+        module procedure date_ne
+        module procedure time_ne
     end interface
 
     interface operator(<)
         module procedure dt_lt
         module procedure td_lt
+        module procedure date_lt
+        module procedure time_lt
     end interface
 
     interface operator(<=)
         module procedure dt_le
         module procedure td_le
+        module procedure date_le
+        module procedure time_le
     end interface
 
     interface operator(>)
         module procedure dt_gt
         module procedure td_gt
+        module procedure date_gt
+        module procedure time_gt
     end interface
 
     interface operator(>=)
         module procedure dt_ge
         module procedure td_ge
+        module procedure date_ge
+        module procedure time_ge
     end interface
 
     interface is_leap_year
         module procedure is_leap_year_int
         module procedure is_leap_year_dt
+        module procedure is_leap_year_date
+    end interface
+
+    interface day_of_year
+        !! version: experimental
+        !!
+        !! Return the ordinal day of the year (1-366).
+        module procedure day_of_year_dt
+        module procedure day_of_year_date
+    end interface
+
+    interface day_of_week
+        !! version: experimental
+        !!
+        !! Return ISO weekday (1=Monday ... 7=Sunday).
+        module procedure day_of_week_dt
+        module procedure day_of_week_date
+    end interface
+
+    interface to_utc
+        !! version: experimental
+        !!
+        !! Convert to UTC.
+        module procedure to_utc_dt
+        module procedure to_utc_time
     end interface
 
 contains
 
-    pure function datetime(year, month, day, hour, minute, &
+    pure function datetime_from_components(year, month, day, &
+                           hour, minute, &
                            second, millisecond, &
                            utc_offset_minutes) result(dt)
         !! version: experimental
@@ -118,7 +196,56 @@ contains
         if (present(millisecond)) dt%millisecond = millisecond
         if (present(utc_offset_minutes)) &
             dt%utc_offset_minutes = utc_offset_minutes
-    end function datetime
+    end function datetime_from_components
+
+    pure function datetime_from_date_time(d, t) result(dt)
+        !! version: experimental
+        !!
+        !! Create a datetime_type from a date_type and an
+        !! optional time_type.
+        type(date_type), intent(in) :: d
+        type(time_type), intent(in), optional :: t
+        type(datetime_type) :: dt
+        dt%year  = d%year
+        dt%month = d%month
+        dt%day   = d%day
+        if (present(t)) then
+            dt%hour               = t%hour
+            dt%minute             = t%minute
+            dt%second             = t%second
+            dt%millisecond        = t%millisecond
+            dt%utc_offset_minutes = t%utc_offset_minutes
+        end if
+    end function datetime_from_date_time
+
+    pure function date(year, month, day) result(d)
+        !! version: experimental
+        !!
+        !! Create a date_type from year, month, day components.
+        integer, intent(in), optional :: year, month, day
+        type(date_type) :: d
+        if (present(year))  d%year  = year
+        if (present(month)) d%month = month
+        if (present(day))   d%day   = day
+    end function date
+
+    pure function time_of_day(hour, minute, second, &
+                              millisecond, &
+                              utc_offset_minutes) result(t)
+        !! version: experimental
+        !!
+        !! Create a time_type from clock components.
+        integer, intent(in), optional :: hour, minute, second
+        integer, intent(in), optional :: millisecond
+        integer, intent(in), optional :: utc_offset_minutes
+        type(time_type) :: t
+        if (present(hour))        t%hour        = hour
+        if (present(minute))      t%minute      = minute
+        if (present(second))      t%second      = second
+        if (present(millisecond)) t%millisecond = millisecond
+        if (present(utc_offset_minutes)) &
+            t%utc_offset_minutes = utc_offset_minutes
+    end function time_of_day
 
     pure function timedelta(days, hours, minutes, seconds, &
                             milliseconds) result(td)
@@ -173,6 +300,45 @@ contains
         type(datetime_type) :: dt
         dt = datetime_type(1970, 1, 1, 0, 0, 0, 0, 0)
     end function epoch
+
+    function today() result(d)
+        !! version: experimental
+        !!
+        !! Return today's local date.
+        type(date_type) :: d
+        integer :: v(8)
+        call date_and_time(values=v)
+        d = date_type(v(1), v(2), v(3))
+    end function today
+
+    function current_time() result(t)
+        !! version: experimental
+        !!
+        !! Return the current local clock time.
+        type(time_type) :: t
+        integer :: v(8)
+        call date_and_time(values=v)
+        t = time_type(v(5), v(6), v(7), v(8), v(4))
+    end function current_time
+
+    pure function get_date(dt) result(d)
+        !! version: experimental
+        !!
+        !! Extract the date part from a datetime_type.
+        type(datetime_type), intent(in) :: dt
+        type(date_type) :: d
+        d = date_type(dt%year, dt%month, dt%day)
+    end function get_date
+
+    pure function get_time(dt) result(t)
+        !! version: experimental
+        !!
+        !! Extract the time part from a datetime_type.
+        type(datetime_type), intent(in) :: dt
+        type(time_type) :: t
+        t = time_type(dt%hour, dt%minute, dt%second, &
+                      dt%millisecond, dt%utc_offset_minutes)
+    end function get_time
 
     pure function dt_plus_td(dt, td) result(res)
         !! datetime + timedelta
@@ -229,6 +395,114 @@ contains
         type(timedelta_type) :: res
         res = ms_to_td(-td_to_ms(td))
     end function td_negate
+
+    pure function date_plus_td(d, td) result(res)
+        !! version: experimental
+        !!
+        !! date + timedelta -> date (adds whole days only).
+        type(date_type), intent(in)      :: d
+        type(timedelta_type), intent(in) :: td
+        type(date_type) :: res
+        integer(int64) :: total_days
+        total_days = days_from_civil(d%year, d%month, d%day) &
+                   + int(td%days, int64)
+        call civil_from_days(total_days, &
+                             res%year, res%month, res%day)
+    end function date_plus_td
+
+    pure function td_plus_date(td, d) result(res)
+        !! timedelta + date (commutative)
+        type(timedelta_type), intent(in) :: td
+        type(date_type), intent(in)      :: d
+        type(date_type) :: res
+        res = date_plus_td(d, td)
+    end function td_plus_date
+
+    pure function date_minus_td(d, td) result(res)
+        !! date - timedelta -> date
+        type(date_type), intent(in)      :: d
+        type(timedelta_type), intent(in) :: td
+        type(date_type) :: res
+        integer(int64) :: total_days
+        total_days = days_from_civil(d%year, d%month, d%day) &
+                   - int(td%days, int64)
+        call civil_from_days(total_days, &
+                             res%year, res%month, res%day)
+    end function date_minus_td
+
+    pure function date_minus_date(d1, d2) result(res)
+        !! date - date -> timedelta (difference in whole days)
+        type(date_type), intent(in) :: d1, d2
+        type(timedelta_type) :: res
+        integer(int64) :: diff
+        diff = days_from_civil(d1%year, d1%month, d1%day) &
+             - days_from_civil(d2%year, d2%month, d2%day)
+        res = timedelta_type(int(diff), 0, 0)
+    end function date_minus_date
+
+    pure function time_plus_td(t, td) result(res)
+        !! version: experimental
+        !!
+        !! time + timedelta -> time (modulo 24-hour wrap).
+        type(time_type), intent(in)      :: t
+        type(timedelta_type), intent(in) :: td
+        type(time_type) :: res
+        integer(int64) :: total_ms, rem
+        ! Convert time to ms since midnight
+        total_ms = int(t%hour, int64)        * MS_PER_HOUR &
+                 + int(t%minute, int64)      * MS_PER_MIN  &
+                 + int(t%second, int64)      * MS_PER_SEC  &
+                 + int(t%millisecond, int64)
+        ! Add full timedelta (including days)
+        total_ms = total_ms + td_to_ms(td)
+        ! Wrap around 24 hours (modulo always non-negative
+        ! for positive divisor in Fortran)
+        total_ms = modulo(total_ms, MS_PER_DAY)
+        res%hour        = int(total_ms / MS_PER_HOUR)
+        rem = mod(total_ms, MS_PER_HOUR)
+        res%minute      = int(rem / MS_PER_MIN)
+        rem = mod(rem, MS_PER_MIN)
+        res%second      = int(rem / MS_PER_SEC)
+        res%millisecond = int(mod(rem, MS_PER_SEC))
+        res%utc_offset_minutes = t%utc_offset_minutes
+    end function time_plus_td
+
+    pure function td_plus_time(td, t) result(res)
+        !! timedelta + time (commutative)
+        type(timedelta_type), intent(in) :: td
+        type(time_type), intent(in)      :: t
+        type(time_type) :: res
+        res = time_plus_td(t, td)
+    end function td_plus_time
+
+    pure function time_minus_td(t, td) result(res)
+        !! time - timedelta -> time (modulo 24-hour wrap)
+        type(time_type), intent(in)      :: t
+        type(timedelta_type), intent(in) :: td
+        type(time_type) :: res
+        integer(int64) :: total_ms, rem
+        total_ms = int(t%hour, int64)        * MS_PER_HOUR &
+                 + int(t%minute, int64)      * MS_PER_MIN  &
+                 + int(t%second, int64)      * MS_PER_SEC  &
+                 + int(t%millisecond, int64)
+        total_ms = total_ms - td_to_ms(td)
+        total_ms = modulo(total_ms, MS_PER_DAY)
+        res%hour        = int(total_ms / MS_PER_HOUR)
+        rem = mod(total_ms, MS_PER_HOUR)
+        res%minute      = int(rem / MS_PER_MIN)
+        rem = mod(rem, MS_PER_MIN)
+        res%second      = int(rem / MS_PER_SEC)
+        res%millisecond = int(mod(rem, MS_PER_SEC))
+        res%utc_offset_minutes = t%utc_offset_minutes
+    end function time_minus_td
+
+    pure function time_minus_time(t1, t2) result(res)
+        !! time - time -> timedelta (UTC-adjusted difference)
+        type(time_type), intent(in) :: t1, t2
+        type(timedelta_type) :: res
+        res = ms_to_td(time_to_utc_ms(t1) &
+                      - time_to_utc_ms(t2))
+    end function time_minus_time
 
     pure function dt_eq(dt1, dt2) result(res)
         type(datetime_type), intent(in) :: dt1, dt2
@@ -302,6 +576,84 @@ contains
         res = td_to_ms(td1) >= td_to_ms(td2)
     end function td_ge
 
+    pure function date_eq(d1, d2) result(res)
+        type(date_type), intent(in) :: d1, d2
+        logical :: res
+        res = days_from_civil(d1%year, d1%month, d1%day) &
+           == days_from_civil(d2%year, d2%month, d2%day)
+    end function date_eq
+
+    pure function date_ne(d1, d2) result(res)
+        type(date_type), intent(in) :: d1, d2
+        logical :: res
+        res = days_from_civil(d1%year, d1%month, d1%day) &
+           /= days_from_civil(d2%year, d2%month, d2%day)
+    end function date_ne
+
+    pure function date_lt(d1, d2) result(res)
+        type(date_type), intent(in) :: d1, d2
+        logical :: res
+        res = days_from_civil(d1%year, d1%month, d1%day) &
+            < days_from_civil(d2%year, d2%month, d2%day)
+    end function date_lt
+
+    pure function date_le(d1, d2) result(res)
+        type(date_type), intent(in) :: d1, d2
+        logical :: res
+        res = days_from_civil(d1%year, d1%month, d1%day) &
+           <= days_from_civil(d2%year, d2%month, d2%day)
+    end function date_le
+
+    pure function date_gt(d1, d2) result(res)
+        type(date_type), intent(in) :: d1, d2
+        logical :: res
+        res = days_from_civil(d1%year, d1%month, d1%day) &
+            > days_from_civil(d2%year, d2%month, d2%day)
+    end function date_gt
+
+    pure function date_ge(d1, d2) result(res)
+        type(date_type), intent(in) :: d1, d2
+        logical :: res
+        res = days_from_civil(d1%year, d1%month, d1%day) &
+           >= days_from_civil(d2%year, d2%month, d2%day)
+    end function date_ge
+
+    pure function time_eq(t1, t2) result(res)
+        type(time_type), intent(in) :: t1, t2
+        logical :: res
+        res = time_to_utc_ms(t1) == time_to_utc_ms(t2)
+    end function time_eq
+
+    pure function time_ne(t1, t2) result(res)
+        type(time_type), intent(in) :: t1, t2
+        logical :: res
+        res = time_to_utc_ms(t1) /= time_to_utc_ms(t2)
+    end function time_ne
+
+    pure function time_lt(t1, t2) result(res)
+        type(time_type), intent(in) :: t1, t2
+        logical :: res
+        res = time_to_utc_ms(t1) < time_to_utc_ms(t2)
+    end function time_lt
+
+    pure function time_le(t1, t2) result(res)
+        type(time_type), intent(in) :: t1, t2
+        logical :: res
+        res = time_to_utc_ms(t1) <= time_to_utc_ms(t2)
+    end function time_le
+
+    pure function time_gt(t1, t2) result(res)
+        type(time_type), intent(in) :: t1, t2
+        logical :: res
+        res = time_to_utc_ms(t1) > time_to_utc_ms(t2)
+    end function time_gt
+
+    pure function time_ge(t1, t2) result(res)
+        type(time_type), intent(in) :: t1, t2
+        logical :: res
+        res = time_to_utc_ms(t1) >= time_to_utc_ms(t2)
+    end function time_ge
+
     pure function format_datetime(dt) result(str)
         !! version: experimental
         !!
@@ -357,6 +709,49 @@ contains
             str = str // '.' // to_string(td%milliseconds, '(I3.3)')
         end if
     end function format_timedelta
+
+    pure function format_date(d) result(str)
+        !! version: experimental
+        !!
+        !! Format a date_type as an ISO 8601 date string.
+        type(date_type), intent(in) :: d
+        character(:), allocatable :: str
+        str = to_string(d%year, '(I4.4)') // '-' // &
+              to_string(d%month, '(I2.2)') // '-' // &
+              to_string(d%day, '(I2.2)')
+    end function format_date
+
+    pure function format_time(t) result(str)
+        !! version: experimental
+        !!
+        !! Format a time_type as an ISO 8601 time string.
+        type(time_type), intent(in) :: t
+        character(:), allocatable :: str
+        integer :: off_h, off_m
+
+        str = to_string(t%hour, '(I2.2)') // ':' // &
+              to_string(t%minute, '(I2.2)') // ':' // &
+              to_string(t%second, '(I2.2)')
+
+        if (t%millisecond /= 0) then
+            str = str // '.' // &
+                  to_string(t%millisecond, '(I3.3)')
+        end if
+
+        if (t%utc_offset_minutes == 0) then
+            str = str // 'Z'
+        else
+            off_h = abs(t%utc_offset_minutes) / 60
+            off_m = mod(abs(t%utc_offset_minutes), 60)
+            if (t%utc_offset_minutes > 0) then
+                str = str // '+'
+            else
+                str = str // '-'
+            end if
+            str = str // to_string(off_h, '(I2.2)') // ':' // &
+                  to_string(off_m, '(I2.2)')
+        end if
+    end function format_time
 
     function parse_datetime(str, stat) result(dt)
         !! version: experimental
@@ -535,6 +930,183 @@ contains
         end if
     end function parse_datetime
 
+    function parse_date(str, stat) result(d)
+        !! version: experimental
+        !!
+        !! Parse an ISO 8601 date string (YYYY-MM-DD).
+        character(len=*), intent(in) :: str
+        integer, intent(out), optional :: stat
+        type(date_type) :: d
+        integer :: slen, ios, max_day
+
+        if (present(stat)) stat = 0
+        d = date_type()
+        slen = len_trim(str)
+
+        ! Require exactly YYYY-MM-DD (10 characters)
+        if (slen < 10) then
+            if (present(stat)) stat = 1
+            return
+        end if
+
+        ! Check required separators
+        if (str(5:5) /= '-' .or. str(8:8) /= '-') then
+            if (present(stat)) stat = 1
+            return
+        end if
+
+        read(str(1:4), '(I4)', iostat=ios) d%year
+        if (ios /= 0) then
+            if (present(stat)) stat = 1
+            return
+        end if
+        read(str(6:7), '(I2)', iostat=ios) d%month
+        if (ios /= 0) then
+            if (present(stat)) stat = 1
+            return
+        end if
+        if (d%month < 1 .or. d%month > 12) then
+            if (present(stat)) stat = 1
+            return
+        end if
+        read(str(9:10), '(I2)', iostat=ios) d%day
+        if (ios /= 0) then
+            if (present(stat)) stat = 1
+            return
+        end if
+        max_day = days_in_month(d%month, d%year)
+        if (d%day < 1 .or. d%day > max_day) then
+            if (present(stat)) stat = 1
+            return
+        end if
+    end function parse_date
+
+    function parse_time(str, stat) result(t)
+        !! version: experimental
+        !!
+        !! Parse an ISO 8601 time string
+        !! (HH:MM:SS[.mmm][Z|+HH:MM]).
+        character(len=*), intent(in) :: str
+        integer, intent(out), optional :: stat
+        type(time_type) :: t
+        integer :: slen, ios, off_h, off_m, ms_end
+        character(len=1) :: sign_ch
+        character(len=32) :: tmp_str
+        real(dp) :: ms_frac
+
+        if (present(stat)) stat = 0
+        t = time_type()
+        slen = len_trim(str)
+
+        ! Minimum: HH:MM:SS (8 characters)
+        if (slen < 8) then
+            if (present(stat)) stat = 1
+            return
+        end if
+
+        ! Check required separators
+        if (str(3:3) /= ':' .or. str(6:6) /= ':') then
+            if (present(stat)) stat = 1
+            return
+        end if
+
+        read(str(1:2), '(I2)', iostat=ios) t%hour
+        if (ios /= 0) then
+            if (present(stat)) stat = 1
+            return
+        end if
+        if (t%hour < 0 .or. t%hour > 23) then
+            if (present(stat)) stat = 1
+            return
+        end if
+
+        read(str(4:5), '(I2)', iostat=ios) t%minute
+        if (ios /= 0) then
+            if (present(stat)) stat = 1
+            return
+        end if
+        if (t%minute < 0 .or. t%minute > 59) then
+            if (present(stat)) stat = 1
+            return
+        end if
+
+        read(str(7:8), '(I2)', iostat=ios) t%second
+        if (ios /= 0) then
+            if (present(stat)) stat = 1
+            return
+        end if
+        if (t%second < 0 .or. t%second > 59) then
+            if (present(stat)) stat = 1
+            return
+        end if
+
+        if (slen == 8) return
+
+        ms_end = 8
+        if (str(9:9) == '.') then
+            ms_end = 9
+            do while (ms_end < slen)
+                sign_ch = str(ms_end+1:ms_end+1)
+                if (sign_ch >= '0' .and. sign_ch <= '9') then
+                    ms_end = ms_end + 1
+                else
+                    exit
+                end if
+            end do
+            if (ms_end == 9) then
+                ! "." without following digits
+                if (present(stat)) stat = 1
+                return
+            end if
+            tmp_str = '0' // str(9:ms_end)
+            read(tmp_str, *, iostat=ios) ms_frac
+            if (ios /= 0) then
+                if (present(stat)) stat = 1
+                return
+            end if
+            t%millisecond = nint(ms_frac * 1000.0_dp)
+        end if
+
+        if (slen <= ms_end) return
+
+        sign_ch = str(ms_end+1:ms_end+1)
+        if (sign_ch == 'Z' .or. sign_ch == 'z') then
+            t%utc_offset_minutes = 0
+        else if (sign_ch == '+' .or. sign_ch == '-') then
+            if (slen < ms_end + 6) then
+                if (present(stat)) stat = 1
+                return
+            end if
+            read(str(ms_end+2:ms_end+3), '(I2)', &
+                 iostat=ios) off_h
+            if (ios /= 0) then
+                if (present(stat)) stat = 1
+                return
+            end if
+            if (str(ms_end+4:ms_end+4) /= ':') then
+                if (present(stat)) stat = 1
+                return
+            end if
+            read(str(ms_end+5:ms_end+6), '(I2)', &
+                 iostat=ios) off_m
+            if (ios /= 0) then
+                if (present(stat)) stat = 1
+                return
+            end if
+            if (off_h < 0 .or. off_h > 23 .or. &
+                off_m < 0 .or. off_m > 59) then
+                if (present(stat)) stat = 1
+                return
+            end if
+            t%utc_offset_minutes = off_h * 60 + off_m
+            if (sign_ch == '-') &
+                t%utc_offset_minutes = -t%utc_offset_minutes
+        else
+            if (present(stat)) stat = 1
+            return
+        end if
+    end function parse_time
+
     pure elemental function is_leap_year_int(year) &
         result(res)
         !! version: experimental
@@ -556,6 +1128,16 @@ contains
         logical :: res
         res = is_leap_year_int(dt%year)
     end function is_leap_year_dt
+
+    pure elemental function is_leap_year_date(d) &
+        result(res)
+        !! version: experimental
+        !!
+        !! Check if a date's year is a leap year.
+        type(date_type), intent(in) :: d
+        logical :: res
+        res = is_leap_year_int(d%year)
+    end function is_leap_year_date
 
     pure function days_in_month(month, year) result(d)
         !! version: experimental
@@ -583,10 +1165,11 @@ contains
         d = merge(366, 365, is_leap_year_int(year))
     end function days_in_year
 
-    pure function day_of_year(dt) result(doy)
+    pure function day_of_year_dt(dt) result(doy)
         !! version: experimental
         !!
-        !! Return the ordinal day of the year (1-366).
+        !! Return the ordinal day of the year (1-366)
+        !! for a datetime_type.
         type(datetime_type), intent(in) :: dt
         integer :: doy
         integer, parameter :: cum(12) = &
@@ -599,12 +1182,31 @@ contains
         doy = cum(dt%month) + dt%day
         if (dt%month > 2 .and. is_leap_year_int(dt%year))&
             doy = doy + 1
-    end function day_of_year
+    end function day_of_year_dt
 
-    pure function day_of_week(dt) result(dow)
+    pure function day_of_year_date(d) result(doy)
         !! version: experimental
         !!
-        !! Return ISO weekday (1=Monday ... 7=Sunday).
+        !! Return the ordinal day of the year (1-366)
+        !! for a date_type.
+        type(date_type), intent(in) :: d
+        integer :: doy
+        integer, parameter :: cum(12) = &
+            [0,31,59,90,120,151,181,212,243,273,304,334]
+        if (d%month < 1 .or. d%month > 12) then
+            doy = 0
+            return
+        end if
+        doy = cum(d%month) + d%day
+        if (d%month > 2 .and. is_leap_year_int(d%year)) &
+            doy = doy + 1
+    end function day_of_year_date
+
+    pure function day_of_week_dt(dt) result(dow)
+        !! version: experimental
+        !!
+        !! Return ISO weekday (1=Monday ... 7=Sunday)
+        !! for a datetime_type.
         type(datetime_type), intent(in) :: dt
         integer :: dow
         integer :: y, w
@@ -620,16 +1222,54 @@ contains
         w = mod(y + y/4 - y/100 + y/400 &
                 + t(dt%month) + dt%day, 7)
         dow = mod(w + 6, 7) + 1
-    end function day_of_week
+    end function day_of_week_dt
 
-    pure function to_utc(dt) result(utc_dt)
+    pure function day_of_week_date(d) result(dow)
+        !! version: experimental
+        !!
+        !! Return ISO weekday (1=Monday ... 7=Sunday)
+        !! for a date_type.
+        type(date_type), intent(in) :: d
+        integer :: dow
+        integer :: y, w
+        integer, parameter :: t(12) = &
+            [0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4]
+        if (d%month < 1 .or. d%month > 12) then
+            dow = 0
+            return
+        end if
+        y = d%year
+        if (d%month < 3) y = y - 1
+        w = mod(y + y/4 - y/100 + y/400 &
+                + t(d%month) + d%day, 7)
+        dow = mod(w + 6, 7) + 1
+    end function day_of_week_date
+
+    pure function to_utc_dt(dt) result(utc_dt)
         !! version: experimental
         !!
         !! Convert a datetime to UTC.
         type(datetime_type), intent(in) :: dt
         type(datetime_type) :: utc_dt
         utc_dt = epoch_ms_to_dt(dt_to_utc_ms(dt), 0)
-    end function to_utc
+    end function to_utc_dt
+
+    pure function to_utc_time(t) result(utc_t)
+        !! version: experimental
+        !!
+        !! Convert a time_type to UTC (modulo 24 hours).
+        type(time_type), intent(in) :: t
+        type(time_type) :: utc_t
+        integer(int64) :: ms, rem
+        ms = modulo(time_to_utc_ms(t), MS_PER_DAY)
+        utc_t%hour        = int(ms / MS_PER_HOUR)
+        rem = mod(ms, MS_PER_HOUR)
+        utc_t%minute      = int(rem / MS_PER_MIN)
+        rem = mod(rem, MS_PER_MIN)
+        utc_t%second      = int(rem / MS_PER_SEC)
+        utc_t%millisecond = int(mod(rem, MS_PER_SEC))
+        utc_t%utc_offset_minutes = 0
+    end function to_utc_time
 
     pure function total_seconds(td) result(secs)
         !! version: experimental
@@ -761,5 +1401,16 @@ contains
         td%seconds      = int(rem / MS_PER_SEC)
         td%milliseconds = int(mod(rem, MS_PER_SEC))
     end function ms_to_td
+
+    pure function time_to_utc_ms(t) result(ms)
+        !! Convert time_type to UTC milliseconds since midnight.
+        type(time_type), intent(in) :: t
+        integer(int64) :: ms
+        ms = int(t%hour, int64)        * MS_PER_HOUR &
+           + int(t%minute, int64)      * MS_PER_MIN  &
+           + int(t%second, int64)      * MS_PER_SEC  &
+           + int(t%millisecond, int64) &
+           - int(t%utc_offset_minutes, int64) * MS_PER_MIN
+    end function time_to_utc_ms
 
 end module stdlib_datetime
