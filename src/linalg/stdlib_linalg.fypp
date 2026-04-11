@@ -70,6 +70,19 @@ module stdlib_linalg
   public :: is_hermitian
   public :: is_triangular
   public :: is_hessenberg
+
+  ! Permutation matrix operations
+  public :: permutation_type
+  public :: permutation_identity
+  public :: permutation_init
+  public :: permutation_is_valid
+  public :: permutation_invert
+  public :: permutation_compose
+  public :: permutation_from_lapack
+  public :: permutation_to_matrix
+  public :: permutation_apply_left
+  public :: permutation_apply_right
+  public :: permutation_apply_vector
   
   ! Export linalg error handling
   public :: linalg_state_type, linalg_error_handling
@@ -2103,6 +2116,132 @@ module stdlib_linalg
     end subroutine stdlib_linalg_${ri}$_expm
     #:endfor
   end interface matrix_exp
+
+  !> Permutation type: stores permutation as integer vector
+  type :: permutation_type
+    integer(ilp), allocatable :: perm(:)
+    integer(ilp) :: n = 0
+    logical :: finalized = .true.
+  end type
+
+  interface permutation_identity
+    !! version: experimental
+    !!
+    !! Creates an identity permutation of size n
+    module function permutation_identity(n) result(p)
+      integer(ilp), intent(in) :: n
+      type(permutation_type) :: p
+    end function
+  end interface
+
+  interface permutation_init
+    !! version: experimental
+    !!
+    !! Creates a permutation from a given integer vector
+    module function permutation_init(perm_vec, finalized) result(p)
+      integer(ilp), intent(in) :: perm_vec(:)
+      logical, intent(in), optional :: finalized
+      type(permutation_type) :: p
+    end function
+  end interface
+
+  interface permutation_is_valid
+    !! version: experimental
+    !!
+    !! Checks if a permutation is valid (each integer 1..n appears exactly once)
+    module function permutation_is_valid(p) result(valid)
+      type(permutation_type), intent(in) :: p
+      logical :: valid
+    end function
+  end interface
+
+  interface permutation_invert
+    !! version: experimental
+    !!
+    !! Inverts a finalized permutation
+    module function permutation_invert(p) result(inv)
+      type(permutation_type), intent(in) :: p
+      type(permutation_type) :: inv
+    end function
+  end interface
+
+  interface permutation_compose
+    !! version: experimental
+    !!
+    !! Composes two finalized permutations: result = p1 * p2
+    module function permutation_compose(p1, p2) result(p)
+      type(permutation_type), intent(in) :: p1, p2
+      type(permutation_type) :: p
+    end function
+  end interface
+
+  interface permutation_from_lapack
+    !! version: experimental
+    !!
+    !! Converts LAPACK pivot vector to finalized permutation
+    module function permutation_from_lapack(ipiv, n, err) result(p)
+      integer(ilp), intent(in) :: ipiv(:)
+      integer(ilp), intent(in) :: n
+      type(linalg_state_type), intent(out), optional :: err
+      type(permutation_type) :: p
+    end function
+  end interface
+
+  interface permutation_apply_left
+    !! version: experimental
+    !!
+    !! Applies permutation from the left: B = P * A (row permutation)
+    #:for k1, t1 in RCI_KINDS_TYPES
+    module subroutine permutation_apply_left_${t1[0]}$${k1}$ (p, A, B, err)
+      type(permutation_type), intent(in) :: p
+      ${t1}$, intent(in) :: A(:,:)
+      ${t1}$, intent(out) :: B(:,:)
+      type(linalg_state_type), intent(out), optional :: err
+    end subroutine
+    #:endfor
+  end interface
+
+  interface permutation_apply_right
+    !! version: experimental
+    !!
+    !! Applies permutation from the right: B = A * P (column permutation)
+    #:for k1, t1 in RCI_KINDS_TYPES
+    module subroutine permutation_apply_right_${t1[0]}$${k1}$ (p, A, B, err)
+      type(permutation_type), intent(in) :: p
+      ${t1}$, intent(in) :: A(:,:)
+      ${t1}$, intent(out) :: B(:,:)
+      type(linalg_state_type), intent(out), optional :: err
+    end subroutine
+    #:endfor
+  end interface
+
+  interface permutation_apply_vector
+    !! version: experimental
+    !!
+    !! Applies permutation to a vector: b = P * a
+    #:for k1, t1 in RCI_KINDS_TYPES
+    module subroutine permutation_apply_vector_${t1[0]}$${k1}$ (p, a, b, err)
+      type(permutation_type), intent(in) :: p
+      ${t1}$, intent(in) :: a(:)
+      ${t1}$, intent(out) :: b(:)
+      type(linalg_state_type), intent(out), optional :: err
+    end subroutine
+    #:endfor
+  end interface
+
+  interface permutation_to_matrix
+    !! version: experimental
+    !!
+    !! Converts permutation to dense matrix
+    #:for k1, t1 in RCI_KINDS_TYPES
+    module subroutine permutation_to_matrix_${t1[0]}$${k1}$ (p, A, err)
+      type(permutation_type), intent(in) :: p
+      ${t1}$, intent(out) :: A(:,:)
+      type(linalg_state_type), intent(out), optional :: err
+    end subroutine
+    #:endfor
+  end interface
+
 contains
 
 

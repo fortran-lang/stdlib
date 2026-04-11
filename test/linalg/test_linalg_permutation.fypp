@@ -1,0 +1,274 @@
+!> Tests for stdlib_linalg_permutation module
+#:include "common.fypp"
+
+module test_linalg_permutation
+  use testdrive, only: new_unittest, unittest_type, error_type, check
+  use stdlib_kinds, only: sp, dp, int32
+  use stdlib_linalg_constants, only: ilp
+  use stdlib_linalg, only: permutation_type, permutation_identity, permutation_init, &
+    permutation_is_valid, permutation_invert, permutation_compose, &
+    permutation_from_lapack, permutation_to_matrix, &
+    permutation_apply_left, permutation_apply_right, permutation_apply_vector
+  implicit none
+  private
+
+  public :: collect_permutation_tests
+
+contains
+
+  subroutine collect_permutation_tests(testsuite)
+    type(unittest_type), allocatable, intent(out) :: testsuite(:)
+    testsuite = [ &
+      new_unittest("identity", test_identity), &
+      new_unittest("is_valid", test_is_valid), &
+      new_unittest("invalid_rejects", test_invalid_rejects), &
+      new_unittest("invert", test_invert), &
+      new_unittest("invert_involution", test_invert_involution), &
+      new_unittest("apply_left", test_apply_left), &
+      new_unittest("apply_right", test_apply_right), &
+      new_unittest("apply_vector", test_apply_vector), &
+      new_unittest("compose", test_compose), &
+      new_unittest("from_lapack", test_from_lapack), &
+      new_unittest("to_matrix", test_to_matrix), &
+      new_unittest("identity_noop", test_identity_noop) &
+    ]
+  end subroutine
+
+  !> Test 1: Identity permutation
+  subroutine test_identity(error)
+    type(error_type), allocatable, intent(out) :: error
+    type(permutation_type) :: p
+    p = permutation_identity(5)
+    call check(error, p%n == 5, "identity size")
+    if (allocated(error)) return
+    call check(error, all(p%perm == [1_ilp, 2_ilp, 3_ilp, 4_ilp, 5_ilp]), "identity elements")
+    if (allocated(error)) return
+    call check(error, permutation_is_valid(p), "identity valid")
+  end subroutine
+
+  !> Test 2: Valid permutation accepted
+  subroutine test_is_valid(error)
+    type(error_type), allocatable, intent(out) :: error
+    type(permutation_type) :: p
+
+    p = permutation_init([3, 1, 4, 2])
+    call check(error, permutation_is_valid(p), "valid permutation")
+  end subroutine
+
+  !> Test 3: Invalid permutations rejected
+  subroutine test_invalid_rejects(error)
+    type(error_type), allocatable, intent(out) :: error
+    type(permutation_type) :: p
+
+    ! Duplicate entry
+    p = permutation_init([1, 1, 3])
+    call check(error, .not. permutation_is_valid(p), "reject duplicate")
+    if (allocated(error)) return
+
+    ! Out of range
+    p = permutation_init([1, 5, 3])
+    call check(error, .not. permutation_is_valid(p), "reject out of range")
+  end subroutine
+
+  !> Test 4: Inversion correctness
+  subroutine test_invert(error)
+    type(error_type), allocatable, intent(out) :: error
+    type(permutation_type) :: p, inv
+
+    ! perm = [3,1,2] means: dest1 <- src3, dest2 <- src1, dest3 <- src2
+    ! inverse: dest3 <- src1, dest1 <- src2, dest2 <- src3 => inv = [2,3,1]
+    p = permutation_init([3, 1, 2])
+    inv = permutation_invert(p)
+    call check(error, all(inv%perm == [2_ilp, 3_ilp, 1_ilp]), "inv(1:3)")
+  end subroutine
+
+  !> Test 5: P * P^-1 = Identity (involution property)
+  subroutine test_invert_involution(error)
+    type(error_type), allocatable, intent(out) :: error
+    type(permutation_type) :: p, inv, composed
+    p = permutation_init([3_ilp, 1_ilp, 4_ilp, 2_ilp])
+    inv = permutation_invert(p)
+    composed = permutation_compose(p, inv)
+    call check(error, all(composed%perm == [1_ilp, 2_ilp, 3_ilp, 4_ilp]), "P*P_inv = I")
+  end subroutine
+
+  !> Test 6: Left multiplication (row permutation)
+  subroutine test_apply_left(error)
+    type(error_type), allocatable, intent(out) :: error
+    type(permutation_type) :: p
+    real(dp) :: A(3,2), B(3,2), B_ref(3,2)
+
+    ! A = [[1,2],[3,4],[5,6]]
+    A(1,:) = [1.0_dp, 2.0_dp]
+    A(2,:) = [3.0_dp, 4.0_dp]
+    A(3,:) = [5.0_dp, 6.0_dp]
+
+    ! B should be [[5,6],[1,2],[3,4]]
+    B_ref(1,:) = [5.0_dp, 6.0_dp]
+    B_ref(2,:) = [1.0_dp, 2.0_dp]
+    B_ref(3,:) = [3.0_dp, 4.0_dp]
+
+    ! perm = [3,1,2]: row1 <- row3, row2 <- row1, row3 <- row2
+    p = permutation_init([3, 1, 2])
+    call permutation_apply_left(p, A, B)
+
+    call check(error, all(abs(B - B_ref) < 1.0e-10_dp), "apply_left whole array")
+  end subroutine
+
+  !> Test 7: Right multiplication (column permutation)
+  subroutine test_apply_right(error)
+    type(error_type), allocatable, intent(out) :: error
+    type(permutation_type) :: p
+    real(dp) :: A(2,3), B(2,3), B_ref(2,3)
+
+    A(1,:) = [1.0_dp, 2.0_dp, 3.0_dp]
+    A(2,:) = [4.0_dp, 5.0_dp, 6.0_dp]
+
+    ! B(:,2) = A(:,1) = [1,4], B(:,3) = A(:,2) = [2,5], B(:,1) = A(:,3) = [3,6]
+    B_ref(:,1) = [3.0_dp, 6.0_dp]
+    B_ref(:,2) = [1.0_dp, 4.0_dp]
+    B_ref(:,3) = [2.0_dp, 5.0_dp]
+
+    ! perm = [2,3,1]: col_perm(2) <- col1, col_perm(3) <- col2, col_perm(1) <- col3
+    p = permutation_init([2, 3, 1])
+    call permutation_apply_right(p, A, B)
+
+    call check(error, all(abs(B - B_ref) < 1.0e-10_dp), "apply_right whole array")
+  end subroutine
+
+  !> Test 8: Vector permutation
+  subroutine test_apply_vector(error)
+    type(error_type), allocatable, intent(out) :: error
+    type(permutation_type) :: p
+    real(dp) :: a(4), b(4)
+
+    a = [10.0_dp, 20.0_dp, 30.0_dp, 40.0_dp]
+    p = permutation_init([3, 1, 4, 2])
+    call permutation_apply_vector(p, a, b)
+
+    ! b(1) = a(3) = 30, b(2) = a(1) = 10, b(3) = a(4) = 40, b(4) = a(2) = 20
+    call check(error, all(abs(b - [30.0_dp, 10.0_dp, 40.0_dp, 20.0_dp]) < 1.0e-10_dp), "apply_vector whole array")
+  end subroutine
+
+  !> Test 9: Composition P1 * P2
+  subroutine test_compose(error)
+    type(error_type), allocatable, intent(out) :: error
+    type(permutation_type) :: p1, p2, composed
+    real(dp) :: a(4), b1(4), b2(4), b_composed(4)
+
+    p1 = permutation_init([2_ilp, 3_ilp, 4_ilp, 1_ilp])
+    p2 = permutation_init([2_ilp, 1_ilp, 4_ilp, 3_ilp])
+    composed = permutation_compose(p1, p2)
+
+    ! Verify: composed applied to vector = p1 applied to (p2 applied to vector)
+    a = [10.0_dp, 20.0_dp, 30.0_dp, 40.0_dp]
+    b1 = 0.0_dp; b2 = 0.0_dp; b_composed = 0.0_dp ! Initialize to avoid garbage
+
+    call permutation_apply_vector(p2, a, b1)       ! b1 = P2 * a
+    call permutation_apply_vector(p1, b1, b2)      ! b2 = P1 * P2 * a
+    call permutation_apply_vector(composed, a, b_composed) ! should equal b2
+
+    call check(error, all(abs(b2 - b_composed) < 1.0e-10_dp), "compose_matches_explicit")
+  end subroutine
+
+  !> Test 10: LAPACK pivot vector conversion
+  subroutine test_from_lapack(error)
+    type(error_type), allocatable, intent(out) :: error
+    type(permutation_type) :: p
+
+    ! LAPACK pivot: [2, 3, 3]
+    ! Step 1: swap rows 1,2 -> [2,1,3]
+    ! Step 2: swap rows 2,3 -> [2,3,1]
+    ! Step 3: swap rows 3,3 -> [2,3,1] (no-op)
+    p = permutation_from_lapack([2, 3, 3], 3)
+
+    call check(error, all(p%perm == [2_ilp, 3_ilp, 1_ilp]), "from_lapack whole array")
+  end subroutine
+
+  !> Test 11: Dense matrix matches permutation operations
+  subroutine test_to_matrix(error)
+    type(error_type), allocatable, intent(out) :: error
+    type(permutation_type) :: p
+    real(dp) :: P_dense(3,3), P_ref(3,3)
+
+    p = permutation_init([3, 1, 2])
+    call permutation_to_matrix(p, P_dense)
+
+    P_ref = 0.0_dp
+    P_ref(1,3) = 1.0_dp
+    P_ref(2,1) = 1.0_dp
+    P_ref(3,2) = 1.0_dp
+
+    call check(error, all(abs(P_dense - P_ref) < 1.0e-10_dp), "to_matrix whole array")
+  end subroutine
+
+  !> Test 12: Identity permutation is a no-op
+  subroutine test_identity_noop(error)
+    type(error_type), allocatable, intent(out) :: error
+    type(permutation_type) :: p
+    real(dp) :: A(3,3), B(3,3)
+    integer(ilp) :: i, j
+
+    p = permutation_identity(3)
+    do i = 1, 3
+      do j = 1, 3
+        A(i,j) = real(i*10 + j, dp)
+      end do
+    end do
+
+    call permutation_apply_left(p, A, B)
+    call check(error, all(abs(A - B) < 1.0e-10_dp), "identity noop")
+    if (allocated(error)) return
+  end subroutine
+
+
+  !> Test permutation with different generic data types (complex and integer)
+  subroutine test_types_support(error)
+    type(error_type), allocatable, intent(out) :: error
+    type(permutation_type) :: p
+    complex(dp) :: c_in(3), c_out(3)
+    integer(int32) :: i_in(3), i_out(3)
+
+    p = permutation_init([3_ilp, 1_ilp, 2_ilp])
+
+    ! Complex support
+    c_in = [(1.0_dp, -1.0_dp), (2.0_dp, -2.0_dp), (3.0_dp, -3.0_dp)]
+    call permutation_apply_vector(p, c_in, c_out)
+    call check(error, abs(c_out(1) - c_in(3)) < 1.0e-10_dp, "complex")
+    if (allocated(error)) return
+
+    ! Integer support
+    i_in = [10_int32, 20_int32, 30_int32]
+    call permutation_apply_vector(p, i_in, i_out)
+    call check(error, i_out(1) == i_in(3), "integer")
+    if (allocated(error)) return
+
+  end subroutine test_types_support
+
+end module test_linalg_permutation
+
+program test_permutation
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_linalg_permutation, only : collect_permutation_tests
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("linalg_permutation", collect_permutation_tests) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program test_permutation
