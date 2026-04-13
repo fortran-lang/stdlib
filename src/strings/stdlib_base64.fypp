@@ -11,8 +11,8 @@
 !> may be subject to change in future releases of `stdlib`.
 
 module stdlib_base64
-    use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64, lk
-    use, intrinsic :: iso_c_binding, only: c_size_t, c_bool
+    use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64, lk, c_bool
+    use, intrinsic :: iso_c_binding, only: c_size_t
     use stdlib_ascii, only: base64_alphabet
     use stdlib_error, only: state_type
 

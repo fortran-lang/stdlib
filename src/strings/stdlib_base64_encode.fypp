@@ -6,7 +6,7 @@ submodule(stdlib_base64) stdlib_base64_encode
 
 contains
 
-#:set RANKS = range(16)
+#:set RANKS = range(0, MAXRANK + 1)
 
 #:for k1, t1, _, _ in REAL_KINDS_TYPES
     module function base64_encode_real_${k1}$(data) result(str)
@@ -88,6 +88,8 @@ contains
     module function base64_encode_bytes(bytes) result(str)
         integer(int8), intent(in), target, contiguous :: bytes(:)
         character(len=:), allocatable, target :: str
+        ! Use c_size_t to safely track the size of massive arrays
+        ! without risking 32-bit integer overflow, and to ensure C-interop
         integer(c_size_t) :: nbytes
         integer :: str_len
         integer :: i, j

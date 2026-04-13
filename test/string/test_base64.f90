@@ -80,10 +80,10 @@ contains
     subroutine test_roundtrip_real(error)
         type(error_type), allocatable, intent(out) :: error
 
-        real(dp) :: vals(4), got(4)
+        real(dp) :: got(4)
         character(len=:), allocatable :: enc, dec
 
-        vals = [1.5_dp, -2.25_dp, 0.125_dp, 9.0_dp]
+        real(dp), parameter :: vals(*) = [1.5_dp, -2.25_dp, 0.125_dp, 9.0_dp]
 
         enc = base64_encode(vals)
         dec = base64_decode(enc)
@@ -95,10 +95,11 @@ contains
     subroutine test_roundtrip_complex(error)
         type(error_type), allocatable, intent(out) :: error
 
-        complex(dp) :: vals(3), got(3)
+        complex(dp) :: got(3)
         character(len=:), allocatable :: enc, dec
 
-        vals = [cmplx(1.0_dp, 2.0_dp, dp), cmplx(-3.0_dp, 0.5_dp, dp), cmplx(0.0_dp, -4.0_dp, dp)]
+        complex(dp), parameter :: vals(*) = [cmplx(1.0_dp, 2.0_dp, dp), &
+                             cmplx(-3.0_dp, 0.5_dp, dp), cmplx(0.0_dp, -4.0_dp, dp)]
 
         enc = base64_encode(vals)
         dec = base64_decode(enc)
