@@ -6,13 +6,11 @@ module test_specialmatrices
     use stdlib_kinds
     use stdlib_linalg, only: hermitian
     use stdlib_linalg_state, only: linalg_state_type
-    use stdlib_math, only: all_close
+    use stdlib_math, only: all_close, is_close
     use stdlib_specialmatrices
     use stdlib_strings, only: to_string
     implicit none
-
 contains
-
 
     !> Collect all exported unit tests
     subroutine collect_suite(testsuite)
@@ -25,14 +23,16 @@ contains
             new_unittest('sym_tridiagonal', test_sym_tridiagonal), &
             new_unittest('sym_tridiagonal error handling', test_sym_tridiagonal_error_handling), &
             new_unittest('symmetric tridiagonal 1x1 dense', test_sym_tridiagonal_1x1), &
-            new_unittest('symmetric tridiagonal arithmetic', test_sym_tridiagonal_arithmetic) &
+            new_unittest('symmetric tridiagonal arithmetic', test_sym_tridiagonal_arithmetic), &
+            new_unittest('tridiagonal 1x1 edge case', test_tridiagonal_1x1), &
+            new_unittest('tridiagonal arithmetic', test_tridiagonal_arithmetic) &
         ]
     end subroutine
 
     subroutine test_tridiagonal(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
-        #:for k1, t1, s1 in (KINDS_TYPES)
+        #:for k1, t1, s1 in KINDS_TYPES
         block
             integer, parameter :: wp = ${k1}$
             integer, parameter :: n = 5
@@ -113,7 +113,7 @@ contains
                 "spmv(fail): y = alpha*A*x + beta*y, alpha: "//to_string(alpha)//", beta: "//to_string(beta))
             if (allocated(error)) return
 
-            ! Test y = alpha * A.T @ x beta * y for random values of alpha and beta
+            ! Test y = alpha * A.T @ x + beta * y for random values of alpha and beta
             y1 = 0.0_wp
             call random_number(alpha)
             call random_number(beta)
@@ -144,7 +144,7 @@ contains
     subroutine test_sym_tridiagonal(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
-        #:for k1, t1, s1 in (KINDS_TYPES)
+        #:for k1, t1, s1 in KINDS_TYPES
         block
             integer, parameter :: wp = ${k1}$
             integer, parameter :: n = 5
@@ -255,13 +255,14 @@ contains
     subroutine test_tridiagonal_error_handling(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
-        #:for k1, t1, s1 in (KINDS_TYPES)
+        #:for k1, t1, s1 in KINDS_TYPES
         block
             integer, parameter :: wp = ${k1}$
             integer, parameter :: n = 5
             type(tridiagonal_${s1}$_type) :: A
-            ${t1}$, allocatable :: dl(:), dv(:), du(:)
             type(linalg_state_type) :: state
+            
+            ${t1}$, allocatable :: dl(:), du(:), dv(:)
             integer :: i
 
             !> Test constructor from arrays.
@@ -283,7 +284,7 @@ contains
     subroutine test_sym_tridiagonal_error_handling(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
-        #:for k1, t1, s1 in (KINDS_TYPES)
+        #:for k1, t1, s1 in KINDS_TYPES
         block
             integer, parameter :: wp = ${k1}$
             integer, parameter :: n = 5
@@ -312,7 +313,7 @@ contains
     subroutine test_sym_tridiagonal_1x1(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
-        #:for k1, t1, s1 in (KINDS_TYPES)
+        #:for k1, t1, s1 in KINDS_TYPES
         block
             integer, parameter :: wp = ${k1}$
             type(sym_tridiagonal_${s1}$_type) :: A
@@ -337,7 +338,7 @@ contains
     subroutine test_sym_tridiagonal_arithmetic(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
-        #:for k1, t1, s1 in (KINDS_TYPES)
+        #:for k1, t1, s1 in KINDS_TYPES
         block
             integer, parameter :: wp = ${k1}$
             type(sym_tridiagonal_${s1}$_type) :: A, B, C
@@ -368,8 +369,89 @@ contains
         end block
         #:endfor
     end subroutine
-end module
 
+    subroutine test_tridiagonal_1x1(error)
+        !> Test 1x1 matrix edge case for dense conversion
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in KINDS_TYPES
+        block
+            integer, parameter :: wp = ${k1}$
+            type(tridiagonal_${s1}$_type) :: A
+            ${t1}$, allocatable :: Amat(:,:)
+            
+            #:if t1.startswith('complex')
+            ${t1}$, parameter :: dl(0) = [${t1}$ ::]
+            ${t1}$, parameter :: du(0) = [${t1}$ ::]
+            ${t1}$, parameter :: dv(1) = [cmplx(5.0_wp, 0.0_wp, kind=wp)]
+            #:else
+            ${t1}$, parameter :: dl(0) = [${t1}$ ::]
+            ${t1}$, parameter :: du(0) = [${t1}$ ::]
+            ${t1}$, parameter :: dv(1) = [5.0_wp]
+            #:endif
+            
+            A = tridiagonal(dl, dv, du) 
+            Amat = dense(A)
+
+            ! Check if the 1x1 matrix converted properly at runtime without segfaulting
+            call check(error, size(Amat, 1) == 1, .true.)
+            if (allocated(error)) return
+            call check(error, size(Amat, 2) == 1, .true.)
+            if (allocated(error)) return
+            call check(error, is_close(Amat(1,1), 5.0_wp), .true.)
+            if (allocated(error)) return
+        end block
+        #:endfor
+    end subroutine
+
+    subroutine test_tridiagonal_arithmetic(error)
+        !> Test arithmetic operations and optimization
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in KINDS_TYPES
+        block
+            integer, parameter :: wp = ${k1}$
+            integer, parameter :: n = 3
+            type(tridiagonal_${s1}$_type) :: A, B, C
+            
+            #:if t1.startswith('complex')
+            ${t1}$, parameter :: dl1(n-1) = [cmplx(1.0_wp, 0.0_wp, kind=wp), cmplx(1.0_wp, 0.0_wp, kind=wp)]
+            ${t1}$, parameter :: dv1(n)   = [cmplx(2.0_wp, 0.0_wp, kind=wp), cmplx(2.0_wp, 0.0_wp, kind=wp), cmplx(2.0_wp, 0.0_wp, kind=wp)]
+            ${t1}$, parameter :: du1(n-1) = [cmplx(3.0_wp, 0.0_wp, kind=wp), cmplx(3.0_wp, 0.0_wp, kind=wp)]
+            
+            ${t1}$, parameter :: dl2(n-1) = [cmplx(4.0_wp, 0.0_wp, kind=wp), cmplx(4.0_wp, 0.0_wp, kind=wp)]
+            ${t1}$, parameter :: dv2(n)   = [cmplx(5.0_wp, 0.0_wp, kind=wp), cmplx(5.0_wp, 0.0_wp, kind=wp), cmplx(5.0_wp, 0.0_wp, kind=wp)]
+            ${t1}$, parameter :: du2(n-1) = [cmplx(6.0_wp, 0.0_wp, kind=wp), cmplx(6.0_wp, 0.0_wp, kind=wp)]
+            #:else
+            ${t1}$, parameter :: dl1(n-1) = [1.0_wp, 1.0_wp]
+            ${t1}$, parameter :: dv1(n)   = [2.0_wp, 2.0_wp, 2.0_wp]
+            ${t1}$, parameter :: du1(n-1) = [3.0_wp, 3.0_wp]
+            
+            ${t1}$, parameter :: dl2(n-1) = [4.0_wp, 4.0_wp]
+            ${t1}$, parameter :: dv2(n)   = [5.0_wp, 5.0_wp, 5.0_wp]
+            ${t1}$, parameter :: du2(n-1) = [6.0_wp, 6.0_wp]
+            #:endif
+            
+            A = tridiagonal(dl1, dv1, du1)
+            B = tridiagonal(dl2, dv2, du2)
+            
+            ! Addition test - use dense() to bypass private component restrictions
+            C = A + B
+            call check(error, all_close(dense(C), dense(A) + dense(B)), .true.)
+            if (allocated(error)) return
+            
+            ! Subtraction test
+            C = A - B
+            call check(error, all_close(dense(C), dense(A) - dense(B)), .true.)
+            if (allocated(error)) return
+            
+            ! Scalar multiplication test
+            C = 3.0_wp * A
+            call check(error, all_close(dense(C), 3.0_wp * dense(A)), .true.)
+            if (allocated(error)) return
+        end block
+        #:endfor
+    end subroutine
+
+end module
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit
@@ -383,7 +465,7 @@ program tester
     stat = 0
 
     testsuites = [ &
-        new_testsuite("specialmatrices", collect_suite) &
+        new_testsuite("special_matrices", collect_suite) &
         ]
 
     do is = 1, size(testsuites)
