@@ -6,6 +6,8 @@ submodule(stdlib_spatial) stdlib_spatial_kabsch_umeyama
     use stdlib_linalg, only: svd, det
     use stdlib_intrinsics, only: stdlib_sum_kahan, stdlib_dot_product_kahan, kahan_kernel
     use stdlib_error, only: error_stop
+    use stdlib_optval, only: optval
+    use stdlib_linalg_lapack, only: gemm
 
 contains
     #:for k, t, s in (KINDS_TYPES)
@@ -38,7 +40,7 @@ contains
         #:endif
         real(${k}$) :: rmsd_err
 
-
+        scale_ = optval(scale, .true.)
         ! Dimension checks
         if(size(P,dim=1)/=size(Q,dim=1) .or. size(P,dim=1)/=size(R,dim=1) .or. size(P,dim=1)/=size(R,dim=2) &
                     .or. size(P,dim=1)/=size(t)) then
@@ -54,11 +56,15 @@ contains
         end if
         d = size(P,dim=1)
         N = size(P,dim=2)
-        scale_ = .true.
-        if(present(scale)) scale_ = scale
 
-        sum_w = one_${k}$ / N
-        if(present(W)) sum_w = one_${k}$ / stdlib_sum_kahan(W)
+        if(present(W)) then
+            sum_w = stdlib_sum_kahan(W)
+        else
+            sum_w = real(N, kind = ${k}$)
+        end if
+        !> leave opportunity for future discussion on how to add spmd reduction needed here to reduce sum_w before division
+
+        sum_w = one_${k}$ / sum_w
         if(sum_w<zero_${k}$) call error_stop("Invalid weights: sum of weights must be positive")
 
         allocate(c_P(d), source=zero_${s}$)
@@ -74,10 +80,8 @@ contains
                 c_Q(i) = stdlib_sum_kahan(tmp_N)
             end do
         else
-            do i = 1, d
-                c_P(i) = stdlib_sum_kahan(P(i, :))
-                c_Q(i) = stdlib_sum_kahan(Q(i, :))
-            end do
+            c_P = stdlib_sum_kahan(P, dim=2)
+            c_Q = stdlib_sum_kahan(Q, dim=2)
         end if
         c_P = c_P * sum_w
         c_Q = c_Q * sum_w
@@ -138,22 +142,15 @@ contains
         ! Check for reflections in case of real entries.
         #:if t.startswith('real')
         reflect_ = det(matmul(U,Vt)) < zero_${s}$
-        #:endif
-
-        #:if t.startswith('real')
         if(reflect_) Vt(d,:) = -Vt(d,:)
         #:endif
 
         ! Optimal rotation matrix.
-        do i = 1,d
-            do j = 1,d
-                #:if t.startswith('complex')
-                R(i,j) = stdlib_dot_product_kahan(conjg(U(i,:)), Vt(:, j))
-                #:else
-                R(i,j) = stdlib_dot_product_kahan(U(i,:), Vt(:, j))
-                #:endif
-            end do
-        end do
+        #:if t.startswith('complex')
+        call gemm(transa='N', transb='N', m=d,n=d,k=d, alpha=one_${s}$, a=U,lda=d, b=Vt, ldb=d, beta=zero_${s}$, c=R, ldc=d)
+        #:else
+        call gemm(transa='N', transb='N', m=d,n=d,k=d, alpha=one_${s}$, a=U,lda=d, b=Vt, ldb=d, beta=zero_${s}$, c=R, ldc=d)
+        #:endif
 
         ! Scaling factor
         if(scale_) then
