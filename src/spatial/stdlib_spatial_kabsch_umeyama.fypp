@@ -7,7 +7,7 @@ submodule(stdlib_spatial) stdlib_spatial_kabsch_umeyama
     use stdlib_intrinsics, only: stdlib_sum_kahan, stdlib_dot_product_kahan, kahan_kernel
     use stdlib_error, only: error_stop
     use stdlib_optval, only: optval
-    use stdlib_linalg_lapack, only: gemm
+    use stdlib_linalg_lapack, only: gemm, gemv
 
 contains
     #:for k, t, s in (KINDS_TYPES)
@@ -34,6 +34,10 @@ contains
         ${t}$, allocatable :: covariance(:,:), U(:,:), Vt(:,:), vec(:), tmp_N(:), tmp_d(:), c_P(:), c_Q(:)
         real(${k}$) :: sum_w, variance_p
         real(${k}$), allocatable :: S(:)
+        ${t}$ :: temp
+        #:if t.startswith('complex')
+        real(${k}$) :: rtemp
+        #:endif
         logical :: scale_
         #:if t.startswith('real')
         logical :: reflect_
@@ -146,35 +150,26 @@ contains
         #:endif
 
         ! Optimal rotation matrix.
-        #:if t.startswith('complex')
         call gemm(transa='N', transb='N', m=d,n=d,k=d, alpha=one_${s}$, a=U,lda=d, b=Vt, ldb=d, beta=zero_${s}$, c=R, ldc=d)
-        #:else
-        call gemm(transa='N', transb='N', m=d,n=d,k=d, alpha=one_${s}$, a=U,lda=d, b=Vt, ldb=d, beta=zero_${s}$, c=R, ldc=d)
-        #:endif
 
         ! Scaling factor
+        c = one_${s}$
         if(scale_) then
-        #:if t.startswith('real')
+            #:if t.startswith('real')
             if(reflect_) then
-                c = variance_p / (sum(S(1:d-1)) - S(d))
+                c = sum(S(1:d-1)) - S(d)
             else
-                c = variance_p / (sum(S(1:d)))
+                c = sum(S(1:d))
             end if
-        #:else
-            c = variance_p / (sum(S(1:d)))
-        #:endif
-        else
-            c = one_${s}$
+            #:else
+            c = sum(S(1:d))
+            #:endif
+            c = variance_p / c
         end if
 
         ! Translation vector t = c_P - c*R*c_Q
-        do i = 1, d
-            #:if t.startswith('complex')
-            t(i) = c_P(i) - c * stdlib_dot_product_kahan(conjg(R(i,1:d)), c_Q(1:d))
-            #:else
-            t(i) = c_P(i) - c * stdlib_dot_product_kahan(R(i,1:d), c_Q(1:d))
-            #:endif
-        end do
+        t = c_P
+        call gemv(trans='N', m=d, n=d, alpha=-c, A=R, lda=d, x=c_Q, incx=1, beta=one_${s}$, y=t, incy=1)
 
         ! Compute RMSD
         allocate(vec(d), source=zero_${s}$)
@@ -182,15 +177,16 @@ contains
         rmsd_err = zero_${k}$
         do point = 1, N
             ! Calculate the k^th difference vector by the formula vec_k = c*R*Q_k + t - P_k
-            do i = 1, d
-                #:if t.startswith('complex')
-                vec(i) = c * stdlib_dot_product_kahan(conjg(R(i,1:d)), Q(1:d,point))
-                #:else
-                vec(i) = c * stdlib_dot_product_kahan(R(i,1:d), Q(1:d,point))
-                #:endif
-            end do
-            vec(1:d) = vec(1:d) + t(1:d) - P(1:d,point)
-            call kahan_kernel(real(stdlib_dot_product_kahan(vec,vec), kind=${k}$), rmsd, rmsd_err)
+            vec = t
+            call gemv(trans='N', m=d, n=d, alpha=c, A=R, lda=d, x=Q(:, point), incx=1, beta=one_${s}$, y=vec, incy=1)
+            vec = vec - P(:,point)
+            temp = stdlib_dot_product_kahan(vec,vec)
+            #:if t.startswith('complex')
+            rtemp = real(temp, kind=${k}$)
+            call kahan_kernel(rtemp, rmsd, rmsd_err)
+            #:else
+            call kahan_kernel(temp, rmsd, rmsd_err)
+            #:endif
         end do
         rmsd = sqrt(rmsd * sum_w)
     end subroutine
