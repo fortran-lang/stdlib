@@ -88,7 +88,7 @@ module stdlib_regex
 
 contains
 
-  pure logical function is_term_ender(tag)
+  elemental logical function is_term_ender(tag)
     integer, intent(in) :: tag
     is_term_ender = (tag == TOK_CHAR .or. tag == TOK_ANY .or. &
                      tag == TOK_CLASS .or. tag == TOK_STAR .or. &
@@ -97,14 +97,14 @@ contains
                      tag == TOK_START)
   end function is_term_ender
 
-  pure logical function is_term_starter(tag)
+  elemental logical function is_term_starter(tag)
     integer, intent(in) :: tag
     is_term_starter = (tag == TOK_CHAR .or. tag == TOK_ANY .or. &
                        tag == TOK_CLASS .or. tag == TOK_LPAREN .or. &
                        tag == TOK_START .or. tag == TOK_END)
   end function is_term_starter
 
-  pure integer function prec(tag)
+  elemental integer function prec(tag)
     integer, intent(in) :: tag
     if (tag == TOK_STAR .or. tag == TOK_PLUS .or. tag == TOK_QUEST) then
       prec = 3
