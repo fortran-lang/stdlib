@@ -1,4 +1,5 @@
 module stdlib_regex
+  use stdlib_ascii, only: TAB, LF, CR
   implicit none
   private
 
@@ -29,19 +30,6 @@ module stdlib_regex
   integer, parameter :: TOK_RPAREN = 10
   integer, parameter :: TOK_ALT    = 11
   integer, parameter :: TOK_CONCAT = 12
-
-  ! Ascii character constants
-  integer, parameter :: CHAR_ZERO = iachar('0')
-  integer, parameter :: CHAR_NINE = iachar('9')
-  integer, parameter :: CHAR_LOWER_A = iachar('a')
-  integer, parameter :: CHAR_LOWER_Z = iachar('z')
-  integer, parameter :: CHAR_UPPER_A = iachar('A')
-  integer, parameter :: CHAR_UPPER_Z = iachar('Z')
-  integer, parameter :: CHAR_SPACE = iachar(' ')
-  integer, parameter :: CHAR_TAB = 9
-  integer, parameter :: CHAR_LF = 10
-  integer, parameter :: CHAR_CR = 13
-  integer, parameter :: CHAR_UNDERSCORE = iachar('_')
 
   type :: state_type
     integer :: op
@@ -150,19 +138,19 @@ contains
         t%c = c
         if (c == 'd') then
           t%tag = TOK_CLASS
-          t%bmap(CHAR_ZERO:CHAR_NINE) = .true.
+          t%bmap(iachar('0'):iachar('9')) = .true.
         else if (c == 's') then
           t%tag = TOK_CLASS
-          t%bmap(CHAR_SPACE) = .true.
-          t%bmap(CHAR_TAB) = .true.
-          t%bmap(CHAR_LF) = .true.
-          t%bmap(CHAR_CR) = .true.
+          t%bmap(iachar(' ')) = .true.
+          t%bmap(iachar(TAB)) = .true.
+          t%bmap(iachar(LF)) = .true.
+          t%bmap(iachar(CR)) = .true.
         else if (c == 'w') then
           t%tag = TOK_CLASS
-          t%bmap(CHAR_LOWER_A:CHAR_LOWER_Z) = .true.
-          t%bmap(CHAR_UPPER_A:CHAR_UPPER_Z) = .true.
-          t%bmap(CHAR_ZERO:CHAR_NINE) = .true.
-          t%bmap(CHAR_UNDERSCORE) = .true.
+          t%bmap(iachar('a'):iachar('z')) = .true.
+          t%bmap(iachar('A'):iachar('Z')) = .true.
+          t%bmap(iachar('0'):iachar('9')) = .true.
+          t%bmap(iachar('_')) = .true.
         end if
       else if (c == '.') then
         t%tag = TOK_ANY

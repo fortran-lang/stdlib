@@ -11,23 +11,23 @@ program catalogue_regex
     character(len=:), allocatable :: string
     character(len=:), allocatable :: expected
 
-    integer            :: match_start, match_end, status, ierr
+    integer            :: match_start, match_end, status, ierr, un, un20
     integer            :: mismatches
     logical            :: matched
 
-    open( 10, file = 'catalogue_regex.inp', status = 'old', iostat = ierr )
+    open( newunit=un, file = 'catalogue_regex.inp', status = 'old', iostat = ierr )
     if ( ierr /= 0 ) then
         write( *, '(a)' ) 'Could not open the file "catalogue_regex.inp"'
         write( *, '(a)' ) 'It should exist - please check'
         error stop
     endif
 
-    open( 20, file = 'catalogue_regex.report' )
+    open( newunit=un20, file = 'catalogue_regex.report' )
 
     mismatches = 0
 
     do
-        read( 10, '(a)', iostat = ierr ) line
+        read( un, '(a)', iostat = ierr ) line
 
         if ( ierr /= 0 ) then
             exit
@@ -43,7 +43,7 @@ program catalogue_regex
                 string = value
 
             case( 'expected' )
-                write( 20, '(a)' ) ''
+                write( un20, '(a)' ) ''
 
                 expected = value
 
@@ -51,69 +51,69 @@ program catalogue_regex
 
                 if ( status /= 0 ) then
                     mismatches = mismatches + 1
-                    write( 20, '(a,i0)' ) 'Error compiling the expression: status = ', status
-                    write( 20, '(a,2a)'  ) '    Expression: "', expression, '"'
+                    write( un20, '(a,i0)' ) 'Error compiling the expression: status = ', status
+                    write( un20, '(a,2a)'  ) '    Expression: "', expression, '"'
                 else
                     call regmatch( re, string, matched, match_start, match_end )
 
                     if ( matched ) then
-                        write( 20, '(a,2a)'  ) 'Match found:'
-                        write( 20, '(a,2a)'  ) '    Expression:   "', expression, '"'
-                        write( 20, '(a,2a)'  ) '    Input string: "', string, '"'
-                        write( 20, '(a,2a)'  ) '    Substring:    "', string(match_start:match_end), '"'
-                        write( 20, '(a,2a)'  ) '    Expected:     "', expected, '"'
+                        write( un20, '(a,2a)'  ) 'Match found:'
+                        write( un20, '(a,2a)'  ) '    Expression:   "', expression, '"'
+                        write( un20, '(a,2a)'  ) '    Input string: "', string, '"'
+                        write( un20, '(a,2a)'  ) '    Substring:    "', string(match_start:match_end), '"'
+                        write( un20, '(a,2a)'  ) '    Expected:     "', expected, '"'
                         if ( expected == string(match_start:match_end) ) then
-                            write( 20, '(a,2a)'  ) '    Success!'
+                            write( un20, '(a,2a)'  ) '    Success!'
                         else
                             mismatches = mismatches + 1
-                            write( 20, '(a,2a)'  ) '    MISMATCH!'
+                            write( un20, '(a,2a)'  ) '    MISMATCH!'
                         endif
                     else
                         mismatches = mismatches + 1
-                        write( 20, '(a,2a)'  ) 'NO match found:'
-                        write( 20, '(a,2a)'  ) '    Expression:   "', expression, '"'
-                        write( 20, '(a,2a)'  ) '    Input string: "', string, '"'
-                        write( 20, '(a,2a)'  ) '    Substring:    (none)'
-                        write( 20, '(a,2a)'  ) '    Expected:     "', expected, '"'
+                        write( un20, '(a,2a)'  ) 'NO match found:'
+                        write( un20, '(a,2a)'  ) '    Expression:   "', expression, '"'
+                        write( un20, '(a,2a)'  ) '    Input string: "', string, '"'
+                        write( un20, '(a,2a)'  ) '    Substring:    (none)'
+                        write( un20, '(a,2a)'  ) '    Expected:     "', expected, '"'
                     endif
                 endif
 
             case( 'error-exp' )
-                write( 20, '(a)' ) ''
+                write( un20, '(a)' ) ''
                 call regcomp( re, expression, status )
 
                 if ( status /= 0 ) then
-                    write( 20, '(a)' ) 'Error detected as expected:'
-                    write( 20, '(a,2a)'  ) '    Expression:   "', expression, '"'
+                    write( un20, '(a)' ) 'Error detected as expected:'
+                    write( un20, '(a,2a)'  ) '    Expression:   "', expression, '"'
                 else
                     mismatches = mismatches + 1
-                    write( 20, '(a)' ) 'An error was expected but not detected:'
-                    write( 20, '(a,2a)'  ) '    Expression:   "', expression, '"'
+                    write( un20, '(a)' ) 'An error was expected but not detected:'
+                    write( un20, '(a,2a)'  ) '    Expression:   "', expression, '"'
                 endif
 
             case( 'no-match' )
-                write( 20, '(a)' ) ''
+                write( un20, '(a)' ) ''
                 call regcomp( re, expression, status )
 
                 if ( status /= 0 ) then
                     mismatches = mismatches + 1
-                    write( 20, '(a,i0)' ) 'Error compiling the expression: status = ', status
-                    write( 20, '(a,2a)'  ) '    Expression: "', expression, '"'
+                    write( un20, '(a,i0)' ) 'Error compiling the expression: status = ', status
+                    write( un20, '(a,2a)'  ) '    Expression: "', expression, '"'
                 else
                     call regmatch( re, string, matched, match_start, match_end )
 
                     if ( matched ) then
                         mismatches = mismatches + 1
-                        write( 20, '(a,2a)'  ) 'Match found where none expected:'
-                        write( 20, '(a,2a)'  ) '    Expression:   "', expression, '"'
-                        write( 20, '(a,2a)'  ) '    Input string: "', string, '"'
-                        write( 20, '(a,2a)'  ) '    Substring:    "', string(match_start:match_end), '"'
-                        write( 20, '(a,2a)'  ) '    Expected:     (none)'
+                        write( un20, '(a,2a)'  ) 'Match found where none expected:'
+                        write( un20, '(a,2a)'  ) '    Expression:   "', expression, '"'
+                        write( un20, '(a,2a)'  ) '    Input string: "', string, '"'
+                        write( un20, '(a,2a)'  ) '    Substring:    "', string(match_start:match_end), '"'
+                        write( un20, '(a,2a)'  ) '    Expected:     (none)'
                     else
-                        write( 20, '(a,2a)'  ) 'No match found, as expected:'
-                        write( 20, '(a,2a)'  ) '    Expression:   "', expression, '"'
-                        write( 20, '(a,2a)'  ) '    Input string: "', string, '"'
-                        write( 20, '(a,2a)'  ) '    Expected:     (none)'
+                        write( un20, '(a,2a)'  ) 'No match found, as expected:'
+                        write( un20, '(a,2a)'  ) '    Expression:   "', expression, '"'
+                        write( un20, '(a,2a)'  ) '    Input string: "', string, '"'
+                        write( un20, '(a,2a)'  ) '    Expected:     (none)'
                     endif
                 endif
 
@@ -123,7 +123,7 @@ program catalogue_regex
         end select
     enddo
 
-    write( 20, '(/,a,i0)' ) 'Number of mismatches or other errors: ', mismatches
+    write( un20, '(/,a,i0)' ) 'Number of mismatches or other errors: ', mismatches
     write( *, '(a)' )       'Program completed'
 
 contains
@@ -163,9 +163,9 @@ subroutine extract_information( line, keyword, value )
             if ( k2 > 0 ) then
                 value = line(k1+1:k2-1)
             else
-                write( 20, '(a)' )  'Error interpreting the input line:'
-                write( 20, '(2a)' ) '    "', trim(line), '"'
-                write( 20, '(2a)' ) 'Program stopped'
+                write( un20, '(a)' )  'Error interpreting the input line:'
+                write( un20, '(2a)' ) '    "', trim(line), '"'
+                write( un20, '(2a)' ) 'Program stopped'
                 write( *, '(2a)' ) 'Program stopped - error reading input. Please check'
                 error stop
             endif
