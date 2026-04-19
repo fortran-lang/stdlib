@@ -9,3 +9,4 @@ set(regex_f90Files
     )
 
 configure_stdlib_target(${PROJECT_NAME}_regex regex_f90Files regex_fppFiles regex_cppFiles)
+target_link_libraries(${PROJECT_NAME}_regex PUBLIC ${PROJECT_NAME}_core)
