@@ -1,0 +1,177 @@
+! SPDX-Identifier: MIT
+#:include "common.fypp"
+
+!> Base64 encoding and decoding algorithms
+!>
+!> This module provides procedures to safely encode and decode data
+!> using the standard Base64 encoding scheme defined in RFC 4648.
+!>
+!> @note
+!> **Experimental:** This API is currently considered experimental and 
+!> may be subject to change in future releases of `stdlib`.
+
+module stdlib_base64
+    use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64, lk, c_bool
+    use, intrinsic :: iso_c_binding, only: c_size_t
+    use stdlib_ascii, only: base64_alphabet
+    use stdlib_error, only: state_type
+
+    implicit none
+    private
+
+    public :: base64_encode, base64_encode_into
+    public :: base64_decode, base64_decode_into
+
+    ! Branchless RFC 4648 decode map: byte -> 6-bit value, invalid -> -1.
+    ! The main loop OR-reduces values and checks once at the end.
+    integer(int8), parameter :: DT(0:255) = int( [ &
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, &
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, &
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,62,-1,-1,-1,63, &
+        52,53,54,55,56,57,58,59,60,61,-1,-1,-1,-1,-1,-1, &
+        -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14, &
+        15,16,17,18,19,20,21,22,23,24,25,-1,-1,-1,-1,-1, &
+        -1,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40, &
+        41,42,43,44,45,46,47,48,49,50,51,-1,-1,-1,-1,-1, &
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, &
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, &
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, &
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, &
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, &
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, &
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, &
+        -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1  &
+    ], int8)
+
+    ! Branchless stream-compaction mask for despace step: keep(1) / drop(0).
+    integer(int32), parameter :: IS_VAL(0:255) = int([ &
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, &
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, &
+        0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, &
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, &
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, &
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, &
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, &
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, &
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, &
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, &
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, &
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, &
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, &
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, &
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, &
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1  &
+    ], int32)
+
+    !> Encodes intrinsic arrays into Base64 text.
+    !>
+    !> This is the ergonomic API for encoding. It allocates and returns the
+    !> output string automatically.
+    !>
+    !> Use this form when convenience matters more than avoiding allocations.
+    !>
+    !> Example:
+    !>```fortran
+    !> character(len=:), allocatable :: encoded
+    !> integer(int8) :: bytes(3) = [77_int8, 97_int8, 110_int8]
+    !> encoded = base64_encode(bytes)  ! "TWFu"
+    !>```
+    interface base64_encode
+#:for k1, t1, _, _ in REAL_KINDS_TYPES
+        module procedure :: base64_encode_real_${k1}$
+#:endfor
+#:for k1, t1, _, _ in INT_KINDS_TYPES
+        module procedure :: base64_encode_int_${k1}$
+#:endfor
+#:for k1, t1, _ in CMPLX_KINDS_TYPES
+        module procedure :: base64_encode_cmplx_${k1}$
+#:endfor
+#:for k1, t1 in LOG_KINDS_TYPES
+        module procedure :: base64_encode_logical_${k1}$
+#:endfor
+    end interface base64_encode
+
+    interface
+#:for k1, t1, _, _ in REAL_KINDS_TYPES
+        module function base64_encode_real_${k1}$(data) result(str)
+            ${t1}$, intent(in), target, contiguous :: data(..)
+            character(len=:), allocatable :: str
+        end function base64_encode_real_${k1}$
+#:endfor
+
+#:for k1, t1, _, _ in INT_KINDS_TYPES
+        module function base64_encode_int_${k1}$(data) result(str)
+            ${t1}$, intent(in), target, contiguous :: data(..)
+            character(len=:), allocatable :: str
+        end function base64_encode_int_${k1}$
+#:endfor
+
+#:for k1, t1, _ in CMPLX_KINDS_TYPES
+        module function base64_encode_cmplx_${k1}$(data) result(str)
+            ${t1}$, intent(in), target, contiguous :: data(..)
+            character(len=:), allocatable :: str
+        end function base64_encode_cmplx_${k1}$
+#:endfor
+
+#:for k1, t1 in LOG_KINDS_TYPES
+        module function base64_encode_logical_${k1}$(data) result(str)
+            ${t1}$, intent(in), target, contiguous :: data(..)
+            character(len=:), allocatable :: str
+        end function base64_encode_logical_${k1}$
+#:endfor
+
+        module function base64_encode_bytes(bytes) result(str)
+            integer(int8), intent(in), target, contiguous :: bytes(:)
+            character(len=:), allocatable, target :: str
+        end function base64_encode_bytes
+
+        !> Encodes bytes into a caller-provided output buffer.
+        !>
+        !> This is the preallocated API for throughput-sensitive workflows.
+        !> It does not allocate and reports status through `err_state`.
+        !>
+        !> On success, `err_state%ok()` is `.true.` and `encoded_len` is the
+        !> number of meaningful characters written into `str`.
+        pure module subroutine base64_encode_into(bytes, str, encoded_len, err_state)
+            integer(int8), intent(in), target, contiguous :: bytes(:)
+            character(len=*), intent(out), target :: str
+            integer, intent(out) :: encoded_len
+            type(state_type), intent(out) :: err_state
+        end subroutine base64_encode_into
+
+        !> Decodes Base64 text into a caller-provided output buffer.
+        !>
+        !> This is the preallocated API for throughput-sensitive workflows.
+        !> It does not allocate and reports status through `err_state`.
+        !>
+        !> The optional `skip_despace` input can be used when the input is
+        !> already whitespace-free.
+        pure module subroutine base64_decode_into(str, res, decoded_len, err_state, skip_despace)
+            character(len=*), intent(in) :: str
+            character(len=*), intent(out) :: res
+            integer, intent(out) :: decoded_len
+            type(state_type), intent(out) :: err_state
+            logical, intent(in), optional :: skip_despace
+        end subroutine base64_decode_into
+
+        !> Decodes Base64 text and returns an allocated byte-string.
+        !>
+        !> This is the ergonomic API for decoding. It allocates and returns
+        !> the result automatically.
+        !>
+        !> On error, an empty result is returned. If `err_state` is present,
+        !> details are stored there.
+        !>
+        !> Example:
+        !>```fortran
+        !> character(len=:), allocatable :: decoded
+        !> decoded = base64_decode("TWFu")  ! "Man"
+        !>```
+        module function base64_decode(str, err_state) result(res)
+            character(len=*), intent(in) :: str
+            type(state_type), intent(out), optional :: err_state
+            character(len=:), allocatable :: res
+        end function base64_decode
+    end interface
+
+end module stdlib_base64

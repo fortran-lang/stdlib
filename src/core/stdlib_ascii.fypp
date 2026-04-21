@@ -65,6 +65,7 @@ module stdlib_ascii
     character(len=*), public, parameter :: letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" !! A .. Za .. z
     character(len=*), public, parameter :: uppercase = letters(1:26) !! A .. Z
     character(len=*), public, parameter :: lowercase = letters(27:) !! a .. z
+    character(len=*), public, parameter :: base64_alphabet = letters//digits//"+/" !! RFC 4648 Base64 alphabet
     character(len=*), public, parameter :: whitespace = " "//TAB//VT//CR//LF//FF !! ASCII _whitespace
 
 
