@@ -61,6 +61,7 @@ check_modular("SPECIALMATRICES")
 check_modular("STRINGLIST")
 check_modular("STATS")
 check_modular("SYSTEM")
+check_modular("REGEX")
 
 option(FIND_BLAS "Find external BLAS and LAPACK" ON)
 
