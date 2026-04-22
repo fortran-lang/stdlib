@@ -6,8 +6,8 @@ program example_matrix_market
     real(dp), allocatable :: matrix(:,:), matrix2(:,:)
     integer, allocatable  :: index(:,:)
     real(dp), allocatable :: data(:)
-    character(len=*), parameter :: dense_filename = "test_dense.mtx"
-    character(len=*), parameter :: sparse_filename = "test_sparse.mtx"
+    character(len=*), parameter :: dense_filename = "example_dense.mtx"
+    character(len=*), parameter :: sparse_filename = "example_sparse.mtx"
     integer :: iostat, i
     character(len=:), allocatable :: iomsg
 
