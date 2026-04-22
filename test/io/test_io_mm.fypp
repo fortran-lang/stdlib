@@ -9,7 +9,7 @@ module test_io_mm
     use stdlib_math, only: all_close
     use stdlib_io_npy, only: load_npy
     use stdlib_io_mm
-    use stdlib_system, only: OS_NAME, get_runtime_os
+    use stdlib_system, only: OS_TYPE, OS_WINDOWS
     implicit none
 
     integer, parameter :: MS_general = 1
@@ -527,7 +527,7 @@ contains
                 if(str(i:i) == '/' .or. str(i:i) == '\') exit
                 i = i - 1
             end do
-            if(OS_NAME(get_runtime_os())=="Windows") then
+            if(OS_TYPE() == OS_WINDOWS) then
                 if(i > 0) then
                     path = str(:i) // "..\data\"
                 else
