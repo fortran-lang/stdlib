@@ -25,7 +25,7 @@ module stdlib_datetime
         !! version: experimental
         !!
         !! Represents a specific point in time.
-        integer :: year        = 1   !! Year (1-9999)
+        integer :: year        = 1   !! Year
         integer :: month       = 1   !! Month (1-12)
         integer :: day         = 1   !! Day (1-31)
         integer :: hour        = 0   !! Hour (0-23)
@@ -50,7 +50,7 @@ module stdlib_datetime
         !! version: experimental
         !!
         !! Represents a calendar date (no time-of-day component).
-        integer :: year  = 1   !! Year (1-9999)
+        integer :: year  = 1   !! Year
         integer :: month = 1   !! Month (1-12)
         integer :: day   = 1   !! Day (1-31)
     end type date_type
@@ -585,43 +585,61 @@ contains
     pure function date_eq(d1, d2) result(res)
         type(date_type), intent(in) :: d1, d2
         logical :: res
-        res = days_from_civil(d1%year, d1%month, d1%day) &
-           == days_from_civil(d2%year, d2%month, d2%day)
+        res = (d1%year == d2%year) .and. (d1%month == d2%month) .and. (d1%day == d2%day)
     end function date_eq
 
     pure function date_ne(d1, d2) result(res)
         type(date_type), intent(in) :: d1, d2
         logical :: res
-        res = days_from_civil(d1%year, d1%month, d1%day) &
-           /= days_from_civil(d2%year, d2%month, d2%day)
+        res = (d1%year /= d2%year) .or. (d1%month /= d2%month) .or. (d1%day /= d2%day)
     end function date_ne
 
     pure function date_lt(d1, d2) result(res)
         type(date_type), intent(in) :: d1, d2
         logical :: res
-        res = days_from_civil(d1%year, d1%month, d1%day) &
-            < days_from_civil(d2%year, d2%month, d2%day)
+        if (d1%year /= d2%year) then
+            res = d1%year < d2%year
+        else if (d1%month /= d2%month) then
+            res = d1%month < d2%month
+        else
+            res = d1%day < d2%day
+        end if
     end function date_lt
 
     pure function date_le(d1, d2) result(res)
         type(date_type), intent(in) :: d1, d2
         logical :: res
-        res = days_from_civil(d1%year, d1%month, d1%day) &
-           <= days_from_civil(d2%year, d2%month, d2%day)
+        if (d1%year /= d2%year) then
+            res = d1%year < d2%year
+        else if (d1%month /= d2%month) then
+            res = d1%month < d2%month
+        else
+            res = d1%day <= d2%day
+        end if
     end function date_le
 
     pure function date_gt(d1, d2) result(res)
         type(date_type), intent(in) :: d1, d2
         logical :: res
-        res = days_from_civil(d1%year, d1%month, d1%day) &
-            > days_from_civil(d2%year, d2%month, d2%day)
+        if (d1%year /= d2%year) then
+            res = d1%year > d2%year
+        else if (d1%month /= d2%month) then
+            res = d1%month > d2%month
+        else
+            res = d1%day > d2%day
+        end if
     end function date_gt
 
     pure function date_ge(d1, d2) result(res)
         type(date_type), intent(in) :: d1, d2
         logical :: res
-        res = days_from_civil(d1%year, d1%month, d1%day) &
-           >= days_from_civil(d2%year, d2%month, d2%day)
+        if (d1%year /= d2%year) then
+            res = d1%year > d2%year
+        else if (d1%month /= d2%month) then
+            res = d1%month > d2%month
+        else
+            res = d1%day >= d2%day
+        end if
     end function date_ge
 
     pure function time_to_normalized_utc_ms(t) result(res)
