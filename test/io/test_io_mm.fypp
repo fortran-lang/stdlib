@@ -548,7 +548,6 @@ contains
             nnz = size(index_f_load, dim=2)
             call load_npy(path // filename // ".mtx_indices.npy", index_s_load, iostat=stat)
             index_s_load = index_s_load + 1
-            call load_npy(path // filename //".mtx_data.npy", data_s_load_1, iostat=stat)
             call check(error, all(index_f_load(1,:)==index_s_load(1:nnz)), .true.,&
                 "MM coordinate test failed: bcsstk01.mtx rows not matched")
             call check(error, all(index_f_load(2,:)==index_s_load(nnz+1:2*nnz)), .true.,&
