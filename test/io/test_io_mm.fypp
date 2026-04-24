@@ -1,0 +1,597 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set I_KINDS_TYPES  = list(zip(INT_KINDS, INT_TYPES, INT_KINDS))
+#:set KINDS_TYPES = R_KINDS_TYPES + C_KINDS_TYPES + I_KINDS_TYPES
+module test_io_mm
+    use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
+    use stdlib_kinds
+    use stdlib_math, only: all_close
+    use stdlib_io_npy, only: load_npy
+    use stdlib_io_mm
+    implicit none
+
+    integer, parameter :: MS_general = 1
+    integer, parameter :: MS_symmetric = 2
+    integer, parameter :: MS_skew_symmetric = 3
+    integer, parameter :: MS_hermitian = 4
+
+contains
+
+
+    !> Collect all exported unit tests
+    subroutine collect_suite(testsuite)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [ &
+            new_unittest('io_mm_array', test_io_mm_array), &
+            new_unittest('io_mm_coordinate', test_io_mm_coordinate) &
+        ]
+    end subroutine
+
+    #:for k, t, s in KINDS_TYPES
+    subroutine generate_random_${s}$_dense_matrix(A)
+        ${t}$, intent(out) :: A(:, :)
+
+        ! Internal variables
+        #:if t.startswith('complex')
+        real(${k}$), allocatable :: R(:, :, :)
+        #:endif
+        #:if t.startswith('integer')
+        real :: rnd
+        integer :: i, j
+        #:endif
+        integer :: n
+
+        n = size(A,dim=1)
+
+        #:if t.startswith('real')
+        call random_number(A)
+        #:endif
+        #:if t.startswith('complex')
+        allocate(R(n,n,2))
+        call random_number(R(:,:,1))
+        call random_number(R(:,:,2))
+        A = cmplx(R(:,:,1), R(:,:,2), kind=${k}$)
+        #:endif
+        #:if t.startswith('integer')
+        do j = 1, n
+            do i = 1,n
+                call random_number(rnd)
+                A(i,j) = int(rnd * 100 - 50, kind=${k}$)
+            end do
+        end do
+        #:endif
+    end subroutine
+    pure function compare_dense_${s}$(A, B) result(result)
+        ${t}$, intent(in) :: A(:, :), B(:, :)
+        logical :: result
+
+        #:if t.startswith('integer')
+        result = all(A==B)
+        #:else
+        result = all_close(A, B)
+        #:endif
+    end function
+    #:endfor
+
+    subroutine test_io_mm_array(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        integer :: u, stat
+        #:for k, t, s in (KINDS_TYPES)
+        block
+            integer, parameter :: n = 5
+            ${t}$, allocatable :: matrix_save(:, :), matrix_load(:, :), A(:, :)
+            logical :: result
+            allocate(matrix_save(n,n))
+            allocate(A(n,n))
+
+            call random_seed()
+            ! General matrix
+            call generate_random_${s}$_dense_matrix(matrix_save)
+            call save_mm("test_mmio_dense.mtx", matrix_save, format = "G0")
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            result = compare_dense_${s}$(matrix_save, matrix_load)
+            call check(error, result, .true.,&
+                "MM array test failed: matrix=general, symmetry_arg=unspecified, type=${t}$")
+            if(allocated(error)) return
+            ! Check if symmetry = auto
+            call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "auto", format = "G0")
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            result = compare_dense_${s}$(matrix_save, matrix_load)
+            call check(error, result, .true.,&
+                "MM array test failed: matrix=general, symmetry_arg=auto, type=${t}$")
+            if(allocated(error)) return
+
+            ! Symmetric matrix
+            call generate_random_${s}$_dense_matrix(A)
+            ! Construct symmetric matrix using (A + A.T)
+            matrix_save = A + transpose(A)
+            call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "symmetric", format = "G0")
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            result = compare_dense_${s}$(matrix_save, matrix_load)
+            call check(error, result, .true.,&
+                "MM array test failed: matrix=symmetric, symmetry_arg=symmetric, type=${t}$")
+            if(allocated(error)) return
+            ! Check if symmetry = auto
+            call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "auto", format = "G0")
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            result = compare_dense_${s}$(matrix_save, matrix_load)
+            call check(error, result, .true.,&
+                "MM array test failed: matrix=symmetric, symmetry_arg=auto, type=${t}$")
+            if(allocated(error)) return
+
+            ! Skew-symmetric matrix
+            call generate_random_${s}$_dense_matrix(A)
+            ! Construct symmetric matrix using (A - A.T)
+            matrix_save = A - transpose(A)
+            call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "skew-symmetric", format = "G0")
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            result = compare_dense_${s}$(matrix_save, matrix_load)
+            call check(error, result, .true.,&
+                "MM array test failed: matrix=skew-symmetric, symmetry_arg=skew-symmetric, type=${t}$")
+            if(allocated(error)) return
+            ! Check if symmetry = auto
+            call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "auto", format = "G0")
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            result = compare_dense_${s}$(matrix_save, matrix_load)
+            call check(error, result, .true.,&
+                "MM array test failed: matrix=skew-symmetric, symmetry_arg=auto, type=${t}$")
+            if(allocated(error)) return
+
+            #:if t.startswith('complex')
+            ! Hermitian matrix
+            call generate_random_${s}$_dense_matrix(A)
+            ! Construct symmetric matrix using (A + A.H)
+            matrix_save = A + transpose(conjg(A))
+            call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "hermitian", format = "G0")
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            result = compare_dense_${s}$(matrix_save, matrix_load)
+            call check(error, result, .true.,&
+                "MM array test failed: matrix=hermitian, symmetry_arg=hermitian, type=${t}$")
+            if(allocated(error)) return
+            ! Check if symmetry = auto
+            call save_mm("test_mmio_dense.mtx", matrix_save, symmetry = "auto", format = "G0")
+            call load_mm("test_mmio_dense.mtx", matrix_load)
+            result = compare_dense_${s}$(matrix_save, matrix_load)
+            call check(error, result, .true.,&
+                "MM array test failed: matrix=hermitian, symmetry_arg=auto, type=${t}$")
+            if(allocated(error)) return
+            #:endif
+        end block
+        #:endfor
+
+        stat = 0
+        open(newunit=u, file="test_mmio_dense.mtx", status="old", iostat=stat)
+        if (stat == 0) then
+            close(u, status="delete")
+        end if
+    end subroutine
+
+    subroutine generate_random_positions(pos, t_entries)
+        integer, intent(out) :: pos(:)
+        integer, intent(in) :: t_entries
+
+        ! Internal variables
+        integer :: i, j, temp
+        real(dp) :: rnd
+
+        pos = [(i,i=1,t_entries)]
+        do i = t_entries, 2, -1
+            call random_number(rnd)
+            j = int(i*rnd) + 1
+            temp = pos(i)
+            pos(i) = pos(j)
+            pos(j) = temp
+        end do
+    end subroutine
+
+    subroutine fill_first_half_indices(index_save, pos, nnz, nrows, ncols, symmetry, j)
+        integer, intent(out) :: index_save(:, :)
+        integer, intent(in) :: pos(:), nnz, nrows, ncols, symmetry
+        integer, intent(out) :: j
+
+        ! Internal variables
+        integer :: i, row, col
+
+        if(symmetry == MS_symmetric .or. symmetry == MS_hermitian) then
+            j = 1
+            do i = 1, nnz
+                row = mod(pos(i) - 1,nrows) + 1
+                col = (pos(i) - 1)/nrows + 1
+                if(row < col) cycle
+                index_save(1,j) = row
+                index_save(2,j) = col
+                j = j + 1
+            end do
+        else
+            j = 1
+            do i = 1, nnz
+                row = mod(pos(i) - 1,nrows) + 1
+                col = (pos(i) - 1)/nrows + 1
+                if(row <= col) cycle
+                index_save(1,j) = row
+                index_save(2,j) = col
+                j = j + 1
+            end do
+        end if
+    end subroutine
+
+    #:for k, t, s in KINDS_TYPES
+    subroutine generate_random_data_for_${s}$_coo(A, nnz_to_write)
+        ${t}$, intent(out) :: A(:)
+        integer, intent(in) :: nnz_to_write
+
+        ! Internal variables
+        #:if t.startswith('complex')
+        real(${k}$), allocatable :: R(:, :)
+        #:endif
+        #:if t.startswith('integer')
+        real :: rnd
+        integer :: i
+        #:endif
+
+        #:if t.startswith('real')
+        call random_number(A(1:nnz_to_write))
+        #:endif
+        #:if t.startswith('complex')
+        allocate(R(nnz_to_write, 2))
+        call random_number(R(:,1))
+        call random_number(R(:,2))
+        A(1:nnz_to_write) = cmplx(R(1:nnz_to_write, 1), R(1:nnz_to_write, 2), kind=${k}$)
+        #:endif
+        #:if t.startswith('integer')
+        do i = 1, nnz_to_write
+            call random_number(rnd)
+            A(i) = int(rnd * 100 - 50, kind=${k}$)
+        end do
+        #:endif
+    end subroutine
+
+    pure function compare_coo_${s}$(index_save, index_load, data_save, data_load) result(result)
+        ${t}$, intent(in) :: data_save(:), data_load(:)
+        integer, intent(in) :: index_save(:, :), index_load(:,:)
+        logical :: result
+
+        #:if t.startswith('integer')
+        result = all(index_save == index_load) .and. all(data_save == data_load)
+        #:else
+        result = all(index_save == index_load) .and. all_close(data_save, data_load)
+        #:endif
+    end function
+
+    subroutine fill_other_half_${s}$(index_save, data_save, j, half_nnz, symmetry, is_pattern)
+        integer, intent(inout) :: index_save(:, :)
+        ${t}$, intent(inout) :: data_save(:)
+        integer, intent(in) :: half_nnz, symmetry
+        integer, intent(inout) :: j
+        logical, intent(in) :: is_pattern
+
+        ! Internal variables.
+        integer :: i
+
+        if(.not. is_pattern) then
+            if(symmetry == MS_symmetric) then
+                do i = 1, half_nnz
+                    if(index_save(1,i) == index_save(2,i)) cycle
+                    index_save(1,j) = index_save(2,i)
+                    index_save(2,j) = index_save(1,i)
+                    data_save(j) = data_save(i)
+                    j=j+1
+                end do
+            #:if t.startswith('complex')
+            else if(symmetry == MS_hermitian) then
+                do i = 1, half_nnz
+                    if(index_save(1,i) == index_save(2,i)) cycle
+                    index_save(1,j) = index_save(2,i)
+                    index_save(2,j) = index_save(1,i)
+                    data_save(j) = conjg(data_save(i))
+                    j=j+1
+                end do
+            #:endif
+            else
+                do i = 1, half_nnz
+                    if(index_save(1,i) == index_save(2,i)) cycle
+                    index_save(1,j) = index_save(2,i)
+                    index_save(2,j) = index_save(1,i)
+                    data_save(j) = -data_save(i)
+                    j=j+1
+                end do
+            end if
+        else
+            if(symmetry == MS_symmetric) then
+                do i = 1, half_nnz
+                    if(index_save(1,i) == index_save(2,i)) cycle
+                    index_save(1,j) = index_save(2,i)
+                    index_save(2,j) = index_save(1,i)
+                    j=j+1
+                end do
+            #:if t.startswith('complex')
+            else if(symmetry == MS_hermitian) then
+                do i = 1, half_nnz
+                    if(index_save(1,i) == index_save(2,i)) cycle
+                    index_save(1,j) = index_save(2,i)
+                    index_save(2,j) = index_save(1,i)
+                    j=j+1
+                end do
+            #:endif
+            else
+                do i = 1, half_nnz
+                    if(index_save(1,i) == index_save(2,i)) cycle
+                    index_save(1,j) = index_save(2,i)
+                    index_save(2,j) = index_save(1,i)
+                    j=j+1
+                end do
+            end if
+        end if
+    end subroutine
+
+    subroutine generate_random_${s}$_coo_matrix(index_save, data_save, nrows, ncols, symmetry, is_pattern)
+        ${t}$, allocatable, intent(out) :: data_save(:)
+        integer, allocatable, intent(out) :: index_save(:, :)
+        integer, intent(in) :: nrows, ncols, symmetry
+        logical, intent(in) :: is_pattern
+
+        ! Internal variables
+        integer, allocatable :: pos(:)
+        integer :: nnz, nnz_lower, nnz_diag, i, j
+        #:if t.startswith('integer')
+        real(dp) :: density
+        #:else
+        real(${k}$) :: density
+        #:endif
+
+        allocate(pos(nrows * ncols))
+        call generate_random_positions(pos, nrows * ncols)
+        call random_number(density)
+        nnz = ceiling(density*nrows*ncols)
+
+        if(symmetry == MS_general) then
+            allocate(index_save(2, nnz))
+            if(.not. is_pattern) allocate(data_save(nnz))
+            do i = 1, nnz
+                index_save(1,i) = mod(pos(i) - 1,nrows) + 1
+                index_save(2,i) = (pos(i) - 1)/nrows + 1
+            end do
+            if(.not. is_pattern) call generate_random_data_for_${s}$_coo(data_save, nnz)
+        else if(symmetry == MS_symmetric) then
+            nnz_lower = count(mod(pos(1:nnz) - 1,nrows) > (pos(1:nnz) - 1)/nrows) !! lower triangular part
+            nnz_diag = count(mod(pos(1:nnz) - 1,nrows) == (pos(1:nnz) - 1)/nrows) !! diagonal
+            allocate(index_save(2, 2*nnz_lower + nnz_diag))
+            if(.not. is_pattern) allocate(data_save(2*nnz_lower + nnz_diag))
+            call fill_first_half_indices(index_save, pos, nnz, nrows, ncols, MS_symmetric, j)
+            if(.not. is_pattern) call generate_random_data_for_${s}$_coo(data_save, nnz_lower + nnz_diag)
+            call fill_other_half_${s}$(index_save, data_save, j, nnz_lower+nnz_diag, MS_symmetric, is_pattern)
+        #:if t.startswith('complex')
+        else if(symmetry == MS_hermitian) then
+            nnz_lower = count(mod(pos(1:nnz) - 1,nrows) > (pos(1:nnz) - 1)/nrows) !! lower triangular part
+            nnz_diag = count(mod(pos(1:nnz) - 1,nrows) == (pos(1:nnz) - 1)/nrows) !! diagonal
+            allocate(index_save(2, 2*nnz_lower + nnz_diag))
+            if(.not. is_pattern) allocate(data_save(2*nnz_lower + nnz_diag))
+            call fill_first_half_indices(index_save, pos, nnz, nrows, ncols, MS_hermitian, j)
+            if(.not. is_pattern) call generate_random_data_for_${s}$_coo(data_save, nnz_lower+nnz_diag)
+            if(.not. is_pattern) then
+                do i = 1, nnz_lower + nnz_diag
+                    if(index_save(1, i) == index_save(2,i)) data_save(i) = real(data_save(i))
+                end do
+            end if
+            call fill_other_half_${s}$(index_save, data_save, j, nnz_lower+nnz_diag, MS_hermitian, is_pattern)
+        #:endif
+        else
+            nnz_lower = count(mod(pos(1:nnz) - 1,nrows) > (pos(1:nnz) - 1)/nrows) !! lower triangular part
+            allocate(index_save(2, 2*nnz_lower))
+            if(.not. is_pattern) allocate(data_save(2*nnz_lower))
+            call fill_first_half_indices(index_save, pos, nnz, nrows, ncols, MS_skew_symmetric, j)
+            if(.not. is_pattern) call generate_random_data_for_${s}$_coo(data_save, nnz_lower)
+            call fill_other_half_${s}$(index_save, data_save, j, nnz_lower, MS_skew_symmetric, is_pattern)
+        end if
+        if(allocated(pos)) deallocate(pos)
+    end subroutine
+    #:endfor
+
+    pure function compare_coo_pattern(index_save, index_load) result(result)
+        integer, intent(in) :: index_save(:, :), index_load(:,:)
+        logical :: result
+
+        result = all(index_save == index_load)
+    end function
+
+    subroutine test_io_mm_coordinate(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        integer :: u, stat
+        #:for k, t, s in KINDS_TYPES
+        block
+            integer :: nrows, ncols
+            ${t}$, allocatable :: data_save(:), data_load(:)
+            integer, allocatable :: index_save(:, :), index_load(:,:)
+            logical :: result
+
+            nrows = 5
+            ncols = 5
+
+            call random_seed()
+            ! General matrix
+            call generate_random_${s}$_coo_matrix(index_save, data_save, nrows, ncols, MS_general, .false.)
+            call save_mm("test_mmio_sparse.mtx", index_save, data_save, format = "G0")
+            call load_mm("test_mmio_sparse.mtx", index_load, data_load)
+            result = compare_coo_${s}$(index_save, index_load, data_save, data_load)
+            call check(error, result, .true.,&
+                "MM coordinate test failed: symmetry_arg=unspecified, type=${t}$")
+            if(allocated(error)) return
+            if(allocated(index_save)) deallocate(index_save)
+            if(allocated(data_save)) deallocate(data_save)
+
+            ! Symmetric matrix
+            call generate_random_${s}$_coo_matrix(index_save, data_save, nrows, ncols, MS_symmetric, .false.)
+            call save_mm("test_mmio_sparse.mtx", index_save, data_save, symmetry = "symmetric", format = "G0")
+            call load_mm("test_mmio_sparse.mtx", index_load, data_load)
+            result = compare_coo_${s}$(index_save, index_load, data_save, data_load)
+            call check(error, result, .true.,&
+                "MM coordinate test failed: symmetry_arg=symmetric, type=${t}$")
+            if(allocated(error)) return
+            if(allocated(index_save)) deallocate(index_save)
+            if(allocated(data_save)) deallocate(data_save)
+
+            ! Skew-symmetric matrix
+            call generate_random_${s}$_coo_matrix(index_save, data_save, nrows, ncols, MS_skew_symmetric, .false.)
+            call save_mm("test_mmio_sparse.mtx", index_save, data_save, symmetry = "skew-symmetric", format = "G0")
+            call load_mm("test_mmio_sparse.mtx", index_load, data_load)
+            result = compare_coo_${s}$(index_save, index_load, data_save, data_load)
+            call check(error, result, .true.,&
+                "MM coordinate test failed: symmetry_arg=skew-symmetric, type=${t}$")
+            if(allocated(error)) return
+            if(allocated(index_save)) deallocate(index_save)
+            if(allocated(data_save)) deallocate(data_save)
+
+            #:if t.startswith('complex')
+            ! Hermitian matrix
+            call generate_random_${s}$_coo_matrix(index_save, data_save, nrows, ncols, MS_hermitian, .false.)
+            call save_mm("test_mmio_sparse.mtx", index_save, data_save, symmetry = "hermitian", format = "G0")
+            call load_mm("test_mmio_sparse.mtx", index_load, data_load)
+            result = compare_coo_${s}$(index_save, index_load, data_save, data_load)
+            call check(error, result, .true.,&
+                "MM coordinate test failed: symmetry_arg=hermitian, type=${t}$")
+            if(allocated(error)) return
+            if(allocated(index_save)) deallocate(index_save)
+            if(allocated(data_save)) deallocate(data_save)
+            #:endif
+        end block
+        #:endfor
+
+        ! Pattern tests
+        block
+            integer :: nrows, ncols
+            real(sp), allocatable :: dummy(:) ! Dummy data matrix
+            integer, allocatable :: index_save(:, :), index_load(:,:)
+            logical :: result
+
+            nrows = 5
+            ncols = 5
+
+            call random_seed()
+            ! General matrix
+            call generate_random_sp_coo_matrix(index_save, dummy, nrows, ncols, MS_general, .true.)
+            call save_mm("test_mmio_sparse.mtx", index_save, [0], format = "G0")
+            call load_mm("test_mmio_sparse.mtx", index_load, dummy)
+            result = compare_coo_pattern(index_save, index_load)
+            call check(error, result, .true.,&
+                "MM coordinate test failed: symmetry_arg=unspecified, type=pattern")
+            if(allocated(error)) return
+            if(allocated(index_save)) deallocate(index_save)
+
+            ! Symmetric matrix
+            call generate_random_sp_coo_matrix(index_save, dummy, nrows, ncols, MS_symmetric, .true.)
+            call save_mm("test_mmio_sparse.mtx", index_save, [0], symmetry = "symmetric", format = "G0")
+            call load_mm("test_mmio_sparse.mtx", index_load, dummy)
+            result = compare_coo_pattern(index_save, index_load)
+            call check(error, result, .true.,&
+                "MM coordinate test failed: symmetry_arg=symmetric, type=pattern")
+            if(allocated(error)) return
+            if(allocated(index_save)) deallocate(index_save)
+
+            ! Skew-symmetric matrix
+            call generate_random_sp_coo_matrix(index_save, dummy, nrows, ncols, MS_skew_symmetric, .true.)
+            call save_mm("test_mmio_sparse.mtx", index_save, [0], symmetry = "skew-symmetric", format = "G0")
+            call load_mm("test_mmio_sparse.mtx", index_load, dummy)
+            result = compare_coo_pattern(index_save, index_load)
+            call check(error, result, .true.,&
+                "MM coordinate test failed: symmetry_arg=skew-symmetric, type=pattern")
+            if(allocated(error)) return
+            if(allocated(index_save)) deallocate(index_save)
+
+            ! Hermitian matrix
+            call generate_random_sp_coo_matrix(index_save, dummy, nrows, ncols, MS_hermitian, .true.)
+            call save_mm("test_mmio_sparse.mtx", index_save, [0], symmetry = "hermitian", format = "G0")
+            call load_mm("test_mmio_sparse.mtx", index_load, dummy)
+            result = compare_coo_pattern(index_save, index_load)
+            call check(error, result, .true.,&
+                "MM coordinate test failed: symmetry_arg=hermitian, type=pattern")
+            if(allocated(error)) return
+            if(allocated(index_save)) deallocate(index_save)
+        end block
+
+        ! Validate given matrices inside https://sparse.tamu.edu/
+        block
+            real(dp), allocatable :: data_f_load_1(:), data_s_load_1(:), data_f_load_2(:,:), data_s_load_2(:,:)
+            integer, allocatable :: index_f_load(:,:), index_s_load(:)
+            integer :: nrows, nnz, stat, i
+            character(len=:), allocatable :: path, str, filename
+
+            str = "${_FILE_}$"
+            i = len_trim(str)
+            do while(i > 0)
+                if(str(i:i) == '/' .or. str(i:i) == '\') exit
+                i = i - 1
+            end do
+            path = str(:i) // "../data/matrix_market/"
+
+            ! coordinate real symmetric
+            filename = "bcsstk01"
+            call load_mm(path // filename // ".mtx", index_f_load, data_f_load_1, iostat=stat)
+            nnz = size(index_f_load, dim=2)
+            call load_npy(path // filename // ".mtx_indices.npy", index_s_load, iostat=stat)
+            index_s_load = index_s_load + 1
+            call load_npy(path // filename //".mtx_data.npy", data_s_load_1, iostat=stat)
+            call check(error, all(index_f_load(1,:)==index_s_load(1:nnz)), .true.,&
+                "MM coordinate test failed: bcsstk01.mtx rows not matched")
+            call check(error, all(index_f_load(2,:)==index_s_load(nnz+1:2*nnz)), .true.,&
+                "MM coordinate test failed: bcsstk01.mtx cols not matched")
+            call check(error, all_close(data_f_load_1, data_s_load_1), .true.,&
+                "MM coordinate test failed: bcsstk01.mtx data not matched")
+
+            ! coordinate pattern symmetric
+            filename = "ash85"
+            call load_mm(path // filename // ".mtx", index_f_load, data_f_load_1, iostat=stat)
+            nnz = size(index_f_load, dim=2)
+            call load_npy(path // filename // ".mtx_indices.npy", index_s_load, iostat=stat)
+            index_s_load = index_s_load + 1
+            call check(error, all(index_f_load(1,:)==index_s_load(1:nnz)), .true.,&
+                "MM coordinate test failed: bcsstk01.mtx rows not matched")
+            call check(error, all(index_f_load(2,:)==index_s_load(nnz+1:2*nnz)), .true.,&
+                "MM coordinate test failed: bcsstk01.mtx cols not matched")
+
+            ! array real general
+            filename = "lhr01_b"
+            call load_mm(path // filename // ".mtx", data_f_load_2, iostat=stat)
+            call load_npy(path // filename // ".mtx_data.npy", data_s_load_2, iostat=stat)
+            call check(error, all_close(data_f_load_2, transpose(data_s_load_2)), .true.,&
+                "MM coordinate test failed: bcsstk01.mtx data not matched")
+        end block
+        stat = 0
+        open(newunit=u, file="test_mmio_sparse.mtx", status="old", iostat=stat)
+        if (stat == 0) then
+            close(u, status="delete")
+        end if
+    end subroutine
+
+end module
+
+
+program tester
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_io_mm, only : collect_suite
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("io_mm", collect_suite) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program
