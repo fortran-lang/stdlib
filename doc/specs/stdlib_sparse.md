@@ -146,7 +146,10 @@ Type-bound procedures to enable adding data in a sparse matrix.
 
 ### Syntax
 
-`call matrix%add(i,j,v)` or
+* Add single value
+`call matrix%add(i,j,v)` 
+
+* Add a block of values
 `call matrix%add(i(:),j(:),v(:,:))`
 
 ### Arguments

@@ -1,0 +1,101 @@
+#:include "common.fypp"
+#:set RANKS = range(1, 2+1)
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
+#! define ranks without parentheses
+#:def rksfx2(rank)
+#{if rank > 0}#${":," + ":," * (rank - 1)}$#{endif}#
+#:enddef
+submodule (stdlib_sparse_spmv) stdlib_sparse_spmv_coo
+contains
+
+    !! spmv_coo
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    #:for rank in RANKS
+    module subroutine spmv_coo_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta,op)
+        type(COO_${s1}$_type), intent(in) :: matrix
+        ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
+        ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
+        ${t1}$, intent(in), optional :: alpha
+        ${t1}$, intent(in), optional :: beta
+        character(1), intent(in), optional :: op
+        ${t1}$ :: alpha_
+        character(1) :: op_
+        integer(ilp) :: col_index, k, row_index
+
+        op_ = sparse_op_none; if(present(op)) op_ = op
+        alpha_ = one_${k1}$
+        if(present(alpha)) alpha_ = alpha
+        if(present(beta)) then
+            vec_y = beta * vec_y
+        else 
+            vec_y = zero_${s1}$
+        endif
+
+        associate( data => matrix%data, index => matrix%index, storage => matrix%storage, nnz => matrix%nnz )
+        select case(op_)
+        case(sparse_op_none)
+            if(storage == sparse_full) then
+                do k = 1, nnz
+                    row_index = index(1,k)
+                    col_index = index(2,k)
+                    vec_y(${rksfx2(rank-1)}$row_index) = vec_y(${rksfx2(rank-1)}$row_index) + alpha_*data(k) * vec_x(${rksfx2(rank-1)}$col_index)
+                end do
+
+            else 
+                do k = 1, nnz
+                    row_index = index(1,k)
+                    col_index = index(2,k)
+                    vec_y(${rksfx2(rank-1)}$row_index) = vec_y(${rksfx2(rank-1)}$row_index) + alpha_*data(k) * vec_x(${rksfx2(rank-1)}$col_index)
+                    if( row_index==col_index ) cycle
+                    vec_y(${rksfx2(rank-1)}$col_index) = vec_y(${rksfx2(rank-1)}$col_index) + alpha_*data(k) * vec_x(${rksfx2(rank-1)}$row_index)
+                end do
+
+            end if
+        case(sparse_op_transpose)
+            if(storage == sparse_full) then
+                do k = 1, nnz
+                    col_index = index(1,k)
+                    row_index = index(2,k)
+                    vec_y(${rksfx2(rank-1)}$row_index) = vec_y(${rksfx2(rank-1)}$row_index) + alpha_*data(k) * vec_x(${rksfx2(rank-1)}$col_index)
+                end do
+
+            else 
+                do k = 1, nnz
+                    col_index = index(1,k)
+                    row_index = index(2,k)
+                    vec_y(${rksfx2(rank-1)}$row_index) = vec_y(${rksfx2(rank-1)}$row_index) + alpha_*data(k) * vec_x(${rksfx2(rank-1)}$col_index)
+                    if( row_index==col_index ) cycle
+                    vec_y(${rksfx2(rank-1)}$col_index) = vec_y(${rksfx2(rank-1)}$col_index) + alpha_*data(k) * vec_x(${rksfx2(rank-1)}$row_index)
+                end do
+
+            end if
+        #:if t1.startswith('complex') 
+        case(sparse_op_hermitian)
+            if(storage == sparse_full) then
+                do k = 1, nnz
+                    col_index = index(1,k)
+                    row_index = index(2,k)
+                    vec_y(${rksfx2(rank-1)}$row_index) = vec_y(${rksfx2(rank-1)}$row_index) + alpha_*conjg(data(k)) * vec_x(${rksfx2(rank-1)}$col_index)
+                end do
+
+            else 
+                do k = 1, nnz
+                    col_index = index(1,k)
+                    row_index = index(2,k)
+                    vec_y(${rksfx2(rank-1)}$row_index) = vec_y(${rksfx2(rank-1)}$row_index) + alpha_*conjg(data(k)) * vec_x(${rksfx2(rank-1)}$col_index)
+                    if( row_index==col_index ) cycle
+                    vec_y(${rksfx2(rank-1)}$col_index) = vec_y(${rksfx2(rank-1)}$col_index) + alpha_*conjg(data(k)) * vec_x(${rksfx2(rank-1)}$row_index)
+                end do
+
+            end if
+        #:endif
+        end select
+        end associate
+    end subroutine
+
+    #:endfor
+    #:endfor
+
+end submodule stdlib_sparse_spmv_coo

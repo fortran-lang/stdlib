@@ -1,0 +1,193 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
+#:set CHUNKS = [4,8,16]
+submodule (stdlib_sparse_spmv) stdlib_sparse_spmv_sellc
+contains
+
+    !! spmv_sellc
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    module subroutine spmv_sellc_${s1}$(matrix,vec_x,vec_y,alpha,beta,op)
+        !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
+        type(SELLC_${s1}$_type), intent(in) :: matrix
+        ${t1}$, intent(in)    :: vec_x(:)
+        ${t1}$, intent(inout) :: vec_y(:)
+        ${t1}$, intent(in), optional :: alpha
+        ${t1}$, intent(in), optional :: beta
+        character(1), intent(in), optional :: op
+        ${t1}$ :: alpha_
+        character(1) :: op_
+        integer(ilp) :: i, nz, rowidx, num_chunks, rm
+
+        op_ = sparse_op_none; if(present(op)) op_ = op
+        alpha_ = one_${s1}$
+        if(present(alpha)) alpha_ = alpha
+        if(present(beta)) then
+            vec_y = beta * vec_y
+        else 
+            vec_y = zero_${s1}$
+        endif
+
+        associate( data => matrix%data, ia => matrix%rowptr , ja => matrix%col, cs => matrix%chunk_size, &
+        &   nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage  )
+
+        if( .not.any( ${CHUNKS}$ == cs ) ) then
+            print *, "error: sellc chunk size not supported."
+            return
+        end if
+
+        num_chunks = nrows / cs
+        rm = nrows - num_chunks * cs
+        if( storage == sparse_full .and. op_==sparse_op_none ) then
+
+            select case(cs)
+            #:for chunk in CHUNKS
+            case(${chunk}$)
+                do i = 1, num_chunks
+                    nz = ia(i+1) - ia(i)
+                    rowidx = (i - 1)*${chunk}$ + 1 
+                    call chunk_kernel_${chunk}$(nz,data(:,ia(i)),ja(:,ia(i)),vec_x,vec_y(rowidx:))
+                end do
+            #:endfor
+            end select
+            
+            ! remainder
+            if(rm>0)then 
+                i = num_chunks + 1 
+                nz = ia(i+1) - ia(i)
+                rowidx = (i - 1)*cs + 1
+                call chunk_kernel_rm(nz,cs,rm,data(:,ia(i)),ja(:,ia(i)),vec_x,vec_y(rowidx:))
+            end if
+            
+        else if( storage == sparse_full .and. op_==sparse_op_transpose ) then
+
+            select case(cs)
+            #:for chunk in CHUNKS
+            case(${chunk}$)
+                do i = 1, num_chunks
+                    nz = ia(i+1) - ia(i)
+                    rowidx = (i - 1)*${chunk}$ + 1 
+                    call chunk_kernel_trans_${chunk}$(nz,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
+                end do
+            #:endfor
+            end select
+            
+            ! remainder
+            if(rm>0)then 
+                i = num_chunks + 1 
+                nz = ia(i+1) - ia(i)
+                rowidx = (i - 1)*cs + 1
+                call chunk_kernel_rm_trans(nz,cs,rm,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
+            end if
+        
+        #:if t1.startswith('complex')
+        else if( storage == sparse_full .and. op_==sparse_op_hermitian ) then
+
+            select case(cs)
+            #:for chunk in CHUNKS
+            case(${chunk}$)
+                do i = 1, num_chunks
+                    nz = ia(i+1) - ia(i)
+                    rowidx = (i - 1)*${chunk}$ + 1 
+                    call chunk_kernel_herm_${chunk}$(nz,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
+                end do
+            #:endfor
+            end select
+            
+            ! remainder
+            if(rm>0)then 
+                i = num_chunks + 1 
+                nz = ia(i+1) - ia(i)
+                rowidx = (i - 1)*cs + 1
+                call chunk_kernel_rm_herm(nz,cs,rm,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
+            end if
+        #:endif
+        else
+            print *, "error: sellc format for spmv operation not yet supported."
+            return
+        end if
+        end associate
+
+    contains
+        #:for chunk in CHUNKS
+        pure subroutine chunk_kernel_${chunk}$(n,a,col,x,y)
+            integer, value      :: n
+            ${t1}$, intent(in)  :: a(${chunk}$,n), x(:)
+            integer(ilp), intent(in) :: col(${chunk}$,n)
+            ${t1}$, intent(inout) :: y(${chunk}$)
+            integer :: j
+            do j = 1, n
+                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
+            end do
+        end subroutine
+        pure subroutine chunk_kernel_trans_${chunk}$(n,a,col,x,y)
+            integer, value      :: n
+            ${t1}$, intent(in)  :: a(${chunk}$,n), x(${chunk}$)
+            integer(ilp), intent(in) :: col(${chunk}$,n)
+            ${t1}$, intent(inout) :: y(:)
+            integer :: j, k
+            do j = 1, n
+                do k = 1, ${chunk}$
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                end do
+            end do
+        end subroutine
+        #:if t1.startswith('complex')
+        pure subroutine chunk_kernel_herm_${chunk}$(n,a,col,x,y)
+            integer, value      :: n
+            ${t1}$, intent(in)  :: a(${chunk}$,n), x(${chunk}$)
+            integer(ilp), intent(in) :: col(${chunk}$,n)
+            ${t1}$, intent(inout) :: y(:)
+            integer :: j, k
+            do j = 1, n
+                do k = 1, ${chunk}$
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
+                end do
+            end do
+        end subroutine
+        #:endif
+        #:endfor
+    
+        pure subroutine chunk_kernel_rm(n,cs,r,a,col,x,y)
+            integer, value      :: n, cs, r
+            ${t1}$, intent(in)  :: a(cs,n), x(:)
+            integer(ilp), intent(in) :: col(cs,n)
+            ${t1}$, intent(inout) :: y(r)
+            integer :: j
+            do j = 1, n
+                y(1:r) = y(1:r) + alpha_ * a(1:r,j) * x(col(1:r,j))
+            end do
+        end subroutine
+        pure subroutine chunk_kernel_rm_trans(n,cs,r,a,col,x,y)
+            integer, value      :: n, cs, r
+            ${t1}$, intent(in)  :: a(cs,n), x(r)
+            integer(ilp), intent(in) :: col(cs,n)
+            ${t1}$, intent(inout) :: y(:)
+            integer :: j, k
+            do j = 1, n
+                do k = 1, r
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                end do
+            end do
+        end subroutine
+        #:if t1.startswith('complex')
+        pure subroutine chunk_kernel_rm_herm(n,cs,r,a,col,x,y)
+            integer, value      :: n, cs, r
+            ${t1}$, intent(in)  :: a(cs,n), x(r)
+            integer(ilp), intent(in) :: col(cs,n)
+            ${t1}$, intent(inout) :: y(:)
+            integer :: j, k
+            do j = 1, n
+                do k = 1, r
+                    y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
+                end do
+            end do
+        end subroutine
+        #:endif
+
+    end subroutine
+    
+    #:endfor
+
+end submodule stdlib_sparse_spmv_sellc
