@@ -41,7 +41,7 @@ contains
     type(permutation_type) :: p
 
     p%n = size(perm_vec)
-    allocate(p%perm(p%n), source=perm_vec)
+    allocate(p%perm, source=perm_vec)
     p%finalized = optval(finalized, .true.)
   end function
 
