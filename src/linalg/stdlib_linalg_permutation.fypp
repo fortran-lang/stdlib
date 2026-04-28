@@ -24,7 +24,7 @@ submodule (stdlib_linalg) stdlib_linalg_permutation
 contains
 
   !> Create an identity permutation of size n
-  module function permutation_identity(n) result(p)
+  pure module function permutation_identity(n) result(p)
     integer(ilp), intent(in) :: n
     type(permutation_type) :: p
 
@@ -35,7 +35,7 @@ contains
   end function
 
   !> Create a permutation from a given integer vector
-  module function permutation_init(perm_vec, finalized) result(p)
+  pure module function permutation_init(perm_vec, finalized) result(p)
     integer(ilp), intent(in) :: perm_vec(:)
     logical, intent(in), optional :: finalized
     type(permutation_type) :: p
@@ -46,7 +46,7 @@ contains
   end function
 
   !> Check if a permutation is valid (each integer 1..n appears exactly once)
-  module function permutation_is_valid(p) result(valid)
+  pure module function is_valid_permutation(p) result(valid)
     type(permutation_type), intent(in) :: p
     logical :: valid
     logical, allocatable :: seen(:)
@@ -91,7 +91,7 @@ contains
     allocate(inv%perm(fp%n))
 
     ! Direct inversion: swap keys and values
-    do i = 1, fp%n
+    do concurrent (i = 1:fp%n)
       inv%perm(fp%perm(i)) = i
     end do
   end function

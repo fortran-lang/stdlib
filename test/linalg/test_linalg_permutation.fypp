@@ -6,7 +6,7 @@ module test_linalg_permutation
   use stdlib_kinds, only: sp, dp, int32
   use stdlib_linalg_constants, only: ilp
   use stdlib_linalg, only: permutation_type, permutation_identity, permutation_init, &
-    permutation_is_valid, permutation_invert, permutation_compose, &
+    is_valid_permutation, permutation_invert, permutation_compose, &
     permutation_from_lapack, permutation_to_matrix, &
     permutation_apply_left, permutation_apply_right, permutation_apply_vector
   implicit none
@@ -43,7 +43,7 @@ contains
     if (allocated(error)) return
     call check(error, all(p%perm == [1_ilp, 2_ilp, 3_ilp, 4_ilp, 5_ilp]), "identity elements")
     if (allocated(error)) return
-    call check(error, permutation_is_valid(p), "identity valid")
+    call check(error, is_valid_permutation(p), "identity valid")
   end subroutine
 
   !> Test 2: Valid permutation accepted
@@ -52,7 +52,7 @@ contains
     type(permutation_type) :: p
 
     p = permutation_init([3, 1, 4, 2])
-    call check(error, permutation_is_valid(p), "valid permutation")
+    call check(error, is_valid_permutation(p), "valid permutation")
   end subroutine
 
   !> Test 3: Invalid permutations rejected
@@ -62,12 +62,12 @@ contains
 
     ! Duplicate entry
     p = permutation_init([1, 1, 3])
-    call check(error, .not. permutation_is_valid(p), "reject duplicate")
+    call check(error, .not. is_valid_permutation(p), "reject duplicate")
     if (allocated(error)) return
 
     ! Out of range
     p = permutation_init([1, 5, 3])
-    call check(error, .not. permutation_is_valid(p), "reject out of range")
+    call check(error, .not. is_valid_permutation(p), "reject out of range")
   end subroutine
 
   !> Test 4: Inversion correctness
@@ -140,9 +140,9 @@ contains
   subroutine test_apply_vector(error)
     type(error_type), allocatable, intent(out) :: error
     type(permutation_type) :: p
-    real(dp) :: a(4), b(4)
+    real(dp), parameter :: a(4) = [10.0_dp, 20.0_dp, 30.0_dp, 40.0_dp]
+    real(dp) :: b(4)
 
-    a = [10.0_dp, 20.0_dp, 30.0_dp, 40.0_dp]
     p = permutation_init([3, 1, 4, 2])
     call permutation_apply_vector(p, a, b)
 
@@ -162,7 +162,9 @@ contains
 
     ! Verify: composed applied to vector = p1 applied to (p2 applied to vector)
     a = [10.0_dp, 20.0_dp, 30.0_dp, 40.0_dp]
-    b1 = 0.0_dp; b2 = 0.0_dp; b_composed = 0.0_dp ! Initialize to avoid garbage
+    b1 = 0.0_dp
+    b2 = 0.0_dp
+    b_composed = 0.0_dp
 
     call permutation_apply_vector(p2, a, b1)       ! b1 = P2 * a
     call permutation_apply_vector(p1, b1, b2)      ! b2 = P1 * P2 * a
@@ -210,10 +212,8 @@ contains
     integer(ilp) :: i, j
 
     p = permutation_identity(3)
-    do i = 1, 3
-      do j = 1, 3
-        A(i,j) = real(i*10 + j, dp)
-      end do
+    do concurrent (i = 1:3, j = 1:3)
+      A(i,j) = real(i*10 + j, dp)
     end do
 
     call permutation_apply_left(p, A, B)
@@ -226,13 +226,13 @@ contains
   subroutine test_types_support(error)
     type(error_type), allocatable, intent(out) :: error
     type(permutation_type) :: p
-    complex(dp) :: c_in(3), c_out(3)
+    complex(dp), parameter :: c_in(3) = [(1.0_dp, -1.0_dp), (2.0_dp, -2.0_dp), (3.0_dp, -3.0_dp)]
+    complex(dp) :: c_out(3)
     integer(int32) :: i_in(3), i_out(3)
 
     p = permutation_init([3_ilp, 1_ilp, 2_ilp])
 
     ! Complex support
-    c_in = [(1.0_dp, -1.0_dp), (2.0_dp, -2.0_dp), (3.0_dp, -3.0_dp)]
     call permutation_apply_vector(p, c_in, c_out)
     call check(error, abs(c_out(1) - c_in(3)) < 1.0e-10_dp, "complex")
     if (allocated(error)) return

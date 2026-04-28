@@ -75,7 +75,7 @@ module stdlib_linalg
   public :: permutation_type
   public :: permutation_identity
   public :: permutation_init
-  public :: permutation_is_valid
+  public :: is_valid_permutation
   public :: permutation_invert
   public :: permutation_compose
   public :: permutation_from_lapack
@@ -2128,7 +2128,7 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Creates an identity permutation of size n
-    module function permutation_identity(n) result(p)
+    pure module function permutation_identity(n) result(p)
       integer(ilp), intent(in) :: n
       type(permutation_type) :: p
     end function
@@ -2138,18 +2138,18 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Creates a permutation from a given integer vector
-    module function permutation_init(perm_vec, finalized) result(p)
+    pure module function permutation_init(perm_vec, finalized) result(p)
       integer(ilp), intent(in) :: perm_vec(:)
       logical, intent(in), optional :: finalized
       type(permutation_type) :: p
     end function
   end interface
 
-  interface permutation_is_valid
+  interface is_valid_permutation
     !! version: experimental
     !!
     !! Checks if a permutation is valid (each integer 1..n appears exactly once)
-    module function permutation_is_valid(p) result(valid)
+    pure module function is_valid_permutation(p) result(valid)
       type(permutation_type), intent(in) :: p
       logical :: valid
     end function
