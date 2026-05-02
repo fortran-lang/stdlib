@@ -16,6 +16,7 @@ module stdlib_sparse_spmv
     implicit none
     private
 
+
     !! Version experimental
     !!
     !! Apply the sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
@@ -25,18 +26,6 @@ module stdlib_sparse_spmv
         #:for rank in RANKS
         module subroutine spmv_coo_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta,op)
             type(COO_${s1}$_type), intent(in) :: matrix
-            ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
-            ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
-            ${t1}$, intent(in), optional :: alpha
-            ${t1}$, intent(in), optional :: beta
-            character(1), intent(in), optional :: op
-        end subroutine
-
-        module subroutine spmv_coo_sub_${rank}$d_${s1}$(data, index, storage, nnz, vec_x,vec_y,alpha,beta,op)
-            ${t1}$, intent(in) :: data(:) 
-            integer(ilp), intent(in) :: index(:,:)
-            integer, intent(in) :: storage
-            integer(ilp), intent(in) :: nnz
             ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
             ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
             ${t1}$, intent(in), optional :: alpha
@@ -82,6 +71,30 @@ module stdlib_sparse_spmv
         end subroutine
         #:endfor
     end interface
+
+    !! Version experimental
+    !!
+    !! Apply the COO sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
+    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    interface spmv_coo
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        #:for rank in RANKS
+        module subroutine spmv_coo_sub_${rank}$d_${s1}$(data, index, storage, nnz, vec_x,vec_y,alpha,beta,op)
+            ${t1}$, intent(in) :: data(:)
+            integer(ilp), intent(in) :: index(:,:)
+            integer, intent(in) :: storage
+            integer(ilp), intent(in) :: nnz
+            ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
+            ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
+            ${t1}$, intent(in), optional :: alpha
+            ${t1}$, intent(in), optional :: beta
+            character(1), intent(in), optional :: op
+        end subroutine
+        #:endfor
+        #:endfor
+    end interface
+
     public :: spmv
+    public :: spmv_coo
 
 end module
