@@ -32,6 +32,18 @@ module stdlib_sparse_spmv
             character(1), intent(in), optional :: op
         end subroutine
 
+        module subroutine spmv_coo_sub_${rank}$d_${s1}$(data, index, storage, nnz, vec_x,vec_y,alpha,beta,op)
+            ${t1}$, intent(in) :: data(:) 
+            integer(ilp), intent(in) :: index(:,:)
+            integer, intent(in) :: storage
+            integer(ilp), intent(in) :: nnz
+            ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
+            ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
+            ${t1}$, intent(in), optional :: alpha
+            ${t1}$, intent(in), optional :: beta
+            character(1), intent(in), optional :: op
+        end subroutine
+ 
         module subroutine spmv_csr_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta,op)
             type(CSR_${s1}$_type), intent(in) :: matrix
             ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$

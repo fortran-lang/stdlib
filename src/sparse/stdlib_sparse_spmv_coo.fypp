@@ -20,6 +20,21 @@ contains
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
         character(1), intent(in), optional :: op
+
+        call spmv_coo_sub_${rank}$d_${s1}$(matrix%data, matrix%index, matrix%storage, matrix%nnz, vec_x,vec_y,alpha,beta,op)
+
+    end subroutine
+
+    module subroutine spmv_coo_sub_${rank}$d_${s1}$(data, index, storage, nnz, vec_x,vec_y,alpha,beta,op)
+        ${t1}$, intent(in) :: data(:) 
+        integer(ilp), intent(in) :: index(:,:) !! Matrix coordinates index(2,nnz)
+        integer, intent(in) :: storage !! storage
+        integer(ilp), intent(in) :: nnz !! number of non-zero values
+        ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
+        ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
+        ${t1}$, intent(in), optional :: alpha
+        ${t1}$, intent(in), optional :: beta
+        character(1), intent(in), optional :: op
         ${t1}$ :: alpha_
         character(1) :: op_
         integer(ilp) :: col_index, k, row_index
@@ -33,7 +48,6 @@ contains
             vec_y = zero_${s1}$
         endif
 
-        associate( data => matrix%data, index => matrix%index, storage => matrix%storage, nnz => matrix%nnz )
         select case(op_)
         case(sparse_op_none)
             if(storage == sparse_full) then
@@ -92,7 +106,6 @@ contains
             end if
         #:endif
         end select
-        end associate
     end subroutine
 
     #:endfor
