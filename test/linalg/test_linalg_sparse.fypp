@@ -63,15 +63,28 @@ contains
             call check(error, all(vec_y1 == real([6,11,15,15],kind=wp)) )
             if (allocated(error)) return
 
+            ! High-level API
             call spmv( COO, vec_x, vec_y2 )
             call check(error, all(vec_y1 == vec_y2) )
             if (allocated(error)) return
 
+            ! Low-level API
+            call spmv_coo( COO%data ,COO%index, COO%storage, COO%nnz, vec_x, vec_y2 )
+            call check(error, all(vec_y1 == vec_y2), 'COO - low level API: wrong output' )
+            if (allocated(error)) return
+
             ! Test in-place transpose
             vec_y1 = 1._wp
+            ! High-level API
             call spmv( COO, vec_y1, vec_x, op=sparse_op_transpose )
             call check(error, all(vec_x == real([17,15,4,14,-3],kind=wp)) )
             if (allocated(error)) return
+
+            ! Low-level API
+            call spmv_coo( COO%data ,COO%index, COO%storage, COO%nnz, vec_y1, vec_x, op=sparse_op_transpose )
+            call check(error, all(vec_x == real([17,15,4,14,-3],kind=wp)), 'COO - transpose - low level API: wrong output' )
+            if (allocated(error)) return
+ 
         end block
         #:endfor
     end subroutine
