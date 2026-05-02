@@ -16,7 +16,6 @@ module stdlib_sparse_spmv
     implicit none
     private
 
-
     !! Version experimental
     !!
     !! Apply the sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
@@ -32,7 +31,7 @@ module stdlib_sparse_spmv
             ${t1}$, intent(in), optional :: beta
             character(1), intent(in), optional :: op
         end subroutine
- 
+
         module subroutine spmv_csr_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta,op)
             type(CSR_${s1}$_type), intent(in) :: matrix
             ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
