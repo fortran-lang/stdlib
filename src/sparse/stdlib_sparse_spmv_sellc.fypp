@@ -16,6 +16,28 @@ contains
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
         character(1), intent(in), optional :: op
+
+        call spmv_sellc_sub_${s1}$(matrix%data, matrix%rowptr, matrix%col, matrix%chunk_size, &
+            matrix%nnz, matrix%nrows, matrix%ncols, matrix%storage, &
+            vec_x,vec_y,alpha,beta,op)
+
+    end subroutine
+
+    module subroutine spmv_sellc_sub_${s1}$(data,ia,ja,cs,nnz,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
+        !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
+        ${t1}$, intent(in) :: data(:,:)
+        integer(ilp), intent(in) :: ia(:)
+        integer(ilp), intent(in) :: ja(:,:)
+        integer, intent(in) :: cs
+        integer(ilp), intent(in) :: nnz
+        integer(ilp), intent(in) :: nrows
+        integer(ilp), intent(in) :: ncols
+        integer, intent(in) :: storage
+        ${t1}$, intent(in)    :: vec_x(:)
+        ${t1}$, intent(inout) :: vec_y(:)
+        ${t1}$, intent(in), optional :: alpha
+        ${t1}$, intent(in), optional :: beta
+        character(1), intent(in), optional :: op
         ${t1}$ :: alpha_
         character(1) :: op_
         integer(ilp) :: i, nz, rowidx, num_chunks, rm
@@ -28,9 +50,6 @@ contains
         else 
             vec_y = zero_${s1}$
         endif
-
-        associate( data => matrix%data, ia => matrix%rowptr , ja => matrix%col, cs => matrix%chunk_size, &
-        &   nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage  )
 
         if( .not.any( ${CHUNKS}$ == cs ) ) then
             print *, "error: sellc chunk size not supported."
@@ -107,7 +126,6 @@ contains
             print *, "error: sellc format for spmv operation not yet supported."
             return
         end if
-        end associate
 
     contains
         #:for chunk in CHUNKS
@@ -187,7 +205,6 @@ contains
         #:endif
 
     end subroutine
-    
     #:endfor
 
 end submodule stdlib_sparse_spmv_sellc

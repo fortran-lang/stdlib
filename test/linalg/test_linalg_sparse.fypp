@@ -289,8 +289,16 @@ contains
             allocate( vec_x(6) , source = 1._wp )
             allocate( vec_y(6) , source = 0._wp )
             
+            !High-level API
             call spmv( SELLC, vec_x, vec_y )
             
+            call check(error, all(vec_y == real([6,22,27,23,27,48],kind=wp)) )
+            if (allocated(error)) return
+
+            !Low-level API
+            call spmv_sellc( SELLC%data, SELLC%rowptr, SELLC%col, SELLC%chunk_size, &
+                SELLC%nnz, SELLC%nrows, SELLC%ncols, SELLC%storage, vec_x, vec_y )
+
             call check(error, all(vec_y == real([6,22,27,23,27,48],kind=wp)) )
             if (allocated(error)) return
 
@@ -298,8 +306,16 @@ contains
             vec_x = real( [1,2,3,4,5,6] , kind=wp )
             call spmv( CSR, vec_x, vec_y , op = sparse_op_transpose )
             allocate( vec_y2(6) , source = 0._wp )
+            !High-level API
             call spmv( SELLC, vec_x, vec_y2 , op = sparse_op_transpose )
-            
+
+            call check(error, all(vec_y == vec_y2))
+            if (allocated(error)) return
+
+            !Low-level API
+            call spmv_sellc( SELLC%data, SELLC%rowptr, SELLC%col, SELLC%chunk_size, &
+                SELLC%nnz, SELLC%nrows, SELLC%ncols, SELLC%storage, vec_x, vec_y2 , op = sparse_op_transpose )
+
             call check(error, all(vec_y == vec_y2))
             if (allocated(error)) return
 
