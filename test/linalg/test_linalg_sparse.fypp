@@ -231,14 +231,29 @@ contains
             
             allocate( vec_x(5) , source = 1._wp )
             allocate( vec_y(4) , source = 0._wp )
+            !High-level API
             call spmv( ELL, vec_x, vec_y )
             
             call check(error, all(vec_y == real([6,11,15,15],kind=wp)) )
             if (allocated(error)) return
 
+            !Low-level API
+            call spmv_ell( ELL%data, ELL%index, ELL%K, &
+                ELL%nnz, ELL%nrows, ELL%ncols, ELL%storage, vec_x, vec_y )
+
+            call check(error, all(vec_y == real([6,11,15,15],kind=wp)) )
+            if (allocated(error)) return
+
             ! Test in-place transpose
             vec_y = 1._wp
+            !High-level API
             call spmv( ELL, vec_y, vec_x, op=sparse_op_transpose )
+            call check(error, all(vec_x == real([17,15,4,14,-3],kind=wp)) )
+            if (allocated(error)) return
+
+            !Low-level API
+            call spmv_ell( ELL%data, ELL%index, ELL%K, &
+                ELL%nnz, ELL%nrows, ELL%ncols, ELL%storage, vec_y, vec_x, op=sparse_op_transpose )
             call check(error, all(vec_x == real([17,15,4,14,-3],kind=wp)) )
             if (allocated(error)) return
         end block

@@ -20,6 +20,25 @@ contains
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
         character(1), intent(in), optional :: op
+
+        call spmv_ell_sub_${rank}$d_${s1}$(matrix%data,matrix%index,matrix%K, &
+            matrix%nnz,matrix%nrows,matrix%ncols,matrix%storage, &
+            vec_x,vec_y,alpha,beta,op)
+    end subroutine
+    
+    module subroutine spmv_ell_sub_${rank}$d_${s1}$(data,index,mnz_p_row,nnz,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
+        ${t1}$, intent(in) :: data(:,:)
+        integer(ilp), intent(in) :: index(:,:)
+        integer, intent(in) :: mnz_p_row
+        integer(ilp), intent(in) :: nnz
+        integer(ilp), intent(in) :: nrows
+        integer(ilp), intent(in) :: ncols
+        integer, intent(in) :: storage
+        ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
+        ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
+        ${t1}$, intent(in), optional :: alpha
+        ${t1}$, intent(in), optional :: beta
+        character(1), intent(in), optional :: op
         ${t1}$ :: alpha_
         character(1) :: op_
         integer(ilp) :: i, j, k
@@ -32,8 +51,6 @@ contains
         else 
             vec_y = zero_${s1}$
         endif
-        associate( data => matrix%data, index => matrix%index, MNZ_P_ROW => matrix%K, &
-            & nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage )
             if( storage == sparse_full .and. op_==sparse_op_none ) then
                 do i = 1, nrows
                     do k = 1, MNZ_P_ROW
@@ -78,9 +95,8 @@ contains
                 end do
             #:endif
             end if
-        end associate
     end subroutine
-    
+
     #:endfor
     #:endfor
 
