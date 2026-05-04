@@ -95,7 +95,32 @@ module stdlib_sparse_spmv
 
     !! Version experimental
     !!
-    !! Apply the CRS sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
+    !! Apply the CSC sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
+    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    interface spmv_csc
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        #:for rank in RANKS
+        module subroutine spmv_csc_sub_${rank}$d_${s1}$(data,colptr,row,nnz,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
+            ${t1}$, intent(in) :: data(:)
+            integer(ilp), intent(in) :: colptr(:) !! matrix column pointer
+            integer(ilp), intent(in) :: row(:)  !! matrix row pointer
+            integer(ilp), intent(in) :: nnz !! number of non-zero values
+            integer(ilp), intent(in) :: nrows
+            integer(ilp), intent(in) :: ncols
+            integer, intent(in) :: storage !! storage
+            ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
+            ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
+            ${t1}$, intent(in), optional :: alpha
+            ${t1}$, intent(in), optional :: beta
+            character(1), intent(in), optional :: op
+        end subroutine
+        #:endfor
+        #:endfor
+    end interface
+
+    !! Version experimental
+    !!
+    !! Apply the CSR sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
     !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
     interface spmv_csr
         #:for k1, t1, s1 in (KINDS_TYPES)
@@ -120,6 +145,7 @@ module stdlib_sparse_spmv
 
     public :: spmv
     public :: spmv_coo
+    public :: spmv_csc
     public :: spmv_csr
 
 end module

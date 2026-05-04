@@ -20,6 +20,25 @@ contains
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
         character(1), intent(in), optional :: op
+
+        call spmv_csc_sub_${rank}$d_${s1}$(matrix%data,matrix%colptr,matrix%row,matrix%nnz,matrix%nrows,matrix%ncols,matrix%storage, &
+            vec_x,vec_y,alpha,beta,op)
+
+    end subroutine
+    
+    module subroutine spmv_csc_sub_${rank}$d_${s1}$(data,colptr,row,nnz,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
+        ${t1}$, intent(in) :: data(:)
+        integer(ilp), intent(in) :: colptr(:) !! matrix column pointer
+        integer(ilp), intent(in) :: row(:)  !! matrix row pointer
+        integer(ilp), intent(in) :: nnz !! number of non-zero values
+        integer(ilp), intent(in) :: nrows
+        integer(ilp), intent(in) :: ncols
+        integer, intent(in) :: storage !! storage
+        ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
+        ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
+        ${t1}$, intent(in), optional :: alpha
+        ${t1}$, intent(in), optional :: beta
+        character(1), intent(in), optional :: op
         ${t1}$ :: alpha_
         character(1) :: op_
         integer(ilp) :: i, j
@@ -38,8 +57,6 @@ contains
             vec_y = zero_${s1}$
         endif
 
-        associate( data => matrix%data, colptr => matrix%colptr, row => matrix%row, &
-            & nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage )
             if( storage == sparse_full .and. op_==sparse_op_none ) then
                 do concurrent(j=1:ncols)
                     aux = alpha_ * vec_x(${rksfx2(rank-1)}$j)
@@ -110,9 +127,7 @@ contains
                 end do
             #:endif
             end if
-        end associate
     end subroutine
-    
     #:endfor
     #:endfor
 

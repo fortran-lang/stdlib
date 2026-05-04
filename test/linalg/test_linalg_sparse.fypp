@@ -179,16 +179,31 @@ contains
             
             allocate( vec_x(5) , source = 1._wp )
             allocate( vec_y(4) , source = 0._wp )
+            !High-level API
             call spmv( CSC, vec_x, vec_y )
+            
+            call check(error, all(vec_y == real([6,11,15,15],kind=wp)) )
+            if (allocated(error)) return
+
+            !High-level API
+            call spmv_csc( CSC%data, CSC%colptr, CSC%row, CSC%nnz, CSC%nrows, CSC%ncols, CSC%storage, vec_x, vec_y )
             
             call check(error, all(vec_y == real([6,11,15,15],kind=wp)) )
             if (allocated(error)) return
 
             ! Test in-place transpose
             vec_y = 1._wp
+            !High-level API
             call spmv( CSC, vec_y, vec_x, op=sparse_op_transpose )
             call check(error, all(vec_x == real([17,15,4,14,-3],kind=wp)) )
             if (allocated(error)) return
+
+            !Low-level API
+            call spmv_csc( CSC%data, CSC%colptr, CSC%row, CSC%nnz, CSC%nrows, CSC%ncols, CSC%storage, vec_y, vec_x, &
+                op=sparse_op_transpose )
+            call check(error, all(vec_x == real([17,15,4,14,-3],kind=wp)) )
+            if (allocated(error)) return
+
         end block
         #:endfor
     end subroutine
