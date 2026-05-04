@@ -78,7 +78,7 @@ module stdlib_sparse_spmv
     interface spmv_coo
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
-        module subroutine spmv_coo_sub_${rank}$d_${s1}$(data, index, storage, nnz, vec_x,vec_y,alpha,beta,op)
+        module subroutine spmv_coo_sub_${rank}$d_${s1}$(data, index, nnz, storage, vec_x,vec_y,alpha,beta,op)
             ${t1}$, intent(in) :: data(:)
             integer(ilp), intent(in) :: index(:,:)
             integer, intent(in) :: storage
@@ -93,7 +93,33 @@ module stdlib_sparse_spmv
         #:endfor
     end interface
 
+    !! Version experimental
+    !!
+    !! Apply the CRS sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
+    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    interface spmv_csr
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        #:for rank in RANKS
+        module subroutine spmv_csr_sub_${rank}$d_${s1}$(data,col,rowptr,nnz,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
+            ${t1}$, intent(in) :: data(:)
+            integer(ilp), intent(in) :: col(:) !! matrix column pointer
+            integer(ilp), intent(in) :: rowptr(:)  !! matrix row pointer
+            integer(ilp), intent(in) :: nnz !! number of non-zero values
+            integer(ilp), intent(in) :: nrows
+            integer(ilp), intent(in) :: ncols
+            integer, intent(in) :: storage !! storage
+            ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
+            ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
+            ${t1}$, intent(in), optional :: alpha
+            ${t1}$, intent(in), optional :: beta
+            character(1), intent(in), optional :: op
+        end subroutine
+        #:endfor
+        #:endfor
+    end interface
+
     public :: spmv
     public :: spmv_coo
+    public :: spmv_csr
 
 end module

@@ -69,7 +69,7 @@ contains
             if (allocated(error)) return
 
             ! Low-level API
-            call spmv_coo( COO%data ,COO%index, COO%storage, COO%nnz, vec_x, vec_y2 )
+            call spmv_coo( COO%data ,COO%index, COO%nnz, COO%storage, vec_x, vec_y2 )
             call check(error, all(vec_y1 == vec_y2), 'COO - low level API: wrong output' )
             if (allocated(error)) return
 
@@ -81,7 +81,7 @@ contains
             if (allocated(error)) return
 
             ! Low-level API
-            call spmv_coo( COO%data ,COO%index, COO%storage, COO%nnz, vec_y1, vec_x, op=sparse_op_transpose )
+            call spmv_coo( COO%data ,COO%index, COO%nnz, COO%storage, vec_y1, vec_x, op=sparse_op_transpose )
             call check(error, all(vec_x == real([17,15,4,14,-3],kind=wp)), 'COO - transpose - low level API: wrong output' )
             if (allocated(error)) return
  
@@ -134,15 +134,29 @@ contains
             
             allocate( vec_x(5) , source = 1._wp )
             allocate( vec_y(4) , source = 0._wp )
+            ! High-level API
             call spmv( CSR, vec_x, vec_y )
             
-            call check(error, all(vec_y == real([6,11,15,15],kind=wp)) )
+            call check(error, all(vec_y == real([6,11,15,15],kind=wp)), 'CSR - high-level API - wrong output' )
+            if (allocated(error)) return
+
+            ! Low-level API
+            call spmv_csr( CSR%data, CSR%col, CSR%rowptr, CSR%nnz, CSR%nrows, CSR%ncols, CSR%storage, &
+                vec_x, vec_y )
+            
+            call check(error, all(vec_y == real([6,11,15,15],kind=wp)), 'CSR - low-level API - wrong output' )
             if (allocated(error)) return
 
             ! Test in-place transpose
             vec_y = 1._wp
+            ! High-level API
             call spmv( CSR, vec_y, vec_x, op=sparse_op_transpose )
-            call check(error, all(vec_x == real([17,15,4,14,-3],kind=wp)) )
+            call check(error, all(vec_x == real([17,15,4,14,-3],kind=wp)), 'CSR transpose - high-level API - wrong output' )
+            if (allocated(error)) return
+
+            call spmv_csr( CSR%data, CSR%col, CSR%rowptr, CSR%nnz, CSR%nrows, CSR%ncols, CSR%storage, &
+                vec_y, vec_x, op=sparse_op_transpose )
+            call check(error, all(vec_x == real([17,15,4,14,-3],kind=wp)), 'CSR transpose - low-level API - wrong output' )
             if (allocated(error)) return
         end block
         #:endfor
