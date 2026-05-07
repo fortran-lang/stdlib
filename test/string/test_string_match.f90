@@ -2,7 +2,7 @@
 module test_string_match
     use testdrive, only : new_unittest, unittest_type, error_type, check
     use stdlib_ascii, only : reverse
-    use stdlib_strings, only : starts_with, ends_with
+    use stdlib_strings, only : starts_with, ends_with, join
     use stdlib_string_type, only : string_type
     implicit none
 
@@ -16,7 +16,8 @@ contains
 
         testsuite = [ &
             new_unittest("starts_with", test_starts_with), &
-            new_unittest("ends_with", test_ends_with) &
+            new_unittest("ends_with", test_ends_with), &
+            new_unittest("join", test_join) &
             ]
     end subroutine collect_string_match
 
@@ -76,6 +77,32 @@ contains
         if (allocated(error)) return
         call check(error, ends_with(string_type(string), string_type(substring)) .eqv. match, message)
     end subroutine check_ends_with
+
+    subroutine test_join(error)
+        type(error_type), allocatable, intent(out) :: error
+        character(len=5) :: test_strings(3)
+
+        test_strings = [character(5) :: "one", "two", "three"]
+        call check_join(error, test_strings, " ", "one two three")
+        if (allocated(error)) return
+        call check_join(error, test_strings, ",", "one,two,three")
+        if (allocated(error)) return
+        call check_join(error, test_strings, "-", "one-two-three")
+    end subroutine test_join
+
+    subroutine check_join(error, strings, separator, expected)
+        type(error_type), allocatable, intent(out) :: error
+        character(len=*), intent(in) :: strings(:)
+        character(len=*), intent(in) :: separator
+        character(len=*), intent(in) :: expected
+        character(len=:), allocatable :: joined
+        character(len=:), allocatable :: message
+
+        joined = join(strings, separator)
+        message = "'join' error: Expected '" // expected // "' but got '" // joined // "'"
+        call check(error, joined == expected, message)
+
+    end subroutine check_join
 
     subroutine test_ends_with(error)
         type(error_type), allocatable, intent(out) :: error

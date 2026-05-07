@@ -1,0 +1,2192 @@
+#:include "common.fypp" 
+module stdlib_blas
+  use stdlib_linalg_constants
+  use stdlib_linalg_blas_aux
+  implicit none
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure real(sp) module function stdlib${ii}$_sasum(n,sx,incx)
+           integer(${ik}$), intent(in) :: incx, n
+           real(sp), intent(in) :: sx(*)
+     end function stdlib${ii}$_sasum
+
+     pure real(dp) module function stdlib${ii}$_dasum(n,dx,incx)
+           integer(${ik}$), intent(in) :: incx, n
+           real(dp), intent(in) :: dx(*)
+     end function stdlib${ii}$_dasum
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure real(${rk}$) module function stdlib${ii}$_${ri}$asum(n,dx,incx)
+           integer(${ik}$), intent(in) :: incx, n
+           real(${rk}$), intent(in) :: dx(*)
+     end function stdlib${ii}$_${ri}$asum
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure real(sp) module function stdlib${ii}$_scasum(n,cx,incx)
+           integer(${ik}$), intent(in) :: incx, n
+           complex(sp), intent(in) :: cx(*)
+     end function stdlib${ii}$_scasum
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure real(dp) module function stdlib${ii}$_dzasum(n,zx,incx)
+           integer(${ik}$), intent(in) :: incx, n
+           complex(dp), intent(in) :: zx(*)
+     end function stdlib${ii}$_dzasum
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure real(${rk}$) module function stdlib${ii}$_${ri}$zasum(n,zx,incx)
+           integer(${ik}$), intent(in) :: incx, n
+           complex(${rk}$), intent(in) :: zx(*)
+     end function stdlib${ii}$_${ri}$zasum
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_saxpy(n,sa,sx,incx,sy,incy)
+           real(sp), intent(in) :: sa
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(sp), intent(in) :: sx(*)
+           real(sp), intent(inout) :: sy(*)
+     end subroutine stdlib${ii}$_saxpy
+
+     pure module subroutine stdlib${ii}$_daxpy(n,da,dx,incx,dy,incy)
+           real(dp), intent(in) :: da
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(dp), intent(in) :: dx(*)
+           real(dp), intent(inout) :: dy(*)
+     end subroutine stdlib${ii}$_daxpy
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$axpy(n,da,dx,incx,dy,incy)
+           real(${rk}$), intent(in) :: da
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(${rk}$), intent(in) :: dx(*)
+           real(${rk}$), intent(inout) :: dy(*)
+     end subroutine stdlib${ii}$_${ri}$axpy
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_caxpy(n,ca,cx,incx,cy,incy)
+           complex(sp), intent(in) :: ca
+           integer(${ik}$), intent(in) :: incx, incy, n
+           complex(sp), intent(in) :: cx(*)
+           complex(sp), intent(inout) :: cy(*)
+     end subroutine stdlib${ii}$_caxpy
+
+     pure module subroutine stdlib${ii}$_zaxpy(n,za,zx,incx,zy,incy)
+           complex(dp), intent(in) :: za
+           integer(${ik}$), intent(in) :: incx, incy, n
+           complex(dp), intent(in) :: zx(*)
+           complex(dp), intent(inout) :: zy(*)
+     end subroutine stdlib${ii}$_zaxpy
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$axpy(n,za,zx,incx,zy,incy)
+           complex(${ck}$), intent(in) :: za
+           integer(${ik}$), intent(in) :: incx, incy, n
+           complex(${ck}$), intent(in) :: zx(*)
+           complex(${ck}$), intent(inout) :: zy(*)
+     end subroutine stdlib${ii}$_${ci}$axpy
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_scopy(n,sx,incx,sy,incy)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(sp), intent(in) :: sx(*)
+           real(sp), intent(out) :: sy(*)
+     end subroutine stdlib${ii}$_scopy
+
+     pure module subroutine stdlib${ii}$_dcopy(n,dx,incx,dy,incy)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(dp), intent(in) :: dx(*)
+           real(dp), intent(out) :: dy(*)
+     end subroutine stdlib${ii}$_dcopy
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$copy(n,dx,incx,dy,incy)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(${rk}$), intent(in) :: dx(*)
+           real(${rk}$), intent(out) :: dy(*)
+     end subroutine stdlib${ii}$_${ri}$copy
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_ccopy(n,cx,incx,cy,incy)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           complex(sp), intent(in) :: cx(*)
+           complex(sp), intent(out) :: cy(*)
+     end subroutine stdlib${ii}$_ccopy
+
+     pure module subroutine stdlib${ii}$_zcopy(n,zx,incx,zy,incy)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           complex(dp), intent(in) :: zx(*)
+           complex(dp), intent(out) :: zy(*)
+     end subroutine stdlib${ii}$_zcopy
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$copy(n,zx,incx,zy,incy)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           complex(${ck}$), intent(in) :: zx(*)
+           complex(${ck}$), intent(out) :: zy(*)
+     end subroutine stdlib${ii}$_${ci}$copy
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure real(sp) module function stdlib${ii}$_sdot(n,sx,incx,sy,incy)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(sp), intent(in) :: sx(*), sy(*)
+     end function stdlib${ii}$_sdot
+
+     pure real(dp) module function stdlib${ii}$_ddot(n,dx,incx,dy,incy)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(dp), intent(in) :: dx(*), dy(*)
+     end function stdlib${ii}$_ddot
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure real(${rk}$) module function stdlib${ii}$_${ri}$dot(n,dx,incx,dy,incy)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(${rk}$), intent(in) :: dx(*), dy(*)
+     end function stdlib${ii}$_${ri}$dot
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure real(dp) module function stdlib${ii}$_dsdot(n,sx,incx,sy,incy)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(sp), intent(in) :: sx(*), sy(*)
+     end function stdlib${ii}$_dsdot
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure real(${rk}$) module function stdlib${ii}$_${ri}$sdot(n,sx,incx,sy,incy)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(dp), intent(in) :: sx(*), sy(*)
+     end function stdlib${ii}$_${ri}$sdot
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure complex(sp) module function stdlib${ii}$_cdotc(n,cx,incx,cy,incy)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           complex(sp), intent(in) :: cx(*), cy(*)
+     end function stdlib${ii}$_cdotc
+
+     pure complex(dp) module function stdlib${ii}$_zdotc(n,zx,incx,zy,incy)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           complex(dp), intent(in) :: zx(*), zy(*)
+     end function stdlib${ii}$_zdotc
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure complex(${ck}$) module function stdlib${ii}$_${ci}$dotc(n,zx,incx,zy,incy)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           complex(${ck}$), intent(in) :: zx(*), zy(*)
+     end function stdlib${ii}$_${ci}$dotc
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure complex(sp) module function stdlib${ii}$_cdotu(n,cx,incx,cy,incy)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           complex(sp), intent(in) :: cx(*), cy(*)
+     end function stdlib${ii}$_cdotu
+
+     pure complex(dp) module function stdlib${ii}$_zdotu(n,zx,incx,zy,incy)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           complex(dp), intent(in) :: zx(*), zy(*)
+     end function stdlib${ii}$_zdotu
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure complex(${ck}$) module function stdlib${ii}$_${ci}$dotu(n,zx,incx,zy,incy)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           complex(${ck}$), intent(in) :: zx(*), zy(*)
+     end function stdlib${ii}$_${ci}$dotu
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure real(sp) module function stdlib${ii}$_snrm2( n, x, incx )
+        integer(${ik}$), intent(in) :: incx, n
+        real(sp), intent(in) :: x(*)
+     end function stdlib${ii}$_snrm2
+
+     pure real(dp) module function stdlib${ii}$_dnrm2( n, x, incx )
+        integer(${ik}$), intent(in) :: incx, n
+        real(dp), intent(in) :: x(*)
+     end function stdlib${ii}$_dnrm2
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure real(${rk}$) module function stdlib${ii}$_${ri}$nrm2( n, x, incx )
+        integer(${ik}$), intent(in) :: incx, n
+        real(${rk}$), intent(in) :: x(*)
+     end function stdlib${ii}$_${ri}$nrm2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure real(sp) module function stdlib${ii}$_scnrm2( n, x, incx )
+        integer(${ik}$), intent(in) :: incx, n
+        complex(sp), intent(in) :: x(*)
+     end function stdlib${ii}$_scnrm2
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure real(dp) module function stdlib${ii}$_dznrm2( n, x, incx )
+        integer(${ik}$), intent(in) :: incx, n
+        complex(dp), intent(in) :: x(*)
+     end function stdlib${ii}$_dznrm2
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure real(${rk}$) module function stdlib${ii}$_${ri}$znrm2( n, x, incx )
+        integer(${ik}$), intent(in) :: incx, n
+        complex(${rk}$), intent(in) :: x(*)
+     end function stdlib${ii}$_${ri}$znrm2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_srot(n,sx,incx,sy,incy,c,s)
+           real(sp), intent(in) :: c, s
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(sp), intent(inout) :: sx(*), sy(*)
+     end subroutine stdlib${ii}$_srot
+
+     pure module subroutine stdlib${ii}$_drot(n,dx,incx,dy,incy,c,s)
+           real(dp), intent(in) :: c, s
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(dp), intent(inout) :: dx(*), dy(*)
+     end subroutine stdlib${ii}$_drot
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$rot(n,dx,incx,dy,incy,c,s)
+           real(${rk}$), intent(in) :: c, s
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(${rk}$), intent(inout) :: dx(*), dy(*)
+     end subroutine stdlib${ii}$_${ri}$rot
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_zdrot( n, zx, incx, zy, incy, c, s )
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(dp), intent(in) :: c, s
+           complex(dp), intent(inout) :: zx(*), zy(*)
+     end subroutine stdlib${ii}$_zdrot
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$drot( n, zx, incx, zy, incy, c, s )
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(${ck}$), intent(in) :: c, s
+           complex(${ck}$), intent(inout) :: zx(*), zy(*)
+     end subroutine stdlib${ii}$_${ci}$drot
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_srotg( a, b, c, s )
+        real(sp), intent(inout) :: a, b
+        real(sp), intent(out) :: c, s
+     end subroutine stdlib${ii}$_srotg
+
+     pure module subroutine stdlib${ii}$_drotg( a, b, c, s )
+        real(dp), intent(inout) :: a, b
+        real(dp), intent(out) :: c, s
+     end subroutine stdlib${ii}$_drotg
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$rotg( a, b, c, s )
+        real(${rk}$), intent(inout) :: a, b
+        real(${rk}$), intent(out) :: c, s
+     end subroutine stdlib${ii}$_${ri}$rotg
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_crotg( a, b, c, s )
+        real(sp), intent(out) :: c
+        complex(sp), intent(inout) :: a
+        complex(sp), intent(in) :: b
+        complex(sp), intent(out) :: s
+     end subroutine stdlib${ii}$_crotg
+
+     pure module subroutine stdlib${ii}$_zrotg( a, b, c, s )
+        real(dp), intent(out) :: c
+        complex(dp), intent(inout) :: a
+        complex(dp), intent(in) :: b
+        complex(dp), intent(out) :: s
+     end subroutine stdlib${ii}$_zrotg
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$rotg( a, b, c, s )
+        real(${ck}$), intent(out) :: c
+        complex(${ck}$), intent(inout) :: a
+        complex(${ck}$), intent(in) :: b
+        complex(${ck}$), intent(out) :: s
+     end subroutine stdlib${ii}$_${ci}$rotg
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_srotm(n,sx,incx,sy,incy,sparam)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(sp), intent(in) :: sparam(5)
+           real(sp), intent(inout) :: sx(*), sy(*)
+     end subroutine stdlib${ii}$_srotm
+
+     pure module subroutine stdlib${ii}$_drotm(n,dx,incx,dy,incy,dparam)    
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(dp), intent(in) :: dparam(5)
+           real(dp), intent(inout) :: dx(*), dy(*)
+     end subroutine stdlib${ii}$_drotm
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$rotm(n,dx,incx,dy,incy,dparam)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(${rk}$), intent(in) :: dparam(5)
+           real(${rk}$), intent(inout) :: dx(*), dy(*)
+     end subroutine stdlib${ii}$_${ri}$rotm
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_srotmg(sd1,sd2,sx1,sy1,sparam)
+           real(sp), intent(inout) :: sd1, sd2, sx1
+           real(sp), intent(in) :: sy1
+           real(sp), intent(out) :: sparam(5)
+     end subroutine stdlib${ii}$_srotmg
+
+     pure module subroutine stdlib${ii}$_drotmg(dd1,dd2,dx1,dy1,dparam)
+           real(dp), intent(inout) :: dd1, dd2, dx1
+           real(dp), intent(in) :: dy1
+           real(dp), intent(out) :: dparam(5)
+     end subroutine stdlib${ii}$_drotmg
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$rotmg(dd1,dd2,dx1,dy1,dparam)
+           real(${rk}$), intent(inout) :: dd1, dd2, dx1
+           real(${rk}$), intent(in) :: dy1
+           real(${rk}$), intent(out) :: dparam(5)
+     end subroutine stdlib${ii}$_${ri}$rotmg
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_csrot( n, cx, incx, cy, incy, c, s )
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(sp), intent(in) :: c, s
+           complex(sp), intent(inout) :: cx(*), cy(*)
+     end subroutine stdlib${ii}$_csrot
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sscal(n,sa,sx,incx)
+           real(sp), intent(in) :: sa
+           integer(${ik}$), intent(in) :: incx, n
+           real(sp), intent(inout) :: sx(*)
+     end subroutine stdlib${ii}$_sscal
+
+     pure module subroutine stdlib${ii}$_dscal(n,da,dx,incx)
+           real(dp), intent(in) :: da
+           integer(${ik}$), intent(in) :: incx, n
+           real(dp), intent(inout) :: dx(*)
+     end subroutine stdlib${ii}$_dscal
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$scal(n,da,dx,incx)
+           real(${rk}$), intent(in) :: da
+           integer(${ik}$), intent(in) :: incx, n
+           real(${rk}$), intent(inout) :: dx(*)
+     end subroutine stdlib${ii}$_${ri}$scal
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cscal(n,ca,cx,incx)
+           complex(sp), intent(in) :: ca
+           integer(${ik}$), intent(in) :: incx, n
+           complex(sp), intent(inout) :: cx(*)
+     end subroutine stdlib${ii}$_cscal
+
+     pure module subroutine stdlib${ii}$_zscal(n,za,zx,incx)
+           complex(dp), intent(in) :: za
+           integer(${ik}$), intent(in) :: incx, n
+           complex(dp), intent(inout) :: zx(*)
+     end subroutine stdlib${ii}$_zscal
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$scal(n,za,zx,incx)
+           complex(${ck}$), intent(in) :: za
+           integer(${ik}$), intent(in) :: incx, n
+           complex(${ck}$), intent(inout) :: zx(*)
+     end subroutine stdlib${ii}$_${ci}$scal
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_csscal(n,sa,cx,incx)
+           real(sp), intent(in) :: sa
+           integer(${ik}$), intent(in) :: incx, n
+           complex(sp), intent(inout) :: cx(*)
+     end subroutine stdlib${ii}$_csscal
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_zdscal(n,da,zx,incx)
+           real(dp), intent(in) :: da
+           integer(${ik}$), intent(in) :: incx, n
+           complex(dp), intent(inout) :: zx(*)
+     end subroutine stdlib${ii}$_zdscal
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$dscal(n,da,zx,incx)
+           real(${ck}$), intent(in) :: da
+           integer(${ik}$), intent(in) :: incx, n
+           complex(${ck}$), intent(inout) :: zx(*)
+     end subroutine stdlib${ii}$_${ci}$dscal
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sswap(n,sx,incx,sy,incy)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(sp), intent(inout) :: sx(*), sy(*)
+     end subroutine stdlib${ii}$_sswap
+
+     pure module subroutine stdlib${ii}$_dswap(n,dx,incx,dy,incy)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(dp), intent(inout) :: dx(*), dy(*)
+     end subroutine stdlib${ii}$_dswap
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$swap(n,dx,incx,dy,incy)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           real(${rk}$), intent(inout) :: dx(*), dy(*)
+     end subroutine stdlib${ii}$_${ri}$swap
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cswap(n,cx,incx,cy,incy)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           complex(sp), intent(inout) :: cx(*), cy(*)
+     end subroutine stdlib${ii}$_cswap
+
+     pure module subroutine stdlib${ii}$_zswap(n,zx,incx,zy,incy)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           complex(dp), intent(inout) :: zx(*), zy(*)
+     end subroutine stdlib${ii}$_zswap
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$swap(n,zx,incx,zy,incy)
+           integer(${ik}$), intent(in) :: incx, incy, n
+           complex(${ck}$), intent(inout) :: zx(*), zy(*)
+     end subroutine stdlib${ii}$_${ci}$swap
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
+           real(sp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, lda, m, n
+           character, intent(in) :: trans
+           real(sp), intent(in) :: a(lda,*), x(*)
+           real(sp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_sgemv
+
+     pure module subroutine stdlib${ii}$_dgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
+           real(dp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, lda, m, n
+           character, intent(in) :: trans
+           real(dp), intent(in) :: a(lda,*), x(*)
+           real(dp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_dgemv
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$gemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
+           real(${rk}$), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, lda, m, n
+           character, intent(in) :: trans
+           real(${rk}$), intent(in) :: a(lda,*), x(*)
+           real(${rk}$), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_${ri}$gemv
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
+           complex(sp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, lda, m, n
+           character, intent(in) :: trans
+           complex(sp), intent(in) :: a(lda,*), x(*)
+           complex(sp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_cgemv
+
+     pure module subroutine stdlib${ii}$_zgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
+           complex(dp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, lda, m, n
+           character, intent(in) :: trans
+           complex(dp), intent(in) :: a(lda,*), x(*)
+           complex(dp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_zgemv
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$gemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
+           complex(${ck}$), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, lda, m, n
+           character, intent(in) :: trans
+           complex(${ck}$), intent(in) :: a(lda,*), x(*)
+           complex(${ck}$), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_${ci}$gemv
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sger(m,n,alpha,x,incx,y,incy,a,lda)
+           real(sp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, incy, lda, m, n
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(in) :: x(*), y(*)
+     end subroutine stdlib${ii}$_sger
+
+     pure module subroutine stdlib${ii}$_dger(m,n,alpha,x,incx,y,incy,a,lda)
+           real(dp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, incy, lda, m, n
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(in) :: x(*), y(*)
+     end subroutine stdlib${ii}$_dger
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$ger(m,n,alpha,x,incx,y,incy,a,lda)
+           real(${rk}$), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, incy, lda, m, n
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(in) :: x(*), y(*)
+     end subroutine stdlib${ii}$_${ri}$ger
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cgerc(m,n,alpha,x,incx,y,incy,a,lda)
+           complex(sp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, incy, lda, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(in) :: x(*), y(*)
+     end subroutine stdlib${ii}$_cgerc
+
+     pure module subroutine stdlib${ii}$_zgerc(m,n,alpha,x,incx,y,incy,a,lda)
+           complex(dp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, incy, lda, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(in) :: x(*), y(*)
+     end subroutine stdlib${ii}$_zgerc
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$gerc(m,n,alpha,x,incx,y,incy,a,lda)
+           complex(${ck}$), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, incy, lda, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(in) :: x(*), y(*)
+     end subroutine stdlib${ii}$_${ci}$gerc
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cgeru(m,n,alpha,x,incx,y,incy,a,lda)
+           complex(sp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, incy, lda, m, n
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(in) :: x(*), y(*)
+     end subroutine stdlib${ii}$_cgeru
+
+     pure module subroutine stdlib${ii}$_zgeru(m,n,alpha,x,incx,y,incy,a,lda)
+           complex(dp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, incy, lda, m, n
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(in) :: x(*), y(*)
+     end subroutine stdlib${ii}$_zgeru
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$geru(m,n,alpha,x,incx,y,incy,a,lda)
+           complex(${ck}$), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, incy, lda, m, n
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(in) :: x(*), y(*)
+     end subroutine stdlib${ii}$_${ci}$geru
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cher(uplo,n,alpha,x,incx,a,lda)
+           real(sp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, lda, n
+           character, intent(in) :: uplo
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(in) :: x(*)
+     end subroutine stdlib${ii}$_cher
+
+     pure module subroutine stdlib${ii}$_zher(uplo,n,alpha,x,incx,a,lda)
+           real(dp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, lda, n
+           character, intent(in) :: uplo
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(in) :: x(*)
+     end subroutine stdlib${ii}$_zher
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$her(uplo,n,alpha,x,incx,a,lda)
+           real(${ck}$), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, lda, n
+           character, intent(in) :: uplo
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(in) :: x(*)
+     end subroutine stdlib${ii}$_${ci}$her
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cher2(uplo,n,alpha,x,incx,y,incy,a,lda)
+           complex(sp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, incy, lda, n
+           character, intent(in) :: uplo
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(in) :: x(*), y(*)
+     end subroutine stdlib${ii}$_cher2
+
+     pure module subroutine stdlib${ii}$_zher2(uplo,n,alpha,x,incx,y,incy,a,lda)
+           complex(dp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, incy, lda, n
+           character, intent(in) :: uplo
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(in) :: x(*), y(*)
+     end subroutine stdlib${ii}$_zher2
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$her2(uplo,n,alpha,x,incx,y,incy,a,lda)
+           complex(${ck}$), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, incy, lda, n
+           character, intent(in) :: uplo
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(in) :: x(*), y(*)
+     end subroutine stdlib${ii}$_${ci}$her2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_chemv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
+           complex(sp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, lda, n
+           character, intent(in) :: uplo
+           complex(sp), intent(in) :: a(lda,*), x(*)
+           complex(sp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_chemv
+
+     pure module subroutine stdlib${ii}$_zhemv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
+           complex(dp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, lda, n
+           character, intent(in) :: uplo
+           complex(dp), intent(in) :: a(lda,*), x(*)
+           complex(dp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_zhemv
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$hemv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
+           complex(${ck}$), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, lda, n
+           character, intent(in) :: uplo
+           complex(${ck}$), intent(in) :: a(lda,*), x(*)
+           complex(${ck}$), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_${ci}$hemv
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
+           real(sp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, kl, ku, lda, m, n
+           character, intent(in) :: trans
+           real(sp), intent(in) :: a(lda,*), x(*)
+           real(sp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_sgbmv
+
+     pure module subroutine stdlib${ii}$_dgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
+           real(dp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, kl, ku, lda, m, n
+           character, intent(in) :: trans
+           real(dp), intent(in) :: a(lda,*), x(*)
+           real(dp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_dgbmv
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$gbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
+           real(${rk}$), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, kl, ku, lda, m, n
+           character, intent(in) :: trans
+           real(${rk}$), intent(in) :: a(lda,*), x(*)
+           real(${rk}$), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_${ri}$gbmv
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
+           complex(sp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, kl, ku, lda, m, n
+           character, intent(in) :: trans
+           complex(sp), intent(in) :: a(lda,*), x(*)
+           complex(sp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_cgbmv
+
+     pure module subroutine stdlib${ii}$_zgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
+           complex(dp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, kl, ku, lda, m, n
+           character, intent(in) :: trans
+           complex(dp), intent(in) :: a(lda,*), x(*)
+           complex(dp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_zgbmv
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$gbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
+           complex(${ck}$), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, kl, ku, lda, m, n
+           character, intent(in) :: trans
+           complex(${ck}$), intent(in) :: a(lda,*), x(*)
+           complex(${ck}$), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_${ci}$gbmv
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_chbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
+           complex(sp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, k, lda, n
+           character, intent(in) :: uplo
+           complex(sp), intent(in) :: a(lda,*), x(*)
+           complex(sp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_chbmv
+
+     pure module subroutine stdlib${ii}$_zhbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
+           complex(dp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, k, lda, n
+           character, intent(in) :: uplo
+           complex(dp), intent(in) :: a(lda,*), x(*)
+           complex(dp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_zhbmv
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$hbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
+           complex(${ck}$), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, k, lda, n
+           character, intent(in) :: uplo
+           complex(${ck}$), intent(in) :: a(lda,*), x(*)
+           complex(${ck}$), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_${ci}$hbmv
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_ssymv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
+           real(sp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, lda, n
+           character, intent(in) :: uplo
+           real(sp), intent(in) :: a(lda,*), x(*)
+           real(sp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_ssymv
+
+     pure module subroutine stdlib${ii}$_dsymv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
+           real(dp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, lda, n
+           character, intent(in) :: uplo
+           real(dp), intent(in) :: a(lda,*), x(*)
+           real(dp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_dsymv
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$symv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
+           real(${rk}$), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, lda, n
+           character, intent(in) :: uplo
+           real(${rk}$), intent(in) :: a(lda,*), x(*)
+           real(${rk}$), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_${ri}$symv
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_ssyr(uplo,n,alpha,x,incx,a,lda)
+           real(sp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, lda, n
+           character, intent(in) :: uplo
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(in) :: x(*)
+     end subroutine stdlib${ii}$_ssyr
+
+     pure module subroutine stdlib${ii}$_dsyr(uplo,n,alpha,x,incx,a,lda)
+           real(dp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, lda, n
+           character, intent(in) :: uplo
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(in) :: x(*)
+     end subroutine stdlib${ii}$_dsyr
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$syr(uplo,n,alpha,x,incx,a,lda)
+           real(${rk}$), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, lda, n
+           character, intent(in) :: uplo
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(in) :: x(*)
+     end subroutine stdlib${ii}$_${ri}$syr
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_ssyr2(uplo,n,alpha,x,incx,y,incy,a,lda)
+           real(sp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, incy, lda, n
+           character, intent(in) :: uplo
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(in) :: x(*), y(*)
+     end subroutine stdlib${ii}$_ssyr2
+
+     pure module subroutine stdlib${ii}$_dsyr2(uplo,n,alpha,x,incx,y,incy,a,lda)
+           real(dp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, incy, lda, n
+           character, intent(in) :: uplo
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(in) :: x(*), y(*)
+     end subroutine stdlib${ii}$_dsyr2
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$syr2(uplo,n,alpha,x,incx,y,incy,a,lda)
+           real(${rk}$), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, incy, lda, n
+           character, intent(in) :: uplo
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(in) :: x(*), y(*)
+     end subroutine stdlib${ii}$_${ri}$syr2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sspmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
+           real(sp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, n
+           character, intent(in) :: uplo
+           real(sp), intent(in) :: ap(*), x(*)
+           real(sp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_sspmv
+
+     pure module subroutine stdlib${ii}$_dspmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
+           real(dp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, n
+           character, intent(in) :: uplo
+           real(dp), intent(in) :: ap(*), x(*)
+           real(dp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_dspmv
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$spmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
+           real(${rk}$), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, n
+           character, intent(in) :: uplo
+           real(${rk}$), intent(in) :: ap(*), x(*)
+           real(${rk}$), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_${ri}$spmv
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_ssbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
+           real(sp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, k, lda, n
+           character, intent(in) :: uplo
+           real(sp), intent(in) :: a(lda,*), x(*)
+           real(sp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_ssbmv
+
+     pure module subroutine stdlib${ii}$_dsbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
+           real(dp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, k, lda, n
+           character, intent(in) :: uplo
+           real(dp), intent(in) :: a(lda,*), x(*)
+           real(dp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_dsbmv
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$sbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
+           real(${rk}$), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, k, lda, n
+           character, intent(in) :: uplo
+           real(${rk}$), intent(in) :: a(lda,*), x(*)
+           real(${rk}$), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_${ri}$sbmv
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sspr(uplo,n,alpha,x,incx,ap)
+           real(sp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, n
+           character, intent(in) :: uplo
+           real(sp), intent(inout) :: ap(*)
+           real(sp), intent(in) :: x(*)
+     end subroutine stdlib${ii}$_sspr
+
+     pure module subroutine stdlib${ii}$_dspr(uplo,n,alpha,x,incx,ap)
+           real(dp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, n
+           character, intent(in) :: uplo
+           real(dp), intent(inout) :: ap(*)
+           real(dp), intent(in) :: x(*)
+     end subroutine stdlib${ii}$_dspr
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$spr(uplo,n,alpha,x,incx,ap)
+           real(${rk}$), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, n
+           character, intent(in) :: uplo
+           real(${rk}$), intent(inout) :: ap(*)
+           real(${rk}$), intent(in) :: x(*)
+     end subroutine stdlib${ii}$_${ri}$spr
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sspr2(uplo,n,alpha,x,incx,y,incy,ap)
+           real(sp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, incy, n
+           character, intent(in) :: uplo
+           real(sp), intent(inout) :: ap(*)
+           real(sp), intent(in) :: x(*), y(*)
+     end subroutine stdlib${ii}$_sspr2
+
+     pure module subroutine stdlib${ii}$_dspr2(uplo,n,alpha,x,incx,y,incy,ap)
+           real(dp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, incy, n
+           character, intent(in) :: uplo
+           real(dp), intent(inout) :: ap(*)
+           real(dp), intent(in) :: x(*), y(*)
+     end subroutine stdlib${ii}$_dspr2
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$spr2(uplo,n,alpha,x,incx,y,incy,ap)
+           real(${rk}$), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, incy, n
+           character, intent(in) :: uplo
+           real(${rk}$), intent(inout) :: ap(*)
+           real(${rk}$), intent(in) :: x(*), y(*)
+     end subroutine stdlib${ii}$_${ri}$spr2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_chpmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
+           complex(sp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, n
+           character, intent(in) :: uplo
+           complex(sp), intent(in) :: ap(*), x(*)
+           complex(sp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_chpmv
+
+     pure module subroutine stdlib${ii}$_zhpmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
+           complex(dp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, n
+           character, intent(in) :: uplo
+           complex(dp), intent(in) :: ap(*), x(*)
+           complex(dp), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_zhpmv
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$hpmv(uplo,n,alpha,ap,x,incx,beta,y,incy)
+           complex(${ck}$), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: incx, incy, n
+           character, intent(in) :: uplo
+           complex(${ck}$), intent(in) :: ap(*), x(*)
+           complex(${ck}$), intent(inout) :: y(*)
+     end subroutine stdlib${ii}$_${ci}$hpmv
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_chpr(uplo,n,alpha,x,incx,ap)
+           real(sp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, n
+           character, intent(in) :: uplo
+           complex(sp), intent(inout) :: ap(*)
+           complex(sp), intent(in) :: x(*)
+     end subroutine stdlib${ii}$_chpr
+
+     pure module subroutine stdlib${ii}$_zhpr(uplo,n,alpha,x,incx,ap)
+           real(dp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, n
+           character, intent(in) :: uplo
+           complex(dp), intent(inout) :: ap(*)
+           complex(dp), intent(in) :: x(*)
+     end subroutine stdlib${ii}$_zhpr
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$hpr(uplo,n,alpha,x,incx,ap)
+           real(${ck}$), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, n
+           character, intent(in) :: uplo
+           complex(${ck}$), intent(inout) :: ap(*)
+           complex(${ck}$), intent(in) :: x(*)
+     end subroutine stdlib${ii}$_${ci}$hpr
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_chpr2(uplo,n,alpha,x,incx,y,incy,ap)
+           complex(sp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, incy, n
+           character, intent(in) :: uplo
+           complex(sp), intent(inout) :: ap(*)
+           complex(sp), intent(in) :: x(*), y(*)
+     end subroutine stdlib${ii}$_chpr2
+
+     pure module subroutine stdlib${ii}$_zhpr2(uplo,n,alpha,x,incx,y,incy,ap)
+           complex(dp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, incy, n
+           character, intent(in) :: uplo
+           complex(dp), intent(inout) :: ap(*)
+           complex(dp), intent(in) :: x(*), y(*)
+     end subroutine stdlib${ii}$_zhpr2
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$hpr2(uplo,n,alpha,x,incx,y,incy,ap)
+           complex(${ck}$), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: incx, incy, n
+           character, intent(in) :: uplo
+           complex(${ck}$), intent(inout) :: ap(*)
+           complex(${ck}$), intent(in) :: x(*), y(*)
+     end subroutine stdlib${ii}$_${ci}$hpr2
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_strmv(uplo,trans,diag,n,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, lda, n
+           character, intent(in) :: diag, trans, uplo
+           real(sp), intent(in) :: a(lda,*)
+           real(sp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_strmv
+
+     pure module subroutine stdlib${ii}$_dtrmv(uplo,trans,diag,n,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, lda, n
+           character, intent(in) :: diag, trans, uplo
+           real(dp), intent(in) :: a(lda,*)
+           real(dp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_dtrmv
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$trmv(uplo,trans,diag,n,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, lda, n
+           character, intent(in) :: diag, trans, uplo
+           real(${rk}$), intent(in) :: a(lda,*)
+           real(${rk}$), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_${ri}$trmv
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_ctrmv(uplo,trans,diag,n,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, lda, n
+           character, intent(in) :: diag, trans, uplo
+           complex(sp), intent(in) :: a(lda,*)
+           complex(sp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_ctrmv
+
+     pure module subroutine stdlib${ii}$_ztrmv(uplo,trans,diag,n,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, lda, n
+           character, intent(in) :: diag, trans, uplo
+           complex(dp), intent(in) :: a(lda,*)
+           complex(dp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_ztrmv
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$trmv(uplo,trans,diag,n,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, lda, n
+           character, intent(in) :: diag, trans, uplo
+           complex(${ck}$), intent(in) :: a(lda,*)
+           complex(${ck}$), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_${ci}$trmv
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_stbmv(uplo,trans,diag,n,k,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, k, lda, n
+           character, intent(in) :: diag, trans, uplo
+           real(sp), intent(in) :: a(lda,*)
+           real(sp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_stbmv
+
+     pure module subroutine stdlib${ii}$_dtbmv(uplo,trans,diag,n,k,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, k, lda, n
+           character, intent(in) :: diag, trans, uplo
+           real(dp), intent(in) :: a(lda,*)
+           real(dp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_dtbmv
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$tbmv(uplo,trans,diag,n,k,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, k, lda, n
+           character, intent(in) :: diag, trans, uplo
+           real(${rk}$), intent(in) :: a(lda,*)
+           real(${rk}$), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_${ri}$tbmv
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_ctbmv(uplo,trans,diag,n,k,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, k, lda, n
+           character, intent(in) :: diag, trans, uplo
+           complex(sp), intent(in) :: a(lda,*)
+           complex(sp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_ctbmv
+
+     pure module subroutine stdlib${ii}$_ztbmv(uplo,trans,diag,n,k,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, k, lda, n
+           character, intent(in) :: diag, trans, uplo
+           complex(dp), intent(in) :: a(lda,*)
+           complex(dp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_ztbmv
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$tbmv(uplo,trans,diag,n,k,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, k, lda, n
+           character, intent(in) :: diag, trans, uplo
+           complex(${ck}$), intent(in) :: a(lda,*)
+           complex(${ck}$), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_${ci}$tbmv
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_stpmv(uplo,trans,diag,n,ap,x,incx)
+           integer(${ik}$), intent(in) :: incx, n
+           character, intent(in) :: diag, trans, uplo
+           real(sp), intent(in) :: ap(*)
+           real(sp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_stpmv
+
+     pure module subroutine stdlib${ii}$_dtpmv(uplo,trans,diag,n,ap,x,incx)
+           integer(${ik}$), intent(in) :: incx, n
+           character, intent(in) :: diag, trans, uplo
+           real(dp), intent(in) :: ap(*)
+           real(dp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_dtpmv
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$tpmv(uplo,trans,diag,n,ap,x,incx)
+           integer(${ik}$), intent(in) :: incx, n
+           character, intent(in) :: diag, trans, uplo
+           real(${rk}$), intent(in) :: ap(*)
+           real(${rk}$), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_${ri}$tpmv
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_ctpmv(uplo,trans,diag,n,ap,x,incx)
+           integer(${ik}$), intent(in) :: incx, n
+           character, intent(in) :: diag, trans, uplo
+           complex(sp), intent(in) :: ap(*)
+           complex(sp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_ctpmv
+
+     pure module subroutine stdlib${ii}$_ztpmv(uplo,trans,diag,n,ap,x,incx)
+           integer(${ik}$), intent(in) :: incx, n
+           character, intent(in) :: diag, trans, uplo
+           complex(dp), intent(in) :: ap(*)
+           complex(dp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_ztpmv
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$tpmv(uplo,trans,diag,n,ap,x,incx)
+           integer(${ik}$), intent(in) :: incx, n
+           character, intent(in) :: diag, trans, uplo
+           complex(${ck}$), intent(in) :: ap(*)
+           complex(${ck}$), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_${ci}$tpmv
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_strsv(uplo,trans,diag,n,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, lda, n
+           character, intent(in) :: diag, trans, uplo
+           real(sp), intent(in) :: a(lda,*)
+           real(sp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_strsv
+
+     pure module subroutine stdlib${ii}$_dtrsv(uplo,trans,diag,n,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, lda, n
+           character, intent(in) :: diag, trans, uplo
+           real(dp), intent(in) :: a(lda,*)
+           real(dp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_dtrsv
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$trsv(uplo,trans,diag,n,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, lda, n
+           character, intent(in) :: diag, trans, uplo
+           real(${rk}$), intent(in) :: a(lda,*)
+           real(${rk}$), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_${ri}$trsv
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_ctrsv(uplo,trans,diag,n,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, lda, n
+           character, intent(in) :: diag, trans, uplo
+           complex(sp), intent(in) :: a(lda,*)
+           complex(sp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_ctrsv
+
+     pure module subroutine stdlib${ii}$_ztrsv(uplo,trans,diag,n,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, lda, n
+           character, intent(in) :: diag, trans, uplo
+           complex(dp), intent(in) :: a(lda,*)
+           complex(dp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_ztrsv
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$trsv(uplo,trans,diag,n,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, lda, n
+           character, intent(in) :: diag, trans, uplo
+           complex(${ck}$), intent(in) :: a(lda,*)
+           complex(${ck}$), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_${ci}$trsv
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_stbsv(uplo,trans,diag,n,k,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, k, lda, n
+           character, intent(in) :: diag, trans, uplo
+           real(sp), intent(in) :: a(lda,*)
+           real(sp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_stbsv
+
+     pure module subroutine stdlib${ii}$_dtbsv(uplo,trans,diag,n,k,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, k, lda, n
+           character, intent(in) :: diag, trans, uplo
+           real(dp), intent(in) :: a(lda,*)
+           real(dp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_dtbsv
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$tbsv(uplo,trans,diag,n,k,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, k, lda, n
+           character, intent(in) :: diag, trans, uplo
+           real(${rk}$), intent(in) :: a(lda,*)
+           real(${rk}$), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_${ri}$tbsv
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_ctbsv(uplo,trans,diag,n,k,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, k, lda, n
+           character, intent(in) :: diag, trans, uplo
+           complex(sp), intent(in) :: a(lda,*)
+           complex(sp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_ctbsv
+
+     pure module subroutine stdlib${ii}$_ztbsv(uplo,trans,diag,n,k,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, k, lda, n
+           character, intent(in) :: diag, trans, uplo
+           complex(dp), intent(in) :: a(lda,*)
+           complex(dp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_ztbsv
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$tbsv(uplo,trans,diag,n,k,a,lda,x,incx)
+           integer(${ik}$), intent(in) :: incx, k, lda, n
+           character, intent(in) :: diag, trans, uplo
+           complex(${ck}$), intent(in) :: a(lda,*)
+           complex(${ck}$), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_${ci}$tbsv
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_stpsv(uplo,trans,diag,n,ap,x,incx)
+           integer(${ik}$), intent(in) :: incx, n
+           character, intent(in) :: diag, trans, uplo
+           real(sp), intent(in) :: ap(*)
+           real(sp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_stpsv
+
+     pure module subroutine stdlib${ii}$_dtpsv(uplo,trans,diag,n,ap,x,incx)
+           integer(${ik}$), intent(in) :: incx, n
+           character, intent(in) :: diag, trans, uplo
+           real(dp), intent(in) :: ap(*)
+           real(dp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_dtpsv
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$tpsv(uplo,trans,diag,n,ap,x,incx)
+           integer(${ik}$), intent(in) :: incx, n
+           character, intent(in) :: diag, trans, uplo
+           real(${rk}$), intent(in) :: ap(*)
+           real(${rk}$), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_${ri}$tpsv
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_ctpsv(uplo,trans,diag,n,ap,x,incx)
+           integer(${ik}$), intent(in) :: incx, n
+           character, intent(in) :: diag, trans, uplo
+           complex(sp), intent(in) :: ap(*)
+           complex(sp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_ctpsv
+
+     pure module subroutine stdlib${ii}$_ztpsv(uplo,trans,diag,n,ap,x,incx)
+           integer(${ik}$), intent(in) :: incx, n
+           character, intent(in) :: diag, trans, uplo
+           complex(dp), intent(in) :: ap(*)
+           complex(dp), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_ztpsv
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$tpsv(uplo,trans,diag,n,ap,x,incx)
+           integer(${ik}$), intent(in) :: incx, n
+           character, intent(in) :: diag, trans, uplo
+           complex(${ck}$), intent(in) :: ap(*)
+           complex(${ck}$), intent(inout) :: x(*)
+     end subroutine stdlib${ii}$_${ci}$tpsv
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_sgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
+           real(sp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: k, lda, ldb, ldc, m, n
+           character, intent(in) :: transa, transb
+           real(sp), intent(in) :: a(lda,*), b(ldb,*)
+           real(sp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_sgemm
+
+     pure module subroutine stdlib${ii}$_dgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
+           real(dp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: k, lda, ldb, ldc, m, n
+           character, intent(in) :: transa, transb
+           real(dp), intent(in) :: a(lda,*), b(ldb,*)
+           real(dp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_dgemm
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$gemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
+           real(${rk}$), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: k, lda, ldb, ldc, m, n
+           character, intent(in) :: transa, transb
+           real(${rk}$), intent(in) :: a(lda,*), b(ldb,*)
+           real(${rk}$), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_${ri}$gemm
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_cgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
+           complex(sp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: k, lda, ldb, ldc, m, n
+           character, intent(in) :: transa, transb
+           complex(sp), intent(in) :: a(lda,*), b(ldb,*)
+           complex(sp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_cgemm
+
+     pure module subroutine stdlib${ii}$_zgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
+           complex(dp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: k, lda, ldb, ldc, m, n
+           character, intent(in) :: transa, transb
+           complex(dp), intent(in) :: a(lda,*), b(ldb,*)
+           complex(dp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_zgemm
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$gemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
+           complex(${ck}$), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: k, lda, ldb, ldc, m, n
+           character, intent(in) :: transa, transb
+           complex(${ck}$), intent(in) :: a(lda,*), b(ldb,*)
+           complex(${ck}$), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_${ci}$gemm
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_chemm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
+           complex(sp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: lda, ldb, ldc, m, n
+           character, intent(in) :: side, uplo
+           complex(sp), intent(in) :: a(lda,*), b(ldb,*)
+           complex(sp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_chemm
+
+     pure module subroutine stdlib${ii}$_zhemm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
+           complex(dp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: lda, ldb, ldc, m, n
+           character, intent(in) :: side, uplo
+           complex(dp), intent(in) :: a(lda,*), b(ldb,*)
+           complex(dp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_zhemm
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$hemm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
+           complex(${ck}$), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: lda, ldb, ldc, m, n
+           character, intent(in) :: side, uplo
+           complex(${ck}$), intent(in) :: a(lda,*), b(ldb,*)
+           complex(${ck}$), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_${ci}$hemm
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cherk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
+           real(sp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: k, lda, ldc, n
+           character, intent(in) :: trans, uplo
+           complex(sp), intent(in) :: a(lda,*)
+           complex(sp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_cherk
+
+     pure module subroutine stdlib${ii}$_zherk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
+           real(dp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: k, lda, ldc, n
+           character, intent(in) :: trans, uplo
+           complex(dp), intent(in) :: a(lda,*)
+           complex(dp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_zherk
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$herk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
+           real(${ck}$), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: k, lda, ldc, n
+           character, intent(in) :: trans, uplo
+           complex(${ck}$), intent(in) :: a(lda,*)
+           complex(${ck}$), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_${ci}$herk
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_cher2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
+           complex(sp), intent(in) :: alpha
+           real(sp), intent(in) :: beta
+           integer(${ik}$), intent(in) :: k, lda, ldb, ldc, n
+           character, intent(in) :: trans, uplo
+           complex(sp), intent(in) :: a(lda,*), b(ldb,*)
+           complex(sp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_cher2k
+
+     pure module subroutine stdlib${ii}$_zher2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
+           complex(dp), intent(in) :: alpha
+           real(dp), intent(in) :: beta
+           integer(${ik}$), intent(in) :: k, lda, ldb, ldc, n
+           character, intent(in) :: trans, uplo
+           complex(dp), intent(in) :: a(lda,*), b(ldb,*)
+           complex(dp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_zher2k
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$her2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
+           complex(${ck}$), intent(in) :: alpha
+           real(${ck}$), intent(in) :: beta
+           integer(${ik}$), intent(in) :: k, lda, ldb, ldc, n
+           character, intent(in) :: trans, uplo
+           complex(${ck}$), intent(in) :: a(lda,*), b(ldb,*)
+           complex(${ck}$), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_${ci}$her2k
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_ssyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
+           real(sp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: k, lda, ldc, n
+           character, intent(in) :: trans, uplo
+           real(sp), intent(in) :: a(lda,*)
+           real(sp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_ssyrk
+
+     pure module subroutine stdlib${ii}$_dsyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
+           real(dp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: k, lda, ldc, n
+           character, intent(in) :: trans, uplo
+           real(dp), intent(in) :: a(lda,*)
+           real(dp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_dsyrk
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$syrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
+           real(${rk}$), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: k, lda, ldc, n
+           character, intent(in) :: trans, uplo
+           real(${rk}$), intent(in) :: a(lda,*)
+           real(${rk}$), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_${ri}$syrk
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_csyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
+           complex(sp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: k, lda, ldc, n
+           character, intent(in) :: trans, uplo
+           complex(sp), intent(in) :: a(lda,*)
+           complex(sp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_csyrk
+
+     pure module subroutine stdlib${ii}$_zsyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
+           complex(dp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: k, lda, ldc, n
+           character, intent(in) :: trans, uplo
+           complex(dp), intent(in) :: a(lda,*)
+           complex(dp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_zsyrk
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$syrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
+           complex(${ck}$), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: k, lda, ldc, n
+           character, intent(in) :: trans, uplo
+           complex(${ck}$), intent(in) :: a(lda,*)
+           complex(${ck}$), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_${ci}$syrk
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_ssyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
+           real(sp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: k, lda, ldb, ldc, n
+           character, intent(in) :: trans, uplo
+           real(sp), intent(in) :: a(lda,*), b(ldb,*)
+           real(sp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_ssyr2k
+
+     pure module subroutine stdlib${ii}$_dsyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
+           real(dp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: k, lda, ldb, ldc, n
+           character, intent(in) :: trans, uplo
+           real(dp), intent(in) :: a(lda,*), b(ldb,*)
+           real(dp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_dsyr2k
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$syr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
+           real(${rk}$), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: k, lda, ldb, ldc, n
+           character, intent(in) :: trans, uplo
+           real(${rk}$), intent(in) :: a(lda,*), b(ldb,*)
+           real(${rk}$), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_${ri}$syr2k
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_csyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
+           complex(sp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: k, lda, ldb, ldc, n
+           character, intent(in) :: trans, uplo
+           complex(sp), intent(in) :: a(lda,*), b(ldb,*)
+           complex(sp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_csyr2k
+
+     pure module subroutine stdlib${ii}$_zsyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
+           complex(dp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: k, lda, ldb, ldc, n
+           character, intent(in) :: trans, uplo
+           complex(dp), intent(in) :: a(lda,*), b(ldb,*)
+           complex(dp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_zsyr2k
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$syr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
+           complex(${ck}$), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: k, lda, ldb, ldc, n
+           character, intent(in) :: trans, uplo
+           complex(${ck}$), intent(in) :: a(lda,*), b(ldb,*)
+           complex(${ck}$), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_${ci}$syr2k
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_ssymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
+           real(sp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: lda, ldb, ldc, m, n
+           character, intent(in) :: side, uplo
+           real(sp), intent(in) :: a(lda,*), b(ldb,*)
+           real(sp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_ssymm
+
+     pure module subroutine stdlib${ii}$_dsymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
+           real(dp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: lda, ldb, ldc, m, n
+           character, intent(in) :: side, uplo
+           real(dp), intent(in) :: a(lda,*), b(ldb,*)
+           real(dp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_dsymm
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$symm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
+           real(${rk}$), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: lda, ldb, ldc, m, n
+           character, intent(in) :: side, uplo
+           real(${rk}$), intent(in) :: a(lda,*), b(ldb,*)
+           real(${rk}$), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_${ri}$symm
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_csymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
+           complex(sp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: lda, ldb, ldc, m, n
+           character, intent(in) :: side, uplo
+           complex(sp), intent(in) :: a(lda,*), b(ldb,*)
+           complex(sp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_csymm
+
+     pure module subroutine stdlib${ii}$_zsymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
+           complex(dp), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: lda, ldb, ldc, m, n
+           character, intent(in) :: side, uplo
+           complex(dp), intent(in) :: a(lda,*), b(ldb,*)
+           complex(dp), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_zsymm
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$symm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
+           complex(${ck}$), intent(in) :: alpha, beta
+           integer(${ik}$), intent(in) :: lda, ldb, ldc, m, n
+           character, intent(in) :: side, uplo
+           complex(${ck}$), intent(in) :: a(lda,*), b(ldb,*)
+           complex(${ck}$), intent(inout) :: c(ldc,*)
+     end subroutine stdlib${ii}$_${ci}$symm
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_strmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
+           real(sp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: lda, ldb, m, n
+           character, intent(in) :: diag, side, transa, uplo
+           real(sp), intent(in) :: a(lda,*)
+           real(sp), intent(inout) :: b(ldb,*)
+     end subroutine stdlib${ii}$_strmm
+
+     pure module subroutine stdlib${ii}$_dtrmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
+           real(dp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: lda, ldb, m, n
+           character, intent(in) :: diag, side, transa, uplo
+           real(dp), intent(in) :: a(lda,*)
+           real(dp), intent(inout) :: b(ldb,*)
+     end subroutine stdlib${ii}$_dtrmm
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$trmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
+           real(${rk}$), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: lda, ldb, m, n
+           character, intent(in) :: diag, side, transa, uplo
+           real(${rk}$), intent(in) :: a(lda,*)
+           real(${rk}$), intent(inout) :: b(ldb,*)
+     end subroutine stdlib${ii}$_${ri}$trmm
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_ctrmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
+           complex(sp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: lda, ldb, m, n
+           character, intent(in) :: diag, side, transa, uplo
+           complex(sp), intent(in) :: a(lda,*)
+           complex(sp), intent(inout) :: b(ldb,*)
+     end subroutine stdlib${ii}$_ctrmm
+
+     pure module subroutine stdlib${ii}$_ztrmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
+           complex(dp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: lda, ldb, m, n
+           character, intent(in) :: diag, side, transa, uplo
+           complex(dp), intent(in) :: a(lda,*)
+           complex(dp), intent(inout) :: b(ldb,*)
+     end subroutine stdlib${ii}$_ztrmm
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$trmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
+           complex(${ck}$), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: lda, ldb, m, n
+           character, intent(in) :: diag, side, transa, uplo
+           complex(${ck}$), intent(in) :: a(lda,*)
+           complex(${ck}$), intent(inout) :: b(ldb,*)
+     end subroutine stdlib${ii}$_${ci}$trmm
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_strsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
+           real(sp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: lda, ldb, m, n
+           character, intent(in) :: diag, side, transa, uplo
+           real(sp), intent(in) :: a(lda,*)
+           real(sp), intent(inout) :: b(ldb,*)
+     end subroutine stdlib${ii}$_strsm
+
+     pure module subroutine stdlib${ii}$_dtrsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
+           real(dp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: lda, ldb, m, n
+           character, intent(in) :: diag, side, transa, uplo
+           real(dp), intent(in) :: a(lda,*)
+           real(dp), intent(inout) :: b(ldb,*)
+     end subroutine stdlib${ii}$_dtrsm
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$trsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
+           real(${rk}$), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: lda, ldb, m, n
+           character, intent(in) :: diag, side, transa, uplo
+           real(${rk}$), intent(in) :: a(lda,*)
+           real(${rk}$), intent(inout) :: b(ldb,*)
+     end subroutine stdlib${ii}$_${ri}$trsm
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_ctrsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
+           complex(sp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: lda, ldb, m, n
+           character, intent(in) :: diag, side, transa, uplo
+           complex(sp), intent(in) :: a(lda,*)
+           complex(sp), intent(inout) :: b(ldb,*)
+     end subroutine stdlib${ii}$_ctrsm
+
+     pure module subroutine stdlib${ii}$_ztrsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
+           complex(dp), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: lda, ldb, m, n
+           character, intent(in) :: diag, side, transa, uplo
+           complex(dp), intent(in) :: a(lda,*)
+           complex(dp), intent(inout) :: b(ldb,*)
+     end subroutine stdlib${ii}$_ztrsm
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$trsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
+           complex(${ck}$), intent(in) :: alpha
+           integer(${ik}$), intent(in) :: lda, ldb, m, n
+           character, intent(in) :: diag, side, transa, uplo
+           complex(${ck}$), intent(in) :: a(lda,*)
+           complex(${ck}$), intent(inout) :: b(ldb,*)
+     end subroutine stdlib${ii}$_${ci}$trsm
+
+#:endif
+#:endfor
+
+#:endfor
+end interface 
+
+end module stdlib_blas

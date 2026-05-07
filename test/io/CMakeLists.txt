@@ -13,7 +13,7 @@ ADDTEST(savetxt_qp)
 set_tests_properties(loadtxt_qp PROPERTIES LABELS quadruple_precision)
 set_tests_properties(savetxt_qp PROPERTIES LABELS quadruple_precision)
 
-ADDTEST(getline)
+ADDTEST(get_line)
 ADDTEST(npy)
 ADDTEST(open)
 ADDTEST(parse_mode)

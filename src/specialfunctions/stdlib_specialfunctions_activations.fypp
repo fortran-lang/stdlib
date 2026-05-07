@@ -1,0 +1,366 @@
+#:include "common.fypp"
+#:set RANKS = range(2, MAXRANK + 1)
+submodule(stdlib_specialfunctions) stdlib_specialfunctions_activations
+    use stdlib_intrinsics, only: sum => stdlib_sum
+    implicit none
+    
+    #:for rk, rt in REAL_KINDS_TYPES
+    ${rt}$, parameter :: isqrt2_${rk}$ = 1._${rk}$ / sqrt(2._${rk}$)
+    #:endfor
+
+contains
+
+!==================================================
+! Gaussian
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+elemental module function gaussian_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    y = exp(-x**2)
+end function
+
+elemental module function gaussian_grad_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    y = -2._${rk}$ * x * exp(-x**2)
+end function
+
+#:endfor
+
+!==================================================
+! Exponential Linear Unit
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+elemental module function elu_${rk}$( x , a ) result ( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$, intent(in) :: a
+    ${rt}$ :: y
+    y = merge( x , a * (exp(x) - 1._${rk}$), x >= 0._${rk}$)
+end function
+
+elemental module function elu_grad_${rk}$( x , a ) result ( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$, intent(in) :: a
+    ${rt}$ :: y
+    y = merge( 1._${rk}$ , a * exp(x), x >= 0._${rk}$)
+end function
+
+#:endfor
+
+!==================================================
+! Rectified Linear Unit
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+elemental module function relu_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    y = max(0._${rk}$, x)
+end function
+
+elemental module function relu_grad_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    y = merge( 1._${rk}$ , 0._${rk}$, x > 0._${rk}$)
+end function
+
+#:endfor
+
+!==================================================
+! leaky Rectified Linear Unit
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+elemental module function leaky_relu_${rk}$( x , a ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$, intent(in) :: a
+    ${rt}$ :: y
+    y = merge( x, a * x , x >= 0._${rk}$)
+end function
+
+elemental module function leaky_relu_grad_${rk}$( x , a ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$, intent(in) :: a
+    ${rt}$ :: y
+    y = merge( 1._${rk}$ , a , x >= 0._${rk}$)
+end function
+
+#:endfor
+
+!==================================================
+! GELU: Gaussian Error Linear Units function
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+elemental module function gelu_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    y = 0.5_${rk}$ * x * (1._${rk}$ + erf(x * isqrt2_${rk}$))
+end function
+
+elemental module function gelu_grad_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    y = 0.5_${rk}$ * (1._${rk}$ + erf(x * isqrt2_${rk}$) )
+    y = y + x * isqrt2_${rk}$ * exp( - 0.5_${rk}$ * x**2 )
+end function
+
+#:endfor
+
+#:for rk, rt in REAL_KINDS_TYPES
+elemental module function gelu_approx_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    y = 0.5_${rk}$ * x * (1._${rk}$ + fast_erf(x * isqrt2_${rk}$))
+end function
+
+elemental module function gelu_approx_grad_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    y = 0.5_${rk}$ * (1._${rk}$ + fast_erf(x * isqrt2_${rk}$) )
+    y = y + x * isqrt2_${rk}$ * exp( - 0.5_${rk}$ * x**2 )
+end function
+
+#:endfor
+
+!==================================================
+! Scaled Exponential Linear Unit (SELU)
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+elemental module function selu_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    ${rt}$, parameter :: scale = 1.0507009873554804934193349852946_${rk}$
+    ${rt}$, parameter :: alpha = 1.6732632423543772848170429916717_${rk}$
+    y = merge( x , alpha * exp(x) - alpha, x > 0._${rk}$)
+    y = scale * y
+end function
+
+elemental module function selu_grad_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    ${rt}$, parameter :: scale = 1.0507009873554804934193349852946_${rk}$
+    ${rt}$, parameter :: alpha = 1.6732632423543772848170429916717_${rk}$
+    y = merge( scale , scale * alpha * exp(x), x > 0._${rk}$)
+end function
+
+#:endfor
+
+!==================================================
+! Sigmoid
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+elemental module function sigmoid_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    y = 1._${rk}$ / (1._${rk}$ + exp(-x))
+end function
+
+elemental module function sigmoid_grad_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    y = exp(x) / (1._${rk}$ + exp(x))**2
+end function
+
+#:endfor
+
+!==================================================
+! SiLU: Sigmoid Linear Unit
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+elemental module function silu_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    y = x / (1._${rk}$ + exp(-x))
+end function
+
+elemental module function silu_grad_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    y = (1._${rk}$ + exp(x))**2
+    y = exp(x) * ( x + y ) / y
+end function
+
+#:endfor
+
+!==================================================
+! Step
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+elemental module function step_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    y = merge( 1._${rk}$ , 0._${rk}$, x > 0._${rk}$)
+end function
+
+elemental module function step_grad_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    y = 0._${rk}$
+end function
+
+#:endfor
+
+!==================================================
+! softmax
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+pure module function softmax_r1_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x(:)
+    ${rt}$ :: y(size(x))
+
+    y = exp(x - maxval(x))
+    y = y / sum(y)
+end function
+
+#:for rank in RANKS
+pure module function softmax_r${rank}$_${rk}$( x , dim ) result( y )
+    ${rt}$, intent(in) :: x${ranksuffix(rank)}$
+    ${rt}$ :: y${shape_from_array_size('x', rank)}$
+
+    integer, intent(in), optional :: dim
+    integer :: dim_, j
+
+    dim_ = 1; if(present(dim)) dim_ = dim
+
+    if(dim_<${rank}$)then
+        do j = 1, size(x,dim=${rank}$)
+            #:if rank == 2
+            y${select_subarray(rank, [(rank, 'j')])}$ = softmax( x${select_subarray(rank, [(rank, 'j')])}$ )
+            #:else
+            y${select_subarray(rank, [(rank, 'j')])}$ = softmax( x${select_subarray(rank, [(rank, 'j')])}$, dim=dim_ )
+            #:endif
+        end do
+    else
+        do j = 1, size(x,dim=1)
+            #:if rank == 2
+            y${select_subarray(rank, [(1, 'j')])}$ = softmax( x${select_subarray(rank, [(1, 'j')])}$ )
+            #:else
+            y${select_subarray(rank, [(1, 'j')])}$ = softmax( x${select_subarray(rank, [(1, 'j')])}$, dim=${rank-1}$ )
+            #:endif
+        end do
+    end if
+end function
+#:endfor
+
+pure module function softmax_grad_r1_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x(:)
+    ${rt}$ :: y(size(x))
+    
+    y = softmax(x)
+    y = y * (1._${rk}$ - y)
+end function
+
+#:for rank in RANKS
+pure module function softmax_grad_r${rank}$_${rk}$( x , dim ) result( y )
+    ${rt}$, intent(in) :: x${ranksuffix(rank)}$
+    ${rt}$ :: y${shape_from_array_size('x', rank)}$
+
+    integer, intent(in), optional :: dim
+    integer :: dim_
+
+    dim_ = 1; if(present(dim)) dim_ = dim
+
+    y = softmax(x,dim_)
+    y = y * (1._${rk}$ - y)
+end function
+#:endfor
+
+#:endfor
+
+!==================================================
+! logsoftmax
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+pure module function logsoftmax_r1_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x(:)
+    ${rt}$ :: y(size(x))
+
+    y = x - maxval(x)
+    y = y - log( sum(exp(y)) )
+end function
+
+#:for rank in RANKS
+pure module function logsoftmax_r${rank}$_${rk}$( x , dim ) result( y )
+    ${rt}$, intent(in) :: x${ranksuffix(rank)}$
+    ${rt}$ :: y${shape_from_array_size('x', rank)}$
+
+    integer, intent(in), optional :: dim
+    integer :: dim_, j
+
+    dim_ = 1; if(present(dim)) dim_ = dim
+
+    if(dim_<${rank}$)then
+        do j = 1, size(x,dim=${rank}$)
+            #:if rank == 2
+            y${select_subarray(rank, [(rank, 'j')])}$ = logsoftmax( x${select_subarray(rank, [(rank, 'j')])}$ )
+            #:else
+            y${select_subarray(rank, [(rank, 'j')])}$ = logsoftmax( x${select_subarray(rank, [(rank, 'j')])}$, dim=dim_ )
+            #:endif
+        end do
+    else
+        do j = 1, size(x,dim=1)
+            #:if rank == 2
+            y${select_subarray(rank, [(1, 'j')])}$ = logsoftmax( x${select_subarray(rank, [(1, 'j')])}$ )
+            #:else
+            y${select_subarray(rank, [(1, 'j')])}$ = logsoftmax( x${select_subarray(rank, [(1, 'j')])}$, dim=${rank-1}$ )
+            #:endif
+        end do
+    end if
+end function
+#:endfor
+
+#:endfor
+
+!==================================================
+! softplus
+!==================================================
+#:for rk, rt in REAL_KINDS_TYPES
+elemental module function softplus_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    y = log(exp(x) + 1._${rk}$)
+end function
+
+elemental module function softplus_grad_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    y = exp(x) / (exp(x) + 1._${rk}$)
+end function
+
+#:endfor
+
+!==================================================
+! Fast intrinsics for accelerated activations
+!==================================================
+
+! Source: https://fortran-lang.discourse.group/t/fastgpt-faster-than-pytorch-in-300-lines-of-fortran/5385/31
+#:for rk, rt in REAL_KINDS_TYPES
+elemental module function fast_tanh_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    ${rt}$ :: x2, a, b
+    
+    x2 = x*x
+    a = x * (135135.0_${rk}$ + x2 * (17325.0_${rk}$ + x2 * (378.0_${rk}$ + x2)))
+    b = 135135.0_${rk}$ + x2 * (62370.0_${rk}$ + x2 * (3150.0_${rk}$ + x2 * 28.0_${rk}$))
+    y = merge( a / b , sign(1._${rk}$,x) , x2 <= 25._${rk}$ )
+end function
+
+elemental module function fast_tanh_grad_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    y = 1._${rk}$ - fast_tanh(x)**2
+end function
+
+elemental module function fast_erf_${rk}$( x ) result( y )
+    ${rt}$, intent(in) :: x
+    ${rt}$ :: y
+    ${rt}$ :: abs_x
+    
+    abs_x = abs(x)
+    y = 1._${rk}$ - 1._${rk}$ / (1._${rk}$+ 0.278393_${rk}$*abs_x + 0.230389_${rk}$*abs_x**2 + 0.000972_${rk}$*abs_x**3 + 0.078108_${rk}$*abs_x**4)**4
+    y = y * sign(1.0_${rk}$,x)
+end function
+
+#:endfor
+
+end submodule

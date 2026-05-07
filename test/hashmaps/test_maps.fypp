@@ -108,41 +108,35 @@ contains
         type(chaining_hashmap_type), intent(inout) :: map
         integer(int8), intent(in) :: test_8_bits(test_size, key_types)
         integer(int_index), intent(in) :: test_block
-        class(*), allocatable :: dummy
         type(dummy_type) :: dummy_val
         integer :: index2
         type(key_type) :: key
-        type(other_type) :: other
+    
         logical :: conflict
 
         do index2=1, test_size, test_block
-            
-            if (allocated(dummy)) deallocate(dummy)
-            dummy_val % value = test_8_bits( index2:index2+test_block-1, 1 )
-            allocate( dummy, source=dummy_val )
-            call set ( other, dummy )
-            
+                       
             ! Test base int8 key interface
             call set( key, test_8_bits( index2:index2+test_block-1, 1 ) )
-            call map % map_entry( key, other, conflict )
+            call map % map_entry( key, dummy_val, conflict )
             call check(error, .not.conflict, "Unable to map int8 entry because of a key conflict.")
             
             ! Test int32 key interface
             ! Use transfer to create int32 vector from generated int8 vector.  
             call set( key, transfer( test_8_bits( index2:index2+test_block-1, 2 ), [0_int32] ) )
-            call map % map_entry( key, other, conflict )
+            call map % map_entry( key, dummy_val, conflict )
             call check(error, .not.conflict, "Unable to map chaining int32 entry because of a key conflict.")
 
             ! Test int8 key generic interface
-            call map % map_entry( test_8_bits( index2:index2+test_block-1, 3 ), other, conflict )
+            call map % map_entry( test_8_bits( index2:index2+test_block-1, 3 ), dummy_val, conflict )
             call check(error, .not.conflict, "Unable to map chaining int8 generic interface")
 
             ! Test int32 key generic interface
-            call map % map_entry( transfer( test_8_bits( index2:index2+test_block-1, 4 ), [0_int32] ), other, conflict )
+            call map % map_entry( transfer( test_8_bits( index2:index2+test_block-1, 4 ), [0_int32] ), dummy_val, conflict )
             call check(error, .not.conflict, "Unable to map chaining int32 generic interface")
 
             ! Test char key generic interface
-            call map % map_entry( transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_size ), other, conflict )
+            call map % map_entry( transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_size ), dummy_val, conflict )
             call check(error, .not.conflict, "Unable to map chaining character generic interface")
 
             if (allocated(error)) return
@@ -189,25 +183,25 @@ contains
         integer(int_index), intent(in)          :: test_block
         integer :: index2
         type(key_type) :: key
-        type(other_type) :: other
+        class(*), allocatable :: data
         logical :: exists
 
         do index2=1, test_size, test_block
             call set( key, test_8_bits( index2:index2+test_block-1, 1 ) )
-            call map % get_other_data( key, other, exists )
+            call map % get_other_data( key, data, exists )
             call check(error, exists, "Unable to get data because int8 key not found in map.")
 
             call set( key, transfer( test_8_bits( index2:index2+test_block-1, 2 ), [0_int32] ) )
-            call map % get_other_data( key, other, exists )
+            call map % get_other_data( key, data, exists )
             call check(error, exists, "Unable to get data because int32 key not found in map.")
 
-            call map % get_other_data( test_8_bits( index2:index2+test_block-1, 3 ), other, exists )
+            call map % get_other_data( test_8_bits( index2:index2+test_block-1, 3 ), data, exists )
             call check(error, exists, "Unable to get data because int8 generic interface key not found in map.")
 
-            call map % get_other_data( transfer( test_8_bits( index2:index2+test_block-1, 4 ), [0_int32] ) , other, exists )
+            call map % get_other_data( transfer( test_8_bits( index2:index2+test_block-1, 4 ), [0_int32] ) , data, exists )
             call check(error, exists, "Unable to get data because int32 generic interface key not found in map.")
 
-            call map % get_other_data( transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_size ) , other, exists )
+            call map % get_other_data( transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_size ) , data, exists )
             call check(error, exists, "Unable to get data because character generic interface key not found in map.")
         end do
 
@@ -403,41 +397,34 @@ contains
         type(open_hashmap_type), intent(inout) :: map
         integer(int8), intent(in) :: test_8_bits(test_size, key_types)
         integer(int_index), intent(in) :: test_block
-        class(*), allocatable :: dummy
         type(dummy_type) :: dummy_val
         integer :: index2
         type(key_type) :: key
-        type(other_type) :: other
         logical :: conflict
 
         do index2=1, test_size, test_block
-
-            if (allocated(dummy)) deallocate(dummy)
-            dummy_val % value = test_8_bits( index2:index2+test_block-1, 1 )
-            allocate( dummy, source=dummy_val )
-            call set ( other, dummy )
             
             ! Test base int8 key interface
             call set( key, test_8_bits( index2:index2+test_block-1, 1 ) )
-            call map % map_entry( key, other, conflict )
+            call map % map_entry( key, dummy_val, conflict )
             call check(error, .not.conflict, "Unable to map int8 entry because of a key conflict.")
             
             ! Test int32 key interface
             ! Use transfer to create int32 vector from generated int8 vector.
             call set( key, transfer( test_8_bits( index2:index2+test_block-1, 2 ), [0_int32] ) )
-            call map % map_entry( key, other, conflict )
+            call map % map_entry( key, dummy_val, conflict )
             call check(error, .not.conflict, "Unable to map int32 entry because of a key conflict.")
 
             ! Test int8 generic key interface
-            call map % map_entry( test_8_bits( index2:index2+test_block-1, 3 ), other, conflict )
+            call map % map_entry( test_8_bits( index2:index2+test_block-1, 3 ), dummy_val, conflict )
             call check(error, .not.conflict, "Unable to map int8 generic key interface entry because of a key conflict.")
 
             ! Test int32 key generic interface
-            call map % map_entry( transfer( test_8_bits( index2:index2+test_block-1, 4 ), [0_int32] ), other, conflict )
+            call map % map_entry( transfer( test_8_bits( index2:index2+test_block-1, 4 ), [0_int32] ), dummy_val, conflict )
             call check(error, .not.conflict, "Unable to map open int32 generic key interface entry because of a key conflict.")
 
             ! Test character key generic interface
-            call map % map_entry( transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_size ), other, conflict )
+            call map % map_entry( transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_size ), dummy_val, conflict )
             call check(error, .not.conflict, "Unable to map open character generic key interface entry because of a key conflict.")
 
             if (allocated(error)) return
@@ -485,25 +472,25 @@ contains
         integer(int_index), intent(in)          :: test_block
         integer :: index2
         type(key_type) :: key
-        type(other_type) :: other
+        class(*), allocatable :: data
         logical :: exists
 
         do index2=1, test_size, test_block
             call set( key, test_8_bits( index2:index2+test_block-1, 1 ) )
-            call map % get_other_data( key, other, exists )
+            call map % get_other_data( key, data, exists )
             call check(error, exists, "Unable to get data because int8 key not found in map.")
 
             call set( key, transfer( test_8_bits( index2:index2+test_block-1, 2 ), [0_int32] ) )
-            call map % get_other_data( key, other, exists )
+            call map % get_other_data( key, data, exists )
             call check(error, exists, "Unable to get data because int32 key not found in map.")
 
-            call map % get_other_data( test_8_bits( index2:index2+test_block-1, 3 ), other, exists )
+            call map % get_other_data( test_8_bits( index2:index2+test_block-1, 3 ), data, exists )
             call check(error, exists, "Unable to get data because int8 generic interface key not found in map.")
 
-            call map % get_other_data( transfer( test_8_bits( index2:index2+test_block-1, 4 ), [0_int32] ), other, exists )
+            call map % get_other_data( transfer( test_8_bits( index2:index2+test_block-1, 4 ), [0_int32] ), data, exists )
             call check(error, exists, "Unable to get data because int32 generic interface key not found in map.")
 
-            call map % get_other_data( transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_size ), other, exists )
+            call map % get_other_data( transfer( test_8_bits( index2:index2+test_block-1, 5 ), char_size ), data, exists )
             call check(error, exists, "Unable to get data because character generic interface key not found in map.")
         end do
 

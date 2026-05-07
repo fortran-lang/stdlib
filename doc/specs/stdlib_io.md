@@ -17,7 +17,7 @@ Loads a rank-2 `array` from a text file.
 
 ### Syntax
 
-`call ` [[stdlib_io(module):loadtxt(interface)]] `(filename, array [, skiprows] [, max_rows] [, fmt])`
+`call ` [[stdlib_io(module):loadtxt(interface)]] `(filename, array [, skiprows] [, max_rows] [, fmt] [, delimiter])`
 
 ### Arguments
 
@@ -31,7 +31,7 @@ Loads a rank-2 `array` from a text file.
 
 `fmt` (optional): Fortran format specifier for the text read.  Defaults to the write format for the data type.  Setting fmt='*' will specify list directed read.   
 
-
+`delimiter` (optional): Shall be a character expression of length 1 that contains the delimiter used to separate the columns. The default is `' '`.
 
 ### Return value
 
@@ -52,7 +52,8 @@ Experimental
 
 ### Description
 
-Returns the unit number of a file opened to read, to write, or to read and write. The file might be a text file or a binary file. All files are opened using a streamed access.
+Returns the unit number of a file opened to read, to write, or to read and write. The file might be a text file or a binary file.
+Text files are opened using a sequential access, while binary files are opened using a streamed access.
 
 ### Syntax
 
@@ -103,19 +104,37 @@ Experimental
 ### Description
 Saves a rank-2 `array` into a text file.
 
+If the text file already exists:
+ - When called with a character expression `filename` as the first argument it will overwrite the file.
+ - When called with an integer number `unit` to an open file as the first argument, it will save data to the file with no further manipulation.
+
 ### Syntax
 
-`call ` [[stdlib_io(module):savetxt(interface)]] `(filename, array)`
+`call ` [[stdlib_io(module):savetxt(interface)]] `(filename, array [,  delimiter] [, fmt] [, header] [, footer] [, comments])`
+
+`call ` [[stdlib_io(module):savetxt(interface)]] `(unit, array [,  delimiter] [, fmt] [, header] [, footer] [, comments])`
 
 ### Arguments
 
-`filename`: Shall be  a character expression containing the name of the file that will contain the 2D `array`.
+`filename` or `unit`: Shall be either a character expression containing the name of the file or an integer containing the unit of an already open file, that will contain the 2D `array`. 
 
 `array`: Shall be a rank-2 array of type `real`, `complex` or `integer`.
 
+`delimiter` (optional): Shall be a character expression of any length that contains the delimiter used to separate the columns. The default is a single space `' '`.
+
+`fmt` (optional): Fortran format specifier for the text save. Defaults to the write format for the data type as defined in the [formatting constants]{formatting-constants}.
+
+`header` (optional): Shall be a character expression that will be written at the beginning of the file.
+
+`footer` (optional): Shall be a character expression that will be written at the end of the file.
+
+`comments` (optional): Shall  be a character expression of any length that will be prepended to the ``header`` and ``footer`` strings to mark them as comments. Default: `#`.
+
+
 ### Output
 
-Provides a text file called `filename` that contains the rank-2 `array`.
+Provides a text file called `filename` that contains the rank-2 `array` with optional `header` and `footer` lines.
+
 
 ### Example
 
@@ -205,7 +224,7 @@ Provides a npy file called `filename` that contains the rank-2 `array`.
 {!example/io/example_savenpy.f90!}
 ```
 
-## `getline`
+## `get_line`
 
 ### Status
 
@@ -217,9 +236,9 @@ Read a whole line from a formatted unit into a string variable
 
 ### Syntax
 
-`call ` [[stdlib_io(module):getline(interface)]] ` (unit, line[, iostat][, iomsg])`
+`call ` [[stdlib_io(module):get_line(interface)]] ` (unit, line[, iostat][, iomsg])`
 
-`call ` [[stdlib_io(module):getline(interface)]] ` (line[, iostat][, iomsg])`
+`call ` [[stdlib_io(module):get_line(interface)]] ` (line[, iostat][, iomsg])`
 
 ### Arguments
 
@@ -241,10 +260,10 @@ Read a whole line from a formatted unit into a string variable
 ### Example
 
 ```fortran
-{!example/io/example_getline.f90!}
+{!example/io/example_get_line.f90!}
 ```
 
-## Formatting constants
+## Formatting constants {formatting-constants}
 
 ### Status
 
@@ -260,3 +279,45 @@ Provides formats for all kinds as defined in the `stdlib_kinds` module.
 ```fortran
 {!example/io/example_fmt_constants.f90!}
 ```
+
+## `get_file` - Read a whole ASCII file into a `character` or a `string` variable
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine interface reads the entirety of a specified ASCII file and returns its content as a string or an allocatable `character` variable. 
+The function provides an optional error-handling mechanism via the `state_type` class. If the `err` argument is not provided, exceptions will trigger an `error stop`. The function also supports an optional flag to delete the file after reading.
+
+### Syntax
+
+`call ` [[stdlib_io(module):get_file(subroutine)]] ` (filename, file [, err] [, delete=.false.])`
+
+### Class
+Function
+
+### Arguments
+
+`filename`: Shall be a character input containing the path to the ASCII file to read. It is an `intent(in)` argument.
+
+`file`: Shall be a `type(string_type)` or an allocatable `character` variable containing the full content of the specified file. It is an `intent(out)` argument.
+ 
+`err` (optional): Shall be a `type(state_type)` variable. It is an `intent(out)` argument used for error handling.
+
+`delete` (optional): Shall be a `logical` flag. If `.true.`, the file is deleted after reading. Default is `.false.`. It is an `intent(in)` argument.
+
+### Return values
+
+Output variable `file` will contain the full content of the specified file.
+
+Raises `STDLIB_IO_ERROR` if the file is not found, cannot be opened, read, or deleted. 
+Exceptions trigger an `error stop` unless the optional `err` argument is provided.
+
+### Example
+
+```fortran
+{!example/io/example_get_file.f90!}
+```
+

@@ -17,6 +17,7 @@ This style guide is a living document and proposed changes may be adopted after 
 
 * Source files should contain at most one `program`, `module`, or `submodule`
 * The filename should match the program or module name and have the file extension `.f90` or `.F90` if preprocessing is required
+* All included files must use the `.inc` extension. These files should be located in the `include/` directory.
 * If the interface and implementation is split using submodules the implementation submodule file should have the same name as the
   interface (parent) module but end in `_implementation`
   E.g., `string_class.f90` and `string_class_implementation.f90`
@@ -61,7 +62,15 @@ focus on the semantics of the proposed changes rather than style and formatting.
   ```  
   When defining many arrays of the same dimension, `dimension` can be used as an exception if it makes the code less verbose.
 * If the `optional` attribute is used to declare a dummy argument, it should follow the `intent` attribute.
-
+* For module procedures, it is recommended to declare attributes before the module keyword for better retro compatibility (Projects using CMake versions lower than CMake 3.25.0 are concerned see [Spurious modules](https://gitlab.kitware.com/cmake/cmake/-/issues/18427#note_983426)).
+  Prefer the following pattern:
+  ```
+  <attribute> <attribute> module <function/subroutine> <name>
+  ```
+  instead of:
+  ```
+  module <attribute> <attribute> <function/subroutine> <name>
+  ```
 ## End <scope> block closing statements
 
 Fortran allows certain block constructs or scopes to include the name of the program unit in the end statement.

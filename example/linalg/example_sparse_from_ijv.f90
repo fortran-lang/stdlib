@@ -35,7 +35,7 @@ program example_sparse_from_ijv
     print *, 'ELL'
     print *, ' index        |         data'
     do i = 1, ELL%nrows
-        print '(3I4,x,3f8.1)', ELL%index(i,:) , ELL%data(i,:)
+        print '(3I4,1x,3f8.1)', ELL%index(i,:) , ELL%data(i,:)
     end do
   
 end program example_sparse_from_ijv

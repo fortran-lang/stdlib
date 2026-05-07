@@ -13,7 +13,7 @@ program test_distribution_uniform
     #:for k1, t1 in REAL_KINDS_TYPES
     ${t1}$, parameter :: ${k1}$tol = 1000 * epsilon(1.0_${k1}$)
     #:endfor
-    integer :: put, get
+    integer :: put
 
     put = 135792468
 
@@ -101,7 +101,7 @@ contains
     #:for k1, t1 in ALL_KINDS_TYPES
       subroutine test_uni_rvs_${t1[0]}$${k1}$
           ${t1}$ :: res(15), scale, loc
-          integer :: i, n, seed, get, k
+          integer :: i, seed, get, k
 
           #:if k1 == "int8"
           ${t1}$, parameter :: ans(15) = [47, 99, 43, 37, 48, 30, 27, 100, 30, &

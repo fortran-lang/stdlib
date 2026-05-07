@@ -28,19 +28,7 @@ Experimental
 #### Example
 
 ```fortran
-program demo_color
-  use stdlib_ansi, only : fg_color_blue, style_bold, style_reset, ansi_code, &
-    & operator(//), operator(+)
-  implicit none
-  type(ansi_code) :: highlight, reset
-
-  print '(a)', highlight // "Dull text message" // reset
-
-  highlight = fg_color_blue + style_bold
-  reset = style_reset
-
-  print '(a)', highlight // "Colorful text message" // reset
-end program demo_color
+{!example/ansi/example_ansi_color.f90!}
 ```
 
 
@@ -216,12 +204,7 @@ Experimental
 #### Example
 
 ```fortran
-program demo_string
-  use stdlib_ansi, only : fg_color_green, style_reset, to_string
-  implicit none
-
-  print '(a)', to_string(fg_color_green) // "Colorized text message" // to_string(style_reset)
-end program demo_string
+{!example/ansi/example_ansi_to_string.f90!}
 ```
 
 
@@ -255,13 +238,7 @@ Experimental
 #### Example
 
 ```fortran
-program demo_combine
-  use stdlib_ansi, only : fg_color_red, style_bold, ansi_code
-  implicit none
-  type(ansi_code) :: bold_red
-
-  bold_red = fg_color_red + style_bold
-end program demo_combine
+{!example/ansi/example_ansi_combine.f90!}
 ```
 
 
@@ -295,10 +272,5 @@ Experimental
 #### Example
 
 ```fortran
-program demo_concat
-  use stdlib_ansi, only : fg_color_red, style_reset, operator(//)
-  implicit none
-
-  print '(a)', fg_color_red // "Colorized text message" // style_reset
-end program demo_concat
+{!example/ansi/example_ansi_concat.f90!}
 ```

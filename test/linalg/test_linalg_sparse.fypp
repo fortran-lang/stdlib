@@ -1,6 +1,9 @@
 #:include "common.fypp"
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
 #:set KINDS_TYPES = R_KINDS_TYPES
+#:set OP_NAMES = ["add","sub","mul","div"]
+#:set OP_SYMBOLS = ["+","-","*","/"]
+#:set OPERATORS = list(zip(OP_NAMES, OP_SYMBOLS))
 module test_sparse_spmv
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
@@ -9,7 +12,6 @@ module test_sparse_spmv
     implicit none
 
 contains
-
 
     !> Collect all exported unit tests
     subroutine collect_suite(testsuite)
@@ -25,7 +27,10 @@ contains
             new_unittest('sellc', test_sellc),  &
             new_unittest('symmetries', test_symmetries), &
             new_unittest('diagonal', test_diagonal), &
-            new_unittest('add_get_values', test_add_get_values) &
+            new_unittest('add_get_values', test_add_get_values),  &
+            new_unittest('sparse_operators', test_sparse_operators), &
+            new_unittest('add_block_symmetric_skip', test_add_block_symmetric_skip), &
+            new_unittest('csc2dense', test_csc2dense) &
         ]
     end subroutine
 
@@ -251,45 +256,123 @@ contains
         #:for k1, t1, s1 in (KINDS_TYPES)
         block
             integer, parameter :: wp = ${k1}$
-            type(COO_${s1}$_type) :: COO
-            type(CSR_${s1}$_type) :: CSR
-            type(ELL_${s1}$_type) :: ELL
-            ${t1}$, allocatable :: dense(:,:)
-            ${t1}$, allocatable :: vec_x(:)
-            ${t1}$, allocatable :: vec_y1(:), vec_y2(:), vec_y3(:), vec_y4(:)
+            type(COO_${s1}$_type) :: COO_low, COO_upper
+            type(CSR_${s1}$_type) :: CSR_low, CSR_upper
+            type(CSC_${s1}$_type) :: CSC_low, CSC_upper
+            type(ELL_${s1}$_type) :: ELL_low, ELL_upper
+            integer, parameter :: ndim = 4
+            ${t1}$, parameter :: dense(ndim,ndim) = reshape(real([1,2,0,0, &
+                                                            2,3,4,0, &
+                                                            0,4,5,6, &
+                                                            0,0,6,7], kind=wp), [ndim,ndim])
+            ${t1}$, parameter :: vec_x(ndim) = real([1,2,3,4], kind=wp)
+            ${t1}$, parameter :: vec_y_ref(ndim) = matmul(dense, vec_x)
+            ${t1}$ :: dense_low(ndim,ndim), dense_upper(ndim,ndim)
+            ${t1}$ :: vec_y(ndim)
+            integer :: i, j
 
-            allocate( vec_x(4)  , source = 1._wp )
-            allocate( vec_y1(4) , source = 0._wp )
-            allocate( vec_y2(4) , source = 0._wp )
-            allocate( vec_y3(4) , source = 0._wp )
-            allocate( vec_y4(4) , source = 0._wp )
+            vec_y = 0._wp
 
-            allocate( dense(4,4) , source = &
-                    reshape(real([1,0,0,0, &
-                                  2,1,0,0, &
-                                  0,2,1,0,&
-                                  0,0,2,1],kind=wp),[4,4]) )
+            dense_low = dense
+            dense_upper = dense
 
-            call dense2coo( dense , COO )
-            COO%storage = sparse_upper
-            call coo2csr(COO, CSR)
-            call csr2ell(CSR, ELL)
+            do i = 1, ndim
+                do j = i + 1, ndim
+                    dense_low(i,j) = 0._wp
+                    dense_upper(j,i) = 0._wp
+                end do
+            end do
 
-            dense(2,1) = 2._wp; dense(3,2) = 2._wp; dense(4,3) = 2._wp
-            vec_y1 = matmul( dense, vec_x )
-            call check(error, all(vec_y1 == [3,5,5,3]) )
+            call dense2coo(dense_low, COO_low)
+            COO_low%storage = sparse_lower
+            call coo2csr(COO_low, CSR_low)
+            call coo2csc(COO_low, CSC_low)
+            call csr2ell(CSR_low, ELL_low)
+
+            call dense2coo(dense_upper, COO_upper)
+            COO_upper%storage = sparse_upper
+            call coo2csr(COO_upper, CSR_upper)
+            call coo2csc(COO_upper, CSC_upper)
+            call csr2ell(CSR_upper, ELL_upper)
+
+            vec_y = 0._wp
+            call spmv(COO_low, vec_x, vec_y)
+            call check(error, all(vec_y == vec_y_ref), "error in COO lower ${s1}$ spmv")
             if (allocated(error)) return
 
-            call spmv( COO , vec_x, vec_y2 )
-            call check(error, all(vec_y1 == vec_y2) )
+            vec_y = 0._wp
+            call spmv(COO_low, vec_x, vec_y, op=sparse_op_transpose)
+            call check(error, all(vec_y == vec_y_ref), "error in COO lower ${s1}$ transpose spmv")
             if (allocated(error)) return
 
-            call spmv( CSR , vec_x, vec_y3 )
-            call check(error, all(vec_y1 == vec_y3) )
+            vec_y = 0._wp
+            call spmv(COO_upper, vec_x, vec_y)
+            call check(error, all(vec_y == vec_y_ref), "error in COO upper ${s1}$ spmv")
             if (allocated(error)) return
 
-            call spmv( ELL , vec_x, vec_y4 )
-            call check(error, all(vec_y1 == vec_y4) )
+            vec_y = 0._wp
+            call spmv(COO_upper, vec_x, vec_y, op=sparse_op_transpose)
+            call check(error, all(vec_y == vec_y_ref), "error in COO upper ${s1}$ transpose spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(CSR_low, vec_x, vec_y)
+            call check(error, all(vec_y == vec_y_ref), "error in CSR lower ${s1}$ spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(CSR_low, vec_x, vec_y, op=sparse_op_transpose)
+            call check(error, all(vec_y == vec_y_ref), "error in CSR lower ${s1}$ transpose spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(CSR_upper, vec_x, vec_y)
+            call check(error, all(vec_y == vec_y_ref), "error in CSR upper ${s1}$ spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(CSR_upper, vec_x, vec_y, op=sparse_op_transpose)
+            call check(error, all(vec_y == vec_y_ref), "error in CSR upper ${s1}$ transpose spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(CSC_low, vec_x, vec_y)
+            call check(error, all(vec_y == vec_y_ref), "error in CSC lower ${s1}$ spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(CSC_low, vec_x, vec_y, op=sparse_op_transpose)
+            call check(error, all(vec_y == vec_y_ref), "error in CSC lower ${s1}$ transpose spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(CSC_upper, vec_x, vec_y)
+            call check(error, all(vec_y == vec_y_ref), "error in CSC upper ${s1}$ spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(CSC_upper, vec_x, vec_y, op=sparse_op_transpose)
+            call check(error, all(vec_y == vec_y_ref), "error in CSC upper ${s1}$ transpose spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(ELL_low, vec_x, vec_y)
+            call check(error, all(vec_y == vec_y_ref), "error in ELL lower ${s1}$ spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(ELL_low, vec_x, vec_y, op=sparse_op_transpose)
+            call check(error, all(vec_y == vec_y_ref), "error in ELL lower ${s1}$ transpose spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(ELL_upper, vec_x, vec_y)
+            call check(error, all(vec_y == vec_y_ref), "error in ELL upper ${s1}$ spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(ELL_upper, vec_x, vec_y, op=sparse_op_transpose)
+            call check(error, all(vec_y == vec_y_ref), "error in ELL upper ${s1}$ transpose spmv")
             if (allocated(error)) return
         end block
         #:endfor
@@ -305,7 +388,6 @@ contains
             type(COO_${s1}$_type) :: COO
             type(CSR_${s1}$_type) :: CSR
             type(CSC_${s1}$_type) :: CSC
-            type(ELL_${s1}$_type) :: ELL
             ${t1}$, allocatable :: diagonal(:)
 
             allocate( dense(4,4) , source = &
@@ -333,6 +415,7 @@ contains
             diagonal = 0.0
             call coo2csc( COO, CSC )
             call diag( CSC , diagonal )
+            print *, 'diagonal csc:', diagonal
             call check(error, all(diagonal == [1,2,3,4]) )
             if (allocated(error)) return
         end block
@@ -369,7 +452,6 @@ contains
 
             call check(error, all(CSR%data == COO%data) )
             if (allocated(error)) return
-
             err = 0._wp
             do i = 1, 5
                 do j = 1, 5
@@ -384,8 +466,230 @@ contains
         #:endfor
     end subroutine
 
-end module
+    subroutine test_sparse_operators(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for matrix in ["COO","CSR","CSC"] # ELL and SELLC are supported but since they have explicit zeros in data array, the tests are less straightforward
+        #:for k, t, s in (KINDS_TYPES)
+        block
+            integer, parameter :: wp = ${k}$
+            real(wp), parameter :: tol = 1000*epsilon(0._wp)
+            real(wp) :: scalar
+            integer :: row(10), col(10)
+            real(wp) :: data(10)
+            type(${matrix}$_${s}$_type) :: a, b, c
+            ${t}$:: err
 
+            data(:)   = real([9,-3,4,7,8,-1,8,4,5,6],kind=wp)
+            col(:)    = [1,5,1,2,2,3,4,1,3,4]
+            row(:)    = [1,1,2,2,3,3,3,4,4,4]
+            
+            call from_ijv(a, row, col, data)
+            call from_ijv(b, row, col, data)
+            scalar = 2.0_wp
+            
+            ! Test sparse + sparse
+            c = a + b
+            err = sum( abs( c%data - 2.0_wp*a%data ) ) / size(data)
+            call check(error, err <= tol, "error in sparse + sparse" )
+            if (allocated(error)) return
+
+            ! Test scalar + sparse
+            c = scalar + a
+            err = sum( abs( c%data - (scalar + a%data) ) ) / size(data)
+            call check(error, err <= tol, "error in scalar + sparse" )
+            if (allocated(error)) return
+
+            ! Test sparse + scalar
+            c = a + scalar
+            err = sum( abs( c%data - (a%data + scalar) ) ) / size(data)
+            call check(error, err <= tol, "error in sparse + scalar" )
+            if (allocated(error)) return
+
+            ! Test sparse * sparse
+            c = a * b
+            err = sum( abs( c%data - a%data*b%data ) ) / size(data)
+            call check(error, err <= tol, "error in sparse * sparse" )
+            if (allocated(error)) return
+
+            ! Test scalar * sparse
+            c = scalar * a
+            err = sum( abs( c%data - (scalar*a%data) ) ) / size(data)
+            call check(error, err <= tol, "error in scalar * sparse" )
+            if (allocated(error)) return
+
+            ! Test sparse * scalar
+            c = a * scalar
+            err = sum( abs( c%data - (a%data*scalar) ) ) / size(data)
+            call check(error, err <= tol, "error in sparse * scalar" )
+            if (allocated(error)) return
+
+            ! Test sparse - sparse
+            c = a - b
+            err = sum( abs( c%data ) ) / size(data)
+            call check(error, err <= tol, "error in sparse - sparse" )
+            if (allocated(error)) return
+
+            ! Test scalar - sparse
+            c = scalar - a
+            err = sum( abs( c%data - (scalar - a%data) ) ) / size(data)
+            call check(error, err <= tol, "error in scalar - sparse" )
+            if (allocated(error)) return
+
+            ! Test sparse - scalar
+            c = a - scalar
+            err = sum( abs( c%data - (a%data - scalar) ) ) / size(data)
+            call check(error, err <= tol, "error in sparse - scalar" )
+            if (allocated(error)) return
+
+            ! Test sparse / sparse
+            c = a / b
+            err = sum( abs( c%data - 1.0_wp ) ) / size(data)
+            call check(error, err <= tol, "error in sparse / sparse" )
+            if (allocated(error)) return
+
+            ! Test scalar / sparse
+            c = scalar / a
+            err = sum( abs( c%data - (scalar / a%data) ) ) / size(data)
+            call check(error, err <= tol, "error in scalar / sparse" )
+            if (allocated(error)) return
+
+            ! Test sparse / scalar
+            c = a / scalar
+            err = sum( abs( c%data - (a%data / scalar) ) ) / size(data)
+            call check(error, err <= tol, "error in sparse / scalar" )
+            if (allocated(error)) return
+
+        end block
+        #:endfor
+        #:endfor
+
+    end subroutine
+
+    subroutine test_add_block_symmetric_skip(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        block
+            integer, parameter :: wp = ${k1}$
+            integer :: connectivity(3,3)
+
+            real(wp) :: dense(5,5), dense_low(5,5), mat(3,3)
+            type(COO_${s1}$_type) :: COO_full, COO_low
+            type(CSR_${s1}$_type) :: CSR_full, CSR_low
+            type(CSC_${s1}$_type) :: CSC_full, CSC_low
+            real(wp)  :: x(5), y(5), y_ref(5)
+            ${t1}$:: err
+            integer :: i, j, locdof(3)
+
+            connectivity(1:3,1) = [1,2,3]
+            connectivity(1:3,2) = [2,3,4]
+            connectivity(1:3,3) = [3,4,5]
+
+            mat(:,1) = [1,2,3]
+            mat(:,2) = [2,1,4]
+            mat(:,3) = [3,4,1]
+
+            dense = 0._wp
+            do i = 1, 3
+                locdof(1:3) = connectivity(1:3,i)
+                dense(locdof,locdof) = dense(locdof,locdof) + mat
+            end do
+
+            call dense2coo(dense,COO_full)
+            call coo2csr(COO_full,CSR_full)
+            call coo2csc(COO_full,CSC_full)
+            dense_low = dense
+            do i = 1, 5
+                do j = i+1, 5
+                    dense_low(i,j) = 0._wp
+                end do
+            end do
+            call dense2coo(dense_low,COO_low)
+            COO_low%storage = sparse_lower
+            call coo2csr(COO_low,CSR_low)
+            call coo2csc(COO_low,CSC_low)
+
+            COO_full%data = 0._wp
+            COO_low%data = 0._wp
+            CSR_full%data = 0._wp
+            CSR_low%data = 0._wp
+            CSC_full%data = 0._wp
+            CSC_low%data = 0._wp
+            do i = 1, 3
+                locdof(1:3) = connectivity(1:3,i)
+                call COO_full%add(locdof,locdof,mat)
+                call COO_low%add(locdof,locdof,mat)
+                call CSR_full%add(locdof,locdof,mat)
+                call CSR_low%add(locdof,locdof,mat)
+                call CSC_full%add(locdof,locdof,mat)
+                call CSC_low%add(locdof,locdof,mat)
+            end do
+
+            call check(error, all(CSR_full%data == COO_full%data) , "error in full CSR ${s1}$ data" )
+            if (allocated(error)) return
+
+            call check(error, all(CSR_low%data == COO_low%data) , "error in low CSR ${s1}$ data" )
+            if (allocated(error)) return
+
+            x = 1._wp
+            y_ref = matmul(dense,x)
+
+            y = 0._wp
+            call spmv( CSR_full, x, y )
+            call check(error, all(y == y_ref) , "error in full CSR ${s1}$ spmv" )
+            if (allocated(error)) return
+            
+            y = 0._wp
+            call spmv( CSR_low, x, y ) 
+            call check(error, all(y == y_ref) , "error in low CSR ${s1}$ spmv" )
+            if (allocated(error)) return
+
+            y = 0._wp
+            call spmv( CSC_full, x, y )
+            call check(error, all(y == y_ref) , "error in full CSC ${s1}$ spmv" )
+            if (allocated(error)) return
+            
+            y = 0._wp
+            call spmv( CSC_low, x, y ) 
+            call check(error, all(y == y_ref) , "error in low CSC ${s1}$ spmv" )
+        end block
+        #:endfor
+        
+    end subroutine
+
+    subroutine test_csc2dense(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        block
+            integer, parameter :: wp = ${k1}$
+            type(COO_${s1}$_type) :: COO
+            type(CSC_${s1}$_type) :: CSC
+            ${t1}$, allocatable :: dense_original(:,:), dense_converted(:,:)
+
+            ! 1. Create a baseline dense 4x4 matrix
+            allocate( dense_original(4,4) , source = &
+                    reshape(real([1,0,0,5, &
+                                  0,2,0,0, &
+                                  0,6,3,0, &
+                                  0,0,7,4],kind=wp),[4,4]) )
+
+            ! 2. Convert Dense -> COO -> CSC (Standard pipeline)
+            call dense2coo( dense_original , COO )
+            call coo2csc( COO, CSC )
+
+            ! 3. Execute the csc2dense conversion
+            call csc2dense( CSC, dense_converted )
+
+            ! 4. Verify the converted matrix perfectly matches the original
+            call check(error, all(dense_original == dense_converted), "Error: csc2dense conversion failed for kind ${s1}$")
+            if (allocated(error)) return
+        end block
+        #:endfor
+    end subroutine
+    
+end module
 
 program tester
     use, intrinsic :: iso_fortran_env, only : error_unit

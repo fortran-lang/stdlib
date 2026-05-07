@@ -4,7 +4,7 @@
 module test_linalg
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
-    use stdlib_linalg, only: diag, eye, trace, outer_product, cross_product, kronecker_product
+    use stdlib_linalg, only: diag, eye, trace, outer_product, cross_product, kronecker_product, hermitian
     use stdlib_linalg_state, only: linalg_state_type, LINALG_SUCCESS, linalg_error_handling
 
     implicit none
@@ -52,6 +52,9 @@ contains
             new_unittest("trace_int64", test_trace_int64), &
   #:for k1, t1 in RCI_KINDS_TYPES
             new_unittest("kronecker_product_${t1[0]}$${k1}$", test_kronecker_product_${t1[0]}$${k1}$), &
+  #:endfor
+  #:for k1, t1 in CMPLX_KINDS_TYPES
+            new_unittest("hermitian_${t1[0]}$${k1}$", test_hermitian_${t1[0]}$${k1}$), &
   #:endfor
             new_unittest("outer_product_rsp", test_outer_product_rsp), &
             new_unittest("outer_product_rdp", test_outer_product_rdp), &
@@ -595,6 +598,32 @@ contains
       ! Expected: C = [1*B, 2*B] = [[1,2,3, 2,4,6], [2,4,6, 4, 8, 12]]
 
     end subroutine test_kronecker_product_${t1[0]}$${k1}$
+  #:endfor
+
+  #:for k1, t1 in CMPLX_KINDS_TYPES
+    subroutine test_hermitian_${t1[0]}$${k1}$(error)
+      !> Error handling
+      type(error_type), allocatable, intent(out) :: error
+      integer, parameter :: m = 2, n = 3      
+      ${t1}$, dimension(m,n) :: A
+      ${t1}$, dimension(n,m) :: AT, expected, diff
+      real(${k1}$), parameter :: tol = 1.e-6_${k1}$
+
+      integer :: i,j
+      
+      do concurrent (i=1:m,j=1:n) 
+        A       (i,j) = cmplx(i,-j,kind=${k1}$)
+        expected(j,i) = cmplx(i,+j,kind=${k1}$)
+      end do 
+
+
+      AT = hermitian(A)
+
+      diff = AT - expected
+
+      call check(error, all(abs(diff) < abs(tol)), "hermitian: all(abs(diff) < abs(tol)) failed")
+
+    end subroutine test_hermitian_${t1[0]}$${k1}$
   #:endfor
 
     subroutine test_outer_product_rsp(error)

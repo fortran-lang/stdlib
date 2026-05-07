@@ -1,0 +1,3857 @@
+#:include "common.fypp" 
+submodule(stdlib_lapack_orthogonal_factors) stdlib_lapack_orthogonal_factors_rz
+  implicit none
+
+
+  contains
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+
+     pure module subroutine stdlib${ii}$_stzrzf( m, n, a, lda, tau, work, lwork, info )
+     !! STZRZF reduces the M-by-N ( M<=N ) real upper trapezoidal matrix A
+     !! to upper triangular form by means of orthogonal transformations.
+     !! The upper trapezoidal matrix A is factored as
+     !! A = ( R  0 ) * Z,
+     !! where Z is an N-by-N orthogonal matrix and R is an M-by-M upper
+     !! triangular matrix.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           ! Array Arguments 
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: tau(*), work(*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           logical(lk) :: lquery
+           integer(${ik}$) :: i, ib, iws, ki, kk, ldwork, lwkmin, lwkopt, m1, mu, nb, nbmin, &
+                     nx
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input arguments
+           info = 0_${ik}$
+           lquery = ( lwork==-1_${ik}$ )
+           if( m<0_${ik}$ ) then
+              info = -1_${ik}$
+           else if( n<m ) then
+              info = -2_${ik}$
+           else if( lda<max( 1_${ik}$, m ) ) then
+              info = -4_${ik}$
+           end if
+           if( info==0_${ik}$ ) then
+              if( m==0_${ik}$ .or. m==n ) then
+                 lwkopt = 1_${ik}$
+                 lwkmin = 1_${ik}$
+              else
+                 ! determine the block size.
+                 nb = stdlib${ii}$_ilaenv( 1_${ik}$, 'SGERQF', ' ', m, n, -1_${ik}$, -1_${ik}$ )
+                 lwkopt = m*nb
+                 lwkmin = max( 1_${ik}$, m )
+              end if
+              work( 1_${ik}$ ) = lwkopt
+              if( lwork<lwkmin .and. .not.lquery ) then
+                 info = -7_${ik}$
+              end if
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'STZRZF', -info )
+              return
+           else if( lquery ) then
+              return
+           end if
+           ! quick return if possible
+           if( m==0_${ik}$ ) then
+              return
+           else if( m==n ) then
+              do i = 1, n
+                 tau( i ) = zero
+              end do
+              return
+           end if
+           nbmin = 2_${ik}$
+           nx = 1_${ik}$
+           iws = m
+           if( nb>1_${ik}$ .and. nb<m ) then
+              ! determine when to cross over from blocked to unblocked code.
+              nx = max( 0_${ik}$, stdlib${ii}$_ilaenv( 3_${ik}$, 'SGERQF', ' ', m, n, -1_${ik}$, -1_${ik}$ ) )
+              if( nx<m ) then
+                 ! determine if workspace is large enough for blocked code.
+                 ldwork = m
+                 iws = ldwork*nb
+                 if( lwork<iws ) then
+                    ! not enough workspace to use optimal nb:  reduce nb and
+                    ! determine the minimum value of nb.
+                    nb = lwork / ldwork
+                    nbmin = max( 2_${ik}$, stdlib${ii}$_ilaenv( 2_${ik}$, 'SGERQF', ' ', m, n, -1_${ik}$,-1_${ik}$ ) )
+                 end if
+              end if
+           end if
+           if( nb>=nbmin .and. nb<m .and. nx<m ) then
+              ! use blocked code initially.
+              ! the last kk rows are handled by the block method.
+              m1 = min( m+1, n )
+              ki = ( ( m-nx-1 ) / nb )*nb
+              kk = min( m, ki+nb )
+              do i = m - kk + ki + 1, m - kk + 1, -nb
+                 ib = min( m-i+1, nb )
+                 ! compute the tz factorization of the current block
+                 ! a(i:i+ib-1,i:n)
+                 call stdlib${ii}$_slatrz( ib, n-i+1, n-m, a( i, i ), lda, tau( i ),work )
+                 if( i>1_${ik}$ ) then
+                    ! form the triangular factor of the block reflector
+                    ! h = h(i+ib-1) . . . h(i+1) h(i)
+                    call stdlib${ii}$_slarzt( 'BACKWARD', 'ROWWISE', n-m, ib, a( i, m1 ),lda, tau( i ), &
+                              work, ldwork )
+                    ! apply h to a(1:i-1,i:n) from the right
+                    call stdlib${ii}$_slarzb( 'RIGHT', 'NO TRANSPOSE', 'BACKWARD','ROWWISE', i-1, n-i+1,&
+                     ib, n-m, a( i, m1 ),lda, work, ldwork, a( 1_${ik}$, i ), lda,work( ib+1 ), ldwork )
+                               
+                 end if
+              end do
+              mu = i + nb - 1_${ik}$
+           else
+              mu = m
+           end if
+           ! use unblocked code to factor the last or only block
+           if( mu>0_${ik}$ )call stdlib${ii}$_slatrz( mu, n, n-m, a, lda, tau, work )
+           work( 1_${ik}$ ) = lwkopt
+           return
+     end subroutine stdlib${ii}$_stzrzf
+
+     pure module subroutine stdlib${ii}$_dtzrzf( m, n, a, lda, tau, work, lwork, info )
+     !! DTZRZF reduces the M-by-N ( M<=N ) real upper trapezoidal matrix A
+     !! to upper triangular form by means of orthogonal transformations.
+     !! The upper trapezoidal matrix A is factored as
+     !! A = ( R  0 ) * Z,
+     !! where Z is an N-by-N orthogonal matrix and R is an M-by-M upper
+     !! triangular matrix.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           ! Array Arguments 
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: tau(*), work(*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           logical(lk) :: lquery
+           integer(${ik}$) :: i, ib, iws, ki, kk, ldwork, lwkmin, lwkopt, m1, mu, nb, nbmin, &
+                     nx
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input arguments
+           info = 0_${ik}$
+           lquery = ( lwork==-1_${ik}$ )
+           if( m<0_${ik}$ ) then
+              info = -1_${ik}$
+           else if( n<m ) then
+              info = -2_${ik}$
+           else if( lda<max( 1_${ik}$, m ) ) then
+              info = -4_${ik}$
+           end if
+           if( info==0_${ik}$ ) then
+              if( m==0_${ik}$ .or. m==n ) then
+                 lwkopt = 1_${ik}$
+                 lwkmin = 1_${ik}$
+              else
+                 ! determine the block size.
+                 nb = stdlib${ii}$_ilaenv( 1_${ik}$, 'DGERQF', ' ', m, n, -1_${ik}$, -1_${ik}$ )
+                 lwkopt = m*nb
+                 lwkmin = max( 1_${ik}$, m )
+              end if
+              work( 1_${ik}$ ) = lwkopt
+              if( lwork<lwkmin .and. .not.lquery ) then
+                 info = -7_${ik}$
+              end if
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'DTZRZF', -info )
+              return
+           else if( lquery ) then
+              return
+           end if
+           ! quick return if possible
+           if( m==0_${ik}$ ) then
+              return
+           else if( m==n ) then
+              do i = 1, n
+                 tau( i ) = zero
+              end do
+              return
+           end if
+           nbmin = 2_${ik}$
+           nx = 1_${ik}$
+           iws = m
+           if( nb>1_${ik}$ .and. nb<m ) then
+              ! determine when to cross over from blocked to unblocked code.
+              nx = max( 0_${ik}$, stdlib${ii}$_ilaenv( 3_${ik}$, 'DGERQF', ' ', m, n, -1_${ik}$, -1_${ik}$ ) )
+              if( nx<m ) then
+                 ! determine if workspace is large enough for blocked code.
+                 ldwork = m
+                 iws = ldwork*nb
+                 if( lwork<iws ) then
+                    ! not enough workspace to use optimal nb:  reduce nb and
+                    ! determine the minimum value of nb.
+                    nb = lwork / ldwork
+                    nbmin = max( 2_${ik}$, stdlib${ii}$_ilaenv( 2_${ik}$, 'DGERQF', ' ', m, n, -1_${ik}$,-1_${ik}$ ) )
+                 end if
+              end if
+           end if
+           if( nb>=nbmin .and. nb<m .and. nx<m ) then
+              ! use blocked code initially.
+              ! the last kk rows are handled by the block method.
+              m1 = min( m+1, n )
+              ki = ( ( m-nx-1 ) / nb )*nb
+              kk = min( m, ki+nb )
+              do i = m - kk + ki + 1, m - kk + 1, -nb
+                 ib = min( m-i+1, nb )
+                 ! compute the tz factorization of the current block
+                 ! a(i:i+ib-1,i:n)
+                 call stdlib${ii}$_dlatrz( ib, n-i+1, n-m, a( i, i ), lda, tau( i ),work )
+                 if( i>1_${ik}$ ) then
+                    ! form the triangular factor of the block reflector
+                    ! h = h(i+ib-1) . . . h(i+1) h(i)
+                    call stdlib${ii}$_dlarzt( 'BACKWARD', 'ROWWISE', n-m, ib, a( i, m1 ),lda, tau( i ), &
+                              work, ldwork )
+                    ! apply h to a(1:i-1,i:n) from the right
+                    call stdlib${ii}$_dlarzb( 'RIGHT', 'NO TRANSPOSE', 'BACKWARD','ROWWISE', i-1, n-i+1,&
+                     ib, n-m, a( i, m1 ),lda, work, ldwork, a( 1_${ik}$, i ), lda,work( ib+1 ), ldwork )
+                               
+                 end if
+              end do
+              mu = i + nb - 1_${ik}$
+           else
+              mu = m
+           end if
+           ! use unblocked code to factor the last or only block
+           if( mu>0_${ik}$ )call stdlib${ii}$_dlatrz( mu, n, n-m, a, lda, tau, work )
+           work( 1_${ik}$ ) = lwkopt
+           return
+     end subroutine stdlib${ii}$_dtzrzf
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$tzrzf( m, n, a, lda, tau, work, lwork, info )
+     !! DTZRZF: reduces the M-by-N ( M<=N ) real upper trapezoidal matrix A
+     !! to upper triangular form by means of orthogonal transformations.
+     !! The upper trapezoidal matrix A is factored as
+     !! A = ( R  0 ) * Z,
+     !! where Z is an N-by-N orthogonal matrix and R is an M-by-M upper
+     !! triangular matrix.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           ! Array Arguments 
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: tau(*), work(*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           logical(lk) :: lquery
+           integer(${ik}$) :: i, ib, iws, ki, kk, ldwork, lwkmin, lwkopt, m1, mu, nb, nbmin, &
+                     nx
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input arguments
+           info = 0_${ik}$
+           lquery = ( lwork==-1_${ik}$ )
+           if( m<0_${ik}$ ) then
+              info = -1_${ik}$
+           else if( n<m ) then
+              info = -2_${ik}$
+           else if( lda<max( 1_${ik}$, m ) ) then
+              info = -4_${ik}$
+           end if
+           if( info==0_${ik}$ ) then
+              if( m==0_${ik}$ .or. m==n ) then
+                 lwkopt = 1_${ik}$
+                 lwkmin = 1_${ik}$
+              else
+                 ! determine the block size.
+                 nb = stdlib${ii}$_ilaenv( 1_${ik}$, 'DGERQF', ' ', m, n, -1_${ik}$, -1_${ik}$ )
+                 lwkopt = m*nb
+                 lwkmin = max( 1_${ik}$, m )
+              end if
+              work( 1_${ik}$ ) = lwkopt
+              if( lwork<lwkmin .and. .not.lquery ) then
+                 info = -7_${ik}$
+              end if
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'DTZRZF', -info )
+              return
+           else if( lquery ) then
+              return
+           end if
+           ! quick return if possible
+           if( m==0_${ik}$ ) then
+              return
+           else if( m==n ) then
+              do i = 1, n
+                 tau( i ) = zero
+              end do
+              return
+           end if
+           nbmin = 2_${ik}$
+           nx = 1_${ik}$
+           iws = m
+           if( nb>1_${ik}$ .and. nb<m ) then
+              ! determine when to cross over from blocked to unblocked code.
+              nx = max( 0_${ik}$, stdlib${ii}$_ilaenv( 3_${ik}$, 'DGERQF', ' ', m, n, -1_${ik}$, -1_${ik}$ ) )
+              if( nx<m ) then
+                 ! determine if workspace is large enough for blocked code.
+                 ldwork = m
+                 iws = ldwork*nb
+                 if( lwork<iws ) then
+                    ! not enough workspace to use optimal nb:  reduce nb and
+                    ! determine the minimum value of nb.
+                    nb = lwork / ldwork
+                    nbmin = max( 2_${ik}$, stdlib${ii}$_ilaenv( 2_${ik}$, 'DGERQF', ' ', m, n, -1_${ik}$,-1_${ik}$ ) )
+                 end if
+              end if
+           end if
+           if( nb>=nbmin .and. nb<m .and. nx<m ) then
+              ! use blocked code initially.
+              ! the last kk rows are handled by the block method.
+              m1 = min( m+1, n )
+              ki = ( ( m-nx-1 ) / nb )*nb
+              kk = min( m, ki+nb )
+              do i = m - kk + ki + 1, m - kk + 1, -nb
+                 ib = min( m-i+1, nb )
+                 ! compute the tz factorization of the current block
+                 ! a(i:i+ib-1,i:n)
+                 call stdlib${ii}$_${ri}$latrz( ib, n-i+1, n-m, a( i, i ), lda, tau( i ),work )
+                 if( i>1_${ik}$ ) then
+                    ! form the triangular factor of the block reflector
+                    ! h = h(i+ib-1) . . . h(i+1) h(i)
+                    call stdlib${ii}$_${ri}$larzt( 'BACKWARD', 'ROWWISE', n-m, ib, a( i, m1 ),lda, tau( i ), &
+                              work, ldwork )
+                    ! apply h to a(1:i-1,i:n) from the right
+                    call stdlib${ii}$_${ri}$larzb( 'RIGHT', 'NO TRANSPOSE', 'BACKWARD','ROWWISE', i-1, n-i+1,&
+                     ib, n-m, a( i, m1 ),lda, work, ldwork, a( 1_${ik}$, i ), lda,work( ib+1 ), ldwork )
+                               
+                 end if
+              end do
+              mu = i + nb - 1_${ik}$
+           else
+              mu = m
+           end if
+           ! use unblocked code to factor the last or only block
+           if( mu>0_${ik}$ )call stdlib${ii}$_${ri}$latrz( mu, n, n-m, a, lda, tau, work )
+           work( 1_${ik}$ ) = lwkopt
+           return
+     end subroutine stdlib${ii}$_${ri}$tzrzf
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_ctzrzf( m, n, a, lda, tau, work, lwork, info )
+     !! CTZRZF reduces the M-by-N ( M<=N ) complex upper trapezoidal matrix A
+     !! to upper triangular form by means of unitary transformations.
+     !! The upper trapezoidal matrix A is factored as
+     !! A = ( R  0 ) * Z,
+     !! where Z is an N-by-N unitary matrix and R is an M-by-M upper
+     !! triangular matrix.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           ! Array Arguments 
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: tau(*), work(*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           logical(lk) :: lquery
+           integer(${ik}$) :: i, ib, iws, ki, kk, ldwork, lwkmin, lwkopt, m1, mu, nb, nbmin, &
+                     nx
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input arguments
+           info = 0_${ik}$
+           lquery = ( lwork==-1_${ik}$ )
+           if( m<0_${ik}$ ) then
+              info = -1_${ik}$
+           else if( n<m ) then
+              info = -2_${ik}$
+           else if( lda<max( 1_${ik}$, m ) ) then
+              info = -4_${ik}$
+           end if
+           if( info==0_${ik}$ ) then
+              if( m==0_${ik}$ .or. m==n ) then
+                 lwkopt = 1_${ik}$
+                 lwkmin = 1_${ik}$
+              else
+                 ! determine the block size.
+                 nb = stdlib${ii}$_ilaenv( 1_${ik}$, 'CGERQF', ' ', m, n, -1_${ik}$, -1_${ik}$ )
+                 lwkopt = m*nb
+                 lwkmin = max( 1_${ik}$, m )
+              end if
+              work( 1_${ik}$ ) = lwkopt
+              if( lwork<lwkmin .and. .not.lquery ) then
+                 info = -7_${ik}$
+              end if
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'CTZRZF', -info )
+              return
+           else if( lquery ) then
+              return
+           end if
+           ! quick return if possible
+           if( m==0_${ik}$ ) then
+              return
+           else if( m==n ) then
+              do i = 1, n
+                 tau( i ) = czero
+              end do
+              return
+           end if
+           nbmin = 2_${ik}$
+           nx = 1_${ik}$
+           iws = m
+           if( nb>1_${ik}$ .and. nb<m ) then
+              ! determine when to cross over from blocked to unblocked code.
+              nx = max( 0_${ik}$, stdlib${ii}$_ilaenv( 3_${ik}$, 'CGERQF', ' ', m, n, -1_${ik}$, -1_${ik}$ ) )
+              if( nx<m ) then
+                 ! determine if workspace is large enough for blocked code.
+                 ldwork = m
+                 iws = ldwork*nb
+                 if( lwork<iws ) then
+                    ! not enough workspace to use optimal nb:  reduce nb and
+                    ! determine the minimum value of nb.
+                    nb = lwork / ldwork
+                    nbmin = max( 2_${ik}$, stdlib${ii}$_ilaenv( 2_${ik}$, 'CGERQF', ' ', m, n, -1_${ik}$,-1_${ik}$ ) )
+                 end if
+              end if
+           end if
+           if( nb>=nbmin .and. nb<m .and. nx<m ) then
+              ! use blocked code initially.
+              ! the last kk rows are handled by the block method.
+              m1 = min( m+1, n )
+              ki = ( ( m-nx-1 ) / nb )*nb
+              kk = min( m, ki+nb )
+              do i = m - kk + ki + 1, m - kk + 1, -nb
+                 ib = min( m-i+1, nb )
+                 ! compute the tz factorization of the current block
+                 ! a(i:i+ib-1,i:n)
+                 call stdlib${ii}$_clatrz( ib, n-i+1, n-m, a( i, i ), lda, tau( i ),work )
+                 if( i>1_${ik}$ ) then
+                    ! form the triangular factor of the block reflector
+                    ! h = h(i+ib-1) . . . h(i+1) h(i)
+                    call stdlib${ii}$_clarzt( 'BACKWARD', 'ROWWISE', n-m, ib, a( i, m1 ),lda, tau( i ), &
+                              work, ldwork )
+                    ! apply h to a(1:i-1,i:n) from the right
+                    call stdlib${ii}$_clarzb( 'RIGHT', 'NO TRANSPOSE', 'BACKWARD','ROWWISE', i-1, n-i+1,&
+                     ib, n-m, a( i, m1 ),lda, work, ldwork, a( 1_${ik}$, i ), lda,work( ib+1 ), ldwork )
+                               
+                 end if
+              end do
+              mu = i + nb - 1_${ik}$
+           else
+              mu = m
+           end if
+           ! use unblocked code to factor the last or only block
+           if( mu>0_${ik}$ )call stdlib${ii}$_clatrz( mu, n, n-m, a, lda, tau, work )
+           work( 1_${ik}$ ) = lwkopt
+           return
+     end subroutine stdlib${ii}$_ctzrzf
+
+     pure module subroutine stdlib${ii}$_ztzrzf( m, n, a, lda, tau, work, lwork, info )
+     !! ZTZRZF reduces the M-by-N ( M<=N ) complex upper trapezoidal matrix A
+     !! to upper triangular form by means of unitary transformations.
+     !! The upper trapezoidal matrix A is factored as
+     !! A = ( R  0 ) * Z,
+     !! where Z is an N-by-N unitary matrix and R is an M-by-M upper
+     !! triangular matrix.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           ! Array Arguments 
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: tau(*), work(*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           logical(lk) :: lquery
+           integer(${ik}$) :: i, ib, iws, ki, kk, ldwork, lwkmin, lwkopt, m1, mu, nb, nbmin, &
+                     nx
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input arguments
+           info = 0_${ik}$
+           lquery = ( lwork==-1_${ik}$ )
+           if( m<0_${ik}$ ) then
+              info = -1_${ik}$
+           else if( n<m ) then
+              info = -2_${ik}$
+           else if( lda<max( 1_${ik}$, m ) ) then
+              info = -4_${ik}$
+           end if
+           if( info==0_${ik}$ ) then
+              if( m==0_${ik}$ .or. m==n ) then
+                 lwkopt = 1_${ik}$
+                 lwkmin = 1_${ik}$
+              else
+                 ! determine the block size.
+                 nb = stdlib${ii}$_ilaenv( 1_${ik}$, 'ZGERQF', ' ', m, n, -1_${ik}$, -1_${ik}$ )
+                 lwkopt = m*nb
+                 lwkmin = max( 1_${ik}$, m )
+              end if
+              work( 1_${ik}$ ) = lwkopt
+              if( lwork<lwkmin .and. .not.lquery ) then
+                 info = -7_${ik}$
+              end if
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'ZTZRZF', -info )
+              return
+           else if( lquery ) then
+              return
+           end if
+           ! quick return if possible
+           if( m==0_${ik}$ ) then
+              return
+           else if( m==n ) then
+              do i = 1, n
+                 tau( i ) = czero
+              end do
+              return
+           end if
+           nbmin = 2_${ik}$
+           nx = 1_${ik}$
+           iws = m
+           if( nb>1_${ik}$ .and. nb<m ) then
+              ! determine when to cross over from blocked to unblocked code.
+              nx = max( 0_${ik}$, stdlib${ii}$_ilaenv( 3_${ik}$, 'ZGERQF', ' ', m, n, -1_${ik}$, -1_${ik}$ ) )
+              if( nx<m ) then
+                 ! determine if workspace is large enough for blocked code.
+                 ldwork = m
+                 iws = ldwork*nb
+                 if( lwork<iws ) then
+                    ! not enough workspace to use optimal nb:  reduce nb and
+                    ! determine the minimum value of nb.
+                    nb = lwork / ldwork
+                    nbmin = max( 2_${ik}$, stdlib${ii}$_ilaenv( 2_${ik}$, 'ZGERQF', ' ', m, n, -1_${ik}$,-1_${ik}$ ) )
+                 end if
+              end if
+           end if
+           if( nb>=nbmin .and. nb<m .and. nx<m ) then
+              ! use blocked code initially.
+              ! the last kk rows are handled by the block method.
+              m1 = min( m+1, n )
+              ki = ( ( m-nx-1 ) / nb )*nb
+              kk = min( m, ki+nb )
+              do i = m - kk + ki + 1, m - kk + 1, -nb
+                 ib = min( m-i+1, nb )
+                 ! compute the tz factorization of the current block
+                 ! a(i:i+ib-1,i:n)
+                 call stdlib${ii}$_zlatrz( ib, n-i+1, n-m, a( i, i ), lda, tau( i ),work )
+                 if( i>1_${ik}$ ) then
+                    ! form the triangular factor of the block reflector
+                    ! h = h(i+ib-1) . . . h(i+1) h(i)
+                    call stdlib${ii}$_zlarzt( 'BACKWARD', 'ROWWISE', n-m, ib, a( i, m1 ),lda, tau( i ), &
+                              work, ldwork )
+                    ! apply h to a(1:i-1,i:n) from the right
+                    call stdlib${ii}$_zlarzb( 'RIGHT', 'NO TRANSPOSE', 'BACKWARD','ROWWISE', i-1, n-i+1,&
+                     ib, n-m, a( i, m1 ),lda, work, ldwork, a( 1_${ik}$, i ), lda,work( ib+1 ), ldwork )
+                               
+                 end if
+              end do
+              mu = i + nb - 1_${ik}$
+           else
+              mu = m
+           end if
+           ! use unblocked code to factor the last or only block
+           if( mu>0_${ik}$ )call stdlib${ii}$_zlatrz( mu, n, n-m, a, lda, tau, work )
+           work( 1_${ik}$ ) = lwkopt
+           return
+     end subroutine stdlib${ii}$_ztzrzf
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$tzrzf( m, n, a, lda, tau, work, lwork, info )
+     !! ZTZRZF: reduces the M-by-N ( M<=N ) complex upper trapezoidal matrix A
+     !! to upper triangular form by means of unitary transformations.
+     !! The upper trapezoidal matrix A is factored as
+     !! A = ( R  0 ) * Z,
+     !! where Z is an N-by-N unitary matrix and R is an M-by-M upper
+     !! triangular matrix.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: lda, lwork, m, n
+           ! Array Arguments 
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: tau(*), work(*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           logical(lk) :: lquery
+           integer(${ik}$) :: i, ib, iws, ki, kk, ldwork, lwkmin, lwkopt, m1, mu, nb, nbmin, &
+                     nx
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input arguments
+           info = 0_${ik}$
+           lquery = ( lwork==-1_${ik}$ )
+           if( m<0_${ik}$ ) then
+              info = -1_${ik}$
+           else if( n<m ) then
+              info = -2_${ik}$
+           else if( lda<max( 1_${ik}$, m ) ) then
+              info = -4_${ik}$
+           end if
+           if( info==0_${ik}$ ) then
+              if( m==0_${ik}$ .or. m==n ) then
+                 lwkopt = 1_${ik}$
+                 lwkmin = 1_${ik}$
+              else
+                 ! determine the block size.
+                 nb = stdlib${ii}$_ilaenv( 1_${ik}$, 'ZGERQF', ' ', m, n, -1_${ik}$, -1_${ik}$ )
+                 lwkopt = m*nb
+                 lwkmin = max( 1_${ik}$, m )
+              end if
+              work( 1_${ik}$ ) = lwkopt
+              if( lwork<lwkmin .and. .not.lquery ) then
+                 info = -7_${ik}$
+              end if
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'ZTZRZF', -info )
+              return
+           else if( lquery ) then
+              return
+           end if
+           ! quick return if possible
+           if( m==0_${ik}$ ) then
+              return
+           else if( m==n ) then
+              do i = 1, n
+                 tau( i ) = czero
+              end do
+              return
+           end if
+           nbmin = 2_${ik}$
+           nx = 1_${ik}$
+           iws = m
+           if( nb>1_${ik}$ .and. nb<m ) then
+              ! determine when to cross over from blocked to unblocked code.
+              nx = max( 0_${ik}$, stdlib${ii}$_ilaenv( 3_${ik}$, 'ZGERQF', ' ', m, n, -1_${ik}$, -1_${ik}$ ) )
+              if( nx<m ) then
+                 ! determine if workspace is large enough for blocked code.
+                 ldwork = m
+                 iws = ldwork*nb
+                 if( lwork<iws ) then
+                    ! not enough workspace to use optimal nb:  reduce nb and
+                    ! determine the minimum value of nb.
+                    nb = lwork / ldwork
+                    nbmin = max( 2_${ik}$, stdlib${ii}$_ilaenv( 2_${ik}$, 'ZGERQF', ' ', m, n, -1_${ik}$,-1_${ik}$ ) )
+                 end if
+              end if
+           end if
+           if( nb>=nbmin .and. nb<m .and. nx<m ) then
+              ! use blocked code initially.
+              ! the last kk rows are handled by the block method.
+              m1 = min( m+1, n )
+              ki = ( ( m-nx-1 ) / nb )*nb
+              kk = min( m, ki+nb )
+              do i = m - kk + ki + 1, m - kk + 1, -nb
+                 ib = min( m-i+1, nb )
+                 ! compute the tz factorization of the current block
+                 ! a(i:i+ib-1,i:n)
+                 call stdlib${ii}$_${ci}$latrz( ib, n-i+1, n-m, a( i, i ), lda, tau( i ),work )
+                 if( i>1_${ik}$ ) then
+                    ! form the triangular factor of the block reflector
+                    ! h = h(i+ib-1) . . . h(i+1) h(i)
+                    call stdlib${ii}$_${ci}$larzt( 'BACKWARD', 'ROWWISE', n-m, ib, a( i, m1 ),lda, tau( i ), &
+                              work, ldwork )
+                    ! apply h to a(1:i-1,i:n) from the right
+                    call stdlib${ii}$_${ci}$larzb( 'RIGHT', 'NO TRANSPOSE', 'BACKWARD','ROWWISE', i-1, n-i+1,&
+                     ib, n-m, a( i, m1 ),lda, work, ldwork, a( 1_${ik}$, i ), lda,work( ib+1 ), ldwork )
+                               
+                 end if
+              end do
+              mu = i + nb - 1_${ik}$
+           else
+              mu = m
+           end if
+           ! use unblocked code to factor the last or only block
+           if( mu>0_${ik}$ )call stdlib${ii}$_${ci}$latrz( mu, n, n-m, a, lda, tau, work )
+           work( 1_${ik}$ ) = lwkopt
+           return
+     end subroutine stdlib${ii}$_${ci}$tzrzf
+
+#:endif
+#:endfor
+
+
+
+     pure module subroutine stdlib${ii}$_cunmrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
+     !! CUNMRZ overwrites the general complex M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'C':      Q**H * C       C * Q**H
+     !! where Q is a complex unitary matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1) H(2) . . . H(k)
+     !! as returned by CTZRZF. Q is of order M if SIDE = 'L' and of order N
+     !! if SIDE = 'R'.
+               info )
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, lwork, m, n
+           ! Array Arguments 
+           complex(sp), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(sp), intent(in) :: tau(*)
+           complex(sp), intent(out) :: work(*)
+        ! =====================================================================
+           ! Parameters 
+           integer(${ik}$), parameter :: nbmax = 64_${ik}$
+           integer(${ik}$), parameter :: ldt = nbmax+1
+           integer(${ik}$), parameter :: tsize = ldt*nbmax
+           
+           ! Local Scalars 
+           logical(lk) :: left, lquery, notran
+           character :: transt
+           integer(${ik}$) :: i, i1, i2, i3, ib, ic, iinfo, iwt, ja, jc, ldwork, lwkopt, mi, nb, &
+                     nbmin, ni, nq, nw
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input arguments
+           info = 0_${ik}$
+           left = stdlib_lsame( side, 'L' )
+           notran = stdlib_lsame( trans, 'N' )
+           lquery = ( lwork==-1_${ik}$ )
+           ! nq is the order of q and nw is the minimum dimension of work
+           if( left ) then
+              nq = m
+              nw = max( 1_${ik}$, n )
+           else
+              nq = n
+              nw = max( 1_${ik}$, m )
+           end if
+           if( .not.left .and. .not.stdlib_lsame( side, 'R' ) ) then
+              info = -1_${ik}$
+           else if( .not.notran .and. .not.stdlib_lsame( trans, 'C' ) ) then
+              info = -2_${ik}$
+           else if( m<0_${ik}$ ) then
+              info = -3_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -4_${ik}$
+           else if( k<0_${ik}$ .or. k>nq ) then
+              info = -5_${ik}$
+           else if( l<0_${ik}$ .or. ( left .and. ( l>m ) ) .or.( .not.left .and. ( l>n ) ) ) then
+              info = -6_${ik}$
+           else if( lda<max( 1_${ik}$, k ) ) then
+              info = -8_${ik}$
+           else if( ldc<max( 1_${ik}$, m ) ) then
+              info = -11_${ik}$
+           else if( lwork<nw .and. .not.lquery ) then
+              info = -13_${ik}$
+           end if
+           if( info==0_${ik}$ ) then
+              ! compute the workspace requirements
+              if( m==0_${ik}$ .or. n==0_${ik}$ ) then
+                 lwkopt = 1_${ik}$
+              else
+                 nb = min( nbmax, stdlib${ii}$_ilaenv( 1_${ik}$, 'CUNMRQ', side // trans, m, n,k, -1_${ik}$ ) )
+                           
+                 lwkopt = nw*nb + tsize
+              end if
+              work( 1_${ik}$ ) = lwkopt
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'CUNMRZ', -info )
+              return
+           else if( lquery ) then
+              return
+           end if
+           ! quick return if possible
+           if( m==0_${ik}$ .or. n==0_${ik}$ ) then
+              return
+           end if
+           ! determine the block size.
+           nb = min( nbmax, stdlib${ii}$_ilaenv( 1_${ik}$, 'CUNMRQ', side // trans, m, n, k,-1_${ik}$ ) )
+           nbmin = 2_${ik}$
+           ldwork = nw
+           if( nb>1_${ik}$ .and. nb<k ) then
+              if( lwork<lwkopt ) then
+                 nb = (lwork-tsize) / ldwork
+                 nbmin = max( 2_${ik}$, stdlib${ii}$_ilaenv( 2_${ik}$, 'CUNMRQ', side // trans, m, n, k,-1_${ik}$ ) )
+              end if
+           end if
+           if( nb<nbmin .or. nb>=k ) then
+              ! use unblocked code
+              call stdlib${ii}$_cunmr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, iinfo )
+                        
+           else
+              ! use blocked code
+              iwt = 1_${ik}$ + nw*nb
+              if( ( left .and. .not.notran ) .or.( .not.left .and. notran ) ) then
+                 i1 = 1_${ik}$
+                 i2 = k
+                 i3 = nb
+              else
+                 i1 = ( ( k-1 ) / nb )*nb + 1_${ik}$
+                 i2 = 1_${ik}$
+                 i3 = -nb
+              end if
+              if( left ) then
+                 ni = n
+                 jc = 1_${ik}$
+                 ja = m - l + 1_${ik}$
+              else
+                 mi = m
+                 ic = 1_${ik}$
+                 ja = n - l + 1_${ik}$
+              end if
+              if( notran ) then
+                 transt = 'C'
+              else
+                 transt = 'N'
+              end if
+              do i = i1, i2, i3
+                 ib = min( nb, k-i+1 )
+                 ! form the triangular factor of the block reflector
+                 ! h = h(i+ib-1) . . . h(i+1) h(i)
+                 call stdlib${ii}$_clarzt( 'BACKWARD', 'ROWWISE', l, ib, a( i, ja ), lda,tau( i ), work(&
+                            iwt ), ldt )
+                 if( left ) then
+                    ! h or h**h is applied to c(i:m,1:n)
+                    mi = m - i + 1_${ik}$
+                    ic = i
+                 else
+                    ! h or h**h is applied to c(1:m,i:n)
+                    ni = n - i + 1_${ik}$
+                    jc = i
+                 end if
+                 ! apply h or h**h
+                 call stdlib${ii}$_clarzb( side, transt, 'BACKWARD', 'ROWWISE', mi, ni,ib, l, a( i, ja )&
+                           , lda, work( iwt ), ldt,c( ic, jc ), ldc, work, ldwork )
+              end do
+           end if
+           work( 1_${ik}$ ) = lwkopt
+           return
+     end subroutine stdlib${ii}$_cunmrz
+
+     pure module subroutine stdlib${ii}$_zunmrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
+     !! ZUNMRZ overwrites the general complex M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'C':      Q**H * C       C * Q**H
+     !! where Q is a complex unitary matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1) H(2) . . . H(k)
+     !! as returned by ZTZRZF. Q is of order M if SIDE = 'L' and of order N
+     !! if SIDE = 'R'.
+               info )
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, lwork, m, n
+           ! Array Arguments 
+           complex(dp), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(dp), intent(in) :: tau(*)
+           complex(dp), intent(out) :: work(*)
+        ! =====================================================================
+           ! Parameters 
+           integer(${ik}$), parameter :: nbmax = 64_${ik}$
+           integer(${ik}$), parameter :: ldt = nbmax+1
+           integer(${ik}$), parameter :: tsize = ldt*nbmax
+           
+           ! Local Scalars 
+           logical(lk) :: left, lquery, notran
+           character :: transt
+           integer(${ik}$) :: i, i1, i2, i3, ib, ic, iinfo, iwt, ja, jc, ldwork, lwkopt, mi, nb, &
+                     nbmin, ni, nq, nw
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input arguments
+           info = 0_${ik}$
+           left = stdlib_lsame( side, 'L' )
+           notran = stdlib_lsame( trans, 'N' )
+           lquery = ( lwork==-1_${ik}$ )
+           ! nq is the order of q and nw is the minimum dimension of work
+           if( left ) then
+              nq = m
+              nw = max( 1_${ik}$, n )
+           else
+              nq = n
+              nw = max( 1_${ik}$, m )
+           end if
+           if( .not.left .and. .not.stdlib_lsame( side, 'R' ) ) then
+              info = -1_${ik}$
+           else if( .not.notran .and. .not.stdlib_lsame( trans, 'C' ) ) then
+              info = -2_${ik}$
+           else if( m<0_${ik}$ ) then
+              info = -3_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -4_${ik}$
+           else if( k<0_${ik}$ .or. k>nq ) then
+              info = -5_${ik}$
+           else if( l<0_${ik}$ .or. ( left .and. ( l>m ) ) .or.( .not.left .and. ( l>n ) ) ) then
+              info = -6_${ik}$
+           else if( lda<max( 1_${ik}$, k ) ) then
+              info = -8_${ik}$
+           else if( ldc<max( 1_${ik}$, m ) ) then
+              info = -11_${ik}$
+           else if( lwork<max( 1_${ik}$, nw ) .and. .not.lquery ) then
+              info = -13_${ik}$
+           end if
+           if( info==0_${ik}$ ) then
+              ! compute the workspace requirements
+              if( m==0_${ik}$ .or. n==0_${ik}$ ) then
+                 lwkopt = 1_${ik}$
+              else
+                 nb = min( nbmax, stdlib${ii}$_ilaenv( 1_${ik}$, 'ZUNMRQ', side // trans, m, n,k, -1_${ik}$ ) )
+                           
+                 lwkopt = nw*nb + tsize
+              end if
+              work( 1_${ik}$ ) = lwkopt
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'ZUNMRZ', -info )
+              return
+           else if( lquery ) then
+              return
+           end if
+           ! quick return if possible
+           if( m==0_${ik}$ .or. n==0_${ik}$ ) then
+              return
+           end if
+           ! determine the block size.  nb may be at most nbmax, where nbmax
+           ! is used to define the local array t.
+           nb = min( nbmax, stdlib${ii}$_ilaenv( 1_${ik}$, 'ZUNMRQ', side // trans, m, n, k,-1_${ik}$ ) )
+           nbmin = 2_${ik}$
+           ldwork = nw
+           if( nb>1_${ik}$ .and. nb<k ) then
+              if( lwork<lwkopt ) then
+                 nb = (lwork-tsize) / ldwork
+                 nbmin = max( 2_${ik}$, stdlib${ii}$_ilaenv( 2_${ik}$, 'ZUNMRQ', side // trans, m, n, k,-1_${ik}$ ) )
+              end if
+           end if
+           if( nb<nbmin .or. nb>=k ) then
+              ! use unblocked code
+              call stdlib${ii}$_zunmr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, iinfo )
+                        
+           else
+              ! use blocked code
+              iwt = 1_${ik}$ + nw*nb
+              if( ( left .and. .not.notran ) .or.( .not.left .and. notran ) ) then
+                 i1 = 1_${ik}$
+                 i2 = k
+                 i3 = nb
+              else
+                 i1 = ( ( k-1 ) / nb )*nb + 1_${ik}$
+                 i2 = 1_${ik}$
+                 i3 = -nb
+              end if
+              if( left ) then
+                 ni = n
+                 jc = 1_${ik}$
+                 ja = m - l + 1_${ik}$
+              else
+                 mi = m
+                 ic = 1_${ik}$
+                 ja = n - l + 1_${ik}$
+              end if
+              if( notran ) then
+                 transt = 'C'
+              else
+                 transt = 'N'
+              end if
+              do i = i1, i2, i3
+                 ib = min( nb, k-i+1 )
+                 ! form the triangular factor of the block reflector
+                 ! h = h(i+ib-1) . . . h(i+1) h(i)
+                 call stdlib${ii}$_zlarzt( 'BACKWARD', 'ROWWISE', l, ib, a( i, ja ), lda,tau( i ), work(&
+                            iwt ), ldt )
+                 if( left ) then
+                    ! h or h**h is applied to c(i:m,1:n)
+                    mi = m - i + 1_${ik}$
+                    ic = i
+                 else
+                    ! h or h**h is applied to c(1:m,i:n)
+                    ni = n - i + 1_${ik}$
+                    jc = i
+                 end if
+                 ! apply h or h**h
+                 call stdlib${ii}$_zlarzb( side, transt, 'BACKWARD', 'ROWWISE', mi, ni,ib, l, a( i, ja )&
+                           , lda, work( iwt ), ldt,c( ic, jc ), ldc, work, ldwork )
+              end do
+           end if
+           work( 1_${ik}$ ) = lwkopt
+           return
+     end subroutine stdlib${ii}$_zunmrz
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$unmrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
+     !! ZUNMRZ: overwrites the general complex M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'C':      Q**H * C       C * Q**H
+     !! where Q is a complex unitary matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1) H(2) . . . H(k)
+     !! as returned by ZTZRZF. Q is of order M if SIDE = 'L' and of order N
+     !! if SIDE = 'R'.
+               info )
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, lwork, m, n
+           ! Array Arguments 
+           complex(${ck}$), intent(inout) :: a(lda,*), c(ldc,*)
+           complex(${ck}$), intent(in) :: tau(*)
+           complex(${ck}$), intent(out) :: work(*)
+        ! =====================================================================
+           ! Parameters 
+           integer(${ik}$), parameter :: nbmax = 64_${ik}$
+           integer(${ik}$), parameter :: ldt = nbmax+1
+           integer(${ik}$), parameter :: tsize = ldt*nbmax
+           
+           ! Local Scalars 
+           logical(lk) :: left, lquery, notran
+           character :: transt
+           integer(${ik}$) :: i, i1, i2, i3, ib, ic, iinfo, iwt, ja, jc, ldwork, lwkopt, mi, nb, &
+                     nbmin, ni, nq, nw
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input arguments
+           info = 0_${ik}$
+           left = stdlib_lsame( side, 'L' )
+           notran = stdlib_lsame( trans, 'N' )
+           lquery = ( lwork==-1_${ik}$ )
+           ! nq is the order of q and nw is the minimum dimension of work
+           if( left ) then
+              nq = m
+              nw = max( 1_${ik}$, n )
+           else
+              nq = n
+              nw = max( 1_${ik}$, m )
+           end if
+           if( .not.left .and. .not.stdlib_lsame( side, 'R' ) ) then
+              info = -1_${ik}$
+           else if( .not.notran .and. .not.stdlib_lsame( trans, 'C' ) ) then
+              info = -2_${ik}$
+           else if( m<0_${ik}$ ) then
+              info = -3_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -4_${ik}$
+           else if( k<0_${ik}$ .or. k>nq ) then
+              info = -5_${ik}$
+           else if( l<0_${ik}$ .or. ( left .and. ( l>m ) ) .or.( .not.left .and. ( l>n ) ) ) then
+              info = -6_${ik}$
+           else if( lda<max( 1_${ik}$, k ) ) then
+              info = -8_${ik}$
+           else if( ldc<max( 1_${ik}$, m ) ) then
+              info = -11_${ik}$
+           else if( lwork<max( 1_${ik}$, nw ) .and. .not.lquery ) then
+              info = -13_${ik}$
+           end if
+           if( info==0_${ik}$ ) then
+              ! compute the workspace requirements
+              if( m==0_${ik}$ .or. n==0_${ik}$ ) then
+                 lwkopt = 1_${ik}$
+              else
+                 nb = min( nbmax, stdlib${ii}$_ilaenv( 1_${ik}$, 'ZUNMRQ', side // trans, m, n,k, -1_${ik}$ ) )
+                           
+                 lwkopt = nw*nb + tsize
+              end if
+              work( 1_${ik}$ ) = lwkopt
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'ZUNMRZ', -info )
+              return
+           else if( lquery ) then
+              return
+           end if
+           ! quick return if possible
+           if( m==0_${ik}$ .or. n==0_${ik}$ ) then
+              return
+           end if
+           ! determine the block size.  nb may be at most nbmax, where nbmax
+           ! is used to define the local array t.
+           nb = min( nbmax, stdlib${ii}$_ilaenv( 1_${ik}$, 'ZUNMRQ', side // trans, m, n, k,-1_${ik}$ ) )
+           nbmin = 2_${ik}$
+           ldwork = nw
+           if( nb>1_${ik}$ .and. nb<k ) then
+              if( lwork<lwkopt ) then
+                 nb = (lwork-tsize) / ldwork
+                 nbmin = max( 2_${ik}$, stdlib${ii}$_ilaenv( 2_${ik}$, 'ZUNMRQ', side // trans, m, n, k,-1_${ik}$ ) )
+              end if
+           end if
+           if( nb<nbmin .or. nb>=k ) then
+              ! use unblocked code
+              call stdlib${ii}$_${ci}$unmr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, iinfo )
+                        
+           else
+              ! use blocked code
+              iwt = 1_${ik}$ + nw*nb
+              if( ( left .and. .not.notran ) .or.( .not.left .and. notran ) ) then
+                 i1 = 1_${ik}$
+                 i2 = k
+                 i3 = nb
+              else
+                 i1 = ( ( k-1 ) / nb )*nb + 1_${ik}$
+                 i2 = 1_${ik}$
+                 i3 = -nb
+              end if
+              if( left ) then
+                 ni = n
+                 jc = 1_${ik}$
+                 ja = m - l + 1_${ik}$
+              else
+                 mi = m
+                 ic = 1_${ik}$
+                 ja = n - l + 1_${ik}$
+              end if
+              if( notran ) then
+                 transt = 'C'
+              else
+                 transt = 'N'
+              end if
+              do i = i1, i2, i3
+                 ib = min( nb, k-i+1 )
+                 ! form the triangular factor of the block reflector
+                 ! h = h(i+ib-1) . . . h(i+1) h(i)
+                 call stdlib${ii}$_${ci}$larzt( 'BACKWARD', 'ROWWISE', l, ib, a( i, ja ), lda,tau( i ), work(&
+                            iwt ), ldt )
+                 if( left ) then
+                    ! h or h**h is applied to c(i:m,1:n)
+                    mi = m - i + 1_${ik}$
+                    ic = i
+                 else
+                    ! h or h**h is applied to c(1:m,i:n)
+                    ni = n - i + 1_${ik}$
+                    jc = i
+                 end if
+                 ! apply h or h**h
+                 call stdlib${ii}$_${ci}$larzb( side, transt, 'BACKWARD', 'ROWWISE', mi, ni,ib, l, a( i, ja )&
+                           , lda, work( iwt ), ldt,c( ic, jc ), ldc, work, ldwork )
+              end do
+           end if
+           work( 1_${ik}$ ) = lwkopt
+           return
+     end subroutine stdlib${ii}$_${ci}$unmrz
+
+#:endif
+#:endfor
+
+
+
+     pure module subroutine stdlib${ii}$_sormrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
+     !! SORMRZ overwrites the general real M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'T':      Q**T * C       C * Q**T
+     !! where Q is a real orthogonal matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1) H(2) . . . H(k)
+     !! as returned by STZRZF. Q is of order M if SIDE = 'L' and of order N
+     !! if SIDE = 'R'.
+               info )
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, lwork, m, n
+           ! Array Arguments 
+           real(sp), intent(inout) :: a(lda,*), c(ldc,*)
+           real(sp), intent(in) :: tau(*)
+           real(sp), intent(out) :: work(*)
+        ! =====================================================================
+           ! Parameters 
+           integer(${ik}$), parameter :: nbmax = 64_${ik}$
+           integer(${ik}$), parameter :: ldt = nbmax+1
+           integer(${ik}$), parameter :: tsize = ldt*nbmax
+           
+           ! Local Scalars 
+           logical(lk) :: left, lquery, notran
+           character :: transt
+           integer(${ik}$) :: i, i1, i2, i3, ib, ic, iinfo, iwt, ja, jc, ldwork, lwkopt, mi, nb, &
+                     nbmin, ni, nq, nw
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input arguments
+           info = 0_${ik}$
+           left = stdlib_lsame( side, 'L' )
+           notran = stdlib_lsame( trans, 'N' )
+           lquery = ( lwork==-1_${ik}$ )
+           ! nq is the order of q and nw is the minimum dimension of work
+           if( left ) then
+              nq = m
+              nw = max( 1_${ik}$, n )
+           else
+              nq = n
+              nw = max( 1_${ik}$, m )
+           end if
+           if( .not.left .and. .not.stdlib_lsame( side, 'R' ) ) then
+              info = -1_${ik}$
+           else if( .not.notran .and. .not.stdlib_lsame( trans, 'T' ) ) then
+              info = -2_${ik}$
+           else if( m<0_${ik}$ ) then
+              info = -3_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -4_${ik}$
+           else if( k<0_${ik}$ .or. k>nq ) then
+              info = -5_${ik}$
+           else if( l<0_${ik}$ .or. ( left .and. ( l>m ) ) .or.( .not.left .and. ( l>n ) ) ) then
+              info = -6_${ik}$
+           else if( lda<max( 1_${ik}$, k ) ) then
+              info = -8_${ik}$
+           else if( ldc<max( 1_${ik}$, m ) ) then
+              info = -11_${ik}$
+           else if( lwork<nw .and. .not.lquery ) then
+              info = -13_${ik}$
+           end if
+           if( info==0_${ik}$ ) then
+              ! compute the workspace requirements
+              if( m==0_${ik}$ .or. n==0_${ik}$ ) then
+                 lwkopt = 1_${ik}$
+              else
+                 nb = min( nbmax, stdlib${ii}$_ilaenv( 1_${ik}$, 'SORMRQ', side // trans, m, n,k, -1_${ik}$ ) )
+                           
+                 lwkopt = nw*nb + tsize
+              end if
+              work( 1_${ik}$ ) = lwkopt
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'SORMRZ', -info )
+              return
+           else if( lquery ) then
+              return
+           end if
+           ! quick return if possible
+           if( m==0_${ik}$ .or. n==0_${ik}$ ) then
+              return
+           end if
+           nbmin = 2_${ik}$
+           ldwork = nw
+           if( nb>1_${ik}$ .and. nb<k ) then
+              if( lwork<lwkopt ) then
+                 nb = (lwork-tsize) / ldwork
+                 nbmin = max( 2_${ik}$, stdlib${ii}$_ilaenv( 2_${ik}$, 'SORMRQ', side // trans, m, n, k,-1_${ik}$ ) )
+              end if
+           end if
+           if( nb<nbmin .or. nb>=k ) then
+              ! use unblocked code
+              call stdlib${ii}$_sormr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, iinfo )
+                        
+           else
+              ! use blocked code
+              iwt = 1_${ik}$ + nw*nb
+              if( ( left .and. .not.notran ) .or.( .not.left .and. notran ) ) then
+                 i1 = 1_${ik}$
+                 i2 = k
+                 i3 = nb
+              else
+                 i1 = ( ( k-1 ) / nb )*nb + 1_${ik}$
+                 i2 = 1_${ik}$
+                 i3 = -nb
+              end if
+              if( left ) then
+                 ni = n
+                 jc = 1_${ik}$
+                 ja = m - l + 1_${ik}$
+              else
+                 mi = m
+                 ic = 1_${ik}$
+                 ja = n - l + 1_${ik}$
+              end if
+              if( notran ) then
+                 transt = 'T'
+              else
+                 transt = 'N'
+              end if
+              do i = i1, i2, i3
+                 ib = min( nb, k-i+1 )
+                 ! form the triangular factor of the block reflector
+                 ! h = h(i+ib-1) . . . h(i+1) h(i)
+                 call stdlib${ii}$_slarzt( 'BACKWARD', 'ROWWISE', l, ib, a( i, ja ), lda,tau( i ), work(&
+                            iwt ), ldt )
+                 if( left ) then
+                    ! h or h**t is applied to c(i:m,1:n)
+                    mi = m - i + 1_${ik}$
+                    ic = i
+                 else
+                    ! h or h**t is applied to c(1:m,i:n)
+                    ni = n - i + 1_${ik}$
+                    jc = i
+                 end if
+                 ! apply h or h**t
+                 call stdlib${ii}$_slarzb( side, transt, 'BACKWARD', 'ROWWISE', mi, ni,ib, l, a( i, ja )&
+                           , lda, work( iwt ), ldt,c( ic, jc ), ldc, work, ldwork )
+              end do
+           end if
+           work( 1_${ik}$ ) = lwkopt
+           return
+     end subroutine stdlib${ii}$_sormrz
+
+     pure module subroutine stdlib${ii}$_dormrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
+     !! DORMRZ overwrites the general real M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'T':      Q**T * C       C * Q**T
+     !! where Q is a real orthogonal matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1) H(2) . . . H(k)
+     !! as returned by DTZRZF. Q is of order M if SIDE = 'L' and of order N
+     !! if SIDE = 'R'.
+               info )
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, lwork, m, n
+           ! Array Arguments 
+           real(dp), intent(inout) :: a(lda,*), c(ldc,*)
+           real(dp), intent(in) :: tau(*)
+           real(dp), intent(out) :: work(*)
+        ! =====================================================================
+           ! Parameters 
+           integer(${ik}$), parameter :: nbmax = 64_${ik}$
+           integer(${ik}$), parameter :: ldt = nbmax+1
+           integer(${ik}$), parameter :: tsize = ldt*nbmax
+           
+           ! Local Scalars 
+           logical(lk) :: left, lquery, notran
+           character :: transt
+           integer(${ik}$) :: i, i1, i2, i3, ib, ic, iinfo, iwt, ja, jc, ldwork, lwkopt, mi, nb, &
+                     nbmin, ni, nq, nw
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input arguments
+           info = 0_${ik}$
+           left = stdlib_lsame( side, 'L' )
+           notran = stdlib_lsame( trans, 'N' )
+           lquery = ( lwork==-1_${ik}$ )
+           ! nq is the order of q and nw is the minimum dimension of work
+           if( left ) then
+              nq = m
+              nw = max( 1_${ik}$, n )
+           else
+              nq = n
+              nw = max( 1_${ik}$, m )
+           end if
+           if( .not.left .and. .not.stdlib_lsame( side, 'R' ) ) then
+              info = -1_${ik}$
+           else if( .not.notran .and. .not.stdlib_lsame( trans, 'T' ) ) then
+              info = -2_${ik}$
+           else if( m<0_${ik}$ ) then
+              info = -3_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -4_${ik}$
+           else if( k<0_${ik}$ .or. k>nq ) then
+              info = -5_${ik}$
+           else if( l<0_${ik}$ .or. ( left .and. ( l>m ) ) .or.( .not.left .and. ( l>n ) ) ) then
+              info = -6_${ik}$
+           else if( lda<max( 1_${ik}$, k ) ) then
+              info = -8_${ik}$
+           else if( ldc<max( 1_${ik}$, m ) ) then
+              info = -11_${ik}$
+           else if( lwork<nw .and. .not.lquery ) then
+              info = -13_${ik}$
+           end if
+           if( info==0_${ik}$ ) then
+              ! compute the workspace requirements
+              if( m==0_${ik}$ .or. n==0_${ik}$ ) then
+                 lwkopt = 1_${ik}$
+              else
+                 nb = min( nbmax, stdlib${ii}$_ilaenv( 1_${ik}$, 'DORMRQ', side // trans, m, n,k, -1_${ik}$ ) )
+                           
+                 lwkopt = nw*nb + tsize
+              end if
+              work( 1_${ik}$ ) = lwkopt
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'DORMRZ', -info )
+              return
+           else if( lquery ) then
+              return
+           end if
+           ! quick return if possible
+           if( m==0_${ik}$ .or. n==0_${ik}$ ) then
+              work( 1_${ik}$ ) = 1_${ik}$
+              return
+           end if
+           nbmin = 2_${ik}$
+           ldwork = nw
+           if( nb>1_${ik}$ .and. nb<k ) then
+              if( lwork<lwkopt ) then
+                 nb = (lwork-tsize) / ldwork
+                 nbmin = max( 2_${ik}$, stdlib${ii}$_ilaenv( 2_${ik}$, 'DORMRQ', side // trans, m, n, k,-1_${ik}$ ) )
+              end if
+           end if
+           if( nb<nbmin .or. nb>=k ) then
+              ! use unblocked code
+              call stdlib${ii}$_dormr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, iinfo )
+                        
+           else
+              ! use blocked code
+              iwt = 1_${ik}$ + nw*nb
+              if( ( left .and. .not.notran ) .or.( .not.left .and. notran ) ) then
+                 i1 = 1_${ik}$
+                 i2 = k
+                 i3 = nb
+              else
+                 i1 = ( ( k-1 ) / nb )*nb + 1_${ik}$
+                 i2 = 1_${ik}$
+                 i3 = -nb
+              end if
+              if( left ) then
+                 ni = n
+                 jc = 1_${ik}$
+                 ja = m - l + 1_${ik}$
+              else
+                 mi = m
+                 ic = 1_${ik}$
+                 ja = n - l + 1_${ik}$
+              end if
+              if( notran ) then
+                 transt = 'T'
+              else
+                 transt = 'N'
+              end if
+              do i = i1, i2, i3
+                 ib = min( nb, k-i+1 )
+                 ! form the triangular factor of the block reflector
+                 ! h = h(i+ib-1) . . . h(i+1) h(i)
+                 call stdlib${ii}$_dlarzt( 'BACKWARD', 'ROWWISE', l, ib, a( i, ja ), lda,tau( i ), work(&
+                            iwt ), ldt )
+                 if( left ) then
+                    ! h or h**t is applied to c(i:m,1:n)
+                    mi = m - i + 1_${ik}$
+                    ic = i
+                 else
+                    ! h or h**t is applied to c(1:m,i:n)
+                    ni = n - i + 1_${ik}$
+                    jc = i
+                 end if
+                 ! apply h or h**t
+                 call stdlib${ii}$_dlarzb( side, transt, 'BACKWARD', 'ROWWISE', mi, ni,ib, l, a( i, ja )&
+                           , lda, work( iwt ), ldt,c( ic, jc ), ldc, work, ldwork )
+              end do
+           end if
+           work( 1_${ik}$ ) = lwkopt
+           return
+     end subroutine stdlib${ii}$_dormrz
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$ormrz( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, lwork, &
+     !! DORMRZ: overwrites the general real M-by-N matrix C with
+     !! SIDE = 'L'     SIDE = 'R'
+     !! TRANS = 'N':      Q * C          C * Q
+     !! TRANS = 'T':      Q**T * C       C * Q**T
+     !! where Q is a real orthogonal matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1) H(2) . . . H(k)
+     !! as returned by DTZRZF. Q is of order M if SIDE = 'L' and of order N
+     !! if SIDE = 'R'.
+               info )
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, lwork, m, n
+           ! Array Arguments 
+           real(${rk}$), intent(inout) :: a(lda,*), c(ldc,*)
+           real(${rk}$), intent(in) :: tau(*)
+           real(${rk}$), intent(out) :: work(*)
+        ! =====================================================================
+           ! Parameters 
+           integer(${ik}$), parameter :: nbmax = 64_${ik}$
+           integer(${ik}$), parameter :: ldt = nbmax+1
+           integer(${ik}$), parameter :: tsize = ldt*nbmax
+           
+           ! Local Scalars 
+           logical(lk) :: left, lquery, notran
+           character :: transt
+           integer(${ik}$) :: i, i1, i2, i3, ib, ic, iinfo, iwt, ja, jc, ldwork, lwkopt, mi, nb, &
+                     nbmin, ni, nq, nw
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input arguments
+           info = 0_${ik}$
+           left = stdlib_lsame( side, 'L' )
+           notran = stdlib_lsame( trans, 'N' )
+           lquery = ( lwork==-1_${ik}$ )
+           ! nq is the order of q and nw is the minimum dimension of work
+           if( left ) then
+              nq = m
+              nw = max( 1_${ik}$, n )
+           else
+              nq = n
+              nw = max( 1_${ik}$, m )
+           end if
+           if( .not.left .and. .not.stdlib_lsame( side, 'R' ) ) then
+              info = -1_${ik}$
+           else if( .not.notran .and. .not.stdlib_lsame( trans, 'T' ) ) then
+              info = -2_${ik}$
+           else if( m<0_${ik}$ ) then
+              info = -3_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -4_${ik}$
+           else if( k<0_${ik}$ .or. k>nq ) then
+              info = -5_${ik}$
+           else if( l<0_${ik}$ .or. ( left .and. ( l>m ) ) .or.( .not.left .and. ( l>n ) ) ) then
+              info = -6_${ik}$
+           else if( lda<max( 1_${ik}$, k ) ) then
+              info = -8_${ik}$
+           else if( ldc<max( 1_${ik}$, m ) ) then
+              info = -11_${ik}$
+           else if( lwork<nw .and. .not.lquery ) then
+              info = -13_${ik}$
+           end if
+           if( info==0_${ik}$ ) then
+              ! compute the workspace requirements
+              if( m==0_${ik}$ .or. n==0_${ik}$ ) then
+                 lwkopt = 1_${ik}$
+              else
+                 nb = min( nbmax, stdlib${ii}$_ilaenv( 1_${ik}$, 'DORMRQ', side // trans, m, n,k, -1_${ik}$ ) )
+                           
+                 lwkopt = nw*nb + tsize
+              end if
+              work( 1_${ik}$ ) = lwkopt
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'DORMRZ', -info )
+              return
+           else if( lquery ) then
+              return
+           end if
+           ! quick return if possible
+           if( m==0_${ik}$ .or. n==0_${ik}$ ) then
+              work( 1_${ik}$ ) = 1_${ik}$
+              return
+           end if
+           nbmin = 2_${ik}$
+           ldwork = nw
+           if( nb>1_${ik}$ .and. nb<k ) then
+              if( lwork<lwkopt ) then
+                 nb = (lwork-tsize) / ldwork
+                 nbmin = max( 2_${ik}$, stdlib${ii}$_ilaenv( 2_${ik}$, 'DORMRQ', side // trans, m, n, k,-1_${ik}$ ) )
+              end if
+           end if
+           if( nb<nbmin .or. nb>=k ) then
+              ! use unblocked code
+              call stdlib${ii}$_${ri}$ormr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, iinfo )
+                        
+           else
+              ! use blocked code
+              iwt = 1_${ik}$ + nw*nb
+              if( ( left .and. .not.notran ) .or.( .not.left .and. notran ) ) then
+                 i1 = 1_${ik}$
+                 i2 = k
+                 i3 = nb
+              else
+                 i1 = ( ( k-1 ) / nb )*nb + 1_${ik}$
+                 i2 = 1_${ik}$
+                 i3 = -nb
+              end if
+              if( left ) then
+                 ni = n
+                 jc = 1_${ik}$
+                 ja = m - l + 1_${ik}$
+              else
+                 mi = m
+                 ic = 1_${ik}$
+                 ja = n - l + 1_${ik}$
+              end if
+              if( notran ) then
+                 transt = 'T'
+              else
+                 transt = 'N'
+              end if
+              do i = i1, i2, i3
+                 ib = min( nb, k-i+1 )
+                 ! form the triangular factor of the block reflector
+                 ! h = h(i+ib-1) . . . h(i+1) h(i)
+                 call stdlib${ii}$_${ri}$larzt( 'BACKWARD', 'ROWWISE', l, ib, a( i, ja ), lda,tau( i ), work(&
+                            iwt ), ldt )
+                 if( left ) then
+                    ! h or h**t is applied to c(i:m,1:n)
+                    mi = m - i + 1_${ik}$
+                    ic = i
+                 else
+                    ! h or h**t is applied to c(1:m,i:n)
+                    ni = n - i + 1_${ik}$
+                    jc = i
+                 end if
+                 ! apply h or h**t
+                 call stdlib${ii}$_${ri}$larzb( side, transt, 'BACKWARD', 'ROWWISE', mi, ni,ib, l, a( i, ja )&
+                           , lda, work( iwt ), ldt,c( ic, jc ), ldc, work, ldwork )
+              end do
+           end if
+           work( 1_${ik}$ ) = lwkopt
+           return
+     end subroutine stdlib${ii}$_${ri}$ormrz
+
+#:endif
+#:endfor
+
+
+
+     pure module subroutine stdlib${ii}$_cunmr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, info )
+     !! CUNMR3 overwrites the general complex m by n matrix C with
+     !! Q * C  if SIDE = 'L' and TRANS = 'N', or
+     !! Q**H* C  if SIDE = 'L' and TRANS = 'C', or
+     !! C * Q  if SIDE = 'R' and TRANS = 'N', or
+     !! C * Q**H if SIDE = 'R' and TRANS = 'C',
+     !! where Q is a complex unitary matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1) H(2) . . . H(k)
+     !! as returned by CTZRZF. Q is of order m if SIDE = 'L' and of order n
+     !! if SIDE = 'R'.
+               
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, m, n
+           ! Array Arguments 
+           complex(sp), intent(in) :: a(lda,*), tau(*)
+           complex(sp), intent(inout) :: c(ldc,*)
+           complex(sp), intent(out) :: work(*)
+        ! =====================================================================
+           ! Local Scalars 
+           logical(lk) :: left, notran
+           integer(${ik}$) :: i, i1, i2, i3, ic, ja, jc, mi, ni, nq
+           complex(sp) :: taui
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input arguments
+           info = 0_${ik}$
+           left = stdlib_lsame( side, 'L' )
+           notran = stdlib_lsame( trans, 'N' )
+           ! nq is the order of q
+           if( left ) then
+              nq = m
+           else
+              nq = n
+           end if
+           if( .not.left .and. .not.stdlib_lsame( side, 'R' ) ) then
+              info = -1_${ik}$
+           else if( .not.notran .and. .not.stdlib_lsame( trans, 'C' ) ) then
+              info = -2_${ik}$
+           else if( m<0_${ik}$ ) then
+              info = -3_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -4_${ik}$
+           else if( k<0_${ik}$ .or. k>nq ) then
+              info = -5_${ik}$
+           else if( l<0_${ik}$ .or. ( left .and. ( l>m ) ) .or.( .not.left .and. ( l>n ) ) ) then
+              info = -6_${ik}$
+           else if( lda<max( 1_${ik}$, k ) ) then
+              info = -8_${ik}$
+           else if( ldc<max( 1_${ik}$, m ) ) then
+              info = -11_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'CUNMR3', -info )
+              return
+           end if
+           ! quick return if possible
+           if( m==0 .or. n==0 .or. k==0 )return
+           if( ( left .and. .not.notran .or. .not.left .and. notran ) ) then
+              i1 = 1_${ik}$
+              i2 = k
+              i3 = 1_${ik}$
+           else
+              i1 = k
+              i2 = 1_${ik}$
+              i3 = -1_${ik}$
+           end if
+           if( left ) then
+              ni = n
+              ja = m - l + 1_${ik}$
+              jc = 1_${ik}$
+           else
+              mi = m
+              ja = n - l + 1_${ik}$
+              ic = 1_${ik}$
+           end if
+           do i = i1, i2, i3
+              if( left ) then
+                 ! h(i) or h(i)**h is applied to c(i:m,1:n)
+                 mi = m - i + 1_${ik}$
+                 ic = i
+              else
+                 ! h(i) or h(i)**h is applied to c(1:m,i:n)
+                 ni = n - i + 1_${ik}$
+                 jc = i
+              end if
+              ! apply h(i) or h(i)**h
+              if( notran ) then
+                 taui = tau( i )
+              else
+                 taui = conjg( tau( i ) )
+              end if
+              call stdlib${ii}$_clarz( side, mi, ni, l, a( i, ja ), lda, taui,c( ic, jc ), ldc, work )
+                        
+           end do
+           return
+     end subroutine stdlib${ii}$_cunmr3
+
+     pure module subroutine stdlib${ii}$_zunmr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, info )
+     !! ZUNMR3 overwrites the general complex m by n matrix C with
+     !! Q * C  if SIDE = 'L' and TRANS = 'N', or
+     !! Q**H* C  if SIDE = 'L' and TRANS = 'C', or
+     !! C * Q  if SIDE = 'R' and TRANS = 'N', or
+     !! C * Q**H if SIDE = 'R' and TRANS = 'C',
+     !! where Q is a complex unitary matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1) H(2) . . . H(k)
+     !! as returned by ZTZRZF. Q is of order m if SIDE = 'L' and of order n
+     !! if SIDE = 'R'.
+               
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, m, n
+           ! Array Arguments 
+           complex(dp), intent(in) :: a(lda,*), tau(*)
+           complex(dp), intent(inout) :: c(ldc,*)
+           complex(dp), intent(out) :: work(*)
+        ! =====================================================================
+           ! Local Scalars 
+           logical(lk) :: left, notran
+           integer(${ik}$) :: i, i1, i2, i3, ic, ja, jc, mi, ni, nq
+           complex(dp) :: taui
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input arguments
+           info = 0_${ik}$
+           left = stdlib_lsame( side, 'L' )
+           notran = stdlib_lsame( trans, 'N' )
+           ! nq is the order of q
+           if( left ) then
+              nq = m
+           else
+              nq = n
+           end if
+           if( .not.left .and. .not.stdlib_lsame( side, 'R' ) ) then
+              info = -1_${ik}$
+           else if( .not.notran .and. .not.stdlib_lsame( trans, 'C' ) ) then
+              info = -2_${ik}$
+           else if( m<0_${ik}$ ) then
+              info = -3_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -4_${ik}$
+           else if( k<0_${ik}$ .or. k>nq ) then
+              info = -5_${ik}$
+           else if( l<0_${ik}$ .or. ( left .and. ( l>m ) ) .or.( .not.left .and. ( l>n ) ) ) then
+              info = -6_${ik}$
+           else if( lda<max( 1_${ik}$, k ) ) then
+              info = -8_${ik}$
+           else if( ldc<max( 1_${ik}$, m ) ) then
+              info = -11_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'ZUNMR3', -info )
+              return
+           end if
+           ! quick return if possible
+           if( m==0 .or. n==0 .or. k==0 )return
+           if( ( left .and. .not.notran .or. .not.left .and. notran ) ) then
+              i1 = 1_${ik}$
+              i2 = k
+              i3 = 1_${ik}$
+           else
+              i1 = k
+              i2 = 1_${ik}$
+              i3 = -1_${ik}$
+           end if
+           if( left ) then
+              ni = n
+              ja = m - l + 1_${ik}$
+              jc = 1_${ik}$
+           else
+              mi = m
+              ja = n - l + 1_${ik}$
+              ic = 1_${ik}$
+           end if
+           do i = i1, i2, i3
+              if( left ) then
+                 ! h(i) or h(i)**h is applied to c(i:m,1:n)
+                 mi = m - i + 1_${ik}$
+                 ic = i
+              else
+                 ! h(i) or h(i)**h is applied to c(1:m,i:n)
+                 ni = n - i + 1_${ik}$
+                 jc = i
+              end if
+              ! apply h(i) or h(i)**h
+              if( notran ) then
+                 taui = tau( i )
+              else
+                 taui = conjg( tau( i ) )
+              end if
+              call stdlib${ii}$_zlarz( side, mi, ni, l, a( i, ja ), lda, taui,c( ic, jc ), ldc, work )
+                        
+           end do
+           return
+     end subroutine stdlib${ii}$_zunmr3
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$unmr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, info )
+     !! ZUNMR3: overwrites the general complex m by n matrix C with
+     !! Q * C  if SIDE = 'L' and TRANS = 'N', or
+     !! Q**H* C  if SIDE = 'L' and TRANS = 'C', or
+     !! C * Q  if SIDE = 'R' and TRANS = 'N', or
+     !! C * Q**H if SIDE = 'R' and TRANS = 'C',
+     !! where Q is a complex unitary matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1) H(2) . . . H(k)
+     !! as returned by ZTZRZF. Q is of order m if SIDE = 'L' and of order n
+     !! if SIDE = 'R'.
+               
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, m, n
+           ! Array Arguments 
+           complex(${ck}$), intent(in) :: a(lda,*), tau(*)
+           complex(${ck}$), intent(inout) :: c(ldc,*)
+           complex(${ck}$), intent(out) :: work(*)
+        ! =====================================================================
+           ! Local Scalars 
+           logical(lk) :: left, notran
+           integer(${ik}$) :: i, i1, i2, i3, ic, ja, jc, mi, ni, nq
+           complex(${ck}$) :: taui
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input arguments
+           info = 0_${ik}$
+           left = stdlib_lsame( side, 'L' )
+           notran = stdlib_lsame( trans, 'N' )
+           ! nq is the order of q
+           if( left ) then
+              nq = m
+           else
+              nq = n
+           end if
+           if( .not.left .and. .not.stdlib_lsame( side, 'R' ) ) then
+              info = -1_${ik}$
+           else if( .not.notran .and. .not.stdlib_lsame( trans, 'C' ) ) then
+              info = -2_${ik}$
+           else if( m<0_${ik}$ ) then
+              info = -3_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -4_${ik}$
+           else if( k<0_${ik}$ .or. k>nq ) then
+              info = -5_${ik}$
+           else if( l<0_${ik}$ .or. ( left .and. ( l>m ) ) .or.( .not.left .and. ( l>n ) ) ) then
+              info = -6_${ik}$
+           else if( lda<max( 1_${ik}$, k ) ) then
+              info = -8_${ik}$
+           else if( ldc<max( 1_${ik}$, m ) ) then
+              info = -11_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'ZUNMR3', -info )
+              return
+           end if
+           ! quick return if possible
+           if( m==0 .or. n==0 .or. k==0 )return
+           if( ( left .and. .not.notran .or. .not.left .and. notran ) ) then
+              i1 = 1_${ik}$
+              i2 = k
+              i3 = 1_${ik}$
+           else
+              i1 = k
+              i2 = 1_${ik}$
+              i3 = -1_${ik}$
+           end if
+           if( left ) then
+              ni = n
+              ja = m - l + 1_${ik}$
+              jc = 1_${ik}$
+           else
+              mi = m
+              ja = n - l + 1_${ik}$
+              ic = 1_${ik}$
+           end if
+           do i = i1, i2, i3
+              if( left ) then
+                 ! h(i) or h(i)**h is applied to c(i:m,1:n)
+                 mi = m - i + 1_${ik}$
+                 ic = i
+              else
+                 ! h(i) or h(i)**h is applied to c(1:m,i:n)
+                 ni = n - i + 1_${ik}$
+                 jc = i
+              end if
+              ! apply h(i) or h(i)**h
+              if( notran ) then
+                 taui = tau( i )
+              else
+                 taui = conjg( tau( i ) )
+              end if
+              call stdlib${ii}$_${ci}$larz( side, mi, ni, l, a( i, ja ), lda, taui,c( ic, jc ), ldc, work )
+                        
+           end do
+           return
+     end subroutine stdlib${ii}$_${ci}$unmr3
+
+#:endif
+#:endfor
+
+
+
+     pure module subroutine stdlib${ii}$_sormr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, info )
+     !! SORMR3 overwrites the general real m by n matrix C with
+     !! Q * C  if SIDE = 'L' and TRANS = 'N', or
+     !! Q**T* C  if SIDE = 'L' and TRANS = 'C', or
+     !! C * Q  if SIDE = 'R' and TRANS = 'N', or
+     !! C * Q**T if SIDE = 'R' and TRANS = 'C',
+     !! where Q is a real orthogonal matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1) H(2) . . . H(k)
+     !! as returned by STZRZF. Q is of order m if SIDE = 'L' and of order n
+     !! if SIDE = 'R'.
+               
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, m, n
+           ! Array Arguments 
+           real(sp), intent(in) :: a(lda,*), tau(*)
+           real(sp), intent(inout) :: c(ldc,*)
+           real(sp), intent(out) :: work(*)
+        ! =====================================================================
+           ! Local Scalars 
+           logical(lk) :: left, notran
+           integer(${ik}$) :: i, i1, i2, i3, ic, ja, jc, mi, ni, nq
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input arguments
+           info = 0_${ik}$
+           left = stdlib_lsame( side, 'L' )
+           notran = stdlib_lsame( trans, 'N' )
+           ! nq is the order of q
+           if( left ) then
+              nq = m
+           else
+              nq = n
+           end if
+           if( .not.left .and. .not.stdlib_lsame( side, 'R' ) ) then
+              info = -1_${ik}$
+           else if( .not.notran .and. .not.stdlib_lsame( trans, 'T' ) ) then
+              info = -2_${ik}$
+           else if( m<0_${ik}$ ) then
+              info = -3_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -4_${ik}$
+           else if( k<0_${ik}$ .or. k>nq ) then
+              info = -5_${ik}$
+           else if( l<0_${ik}$ .or. ( left .and. ( l>m ) ) .or.( .not.left .and. ( l>n ) ) ) then
+              info = -6_${ik}$
+           else if( lda<max( 1_${ik}$, k ) ) then
+              info = -8_${ik}$
+           else if( ldc<max( 1_${ik}$, m ) ) then
+              info = -11_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'SORMR3', -info )
+              return
+           end if
+           ! quick return if possible
+           if( m==0 .or. n==0 .or. k==0 )return
+           if( ( left .and. .not.notran .or. .not.left .and. notran ) ) then
+              i1 = 1_${ik}$
+              i2 = k
+              i3 = 1_${ik}$
+           else
+              i1 = k
+              i2 = 1_${ik}$
+              i3 = -1_${ik}$
+           end if
+           if( left ) then
+              ni = n
+              ja = m - l + 1_${ik}$
+              jc = 1_${ik}$
+           else
+              mi = m
+              ja = n - l + 1_${ik}$
+              ic = 1_${ik}$
+           end if
+           do i = i1, i2, i3
+              if( left ) then
+                 ! h(i) or h(i)**t is applied to c(i:m,1:n)
+                 mi = m - i + 1_${ik}$
+                 ic = i
+              else
+                 ! h(i) or h(i)**t is applied to c(1:m,i:n)
+                 ni = n - i + 1_${ik}$
+                 jc = i
+              end if
+              ! apply h(i) or h(i)**t
+              call stdlib${ii}$_slarz( side, mi, ni, l, a( i, ja ), lda, tau( i ),c( ic, jc ), ldc, &
+                        work )
+           end do
+           return
+     end subroutine stdlib${ii}$_sormr3
+
+     pure module subroutine stdlib${ii}$_dormr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, info )
+     !! DORMR3 overwrites the general real m by n matrix C with
+     !! Q * C  if SIDE = 'L' and TRANS = 'N', or
+     !! Q**T* C  if SIDE = 'L' and TRANS = 'C', or
+     !! C * Q  if SIDE = 'R' and TRANS = 'N', or
+     !! C * Q**T if SIDE = 'R' and TRANS = 'C',
+     !! where Q is a real orthogonal matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1) H(2) . . . H(k)
+     !! as returned by DTZRZF. Q is of order m if SIDE = 'L' and of order n
+     !! if SIDE = 'R'.
+               
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, m, n
+           ! Array Arguments 
+           real(dp), intent(in) :: a(lda,*), tau(*)
+           real(dp), intent(inout) :: c(ldc,*)
+           real(dp), intent(out) :: work(*)
+        ! =====================================================================
+           ! Local Scalars 
+           logical(lk) :: left, notran
+           integer(${ik}$) :: i, i1, i2, i3, ic, ja, jc, mi, ni, nq
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input arguments
+           info = 0_${ik}$
+           left = stdlib_lsame( side, 'L' )
+           notran = stdlib_lsame( trans, 'N' )
+           ! nq is the order of q
+           if( left ) then
+              nq = m
+           else
+              nq = n
+           end if
+           if( .not.left .and. .not.stdlib_lsame( side, 'R' ) ) then
+              info = -1_${ik}$
+           else if( .not.notran .and. .not.stdlib_lsame( trans, 'T' ) ) then
+              info = -2_${ik}$
+           else if( m<0_${ik}$ ) then
+              info = -3_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -4_${ik}$
+           else if( k<0_${ik}$ .or. k>nq ) then
+              info = -5_${ik}$
+           else if( l<0_${ik}$ .or. ( left .and. ( l>m ) ) .or.( .not.left .and. ( l>n ) ) ) then
+              info = -6_${ik}$
+           else if( lda<max( 1_${ik}$, k ) ) then
+              info = -8_${ik}$
+           else if( ldc<max( 1_${ik}$, m ) ) then
+              info = -11_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'DORMR3', -info )
+              return
+           end if
+           ! quick return if possible
+           if( m==0 .or. n==0 .or. k==0 )return
+           if( ( left .and. .not.notran .or. .not.left .and. notran ) ) then
+              i1 = 1_${ik}$
+              i2 = k
+              i3 = 1_${ik}$
+           else
+              i1 = k
+              i2 = 1_${ik}$
+              i3 = -1_${ik}$
+           end if
+           if( left ) then
+              ni = n
+              ja = m - l + 1_${ik}$
+              jc = 1_${ik}$
+           else
+              mi = m
+              ja = n - l + 1_${ik}$
+              ic = 1_${ik}$
+           end if
+           do i = i1, i2, i3
+              if( left ) then
+                 ! h(i) or h(i)**t is applied to c(i:m,1:n)
+                 mi = m - i + 1_${ik}$
+                 ic = i
+              else
+                 ! h(i) or h(i)**t is applied to c(1:m,i:n)
+                 ni = n - i + 1_${ik}$
+                 jc = i
+              end if
+              ! apply h(i) or h(i)**t
+              call stdlib${ii}$_dlarz( side, mi, ni, l, a( i, ja ), lda, tau( i ),c( ic, jc ), ldc, &
+                        work )
+           end do
+           return
+     end subroutine stdlib${ii}$_dormr3
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$ormr3( side, trans, m, n, k, l, a, lda, tau, c, ldc,work, info )
+     !! DORMR3: overwrites the general real m by n matrix C with
+     !! Q * C  if SIDE = 'L' and TRANS = 'N', or
+     !! Q**T* C  if SIDE = 'L' and TRANS = 'C', or
+     !! C * Q  if SIDE = 'R' and TRANS = 'N', or
+     !! C * Q**T if SIDE = 'R' and TRANS = 'C',
+     !! where Q is a real orthogonal matrix defined as the product of k
+     !! elementary reflectors
+     !! Q = H(1) H(2) . . . H(k)
+     !! as returned by DTZRZF. Q is of order m if SIDE = 'L' and of order n
+     !! if SIDE = 'R'.
+               
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: side, trans
+           integer(${ik}$), intent(out) :: info
+           integer(${ik}$), intent(in) :: k, l, lda, ldc, m, n
+           ! Array Arguments 
+           real(${rk}$), intent(in) :: a(lda,*), tau(*)
+           real(${rk}$), intent(inout) :: c(ldc,*)
+           real(${rk}$), intent(out) :: work(*)
+        ! =====================================================================
+           ! Local Scalars 
+           logical(lk) :: left, notran
+           integer(${ik}$) :: i, i1, i2, i3, ic, ja, jc, mi, ni, nq
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! test the input arguments
+           info = 0_${ik}$
+           left = stdlib_lsame( side, 'L' )
+           notran = stdlib_lsame( trans, 'N' )
+           ! nq is the order of q
+           if( left ) then
+              nq = m
+           else
+              nq = n
+           end if
+           if( .not.left .and. .not.stdlib_lsame( side, 'R' ) ) then
+              info = -1_${ik}$
+           else if( .not.notran .and. .not.stdlib_lsame( trans, 'T' ) ) then
+              info = -2_${ik}$
+           else if( m<0_${ik}$ ) then
+              info = -3_${ik}$
+           else if( n<0_${ik}$ ) then
+              info = -4_${ik}$
+           else if( k<0_${ik}$ .or. k>nq ) then
+              info = -5_${ik}$
+           else if( l<0_${ik}$ .or. ( left .and. ( l>m ) ) .or.( .not.left .and. ( l>n ) ) ) then
+              info = -6_${ik}$
+           else if( lda<max( 1_${ik}$, k ) ) then
+              info = -8_${ik}$
+           else if( ldc<max( 1_${ik}$, m ) ) then
+              info = -11_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'DORMR3', -info )
+              return
+           end if
+           ! quick return if possible
+           if( m==0 .or. n==0 .or. k==0 )return
+           if( ( left .and. .not.notran .or. .not.left .and. notran ) ) then
+              i1 = 1_${ik}$
+              i2 = k
+              i3 = 1_${ik}$
+           else
+              i1 = k
+              i2 = 1_${ik}$
+              i3 = -1_${ik}$
+           end if
+           if( left ) then
+              ni = n
+              ja = m - l + 1_${ik}$
+              jc = 1_${ik}$
+           else
+              mi = m
+              ja = n - l + 1_${ik}$
+              ic = 1_${ik}$
+           end if
+           do i = i1, i2, i3
+              if( left ) then
+                 ! h(i) or h(i)**t is applied to c(i:m,1:n)
+                 mi = m - i + 1_${ik}$
+                 ic = i
+              else
+                 ! h(i) or h(i)**t is applied to c(1:m,i:n)
+                 ni = n - i + 1_${ik}$
+                 jc = i
+              end if
+              ! apply h(i) or h(i)**t
+              call stdlib${ii}$_${ri}$larz( side, mi, ni, l, a( i, ja ), lda, tau( i ),c( ic, jc ), ldc, &
+                        work )
+           end do
+           return
+     end subroutine stdlib${ii}$_${ri}$ormr3
+
+#:endif
+#:endfor
+
+
+
+     pure module subroutine stdlib${ii}$_slarz( side, m, n, l, v, incv, tau, c, ldc, work )
+     !! SLARZ applies a real elementary reflector H to a real M-by-N
+     !! matrix C, from either the left or the right. H is represented in the
+     !! form
+     !! H = I - tau * v * v**T
+     !! where tau is a real scalar and v is a real vector.
+     !! If tau = 0, then H is taken to be the unit matrix.
+     !! H is a product of k elementary reflectors as returned by STZRZF.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: side
+           integer(${ik}$), intent(in) :: incv, l, ldc, m, n
+           real(sp), intent(in) :: tau
+           ! Array Arguments 
+           real(sp), intent(inout) :: c(ldc,*)
+           real(sp), intent(in) :: v(*)
+           real(sp), intent(out) :: work(*)
+        ! =====================================================================
+           
+           ! Executable Statements 
+           if( stdlib_lsame( side, 'L' ) ) then
+              ! form  h * c
+              if( tau/=zero ) then
+                 ! w( 1:n ) = c( 1, 1:n )
+                 call stdlib${ii}$_scopy( n, c, ldc, work, 1_${ik}$ )
+                 ! w( 1:n ) = w( 1:n ) + c( m-l+1:m, 1:n )**t * v( 1:l )
+                 call stdlib${ii}$_sgemv( 'TRANSPOSE', l, n, one, c( m-l+1, 1_${ik}$ ), ldc, v,incv, one, work,&
+                            1_${ik}$ )
+                 ! c( 1, 1:n ) = c( 1, 1:n ) - tau * w( 1:n )
+                 call stdlib${ii}$_saxpy( n, -tau, work, 1_${ik}$, c, ldc )
+                 ! c( m-l+1:m, 1:n ) = c( m-l+1:m, 1:n ) - ...
+                                     ! tau * v( 1:l ) * w( 1:n )**t
+                 call stdlib${ii}$_sger( l, n, -tau, v, incv, work, 1_${ik}$, c( m-l+1, 1_${ik}$ ),ldc )
+              end if
+           else
+              ! form  c * h
+              if( tau/=zero ) then
+                 ! w( 1:m ) = c( 1:m, 1 )
+                 call stdlib${ii}$_scopy( m, c, 1_${ik}$, work, 1_${ik}$ )
+                 ! w( 1:m ) = w( 1:m ) + c( 1:m, n-l+1:n, 1:n ) * v( 1:l )
+                 call stdlib${ii}$_sgemv( 'NO TRANSPOSE', m, l, one, c( 1_${ik}$, n-l+1 ), ldc,v, incv, one, &
+                           work, 1_${ik}$ )
+                 ! c( 1:m, 1 ) = c( 1:m, 1 ) - tau * w( 1:m )
+                 call stdlib${ii}$_saxpy( m, -tau, work, 1_${ik}$, c, 1_${ik}$ )
+                 ! c( 1:m, n-l+1:n ) = c( 1:m, n-l+1:n ) - ...
+                                     ! tau * w( 1:m ) * v( 1:l )**t
+                 call stdlib${ii}$_sger( m, l, -tau, work, 1_${ik}$, v, incv, c( 1_${ik}$, n-l+1 ),ldc )
+              end if
+           end if
+           return
+     end subroutine stdlib${ii}$_slarz
+
+     pure module subroutine stdlib${ii}$_dlarz( side, m, n, l, v, incv, tau, c, ldc, work )
+     !! DLARZ applies a real elementary reflector H to a real M-by-N
+     !! matrix C, from either the left or the right. H is represented in the
+     !! form
+     !! H = I - tau * v * v**T
+     !! where tau is a real scalar and v is a real vector.
+     !! If tau = 0, then H is taken to be the unit matrix.
+     !! H is a product of k elementary reflectors as returned by DTZRZF.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: side
+           integer(${ik}$), intent(in) :: incv, l, ldc, m, n
+           real(dp), intent(in) :: tau
+           ! Array Arguments 
+           real(dp), intent(inout) :: c(ldc,*)
+           real(dp), intent(in) :: v(*)
+           real(dp), intent(out) :: work(*)
+        ! =====================================================================
+           
+           ! Executable Statements 
+           if( stdlib_lsame( side, 'L' ) ) then
+              ! form  h * c
+              if( tau/=zero ) then
+                 ! w( 1:n ) = c( 1, 1:n )
+                 call stdlib${ii}$_dcopy( n, c, ldc, work, 1_${ik}$ )
+                 ! w( 1:n ) = w( 1:n ) + c( m-l+1:m, 1:n )**t * v( 1:l )
+                 call stdlib${ii}$_dgemv( 'TRANSPOSE', l, n, one, c( m-l+1, 1_${ik}$ ), ldc, v,incv, one, work,&
+                            1_${ik}$ )
+                 ! c( 1, 1:n ) = c( 1, 1:n ) - tau * w( 1:n )
+                 call stdlib${ii}$_daxpy( n, -tau, work, 1_${ik}$, c, ldc )
+                 ! c( m-l+1:m, 1:n ) = c( m-l+1:m, 1:n ) - ...
+                                     ! tau * v( 1:l ) * w( 1:n )**t
+                 call stdlib${ii}$_dger( l, n, -tau, v, incv, work, 1_${ik}$, c( m-l+1, 1_${ik}$ ),ldc )
+              end if
+           else
+              ! form  c * h
+              if( tau/=zero ) then
+                 ! w( 1:m ) = c( 1:m, 1 )
+                 call stdlib${ii}$_dcopy( m, c, 1_${ik}$, work, 1_${ik}$ )
+                 ! w( 1:m ) = w( 1:m ) + c( 1:m, n-l+1:n, 1:n ) * v( 1:l )
+                 call stdlib${ii}$_dgemv( 'NO TRANSPOSE', m, l, one, c( 1_${ik}$, n-l+1 ), ldc,v, incv, one, &
+                           work, 1_${ik}$ )
+                 ! c( 1:m, 1 ) = c( 1:m, 1 ) - tau * w( 1:m )
+                 call stdlib${ii}$_daxpy( m, -tau, work, 1_${ik}$, c, 1_${ik}$ )
+                 ! c( 1:m, n-l+1:n ) = c( 1:m, n-l+1:n ) - ...
+                                     ! tau * w( 1:m ) * v( 1:l )**t
+                 call stdlib${ii}$_dger( m, l, -tau, work, 1_${ik}$, v, incv, c( 1_${ik}$, n-l+1 ),ldc )
+              end if
+           end if
+           return
+     end subroutine stdlib${ii}$_dlarz
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$larz( side, m, n, l, v, incv, tau, c, ldc, work )
+     !! DLARZ: applies a real elementary reflector H to a real M-by-N
+     !! matrix C, from either the left or the right. H is represented in the
+     !! form
+     !! H = I - tau * v * v**T
+     !! where tau is a real scalar and v is a real vector.
+     !! If tau = 0, then H is taken to be the unit matrix.
+     !! H is a product of k elementary reflectors as returned by DTZRZF.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: side
+           integer(${ik}$), intent(in) :: incv, l, ldc, m, n
+           real(${rk}$), intent(in) :: tau
+           ! Array Arguments 
+           real(${rk}$), intent(inout) :: c(ldc,*)
+           real(${rk}$), intent(in) :: v(*)
+           real(${rk}$), intent(out) :: work(*)
+        ! =====================================================================
+           
+           ! Executable Statements 
+           if( stdlib_lsame( side, 'L' ) ) then
+              ! form  h * c
+              if( tau/=zero ) then
+                 ! w( 1:n ) = c( 1, 1:n )
+                 call stdlib${ii}$_${ri}$copy( n, c, ldc, work, 1_${ik}$ )
+                 ! w( 1:n ) = w( 1:n ) + c( m-l+1:m, 1:n )**t * v( 1:l )
+                 call stdlib${ii}$_${ri}$gemv( 'TRANSPOSE', l, n, one, c( m-l+1, 1_${ik}$ ), ldc, v,incv, one, work,&
+                            1_${ik}$ )
+                 ! c( 1, 1:n ) = c( 1, 1:n ) - tau * w( 1:n )
+                 call stdlib${ii}$_${ri}$axpy( n, -tau, work, 1_${ik}$, c, ldc )
+                 ! c( m-l+1:m, 1:n ) = c( m-l+1:m, 1:n ) - ...
+                                     ! tau * v( 1:l ) * w( 1:n )**t
+                 call stdlib${ii}$_${ri}$ger( l, n, -tau, v, incv, work, 1_${ik}$, c( m-l+1, 1_${ik}$ ),ldc )
+              end if
+           else
+              ! form  c * h
+              if( tau/=zero ) then
+                 ! w( 1:m ) = c( 1:m, 1 )
+                 call stdlib${ii}$_${ri}$copy( m, c, 1_${ik}$, work, 1_${ik}$ )
+                 ! w( 1:m ) = w( 1:m ) + c( 1:m, n-l+1:n, 1:n ) * v( 1:l )
+                 call stdlib${ii}$_${ri}$gemv( 'NO TRANSPOSE', m, l, one, c( 1_${ik}$, n-l+1 ), ldc,v, incv, one, &
+                           work, 1_${ik}$ )
+                 ! c( 1:m, 1 ) = c( 1:m, 1 ) - tau * w( 1:m )
+                 call stdlib${ii}$_${ri}$axpy( m, -tau, work, 1_${ik}$, c, 1_${ik}$ )
+                 ! c( 1:m, n-l+1:n ) = c( 1:m, n-l+1:n ) - ...
+                                     ! tau * w( 1:m ) * v( 1:l )**t
+                 call stdlib${ii}$_${ri}$ger( m, l, -tau, work, 1_${ik}$, v, incv, c( 1_${ik}$, n-l+1 ),ldc )
+              end if
+           end if
+           return
+     end subroutine stdlib${ii}$_${ri}$larz
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_clarz( side, m, n, l, v, incv, tau, c, ldc, work )
+     !! CLARZ applies a complex elementary reflector H to a complex
+     !! M-by-N matrix C, from either the left or the right. H is represented
+     !! in the form
+     !! H = I - tau * v * v**H
+     !! where tau is a complex scalar and v is a complex vector.
+     !! If tau = 0, then H is taken to be the unit matrix.
+     !! To apply H**H (the conjugate transpose of H), supply conjg(tau) instead
+     !! tau.
+     !! H is a product of k elementary reflectors as returned by CTZRZF.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: side
+           integer(${ik}$), intent(in) :: incv, l, ldc, m, n
+           complex(sp), intent(in) :: tau
+           ! Array Arguments 
+           complex(sp), intent(inout) :: c(ldc,*)
+           complex(sp), intent(in) :: v(*)
+           complex(sp), intent(out) :: work(*)
+        ! =====================================================================
+           
+           ! Executable Statements 
+           if( stdlib_lsame( side, 'L' ) ) then
+              ! form  h * c
+              if( tau/=czero ) then
+                 ! w( 1:n ) = conjg( c( 1, 1:n ) )
+                 call stdlib${ii}$_ccopy( n, c, ldc, work, 1_${ik}$ )
+                 call stdlib${ii}$_clacgv( n, work, 1_${ik}$ )
+                 ! w( 1:n ) = conjg( w( 1:n ) + c( m-l+1:m, 1:n )**h * v( 1:l ) )
+                 call stdlib${ii}$_cgemv( 'CONJUGATE TRANSPOSE', l, n, cone, c( m-l+1, 1_${ik}$ ),ldc, v, incv,&
+                            cone, work, 1_${ik}$ )
+                 call stdlib${ii}$_clacgv( n, work, 1_${ik}$ )
+                 ! c( 1, 1:n ) = c( 1, 1:n ) - tau * w( 1:n )
+                 call stdlib${ii}$_caxpy( n, -tau, work, 1_${ik}$, c, ldc )
+                 ! c( m-l+1:m, 1:n ) = c( m-l+1:m, 1:n ) - ...
+                                     ! tau * v( 1:l ) * w( 1:n )**h
+                 call stdlib${ii}$_cgeru( l, n, -tau, v, incv, work, 1_${ik}$, c( m-l+1, 1_${ik}$ ),ldc )
+              end if
+           else
+              ! form  c * h
+              if( tau/=czero ) then
+                 ! w( 1:m ) = c( 1:m, 1 )
+                 call stdlib${ii}$_ccopy( m, c, 1_${ik}$, work, 1_${ik}$ )
+                 ! w( 1:m ) = w( 1:m ) + c( 1:m, n-l+1:n, 1:n ) * v( 1:l )
+                 call stdlib${ii}$_cgemv( 'NO TRANSPOSE', m, l, cone, c( 1_${ik}$, n-l+1 ), ldc,v, incv, cone, &
+                           work, 1_${ik}$ )
+                 ! c( 1:m, 1 ) = c( 1:m, 1 ) - tau * w( 1:m )
+                 call stdlib${ii}$_caxpy( m, -tau, work, 1_${ik}$, c, 1_${ik}$ )
+                 ! c( 1:m, n-l+1:n ) = c( 1:m, n-l+1:n ) - ...
+                                     ! tau * w( 1:m ) * v( 1:l )**h
+                 call stdlib${ii}$_cgerc( m, l, -tau, work, 1_${ik}$, v, incv, c( 1_${ik}$, n-l+1 ),ldc )
+              end if
+           end if
+           return
+     end subroutine stdlib${ii}$_clarz
+
+     pure module subroutine stdlib${ii}$_zlarz( side, m, n, l, v, incv, tau, c, ldc, work )
+     !! ZLARZ applies a complex elementary reflector H to a complex
+     !! M-by-N matrix C, from either the left or the right. H is represented
+     !! in the form
+     !! H = I - tau * v * v**H
+     !! where tau is a complex scalar and v is a complex vector.
+     !! If tau = 0, then H is taken to be the unit matrix.
+     !! To apply H**H (the conjugate transpose of H), supply conjg(tau) instead
+     !! tau.
+     !! H is a product of k elementary reflectors as returned by ZTZRZF.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: side
+           integer(${ik}$), intent(in) :: incv, l, ldc, m, n
+           complex(dp), intent(in) :: tau
+           ! Array Arguments 
+           complex(dp), intent(inout) :: c(ldc,*)
+           complex(dp), intent(in) :: v(*)
+           complex(dp), intent(out) :: work(*)
+        ! =====================================================================
+           
+           ! Executable Statements 
+           if( stdlib_lsame( side, 'L' ) ) then
+              ! form  h * c
+              if( tau/=czero ) then
+                 ! w( 1:n ) = conjg( c( 1, 1:n ) )
+                 call stdlib${ii}$_zcopy( n, c, ldc, work, 1_${ik}$ )
+                 call stdlib${ii}$_zlacgv( n, work, 1_${ik}$ )
+                 ! w( 1:n ) = conjg( w( 1:n ) + c( m-l+1:m, 1:n )**h * v( 1:l ) )
+                 call stdlib${ii}$_zgemv( 'CONJUGATE TRANSPOSE', l, n, cone, c( m-l+1, 1_${ik}$ ),ldc, v, incv,&
+                            cone, work, 1_${ik}$ )
+                 call stdlib${ii}$_zlacgv( n, work, 1_${ik}$ )
+                 ! c( 1, 1:n ) = c( 1, 1:n ) - tau * w( 1:n )
+                 call stdlib${ii}$_zaxpy( n, -tau, work, 1_${ik}$, c, ldc )
+                 ! c( m-l+1:m, 1:n ) = c( m-l+1:m, 1:n ) - ...
+                                     ! tau * v( 1:l ) * w( 1:n )**h
+                 call stdlib${ii}$_zgeru( l, n, -tau, v, incv, work, 1_${ik}$, c( m-l+1, 1_${ik}$ ),ldc )
+              end if
+           else
+              ! form  c * h
+              if( tau/=czero ) then
+                 ! w( 1:m ) = c( 1:m, 1 )
+                 call stdlib${ii}$_zcopy( m, c, 1_${ik}$, work, 1_${ik}$ )
+                 ! w( 1:m ) = w( 1:m ) + c( 1:m, n-l+1:n, 1:n ) * v( 1:l )
+                 call stdlib${ii}$_zgemv( 'NO TRANSPOSE', m, l, cone, c( 1_${ik}$, n-l+1 ), ldc,v, incv, cone, &
+                           work, 1_${ik}$ )
+                 ! c( 1:m, 1 ) = c( 1:m, 1 ) - tau * w( 1:m )
+                 call stdlib${ii}$_zaxpy( m, -tau, work, 1_${ik}$, c, 1_${ik}$ )
+                 ! c( 1:m, n-l+1:n ) = c( 1:m, n-l+1:n ) - ...
+                                     ! tau * w( 1:m ) * v( 1:l )**h
+                 call stdlib${ii}$_zgerc( m, l, -tau, work, 1_${ik}$, v, incv, c( 1_${ik}$, n-l+1 ),ldc )
+              end if
+           end if
+           return
+     end subroutine stdlib${ii}$_zlarz
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$larz( side, m, n, l, v, incv, tau, c, ldc, work )
+     !! ZLARZ: applies a complex elementary reflector H to a complex
+     !! M-by-N matrix C, from either the left or the right. H is represented
+     !! in the form
+     !! H = I - tau * v * v**H
+     !! where tau is a complex scalar and v is a complex vector.
+     !! If tau = 0, then H is taken to be the unit matrix.
+     !! To apply H**H (the conjugate transpose of H), supply conjg(tau) instead
+     !! tau.
+     !! H is a product of k elementary reflectors as returned by ZTZRZF.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: side
+           integer(${ik}$), intent(in) :: incv, l, ldc, m, n
+           complex(${ck}$), intent(in) :: tau
+           ! Array Arguments 
+           complex(${ck}$), intent(inout) :: c(ldc,*)
+           complex(${ck}$), intent(in) :: v(*)
+           complex(${ck}$), intent(out) :: work(*)
+        ! =====================================================================
+           
+           ! Executable Statements 
+           if( stdlib_lsame( side, 'L' ) ) then
+              ! form  h * c
+              if( tau/=czero ) then
+                 ! w( 1:n ) = conjg( c( 1, 1:n ) )
+                 call stdlib${ii}$_${ci}$copy( n, c, ldc, work, 1_${ik}$ )
+                 call stdlib${ii}$_${ci}$lacgv( n, work, 1_${ik}$ )
+                 ! w( 1:n ) = conjg( w( 1:n ) + c( m-l+1:m, 1:n )**h * v( 1:l ) )
+                 call stdlib${ii}$_${ci}$gemv( 'CONJUGATE TRANSPOSE', l, n, cone, c( m-l+1, 1_${ik}$ ),ldc, v, incv,&
+                            cone, work, 1_${ik}$ )
+                 call stdlib${ii}$_${ci}$lacgv( n, work, 1_${ik}$ )
+                 ! c( 1, 1:n ) = c( 1, 1:n ) - tau * w( 1:n )
+                 call stdlib${ii}$_${ci}$axpy( n, -tau, work, 1_${ik}$, c, ldc )
+                 ! c( m-l+1:m, 1:n ) = c( m-l+1:m, 1:n ) - ...
+                                     ! tau * v( 1:l ) * w( 1:n )**h
+                 call stdlib${ii}$_${ci}$geru( l, n, -tau, v, incv, work, 1_${ik}$, c( m-l+1, 1_${ik}$ ),ldc )
+              end if
+           else
+              ! form  c * h
+              if( tau/=czero ) then
+                 ! w( 1:m ) = c( 1:m, 1 )
+                 call stdlib${ii}$_${ci}$copy( m, c, 1_${ik}$, work, 1_${ik}$ )
+                 ! w( 1:m ) = w( 1:m ) + c( 1:m, n-l+1:n, 1:n ) * v( 1:l )
+                 call stdlib${ii}$_${ci}$gemv( 'NO TRANSPOSE', m, l, cone, c( 1_${ik}$, n-l+1 ), ldc,v, incv, cone, &
+                           work, 1_${ik}$ )
+                 ! c( 1:m, 1 ) = c( 1:m, 1 ) - tau * w( 1:m )
+                 call stdlib${ii}$_${ci}$axpy( m, -tau, work, 1_${ik}$, c, 1_${ik}$ )
+                 ! c( 1:m, n-l+1:n ) = c( 1:m, n-l+1:n ) - ...
+                                     ! tau * w( 1:m ) * v( 1:l )**h
+                 call stdlib${ii}$_${ci}$gerc( m, l, -tau, work, 1_${ik}$, v, incv, c( 1_${ik}$, n-l+1 ),ldc )
+              end if
+           end if
+           return
+     end subroutine stdlib${ii}$_${ci}$larz
+
+#:endif
+#:endfor
+
+
+
+     pure module subroutine stdlib${ii}$_slarzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
+     !! SLARZB applies a real block reflector H or its transpose H**T to
+     !! a real distributed M-by-N  C from the left or the right.
+     !! Currently, only STOREV = 'R' and DIRECT = 'B' are supported.
+               ldc, work, ldwork )
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: direct, side, storev, trans
+           integer(${ik}$), intent(in) :: k, l, ldc, ldt, ldv, ldwork, m, n
+           ! Array Arguments 
+           real(sp), intent(inout) :: c(ldc,*), t(ldt,*), v(ldv,*)
+           real(sp), intent(out) :: work(ldwork,*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           character :: transt
+           integer(${ik}$) :: i, info, j
+           ! Executable Statements 
+           ! quick return if possible
+           if( m<=0 .or. n<=0 )return
+           ! check for currently supported options
+           info = 0_${ik}$
+           if( .not.stdlib_lsame( direct, 'B' ) ) then
+              info = -3_${ik}$
+           else if( .not.stdlib_lsame( storev, 'R' ) ) then
+              info = -4_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'SLARZB', -info )
+              return
+           end if
+           if( stdlib_lsame( trans, 'N' ) ) then
+              transt = 'T'
+           else
+              transt = 'N'
+           end if
+           if( stdlib_lsame( side, 'L' ) ) then
+              ! form  h * c  or  h**t * c
+              ! w( 1:n, 1:k ) = c( 1:k, 1:n )**t
+              do j = 1, k
+                 call stdlib${ii}$_scopy( n, c( j, 1_${ik}$ ), ldc, work( 1_${ik}$, j ), 1_${ik}$ )
+              end do
+              ! w( 1:n, 1:k ) = w( 1:n, 1:k ) + ...
+                              ! c( m-l+1:m, 1:n )**t * v( 1:k, 1:l )**t
+              if( l>0_${ik}$ )call stdlib${ii}$_sgemm( 'TRANSPOSE', 'TRANSPOSE', n, k, l, one,c( m-l+1, 1_${ik}$ ), &
+                        ldc, v, ldv, one, work, ldwork )
+              ! w( 1:n, 1:k ) = w( 1:n, 1:k ) * t**t  or  w( 1:m, 1:k ) * t
+              call stdlib${ii}$_strmm( 'RIGHT', 'LOWER', transt, 'NON-UNIT', n, k, one, t,ldt, work, &
+                        ldwork )
+              ! c( 1:k, 1:n ) = c( 1:k, 1:n ) - w( 1:n, 1:k )**t
+              do j = 1, n
+                 do i = 1, k
+                    c( i, j ) = c( i, j ) - work( j, i )
+                 end do
+              end do
+              ! c( m-l+1:m, 1:n ) = c( m-l+1:m, 1:n ) - ...
+                                  ! v( 1:k, 1:l )**t * w( 1:n, 1:k )**t
+              if( l>0_${ik}$ )call stdlib${ii}$_sgemm( 'TRANSPOSE', 'TRANSPOSE', l, n, k, -one, v, ldv,work, &
+                        ldwork, one, c( m-l+1, 1_${ik}$ ), ldc )
+           else if( stdlib_lsame( side, 'R' ) ) then
+              ! form  c * h  or  c * h**t
+              ! w( 1:m, 1:k ) = c( 1:m, 1:k )
+              do j = 1, k
+                 call stdlib${ii}$_scopy( m, c( 1_${ik}$, j ), 1_${ik}$, work( 1_${ik}$, j ), 1_${ik}$ )
+              end do
+              ! w( 1:m, 1:k ) = w( 1:m, 1:k ) + ...
+                              ! c( 1:m, n-l+1:n ) * v( 1:k, 1:l )**t
+              if( l>0_${ik}$ )call stdlib${ii}$_sgemm( 'NO TRANSPOSE', 'TRANSPOSE', m, k, l, one,c( 1_${ik}$, n-l+1 ),&
+                         ldc, v, ldv, one, work, ldwork )
+              ! w( 1:m, 1:k ) = w( 1:m, 1:k ) * t  or  w( 1:m, 1:k ) * t**t
+              call stdlib${ii}$_strmm( 'RIGHT', 'LOWER', trans, 'NON-UNIT', m, k, one, t,ldt, work, &
+                        ldwork )
+              ! c( 1:m, 1:k ) = c( 1:m, 1:k ) - w( 1:m, 1:k )
+              do j = 1, k
+                 do i = 1, m
+                    c( i, j ) = c( i, j ) - work( i, j )
+                 end do
+              end do
+              ! c( 1:m, n-l+1:n ) = c( 1:m, n-l+1:n ) - ...
+                                  ! w( 1:m, 1:k ) * v( 1:k, 1:l )
+              if( l>0_${ik}$ )call stdlib${ii}$_sgemm( 'NO TRANSPOSE', 'NO TRANSPOSE', m, l, k, -one,work, &
+                        ldwork, v, ldv, one, c( 1_${ik}$, n-l+1 ), ldc )
+           end if
+           return
+     end subroutine stdlib${ii}$_slarzb
+
+     pure module subroutine stdlib${ii}$_dlarzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
+     !! DLARZB applies a real block reflector H or its transpose H**T to
+     !! a real distributed M-by-N  C from the left or the right.
+     !! Currently, only STOREV = 'R' and DIRECT = 'B' are supported.
+               ldc, work, ldwork )
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: direct, side, storev, trans
+           integer(${ik}$), intent(in) :: k, l, ldc, ldt, ldv, ldwork, m, n
+           ! Array Arguments 
+           real(dp), intent(inout) :: c(ldc,*), t(ldt,*), v(ldv,*)
+           real(dp), intent(out) :: work(ldwork,*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           character :: transt
+           integer(${ik}$) :: i, info, j
+           ! Executable Statements 
+           ! quick return if possible
+           if( m<=0 .or. n<=0 )return
+           ! check for currently supported options
+           info = 0_${ik}$
+           if( .not.stdlib_lsame( direct, 'B' ) ) then
+              info = -3_${ik}$
+           else if( .not.stdlib_lsame( storev, 'R' ) ) then
+              info = -4_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'DLARZB', -info )
+              return
+           end if
+           if( stdlib_lsame( trans, 'N' ) ) then
+              transt = 'T'
+           else
+              transt = 'N'
+           end if
+           if( stdlib_lsame( side, 'L' ) ) then
+              ! form  h * c  or  h**t * c
+              ! w( 1:n, 1:k ) = c( 1:k, 1:n )**t
+              do j = 1, k
+                 call stdlib${ii}$_dcopy( n, c( j, 1_${ik}$ ), ldc, work( 1_${ik}$, j ), 1_${ik}$ )
+              end do
+              ! w( 1:n, 1:k ) = w( 1:n, 1:k ) + ...
+                              ! c( m-l+1:m, 1:n )**t * v( 1:k, 1:l )**t
+              if( l>0_${ik}$ )call stdlib${ii}$_dgemm( 'TRANSPOSE', 'TRANSPOSE', n, k, l, one,c( m-l+1, 1_${ik}$ ), &
+                        ldc, v, ldv, one, work, ldwork )
+              ! w( 1:n, 1:k ) = w( 1:n, 1:k ) * t**t  or  w( 1:m, 1:k ) * t
+              call stdlib${ii}$_dtrmm( 'RIGHT', 'LOWER', transt, 'NON-UNIT', n, k, one, t,ldt, work, &
+                        ldwork )
+              ! c( 1:k, 1:n ) = c( 1:k, 1:n ) - w( 1:n, 1:k )**t
+              do j = 1, n
+                 do i = 1, k
+                    c( i, j ) = c( i, j ) - work( j, i )
+                 end do
+              end do
+              ! c( m-l+1:m, 1:n ) = c( m-l+1:m, 1:n ) - ...
+                                  ! v( 1:k, 1:l )**t * w( 1:n, 1:k )**t
+              if( l>0_${ik}$ )call stdlib${ii}$_dgemm( 'TRANSPOSE', 'TRANSPOSE', l, n, k, -one, v, ldv,work, &
+                        ldwork, one, c( m-l+1, 1_${ik}$ ), ldc )
+           else if( stdlib_lsame( side, 'R' ) ) then
+              ! form  c * h  or  c * h**t
+              ! w( 1:m, 1:k ) = c( 1:m, 1:k )
+              do j = 1, k
+                 call stdlib${ii}$_dcopy( m, c( 1_${ik}$, j ), 1_${ik}$, work( 1_${ik}$, j ), 1_${ik}$ )
+              end do
+              ! w( 1:m, 1:k ) = w( 1:m, 1:k ) + ...
+                              ! c( 1:m, n-l+1:n ) * v( 1:k, 1:l )**t
+              if( l>0_${ik}$ )call stdlib${ii}$_dgemm( 'NO TRANSPOSE', 'TRANSPOSE', m, k, l, one,c( 1_${ik}$, n-l+1 ),&
+                         ldc, v, ldv, one, work, ldwork )
+              ! w( 1:m, 1:k ) = w( 1:m, 1:k ) * t  or  w( 1:m, 1:k ) * t**t
+              call stdlib${ii}$_dtrmm( 'RIGHT', 'LOWER', trans, 'NON-UNIT', m, k, one, t,ldt, work, &
+                        ldwork )
+              ! c( 1:m, 1:k ) = c( 1:m, 1:k ) - w( 1:m, 1:k )
+              do j = 1, k
+                 do i = 1, m
+                    c( i, j ) = c( i, j ) - work( i, j )
+                 end do
+              end do
+              ! c( 1:m, n-l+1:n ) = c( 1:m, n-l+1:n ) - ...
+                                  ! w( 1:m, 1:k ) * v( 1:k, 1:l )
+              if( l>0_${ik}$ )call stdlib${ii}$_dgemm( 'NO TRANSPOSE', 'NO TRANSPOSE', m, l, k, -one,work, &
+                        ldwork, v, ldv, one, c( 1_${ik}$, n-l+1 ), ldc )
+           end if
+           return
+     end subroutine stdlib${ii}$_dlarzb
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$larzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
+     !! DLARZB: applies a real block reflector H or its transpose H**T to
+     !! a real distributed M-by-N  C from the left or the right.
+     !! Currently, only STOREV = 'R' and DIRECT = 'B' are supported.
+               ldc, work, ldwork )
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: direct, side, storev, trans
+           integer(${ik}$), intent(in) :: k, l, ldc, ldt, ldv, ldwork, m, n
+           ! Array Arguments 
+           real(${rk}$), intent(inout) :: c(ldc,*), t(ldt,*), v(ldv,*)
+           real(${rk}$), intent(out) :: work(ldwork,*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           character :: transt
+           integer(${ik}$) :: i, info, j
+           ! Executable Statements 
+           ! quick return if possible
+           if( m<=0 .or. n<=0 )return
+           ! check for currently supported options
+           info = 0_${ik}$
+           if( .not.stdlib_lsame( direct, 'B' ) ) then
+              info = -3_${ik}$
+           else if( .not.stdlib_lsame( storev, 'R' ) ) then
+              info = -4_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'DLARZB', -info )
+              return
+           end if
+           if( stdlib_lsame( trans, 'N' ) ) then
+              transt = 'T'
+           else
+              transt = 'N'
+           end if
+           if( stdlib_lsame( side, 'L' ) ) then
+              ! form  h * c  or  h**t * c
+              ! w( 1:n, 1:k ) = c( 1:k, 1:n )**t
+              do j = 1, k
+                 call stdlib${ii}$_${ri}$copy( n, c( j, 1_${ik}$ ), ldc, work( 1_${ik}$, j ), 1_${ik}$ )
+              end do
+              ! w( 1:n, 1:k ) = w( 1:n, 1:k ) + ...
+                              ! c( m-l+1:m, 1:n )**t * v( 1:k, 1:l )**t
+              if( l>0_${ik}$ )call stdlib${ii}$_${ri}$gemm( 'TRANSPOSE', 'TRANSPOSE', n, k, l, one,c( m-l+1, 1_${ik}$ ), &
+                        ldc, v, ldv, one, work, ldwork )
+              ! w( 1:n, 1:k ) = w( 1:n, 1:k ) * t**t  or  w( 1:m, 1:k ) * t
+              call stdlib${ii}$_${ri}$trmm( 'RIGHT', 'LOWER', transt, 'NON-UNIT', n, k, one, t,ldt, work, &
+                        ldwork )
+              ! c( 1:k, 1:n ) = c( 1:k, 1:n ) - w( 1:n, 1:k )**t
+              do j = 1, n
+                 do i = 1, k
+                    c( i, j ) = c( i, j ) - work( j, i )
+                 end do
+              end do
+              ! c( m-l+1:m, 1:n ) = c( m-l+1:m, 1:n ) - ...
+                                  ! v( 1:k, 1:l )**t * w( 1:n, 1:k )**t
+              if( l>0_${ik}$ )call stdlib${ii}$_${ri}$gemm( 'TRANSPOSE', 'TRANSPOSE', l, n, k, -one, v, ldv,work, &
+                        ldwork, one, c( m-l+1, 1_${ik}$ ), ldc )
+           else if( stdlib_lsame( side, 'R' ) ) then
+              ! form  c * h  or  c * h**t
+              ! w( 1:m, 1:k ) = c( 1:m, 1:k )
+              do j = 1, k
+                 call stdlib${ii}$_${ri}$copy( m, c( 1_${ik}$, j ), 1_${ik}$, work( 1_${ik}$, j ), 1_${ik}$ )
+              end do
+              ! w( 1:m, 1:k ) = w( 1:m, 1:k ) + ...
+                              ! c( 1:m, n-l+1:n ) * v( 1:k, 1:l )**t
+              if( l>0_${ik}$ )call stdlib${ii}$_${ri}$gemm( 'NO TRANSPOSE', 'TRANSPOSE', m, k, l, one,c( 1_${ik}$, n-l+1 ),&
+                         ldc, v, ldv, one, work, ldwork )
+              ! w( 1:m, 1:k ) = w( 1:m, 1:k ) * t  or  w( 1:m, 1:k ) * t**t
+              call stdlib${ii}$_${ri}$trmm( 'RIGHT', 'LOWER', trans, 'NON-UNIT', m, k, one, t,ldt, work, &
+                        ldwork )
+              ! c( 1:m, 1:k ) = c( 1:m, 1:k ) - w( 1:m, 1:k )
+              do j = 1, k
+                 do i = 1, m
+                    c( i, j ) = c( i, j ) - work( i, j )
+                 end do
+              end do
+              ! c( 1:m, n-l+1:n ) = c( 1:m, n-l+1:n ) - ...
+                                  ! w( 1:m, 1:k ) * v( 1:k, 1:l )
+              if( l>0_${ik}$ )call stdlib${ii}$_${ri}$gemm( 'NO TRANSPOSE', 'NO TRANSPOSE', m, l, k, -one,work, &
+                        ldwork, v, ldv, one, c( 1_${ik}$, n-l+1 ), ldc )
+           end if
+           return
+     end subroutine stdlib${ii}$_${ri}$larzb
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_clarzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
+     !! CLARZB applies a complex block reflector H or its transpose H**H
+     !! to a complex distributed M-by-N  C from the left or the right.
+     !! Currently, only STOREV = 'R' and DIRECT = 'B' are supported.
+               ldc, work, ldwork )
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: direct, side, storev, trans
+           integer(${ik}$), intent(in) :: k, l, ldc, ldt, ldv, ldwork, m, n
+           ! Array Arguments 
+           complex(sp), intent(inout) :: c(ldc,*), t(ldt,*), v(ldv,*)
+           complex(sp), intent(out) :: work(ldwork,*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           character :: transt
+           integer(${ik}$) :: i, info, j
+           ! Executable Statements 
+           ! quick return if possible
+           if( m<=0 .or. n<=0 )return
+           ! check for currently supported options
+           info = 0_${ik}$
+           if( .not.stdlib_lsame( direct, 'B' ) ) then
+              info = -3_${ik}$
+           else if( .not.stdlib_lsame( storev, 'R' ) ) then
+              info = -4_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'CLARZB', -info )
+              return
+           end if
+           if( stdlib_lsame( trans, 'N' ) ) then
+              transt = 'C'
+           else
+              transt = 'N'
+           end if
+           if( stdlib_lsame( side, 'L' ) ) then
+              ! form  h * c  or  h**h * c
+              ! w( 1:n, 1:k ) = c( 1:k, 1:n )**h
+              do j = 1, k
+                 call stdlib${ii}$_ccopy( n, c( j, 1_${ik}$ ), ldc, work( 1_${ik}$, j ), 1_${ik}$ )
+              end do
+              ! w( 1:n, 1:k ) = w( 1:n, 1:k ) + ...
+                              ! c( m-l+1:m, 1:n )**h * v( 1:k, 1:l )**t
+              if( l>0_${ik}$ )call stdlib${ii}$_cgemm( 'TRANSPOSE', 'CONJUGATE TRANSPOSE', n, k, l,cone, c( m-&
+                        l+1, 1_${ik}$ ), ldc, v, ldv, cone, work,ldwork )
+              ! w( 1:n, 1:k ) = w( 1:n, 1:k ) * t**t  or  w( 1:m, 1:k ) * t
+              call stdlib${ii}$_ctrmm( 'RIGHT', 'LOWER', transt, 'NON-UNIT', n, k, cone, t,ldt, work, &
+                        ldwork )
+              ! c( 1:k, 1:n ) = c( 1:k, 1:n ) - w( 1:n, 1:k )**h
+              do j = 1, n
+                 do i = 1, k
+                    c( i, j ) = c( i, j ) - work( j, i )
+                 end do
+              end do
+              ! c( m-l+1:m, 1:n ) = c( m-l+1:m, 1:n ) - ...
+                                  ! v( 1:k, 1:l )**h * w( 1:n, 1:k )**h
+              if( l>0_${ik}$ )call stdlib${ii}$_cgemm( 'TRANSPOSE', 'TRANSPOSE', l, n, k, -cone, v, ldv,work, &
+                        ldwork, cone, c( m-l+1, 1_${ik}$ ), ldc )
+           else if( stdlib_lsame( side, 'R' ) ) then
+              ! form  c * h  or  c * h**h
+              ! w( 1:m, 1:k ) = c( 1:m, 1:k )
+              do j = 1, k
+                 call stdlib${ii}$_ccopy( m, c( 1_${ik}$, j ), 1_${ik}$, work( 1_${ik}$, j ), 1_${ik}$ )
+              end do
+              ! w( 1:m, 1:k ) = w( 1:m, 1:k ) + ...
+                              ! c( 1:m, n-l+1:n ) * v( 1:k, 1:l )**h
+              if( l>0_${ik}$ )call stdlib${ii}$_cgemm( 'NO TRANSPOSE', 'TRANSPOSE', m, k, l, cone,c( 1_${ik}$, n-l+1 )&
+                        , ldc, v, ldv, cone, work, ldwork )
+              ! w( 1:m, 1:k ) = w( 1:m, 1:k ) * conjg( t )  or
+                              ! w( 1:m, 1:k ) * t**h
+              do j = 1, k
+                 call stdlib${ii}$_clacgv( k-j+1, t( j, j ), 1_${ik}$ )
+              end do
+              call stdlib${ii}$_ctrmm( 'RIGHT', 'LOWER', trans, 'NON-UNIT', m, k, cone, t,ldt, work, &
+                        ldwork )
+              do j = 1, k
+                 call stdlib${ii}$_clacgv( k-j+1, t( j, j ), 1_${ik}$ )
+              end do
+              ! c( 1:m, 1:k ) = c( 1:m, 1:k ) - w( 1:m, 1:k )
+              do j = 1, k
+                 do i = 1, m
+                    c( i, j ) = c( i, j ) - work( i, j )
+                 end do
+              end do
+              ! c( 1:m, n-l+1:n ) = c( 1:m, n-l+1:n ) - ...
+                                  ! w( 1:m, 1:k ) * conjg( v( 1:k, 1:l ) )
+              do j = 1, l
+                 call stdlib${ii}$_clacgv( k, v( 1_${ik}$, j ), 1_${ik}$ )
+              end do
+              if( l>0_${ik}$ )call stdlib${ii}$_cgemm( 'NO TRANSPOSE', 'NO TRANSPOSE', m, l, k, -cone,work, &
+                        ldwork, v, ldv, cone, c( 1_${ik}$, n-l+1 ), ldc )
+              do j = 1, l
+                 call stdlib${ii}$_clacgv( k, v( 1_${ik}$, j ), 1_${ik}$ )
+              end do
+           end if
+           return
+     end subroutine stdlib${ii}$_clarzb
+
+     pure module subroutine stdlib${ii}$_zlarzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
+     !! ZLARZB applies a complex block reflector H or its transpose H**H
+     !! to a complex distributed M-by-N  C from the left or the right.
+     !! Currently, only STOREV = 'R' and DIRECT = 'B' are supported.
+               ldc, work, ldwork )
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: direct, side, storev, trans
+           integer(${ik}$), intent(in) :: k, l, ldc, ldt, ldv, ldwork, m, n
+           ! Array Arguments 
+           complex(dp), intent(inout) :: c(ldc,*), t(ldt,*), v(ldv,*)
+           complex(dp), intent(out) :: work(ldwork,*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           character :: transt
+           integer(${ik}$) :: i, info, j
+           ! Executable Statements 
+           ! quick return if possible
+           if( m<=0 .or. n<=0 )return
+           ! check for currently supported options
+           info = 0_${ik}$
+           if( .not.stdlib_lsame( direct, 'B' ) ) then
+              info = -3_${ik}$
+           else if( .not.stdlib_lsame( storev, 'R' ) ) then
+              info = -4_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'ZLARZB', -info )
+              return
+           end if
+           if( stdlib_lsame( trans, 'N' ) ) then
+              transt = 'C'
+           else
+              transt = 'N'
+           end if
+           if( stdlib_lsame( side, 'L' ) ) then
+              ! form  h * c  or  h**h * c
+              ! w( 1:n, 1:k ) = c( 1:k, 1:n )**h
+              do j = 1, k
+                 call stdlib${ii}$_zcopy( n, c( j, 1_${ik}$ ), ldc, work( 1_${ik}$, j ), 1_${ik}$ )
+              end do
+              ! w( 1:n, 1:k ) = w( 1:n, 1:k ) + ...
+                              ! c( m-l+1:m, 1:n )**h * v( 1:k, 1:l )**t
+              if( l>0_${ik}$ )call stdlib${ii}$_zgemm( 'TRANSPOSE', 'CONJUGATE TRANSPOSE', n, k, l,cone, c( m-&
+                        l+1, 1_${ik}$ ), ldc, v, ldv, cone, work,ldwork )
+              ! w( 1:n, 1:k ) = w( 1:n, 1:k ) * t**t  or  w( 1:m, 1:k ) * t
+              call stdlib${ii}$_ztrmm( 'RIGHT', 'LOWER', transt, 'NON-UNIT', n, k, cone, t,ldt, work, &
+                        ldwork )
+              ! c( 1:k, 1:n ) = c( 1:k, 1:n ) - w( 1:n, 1:k )**h
+              do j = 1, n
+                 do i = 1, k
+                    c( i, j ) = c( i, j ) - work( j, i )
+                 end do
+              end do
+              ! c( m-l+1:m, 1:n ) = c( m-l+1:m, 1:n ) - ...
+                                  ! v( 1:k, 1:l )**h * w( 1:n, 1:k )**h
+              if( l>0_${ik}$ )call stdlib${ii}$_zgemm( 'TRANSPOSE', 'TRANSPOSE', l, n, k, -cone, v, ldv,work, &
+                        ldwork, cone, c( m-l+1, 1_${ik}$ ), ldc )
+           else if( stdlib_lsame( side, 'R' ) ) then
+              ! form  c * h  or  c * h**h
+              ! w( 1:m, 1:k ) = c( 1:m, 1:k )
+              do j = 1, k
+                 call stdlib${ii}$_zcopy( m, c( 1_${ik}$, j ), 1_${ik}$, work( 1_${ik}$, j ), 1_${ik}$ )
+              end do
+              ! w( 1:m, 1:k ) = w( 1:m, 1:k ) + ...
+                              ! c( 1:m, n-l+1:n ) * v( 1:k, 1:l )**h
+              if( l>0_${ik}$ )call stdlib${ii}$_zgemm( 'NO TRANSPOSE', 'TRANSPOSE', m, k, l, cone,c( 1_${ik}$, n-l+1 )&
+                        , ldc, v, ldv, cone, work, ldwork )
+              ! w( 1:m, 1:k ) = w( 1:m, 1:k ) * conjg( t )  or
+                              ! w( 1:m, 1:k ) * t**h
+              do j = 1, k
+                 call stdlib${ii}$_zlacgv( k-j+1, t( j, j ), 1_${ik}$ )
+              end do
+              call stdlib${ii}$_ztrmm( 'RIGHT', 'LOWER', trans, 'NON-UNIT', m, k, cone, t,ldt, work, &
+                        ldwork )
+              do j = 1, k
+                 call stdlib${ii}$_zlacgv( k-j+1, t( j, j ), 1_${ik}$ )
+              end do
+              ! c( 1:m, 1:k ) = c( 1:m, 1:k ) - w( 1:m, 1:k )
+              do j = 1, k
+                 do i = 1, m
+                    c( i, j ) = c( i, j ) - work( i, j )
+                 end do
+              end do
+              ! c( 1:m, n-l+1:n ) = c( 1:m, n-l+1:n ) - ...
+                                  ! w( 1:m, 1:k ) * conjg( v( 1:k, 1:l ) )
+              do j = 1, l
+                 call stdlib${ii}$_zlacgv( k, v( 1_${ik}$, j ), 1_${ik}$ )
+              end do
+              if( l>0_${ik}$ )call stdlib${ii}$_zgemm( 'NO TRANSPOSE', 'NO TRANSPOSE', m, l, k, -cone,work, &
+                        ldwork, v, ldv, cone, c( 1_${ik}$, n-l+1 ), ldc )
+              do j = 1, l
+                 call stdlib${ii}$_zlacgv( k, v( 1_${ik}$, j ), 1_${ik}$ )
+              end do
+           end if
+           return
+     end subroutine stdlib${ii}$_zlarzb
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$larzb( side, trans, direct, storev, m, n, k, l, v,ldv, t, ldt, c, &
+     !! ZLARZB: applies a complex block reflector H or its transpose H**H
+     !! to a complex distributed M-by-N  C from the left or the right.
+     !! Currently, only STOREV = 'R' and DIRECT = 'B' are supported.
+               ldc, work, ldwork )
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: direct, side, storev, trans
+           integer(${ik}$), intent(in) :: k, l, ldc, ldt, ldv, ldwork, m, n
+           ! Array Arguments 
+           complex(${ck}$), intent(inout) :: c(ldc,*), t(ldt,*), v(ldv,*)
+           complex(${ck}$), intent(out) :: work(ldwork,*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           character :: transt
+           integer(${ik}$) :: i, info, j
+           ! Executable Statements 
+           ! quick return if possible
+           if( m<=0 .or. n<=0 )return
+           ! check for currently supported options
+           info = 0_${ik}$
+           if( .not.stdlib_lsame( direct, 'B' ) ) then
+              info = -3_${ik}$
+           else if( .not.stdlib_lsame( storev, 'R' ) ) then
+              info = -4_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'ZLARZB', -info )
+              return
+           end if
+           if( stdlib_lsame( trans, 'N' ) ) then
+              transt = 'C'
+           else
+              transt = 'N'
+           end if
+           if( stdlib_lsame( side, 'L' ) ) then
+              ! form  h * c  or  h**h * c
+              ! w( 1:n, 1:k ) = c( 1:k, 1:n )**h
+              do j = 1, k
+                 call stdlib${ii}$_${ci}$copy( n, c( j, 1_${ik}$ ), ldc, work( 1_${ik}$, j ), 1_${ik}$ )
+              end do
+              ! w( 1:n, 1:k ) = w( 1:n, 1:k ) + ...
+                              ! c( m-l+1:m, 1:n )**h * v( 1:k, 1:l )**t
+              if( l>0_${ik}$ )call stdlib${ii}$_${ci}$gemm( 'TRANSPOSE', 'CONJUGATE TRANSPOSE', n, k, l,cone, c( m-&
+                        l+1, 1_${ik}$ ), ldc, v, ldv, cone, work,ldwork )
+              ! w( 1:n, 1:k ) = w( 1:n, 1:k ) * t**t  or  w( 1:m, 1:k ) * t
+              call stdlib${ii}$_${ci}$trmm( 'RIGHT', 'LOWER', transt, 'NON-UNIT', n, k, cone, t,ldt, work, &
+                        ldwork )
+              ! c( 1:k, 1:n ) = c( 1:k, 1:n ) - w( 1:n, 1:k )**h
+              do j = 1, n
+                 do i = 1, k
+                    c( i, j ) = c( i, j ) - work( j, i )
+                 end do
+              end do
+              ! c( m-l+1:m, 1:n ) = c( m-l+1:m, 1:n ) - ...
+                                  ! v( 1:k, 1:l )**h * w( 1:n, 1:k )**h
+              if( l>0_${ik}$ )call stdlib${ii}$_${ci}$gemm( 'TRANSPOSE', 'TRANSPOSE', l, n, k, -cone, v, ldv,work, &
+                        ldwork, cone, c( m-l+1, 1_${ik}$ ), ldc )
+           else if( stdlib_lsame( side, 'R' ) ) then
+              ! form  c * h  or  c * h**h
+              ! w( 1:m, 1:k ) = c( 1:m, 1:k )
+              do j = 1, k
+                 call stdlib${ii}$_${ci}$copy( m, c( 1_${ik}$, j ), 1_${ik}$, work( 1_${ik}$, j ), 1_${ik}$ )
+              end do
+              ! w( 1:m, 1:k ) = w( 1:m, 1:k ) + ...
+                              ! c( 1:m, n-l+1:n ) * v( 1:k, 1:l )**h
+              if( l>0_${ik}$ )call stdlib${ii}$_${ci}$gemm( 'NO TRANSPOSE', 'TRANSPOSE', m, k, l, cone,c( 1_${ik}$, n-l+1 )&
+                        , ldc, v, ldv, cone, work, ldwork )
+              ! w( 1:m, 1:k ) = w( 1:m, 1:k ) * conjg( t )  or
+                              ! w( 1:m, 1:k ) * t**h
+              do j = 1, k
+                 call stdlib${ii}$_${ci}$lacgv( k-j+1, t( j, j ), 1_${ik}$ )
+              end do
+              call stdlib${ii}$_${ci}$trmm( 'RIGHT', 'LOWER', trans, 'NON-UNIT', m, k, cone, t,ldt, work, &
+                        ldwork )
+              do j = 1, k
+                 call stdlib${ii}$_${ci}$lacgv( k-j+1, t( j, j ), 1_${ik}$ )
+              end do
+              ! c( 1:m, 1:k ) = c( 1:m, 1:k ) - w( 1:m, 1:k )
+              do j = 1, k
+                 do i = 1, m
+                    c( i, j ) = c( i, j ) - work( i, j )
+                 end do
+              end do
+              ! c( 1:m, n-l+1:n ) = c( 1:m, n-l+1:n ) - ...
+                                  ! w( 1:m, 1:k ) * conjg( v( 1:k, 1:l ) )
+              do j = 1, l
+                 call stdlib${ii}$_${ci}$lacgv( k, v( 1_${ik}$, j ), 1_${ik}$ )
+              end do
+              if( l>0_${ik}$ )call stdlib${ii}$_${ci}$gemm( 'NO TRANSPOSE', 'NO TRANSPOSE', m, l, k, -cone,work, &
+                        ldwork, v, ldv, cone, c( 1_${ik}$, n-l+1 ), ldc )
+              do j = 1, l
+                 call stdlib${ii}$_${ci}$lacgv( k, v( 1_${ik}$, j ), 1_${ik}$ )
+              end do
+           end if
+           return
+     end subroutine stdlib${ii}$_${ci}$larzb
+
+#:endif
+#:endfor
+
+
+
+     pure module subroutine stdlib${ii}$_slarzt( direct, storev, n, k, v, ldv, tau, t, ldt )
+     !! SLARZT forms the triangular factor T of a real block reflector
+     !! H of order > n, which is defined as a product of k elementary
+     !! reflectors.
+     !! If DIRECT = 'F', H = H(1) H(2) . . . H(k) and T is upper triangular;
+     !! If DIRECT = 'B', H = H(k) . . . H(2) H(1) and T is lower triangular.
+     !! If STOREV = 'C', the vector which defines the elementary reflector
+     !! H(i) is stored in the i-th column of the array V, and
+     !! H  =  I - V * T * V**T
+     !! If STOREV = 'R', the vector which defines the elementary reflector
+     !! H(i) is stored in the i-th row of the array V, and
+     !! H  =  I - V**T * T * V
+     !! Currently, only STOREV = 'R' and DIRECT = 'B' are supported.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: direct, storev
+           integer(${ik}$), intent(in) :: k, ldt, ldv, n
+           ! Array Arguments 
+           real(sp), intent(out) :: t(ldt,*)
+           real(sp), intent(in) :: tau(*)
+           real(sp), intent(inout) :: v(ldv,*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           integer(${ik}$) :: i, info, j
+           ! Executable Statements 
+           ! check for currently supported options
+           info = 0_${ik}$
+           if( .not.stdlib_lsame( direct, 'B' ) ) then
+              info = -1_${ik}$
+           else if( .not.stdlib_lsame( storev, 'R' ) ) then
+              info = -2_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'SLARZT', -info )
+              return
+           end if
+           do i = k, 1, -1
+              if( tau( i )==zero ) then
+                 ! h(i)  =  i
+                 do j = i, k
+                    t( j, i ) = zero
+                 end do
+              else
+                 ! general case
+                 if( i<k ) then
+                    ! t(i+1:k,i) = - tau(i) * v(i+1:k,1:n) * v(i,1:n)**t
+                    call stdlib${ii}$_sgemv( 'NO TRANSPOSE', k-i, n, -tau( i ),v( i+1, 1_${ik}$ ), ldv, v( i, &
+                              1_${ik}$ ), ldv, zero,t( i+1, i ), 1_${ik}$ )
+                    ! t(i+1:k,i) = t(i+1:k,i+1:k) * t(i+1:k,i)
+                    call stdlib${ii}$_strmv( 'LOWER', 'NO TRANSPOSE', 'NON-UNIT', k-i,t( i+1, i+1 ), &
+                              ldt, t( i+1, i ), 1_${ik}$ )
+                 end if
+                 t( i, i ) = tau( i )
+              end if
+           end do
+           return
+     end subroutine stdlib${ii}$_slarzt
+
+     pure module subroutine stdlib${ii}$_dlarzt( direct, storev, n, k, v, ldv, tau, t, ldt )
+     !! DLARZT forms the triangular factor T of a real block reflector
+     !! H of order > n, which is defined as a product of k elementary
+     !! reflectors.
+     !! If DIRECT = 'F', H = H(1) H(2) . . . H(k) and T is upper triangular;
+     !! If DIRECT = 'B', H = H(k) . . . H(2) H(1) and T is lower triangular.
+     !! If STOREV = 'C', the vector which defines the elementary reflector
+     !! H(i) is stored in the i-th column of the array V, and
+     !! H  =  I - V * T * V**T
+     !! If STOREV = 'R', the vector which defines the elementary reflector
+     !! H(i) is stored in the i-th row of the array V, and
+     !! H  =  I - V**T * T * V
+     !! Currently, only STOREV = 'R' and DIRECT = 'B' are supported.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: direct, storev
+           integer(${ik}$), intent(in) :: k, ldt, ldv, n
+           ! Array Arguments 
+           real(dp), intent(out) :: t(ldt,*)
+           real(dp), intent(in) :: tau(*)
+           real(dp), intent(inout) :: v(ldv,*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           integer(${ik}$) :: i, info, j
+           ! Executable Statements 
+           ! check for currently supported options
+           info = 0_${ik}$
+           if( .not.stdlib_lsame( direct, 'B' ) ) then
+              info = -1_${ik}$
+           else if( .not.stdlib_lsame( storev, 'R' ) ) then
+              info = -2_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'DLARZT', -info )
+              return
+           end if
+           do i = k, 1, -1
+              if( tau( i )==zero ) then
+                 ! h(i)  =  i
+                 do j = i, k
+                    t( j, i ) = zero
+                 end do
+              else
+                 ! general case
+                 if( i<k ) then
+                    ! t(i+1:k,i) = - tau(i) * v(i+1:k,1:n) * v(i,1:n)**t
+                    call stdlib${ii}$_dgemv( 'NO TRANSPOSE', k-i, n, -tau( i ),v( i+1, 1_${ik}$ ), ldv, v( i, &
+                              1_${ik}$ ), ldv, zero,t( i+1, i ), 1_${ik}$ )
+                    ! t(i+1:k,i) = t(i+1:k,i+1:k) * t(i+1:k,i)
+                    call stdlib${ii}$_dtrmv( 'LOWER', 'NO TRANSPOSE', 'NON-UNIT', k-i,t( i+1, i+1 ), &
+                              ldt, t( i+1, i ), 1_${ik}$ )
+                 end if
+                 t( i, i ) = tau( i )
+              end if
+           end do
+           return
+     end subroutine stdlib${ii}$_dlarzt
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$larzt( direct, storev, n, k, v, ldv, tau, t, ldt )
+     !! DLARZT: forms the triangular factor T of a real block reflector
+     !! H of order > n, which is defined as a product of k elementary
+     !! reflectors.
+     !! If DIRECT = 'F', H = H(1) H(2) . . . H(k) and T is upper triangular;
+     !! If DIRECT = 'B', H = H(k) . . . H(2) H(1) and T is lower triangular.
+     !! If STOREV = 'C', the vector which defines the elementary reflector
+     !! H(i) is stored in the i-th column of the array V, and
+     !! H  =  I - V * T * V**T
+     !! If STOREV = 'R', the vector which defines the elementary reflector
+     !! H(i) is stored in the i-th row of the array V, and
+     !! H  =  I - V**T * T * V
+     !! Currently, only STOREV = 'R' and DIRECT = 'B' are supported.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: direct, storev
+           integer(${ik}$), intent(in) :: k, ldt, ldv, n
+           ! Array Arguments 
+           real(${rk}$), intent(out) :: t(ldt,*)
+           real(${rk}$), intent(in) :: tau(*)
+           real(${rk}$), intent(inout) :: v(ldv,*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           integer(${ik}$) :: i, info, j
+           ! Executable Statements 
+           ! check for currently supported options
+           info = 0_${ik}$
+           if( .not.stdlib_lsame( direct, 'B' ) ) then
+              info = -1_${ik}$
+           else if( .not.stdlib_lsame( storev, 'R' ) ) then
+              info = -2_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'DLARZT', -info )
+              return
+           end if
+           do i = k, 1, -1
+              if( tau( i )==zero ) then
+                 ! h(i)  =  i
+                 do j = i, k
+                    t( j, i ) = zero
+                 end do
+              else
+                 ! general case
+                 if( i<k ) then
+                    ! t(i+1:k,i) = - tau(i) * v(i+1:k,1:n) * v(i,1:n)**t
+                    call stdlib${ii}$_${ri}$gemv( 'NO TRANSPOSE', k-i, n, -tau( i ),v( i+1, 1_${ik}$ ), ldv, v( i, &
+                              1_${ik}$ ), ldv, zero,t( i+1, i ), 1_${ik}$ )
+                    ! t(i+1:k,i) = t(i+1:k,i+1:k) * t(i+1:k,i)
+                    call stdlib${ii}$_${ri}$trmv( 'LOWER', 'NO TRANSPOSE', 'NON-UNIT', k-i,t( i+1, i+1 ), &
+                              ldt, t( i+1, i ), 1_${ik}$ )
+                 end if
+                 t( i, i ) = tau( i )
+              end if
+           end do
+           return
+     end subroutine stdlib${ii}$_${ri}$larzt
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_clarzt( direct, storev, n, k, v, ldv, tau, t, ldt )
+     !! CLARZT forms the triangular factor T of a complex block reflector
+     !! H of order > n, which is defined as a product of k elementary
+     !! reflectors.
+     !! If DIRECT = 'F', H = H(1) H(2) . . . H(k) and T is upper triangular;
+     !! If DIRECT = 'B', H = H(k) . . . H(2) H(1) and T is lower triangular.
+     !! If STOREV = 'C', the vector which defines the elementary reflector
+     !! H(i) is stored in the i-th column of the array V, and
+     !! H  =  I - V * T * V**H
+     !! If STOREV = 'R', the vector which defines the elementary reflector
+     !! H(i) is stored in the i-th row of the array V, and
+     !! H  =  I - V**H * T * V
+     !! Currently, only STOREV = 'R' and DIRECT = 'B' are supported.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: direct, storev
+           integer(${ik}$), intent(in) :: k, ldt, ldv, n
+           ! Array Arguments 
+           complex(sp), intent(out) :: t(ldt,*)
+           complex(sp), intent(in) :: tau(*)
+           complex(sp), intent(inout) :: v(ldv,*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           integer(${ik}$) :: i, info, j
+           ! Executable Statements 
+           ! check for currently supported options
+           info = 0_${ik}$
+           if( .not.stdlib_lsame( direct, 'B' ) ) then
+              info = -1_${ik}$
+           else if( .not.stdlib_lsame( storev, 'R' ) ) then
+              info = -2_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'CLARZT', -info )
+              return
+           end if
+           do i = k, 1, -1
+              if( tau( i )==czero ) then
+                 ! h(i)  =  i
+                 do j = i, k
+                    t( j, i ) = czero
+                 end do
+              else
+                 ! general case
+                 if( i<k ) then
+                    ! t(i+1:k,i) = - tau(i) * v(i+1:k,1:n) * v(i,1:n)**h
+                    call stdlib${ii}$_clacgv( n, v( i, 1_${ik}$ ), ldv )
+                    call stdlib${ii}$_cgemv( 'NO TRANSPOSE', k-i, n, -tau( i ),v( i+1, 1_${ik}$ ), ldv, v( i, &
+                              1_${ik}$ ), ldv, czero,t( i+1, i ), 1_${ik}$ )
+                    call stdlib${ii}$_clacgv( n, v( i, 1_${ik}$ ), ldv )
+                    ! t(i+1:k,i) = t(i+1:k,i+1:k) * t(i+1:k,i)
+                    call stdlib${ii}$_ctrmv( 'LOWER', 'NO TRANSPOSE', 'NON-UNIT', k-i,t( i+1, i+1 ), &
+                              ldt, t( i+1, i ), 1_${ik}$ )
+                 end if
+                 t( i, i ) = tau( i )
+              end if
+           end do
+           return
+     end subroutine stdlib${ii}$_clarzt
+
+     pure module subroutine stdlib${ii}$_zlarzt( direct, storev, n, k, v, ldv, tau, t, ldt )
+     !! ZLARZT forms the triangular factor T of a complex block reflector
+     !! H of order > n, which is defined as a product of k elementary
+     !! reflectors.
+     !! If DIRECT = 'F', H = H(1) H(2) . . . H(k) and T is upper triangular;
+     !! If DIRECT = 'B', H = H(k) . . . H(2) H(1) and T is lower triangular.
+     !! If STOREV = 'C', the vector which defines the elementary reflector
+     !! H(i) is stored in the i-th column of the array V, and
+     !! H  =  I - V * T * V**H
+     !! If STOREV = 'R', the vector which defines the elementary reflector
+     !! H(i) is stored in the i-th row of the array V, and
+     !! H  =  I - V**H * T * V
+     !! Currently, only STOREV = 'R' and DIRECT = 'B' are supported.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: direct, storev
+           integer(${ik}$), intent(in) :: k, ldt, ldv, n
+           ! Array Arguments 
+           complex(dp), intent(out) :: t(ldt,*)
+           complex(dp), intent(in) :: tau(*)
+           complex(dp), intent(inout) :: v(ldv,*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           integer(${ik}$) :: i, info, j
+           ! Executable Statements 
+           ! check for currently supported options
+           info = 0_${ik}$
+           if( .not.stdlib_lsame( direct, 'B' ) ) then
+              info = -1_${ik}$
+           else if( .not.stdlib_lsame( storev, 'R' ) ) then
+              info = -2_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'ZLARZT', -info )
+              return
+           end if
+           do i = k, 1, -1
+              if( tau( i )==czero ) then
+                 ! h(i)  =  i
+                 do j = i, k
+                    t( j, i ) = czero
+                 end do
+              else
+                 ! general case
+                 if( i<k ) then
+                    ! t(i+1:k,i) = - tau(i) * v(i+1:k,1:n) * v(i,1:n)**h
+                    call stdlib${ii}$_zlacgv( n, v( i, 1_${ik}$ ), ldv )
+                    call stdlib${ii}$_zgemv( 'NO TRANSPOSE', k-i, n, -tau( i ),v( i+1, 1_${ik}$ ), ldv, v( i, &
+                              1_${ik}$ ), ldv, czero,t( i+1, i ), 1_${ik}$ )
+                    call stdlib${ii}$_zlacgv( n, v( i, 1_${ik}$ ), ldv )
+                    ! t(i+1:k,i) = t(i+1:k,i+1:k) * t(i+1:k,i)
+                    call stdlib${ii}$_ztrmv( 'LOWER', 'NO TRANSPOSE', 'NON-UNIT', k-i,t( i+1, i+1 ), &
+                              ldt, t( i+1, i ), 1_${ik}$ )
+                 end if
+                 t( i, i ) = tau( i )
+              end if
+           end do
+           return
+     end subroutine stdlib${ii}$_zlarzt
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$larzt( direct, storev, n, k, v, ldv, tau, t, ldt )
+     !! ZLARZT: forms the triangular factor T of a complex block reflector
+     !! H of order > n, which is defined as a product of k elementary
+     !! reflectors.
+     !! If DIRECT = 'F', H = H(1) H(2) . . . H(k) and T is upper triangular;
+     !! If DIRECT = 'B', H = H(k) . . . H(2) H(1) and T is lower triangular.
+     !! If STOREV = 'C', the vector which defines the elementary reflector
+     !! H(i) is stored in the i-th column of the array V, and
+     !! H  =  I - V * T * V**H
+     !! If STOREV = 'R', the vector which defines the elementary reflector
+     !! H(i) is stored in the i-th row of the array V, and
+     !! H  =  I - V**H * T * V
+     !! Currently, only STOREV = 'R' and DIRECT = 'B' are supported.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           character, intent(in) :: direct, storev
+           integer(${ik}$), intent(in) :: k, ldt, ldv, n
+           ! Array Arguments 
+           complex(${ck}$), intent(out) :: t(ldt,*)
+           complex(${ck}$), intent(in) :: tau(*)
+           complex(${ck}$), intent(inout) :: v(ldv,*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           integer(${ik}$) :: i, info, j
+           ! Executable Statements 
+           ! check for currently supported options
+           info = 0_${ik}$
+           if( .not.stdlib_lsame( direct, 'B' ) ) then
+              info = -1_${ik}$
+           else if( .not.stdlib_lsame( storev, 'R' ) ) then
+              info = -2_${ik}$
+           end if
+           if( info/=0_${ik}$ ) then
+              call stdlib${ii}$_xerbla( 'ZLARZT', -info )
+              return
+           end if
+           do i = k, 1, -1
+              if( tau( i )==czero ) then
+                 ! h(i)  =  i
+                 do j = i, k
+                    t( j, i ) = czero
+                 end do
+              else
+                 ! general case
+                 if( i<k ) then
+                    ! t(i+1:k,i) = - tau(i) * v(i+1:k,1:n) * v(i,1:n)**h
+                    call stdlib${ii}$_${ci}$lacgv( n, v( i, 1_${ik}$ ), ldv )
+                    call stdlib${ii}$_${ci}$gemv( 'NO TRANSPOSE', k-i, n, -tau( i ),v( i+1, 1_${ik}$ ), ldv, v( i, &
+                              1_${ik}$ ), ldv, czero,t( i+1, i ), 1_${ik}$ )
+                    call stdlib${ii}$_${ci}$lacgv( n, v( i, 1_${ik}$ ), ldv )
+                    ! t(i+1:k,i) = t(i+1:k,i+1:k) * t(i+1:k,i)
+                    call stdlib${ii}$_${ci}$trmv( 'LOWER', 'NO TRANSPOSE', 'NON-UNIT', k-i,t( i+1, i+1 ), &
+                              ldt, t( i+1, i ), 1_${ik}$ )
+                 end if
+                 t( i, i ) = tau( i )
+              end if
+           end do
+           return
+     end subroutine stdlib${ii}$_${ci}$larzt
+
+#:endif
+#:endfor
+
+
+
+     pure module subroutine stdlib${ii}$_slatrz( m, n, l, a, lda, tau, work )
+     !! SLATRZ factors the M-by-(M+L) real upper trapezoidal matrix
+     !! [ A1 A2 ] = [ A(1:M,1:M) A(1:M,N-L+1:N) ] as ( R  0 ) * Z, by means
+     !! of orthogonal transformations.  Z is an (M+L)-by-(M+L) orthogonal
+     !! matrix and, R and A1 are M-by-M upper triangular matrices.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           integer(${ik}$), intent(in) :: l, lda, m, n
+           ! Array Arguments 
+           real(sp), intent(inout) :: a(lda,*)
+           real(sp), intent(out) :: tau(*), work(*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           integer(${ik}$) :: i
+           ! Executable Statements 
+           ! test the input arguments
+           ! quick return if possible
+           if( m==0_${ik}$ ) then
+              return
+           else if( m==n ) then
+              do i = 1, n
+                 tau( i ) = zero
+              end do
+              return
+           end if
+           do i = m, 1, -1
+              ! generate elementary reflector h(i) to annihilate
+              ! [ a(i,i) a(i,n-l+1:n) ]
+              call stdlib${ii}$_slarfg( l+1, a( i, i ), a( i, n-l+1 ), lda, tau( i ) )
+              ! apply h(i) to a(1:i-1,i:n) from the right
+              call stdlib${ii}$_slarz( 'RIGHT', i-1, n-i+1, l, a( i, n-l+1 ), lda,tau( i ), a( 1_${ik}$, i ), &
+                        lda, work )
+           end do
+           return
+     end subroutine stdlib${ii}$_slatrz
+
+     pure module subroutine stdlib${ii}$_dlatrz( m, n, l, a, lda, tau, work )
+     !! DLATRZ factors the M-by-(M+L) real upper trapezoidal matrix
+     !! [ A1 A2 ] = [ A(1:M,1:M) A(1:M,N-L+1:N) ] as ( R  0 ) * Z, by means
+     !! of orthogonal transformations.  Z is an (M+L)-by-(M+L) orthogonal
+     !! matrix and, R and A1 are M-by-M upper triangular matrices.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           integer(${ik}$), intent(in) :: l, lda, m, n
+           ! Array Arguments 
+           real(dp), intent(inout) :: a(lda,*)
+           real(dp), intent(out) :: tau(*), work(*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           integer(${ik}$) :: i
+           ! Executable Statements 
+           ! test the input arguments
+           ! quick return if possible
+           if( m==0_${ik}$ ) then
+              return
+           else if( m==n ) then
+              do i = 1, n
+                 tau( i ) = zero
+              end do
+              return
+           end if
+           do i = m, 1, -1
+              ! generate elementary reflector h(i) to annihilate
+              ! [ a(i,i) a(i,n-l+1:n) ]
+              call stdlib${ii}$_dlarfg( l+1, a( i, i ), a( i, n-l+1 ), lda, tau( i ) )
+              ! apply h(i) to a(1:i-1,i:n) from the right
+              call stdlib${ii}$_dlarz( 'RIGHT', i-1, n-i+1, l, a( i, n-l+1 ), lda,tau( i ), a( 1_${ik}$, i ), &
+                        lda, work )
+           end do
+           return
+     end subroutine stdlib${ii}$_dlatrz
+
+#:for rk,rt,ri in REAL_KINDS_TYPES
+#:if not rk in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ri}$latrz( m, n, l, a, lda, tau, work )
+     !! DLATRZ: factors the M-by-(M+L) real upper trapezoidal matrix
+     !! [ A1 A2 ] = [ A(1:M,1:M) A(1:M,N-L+1:N) ] as ( R  0 ) * Z, by means
+     !! of orthogonal transformations.  Z is an (M+L)-by-(M+L) orthogonal
+     !! matrix and, R and A1 are M-by-M upper triangular matrices.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${rk}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           integer(${ik}$), intent(in) :: l, lda, m, n
+           ! Array Arguments 
+           real(${rk}$), intent(inout) :: a(lda,*)
+           real(${rk}$), intent(out) :: tau(*), work(*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           integer(${ik}$) :: i
+           ! Executable Statements 
+           ! test the input arguments
+           ! quick return if possible
+           if( m==0_${ik}$ ) then
+              return
+           else if( m==n ) then
+              do i = 1, n
+                 tau( i ) = zero
+              end do
+              return
+           end if
+           do i = m, 1, -1
+              ! generate elementary reflector h(i) to annihilate
+              ! [ a(i,i) a(i,n-l+1:n) ]
+              call stdlib${ii}$_${ri}$larfg( l+1, a( i, i ), a( i, n-l+1 ), lda, tau( i ) )
+              ! apply h(i) to a(1:i-1,i:n) from the right
+              call stdlib${ii}$_${ri}$larz( 'RIGHT', i-1, n-i+1, l, a( i, n-l+1 ), lda,tau( i ), a( 1_${ik}$, i ), &
+                        lda, work )
+           end do
+           return
+     end subroutine stdlib${ii}$_${ri}$latrz
+
+#:endif
+#:endfor
+
+     pure module subroutine stdlib${ii}$_clatrz( m, n, l, a, lda, tau, work )
+     !! CLATRZ factors the M-by-(M+L) complex upper trapezoidal matrix
+     !! [ A1 A2 ] = [ A(1:M,1:M) A(1:M,N-L+1:N) ] as ( R  0 ) * Z by means
+     !! of unitary transformations, where  Z is an (M+L)-by-(M+L) unitary
+     !! matrix and, R and A1 are M-by-M upper triangular matrices.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_sp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           integer(${ik}$), intent(in) :: l, lda, m, n
+           ! Array Arguments 
+           complex(sp), intent(inout) :: a(lda,*)
+           complex(sp), intent(out) :: tau(*), work(*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           integer(${ik}$) :: i
+           complex(sp) :: alpha
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! quick return if possible
+           if( m==0_${ik}$ ) then
+              return
+           else if( m==n ) then
+              do i = 1, n
+                 tau( i ) = czero
+              end do
+              return
+           end if
+           do i = m, 1, -1
+              ! generate elementary reflector h(i) to annihilate
+              ! [ a(i,i) a(i,n-l+1:n) ]
+              call stdlib${ii}$_clacgv( l, a( i, n-l+1 ), lda )
+              alpha = conjg( a( i, i ) )
+              call stdlib${ii}$_clarfg( l+1, alpha, a( i, n-l+1 ), lda, tau( i ) )
+              tau( i ) = conjg( tau( i ) )
+              ! apply h(i) to a(1:i-1,i:n) from the right
+              call stdlib${ii}$_clarz( 'RIGHT', i-1, n-i+1, l, a( i, n-l+1 ), lda,conjg( tau( i ) ), a( &
+                        1_${ik}$, i ), lda, work )
+              a( i, i ) = conjg( alpha )
+           end do
+           return
+     end subroutine stdlib${ii}$_clatrz
+
+     pure module subroutine stdlib${ii}$_zlatrz( m, n, l, a, lda, tau, work )
+     !! ZLATRZ factors the M-by-(M+L) complex upper trapezoidal matrix
+     !! [ A1 A2 ] = [ A(1:M,1:M) A(1:M,N-L+1:N) ] as ( R  0 ) * Z by means
+     !! of unitary transformations, where  Z is an (M+L)-by-(M+L) unitary
+     !! matrix and, R and A1 are M-by-M upper triangular matrices.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_dp, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           integer(${ik}$), intent(in) :: l, lda, m, n
+           ! Array Arguments 
+           complex(dp), intent(inout) :: a(lda,*)
+           complex(dp), intent(out) :: tau(*), work(*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           integer(${ik}$) :: i
+           complex(dp) :: alpha
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! quick return if possible
+           if( m==0_${ik}$ ) then
+              return
+           else if( m==n ) then
+              do i = 1, n
+                 tau( i ) = czero
+              end do
+              return
+           end if
+           do i = m, 1, -1
+              ! generate elementary reflector h(i) to annihilate
+              ! [ a(i,i) a(i,n-l+1:n) ]
+              call stdlib${ii}$_zlacgv( l, a( i, n-l+1 ), lda )
+              alpha = conjg( a( i, i ) )
+              call stdlib${ii}$_zlarfg( l+1, alpha, a( i, n-l+1 ), lda, tau( i ) )
+              tau( i ) = conjg( tau( i ) )
+              ! apply h(i) to a(1:i-1,i:n) from the right
+              call stdlib${ii}$_zlarz( 'RIGHT', i-1, n-i+1, l, a( i, n-l+1 ), lda,conjg( tau( i ) ), a( &
+                        1_${ik}$, i ), lda, work )
+              a( i, i ) = conjg( alpha )
+           end do
+           return
+     end subroutine stdlib${ii}$_zlatrz
+
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+#:if not ck in ["sp","dp"]
+     pure module subroutine stdlib${ii}$_${ci}$latrz( m, n, l, a, lda, tau, work )
+     !! ZLATRZ: factors the M-by-(M+L) complex upper trapezoidal matrix
+     !! [ A1 A2 ] = [ A(1:M,1:M) A(1:M,N-L+1:N) ] as ( R  0 ) * Z by means
+     !! of unitary transformations, where  Z is an (M+L)-by-(M+L) unitary
+     !! matrix and, R and A1 are M-by-M upper triangular matrices.
+        ! -- lapack computational routine --
+        ! -- lapack is a software package provided by univ. of tennessee,    --
+        ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
+           use stdlib_blas_constants_${ck}$, only: negone, zero, half, one, two, three, four, eight, ten, czero, chalf, cone, cnegone
+           ! Scalar Arguments 
+           integer(${ik}$), intent(in) :: l, lda, m, n
+           ! Array Arguments 
+           complex(${ck}$), intent(inout) :: a(lda,*)
+           complex(${ck}$), intent(out) :: tau(*), work(*)
+        ! =====================================================================
+           
+           ! Local Scalars 
+           integer(${ik}$) :: i
+           complex(${ck}$) :: alpha
+           ! Intrinsic Functions 
+           ! Executable Statements 
+           ! quick return if possible
+           if( m==0_${ik}$ ) then
+              return
+           else if( m==n ) then
+              do i = 1, n
+                 tau( i ) = czero
+              end do
+              return
+           end if
+           do i = m, 1, -1
+              ! generate elementary reflector h(i) to annihilate
+              ! [ a(i,i) a(i,n-l+1:n) ]
+              call stdlib${ii}$_${ci}$lacgv( l, a( i, n-l+1 ), lda )
+              alpha = conjg( a( i, i ) )
+              call stdlib${ii}$_${ci}$larfg( l+1, alpha, a( i, n-l+1 ), lda, tau( i ) )
+              tau( i ) = conjg( tau( i ) )
+              ! apply h(i) to a(1:i-1,i:n) from the right
+              call stdlib${ii}$_${ci}$larz( 'RIGHT', i-1, n-i+1, l, a( i, n-l+1 ), lda,conjg( tau( i ) ), a( &
+                        1_${ik}$, i ), lda, work )
+              a( i, i ) = conjg( alpha )
+           end do
+           return
+     end subroutine stdlib${ii}$_${ci}$latrz
+
+#:endif
+#:endfor
+
+
+#:endfor
+end submodule stdlib_lapack_orthogonal_factors_rz

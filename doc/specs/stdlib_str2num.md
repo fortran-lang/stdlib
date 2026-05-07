@@ -75,8 +75,8 @@ The accuracy of the conversion is implementation dependent; it is recommended th
 
 `sp`  : exact match
 
-`dp`  : precision up-to epsilon(0.0_dp)
+`dp`  : precision up-to 10*epsilon(0.0_dp)
 
-`qp` : precision around 200*epsilon(0.0_qp)
+`qp` : precision around 100*epsilon(0.0_qp)
 
 Where precision refers to the relative difference between `to_num` and `read`. On the other hand, `to_num` provides speed-ups ranging from 4x to >10x compared to the intrinsic `read`.

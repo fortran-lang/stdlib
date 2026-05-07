@@ -34,11 +34,11 @@ Experimental
 
 #### Description
 
-Getter function to retrieve version information
+Getter subroutine to retrieve version information
 
 #### Syntax
 
-`res = ` [[stdlib_version(module):get_stdlib_version(subroutine)]] ` ([major], [minor], [patch], [string])`
+`call ` [[stdlib_version(module):get_stdlib_version(subroutine)]] ` ([major], [minor], [patch], [string])`
 
 #### Class
 

@@ -204,42 +204,41 @@ contains
         integer, parameter              :: first = -100
         integer, parameter              :: last = 100
         integer, parameter              :: stride = 4
+        type(string_type)               :: all_strings(first:last)
 
         write (*,*) "test_insert_at_array:    Starting work_list!"
+        
+        do concurrent (j=first:last)
+            all_strings(j) = string_type( to_string(j) )
+        end do
 
-        call work_list%insert_at( list_head, &
-                        & [ ( string_type( to_string(j) ), j = first, first + stride - 1 ) ] )
+        call work_list%insert_at( list_head, all_strings(first:first+stride-1) )
 
         call compare_list( work_list, first, first + stride, 5 )
 
-        call work_list%insert_at( list_tail, &
-                        & [ ( string_type( to_string(j) ), j = last - stride, last - 1 ) ] )
+        call work_list%insert_at( list_tail, all_strings(last-stride:last-1) )
 
         do i = first + stride, last - stride - 1, stride
-            call work_list%insert_at( fidx( i - first + 1 ), &
-                        & [ ( string_type( to_string(j) ), j = i, i + stride - 1 ) ] )
+            call work_list%insert_at( fidx( i - first + 1 ), all_strings(i:i+stride-1) )
         end do
 
-        call work_list%insert_at( list_tail, [ to_string(last) ] )
+        call work_list%insert_at( list_tail, all_strings(last:last) )
 
         call compare_list( work_list, first, last + 1, 6 )
 
         write (*,*) "test_insert_at_array:    Starting reference_list!"
 
-        call reference_list%insert_at( list_tail, &
-                        & [ ( string_type( to_string(j) ), j = last - stride + 1, last ) ] )
+        call reference_list%insert_at( list_tail, all_strings (last-stride+1:last) )
 
         call compare_list( reference_list, last - stride + 1, last + 1, 7 )
 
-        call reference_list%insert_at( list_head, &
-                        & [ ( string_type( to_string(j) ), j = first + 1, first + stride ) ] )
+        call reference_list%insert_at( list_head, all_strings(first+1:first+stride) )
 
         do i = last - stride, first + stride + 1, -1 * stride
-            call reference_list%insert_at( bidx( last - i + 1 ), &
-                        & [ ( string_type( to_string(j) ), j = i - stride + 1, i ) ] )
+            call reference_list%insert_at( bidx( last - i + 1 ), all_strings(i-stride+1:i) )
         end do
 
-        call reference_list%insert_at( list_head, [ to_string(first) ] )
+        call reference_list%insert_at( list_head, all_strings(first:first) )
 
         call compare_list( reference_list, first, last + 1, 8 )
 
@@ -252,12 +251,17 @@ contains
         integer, parameter              :: first = -100
         integer, parameter              :: last = 100
         integer, parameter              :: stride = 4
+        type(string_type)               :: all_strings(first:last)
 
         write (*,*) "test_insert_at_list:     Starting work_list!"
+        
+        do concurrent (j=first:last)
+            all_strings(j) = string_type( to_string(j) )
+        end do        
 
         call temp_list%clear()
         do j = first, first + stride - 1
-            call temp_list%insert_at( list_tail, string_type( to_string(j) ) )
+            call temp_list%insert_at( list_tail, all_strings(j) )
         end do
 
         call work_list%insert_at(list_head, temp_list)
@@ -265,7 +269,7 @@ contains
 
         call temp_list%clear()
         do j = last - 1, last - stride, -1
-            call temp_list%insert_at( list_head, string_type( to_string(j) ) )
+            call temp_list%insert_at( list_head, all_strings(j) )
         end do
 
         call work_list%insert_at(list_tail, temp_list)
@@ -280,7 +284,7 @@ contains
         end do
 
         call temp_list%clear()
-        call temp_list%insert_at( list_head, to_string(last) )
+        call temp_list%insert_at( list_head, all_strings(last) )
         call work_list%insert_at( list_tail, temp_list )
 
         call compare_list( work_list, first, last + 1, 10 )

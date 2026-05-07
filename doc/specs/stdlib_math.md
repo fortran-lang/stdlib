@@ -93,7 +93,7 @@ All arguments must have same `type` and same `kind`.
 #### Examples
 
 ```fortran
-{!example/math/example_math_swap.f90!}
+{!example/math/example_math_swap.F90!}
 ```
 
 ### `gcd` function
@@ -234,7 +234,7 @@ For function calls where the `base` is specified, the `type` and `kind` of the r
 | "             " | "       " | `Integer` | `complex(KIND)` |
 | `Integer` | "        " | `real(KIND)` | `real(KIND)` |
 | "              " | "        " | `complex(KIND)` | `complex(KIND)` |
-| "              " | "        " | `Integer` | `Integer` |
+| "              " | "        " | `Integer` | `real(dp)` |
 
 #### Examples
 
@@ -427,7 +427,7 @@ Experimental
 
 Elemenal function.
 
-### Description
+#### Description
 
 `deg2rad` converts phase angles from degrees to radians.
 
@@ -459,7 +459,7 @@ Experimental
 
 Elemenal function.
 
-### Description
+#### Description
 
 `rad2deg` converts phase angles from radians to degrees.
 

@@ -49,7 +49,7 @@ program test_open_maps
 
     test_8_bits(:) = transfer( rand_object, 0_int8, test_size )
 
-    call map % init( fnv_1_hasher, slots_bits=10 )
+    ! Test implicit initalization by skipping init call for first test.
     call input_random_data( map, test_16, 'FNV-1', "16 byte words" )
     call test_inquire_data( map, test_16, 'FNV-1', "16 byte words" )
     call test_get_data( map, test_16, 'FNV-1', '16 byte words' )
@@ -58,7 +58,7 @@ program test_open_maps
     call report_hash_statistics( map, 'FNV-1', '16 byte words' )
     call report_removal_times( map, test_16, 'FNV-1', '16 byte words' )
 
-    call map % init( fnv_1_hasher, slots_bits=10 )
+    call map % init()   ! Test default options
     call input_random_data( map, test_256, 'FNV-1', "256 byte words" )
     call test_inquire_data( map, test_256, 'FNV-1', "256 byte words" )
     call test_get_data( map, test_256, 'FNV-1', '256 byte words' )
@@ -162,22 +162,20 @@ contains
         integer(int_index), intent(in) :: test_block
         character(*), intent(in) :: hash_name
         character(*), intent(in) :: size_name
-        class(*), allocatable :: dummy
+       
         type(dummy_type) :: dummy_val
         integer :: index2
         type(key_type) :: key
-        type(other_type) :: other
         real :: t1, t2, tdiff
         logical :: conflict
 
         call cpu_time(t1)
         do index2=1, size(test_8_bits), test_block
             call set( key, test_8_bits( index2:index2+test_block-1 ) )
-            if (allocated(dummy)) deallocate(dummy)
+            
             dummy_val % value = test_8_bits( index2:index2+test_block-1 )
-            allocate( dummy, source=dummy_val )
-            call set ( other, dummy )
-            call map % map_entry( key, other, conflict )
+            
+            call map % map_entry( key, dummy_val, conflict )
             if (conflict) &
                 error stop "Unable to map entry because of a key conflict."
         end do
@@ -219,14 +217,14 @@ contains
         character(*), intent(in)                :: hash_name, size_name
         integer :: index2
         type(key_type) :: key
-        type(other_type) :: other
+        class(*), allocatable :: data
         logical :: exists
         real :: t1, t2, tdiff
 
         call cpu_time(t1)
         do index2=1, size(test_8_bits), test_block
             call set( key, test_8_bits( index2:index2+test_block-1 ) )
-            call map % get_other_data( key, other, exists )
+            call map % get_other_data( key, data, exists )
             if (.not. exists) &
                 error stop "Unable to get data because key not found in map."
         end do

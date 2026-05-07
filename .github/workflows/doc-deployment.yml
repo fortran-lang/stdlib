@@ -22,7 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -v ford==7.0.5
+          pip install -v ford==7.0.12
           pip install fypp
           python --version
           ford --version

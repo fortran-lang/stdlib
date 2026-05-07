@@ -1,6 +1,6 @@
 program example_qr  
   use stdlib_linalg, only: qr
-  implicit none(type,external)
+  implicit none
   real :: A(104, 32), Q(104,32), R(32,32)
   
   ! Create a random matrix

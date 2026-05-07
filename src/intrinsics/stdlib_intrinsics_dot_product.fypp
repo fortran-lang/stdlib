@@ -1,0 +1,77 @@
+#:include "common.fypp"
+#:set I_KINDS_TYPES = list(zip(INT_KINDS, INT_TYPES, INT_KINDS))
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+
+#:def cnjg(type,expression)
+#:if 'complex' in type
+conjg(${expression}$)
+#:else
+${expression}$
+#:endif
+#:enddef
+
+submodule(stdlib_intrinsics) stdlib_intrinsics_dot_product
+    !!Replacement for certain Fortran intrinsic functions offering either faster and/or more accurate implementations.
+    !! ([Specification](../page/specs/stdlib_intrinsics.html))
+    use stdlib_kinds
+    use stdlib_constants
+    implicit none
+
+    integer, parameter :: ilp = int64
+    
+contains
+! This implementation is based on https://github.com/jalvesz/fast_math
+#:for k, t, s in I_KINDS_TYPES + R_KINDS_TYPES + C_KINDS_TYPES
+pure module function stdlib_dot_product_${s}$(a,b) result(p)
+    integer(ilp), parameter :: chunk = 64
+    ${t}$, intent(in) :: a(:)
+    ${t}$, intent(in) :: b(:)
+    ${t}$ :: p
+    ${t}$ :: abatch(chunk)
+    integer(ilp) :: i, n, r
+    ! -----------------------------
+    n = size(a,kind=ilp)
+    r = mod(n,chunk)
+
+    abatch(1:r)       = ${cnjg(t,'a(1:r)')}$*b(1:r)
+    abatch(r+1:chunk) = zero_${s}$
+    do i = r+1, n-r, chunk
+        abatch(1:chunk) = abatch(1:chunk) + ${cnjg(t,'a(i:i+chunk-1)')}$*b(i:i+chunk-1)
+    end do
+
+    p = zero_${s}$
+    do i = 1, chunk/2
+        p = p + abatch(i)+abatch(chunk/2+i)
+    end do
+end function
+#:endfor
+
+#:for k, t, s in R_KINDS_TYPES + C_KINDS_TYPES
+pure module function stdlib_dot_product_kahan_${s}$(a,b) result(p)
+    integer(ilp), parameter :: chunk = 64
+    ${t}$, intent(in) :: a(:)
+    ${t}$, intent(in) :: b(:)
+    ${t}$ :: p
+    ${t}$ :: abatch(chunk)
+    ${t}$ :: cbatch(chunk)
+    integer(ilp) :: i, n, r
+    ! -----------------------------
+    n = size(a,kind=ilp)
+    r = mod(n,chunk)
+
+    abatch(1:r)       = ${cnjg(t,'a(1:r)')}$*b(1:r)
+    abatch(r+1:chunk) = zero_${s}$
+    cbatch = zero_${s}$
+    do i = r+1, n-r, chunk
+        call kahan_kernel( ${cnjg(t,'a(i:i+chunk-1)')}$*b(i:i+chunk-1) , abatch(1:chunk) , cbatch(1:chunk) )
+    end do     
+
+    p = zero_${s}$
+    do i = 1, chunk
+        call kahan_kernel( abatch(i) , p , cbatch(i) )
+    end do      
+end function
+#:endfor
+
+end submodule stdlib_intrinsics_dot_product
