@@ -65,7 +65,19 @@ program example_datetime
     t3 = datetime_type(2026, 3, 17, 17, 30, 0, 0, 330)
     print '(A,L1)', '12:00Z == 17:30+05:30? ', t2 == t3
 
-    ! 9. Unix epoch
+    ! 9. Compact format_timedelta (sub-second / sub-minute)
+    print *
+    print '(A)', '=== Compact Duration Formatting ==='
+    duration = timedelta(milliseconds=5)
+    print '(A,T40,A)', 'timedelta(ms=5):', format_timedelta(duration)
+    duration = timedelta(milliseconds=1500)
+    print '(A,T40,A)', 'timedelta(ms=1500):', format_timedelta(duration)
+    duration = timedelta(seconds=65)
+    print '(A,T40,A)', 'timedelta(s=65):', format_timedelta(duration)
+    duration = timedelta(hours=1, minutes=2, seconds=3)
+    print '(A,T40,A)', 'timedelta(1h 2m 3s):', format_timedelta(duration)
+
+    ! 10. Unix epoch
     print *
     print '(A,A)', 'Unix epoch:         ', &
         format_datetime(epoch())

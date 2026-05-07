@@ -243,6 +243,14 @@ Pure function.
 #### Description
 
 Formats a `timedelta_type` as a human-readable string.
+For zero-day durations, compact forms are used:
+- `5ms` for sub-second values
+- `1.500s` or `42s` for sub-minute values
+- `MM:SS` when hours are zero
+- `HH:MM:SS[.mmm]` otherwise
+
+For nonzero-day durations, the verbose form is preserved:
+`X days, HH:MM:SS[.mmm]`.
 
 #### Syntax
 
@@ -250,7 +258,7 @@ Formats a `timedelta_type` as a human-readable string.
 
 #### Return value
 
-`character(:), allocatable` — e.g. `"30 days, 01:30:00"`.
+`character(:), allocatable` — e.g. `"5ms"`, `"1.500s"`, `"05:30"`, `"01:02:03.456"`, or `"30 days, 01:30:00"`.
 
 ## Utility Functions
 

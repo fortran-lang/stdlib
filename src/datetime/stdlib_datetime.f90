@@ -340,21 +340,59 @@ contains
         !! version: experimental
         !!
         !! Format a timedelta_type as a readable string.
+        !! When days == 0, sub-second/sub-minute durations are formatted
+        !! compactly (e.g. "5ms", "1.500s", "05:30"). The "0 days, "
+        !! prefix is omitted. When days /= 0, original verbose format
+        !! is preserved.
         type(timedelta_type), intent(in) :: td
         character(:), allocatable :: str
-        integer :: h, m, s
+        integer :: h, m, s, ms
 
-        h = td%seconds / 3600
-        m = mod(td%seconds, 3600) / 60
-        s = mod(td%seconds, 60)
+        h  = td%seconds / 3600
+        m  = mod(td%seconds, 3600) / 60
+        s  = mod(td%seconds, 60)
+        ms = td%milliseconds
 
-        str = to_string(td%days, '(I0)') // ' days, ' // &
-              to_string(h, '(I2.2)') // ':' // &
-              to_string(m, '(I2.2)') // ':' // &
-              to_string(s, '(I2.2)')
+        if (td%days == 0) then
+            ! Compact formatting for zero-day durations
+            if (h == 0 .and. m == 0 .and. s == 0) then
+                if (ms == 0) then
+                    str = "0s"
+                else
+                    str = to_string(ms, '(I0)') // "ms"
+                end if
+                return
+            end if
 
-        if (td%milliseconds /= 0) then
-            str = str // '.' // to_string(td%milliseconds, '(I3.3)')
+            if (h == 0 .and. m == 0) then
+                if (ms == 0) then
+                    str = to_string(s, '(I0)') // "s"
+                else
+                    str = to_string(s, '(I0)') // "." // to_string(ms, '(I3.3)') // "s"
+                end if
+                return
+            end if
+
+            if (h > 0) then
+                str = to_string(h, '(I2.2)') // ":" // &
+                      to_string(m, '(I2.2)') // ":" // &
+                      to_string(s, '(I2.2)')
+            else
+                str = to_string(m, '(I2.2)') // ":" // &
+                      to_string(s, '(I2.2)')
+            end if
+
+            if (ms /= 0) str = str // "." // to_string(ms, '(I3.3)')
+        else
+            ! Original format for durations with days
+            str = to_string(td%days, '(I0)') // ' days, ' // &
+                  to_string(h, '(I2.2)') // ':' // &
+                  to_string(m, '(I2.2)') // ':' // &
+                  to_string(s, '(I2.2)')
+
+            if (ms /= 0) then
+                str = str // '.' // to_string(ms, '(I3.3)')
+            end if
         end if
     end function format_timedelta
 
