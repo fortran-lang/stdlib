@@ -10,6 +10,16 @@
 #include <string.h>
 #include <stdint.h>
 #include <math.h>
+
+/* Endian detection: broaden beyond just __BYTE_ORDER__ to cover all major BE
+ * toolchains (IBM XL, older GCC, etc.) — mirrors nmhash.h's approach. */
+#ifndef WATERHASH_BIG_ENDIAN
+#  if defined(__BIG_ENDIAN__) || (defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+#    define WATERHASH_BIG_ENDIAN 1
+#  else
+#    define WATERHASH_BIG_ENDIAN 0
+#  endif
+#endif
 const uint64_t _waterp0 = 0xa0761d65ull, _waterp1 = 0xe7037ed1ull, _waterp2 = 0x8ebc6af1ull;
 const uint64_t _waterp3 = 0x589965cdull, _waterp4 = 0x1d8e4e27ull, _waterp5 = 0xeb44accbull;
 
@@ -19,8 +29,21 @@ static inline uint64_t _watermum(const uint64_t A, const uint64_t B) {
 }
 
 static inline uint64_t _waterr08(const uint8_t *p){ uint8_t  v; memcpy(&v, p, 1); return v; }
-static inline uint64_t _waterr16(const uint8_t *p){ uint16_t v; memcpy(&v, p, 2); return v; }
-static inline uint64_t _waterr32(const uint8_t *p){ uint32_t v; memcpy(&v, p, 4); return v; }
+static inline uint64_t _waterr16(const uint8_t *p){
+    uint16_t v; memcpy(&v, p, 2);
+#if WATERHASH_BIG_ENDIAN
+    v = (uint16_t)((v << 8) | (v >> 8));
+#endif
+    return v;
+}
+static inline uint64_t _waterr32(const uint8_t *p){
+    uint32_t v; memcpy(&v, p, 4);
+#if WATERHASH_BIG_ENDIAN
+    v = ((v >> 24) & 0xff) | ((v >> 8) & 0xff00) |
+        ((v << 8) & 0xff0000) | ((v << 24) & 0xff000000u);
+#endif
+    return v;
+}
 static inline uint32_t waterhash(const void* key, uint32_t len, uint64_t seed){
     const uint8_t *p = (const uint8_t*)key;
     uint32_t i;

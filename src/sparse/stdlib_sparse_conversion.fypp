@@ -6,6 +6,7 @@
 !!
 ! This code was modified from https://github.com/jalvesz/FSPARSE by its author: Alves Jose
 module stdlib_sparse_conversion
+    use stdlib_optval, only: optval
     use stdlib_sorting, only: sort
     use stdlib_sparse_constants
     use stdlib_sparse_kinds
@@ -84,6 +85,19 @@ module stdlib_sparse_conversion
         #:endfor
     end interface
     public :: csr2dense
+    
+    !! version: experimental
+    !!
+    !! Conversion from csc to dense
+    !! Enables creating a dense 2D matrix from the non-zero values stored in a CSC format
+    !! The dense matrix can be allocated on the fly if not pre-allocated by the user.
+    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    interface csc2dense
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        module procedure :: csc2dense_${s1}$
+        #:endfor
+    end interface
+    public :: csc2dense
 
     !! version: experimental
     !!
@@ -215,10 +229,19 @@ contains
     #:endfor
 
     #:for k1, t1, s1 in (KINDS_TYPES)
-    subroutine coo2csr_${s1}$(COO,CSR)
-        type(COO_${s1}$_type), intent(in)  :: COO
-        type(CSR_${s1}$_type), intent(out) :: CSR
+    subroutine coo2csr_${s1}$(COO, CSR, sort_data)
+        type(COO_${s1}$_type), intent(inout) :: COO
+        type(CSR_${s1}$_type), intent(out)   :: CSR
+        logical, intent(in), optional :: sort_data
+        logical :: sort_data_
         integer(ilp) :: i
+
+        sort_data_ = optval(x=sort_data, default=.false.)
+
+        if(sort_data_) then
+            call sort_coo_unique_${s1}$( COO%index, COO%data, COO%nnz, COO%nrows, COO%ncols )
+            COO%is_sorted = .true.
+        end if
 
         CSR%nnz = COO%nnz; CSR%nrows = COO%nrows; CSR%ncols = COO%ncols
         CSR%storage = COO%storage
@@ -303,6 +326,32 @@ contains
                     dense(i,CSR%col(j)) = CSR%data(j)
                     if( i == CSR%col(j) ) cycle
                     dense(CSR%col(j),i) = CSR%data(j)
+                end do
+            end do
+        end if
+    end subroutine
+    
+    #:endfor
+
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    subroutine csc2dense_${s1}$(CSC,dense)
+        type(CSC_${s1}$_type), intent(in) :: CSC
+        ${t1}$, allocatable, intent(out) :: dense(:,:)
+        integer(ilp) :: i, j
+
+        if(.not.allocated(dense)) allocate(dense(CSC%nrows,CSC%ncols),source=zero_${s1}$)
+        if( CSC%storage == sparse_full) then
+            do j = 1, CSC%ncols
+                do i = CSC%colptr(j), CSC%colptr(j+1)-1
+                    dense(CSC%row(i),j) = CSC%data(i)
+                end do
+            end do
+        else
+            do j = 1, CSC%ncols
+                do i = CSC%colptr(j), CSC%colptr(j+1)-1
+                    dense(CSC%row(i),j) = CSC%data(i)
+                    if( j == CSC%row(i) ) cycle
+                    dense(j,CSC%row(i)) = CSC%data(i)
                 end do
             end do
         end if

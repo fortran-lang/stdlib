@@ -1310,6 +1310,27 @@ interface
 #:endfor
 end interface 
 
+! LASCL2 performs diagonal scaling: X(i,:) = D(i) * X(i,:)
+interface 
+#:for ik,it,ii in LINALG_INT_KINDS_TYPES
+#:for rk,rt,ri in REAL_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_${ri}$lascl2( m, n, d, x, ldx )
+           integer(${ik}$), intent(in) :: m, n, ldx
+           real(${rk}$), intent(in) :: d(*)
+           real(${rk}$), intent(inout) :: x(ldx,*)
+     end subroutine stdlib${ii}$_${ri}$lascl2
+
+#:endfor
+#:for ck,ct,ci in CMPLX_KINDS_TYPES
+     pure module subroutine stdlib${ii}$_${ci}$lascl2( m, n, d, x, ldx )
+           integer(${ik}$), intent(in) :: m, n, ldx
+           real(${ck}$), intent(in) :: d(*)
+           complex(${ck}$), intent(inout) :: x(ldx,*)
+     end subroutine stdlib${ii}$_${ci}$lascl2
+
+#:endfor
+#:endfor
+end interface 
 
 interface 
 #:for ik,it,ii in LINALG_INT_KINDS_TYPES
