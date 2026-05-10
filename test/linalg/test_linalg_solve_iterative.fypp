@@ -125,12 +125,24 @@ module test_linalg_solve_iterative
     end subroutine test_stdlib_solve_gmres
 
     subroutine test_stdlib_solve_gmres_hilbert(error)
+    ! This test uses a Hilbert matrix (n=10) to validate the numerical stability 
+    ! of the GMRES solver. The Hilbert matrix is notoriously ill-conditioned 
+    ! (cond(A) ~ 10^13 for n=10), making it an excellent benchmark for 
+    ! orthogonality maintenance. By setting rtol=0 and maxiter=n, we force 
+    ! the construction of the full Krylov basis, which only converges to 
+    ! the reference solution if the MGS with reorthogonalization 
+    ! preserves the basis' orthogonality.
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: n = 10
         integer :: r, c
         #:for k, t, s in R_KINDS_TYPES
         block
-            ${t}$, parameter :: tol = 1000*epsilon(0.0_${k}$)
+            #:if k == 'sp'
+            ${t}$, parameter :: tol = 1.e-2_${k}$
+            #:else
+            ${t}$, parameter :: tol = 1.e-5_${k}$
+            #:endif
+            
             ${t}$ :: A(n, n), b(n), x(n), x_ref(n)
             do r = 1, n
                 do c = 1, n
@@ -142,10 +154,9 @@ module test_linalg_solve_iterative
             b = matmul(A, x_ref)
             x = 0.0_${k}$
 
-            call stdlib_solve_gmres(A, b, x, rtol=tol, maxiter=n)
-            
+            call stdlib_solve_gmres(A, b, x, rtol=0.0_${k}$, maxiter=n)
             call check(error, norm2(x-x_ref) < tol*norm2(x_ref), & 
-            'error in GMRES: Hilbert matrix')
+            'error in GMRES ${k}$: Hilbert matrix')
             if (allocated(error)) return
         end block
         #:endfor
