@@ -21,7 +21,7 @@ contains
         ${t}$, intent(inout) :: x(:)
         integer, intent(in) :: maxiter, kdim
         type(stdlib_solver_workspace_${s}$_type), intent(inout) :: workspace
-        integer :: i, iter, inner_iter, j, k
+        integer :: i, iter, inner_iter, j, iorth
         ${t}$ :: beta, denom, hnext, htmp, norm_sq, norm_sq0, temp, tolsq
         ${t}$, allocatable :: cs(:), g(:), h(:,:), sn(:), x_base(:), y(:)
 
@@ -71,7 +71,7 @@ contains
                     call A%matvec(z(:,j), w, alpha=one_${s}$, beta=zero_${s}$, op='N')
 
                 ! Modified Gram Schmidt (MGSR) 
-                    do k = 1, 2 ! reorthogonalization
+                    do iorth = 1, 2 ! reorthogonalization
                         do i = 1, j
                             htmp   = A%inner_product(v(:,i), w)
                             h(i,j) = h(i,j) + htmp
