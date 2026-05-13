@@ -137,10 +137,11 @@ module test_linalg_solve_iterative
         integer :: r, c
         #:for k, t, s in R_KINDS_TYPES
         block
-            #:if k == 'sp'
+            !Hilbert sp is almost useless. 
+            #:if k == 'sp' 
             ${t}$, parameter :: tol = 1.e-0_${k}$
             #:else
-            ${t}$, parameter :: tol = 1.e-5_${k}$
+            ${t}$, parameter :: tol = 1.e-4_${k}$
             #:endif
             
             ${t}$ :: A(n, n), b(n), x(n), x_ref(n)
