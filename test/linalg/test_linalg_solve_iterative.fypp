@@ -109,9 +109,8 @@ module test_linalg_solve_iterative
                                             1, 10,  3, &
                                             2,  3, 10], [3,3])
         ${t}$ :: x(3)
-        ${t}$, parameter :: xref(:) = [(137._${k}$/218._${k}$), -(9._${k}$/109._${k}$), (87._${k}$/218._${k}$)]
-        ${t}$, parameter :: load(*) = [7.0_${k}$, 1.0_${k}$, 5.0_${k}$]
-        load = [7.0_${k}$, 1.0_${k}$, 5.0_${k}$]
+        ${t}$, parameter :: xref(3) = [(137._${k}$/218._${k}$), -(9._${k}$/109._${k}$), (87._${k}$/218._${k}$)]
+        ${t}$, parameter :: load(3) = [7.0_${k}$, 1.0_${k}$, 5.0_${k}$]
         x = [0.2_${k}$, -0.1_${k}$, 0.3_${k}$]
 
         call stdlib_solve_gmres(A, load, x, rtol=1.e-10_${k}$, precond=pc_jacobi)
@@ -124,13 +123,13 @@ module test_linalg_solve_iterative
     end subroutine test_stdlib_solve_gmres
 
     subroutine test_stdlib_solve_gmres_hilbert(error)
-    ! This test uses a Hilbert matrix (n=10) to validate the numerical stability 
-    ! of the GMRES solver. The Hilbert matrix is notoriously ill-conditioned 
-    ! (cond(A) ~ 10^13 for n=10), making it an excellent benchmark for 
-    ! orthogonality maintenance. By setting rtol=0 and maxiter=n, we force 
-    ! the construction of the full Krylov basis, which only converges to 
-    ! the reference solution if the MGS with reorthogonalization 
-    ! preserves the basis' orthogonality.
+        ! This test uses a Hilbert matrix (n=10) to validate the numerical stability 
+        ! of the GMRES solver. The Hilbert matrix is notoriously ill-conditioned 
+        ! (cond(A) ~ 10^13 for n=10), making it an excellent benchmark for 
+        ! orthogonality maintenance. By setting rtol=0 and maxiter=n, we force 
+        ! the construction of the full Krylov basis, which only converges to 
+        ! the reference solution if the MGS with reorthogonalization 
+        ! preserves the basis' orthogonality.
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: n = 10
         integer :: r, c
@@ -151,7 +150,6 @@ module test_linalg_solve_iterative
                 end do
             end do
 
-            x_ref = 1.0_${k}$
             b = matmul(A, x_ref)
             x = 0.0_${k}$
 
