@@ -92,9 +92,8 @@ module test_linalg_solve_iterative
                                            0,  4, -1,  1, &
                                            1,  0,  3,  2, &
                                            2, -1,  0,  6], [4,4])
-        ${t}$ :: x(4), load(4), xref(4)
-
-        xref = [1.0_${k}$, 2.0_${k}$, -1.0_${k}$, 0.5_${k}$]
+        ${t}$ :: x(4), load(4)
+        ${t}$, parameter :: xref(*) = [1.0_${k}$, 2.0_${k}$, -1.0_${k}$, 0.5_${k}$]
         load = matmul(A, xref)
         x = 0.0_${k}$
 
