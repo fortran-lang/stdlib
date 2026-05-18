@@ -143,7 +143,8 @@ module test_linalg_solve_iterative
             ${t}$, parameter :: tol = 1.e-3_${k}$
             #:endif
             
-            ${t}$ :: A(n, n), b(n), x(n), x_ref(n)
+            ${t}$ :: A(n, n), b(n), x(n)
+            ${t}$, parameter :: x_ref(n) = 1.0_${k}$
             do r = 1, n
                 do c = 1, n
                     A(r, c) = 1.0_${k}$ / real(r + c - 1, ${k}$)
