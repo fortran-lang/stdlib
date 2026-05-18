@@ -88,7 +88,7 @@ module test_linalg_solve_iterative
         #:for k, t, s in R_KINDS_TYPES
         block
         ${t}$, parameter :: tol = 1000*epsilon(0.0_${k}$)
-        ${t}$ :: A(4,4) = reshape([${t}$ :: 5,  1,  2,  0, &
+        ${t}$, parameter :: A(4,4) = reshape([${t}$ :: 5,  1,  2,  0, &
                                            0,  4, -1,  1, &
                                            1,  0,  3,  2, &
                                            2, -1,  0,  6], [4,4])
