@@ -441,3 +441,9 @@ Subroutine
 #### Note
 
 GMRES is especially useful for general non-symmetric systems where CG and PCG do not apply. Its main cost is the Krylov basis storage and orthogonalization work within each restart cycle. With `compact=.true.`, the solver reduces workspace requirements significantly. With `compact=.false.`, it retains the previous cached-basis update strategy.
+
+#### Example
+
+```fortran
+{!example/linalg/example_solve_gmres.f90!}
+```
