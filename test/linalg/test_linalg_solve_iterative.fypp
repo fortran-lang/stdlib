@@ -119,6 +119,22 @@ module test_linalg_solve_iterative
         if (allocated(error)) return
         end block
 
+        block
+        ${t}$, parameter :: tol = 1000*epsilon(0.0_${k}$)
+        ${t}$, parameter :: A(3,3) = reshape([${t}$ :: 10,  1,  2, &
+                                            1, 10,  3, &
+                                            2,  3, 10], [3,3])
+        ${t}$ :: x(3)
+        ${t}$, parameter :: xref(3) = [(137._${k}$/218._${k}$), -(9._${k}$/109._${k}$), (87._${k}$/218._${k}$)]
+        ${t}$, parameter :: load(3) = [7.0_${k}$, 1.0_${k}$, 5.0_${k}$]
+        x = [0.2_${k}$, -0.1_${k}$, 0.3_${k}$]
+
+        call stdlib_solve_gmres(A, load, x, rtol=1.e-10_${k}$, precond=pc_jacobi, compact=.false.)
+
+        call check(error, norm2(x-xref)<tol*norm2(xref), 'error in GMRES solver (Jacobi preconditioned speed mode test)')
+        if (allocated(error)) return
+        end block
+
         #:endfor
     end subroutine test_stdlib_solve_gmres
 

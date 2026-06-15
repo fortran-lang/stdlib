@@ -349,3 +349,95 @@ The method uses 8 auxiliary vectors internally, requiring more memory than simpl
 ```fortran
 {!example/linalg/example_solve_bicgstab_wilkinson.f90!}
 ```
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `stdlib_solve_gmres_kernel` subroutine
+
+#### Description
+
+Implements the restarted Generalized Minimal Residual (GMRES) method for solving the linear system \( Ax = b \), where \( A \) is a general linear operator defined via the `stdlib_linop` type. This is the core implementation, allowing custom matrix types, custom preconditioners, and user-managed workspace.
+
+#### Syntax
+
+`call ` [[stdlib_linalg_iterative_solvers(module):stdlib_solve_gmres_kernel(interface)]] ` (A, M, b, x, rtol, atol, maxiter, kdim, workspace, compact)`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Subroutine
+
+#### Argument(s)
+
+`A`: `class(stdlib_linop_<kind>_type)` defining the linear operator. This argument is `intent(in)`.
+
+`M`: `class(stdlib_linop_<kind>_type)` defining the preconditioner linear operator. This argument is `intent(in)`.
+
+`b`: 1-D array of `real(<kind>)` defining the loading conditions of the linear system. This argument is `intent(in)`.
+
+`x`: 1-D array of `real(<kind>)` which serves as the input initial guess and the output solution. This argument is `intent(inout)`.
+
+`rtol` and `atol`: scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used \( || b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 ) \). These arguments are `intent(in)`.
+
+`maxiter`: scalar of type `integer` defining the maximum allowed number of iterations. This argument is `intent(in)`.
+
+`kdim`: scalar of type `integer` defining the Krylov subspace size before restart. This argument is `intent(in)`.
+
+`workspace`: scalar derived type of `type(stdlib_solver_workspace_<kind>_type)` holding the work array for the solver. This argument is `intent(inout)`.
+
+`compact`: scalar of type `logical`. If true, GMRES stores only one preconditioned basis vector at a time and rebuilds the cycle-end correction through the preconditioner, reducing memory usage. If false, GMRES caches the full preconditioned basis for a faster cycle-end update at the cost of additional memory. Default is `.true.`. This argument is `intent(in)`.
+
+#### Note
+
+GMRES trades increasing memory and orthogonalization cost for robust convergence on general non-symmetric systems. The `compact` option allows choosing between a lower-memory layout and a slightly faster restart update.
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `stdlib_solve_gmres` subroutine
+
+#### Description
+
+Provides a user-friendly interface to the restarted GMRES method for solving \( Ax = b \), supporting `dense` and `CSR_<kind>_type` matrices. GMRES is suitable for general non-symmetric systems and supports optional preconditioning, workspace reuse, and a storage-mode choice for balancing memory use against cycle-end update speed.
+
+#### Syntax
+
+`call ` [[stdlib_linalg_iterative_solvers(module):stdlib_solve_gmres(interface)]] ` (A, b, x [, di, rtol, atol, maxiter, restart, kdim, precond, M, workspace, compact])`
+
+#### Status
+
+Experimental
+
+#### Class
+
+Subroutine
+
+#### Argument(s)
+
+`A`: `dense` or `CSR_<kind>_type` matrix defining the linear system. This argument is `intent(in)`.
+
+`b`: 1-D array of `real(<kind>)` defining the loading conditions of the linear system. This argument is `intent(in)`.
+
+`x`: 1-D array of `real(<kind>)` which serves as the input initial guess and the output solution. This argument is `intent(inout)`.
+
+`di` (optional): 1-D mask array of type `logical(int8)` defining the degrees of freedom subject to dirichlet boundary conditions. The actual boundary condition values should be stored in the `b` load array. This argument is `intent(in)`.
+
+`rtol` and `atol` (optional): scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used \( || b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 ) \). Default values are `rtol=1.e-5` and `atol=epsilon(1._<kind>)`. These arguments are `intent(in)`.
+
+`maxiter` (optional): scalar of type `integer` defining the maximum allowed number of iterations. If no value is given, a default of `N` is set, where `N = size(b)`. This argument is `intent(in)`.
+
+`restart` (optional): scalar of type `logical` indicating whether to restart the iteration with zero initial guess. Default is `.true.`. This argument is `intent(in)`.
+
+`kdim` (optional): scalar of type `integer` defining the Krylov subspace size before restart. If no value is given, a default of `min(30, N)` is used. This argument is `intent(in)`.
+
+`precond` (optional): scalar of type `integer` enabling to switch among the default preconditioners available with the following enum (`pc_none`, `pc_jacobi`). If no value is given, no preconditioning will be applied. This argument is `intent(in)`.
+
+`M` (optional): scalar derived type of `class(stdlib_linop_<kind>_type)` defining a custom preconditioner linear operator. If given, `precond` will have no effect, and a pointer is set to this custom preconditioner. This argument is `intent(in)`.
+
+`workspace` (optional): scalar derived type of `type(stdlib_solver_workspace_<kind>_type)` holding the work temporal array for the solver. If the user passes its own `workspace`, then internally a pointer is set to it, otherwise, memory will be internally allocated and deallocated before exiting the procedure. This argument is `intent(inout)`.
+
+`compact` (optional): scalar of type `logical`. If true, GMRES stores only one preconditioned basis vector per iteration cycle and minimizes memory use. If false, GMRES caches the full preconditioned basis to speed up the cycle-end update. Default is `.true.`. This argument is `intent(in)`.
+
+#### Note
+
+GMRES is especially useful for general non-symmetric systems where CG and PCG do not apply. Its main cost is the Krylov basis storage and orthogonalization work within each restart cycle. With `compact=.true.`, the solver reduces workspace requirements significantly. With `compact=.false.`, it retains the previous cached-basis update strategy.

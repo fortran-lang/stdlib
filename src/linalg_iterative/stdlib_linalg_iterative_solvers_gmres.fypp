@@ -9,29 +9,33 @@ submodule(stdlib_linalg_iterative_solvers) stdlib_linalg_iterative_gmres
     use stdlib_sparse
     use stdlib_constants
     use stdlib_optval, only: optval
+    use stdlib_linalg_blas, only: gemv
     implicit none
 
 contains
 
     #:for k, t, s in R_KINDS_TYPES
-    module subroutine stdlib_solve_gmres_kernel_${s}$(A,M,b,x,rtol,atol,maxiter,kdim,workspace)
+    module subroutine stdlib_solve_gmres_kernel_${s}$(A,M,b,x,rtol,atol,maxiter,kdim,workspace,compact)
         class(stdlib_linop_${s}$_type), intent(in) :: A
         class(stdlib_linop_${s}$_type), intent(in) :: M
         ${t}$, intent(in) :: b(:), rtol, atol
         ${t}$, intent(inout) :: x(:)
         integer, intent(in) :: maxiter, kdim
         type(stdlib_solver_workspace_${s}$_type), intent(inout) :: workspace
-        integer :: i, iter, inner_iter, j, iorth
+        logical, intent(in) :: compact
+        integer :: i, iter, inner_iter, j, j_final, iorth, jz, zbase
         ${t}$ :: beta, denom, hnext, htmp, norm_sq, norm_sq0, temp, tolsq
-        ${t}$, allocatable :: cs(:), g(:), h(:,:), sn(:), x_base(:), y(:)
+        ${t}$, allocatable :: cs(:), g(:), h(:,:), sn(:), y(:)
 
-        allocate(h(kdim+1, kdim), cs(kdim), sn(kdim), g(kdim+1), y(kdim), x_base(size(x)))
+        allocate(h(kdim+1, kdim), cs(kdim), sn(kdim), g(kdim+1), y(kdim) )
+        zbase = kdim + 4
 
         associate( r => workspace%tmp(:,1), &
-                   w => workspace%tmp(:,2), &
-                   v => workspace%tmp(:,3:kdim+3), &
-                   z => workspace%tmp(:,kdim+4:2*kdim+3) )
-
+               w => workspace%tmp(:,2), &
+               v => workspace%tmp(:,3:kdim+3), &
+               z => workspace%tmp(:,zbase:zbase+merge(0,kdim-1,compact)) )
+            
+            iter = 0
             ! Initialize convergence targets from the right-hand side norm.
             norm_sq0 = A%inner_product(b, b)
             tolsq = max(rtol*rtol*norm_sq0, atol*atol)
@@ -40,21 +44,16 @@ contains
             r = b
             call A%matvec(x, r, alpha=-one_${s}$, beta=one_${s}$, op='N')
             norm_sq = A%inner_product(r, r)
-            if (associated(workspace%callback)) call workspace%callback(x, norm_sq, 0)
+            if (associated(workspace%callback)) call workspace%callback(x, norm_sq, iter)
 
-            if (norm_sq <= tolsq .or. maxiter <= 0) then
-                deallocate(h, cs, sn, g, y, x_base)
-                return
-            end if
+            if (norm_sq <= tolsq) return
 
-            iter = 0
             do while (iter < maxiter .and. norm_sq >= tolsq)
                 ! Start a new GMRES cycle from the current residual.
                 beta = sqrt(max(norm_sq, zero_${s}$))
                 if (beta <= epsilon(one_${s}$)) exit
 
                 inner_iter = min(kdim, maxiter - iter)
-                x_base = x
                 h = zero_${s}$
                 cs = zero_${s}$
                 sn = zero_${s}$
@@ -65,12 +64,14 @@ contains
                 v(:,1) = r / beta
                 g(1) = beta
 
+                j_final = 0
                 do j = 1, inner_iter
                     ! Run Arnoldi with the preconditioned basis vector.
-                    call M%matvec(v(:,j), z(:,j), alpha=one_${s}$, beta=zero_${s}$, op='N')
-                    call A%matvec(z(:,j), w, alpha=one_${s}$, beta=zero_${s}$, op='N')
+                    jz = merge(1, j, compact)
+                    call M%matvec(v(:,j), z(:,jz), alpha=one_${s}$, beta=zero_${s}$, op='N')
+                    call A%matvec(z(:,jz), w, alpha=one_${s}$, beta=zero_${s}$, op='N')
 
-                ! Modified Gram Schmidt (MGSR) 
+                    ! Modified Gram Schmidt (MGSR) 
                     do iorth = 1, 2 ! reorthogonalization
                         do i = 1, j
                             htmp   = A%inner_product(v(:,i), w)
@@ -112,20 +113,33 @@ contains
                     g(j+1) = -sn(j) * g(j) + cs(j) * g(j+1)
                     g(j) = temp
 
-                    ! Solve the reduced system and update the current iterate.
-                    call upper_triangular_solve(h, g, y, j)
-                    x = x_base
-                    do i = 1, j
-                        x = x + y(i) * z(:,i)
-                    end do
-
-                    ! Track the residual norm estimate for convergence.
+                    ! Cheap residual-norm estimate; no solution rebuild needed.
                     norm_sq = g(j+1) * g(j+1)
                     iter = iter + 1
+                    j_final = j
+                    ! x is kept constant for the logger through out the inner iteration
                     if (associated(workspace%callback)) call workspace%callback(x, norm_sq, iter)
 
                     if (norm_sq < tolsq .or. hnext <= epsilon(one_${s}$) .or. iter >= maxiter) exit
                 end do
+
+                ! Cycle-end update from the least-squares correction.
+                if (j_final > 0) then
+                    call upper_triangular_solve(h, g, y, j_final)
+                    if (compact) then
+                        call gemv('N', m=size(x), n=j_final, alpha=one_${s}$, &
+                            a=v, lda=size(v,1), &
+                            x=y, incx=1, &
+                            beta=zero_${s}$, y=w, incy=1)
+                        call M%matvec(w, z(:,1), alpha=one_${s}$, beta=zero_${s}$, op='N')
+                        x = x + z(:,1)
+                    else
+                        call gemv('N', m=size(x), n=j_final, alpha=one_${s}$, &
+                            a=z, lda=size(z,1), &
+                            x=y, incx=1, &
+                            beta=one_${s}$, y=x, incy=1)
+                    end if
+                end if
 
                 if (norm_sq < tolsq .or. iter >= maxiter) exit
 
@@ -135,8 +149,6 @@ contains
                 norm_sq = A%inner_product(r, r)
             end do
         end associate
-
-        deallocate(h, cs, sn, g, y, x_base)
 
     contains
 
@@ -161,7 +173,7 @@ contains
 
     #:for matrix in MATRIX_TYPES
     #:for k, t, s in R_KINDS_TYPES
-    module subroutine stdlib_solve_gmres_${matrix}$_${s}$(A,b,x,di,rtol,atol,maxiter,restart,kdim,precond,M,workspace)
+    module subroutine stdlib_solve_gmres_${matrix}$_${s}$(A,b,x,di,rtol,atol,maxiter,restart,kdim,precond,M,workspace,compact)
         #:if matrix == "dense"
         use stdlib_linalg, only: diag
         ${t}$, intent(in) :: A(:,:)
@@ -177,12 +189,13 @@ contains
         integer, intent(in), optional :: precond
         class(stdlib_linop_${s}$_type), optional, intent(in), target :: M
         type(stdlib_solver_workspace_${s}$_type), optional, intent(inout), target :: workspace
+        logical, intent(in), optional :: compact
         type(stdlib_linop_${s}$_type) :: op
         type(stdlib_linop_${s}$_type), pointer :: M_ => null()
         type(stdlib_solver_workspace_${s}$_type), pointer :: workspace_
         integer :: kdim_, maxiter_, n, ncols, precond_
         ${t}$ :: rtol_, atol_
-        logical :: restart_
+        logical :: compact_, restart_
         logical(int8), pointer :: di_(:)
         ${t}$, allocatable :: diagonal(:)
 
@@ -190,10 +203,11 @@ contains
         maxiter_ = optval(x=maxiter, default=n)
         kdim_ = max(1, min(optval(x=kdim, default=min(30, n)), n))
         restart_ = optval(x=restart, default=.true.)
+        compact_ = optval(x=compact, default=.true.)
         rtol_ = optval(x=rtol, default=1.e-5_${s}$)
         atol_ = optval(x=atol, default=epsilon(one_${s}$))
         precond_ = optval(x=precond, default=pc_none)
-        ncols = 2 * kdim_ + stdlib_size_wksp_gmres
+        ncols = kdim_ + stdlib_size_wksp_gmres + merge(1, kdim_, compact_)
 
         if (present(M)) then
             M_ => M
@@ -237,7 +251,7 @@ contains
 
         if (restart_) x = zero_${s}$
         x = merge(b, x, di_)
-        call stdlib_solve_gmres_kernel(op, M_, b, x, rtol_, atol_, maxiter_, kdim_, workspace_)
+        call stdlib_solve_gmres_kernel(op, M_, b, x, rtol_, atol_, maxiter_, kdim_, workspace_, compact=compact_)
 
         if (.not.present(di)) deallocate(di_)
         di_ => null()

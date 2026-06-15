@@ -168,7 +168,7 @@ module stdlib_linalg_iterative_solvers
     !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_gmres_kernel)
     interface stdlib_solve_gmres_kernel
         #:for k, t, s in R_KINDS_TYPES
-        module subroutine stdlib_solve_gmres_kernel_${s}$(A,M,b,x,rtol,atol,maxiter,kdim,workspace)
+        module subroutine stdlib_solve_gmres_kernel_${s}$(A,M,b,x,rtol,atol,maxiter,kdim,workspace,compact)
             class(stdlib_linop_${s}$_type), intent(in) :: A !! linear operator
             class(stdlib_linop_${s}$_type), intent(in) :: M !! preconditioner linear operator
             ${t}$, intent(in) :: b(:) !! right-hand side vector
@@ -178,6 +178,7 @@ module stdlib_linalg_iterative_solvers
             integer, intent(in) :: maxiter !! maximum number of iterations
             integer, intent(in) :: kdim !! Krylov subspace size before restart
             type(stdlib_solver_workspace_${s}$_type), intent(inout) :: workspace !! workspace for the solver
+            logical, intent(in) :: compact !! keep only one preconditioned basis vector and rebuild the cycle update at restart
         end subroutine
         #:endfor
     end interface
@@ -247,7 +248,7 @@ module stdlib_linalg_iterative_solvers
     interface stdlib_solve_gmres
         #:for matrix in MATRIX_TYPES
         #:for k, t, s in R_KINDS_TYPES
-        module subroutine stdlib_solve_gmres_${matrix}$_${s}$(A,b,x,di,rtol,atol,maxiter,restart,kdim,precond,M,workspace)
+        module subroutine stdlib_solve_gmres_${matrix}$_${s}$(A,b,x,di,rtol,atol,maxiter,restart,kdim,precond,M,workspace,compact)
             !! linear operator matrix
             #:if matrix == "dense"
             ${t}$, intent(in) :: A(:,:)
@@ -265,6 +266,7 @@ module stdlib_linalg_iterative_solvers
             integer, intent(in), optional :: precond !! preconditioner method enumerator
             class(stdlib_linop_${s}$_type), optional, intent(in), target :: M !! preconditioner linear operator
             type(stdlib_solver_workspace_${s}$_type), optional, intent(inout), target :: workspace !! workspace for the solver
+            logical, intent(in), optional :: compact !! if true, favor lower memory use over cycle-end update speed
         end subroutine
         #:endfor
         #:endfor
