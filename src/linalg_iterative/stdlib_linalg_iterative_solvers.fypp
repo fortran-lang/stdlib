@@ -16,7 +16,6 @@ module stdlib_linalg_iterative_solvers
         enumerator :: stdlib_size_wksp_cg = 3
         enumerator :: stdlib_size_wksp_pcg = 4
         enumerator :: stdlib_size_wksp_bicgstab = 8
-        enumerator :: stdlib_size_wksp_gmres = 3
     end enum
     public :: stdlib_size_wksp_cg, stdlib_size_wksp_pcg, stdlib_size_wksp_bicgstab, stdlib_size_wksp_gmres
 
@@ -274,6 +273,15 @@ module stdlib_linalg_iterative_solvers
     public :: stdlib_solve_gmres
 
 contains
+    
+    !------------------------------------------------------------------
+    ! helpers
+    !------------------------------------------------------------------
+    integer(int32) function stdlib_size_wksp_gmres(kdim,compact)
+        integer(int32), intent(in) :: kdim
+        logical, intent(in) :: compact
+        stdlib_size_wksp_gmres = 3 + kdim + merge(1, kdim, compact)
+    end function
 
     !------------------------------------------------------------------
     ! defaults
