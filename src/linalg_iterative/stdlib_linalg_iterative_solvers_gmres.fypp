@@ -23,7 +23,7 @@ contains
         integer, intent(in) :: maxiter, kdim
         type(stdlib_solver_workspace_${s}$_type), intent(inout) :: workspace
         logical, intent(in) :: compact
-        integer :: i, iter, inner_iter, j, j_final, iorth, jz, zbase
+        integer :: i, iter, j, j_final, iorth, jz, zbase
         ${t}$ :: beta, denom, hnext, htmp, norm_sq, norm_sq0, temp, tolsq
         ${t}$, allocatable :: cs(:), g(:), h(:,:), sn(:), y(:)
 
@@ -49,11 +49,11 @@ contains
             if (norm_sq <= tolsq) return
 
             do while (iter < maxiter .and. norm_sq >= tolsq)
+                iter = iter + 1
                 ! Start a new GMRES cycle from the current residual.
                 beta = sqrt(max(norm_sq, zero_${s}$))
                 if (beta <= epsilon(one_${s}$)) exit
 
-                inner_iter = min(kdim, maxiter - iter)
                 h = zero_${s}$
                 cs = zero_${s}$
                 sn = zero_${s}$
@@ -65,7 +65,7 @@ contains
                 g(1) = beta
 
                 j_final = 0
-                do j = 1, inner_iter
+                do j = 1, kdim
                     ! Run Arnoldi with the preconditioned basis vector.
                     jz = merge(1, j, compact)
                     call M%matvec(v(:,j), z(:,jz), alpha=one_${s}$, beta=zero_${s}$, op='N')
@@ -115,12 +115,9 @@ contains
 
                     ! Cheap residual-norm estimate; no solution rebuild needed.
                     norm_sq = g(j+1) * g(j+1)
-                    iter = iter + 1
                     j_final = j
-                    ! x is kept constant for the logger through out the inner iteration
-                    if (associated(workspace%callback)) call workspace%callback(x, norm_sq, iter)
 
-                    if (norm_sq < tolsq .or. hnext <= epsilon(one_${s}$) .or. iter >= maxiter) exit
+                    if (norm_sq < tolsq .or. hnext <= epsilon(one_${s}$)) exit
                 end do
 
                 ! Cycle-end update from the least-squares correction.
@@ -141,12 +138,13 @@ contains
                     end if
                 end if
 
-                if (norm_sq < tolsq .or. iter >= maxiter) exit
-
-                ! Refresh the residual before the next restarted cycle.
+                ! Refresh the true residual so the convergence test per restart cycle and the logged
+                ! value use the true ||b - A*x||, not the Hessenberg estimate.
                 r = b
                 call A%matvec(x, r, alpha=-one_${s}$, beta=one_${s}$, op='N')
                 norm_sq = A%inner_product(r, r)
+
+                if (associated(workspace%callback)) call workspace%callback(x, norm_sq, iter)
             end do
         end associate
 
