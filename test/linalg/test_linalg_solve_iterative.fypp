@@ -150,13 +150,9 @@ module test_linalg_solve_iterative
         integer, parameter :: n = 10
         integer :: r, c
         #:for k, t, s in R_KINDS_TYPES
+        #:if k not in ['sp'] # Hilbert sp is almost useless. for n=10, cond(A) ~ 10^13, which is beyond the precision of single precision.
         block
-            !Hilbert sp is almost useless. 
-            #:if k == 'sp' 
-            ${t}$, parameter :: tol = 1.e-0_${k}$
-            #:else
             ${t}$, parameter :: tol = 1.e-3_${k}$
-            #:endif
             
             ${t}$ :: A(n, n), b(n), x(n)
             ${t}$, parameter :: x_ref(n) = 1.0_${k}$
@@ -174,6 +170,7 @@ module test_linalg_solve_iterative
             'error in GMRES ${k}$: Hilbert matrix')
             if (allocated(error)) return
         end block
+        #:endif
         #:endfor
     end subroutine test_stdlib_solve_gmres_hilbert
 
