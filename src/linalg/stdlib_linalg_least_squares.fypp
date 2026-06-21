@@ -624,6 +624,7 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
         ${rt}$, pointer :: amat(:,:), lmat(:,:)
         ${rt}$, allocatable, target :: amat_alloc(:,:), lmat_alloc(:,:)
         ${rt}$, allocatable :: d(:), y(:), work(:)
+        ${rt}$ :: work_size(1)
         character(*), parameter :: this = 'generalized_lstsq'
 
         m = size(a, 1, kind=ilp)
