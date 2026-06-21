@@ -1,6 +1,7 @@
 program example_matrix_market
     use stdlib_io_mm, only : load_mm, save_mm
     use stdlib_kinds, only : dp
+    use stdlib_error, only: error_stop
     implicit none
 
     real(dp), allocatable :: matrix(:,:), matrix2(:,:)
@@ -9,6 +10,7 @@ program example_matrix_market
     character(len=*), parameter :: dense_filename = "example_dense.mtx"
     character(len=*), parameter :: sparse_filename = "example_sparse.mtx"
     integer :: iostat, i
+    character(len=:), allocatable :: errmsg
     character(len=:), allocatable :: iomsg
 
     ! Create a test dense matrix
@@ -24,8 +26,8 @@ program example_matrix_market
     ! Save dense matrix to Matrix Market file
     call save_mm(dense_filename, matrix, format="ES24.15E2", symmetry="general", iostat=iostat, iomsg=iomsg)
     if (iostat /= 0) then
-        print *, "Error saving dense matrix: ", iomsg
-        stop 1
+        errmsg = "Error saving dense matrix: " // trim(iomsg)
+        call error_stop(errmsg)
     end if
 
     print *, "Dense matrix saved to ", dense_filename
@@ -33,8 +35,8 @@ program example_matrix_market
     ! Load dense matrix from Matrix Market file  
     call load_mm(dense_filename, matrix2, iostat=iostat, iomsg=iomsg)
     if (iostat /= 0) then
-        print *, "Error loading dense matrix: ", iomsg
-        stop 1
+        errmsg = "Error loading dense matrix: " // trim(iomsg)
+        call error_stop(errmsg)
     end if
 
     print *, "Loaded dense matrix:"
@@ -54,8 +56,8 @@ program example_matrix_market
     ! Save sparse matrix to Matrix Market file
     call save_mm(sparse_filename, index, data, format="ES24.15E2", symmetry="general", iostat=iostat, iomsg=iomsg)
     if (iostat /= 0) then
-        print *, "Error saving sparse matrix: ", iomsg
-        stop 1
+        errmsg = "Error saving sparse matrix: " // trim(iomsg)
+        call error_stop(errmsg)
     end if
 
     print *, "Sparse matrix saved to ", sparse_filename
@@ -63,8 +65,8 @@ program example_matrix_market
     ! Load sparse matrix from Matrix Market file
     call load_mm(sparse_filename, index, data, iostat=iostat, iomsg=iomsg)
     if (iostat /= 0) then
-        print *, "Error loading sparse matrix: ", iomsg
-        stop 1
+        errmsg = "Error loading sparse matrix: " // trim(iomsg)
+        call error_stop(errmsg)
     end if
 
     print *, "Loaded sparse matrix (COO format):"
