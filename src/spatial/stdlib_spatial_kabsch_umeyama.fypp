@@ -46,20 +46,16 @@ contains
 
         scale_ = optval(scale, .true.)
         ! Dimension checks
-        if(size(P,dim=1)/=size(Q,dim=1) .or. size(P,dim=1)/=size(R,dim=1) .or. size(P,dim=1)/=size(R,dim=2) &
-                    .or. size(P,dim=1)/=size(t)) then
-            call error_stop("array sizes do not match")
-        end if
-        if(size(P,dim=2)/=size(Q,dim=2)) then
+        d = size(P,dim=1)
+        N = size(P,dim=2)
+        if(any(shape(P)/=shape(Q)) .or. any(shape(R)/=[d,d]) .or. size(t)/=d) then
             call error_stop("array sizes do not match")
         end if
         if (present(W)) then
-            if (size(W) /= size(P,dim=2)) then
+            if (size(W) /= N) then
                 call error_stop("array sizes do not match")
             end if
         end if
-        d = size(P,dim=1)
-        N = size(P,dim=2)
 
         if(present(W)) then
             sum_w = stdlib_sum_kahan(W)
@@ -71,9 +67,7 @@ contains
         sum_w = one_${k}$ / sum_w
         if(sum_w<zero_${k}$) call error_stop("Invalid weights: sum of weights must be positive")
 
-        allocate(c_P(d), source=zero_${s}$)
-        allocate(c_Q(d), source=zero_${s}$)
-        allocate(tmp_N(N), source=zero_${s}$)
+        allocate(c_P(d), c_Q(d), tmp_N(N), source=zero_${s}$)
 
         ! Compute centroids of P and Q
         if(present(W)) then
