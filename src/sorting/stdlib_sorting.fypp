@@ -478,6 +478,7 @@ module stdlib_sorting
 !!        a_data(:) = a_data( index(1:size(a_data)) )
 !!    end subroutine sort_a_data
 !!```
+    public unique
 
     interface ord_sort
 !! Version: experimental
@@ -652,6 +653,36 @@ module stdlib_sorting
 #:endfor
 
     end interface sort_index
+
+    interface unique
+    #:for t1, t2, name1, cpp1 in IR_INDEX_TYPES_ALT_NAME
+        module function ${name1}$_unique(A, sorted_output) result(output)
+            ${t1}$, intent(in) :: A(:)
+            logical, intent(in) :: sorted_output
+            ${t1}$, allocatable :: output(:)
+        end function
+    #:endfor
+    end interface
+
+    interface sort_unique
+        #:for t1, t2, name1, cpp1 in IR_INDEX_TYPES_ALT_NAME
+        module function ${name1}$_sort_unique(temp) result(output)
+            ${t1}$, intent(inout) :: temp(:)
+            ${t1}$, allocatable :: output(:)
+        end function
+        #:endfor
+    end interface
+
+    interface stable_unique
+        #:for t1, t2, name1, cpp1 in IR_INDEX_TYPES_ALT_NAME
+        ! #:if name1 != 'xdp'
+        module function ${name1}$_stable_unique(temp) result(output)
+            ${t1}$, intent(in) :: temp(:)
+            ${t1}$, allocatable :: output(:)
+        end function
+        ! #:endif
+        #:endfor
+    end interface
 
 contains
 

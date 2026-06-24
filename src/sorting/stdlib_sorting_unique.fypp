@@ -1,0 +1,87 @@
+#:include "common.fypp"
+#:set INT_TYPES_ALT_NAME = list(zip(INT_TYPES, INT_TYPES, INT_KINDS, INT_CPPS))
+#:set REAL_TYPES_ALT_NAME = list(zip(REAL_TYPES, REAL_TYPES, REAL_KINDS, REAL_CPPS))
+#:set IR_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME
+
+submodule(stdlib_sorting) stdlib_sorting_unique
+    use stdlib_hashmaps, only: chaining_hashmap_type
+    use stdlib_hashmap_wrappers, only: key_type
+    use stdlib_constants
+    implicit none
+
+contains
+    #:for t1, t2, name1, cpp1 in IR_INDEX_TYPES_ALT_NAME
+    module function ${name1}$_unique(A, sorted_output) result(output)
+        ${t1}$, intent(in) :: A(:)
+        logical, intent(in) :: sorted_output
+        ${t1}$, allocatable :: output(:)
+        
+        ${t1}$, allocatable:: temp(:)
+
+        if(size(A) == 0) then
+            allocate(output(0))
+            return
+        end if
+        allocate(temp, source=A)
+        if(sorted_output) then
+            output = sort_unique(temp)
+        ! #:if name1 != 'xdp'
+        else
+            output = stable_unique(temp)
+        ! #:endif
+        end if
+        deallocate(temp)
+    end function
+    #:endfor
+
+    #:for t1, t2, name1, cpp1 in IR_INDEX_TYPES_ALT_NAME
+    module function ${name1}$_sort_unique(temp) result(output)
+        ${t1}$, intent(inout) :: temp(:)
+        ${t1}$, allocatable :: output(:)
+
+        logical, allocatable :: mask(:)
+        integer :: i
+
+        allocate(mask(size(temp)))
+        mask(1) = .true.
+        call sort(temp)
+        do i = 2, size(temp)
+            mask(i) = temp(i) /= temp(i-1)
+        end do
+        output = pack(temp, mask)
+        deallocate(mask)
+    end function
+    #:endfor
+
+    #:for t1, t2, name1, cpp1 in IR_INDEX_TYPES_ALT_NAME
+    ! #:if name1 != 'xdp'
+    module function ${name1}$_stable_unique(temp) result(output)
+        ${t1}$, intent(in) :: temp(:)
+        ${t1}$, allocatable :: output(:)
+
+        type(chaining_hashmap_type) :: map
+        logical, allocatable :: mask(:)
+        logical :: present
+        integer :: i
+        integer(int8) :: key(storage_size(temp(1))/8)
+
+        call map%init()
+        allocate(mask(size(temp)))
+        do i = 1, size(temp)
+            key = 0
+            key = transfer(temp(i), key)
+            call map%key_test(key, present)
+            if (.not. present) then
+                call map%map_entry(key)
+                mask(i) = .true.
+            else
+                mask(i) = .false.
+            end if
+        end do
+        output = pack(temp, mask)
+        deallocate(mask)
+    end function
+    ! #:endif
+    #:endfor
+
+end submodule stdlib_sorting_unique
