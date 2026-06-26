@@ -1,0 +1,69 @@
+name: CI_Flang
+
+on: [push, pull_request]
+
+env:
+  CMAKE_BUILD_PARALLEL_LEVEL: "2"
+  CTEST_OUTPUT_ON_FAILURE: "ON"
+  CTEST_PARALLEL_LEVEL: "2"
+  CTEST_TIME_TIMEOUT: "5"
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain:
+          - {compiler: flang, version: '18'}
+          - {compiler: flang, version: 'latest'}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.x
+
+    - name: Install fypp and ninja
+      run: pip install --upgrade fypp ninja
+
+    - name: Setup Flang and Clang
+      uses: minhqdao/setup-fortran@v1
+      id: setup-fortran
+      with:
+        compiler: ${{ matrix.toolchain.compiler }}
+        version: ${{ matrix.toolchain.version }}
+
+    - name: Configure with CMake
+      run: >-
+        cmake -Wdev -G Ninja
+        -DCMAKE_BUILD_TYPE=Release
+        -DCMAKE_Fortran_COMPILER=${{ steps.setup-fortran.outputs.fc }}
+        -DCMAKE_C_COMPILER=${{ steps.setup-fortran.outputs.cc }}
+        -DCMAKE_MAXIMUM_RANK:String=4
+        -DCMAKE_INSTALL_PREFIX=$PWD/_dist
+        -DFIND_BLAS:STRING=FALSE
+        -DWITH_XDP=off
+        -DWITH_QP=off
+        -S . -B build
+
+    - name: Build
+      run: cmake --build build --parallel
+
+    - name: Catch build fail
+      if: failure()
+      run: cmake --build build --verbose --parallel 1
+
+    - name: Test
+      run: >-
+        ctest
+        --test-dir build
+        --parallel
+        --output-on-failure
+        --no-tests=error
+
+    - name: Install project
+      run: cmake --install build
