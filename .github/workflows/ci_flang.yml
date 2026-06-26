@@ -15,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         toolchain:
-          - {compiler: flang, version: '18'}
+          - {compiler: flang, version: '22'}
           - {compiler: flang, version: 'latest'}
 
     steps:
