@@ -11,11 +11,6 @@ env:
 jobs:
   Build:
     runs-on: ubuntu-latest
-<<<<<<< HEAD
-=======
-    strategy:
-      fail-fast: false
->>>>>>> origin/ci/flang-clang
 
     steps:
     - name: Checkout code
@@ -26,7 +21,6 @@ jobs:
       with:
         python-version: 3.x
 
-<<<<<<< HEAD
     - name: Install fypp
       run: pip install --upgrade fypp
 
@@ -43,22 +37,6 @@ jobs:
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_Fortran_COMPILER=${{ steps.setup-fortran.outputs.fc }}
         -DCMAKE_C_COMPILER=${{ steps.setup-fortran.outputs.cc }}
-=======
-    - name: Install fypp and ninja
-      run: pip install --upgrade fypp ninja
-
-    - name: Install Flang and Clang
-      run: |
-        sudo apt-get update -y
-        sudo apt-get install -y flang clang
-
-    - name: Configure with CMake
-      run: >-
-        cmake -Wdev -G Ninja
-        -DCMAKE_BUILD_TYPE=Release
-        -DCMAKE_Fortran_COMPILER=flang
-        -DCMAKE_C_COMPILER=clang
->>>>>>> origin/ci/flang-clang
         -DCMAKE_MAXIMUM_RANK:String=4
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
         -DFIND_BLAS:STRING=FALSE
@@ -66,11 +44,7 @@ jobs:
         -DWITH_QP=off
         -S . -B build
 
-<<<<<<< HEAD
     - name: Build
-=======
-    - name: Build and compile
->>>>>>> origin/ci/flang-clang
       run: cmake --build build --parallel
 
     - name: Catch build fail
