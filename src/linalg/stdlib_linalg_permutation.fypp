@@ -30,8 +30,7 @@ contains
 
     p%n = n
     p%finalized = .true.
-    allocate(p%perm(n))
-    p%perm = arange(1_ilp, n)
+    p%perm = arange(1_ilp, n)  ! arange allocates the result internally
   end function
 
   !> Create a permutation from a given integer vector
@@ -45,7 +44,9 @@ contains
     p%finalized = optval(finalized, .true.)
   end function
 
-  !> Check if a permutation is valid (each integer 1..n appears exactly once)
+  !> Check if a permutation is valid
+  !> For finalized permutations: each integer 1..n appears exactly once.
+  !> For LAPACK pivot sequences: each entry is within [1, n] (duplicates allowed).
   pure module function is_valid_permutation(p) result(valid)
     type(permutation_type), intent(in) :: p
     logical :: valid
@@ -53,24 +54,22 @@ contains
     integer(ilp) :: i
 
     valid = .false.
-    if (.not. allocated(p%perm)) return
-    if (p%n < 1) return
-    if (size(p%perm) /= p%n) return
-
-    if (p%finalized) then
-      allocate(seen(p%n), source=.false.)
-      do i = 1, p%n
-        if (p%perm(i) < 1 .or. p%perm(i) > p%n) return
-        if (seen(p%perm(i))) return
-        seen(p%perm(i)) = .true.
-      end do
-    else
-      ! For LAPACK pivots, just check bounds (duplicates are valid for swapping)
-      do i = 1, size(p%perm)
-        if (p%perm(i) < 1 .or. p%perm(i) > p%n) return
-      end do
+    if (allocated(p%perm) .and. (p%n >= 1) .and. (size(p%perm, kind=ilp) == p%n)) then
+      if (p%finalized) then
+        allocate(seen(p%n), source=.false.)
+        do i = 1, p%n
+          if (p%perm(i) < 1 .or. p%perm(i) > p%n) return
+          if (seen(p%perm(i))) return
+          seen(p%perm(i)) = .true.
+        end do
+      else
+        ! For LAPACK pivots: only range-check; duplicates are valid (swap steps)
+        do i = 1, p%n
+          if (p%perm(i) < 1 .or. p%perm(i) > p%n) return
+        end do
+      end if
+      valid = .true.
     end if
-    valid = .true.
   end function
 
   !> Invert a finalized permutation
@@ -108,13 +107,12 @@ contains
 
     p%n = n
     p%finalized = .true.
-    allocate(p%perm(n))
 
-    ! Start with identity
+    ! Start with identity; arange allocates the result internally
     p%perm = arange(1_ilp, n)
 
     ! Replay swap sequence forward
-    do i = 1, min(n, int(size(ipiv), ilp))
+    do i = 1, min(n, size(ipiv, kind=ilp))
       if (ipiv(i) < 1 .or. ipiv(i) > n) then
         err0 = linalg_state_type("permutation_from_lapack", LINALG_VALUE_ERROR, "Invalid LAPACK pivot index out of bounds")
         call linalg_error_handling(err0, err)
@@ -150,8 +148,11 @@ contains
 
     p%n = p1%n
     p%finalized = .true.
-    allocate(p%perm(p%n))
-
+    ! = operator handles allocation; verify sizes match
+    if (p1%n /= p2%n) then
+      p%n = 0
+      return
+    end if
     p%perm = p2%perm(p1%perm)
   end function
 
@@ -233,7 +234,7 @@ contains
       return
     end if
     A = 0
-    do i = 1, p%n
+    do concurrent (i = 1:p%n)
       A(i, p%perm(i)) = 1
     end do
     call linalg_error_handling(err0, err)
