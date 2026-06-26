@@ -11,12 +11,6 @@ env:
 jobs:
   Build:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        toolchain:
-          - {compiler: flang, version: '22'}
-          - {compiler: flang, version: 'latest'}
 
     steps:
     - name: Checkout code
@@ -27,19 +21,19 @@ jobs:
       with:
         python-version: 3.x
 
-    - name: Install fypp and ninja
-      run: pip install --upgrade fypp ninja
+    - name: Install fypp
+      run: pip install --upgrade fypp
 
     - name: Setup Flang and Clang
       uses: minhqdao/setup-fortran@v1
       id: setup-fortran
       with:
-        compiler: ${{ matrix.toolchain.compiler }}
-        version: ${{ matrix.toolchain.version }}
+        compiler: flang
+        version: latest
 
     - name: Configure with CMake
       run: >-
-        cmake -Wdev -G Ninja
+        cmake -Wdev
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_Fortran_COMPILER=${{ steps.setup-fortran.outputs.fc }}
         -DCMAKE_C_COMPILER=${{ steps.setup-fortran.outputs.cc }}
