@@ -38,7 +38,7 @@ jobs:
         -DCMAKE_C_COMPILER=${{ steps.setup-fortran.outputs.cc }}
         -DCMAKE_MAXIMUM_RANK:STRING=4
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
-        -DFIND_BLAS:STRING=FALSE
+        -DFIND_BLAS:BOOL=FALSE
         -DWITH_XDP=off
         -DWITH_QP=off
         -S . -B build
