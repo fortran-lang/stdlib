@@ -4,7 +4,6 @@ on: [push, pull_request]
 
 env:
   CMAKE_BUILD_PARALLEL_LEVEL: "2"
-  CTEST_OUTPUT_ON_FAILURE: "ON"
   CTEST_PARALLEL_LEVEL: "2"
   CTEST_TEST_TIMEOUT: "5"
 
