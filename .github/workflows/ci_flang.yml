@@ -1,6 +1,13 @@
 name: CI_Flang
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 env:
   CMAKE_BUILD_PARALLEL_LEVEL: "2"
