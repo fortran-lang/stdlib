@@ -25,7 +25,7 @@ jobs:
       - name: Install requirements
         run: pip install --upgrade -r config/requirements.txt
 
-      - uses: fortran-lang/setup-fortran@v1.6.2
+      - uses: fortran-lang/setup-fortran@main
         id: setup-fortran
         with:
           compiler: ${{ matrix.toolchain.compiler }}
@@ -81,7 +81,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4.2.2
 
-      - uses: fortran-lang/setup-fortran@v1.6.2
+      - uses: fortran-lang/setup-fortran@main
         id: setup-fortran
         with:
           compiler: ${{ matrix.toolchain.compiler }}
@@ -119,7 +119,7 @@ jobs:
           # Exclude example files from coverage: use both absolute-path pattern (*/example/*)
           # and relative-path pattern (example/**) because lcov 2.x requires ** for recursive matching
           # and the fpm build stores paths relative to the project root.
-          lcov --remove ${{ env.COV_DIR }}/coverage.info '*/example/*' 'example/**' --output-file ${{ env.COV_DIR }}/coverage.info --ignore-errors unused,mismatch
+          lcov --remove ${{ env.COV_DIR }}/coverage.info '*/example/*' 'example/**' --output-file ${{ env.COV_DIR }}/coverage.info --ignore-errors unused,mismatch,inconsistent
         env:
             COV_DIR: build/coverage
 
