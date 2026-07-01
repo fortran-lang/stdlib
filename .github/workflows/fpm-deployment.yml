@@ -25,7 +25,7 @@ jobs:
       - name: Install requirements
         run: pip install --upgrade -r config/requirements.txt
 
-      - uses: fortran-lang/setup-fortran@main
+      - uses: fortran-lang/setup-fortran@v1.6.2
         id: setup-fortran
         with:
           compiler: ${{ matrix.toolchain.compiler }}
@@ -81,7 +81,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4.2.2
 
-      - uses: fortran-lang/setup-fortran@main
+      - uses: fortran-lang/setup-fortran@v1.6.2
         id: setup-fortran
         with:
           compiler: ${{ matrix.toolchain.compiler }}
