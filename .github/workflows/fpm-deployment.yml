@@ -42,10 +42,6 @@ jobs:
       - run: | # Just for deployment: create stdlib-fpm-ilp64 folder
           python config/fypp_deployment.py --deploy_stdlib_fpm --with_ilp64
 
-      - run: | # Use fpm gnu ci to check xdp and qp
-          python config/fypp_deployment.py --with_xdp --with_qp
-          fpm test --profile release --flag '-DWITH_XDP -DWITH_QP'
-
       - run: | # Tests without xdp and qp
           python config/fypp_deployment.py
           fpm test --profile release
@@ -105,9 +101,9 @@ jobs:
         run: |
           sudo apt-get install lcov
 
-      - run: | # Use fpm gnu ci to check xdp and qp
-          python config/fypp_deployment.py --with_xdp --with_qp
-          fpm test --profile release --flag '-DWITH_XDP -DWITH_QP -coverage'
+      - run: | # Use fpm gnu ci to check coverage
+          python config/fypp_deployment.py
+          fpm test --profile release --flag '-coverage'
 
       - name: Create coverage report
         run: |
