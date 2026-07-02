@@ -256,45 +256,123 @@ contains
         #:for k1, t1, s1 in (KINDS_TYPES)
         block
             integer, parameter :: wp = ${k1}$
-            type(COO_${s1}$_type) :: COO
-            type(CSR_${s1}$_type) :: CSR
-            type(ELL_${s1}$_type) :: ELL
-            ${t1}$, allocatable :: dense(:,:)
-            ${t1}$, allocatable :: vec_x(:)
-            ${t1}$, allocatable :: vec_y1(:), vec_y2(:), vec_y3(:), vec_y4(:)
+            type(COO_${s1}$_type) :: COO_low, COO_upper
+            type(CSR_${s1}$_type) :: CSR_low, CSR_upper
+            type(CSC_${s1}$_type) :: CSC_low, CSC_upper
+            type(ELL_${s1}$_type) :: ELL_low, ELL_upper
+            integer, parameter :: ndim = 4
+            ${t1}$, parameter :: dense(ndim,ndim) = reshape(real([1,2,0,0, &
+                                                            2,3,4,0, &
+                                                            0,4,5,6, &
+                                                            0,0,6,7], kind=wp), [ndim,ndim])
+            ${t1}$, parameter :: vec_x(ndim) = real([1,2,3,4], kind=wp)
+            ${t1}$, parameter :: vec_y_ref(ndim) = matmul(dense, vec_x)
+            ${t1}$ :: dense_low(ndim,ndim), dense_upper(ndim,ndim)
+            ${t1}$ :: vec_y(ndim)
+            integer :: i, j
 
-            allocate( vec_x(4)  , source = 1._wp )
-            allocate( vec_y1(4) , source = 0._wp )
-            allocate( vec_y2(4) , source = 0._wp )
-            allocate( vec_y3(4) , source = 0._wp )
-            allocate( vec_y4(4) , source = 0._wp )
+            vec_y = 0._wp
 
-            allocate( dense(4,4) , source = &
-                    reshape(real([1,0,0,0, &
-                                  2,1,0,0, &
-                                  0,2,1,0,&
-                                  0,0,2,1],kind=wp),[4,4]) )
+            dense_low = dense
+            dense_upper = dense
 
-            call dense2coo( dense , COO )
-            COO%storage = sparse_upper
-            call coo2csr(COO, CSR)
-            call csr2ell(CSR, ELL)
+            do i = 1, ndim
+                do j = i + 1, ndim
+                    dense_low(i,j) = 0._wp
+                    dense_upper(j,i) = 0._wp
+                end do
+            end do
 
-            dense(2,1) = 2._wp; dense(3,2) = 2._wp; dense(4,3) = 2._wp
-            vec_y1 = matmul( dense, vec_x )
-            call check(error, all(vec_y1 == [3,5,5,3]) )
+            call dense2coo(dense_low, COO_low)
+            COO_low%storage = sparse_lower
+            call coo2csr(COO_low, CSR_low)
+            call coo2csc(COO_low, CSC_low)
+            call csr2ell(CSR_low, ELL_low)
+
+            call dense2coo(dense_upper, COO_upper)
+            COO_upper%storage = sparse_upper
+            call coo2csr(COO_upper, CSR_upper)
+            call coo2csc(COO_upper, CSC_upper)
+            call csr2ell(CSR_upper, ELL_upper)
+
+            vec_y = 0._wp
+            call spmv(COO_low, vec_x, vec_y)
+            call check(error, all(vec_y == vec_y_ref), "error in COO lower ${s1}$ spmv")
             if (allocated(error)) return
 
-            call spmv( COO , vec_x, vec_y2 )
-            call check(error, all(vec_y1 == vec_y2) )
+            vec_y = 0._wp
+            call spmv(COO_low, vec_x, vec_y, op=sparse_op_transpose)
+            call check(error, all(vec_y == vec_y_ref), "error in COO lower ${s1}$ transpose spmv")
             if (allocated(error)) return
 
-            call spmv( CSR , vec_x, vec_y3 )
-            call check(error, all(vec_y1 == vec_y3) )
+            vec_y = 0._wp
+            call spmv(COO_upper, vec_x, vec_y)
+            call check(error, all(vec_y == vec_y_ref), "error in COO upper ${s1}$ spmv")
             if (allocated(error)) return
 
-            call spmv( ELL , vec_x, vec_y4 )
-            call check(error, all(vec_y1 == vec_y4) )
+            vec_y = 0._wp
+            call spmv(COO_upper, vec_x, vec_y, op=sparse_op_transpose)
+            call check(error, all(vec_y == vec_y_ref), "error in COO upper ${s1}$ transpose spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(CSR_low, vec_x, vec_y)
+            call check(error, all(vec_y == vec_y_ref), "error in CSR lower ${s1}$ spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(CSR_low, vec_x, vec_y, op=sparse_op_transpose)
+            call check(error, all(vec_y == vec_y_ref), "error in CSR lower ${s1}$ transpose spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(CSR_upper, vec_x, vec_y)
+            call check(error, all(vec_y == vec_y_ref), "error in CSR upper ${s1}$ spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(CSR_upper, vec_x, vec_y, op=sparse_op_transpose)
+            call check(error, all(vec_y == vec_y_ref), "error in CSR upper ${s1}$ transpose spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(CSC_low, vec_x, vec_y)
+            call check(error, all(vec_y == vec_y_ref), "error in CSC lower ${s1}$ spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(CSC_low, vec_x, vec_y, op=sparse_op_transpose)
+            call check(error, all(vec_y == vec_y_ref), "error in CSC lower ${s1}$ transpose spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(CSC_upper, vec_x, vec_y)
+            call check(error, all(vec_y == vec_y_ref), "error in CSC upper ${s1}$ spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(CSC_upper, vec_x, vec_y, op=sparse_op_transpose)
+            call check(error, all(vec_y == vec_y_ref), "error in CSC upper ${s1}$ transpose spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(ELL_low, vec_x, vec_y)
+            call check(error, all(vec_y == vec_y_ref), "error in ELL lower ${s1}$ spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(ELL_low, vec_x, vec_y, op=sparse_op_transpose)
+            call check(error, all(vec_y == vec_y_ref), "error in ELL lower ${s1}$ transpose spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(ELL_upper, vec_x, vec_y)
+            call check(error, all(vec_y == vec_y_ref), "error in ELL upper ${s1}$ spmv")
+            if (allocated(error)) return
+
+            vec_y = 0._wp
+            call spmv(ELL_upper, vec_x, vec_y, op=sparse_op_transpose)
+            call check(error, all(vec_y == vec_y_ref), "error in ELL upper ${s1}$ transpose spmv")
             if (allocated(error)) return
         end block
         #:endfor
