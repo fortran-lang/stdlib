@@ -30,7 +30,7 @@ jobs:
     - name: Install fypp
       run: pip install --upgrade fypp
 
-    - name: Setup Flang and Clang
+    - name: Setup Flang
       uses: minhqdao/setup-fortran@v1
       id: setup-fortran
       with:
