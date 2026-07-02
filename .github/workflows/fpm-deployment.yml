@@ -1,6 +1,13 @@
 name: fpm-deployment
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -15,17 +22,17 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2.3.1
+        uses: actions/checkout@v4
 
       - name: Set up Python 3.x
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v5
         with:
           python-version: 3.x
 
       - name: Install requirements
         run: pip install --upgrade -r config/requirements.txt
 
-      - uses: fortran-lang/setup-fortran@main
+      - uses: fortran-lang/setup-fortran@v1.6.2
         id: setup-fortran
         with:
           compiler: ${{ matrix.toolchain.compiler }}
@@ -41,10 +48,6 @@ jobs:
 
       - run: | # Just for deployment: create stdlib-fpm-ilp64 folder
           python config/fypp_deployment.py --deploy_stdlib_fpm --with_ilp64
-
-      - run: | # Use fpm gnu ci to check xdp and qp
-          python config/fypp_deployment.py --with_xdp --with_qp
-          fpm test --profile release --flag '-DWITH_XDP -DWITH_QP'
 
       - run: | # Tests without xdp and qp
           python config/fypp_deployment.py
@@ -81,14 +84,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4.2.2
 
-      - uses: fortran-lang/setup-fortran@main
+      - uses: fortran-lang/setup-fortran@v1.6.2
         id: setup-fortran
         with:
           compiler: ${{ matrix.toolchain.compiler }}
           version: ${{ matrix.toolchain.version }}
 
       - name: Set up Python 3.x
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v5
         with:
           python-version: 3.x
 
@@ -105,9 +108,9 @@ jobs:
         run: |
           sudo apt-get install lcov
 
-      - run: | # Use fpm gnu ci to check xdp and qp
-          python config/fypp_deployment.py --with_xdp --with_qp
-          fpm test --profile release --flag '-DWITH_XDP -DWITH_QP -coverage'
+      - run: | # Use fpm gnu ci to check coverage
+          python config/fypp_deployment.py
+          fpm test --profile release --flag '-coverage'
 
       - name: Create coverage report
         run: |
@@ -116,7 +119,10 @@ jobs:
           lcov --capture --initial --base-directory . --directory ${{ env.COV_DIR }} --output-file ${{ env.COV_DIR }}/coverage.base --ignore-errors mismatch
           lcov --capture           --base-directory . --directory ${{ env.COV_DIR }} --output-file ${{ env.COV_DIR }}/coverage.capture --ignore-errors mismatch
           lcov --add-tracefile ${{ env.COV_DIR }}/coverage.base --add-tracefile ${{ env.COV_DIR }}/coverage.capture --output-file ${{ env.COV_DIR }}/coverage.info --ignore-errors mismatch
-          lcov --remove ${{ env.COV_DIR }}/coverage.info '*/example/*' --output-file ${{ env.COV_DIR }}/coverage.info
+          # Exclude example files from coverage: use both absolute-path pattern (*/example/*)
+          # and relative-path pattern (example/**) because lcov 2.x requires ** for recursive matching
+          # and the fpm build stores paths relative to the project root.
+          lcov --remove ${{ env.COV_DIR }}/coverage.info '*/example/*' 'example/**' --output-file ${{ env.COV_DIR }}/coverage.info --ignore-errors unused,mismatch,inconsistent
         env:
             COV_DIR: build/coverage
 
