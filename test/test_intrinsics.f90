@@ -443,7 +443,8 @@ end subroutine
 subroutine test_matmul(error)
     type(error_type), allocatable, intent(out) :: error
     type(linalg_state_type) :: linerr
-    real :: a(2, 3), b(3, 4), c(3, 2), d(2, 2)
+    real :: a(2, 3), b(3, 4), c(3, 2)
+    real, allocatable :: d(:,:)
 
     d = stdlib_matmul(a, b, c, err=linerr)
     call check(error, linerr == LINALG_VALUE_ERROR, "incompatible matrices are considered compatible")
