@@ -682,7 +682,7 @@ contains
         end if
         era = int(era64)
         doe = int(zz - era64 * 146097_int64)
-        yoe = (doe - doe/1461 + doe/36524 &
+        yoe = (doe - doe/1460 + doe/36524 &
                - doe/146096) / 365
         y = yoe + era * 400
         doy = doe - (365*yoe + yoe/4 - yoe/100)
