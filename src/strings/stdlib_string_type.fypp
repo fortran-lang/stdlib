@@ -363,7 +363,7 @@ module stdlib_string_type
         module procedure :: write_unformatted
     end interface
 
-    !> Read a character sequence from a connected unformatted unit into the string.
+    !> Read a character sequence from a connected formatted unit into the string.
     interface read(formatted)
         module procedure :: read_formatted
     end interface
