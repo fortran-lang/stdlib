@@ -10,7 +10,7 @@ submodule(stdlib_math) stdlib_math_is_close
 contains
 
 
-    elemental module logical function is_close_rsp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+    elemental logical module function is_close_rsp(a, b, rel_tol, abs_tol, equal_nan) result(close)
         real(sp), intent(in) :: a, b
         real(sp), intent(in), optional :: rel_tol, abs_tol
         logical, intent(in), optional :: equal_nan
@@ -26,7 +26,7 @@ contains
         end if     
 
     end function is_close_rsp
-    elemental module logical function is_close_rdp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+    elemental logical module function is_close_rdp(a, b, rel_tol, abs_tol, equal_nan) result(close)
         real(dp), intent(in) :: a, b
         real(dp), intent(in), optional :: rel_tol, abs_tol
         logical, intent(in), optional :: equal_nan
@@ -43,7 +43,7 @@ contains
 
     end function is_close_rdp
 
-    elemental module logical function is_close_csp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+    elemental logical module function is_close_csp(a, b, rel_tol, abs_tol, equal_nan) result(close)
         complex(sp), intent(in) :: a, b
         real(sp), intent(in), optional :: rel_tol, abs_tol
         logical, intent(in), optional :: equal_nan
@@ -52,7 +52,7 @@ contains
                 is_close_rsp(a%im, b%im, rel_tol, abs_tol, equal_nan)
 
     end function is_close_csp
-    elemental module logical function is_close_cdp(a, b, rel_tol, abs_tol, equal_nan) result(close)
+    elemental logical module function is_close_cdp(a, b, rel_tol, abs_tol, equal_nan) result(close)
         complex(dp), intent(in) :: a, b
         real(dp), intent(in), optional :: rel_tol, abs_tol
         logical, intent(in), optional :: equal_nan
