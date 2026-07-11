@@ -31,6 +31,17 @@ You are welcome to propose changes to the style guide by
 [opening an issue](https://github.com/fortran-lang/stdlib/issues/new/choose) or
 [starting a discussion](https://github.com/fortran-lang/stdlib/discussions/new).
 
+## Documentation
+
+Please follow the
+[Fortran stdlib spec template](https://github.com/fortran-lang/stdlib/blob/master/SPEC_GUIDE.md)
+for the documentation of your Fortran code.
+
+The spec template is a living document.
+You are welcome to propose changes to the spec template by
+[opening an issue](https://github.com/fortran-lang/stdlib/issues/new/choose) or
+[starting a discussion](https://github.com/fortran-lang/stdlib/discussions/new).
+
 
 ## Reporting a bug
 
