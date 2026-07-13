@@ -47,10 +47,7 @@ containing the Base64 representation of the input `data`.
 #### Example
 
 ```fortran
-character(len=:), allocatable :: encoded
-integer(int8) :: bytes(3) = [77_int8, 97_int8, 110_int8]
-
-encoded = base64_encode(bytes)  ! "TWFu"
+{!example/strings/example_base64_encode.f90!}
 ```
 
 ### `base64_encode_into`
@@ -90,6 +87,12 @@ representing the number of encoded characters written.
 `err_state`: shall be a `type(state_type)` from `stdlib_error`. It is an
 `intent(out)` argument used to report success or errors.
 
+#### Example
+
+```fortran
+{!example/strings/example_base64_encode_into.f90!}
+```
+
 ### `base64_decode`
 
 #### Status
@@ -127,9 +130,7 @@ containing the decoded bytes.
 #### Example
 
 ```fortran
-character(len=:), allocatable :: decoded
-
-decoded = base64_decode("TWFu")  ! "Man"
+{!example/strings/example_base64_decode.f90!}
 ```
 
 ### `base64_decode_into`
@@ -170,3 +171,9 @@ representing the number of decoded bytes written.
 
 `skip_despace` (optional): shall be a `logical`. It is an `intent(in)`
 argument. If `.true.`, the routine assumes the input contains no whitespace.
+
+#### Example
+
+```fortran
+{!example/strings/example_base64_decode_into.f90!}
+```

@@ -12,8 +12,7 @@
 
 module stdlib_base64
     use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64, lk, c_bool
-    use, intrinsic :: iso_c_binding, only: c_size_t
-    use stdlib_ascii, only: base64_alphabet
+    use stdlib_ascii, only: base64_dictionary => base64_alphabet
     use stdlib_error, only: state_type
 
     implicit none
@@ -77,52 +76,52 @@ module stdlib_base64
     !> encoded = base64_encode(bytes)  ! "TWFu"
     !>```
     interface base64_encode
-#:for k1, t1, _, _ in REAL_KINDS_TYPES
+        #:for k1, t1, _, _ in REAL_KINDS_TYPES
         module procedure :: base64_encode_real_${k1}$
-#:endfor
-#:for k1, t1, _, _ in INT_KINDS_TYPES
+        #:endfor
+        #:for k1, t1, _, _ in INT_KINDS_TYPES
         module procedure :: base64_encode_int_${k1}$
-#:endfor
-#:for k1, t1, _ in CMPLX_KINDS_TYPES
+        #:endfor
+        #:for k1, t1, _ in CMPLX_KINDS_TYPES
         module procedure :: base64_encode_cmplx_${k1}$
-#:endfor
-#:for k1, t1 in LOG_KINDS_TYPES
+        #:endfor
+        #:for k1, t1 in LOG_KINDS_TYPES
         module procedure :: base64_encode_logical_${k1}$
-#:endfor
+        #:endfor
     end interface base64_encode
 
     interface
-#:for k1, t1, _, _ in REAL_KINDS_TYPES
+        #:for k1, t1, _, _ in REAL_KINDS_TYPES
         module function base64_encode_real_${k1}$(data) result(str)
-            ${t1}$, intent(in), target, contiguous :: data(..)
+            ${t1}$, intent(in), contiguous :: data(..)
             character(len=:), allocatable :: str
         end function base64_encode_real_${k1}$
-#:endfor
+        #:endfor
 
-#:for k1, t1, _, _ in INT_KINDS_TYPES
+        #:for k1, t1, _, _ in INT_KINDS_TYPES
         module function base64_encode_int_${k1}$(data) result(str)
-            ${t1}$, intent(in), target, contiguous :: data(..)
+            ${t1}$, intent(in), contiguous :: data(..)
             character(len=:), allocatable :: str
         end function base64_encode_int_${k1}$
-#:endfor
+        #:endfor
 
-#:for k1, t1, _ in CMPLX_KINDS_TYPES
+        #:for k1, t1, _ in CMPLX_KINDS_TYPES
         module function base64_encode_cmplx_${k1}$(data) result(str)
-            ${t1}$, intent(in), target, contiguous :: data(..)
+            ${t1}$, intent(in), contiguous :: data(..)
             character(len=:), allocatable :: str
         end function base64_encode_cmplx_${k1}$
-#:endfor
+        #:endfor
 
-#:for k1, t1 in LOG_KINDS_TYPES
+        #:for k1, t1 in LOG_KINDS_TYPES
         module function base64_encode_logical_${k1}$(data) result(str)
-            ${t1}$, intent(in), target, contiguous :: data(..)
+            ${t1}$, intent(in), contiguous :: data(..)
             character(len=:), allocatable :: str
         end function base64_encode_logical_${k1}$
-#:endfor
+        #:endfor
 
         module function base64_encode_bytes(bytes) result(str)
-            integer(int8), intent(in), target, contiguous :: bytes(:)
-            character(len=:), allocatable, target :: str
+            integer(int8), intent(in), contiguous :: bytes(:)
+            character(len=:), allocatable :: str
         end function base64_encode_bytes
 
         !> Encodes bytes into a caller-provided output buffer.
@@ -133,8 +132,8 @@ module stdlib_base64
         !> On success, `err_state%ok()` is `.true.` and `encoded_len` is the
         !> number of meaningful characters written into `str`.
         pure module subroutine base64_encode_into(bytes, str, encoded_len, err_state)
-            integer(int8), intent(in), target, contiguous :: bytes(:)
-            character(len=*), intent(out), target :: str
+            integer(int8), intent(in), contiguous :: bytes(:)
+            character(len=*), intent(out) :: str
             integer, intent(out) :: encoded_len
             type(state_type), intent(out) :: err_state
         end subroutine base64_encode_into

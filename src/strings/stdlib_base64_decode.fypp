@@ -14,9 +14,10 @@ contains
 
         integer(int8), allocatable :: filtered(:)
         logical :: clean_mode
+        integer, parameter :: chunk_size = 4
 
-        integer(int32) :: v0, v1, v2, v3, c, raw_c
-        integer :: i, j, slen, n_pad
+        integer(int32) :: v(chunk_size), c, raw_c, raw_c4(chunk_size)
+        integer :: i, j, k, slen, n_pad
         integer(int32) :: error_accum, unicode_accum
 
         err_state = state_type(STDLIB_SUCCESS)
@@ -53,7 +54,7 @@ contains
             allocate(filtered(len(str)))
             j = 0
             do i = 1, len(str)
-                raw_c = int(iachar(str(i:i)), int32)
+                raw_c = iachar(str(i:i), kind=int32)
                 unicode_accum = ior(unicode_accum, raw_c)
                 c = iand(raw_c, 255_int32)
                 if (IS_VAL(c) == 0) cycle
@@ -88,31 +89,19 @@ contains
         ! Fortran Scalar Decoder Loop
         do i = 1, slen - 7, 4
             if (clean_mode) then
-                raw_c = int(iachar(str(i:i)), int32)
-                unicode_accum = ior(unicode_accum, raw_c)
-                v0 = int(DT(iand(raw_c, 255_int32)), int32)
-                raw_c = int(iachar(str(i+1:i+1)), int32)
-                unicode_accum = ior(unicode_accum, raw_c)
-                v1 = int(DT(iand(raw_c, 255_int32)), int32)
-                raw_c = int(iachar(str(i+2:i+2)), int32)
-                unicode_accum = ior(unicode_accum, raw_c)
-                v2 = int(DT(iand(raw_c, 255_int32)), int32)
-                raw_c = int(iachar(str(i+3:i+3)), int32)
-                unicode_accum = ior(unicode_accum, raw_c)
-                v3 = int(DT(iand(raw_c, 255_int32)), int32)
+                raw_c4 = [(iachar(str(k:k), kind=int32), k = i, i + chunk_size - 1)]
+                unicode_accum = ior(unicode_accum, ior(raw_c4(1), ior(raw_c4(2), ior(raw_c4(3), raw_c4(4)))))
+                v = int(DT(iand(raw_c4, 255_int32)), int32)
             else
-                v0 = int(DT(iand(int(filtered(i), int32), 255_int32)), int32)
-                v1 = int(DT(iand(int(filtered(i+1), int32), 255_int32)), int32)
-                v2 = int(DT(iand(int(filtered(i+2), int32), 255_int32)), int32)
-                v3 = int(DT(iand(int(filtered(i+3), int32), 255_int32)), int32)
+                v = int(DT(iand(int(filtered(i:i+3), int32), 255_int32)), int32)
             end if
 
-            error_accum = ior(error_accum, ior(v0, ior(v1, ior(v2, v3))))
+            error_accum = ior(error_accum, ior(v(1), ior(v(2), ior(v(3), v(4)))))
 
             j = (i - 1) / 4 * 3 + 1
-            res(j:j)     = char(ior(ishft(v0, 2), ishft(v1, -4)))
-            res(j+1:j+1) = char(ior(ishft(iand(v1, 15_int32), 4), ishft(v2, -2)))
-            res(j+2:j+2) = char(ior(ishft(iand(v2, 3_int32), 6), v3))
+            res(j:j)     = char(ior(ishft(v(1), 2), ishft(v(2), -4)))
+            res(j+1:j+1) = char(ior(ishft(iand(v(2), 15_int32), 4), ishft(v(3), -2)))
+            res(j+2:j+2) = char(ior(ishft(iand(v(3), 3_int32), 6), v(4)))
         end do
 
         if (error_accum < 0 .or. unicode_accum > 255_int32) then
@@ -127,60 +116,40 @@ contains
         j = (i - 1) / 4 * 3 + 1
 
         if (clean_mode) then
-            raw_c = int(iachar(str(i:i)), int32)
-            unicode_accum = ior(unicode_accum, raw_c)
-            c = iand(raw_c, 255_int32)
-            v0 = int(DT(c), int32)
-            raw_c = int(iachar(str(i+1:i+1)), int32)
-            unicode_accum = ior(unicode_accum, raw_c)
-            c = iand(raw_c, 255_int32)
-            v1 = int(DT(c), int32)
-            raw_c = int(iachar(str(i+2:i+2)), int32)
-            unicode_accum = ior(unicode_accum, raw_c)
-            c = iand(raw_c, 255_int32)
-            v2 = int(DT(c), int32)
-            raw_c = int(iachar(str(i+3:i+3)), int32)
-            unicode_accum = ior(unicode_accum, raw_c)
-            c = iand(raw_c, 255_int32)
-            v3 = int(DT(c), int32)
+            raw_c4 = [(iachar(str(k:k), kind=int32), k = i, i + chunk_size - 1)]
+            unicode_accum = ior(unicode_accum, ior(raw_c4(1), ior(raw_c4(2), ior(raw_c4(3), raw_c4(4)))))
+            v = int(DT(iand(raw_c4, 255_int32)), int32)
         else
-            c  = iand(int(filtered(i),   int32), 255_int32)
-            v0 = int(DT(c), int32)
-            c  = iand(int(filtered(i+1), int32), 255_int32)
-            v1 = int(DT(c), int32)
-            c  = iand(int(filtered(i+2), int32), 255_int32)
-            v2 = int(DT(c), int32)
-            c  = iand(int(filtered(i+3), int32), 255_int32)
-            v3 = int(DT(c), int32)
+            v = int(DT(iand(int(filtered(i:i+3), int32), 255_int32)), int32)
         end if
 
-        if (v0 < 0 .or. v1 < 0 .or. unicode_accum > 255_int32) then
+        if (v(1) < 0 .or. v(2) < 0 .or. unicode_accum > 255_int32) then
             err_state = state_type("base64_decode_into", STDLIB_VALUE_ERROR, &
                 "Invalid final quartet")
             decoded_len = 0
             return
         end if
 
-        res(j:j) = char(ior(ishft(v0, 2), ishft(v1, -4)))
+        res(j:j) = char(ior(ishft(v(1), 2), ishft(v(2), -4)))
 
         if (n_pad < 2) then
-            if (v2 < 0) then
+            if (v(3) < 0) then
                 err_state = state_type("base64_decode_into", STDLIB_VALUE_ERROR, &
                     "Invalid final quartet")
                 decoded_len = 0
                 return
             end if
-            res(j+1:j+1) = char(ior(ishft(iand(v1, 15_int32), 4), ishft(v2, -2)))
+            res(j+1:j+1) = char(ior(ishft(iand(v(2), 15_int32), 4), ishft(v(3), -2)))
         end if
 
         if (n_pad == 0) then
-            if (v3 < 0) then
+            if (v(4) < 0) then
                 err_state = state_type("base64_decode_into", STDLIB_VALUE_ERROR, &
                     "Invalid final quartet")
                 decoded_len = 0
                 return
             end if
-            res(j+2:j+2) = char(ior(ishft(iand(v2, 3_int32), 6), v3))
+            res(j+2:j+2) = char(ior(ishft(iand(v(3), 3_int32), 6), v(4)))
         end if
     end subroutine base64_decode_into
 
