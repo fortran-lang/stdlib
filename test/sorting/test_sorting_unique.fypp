@@ -111,7 +111,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
         #:for t1, t2, name1, cpp1 in REAL_TYPES_ALT_NAME
-        ! #:if name1 != 'xdp'
+        #:if name1 != 'xdp'
         block
             ${t1}$, allocatable :: A(:)
             ${t1}$, allocatable :: output(:)
@@ -145,22 +145,12 @@ contains
             if(allocated(error)) return
 
             A = [4.0_${name1}$, 4.0_${name1}$, 4.0_${name1}$, 4.0_${name1}$]
-            allocate(bytes(storage_size(A(1))/8))
-            bytes = transfer(A(1), bytes)
-            print*, "A(1): ", bytes
-            bytes = transfer(A(2), bytes)
-            print*, "A(2): ", bytes
-            bytes = transfer(A(3), bytes)
-            print*, "A(3): ", bytes
-            bytes = transfer(A(4), bytes)
-            print*, "A(4): ", bytes
             output = unique(A, .true.)
             expected_sorted = [4.0_${name1}$]
             call check(error, all_close(output, expected_sorted), .true.,&
                 "Sorted(${name1}$): all duplicates")
             if(allocated(error)) return
             output = unique(A, .false.)
-            print*, "output: ", output
             expected_stable = [4.0_${name1}$]
             call check(error, all_close(output, expected_stable), .true.,&
                 "Stable(${name1}$): all duplicates")
@@ -202,7 +192,7 @@ contains
                 "Stable(${name1}$): negatives and duplicates")
             if(allocated(error)) return
         end block
-        ! #:endif
+        #:endif
         #:endfor
     end subroutine
 

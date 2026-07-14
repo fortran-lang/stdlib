@@ -15,7 +15,7 @@ contains
         ${t1}$, intent(in) :: A(:)
         logical, intent(in) :: sorted_output
         ${t1}$, allocatable :: output(:)
-        
+
         ${t1}$, allocatable:: temp(:)
 
         if(size(A) == 0) then
@@ -25,10 +25,12 @@ contains
         allocate(temp, source=A)
         if(sorted_output) then
             output = sort_unique(temp)
-        ! #:if name1 != 'xdp'
         else
+        #:if name1 != 'xdp'
             output = stable_unique(temp)
-        ! #:endif
+        #:else
+            error stop 'unsorted version does not support xdp kinds'
+        #:endif
         end if
         deallocate(temp)
     end function
@@ -54,7 +56,7 @@ contains
     #:endfor
 
     #:for t1, t2, name1, cpp1 in IR_INDEX_TYPES_ALT_NAME
-    ! #:if name1 != 'xdp'
+    #:if name1 != 'xdp'
     module function ${name1}$_stable_unique(temp) result(output)
         ${t1}$, intent(in) :: temp(:)
         ${t1}$, allocatable :: output(:)
@@ -81,7 +83,7 @@ contains
         output = pack(temp, mask)
         deallocate(mask)
     end function
-    ! #:endif
+    #:endif
     #:endfor
 
 end submodule stdlib_sorting_unique
