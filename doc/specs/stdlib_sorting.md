@@ -659,7 +659,7 @@ element of the input array.
 
 ##### Syntax
 
-`output = ` [[stdlib_sorting(module):unique(interface)]] `( array, sorted_output )`
+`output = ` [[stdlib_sorting(module):unique(interface)]] `( array, sorted_output[, tolerance] )`
 
 ##### Class
 
@@ -676,6 +676,13 @@ It is an `intent(in)` argument.
 If `.true.`, the result contains the unique elements in
 non-decreasing order. Otherwise, the result contains the unique
 elements in the order of their first occurrence.
+
+`tolerance` (optional): shall be a scalar of the same real kind as `array`.
+It is an `intent(in)` argument specifying the tolerance used when
+comparing values in sorted order. Two values whose absolute
+difference is less than orequal to `tolerance` are considered
+equal. If omitted, tolerance defaults to zero. This argument is only
+available for real arrays.
 
 ##### Result
 

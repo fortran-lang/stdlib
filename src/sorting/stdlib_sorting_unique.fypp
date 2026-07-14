@@ -5,26 +5,36 @@
 
 submodule(stdlib_sorting) stdlib_sorting_unique
     use stdlib_hashmaps, only: chaining_hashmap_type
-    use stdlib_hashmap_wrappers, only: key_type
     use stdlib_constants
     implicit none
 
 contains
     #:for t1, t2, name1, cpp1 in IR_INDEX_TYPES_ALT_NAME
-    module function ${name1}$_unique(A, sorted_output) result(output)
+    module function ${name1}$_unique(A, sorted_output${", tolerance" if t1.startswith('real') else ""}$) result(output)
         ${t1}$, intent(in) :: A(:)
         logical, intent(in) :: sorted_output
         ${t1}$, allocatable :: output(:)
+        #:if t1.startswith('real')
+        ${t1}$, optional, intent(in) :: tolerance
+        #:endif
 
+        #:if t1.startswith('real')
+        ${t1}$ :: tolerance_
+        #:endif
         ${t1}$, allocatable:: temp(:)
 
         if(size(A) == 0) then
             allocate(output(0))
             return
         end if
+
+        #:if t1.startswith('real')
+        tolerance_ = optval(tolerance, 0.0_${name1}$)
+        if(tolerance_ < 0.0_${name1}$) error stop "tolerance must be non-negative"
+        #:endif
         allocate(temp, source=A)
         if(sorted_output) then
-            output = sort_unique(temp)
+            output = sort_unique(temp${", tolerance_" if t1.startswith('real') else ""}$)
         else
         #:if name1 != 'xdp'
             output = stable_unique(temp)
@@ -37,18 +47,32 @@ contains
     #:endfor
 
     #:for t1, t2, name1, cpp1 in IR_INDEX_TYPES_ALT_NAME
-    module function ${name1}$_sort_unique(temp) result(output)
+    module function ${name1}$_sort_unique(temp${", tolerance" if t1.startswith('real') else ""}$) result(output)
         ${t1}$, intent(inout) :: temp(:)
         ${t1}$, allocatable :: output(:)
+        #:if t1.startswith('real')
+        ${t1}$, intent(in) :: tolerance
+        #:endif
 
         logical, allocatable :: mask(:)
         integer :: i
+        #:if t1.startswith('real')
+        ${t1}$ :: last_unique
+        #:endif
 
         allocate(mask(size(temp)))
         mask(1) = .true.
         call sort(temp)
+        #:if t1.startswith('real')
+        last_unique = temp(1)
+        #:endif
         do i = 2, size(temp)
+            #:if t1.startswith('real')
+            mask(i) = abs(temp(i)-last_unique) > tolerance
+            if(mask(i)) last_unique = temp(i)
+            #:else
             mask(i) = temp(i) /= temp(i-1)
+            #:endif
         end do
         output = pack(temp, mask)
         deallocate(mask)
