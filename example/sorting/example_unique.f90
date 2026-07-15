@@ -10,7 +10,4 @@ program example_unique
 
   B = unique(A, .true.)
   print *, B ![-1.0_dp, 2.0_dp, 3.0_dp, 4.0_dp, 5.0_dp]
-
-  B = unique(A, .false.)
-  print *, B ![4.0_dp, 5.0_dp, 3.0_dp, -1.0_dp, 2.0_dp]
 end program example_unique
