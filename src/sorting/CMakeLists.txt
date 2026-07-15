@@ -1,5 +1,4 @@
 set(sorting_fppFiles
-    stdlib_sorting_unique.fypp
     )
 
 set(sorting_cppFiles
@@ -7,6 +6,7 @@ set(sorting_cppFiles
     stdlib_sorting_ord_sort.fypp
     stdlib_sorting_sort_adjoint.fypp
     stdlib_sorting_sort.fypp
+    stdlib_sorting_unique.fypp
     )
 
 set(sorting_f90Files
@@ -19,4 +19,8 @@ if(STDLIB_BITSETS)
   target_link_libraries(${PROJECT_NAME}_sorting PUBLIC ${PROJECT_NAME}_bitsets)
 endif()
 
-target_link_libraries(${PROJECT_NAME}_sorting PUBLIC ${PROJECT_NAME}_core ${PROJECT_NAME}_constants ${PROJECT_NAME}_strings ${PROJECT_NAME}_hashmaps)
+target_link_libraries(${PROJECT_NAME}_sorting PUBLIC ${PROJECT_NAME}_core ${PROJECT_NAME}_constants ${PROJECT_NAME}_strings)
+
+if(STDLIB_HASHMAPS)
+  target_link_libraries(${PROJECT_NAME}_sorting PUBLIC ${PROJECT_NAME}_hashmaps)
+endif()

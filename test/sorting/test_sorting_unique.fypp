@@ -1,3 +1,4 @@
+#include "macros.inc"
 #:include "common.fypp"
 #:set INT_TYPES_ALT_NAME = list(zip(INT_TYPES, INT_TYPES, INT_KINDS, INT_CPPS))
 #:set REAL_TYPES_ALT_NAME = list(zip(REAL_TYPES, REAL_TYPES, REAL_KINDS, REAL_CPPS))
@@ -38,11 +39,13 @@ contains
             call check(error, all(output==expected_sorted), .true.,&
                 "Sorted(${name1}$): empty array")
             if(allocated(error)) return
+#if STDLIB_HASHMAPS
             output = unique(A, .false.)
             allocate(expected_stable(0))
             call check(error, all(output==expected_stable), .true.,&
                 "Stable(${name1}$): empty array")
             if(allocated(error)) return
+#endif
 
             A = [1_${name1}$]
             output = unique(A, .true.)
@@ -50,11 +53,13 @@ contains
             call check(error, all(output==expected_sorted), .true.,&
                 "Sorted(${name1}$): single element")
             if(allocated(error)) return
+#if STDLIB_HASHMAPS
             output = unique(A, .false.)
             expected_stable = [1_${name1}$]
             call check(error, all(output==expected_stable), .true.,&
                 "Stable(${name1}$): single element")
             if(allocated(error)) return
+#endif
 
             A = [4_${name1}$, 4_${name1}$, 4_${name1}$, 4_${name1}$]
             output = unique(A, .true.)
@@ -62,11 +67,13 @@ contains
             call check(error, all(output==expected_sorted), .true.,&
                 "Sorted(${name1}$): all duplicates")
             if(allocated(error)) return
+#if STDLIB_HASHMAPS
             output = unique(A, .false.)
             expected_stable = [4_${name1}$]
             call check(error, all(output==expected_stable), .true.,&
                 "Stable(${name1}$): all duplicates")
             if(allocated(error)) return
+#endif
 
             A = [1_${name1}$, 2_${name1}$, 3_${name1}$, 4_${name1}$]
             output = unique(A, .true.)
@@ -74,11 +81,13 @@ contains
             call check(error, all(output==expected_sorted), .true.,&
                 "Sorted(${name1}$): already unique")
             if(allocated(error)) return
+#if STDLIB_HASHMAPS
             output = unique(A, .false.)
             expected_stable = [1_${name1}$, 2_${name1}$, 3_${name1}$, 4_${name1}$]
             call check(error, all(output==expected_stable), .true.,&
                 "Stable(${name1}$): already unique")
             if(allocated(error)) return
+#endif
 
             A = [5_${name1}$, 2_${name1}$, 3_${name1}$, 5_${name1}$, 2_${name1}$, 1_${name1}$]
             output = unique(A, .true.)
@@ -86,11 +95,13 @@ contains
             call check(error, all(output==expected_sorted), .true.,&
                 "Sorted(${name1}$): mixed duplicates")
             if(allocated(error)) return
+#if STDLIB_HASHMAPS
             output = unique(A, .false.)
             expected_stable = [5_${name1}$, 2_${name1}$, 3_${name1}$, 1_${name1}$]
             call check(error, all(output==expected_stable), .true.,&
                 "Stable(${name1}$): mixed duplicates")
             if(allocated(error)) return
+#endif
 
             A = [-2_${name1}$, 5_${name1}$, -2_${name1}$, 1_${name1}$, 5_${name1}$]
             output = unique(A, .true.)
@@ -98,11 +109,13 @@ contains
             call check(error, all(output==expected_sorted), .true.,&
                 "Sorted(${name1}$): negatives and duplicates")
             if(allocated(error)) return
+#if STDLIB_HASHMAPS
             output = unique(A, .false.)
             expected_stable = [-2_${name1}$, 5_${name1}$, 1_${name1}$]
             call check(error, all(output==expected_stable), .true.,&
                 "Stable(${name1}$): negatives and duplicates")
             if(allocated(error)) return
+#endif
         end block
         #:endfor
     end subroutine
@@ -126,11 +139,13 @@ contains
             call check(error, all_close(output, expected_sorted), .true.,&
                 "Sorted(${name1}$): empty array")
             if(allocated(error)) return
+#if STDLIB_HASHMAPS
             output = unique(A, .false.)
             allocate(expected_stable(0))
             call check(error, all_close(output, expected_stable), .true.,&
                 "Stable(${name1}$): empty array")
             if(allocated(error)) return
+#endif
 
             A = [1.0_${name1}$]
             output = unique(A, .true.)
@@ -138,11 +153,13 @@ contains
             call check(error, all_close(output, expected_sorted), .true.,&
                 "Sorted(${name1}$): single element")
             if(allocated(error)) return
+#if STDLIB_HASHMAPS
             output = unique(A, .false.)
             expected_stable = [1.0_${name1}$]
             call check(error, all_close(output, expected_stable), .true.,&
                 "Stable(${name1}$): single element")
             if(allocated(error)) return
+#endif
 
             A = [4.0_${name1}$, 4.0_${name1}$, 4.0_${name1}$, 4.0_${name1}$]
             output = unique(A, .true.)
@@ -150,11 +167,13 @@ contains
             call check(error, all_close(output, expected_sorted), .true.,&
                 "Sorted(${name1}$): all duplicates")
             if(allocated(error)) return
+#if STDLIB_HASHMAPS
             output = unique(A, .false.)
             expected_stable = [4.0_${name1}$]
             call check(error, all_close(output, expected_stable), .true.,&
                 "Stable(${name1}$): all duplicates")
             if(allocated(error)) return
+#endif
 
             A = [1.0_${name1}$, 2.0_${name1}$, 3.0_${name1}$, 4.0_${name1}$]
             output = unique(A, .true.)
@@ -162,11 +181,13 @@ contains
             call check(error, all_close(output, expected_sorted), .true.,&
                 "Sorted(${name1}$): already unique")
             if(allocated(error)) return
+#if STDLIB_HASHMAPS
             output = unique(A, .false.)
             expected_stable = [1.0_${name1}$, 2.0_${name1}$, 3.0_${name1}$, 4.0_${name1}$]
             call check(error, all_close(output, expected_stable), .true.,&
                 "Stable(${name1}$): already unique")
             if(allocated(error)) return
+#endif
 
             A = [5.0_${name1}$, 2.0_${name1}$, 3.0_${name1}$, 5.0_${name1}$, 2.0_${name1}$, 1.0_${name1}$]
             output = unique(A, .true.)
@@ -174,11 +195,13 @@ contains
             call check(error, all_close(output, expected_sorted), .true.,&
                 "Sorted(${name1}$): mixed duplicates")
             if(allocated(error)) return
+#if STDLIB_HASHMAPS
             output = unique(A, .false.)
             expected_stable = [5.0_${name1}$, 2.0_${name1}$, 3.0_${name1}$, 1.0_${name1}$]
             call check(error, all_close(output, expected_stable), .true.,&
                 "Stable(${name1}$): mixed duplicates")
             if(allocated(error)) return
+#endif
 
             A = [-2.0_${name1}$, 5.0_${name1}$, -2.0_${name1}$, 1.0_${name1}$, 5.0_${name1}$]
             output = unique(A, .true.)
@@ -186,11 +209,13 @@ contains
             call check(error, all_close(output, expected_sorted), .true.,&
                 "Sorted(${name1}$): negatives and duplicates")
             if(allocated(error)) return
+#if STDLIB_HASHMAPS
             output = unique(A, .false.)
             expected_stable = [-2.0_${name1}$, 5.0_${name1}$, 1.0_${name1}$]
             call check(error, all_close(output, expected_stable), .true.,&
                 "Stable(${name1}$): negatives and duplicates")
             if(allocated(error)) return
+#endif
         end block
         #:endif
         #:endfor
