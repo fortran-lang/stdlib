@@ -4,7 +4,7 @@
 #:set IR_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME
 
 submodule(stdlib_sorting) stdlib_sorting_unique
-    use stdlib_hashmaps, only: chaining_hashmap_type
+    ! use stdlib_hashmaps, only: chaining_hashmap_type
     use stdlib_constants
     implicit none
 
@@ -85,27 +85,28 @@ contains
         ${t1}$, intent(in) :: temp(:)
         ${t1}$, allocatable :: output(:)
 
-        type(chaining_hashmap_type) :: map
-        logical, allocatable :: mask(:)
-        logical :: present
-        integer :: i
-        integer(int8) :: key(storage_size(temp(1))/8)
+        allocate(output(size(temp)), source=temp)
+        ! type(chaining_hashmap_type) :: map
+        ! logical, allocatable :: mask(:)
+        ! logical :: present
+        ! integer :: i
+        ! integer(int8) :: key(storage_size(temp(1))/8)
 
-        call map%init()
-        allocate(mask(size(temp)))
-        do i = 1, size(temp)
-            key = 0
-            key = transfer(temp(i), key)
-            call map%key_test(key, present)
-            if (.not. present) then
-                call map%map_entry(key)
-                mask(i) = .true.
-            else
-                mask(i) = .false.
-            end if
-        end do
-        output = pack(temp, mask)
-        deallocate(mask)
+        ! call map%init()
+        ! allocate(mask(size(temp)))
+        ! do i = 1, size(temp)
+        !     key = 0
+        !     key = transfer(temp(i), key)
+        !     call map%key_test(key, present)
+        !     if (.not. present) then
+        !         call map%map_entry(key)
+        !         mask(i) = .true.
+        !     else
+        !         mask(i) = .false.
+        !     end if
+        ! end do
+        ! output = pack(temp, mask)
+        ! deallocate(mask)
     end function
     #:endif
     #:endfor
