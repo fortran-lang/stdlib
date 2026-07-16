@@ -131,4 +131,8 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          # Upload only the lcov report rooted at src/; otherwise Codecov also
+          # discovers generated *.gcov files under example/ and treats them as
+          # primary analyzed sources.
+          disable_search: true
           files: build/coverage/coverage.info
