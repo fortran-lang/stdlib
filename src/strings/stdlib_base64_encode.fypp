@@ -3,6 +3,9 @@
 
 submodule(stdlib_base64) stdlib_base64_encode
     use stdlib_error, only: state_type, STDLIB_SUCCESS, STDLIB_VALUE_ERROR
+    
+    integer, parameter :: enc_chunk = 4
+    integer, parameter :: raw_chunk = 3
 
 contains
 
@@ -95,13 +98,13 @@ contains
         integer(int32) :: triplet
 
         nbytes = size(bytes, kind=int64)
-        str_len = 4 * ((int(nbytes) + 2) / 3)
+        str_len = enc_chunk * ((int(nbytes) + (raw_chunk - 1)) / raw_chunk)
 
         allocate(character(len=str_len) :: str)
         if (nbytes == 0) return
 
         j = 1
-        do i = 1, int(nbytes) - 2, 3
+        do i = 1, int(nbytes) - (raw_chunk - 1), raw_chunk
             triplet = ior(ishft(iand(int(bytes(i), int32), 255_int32), 16_int32), &
                       ior(ishft(iand(int(bytes(i+1), int32), 255_int32), 8_int32), &
                           iand(int(bytes(i+2), int32), 255_int32)))
@@ -113,17 +116,17 @@ contains
             str(j+2:j+2) = base64_dictionary( &
                 iand(ishft(triplet, -6_int32), 63_int32) + 1 : iand(ishft(triplet, -6_int32), 63_int32) + 1)
             str(j+3:j+3) = base64_dictionary(iand(triplet, 63_int32) + 1 : iand(triplet, 63_int32) + 1)
-            j = j + 4
+            j = j + enc_chunk
         end do
 
-        if (mod(nbytes, 3_int64) == 1) then
+        if (mod(nbytes, int(raw_chunk, int64)) == 1) then
             triplet = ishft(iand(int(bytes(int(nbytes)), int32), 255_int32), 16_int32)
             str(j:j) = base64_dictionary( &
                 ishft(triplet, -18_int32) + 1 : ishft(triplet, -18_int32) + 1)
             str(j+1:j+1) = base64_dictionary( &
                 iand(ishft(triplet, -12_int32), 63_int32) + 1 : iand(ishft(triplet, -12_int32), 63_int32) + 1)
             str(j+2:j+3) = "=="
-        else if (mod(nbytes, 3_int64) == 2) then
+        else if (mod(nbytes, int(raw_chunk, int64)) == 2) then
             triplet = ior(ishft(iand(int(bytes(int(nbytes)-1), int32), 255_int32), 16_int32), &
                           ishft(iand(int(bytes(int(nbytes)), int32), 255_int32), 8_int32))
             str(j:j) = base64_dictionary( &
@@ -157,7 +160,7 @@ contains
             return
         end if
 
-        str_len = 4 * ((int(nbytes) + 2) / 3)
+        str_len = enc_chunk * ((int(nbytes) + (raw_chunk - 1)) / raw_chunk)
 
         if (len(str) < str_len) then
             str = ''
@@ -169,7 +172,7 @@ contains
         encoded_len = str_len
 
         j = 1
-        do i = 1, int(nbytes) - 2, 3
+        do i = 1, int(nbytes) - (raw_chunk - 1), raw_chunk
             triplet = ior(ishft(iand(int(bytes(i), int32), 255_int32), 16_int32), &
                       ior(ishft(iand(int(bytes(i+1), int32), 255_int32), 8_int32), &
                           iand(int(bytes(i+2), int32), 255_int32)))
@@ -181,17 +184,17 @@ contains
             str(j+2:j+2) = base64_dictionary( &
                 iand(ishft(triplet, -6_int32), 63_int32) + 1 : iand(ishft(triplet, -6_int32), 63_int32) + 1)
             str(j+3:j+3) = base64_dictionary(iand(triplet, 63_int32) + 1 : iand(triplet, 63_int32) + 1)
-            j = j + 4
+            j = j + enc_chunk
         end do
 
-        if (mod(nbytes, 3_int64) == 1) then
+        if (mod(nbytes, int(raw_chunk, int64)) == 1) then
             triplet = ishft(iand(int(bytes(int(nbytes)), int32), 255_int32), 16_int32)
             str(j:j) = base64_dictionary( &
                 ishft(triplet, -18_int32) + 1 : ishft(triplet, -18_int32) + 1)
             str(j+1:j+1) = base64_dictionary( &
                 iand(ishft(triplet, -12_int32), 63_int32) + 1 : iand(ishft(triplet, -12_int32), 63_int32) + 1)
             str(j+2:j+3) = "=="
-        else if (mod(nbytes, 3_int64) == 2) then
+        else if (mod(nbytes, int(raw_chunk, int64)) == 2) then
             triplet = ior(ishft(iand(int(bytes(int(nbytes)-1), int32), 255_int32), 16_int32), &
                           ishft(iand(int(bytes(int(nbytes)), int32), 255_int32), 8_int32))
             str(j:j) = base64_dictionary( &
