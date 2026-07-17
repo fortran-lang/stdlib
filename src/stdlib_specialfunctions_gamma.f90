@@ -18,6 +18,7 @@ module stdlib_specialfunctions_gamma
     public :: lower_incomplete_gamma, log_lower_incomplete_gamma
     public :: upper_incomplete_gamma, log_upper_incomplete_gamma
     public :: regularized_gamma_p, regularized_gamma_q
+    public :: beta, log_beta, incomplete_beta
 
 
 
@@ -200,6 +201,31 @@ module stdlib_specialfunctions_gamma
     end interface l_gamma
 
 
+
+    interface beta
+    !! Beta function
+    !!
+        module procedure beta_rsp
+        module procedure beta_rdp
+    end interface beta
+
+
+
+    interface log_beta
+    !! Logarithm of beta function
+    !!
+        module procedure log_beta_rsp
+        module procedure log_beta_rdp
+    end interface log_beta
+
+
+
+    interface incomplete_beta
+    !! Regularized incomplete beta function I_x(a,b)
+    !!
+        module procedure incomplete_beta_rsp
+        module procedure incomplete_beta_rdp
+    end interface incomplete_beta
 
 
 
@@ -4387,6 +4413,258 @@ contains
 
         end if
      end function regamma_q_iint64dp
+
+
+
+
+    !
+    ! Beta function implementations
+    !
+
+    elemental function beta_rsp(a, b) result(res)
+    ! Beta function: beta(a,b) = gamma(a)*gamma(b)/gamma(a+b)
+    !
+        real(sp), intent(in) :: a, b
+        real(sp) :: res
+
+        if(a <= 0.0_sp .or. b <= 0.0_sp) then
+            res = ieee_value(1.0_sp, ieee_quiet_nan)
+        else
+            ! Use log-gamma for numerical stability
+            res = exp(log_gamma(a) + log_gamma(b) - log_gamma(a + b))
+        end if
+    end function beta_rsp
+
+    elemental function beta_rdp(a, b) result(res)
+    ! Beta function: beta(a,b) = gamma(a)*gamma(b)/gamma(a+b)
+    !
+        real(dp), intent(in) :: a, b
+        real(dp) :: res
+
+        if(a <= 0.0_dp .or. b <= 0.0_dp) then
+            res = ieee_value(1.0_dp, ieee_quiet_nan)
+        else
+            ! Use log-gamma for numerical stability
+            res = exp(log_gamma(a) + log_gamma(b) - log_gamma(a + b))
+        end if
+    end function beta_rdp
+
+
+
+    elemental function log_beta_rsp(a, b) result(res)
+    ! Logarithm of beta function
+    !
+        real(sp), intent(in) :: a, b
+        real(sp) :: res
+
+        if(a <= 0.0_sp .or. b <= 0.0_sp) then
+            res = ieee_value(1.0_sp, ieee_quiet_nan)
+        else
+            res = log_gamma(a) + log_gamma(b) - log_gamma(a + b)
+        end if
+    end function log_beta_rsp
+
+    elemental function log_beta_rdp(a, b) result(res)
+    ! Logarithm of beta function
+    !
+        real(dp), intent(in) :: a, b
+        real(dp) :: res
+
+        if(a <= 0.0_dp .or. b <= 0.0_dp) then
+            res = ieee_value(1.0_dp, ieee_quiet_nan)
+        else
+            res = log_gamma(a) + log_gamma(b) - log_gamma(a + b)
+        end if
+    end function log_beta_rdp
+
+
+
+    elemental function incomplete_beta_rsp(x, a, b) result(res)
+    ! Regularized incomplete beta function I_x(a,b)
+    ! Uses continued fraction expansion for numerical accuracy
+    !
+        real(sp), intent(in) :: x, a, b
+        real(sp) :: res
+        real(sp) :: bt, xc
+        real(sp), parameter :: zero = 0.0_sp, one = 1.0_sp
+        real(sp), parameter :: eps = epsilon(1.0_sp)
+        integer, parameter :: maxit = 200
+
+        if((a <= zero .or. b <= zero) .or. (x < zero .or. x > one)) then
+            res = ieee_value(1.0_sp, ieee_quiet_nan)
+            return
+        end if
+
+        if(x == zero .or. x == one) then
+            res = x
+            return
+        end if
+
+        ! Compute the logarithm of the beta function coefficient
+        bt = exp(log_gamma(a + b) - log_gamma(a) - log_gamma(b) &
+                 + a * log(x) + b * log(one - x))
+
+        ! Use symmetry relation if necessary for better convergence
+        xc = x
+        if(x < (a + one) / (a + b + 2.0_sp)) then
+            res = bt * betacf_rsp(x, a, b, eps, maxit) / a
+        else
+            ! Use symmetry relation I_x(a,b) = 1 - I_(1-x)(b,a)
+            xc = one - x
+            bt = exp(log_gamma(a + b) - log_gamma(a) - log_gamma(b) &
+                     + b * log(xc) + a * log(one - xc))
+            res = one - bt * betacf_rsp(xc, b, a, eps, maxit) / b
+        end if
+    end function incomplete_beta_rsp
+
+    elemental function incomplete_beta_rdp(x, a, b) result(res)
+    ! Regularized incomplete beta function I_x(a,b)
+    ! Uses continued fraction expansion for numerical accuracy
+    !
+        real(dp), intent(in) :: x, a, b
+        real(dp) :: res
+        real(dp) :: bt, xc
+        real(dp), parameter :: zero = 0.0_dp, one = 1.0_dp
+        real(dp), parameter :: eps = epsilon(1.0_dp)
+        integer, parameter :: maxit = 200
+
+        if((a <= zero .or. b <= zero) .or. (x < zero .or. x > one)) then
+            res = ieee_value(1.0_dp, ieee_quiet_nan)
+            return
+        end if
+
+        if(x == zero .or. x == one) then
+            res = x
+            return
+        end if
+
+        ! Compute the logarithm of the beta function coefficient
+        bt = exp(log_gamma(a + b) - log_gamma(a) - log_gamma(b) &
+                 + a * log(x) + b * log(one - x))
+
+        ! Use symmetry relation if necessary for better convergence
+        xc = x
+        if(x < (a + one) / (a + b + 2.0_dp)) then
+            res = bt * betacf_rdp(x, a, b, eps, maxit) / a
+        else
+            ! Use symmetry relation I_x(a,b) = 1 - I_(1-x)(b,a)
+            xc = one - x
+            bt = exp(log_gamma(a + b) - log_gamma(a) - log_gamma(b) &
+                     + b * log(xc) + a * log(one - xc))
+            res = one - bt * betacf_rdp(xc, b, a, eps, maxit) / b
+        end if
+    end function incomplete_beta_rdp
+
+
+
+    pure function betacf_rsp(x, a, b, eps, maxit) result(res)
+    ! Continued fraction for incomplete beta function
+    ! Internal use only
+    !
+        real(sp), intent(in) :: x, a, b, eps
+        integer, intent(in) :: maxit
+        real(sp) :: res
+        real(sp) :: aa, c, d, del, h, qab, qam, qap, fpmin
+        integer :: m, m2
+        logical :: converged
+        real(sp), parameter :: one = 1.0_sp
+
+        fpmin = tiny(1.0_sp) / eps
+
+        qab = a + b
+        qap = a + one
+        qam = a - one
+        c = one
+        d = one - qab * x / qap
+        if(abs(d) < fpmin) d = fpmin
+        d = one / d
+        h = d
+        converged = .false.
+
+        do m = 1, maxit
+            m2 = 2 * m
+            aa = m * (b - m) * x / ((qam + m2) * (a + m2))
+            d = one + aa * d
+            if(abs(d) < fpmin) d = fpmin
+            c = one + aa / c
+            if(abs(c) < fpmin) c = fpmin
+            d = one / d
+            h = h * d * c
+            aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2))
+            d = one + aa * d
+            if(abs(d) < fpmin) d = fpmin
+            c = one + aa / c
+            if(abs(c) < fpmin) c = fpmin
+            d = one / d
+            del = d * c
+            h = h * del
+            if(abs(del - one) < eps) then
+                converged = .true.
+                exit
+            end if
+        end do
+
+        if (converged) then
+            res = h
+        else
+            res = ieee_value(one, ieee_quiet_nan)
+        end if
+    end function betacf_rsp
+
+    pure function betacf_rdp(x, a, b, eps, maxit) result(res)
+    ! Continued fraction for incomplete beta function
+    ! Internal use only
+    !
+        real(dp), intent(in) :: x, a, b, eps
+        integer, intent(in) :: maxit
+        real(dp) :: res
+        real(dp) :: aa, c, d, del, h, qab, qam, qap, fpmin
+        integer :: m, m2
+        logical :: converged
+        real(dp), parameter :: one = 1.0_dp
+
+        fpmin = tiny(1.0_dp) / eps
+
+        qab = a + b
+        qap = a + one
+        qam = a - one
+        c = one
+        d = one - qab * x / qap
+        if(abs(d) < fpmin) d = fpmin
+        d = one / d
+        h = d
+        converged = .false.
+
+        do m = 1, maxit
+            m2 = 2 * m
+            aa = m * (b - m) * x / ((qam + m2) * (a + m2))
+            d = one + aa * d
+            if(abs(d) < fpmin) d = fpmin
+            c = one + aa / c
+            if(abs(c) < fpmin) c = fpmin
+            d = one / d
+            h = h * d * c
+            aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2))
+            d = one + aa * d
+            if(abs(d) < fpmin) d = fpmin
+            c = one + aa / c
+            if(abs(c) < fpmin) c = fpmin
+            d = one / d
+            del = d * c
+            h = h * del
+            if(abs(del - one) < eps) then
+                converged = .true.
+                exit
+            end if
+        end do
+
+        if (converged) then
+            res = h
+        else
+            res = ieee_value(one, ieee_quiet_nan)
+        end if
+    end function betacf_rdp
+
 
 
 end module stdlib_specialfunctions_gamma

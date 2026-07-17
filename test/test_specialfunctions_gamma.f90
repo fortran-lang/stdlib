@@ -8,7 +8,8 @@ module test_specialfunctions_gamma
                                              log_lower_incomplete_gamma,       &
                                              log_upper_incomplete_gamma,       &
                                              regularized_gamma_p,              &
-                                             regularized_gamma_q
+                                             regularized_gamma_q,              &
+                                             beta, log_beta, incomplete_beta
 
     implicit none
     private
@@ -169,6 +170,12 @@ contains
                            test_gamma_p_rsp)                       &
             , new_unittest("regularized_gamma_q_rsp",              &
                            test_gamma_q_rsp)                       &
+            , new_unittest("beta_rsp",                             &
+                           test_beta_rsp)                          &
+            , new_unittest("log_beta_rsp",                         &
+                           test_log_beta_rsp)                      &
+            , new_unittest("incomplete_beta_rsp",                  &
+                           test_incomplete_beta_rsp)               &
             , new_unittest("lower_incomplete_gamma_rdp",           &
                            test_lincgamma_rdp)                     &
             , new_unittest("log_lower_incomplete_gamma_rdp",       &
@@ -181,6 +188,12 @@ contains
                            test_gamma_p_rdp)                       &
             , new_unittest("regularized_gamma_q_rdp",              &
                            test_gamma_q_rdp)                       &
+            , new_unittest("beta_rdp",                             &
+                           test_beta_rdp)                          &
+            , new_unittest("log_beta_rdp",                         &
+                           test_log_beta_rdp)                      &
+            , new_unittest("incomplete_beta_rdp",                  &
+                           test_incomplete_beta_rdp)               &
             ]
     end subroutine collect_specialfunctions_gamma
 
@@ -1822,6 +1835,77 @@ contains
 
 
 
+    subroutine test_beta_rsp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 3
+        integer :: i
+        real(sp), parameter :: a(n) = [2.0_sp, 1.0_sp, 0.5_sp]
+        real(sp), parameter :: b(n) = [3.0_sp, 1.0_sp, 0.5_sp]
+
+        real(sp), parameter :: ans(n) = [1.0_sp/12.0_sp,                 &
+                                       1.0_sp,                             &
+                                       acos(-1.0_sp)]
+
+        do i = 1, n
+
+            call check(error, beta(a(i), b(i)), ans(i),                        &
+              "Beta function with a(kind=sp) and b(kind=sp) failed",  &
+              thr = tol_sp, rel = .true.)
+                        if (allocated(error)) return
+
+        end do
+    end subroutine test_beta_rsp
+
+
+
+    subroutine test_log_beta_rsp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 3
+        integer :: i
+        character(len=120) :: msg
+        real(sp) :: a(n) = [2.0_sp, 1.0_sp, 0.5_sp]
+        real(sp) :: b(n) = [3.0_sp, 1.0_sp, 0.5_sp]
+
+        real(sp), parameter :: ans(n) = [log(1.0_sp/12.0_sp),            &
+                                       0.0_sp,                             &
+                                       log(acos(-1.0_sp))]
+
+        do i = 1, n
+                        write(msg, '(a,i0)') "Log-beta function with a(kind=sp) and b(kind=sp) failed at i=", i
+
+            call check(error, log_beta(a(i), b(i)), ans(i),                    &
+                            msg,                                                              &
+              thr = tol_sp, rel = .true.)
+                        if (allocated(error)) return
+
+        end do
+    end subroutine test_log_beta_rsp
+
+
+
+    subroutine test_incomplete_beta_rsp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        real(sp) :: x(n) = [0.25_sp, 0.5_sp, 0.0_sp, 1.0_sp]
+        real(sp) :: a(n) = [2.0_sp, 2.0_sp, 2.0_sp, 2.0_sp]
+        real(sp) :: b(n) = [3.0_sp, 3.0_sp, 3.0_sp, 3.0_sp]
+
+        real(sp), parameter :: ans(n) = [67.0_sp/256.0_sp,               &
+                                       11.0_sp/16.0_sp,                &
+                                       0.0_sp,                             &
+                                       1.0_sp]
+
+        do i = 1, n
+
+            call check(error, incomplete_beta(x(i), a(i), b(i)), ans(i),       &
+              "Incomplete beta I_x(a,b) with kind=sp failed",             &
+              thr = tol_sp, rel = .true.)
+                        if (allocated(error)) return
+
+        end do
+    end subroutine test_incomplete_beta_rsp
+
     subroutine test_lincgamma_rsp(error)
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: n = 4
@@ -1963,6 +2047,79 @@ contains
         end do
     end subroutine test_gamma_q_rsp
 
+
+
+
+    subroutine test_beta_rdp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 3
+        integer :: i
+        real(dp), parameter :: a(n) = [2.0_dp, 1.0_dp, 0.5_dp]
+        real(dp), parameter :: b(n) = [3.0_dp, 1.0_dp, 0.5_dp]
+
+        real(dp), parameter :: ans(n) = [1.0_dp/12.0_dp,                 &
+                                       1.0_dp,                             &
+                                       acos(-1.0_dp)]
+
+        do i = 1, n
+
+            call check(error, beta(a(i), b(i)), ans(i),                        &
+              "Beta function with a(kind=dp) and b(kind=dp) failed",  &
+              thr = tol_dp, rel = .true.)
+                        if (allocated(error)) return
+
+        end do
+    end subroutine test_beta_rdp
+
+
+
+    subroutine test_log_beta_rdp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 3
+        integer :: i
+        character(len=120) :: msg
+        real(dp) :: a(n) = [2.0_dp, 1.0_dp, 0.5_dp]
+        real(dp) :: b(n) = [3.0_dp, 1.0_dp, 0.5_dp]
+
+        real(dp), parameter :: ans(n) = [log(1.0_dp/12.0_dp),            &
+                                       0.0_dp,                             &
+                                       log(acos(-1.0_dp))]
+
+        do i = 1, n
+                        write(msg, '(a,i0)') "Log-beta function with a(kind=dp) and b(kind=dp) failed at i=", i
+
+            call check(error, log_beta(a(i), b(i)), ans(i),                    &
+                            msg,                                                              &
+              thr = tol_dp, rel = .true.)
+                        if (allocated(error)) return
+
+        end do
+    end subroutine test_log_beta_rdp
+
+
+
+    subroutine test_incomplete_beta_rdp(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        real(dp) :: x(n) = [0.25_dp, 0.5_dp, 0.0_dp, 1.0_dp]
+        real(dp) :: a(n) = [2.0_dp, 2.0_dp, 2.0_dp, 2.0_dp]
+        real(dp) :: b(n) = [3.0_dp, 3.0_dp, 3.0_dp, 3.0_dp]
+
+        real(dp), parameter :: ans(n) = [67.0_dp/256.0_dp,               &
+                                       11.0_dp/16.0_dp,                &
+                                       0.0_dp,                             &
+                                       1.0_dp]
+
+        do i = 1, n
+
+            call check(error, incomplete_beta(x(i), a(i), b(i)), ans(i),       &
+              "Incomplete beta I_x(a,b) with kind=dp failed",             &
+              thr = tol_dp, rel = .true.)
+                        if (allocated(error)) return
+
+        end do
+    end subroutine test_incomplete_beta_rdp
 
     subroutine test_lincgamma_rdp(error)
         type(error_type), allocatable, intent(out) :: error
