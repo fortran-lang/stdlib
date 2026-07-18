@@ -71,6 +71,8 @@ subroutine collect_datetime(testsuite)
                      test_format_datetime_offset), &
         new_unittest("format_timedelta_test", &
                      test_format_timedelta), &
+        new_unittest("format_timedelta_compact", &
+                     test_format_timedelta_compact), &
         new_unittest("timedelta_ms_rollover", &
                      test_timedelta_ms_rollover), &
         new_unittest("to_utc_test", &
@@ -518,12 +520,96 @@ end subroutine test_format_datetime_offset
 subroutine test_format_timedelta(error)
     type(error_type), allocatable, intent(out) :: error
     type(timedelta_type) :: td
+
+    ! Legacy: days present -> "X days, HH:MM:SS"
     td = timedelta(days=30, hours=1, minutes=30)
     call check(error, &
         format_timedelta(td) == '30 days, 01:30:00', &
-        "timedelta format should be '30 days, 01:30:00'")
+        "[30d 1h 30m] -> '30 days, 01:30:00'")
+    if (allocated(error)) return
+
+    ! Days + hours + seconds
+    td = timedelta(days=2, hours=5, seconds=30)
+    call check(error, &
+        format_timedelta(td) == '2 days, 05:00:30', &
+        "[2d 5h 30s] -> '2 days, 05:00:30'")
+    if (allocated(error)) return
+
+    ! Days + milliseconds: legacy days format keeps .mmm suffix
+    td = timedelta(days=2, hours=5, seconds=30, milliseconds=125)
+    call check(error, &
+        format_timedelta(td) == '2 days, 05:00:30.125', &
+        "[2d 5h 30s 125ms] -> '2 days, 05:00:30.125'")
+    if (allocated(error)) return
+
+    ! No days: hours only
+    td = timedelta(hours=1, minutes=2, seconds=3)
+    call check(error, &
+        format_timedelta(td) == '01:02:03', &
+        "[1h 2m 3s] -> '01:02:03'")
+    if (allocated(error)) return
+
+    ! No days, no hours: MM:SS
+    td = timedelta(minutes=5, seconds=30)
+    call check(error, &
+        format_timedelta(td) == '05:30', &
+        "[5m 30s] -> '05:30'")
+    if (allocated(error)) return
+
+    ! With milliseconds
+    td = timedelta(hours=1, minutes=2, seconds=3, milliseconds=456)
+    call check(error, &
+        format_timedelta(td) == '01:02:03.456', &
+        "[1h 2m 3s 456ms] -> '01:02:03.456'")
     if (allocated(error)) return
 end subroutine test_format_timedelta
+
+subroutine test_format_timedelta_compact(error)
+    type(error_type), allocatable, intent(out) :: error
+    type(timedelta_type) :: td
+
+    ! Sub-second: milliseconds only
+    td = timedelta(milliseconds=5)
+    call check(error, &
+        format_timedelta(td) == '5ms', &
+        "[5ms] -> '5ms'")
+    if (allocated(error)) return
+
+    ! Sub-second: zero
+    td = timedelta(milliseconds=0)
+    call check(error, &
+        format_timedelta(td) == '0s', &
+        "[0ms] -> '0s'")
+    if (allocated(error)) return
+
+    ! Sub-minute: seconds with ms fraction
+    td = timedelta(milliseconds=1500)
+    call check(error, &
+        format_timedelta(td) == '1.500s', &
+        "[1500ms] -> '1.500s'")
+    if (allocated(error)) return
+
+    ! Sub-minute: whole seconds
+    td = timedelta(seconds=42)
+    call check(error, &
+        format_timedelta(td) == '42s', &
+        "[42s] -> '42s'")
+    if (allocated(error)) return
+
+    ! Minute-second compact form with milliseconds
+    td = timedelta(minutes=5, seconds=30, milliseconds=125)
+    call check(error, &
+        format_timedelta(td) == '05:30.125', &
+        "[5m 30s 125ms] -> '05:30.125'")
+    if (allocated(error)) return
+
+    ! Negative duration: preserves original format since days /= 0
+    td = timedelta(seconds=-1)
+    call check(error, &
+        format_timedelta(td) == '-1 days, 23:59:59', &
+        "[-1s] -> '-1 days, 23:59:59' (negative via days component)")
+    if (allocated(error)) return
+end subroutine test_format_timedelta_compact
 
 subroutine test_timedelta_ms_rollover(error)
     type(error_type), allocatable, intent(out) :: error
