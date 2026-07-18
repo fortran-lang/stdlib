@@ -87,12 +87,13 @@ module test_linalg_solve_iterative
 
         #:for k, t, s in R_KINDS_TYPES
         block
+        integer, parameter :: n = 4
         ${t}$, parameter :: tol = 1000*epsilon(0.0_${k}$)
-        ${t}$, parameter :: A(4,4) = reshape([${t}$ :: 5,  1,  2,  0, &
+        ${t}$, parameter :: A(n,n) = reshape([${t}$ :: 5,  1,  2,  0, &
                                            0,  4, -1,  1, &
                                            1,  0,  3,  2, &
-                                           2, -1,  0,  6], [4,4])
-        ${t}$ :: x(4), load(4)
+                                           2, -1,  0,  6], [n,n])
+        ${t}$ :: x(n), load(n)
         ${t}$, parameter :: xref(*) = [1.0_${k}$, 2.0_${k}$, -1.0_${k}$, 0.5_${k}$]
         load = matmul(A, xref)
         x = 0.0_${k}$
@@ -104,13 +105,14 @@ module test_linalg_solve_iterative
         end block
 
         block
+        integer, parameter :: n = 3
         ${t}$, parameter :: tol = 1000*epsilon(0.0_${k}$)
-        ${t}$, parameter :: A(3,3) = reshape([${t}$ :: 10,  1,  2, &
+        ${t}$, parameter :: A(n,n) = reshape([${t}$ :: 10,  1,  2, &
                                             1, 10,  3, &
-                                            2,  3, 10], [3,3])
-        ${t}$ :: x(3)
-        ${t}$, parameter :: xref(3) = [(137._${k}$/218._${k}$), -(9._${k}$/109._${k}$), (87._${k}$/218._${k}$)]
-        ${t}$, parameter :: load(3) = [7.0_${k}$, 1.0_${k}$, 5.0_${k}$]
+                                            2,  3, 10], [n,n])
+        ${t}$ :: x(n)
+        ${t}$, parameter :: xref(n) = [(137._${k}$/218._${k}$), -(9._${k}$/109._${k}$), (87._${k}$/218._${k}$)]
+        ${t}$, parameter :: load(n) = [7.0_${k}$, 1.0_${k}$, 5.0_${k}$]
         x = [0.2_${k}$, -0.1_${k}$, 0.3_${k}$]
 
         call stdlib_solve_gmres(A, load, x, rtol=1.e-10_${k}$, precond=pc_jacobi)
@@ -120,13 +122,14 @@ module test_linalg_solve_iterative
         end block
 
         block
+        integer, parameter :: n = 3
         ${t}$, parameter :: tol = 1000*epsilon(0.0_${k}$)
-        ${t}$, parameter :: A(3,3) = reshape([${t}$ :: 10,  1,  2, &
+        ${t}$, parameter :: A(n,n) = reshape([${t}$ :: 10,  1,  2, &
                                             1, 10,  3, &
-                                            2,  3, 10], [3,3])
-        ${t}$ :: x(3)
-        ${t}$, parameter :: xref(3) = [(137._${k}$/218._${k}$), -(9._${k}$/109._${k}$), (87._${k}$/218._${k}$)]
-        ${t}$, parameter :: load(3) = [7.0_${k}$, 1.0_${k}$, 5.0_${k}$]
+                                            2,  3, 10], [n,n])
+        ${t}$ :: x(n)
+        ${t}$, parameter :: xref(n) = [(137._${k}$/218._${k}$), -(9._${k}$/109._${k}$), (87._${k}$/218._${k}$)]
+        ${t}$, parameter :: load(n) = [7.0_${k}$, 1.0_${k}$, 5.0_${k}$]
         x = [0.2_${k}$, -0.1_${k}$, 0.3_${k}$]
 
         call stdlib_solve_gmres(A, load, x, rtol=1.e-10_${k}$, precond=pc_jacobi, compact=.false.)
