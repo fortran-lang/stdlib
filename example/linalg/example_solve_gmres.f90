@@ -2,14 +2,14 @@ program example_solve_gmres
     use stdlib_kinds, only: dp
     use stdlib_linalg_iterative_solvers, only: stdlib_solve_gmres, pc_jacobi
     implicit none
-
-    real(dp), parameter :: A(4,4) = reshape([5.0_dp,  1.0_dp,  2.0_dp, 0.0_dp, &
+    integer, parameter :: n = 4
+    real(dp), parameter :: A(n,n) = reshape([5.0_dp,  1.0_dp,  2.0_dp, 0.0_dp, &
                                              0.0_dp,  4.0_dp, -1.0_dp, 1.0_dp, &
                                              1.0_dp,  0.0_dp,  3.0_dp, 2.0_dp, &
-                                             2.0_dp, -1.0_dp,  0.0_dp, 6.0_dp], [4,4])
-    real(dp), parameter :: x0(4) = [0.2_dp, -0.1_dp, 0.3_dp, 0.0_dp]
-    real(dp), parameter :: xref(4) = [1.0_dp, 2.0_dp, -1.0_dp, 0.5_dp]
-    real(dp) :: rhs(4), x(4)
+                                             2.0_dp, -1.0_dp,  0.0_dp, 6.0_dp], [n,n])
+    real(dp), parameter :: x0(n) = [0.2_dp, -0.1_dp, 0.3_dp, 0.0_dp]
+    real(dp), parameter :: xref(n) = [1.0_dp, 2.0_dp, -1.0_dp, 0.5_dp]
+    real(dp) :: rhs(n), x(n)
 
     rhs = matmul(A, xref)
 

@@ -277,7 +277,7 @@ contains
     !------------------------------------------------------------------
     ! helpers
     !------------------------------------------------------------------
-    integer(int32) function stdlib_size_wksp_gmres(kdim,compact)
+    elemental integer(int32) function stdlib_size_wksp_gmres(kdim,compact)
         integer(int32), intent(in) :: kdim
         logical, intent(in) :: compact
         stdlib_size_wksp_gmres = 3 + kdim + merge(1, kdim, compact)
