@@ -114,15 +114,16 @@ jobs:
 
       - name: Create coverage report
         run: |
+          set -euo pipefail
           mkdir -p ${{ env.COV_DIR }}
           mv ./build/gfortran_*/*/* ${{ env.COV_DIR }}
           lcov --capture --initial --base-directory . --directory ${{ env.COV_DIR }} --output-file ${{ env.COV_DIR }}/coverage.base --ignore-errors mismatch
           lcov --capture           --base-directory . --directory ${{ env.COV_DIR }} --output-file ${{ env.COV_DIR }}/coverage.capture --ignore-errors mismatch
-          lcov --add-tracefile ${{ env.COV_DIR }}/coverage.base --add-tracefile ${{ env.COV_DIR }}/coverage.capture --output-file ${{ env.COV_DIR }}/coverage.info --ignore-errors mismatch
-          # Exclude example files from coverage: use both absolute-path pattern (*/example/*)
-          # and relative-path pattern (example/**) because lcov 2.x requires ** for recursive matching
-          # and the fpm build stores paths relative to the project root.
-          lcov --remove ${{ env.COV_DIR }}/coverage.info '*/example/*' 'example/**' --output-file ${{ env.COV_DIR }}/coverage.info --ignore-errors unused,mismatch,inconsistent
+          lcov --add-tracefile ${{ env.COV_DIR }}/coverage.base --add-tracefile ${{ env.COV_DIR }}/coverage.capture --output-file ${{ env.COV_DIR }}/coverage.full.info --ignore-errors mismatch
+          # Keep only src files in final coverage report to avoid example/ and test/ sources affecting the metric.
+          lcov --extract ${{ env.COV_DIR }}/coverage.full.info '*/src/*' 'src/**' --output-file ${{ env.COV_DIR }}/coverage.info --ignore-errors unused,mismatch,inconsistent
+          echo "Files included in final coverage report:"
+          grep '^SF:' ${{ env.COV_DIR }}/coverage.info | sed 's#^SF:##' | sort -u
         env:
             COV_DIR: build/coverage
 
@@ -130,4 +131,8 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          # Upload only the lcov report rooted at src/; otherwise Codecov also
+          # discovers generated *.gcov files under example/ and treats them as
+          # primary analyzed sources.
+          disable_search: true
           files: build/coverage/coverage.info
