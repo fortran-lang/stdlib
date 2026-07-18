@@ -12,7 +12,7 @@ module stdlib_linalg_iterative_solvers
         enumerator :: stdlib_size_wksp_pcg = 4
         enumerator :: stdlib_size_wksp_bicgstab = 8
     end enum
-    public :: stdlib_size_wksp_cg, stdlib_size_wksp_pcg, stdlib_size_wksp_bicgstab
+    public :: stdlib_size_wksp_cg, stdlib_size_wksp_pcg, stdlib_size_wksp_bicgstab, stdlib_size_wksp_gmres
 
     enum, bind(c)
         enumerator :: pc_none = 0
@@ -231,6 +231,38 @@ module stdlib_linalg_iterative_solvers
 
     !! version: experimental
     !!
+    !! stdlib_solve_gmres_kernel interface for the restarted generalized minimal residual method.
+    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_gmres_kernel)
+    interface stdlib_solve_gmres_kernel
+        module subroutine stdlib_solve_gmres_kernel_sp(A,M,b,x,rtol,atol,maxiter,kdim,workspace,compact)
+            class(stdlib_linop_sp_type), intent(in) :: A !! linear operator
+            class(stdlib_linop_sp_type), intent(in) :: M !! preconditioner linear operator
+            real(sp), intent(in) :: b(:) !! right-hand side vector
+            real(sp), intent(inout) :: x(:) !! solution vector and initial guess
+            real(sp), intent(in) :: rtol !! relative tolerance for convergence
+            real(sp), intent(in) :: atol !! absolute tolerance for convergence
+            integer, intent(in) :: maxiter !! maximum number of iterations
+            integer, intent(in) :: kdim !! Krylov subspace size before restart
+            type(stdlib_solver_workspace_sp_type), intent(inout) :: workspace !! workspace for the solver
+            logical, intent(in) :: compact !! keep only one preconditioned basis vector and rebuild the cycle update at restart
+        end subroutine
+        module subroutine stdlib_solve_gmres_kernel_dp(A,M,b,x,rtol,atol,maxiter,kdim,workspace,compact)
+            class(stdlib_linop_dp_type), intent(in) :: A !! linear operator
+            class(stdlib_linop_dp_type), intent(in) :: M !! preconditioner linear operator
+            real(dp), intent(in) :: b(:) !! right-hand side vector
+            real(dp), intent(inout) :: x(:) !! solution vector and initial guess
+            real(dp), intent(in) :: rtol !! relative tolerance for convergence
+            real(dp), intent(in) :: atol !! absolute tolerance for convergence
+            integer, intent(in) :: maxiter !! maximum number of iterations
+            integer, intent(in) :: kdim !! Krylov subspace size before restart
+            type(stdlib_solver_workspace_dp_type), intent(inout) :: workspace !! workspace for the solver
+            logical, intent(in) :: compact !! keep only one preconditioned basis vector and rebuild the cycle update at restart
+        end subroutine
+    end interface
+    public :: stdlib_solve_gmres_kernel
+
+    !! version: experimental
+    !!
     !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_pcg)
     interface stdlib_solve_pcg
         module subroutine stdlib_solve_pcg_dense_sp(A,b,x,di,rtol,atol,maxiter,restart,precond,M,workspace)
@@ -355,7 +387,87 @@ module stdlib_linalg_iterative_solvers
     end interface
     public :: stdlib_solve_bicgstab
 
+    !! version: experimental
+    !!
+    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_gmres)
+    interface stdlib_solve_gmres
+        module subroutine stdlib_solve_gmres_dense_sp(A,b,x,di,rtol,atol,maxiter,restart,kdim,precond,M,workspace,compact)
+            !! linear operator matrix
+            real(sp), intent(in) :: A(:,:)
+            real(sp), intent(in) :: b(:) !! right-hand side vector
+            real(sp), intent(inout) :: x(:) !! solution vector and initial guess
+            real(sp), intent(in), optional :: rtol !! relative tolerance for convergence
+            real(sp), intent(in), optional :: atol !! absolute tolerance for convergence
+            logical(int8), intent(in), optional, target :: di(:) !! dirichlet conditions mask
+            integer, intent(in), optional :: maxiter !! maximum number of iterations
+            logical, intent(in), optional :: restart !! restart flag
+            integer, intent(in), optional :: kdim !! Krylov subspace size before restart
+            integer, intent(in), optional :: precond !! preconditioner method enumerator
+            class(stdlib_linop_sp_type), optional, intent(in), target :: M !! preconditioner linear operator
+            type(stdlib_solver_workspace_sp_type), optional, intent(inout), target :: workspace !! workspace for the solver
+            logical, intent(in), optional :: compact !! if true, favor lower memory use over cycle-end update speed
+        end subroutine
+        module subroutine stdlib_solve_gmres_dense_dp(A,b,x,di,rtol,atol,maxiter,restart,kdim,precond,M,workspace,compact)
+            !! linear operator matrix
+            real(dp), intent(in) :: A(:,:)
+            real(dp), intent(in) :: b(:) !! right-hand side vector
+            real(dp), intent(inout) :: x(:) !! solution vector and initial guess
+            real(dp), intent(in), optional :: rtol !! relative tolerance for convergence
+            real(dp), intent(in), optional :: atol !! absolute tolerance for convergence
+            logical(int8), intent(in), optional, target :: di(:) !! dirichlet conditions mask
+            integer, intent(in), optional :: maxiter !! maximum number of iterations
+            logical, intent(in), optional :: restart !! restart flag
+            integer, intent(in), optional :: kdim !! Krylov subspace size before restart
+            integer, intent(in), optional :: precond !! preconditioner method enumerator
+            class(stdlib_linop_dp_type), optional, intent(in), target :: M !! preconditioner linear operator
+            type(stdlib_solver_workspace_dp_type), optional, intent(inout), target :: workspace !! workspace for the solver
+            logical, intent(in), optional :: compact !! if true, favor lower memory use over cycle-end update speed
+        end subroutine
+        module subroutine stdlib_solve_gmres_CSR_sp(A,b,x,di,rtol,atol,maxiter,restart,kdim,precond,M,workspace,compact)
+            !! linear operator matrix
+            type(CSR_sp_type), intent(in) :: A
+            real(sp), intent(in) :: b(:) !! right-hand side vector
+            real(sp), intent(inout) :: x(:) !! solution vector and initial guess
+            real(sp), intent(in), optional :: rtol !! relative tolerance for convergence
+            real(sp), intent(in), optional :: atol !! absolute tolerance for convergence
+            logical(int8), intent(in), optional, target :: di(:) !! dirichlet conditions mask
+            integer, intent(in), optional :: maxiter !! maximum number of iterations
+            logical, intent(in), optional :: restart !! restart flag
+            integer, intent(in), optional :: kdim !! Krylov subspace size before restart
+            integer, intent(in), optional :: precond !! preconditioner method enumerator
+            class(stdlib_linop_sp_type), optional, intent(in), target :: M !! preconditioner linear operator
+            type(stdlib_solver_workspace_sp_type), optional, intent(inout), target :: workspace !! workspace for the solver
+            logical, intent(in), optional :: compact !! if true, favor lower memory use over cycle-end update speed
+        end subroutine
+        module subroutine stdlib_solve_gmres_CSR_dp(A,b,x,di,rtol,atol,maxiter,restart,kdim,precond,M,workspace,compact)
+            !! linear operator matrix
+            type(CSR_dp_type), intent(in) :: A
+            real(dp), intent(in) :: b(:) !! right-hand side vector
+            real(dp), intent(inout) :: x(:) !! solution vector and initial guess
+            real(dp), intent(in), optional :: rtol !! relative tolerance for convergence
+            real(dp), intent(in), optional :: atol !! absolute tolerance for convergence
+            logical(int8), intent(in), optional, target :: di(:) !! dirichlet conditions mask
+            integer, intent(in), optional :: maxiter !! maximum number of iterations
+            logical, intent(in), optional :: restart !! restart flag
+            integer, intent(in), optional :: kdim !! Krylov subspace size before restart
+            integer, intent(in), optional :: precond !! preconditioner method enumerator
+            class(stdlib_linop_dp_type), optional, intent(in), target :: M !! preconditioner linear operator
+            type(stdlib_solver_workspace_dp_type), optional, intent(inout), target :: workspace !! workspace for the solver
+            logical, intent(in), optional :: compact !! if true, favor lower memory use over cycle-end update speed
+        end subroutine
+    end interface
+    public :: stdlib_solve_gmres
+
 contains
+    
+    !------------------------------------------------------------------
+    ! helpers
+    !------------------------------------------------------------------
+    elemental integer(int32) function stdlib_size_wksp_gmres(kdim,compact)
+        integer(int32), intent(in) :: kdim
+        logical, intent(in) :: compact
+        stdlib_size_wksp_gmres = 3 + kdim + merge(1, kdim, compact)
+    end function
 
     !------------------------------------------------------------------
     ! defaults
