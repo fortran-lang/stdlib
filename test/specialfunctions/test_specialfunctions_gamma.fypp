@@ -12,7 +12,8 @@ module test_specialfunctions_gamma
                                              log_lower_incomplete_gamma,       &
                                              log_upper_incomplete_gamma,       &
                                              regularized_gamma_p,              &
-                                             regularized_gamma_q
+                                             regularized_gamma_q,              &
+                                             beta, log_beta, incomplete_beta
 
     implicit none
     private
@@ -44,7 +45,7 @@ contains
         #:endfor
 
         #:for k1, t1 in INT_KINDS_TYPES
-                    #:for k2, t2 in GAMMA_REAL_KINDS_TYPES
+          #:for k2, t2 in GAMMA_REAL_KINDS_TYPES
             , new_unittest("lower_incomplete_gamma_${t1[0]}$${k1}$${k2}$",     &
                            test_lincgamma_${t1[0]}$${k1}$${k2}$)               &
             , new_unittest("log_lower_incomplete_gamma_${t1[0]}$${k1}$${k2}$", &
@@ -73,6 +74,12 @@ contains
                            test_gamma_p_${t1[0]}$${k1}$)                       &
             , new_unittest("regularized_gamma_q_${t1[0]}$${k1}$",              &
                            test_gamma_q_${t1[0]}$${k1}$)                       &
+            , new_unittest("beta_${t1[0]}$${k1}$",                             &
+                           test_beta_${t1[0]}$${k1}$)                          &
+            , new_unittest("log_beta_${t1[0]}$${k1}$",                         &
+                           test_log_beta_${t1[0]}$${k1}$)                      &
+            , new_unittest("incomplete_beta_${t1[0]}$${k1}$",                  &
+                           test_incomplete_beta_${t1[0]}$${k1}$)               &
         #:endfor
             ]
     end subroutine collect_specialfunctions_gamma
@@ -397,12 +404,83 @@ contains
         end do
     end subroutine test_gamma_q_${t1[0]}$${k1}$${k2}$
 
-      #:endfor
-    #:endfor
+            #:endfor
+        #:endfor
+
+        #:for k1, t1 in GAMMA_REAL_KINDS_TYPES
 
 
 
-    #:for k1, t1 in GAMMA_REAL_KINDS_TYPES
+    subroutine test_beta_${t1[0]}$${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 3
+        integer :: i
+        ${t1}$, parameter :: a(n) = [2.0_${k1}$, 1.0_${k1}$, 0.5_${k1}$]
+        ${t1}$, parameter :: b(n) = [3.0_${k1}$, 1.0_${k1}$, 0.5_${k1}$]
+
+        ${t1}$, parameter :: ans(n) = [1.0_${k1}$/12.0_${k1}$,                 &
+                                       1.0_${k1}$,                             &
+                                       acos(-1.0_${k1}$)]
+
+        do i = 1, n
+
+            call check(error, beta(a(i), b(i)), ans(i),                        &
+              "Beta function with a(kind=${k1}$) and b(kind=${k1}$) failed",  &
+              thr = tol_${k1}$, rel = .true.)
+                        if (allocated(error)) return
+
+        end do
+    end subroutine test_beta_${t1[0]}$${k1}$
+
+
+
+    subroutine test_log_beta_${t1[0]}$${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 3
+        integer :: i
+        character(len=120) :: msg
+        ${t1}$ :: a(n) = [2.0_${k1}$, 1.0_${k1}$, 0.5_${k1}$]
+        ${t1}$ :: b(n) = [3.0_${k1}$, 1.0_${k1}$, 0.5_${k1}$]
+
+        ${t1}$, parameter :: ans(n) = [log(1.0_${k1}$/12.0_${k1}$),            &
+                                       0.0_${k1}$,                             &
+                                       log(acos(-1.0_${k1}$))]
+
+        do i = 1, n
+                        write(msg, '(a,i0)') "Log-beta function with a(kind=${k1}$) and b(kind=${k1}$) failed at i=", i
+
+            call check(error, log_beta(a(i), b(i)), ans(i),                    &
+                            msg,                                                              &
+              thr = tol_${k1}$, rel = .true.)
+                        if (allocated(error)) return
+
+        end do
+    end subroutine test_log_beta_${t1[0]}$${k1}$
+
+
+
+    subroutine test_incomplete_beta_${t1[0]}$${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 4
+        integer :: i
+        ${t1}$ :: x(n) = [0.25_${k1}$, 0.5_${k1}$, 0.0_${k1}$, 1.0_${k1}$]
+        ${t1}$ :: a(n) = [2.0_${k1}$, 2.0_${k1}$, 2.0_${k1}$, 2.0_${k1}$]
+        ${t1}$ :: b(n) = [3.0_${k1}$, 3.0_${k1}$, 3.0_${k1}$, 3.0_${k1}$]
+
+        ${t1}$, parameter :: ans(n) = [67.0_${k1}$/256.0_${k1}$,               &
+                                       11.0_${k1}$/16.0_${k1}$,                &
+                                       0.0_${k1}$,                             &
+                                       1.0_${k1}$]
+
+        do i = 1, n
+
+            call check(error, incomplete_beta(x(i), a(i), b(i)), ans(i),       &
+              "Incomplete beta I_x(a,b) with kind=${k1}$ failed",             &
+              thr = tol_${k1}$, rel = .true.)
+                        if (allocated(error)) return
+
+        end do
+    end subroutine test_incomplete_beta_${t1[0]}$${k1}$
 
     subroutine test_lincgamma_${t1[0]}$${k1}$(error)
         type(error_type), allocatable, intent(out) :: error
