@@ -20,6 +20,8 @@ module test_linalg_solve_iterative
 
         tests = [ new_unittest("stdlib_solve_cg",test_stdlib_solve_cg), &
                   new_unittest("stdlib_solve_pcg",test_stdlib_solve_pcg), &
+                  new_unittest("stdlib_solve_gmres",test_stdlib_solve_gmres), &
+                  new_unittest("stdlib_solve_gmres_hilbert",test_stdlib_solve_gmres_hilbert), &
                   new_unittest("stdlib_solve_bicgstab",test_stdlib_solve_bicgstab), &
                   new_unittest("stdlib_solve_bicgstab_nonsymmetric",test_stdlib_solve_bicgstab_nonsymmetric) ]
 
@@ -110,6 +112,147 @@ module test_linalg_solve_iterative
         end block
 
     end subroutine test_stdlib_solve_pcg
+
+    subroutine test_stdlib_solve_gmres(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        block
+        integer, parameter :: n = 4
+        real(sp), parameter :: tol = 1000*epsilon(0.0_sp)
+        real(sp), parameter :: A(n,n) = reshape([real(sp) :: 5,  1,  2,  0, &
+                                           0,  4, -1,  1, &
+                                           1,  0,  3,  2, &
+                                           2, -1,  0,  6], [n,n])
+        real(sp) :: x(n), load(n)
+        real(sp), parameter :: xref(*) = [1.0_sp, 2.0_sp, -1.0_sp, 0.5_sp]
+        load = matmul(A, xref)
+        x = 0.0_sp
+
+        call stdlib_solve_gmres(A, load, x, rtol=tol, maxiter=12)
+        
+        call check(error, norm2(x-xref)<tol*norm2(xref), 'error in GMRES solver (restarted dense test)')
+        if (allocated(error)) return
+        end block
+
+        block
+        integer, parameter :: n = 3
+        real(sp), parameter :: tol = 1000*epsilon(0.0_sp)
+        real(sp), parameter :: A(n,n) = reshape([real(sp) :: 10,  1,  2, &
+                                            1, 10,  3, &
+                                            2,  3, 10], [n,n])
+        real(sp) :: x(n)
+        real(sp), parameter :: xref(n) = [(137._sp/218._sp), -(9._sp/109._sp), (87._sp/218._sp)]
+        real(sp), parameter :: load(n) = [7.0_sp, 1.0_sp, 5.0_sp]
+        x = [0.2_sp, -0.1_sp, 0.3_sp]
+
+        call stdlib_solve_gmres(A, load, x, rtol=1.e-10_sp, precond=pc_jacobi)
+
+        call check(error, norm2(x-xref)<tol*norm2(xref), 'error in GMRES solver (Jacobi preconditioned test)')
+        if (allocated(error)) return
+        end block
+
+        block
+        integer, parameter :: n = 3
+        real(sp), parameter :: tol = 1000*epsilon(0.0_sp)
+        real(sp), parameter :: A(n,n) = reshape([real(sp) :: 10,  1,  2, &
+                                            1, 10,  3, &
+                                            2,  3, 10], [n,n])
+        real(sp) :: x(n)
+        real(sp), parameter :: xref(n) = [(137._sp/218._sp), -(9._sp/109._sp), (87._sp/218._sp)]
+        real(sp), parameter :: load(n) = [7.0_sp, 1.0_sp, 5.0_sp]
+        x = [0.2_sp, -0.1_sp, 0.3_sp]
+
+        call stdlib_solve_gmres(A, load, x, rtol=1.e-10_sp, precond=pc_jacobi, compact=.false.)
+
+        call check(error, norm2(x-xref)<tol*norm2(xref), 'error in GMRES solver (Jacobi preconditioned speed mode test)')
+        if (allocated(error)) return
+        end block
+
+        block
+        integer, parameter :: n = 4
+        real(dp), parameter :: tol = 1000*epsilon(0.0_dp)
+        real(dp), parameter :: A(n,n) = reshape([real(dp) :: 5,  1,  2,  0, &
+                                           0,  4, -1,  1, &
+                                           1,  0,  3,  2, &
+                                           2, -1,  0,  6], [n,n])
+        real(dp) :: x(n), load(n)
+        real(dp), parameter :: xref(*) = [1.0_dp, 2.0_dp, -1.0_dp, 0.5_dp]
+        load = matmul(A, xref)
+        x = 0.0_dp
+
+        call stdlib_solve_gmres(A, load, x, rtol=tol, maxiter=12)
+        
+        call check(error, norm2(x-xref)<tol*norm2(xref), 'error in GMRES solver (restarted dense test)')
+        if (allocated(error)) return
+        end block
+
+        block
+        integer, parameter :: n = 3
+        real(dp), parameter :: tol = 1000*epsilon(0.0_dp)
+        real(dp), parameter :: A(n,n) = reshape([real(dp) :: 10,  1,  2, &
+                                            1, 10,  3, &
+                                            2,  3, 10], [n,n])
+        real(dp) :: x(n)
+        real(dp), parameter :: xref(n) = [(137._dp/218._dp), -(9._dp/109._dp), (87._dp/218._dp)]
+        real(dp), parameter :: load(n) = [7.0_dp, 1.0_dp, 5.0_dp]
+        x = [0.2_dp, -0.1_dp, 0.3_dp]
+
+        call stdlib_solve_gmres(A, load, x, rtol=1.e-10_dp, precond=pc_jacobi)
+
+        call check(error, norm2(x-xref)<tol*norm2(xref), 'error in GMRES solver (Jacobi preconditioned test)')
+        if (allocated(error)) return
+        end block
+
+        block
+        integer, parameter :: n = 3
+        real(dp), parameter :: tol = 1000*epsilon(0.0_dp)
+        real(dp), parameter :: A(n,n) = reshape([real(dp) :: 10,  1,  2, &
+                                            1, 10,  3, &
+                                            2,  3, 10], [n,n])
+        real(dp) :: x(n)
+        real(dp), parameter :: xref(n) = [(137._dp/218._dp), -(9._dp/109._dp), (87._dp/218._dp)]
+        real(dp), parameter :: load(n) = [7.0_dp, 1.0_dp, 5.0_dp]
+        x = [0.2_dp, -0.1_dp, 0.3_dp]
+
+        call stdlib_solve_gmres(A, load, x, rtol=1.e-10_dp, precond=pc_jacobi, compact=.false.)
+
+        call check(error, norm2(x-xref)<tol*norm2(xref), 'error in GMRES solver (Jacobi preconditioned speed mode test)')
+        if (allocated(error)) return
+        end block
+
+    end subroutine test_stdlib_solve_gmres
+
+    subroutine test_stdlib_solve_gmres_hilbert(error)
+        ! This test uses a Hilbert matrix (n=10) to validate the numerical stability 
+        ! of the GMRES solver. The Hilbert matrix is notoriously ill-conditioned 
+        ! (cond(A) ~ 10^13 for n=10), making it an excellent benchmark for 
+        ! orthogonality maintenance. By setting rtol=0 and maxiter=n, we force 
+        ! the construction of the full Krylov basis, which only converges to 
+        ! the reference solution if the MGS with reorthogonalization 
+        ! preserves the basis' orthogonality.
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 10
+        integer :: r, c
+        block
+            real(dp), parameter :: tol = 1.e-3_dp
+            
+            real(dp) :: A(n, n), b(n), x(n)
+            real(dp), parameter :: x_ref(n) = 1.0_dp
+            do r = 1, n
+                do c = 1, n
+                    A(r, c) = 1.0_dp / real(r + c - 1, dp)
+                end do
+            end do
+
+            b = matmul(A, x_ref)
+            x = 0.0_dp
+
+            call stdlib_solve_gmres(A, b, x, rtol=0.0_dp, maxiter=n)
+            call check(error, norm2(x-x_ref) < tol*norm2(x_ref), & 
+            'error in GMRES dp: Hilbert matrix')
+            if (allocated(error)) return
+        end block
+    end subroutine test_stdlib_solve_gmres_hilbert
 
     subroutine test_stdlib_solve_bicgstab(error)
         type(error_type), allocatable, intent(out) :: error
