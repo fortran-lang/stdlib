@@ -64,6 +64,12 @@ contains
         call check(error, ucheck("-1"))
         if (allocated(error)) return
 
+        call check(error, ucheck("+1"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("+1.234"))
+        if (allocated(error)) return
+
         call check(error, ucheck(" -0.23317260678539647E-01 "))
         if (allocated(error)) return
 
@@ -165,6 +171,12 @@ contains
         call check(error, ucheck("-1"))
         if (allocated(error)) return
 
+        call check(error, ucheck("+1"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("+1.234"))
+        if (allocated(error)) return
+
         call check(error, ucheck(" -0.23317260678539647E-01 "))
         if (allocated(error)) return
 
@@ -241,6 +253,18 @@ contains
         call check(error, ucheck("-123"))
         if (allocated(error)) return
 
+        call check(error, ucheck("+1"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("+42"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("   +99"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("+0005"))
+        if (allocated(error)) return
+
         call check(error, ucheck("   99"))
         if (allocated(error)) return
 
@@ -295,6 +319,18 @@ contains
         if (allocated(error)) return
 
         call check(error, ucheck("-123"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("+1"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("+42"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("   +99"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("+0005"))
         if (allocated(error)) return
 
         call check(error, ucheck("   99"))
@@ -353,6 +389,18 @@ contains
         call check(error, ucheck("-123"))
         if (allocated(error)) return
 
+        call check(error, ucheck("+1"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("+42"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("   +99"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("+0005"))
+        if (allocated(error)) return
+
         call check(error, ucheck("   99"))
         if (allocated(error)) return
 
@@ -407,6 +455,18 @@ contains
         if (allocated(error)) return
 
         call check(error, ucheck("-123"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("+1"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("+42"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("   +99"))
+        if (allocated(error)) return
+
+        call check(error, ucheck("+0005"))
         if (allocated(error)) return
 
         call check(error, ucheck("   99"))
