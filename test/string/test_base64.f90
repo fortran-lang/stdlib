@@ -28,18 +28,34 @@ contains
     subroutine test_known_vectors(error)
         type(error_type), allocatable, intent(out) :: error
 
-        call check(error, base64_encode([int(77, int8), int(97, int8), int(110, int8)]) == "TWFu")
+        ! Encode: No padding (3 bytes)
+        call check(error, base64_encode([int(77, int8), int(97, int8), int(110, int8)]) == "TWFu", &
+                   "Encode failed: 3-byte block (no padding). Expected 'TWFu'")
         if (allocated(error)) return
-        call check(error, base64_encode([int(77, int8), int(97, int8)]) == "TWE=")
+        
+        ! Encode: 1 padding char (2 bytes)
+        call check(error, base64_encode([int(77, int8), int(97, int8)]) == "TWE=", &
+                   "Encode failed: 2-byte block (1 padding char). Expected 'TWE='")
         if (allocated(error)) return
-        call check(error, base64_encode([int(77, int8)]) == "TQ==")
+        
+        ! Encode: 2 padding chars (1 byte)
+        call check(error, base64_encode([int(77, int8)]) == "TQ==", &
+                   "Encode failed: 1-byte block (2 padding chars). Expected 'TQ=='")
         if (allocated(error)) return
 
-        call check(error, base64_decode("TWFu") == "Man")
+        ! Decode: No padding
+        call check(error, base64_decode("TWFu") == "Man", &
+                   "Decode failed: unpadded string. Expected 'Man'")
         if (allocated(error)) return
-        call check(error, base64_decode("TWE=") == "Ma")
+        
+        ! Decode: 1 padding char
+        call check(error, base64_decode("TWE=") == "Ma", &
+                   "Decode failed: 1 padding char '='. Expected 'Ma'")
         if (allocated(error)) return
-        call check(error, base64_decode("TQ==") == "M")
+        
+        ! Decode: 2 padding chars
+        call check(error, base64_decode("TQ==") == "M", &
+                   "Decode failed: 2 padding chars '=='. Expected 'M'")
     end subroutine test_known_vectors
 
     subroutine test_decode_whitespace(error)
@@ -65,10 +81,9 @@ contains
     subroutine test_roundtrip_int32(error)
         type(error_type), allocatable, intent(out) :: error
 
-        integer(int32) :: vals(4), got(4)
+        integer(int32), parameter :: vals(4) = [1_int32, -2_int32, 1024_int32, -4096_int32]
+        integer(int32) :: got(4)
         character(len=:), allocatable :: enc, dec
-
-        vals = [1_int32, -2_int32, 1024_int32, -4096_int32]
 
         enc = base64_encode(vals)
         dec = base64_decode(enc)

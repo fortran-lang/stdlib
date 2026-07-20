@@ -4,9 +4,6 @@ submodule(stdlib_base64) stdlib_base64_decode
     use stdlib_error, only: state_type, STDLIB_SUCCESS, STDLIB_VALUE_ERROR
     use stdlib_strings, only: to_string
 
-    integer, parameter :: enc_chunk = 4
-    integer, parameter :: raw_chunk = 3
-
 contains
 
     pure module subroutine base64_decode_into(str, res, decoded_len, err_state, skip_despace)
@@ -64,6 +61,8 @@ contains
                 j = j + 1
                 filtered(j) = int(c, int8)
             end do
+            ! Note: indices slen+1 to len(str) in 'filtered' remain uninitialized.
+            ! The decoding loop must only process up to 'slen'.
             slen = j
 
             if (unicode_accum > 255_int32 .or. slen == 0 .or. mod(slen, enc_chunk) /= 0) then

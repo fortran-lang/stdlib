@@ -12,18 +12,21 @@
 
 module stdlib_base64
     use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64, lk, c_bool
-    use stdlib_ascii, only: base64_dictionary => base64_alphabet
+    use stdlib_ascii, only: base64_dictionary
     use stdlib_error, only: state_type
 
     implicit none
     private
+
+    integer, parameter :: enc_chunk = 4
+    integer, parameter :: raw_chunk = 3
 
     public :: base64_encode, base64_encode_into
     public :: base64_decode, base64_decode_into
 
     ! Branchless RFC 4648 decode map: byte -> 6-bit value, invalid -> -1.
     ! The main loop OR-reduces values and checks once at the end.
-    integer(int8), parameter :: DT(0:255) = int( [ &
+    integer(int32), parameter :: DT(0:255) = int( [ &
         -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, &
         -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, &
         -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,62,-1,-1,-1,63, &
@@ -40,7 +43,7 @@ module stdlib_base64
         -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, &
         -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, &
         -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1  &
-    ], int8)
+    ], int32)
 
     ! Branchless stream-compaction mask for despace step: keep(1) / drop(0).
     integer(int32), parameter :: IS_VAL(0:255) = int([ &

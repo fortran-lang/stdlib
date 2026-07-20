@@ -3,9 +3,6 @@
 
 submodule(stdlib_base64) stdlib_base64_encode
     use stdlib_error, only: state_type, STDLIB_SUCCESS, STDLIB_VALUE_ERROR
-    
-    integer, parameter :: enc_chunk = 4
-    integer, parameter :: raw_chunk = 3
 
 contains
 

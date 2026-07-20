@@ -37,7 +37,7 @@ Function.
 #### Argument
 
 `data`: shall be a contiguous array of an intrinsic type (`real`, `integer`,
-`complex`, `logical`, or `integer(int8)`). It is an `intent(in)` argument.
+`complex`, `logical`) of any kind. It is an `intent(in)` argument.
 
 #### Result value
 
@@ -60,8 +60,7 @@ Experimental
 
 Encodes bytes into a caller-provided output buffer.
 
-This is the preallocated API for throughput-sensitive workflows. It does not
-allocate and reports status through `err_state`. On success,
+This is the preallocated API for throughput-sensitive workflows. It does not perform any memory allocation. Instead, it reports its execution status through `err_state`. On success,
 `err_state%ok()` is `.true.` and `encoded_len` is the number of meaningful
 characters written to `str`.
 
@@ -76,10 +75,9 @@ Pure module subroutine.
 
 #### Arguments
 
-`bytes`: shall be a contiguous array of type `integer(int8)`. It is an
-`intent(in)` argument.
+`bytes`: shall be a contiguous array of type `integer(int8)`. It is an `intent(in)` argument.
 
-`str`: shall be an intrinsic character type. It is an `intent(out)` argument.
+`str`: shall be a scalar character variable of sufficient length to hold the encoded result. It is an `intent(out)` argument and is **not** allocatable.
 
 `encoded_len`: shall be an `integer`. It is an `intent(out)` argument
 representing the number of encoded characters written.
