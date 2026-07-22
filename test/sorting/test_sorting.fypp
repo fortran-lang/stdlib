@@ -98,7 +98,7 @@ module test_sorting
 
 contains
 
-    !> Collect all exported unit tests
+   !> Collect all exported unit tests
     subroutine collect_sorting(testsuite)
         !> Collection of tests
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
@@ -119,6 +119,15 @@ contains
             new_unittest('bitset_large_sorts', test_bitsetl_sorts), &
             new_unittest('bitset_64_sorts', test_bitset64_sorts), &
 #endif
+            ! --- Global is_sorted tests (run once) ---
+            new_unittest('char_is_sorted', test_char_is_sorted), &
+            new_unittest('string_is_sorted', test_string_is_sorted), &
+#if STDLIB_BITSETS
+            new_unittest('bitsetl_is_sorted', test_bitsetl_is_sorted), &
+            new_unittest('bitset64_is_sorted', test_bitset64_is_sorted), &
+#endif
+            ! -----------------------------------------
+
 #:for ki, ti, namei in INT_INDEX_TYPES_ALT_NAME
             new_unittest('int_sort_indexes_${namei}$', test_int_sort_indexes_${namei}$), &
             new_unittest('char_sort_indexes_${namei}$', test_char_sort_indexes_${namei}$), &
@@ -128,6 +137,7 @@ contains
             new_unittest('bitset_64_sort_indexes_${namei}$', test_bitset64_sort_indexes_${namei}$), &
 #endif
 #:endfor
+
 #:for ki, ti, namei in INT_TYPES_ALT_NAME
             new_unittest('int_sort_adjointes_${namei}$', test_int_sort_adjointes_${namei}$), &
             new_unittest('char_sort_adjointes_${namei}$', test_char_sort_adjointes_${namei}$), &
@@ -136,16 +146,18 @@ contains
             new_unittest('bitset_large_sort_adjointes_${namei}$', test_bitsetl_sort_adjointes_${namei}$), &
             new_unittest('bitset_64_sort_adjointes_${namei}$', test_bitset64_sort_adjointes_${namei}$), &
 #endif
+            new_unittest('int_is_sorted_${namei}$', test_int_is_sorted_${namei}$), &
 #:endfor
+
 #:for ki, ti, namei in REAL_TYPES_ALT_NAME
             new_unittest('real_sort_adjointes_${namei}$', test_real_sort_adjointes_${namei}$), &
+            new_unittest('real_is_sorted_${namei}$', test_real_is_sorted_${namei}$), &
 #:endfor
             new_unittest('int_ord_sorts', test_int_ord_sorts) &
         ]
 
     end subroutine collect_sorting
-
-
+    
     subroutine initialize_tests()
 
         ! Create the test arrays
@@ -368,7 +380,7 @@ contains
         if ( .not. valid ) then
             write( *, * ) "ORD_SORT did not sort " // a_name // "."
             write(*,*) 'i = ', i
-            write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
+            write(*,'(a12, 2i7)') 'dummy(i-2:i-1) = ', dummy(i-2:i-1)
         end if
         write( lun, '("|      Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
@@ -383,7 +395,7 @@ contains
             write( *, * ) "reverse + work ORD_SORT did not sort " // a_name // &
                 "."
             write(*,*) 'i = ', i
-            write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
+            write(*,'(a12, 2i7)') 'dummy(i-2:i-1) = ', dummy(i-2:i-1)
         end if
 
         dummy = a
@@ -393,7 +405,7 @@ contains
         if ( .not. valid ) then
             write( *, * ) "reverse ORD_SORT did not sort " // a_name // "."
             write(*,*) 'i = ', i
-            write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
+            write(*,'(a12, 2i7)') 'dummy(i-2:i-1) = ', dummy(i-2:i-1)
         end if
 
     end subroutine test_int_ord_sort
@@ -605,8 +617,8 @@ contains
             write(*,*) 'i = ', i
             call bitsetl_dummy(i-1)%to_string(bin_im1)
             call bitsetl_dummy(i)%to_string(bin_i)
-            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
-                bin_im1, bin_i
+           write(*,'(a, 2(1x,a))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
         end if
         write( lun, '("| Bitset_large |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
@@ -624,8 +636,8 @@ contains
             write(*,*) 'i = ', i
             call bitsetl_dummy(i-1)%to_string(bin_im1)
             call bitsetl_dummy(i)%to_string(bin_i)
-            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
-                bin_im1, bin_i
+            write(*,'(a, 2(1x,a))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
         end if
 
         bitsetl_dummy = a
@@ -636,10 +648,10 @@ contains
         if ( .not. valid ) then
             write( *, * ) "reverse ORD_SORT did not sort " // a_name // "."
             write(*,*) 'i = ', i
-            call bitsetl_dummy(i-1)%to_string(bin_im1)
-            call bitsetl_dummy(i)%to_string(bin_i)
-            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
-                bin_im1, bin_i
+            bin_im1 = bitsetl_dummy(i-1)%to_string()
+            bin_i = bitsetl_dummy(i)%to_string()
+            write(*,'(a, 2(1x,a))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
         end if
 
     end subroutine test_bitsetl_ord_sort
@@ -810,7 +822,7 @@ contains
         if ( .not. valid ) then
             write( *, * ) "RADIX_SORT did not sort " // a_name // "."
             write(*,*) 'i = ', i
-            write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
+            write(*,'(a12, 2i7)') 'dummy(i-2:i-1) = ', dummy(i-2:i-1)
         end if
         write( lun, '("|      Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
@@ -824,7 +836,7 @@ contains
         if ( .not. valid ) then
             write( *, * ) "reverse RADIX_SORT did not sort " // a_name // "."
             write(*,*) 'i = ', i
-            write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
+            write(*,'(a12, 2i7)') 'dummy(i-2:i-1) = ', dummy(i-2:i-1)
         end if
 
     end subroutine test_int_radix_sort
@@ -963,7 +975,7 @@ contains
         if ( .not. valid ) then
             write( *, * ) "SORT did not sort " // a_name // "."
             write(*,*) 'i = ', i
-            write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
+            write(*,'(a12, 2i7)') 'dummy(i-2:i-1) = ', dummy(i-2:i-1)
         end if
         write( lun, '("|      Integer |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
@@ -977,7 +989,7 @@ contains
         if ( .not. valid ) then
             write( *, * ) "reverse SORT did not sort " // a_name // "."
             write(*,*) 'i = ', i
-            write(*,'(a12, 2i7)') 'dummy(i-1:i) = ', dummy(i-1:i)
+            write(*,'(a12, 2i7)') 'dummy(i-2:i-1) = ', dummy(i-2:i-1)
         end if
 
     end subroutine test_int_sort
@@ -1162,8 +1174,8 @@ contains
             write(*,*) 'i = ', i
             call bitsetl_dummy(i-1)%to_string(bin_im1)
             call bitsetl_dummy(i)%to_string(bin_i)
-            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
-                bin_im1, bin_i
+            write(*,'(a, 2(1x,a))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
         end if
         write( lun, '("| Bitset_large |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
@@ -1179,8 +1191,8 @@ contains
             write(*,*) 'i = ', i
             call bitsetl_dummy(i-1)%to_string(bin_im1)
             call bitsetl_dummy(i)%to_string(bin_i)
-            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
-                bin_im1, bin_i
+           write(*,'(a, 2(1x,a))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
         end if
     end subroutine test_bitsetl_sort
 
@@ -1249,8 +1261,8 @@ contains
             write(*,*) 'i = ', i
             call bitset64_dummy(i-1)%to_string(bin_im1)
             call bitset64_dummy(i)%to_string(bin_i)
-            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
-                bin_im1, bin_i
+            write(*,'(a, 2(1x,a))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
         end if
     end subroutine test_bitset64_sort
 #endif
@@ -1388,7 +1400,7 @@ contains
 
         tdiff = 0
         do i = 1, repeat
-            char_dummy = a
+            char_dummy(0:size(a)-1) = a
             call system_clock( t0, rate )
 
             call sort_index( char_dummy, index_${namei}$, char_work, iwork_${namei}$ )
@@ -1516,8 +1528,8 @@ contains
             write(*,*) 'i = ', i
             call bitsetl_dummy(i-1)%to_string(bin_im1)
             call bitsetl_dummy(i)%to_string(bin_i)
-            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
-                bin_im1, bin_i
+            write(*,'(a, 2(1x,a))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
         end if
         write( lun, '("| Bitset_large |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
@@ -1647,9 +1659,9 @@ contains
         real(dp)                       :: rate
         ${ti}$                         :: adjoint(size(a))
         ${ti}$                         :: iwork(size(a))
-        integer(int64)                 :: i, j
-        logical                        :: valid
-
+        integer(int64)                 :: i, j
+        integer(int64)                 :: i_adj
+        logical                        :: valid, valid_adj
         ltest = .true.
 
         tdiff = 0
@@ -1663,7 +1675,7 @@ contains
         end do
         tdiff = tdiff/repeat
 
-        call verify_sort( dummy, valid, i )
+       call verify_sort( dummy, valid, i )
         ltest = (ltest .and. valid)
         if ( .not. valid ) then
             write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
@@ -1689,6 +1701,61 @@ contains
         end if
 
     end subroutine test_int_sort_adjoint_${namei}$
+
+    ! ==========================================================
+    ! NEW IS_SORTED INTEGER TESTS ADDED HERE
+    ! ==========================================================
+    subroutine test_int_is_sorted_${namei}$(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_is_sorted_logic_${namei}$( increase, "Increasing", .true., .false., ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_is_sorted_logic_${namei}$( decrease, "Decreasing", .false., .true., ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_is_sorted_logic_${namei}$( identical, "Identical", .true., .true., ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_is_sorted_logic_${namei}$( rand1, "Random dense", .false., .false., ltest )
+        call check(error, ltest)
+
+    end subroutine test_int_is_sorted_${namei}$
+
+    subroutine test_is_sorted_logic_${namei}$( a, a_name, expect_fwd, expect_rev, ltest )
+        ${ti}$, intent(in)            :: a(:)
+        character(*), intent(in)      :: a_name
+        logical, intent(in)           :: expect_fwd
+        logical, intent(in)           :: expect_rev
+        logical, intent(out)          :: ltest
+
+        logical :: actual_fwd, actual_rev
+
+        ltest = .true.
+
+        ! Check default (forward) sorting
+        actual_fwd = is_sorted(a)
+        if ( actual_fwd .neqv. expect_fwd ) then
+            write( *, * ) "IS_SORTED (forward) failed for " // a_name // "."
+            write( *, * ) "Expected: ", expect_fwd, " Got: ", actual_fwd
+            ltest = .false.
+        end if
+
+        ! Check reverse sorting
+        actual_rev = is_sorted(a, reverse=.true.)
+        if ( actual_rev .neqv. expect_rev ) then
+            write( *, * ) "IS_SORTED (reverse) failed for " // a_name // "."
+            write( *, * ) "Expected: ", expect_rev, " Got: ", actual_rev
+            ltest = .false.
+        end if
+
+    end subroutine test_is_sorted_logic_${namei}$
+    ! ==========================================================
 
     subroutine test_char_sort_adjointes_${namei}$(error)
         !> Error handling
@@ -1750,6 +1817,48 @@ contains
 
     end subroutine test_char_sort_adjoint_${namei}$
 
+    ! ==========================================================
+    ! NEW IS_SORTED CHARACTER TESTS
+    ! ==========================================================
+    subroutine test_char_is_sorted_${namei}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_is_sorted_logic_char_${namei}$( char_increase, "Char Increasing", .true., .false., ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_is_sorted_logic_char_${namei}$( char_decrease, "Char Decreasing", .false., .true., ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_is_sorted_logic_char_${namei}$( char_rand, "Char Random", .false., .false., ltest )
+        call check(error, ltest)
+    end subroutine test_char_is_sorted_${namei}$
+
+    subroutine test_is_sorted_logic_char_${namei}$( a, a_name, expect_fwd, expect_rev, ltest )
+        character(len=4), intent(in)  :: a(0:)
+        character(*), intent(in)      :: a_name
+        logical, intent(in)           :: expect_fwd
+        logical, intent(in)           :: expect_rev
+        logical, intent(out)          :: ltest
+        logical :: actual_fwd, actual_rev
+
+        ltest = .true.
+
+        actual_fwd = is_sorted(a)
+        if ( actual_fwd .neqv. expect_fwd ) then
+            write( *, * ) "IS_SORTED (forward) failed for " // a_name
+            ltest = .false.
+        end if
+
+        actual_rev = is_sorted(a, reverse=.true.)
+        if ( actual_rev .neqv. expect_rev ) then
+            write( *, * ) "IS_SORTED (reverse) failed for " // a_name
+            ltest = .false.
+        end if
+    end subroutine test_is_sorted_logic_char_${namei}$
+
     subroutine test_string_sort_adjointes_${namei}$(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
@@ -1806,6 +1915,47 @@ contains
             string_size, a_name, "Sort_adjoint", tdiff/rate
 
     end subroutine test_string_sort_adjoint_${namei}$
+    ! ==========================================================
+    ! NEW IS_SORTED STRING TESTS
+    ! ==========================================================
+    subroutine test_string_is_sorted_${namei}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_is_sorted_logic_str_${namei}$( string_increase, "Str Increasing", .true., .false., ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_is_sorted_logic_str_${namei}$( string_decrease, "Str Decreasing", .false., .true., ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_is_sorted_logic_str_${namei}$( string_rand, "Str Random", .false., .false., ltest )
+        call check(error, ltest)
+    end subroutine test_string_is_sorted_${namei}$
+
+    subroutine test_is_sorted_logic_str_${namei}$( a, a_name, expect_fwd, expect_rev, ltest )
+        type(string_type), intent(in) :: a(0:)
+        character(*), intent(in)      :: a_name
+        logical, intent(in)           :: expect_fwd
+        logical, intent(in)           :: expect_rev
+        logical, intent(out)          :: ltest
+        logical :: actual_fwd, actual_rev
+
+        ltest = .true.
+
+        actual_fwd = is_sorted(a)
+        if ( actual_fwd .neqv. expect_fwd ) then
+            write( *, * ) "IS_SORTED (forward) failed for " // a_name
+            ltest = .false.
+        end if
+
+        actual_rev = is_sorted(a, reverse=.true.)
+        if ( actual_rev .neqv. expect_rev ) then
+            write( *, * ) "IS_SORTED (reverse) failed for " // a_name
+            ltest = .false.
+        end if
+    end subroutine test_is_sorted_logic_str_${namei}$
 
 #if STDLIB_BITSETS
     subroutine test_bitsetl_sort_adjointes_${namei}$(error)
@@ -1859,8 +2009,8 @@ contains
             write(*,*) 'i = ', i
             call bitsetl_dummy(i-1)%to_string(bin_im1)
             call bitsetl_dummy(i)%to_string(bin_i)
-            write(*,'(a, 2(a:,1x))') 'bitsetl_dummy(i-1:i) = ', &
-                bin_im1, bin_i
+            write(*,'(a, 2(1x,a))') 'bitsetl_dummy(i-1:i) = ', &
+                bin_im1, bin_i
         end if
         write( lun, '("| Bitset_large |", 1x, i7, 2x, "|", 1x, a15, " |", ' // &
             'a12, " |",  F10.6, " |" )' ) &
@@ -1868,6 +2018,47 @@ contains
 
     end subroutine test_bitsetl_sort_adjoint_${namei}$
 
+    ! ==========================================================
+    ! NEW IS_SORTED BITSET TESTS
+    ! ==========================================================
+    subroutine test_bitsetl_is_sorted_${namei}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        logical :: ltest
+
+        call test_is_sorted_logic_bit_${namei}$( bitsetl_increase, "Bitset Increasing", .true., .false., ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_is_sorted_logic_bit_${namei}$( bitsetl_decrease, "Bitset Decreasing", .false., .true., ltest )
+        call check(error, ltest)
+        if (allocated(error)) return
+
+        call test_is_sorted_logic_bit_${namei}$( bitsetl_rand, "Bitset Random", .false., .false., ltest )
+        call check(error, ltest)
+    end subroutine test_bitsetl_is_sorted_${namei}$
+
+    subroutine test_is_sorted_logic_bit_${namei}$( a, a_name, expect_fwd, expect_rev, ltest )
+        type(bitset_large), intent(in) :: a(0:)
+        character(*), intent(in)       :: a_name
+        logical, intent(in)            :: expect_fwd
+        logical, intent(in)            :: expect_rev
+        logical, intent(out)           :: ltest
+        logical :: actual_fwd, actual_rev
+
+        ltest = .true.
+
+        actual_fwd = is_sorted(a)
+        if ( actual_fwd .neqv. expect_fwd ) then
+            write( *, * ) "IS_SORTED (forward) failed for " // a_name
+            ltest = .false.
+        end if
+
+        actual_rev = is_sorted(a, reverse=.true.)
+        if ( actual_rev .neqv. expect_rev ) then
+            write( *, * ) "IS_SORTED (reverse) failed for " // a_name
+            ltest = .false.
+        end if
+    end subroutine test_is_sorted_logic_bit_${namei}$
     subroutine test_bitset64_sort_adjointes_${namei}$(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
@@ -1975,7 +2166,7 @@ contains
     end subroutine test_real_sort_adjointes_${namei}$
 
     subroutine test_real_sort_adjoint_${namei}$( a, a_name, ltest )
-        integer(int32), intent(inout) :: a(:)
+        integer(${ki}$), intent(in) :: a(0:)
         character(*), intent(in)      :: a_name
         logical, intent(out)          :: ltest
 
@@ -2002,14 +2193,18 @@ contains
         tdiff = tdiff/repeat
 
         call verify_sort( dummy, valid, i )
-        call verify_adjoint(int(adjoint, kind=int32), dummy, valid_adj, i_adj )
-
-        ltest = (ltest .and. valid .and. valid_adj)
-        if ( .not. valid ) then
-            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
-            write(*,*) 'i = ', i
-            write(*,'(a18, 2i7)') 'a(i-1:i) = ', a(i-1:i)
-        end if
+        ! Check if original array indexed by adjoint matches the sorted dummy
+        call verify_adjoint( a(adjoint), dummy, valid_adj, i_adj )
+        ltest = (ltest .and. valid .and. valid_adj)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a18, 2i7)') 'a(i-1:i) = ', a(i-1:i)
+        end if
+        if ( .not. valid_adj ) then
+            write( *, * ) "SORT_ADJOINT adjoint mapping failed for " // a_name // "."
+            write(*,*) 'i_adj = ', i_adj
+        end if
         if ( .not. valid_adj ) then
             write( *, * ) "SORT_ADJOINT did not sort " // a_name // "."
             write(*,*) 'i_adj = ', i_adj
@@ -2024,15 +2219,20 @@ contains
         adjoint = real(dummy, kind=${namei}$)
         call sort_adjoint( dummy, adjoint, work, iwork, reverse=.true. )
 
-        call verify_reverse_sort( dummy, valid, i )
-        call verify_adjoint(int(adjoint, kind=int32), dummy, valid_adj, i_adj )
-        ltest = (ltest .and. valid .and. valid_adj)
-        if ( .not. valid ) then
-            write( *, * ) "SORT_ADJOINT did not reverse sort " // &
-                a_name // "."
-            write(*,*) 'i = ', i
-            write(*,'(a18, 2i7)') 'a(i-1:i) = ', a(i-1:i)
-        end if
+       call verify_reverse_sort( dummy, valid, i )
+        call verify_adjoint( a(adjoint), dummy, valid_adj, i_adj )
+        ltest = (ltest .and. valid .and. valid_adj)
+        if ( .not. valid ) then
+            write( *, * ) "SORT_ADJOINT did not reverse sort " // &
+                a_name // "."
+            write(*,*) 'i = ', i
+            write(*,'(a18, 2i7)') 'a(i-1:i) = ', a(i-1:i)
+        end if
+        if ( .not. valid_adj ) then
+            write( *, * ) "SORT_ADJOINT reverse adjoint mapping failed for " // a_name // "."
+            write(*,*) 'i_adj = ', i_adj
+        end if
+
         if ( .not. valid_adj ) then
             write( *, * ) "SORT_ADJOINT did not reverse sort " // &
                 a_name // "."
@@ -2075,6 +2275,50 @@ contains
         valid = .true.
 
     end subroutine verify_adjoint
+    subroutine verify_real_adjoint( a, true_arr, valid, i )
+        real(dp), intent(in) :: a(:)
+        real(dp), intent(in) :: true_arr(:)
+        logical, intent(out) :: valid
+        integer(int64), intent(out) :: i
+        integer(int64) :: n
+
+        n = size( a, kind=int64 )
+        valid = .false.
+        do i=1, n
+            if ( a(i) /= true_arr(i) ) return
+        end do
+        valid = .true.
+    end subroutine verify_real_adjoint
+
+    subroutine verify_char_adjoint( a, true_arr, valid, i )
+        character(len=*), intent(in) :: a(:)
+        character(len=*), intent(in) :: true_arr(:)
+        logical, intent(out) :: valid
+        integer(int64), intent(out) :: i
+        integer(int64) :: n
+
+        n = size( a, kind=int64 )
+        valid = .false.
+        do i=1, n
+            if ( a(i) /= true_arr(i) ) return
+        end do
+        valid = .true.
+    end subroutine verify_char_adjoint
+
+    subroutine verify_string_adjoint( a, true_arr, valid, i )
+        type(string_type), intent(in) :: a(:)
+        type(string_type), intent(in) :: true_arr(:)
+        logical, intent(out) :: valid
+        integer(int64), intent(out) :: i
+        integer(int64) :: n
+
+        n = size( a, kind=int64 )
+        valid = .false.
+        do i=1, n
+            if ( a(i) /= true_arr(i) ) return
+        end do
+        valid = .true.
+    end subroutine verify_string_adjoint
 
     subroutine verify_real_sort( a, valid, i )
         real(sp), intent(in) :: a(0:)
