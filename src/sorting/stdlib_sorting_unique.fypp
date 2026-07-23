@@ -43,7 +43,7 @@ contains
             error stop "unsorted version requires STDLIB_HASHMAPS"
 #endif
         #:if name1 != 'xdp'
-            output = stable_unique(temp)
+            output = unsorted_unique(temp)
         #:else
             error stop 'unsorted version does not support xdp kinds'
         #:endif
@@ -88,7 +88,7 @@ contains
 #if STDLIB_HASHMAPS
     #:for t1, t2, name1, cpp1 in IR_INDEX_TYPES_ALT_NAME
     #:if name1 != 'xdp'
-    module function ${name1}$_stable_unique(temp) result(output)
+    module function ${name1}$_unsorted_unique(temp) result(output)
         ${t1}$, intent(in) :: temp(:)
         ${t1}$, allocatable :: output(:)
 

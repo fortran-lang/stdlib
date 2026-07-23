@@ -759,10 +759,10 @@ module stdlib_sorting
         #:endfor
     end interface
 
-    interface stable_unique
+    interface unsorted_unique
         #:for t1, t2, name1, cpp1 in IR_INDEX_TYPES_ALT_NAME
         #:if name1 != 'xdp'
-        module function ${name1}$_stable_unique(temp) result(output)
+        module function ${name1}$_unsorted_unique(temp) result(output)
             ${t1}$, intent(in) :: temp(:)
             ${t1}$, allocatable :: output(:)
         end function
