@@ -479,6 +479,64 @@ module stdlib_sorting
 !!    end subroutine sort_a_data
 !!```
 
+    public unique
+!! Version: experimental
+!!
+!! The generic function implementing the `UNIQUE` algorithm to return the 
+!! distinct elements of a rank-1 array. The result may either preserve the
+!! order of first occurrence or be returned in sorted order.
+!!
+!! Its use has the syntax: 
+!!     output = unique(array, sorted_output[, tolerance] )
+!!
+!! with the arguments:
+!! * array: the rank-1 input array. It is an `intent(in)` argument of any
+!!   of the types `integer(int8)`, `integer(int16)`, `integer(int32)`,
+!!   `integer(int64)`, `real(real32)`, `real(real64)`, or
+!!   `real(real128)`.
+!!
+!! * sorted_output: a scalar of type default logical. It is an
+!!   `intent(in)` argument. If `.true.`, the returned array contains the
+!!   unique elements sorted in non-decreasing order. Otherwise, the unique
+!!   elements are returned in the order of their first appearance in
+!!   `array`.
+!!
+!! * `tolerance` (optional): It is an `intent(in)` argument available only
+!!    for real arrays. When `sorted_output` is `.true.`, two values
+!!    in sorted order whose absolute difference is less than or equal to
+!!    `tolerance` are considered equal. If omitted, `tolerance` defaults
+!!    to zero.
+!!
+!! The result is an allocatable rank-1 array of the same type as `array`
+!! containing one copy of each distinct element.
+!!
+!! **Note:** The unsorted (`sorted_output = .false.`) implementation is
+!! currently unavailable for `real(`xdp`)` because hashing is
+!! performed on the underlying binary representation, which is not
+!! sufficiently portable for this kind.
+!!
+!!#### Examples
+!!
+!! Remove duplicates while preserving the original order:
+!!
+!!```Fortran
+!!    integer :: a(8) = [4, 2, 4, 1, 2, 3, 1, 5]
+!!    integer, allocatable :: b(:)
+!!
+!!    b = unique(a, .false.)
+!!    ! b = [4, 2, 1, 3, 5]
+!!```
+!!
+!! Return the unique values in sorted order:
+!!
+!!```Fortran
+!!    integer :: a(8) = [4, 2, 4, 1, 2, 3, 1, 5]
+!!    integer, allocatable :: b(:)
+!!
+!!    b = unique(a, .true.)
+!!    ! b = [1, 2, 3, 4, 5]
+!!```
+
     interface ord_sort
 !! Version: experimental
 !!
@@ -652,6 +710,65 @@ module stdlib_sorting
 #:endfor
 
     end interface sort_index
+
+    interface unique
+!! Version: experimental
+!!
+!! The generic function interface implementing the `UNIQUE` algorithm to
+!! return the distinct elements of a rank-1 array.
+!!
+!! The result may either preserve the order of first occurrence or be
+!! returned in sorted order, depending on the value of the
+!! `SORTED_OUTPUT` argument.
+!!
+!! For real arrays, an optional `TOLERANCE` argument may be supplied
+!! when `SORTED_OUTPUT` is `.true.`. Two values whose absolute
+!! difference is less than or equal to `TOLERANCE` are considered
+!! equal. The `TOLERANCE` argument is not available for integer
+!! overloads.
+    #:for t1, t2, name1, cpp1 in IR_INDEX_TYPES_ALT_NAME
+        module function ${name1}$_unique(A, sorted_output${", tolerance" if t1.startswith('real') else ""}$) result(output)
+!! Version: experimental
+!!
+#:if t1.startswith('real')
+!! `${name1}$_unique( array, sorted_output[, tolerance] )` returns the
+!! distinct elements of the input array of type `${t1}$`.
+#:else
+!! `${name1}$_unique( array, sorted_output )` returns the distinct
+!! elements of the input array of type `${t1}$`.
+#:endif
+            ${t1}$, intent(in) :: A(:)
+            logical, intent(in) :: sorted_output
+            #:if t1.startswith('real')
+            ${t1}$, optional, intent(in) :: tolerance
+            #:endif
+            ${t1}$, allocatable :: output(:)
+        end function
+    #:endfor
+    end interface
+
+    interface sort_unique
+        #:for t1, t2, name1, cpp1 in IR_INDEX_TYPES_ALT_NAME
+        module function ${name1}$_sort_unique(temp${", tolerance" if t1.startswith('real') else ""}$) result(output)
+            ${t1}$, intent(inout) :: temp(:)
+            #:if t1.startswith('real')
+            ${t1}$, intent(in) :: tolerance
+            #:endif
+            ${t1}$, allocatable :: output(:)
+        end function
+        #:endfor
+    end interface
+
+    interface unsorted_unique
+        #:for t1, t2, name1, cpp1 in IR_INDEX_TYPES_ALT_NAME
+        #:if name1 != 'xdp'
+        module function ${name1}$_unsorted_unique(temp) result(output)
+            ${t1}$, intent(in) :: temp(:)
+            ${t1}$, allocatable :: output(:)
+        end function
+        #:endif
+        #:endfor
+    end interface
 
 contains
 

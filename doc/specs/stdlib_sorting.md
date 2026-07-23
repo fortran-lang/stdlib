@@ -26,9 +26,10 @@ module's `string_type` type.
 
 The module `stdlib_sorting` defines several public entities, two
 default integer parameters, `int_index` and `int_index_low`, and four overloaded
-subroutines: `ORD_SORT`, `SORT`, `RADIX_SORT` and `SORT_INDEX`. The
-overloaded subroutines also each have several specific names for
-versions corresponding to different types of array arguments.
+subroutines: `ORD_SORT`, `SORT`, `RADIX_SORT` and `SORT_INDEX` and 
+the overloaded function `UNIQUE`. The overloaded subroutines also each have 
+several specific names for versions corresponding to different types 
+of array arguments.
 
 ### The parameters `int_index` and `int_index_low`
 
@@ -37,7 +38,7 @@ in indexing the various arrays. Currently the module sets `int_index` and
 `int_index_low`
 to the value of `int64` and `int32` from the `stdlib_kinds` module, respectively.
 
-### The module subroutines
+### The module procedures
 
 The `stdlib_sorting` module provides three different overloaded
 subroutines intended to sort three different kinds of arrays of
@@ -57,6 +58,9 @@ data:
   that are effectively unordered before the sort;
 * `RADIX_SORT` is intended to sort fixed width intrinsic data 
   types (integers and reals).
+* `UNIQUE` returns the distinct elements of a rank one array,
+  either preserving the order of first occurrence or returning the
+  unique elements in sorted order.
 
 #### Licensing
 
@@ -231,6 +235,22 @@ times faster than other sort subroutines.
 The `RADIX_SORT` needs a buffer that have same size of the input data.
 Your can provide it using `work` argument, if not the subroutine will
 allocate the buffer and deallocate before return.
+
+#### The `UNIQUE` function
+
+`UNIQUE` returns the distinct elements of a rank one array.
+
+When the argument `sorted_output` is `.true.`, the implementation
+sorts a copy of the input array before removing adjacent duplicate
+elements, producing the unique values in non-decreasing order.
+
+When `sorted_output` is `.false.`, the implementation preserves the
+order of first occurrence by using a hash map to identify values that
+have already been encountered.
+
+The sorted implementation has `O(N Ln(N))` runtime complexity, while
+the order-preserving implementation has expected `O(N)` runtime
+complexity. Both require `O(N)` additional memory.
 
 ### Specifications of the `stdlib_sorting` procedures
 
@@ -624,6 +644,62 @@ Sorting an array of a derived type based on the data in one component
         ! Sort a_data based on the sorting of that component
         a_data(:) = a_data( index(1:size(a_data)) )
     end subroutine sort_a_data
+```
+
+#### `unique` - returns the distinct elements of an input array
+
+##### Status
+
+Experimental
+
+##### Description
+
+Returns an allocatable array containing one copy of each distinct
+element of the input array.
+
+##### Syntax
+
+`output = ` [[stdlib_sorting(module):unique(interface)]] `( array, sorted_output[, tolerance] )`
+
+##### Class
+
+Generic function.
+
+##### Arguments
+
+`array`: shall be a rank one array of any of the types `integer(int8)`, 
+`integer(int16)`, `integer(int32)`,`integer(int64)`, `real(sp)`, 
+`real(dp)`, or `real(qp)`. It is an `intent(in)` argument.
+
+`sorted_output`: shall be a scalar of type default logical.
+It is an `intent(in)` argument.
+If `.true.`, the result contains the unique elements in
+non-decreasing order. Otherwise, the result contains the unique
+elements in the order of their first occurrence.
+
+`tolerance` (optional): shall be a scalar of the same real kind as `array`.
+It is an `intent(in)` argument specifying the tolerance used when
+comparing values in sorted order. Two values whose absolute
+difference is less than or equal to `tolerance` are considered
+equal. If omitted, tolerance defaults to zero. This argument is only
+available for real arrays.
+
+##### Result
+
+The result is an allocatable rank one array of the same type as
+`array`, containing one copy of each distinct element.
+
+##### Notes
+
+The unsorted (`sorted_output = .false.`) implementation is
+currently unavailable for `real(xdp)` because hashing is
+performed on the underlying binary representation, which is not
+sufficiently portable for this kind.
+
+##### Example
+
+```Fortran
+{!example/sorting/example_unique.f90!}
 ```
 
 
