@@ -20,6 +20,25 @@ contains
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
         character(1), intent(in), optional :: op
+
+        call spmv_kernel_csr_${rank}$d_${s1}$(matrix%data, matrix%col, matrix%rowptr, matrix%nnz, matrix%nrows, matrix%ncols, matrix%storage, &
+            vec_x,vec_y,alpha,beta,op)
+
+    end subroutine
+
+    module subroutine spmv_kernel_csr_${rank}$d_${s1}$(data,col,rowptr,nnz,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
+        ${t1}$, intent(in) :: data(:)
+        integer(ilp), intent(in) :: col(:) !! matrix column pointer
+        integer(ilp), intent(in) :: rowptr(:)  !! matrix row pointer
+        integer(ilp), intent(in) :: nnz !! number of non-zero values
+        integer(ilp), intent(in) :: nrows
+        integer(ilp), intent(in) :: ncols
+        integer, intent(in) :: storage !! storage
+        ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
+        ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
+        ${t1}$, intent(in), optional :: alpha
+        ${t1}$, intent(in), optional :: beta
+        character(1), intent(in), optional :: op
         ${t1}$ :: alpha_
         character(1) :: op_
         integer(ilp) :: i, j
@@ -37,9 +56,6 @@ contains
         else 
             vec_y = zero_${s1}$
         endif
-
-        associate( data => matrix%data, col => matrix%col, rowptr => matrix%rowptr, &
-            & nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage )
     
             if( storage == sparse_full .and. op_==sparse_op_none ) then
                 do i = 1, nrows
@@ -114,9 +130,8 @@ contains
                 end do
             #:endif
             end if
-        end associate
     end subroutine
-    
+
     #:endfor
     #:endfor
 
