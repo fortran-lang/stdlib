@@ -22,7 +22,7 @@ contains
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
         character(1), intent(in), optional :: op
-        call spmv_bsr_1d_${s1}$_kernel(matrix%data, matrix%rowptr, matrix%col, &
+        call spmv_kernel_bsr_1d_${s1}$(matrix%data, matrix%rowptr, matrix%col, &
             matrix%nrows, matrix%ncols, matrix%storage, matrix%block_shape, &
             vec_x, vec_y, alpha, beta, op)
     end subroutine spmv_bsr_1d_${s1}$
@@ -35,7 +35,7 @@ contains
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
         character(1), intent(in), optional :: op
-        call spmv_bsr_2d_${s1}$_kernel(matrix%data, matrix%rowptr, matrix%col, &
+        call spmv_kernel_bsr_2d_${s1}$(matrix%data, matrix%rowptr, matrix%col, &
             matrix%nrows, matrix%ncols, matrix%storage, matrix%block_shape, &
             vec_x, vec_y, alpha, beta, op)
     end subroutine spmv_bsr_2d_${s1}$
@@ -46,7 +46,7 @@ contains
     #:for k1, t1, s1 in (KINDS_TYPES)
 
     !> Non-OOP rank=1 kernel for BSR SpMV
-    subroutine spmv_bsr_1d_${s1}$_kernel(data, rowptr, col, nrows, ncols, storage, block_shape, &
+    subroutine spmv_kernel_bsr_1d_${s1}$(data, rowptr, col, nrows, ncols, storage, block_shape, &
             vec_x, vec_y, alpha, beta, op)
         ${t1}$, intent(in) :: data(:,:,:)
         integer(ilp), intent(in) :: rowptr(:), col(:)
@@ -251,10 +251,10 @@ contains
             end do
         #:endif
         end if
-    end subroutine spmv_bsr_1d_${s1}$_kernel
+    end subroutine spmv_kernel_bsr_1d_${s1}$
 
     !> Non-OOP rank=2 kernel for BSR SpMV
-    subroutine spmv_bsr_2d_${s1}$_kernel(data, rowptr, col, nrows, ncols, storage, block_shape, &
+    subroutine spmv_kernel_bsr_2d_${s1}$(data, rowptr, col, nrows, ncols, storage, block_shape, &
             vec_x, vec_y, alpha, beta, op)
         ${t1}$, intent(in) :: data(:,:,:)
         integer(ilp), intent(in) :: rowptr(:), col(:)
@@ -460,7 +460,7 @@ contains
             end do
         #:endif
         end if
-    end subroutine spmv_bsr_2d_${s1}$_kernel
+    end subroutine spmv_kernel_bsr_2d_${s1}$
 
     #:endfor
 
