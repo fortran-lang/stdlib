@@ -21,17 +21,17 @@ contains
         ${t1}$, intent(in), optional :: beta
         character(1), intent(in), optional :: op
 
-        call spmv_kernel_csr_${rank}$d_${s1}$(matrix%data, matrix%col, matrix%rowptr, matrix%nrows, matrix%ncols, matrix%storage, &
+        call spmv_kernel_csr_${rank}$d_${s1}$(matrix%nrows, matrix%ncols, matrix%data, matrix%col, matrix%rowptr, matrix%storage, &
             vec_x,vec_y,alpha,beta,op)
 
     end subroutine
 
-    module subroutine spmv_kernel_csr_${rank}$d_${s1}$(data,col,rowptr,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
+    module subroutine spmv_kernel_csr_${rank}$d_${s1}$(nrows,ncols,data,col,rowptr,storage,vec_x,vec_y,alpha,beta,op)
+        integer(ilp), intent(in) :: nrows
+        integer(ilp), intent(in) :: ncols
         ${t1}$, intent(in) :: data(:)
         integer(ilp), intent(in) :: col(:) !! matrix column pointer
         integer(ilp), intent(in) :: rowptr(:)  !! matrix row pointer
-        integer(ilp), intent(in) :: nrows
-        integer(ilp), intent(in) :: ncols
         integer, intent(in) :: storage !! storage
         ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
