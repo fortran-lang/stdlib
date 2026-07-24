@@ -232,81 +232,19 @@ $$y=\alpha*op(M)*x+\beta*y$$
 
 ### Syntax
 
-`call ` [[stdlib_sparse_spmv(module):spmv_kernel_coo(interface)]] `(data,index,nnz,storage,vec_x,vec_y [,alpha,beta,op])`
-`call ` [[stdlib_sparse_spmv(module):spmv_kernel_csc(interface)]] `(data,colptr,row,nnz,nrows,ncols,storage,vec_x,vec_y [,alpha,beta,op])`
-`call ` [[stdlib_sparse_spmv(module):spmv_kernel_csr(interface)]] `(data,col,rowptr,nnz,nrows,ncols,storage,vec_x,vec_y [,alpha,beta,op])`
-`call ` [[stdlib_sparse_spmv(module):spmv_kernel_ell(interface)]] `(data,index,mnz_p_row,nnz,nrows,ncols,storage,vec_x,vec_y [,alpha,beta,op])`
-`call ` [[stdlib_sparse_spmv(module):spmv_kernel_sellc(interface)]] `(data,ia,ja,cs,nnz,nrows,ncols,storage,vec_x,vec_y [,alpha,beta,op])`
+`call ` [[stdlib_sparse_spmv(module):spmv_kernel_coo(interface)]] `(nrows,ncols,data,index,nnz,storage,vec_x,vec_y [,alpha,beta,op])`
+`call ` [[stdlib_sparse_spmv(module):spmv_kernel_csc(interface)]] `(nrows,ncols,data,colptr,row,storage,vec_x,vec_y [,alpha,beta,op])`
+`call ` [[stdlib_sparse_spmv(module):spmv_kernel_csr(interface)]] `(nrows,ncols,data,col,rowptr,storage,vec_x,vec_y [,alpha,beta,op])`
+`call ` [[stdlib_sparse_spmv(module):spmv_kernel_ell(interface)]] `(nrows,ncols,data,index,mnz_p_row,storage,vec_x,vec_y [,alpha,beta,op])`
+`call ` [[stdlib_sparse_spmv(module):spmv_kernel_sellc(interface)]] `(nrows,ncols,data,ia,ja,cs,storage,vec_x,vec_y [,alpha,beta,op])`
 
 ### Arguments
 
-For the `COO` format:
-
-`data`: Shall be a rank-1 array of `real` or `complex` type. It is an `intent(in)` argument.
-
-`index`: Shall be a rank-2 array of `integer(ilp)` type. It is an `intent(in)` argument.
-
-`nnz`: Shall be a rank-1 or rank-2 array of `real` or `complex` type array. It is an `intent(in)` argument.          integer(ilp), intent(in) :: nnz
-
-For the `CSC` format:
-
-`data`: Shall be a rank-1 array of `real` or `complex` type. It is an `intent(in)` argument.
-
-`colptr`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument.  !! matrix column pointer
-
-`row`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument. !! matrix row pointer
-
-`nnz`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument.   !! number of non-zero values
-
-`nrows`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument. 
-
-`ncols`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument.
-
-For the `CSR` format:
-
-`data`: Shall be a rank-1 array of `real` or `complex` type array. It is an `intent(in)` argument.
-
-`col`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument.  !! matrix column pointer
-
-`rowptr`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument.   !! matrix row pointer
-
-`nnz`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument.     !! number of non-zero values
-
-`nrows`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument.
-
-`ncols`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument.
-
-For the `ELL` format:
-
-`data`: Shall be a rank-2 array of `real` or `complex` type. It is an `intent(in)` argument.
-
-`index`: Shall be a rank-2 array of `integer(ilp)` type. It is an `intent(in)` argument.
-
-`mnz_p_row`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument.
-
-`nnz`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument.
-
-`nrows`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument.
-
-`ncols`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument.
-
-For the `SELLC` format:
-
-`data`: Shall be a rank-2 array of `real` or `complex` type array. It is an `intent(in)` argument.
-
-`ia`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument.
-
-`ja`: Shall be a rank-2 array of `integer(ilp)` type. It is an `intent(in)` argument.
-
-`cs`: Shall be a scalar of `integer` type. It is an `intent(in)` argument.
-
-`nnz`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument.
-
-`nrows`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument.
-
-`ncols`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument.
-
 For the all formats:
+
+`nrows`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument.
+
+`ncols`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument.
 
 `storage`: Shall be a scalar of `integer` type. It is an `intent(in)` argument.
 
@@ -319,6 +257,54 @@ For the all formats:
 `beta`, `optional` : Shall be a scalar value of the same type as `vec_x`. Default value `beta=0`. It is an `intent(in)` argument.
 
 `op`, `optional`: In-place operator identifier. Shall be a `character(1)` argument. It can have any of the following values: `N`: no transpose, `T`: transpose, `H`: hermitian or complex transpose. These values are provided as constants by the `stdlib_sparse` module: `sparse_op_none`, `sparse_op_transpose`, `sparse_op_hermitian`
+
+For the `COO` format:
+
+`data`: Shall be a rank-1 array of `real` or `complex` type. It is an `intent(in)` argument.
+
+`index`: Shall be a rank-2 array of `integer(ilp)` type. It is an `intent(in)` argument.
+
+`nnz`: Shall be a rank-1 or rank-2 array of `real` or `complex` type array. It is an `intent(in)` argument.      !! number of non-zero values
+
+
+For the `CSC` format:
+
+`data`: Shall be a rank-1 array of `real` or `complex` type. It is an `intent(in)` argument.
+
+`colptr`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument.  !! matrix column pointer
+
+`row`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument. !! matrix row pointer
+
+
+For the `CSR` format:
+
+`data`: Shall be a rank-1 array of `real` or `complex` type array. It is an `intent(in)` argument.
+
+`col`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument.  !! matrix column pointer
+
+`rowptr`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument.   !! matrix row pointer
+
+
+For the `ELL` format:
+
+`data`: Shall be a rank-2 array of `real` or `complex` type. It is an `intent(in)` argument.
+
+`index`: Shall be a rank-2 array of `integer(ilp)` type. It is an `intent(in)` argument.
+
+`mnz_p_row`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument.
+
+
+For the `SELLC` format:
+
+`data`: Shall be a rank-2 array of `real` or `complex` type array. It is an `intent(in)` argument.
+
+`ia`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument.
+
+`ja`: Shall be a rank-2 array of `integer(ilp)` type. It is an `intent(in)` argument.
+
+`cs`: Shall be a scalar of `integer` type. It is an `intent(in)` argument.
+
+
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ## Sparse matrix to matrix conversions

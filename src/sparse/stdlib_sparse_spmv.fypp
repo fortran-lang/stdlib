@@ -78,7 +78,9 @@ module stdlib_sparse_spmv
     interface spmv_kernel_coo
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
-        module subroutine spmv_kernel_coo_${rank}$d_${s1}$(data, index, nnz, storage, vec_x,vec_y,alpha,beta,op)
+        module subroutine spmv_kernel_coo_${rank}$d_${s1}$(nrows, ncols, data, index, nnz, storage, vec_x,vec_y,alpha,beta,op)
+            integer(ilp), intent(in) :: nrows
+            integer(ilp), intent(in) :: ncols
             ${t1}$, intent(in) :: data(:)
             integer(ilp), intent(in) :: index(:,:)
             integer, intent(in) :: storage
@@ -148,12 +150,12 @@ module stdlib_sparse_spmv
     interface spmv_kernel_ell
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
-        module subroutine spmv_kernel_ell_${rank}$d_${s1}$(data,index,mnz_p_row,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
+        module subroutine spmv_kernel_ell_${rank}$d_${s1}$(nrows,ncols,data,index,mnz_p_row,storage,vec_x,vec_y,alpha,beta,op)
+            integer(ilp), intent(in) :: nrows
+            integer(ilp), intent(in) :: ncols
             ${t1}$, intent(in) :: data(:,:)
             integer(ilp), intent(in) :: index(:,:)
             integer(ilp), intent(in) :: mnz_p_row
-            integer(ilp), intent(in) :: nrows
-            integer(ilp), intent(in) :: ncols
             integer, intent(in) :: storage
             ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
             ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
@@ -171,14 +173,14 @@ module stdlib_sparse_spmv
     !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
     interface spmv_kernel_sellc
         #:for k1, t1, s1 in (KINDS_TYPES)
-        module subroutine spmv_kernel_sellc_${s1}$(data,ia,ja,cs,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
+        module subroutine spmv_kernel_sellc_${s1}$(nrows,ncols,data,ia,ja,cs,storage,vec_x,vec_y,alpha,beta,op)
             !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
+            integer(ilp), intent(in) :: nrows
+            integer(ilp), intent(in) :: ncols
             ${t1}$, intent(in) :: data(:,:)
             integer(ilp), intent(in) :: ia(:)
             integer(ilp), intent(in) :: ja(:,:)
             integer, intent(in) :: cs
-            integer(ilp), intent(in) :: nrows
-            integer(ilp), intent(in) :: ncols
             integer, intent(in) :: storage
             ${t1}$, intent(in)    :: vec_x(:)
             ${t1}$, intent(inout) :: vec_y(:)

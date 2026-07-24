@@ -17,20 +17,20 @@ contains
         ${t1}$, intent(in), optional :: beta
         character(1), intent(in), optional :: op
 
-        call spmv_kernel_sellc_${s1}$(matrix%data, matrix%rowptr, matrix%col, matrix%chunk_size, &
-            matrix%nrows, matrix%ncols, matrix%storage, &
+        call spmv_kernel_sellc_${s1}$(matrix%nrows, matrix%ncols, matrix%data, matrix%rowptr, matrix%col, &
+            matrix%chunk_size, matrix%storage, &
             vec_x,vec_y,alpha,beta,op)
 
     end subroutine
 
-    module subroutine spmv_kernel_sellc_${s1}$(data,ia,ja,cs,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
+    module subroutine spmv_kernel_sellc_${s1}$(nrows,ncols,data,ia,ja,cs,storage,vec_x,vec_y,alpha,beta,op)
         !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
+        integer(ilp), intent(in) :: nrows
+        integer(ilp), intent(in) :: ncols
         ${t1}$, intent(in) :: data(:,:)
         integer(ilp), intent(in) :: ia(:)
         integer(ilp), intent(in) :: ja(:,:)
         integer, intent(in) :: cs
-        integer(ilp), intent(in) :: nrows
-        integer(ilp), intent(in) :: ncols
         integer, intent(in) :: storage
         ${t1}$, intent(in)    :: vec_x(:)
         ${t1}$, intent(inout) :: vec_y(:)
