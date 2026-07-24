@@ -21,12 +21,12 @@ contains
         ${t1}$, intent(in), optional :: beta
         character(1), intent(in), optional :: op
 
-        call spmv_csc_sub_${rank}$d_${s1}$(matrix%data,matrix%colptr,matrix%row,matrix%nnz,matrix%nrows,matrix%ncols,matrix%storage, &
+        call spmv_kernel_csc_${rank}$d_${s1}$(matrix%data,matrix%colptr,matrix%row,matrix%nnz,matrix%nrows,matrix%ncols,matrix%storage, &
             vec_x,vec_y,alpha,beta,op)
 
     end subroutine
     
-    module subroutine spmv_csc_sub_${rank}$d_${s1}$(data,colptr,row,nnz,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
+    module subroutine spmv_kernel_csc_${rank}$d_${s1}$(data,colptr,row,nnz,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
         ${t1}$, intent(in) :: data(:)
         integer(ilp), intent(in) :: colptr(:) !! matrix column pointer
         integer(ilp), intent(in) :: row(:)  !! matrix row pointer

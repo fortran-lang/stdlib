@@ -21,12 +21,12 @@ contains
         ${t1}$, intent(in), optional :: beta
         character(1), intent(in), optional :: op
 
-        call spmv_coo_sub_${rank}$d_${s1}$(matrix%data, matrix%index, matrix%nnz, matrix%storage, &
+        call spmv_kernel_coo_${rank}$d_${s1}$(matrix%data, matrix%index, matrix%nnz, matrix%storage, &
             vec_x,vec_y,alpha,beta,op)
 
     end subroutine
 
-    module subroutine spmv_coo_sub_${rank}$d_${s1}$(data,index,nnz,storage,vec_x,vec_y,alpha,beta,op)
+    module subroutine spmv_kernel_coo_${rank}$d_${s1}$(data,index,nnz,storage,vec_x,vec_y,alpha,beta,op)
         ${t1}$, intent(in) :: data(:)
         integer(ilp), intent(in) :: index(:,:) !! Matrix coordinates index(2,nnz)
         integer(ilp), intent(in) :: nnz !! number of non-zero values

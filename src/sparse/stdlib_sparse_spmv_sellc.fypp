@@ -17,13 +17,13 @@ contains
         ${t1}$, intent(in), optional :: beta
         character(1), intent(in), optional :: op
 
-        call spmv_sellc_sub_${s1}$(matrix%data, matrix%rowptr, matrix%col, matrix%chunk_size, &
+        call spmv_kernel_sellc_${s1}$(matrix%data, matrix%rowptr, matrix%col, matrix%chunk_size, &
             matrix%nnz, matrix%nrows, matrix%ncols, matrix%storage, &
             vec_x,vec_y,alpha,beta,op)
 
     end subroutine
 
-    module subroutine spmv_sellc_sub_${s1}$(data,ia,ja,cs,nnz,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
+    module subroutine spmv_kernel_sellc_${s1}$(data,ia,ja,cs,nnz,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
         !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
         ${t1}$, intent(in) :: data(:,:)
         integer(ilp), intent(in) :: ia(:)

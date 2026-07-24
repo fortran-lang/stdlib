@@ -21,12 +21,12 @@ contains
         ${t1}$, intent(in), optional :: beta
         character(1), intent(in), optional :: op
 
-        call spmv_ell_sub_${rank}$d_${s1}$(matrix%data,matrix%index,matrix%K, &
+        call spmv_kernel_ell_${rank}$d_${s1}$(matrix%data,matrix%index,matrix%K, &
             matrix%nnz,matrix%nrows,matrix%ncols,matrix%storage, &
             vec_x,vec_y,alpha,beta,op)
     end subroutine
     
-    module subroutine spmv_ell_sub_${rank}$d_${s1}$(data,index,mnz_p_row,nnz,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
+    module subroutine spmv_kernel_ell_${rank}$d_${s1}$(data,index,mnz_p_row,nnz,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
         ${t1}$, intent(in) :: data(:,:)
         integer(ilp), intent(in) :: index(:,:)
         integer, intent(in) :: mnz_p_row

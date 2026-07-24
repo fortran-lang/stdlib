@@ -75,10 +75,10 @@ module stdlib_sparse_spmv
     !!
     !! Apply the COO sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
     !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
-    interface spmv_coo
+    interface spmv_kernel_coo
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
-        module subroutine spmv_coo_sub_${rank}$d_${s1}$(data, index, nnz, storage, vec_x,vec_y,alpha,beta,op)
+        module subroutine spmv_kernel_coo_${rank}$d_${s1}$(data, index, nnz, storage, vec_x,vec_y,alpha,beta,op)
             ${t1}$, intent(in) :: data(:)
             integer(ilp), intent(in) :: index(:,:)
             integer, intent(in) :: storage
@@ -97,10 +97,10 @@ module stdlib_sparse_spmv
     !!
     !! Apply the CSC sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
     !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
-    interface spmv_csc
+    interface spmv_kernel_csc
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
-        module subroutine spmv_csc_sub_${rank}$d_${s1}$(data,colptr,row,nnz,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
+        module subroutine spmv_kernel_csc_${rank}$d_${s1}$(data,colptr,row,nnz,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
             ${t1}$, intent(in) :: data(:)
             integer(ilp), intent(in) :: colptr(:) !! matrix column pointer
             integer(ilp), intent(in) :: row(:)  !! matrix row pointer
@@ -122,10 +122,10 @@ module stdlib_sparse_spmv
     !!
     !! Apply the CSR sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
     !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
-    interface spmv_csr
+    interface spmv_kernel_csr
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
-        module subroutine spmv_csr_sub_${rank}$d_${s1}$(data,col,rowptr,nnz,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
+        module subroutine spmv_kernel_csr_${rank}$d_${s1}$(data,col,rowptr,nnz,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
             ${t1}$, intent(in) :: data(:)
             integer(ilp), intent(in) :: col(:) !! matrix column pointer
             integer(ilp), intent(in) :: rowptr(:)  !! matrix row pointer
@@ -147,10 +147,10 @@ module stdlib_sparse_spmv
     !!
     !! Apply the ELL sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
     !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
-    interface spmv_ell
+    interface spmv_kernel_ell
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
-        module subroutine spmv_ell_sub_${rank}$d_${s1}$(data,index,mnz_p_row,nnz,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
+        module subroutine spmv_kernel_ell_${rank}$d_${s1}$(data,index,mnz_p_row,nnz,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
             ${t1}$, intent(in) :: data(:,:)
             integer(ilp), intent(in) :: index(:,:)
             integer(ilp), intent(in) :: mnz_p_row
@@ -172,9 +172,9 @@ module stdlib_sparse_spmv
     !!
     !! Apply the SELLC sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
     !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
-    interface spmv_sellc
+    interface spmv_kernel_sellc
         #:for k1, t1, s1 in (KINDS_TYPES)
-        module subroutine spmv_sellc_sub_${s1}$(data,ia,ja,cs,nnz,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
+        module subroutine spmv_kernel_sellc_${s1}$(data,ia,ja,cs,nnz,nrows,ncols,storage,vec_x,vec_y,alpha,beta,op)
             !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
             ${t1}$, intent(in) :: data(:,:)
             integer(ilp), intent(in) :: ia(:)
@@ -194,10 +194,10 @@ module stdlib_sparse_spmv
     end interface
 
     public :: spmv
-    public :: spmv_coo
-    public :: spmv_csc
-    public :: spmv_csr
-    public :: spmv_ell
-    public :: spmv_sellc
+    public :: spmv_kernel_coo
+    public :: spmv_kernel_csc
+    public :: spmv_kernel_csr
+    public :: spmv_kernel_ell
+    public :: spmv_kernel_sellc
 
 end module
