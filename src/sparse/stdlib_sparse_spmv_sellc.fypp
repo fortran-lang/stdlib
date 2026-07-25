@@ -23,14 +23,14 @@ contains
 
     end subroutine
 
-    module subroutine spmv_kernel_sellc_${s1}$(nrows,ncols,data,ia,ja,cs,storage,vec_x,vec_y,alpha,beta,op)
+    module subroutine spmv_kernel_sellc_${s1}$(nrows,ncols,data,ia,ja,chunk_size,storage,vec_x,vec_y,alpha,beta,op)
         !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
         integer(ilp), intent(in) :: nrows
         integer(ilp), intent(in) :: ncols
         ${t1}$, intent(in) :: data(:,:)
         integer(ilp), intent(in) :: ia(:)
         integer(ilp), intent(in) :: ja(:,:)
-        integer, intent(in) :: cs
+        integer, intent(in) :: chunk_size
         integer, intent(in) :: storage
         ${t1}$, intent(in)    :: vec_x(:)
         ${t1}$, intent(inout) :: vec_y(:)
@@ -50,16 +50,16 @@ contains
             vec_y = zero_${s1}$
         endif
 
-        if( .not.any( ${CHUNKS}$ == cs ) ) then
+        if( .not.any( ${CHUNKS}$ == chunk_size ) ) then
             print *, "error: sellc chunk size not supported."
             return
         end if
 
-        num_chunks = nrows / cs
-        rm = nrows - num_chunks * cs
+        num_chunks = nrows / chunk_size
+        rm = nrows - num_chunks * chunk_size
         if( storage == sparse_full .and. op_==sparse_op_none ) then
 
-            select case(cs)
+            select case(chunk_size)
             #:for chunk in CHUNKS
             case(${chunk}$)
                 do i = 1, num_chunks
@@ -74,13 +74,13 @@ contains
             if(rm>0)then 
                 i = num_chunks + 1 
                 nz = ia(i+1) - ia(i)
-                rowidx = (i - 1)*cs + 1
-                call chunk_kernel_rm(nz,cs,rm,data(:,ia(i)),ja(:,ia(i)),vec_x,vec_y(rowidx:))
+                rowidx = (i - 1)*chunk_size + 1
+                call chunk_kernel_rm(nz,chunk_size,rm,data(:,ia(i)),ja(:,ia(i)),vec_x,vec_y(rowidx:))
             end if
             
         else if( storage == sparse_full .and. op_==sparse_op_transpose ) then
 
-            select case(cs)
+            select case(chunk_size)
             #:for chunk in CHUNKS
             case(${chunk}$)
                 do i = 1, num_chunks
@@ -95,14 +95,14 @@ contains
             if(rm>0)then 
                 i = num_chunks + 1 
                 nz = ia(i+1) - ia(i)
-                rowidx = (i - 1)*cs + 1
-                call chunk_kernel_rm_trans(nz,cs,rm,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
+                rowidx = (i - 1)*chunk_size + 1
+                call chunk_kernel_rm_trans(nz,chunk_size,rm,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
             end if
         
         #:if t1.startswith('complex')
         else if( storage == sparse_full .and. op_==sparse_op_hermitian ) then
 
-            select case(cs)
+            select case(chunk_size)
             #:for chunk in CHUNKS
             case(${chunk}$)
                 do i = 1, num_chunks
@@ -117,8 +117,8 @@ contains
             if(rm>0)then 
                 i = num_chunks + 1 
                 nz = ia(i+1) - ia(i)
-                rowidx = (i - 1)*cs + 1
-                call chunk_kernel_rm_herm(nz,cs,rm,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
+                rowidx = (i - 1)*chunk_size + 1
+                call chunk_kernel_rm_herm(nz,chunk_size,rm,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
             end if
         #:endif
         else

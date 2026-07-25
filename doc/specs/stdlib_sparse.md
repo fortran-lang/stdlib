@@ -94,7 +94,7 @@ CSR%rowptr(:) = [1,3,5,8,11]
 Experimental
 
 #### Description
-The Compressed Sparse Colum `CSC` is similar to the `CSR` format but values are accesed first by column, thus an index counter is given by `colptr` which enables to know the first and last non-zero row index of a given colum. 
+The Compressed Sparse Colum `CSC` is similar to the `CSR` format but values are accessed first by column, thus an index counter is given by `colptr` which enables to know the first and last non-zero row index of a given colum.
 
 ```Fortran
 type(CSC_sp_type) :: CSC
@@ -236,17 +236,17 @@ $$y=\alpha*op(M)*x+\beta*y$$
 `call ` [[stdlib_sparse_spmv(module):spmv_kernel_csc(interface)]] `(nrows,ncols,data,colptr,row,storage,vec_x,vec_y [,alpha,beta,op])`
 `call ` [[stdlib_sparse_spmv(module):spmv_kernel_csr(interface)]] `(nrows,ncols,data,col,rowptr,storage,vec_x,vec_y [,alpha,beta,op])`
 `call ` [[stdlib_sparse_spmv(module):spmv_kernel_ell(interface)]] `(nrows,ncols,data,index,mnz_p_row,storage,vec_x,vec_y [,alpha,beta,op])`
-`call ` [[stdlib_sparse_spmv(module):spmv_kernel_sellc(interface)]] `(nrows,ncols,data,ia,ja,cs,storage,vec_x,vec_y [,alpha,beta,op])`
+`call ` [[stdlib_sparse_spmv(module):spmv_kernel_sellc(interface)]] `(nrows,ncols,data,ia,ja,chunk_size,storage,vec_x,vec_y [,alpha,beta,op])`
 
 ### Arguments
 
 For the all formats:
 
-`nrows`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument.
+`nrows`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument. It specifies the number of rows in the sparse matrix.
 
-`ncols`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument.
+`ncols`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument. It specifies the number of columns in the sparse matrix.
 
-`storage`: Shall be a scalar of `integer` type. It is an `intent(in)` argument.
+`storage`: Shall be a scalar of `integer` type. It is an `intent(in)` argument. It defines the symmetry storage of the sparse matrix and must be one of `sparse_full`, `sparse_lower`, or `sparse_upper`.
 
 `vec_x`: Shall be a rank-1 or rank-2 array of `real` or `complex` type array. It is an `intent(in)` argument.
 
@@ -264,25 +264,25 @@ For the `COO` format:
 
 `index`: Shall be a rank-2 array of `integer(ilp)` type. It is an `intent(in)` argument.
 
-`nnz`: Shall be a rank-1 or rank-2 array of `real` or `complex` type array. It is an `intent(in)` argument.      !! number of non-zero values
+`nnz`: Shall be a rank-1 or rank-2 array of `real` or `complex` type array. It is an `intent(in)` argument. It specifies the number of non-zero values in `index`.
 
 
 For the `CSC` format:
 
 `data`: Shall be a rank-1 array of `real` or `complex` type. It is an `intent(in)` argument.
 
-`colptr`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument.  !! matrix column pointer
+`colptr`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument.
 
-`row`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument. !! matrix row pointer
+`row`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument.
 
 
 For the `CSR` format:
 
 `data`: Shall be a rank-1 array of `real` or `complex` type array. It is an `intent(in)` argument.
 
-`col`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument.  !! matrix column pointer
+`col`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument.
 
-`rowptr`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument.   !! matrix row pointer
+`rowptr`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument.
 
 
 For the `ELL` format:
@@ -291,7 +291,7 @@ For the `ELL` format:
 
 `index`: Shall be a rank-2 array of `integer(ilp)` type. It is an `intent(in)` argument.
 
-`mnz_p_row`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument.
+`mnz_p_row`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument. It specifies the constant number of elements per row $K$.
 
 
 For the `SELLC` format:
@@ -302,8 +302,7 @@ For the `SELLC` format:
 
 `ja`: Shall be a rank-2 array of `integer(ilp)` type. It is an `intent(in)` argument.
 
-`cs`: Shall be a scalar of `integer` type. It is an `intent(in)` argument.
-
+`chunk_size`: Shall be a scalar of `integer` type. It is an `intent(in)` argument.
 
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
