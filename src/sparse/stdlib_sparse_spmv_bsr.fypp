@@ -31,8 +31,9 @@ contains
         beta_  = optval(x=beta , default=zero_${s1}$)
         op_    = optval(x=op   , default=sparse_op_none)
 
-        call spmv_kernel_bsr_${rank}$d_${s1}$(matrix%data, matrix%rowptr, matrix%col, &
-            matrix%storage, vec_x, vec_y, alpha_, beta_, op_)
+        call spmv_kernel_bsr_${rank}$d_${s1}$(op_, alpha_, &
+                matrix%data, matrix%rowptr, matrix%col, matrix%storage, &
+                vec_x, beta_, vec_y )
     end subroutine spmv_bsr_${rank}$d_${s1}$
     #:endfor
     #:endfor
@@ -41,7 +42,7 @@ contains
     #:for k1, t1, s1 in (KINDS_TYPES)
 
     !> Non-OOP rank=1 kernel for BSR SpMV
-    subroutine spmv_kernel_bsr_1d_${s1}$(data, rowptr, col, storage, vec_x, vec_y, alpha, beta, op)
+    subroutine spmv_kernel_bsr_1d_${s1}$(op, alpha, data, rowptr, col, storage, vec_x, beta, vec_y)
         ${t1}$, intent(in), contiguous :: data(:,:,:)
         integer(ilp), intent(in), contiguous :: rowptr(:), col(:)
         integer(ilp), intent(in) :: storage
@@ -68,13 +69,9 @@ contains
         br = size(data, dim=1)
         bc = size(data, dim=2)
         nbrow = size(rowptr) - 1
-        if(op == sparse_op_none) then
-            nrows = size(vec_y)
-            ncols = size(vec_x)
-        else
-            nrows = size(vec_x)
-            ncols = size(vec_y)
-        end if
+
+        nrows = merge( size(vec_y), size(vec_x), op == sparse_op_none )
+        ncols = merge( size(vec_x), size(vec_y), op == sparse_op_none )
 
         if( storage == sparse_full .and. op == sparse_op_none ) then
             do bi = 1, nbrow
@@ -251,7 +248,7 @@ contains
     end subroutine spmv_kernel_bsr_1d_${s1}$
 
     !> Non-OOP rank=2 kernel for BSR SpMV
-    subroutine spmv_kernel_bsr_2d_${s1}$(data, rowptr, col, storage, vec_x, vec_y, alpha, beta, op)
+    subroutine spmv_kernel_bsr_2d_${s1}$(op, alpha, data, rowptr, col, storage, vec_x, beta, vec_y)
         ${t1}$, intent(in), contiguous :: data(:,:,:)
         integer(ilp), intent(in), contiguous :: rowptr(:), col(:)
         integer(ilp), intent(in) :: storage
@@ -279,13 +276,8 @@ contains
         bc = size(data, dim=2)
         nbrow = size(rowptr) - 1
         nrhs = size(vec_x, dim=2)
-        if(op == sparse_op_none) then
-            nrows = size(vec_y, dim=1)
-            ncols = size(vec_x, dim=1)
-        else
-            nrows = size(vec_x, dim=1)
-            ncols = size(vec_y, dim=1)
-        end if
+        nrows = merge( size(vec_y, dim=1), size(vec_x, dim=1), op == sparse_op_none )
+        ncols = merge( size(vec_x, dim=1), size(vec_y, dim=1), op == sparse_op_none )
 
         if( storage == sparse_full .and. op == sparse_op_none ) then
             do bi = 1, nbrow
