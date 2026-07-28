@@ -8,56 +8,49 @@
 #{if rank > 0}#${":," + ":," * (rank - 1)}$#{endif}#
 #:enddef
 submodule (stdlib_sparse_spmv) stdlib_sparse_spmv_bsr
+    use stdlib_optval, only: optval
     use stdlib_linalg_blas, only: gemv, gemm
 contains
 
     !! spmv_bsr OOP wrappers
     #:for k1, t1, s1 in (KINDS_TYPES)
-
-    !> OOP rank=1 wrapper: unpacks BSR matrix and delegates to kernel
-    module subroutine spmv_bsr_1d_${s1}$(matrix, vec_x, vec_y, alpha, beta, op)
+    #:for rank in RANKS
+    !> OOP rank=${rank}$ wrapper: unpacks BSR matrix and delegates to kernel
+    module subroutine spmv_bsr_${rank}$d_${s1}$(matrix, vec_x, vec_y, alpha, beta, op)
         type(BSR_${s1}$_type), intent(in) :: matrix
-        ${t1}$, intent(in)    :: vec_x(:)
-        ${t1}$, intent(inout) :: vec_y(:)
+        ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
+        ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
         character(1), intent(in), optional :: op
-        call spmv_kernel_bsr_1d_${s1}$(matrix%data, matrix%rowptr, matrix%col, &
-            matrix%nrows, matrix%ncols, matrix%storage, matrix%block_shape, &
-            vec_x, vec_y, alpha, beta, op)
-    end subroutine spmv_bsr_1d_${s1}$
 
-    !> OOP rank=2 wrapper: unpacks BSR matrix and delegates to kernel
-    module subroutine spmv_bsr_2d_${s1}$(matrix, vec_x, vec_y, alpha, beta, op)
-        type(BSR_${s1}$_type), intent(in) :: matrix
-        ${t1}$, intent(in)    :: vec_x(:,:)
-        ${t1}$, intent(inout) :: vec_y(:,:)
-        ${t1}$, intent(in), optional :: alpha
-        ${t1}$, intent(in), optional :: beta
-        character(1), intent(in), optional :: op
-        call spmv_kernel_bsr_2d_${s1}$(matrix%data, matrix%rowptr, matrix%col, &
-            matrix%nrows, matrix%ncols, matrix%storage, matrix%block_shape, &
-            vec_x, vec_y, alpha, beta, op)
-    end subroutine spmv_bsr_2d_${s1}$
+        ${t1}$ :: alpha_, beta_
+        character(1) :: op_
 
+        alpha_ = optval(x=alpha, default=one_${s1}$ )
+        beta_  = optval(x=beta , default=zero_${s1}$)
+        op_    = optval(x=op   , default=sparse_op_none)
+
+        call spmv_kernel_bsr_${rank}$d_${s1}$(matrix%data, matrix%rowptr, matrix%col, &
+            matrix%storage, vec_x, vec_y, alpha_, beta_, op_)
+    end subroutine spmv_bsr_${rank}$d_${s1}$
+    #:endfor
     #:endfor
 
     !! spmv_bsr non-OOP kernels
     #:for k1, t1, s1 in (KINDS_TYPES)
 
     !> Non-OOP rank=1 kernel for BSR SpMV
-    subroutine spmv_kernel_bsr_1d_${s1}$(data, rowptr, col, nrows, ncols, storage, block_shape, &
-            vec_x, vec_y, alpha, beta, op)
-        ${t1}$, intent(in) :: data(:,:,:)
-        integer(ilp), intent(in) :: rowptr(:), col(:)
-        integer(ilp), intent(in) :: nrows, ncols, storage, block_shape(2)
-        ${t1}$, intent(in)    :: vec_x(:)
-        ${t1}$, intent(inout) :: vec_y(:)
-        ${t1}$, intent(in), optional :: alpha
-        ${t1}$, intent(in), optional :: beta
-        character(1), intent(in), optional :: op
-        ${t1}$ :: alpha_, beta_
-        character(1) :: op_
+    subroutine spmv_kernel_bsr_1d_${s1}$(data, rowptr, col, storage, vec_x, vec_y, alpha, beta, op)
+        ${t1}$, intent(in), contiguous :: data(:,:,:)
+        integer(ilp), intent(in), contiguous :: rowptr(:), col(:)
+        integer(ilp), intent(in) :: storage
+        ${t1}$, intent(in), contiguous    :: vec_x(:)
+        ${t1}$, intent(inout), contiguous :: vec_y(:)
+        ${t1}$, intent(in) :: alpha
+        ${t1}$, intent(in) :: beta
+        character(1), intent(in) :: op
+        integer(ilp) :: nrows, ncols
         integer(ilp) :: nbrow, bi, bj, p, br, bc
         integer(ilp) :: row_i_start, col_j_start, i_max_i, j_max_j
         integer(ilp) :: row_j_start, col_i_start, i_max_j, j_max_i
@@ -66,20 +59,24 @@ contains
         ${t1}$, allocatable :: ywork_br(:)
         #:endif
 
-        op_ = sparse_op_none; if(present(op)) op_ = op
-        alpha_ = one_${s1}$; if(present(alpha)) alpha_ = alpha
-        beta_ = zero_${s1}$; if(present(beta)) beta_ = beta
-        if(present(beta)) then
-            vec_y = beta_ * vec_y
-        else
+        if(beta == zero_${s1}$) then
             vec_y = zero_${s1}$
+        else
+            vec_y = beta * vec_y
         endif
 
-        br = block_shape(1)
-        bc = block_shape(2)
-        nbrow = nrows / br
+        br = size(data, dim=1)
+        bc = size(data, dim=2)
+        nbrow = size(rowptr) - 1
+        if(op == sparse_op_none) then
+            nrows = size(vec_y)
+            ncols = size(vec_x)
+        else
+            nrows = size(vec_x)
+            ncols = size(vec_y)
+        end if
 
-        if( storage == sparse_full .and. op_ == sparse_op_none ) then
+        if( storage == sparse_full .and. op == sparse_op_none ) then
             do bi = 1, nbrow
                 row_i_start = (bi - 1) * br + 1
                 if (row_i_start > nrows) cycle
@@ -89,13 +86,13 @@ contains
                     col_j_start = (bj - 1) * bc + 1
                     if (col_j_start > ncols) cycle
                     j_max_j = min(bc, ncols - col_j_start + 1)
-                    call gemv('N', m=i_max_i, n=j_max_j, alpha=alpha_, a=data(1:,1:,p), lda=br, &
+                    call gemv('N', m=i_max_i, n=j_max_j, alpha=alpha, a=data(1:,1:,p), lda=br, &
                         x=vec_x(col_j_start:), incx=1, beta=one_${s1}$, &
                         y=vec_y(row_i_start:), incy=1)
                 end do
             end do
 
-        else if( storage == sparse_full .and. op_ == sparse_op_transpose ) then
+        else if( storage == sparse_full .and. op == sparse_op_transpose ) then
             do bi = 1, nbrow
                 row_i_start = (bi - 1) * br + 1
                 if (row_i_start > nrows) cycle
@@ -105,13 +102,13 @@ contains
                     col_j_start = (bj - 1) * bc + 1
                     if (col_j_start > ncols) cycle
                     j_max_j = min(bc, ncols - col_j_start + 1)
-                    call gemv('T', m=i_max_i, n=j_max_j, alpha=alpha_, a=data(1:,1:,p), lda=br, &
+                    call gemv('T', m=i_max_i, n=j_max_j, alpha=alpha, a=data(1:,1:,p), lda=br, &
                         x=vec_x(row_i_start:), incx=1, beta=one_${s1}$, &
                         y=vec_y(col_j_start:), incy=1)
                 end do
             end do
 
-        else if( storage == sparse_lower .and. op_ /= sparse_op_hermitian ) then
+        else if( storage == sparse_lower .and. op /= sparse_op_hermitian ) then
             do bi = 1, nbrow
                 row_i_start = (bi - 1) * br + 1
                 if (row_i_start > nrows) cycle
@@ -121,7 +118,7 @@ contains
                     col_j_start = (bj - 1) * bc + 1
                     if (col_j_start > ncols) cycle
                     j_max_j = min(bc, ncols - col_j_start + 1)
-                    call gemv('N', m=i_max_i, n=j_max_j, alpha=alpha_, a=data(1:,1:,p), lda=br, &
+                    call gemv('N', m=i_max_i, n=j_max_j, alpha=alpha, a=data(1:,1:,p), lda=br, &
                         x=vec_x(col_j_start:), incx=1, beta=one_${s1}$, &
                         y=vec_y(row_i_start:), incy=1)
 
@@ -133,13 +130,13 @@ contains
                     col_i_start = (bi - 1) * bc + 1
                     if (col_i_start > ncols) cycle
                     j_max_i = min(bc, ncols - col_i_start + 1)
-                    call gemv('T', m=i_max_i, n=j_max_j, alpha=alpha_, a=data(1:,1:,p), lda=br, &
+                    call gemv('T', m=i_max_i, n=j_max_j, alpha=alpha, a=data(1:,1:,p), lda=br, &
                         x=vec_x(col_i_start:), incx=1, beta=one_${s1}$, &
                         y=vec_y(row_j_start:), incy=1)
                 end do
             end do
 
-        else if( storage == sparse_upper .and. op_ /= sparse_op_hermitian ) then
+        else if( storage == sparse_upper .and. op /= sparse_op_hermitian ) then
             do bi = 1, nbrow
                 row_i_start = (bi - 1) * br + 1
                 if (row_i_start > nrows) cycle
@@ -149,7 +146,7 @@ contains
                     col_j_start = (bj - 1) * bc + 1
                     if (col_j_start > ncols) cycle
                     j_max_j = min(bc, ncols - col_j_start + 1)
-                    call gemv('N', m=i_max_i, n=j_max_j, alpha=alpha_, a=data(1:,1:,p), lda=br, &
+                    call gemv('N', m=i_max_i, n=j_max_j, alpha=alpha, a=data(1:,1:,p), lda=br, &
                         x=vec_x(col_j_start:), incx=1, beta=one_${s1}$, &
                         y=vec_y(row_i_start:), incy=1)
 
@@ -161,14 +158,14 @@ contains
                     col_i_start = (bi - 1) * bc + 1
                     if (col_i_start > ncols) cycle
                     j_max_i = min(bc, ncols - col_i_start + 1)
-                    call gemv('T', m=i_max_i, n=j_max_j, alpha=alpha_, a=data(1:,1:,p), lda=br, &
+                    call gemv('T', m=i_max_i, n=j_max_j, alpha=alpha, a=data(1:,1:,p), lda=br, &
                         x=vec_x(col_i_start:), incx=1, beta=one_${s1}$, &
                         y=vec_y(row_j_start:), incy=1)
                 end do
             end do
 
         #:if t1.startswith('complex')
-        else if( storage == sparse_full .and. op_ == sparse_op_hermitian ) then
+        else if( storage == sparse_full .and. op == sparse_op_hermitian ) then
             do bi = 1, nbrow
                 row_i_start = (bi - 1) * br + 1
                 if (row_i_start > nrows) cycle
@@ -178,13 +175,13 @@ contains
                     col_j_start = (bj - 1) * bc + 1
                     if (col_j_start > ncols) cycle
                     j_max_j = min(bc, ncols - col_j_start + 1)
-                    call gemv('C', m=i_max_i, n=j_max_j, alpha=alpha_, a=data(1:,1:,p), lda=br, &
+                    call gemv('C', m=i_max_i, n=j_max_j, alpha=alpha, a=data(1:,1:,p), lda=br, &
                         x=vec_x(row_i_start:), incx=1, beta=one_${s1}$, &
                         y=vec_y(col_j_start:), incy=1)
                 end do
             end do
 
-        else if( storage == sparse_lower .and. op_ == sparse_op_hermitian ) then
+        else if( storage == sparse_lower .and. op == sparse_op_hermitian ) then
             if(.not.allocated(xwork_bc)) allocate(xwork_bc(bc))
             if(.not.allocated(ywork_br)) allocate(ywork_br(br))
             do bi = 1, nbrow
@@ -201,7 +198,7 @@ contains
                     call gemv('N', m=i_max_i, n=j_max_j, alpha=one_${s1}$, a=data(1:,1:,p), lda=br, &
                         x=xwork_bc, incx=1, beta=zero_${s1}$, y=ywork_br, incy=1)
                     vec_y(row_i_start:row_i_start+i_max_i-1) = vec_y(row_i_start:row_i_start+i_max_i-1) + &
-                        alpha_ * conjg(ywork_br(1:i_max_i))
+                        alpha * conjg(ywork_br(1:i_max_i))
 
                     if (bi == bj) cycle
 
@@ -211,13 +208,13 @@ contains
                     col_i_start = (bi - 1) * bc + 1
                     if (col_i_start > ncols) cycle
                     j_max_i = min(bc, ncols - col_i_start + 1)
-                    call gemv('C', m=i_max_i, n=j_max_j, alpha=alpha_, a=data(1:,1:,p), lda=br, &
+                    call gemv('C', m=i_max_i, n=j_max_j, alpha=alpha, a=data(1:,1:,p), lda=br, &
                         x=vec_x(col_i_start:), incx=1, beta=one_${s1}$, &
                         y=vec_y(row_j_start:), incy=1)
                 end do
             end do
 
-        else if( storage == sparse_upper .and. op_ == sparse_op_hermitian ) then
+        else if( storage == sparse_upper .and. op == sparse_op_hermitian ) then
             if(.not.allocated(xwork_bc)) allocate(xwork_bc(bc))
             if(.not.allocated(ywork_br)) allocate(ywork_br(br))
             do bi = 1, nbrow
@@ -234,7 +231,7 @@ contains
                     call gemv('N', m=i_max_i, n=j_max_j, alpha=one_${s1}$, a=data(1:,1:,p), lda=br, &
                         x=xwork_bc, incx=1, beta=zero_${s1}$, y=ywork_br, incy=1)
                     vec_y(row_i_start:row_i_start+i_max_i-1) = vec_y(row_i_start:row_i_start+i_max_i-1) + &
-                        alpha_ * conjg(ywork_br(1:i_max_i))
+                        alpha * conjg(ywork_br(1:i_max_i))
 
                     if (bi == bj) cycle
 
@@ -244,7 +241,7 @@ contains
                     col_i_start = (bi - 1) * bc + 1
                     if (col_i_start > ncols) cycle
                     j_max_i = min(bc, ncols - col_i_start + 1)
-                    call gemv('C', m=i_max_i, n=j_max_j, alpha=alpha_, a=data(1:,1:,p), lda=br, &
+                    call gemv('C', m=i_max_i, n=j_max_j, alpha=alpha, a=data(1:,1:,p), lda=br, &
                         x=vec_x(col_i_start:), incx=1, beta=one_${s1}$, &
                         y=vec_y(row_j_start:), incy=1)
                 end do
@@ -254,18 +251,16 @@ contains
     end subroutine spmv_kernel_bsr_1d_${s1}$
 
     !> Non-OOP rank=2 kernel for BSR SpMV
-    subroutine spmv_kernel_bsr_2d_${s1}$(data, rowptr, col, nrows, ncols, storage, block_shape, &
-            vec_x, vec_y, alpha, beta, op)
-        ${t1}$, intent(in) :: data(:,:,:)
-        integer(ilp), intent(in) :: rowptr(:), col(:)
-        integer(ilp), intent(in) :: nrows, ncols, storage, block_shape(2)
-        ${t1}$, intent(in)    :: vec_x(:,:)
-        ${t1}$, intent(inout) :: vec_y(:,:)
-        ${t1}$, intent(in), optional :: alpha
-        ${t1}$, intent(in), optional :: beta
-        character(1), intent(in), optional :: op
-        ${t1}$ :: alpha_, beta_
-        character(1) :: op_
+    subroutine spmv_kernel_bsr_2d_${s1}$(data, rowptr, col, storage, vec_x, vec_y, alpha, beta, op)
+        ${t1}$, intent(in), contiguous :: data(:,:,:)
+        integer(ilp), intent(in), contiguous :: rowptr(:), col(:)
+        integer(ilp), intent(in) :: storage
+        ${t1}$, intent(in), contiguous    :: vec_x(:,:)
+        ${t1}$, intent(inout), contiguous :: vec_y(:,:)
+        ${t1}$, intent(in) :: alpha
+        ${t1}$, intent(in) :: beta
+        character(1), intent(in) :: op
+        integer(ilp) :: nrows, ncols
         integer(ilp) :: nbrow, bi, bj, p, br, bc, nrhs
         integer(ilp) :: row_i_start, col_j_start, i_max_i, j_max_j
         integer(ilp) :: row_j_start, col_i_start, i_max_j, j_max_i
@@ -274,21 +269,25 @@ contains
         ${t1}$, allocatable :: ywork_br(:,:)
         #:endif
 
-        op_ = sparse_op_none; if(present(op)) op_ = op
-        alpha_ = one_${s1}$; if(present(alpha)) alpha_ = alpha
-        beta_ = zero_${s1}$; if(present(beta)) beta_ = beta
-        if(present(beta)) then
-            vec_y = beta_ * vec_y
-        else
+        if(beta == zero_${s1}$) then
             vec_y = zero_${s1}$
+        else
+            vec_y = beta * vec_y
         endif
 
-        br = block_shape(1)
-        bc = block_shape(2)
-        nbrow = nrows / br
+        br = size(data, dim=1)
+        bc = size(data, dim=2)
+        nbrow = size(rowptr) - 1
         nrhs = size(vec_x, dim=2)
+        if(op == sparse_op_none) then
+            nrows = size(vec_y, dim=1)
+            ncols = size(vec_x, dim=1)
+        else
+            nrows = size(vec_x, dim=1)
+            ncols = size(vec_y, dim=1)
+        end if
 
-        if( storage == sparse_full .and. op_ == sparse_op_none ) then
+        if( storage == sparse_full .and. op == sparse_op_none ) then
             do bi = 1, nbrow
                 row_i_start = (bi - 1) * br + 1
                 if (row_i_start > nrows) cycle
@@ -298,13 +297,13 @@ contains
                     col_j_start = (bj - 1) * bc + 1
                     if (col_j_start > ncols) cycle
                     j_max_j = min(bc, ncols - col_j_start + 1)
-                    call gemm('N','N', m=i_max_i, n=nrhs, k=j_max_j, alpha=alpha_, a=data(1:,1:,p), lda=br, &
+                    call gemm('N','N', m=i_max_i, n=nrhs, k=j_max_j, alpha=alpha, a=data(1:,1:,p), lda=br, &
                         b=vec_x(col_j_start:, :), ldb=j_max_j, beta=one_${s1}$, &
                         c=vec_y(row_i_start:, :), ldc=i_max_i)
                 end do
             end do
 
-        else if( storage == sparse_full .and. op_ == sparse_op_transpose ) then
+        else if( storage == sparse_full .and. op == sparse_op_transpose ) then
             do bi = 1, nbrow
                 row_i_start = (bi - 1) * br + 1
                 if (row_i_start > nrows) cycle
@@ -314,13 +313,13 @@ contains
                     col_j_start = (bj - 1) * bc + 1
                     if (col_j_start > ncols) cycle
                     j_max_j = min(bc, ncols - col_j_start + 1)
-                    call gemm('T','N', m=j_max_j, n=nrhs, k=i_max_i, alpha=alpha_, a=data(1:,1:,p), lda=br, &
+                    call gemm('T','N', m=j_max_j, n=nrhs, k=i_max_i, alpha=alpha, a=data(1:,1:,p), lda=br, &
                         b=vec_x(row_i_start:, :), ldb=i_max_i, beta=one_${s1}$, &
                         c=vec_y(col_j_start:, :), ldc=j_max_j)
                 end do
             end do
 
-        else if( storage == sparse_lower .and. op_ /= sparse_op_hermitian ) then
+        else if( storage == sparse_lower .and. op /= sparse_op_hermitian ) then
             do bi = 1, nbrow
                 row_i_start = (bi - 1) * br + 1
                 if (row_i_start > nrows) cycle
@@ -330,7 +329,7 @@ contains
                     col_j_start = (bj - 1) * bc + 1
                     if (col_j_start > ncols) cycle
                     j_max_j = min(bc, ncols - col_j_start + 1)
-                    call gemm('N','N', m=i_max_i, n=nrhs, k=j_max_j, alpha=alpha_, a=data(1:,1:,p), lda=br, &
+                    call gemm('N','N', m=i_max_i, n=nrhs, k=j_max_j, alpha=alpha, a=data(1:,1:,p), lda=br, &
                         b=vec_x(col_j_start:, :), ldb=j_max_j, beta=one_${s1}$, &
                         c=vec_y(row_i_start:, :), ldc=i_max_i)
 
@@ -342,13 +341,13 @@ contains
                     col_i_start = (bi - 1) * bc + 1
                     if (col_i_start > ncols) cycle
                     j_max_i = min(bc, ncols - col_i_start + 1)
-                    call gemm('T','N', m=j_max_j, n=nrhs, k=i_max_i, alpha=alpha_, a=data(1:,1:,p), lda=br, &
+                    call gemm('T','N', m=j_max_j, n=nrhs, k=i_max_i, alpha=alpha, a=data(1:,1:,p), lda=br, &
                         b=vec_x(col_i_start:, :), ldb=j_max_i, beta=one_${s1}$, &
                         c=vec_y(row_j_start:, :), ldc=i_max_j)
                 end do
             end do
 
-        else if( storage == sparse_upper .and. op_ /= sparse_op_hermitian ) then
+        else if( storage == sparse_upper .and. op /= sparse_op_hermitian ) then
             do bi = 1, nbrow
                 row_i_start = (bi - 1) * br + 1
                 if (row_i_start > nrows) cycle
@@ -358,7 +357,7 @@ contains
                     col_j_start = (bj - 1) * bc + 1
                     if (col_j_start > ncols) cycle
                     j_max_j = min(bc, ncols - col_j_start + 1)
-                    call gemm('N','N', m=i_max_i, n=nrhs, k=j_max_j, alpha=alpha_, a=data(1:,1:,p), lda=br, &
+                    call gemm('N','N', m=i_max_i, n=nrhs, k=j_max_j, alpha=alpha, a=data(1:,1:,p), lda=br, &
                         b=vec_x(col_j_start:, :), ldb=j_max_j, beta=one_${s1}$, &
                         c=vec_y(row_i_start:, :), ldc=i_max_i)
 
@@ -370,14 +369,14 @@ contains
                     col_i_start = (bi - 1) * bc + 1
                     if (col_i_start > ncols) cycle
                     j_max_i = min(bc, ncols - col_i_start + 1)
-                    call gemm('T','N', m=j_max_j, n=nrhs, k=i_max_i, alpha=alpha_, a=data(1:,1:,p), lda=br, &
+                    call gemm('T','N', m=j_max_j, n=nrhs, k=i_max_i, alpha=alpha, a=data(1:,1:,p), lda=br, &
                         b=vec_x(col_i_start:, :), ldb=j_max_i, beta=one_${s1}$, &
                         c=vec_y(row_j_start:, :), ldc=i_max_j)
                 end do
             end do
 
         #:if t1.startswith('complex')
-        else if( storage == sparse_full .and. op_ == sparse_op_hermitian ) then
+        else if( storage == sparse_full .and. op == sparse_op_hermitian ) then
             do bi = 1, nbrow
                 row_i_start = (bi - 1) * br + 1
                 if (row_i_start > nrows) cycle
@@ -387,13 +386,13 @@ contains
                     col_j_start = (bj - 1) * bc + 1
                     if (col_j_start > ncols) cycle
                     j_max_j = min(bc, ncols - col_j_start + 1)
-                    call gemm('C','N', m=j_max_j, n=nrhs, k=i_max_i, alpha=alpha_, a=data(1:,1:,p), lda=br, &
+                    call gemm('C','N', m=j_max_j, n=nrhs, k=i_max_i, alpha=alpha, a=data(1:,1:,p), lda=br, &
                         b=vec_x(row_i_start:, :), ldb=i_max_i, beta=one_${s1}$, &
                         c=vec_y(col_j_start:, :), ldc=j_max_j)
                 end do
             end do
 
-        else if( storage == sparse_lower .and. op_ == sparse_op_hermitian ) then
+        else if( storage == sparse_lower .and. op == sparse_op_hermitian ) then
             if(.not.allocated(xwork_bc)) allocate(xwork_bc(bc,nrhs))
             if(.not.allocated(ywork_br)) allocate(ywork_br(br,nrhs))
             do bi = 1, nbrow
@@ -410,7 +409,7 @@ contains
                     call gemm('N','N', m=i_max_i, n=nrhs, k=j_max_j, alpha=one_${s1}$, a=data(1:,1:,p), lda=br, &
                         b=xwork_bc, ldb=bc, beta=zero_${s1}$, c=ywork_br, ldc=br)
                     vec_y(row_i_start:row_i_start+i_max_i-1, :) = vec_y(row_i_start:row_i_start+i_max_i-1, :) + &
-                        alpha_ * conjg(ywork_br(1:i_max_i, :))
+                        alpha * conjg(ywork_br(1:i_max_i, :))
 
                     if (bi == bj) cycle
 
@@ -420,13 +419,13 @@ contains
                     col_i_start = (bi - 1) * bc + 1
                     if (col_i_start > ncols) cycle
                     j_max_i = min(bc, ncols - col_i_start + 1)
-                    call gemm('C','N', m=j_max_j, n=nrhs, k=i_max_i, alpha=alpha_, a=data(1:,1:,p), lda=br, &
+                    call gemm('C','N', m=j_max_j, n=nrhs, k=i_max_i, alpha=alpha, a=data(1:,1:,p), lda=br, &
                         b=vec_x(col_i_start:, :), ldb=j_max_i, beta=one_${s1}$, &
                         c=vec_y(row_j_start:, :), ldc=i_max_j)
                 end do
             end do
 
-        else if( storage == sparse_upper .and. op_ == sparse_op_hermitian ) then
+        else if( storage == sparse_upper .and. op == sparse_op_hermitian ) then
             if(.not.allocated(xwork_bc)) allocate(xwork_bc(bc,nrhs))
             if(.not.allocated(ywork_br)) allocate(ywork_br(br,nrhs))
             do bi = 1, nbrow
@@ -443,7 +442,7 @@ contains
                     call gemm('N','N', m=i_max_i, n=nrhs, k=j_max_j, alpha=one_${s1}$, a=data(1:,1:,p), lda=br, &
                         b=xwork_bc, ldb=bc, beta=zero_${s1}$, c=ywork_br, ldc=br)
                     vec_y(row_i_start:row_i_start+i_max_i-1, :) = vec_y(row_i_start:row_i_start+i_max_i-1, :) + &
-                        alpha_ * conjg(ywork_br(1:i_max_i, :))
+                        alpha * conjg(ywork_br(1:i_max_i, :))
 
                     if (bi == bj) cycle
 
@@ -453,7 +452,7 @@ contains
                     col_i_start = (bi - 1) * bc + 1
                     if (col_i_start > ncols) cycle
                     j_max_i = min(bc, ncols - col_i_start + 1)
-                    call gemm('C','N', m=j_max_j, n=nrhs, k=i_max_i, alpha=alpha_, a=data(1:,1:,p), lda=br, &
+                    call gemm('C','N', m=j_max_j, n=nrhs, k=i_max_i, alpha=alpha, a=data(1:,1:,p), lda=br, &
                         b=vec_x(col_i_start:, :), ldb=j_max_i, beta=one_${s1}$, &
                         c=vec_y(row_j_start:, :), ldc=i_max_j)
                 end do
