@@ -1,6 +1,7 @@
 set(specialmatrices_fppFiles
     stdlib_specialmatrices.fypp
     stdlib_specialmatrices_tridiagonal.fypp
+    stdlib_specialmatrices_sym_tridiagonal.fypp
     )
 
 set(specialmatrices_cppFiles

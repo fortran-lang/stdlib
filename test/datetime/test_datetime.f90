@@ -274,6 +274,19 @@ subroutine test_dt_plus_td(error)
     call check(error, res%day == 18, &
         "td + dt day should be 18 (commutative)")
     if (allocated(error)) return
+
+    dt = datetime_type(year=1996, month=2, day=28)
+    td = timedelta(days=1)
+    res = td + dt
+    call check(error, res%year == 1996, &
+        "dt + td year should be 1996")
+    if (allocated(error)) return
+    call check(error, res%month == 2, &
+        "dt + td month should be 2")
+    if (allocated(error)) return
+    call check(error, res%day == 29, &
+        "dt + td day should be 29")
+    if (allocated(error)) return
 end subroutine test_dt_plus_td
 
 subroutine test_dt_minus_td(error)

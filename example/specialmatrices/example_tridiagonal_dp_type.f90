@@ -1,6 +1,6 @@
 program example_tridiagonal_matrix
    use stdlib_linalg_constants, only: dp
-   use stdlib_specialmatrices
+   use stdlib_specialmatrices, only: tridiagonal_dp_type, tridiagonal
    implicit none
 
    integer, parameter :: n = 5
