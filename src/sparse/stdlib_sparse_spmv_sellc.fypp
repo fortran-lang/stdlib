@@ -28,18 +28,17 @@ contains
 
         call spmv_kernel_sellc_${s1}$(op_,alpha_, &
             matrix%data, matrix%rowptr, matrix%col, &
-            matrix%nrows, matrix%chunk_size, matrix%storage, &
+            matrix%nrows, matrix%storage, &
             vec_x,beta_,vec_y)
 
     end subroutine
 
-    module subroutine spmv_kernel_sellc_${s1}$(op,alpha,data,ia,ja,nrows,chunk_size,storage,vec_x,beta,vec_y)
+    module subroutine spmv_kernel_sellc_${s1}$(op,alpha,data,ia,ja,nrows,storage,vec_x,beta,vec_y)
         !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
         ${t1}$, intent(in), contiguous :: data(:,:)
         integer(ilp), intent(in), contiguous :: ia(:)
         integer(ilp), intent(in), contiguous :: ja(:,:)
         integer(ilp), intent(in) :: nrows
-        integer, intent(in) :: chunk_size
         integer, intent(in) :: storage
         ${t1}$, intent(in), contiguous    :: vec_x(:)
         ${t1}$, intent(inout), contiguous :: vec_y(:)
@@ -47,6 +46,9 @@ contains
         ${t1}$, intent(in) :: beta
         character(1), intent(in) :: op
         integer(ilp) :: i, nz, rowidx, num_chunks, rm
+        integer :: chunk_size
+
+        chunk_size = size(data, 1)
 
         if( .not.any( ${CHUNKS}$ == chunk_size ) ) then
             print *, "error: sellc chunk size not supported."

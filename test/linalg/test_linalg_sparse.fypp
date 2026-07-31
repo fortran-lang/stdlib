@@ -318,7 +318,7 @@ contains
 
             !Low-level API
             call spmv_kernel_sellc(sparse_op_none, alpha, &
-                SELLC%data, SELLC%rowptr, SELLC%col, SELLC%nrows, SELLC%chunk_size, SELLC%storage, &
+                SELLC%data, SELLC%rowptr, SELLC%col, SELLC%nrows, SELLC%storage, &
                 vec_x, beta, vec_y )
 
             call check(error, all(vec_y == real([6,22,27,23,27,48],kind=wp)), 'SELLC - low-level API - wrong output' )
@@ -336,7 +336,7 @@ contains
 
             !Low-level API
             call spmv_kernel_sellc(sparse_op_transpose, alpha, &
-                SELLC%data, SELLC%rowptr, SELLC%col, SELLC%nrows, SELLC%chunk_size, SELLC%storage, &
+                SELLC%data, SELLC%rowptr, SELLC%col, SELLC%nrows, SELLC%storage, &
                 vec_x, beta, vec_y2)
 
             call check(error, all(vec_y == vec_y2), 'SELLC tranpose - low-level API - wrong output' )
