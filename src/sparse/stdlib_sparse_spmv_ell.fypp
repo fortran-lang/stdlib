@@ -33,14 +33,13 @@ contains
         if(present(beta)) beta_ = alpha
 
         call spmv_kernel_ell_${rank}$d_${s1}$(op_,alpha_, &
-            matrix%nrows,matrix%ncols,matrix%data,matrix%index,matrix%K, &
+            matrix%ncols,matrix%data,matrix%index,matrix%K, &
             matrix%storage, &
             vec_x,beta_,vec_y)
 
     end subroutine
     
-    module subroutine spmv_kernel_ell_${rank}$d_${s1}$(op,alpha,nrows,ncols,data,index,mnz_p_row,storage,vec_x,beta,vec_y)
-        integer(ilp), intent(in) :: nrows
+    module subroutine spmv_kernel_ell_${rank}$d_${s1}$(op,alpha,ncols,data,index,mnz_p_row,storage,vec_x,beta,vec_y)
         integer(ilp), intent(in) :: ncols
         ${t1}$, intent(in) :: data(:,:)
         integer(ilp), intent(in) :: index(:,:)
@@ -52,7 +51,10 @@ contains
         ${t1}$, intent(in) :: beta
         character(1), intent(in) :: op
         integer(ilp) :: i, j, k
+        integer(ilp) :: nrows
         
+        nrows = size(index, 1)
+
         vec_y = beta * vec_y
 
             if( storage == sparse_full .and. op==sparse_op_none ) then
