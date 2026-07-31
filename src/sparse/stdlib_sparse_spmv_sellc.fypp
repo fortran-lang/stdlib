@@ -37,14 +37,14 @@ contains
 
     module subroutine spmv_kernel_sellc_${s1}$(op,alpha,data,ia,ja,nrows,chunk_size,storage,vec_x,beta,vec_y)
         !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
-        ${t1}$, intent(in) :: data(:,:)
-        integer(ilp), intent(in) :: ia(:)
-        integer(ilp), intent(in) :: ja(:,:)
+        ${t1}$, intent(in), contiguous :: data(:,:)
+        integer(ilp), intent(in), contiguous :: ia(:)
+        integer(ilp), intent(in), contiguous :: ja(:,:)
         integer(ilp), intent(in) :: nrows
         integer, intent(in) :: chunk_size
         integer, intent(in) :: storage
-        ${t1}$, intent(in)    :: vec_x(:)
-        ${t1}$, intent(inout) :: vec_y(:)
+        ${t1}$, intent(in), contiguous    :: vec_x(:)
+        ${t1}$, intent(inout), contiguous :: vec_y(:)
         ${t1}$, intent(in) :: alpha
         ${t1}$, intent(in) :: beta
         character(1), intent(in) :: op

@@ -39,12 +39,12 @@ contains
     end subroutine
     
     module subroutine spmv_kernel_ell_${rank}$d_${s1}$(op,alpha,data,index,mnz_p_row,storage,vec_x,beta,vec_y)
-        ${t1}$, intent(in) :: data(:,:)
-        integer(ilp), intent(in) :: index(:,:)
+        ${t1}$, intent(in), contiguous :: data(:,:)
+        integer(ilp), intent(in), contiguous :: index(:,:)
         integer, intent(in) :: mnz_p_row
         integer, intent(in) :: storage
-        ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
-        ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
+        ${t1}$, intent(in), contiguous    :: vec_x${ranksuffix(rank)}$
+        ${t1}$, intent(inout), contiguous :: vec_y${ranksuffix(rank)}$
         ${t1}$, intent(in) :: alpha
         ${t1}$, intent(in) :: beta
         character(1), intent(in) :: op

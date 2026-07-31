@@ -39,12 +39,12 @@ contains
     end subroutine
 
     module subroutine spmv_kernel_coo_${rank}$d_${s1}$(op,alpha,data,index,nnz,storage,vec_x,beta,vec_y)
-        ${t1}$, intent(in) :: data(:)
-        integer(ilp), intent(in) :: index(:,:) !! Matrix coordinates index(2,nnz)
+        ${t1}$, intent(in), contiguous :: data(:)
+        integer(ilp), intent(in), contiguous :: index(:,:) !! Matrix coordinates index(2,nnz)
         integer(ilp), intent(in) :: nnz !! number of non-zero values
         integer, intent(in) :: storage !! storage
-        ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
-        ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
+        ${t1}$, intent(in), contiguous    :: vec_x${ranksuffix(rank)}$
+        ${t1}$, intent(inout), contiguous :: vec_y${ranksuffix(rank)}$
         ${t1}$, intent(in) :: alpha
         ${t1}$, intent(in) :: beta
         character(1), intent(in) :: op

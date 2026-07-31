@@ -39,12 +39,12 @@ contains
     end subroutine
 
     module subroutine spmv_kernel_csr_${rank}$d_${s1}$(op,alpha,data,col,rowptr,storage,vec_x,beta,vec_y)
-        ${t1}$, intent(in) :: data(:)
-        integer(ilp), intent(in) :: col(:) !! matrix column pointer
-        integer(ilp), intent(in) :: rowptr(:)  !! matrix row pointer
+        ${t1}$, intent(in), contiguous :: data(:)
+        integer(ilp), intent(in), contiguous :: col(:) !! matrix column pointer
+        integer(ilp), intent(in), contiguous :: rowptr(:)  !! matrix row pointer
         integer, intent(in) :: storage !! storage
-        ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
-        ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
+        ${t1}$, intent(in), contiguous    :: vec_x${ranksuffix(rank)}$
+        ${t1}$, intent(inout), contiguous :: vec_y${ranksuffix(rank)}$
         ${t1}$, intent(in) :: alpha
         ${t1}$, intent(in) :: beta
         character(1), intent(in) :: op
