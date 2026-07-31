@@ -28,7 +28,7 @@ contains
         if(present(alpha)) alpha_ = alpha
 
         beta_ = zero_${k1}$
-        if(present(beta)) beta_ = alpha
+        if(present(beta)) beta_ = beta
 
         call spmv_kernel_ell_${rank}$d_${s1}$(op_,alpha_, &
             matrix%data,matrix%index,matrix%K,matrix%storage, &
