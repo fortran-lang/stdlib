@@ -30,8 +30,6 @@ contains
         beta_ = zero_${k1}$
         if(present(beta)) beta_ = beta
 
-        if(present(beta))vec_y = zero_${s1}$
-
         call spmv_kernel_csc_${rank}$d_${s1}$(op_,alpha_, &
             matrix%data,matrix%colptr,matrix%row,matrix%storage, &
             vec_x,beta_,vec_y)
