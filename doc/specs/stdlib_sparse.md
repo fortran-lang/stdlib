@@ -240,7 +240,7 @@ $$y=\alpha*op(M)*x+\beta*y$$
 
 ### Arguments
 
-For the all formats:
+Common arguments for all formats
 
 `nrows`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument. It specifies the number of rows in the sparse matrix.
 
