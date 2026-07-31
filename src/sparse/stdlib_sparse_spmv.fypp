@@ -78,11 +78,10 @@ module stdlib_sparse_spmv
     interface spmv_kernel_coo
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
-        module subroutine spmv_kernel_coo_${rank}$d_${s1}$(op,alpha,data,index,nnz,storage,vec_x,beta,vec_y)
+        module subroutine spmv_kernel_coo_${rank}$d_${s1}$(op,alpha,data,index,storage,vec_x,beta,vec_y)
             ${t1}$, intent(in), contiguous :: data(:)
             integer(ilp), intent(in), contiguous :: index(:,:)
             integer, intent(in) :: storage
-            integer(ilp), intent(in) :: nnz
             ${t1}$, intent(in), contiguous    :: vec_x${ranksuffix(rank)}$
             ${t1}$, intent(inout), contiguous :: vec_y${ranksuffix(rank)}$
             ${t1}$, intent(in) :: alpha

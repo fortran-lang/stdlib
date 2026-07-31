@@ -31,15 +31,14 @@ contains
         if(present(beta)) beta_ = beta
 
         call spmv_kernel_coo_${rank}$d_${s1}$(op_, alpha_, &
-            matrix%data, matrix%index, matrix%nnz, matrix%storage, &
+            matrix%data, matrix%index, matrix%storage, &
             vec_x, beta_, vec_y)
 
     end subroutine
 
-    module subroutine spmv_kernel_coo_${rank}$d_${s1}$(op,alpha,data,index,nnz,storage,vec_x,beta,vec_y)
+    module subroutine spmv_kernel_coo_${rank}$d_${s1}$(op,alpha,data,index,storage,vec_x,beta,vec_y)
         ${t1}$, intent(in), contiguous :: data(:)
         integer(ilp), intent(in), contiguous :: index(:,:) !! Matrix coordinates index(2,nnz)
-        integer(ilp), intent(in) :: nnz !! number of non-zero values
         integer, intent(in) :: storage !! storage
         ${t1}$, intent(in), contiguous    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout), contiguous :: vec_y${ranksuffix(rank)}$
@@ -47,6 +46,9 @@ contains
         ${t1}$, intent(in) :: beta
         character(1), intent(in) :: op
         integer(ilp) :: col_index, k, row_index
+        integer(ilp) :: nnz !! number of non-zero values
+
+        nnz = size(index, 2)
 
         vec_y = beta * vec_y
 

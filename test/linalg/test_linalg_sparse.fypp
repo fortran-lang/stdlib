@@ -72,7 +72,7 @@ contains
 
             ! Low-level API
             call spmv_kernel_coo(sparse_op_none, alpha, &
-                COO%data ,COO%index, COO%nnz, COO%storage, &
+                COO%data ,COO%index, COO%storage, &
                 vec_x, beta, vec_y2 )
             call check(error, all(vec_y1 == vec_y2), 'COO - low level API: wrong output' )
             if (allocated(error)) return
@@ -86,7 +86,7 @@ contains
 
             ! Low-level API
             call spmv_kernel_coo(sparse_op_transpose, alpha, &
-                COO%data ,COO%index, COO%nnz, COO%storage, &
+                COO%data ,COO%index, COO%storage, &
                 vec_y1, beta, vec_x)
             call check(error, all(vec_x == real([17,15,4,14,-3],kind=wp)), 'COO - transpose - low level API: wrong output' )
             if (allocated(error)) return
