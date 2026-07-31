@@ -16,12 +16,10 @@ contains
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
         character(1), intent(in), optional :: op
-
         ${t1}$ :: alpha_, beta_
         character(1) :: op_
 
         op_ = sparse_op_none; if(present(op)) op_ = op
-
         alpha_ = one_${s1}$
         if(present(alpha)) alpha_ = alpha
 
