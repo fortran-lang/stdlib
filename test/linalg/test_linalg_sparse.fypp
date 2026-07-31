@@ -41,6 +41,8 @@ contains
         block
             integer, parameter :: wp = ${k1}$
             type(COO_${s1}$_type) :: COO
+            ${t1}$, parameter :: alpha = 1._wp
+            ${t1}$, parameter :: beta = 0._wp
             ${t1}$, allocatable :: dense(:,:)
             ${t1}$, allocatable :: vec_x(:)
             ${t1}$, allocatable :: vec_y1(:), vec_y2(:)
@@ -69,7 +71,9 @@ contains
             if (allocated(error)) return
 
             ! Low-level API
-            call spmv_kernel_coo(COO%nrows, COO%ncols, COO%data ,COO%index, COO%nnz, COO%storage, vec_x, vec_y2 )
+            call spmv_kernel_coo(sparse_op_none, alpha, &
+                COO%nrows, COO%ncols, COO%data ,COO%index, COO%nnz, COO%storage, &
+                vec_x, beta, vec_y2 )
             call check(error, all(vec_y1 == vec_y2), 'COO - low level API: wrong output' )
             if (allocated(error)) return
 
@@ -81,8 +85,9 @@ contains
             if (allocated(error)) return
 
             ! Low-level API
-            call spmv_kernel_coo(COO%nrows, COO%ncols, COO%data ,COO%index, COO%nnz, COO%storage, vec_y1, vec_x, &
-                                 op=sparse_op_transpose )
+            call spmv_kernel_coo(sparse_op_transpose, alpha, &
+                COO%nrows, COO%ncols, COO%data ,COO%index, COO%nnz, COO%storage, &
+                vec_y1, beta, vec_x)
             call check(error, all(vec_x == real([17,15,4,14,-3],kind=wp)), 'COO - transpose - low level API: wrong output' )
             if (allocated(error)) return
  
@@ -125,6 +130,8 @@ contains
         block
             integer, parameter :: wp = ${k1}$
             type(CSR_${s1}$_type) :: CSR
+            ${t1}$, parameter :: alpha = 1._wp
+            ${t1}$, parameter :: beta = 0._wp
             ${t1}$, allocatable :: vec_x(:)
             ${t1}$, allocatable :: vec_y(:)
 
@@ -142,8 +149,9 @@ contains
             if (allocated(error)) return
 
             ! Low-level API
-            call spmv_kernel_csr(CSR%nrows, CSR%ncols, CSR%data, CSR%col, CSR%rowptr, CSR%storage, &
-                vec_x, vec_y )
+            call spmv_kernel_csr(sparse_op_none, alpha, &
+                CSR%nrows, CSR%ncols, CSR%data, CSR%col, CSR%rowptr, CSR%storage, &
+                vec_x, beta, vec_y )
             
             call check(error, all(vec_y == real([6,11,15,15],kind=wp)), 'CSR - low-level API - wrong output' )
             if (allocated(error)) return
@@ -155,8 +163,9 @@ contains
             call check(error, all(vec_x == real([17,15,4,14,-3],kind=wp)), 'CSR transpose - high-level API - wrong output' )
             if (allocated(error)) return
 
-            call spmv_kernel_csr(CSR%nrows, CSR%ncols, CSR%data, CSR%col, CSR%rowptr, CSR%storage, &
-                vec_y, vec_x, op=sparse_op_transpose )
+            call spmv_kernel_csr(sparse_op_transpose, alpha, &
+                CSR%nrows, CSR%ncols, CSR%data, CSR%col, CSR%rowptr, CSR%storage, &
+                vec_y, beta, vec_x)
             call check(error, all(vec_x == real([17,15,4,14,-3],kind=wp)), 'CSR transpose - low-level API - wrong output' )
             if (allocated(error)) return
         end block
@@ -170,6 +179,8 @@ contains
         block
             integer, parameter :: wp = ${k1}$
             type(CSC_${s1}$_type) :: CSC
+            ${t1}$, parameter :: alpha = 1._wp
+            ${t1}$, parameter :: beta = 0._wp
             ${t1}$, allocatable :: vec_x(:)
             ${t1}$, allocatable :: vec_y(:)
 
@@ -187,7 +198,9 @@ contains
             if (allocated(error)) return
 
             !High-level API
-            call spmv_kernel_csc(CSC%nrows, CSC%ncols, CSC%data, CSC%colptr, CSC%row, CSC%storage, vec_x, vec_y )
+            call spmv_kernel_csc(sparse_op_none, alpha, &
+                CSC%nrows, CSC%ncols, CSC%data, CSC%colptr, CSC%row, CSC%storage, &
+                vec_x, beta, vec_y )
             
             call check(error, all(vec_y == real([6,11,15,15],kind=wp)) )
             if (allocated(error)) return
@@ -200,8 +213,9 @@ contains
             if (allocated(error)) return
 
             !Low-level API
-            call spmv_kernel_csc(CSC%nrows, CSC%ncols, CSC%data, CSC%colptr, CSC%row, CSC%storage, vec_y, vec_x, &
-                op=sparse_op_transpose )
+            call spmv_kernel_csc(sparse_op_transpose, alpha, &
+                CSC%nrows, CSC%ncols, CSC%data, CSC%colptr, CSC%row, CSC%storage, &
+                vec_y, beta, vec_x)
             call check(error, all(vec_x == real([17,15,4,14,-3],kind=wp)) )
             if (allocated(error)) return
 
@@ -216,6 +230,8 @@ contains
         block
             integer, parameter :: wp = ${k1}$
             type(ELL_${s1}$_type) :: ELL
+            ${t1}$, parameter :: alpha = 1._wp
+            ${t1}$, parameter :: beta = 0._wp
             ${t1}$, allocatable :: vec_x(:)
             ${t1}$, allocatable :: vec_y(:)
 
@@ -239,8 +255,9 @@ contains
             if (allocated(error)) return
 
             !Low-level API
-            call spmv_kernel_ell(ELL%nrows, ELL%ncols, ELL%data, ELL%index, ELL%K, &
-                ELL%storage, vec_x, vec_y )
+            call spmv_kernel_ell(sparse_op_none, alpha, &
+                ELL%nrows, ELL%ncols, ELL%data, ELL%index, ELL%K, ELL%storage, &
+                vec_x, beta, vec_y )
 
             call check(error, all(vec_y == real([6,11,15,15],kind=wp)) )
             if (allocated(error)) return
@@ -253,8 +270,9 @@ contains
             if (allocated(error)) return
 
             !Low-level API
-            call spmv_kernel_ell(ELL%nrows, ELL%ncols, ELL%data, ELL%index, ELL%K, &
-                ELL%storage, vec_y, vec_x, op=sparse_op_transpose )
+            call spmv_kernel_ell(sparse_op_transpose, alpha, &
+                ELL%nrows, ELL%ncols, ELL%data, ELL%index, ELL%K, ELL%storage, &
+                vec_y, beta, vec_x)
             call check(error, all(vec_x == real([17,15,4,14,-3],kind=wp)) )
             if (allocated(error)) return
         end block
@@ -270,6 +288,8 @@ contains
             integer, parameter :: wp = ${k1}$
             type(SELLC_${s1}$_type) :: SELLC
             type(CSR_${s1}$_type)   :: CSR
+            ${t1}$, parameter :: alpha = 1._wp
+            ${t1}$, parameter :: beta = 0._wp
             ${t1}$, allocatable :: vec_x(:)
             ${t1}$, allocatable :: vec_y(:), vec_y2(:)
             integer :: i
@@ -297,8 +317,9 @@ contains
             if (allocated(error)) return
 
             !Low-level API
-            call spmv_kernel_sellc(SELLC%nrows, SELLC%ncols, SELLC%data, SELLC%rowptr, SELLC%col, SELLC%chunk_size, &
-                SELLC%storage, vec_x, vec_y )
+            call spmv_kernel_sellc(sparse_op_none, alpha, &
+                SELLC%nrows, SELLC%ncols, SELLC%data, SELLC%rowptr, SELLC%col, SELLC%chunk_size, SELLC%storage, &
+                vec_x, beta, vec_y )
 
             call check(error, all(vec_y == real([6,22,27,23,27,48],kind=wp)) )
             if (allocated(error)) return
@@ -314,8 +335,9 @@ contains
             if (allocated(error)) return
 
             !Low-level API
-            call spmv_kernel_sellc(SELLC%nrows, SELLC%ncols, SELLC%data, SELLC%rowptr, SELLC%col, SELLC%chunk_size, &
-                SELLC%storage, vec_x, vec_y2 , op = sparse_op_transpose )
+            call spmv_kernel_sellc(sparse_op_transpose, alpha, &
+                SELLC%nrows, SELLC%ncols, SELLC%data, SELLC%rowptr, SELLC%col, SELLC%chunk_size, SELLC%storage, &
+                vec_x, beta, vec_y2)
 
             call check(error, all(vec_y == vec_y2))
             if (allocated(error)) return

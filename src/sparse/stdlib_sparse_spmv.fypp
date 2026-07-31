@@ -78,7 +78,7 @@ module stdlib_sparse_spmv
     interface spmv_kernel_coo
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
-        module subroutine spmv_kernel_coo_${rank}$d_${s1}$(nrows, ncols, data, index, nnz, storage, vec_x,vec_y,alpha,beta,op)
+        module subroutine spmv_kernel_coo_${rank}$d_${s1}$(op,alpha,nrows,ncols,data,index,nnz,storage,vec_x,beta,vec_y)
             integer(ilp), intent(in) :: nrows
             integer(ilp), intent(in) :: ncols
             ${t1}$, intent(in) :: data(:)
@@ -87,9 +87,9 @@ module stdlib_sparse_spmv
             integer(ilp), intent(in) :: nnz
             ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
             ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
-            ${t1}$, intent(in), optional :: alpha
-            ${t1}$, intent(in), optional :: beta
-            character(1), intent(in), optional :: op
+            ${t1}$, intent(in) :: alpha
+            ${t1}$, intent(in) :: beta
+            character(1), intent(in) :: op
         end subroutine
         #:endfor
         #:endfor
@@ -102,7 +102,7 @@ module stdlib_sparse_spmv
     interface spmv_kernel_csc
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
-        module subroutine spmv_kernel_csc_${rank}$d_${s1}$(nrows,ncols,data,colptr,row,storage,vec_x,vec_y,alpha,beta,op)
+        module subroutine spmv_kernel_csc_${rank}$d_${s1}$(op,alpha,nrows,ncols,data,colptr,row,storage,vec_x,beta,vec_y)
             integer(ilp), intent(in) :: nrows
             integer(ilp), intent(in) :: ncols
             ${t1}$, intent(in) :: data(:)
@@ -111,9 +111,9 @@ module stdlib_sparse_spmv
             integer, intent(in) :: storage !! storage
             ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
             ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
-            ${t1}$, intent(in), optional :: alpha
-            ${t1}$, intent(in), optional :: beta
-            character(1), intent(in), optional :: op
+            ${t1}$, intent(in) :: alpha
+            ${t1}$, intent(in) :: beta
+            character(1), intent(in) :: op
         end subroutine
         #:endfor
         #:endfor
@@ -126,7 +126,7 @@ module stdlib_sparse_spmv
     interface spmv_kernel_csr
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
-        module subroutine spmv_kernel_csr_${rank}$d_${s1}$(nrows,ncols,data,col,rowptr,storage,vec_x,vec_y,alpha,beta,op)
+        module subroutine spmv_kernel_csr_${rank}$d_${s1}$(op,alpha,nrows,ncols,data,col,rowptr,storage,vec_x,beta,vec_y)
             integer(ilp), intent(in) :: nrows
             integer(ilp), intent(in) :: ncols
             ${t1}$, intent(in) :: data(:)
@@ -135,9 +135,9 @@ module stdlib_sparse_spmv
             integer, intent(in) :: storage !! storage
             ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
             ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
-            ${t1}$, intent(in), optional :: alpha
-            ${t1}$, intent(in), optional :: beta
-            character(1), intent(in), optional :: op
+            ${t1}$, intent(in) :: alpha
+            ${t1}$, intent(in) :: beta
+            character(1), intent(in) :: op
         end subroutine
         #:endfor
         #:endfor
@@ -150,7 +150,7 @@ module stdlib_sparse_spmv
     interface spmv_kernel_ell
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
-        module subroutine spmv_kernel_ell_${rank}$d_${s1}$(nrows,ncols,data,index,mnz_p_row,storage,vec_x,vec_y,alpha,beta,op)
+        module subroutine spmv_kernel_ell_${rank}$d_${s1}$(op,alpha,nrows,ncols,data,index,mnz_p_row,storage,vec_x,beta,vec_y)
             integer(ilp), intent(in) :: nrows
             integer(ilp), intent(in) :: ncols
             ${t1}$, intent(in) :: data(:,:)
@@ -159,9 +159,9 @@ module stdlib_sparse_spmv
             integer, intent(in) :: storage
             ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
             ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
-            ${t1}$, intent(in), optional :: alpha
-            ${t1}$, intent(in), optional :: beta
-            character(1), intent(in), optional :: op
+            ${t1}$, intent(in) :: alpha
+            ${t1}$, intent(in) :: beta
+            character(1), intent(in) :: op
         end subroutine
         #:endfor
         #:endfor
@@ -173,7 +173,7 @@ module stdlib_sparse_spmv
     !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
     interface spmv_kernel_sellc
         #:for k1, t1, s1 in (KINDS_TYPES)
-        module subroutine spmv_kernel_sellc_${s1}$(nrows,ncols,data,ia,ja,chunk_size,storage,vec_x,vec_y,alpha,beta,op)
+        module subroutine spmv_kernel_sellc_${s1}$(op,alpha,nrows,ncols,data,ia,ja,chunk_size,storage,vec_x,beta,vec_y)
             !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
             integer(ilp), intent(in) :: nrows
             integer(ilp), intent(in) :: ncols
@@ -184,9 +184,9 @@ module stdlib_sparse_spmv
             integer, intent(in) :: storage
             ${t1}$, intent(in)    :: vec_x(:)
             ${t1}$, intent(inout) :: vec_y(:)
-            ${t1}$, intent(in), optional :: alpha
-            ${t1}$, intent(in), optional :: beta
-            character(1), intent(in), optional :: op
+            ${t1}$, intent(in) :: alpha
+            ${t1}$, intent(in) :: beta
+            character(1), intent(in) :: op
         end subroutine
         #:endfor
     end interface

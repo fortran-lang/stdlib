@@ -21,12 +21,24 @@ contains
         ${t1}$, intent(in), optional :: beta
         character(1), intent(in), optional :: op
 
-        call spmv_kernel_coo_${rank}$d_${s1}$(matrix%nrows, matrix%ncols, matrix%data, matrix%index, matrix%nnz, matrix%storage, &
-            vec_x,vec_y,alpha,beta,op)
+        ${t1}$ :: alpha_, beta_
+        character(1) :: op_
+
+        op_ = sparse_op_none; if(present(op)) op_ = op
+
+        alpha_ = one_${k1}$
+        if(present(alpha)) alpha_ = alpha
+
+        beta_ = zero_${s1}$
+        if(present(beta)) beta_ = beta
+
+        call spmv_kernel_coo_${rank}$d_${s1}$(op_, alpha_, &
+            matrix%nrows, matrix%ncols, matrix%data, matrix%index, matrix%nnz, matrix%storage, &
+            vec_x, beta_, vec_y)
 
     end subroutine
 
-    module subroutine spmv_kernel_coo_${rank}$d_${s1}$(nrows,ncols,data,index,nnz,storage,vec_x,vec_y,alpha,beta,op)
+    module subroutine spmv_kernel_coo_${rank}$d_${s1}$(op,alpha,nrows,ncols,data,index,nnz,storage,vec_x,beta,vec_y)
         integer(ilp), intent(in) :: nrows
         integer(ilp), intent(in) :: ncols
         ${t1}$, intent(in) :: data(:)
@@ -35,38 +47,29 @@ contains
         integer, intent(in) :: storage !! storage
         ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
-        ${t1}$, intent(in), optional :: alpha
-        ${t1}$, intent(in), optional :: beta
-        character(1), intent(in), optional :: op
-        ${t1}$ :: alpha_
-        character(1) :: op_
+        ${t1}$, intent(in) :: alpha
+        ${t1}$, intent(in) :: beta
+        character(1), intent(in) :: op
         integer(ilp) :: col_index, k, row_index
 
-        op_ = sparse_op_none; if(present(op)) op_ = op
-        alpha_ = one_${k1}$
-        if(present(alpha)) alpha_ = alpha
-        if(present(beta)) then
-            vec_y = beta * vec_y
-        else 
-            vec_y = zero_${s1}$
-        endif
+        vec_y = beta * vec_y
 
-        select case(op_)
+        select case(op)
         case(sparse_op_none)
             if(storage == sparse_full) then
                 do k = 1, nnz
                     row_index = index(1,k)
                     col_index = index(2,k)
-                    vec_y(${rksfx2(rank-1)}$row_index) = vec_y(${rksfx2(rank-1)}$row_index) + alpha_*data(k) * vec_x(${rksfx2(rank-1)}$col_index)
+                    vec_y(${rksfx2(rank-1)}$row_index) = vec_y(${rksfx2(rank-1)}$row_index) + alpha*data(k) * vec_x(${rksfx2(rank-1)}$col_index)
                 end do
 
             else 
                 do k = 1, nnz
                     row_index = index(1,k)
                     col_index = index(2,k)
-                    vec_y(${rksfx2(rank-1)}$row_index) = vec_y(${rksfx2(rank-1)}$row_index) + alpha_*data(k) * vec_x(${rksfx2(rank-1)}$col_index)
+                    vec_y(${rksfx2(rank-1)}$row_index) = vec_y(${rksfx2(rank-1)}$row_index) + alpha*data(k) * vec_x(${rksfx2(rank-1)}$col_index)
                     if( row_index==col_index ) cycle
-                    vec_y(${rksfx2(rank-1)}$col_index) = vec_y(${rksfx2(rank-1)}$col_index) + alpha_*data(k) * vec_x(${rksfx2(rank-1)}$row_index)
+                    vec_y(${rksfx2(rank-1)}$col_index) = vec_y(${rksfx2(rank-1)}$col_index) + alpha*data(k) * vec_x(${rksfx2(rank-1)}$row_index)
                 end do
 
             end if
@@ -75,16 +78,16 @@ contains
                 do k = 1, nnz
                     col_index = index(1,k)
                     row_index = index(2,k)
-                    vec_y(${rksfx2(rank-1)}$row_index) = vec_y(${rksfx2(rank-1)}$row_index) + alpha_*data(k) * vec_x(${rksfx2(rank-1)}$col_index)
+                    vec_y(${rksfx2(rank-1)}$row_index) = vec_y(${rksfx2(rank-1)}$row_index) + alpha*data(k) * vec_x(${rksfx2(rank-1)}$col_index)
                 end do
 
             else 
                 do k = 1, nnz
                     col_index = index(1,k)
                     row_index = index(2,k)
-                    vec_y(${rksfx2(rank-1)}$row_index) = vec_y(${rksfx2(rank-1)}$row_index) + alpha_*data(k) * vec_x(${rksfx2(rank-1)}$col_index)
+                    vec_y(${rksfx2(rank-1)}$row_index) = vec_y(${rksfx2(rank-1)}$row_index) + alpha*data(k) * vec_x(${rksfx2(rank-1)}$col_index)
                     if( row_index==col_index ) cycle
-                    vec_y(${rksfx2(rank-1)}$col_index) = vec_y(${rksfx2(rank-1)}$col_index) + alpha_*data(k) * vec_x(${rksfx2(rank-1)}$row_index)
+                    vec_y(${rksfx2(rank-1)}$col_index) = vec_y(${rksfx2(rank-1)}$col_index) + alpha*data(k) * vec_x(${rksfx2(rank-1)}$row_index)
                 end do
 
             end if
@@ -94,16 +97,16 @@ contains
                 do k = 1, nnz
                     col_index = index(1,k)
                     row_index = index(2,k)
-                    vec_y(${rksfx2(rank-1)}$row_index) = vec_y(${rksfx2(rank-1)}$row_index) + alpha_*conjg(data(k)) * vec_x(${rksfx2(rank-1)}$col_index)
+                    vec_y(${rksfx2(rank-1)}$row_index) = vec_y(${rksfx2(rank-1)}$row_index) + alpha*conjg(data(k)) * vec_x(${rksfx2(rank-1)}$col_index)
                 end do
 
             else 
                 do k = 1, nnz
                     col_index = index(1,k)
                     row_index = index(2,k)
-                    vec_y(${rksfx2(rank-1)}$row_index) = vec_y(${rksfx2(rank-1)}$row_index) + alpha_*conjg(data(k)) * vec_x(${rksfx2(rank-1)}$col_index)
+                    vec_y(${rksfx2(rank-1)}$row_index) = vec_y(${rksfx2(rank-1)}$row_index) + alpha*conjg(data(k)) * vec_x(${rksfx2(rank-1)}$col_index)
                     if( row_index==col_index ) cycle
-                    vec_y(${rksfx2(rank-1)}$col_index) = vec_y(${rksfx2(rank-1)}$col_index) + alpha_*conjg(data(k)) * vec_x(${rksfx2(rank-1)}$row_index)
+                    vec_y(${rksfx2(rank-1)}$col_index) = vec_y(${rksfx2(rank-1)}$col_index) + alpha*conjg(data(k)) * vec_x(${rksfx2(rank-1)}$row_index)
                 end do
 
             end if
