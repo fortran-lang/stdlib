@@ -33,14 +33,12 @@ contains
         if(present(beta)) beta_ = alpha
 
         call spmv_kernel_ell_${rank}$d_${s1}$(op_,alpha_, &
-            matrix%ncols,matrix%data,matrix%index,matrix%K, &
-            matrix%storage, &
+            matrix%data,matrix%index,matrix%K,matrix%storage, &
             vec_x,beta_,vec_y)
 
     end subroutine
     
-    module subroutine spmv_kernel_ell_${rank}$d_${s1}$(op,alpha,ncols,data,index,mnz_p_row,storage,vec_x,beta,vec_y)
-        integer(ilp), intent(in) :: ncols
+    module subroutine spmv_kernel_ell_${rank}$d_${s1}$(op,alpha,data,index,mnz_p_row,storage,vec_x,beta,vec_y)
         ${t1}$, intent(in) :: data(:,:)
         integer(ilp), intent(in) :: index(:,:)
         integer, intent(in) :: mnz_p_row

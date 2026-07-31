@@ -33,13 +33,12 @@ contains
         if(present(beta)) beta_ = beta
 
         call spmv_kernel_coo_${rank}$d_${s1}$(op_, alpha_, &
-            matrix%ncols, matrix%data, matrix%index, matrix%nnz, matrix%storage, &
+            matrix%data, matrix%index, matrix%nnz, matrix%storage, &
             vec_x, beta_, vec_y)
 
     end subroutine
 
-    module subroutine spmv_kernel_coo_${rank}$d_${s1}$(op,alpha,ncols,data,index,nnz,storage,vec_x,beta,vec_y)
-        integer(ilp), intent(in) :: ncols
+    module subroutine spmv_kernel_coo_${rank}$d_${s1}$(op,alpha,data,index,nnz,storage,vec_x,beta,vec_y)
         ${t1}$, intent(in) :: data(:)
         integer(ilp), intent(in) :: index(:,:) !! Matrix coordinates index(2,nnz)
         integer(ilp), intent(in) :: nnz !! number of non-zero values

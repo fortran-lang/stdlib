@@ -38,13 +38,12 @@ contains
         endif
 
         call spmv_kernel_csc_${rank}$d_${s1}$(op_,alpha_, &
-            matrix%ncols,matrix%data,matrix%colptr,matrix%row,matrix%storage, &
+            matrix%data,matrix%colptr,matrix%row,matrix%storage, &
             vec_x,beta_,vec_y)
 
     end subroutine
     
-    module subroutine spmv_kernel_csc_${rank}$d_${s1}$(op,alpha,ncols,data,colptr,row,storage,vec_x,beta,vec_y)
-        integer(ilp), intent(in) :: ncols
+    module subroutine spmv_kernel_csc_${rank}$d_${s1}$(op,alpha,data,colptr,row,storage,vec_x,beta,vec_y)
         ${t1}$, intent(in) :: data(:)
         integer(ilp), intent(in) :: colptr(:) !! matrix column pointer
         integer(ilp), intent(in) :: row(:)  !! matrix row pointer
@@ -55,11 +54,14 @@ contains
         ${t1}$, intent(in) :: beta
         character(1), intent(in) :: op
         integer(ilp) :: i, j
+        integer(ilp) :: ncols
         #:if rank == 1
         ${t1}$ :: aux
         #:else
         ${t1}$ :: aux(size(vec_x,dim=1))
         #:endif
+
+        ncols = size(colptr)-1
 
         vec_y = beta * vec_y
 
