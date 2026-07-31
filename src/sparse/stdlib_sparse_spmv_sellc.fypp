@@ -28,17 +28,16 @@ contains
 
         call spmv_kernel_sellc_${s1}$(op_,alpha_, &
             matrix%data, matrix%rowptr, matrix%col, &
-            matrix%nrows, matrix%storage, &
+            matrix%storage, &
             vec_x,beta_,vec_y)
 
     end subroutine
 
-    module subroutine spmv_kernel_sellc_${s1}$(op,alpha,data,ia,ja,nrows,storage,vec_x,beta,vec_y)
+    module subroutine spmv_kernel_sellc_${s1}$(op,alpha,data,ia,ja,storage,vec_x,beta,vec_y)
         !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
         ${t1}$, intent(in), contiguous :: data(:,:)
         integer(ilp), intent(in), contiguous :: ia(:)
         integer(ilp), intent(in), contiguous :: ja(:,:)
-        integer(ilp), intent(in) :: nrows
         integer, intent(in) :: storage
         ${t1}$, intent(in), contiguous    :: vec_x(:)
         ${t1}$, intent(inout), contiguous :: vec_y(:)
@@ -46,6 +45,7 @@ contains
         ${t1}$, intent(in) :: beta
         character(1), intent(in) :: op
         integer(ilp) :: i, nz, rowidx, num_chunks, rm
+        integer(ilp) :: nrows
         integer :: chunk_size
 
         chunk_size = size(data, 1)
@@ -56,6 +56,8 @@ contains
         end if
 
         vec_y = beta * vec_y
+
+        nrows = merge(size(vec_y), size(vec_x), op==sparse_op_none)
 
         num_chunks = nrows / chunk_size
         rm = nrows - num_chunks * chunk_size

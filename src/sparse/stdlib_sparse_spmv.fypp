@@ -164,12 +164,11 @@ module stdlib_sparse_spmv
     !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
     interface spmv_kernel_sellc
         #:for k1, t1, s1 in (KINDS_TYPES)
-        module subroutine spmv_kernel_sellc_${s1}$(op,alpha,data,ia,ja,nrows,storage,vec_x,beta,vec_y)
+        module subroutine spmv_kernel_sellc_${s1}$(op,alpha,data,ia,ja,storage,vec_x,beta,vec_y)
             !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
             ${t1}$, intent(in), contiguous :: data(:,:)
             integer(ilp), intent(in), contiguous :: ia(:)
             integer(ilp), intent(in), contiguous :: ja(:,:)
-            integer, intent(in) :: nrows
             integer, intent(in) :: storage
             ${t1}$, intent(in), contiguous    :: vec_x(:)
             ${t1}$, intent(inout), contiguous :: vec_y(:)
