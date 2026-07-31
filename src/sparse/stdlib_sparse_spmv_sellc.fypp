@@ -57,8 +57,7 @@ contains
 
         vec_y = beta * vec_y
 
-        num_chunks = size(ia)-1 !nrows / chunk_size
-
+        num_chunks = nrows / chunk_size
         rm = nrows - num_chunks * chunk_size
 
         if( storage == sparse_full .and. op==sparse_op_none ) then
