@@ -31,15 +31,14 @@ contains
         if(present(beta)) beta_ = beta
 
         call spmv_kernel_ell_${rank}$d_${s1}$(op_,alpha_, &
-            matrix%data,matrix%index,matrix%K,matrix%storage, &
+            matrix%data,matrix%index,matrix%storage, &
             vec_x,beta_,vec_y)
 
     end subroutine
     
-    module subroutine spmv_kernel_ell_${rank}$d_${s1}$(op,alpha,data,index,mnz_p_row,storage,vec_x,beta,vec_y)
+    module subroutine spmv_kernel_ell_${rank}$d_${s1}$(op,alpha,data,index,storage,vec_x,beta,vec_y)
         ${t1}$, intent(in), contiguous :: data(:,:)
         integer(ilp), intent(in), contiguous :: index(:,:)
-        integer, intent(in) :: mnz_p_row
         integer, intent(in) :: storage
         ${t1}$, intent(in), contiguous    :: vec_x${ranksuffix(rank)}$
         ${t1}$, intent(inout), contiguous :: vec_y${ranksuffix(rank)}$
@@ -48,8 +47,10 @@ contains
         character(1), intent(in) :: op
         integer(ilp) :: i, j, k
         integer(ilp) :: nrows
+        integer :: mnz_p_row
         
         nrows = size(index, 1)
+        mnz_p_row = size(index, 2)
 
         vec_y = beta * vec_y
 

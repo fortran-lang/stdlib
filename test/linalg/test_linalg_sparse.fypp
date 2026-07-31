@@ -256,7 +256,7 @@ contains
 
             !Low-level API
             call spmv_kernel_ell(sparse_op_none, alpha, &
-                ELL%data, ELL%index, ELL%K, ELL%storage, &
+                ELL%data, ELL%index, ELL%storage, &
                 vec_x, beta, vec_y )
 
             call check(error, all(vec_y == real([6,11,15,15],kind=wp)), 'ELL - low-level API - wrong output' )
@@ -271,7 +271,7 @@ contains
 
             !Low-level API
             call spmv_kernel_ell(sparse_op_transpose, alpha, &
-                ELL%data, ELL%index, ELL%K, ELL%storage, &
+                ELL%data, ELL%index, ELL%storage, &
                 vec_y, beta, vec_x)
             call check(error, all(vec_x == real([17,15,4,14,-3],kind=wp)), 'ELL tranpose - low-level API - wrong output' )
             if (allocated(error)) return
