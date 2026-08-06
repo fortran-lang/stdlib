@@ -559,7 +559,7 @@ subroutine test_format_timedelta(error)
     ! With milliseconds
     td = timedelta(hours=1, minutes=2, seconds=3, milliseconds=456)
     call check(error, &
-        format_timedelta(td) == '01:02:03.456', &
+        format_timedelta(td) == '0 days, 01:02:03.456', &
         "[0d 1h 2m 3s 456ms] -> '0 days, 01:02:03.456'")
     if (allocated(error)) return
 end subroutine test_format_timedelta
