@@ -249,7 +249,7 @@ For zero-day durations, compact forms can be used by passing it with `.true.`:
 - `MM:SS` when hours are zero
 - `HH:MM:SS[.mmm]` otherwise
 
-For nonzero-day durations or compact is not used, the verbose form is preserved:
+If day is present or compact is unused or `.false.`, the verbose form is preserved:
 `X days, HH:MM:SS[.mmm]`.
 
 #### Syntax
