@@ -1,0 +1,309 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set MATRIX_TYPES = ["dense", "CSR"]
+#:set RANKS = range(1, 2+1)
+
+submodule(stdlib_linalg_iterative_solvers) stdlib_linalg_iterative_gmres
+    use stdlib_kinds
+    use stdlib_sparse
+    use stdlib_constants
+    use stdlib_optval, only: optval
+    use stdlib_linalg_blas, only: gemv
+    use stdlib_linalg_lapack, only: lartg, lasr, trtrs
+    use stdlib_linalg_constants, only: ilp
+    implicit none
+
+contains
+
+    #:for k, t, s in R_KINDS_TYPES
+    module subroutine stdlib_solve_gmres_kernel_${s}$(A,M,b,x,rtol,atol,maxiter,kdim,workspace,compact)
+        class(stdlib_linop_${s}$_type), intent(in) :: A
+        class(stdlib_linop_${s}$_type), intent(in) :: M
+        ${t}$, intent(in) :: b(:), rtol, atol
+        ${t}$, intent(inout) :: x(:)
+        integer, intent(in) :: maxiter, kdim
+        type(stdlib_solver_workspace_${s}$_type), intent(inout) :: workspace
+        logical, intent(in) :: compact
+        integer :: i, iter, j, j_final, iorth, jz, info
+        ${t}$ :: beta, hnext, htmp, norm_sq, norm_sq0, temp, tolsq
+        ${t}$, allocatable :: cs(:), g(:), h(:,:), sn(:), y(:)
+
+        allocate(h(kdim+1, kdim), cs(kdim), sn(kdim), g(kdim+1), y(kdim) )
+
+        associate( r => workspace%tmp(:,1), &
+               w => workspace%tmp(:,2), &
+               v => workspace%tmp(:,3:kdim+3), &
+               z => workspace%tmp(:,kdim + 4:) )
+            
+            iter = 0
+            ! Initialize convergence targets from the right-hand side norm.
+            norm_sq0 = A%inner_product(b, b)
+            tolsq = max(rtol*rtol*norm_sq0, atol*atol)
+
+            ! Form the initial residual and report the starting iterate.
+            r = b
+            call A%matvec(x, r, alpha=-one_${s}$, beta=one_${s}$, op='N')
+            norm_sq = A%inner_product(r, r)
+            if (associated(workspace%callback)) call workspace%callback(x, norm_sq, iter)
+
+            if (norm_sq <= tolsq) return
+
+            do while (iter < maxiter .and. norm_sq >= tolsq)
+                iter = iter + 1
+                ! Start a new GMRES cycle from the current residual.
+                beta = sqrt(max(norm_sq, zero_${s}$))
+                if (beta <= epsilon(one_${s}$)) exit
+
+                h = zero_${s}$
+                cs = zero_${s}$
+                sn = zero_${s}$
+                g = zero_${s}$
+                y = zero_${s}$
+
+                ! Initialize the Krylov basis and least-squares right-hand side.
+                v(:,1) = r / beta
+                g(1) = beta
+
+                j_final = 0
+                do j = 1, kdim
+                    ! Run Arnoldi with the preconditioned basis vector.
+                    jz = merge(1, j, compact)
+                    call M%matvec(v(:,j), z(:,jz), alpha=one_${s}$, beta=zero_${s}$, op='N')
+                    call A%matvec(z(:,jz), w, alpha=one_${s}$, beta=zero_${s}$, op='N')
+
+                    ! Modified Gram Schmidt (MGSR) 
+                    do iorth = 1, 2 ! reorthogonalization
+                        do i = 1, j
+                            htmp   = A%inner_product(v(:,i), w)
+                            h(i,j) = h(i,j) + htmp
+                            w      = w - htmp*v(:,i)
+                        end do
+                    end do
+
+                    hnext = sqrt(max(A%inner_product(w, w), zero_${s}$))
+                    h(j+1,j) = hnext
+                    if (hnext > epsilon(one_${s}$)) then
+                        v(:,j+1) = w / hnext
+                    else
+                        v(:,j+1) = zero_${s}$
+                    end if
+
+                    ! Apply previous rotations to the new column, then generate the next one.
+                    call apply_givens_rotation(h(1:j+1,j), cs, sn)
+
+                    temp = cs(j) * g(j) + sn(j) * g(j+1)
+                    g(j+1) = -sn(j) * g(j) + cs(j) * g(j+1)
+                    g(j) = temp
+
+                    ! Cheap residual-norm estimate; no solution rebuild needed.
+                    norm_sq = g(j+1) * g(j+1)
+                    j_final = j
+
+                    if (norm_sq < tolsq .or. hnext <= epsilon(one_${s}$)) exit
+                end do
+
+                ! Cycle-end update from the least-squares correction.
+                if (j_final > 0) then
+                    call upper_triangular_solve(h, g, y, j_final, info)
+                    if(info /= 0) exit
+
+                    if (compact) then
+                        call gemv('N', m=size(x), n=j_final, alpha=one_${s}$, &
+                            a=v, lda=size(v,1), &
+                            x=y, incx=1, &
+                            beta=zero_${s}$, y=w, incy=1)
+                        call M%matvec(w, z(:,1), alpha=one_${s}$, beta=zero_${s}$, op='N')
+                        x = x + z(:,1)
+                    else
+                        call gemv('N', m=size(x), n=j_final, alpha=one_${s}$, &
+                            a=z, lda=size(z,1), &
+                            x=y, incx=1, &
+                            beta=one_${s}$, y=x, incy=1)
+                    end if
+                end if
+
+                ! Refresh the true residual so the convergence test per restart cycle and the logged
+                ! value use the true ||b - A*x||, not the Hessenberg estimate.
+                r = b
+                call A%matvec(x, r, alpha=-one_${s}$, beta=one_${s}$, op='N')
+                norm_sq = A%inner_product(r, r)
+
+                if (associated(workspace%callback)) call workspace%callback(x, norm_sq, iter)
+            end do
+        end associate
+
+    contains
+
+        subroutine apply_givens_rotation(hcol, c, s)
+            ! implementation inspired by https://github.com/nekStab/LightKrylov
+            ${t}$, target, contiguous, intent(inout) :: hcol(:)
+            ${t}$, intent(inout) :: c(:), s(:)
+            integer :: k
+            ${t}$ :: r
+            ${t}$, pointer :: hmat(:, :)
+            ! Size of the column.
+            k = int(size(hcol) - 1, kind=ilp)
+            ! Apply previous Givens rotations to this new column.
+            hmat(1:k, 1:1) => hcol(:k)
+            call lasr('L', 'V', 'F', k, 1_ilp, c(:k-1), s(:k-1), hmat, k)
+            ! Compute the sine and cosine components for the next rotation.
+            call lartg(hcol(k), hcol(k+1), c(k), s(k), r)
+            ! Eliminate H(k+1, k).
+            hcol(k) = r
+            hcol(k+1) = zero_${s}$
+        end subroutine
+
+        subroutine upper_triangular_solve(h, g, y, n, info)
+            ${t}$, intent(in) :: h(:,:), g(:)
+            ${t}$, target, contiguous, intent(inout) :: y(:)
+            integer, intent(in) :: n
+            integer, intent(out) :: info
+            integer(ilp) :: n_, lda_
+            ${t}$, pointer :: rhs(:, :)
+
+            y(1:n) = g(1:n)
+
+            n_ = int(n, kind=ilp)
+            lda_ = int(size(h,1), kind=ilp)
+
+            rhs(1:n,1:1) => y(:n)
+
+            call trtrs('U','N','N', n_, 1_ilp, h, lda_, rhs, n_, info)
+        end subroutine
+    end subroutine
+    #:endfor
+
+    #:for matrix in MATRIX_TYPES
+    #:for k, t, s in R_KINDS_TYPES
+    module subroutine stdlib_solve_gmres_${matrix}$_${s}$(A,b,x,di,rtol,atol,maxiter,restart,kdim,precond,M,workspace,compact)
+        #:if matrix == "dense"
+        use stdlib_linalg, only: diag
+        ${t}$, intent(in) :: A(:,:)
+        #:else
+        type(${matrix}$_${s}$_type), intent(in) :: A
+        #:endif
+        ${t}$, intent(in) :: b(:)
+        ${t}$, intent(inout) :: x(:)
+        ${t}$, intent(in), optional :: rtol, atol
+        logical(int8), intent(in), optional, target :: di(:)
+        integer, intent(in), optional :: maxiter, kdim
+        logical, intent(in), optional :: restart
+        integer, intent(in), optional :: precond
+        class(stdlib_linop_${s}$_type), optional, intent(in), target :: M
+        type(stdlib_solver_workspace_${s}$_type), optional, intent(inout), target :: workspace
+        logical, intent(in), optional :: compact
+        type(stdlib_linop_${s}$_type) :: op
+        type(stdlib_linop_${s}$_type), pointer :: M_ => null()
+        type(stdlib_solver_workspace_${s}$_type), pointer :: workspace_
+        integer :: kdim_, maxiter_, n, ncols, precond_
+        ${t}$ :: rtol_, atol_
+        logical :: compact_, restart_
+        logical(int8), pointer :: di_(:)
+        ${t}$, allocatable :: diagonal(:)
+
+        n = size(b)
+        maxiter_ = optval(x=maxiter, default=n)
+        kdim_ = max(1, min(optval(x=kdim, default=min(30, n)), n))
+        restart_ = optval(x=restart, default=.true.)
+        compact_ = optval(x=compact, default=.true.)
+        rtol_ = optval(x=rtol, default=1.e-5_${s}$)
+        atol_ = optval(x=atol, default=epsilon(one_${s}$))
+        precond_ = optval(x=precond, default=pc_none)
+        ncols = stdlib_size_wksp_gmres(kdim_,compact_)
+
+        if (present(M)) then
+            M_ => M
+        else
+            allocate(M_)
+            allocate(diagonal(n), source=zero_${s}$)
+
+            select case(precond_)
+            case(pc_jacobi)
+                #:if matrix == "dense"
+                diagonal = diag(A)
+                #:else
+                call diag(A, diagonal)
+                #:endif
+                M_%matvec => precond_jacobi
+            case default
+                M_%matvec => precond_none
+            end select
+            where(abs(diagonal) > epsilon(zero_${s}$)) diagonal = one_${s}$ / diagonal
+        end if
+
+        op%matvec => matvec
+
+        if (present(di)) then
+            di_ => di
+        else
+            allocate(di_(n), source=.false._int8)
+        end if
+
+        if (present(workspace)) then
+            workspace_ => workspace
+        else
+            allocate(workspace_)
+        end if
+        if (.not.allocated(workspace_%tmp)) then
+            allocate(workspace_%tmp(n, ncols), source=zero_${s}$)
+        else if (size(workspace_%tmp,1) /= n .or. size(workspace_%tmp,2) < ncols) then
+            deallocate(workspace_%tmp)
+            allocate(workspace_%tmp(n, ncols), source=zero_${s}$)
+        end if
+
+        if (restart_) x = zero_${s}$
+        x = merge(b, x, di_)
+        call stdlib_solve_gmres_kernel(op, M_, b, x, rtol_, atol_, maxiter_, kdim_, workspace_, compact=compact_)
+
+        if (.not.present(di)) deallocate(di_)
+        di_ => null()
+
+        if (.not.present(workspace)) then
+            deallocate(workspace_%tmp)
+            deallocate(workspace_)
+        end if
+        M_ => null()
+        workspace_ => null()
+
+    contains
+
+        subroutine matvec(x,y,alpha,beta,op)
+            #:if matrix == "dense"
+            use stdlib_linalg_blas, only: gemv
+            #:endif
+            ${t}$, intent(in) :: x(:)
+            ${t}$, intent(inout) :: y(:)
+            ${t}$, intent(in) :: alpha
+            ${t}$, intent(in) :: beta
+            character(1), intent(in) :: op
+            #:if matrix == "dense"
+            call gemv(op, m=size(A,1), n=size(A,2), alpha=alpha, a=A, lda=size(A,1), x=x, incx=1, beta=beta, y=y, incy=1)
+            #:else
+            call spmv(A, x, y, alpha, beta, op)
+            #:endif
+            y = merge(zero_${s}$, y, di_)
+        end subroutine
+
+        subroutine precond_none(x,y,alpha,beta,op)
+            ${t}$, intent(in) :: x(:)
+            ${t}$, intent(inout) :: y(:)
+            ${t}$, intent(in) :: alpha
+            ${t}$, intent(in) :: beta
+            character(1), intent(in) :: op
+            y = merge(zero_${s}$, x, di_)
+        end subroutine
+
+        subroutine precond_jacobi(x,y,alpha,beta,op)
+            ${t}$, intent(in) :: x(:)
+            ${t}$, intent(inout) :: y(:)
+            ${t}$, intent(in) :: alpha
+            ${t}$, intent(in) :: beta
+            character(1), intent(in) :: op
+            y = merge(zero_${s}$, diagonal * x, di_)
+        end subroutine
+    end subroutine
+    #:endfor
+    #:endfor
+
+end submodule stdlib_linalg_iterative_gmres
