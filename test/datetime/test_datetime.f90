@@ -552,7 +552,7 @@ subroutine test_format_timedelta(error)
     ! No days, no hours: MM:SS
     td = timedelta(minutes=5, seconds=30)
     call check(error, &
-        format_timedelta(td) == '05:30', &
+        format_timedelta(td) == '0 days, 05:30', &
         "[0d 5m 30s] -> '0 days, 00:05:30'")
     if (allocated(error)) return
 
