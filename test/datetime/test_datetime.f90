@@ -545,22 +545,22 @@ subroutine test_format_timedelta(error)
     ! No days: hours only
     td = timedelta(hours=1, minutes=2, seconds=3)
     call check(error, &
-        format_timedelta(td) == '01:02:03', &
-        "[1h 2m 3s] -> '01:02:03'")
+        format_timedelta(td) == '0 days, 01:02:03', &
+        "[0d 1h 2m 3s] -> '0 days, 01:02:03'")
     if (allocated(error)) return
 
     ! No days, no hours: MM:SS
     td = timedelta(minutes=5, seconds=30)
     call check(error, &
         format_timedelta(td) == '05:30', &
-        "[5m 30s] -> '05:30'")
+        "[0d 5m 30s] -> '0 days, 00:05:30'")
     if (allocated(error)) return
 
     ! With milliseconds
     td = timedelta(hours=1, minutes=2, seconds=3, milliseconds=456)
     call check(error, &
         format_timedelta(td) == '01:02:03.456', &
-        "[1h 2m 3s 456ms] -> '01:02:03.456'")
+        "[0d 1h 2m 3s 456ms] -> '0 days, 01:02:03.456'")
     if (allocated(error)) return
 end subroutine test_format_timedelta
 
@@ -571,42 +571,42 @@ subroutine test_format_timedelta_compact(error)
     ! Sub-second: milliseconds only
     td = timedelta(milliseconds=5)
     call check(error, &
-        format_timedelta(td) == '5ms', &
+        format_timedelta(td, compact=.true.) == '5ms', &
         "[5ms] -> '5ms'")
     if (allocated(error)) return
 
     ! Sub-second: zero
     td = timedelta(milliseconds=0)
     call check(error, &
-        format_timedelta(td) == '0s', &
+        format_timedelta(td, compact=.true.) == '0s', &
         "[0ms] -> '0s'")
     if (allocated(error)) return
 
     ! Sub-minute: seconds with ms fraction
     td = timedelta(milliseconds=1500)
     call check(error, &
-        format_timedelta(td) == '1.500s', &
+        format_timedelta(td, compact=.true.) == '1.500s', &
         "[1500ms] -> '1.500s'")
     if (allocated(error)) return
 
     ! Sub-minute: whole seconds
     td = timedelta(seconds=42)
     call check(error, &
-        format_timedelta(td) == '42s', &
+        format_timedelta(td, compact=.true.) == '42s', &
         "[42s] -> '42s'")
     if (allocated(error)) return
 
     ! Minute-second compact form with milliseconds
     td = timedelta(minutes=5, seconds=30, milliseconds=125)
     call check(error, &
-        format_timedelta(td) == '05:30.125', &
+        format_timedelta(td, compact=.true.) == '05:30.125', &
         "[5m 30s 125ms] -> '05:30.125'")
     if (allocated(error)) return
 
     ! Negative duration: preserves original format since days /= 0
     td = timedelta(seconds=-1)
     call check(error, &
-        format_timedelta(td) == '-1 days, 23:59:59', &
+        format_timedelta(td, compact=.true.) == '-1 days, 23:59:59', &
         "[-1s] -> '-1 days, 23:59:59' (negative via days component)")
     if (allocated(error)) return
 end subroutine test_format_timedelta_compact

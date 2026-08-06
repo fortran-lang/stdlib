@@ -243,18 +243,22 @@ Pure function.
 #### Description
 
 Formats a `timedelta_type` as a human-readable string.
-For zero-day durations, compact forms are used:
+For zero-day durations, compact forms can be used by passing it with `.true.`:
 - `5ms` for sub-second values
 - `1.500s` or `42s` for sub-minute values
 - `MM:SS` when hours are zero
 - `HH:MM:SS[.mmm]` otherwise
 
-For nonzero-day durations, the verbose form is preserved:
+For nonzero-day durations or compact is not used, the verbose form is preserved:
 `X days, HH:MM:SS[.mmm]`.
 
 #### Syntax
 
-`str = ` [[stdlib_datetime(module):format_timedelta(function)]] `(td)`
+`str = ` [[stdlib_datetime(module):format_timedelta(function)]] `(td [, compact])`
+
+#### Arguments
+
+`compact` (optional): `logical`, `intent(in)`. Will use the compact form if `.true.`.
 
 #### Return value
 

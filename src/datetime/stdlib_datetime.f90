@@ -336,7 +336,7 @@ contains
         end if
     end function format_datetime
 
-    pure function format_timedelta(td) result(str)
+    pure function format_timedelta(td, compact) result(str)
         !! version: experimental
         !!
         !! Format a timedelta_type as a readable string.
@@ -345,15 +345,19 @@ contains
         !! prefix is omitted. When days /= 0, original verbose format
         !! is preserved.
         type(timedelta_type), intent(in) :: td
+        logical, intent(in), optional :: compact
         character(:), allocatable :: str
         integer :: h, m, s, ms
+        logical :: show_compact
 
         h  = td%seconds / 3600
         m  = mod(td%seconds, 3600) / 60
         s  = mod(td%seconds, 60)
         ms = td%milliseconds
+        show_compact = .false. ! .false. by default
+        if (present(compact)) show_compact = compact
 
-        if (td%days == 0) then
+        if (td%days == 0 .and. show_compact) then
             ! Compact formatting for zero-day durations
             if (h == 0 .and. m == 0 .and. s == 0) then
                 if (ms == 0) then
