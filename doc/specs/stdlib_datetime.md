@@ -243,13 +243,13 @@ Pure function.
 #### Description
 
 Formats a `timedelta_type` as a human-readable string.
-For zero-day durations, compact forms can be used by passing it with `.true.`:
+For zero-day durations, compact forms can be enabled by passing `compact=.true.`:
 - `5ms` for sub-second values
 - `1.500s` or `42s` for sub-minute values
-- `MM:SS` when hours are zero
+- `MM:SS[.mmm]` when hours are zero
 - `HH:MM:SS[.mmm]` otherwise
 
-If day is present or compact is unused or `.false.`, the verbose form is preserved:
+If `days /= 0`, or `compact` is not present or `.false.`, the verbose form is preserved:
 `X days, HH:MM:SS[.mmm]`.
 
 #### Syntax

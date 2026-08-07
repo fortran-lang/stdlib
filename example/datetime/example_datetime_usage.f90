@@ -69,9 +69,9 @@ program example_datetime
     print *
     print '(A)', '=== Compact Duration Formatting ==='
     duration = timedelta(milliseconds=5)
-    print '(A,T40,A)', 'timedelta(ms=5):', format_timedelta(duration)
+    print '(A,T40,A)', 'timedelta(ms=5):', format_timedelta(duration, compact=.true.)
     duration = timedelta(milliseconds=1500)
-    print '(A,T40,A)', 'timedelta(ms=1500):', format_timedelta(duration)
+    print '(A,T40,A)', 'timedelta(ms=1500):', format_timedelta(duration, compact=.true.)
     duration = timedelta(seconds=65)
     print '(A,T40,A)', 'timedelta(s=65):', format_timedelta(duration)
     duration = timedelta(hours=1, minutes=2, seconds=3)

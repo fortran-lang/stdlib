@@ -340,10 +340,9 @@ contains
         !! version: experimental
         !!
         !! Format a timedelta_type as a readable string.
-        !! When days == 0, sub-second/sub-minute durations are formatted
-        !! compactly (e.g. "5ms", "1.500s", "05:30"). The "0 days, "
-        !! prefix is omitted. When days /= 0, original verbose format
-        !! is preserved.
+        !! When days == 0 and compact is present and .true., sub-second/sub-minute durations are
+        !! formatted compactly (e.g. "5ms", "1.500s", "05:30[.mmm]"); the "0 days, " prefix is omitted.
+        !! When compact is absent or .false., or when days /= 0, the original verbose format is preserved.
         type(timedelta_type), intent(in) :: td
         logical, intent(in), optional :: compact
         character(:), allocatable :: str
