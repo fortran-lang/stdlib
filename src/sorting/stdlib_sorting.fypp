@@ -482,12 +482,12 @@ module stdlib_sorting
     public unique
 !! Version: experimental
 !!
-!! The generic function implementing the `UNIQUE` algorithm to return the 
+!! The generic procedure implementing the `UNIQUE` algorithm to return the
 !! distinct elements of a rank-1 array. The result may either preserve the
 !! order of first occurrence or be returned in sorted order.
 !!
 !! Its use has the syntax: 
-!!     output = unique(array, sorted_output[, tolerance] )
+!!     call unique(array, sorted_output, output[, tolerance] )
 !!
 !! with the arguments:
 !! * array: the rank-1 input array. It is an `intent(in)` argument of any
@@ -523,7 +523,7 @@ module stdlib_sorting
 !!    integer :: a(8) = [4, 2, 4, 1, 2, 3, 1, 5]
 !!    integer, allocatable :: b(:)
 !!
-!!    b = unique(a, .false.)
+!!    call unique(a, .false., b)
 !!    ! b = [4, 2, 1, 3, 5]
 !!```
 !!
@@ -533,7 +533,7 @@ module stdlib_sorting
 !!    integer :: a(8) = [4, 2, 4, 1, 2, 3, 1, 5]
 !!    integer, allocatable :: b(:)
 !!
-!!    b = unique(a, .true.)
+!!    call unique(a, .true., b)
 !!    ! b = [1, 2, 3, 4, 5]
 !!```
 

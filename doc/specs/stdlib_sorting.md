@@ -241,7 +241,7 @@ allocate the buffer and deallocate before return.
 
 When the argument `sorted_output` is `.true.`, the implementation
 sorts a copy of the input array before removing adjacent duplicate
-elements, producing the unique values in non-decreasing order.
+elements, producing the unique values in increasing order.
 
 When `sorted_output` is `.false.`, the implementation preserves the
 order of first occurrence by using a hash map to identify values that
