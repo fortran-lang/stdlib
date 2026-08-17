@@ -366,6 +366,8 @@ contains
         ${t1}$ :: i
         ${t1}$, parameter :: zero = 0_${k1}$, one = 1_${k1}$, two = 2_${k1}$
 
+        res = 0.0_dp
+
         if(z <= zero) call error_stop("Error(log_gamma): Gamma function"       &
             //" argument must be positive integer.")
 
@@ -406,6 +408,8 @@ contains
         ${t1}$ :: i
         ${t1}$, parameter :: zero = 0_${k1}$, one = 1_${k1}$, two = 2_${k1}$
         ${t2}$, parameter :: zero_k2 = 0.0_${k2}$
+
+        res = zero_k2
 
         if(z <= zero) call error_stop("Error(log_gamma): Gamma function"       &
             //" argument must be positive integer.")
@@ -553,6 +557,8 @@ contains
         ${t1}$, parameter :: zero = 0_${k1}$, one = 1_${k1}$, two = 2_${k1}$
         ${t2}$, parameter :: zero_${k2}$ = 0.0_${k2}$, one_${k2}$ = 1.0_${k2}$
 
+        res = zero_${k2}$
+
         if(n < zero) call error_stop("Error(l_factorial): Logarithm of"        &
             //" factorial function argument must be non-negative")
 
@@ -594,7 +600,7 @@ contains
     ! Fortran 90 program by Jim-215-Fisher
     !
         ${t1}$, intent(in) :: p, x
-        integer :: n
+        integer :: n, m
 
         ${t2}$ :: res, p_lim, a, b, g, c, d, y
         ${t2}$, parameter :: zero = 0.0_${k2}$, one = 1.0_${k2}$
@@ -618,12 +624,9 @@ contains
 
         endif
 
-        if(x < zero_k1 .and. p < p_lim .and. abs(anint(p) - p) > tol_${k1}$)   &
+        if(x < zero_k1 .and. abs(anint(p) - p) > tol_${k1}$)                  &
             call error_stop("Error(gpx): Incomplete gamma function with "      &
-            //"negative x must come with a whole number p not too small")
-
-        if(x < zero_k1) call error_stop("Error(gpx): Incomplete gamma"         &
-            // " function with negative x must have an integer parameter p")
+            //"negative x must come with a whole number p")
 
         if(p >= p_lim) then     !use modified Lentz method of continued fraction
                                 !for eq. (15) in the above reference.
@@ -690,8 +693,30 @@ contains
 
             end do
 
-        else
-            g = ieee_value(1._${k1}$, ieee_quiet_nan)
+        else                            !Algorithm 2 in the reference
+            m = nint(p)
+            a = -x
+            c = one / a
+            d = p - one
+            b = c * (a - d)
+            n = 1
+
+            do
+
+                c = d * (d - one) / (a * a)
+                d = d - 2
+                y = c * (a - d)
+                b = b + y
+                n = n + 1
+
+                if(n > (m - 2) / 2 .or. y < b * tol_${k2}$) exit
+
+            end do
+
+            if(y >= b * tol_${k2}$ .and. mod(m, 2) /= 0) b = b + d * c / a
+
+            g = ((-1) ** m * exp(-a + log_gamma(p) - (p - 1) * log(a))       &
+                + b) / a
 
         end if
 
@@ -851,6 +876,8 @@ contains
         ${t1}$ :: res, s1, y
         ${t1}$, parameter :: zero = 0.0_${k1}$, one = 1.0_${k1}$
 
+        res = zero
+
         if(x == zero) then
 
             res = zero
@@ -867,9 +894,8 @@ contains
             res = gpx(p, x) * exp(s1)
 
         else
-
-            call error_stop("Error(Logarithm of upper incomplete gamma "       &
-              //"function): negative x must be with integer p")
+            s1 = -x + p * log(abs(x))
+            res = (-1) ** nint(p) * gpx(p, x) * exp(s1)
 
         end if
     end function ingamma_low_${t1[0]}$${k1}$
@@ -889,6 +915,8 @@ contains
         ${t2}$, intent(in) :: x
         ${t2}$ :: res, s1, y
         ${t2}$, parameter :: zero = 0.0_${k2}$, one = 1.0_${k2}$
+
+        res = zero
 
         if(x == zero) then
 
@@ -926,6 +954,8 @@ contains
         ${t1}$ :: res, s1, y
         ${t1}$, parameter :: zero = 0.0_${k1}$, one = 1.0_${k1}$
 
+        res = zero
+
 
         if(x == zero) then
 
@@ -943,9 +973,8 @@ contains
             res = log(abs(gpx(p, x))) + s1
 
         else
-
-            call error_stop("Error(Logarithm of upper incomplete gamma "       &
-              //"function): negative x must be with integer p")
+            s1 = -x + p * log(abs(x))
+            res = log(abs(gpx(p, x))) + s1
 
         end if
     end function l_ingamma_low_${t1[0]}$${k1}$
@@ -964,6 +993,8 @@ contains
         ${t2}$, intent(in) :: x
         ${t2}$ :: res, s1, y
         ${t2}$, parameter :: zero = 0.0_${k2}$, one = 1.0_${k2}$
+
+        res = zero
 
         if(x == zero) then
 
@@ -997,6 +1028,8 @@ contains
         ${t1}$ :: res, s1, y
         ${t1}$, parameter :: zero = 0.0_${k1}$, one = 1.0_${k1}$
 
+        res = zero
+
         if(x == zero) then
 
             res = gamma(p)
@@ -1013,10 +1046,10 @@ contains
             res = (one - gpx(p, x) * exp(s1)) * exp(y)
 
         else
-
-
-            call error_stop("Error(Logarithm of upper incomplete gamma "       &
-              //"function): negative x must be with integer p")
+            y = log_gamma(p)
+            s1 = -x + p * log(abs(x)) - y
+            res = gpx(p, x) * exp(s1)
+            res = (one - (-1) ** nint(p) * res) * exp(y)
 
         end if
     end function ingamma_up_${t1[0]}$${k1}$
@@ -1036,6 +1069,8 @@ contains
         ${t2}$, intent(in) :: x
         ${t2}$ :: res, s1, y
         ${t2}$, parameter :: zero = 0.0_${k2}$, one = 1.0_${k2}$
+
+        res = zero
 
         if(x == zero) then
 
@@ -1075,6 +1110,8 @@ contains
         ${t1}$ :: res, s1, y
         ${t1}$, parameter :: zero = 0.0_${k1}$, one = 1.0_${k1}$
 
+        res = zero
+
 
         if(x == zero) then
 
@@ -1093,9 +1130,10 @@ contains
             res = log(one - res) + y
 
         else
-
-            call error_stop("Error(Logarithm of upper incomplete gamma "       &
-              //"function): negative x must be with integer p")
+            y = log_gamma(p)
+            s1 = -x + p * log(abs(x)) + log(gpx(p, x))
+            res = (-1) ** nint(p) * exp(s1)
+            res = log(abs(exp(y) - res))
 
         end if
     end function l_ingamma_up_${t1[0]}$${k1}$
@@ -1114,6 +1152,8 @@ contains
         ${t2}$, intent(in) :: x
         ${t2}$ :: res, s1, y
         ${t2}$, parameter :: zero = 0.0_${k2}$, one = 1.0_${k2}$
+
+        res = zero
 
         if(x == zero) then
 
@@ -1156,6 +1196,8 @@ contains
         ${t1}$ :: res, s1
         ${t1}$, parameter :: zero = 0.0_${k1}$, one = 1.0_${k1}$
 
+        res = zero
+
         if(x < zero) call error_stop("Error(regamma_p): Regularized gamma_p"   &
             //" function is not defined at x < 0")
 
@@ -1192,6 +1234,8 @@ contains
         ${t2}$ :: res, s1
         ${t2}$, parameter :: zero = 0.0_${k2}$, one = 1.0_${k2}$
 
+        res = zero
+
         if(x < zero) call error_stop("Error(regamma_p): Regularized gamma_p"   &
             //" function is not defined at x < 0")
 
@@ -1226,6 +1270,8 @@ contains
         ${t1}$, intent(in) :: p, x
         ${t1}$ :: res, s1
         ${t1}$, parameter :: zero = 0.0_${k1}$, one = 1.0_${k1}$
+
+        res = zero
 
         if(x < zero) call error_stop("Error(regamma_p): Regularized gamma_q"   &
             //" function is not defined at x < 0")
@@ -1262,6 +1308,8 @@ contains
         ${t2}$, intent(in) :: x
         ${t2}$ :: res, s1
         ${t2}$, parameter :: zero = 0.0_${k2}$, one = 1.0_${k2}$
+
+        res = zero
 
         if(x < zero) call error_stop("Error(regamma_q): Regularized gamma_q"   &
             //" function is not defined at x < 0")

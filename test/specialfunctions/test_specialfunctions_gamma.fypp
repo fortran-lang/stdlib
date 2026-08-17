@@ -80,6 +80,8 @@ contains
                            test_log_beta_${t1[0]}$${k1}$)                      &
             , new_unittest("incomplete_beta_${t1[0]}$${k1}$",                  &
                            test_incomplete_beta_${t1[0]}$${k1}$)               &
+            , new_unittest("negative_real_incomplete_gamma_${k1}$",           &
+                           test_negative_real_incgamma_${k1}$)                 &
         #:endfor
             ]
     end subroutine collect_specialfunctions_gamma
@@ -482,6 +484,54 @@ contains
         end do
     end subroutine test_incomplete_beta_${t1[0]}$${k1}$
 
+
+
+    subroutine test_negative_real_incgamma_${k1}$(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer :: i
+        ! 80-digit reference values from
+        ! gamma(n,x) = (n-1)! * (1-exp(-x)*sum(x**k/k!, k=0,...,n-1)).
+        ${t1}$, parameter :: p(*) = [3.0_${k1}$, 2.0_${k1}$]
+        ${t1}$, parameter :: x(*) = [-5.0_${k1}$, -10.0_${k1}$]
+        ${t1}$, parameter :: lower(*) = [                                  &
+            -2.52102370474380225816e3_${k1}$,                              &
+             1.98239192153260448653e5_${k1}$]
+        ${t1}$, parameter :: log_lower(*) = [                               &
+             7.83242033005676398766_${k1}$,                                &
+             1.21972296217601365312e1_${k1}$]
+        ${t1}$, parameter :: upper(*) = [                                   &
+             2.52302370474380225816e3_${k1}$,                              &
+            -1.98238192153260448653e5_${k1}$]
+        ${t1}$, parameter :: log_upper(*) = [                               &
+             7.83321334405621608025_${k1}$,                                &
+             1.21972245773362193828e1_${k1}$]
+        ${t1}$, parameter :: regression_tol = 128 * epsilon(1.0_${k1}$)
+
+        do i = 1, size(p)
+            call check(error, lower_incomplete_gamma(p(i), x(i)), lower(i), &
+                "Lower incomplete gamma with negative x and real p failed", &
+                thr = regression_tol, rel = .true.)
+            if (allocated(error)) return
+
+            call check(error, log_lower_incomplete_gamma(p(i), x(i)),       &
+                log_lower(i), "Log lower incomplete gamma with negative x " &
+                //"and real p failed", thr = regression_tol, rel = .true.)
+            if (allocated(error)) return
+
+            call check(error, upper_incomplete_gamma(p(i), x(i)), upper(i), &
+                "Upper incomplete gamma with negative x and real p failed", &
+                thr = regression_tol, rel = .true.)
+            if (allocated(error)) return
+
+            call check(error, log_upper_incomplete_gamma(p(i), x(i)),       &
+                log_upper(i), "Log upper incomplete gamma with negative x " &
+                //"and real p failed", thr = regression_tol, rel = .true.)
+            if (allocated(error)) return
+        end do
+    end subroutine test_negative_real_incgamma_${k1}$
+
+
+
     subroutine test_lincgamma_${t1[0]}$${k1}$(error)
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: n = 4
@@ -565,7 +615,7 @@ contains
 
         ${t1}$, parameter :: ans(n) = [-0.5_${k1}$, -1.9959226032237259_${k1}$,&
                                        -1.2054260888453405_${k1}$,             &
-                                       5.5903962398338761_${k1}$]
+                                        5.5903962398338761_${k1}$]
 
         do i = 1, n
 
