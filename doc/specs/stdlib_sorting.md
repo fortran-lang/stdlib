@@ -666,9 +666,8 @@ Generic subroutine.
 
 ##### Arguments
 
-`array`: shall be a rank one array of any of the types `integer(int8)`, 
-`integer(int16)`, `integer(int32)`,`integer(int64)`, `real(sp)`, 
-`real(dp)`, or `real(qp)`. It is an `intent(in)` argument.
+`array`: shall be a rank one array of any supported kind of the types `integer`,
+and `real`. It is an `intent(in)` argument.
 
 `sorted_output`: shall be a scalar of type default logical.
 It is an `intent(in)` argument.
