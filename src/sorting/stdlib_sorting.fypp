@@ -727,7 +727,7 @@ module stdlib_sorting
 !! equal. The `TOLERANCE` argument is not available for integer
 !! overloads.
     #:for t1, t2, name1, cpp1 in IR_INDEX_TYPES_ALT_NAME
-        module subroutine ${name1}$_unique(A, sorted_output, output${", tolerance" if t1.startswith('real') else ""}$)
+        module subroutine ${name1}$_unique(A, output, sorted_output${", tolerance" if t1.startswith('real') else ""}$)
 !! Version: experimental
 !!
 #:if t1.startswith('real')
@@ -739,11 +739,11 @@ module stdlib_sorting
 !! distinct elements of the input array of type `${t1}$` in `output`.
 #:endif
             ${t1}$, intent(in) :: A(:)
-            logical, intent(in) :: sorted_output
+            ${t1}$, allocatable, intent(inout) :: output(:)
+            logical, optional, intent(in) :: sorted_output
             #:if t1.startswith('real')
             ${t1}$, optional, intent(in) :: tolerance
             #:endif
-            ${t1}$, allocatable, intent(inout) :: output(:)
         end subroutine
     #:endfor
     end interface

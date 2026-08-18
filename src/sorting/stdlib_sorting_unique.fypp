@@ -13,10 +13,10 @@ submodule(stdlib_sorting) stdlib_sorting_unique
 
 contains
     #:for t1, t2, name1, cpp1 in IR_INDEX_TYPES_ALT_NAME
-    module subroutine ${name1}$_unique(A, sorted_output, output${", tolerance" if t1.startswith('real') else ""}$)
+    module subroutine ${name1}$_unique(A, output, sorted_output${", tolerance" if t1.startswith('real') else ""}$)
         ${t1}$, intent(in) :: A(:)
-        logical, intent(in) :: sorted_output
         ${t1}$, allocatable, intent(inout) :: output(:)
+        logical, optional, intent(in) :: sorted_output
         #:if t1.startswith('real')
         ${t1}$, optional, intent(in) :: tolerance
         #:endif
@@ -24,6 +24,7 @@ contains
         #:if t1.startswith('real')
         ${t1}$ :: tolerance_
         #:endif
+        logical ::sorted_output_
         ${t1}$, allocatable:: temp(:)
 
         if(size(A) == 0) then
@@ -34,12 +35,13 @@ contains
             return
         end if
 
+        sorted_output_ = optval(sorted_output, .false.)
         #:if t1.startswith('real')
         tolerance_ = optval(tolerance, 0.0_${name1}$)
         if(tolerance_ < 0.0_${name1}$) error stop "tolerance must be non-negative"
         #:endif
         allocate(temp, source=A)
-        if(sorted_output) then
+        if(sorted_output_) then
             call sort_unique(temp, output${", tolerance_" if t1.startswith('real') else ""}$)
         else
 #if !STDLIB_HASHMAPS
