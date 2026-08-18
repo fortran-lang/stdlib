@@ -677,7 +677,7 @@ non-decreasing order. Otherwise, the result contains the unique
 elements in the order of their first occurrence.
 
 `output`: shall be an allocatable rank-one array of the same type and
-kind as `array`. It is an `intent(inout)` argument. On return, it
+kind as `array`. It is an `intent(out)` argument. On return, it
 contains one copy of each distinct element of `array`.
 
 `tolerance` (optional): shall be a scalar of the same real kind as `array`.
