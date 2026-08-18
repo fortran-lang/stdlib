@@ -487,7 +487,7 @@ module stdlib_sorting
 !! order of first occurrence or be returned in sorted order.
 !!
 !! Its use has the syntax: 
-!!     call unique(array, sorted_output, output[, tolerance] )
+!!     call unique(array, output[, sorted_output, tolerance] )
 !!
 !! with the arguments:
 !! * array: the rank-1 input array. It is an `intent(in)` argument of any
@@ -523,7 +523,7 @@ module stdlib_sorting
 !!    integer :: a(8) = [4, 2, 4, 1, 2, 3, 1, 5]
 !!    integer, allocatable :: b(:)
 !!
-!!    call unique(a, .false., b)
+!!    call unique(a, b, .false.)
 !!    ! b = [4, 2, 1, 3, 5]
 !!```
 !!
@@ -533,7 +533,7 @@ module stdlib_sorting
 !!    integer :: a(8) = [4, 2, 4, 1, 2, 3, 1, 5]
 !!    integer, allocatable :: b(:)
 !!
-!!    call unique(a, .true., b)
+!!    call unique(a, b, .true.)
 !!    ! b = [1, 2, 3, 4, 5]
 !!```
 
@@ -731,11 +731,11 @@ module stdlib_sorting
 !! Version: experimental
 !!
 #:if t1.startswith('real')
-!! `call ${name1}$_unique(array, sorted_output, output[, tolerance])`
+!! `call ${name1}$_unique(array, output[, sorted_output, tolerance])`
 !! stores the distinct elements of the input array of type `${t1}$` in
 !! `output`.
 #:else
-!! `call ${name1}$_unique(array, sorted_output, output)` stores the
+!! `call ${name1}$_unique(array, output[, sorted_output])` stores the
 !! distinct elements of the input array of type `${t1}$` in `output`.
 #:endif
             ${t1}$, intent(in) :: A(:)

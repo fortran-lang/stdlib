@@ -658,7 +658,7 @@ Computes the distinct elements of the input array and stores them in
 
 ##### Syntax
 
-`call ` [[stdlib_sorting(module):unique(interface)]] `( array, sorted_output, output[, tolerance] )`
+`call ` [[stdlib_sorting(module):unique(interface)]] `( array, output[, sorted_output, tolerance] )`
 
 ##### Class
 
