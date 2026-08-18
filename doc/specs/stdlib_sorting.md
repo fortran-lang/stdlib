@@ -667,7 +667,7 @@ Generic subroutine.
 ##### Arguments
 
 `array`: shall be a rank one array of any supported kind of the types `integer`,
-`real` and `character`. It is an `intent(in)` argument.
+`real`, `character` and `string_type`. It is an `intent(in)` argument.
 
 `output`: shall be an allocatable rank-one array of the same type and
 kind as `array`. It is an `intent(inout)` argument. On return, it

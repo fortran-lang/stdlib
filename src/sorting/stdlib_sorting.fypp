@@ -15,7 +15,7 @@
 #:set IRSCB_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME &
     & + BITSETS_TYPES_ALT_NAME
 #:set IR_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME
-#:set IRC_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME
+#:set IRSC_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME
 
 !! Licensing:
 !!
@@ -492,7 +492,8 @@ module stdlib_sorting
 !!
 !! with the arguments:
 !! * array: the rank-1 input array. It is an `intent(in)` argument of any
-!!   supported kind of the types `integer`, `real` and `character`.
+!!   supported kind of the types `integer`, `real`, `character`, and
+!!   `string_type`.
 !!
 !! * sorted_output(optional): a scalar of type default logical. It is an
 !!   `intent(in)` argument. If `.true.`, the returned array contains the
@@ -522,7 +523,7 @@ module stdlib_sorting
 !!    integer :: a(8) = [4, 2, 4, 1, 2, 3, 1, 5]
 !!    integer, allocatable :: b(:)
 !!
-!!    call unique(a, b, .false.)
+!!    call unique(a, b)
 !!    ! b = [4, 2, 1, 3, 5]
 !!```
 !!
@@ -726,7 +727,7 @@ module stdlib_sorting
 !! difference is less than or equal to `TOLERANCE` are considered
 !! equal. The `TOLERANCE` argument is not available for integer
 !! overloads.
-    #:for t1, t2, name1, cpp1 in IRC_INDEX_TYPES_ALT_NAME
+    #:for t1, t2, name1, cpp1 in IRSC_INDEX_TYPES_ALT_NAME
         module subroutine ${name1}$_unique(array, output, sorted_output${", tolerance" if t1.startswith('real') else ""}$)
 !! Version: experimental
 !!
@@ -749,7 +750,7 @@ module stdlib_sorting
     end interface
 
     interface sort_unique
-        #:for t1, t2, name1, cpp1 in IRC_INDEX_TYPES_ALT_NAME
+        #:for t1, t2, name1, cpp1 in IRSC_INDEX_TYPES_ALT_NAME
         module subroutine ${name1}$_sort_unique(array, output${", tolerance" if t1.startswith('real') else ""}$)
             ${t1}$, intent(inout) :: array(:)
             #:if t1.startswith('real')
@@ -761,7 +762,7 @@ module stdlib_sorting
     end interface
 
     interface unsorted_unique
-        #:for t1, t2, name1, cpp1 in IRC_INDEX_TYPES_ALT_NAME
+        #:for t1, t2, name1, cpp1 in IRSC_INDEX_TYPES_ALT_NAME
         #:if name1 != 'xdp'
         module subroutine ${name1}$_unsorted_unique(array, output)
             ${t1}$, intent(in) :: array(:)

@@ -3,7 +3,8 @@
 #:set INT_TYPES_ALT_NAME = list(zip(INT_TYPES, INT_TYPES, INT_KINDS, INT_CPPS))
 #:set REAL_TYPES_ALT_NAME = list(zip(REAL_TYPES, REAL_TYPES, REAL_KINDS, REAL_CPPS))
 #:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"], ["character(len=len(array))"], ["char"], [""]))
-#:set IRC_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME
+#:set STRING_TYPES_ALT_NAME = list(zip(STRING_TYPES, STRING_TYPES, STRING_KINDS, STRING_CPPS))
+#:set IRSC_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME
 
 submodule(stdlib_sorting) stdlib_sorting_unique
 #if STDLIB_HASHMAPS
@@ -11,10 +12,11 @@ submodule(stdlib_sorting) stdlib_sorting_unique
     use stdlib_hashmap_wrappers, only: key_type, set
 #endif
     use stdlib_constants
+    use stdlib_string_type, only: string_type, char_string => char, operator(==), operator(/=)
     implicit none
 
 contains
-    #:for t1, t2, name1, cpp1 in IRC_INDEX_TYPES_ALT_NAME
+    #:for t1, t2, name1, cpp1 in IRSC_INDEX_TYPES_ALT_NAME
     module subroutine ${name1}$_unique(array, output, sorted_output${", tolerance" if t1.startswith('real') else ""}$)
         ${t1}$, intent(in) :: array(:)
         ${t2}$, allocatable, intent(inout) :: output(:)
@@ -62,7 +64,7 @@ contains
     end subroutine
     #:endfor
 
-    #:for t1, t2, name1, cpp1 in IRC_INDEX_TYPES_ALT_NAME
+    #:for t1, t2, name1, cpp1 in IRSC_INDEX_TYPES_ALT_NAME
     module subroutine ${name1}$_sort_unique(array, output${", tolerance" if t1.startswith('real') else ""}$)
         ${t1}$, intent(inout) :: array(:)
         ${t2}$, allocatable, intent(inout) :: output(:)
@@ -102,7 +104,7 @@ contains
     #:endfor
 
 #if STDLIB_HASHMAPS
-    #:for t1, t2, name1, cpp1 in IRC_INDEX_TYPES_ALT_NAME
+    #:for t1, t2, name1, cpp1 in IRSC_INDEX_TYPES_ALT_NAME
     #:if name1 != 'xdp'
     module subroutine ${name1}$_unsorted_unique(array, output)
         ${t1}$, intent(in) :: array(:)
@@ -112,7 +114,7 @@ contains
         logical, allocatable :: mask(:)
         logical :: present
         integer :: i
-        #:if t1.startswith('char')
+        #:if t1.startswith('char') or name1.startswith('string')
         type(key_type) :: key
         #:else
         integer(int8) :: key(storage_size(array(1))/8)
@@ -123,6 +125,8 @@ contains
         do i = 1, size(array)
             #:if t1.startswith('char')
             call set(key, array(i))
+            #:elif name1.startswith('string')
+            call set(key, char_string(array(i)))
             #:else
             key = transfer(array(i), key)
             #:endif
