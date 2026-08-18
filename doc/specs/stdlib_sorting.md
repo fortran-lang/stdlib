@@ -667,10 +667,10 @@ Generic subroutine.
 ##### Arguments
 
 `array`: shall be a rank one array of any supported kind of the types `integer`,
-and `real`. It is an `intent(in)` argument.
+`real` and `character`. It is an `intent(in)` argument.
 
 `output`: shall be an allocatable rank-one array of the same type and
-kind as `array`. It is an `intent(out)` argument. On return, it
+kind as `array`. It is an `intent(inout)` argument. On return, it
 contains one copy of each distinct element of `array`.
 
 `sorted_output` (optional): shall be a scalar of type default logical.

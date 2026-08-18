@@ -2,11 +2,13 @@
 #:include "common.fypp"
 #:set INT_TYPES_ALT_NAME = list(zip(INT_TYPES, INT_TYPES, INT_KINDS, INT_CPPS))
 #:set REAL_TYPES_ALT_NAME = list(zip(REAL_TYPES, REAL_TYPES, REAL_KINDS, REAL_CPPS))
+#:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"], ["character(len=len(array))"], ["char"], [""]))
 #:set IR_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME
 
 submodule(stdlib_sorting) stdlib_sorting_unique
 #if STDLIB_HASHMAPS
     use stdlib_hashmaps, only: chaining_hashmap_type
+    use stdlib_hashmap_wrappers, only: key_type, set
 #endif
     use stdlib_constants
     implicit none
@@ -60,6 +62,38 @@ contains
     end subroutine
     #:endfor
 
+    #:for t1, t2, name1, cpp1 in CHAR_TYPES_ALT_NAME
+    module subroutine ${name1}$_unique(A, output, sorted_output)
+        ${t1}$, intent(in) :: A(:)
+        character(len=len(A)), allocatable, intent(inout) :: output(:)
+        logical, optional, intent(in) :: sorted_output
+
+        logical :: sorted_output_
+        character(len=len(A)), allocatable :: temp(:)
+
+        if(size(A) == 0) then
+            if (allocated(output)) then
+                deallocate(output)
+            end if
+            allocate(output(0))
+            return
+        end if
+
+        sorted_output_ = optval(sorted_output, .false.)
+        allocate(temp, source=A)
+        if(sorted_output_) then
+            call sort_unique(temp, output)
+        else
+#if !STDLIB_HASHMAPS
+            error stop "unsorted version requires STDLIB_HASHMAPS"
+#endif
+            call unsorted_unique(temp, output)
+        end if
+        deallocate(temp)
+    end subroutine
+    #:endfor
+
+
     #:for t1, t2, name1, cpp1 in IR_INDEX_TYPES_ALT_NAME
     module subroutine ${name1}$_sort_unique(temp, output${", tolerance" if t1.startswith('real') else ""}$)
         ${t1}$, intent(inout) :: temp(:)
@@ -87,6 +121,31 @@ contains
             #:else
             mask(i) = temp(i) /= temp(i-1)
             #:endif
+        end do
+        if (.not. allocated(output)) then
+            allocate(output(size(temp)))
+        else if (size(output) < size(temp)) then
+            deallocate(output)
+            allocate(output(size(temp)))
+        end if
+        output = pack(temp, mask)
+        deallocate(mask)
+    end subroutine
+    #:endfor
+
+    #:for t1, t2, name1, cpp1 in CHAR_TYPES_ALT_NAME
+    module subroutine ${name1}$_sort_unique(temp, output)
+        ${t1}$, intent(inout) :: temp(:)
+        character(len=len(temp)), allocatable, intent(inout) :: output(:)
+
+        logical, allocatable :: mask(:)
+        integer :: i
+
+        allocate(mask(size(temp)))
+        mask(1) = .true.
+        call sort(temp)
+        do i = 2, size(temp)
+            mask(i) = temp(i) /= temp(i-1)
         end do
         if (.not. allocated(output)) then
             allocate(output(size(temp)))
@@ -136,6 +195,41 @@ contains
     end subroutine
     #:endif
     #:endfor
+
+    #:for t1, t2, name1, cpp1 in CHAR_TYPES_ALT_NAME
+    module subroutine ${name1}$_unsorted_unique(temp, output)
+        ${t1}$, intent(in) :: temp(:)
+        character(len=len(temp)), allocatable, intent(inout) :: output(:)
+
+        type(chaining_hashmap_type) :: map
+        type(key_type) :: key
+        logical, allocatable :: mask(:)
+        logical :: present
+        integer :: i
+
+        call map%init()
+        allocate(mask(size(temp)))
+        do i = 1, size(temp)
+            call set(key, temp(i))
+            call map%key_test(key, present)
+            if (.not. present) then
+                call map%map_entry(key)
+                mask(i) = .true.
+            else
+                mask(i) = .false.
+            end if
+        end do
+        if (.not. allocated(output)) then
+            allocate(output(size(temp)))
+        else if (size(output) < size(temp)) then
+            deallocate(output)
+            allocate(output(size(temp)))
+        end if
+        output = pack(temp, mask)
+        deallocate(mask)
+    end subroutine
+    #:endfor
+
 #endif
 
 end submodule stdlib_sorting_unique
