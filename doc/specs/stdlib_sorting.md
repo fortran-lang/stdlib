@@ -669,22 +669,23 @@ Generic subroutine.
 `array`: shall be a rank one array of any supported kind of the types `integer`,
 and `real`. It is an `intent(in)` argument.
 
-`sorted_output`: shall be a scalar of type default logical.
+`output`: shall be an allocatable rank-one array of the same type and
+kind as `array`. It is an `intent(out)` argument. On return, it
+contains one copy of each distinct element of `array`.
+
+`sorted_output` (optional): shall be a scalar of type default logical.
 It is an `intent(in)` argument. If `.true.`, the result contains
 the unique elements in increasing order. Otherwise, the result
 contains the unique elements in the order of their first occurrence.
 `SORTED_OUTPUT` is `.false.` by default.
-
-`output`: shall be an allocatable rank-one array of the same type and
-kind as `array`. It is an `intent(out)` argument. On return, it
-contains one copy of each distinct element of `array`.
 
 `tolerance` (optional): shall be a scalar of the same real kind as `array`.
 It is an `intent(in)` argument specifying the tolerance used when
 comparing values in sorted order. Two values whose absolute
 difference is less than or equal to `tolerance` are considered
 equal. If omitted, tolerance defaults to zero. This argument is only
-available for real arrays.
+available for real arrays. `tolerance` may only be supplied when `sorted_output`
+is `.true.`.
 
 ##### Notes
 

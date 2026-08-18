@@ -24,8 +24,8 @@ contains
         #:if t1.startswith('real')
         ${t1}$ :: tolerance_
         #:endif
-        logical ::sorted_output_
-        ${t1}$, allocatable:: temp(:)
+        logical :: sorted_output_
+        ${t1}$, allocatable :: temp(:)
 
         if(size(A) == 0) then
             if (allocated(output)) then
@@ -37,6 +37,9 @@ contains
 
         sorted_output_ = optval(sorted_output, .false.)
         #:if t1.startswith('real')
+        if (.not. sorted_output_ .and. present(tolerance)) then
+            error stop "tolerance requires sorted_output=.true."
+        end if
         tolerance_ = optval(tolerance, 0.0_${name1}$)
         if(tolerance_ < 0.0_${name1}$) error stop "tolerance must be non-negative"
         #:endif

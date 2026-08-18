@@ -495,9 +495,9 @@ module stdlib_sorting
 !!   `integer(int64)`, `real(real32)`, `real(real64)`, or
 !!   `real(real128)`.
 !!
-!! * sorted_output: a scalar of type default logical. It is an
+!! * sorted_output(optional): a scalar of type default logical. It is an
 !!   `intent(in)` argument. If `.true.`, the returned array contains the
-!!   unique elements sorted in non-decreasing order. Otherwise, the unique
+!!   unique elements sorted in increasing order. Otherwise, the unique
 !!   elements are returned in the order of their first appearance in
 !!   `array`. `SORTED_OUTPUT` is `.false.` by default.
 !!
