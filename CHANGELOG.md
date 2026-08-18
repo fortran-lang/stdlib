@@ -1,7 +1,7 @@
 ## Unreleased
 
 Changes to existing modules
-  - Fix negative-argument incomplete gamma functions and uninitialized-result
+  - Enforce incomplete gamma argument domains and fix uninitialized-result
     diagnostics
     [#898](https://github.com/fortran-lang/stdlib/issues/898)
 
