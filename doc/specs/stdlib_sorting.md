@@ -670,10 +670,10 @@ Generic subroutine.
 and `real`. It is an `intent(in)` argument.
 
 `sorted_output`: shall be a scalar of type default logical.
-It is an `intent(in)` argument.
-If `.true.`, the result contains the unique elements in
-non-decreasing order. Otherwise, the result contains the unique
-elements in the order of their first occurrence.
+It is an `intent(in)` argument. If `.true.`, the result contains
+the unique elements in increasing order. Otherwise, the result
+contains the unique elements in the order of their first occurrence.
+`SORTED_OUTPUT` is `.false.` by default.
 
 `output`: shall be an allocatable rank-one array of the same type and
 kind as `array`. It is an `intent(out)` argument. On return, it

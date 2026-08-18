@@ -499,7 +499,7 @@ module stdlib_sorting
 !!   `intent(in)` argument. If `.true.`, the returned array contains the
 !!   unique elements sorted in non-decreasing order. Otherwise, the unique
 !!   elements are returned in the order of their first appearance in
-!!   `array`.
+!!   `array`. `SORTED_OUTPUT` is `.false.` by default.
 !!
 !! * `tolerance` (optional): It is an `intent(in)` argument available only
 !!    for real arrays. When `sorted_output` is `.true.`, two values
@@ -719,7 +719,8 @@ module stdlib_sorting
 !!
 !! The output array either preserves the order of first occurrence or
 !! contains the distinct elements in sorted order, depending on the
-!! value of the `SORTED_OUTPUT` argument.
+!! value of the `SORTED_OUTPUT` argument. `SORTED_OUTPUT` is `.false.`
+!! by default.
 !!
 !! For real arrays, an optional `TOLERANCE` argument may be supplied
 !! when `SORTED_OUTPUT` is `.true.`. Two values whose absolute
