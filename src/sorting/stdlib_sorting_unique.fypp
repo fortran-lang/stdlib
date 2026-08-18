@@ -4,7 +4,9 @@
 #:set REAL_TYPES_ALT_NAME = list(zip(REAL_TYPES, REAL_TYPES, REAL_KINDS, REAL_CPPS))
 #:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"], ["character(len=len(array))"], ["char"], [""]))
 #:set STRING_TYPES_ALT_NAME = list(zip(STRING_TYPES, STRING_TYPES, STRING_KINDS, STRING_CPPS))
-#:set IRSC_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME
+#:set CMPLX_TYPES_ALT_NAME = list(zip(CMPLX_TYPES, CMPLX_TYPES, CMPLX_SUFFIX, len(CMPLX_TYPES) * [""]))
+#:set IRSCX_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME &
+    & + CMPLX_TYPES_ALT_NAME
 
 submodule(stdlib_sorting) stdlib_sorting_unique
 #if STDLIB_HASHMAPS
@@ -16,11 +18,14 @@ submodule(stdlib_sorting) stdlib_sorting_unique
     implicit none
 
 contains
-    #:for t1, t2, name1, cpp1 in IRSC_INDEX_TYPES_ALT_NAME
-    module subroutine ${name1}$_unique(array, output, sorted_output${", tolerance" if t1.startswith('real') else ""}$)
+    #:for t1, t2, name1, cpp1 in IRSCX_INDEX_TYPES_ALT_NAME
+    module subroutine ${name1}$_unique(array, output${", sorted_output" if not t1.startswith('complex') else ""}$ &
+                                        ${", tolerance" if t1.startswith('real') else ""}$)
         ${t1}$, intent(in) :: array(:)
         ${t2}$, allocatable, intent(inout) :: output(:)
+        #:if not t1.startswith('complex')
         logical, optional, intent(in) :: sorted_output
+        #:endif
         #:if t1.startswith('real')
         ${t1}$, optional, intent(in) :: tolerance
         #:endif
@@ -28,8 +33,10 @@ contains
         #:if t1.startswith('real')
         ${t1}$ :: tolerance_
         #:endif
+        #:if not t1.startswith('complex')
         logical :: sorted_output_
         ${t2}$, allocatable :: temp(:)
+        #:endif
 
         if(size(array) == 0) then
             if (allocated(output)) then
@@ -39,7 +46,10 @@ contains
             return
         end if
 
+        #:if not t1.startswith('complex')
         sorted_output_ = optval(sorted_output, .false.)
+        #:endif
+
         #:if t1.startswith('real')
         if (.not. sorted_output_ .and. present(tolerance)) then
             error stop "tolerance requires sorted_output=.true."
@@ -47,24 +57,29 @@ contains
         tolerance_ = optval(tolerance, 0.0_${name1}$)
         if(tolerance_ < 0.0_${name1}$) error stop "tolerance must be non-negative"
         #:endif
-        allocate(temp, source=array)
+        #:if not t1.startswith('complex')
         if(sorted_output_) then
+            allocate(temp, source=array)
             call sort_unique(temp, output${", tolerance_" if t1.startswith('real') else ""}$)
+            deallocate(temp)
         else
+        #:endif
 #if !STDLIB_HASHMAPS
-            error stop "unsorted version requires STDLIB_HASHMAPS"
+                error stop "unsorted version requires STDLIB_HASHMAPS"
 #endif
-        #:if name1 != 'xdp'
-            call unsorted_unique(temp, output)
+        #:if name1 != 'xdp' and name1 != 'cxdp'
+            call unsorted_unique(array, output)
         #:else
             error stop 'unsorted version does not support xdp kinds'
         #:endif
+        #:if not t1.startswith('complex')
         end if
-        deallocate(temp)
+        #:endif
     end subroutine
     #:endfor
 
-    #:for t1, t2, name1, cpp1 in IRSC_INDEX_TYPES_ALT_NAME
+    #:for t1, t2, name1, cpp1 in IRSCX_INDEX_TYPES_ALT_NAME
+    #:if not t1.startswith('complex')
     module subroutine ${name1}$_sort_unique(array, output${", tolerance" if t1.startswith('real') else ""}$)
         ${t1}$, intent(inout) :: array(:)
         ${t2}$, allocatable, intent(inout) :: output(:)
@@ -101,11 +116,12 @@ contains
         output = pack(array, mask)
         deallocate(mask)
     end subroutine
+    #:endif
     #:endfor
 
 #if STDLIB_HASHMAPS
-    #:for t1, t2, name1, cpp1 in IRSC_INDEX_TYPES_ALT_NAME
-    #:if name1 != 'xdp'
+    #:for t1, t2, name1, cpp1 in IRSCX_INDEX_TYPES_ALT_NAME
+    #:if name1 != 'xdp' and name1 != 'cxdp'
     module subroutine ${name1}$_unsorted_unique(array, output)
         ${t1}$, intent(in) :: array(:)
         ${t2}$, allocatable, intent(inout) :: output(:)

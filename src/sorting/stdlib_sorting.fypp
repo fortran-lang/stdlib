@@ -6,7 +6,7 @@
 #:set STRING_TYPES_ALT_NAME = list(zip(STRING_TYPES, STRING_TYPES, STRING_KINDS, STRING_CPPS))
 #:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"], ["character(len=len(array))"], ["char"], [""]))
 #:set BITSETS_TYPES_ALT_NAME = list(zip(BITSETS_TYPES, BITSETS_TYPES, BITSETS_KINDS, BITSETS_CPPS))
-
+#:set CMPLX_TYPES_ALT_NAME = list(zip(CMPLX_TYPES, CMPLX_TYPES, CMPLX_SUFFIX, len(CMPLX_TYPES) * [""]))
 #:set INT_INDEX_TYPES_ALT_NAME = list(zip(["int_index", "int_index_low"], ["integer(int_index)", "integer(int_index_low)"], ["default", "low"]))
 
 #! For better code reuse in fypp, make lists that contain the input types,
@@ -15,7 +15,8 @@
 #:set IRSCB_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME &
     & + BITSETS_TYPES_ALT_NAME
 #:set IR_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME
-#:set IRSC_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME
+#:set IRSCX_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME &
+    & + CMPLX_TYPES_ALT_NAME
 
 !! Licensing:
 !!
@@ -487,19 +488,20 @@ module stdlib_sorting
 !! distinct elements of a rank-1 array. The result may either preserve the
 !! order of first occurrence or be returned in sorted order.
 !!
-!! Its use has the syntax: 
+!! Its use has the syntax:
 !!     call unique(array, output[, sorted_output, tolerance] )
 !!
 !! with the arguments:
 !! * array: the rank-1 input array. It is an `intent(in)` argument of any
-!!   supported kind of the types `integer`, `real`, `character`, and
-!!   `string_type`.
+!!   supported kind of the types `integer`, `real`, `character`, `string_type`
+!!   and `complex`.
 !!
-!! * sorted_output(optional): a scalar of type default logical. It is an
+!! * sorted_output (optional): a scalar of type default logical. It is an
 !!   `intent(in)` argument. If `.true.`, the returned array contains the
 !!   unique elements sorted in increasing order. Otherwise, the unique
 !!   elements are returned in the order of their first appearance in
-!!   `array`. `SORTED_OUTPUT` is `.false.` by default.
+!!   `array`. `SORTED_OUTPUT` is `.false.` by default. This argument is
+!!   not available for complex arrays.
 !!
 !! * `tolerance` (optional): It is an `intent(in)` argument available only
 !!    for real arrays. When `sorted_output` is `.true.`, two values
@@ -511,9 +513,9 @@ module stdlib_sorting
 !! containing one copy of each distinct element.
 !!
 !! **Note:** The unsorted (`sorted_output = .false.`) implementation is
-!! currently unavailable for `real(`xdp`)` because hashing is
-!! performed on the underlying binary representation, which is not
-!! sufficiently portable for this kind.
+!! currently unavailable for `real(`xdp`)` and `complex(`xdp`)` because 
+!! hashing is performed on the underlying binary representation, which 
+!! is not sufficiently portable for these kinds.
 !!
 !!#### Examples
 !!
@@ -720,15 +722,20 @@ module stdlib_sorting
 !! The output array either preserves the order of first occurrence or
 !! contains the distinct elements in sorted order, depending on the
 !! value of the `SORTED_OUTPUT` argument. `SORTED_OUTPUT` is `.false.`
-!! by default.
+!! by default. The `SORTED_OUTPUT` argument is not available for complex
+!! overloads. 
 !!
 !! For real arrays, an optional `TOLERANCE` argument may be supplied
 !! when `SORTED_OUTPUT` is `.true.`. Two values whose absolute
 !! difference is less than or equal to `TOLERANCE` are considered
-!! equal. The `TOLERANCE` argument is not available for integer
-!! overloads.
-    #:for t1, t2, name1, cpp1 in IRSC_INDEX_TYPES_ALT_NAME
-        module subroutine ${name1}$_unique(array, output, sorted_output${", tolerance" if t1.startswith('real') else ""}$)
+!! equal.
+!!
+!! For complex arrays, only the unsorted implementation is available.
+!! The distinct elements are returned in the order of their first
+!! occurrence.
+    #:for t1, t2, name1, cpp1 in IRSCX_INDEX_TYPES_ALT_NAME
+        module subroutine ${name1}$_unique(array, output${", sorted_output" if not t1.startswith('complex') else ""}$ &
+                                        ${", tolerance" if t1.startswith('real') else ""}$)
 !! Version: experimental
 !!
 #:if t1.startswith('real')
@@ -741,7 +748,9 @@ module stdlib_sorting
 #:endif
             ${t1}$, intent(in) :: array(:)
             ${t2}$, allocatable, intent(inout) :: output(:)
+            #:if not t1.startswith('complex')
             logical, optional, intent(in) :: sorted_output
+            #:endif
             #:if t1.startswith('real')
             ${t1}$, optional, intent(in) :: tolerance
             #:endif
@@ -750,7 +759,8 @@ module stdlib_sorting
     end interface
 
     interface sort_unique
-        #:for t1, t2, name1, cpp1 in IRSC_INDEX_TYPES_ALT_NAME
+        #:for t1, t2, name1, cpp1 in IRSCX_INDEX_TYPES_ALT_NAME
+        #:if not t1.startswith('complex')
         module subroutine ${name1}$_sort_unique(array, output${", tolerance" if t1.startswith('real') else ""}$)
             ${t1}$, intent(inout) :: array(:)
             #:if t1.startswith('real')
@@ -758,12 +768,13 @@ module stdlib_sorting
             #:endif
             ${t2}$, allocatable, intent(inout) :: output(:)
         end subroutine
+        #:endif
         #:endfor
     end interface
 
     interface unsorted_unique
-        #:for t1, t2, name1, cpp1 in IRSC_INDEX_TYPES_ALT_NAME
-        #:if name1 != 'xdp'
+        #:for t1, t2, name1, cpp1 in IRSCX_INDEX_TYPES_ALT_NAME
+        #:if name1 != 'xdp' and name1 != 'cxdp'
         module subroutine ${name1}$_unsorted_unique(array, output)
             ${t1}$, intent(in) :: array(:)
             ${t2}$, allocatable, intent(inout) :: output(:)

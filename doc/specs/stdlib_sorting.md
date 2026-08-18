@@ -667,7 +667,7 @@ Generic subroutine.
 ##### Arguments
 
 `array`: shall be a rank one array of any supported kind of the types `integer`,
-`real`, `character` and `string_type`. It is an `intent(in)` argument.
+`real`, `character`, `string_type` and `complex`. It is an `intent(in)` argument.
 
 `output`: shall be an allocatable rank-one array of the same type and
 kind as `array`. It is an `intent(inout)` argument. On return, it
@@ -677,7 +677,8 @@ contains one copy of each distinct element of `array`.
 It is an `intent(in)` argument. If `.true.`, the result contains
 the unique elements in increasing order. Otherwise, the result
 contains the unique elements in the order of their first occurrence.
-`SORTED_OUTPUT` is `.false.` by default.
+`SORTED_OUTPUT` is `.false.` by default. This argument is not available
+for complex arrays.
 
 `tolerance` (optional): shall be a scalar of the same real kind as `array`.
 It is an `intent(in)` argument specifying the tolerance used when
@@ -689,10 +690,10 @@ is `.true.`.
 
 ##### Notes
 
-The unsorted (`sorted_output = .false.`) implementation is
-currently unavailable for `real(xdp)` because hashing is
+The unsorted (`sorted_output = .false.`) implementation is currently
+unavailable for `real(xdp)` and `complex(`xdp`)` because hashing is
 performed on the underlying binary representation, which is not
-sufficiently portable for this kind.
+sufficiently portable for these kinds.
 
 ##### Example
 

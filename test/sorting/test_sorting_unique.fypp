@@ -4,6 +4,7 @@
 #:set REAL_TYPES_ALT_NAME = list(zip(REAL_TYPES, REAL_TYPES, REAL_KINDS, REAL_CPPS))
 #:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"], ["character(len=len(array))"], ["char"], [""]))
 #:set STRING_TYPES_ALT_NAME = list(zip(STRING_TYPES, STRING_TYPES, STRING_KINDS, STRING_CPPS))
+#:set CMPLX_TYPES_ALT_NAME = list(zip(CMPLX_TYPES, CMPLX_TYPES, CMPLX_KINDS, len(CMPLX_TYPES) * [""]))
 #:set IRSC_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME
 module test_sorting_unique
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
@@ -23,7 +24,8 @@ contains
             new_unittest('int', test_int),&
             new_unittest('real', test_real),&
             new_unittest('char', test_char), &
-            new_unittest('string', test_string) &
+            new_unittest('string', test_string), &
+            new_unittest('complex', test_complex) &
         ]
     end subroutine
 
@@ -514,6 +516,119 @@ contains
             if(allocated(error)) return
 #endif
         end block
+        #:endfor
+    end subroutine
+
+    subroutine test_complex(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for t1, t2, name1, cpp1 in CMPLX_TYPES_ALT_NAME
+        #:if name1 != 'xdp'
+        block
+            ${t1}$, allocatable :: A(:)
+            ${t1}$, allocatable :: output(:)
+            ${t1}$, allocatable :: expected(:)
+
+            allocate(A(0))
+            call unique(A, output)
+            allocate(expected(0))
+            call check(error, all(output == expected), .true., &
+                "Unsorted(${name1}$): empty array")
+            if (allocated(error)) return
+
+            A = [complex(${name1}$) :: &
+                (1.0_${name1}$, 2.0_${name1}$)]
+            call unique(A, output)
+            expected = [complex(${name1}$) :: &
+                        (1.0_${name1}$, 2.0_${name1}$)]
+            call check(error, all(output == expected), .true., &
+                "Unsorted(${name1}$): single element")
+            if (allocated(error)) return
+
+            A = [complex(${name1}$) :: &
+                (1.0_${name1}$, 2.0_${name1}$), &
+                (1.0_${name1}$, 2.0_${name1}$), &
+                (1.0_${name1}$, 2.0_${name1}$), &
+                (1.0_${name1}$, 2.0_${name1}$)]
+            call unique(A, output)
+            expected = [complex(${name1}$) :: &
+                        (1.0_${name1}$, 2.0_${name1}$)]
+            call check(error, all(output == expected), .true., &
+                "Unsorted(${name1}$): all duplicates")
+            if (allocated(error)) return
+
+            A = [complex(${name1}$) :: &
+                (1.0_${name1}$, 1.0_${name1}$), &
+                (2.0_${name1}$, 2.0_${name1}$), &
+                (3.0_${name1}$, 3.0_${name1}$), &
+                (4.0_${name1}$, 4.0_${name1}$)]
+            call unique(A, output)
+            expected = [complex(${name1}$) :: &
+                        (1.0_${name1}$, 1.0_${name1}$), &
+                        (2.0_${name1}$, 2.0_${name1}$), &
+                        (3.0_${name1}$, 3.0_${name1}$), &
+                        (4.0_${name1}$, 4.0_${name1}$)]
+            call check(error, all(output == expected), .true., &
+                "Unsorted(${name1}$): already unique")
+            if (allocated(error)) return
+
+            A = [complex(${name1}$) :: &
+                (5.0_${name1}$, 2.0_${name1}$), &
+                (2.0_${name1}$, 3.0_${name1}$), &
+                (5.0_${name1}$, 2.0_${name1}$), &
+                (3.0_${name1}$, 4.0_${name1}$), &
+                (2.0_${name1}$, 3.0_${name1}$), &
+                (1.0_${name1}$, 5.0_${name1}$)]
+            call unique(A, output)
+            expected = [complex(${name1}$) :: &
+                        (5.0_${name1}$, 2.0_${name1}$), &
+                        (2.0_${name1}$, 3.0_${name1}$), &
+                        (3.0_${name1}$, 4.0_${name1}$), &
+                        (1.0_${name1}$, 5.0_${name1}$)]
+            call check(error, all(output == expected), .true., &
+                "Unsorted(${name1}$): mixed duplicates")
+            if (allocated(error)) return
+
+            A = [complex(${name1}$) :: &
+                (1.0_${name1}$, 0.0_${name1}$), &
+                (0.0_${name1}$, 1.0_${name1}$), &
+                (1.0_${name1}$, 0.0_${name1}$), &
+                (0.0_${name1}$, -1.0_${name1}$), &
+                (0.0_${name1}$, 1.0_${name1}$)]
+            call unique(A, output)
+            expected = [complex(${name1}$) :: &
+                        (1.0_${name1}$, 0.0_${name1}$), &
+                        (0.0_${name1}$, 1.0_${name1}$), &
+                        (0.0_${name1}$, -1.0_${name1}$)]
+            call check(error, all(output == expected), .true., &
+                "Unsorted(${name1}$): real and imaginary parts")
+            if (allocated(error)) return
+
+            A = [complex(${name1}$) :: &
+                (3.5_${name1}$, -1.2_${name1}$), &
+                (-2.1_${name1}$, 4.7_${name1}$), &
+                (0.5_${name1}$, 2.3_${name1}$), &
+                (3.5_${name1}$, -1.2_${name1}$), &
+                (-4.8_${name1}$, 0.9_${name1}$), &
+                (1.7_${name1}$, -3.6_${name1}$), &
+                (0.5_${name1}$, 2.3_${name1}$), &
+                (-2.1_${name1}$, 4.7_${name1}$), &
+                (6.2_${name1}$, -0.4_${name1}$), &
+                (1.7_${name1}$, -3.6_${name1}$)]
+            call unique(A, output)
+            expected = [complex(${name1}$) :: &
+                        (3.5_${name1}$, -1.2_${name1}$), &
+                        (-2.1_${name1}$, 4.7_${name1}$), &
+                        (0.5_${name1}$, 2.3_${name1}$), &
+                        (-4.8_${name1}$, 0.9_${name1}$), &
+                        (1.7_${name1}$, -3.6_${name1}$), &
+                        (6.2_${name1}$, -0.4_${name1}$)]
+            call check(error, all(output == expected), .true., &
+                "Unsorted(${name1}$): random values with duplicates")
+            if (allocated(error)) return
+        end block
+        #:endif
         #:endfor
     end subroutine
 end module
