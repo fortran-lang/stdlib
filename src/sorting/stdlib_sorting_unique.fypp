@@ -3,7 +3,7 @@
 #:set INT_TYPES_ALT_NAME = list(zip(INT_TYPES, INT_TYPES, INT_KINDS, INT_CPPS))
 #:set REAL_TYPES_ALT_NAME = list(zip(REAL_TYPES, REAL_TYPES, REAL_KINDS, REAL_CPPS))
 #:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"], ["character(len=len(array))"], ["char"], [""]))
-#:set IR_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME
+#:set IRC_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME
 
 submodule(stdlib_sorting) stdlib_sorting_unique
 #if STDLIB_HASHMAPS
@@ -14,10 +14,10 @@ submodule(stdlib_sorting) stdlib_sorting_unique
     implicit none
 
 contains
-    #:for t1, t2, name1, cpp1 in IR_INDEX_TYPES_ALT_NAME
-    module subroutine ${name1}$_unique(A, output, sorted_output${", tolerance" if t1.startswith('real') else ""}$)
-        ${t1}$, intent(in) :: A(:)
-        ${t1}$, allocatable, intent(inout) :: output(:)
+    #:for t1, t2, name1, cpp1 in IRC_INDEX_TYPES_ALT_NAME
+    module subroutine ${name1}$_unique(array, output, sorted_output${", tolerance" if t1.startswith('real') else ""}$)
+        ${t1}$, intent(in) :: array(:)
+        ${t2}$, allocatable, intent(inout) :: output(:)
         logical, optional, intent(in) :: sorted_output
         #:if t1.startswith('real')
         ${t1}$, optional, intent(in) :: tolerance
@@ -27,9 +27,9 @@ contains
         ${t1}$ :: tolerance_
         #:endif
         logical :: sorted_output_
-        ${t1}$, allocatable :: temp(:)
+        ${t2}$, allocatable :: temp(:)
 
-        if(size(A) == 0) then
+        if(size(array) == 0) then
             if (allocated(output)) then
                 deallocate(output)
             end if
@@ -45,7 +45,7 @@ contains
         tolerance_ = optval(tolerance, 0.0_${name1}$)
         if(tolerance_ < 0.0_${name1}$) error stop "tolerance must be non-negative"
         #:endif
-        allocate(temp, source=A)
+        allocate(temp, source=array)
         if(sorted_output_) then
             call sort_unique(temp, output${", tolerance_" if t1.startswith('real') else ""}$)
         else
@@ -62,42 +62,10 @@ contains
     end subroutine
     #:endfor
 
-    #:for t1, t2, name1, cpp1 in CHAR_TYPES_ALT_NAME
-    module subroutine ${name1}$_unique(A, output, sorted_output)
-        ${t1}$, intent(in) :: A(:)
-        character(len=len(A)), allocatable, intent(inout) :: output(:)
-        logical, optional, intent(in) :: sorted_output
-
-        logical :: sorted_output_
-        character(len=len(A)), allocatable :: temp(:)
-
-        if(size(A) == 0) then
-            if (allocated(output)) then
-                deallocate(output)
-            end if
-            allocate(output(0))
-            return
-        end if
-
-        sorted_output_ = optval(sorted_output, .false.)
-        allocate(temp, source=A)
-        if(sorted_output_) then
-            call sort_unique(temp, output)
-        else
-#if !STDLIB_HASHMAPS
-            error stop "unsorted version requires STDLIB_HASHMAPS"
-#endif
-            call unsorted_unique(temp, output)
-        end if
-        deallocate(temp)
-    end subroutine
-    #:endfor
-
-
-    #:for t1, t2, name1, cpp1 in IR_INDEX_TYPES_ALT_NAME
-    module subroutine ${name1}$_sort_unique(temp, output${", tolerance" if t1.startswith('real') else ""}$)
-        ${t1}$, intent(inout) :: temp(:)
-        ${t1}$, allocatable, intent(inout) :: output(:)
+    #:for t1, t2, name1, cpp1 in IRC_INDEX_TYPES_ALT_NAME
+    module subroutine ${name1}$_sort_unique(array, output${", tolerance" if t1.startswith('real') else ""}$)
+        ${t1}$, intent(inout) :: array(:)
+        ${t2}$, allocatable, intent(inout) :: output(:)
         #:if t1.startswith('real')
         ${t1}$, intent(in) :: tolerance
         #:endif
@@ -108,74 +76,56 @@ contains
         ${t1}$ :: last_unique
         #:endif
 
-        allocate(mask(size(temp)))
+        allocate(mask(size(array)))
         mask(1) = .true.
-        call sort(temp)
+        call sort(array)
         #:if t1.startswith('real')
-        last_unique = temp(1)
+        last_unique = array(1)
         #:endif
-        do i = 2, size(temp)
+        do i = 2, size(array)
             #:if t1.startswith('real')
-            mask(i) = abs(temp(i)-last_unique) > tolerance
-            if(mask(i)) last_unique = temp(i)
+            mask(i) = abs(array(i)-last_unique) > tolerance
+            if(mask(i)) last_unique = array(i)
             #:else
-            mask(i) = temp(i) /= temp(i-1)
+            mask(i) = array(i) /= array(i-1)
             #:endif
         end do
         if (.not. allocated(output)) then
-            allocate(output(size(temp)))
-        else if (size(output) < size(temp)) then
+            allocate(output(size(array)))
+        else if (size(output) < size(array)) then
             deallocate(output)
-            allocate(output(size(temp)))
+            allocate(output(size(array)))
         end if
-        output = pack(temp, mask)
-        deallocate(mask)
-    end subroutine
-    #:endfor
-
-    #:for t1, t2, name1, cpp1 in CHAR_TYPES_ALT_NAME
-    module subroutine ${name1}$_sort_unique(temp, output)
-        ${t1}$, intent(inout) :: temp(:)
-        character(len=len(temp)), allocatable, intent(inout) :: output(:)
-
-        logical, allocatable :: mask(:)
-        integer :: i
-
-        allocate(mask(size(temp)))
-        mask(1) = .true.
-        call sort(temp)
-        do i = 2, size(temp)
-            mask(i) = temp(i) /= temp(i-1)
-        end do
-        if (.not. allocated(output)) then
-            allocate(output(size(temp)))
-        else if (size(output) < size(temp)) then
-            deallocate(output)
-            allocate(output(size(temp)))
-        end if
-        output = pack(temp, mask)
+        output = pack(array, mask)
         deallocate(mask)
     end subroutine
     #:endfor
 
 #if STDLIB_HASHMAPS
-    #:for t1, t2, name1, cpp1 in IR_INDEX_TYPES_ALT_NAME
+    #:for t1, t2, name1, cpp1 in IRC_INDEX_TYPES_ALT_NAME
     #:if name1 != 'xdp'
-    module subroutine ${name1}$_unsorted_unique(temp, output)
-        ${t1}$, intent(in) :: temp(:)
-        ${t1}$, allocatable, intent(inout) :: output(:)
+    module subroutine ${name1}$_unsorted_unique(array, output)
+        ${t1}$, intent(in) :: array(:)
+        ${t2}$, allocatable, intent(inout) :: output(:)
 
         type(chaining_hashmap_type) :: map
         logical, allocatable :: mask(:)
         logical :: present
         integer :: i
-        integer(int8) :: key(storage_size(temp(1))/8)
+        #:if t1.startswith('char')
+        type(key_type) :: key
+        #:else
+        integer(int8) :: key(storage_size(array(1))/8)
+        #:endif
 
         call map%init()
-        allocate(mask(size(temp)))
-        do i = 1, size(temp)
-            key = 0
-            key = transfer(temp(i), key)
+        allocate(mask(size(array)))
+        do i = 1, size(array)
+            #:if t1.startswith('char')
+            call set(key, array(i))
+            #:else
+            key = transfer(array(i), key)
+            #:endif
             call map%key_test(key, present)
             if (.not. present) then
                 call map%map_entry(key)
@@ -185,51 +135,16 @@ contains
             end if
         end do
         if (.not. allocated(output)) then
-            allocate(output(size(temp)))
-        else if (size(output) < size(temp)) then
+            allocate(output(size(array)))
+        else if (size(output) < size(array)) then
             deallocate(output)
-            allocate(output(size(temp)))
+            allocate(output(size(array)))
         end if
-        output = pack(temp, mask)
+        output = pack(array, mask)
         deallocate(mask)
     end subroutine
     #:endif
     #:endfor
-
-    #:for t1, t2, name1, cpp1 in CHAR_TYPES_ALT_NAME
-    module subroutine ${name1}$_unsorted_unique(temp, output)
-        ${t1}$, intent(in) :: temp(:)
-        character(len=len(temp)), allocatable, intent(inout) :: output(:)
-
-        type(chaining_hashmap_type) :: map
-        type(key_type) :: key
-        logical, allocatable :: mask(:)
-        logical :: present
-        integer :: i
-
-        call map%init()
-        allocate(mask(size(temp)))
-        do i = 1, size(temp)
-            call set(key, temp(i))
-            call map%key_test(key, present)
-            if (.not. present) then
-                call map%map_entry(key)
-                mask(i) = .true.
-            else
-                mask(i) = .false.
-            end if
-        end do
-        if (.not. allocated(output)) then
-            allocate(output(size(temp)))
-        else if (size(output) < size(temp)) then
-            deallocate(output)
-            allocate(output(size(temp)))
-        end if
-        output = pack(temp, mask)
-        deallocate(mask)
-    end subroutine
-    #:endfor
-
 #endif
 
 end submodule stdlib_sorting_unique

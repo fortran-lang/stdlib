@@ -726,8 +726,8 @@ module stdlib_sorting
 !! difference is less than or equal to `TOLERANCE` are considered
 !! equal. The `TOLERANCE` argument is not available for integer
 !! overloads.
-    #:for t1, t2, name1, cpp1 in IR_INDEX_TYPES_ALT_NAME
-        module subroutine ${name1}$_unique(A, output, sorted_output${", tolerance" if t1.startswith('real') else ""}$)
+    #:for t1, t2, name1, cpp1 in IRC_INDEX_TYPES_ALT_NAME
+        module subroutine ${name1}$_unique(array, output, sorted_output${", tolerance" if t1.startswith('real') else ""}$)
 !! Version: experimental
 !!
 #:if t1.startswith('real')
@@ -738,7 +738,7 @@ module stdlib_sorting
 !! `call ${name1}$_unique(array, output[, sorted_output])` stores the
 !! distinct elements of the input array of type `${t1}$` in `output`.
 #:endif
-            ${t1}$, intent(in) :: A(:)
+            ${t1}$, intent(in) :: array(:)
             ${t2}$, allocatable, intent(inout) :: output(:)
             logical, optional, intent(in) :: sorted_output
             #:if t1.startswith('real')
@@ -746,54 +746,28 @@ module stdlib_sorting
             #:endif
         end subroutine
     #:endfor
-
-    #:for t1, t2, name1, cpp1 in CHAR_TYPES_ALT_NAME
-        module subroutine ${name1}$_unique(A, output, sorted_output)
-!! Version: experimental
-!!
-!! `call ${name1}$_unique(array, output[, sorted_output])` stores the
-!! distinct elements of the input array of type `${t1}$` in `output`.
-            ${t1}$, intent(in) :: A(:)
-            character(len=len(A)), allocatable, intent(inout) :: output(:)
-            logical, optional, intent(in) :: sorted_output
-        end subroutine
-    #:endfor
     end interface
 
     interface sort_unique
-        #:for t1, t2, name1, cpp1 in IR_INDEX_TYPES_ALT_NAME
-        module subroutine ${name1}$_sort_unique(temp, output${", tolerance" if t1.startswith('real') else ""}$)
-            ${t1}$, intent(inout) :: temp(:)
+        #:for t1, t2, name1, cpp1 in IRC_INDEX_TYPES_ALT_NAME
+        module subroutine ${name1}$_sort_unique(array, output${", tolerance" if t1.startswith('real') else ""}$)
+            ${t1}$, intent(inout) :: array(:)
             #:if t1.startswith('real')
             ${t1}$, intent(in) :: tolerance
             #:endif
             ${t2}$, allocatable, intent(inout) :: output(:)
         end subroutine
         #:endfor
-
-        #:for t1, t2, name1, cpp1 in CHAR_TYPES_ALT_NAME
-        module subroutine ${name1}$_sort_unique(temp, output)
-            ${t1}$, intent(inout) :: temp(:)
-            character(len=len(temp)), allocatable, intent(inout) :: output(:)
-        end subroutine
-        #:endfor
     end interface
 
     interface unsorted_unique
-        #:for t1, t2, name1, cpp1 in IR_INDEX_TYPES_ALT_NAME
+        #:for t1, t2, name1, cpp1 in IRC_INDEX_TYPES_ALT_NAME
         #:if name1 != 'xdp'
-        module subroutine ${name1}$_unsorted_unique(temp, output)
-            ${t1}$, intent(in) :: temp(:)
+        module subroutine ${name1}$_unsorted_unique(array, output)
+            ${t1}$, intent(in) :: array(:)
             ${t2}$, allocatable, intent(inout) :: output(:)
         end subroutine
         #:endif
-        #:endfor
-
-        #:for t1, t2, name1, cpp1 in CHAR_TYPES_ALT_NAME
-        module subroutine ${name1}$_unsorted_unique(temp, output)
-            ${t1}$, intent(in) :: temp(:)
-            character(len=len(temp)), allocatable, intent(inout) :: output(:)
-        end subroutine
         #:endfor
     end interface
 
