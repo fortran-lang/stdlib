@@ -375,7 +375,7 @@ contains
         call move_alloc(from=temp_idx,to=self%col)
 
         if(.not.allocated(self%rowptr)) then
-            allocate(temp_idx(num_brows+1) , source = 0 )
+            allocate(temp_idx(num_brows+1) , source = 0_ilp )
         else
             allocate(temp_idx(num_brows+1) , source = self%rowptr )
         end if
