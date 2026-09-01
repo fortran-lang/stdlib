@@ -232,40 +232,33 @@ $$y=\alpha*op(M)*x+\beta*y$$
 
 ### Syntax
 
-`call ` [[stdlib_sparse_spmv(module):spmv_kernel_coo(interface)]] `(nrows,ncols,data,index,nnz,storage,vec_x,vec_y [,alpha,beta,op])`
-`call ` [[stdlib_sparse_spmv(module):spmv_kernel_csc(interface)]] `(nrows,ncols,data,colptr,row,storage,vec_x,vec_y [,alpha,beta,op])`
-`call ` [[stdlib_sparse_spmv(module):spmv_kernel_csr(interface)]] `(nrows,ncols,data,col,rowptr,storage,vec_x,vec_y [,alpha,beta,op])`
-`call ` [[stdlib_sparse_spmv(module):spmv_kernel_ell(interface)]] `(nrows,ncols,data,index,mnz_p_row,storage,vec_x,vec_y [,alpha,beta,op])`
-`call ` [[stdlib_sparse_spmv(module):spmv_kernel_sellc(interface)]] `(nrows,ncols,data,ia,ja,chunk_size,storage,vec_x,vec_y [,alpha,beta,op])`
+`call ` [[stdlib_sparse_spmv(module):spmv_kernel_coo(interface)]] `(op,alpha,data,index,storage,vec_x,beta,vec_y)`
+`call ` [[stdlib_sparse_spmv(module):spmv_kernel_csc(interface)]] `(op,alpha,data,colptr,row,storage,vec_x,beta,vec_y)`
+`call ` [[stdlib_sparse_spmv(module):spmv_kernel_csr(interface)]] `(op,alpha,data,col,rowptr,storage,vec_x,beta,vec_y)`
+`call ` [[stdlib_sparse_spmv(module):spmv_kernel_ell(interface)]] `(op,alpha,data,index,storage,vec_x,beta,vec_y)`
+`call ` [[stdlib_sparse_spmv(module):spmv_kernel_sellc(interface)]] `(op,alpha,data,ia,ja,storage,vec_x,beta,vec_y)`
 
 ### Arguments
 
 Common arguments for all formats
 
-`nrows`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument. It specifies the number of rows in the sparse matrix.
+`op`: In-place operator identifier. Shall be a `character(1)` argument. It can have any of the following values: `N`: no transpose, `T`: transpose, `H`: hermitian or complex transpose. These values are provided as constants by the `stdlib_sparse` module: `sparse_op_none`, `sparse_op_transpose`, `sparse_op_hermitian`
 
-`ncols`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument. It specifies the number of columns in the sparse matrix.
+`alpha`: Shall be a scalar value of the same type as `vec_x`. Default value `alpha=1`. It is an `intent(in)` argument.
 
 `storage`: Shall be a scalar of `integer` type. It is an `intent(in)` argument. It defines the symmetry storage of the sparse matrix and must be one of `sparse_full`, `sparse_lower`, or `sparse_upper`.
 
 `vec_x`: Shall be a rank-1 or rank-2 array of `real` or `complex` type array. It is an `intent(in)` argument.
 
+`beta`: Shall be a scalar value of the same type as `vec_x`. Default value `beta=0`. It is an `intent(in)` argument.
+
 `vec_y`: Shall be a rank-1 or rank-2 array of `real` or `complex` type array. . It is an `intent(inout)` argument.
-
-`alpha`, `optional` : Shall be a scalar value of the same type as `vec_x`. Default value `alpha=1`. It is an `intent(in)` argument.
-
-`beta`, `optional` : Shall be a scalar value of the same type as `vec_x`. Default value `beta=0`. It is an `intent(in)` argument.
-
-`op`, `optional`: In-place operator identifier. Shall be a `character(1)` argument. It can have any of the following values: `N`: no transpose, `T`: transpose, `H`: hermitian or complex transpose. These values are provided as constants by the `stdlib_sparse` module: `sparse_op_none`, `sparse_op_transpose`, `sparse_op_hermitian`
 
 For the `COO` format:
 
 `data`: Shall be a rank-1 array of `real` or `complex` type. It is an `intent(in)` argument.
 
 `index`: Shall be a rank-2 array of `integer(ilp)` type. It is an `intent(in)` argument.
-
-`nnz`: Shall be a rank-1 or rank-2 array of `real` or `complex` type array. It is an `intent(in)` argument. It specifies the number of non-zero values in `index`.
-
 
 For the `CSC` format:
 
@@ -284,15 +277,11 @@ For the `CSR` format:
 
 `rowptr`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument.
 
-
 For the `ELL` format:
 
 `data`: Shall be a rank-2 array of `real` or `complex` type. It is an `intent(in)` argument.
 
 `index`: Shall be a rank-2 array of `integer(ilp)` type. It is an `intent(in)` argument.
-
-`mnz_p_row`: Shall be a scalar of `integer(ilp)` type. It is an `intent(in)` argument. It specifies the constant number of elements per row $K$.
-
 
 For the `SELLC` format:
 
@@ -301,8 +290,6 @@ For the `SELLC` format:
 `ia`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument.
 
 `ja`: Shall be a rank-2 array of `integer(ilp)` type. It is an `intent(in)` argument.
-
-`chunk_size`: Shall be a scalar of `integer` type. It is an `intent(in)` argument.
 
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
