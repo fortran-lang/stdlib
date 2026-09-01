@@ -591,6 +591,7 @@ contains
         ${t1}$, parameter :: B(2) = [${t1}$ :: 1, 2]
         
         !> rank-1 diff
+        call check(error, all_close(diff(x), [${t1}$ :: 5, 10, 15, 20, 25]), &        
             "diff(<rank-1>) in test_diff_real_${k1}$ failed")
         if (allocated(error)) return
         call check(error, all_close(diff(x, n=0), x), &
