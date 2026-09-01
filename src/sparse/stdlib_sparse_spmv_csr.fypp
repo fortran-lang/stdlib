@@ -20,103 +20,119 @@ contains
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
         character(1), intent(in), optional :: op
-        ${t1}$ :: alpha_
+        ${t1}$ :: alpha_, beta_
         character(1) :: op_
+
+        op_ = sparse_op_none; if(present(op)) op_ = op
+        alpha_ = one_${k1}$
+        if(present(alpha)) alpha_ = alpha
+
+        beta_ = zero_${k1}$
+        if(present(beta)) beta_ = beta
+
+        call spmv_kernel_csr_${rank}$d_${s1}$(op_, alpha_, &
+            matrix%data, matrix%col, matrix%rowptr, matrix%storage, &
+            vec_x, beta_, vec_y)
+
+    end subroutine
+
+    module subroutine spmv_kernel_csr_${rank}$d_${s1}$(op,alpha,data,col,rowptr,storage,vec_x,beta,vec_y)
+        ${t1}$, intent(in), contiguous :: data(:)
+        integer(ilp), intent(in), contiguous :: col(:) !! matrix column pointer
+        integer(ilp), intent(in), contiguous :: rowptr(:)  !! matrix row pointer
+        integer, intent(in) :: storage !! storage
+        ${t1}$, intent(in), contiguous    :: vec_x${ranksuffix(rank)}$
+        ${t1}$, intent(inout), contiguous :: vec_y${ranksuffix(rank)}$
+        ${t1}$, intent(in) :: alpha
+        ${t1}$, intent(in) :: beta
+        character(1), intent(in) :: op
         integer(ilp) :: i, j
+        integer(ilp) :: nrows
         #:if rank == 1
         ${t1}$ :: aux, aux2
         #:else
         ${t1}$ :: aux(size(vec_x,dim=1)), aux2(size(vec_x,dim=1))
         #:endif
         
-        op_ = sparse_op_none; if(present(op)) op_ = op
-        alpha_ = one_${k1}$
-        if(present(alpha)) alpha_ = alpha
-        if(present(beta)) then
-            vec_y = beta * vec_y
-        else 
-            vec_y = zero_${s1}$
-        endif
+        nrows = size(rowptr)-1
 
-        associate( data => matrix%data, col => matrix%col, rowptr => matrix%rowptr, &
-            & nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage )
-    
-            if( storage == sparse_full .and. op_==sparse_op_none ) then
+        vec_y = beta * vec_y
+   
+            if( storage == sparse_full .and. op==sparse_op_none ) then
                 do i = 1, nrows
                     aux = zero_${k1}$
                     do j = rowptr(i), rowptr(i+1)-1
                         aux = aux + data(j) * vec_x(${rksfx2(rank-1)}$col(j))
                     end do
-                    vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_ * aux
+                    vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha * aux
                 end do
 
-            else if( storage == sparse_full .and. op_==sparse_op_transpose ) then
+            else if( storage == sparse_full .and. op==sparse_op_transpose ) then
                 do i = 1, nrows
-                    aux = alpha_ * vec_x(${rksfx2(rank-1)}$i)
+                    aux = alpha * vec_x(${rksfx2(rank-1)}$i)
                     do j = rowptr(i), rowptr(i+1)-1
                         vec_y(${rksfx2(rank-1)}$col(j)) = vec_y(${rksfx2(rank-1)}$col(j)) + data(j) * aux
                     end do
                 end do
                 
-            else if( storage == sparse_lower .and. op_/=sparse_op_hermitian )then
+            else if( storage == sparse_lower .and. op/=sparse_op_hermitian )then
                 do i = 1 , nrows
                     aux  = zero_${s1}$
-                    aux2 = alpha_ * vec_x(${rksfx2(rank-1)}$i)
+                    aux2 = alpha * vec_x(${rksfx2(rank-1)}$i)
                     do j = rowptr(i), rowptr(i+1)-2
                         aux = aux + data(j) * vec_x(${rksfx2(rank-1)}$col(j))
                         vec_y(${rksfx2(rank-1)}$col(j)) = vec_y(${rksfx2(rank-1)}$col(j)) + data(j) * aux2
                     end do
-                    aux = alpha_ * aux + data(j) * aux2
+                    aux = alpha * aux + data(j) * aux2
                     vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + aux
                 end do
 
-            else if( storage == sparse_upper .and. op_/=sparse_op_hermitian )then
+            else if( storage == sparse_upper .and. op/=sparse_op_hermitian )then
                 do i = 1 , nrows
                     aux  = vec_x(${rksfx2(rank-1)}$i) * data(rowptr(i))
-                    aux2 = alpha_ * vec_x(${rksfx2(rank-1)}$i)
+                    aux2 = alpha * vec_x(${rksfx2(rank-1)}$i)
                     do j = rowptr(i)+1, rowptr(i+1)-1
                         aux = aux + data(j) * vec_x(${rksfx2(rank-1)}$col(j))
                         vec_y(${rksfx2(rank-1)}$col(j)) = vec_y(${rksfx2(rank-1)}$col(j)) + data(j) * aux2
                     end do
-                    vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_ * aux
+                    vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha * aux
                 end do
                 
             #:if t1.startswith('complex')
-            else if( storage == sparse_full .and. op_==sparse_op_hermitian) then
+            else if( storage == sparse_full .and. op==sparse_op_hermitian) then
                 do i = 1, nrows
-                    aux = alpha_ * vec_x(${rksfx2(rank-1)}$i)
+                    aux = alpha * vec_x(${rksfx2(rank-1)}$i)
                     do j = rowptr(i), rowptr(i+1)-1
                         vec_y(${rksfx2(rank-1)}$col(j)) = vec_y(${rksfx2(rank-1)}$col(j)) + conjg(data(j)) * aux
                     end do
                 end do
 
-            else if( storage == sparse_lower .and. op_==sparse_op_hermitian )then
+            else if( storage == sparse_lower .and. op==sparse_op_hermitian )then
                 do i = 1 , nrows
                     aux  = zero_${s1}$
-                    aux2 = alpha_ * vec_x(${rksfx2(rank-1)}$i)
+                    aux2 = alpha * vec_x(${rksfx2(rank-1)}$i)
                     do j = rowptr(i), rowptr(i+1)-2
                         aux = aux + conjg(data(j)) * vec_x(${rksfx2(rank-1)}$col(j))
                         vec_y(${rksfx2(rank-1)}$col(j)) = vec_y(${rksfx2(rank-1)}$col(j)) + conjg(data(j)) * aux2
                     end do
-                    aux = alpha_ * aux + conjg(data(j)) * aux2
+                    aux = alpha * aux + conjg(data(j)) * aux2
                     vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + aux
                 end do
 
-            else if( storage == sparse_upper .and. op_==sparse_op_hermitian )then
+            else if( storage == sparse_upper .and. op==sparse_op_hermitian )then
                 do i = 1 , nrows
                     aux  = vec_x(${rksfx2(rank-1)}$i) * conjg(data(rowptr(i)))
-                    aux2 = alpha_ * vec_x(${rksfx2(rank-1)}$i)
+                    aux2 = alpha * vec_x(${rksfx2(rank-1)}$i)
                     do j = rowptr(i)+1, rowptr(i+1)-1
                         aux = aux + conjg(data(j)) * vec_x(${rksfx2(rank-1)}$col(j))
                         vec_y(${rksfx2(rank-1)}$col(j)) = vec_y(${rksfx2(rank-1)}$col(j)) + conjg(data(j)) * aux2
                     end do
-                    vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_ * aux
+                    vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha * aux
                 end do
             #:endif
             end if
-        end associate
     end subroutine
-    
+
     #:endfor
     #:endfor
 

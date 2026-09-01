@@ -20,67 +20,86 @@ contains
         ${t1}$, intent(in), optional :: alpha
         ${t1}$, intent(in), optional :: beta
         character(1), intent(in), optional :: op
-        ${t1}$ :: alpha_
+        ${t1}$ :: alpha_, beta_
         character(1) :: op_
-        integer(ilp) :: i, j, k
-        
+
         op_ = sparse_op_none; if(present(op)) op_ = op
         alpha_ = one_${k1}$
         if(present(alpha)) alpha_ = alpha
-        if(present(beta)) then
-            vec_y = beta * vec_y
-        else 
-            vec_y = zero_${s1}$
-        endif
-        associate( data => matrix%data, index => matrix%index, MNZ_P_ROW => matrix%K, &
-            & nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage )
-            if( storage == sparse_full .and. op_==sparse_op_none ) then
+
+        beta_ = zero_${k1}$
+        if(present(beta)) beta_ = beta
+
+        call spmv_kernel_ell_${rank}$d_${s1}$(op_,alpha_, &
+            matrix%data,matrix%index,matrix%storage, &
+            vec_x,beta_,vec_y)
+
+    end subroutine
+    
+    module subroutine spmv_kernel_ell_${rank}$d_${s1}$(op,alpha,data,index,storage,vec_x,beta,vec_y)
+        ${t1}$, intent(in), contiguous :: data(:,:)
+        integer(ilp), intent(in), contiguous :: index(:,:)
+        integer, intent(in) :: storage
+        ${t1}$, intent(in), contiguous    :: vec_x${ranksuffix(rank)}$
+        ${t1}$, intent(inout), contiguous :: vec_y${ranksuffix(rank)}$
+        ${t1}$, intent(in) :: alpha
+        ${t1}$, intent(in) :: beta
+        character(1), intent(in) :: op
+        integer(ilp) :: i, j, k
+        integer(ilp) :: nrows
+        integer :: mnz_p_row
+        
+        nrows = size(index, 1)
+        mnz_p_row = size(index, 2)
+
+        vec_y = beta * vec_y
+
+            if( storage == sparse_full .and. op==sparse_op_none ) then
                 do i = 1, nrows
                     do k = 1, MNZ_P_ROW
                         j = index(i,k)
-                        if(j>0) vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_*data(i,k) * vec_x(${rksfx2(rank-1)}$j)
+                        if(j>0) vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha*data(i,k) * vec_x(${rksfx2(rank-1)}$j)
                     end do
                 end do
-            else if( storage == sparse_full .and. op_==sparse_op_transpose ) then
+            else if( storage == sparse_full .and. op==sparse_op_transpose ) then
                 do i = 1, nrows
                     do k = 1, MNZ_P_ROW
                         j = index(i,k)
-                        if(j>0) vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_*data(i,k) * vec_x(${rksfx2(rank-1)}$i)
+                        if(j>0) vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha*data(i,k) * vec_x(${rksfx2(rank-1)}$i)
                     end do
                 end do
-            else if( storage /= sparse_full .and. op_/=sparse_op_hermitian ) then
+            else if( storage /= sparse_full .and. op/=sparse_op_hermitian ) then
                 do i = 1, nrows
                     do k = 1, MNZ_P_ROW
                         j = index(i,k)
                         if(j<=0) cycle
-                        vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_*data(i,k) * vec_x(${rksfx2(rank-1)}$j)
+                        vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha*data(i,k) * vec_x(${rksfx2(rank-1)}$j)
                         if(i==j) cycle 
-                        vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_*data(i,k) * vec_x(${rksfx2(rank-1)}$i)
+                        vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha*data(i,k) * vec_x(${rksfx2(rank-1)}$i)
                     end do
                 end do
             #:if t1.startswith('complex')
-            else if( storage == sparse_full .and. op_==sparse_op_hermitian ) then
+            else if( storage == sparse_full .and. op==sparse_op_hermitian ) then
                 do i = 1, nrows
                     do k = 1, MNZ_P_ROW
                         j = index(i,k)
-                        if(j>0) vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_*conjg(data(i,k)) * vec_x(${rksfx2(rank-1)}$i)
+                        if(j>0) vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha*conjg(data(i,k)) * vec_x(${rksfx2(rank-1)}$i)
                     end do
                 end do
-            else if( storage /= sparse_full .and. op_==sparse_op_hermitian ) then
+            else if( storage /= sparse_full .and. op==sparse_op_hermitian ) then
                 do i = 1, nrows
                     do k = 1, MNZ_P_ROW
                         j = index(i,k)
                         if(j<=0) cycle
-                        vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha_*conjg(data(i,k)) * vec_x(${rksfx2(rank-1)}$j)
+                        vec_y(${rksfx2(rank-1)}$i) = vec_y(${rksfx2(rank-1)}$i) + alpha*conjg(data(i,k)) * vec_x(${rksfx2(rank-1)}$j)
                         if(i==j) cycle 
-                        vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha_*conjg(data(i,k)) * vec_x(${rksfx2(rank-1)}$i)
+                        vec_y(${rksfx2(rank-1)}$j) = vec_y(${rksfx2(rank-1)}$j) + alpha*conjg(data(i,k)) * vec_x(${rksfx2(rank-1)}$i)
                     end do
                 end do
             #:endif
             end if
-        end associate
     end subroutine
-    
+
     #:endfor
     #:endfor
 
