@@ -362,7 +362,7 @@ contains
         br = max(block_shape(1), 1)
         bc = max(block_shape(2), 1)
 
-        self%block_shape = (/br,bc/)
+        self%block_shape = [br,bc]
         self%nrows = num_brows * br
         self%ncols = num_bcols * bc
         self%nnz   = br*bc*bnnz
