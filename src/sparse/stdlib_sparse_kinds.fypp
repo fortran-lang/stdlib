@@ -368,7 +368,7 @@ contains
         self%nnz   = br*bc*bnnz
 
         if(.not.allocated(self%col)) then
-            allocate(temp_idx(bnnz) , source = 0 )
+            allocate(temp_idx(bnnz) , source = 0_ilp )
         else
             allocate(temp_idx(bnnz) , source = self%col )
         end if
