@@ -54,7 +54,7 @@ module stdlib_sparse_kinds
     !!
     !! BSR: Compressed sparse row or Yale format
     type, public, extends(sparse_type) :: BSR_type  
-      integer(ilp) :: block_shape(2) = (/1,1/) !! shape of the blocks
+      integer(ilp) :: block_shape(2) = [1,1] !! shape of the blocks
       integer(ilp), allocatable  :: col(:)    !! matrix column pointer
       integer(ilp), allocatable  :: rowptr(:) !! matrix row pointer
     contains
