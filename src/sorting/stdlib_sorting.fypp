@@ -501,7 +501,8 @@ module stdlib_sorting
 !!   unique elements sorted in increasing order. Otherwise, the unique
 !!   elements are returned in the order of their first appearance in
 !!   `array`. `SORTED_OUTPUT` is `.false.` by default. This argument is
-!!   not available for complex arrays.
+!!   not available for complex arrays for which only the unsorted implementation
+!!   is provided.
 !!
 !! * `tolerance` (optional): It is an `intent(in)` argument available only
 !!    for real arrays. When `sorted_output` is `.true.`, two values
