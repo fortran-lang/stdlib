@@ -290,8 +290,8 @@ contains
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: n = 4
         integer :: i
-        ${t1}$ :: p(n) = [1_${k1}$, 2_${k1}$, 3_${k1}$, 2_${k1}$]
-        ${t2}$ :: x(n) = [0.5_${k2}$, 3.5_${k2}$, -5.0_${k2}$, -10.0_${k2}$]
+        ${t1}$, parameter :: p(n) = [1_${k1}$, 2_${k1}$, 3_${k1}$, 2_${k1}$]
+        ${t2}$, parameter :: x(n) = [0.5_${k2}$, 3.5_${k2}$, -5.0_${k2}$, -10.0_${k2}$]
 
         ${t2}$, parameter :: ans(n) = [-0.93275212956718857_${k2}$,            &
                                        -0.14605314979599791_${k2}$,            &
@@ -315,8 +315,8 @@ contains
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: n = 4
         integer :: i
-        ${t1}$ :: p(n) = [1_${k1}$, 2_${k1}$, 3_${k1}$, 2_${k1}$]
-        ${t2}$ :: x(n) = [0.5_${k2}$, 3.5_${k2}$, -5.0_${k2}$, -10.0_${k2}$]
+        ${t1}$, parameter :: p(n) = [1_${k1}$, 2_${k1}$, 3_${k1}$, 2_${k1}$]
+        ${t2}$, parameter :: x(n) = [0.5_${k2}$, 3.5_${k2}$, -5.0_${k2}$, -10.0_${k2}$]
 
         ${t2}$, parameter :: ans(n) = [0.60653065971263342_${k2}$,             &
                                        0.13588822540043325_${k2}$,             &
@@ -340,8 +340,8 @@ contains
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: n = 4
         integer :: i
-        ${t1}$ :: p(n) = [1_${k1}$, 2_${k1}$, 3_${k1}$, 2_${k1}$]
-        ${t2}$ :: x(n) = [0.5_${k2}$, 3.5_${k2}$, -5.0_${k2}$, -10.0_${k2}$]
+        ${t1}$, parameter :: p(n) = [1_${k1}$, 2_${k1}$, 3_${k1}$, 2_${k1}$]
+        ${t2}$, parameter :: x(n) = [0.5_${k2}$, 3.5_${k2}$, -5.0_${k2}$, -10.0_${k2}$]
 
         ${t2}$, parameter :: ans(n) = [-0.5_${k2}$, -1.9959226032237259_${k2}$,&
                                        7.8332133440562161_${k2}$,              &
@@ -364,8 +364,8 @@ contains
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: n = 4
         integer :: i
-        ${t1}$ :: p(n) = [1_${k1}$, 1_${k1}$, 3_${k1}$, 3_${k1}$]
-        ${t2}$ :: x(n) = [0.5_${k2}$, 1.5_${k2}$, 0.5_${k2}$, 3.5_${k2}$]
+        ${t1}$, parameter :: p(n) = [1_${k1}$, 1_${k1}$, 3_${k1}$, 3_${k1}$]
+        ${t2}$, parameter :: x(n) = [0.5_${k2}$, 1.5_${k2}$, 0.5_${k2}$, 3.5_${k2}$]
 
         ${t2}$, parameter :: ans(n) = [0.39346934028736658_${k2}$,             &
                                        0.77686983985157017_${k2}$,             &
@@ -387,8 +387,8 @@ contains
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: n = 4
         integer :: i
-        ${t1}$ :: p(n) = [1_${k1}$, 1_${k1}$, 3_${k1}$, 3_${k1}$]
-        ${t2}$ :: x(n) = [0.5_${k2}$, 1.5_${k2}$, 0.5_${k2}$, 3.5_${k2}$]
+        ${t1}$, parameter :: p(n) = [1_${k1}$, 1_${k1}$, 3_${k1}$, 3_${k1}$]
+        ${t2}$, parameter :: x(n) = [0.5_${k2}$, 1.5_${k2}$, 0.5_${k2}$, 3.5_${k2}$]
 
         ${t2}$, parameter :: ans(n) = [0.60653065971263342_${k2}$,             &
                                        0.22313016014842983_${k2}$,             &
@@ -439,8 +439,8 @@ contains
         integer, parameter :: n = 3
         integer :: i
         character(len=120) :: msg
-        ${t1}$ :: a(n) = [2.0_${k1}$, 1.0_${k1}$, 0.5_${k1}$]
-        ${t1}$ :: b(n) = [3.0_${k1}$, 1.0_${k1}$, 0.5_${k1}$]
+        ${t1}$, parameter :: a(n) = [2.0_${k1}$, 1.0_${k1}$, 0.5_${k1}$]
+        ${t1}$, parameter :: b(n) = [3.0_${k1}$, 1.0_${k1}$, 0.5_${k1}$]
 
         ${t1}$, parameter :: ans(n) = [log(1.0_${k1}$/12.0_${k1}$),            &
                                        0.0_${k1}$,                             &
@@ -463,9 +463,9 @@ contains
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: n = 4
         integer :: i
-        ${t1}$ :: x(n) = [0.25_${k1}$, 0.5_${k1}$, 0.0_${k1}$, 1.0_${k1}$]
-        ${t1}$ :: a(n) = [2.0_${k1}$, 2.0_${k1}$, 2.0_${k1}$, 2.0_${k1}$]
-        ${t1}$ :: b(n) = [3.0_${k1}$, 3.0_${k1}$, 3.0_${k1}$, 3.0_${k1}$]
+        ${t1}$, parameter :: x(n) = [0.25_${k1}$, 0.5_${k1}$, 0.0_${k1}$, 1.0_${k1}$]
+        ${t1}$, parameter :: a(n) = [2.0_${k1}$, 2.0_${k1}$, 2.0_${k1}$, 2.0_${k1}$]
+        ${t1}$, parameter :: b(n) = [3.0_${k1}$, 3.0_${k1}$, 3.0_${k1}$, 3.0_${k1}$]
 
         ${t1}$, parameter :: ans(n) = [67.0_${k1}$/256.0_${k1}$,               &
                                        11.0_${k1}$/16.0_${k1}$,                &
@@ -486,8 +486,8 @@ contains
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: n = 4
         integer :: i
-        ${t1}$ :: p(n) = [1.0_${k1}$, 2.0_${k1}$, 3.1_${k1}$, 6.5_${k1}$]
-        ${t1}$ :: x(n) = [0.5_${k1}$, 3.5_${k1}$, 5.0_${k1}$, 3.2_${k1}$]
+        ${t1}$, parameter :: p(n) = [1.0_${k1}$, 2.0_${k1}$, 3.1_${k1}$, 6.5_${k1}$]
+        ${t1}$, parameter :: x(n) = [0.5_${k1}$, 3.5_${k1}$, 5.0_${k1}$, 3.2_${k1}$]
 
         ${t1}$, parameter :: ans(n) = [0.3934693402873667_${k1}$,              &
                                        0.86411177459956675_${k1}$,             &
@@ -510,8 +510,8 @@ contains
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: n = 4
         integer :: i
-        ${t1}$ :: p(n) = [1.0_${k1}$, 2.0_${k1}$, 3.1_${k1}$, 6.5_${k1}$]
-        ${t1}$ :: x(n) = [0.5_${k1}$, 3.5_${k1}$, 5.0_${k1}$, 3.2_${k1}$]
+        ${t1}$, parameter :: p(n) = [1.0_${k1}$, 2.0_${k1}$, 3.1_${k1}$, 6.5_${k1}$]
+        ${t1}$, parameter :: x(n) = [0.5_${k1}$, 3.5_${k1}$, 5.0_${k1}$, 3.2_${k1}$]
 
         ${t1}$, parameter :: ans(n) = [-0.93275212956718857_${k1}$,            &
                                        -0.14605314979599791_${k1}$,            &
@@ -535,8 +535,8 @@ contains
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: n = 4
         integer :: i
-        ${t1}$ :: p(n) = [1.0_${k1}$, 2.0_${k1}$, 3.1_${k1}$, 6.5_${k1}$]
-        ${t1}$ :: x(n) = [0.5_${k1}$, 3.5_${k1}$, 5.0_${k1}$, 3.2_${k1}$]
+        ${t1}$, parameter :: p(n) = [1.0_${k1}$, 2.0_${k1}$, 3.1_${k1}$, 6.5_${k1}$]
+        ${t1}$, parameter :: x(n) = [0.5_${k1}$, 3.5_${k1}$, 5.0_${k1}$, 3.2_${k1}$]
 
         ${t1}$, parameter :: ans(n) = [0.60653065971263342_${k1}$,             &
                                        0.13588822540043325_${k1}$,             &
@@ -560,8 +560,8 @@ contains
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: n = 4
         integer :: i
-        ${t1}$ :: p(n) = [1.0_${k1}$, 2.0_${k1}$, 3.1_${k1}$, 6.5_${k1}$]
-        ${t1}$ :: x(n) = [0.5_${k1}$, 3.5_${k1}$, 5.0_${k1}$, 3.2_${k1}$]
+        ${t1}$, parameter :: p(n) = [1.0_${k1}$, 2.0_${k1}$, 3.1_${k1}$, 6.5_${k1}$]
+        ${t1}$, parameter :: x(n) = [0.5_${k1}$, 3.5_${k1}$, 5.0_${k1}$, 3.2_${k1}$]
 
         ${t1}$, parameter :: ans(n) = [-0.5_${k1}$, -1.9959226032237259_${k1}$,&
                                        -1.2054260888453405_${k1}$,             &
@@ -583,8 +583,8 @@ contains
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: n = 4
         integer :: i
-        ${t1}$ :: p(n) = [1.3_${k1}$, 1.3_${k1}$, 3.7_${k1}$, 3.7_${k1}$]
-        ${t1}$ :: x(n) = [0.5_${k1}$, 2.1_${k1}$, 2.6_${k1}$, 5.1_${k1}$]
+        ${t1}$, parameter :: p(n) = [1.3_${k1}$, 1.3_${k1}$, 3.7_${k1}$, 3.7_${k1}$]
+        ${t1}$, parameter :: x(n) = [0.5_${k1}$, 2.1_${k1}$, 2.6_${k1}$, 5.1_${k1}$]
 
         ${t1}$, parameter :: ans(n) = [0.26487356764588505_${k1}$,             &
                                        0.81011791338807457_${k1}$,             &
@@ -606,8 +606,8 @@ contains
         type(error_type), allocatable, intent(out) :: error
         integer, parameter :: n = 4
         integer :: i
-        ${t1}$ :: p(n) = [1.3_${k1}$, 1.3_${k1}$, 3.7_${k1}$, 3.7_${k1}$]
-        ${t1}$ :: x(n) = [0.5_${k1}$, 2.1_${k1}$, 2.6_${k1}$, 5.1_${k1}$]
+        ${t1}$, parameter :: p(n) = [1.3_${k1}$, 1.3_${k1}$, 3.7_${k1}$, 3.7_${k1}$]
+        ${t1}$, parameter :: x(n) = [0.5_${k1}$, 2.1_${k1}$, 2.6_${k1}$, 5.1_${k1}$]
 
         ${t1}$, parameter :: ans(n) = [0.73512643235411495_${k1}$,             &
                                        0.18988208661192543_${k1}$,             &
