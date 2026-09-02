@@ -42,7 +42,14 @@ function(resolve_pc_libs out_var root_target)
             endif()
         else()
             # Plain linker flag or library
-            list(APPEND _result "${target}")
+            if("${target}" MATCHES "\\.framework$")
+                get_filename_component(_fw_name "${target}" NAME)
+                string(REGEX REPLACE "\\.framework$" "" _fw_name "${_fw_name}")
+                get_filename_component(_fw_dir "${target}" DIRECTORY)
+                list(APPEND _result "-F${_fw_dir} -framework ${_fw_name}")
+            else()
+                list(APPEND _result "${target}")
+            endif()
         endif()
 
         set(_result "${_result}" PARENT_SCOPE)
@@ -67,14 +74,21 @@ function(libs_to_linker_flags out_var libs)
     set(_flags "")
     foreach(lib IN LISTS libs)
         if(IS_ABSOLUTE "${lib}")
-            # Extract the full filename, then strip everything from the first dot
-            # onwards. Using NAME_WE would only strip the last extension, which
-            # breaks for versioned libraries (e.g. libopenblas.so.0.3 -> libopenblas.so.0).
-            get_filename_component(_name "${lib}" NAME)
-            string(REGEX REPLACE "\\..*$" "" _name "${_name}")
-            # Strip leading "lib" prefix if present
-            string(REGEX REPLACE "^lib" "" _name "${_name}")
-            list(APPEND _flags "-l${_name}")
+            if("${lib}" MATCHES "\\.framework$")
+                get_filename_component(_fw_name "${lib}" NAME)
+                string(REGEX REPLACE "\\.framework$" "" _fw_name "${_fw_name}")
+                get_filename_component(_fw_dir "${lib}" DIRECTORY)
+                list(APPEND _flags "-F${_fw_dir} -framework ${_fw_name}")
+            else()
+                # Extract the full filename, then strip everything from the first dot
+                # onwards. Using NAME_WE would only strip the last extension, which
+                # breaks for versioned libraries (e.g. libopenblas.so.0.3 -> libopenblas.so.0).
+                get_filename_component(_name "${lib}" NAME)
+                string(REGEX REPLACE "\\..*$" "" _name "${_name}")
+                # Strip leading "lib" prefix if present
+                string(REGEX REPLACE "^lib" "" _name "${_name}")
+                list(APPEND _flags "-l${_name}")
+            endif()
         else()
             # Already a flag like -lopenblas or -lm
             list(APPEND _flags "${lib}")
