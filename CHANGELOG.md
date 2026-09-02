@@ -3,6 +3,8 @@
 Changes to the existing build system
   - Fixed absolute paths in generated pkg-config file for external BLAS/LAPACK 
     [#1109](https://github.com/fortran-lang/stdlib/issues/1109)
+  - Fixed macOS `.framework` paths in generated pkg-config file (e.g. Accelerate.framework)
+    [#1204](https://github.com/fortran-lang/stdlib/issues/1204)
 
 # Version 0.8.1
 
