@@ -109,7 +109,10 @@ module stdlib_str2num
         integer(int8) :: err
         !----------------------------------------------
         call to_num_base(s,v,p,err)
-        p = min( p , len(s) )
+        ! `p` is int8 and `len` returns a default integer, so comparing them
+        ! directly is a GNU extension that -std=f2018 rejects. The result is
+        ! never larger than `p`, so it always fits back into int8.
+        p = min( int(p), len(s) )
         s => s(p:)
         if(present(stat)) stat = err
     end function

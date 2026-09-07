@@ -1028,7 +1028,10 @@ function c_get_strerror(winapi) result(str)
             import c_size_t, c_ptr, c_bool
             implicit none
             integer(c_size_t), intent(out) :: len
-            logical, intent(in) :: winapi
+            ! The C side takes a `bool` by value. A default `logical` passed by
+            ! reference is neither: -std=f2018 rejects the kind, and the pointer
+            ! that reached C was read as the flag, so it was always true.
+            logical(c_bool), intent(in), value :: winapi
         end function strerror
     end interface
 
@@ -1039,7 +1042,7 @@ function c_get_strerror(winapi) result(str)
 
     winapi_ = optval(winapi, .false.)
 
-    c_str_ptr = strerror(len, winapi_)
+    c_str_ptr = strerror(len, logical(winapi_, kind=c_bool))
 
     str = to_f_char(c_str_ptr, len)
 end function c_get_strerror
