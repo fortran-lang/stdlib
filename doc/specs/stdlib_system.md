@@ -800,6 +800,92 @@ Subroutine
 
 ---
 
+## `set_environment_variable` - Sets an environment variable
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine creates an environment variable for the calling process, or changes the value of one that already exists.
+
+The variable is visible to this process and to any process it starts afterwards. It is not written back to the parent shell; that is a property of the operating system rather than of this implementation.
+
+`overwrite` selects whether an existing variable is replaced, and defaults to `.true.`. Windows has no equivalent of the POSIX flag -- `_putenv_s` always replaces -- so the argument has no effect there.
+
+The name must not be empty and must not contain `=`. Both are rejected before the call reaches the operating system, which reports them only as `EINVAL`.
+
+### Syntax
+
+`call [[stdlib_system(module):set_environment_variable(subroutine)]] (name, value [, overwrite] [, err])`
+
+### Class
+
+Subroutine
+
+### Arguments
+
+`name`: Shall be a character string holding the name of the variable. It is an `intent(in)` argument.
+
+`value`: Shall be a character string holding the value to give it. It is an `intent(in)` argument.
+
+`overwrite`(optional): Shall be a `logical` selecting whether an existing variable is replaced. Defaults to `.true.`, and has no effect on Windows. It is an `intent(in)` argument.
+
+`err`(optional): Shall be of type `state_type`, and is used for error handling. It is an `intent(out)` argument.
+
+### Return values
+
+`err` is an optional state return flag. On error if not requested, an `FS_ERROR` will trigger an error stop.
+
+### Example
+
+```fortran
+{!example/system/example_environment_variable.f90!}
+```
+
+---
+
+## `delete_environment_variable` - Removes an environment variable
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine removes an environment variable from the calling process.
+
+Deleting a variable that is not set is not an error, which matches the behaviour of `unsetenv`.
+
+As with `set_environment_variable`, the name must not be empty and must not contain `=`.
+
+### Syntax
+
+`call [[stdlib_system(module):delete_environment_variable(subroutine)]] (name [, err])`
+
+### Class
+
+Subroutine
+
+### Arguments
+
+`name`: Shall be a character string holding the name of the variable. It is an `intent(in)` argument.
+
+`err`(optional): Shall be of type `state_type`, and is used for error handling. It is an `intent(out)` argument.
+
+### Return values
+
+`err` is an optional state return flag. On error if not requested, an `FS_ERROR` will trigger an error stop.
+
+### Example
+
+```fortran
+{!example/system/example_environment_variable.f90!}
+```
+
+---
+
 ## `exists` - Checks if a path exists in the filesystem
 
 ### Status
