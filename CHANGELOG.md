@@ -1,5 +1,10 @@
 ## Unreleased
 
+Changes to existing modules
+  - Enforce incomplete gamma argument domains and fix uninitialized-result
+    diagnostics
+    [#898](https://github.com/fortran-lang/stdlib/issues/898)
+
 Changes to the existing build system
   - Fixed absolute paths in generated pkg-config file for external BLAS/LAPACK 
     [#1109](https://github.com/fortran-lang/stdlib/issues/1109)

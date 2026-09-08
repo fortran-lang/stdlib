@@ -5,7 +5,7 @@
 #:set GAMMA_IDX_CMPLX_KINDS_TYPES = [(i, CMPLX_KINDS[i], CMPLX_TYPES[i], CMPLX_INIT[i]) for i in range(len(CMPLX_KINDS)) if CMPLX_KINDS[i] in ('sp', 'dp', 'xdp')]
 #:set GAMMA_IDX_REAL_KINDS_TYPES  = [(i, REAL_KINDS[i], REAL_TYPES[i], REAL_INIT[i]) for i in range(len(REAL_KINDS)) if REAL_KINDS[i] in ('sp', 'dp', 'xdp')]
 module stdlib_specialfunctions_gamma
-    use ieee_arithmetic, only: ieee_value, ieee_quiet_nan
+    use ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_negative_inf
     use stdlib_kinds, only :  sp, dp, xdp, qp, int8, int16, int32, int64
     use stdlib_error, only : error_stop
 
@@ -366,6 +366,8 @@ contains
         ${t1}$ :: i
         ${t1}$, parameter :: zero = 0_${k1}$, one = 1_${k1}$, two = 2_${k1}$
 
+        res = 0.0_dp
+
         if(z <= zero) call error_stop("Error(log_gamma): Gamma function"       &
             //" argument must be positive integer.")
 
@@ -406,6 +408,8 @@ contains
         ${t1}$ :: i
         ${t1}$, parameter :: zero = 0_${k1}$, one = 1_${k1}$, two = 2_${k1}$
         ${t2}$, parameter :: zero_k2 = 0.0_${k2}$
+
+        res = zero_k2
 
         if(z <= zero) call error_stop("Error(log_gamma): Gamma function"       &
             //" argument must be positive integer.")
@@ -553,6 +557,8 @@ contains
         ${t1}$, parameter :: zero = 0_${k1}$, one = 1_${k1}$, two = 2_${k1}$
         ${t2}$, parameter :: zero_${k2}$ = 0.0_${k2}$, one_${k2}$ = 1.0_${k2}$
 
+        res = zero_${k2}$
+
         if(n < zero) call error_stop("Error(l_factorial): Logarithm of"        &
             //" factorial function argument must be non-negative")
 
@@ -617,10 +623,6 @@ contains
             p_lim = x
 
         endif
-
-        if(x < zero_k1 .and. p < p_lim .and. abs(anint(p) - p) > tol_${k1}$)   &
-            call error_stop("Error(gpx): Incomplete gamma function with "      &
-            //"negative x must come with a whole number p not too small")
 
         if(x < zero_k1) call error_stop("Error(gpx): Incomplete gamma"         &
             // " function with negative x must have an integer parameter p")
@@ -691,7 +693,7 @@ contains
             end do
 
         else
-            g = ieee_value(1._${k1}$, ieee_quiet_nan)
+            g = ieee_value(one, ieee_quiet_nan)
 
         end if
 
@@ -851,6 +853,13 @@ contains
         ${t1}$ :: res, s1, y
         ${t1}$, parameter :: zero = 0.0_${k1}$, one = 1.0_${k1}$
 
+        res = zero
+
+        if(p <= zero) call error_stop("Error(lower_incomplete_gamma): "        &
+            //"parameter p must be positive")
+        if(x < zero) call error_stop("Error(lower_incomplete_gamma): negative " &
+            //"x requires an integer parameter p")
+
         if(x == zero) then
 
             res = zero
@@ -865,11 +874,6 @@ contains
 
             s1 = -x + p * log(x)
             res = gpx(p, x) * exp(s1)
-
-        else
-
-            call error_stop("Error(Logarithm of upper incomplete gamma "       &
-              //"function): negative x must be with integer p")
 
         end if
     end function ingamma_low_${t1[0]}$${k1}$
@@ -889,6 +893,12 @@ contains
         ${t2}$, intent(in) :: x
         ${t2}$ :: res, s1, y
         ${t2}$, parameter :: zero = 0.0_${k2}$, one = 1.0_${k2}$
+        ${t1}$, parameter :: zero_k1 = 0_${k1}$
+
+        res = zero
+
+        if(p <= zero_k1) call error_stop("Error(lower_incomplete_gamma): "     &
+            //"parameter p must be positive")
 
         if(x == zero) then
 
@@ -926,10 +936,16 @@ contains
         ${t1}$ :: res, s1, y
         ${t1}$, parameter :: zero = 0.0_${k1}$, one = 1.0_${k1}$
 
+        res = zero
+
+        if(p <= zero) call error_stop("Error(log_lower_incomplete_gamma): "    &
+            //"parameter p must be positive")
+        if(x < zero) call error_stop("Error(log_lower_incomplete_gamma): "     &
+            //"negative x requires an integer parameter p")
 
         if(x == zero) then
 
-            res = zero
+            res = ieee_value(zero, ieee_negative_inf)
 
         else if(x > p) then
 
@@ -941,11 +957,6 @@ contains
 
             s1 = -x + p * log(abs(x))
             res = log(abs(gpx(p, x))) + s1
-
-        else
-
-            call error_stop("Error(Logarithm of upper incomplete gamma "       &
-              //"function): negative x must be with integer p")
 
         end if
     end function l_ingamma_low_${t1[0]}$${k1}$
@@ -964,10 +975,16 @@ contains
         ${t2}$, intent(in) :: x
         ${t2}$ :: res, s1, y
         ${t2}$, parameter :: zero = 0.0_${k2}$, one = 1.0_${k2}$
+        ${t1}$, parameter :: zero_k1 = 0_${k1}$
+
+        res = zero
+
+        if(p <= zero_k1) call error_stop("Error(log_lower_incomplete_gamma): " &
+            //"parameter p must be positive")
 
         if(x == zero) then
 
-            res = zero
+            res = ieee_value(zero, ieee_negative_inf)
 
         else if(x > real(p, ${k2}$)) then
 
@@ -997,6 +1014,13 @@ contains
         ${t1}$ :: res, s1, y
         ${t1}$, parameter :: zero = 0.0_${k1}$, one = 1.0_${k1}$
 
+        res = zero
+
+        if(p <= zero) call error_stop("Error(upper_incomplete_gamma): "        &
+            //"parameter p must be positive")
+        if(x < zero) call error_stop("Error(upper_incomplete_gamma): negative " &
+            //"x requires an integer parameter p")
+
         if(x == zero) then
 
             res = gamma(p)
@@ -1011,12 +1035,6 @@ contains
             y = log_gamma(p)
             s1 = -x + p * log(x) - y
             res = (one - gpx(p, x) * exp(s1)) * exp(y)
-
-        else
-
-
-            call error_stop("Error(Logarithm of upper incomplete gamma "       &
-              //"function): negative x must be with integer p")
 
         end if
     end function ingamma_up_${t1[0]}$${k1}$
@@ -1036,6 +1054,12 @@ contains
         ${t2}$, intent(in) :: x
         ${t2}$ :: res, s1, y
         ${t2}$, parameter :: zero = 0.0_${k2}$, one = 1.0_${k2}$
+        ${t1}$, parameter :: zero_k1 = 0_${k1}$
+
+        res = zero
+
+        if(p <= zero_k1) call error_stop("Error(upper_incomplete_gamma): "     &
+            //"parameter p must be positive")
 
         if(x == zero) then
 
@@ -1075,6 +1099,12 @@ contains
         ${t1}$ :: res, s1, y
         ${t1}$, parameter :: zero = 0.0_${k1}$, one = 1.0_${k1}$
 
+        res = zero
+
+        if(p <= zero) call error_stop("Error(log_upper_incomplete_gamma): "    &
+            //"parameter p must be positive")
+        if(x < zero) call error_stop("Error(log_upper_incomplete_gamma): "     &
+            //"negative x requires an integer parameter p")
 
         if(x == zero) then
 
@@ -1091,11 +1121,6 @@ contains
             s1 = -x + p * log(x) - y
             res = gpx(p, x) * exp(s1)
             res = log(one - res) + y
-
-        else
-
-            call error_stop("Error(Logarithm of upper incomplete gamma "       &
-              //"function): negative x must be with integer p")
 
         end if
     end function l_ingamma_up_${t1[0]}$${k1}$
@@ -1114,6 +1139,12 @@ contains
         ${t2}$, intent(in) :: x
         ${t2}$ :: res, s1, y
         ${t2}$, parameter :: zero = 0.0_${k2}$, one = 1.0_${k2}$
+        ${t1}$, parameter :: zero_k1 = 0_${k1}$
+
+        res = zero
+
+        if(p <= zero_k1) call error_stop("Error(log_upper_incomplete_gamma): " &
+            //"parameter p must be positive")
 
         if(x == zero) then
 
@@ -1156,6 +1187,8 @@ contains
         ${t1}$ :: res, s1
         ${t1}$, parameter :: zero = 0.0_${k1}$, one = 1.0_${k1}$
 
+        res = zero
+
         if(x < zero) call error_stop("Error(regamma_p): Regularized gamma_p"   &
             //" function is not defined at x < 0")
 
@@ -1192,6 +1225,8 @@ contains
         ${t2}$ :: res, s1
         ${t2}$, parameter :: zero = 0.0_${k2}$, one = 1.0_${k2}$
 
+        res = zero
+
         if(x < zero) call error_stop("Error(regamma_p): Regularized gamma_p"   &
             //" function is not defined at x < 0")
 
@@ -1226,6 +1261,8 @@ contains
         ${t1}$, intent(in) :: p, x
         ${t1}$ :: res, s1
         ${t1}$, parameter :: zero = 0.0_${k1}$, one = 1.0_${k1}$
+
+        res = zero
 
         if(x < zero) call error_stop("Error(regamma_p): Regularized gamma_q"   &
             //" function is not defined at x < 0")
@@ -1262,6 +1299,8 @@ contains
         ${t2}$, intent(in) :: x
         ${t2}$ :: res, s1
         ${t2}$, parameter :: zero = 0.0_${k2}$, one = 1.0_${k2}$
+
+        res = zero
 
         if(x < zero) call error_stop("Error(regamma_q): Regularized gamma_q"   &
             //" function is not defined at x < 0")
