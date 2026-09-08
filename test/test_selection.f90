@@ -84,8 +84,9 @@ contains
           integer(int8), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int8), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          integer(int8), parameter :: one = 1
           integer(int8) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int8) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -262,8 +263,9 @@ contains
           integer(int16), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int16), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          integer(int8), parameter :: one = 1
           integer(int8) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int16) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -440,8 +442,9 @@ contains
           integer(int32), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int32), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          integer(int8), parameter :: one = 1
           integer(int8) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int32) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -618,8 +621,9 @@ contains
           integer(int64), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int64), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          integer(int8), parameter :: one = 1
           integer(int8) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int64) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -796,8 +800,9 @@ contains
           integer(int8), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int8), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          integer(int16), parameter :: one = 1
           integer(int16) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int8) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -974,8 +979,9 @@ contains
           integer(int16), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int16), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          integer(int16), parameter :: one = 1
           integer(int16) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int16) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -1152,8 +1158,9 @@ contains
           integer(int32), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int32), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          integer(int16), parameter :: one = 1
           integer(int16) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int32) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -1330,8 +1337,9 @@ contains
           integer(int64), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int64), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          integer(int16), parameter :: one = 1
           integer(int16) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int64) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -1508,8 +1516,9 @@ contains
           integer(int8), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int8), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          integer(int32), parameter :: one = 1
           integer(int32) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int8) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -1686,8 +1695,9 @@ contains
           integer(int16), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int16), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          integer(int32), parameter :: one = 1
           integer(int32) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int16) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -1864,8 +1874,9 @@ contains
           integer(int32), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int32), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          integer(int32), parameter :: one = 1
           integer(int32) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int32) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -2042,8 +2053,9 @@ contains
           integer(int64), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int64), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          integer(int32), parameter :: one = 1
           integer(int32) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int64) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -2220,8 +2232,9 @@ contains
           integer(int8), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int8), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          integer(int64), parameter :: one = 1
           integer(int64) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int8) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -2398,8 +2411,9 @@ contains
           integer(int16), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int16), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          integer(int64), parameter :: one = 1
           integer(int64) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int16) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -2576,8 +2590,9 @@ contains
           integer(int32), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int32), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          integer(int64), parameter :: one = 1
           integer(int64) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int32) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -2754,8 +2769,9 @@ contains
           integer(int64), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int64), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          integer(int64), parameter :: one = 1
           integer(int64) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int64) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -2932,8 +2948,9 @@ contains
           integer(int8), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int8), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          real(sp), parameter :: one = 1
           real(sp) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int8) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -3108,8 +3125,9 @@ contains
           integer(int16), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int16), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          real(sp), parameter :: one = 1
           real(sp) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int16) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -3285,8 +3303,9 @@ contains
           integer(int32), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int32), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          real(sp), parameter :: one = 1
           real(sp) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int32) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -3462,8 +3481,9 @@ contains
           integer(int64), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int64), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          real(sp), parameter :: one = 1
           real(sp) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int64) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -3639,8 +3659,9 @@ contains
           integer(int8), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int8), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          real(dp), parameter :: one = 1
           real(dp) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int8) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -3815,8 +3836,9 @@ contains
           integer(int16), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int16), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          real(dp), parameter :: one = 1
           real(dp) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int16) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -3992,8 +4014,9 @@ contains
           integer(int32), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int32), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          real(dp), parameter :: one = 1
           real(dp) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int32) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -4169,8 +4192,9 @@ contains
           integer(int64), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int64), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
+          real(dp), parameter :: one = 1
           real(dp) :: x(N), x_copy(N), mat(Nm), mat_copy(Nm), len1(1), len2(2), &
-              kth_smallest, random_vals(Nr), one = 1
+              kth_smallest, random_vals(Nr)
           integer(int64) :: i, p, up_rank, down_rank, mid_rank
           real(dp) :: random_doubles(Nr) ! Deliberately double precision for all cases
           logical :: test1, test2, test3
@@ -4348,7 +4372,8 @@ contains
           integer(int8), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int8), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          integer(int8) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          integer(int8), parameter :: one = 1
+          integer(int8) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)
@@ -4560,7 +4585,8 @@ contains
           integer(int16), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int16), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          integer(int8) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          integer(int8), parameter :: one = 1
+          integer(int8) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)
@@ -4774,7 +4800,8 @@ contains
           integer(int32), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int32), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          integer(int8) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          integer(int8), parameter :: one = 1
+          integer(int8) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)
@@ -4988,7 +5015,8 @@ contains
           integer(int64), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int64), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          integer(int8) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          integer(int8), parameter :: one = 1
+          integer(int8) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)
@@ -5202,7 +5230,8 @@ contains
           integer(int8), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int8), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          integer(int16) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          integer(int16), parameter :: one = 1
+          integer(int16) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)
@@ -5416,7 +5445,8 @@ contains
           integer(int16), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int16), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          integer(int16) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          integer(int16), parameter :: one = 1
+          integer(int16) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)
@@ -5631,7 +5661,8 @@ contains
           integer(int32), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int32), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          integer(int16) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          integer(int16), parameter :: one = 1
+          integer(int16) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)
@@ -5846,7 +5877,8 @@ contains
           integer(int64), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int64), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          integer(int16) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          integer(int16), parameter :: one = 1
+          integer(int16) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)
@@ -6061,7 +6093,8 @@ contains
           integer(int8), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int8), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          integer(int32) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          integer(int32), parameter :: one = 1
+          integer(int32) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)
@@ -6275,7 +6308,8 @@ contains
           integer(int16), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int16), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          integer(int32) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          integer(int32), parameter :: one = 1
+          integer(int32) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)
@@ -6490,7 +6524,8 @@ contains
           integer(int32), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int32), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          integer(int32) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          integer(int32), parameter :: one = 1
+          integer(int32) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)
@@ -6705,7 +6740,8 @@ contains
           integer(int64), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int64), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          integer(int32) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          integer(int32), parameter :: one = 1
+          integer(int32) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)
@@ -6920,7 +6956,8 @@ contains
           integer(int8), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int8), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          integer(int64) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          integer(int64), parameter :: one = 1
+          integer(int64) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)
@@ -7134,7 +7171,8 @@ contains
           integer(int16), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int16), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          integer(int64) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          integer(int64), parameter :: one = 1
+          integer(int64) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)
@@ -7349,7 +7387,8 @@ contains
           integer(int32), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int32), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          integer(int64) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          integer(int64), parameter :: one = 1
+          integer(int64) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)
@@ -7564,7 +7603,8 @@ contains
           integer(int64), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int64), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          integer(int64) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          integer(int64), parameter :: one = 1
+          integer(int64) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)
@@ -7779,7 +7819,8 @@ contains
           integer(int8), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int8), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          real(sp) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          real(sp), parameter :: one = 1
+          real(sp) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)
@@ -7991,7 +8032,8 @@ contains
           integer(int16), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int16), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          real(sp) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          real(sp), parameter :: one = 1
+          real(sp) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)
@@ -8203,7 +8245,8 @@ contains
           integer(int32), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int32), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          real(sp) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          real(sp), parameter :: one = 1
+          real(sp) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)
@@ -8415,7 +8458,8 @@ contains
           integer(int64), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int64), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          real(sp) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          real(sp), parameter :: one = 1
+          real(sp) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)
@@ -8627,7 +8671,8 @@ contains
           integer(int8), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int8), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          real(dp) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          real(dp), parameter :: one = 1
+          real(dp) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)
@@ -8839,7 +8884,8 @@ contains
           integer(int16), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int16), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          real(dp) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          real(dp), parameter :: one = 1
+          real(dp) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)
@@ -9051,7 +9097,8 @@ contains
           integer(int32), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int32), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          real(dp) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          real(dp), parameter :: one = 1
+          real(dp) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)
@@ -9263,7 +9310,8 @@ contains
           integer(int64), parameter :: Nreps = 2  ! Number of repetitions of random sampling
           integer(int64), parameter :: Nr = 25_ip ! Size of random array, must be < HUGE(N)
 
-          real(dp) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr), one=1
+          real(dp), parameter :: one = 1
+          real(dp) :: x(N), mat(Nm), len1(1), len2(2), random_vals(Nr)
 
           integer(ip) :: indx(N), indx_copy(N), indx_mat(Nm), indx_mat_copy(Nm), &
               indx_len1(1), indx_len2(2), indx_r(Nr)

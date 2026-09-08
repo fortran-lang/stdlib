@@ -825,10 +825,9 @@ contains
     
     subroutine test_diff_real_sp(error)
         type(error_type), allocatable, intent(out) :: error
-        real(sp) :: x(6) = [real(sp) :: 0, 5, 15, 30, 50, 75]
-        real(sp) :: A(1, 3) = reshape([real(sp) :: 1, 3, 5], [1, 3])
-        real(sp) :: B(2) = [real(sp) :: 1, 2]
-        
+        real(sp), parameter :: x(6) = [real(sp) :: 0, 5, 15, 30, 50, 75]
+        real(sp), parameter :: A(1, 3) = reshape([real(sp) :: 1, 3, 5], [1, 3])
+        real(sp), parameter :: B(2) = [real(sp) :: 1, 2]
         !> rank-1 diff
         call check(error, all_close(diff(x), [real(sp) :: 5, 10, 15, 20, 25]), &
             "diff(<rank-1>) in test_diff_real_sp failed")
@@ -871,10 +870,9 @@ contains
     end subroutine test_diff_real_sp
     subroutine test_diff_real_dp(error)
         type(error_type), allocatable, intent(out) :: error
-        real(dp) :: x(6) = [real(dp) :: 0, 5, 15, 30, 50, 75]
-        real(dp) :: A(1, 3) = reshape([real(dp) :: 1, 3, 5], [1, 3])
-        real(dp) :: B(2) = [real(dp) :: 1, 2]
-        
+        real(dp), parameter :: x(6) = [real(dp) :: 0, 5, 15, 30, 50, 75]
+        real(dp), parameter :: A(1, 3) = reshape([real(dp) :: 1, 3, 5], [1, 3])
+        real(dp), parameter :: B(2) = [real(dp) :: 1, 2]
         !> rank-1 diff
         call check(error, all_close(diff(x), [real(dp) :: 5, 10, 15, 20, 25]), &
             "diff(<rank-1>) in test_diff_real_dp failed")
@@ -918,9 +916,9 @@ contains
     
     subroutine test_diff_int_int8(error)
         type(error_type), allocatable, intent(out) :: error
-        integer(int8) :: x(6) = [integer(int8) :: 0, 5, 15, 30, 50, 75]
-        integer(int8) :: A(1, 3) = reshape([integer(int8) :: 1, 3, 5], [1, 3])
-        integer(int8) :: B(2) = [integer(int8) :: 1, 2]
+        integer(int8), parameter :: x(6) = [integer(int8) :: 0, 5, 15, 30, 50, 75]
+        integer(int8), parameter :: A(1, 3) = reshape([integer(int8) :: 1, 3, 5], [1, 3])
+        integer(int8), parameter :: B(2) = [integer(int8) :: 1, 2]
         
         !> rank-1 diff
         call check(error, all(diff(x) == [integer(int8) :: 5, 10, 15, 20, 25]), &
@@ -962,9 +960,9 @@ contains
     end subroutine test_diff_int_int8
     subroutine test_diff_int_int16(error)
         type(error_type), allocatable, intent(out) :: error
-        integer(int16) :: x(6) = [integer(int16) :: 0, 5, 15, 30, 50, 75]
-        integer(int16) :: A(1, 3) = reshape([integer(int16) :: 1, 3, 5], [1, 3])
-        integer(int16) :: B(2) = [integer(int16) :: 1, 2]
+        integer(int16), parameter :: x(6) = [integer(int16) :: 0, 5, 15, 30, 50, 75]
+        integer(int16), parameter :: A(1, 3) = reshape([integer(int16) :: 1, 3, 5], [1, 3])
+        integer(int16), parameter :: B(2) = [integer(int16) :: 1, 2]
         
         !> rank-1 diff
         call check(error, all(diff(x) == [integer(int16) :: 5, 10, 15, 20, 25]), &
@@ -1006,9 +1004,9 @@ contains
     end subroutine test_diff_int_int16
     subroutine test_diff_int_int32(error)
         type(error_type), allocatable, intent(out) :: error
-        integer(int32) :: x(6) = [integer(int32) :: 0, 5, 15, 30, 50, 75]
-        integer(int32) :: A(1, 3) = reshape([integer(int32) :: 1, 3, 5], [1, 3])
-        integer(int32) :: B(2) = [integer(int32) :: 1, 2]
+        integer(int32), parameter :: x(6) = [integer(int32) :: 0, 5, 15, 30, 50, 75]
+        integer(int32), parameter :: A(1, 3) = reshape([integer(int32) :: 1, 3, 5], [1, 3])
+        integer(int32), parameter :: B(2) = [integer(int32) :: 1, 2]
         
         !> rank-1 diff
         call check(error, all(diff(x) == [integer(int32) :: 5, 10, 15, 20, 25]), &
@@ -1050,9 +1048,9 @@ contains
     end subroutine test_diff_int_int32
     subroutine test_diff_int_int64(error)
         type(error_type), allocatable, intent(out) :: error
-        integer(int64) :: x(6) = [integer(int64) :: 0, 5, 15, 30, 50, 75]
-        integer(int64) :: A(1, 3) = reshape([integer(int64) :: 1, 3, 5], [1, 3])
-        integer(int64) :: B(2) = [integer(int64) :: 1, 2]
+        integer(int64), parameter :: x(6) = [integer(int64) :: 0, 5, 15, 30, 50, 75]
+        integer(int64), parameter :: A(1, 3) = reshape([integer(int64) :: 1, 3, 5], [1, 3])
+        integer(int64), parameter :: B(2) = [integer(int64) :: 1, 2]
         
         !> rank-1 diff
         call check(error, all(diff(x) == [integer(int64) :: 5, 10, 15, 20, 25]), &
