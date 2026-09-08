@@ -70,6 +70,119 @@ module stdlib_sparse_spmv
         end subroutine
         #:endfor
     end interface
+
+    !! Version experimental
+    !!
+    !! Apply the COO sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
+    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    interface spmv_kernel_coo
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        #:for rank in RANKS
+        module subroutine spmv_kernel_coo_${rank}$d_${s1}$(op,alpha,data,index,storage,vec_x,beta,vec_y)
+            ${t1}$, intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: index(:,:)
+            integer, intent(in) :: storage
+            ${t1}$, intent(in), contiguous    :: vec_x${ranksuffix(rank)}$
+            ${t1}$, intent(inout), contiguous :: vec_y${ranksuffix(rank)}$
+            ${t1}$, intent(in) :: alpha
+            ${t1}$, intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        #:endfor
+        #:endfor
+    end interface
+
+    !! Version experimental
+    !!
+    !! Apply the CSC sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
+    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    interface spmv_kernel_csc
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        #:for rank in RANKS
+        module subroutine spmv_kernel_csc_${rank}$d_${s1}$(op,alpha,data,colptr,row,storage,vec_x,beta,vec_y)
+            ${t1}$, intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: colptr(:) !! matrix column pointer
+            integer(ilp), intent(in), contiguous :: row(:)  !! matrix row pointer
+            integer, intent(in) :: storage !! storage
+            ${t1}$, intent(in), contiguous    :: vec_x${ranksuffix(rank)}$
+            ${t1}$, intent(inout), contiguous :: vec_y${ranksuffix(rank)}$
+            ${t1}$, intent(in) :: alpha
+            ${t1}$, intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        #:endfor
+        #:endfor
+    end interface
+
+    !! Version experimental
+    !!
+    !! Apply the CSR sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
+    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    interface spmv_kernel_csr
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        #:for rank in RANKS
+        module subroutine spmv_kernel_csr_${rank}$d_${s1}$(op,alpha,data,col,rowptr,storage,vec_x,beta,vec_y)
+            ${t1}$, intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: col(:) !! matrix column pointer
+            integer(ilp), intent(in), contiguous :: rowptr(:)  !! matrix row pointer
+            integer, intent(in) :: storage !! storage
+            ${t1}$, intent(in), contiguous    :: vec_x${ranksuffix(rank)}$
+            ${t1}$, intent(inout), contiguous :: vec_y${ranksuffix(rank)}$
+            ${t1}$, intent(in) :: alpha
+            ${t1}$, intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        #:endfor
+        #:endfor
+    end interface
+
+    !! Version experimental
+    !!
+    !! Apply the ELL sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
+    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    interface spmv_kernel_ell
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        #:for rank in RANKS
+        module subroutine spmv_kernel_ell_${rank}$d_${s1}$(op,alpha,data,index,storage,vec_x,beta,vec_y)
+            ${t1}$, intent(in), contiguous :: data(:,:)
+            integer(ilp), intent(in), contiguous :: index(:,:)
+            integer, intent(in) :: storage
+            ${t1}$, intent(in), contiguous    :: vec_x${ranksuffix(rank)}$
+            ${t1}$, intent(inout), contiguous :: vec_y${ranksuffix(rank)}$
+            ${t1}$, intent(in) :: alpha
+            ${t1}$, intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        #:endfor
+        #:endfor
+    end interface
+
+    !! Version experimental
+    !!
+    !! Apply the SELLC sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
+    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    interface spmv_kernel_sellc
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        module subroutine spmv_kernel_sellc_${s1}$(op,alpha,data,ia,ja,storage,vec_x,beta,vec_y)
+            !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
+            ${t1}$, intent(in), contiguous :: data(:,:)
+            integer(ilp), intent(in), contiguous :: ia(:)
+            integer(ilp), intent(in), contiguous :: ja(:,:)
+            integer, intent(in) :: storage
+            ${t1}$, intent(in), contiguous    :: vec_x(:)
+            ${t1}$, intent(inout), contiguous :: vec_y(:)
+            ${t1}$, intent(in) :: alpha
+            ${t1}$, intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        #:endfor
+    end interface
+
     public :: spmv
+    public :: spmv_kernel_coo
+    public :: spmv_kernel_csc
+    public :: spmv_kernel_csr
+    public :: spmv_kernel_ell
+    public :: spmv_kernel_sellc
 
 end module
