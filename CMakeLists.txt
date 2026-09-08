@@ -126,7 +126,7 @@ if(NOT FYPP OR "${FYPP}" MATCHES "NOTFOUND")
     "   Windows:      'where fypp' and 'where python'\n"
     "   Linux/macOS:  'which fypp' and 'which python'\n\n"
     " Ensure the executable is in your PATH or set it manually during configuration:\n"
-    "   cmake -B build -DFYPP_EXECUTABLE=/path/to/fypp\n"
+    "   cmake -B build -DFYPP=/path/to/fypp\n"
     " ------------------------------------------------------------------------\n"
   )
 endif()
