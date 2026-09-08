@@ -10,32 +10,55 @@ contains
         real(sp), intent(in), optional :: alpha
         real(sp), intent(in), optional :: beta
         character(1), intent(in), optional :: op
-        real(sp) :: alpha_
+        real(sp) :: alpha_, beta_
         character(1) :: op_
-        integer(ilp) :: i, nz, rowidx, num_chunks, rm
 
         op_ = sparse_op_none; if(present(op)) op_ = op
         alpha_ = one_sp
         if(present(alpha)) alpha_ = alpha
-        if(present(beta)) then
-            vec_y = beta * vec_y
-        else 
-            vec_y = zero_sp
-        endif
 
-        associate( data => matrix%data, ia => matrix%rowptr , ja => matrix%col, cs => matrix%chunk_size, &
-        &   nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage  )
+        beta_ = zero_sp
+        if(present(beta)) beta_ = beta
 
-        if( .not.any( [4, 8, 16] == cs ) ) then
+        call spmv_kernel_sellc_sp(op_,alpha_, &
+            matrix%data, matrix%rowptr, matrix%col, &
+            matrix%storage, &
+            vec_x,beta_,vec_y)
+
+    end subroutine
+
+    module subroutine spmv_kernel_sellc_sp(op,alpha,data,ia,ja,storage,vec_x,beta,vec_y)
+        !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
+        real(sp), intent(in), contiguous :: data(:,:)
+        integer(ilp), intent(in), contiguous :: ia(:)
+        integer(ilp), intent(in), contiguous :: ja(:,:)
+        integer, intent(in) :: storage
+        real(sp), intent(in), contiguous    :: vec_x(:)
+        real(sp), intent(inout), contiguous :: vec_y(:)
+        real(sp), intent(in) :: alpha
+        real(sp), intent(in) :: beta
+        character(1), intent(in) :: op
+        integer(ilp) :: i, nz, rowidx, num_chunks, rm
+        integer(ilp) :: nrows
+        integer :: chunk_size
+
+        chunk_size = size(data, 1)
+
+        if( .not.any( [4, 8, 16] == chunk_size ) ) then
             print *, "error: sellc chunk size not supported."
             return
         end if
 
-        num_chunks = nrows / cs
-        rm = nrows - num_chunks * cs
-        if( storage == sparse_full .and. op_==sparse_op_none ) then
+        vec_y = beta * vec_y
 
-            select case(cs)
+        nrows = merge(size(vec_y), size(vec_x), op==sparse_op_none)
+
+        num_chunks = nrows / chunk_size
+        rm = nrows - num_chunks * chunk_size
+
+        if( storage == sparse_full .and. op==sparse_op_none ) then
+
+            select case(chunk_size)
             case(4)
                 do i = 1, num_chunks
                     nz = ia(i+1) - ia(i)
@@ -60,13 +83,13 @@ contains
             if(rm>0)then 
                 i = num_chunks + 1 
                 nz = ia(i+1) - ia(i)
-                rowidx = (i - 1)*cs + 1
-                call chunk_kernel_rm(nz,cs,rm,data(:,ia(i)),ja(:,ia(i)),vec_x,vec_y(rowidx:))
+                rowidx = (i - 1)*chunk_size + 1
+                call chunk_kernel_rm(nz,chunk_size,rm,data(:,ia(i)),ja(:,ia(i)),vec_x,vec_y(rowidx:))
             end if
             
-        else if( storage == sparse_full .and. op_==sparse_op_transpose ) then
+        else if( storage == sparse_full .and. op==sparse_op_transpose ) then
 
-            select case(cs)
+            select case(chunk_size)
             case(4)
                 do i = 1, num_chunks
                     nz = ia(i+1) - ia(i)
@@ -91,15 +114,14 @@ contains
             if(rm>0)then 
                 i = num_chunks + 1 
                 nz = ia(i+1) - ia(i)
-                rowidx = (i - 1)*cs + 1
-                call chunk_kernel_rm_trans(nz,cs,rm,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
+                rowidx = (i - 1)*chunk_size + 1
+                call chunk_kernel_rm_trans(nz,chunk_size,rm,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
             end if
         
         else
             print *, "error: sellc format for spmv operation not yet supported."
             return
         end if
-        end associate
 
     contains
         pure subroutine chunk_kernel_4(n,a,col,x,y)
@@ -109,7 +131,7 @@ contains
             real(sp), intent(inout) :: y(4)
             integer :: j
             do j = 1, n
-                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_4(n,a,col,x,y)
@@ -120,7 +142,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, 4
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -131,7 +153,7 @@ contains
             real(sp), intent(inout) :: y(8)
             integer :: j
             do j = 1, n
-                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_8(n,a,col,x,y)
@@ -142,7 +164,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, 8
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -153,7 +175,7 @@ contains
             real(sp), intent(inout) :: y(16)
             integer :: j
             do j = 1, n
-                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_16(n,a,col,x,y)
@@ -164,7 +186,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, 16
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -176,7 +198,7 @@ contains
             real(sp), intent(inout) :: y(r)
             integer :: j
             do j = 1, n
-                y(1:r) = y(1:r) + alpha_ * a(1:r,j) * x(col(1:r,j))
+                y(1:r) = y(1:r) + alpha * a(1:r,j) * x(col(1:r,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_rm_trans(n,cs,r,a,col,x,y)
@@ -187,13 +209,12 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, r
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * a(k,j) * x(k)
                 end do
             end do
         end subroutine
 
     end subroutine
-    
     module subroutine spmv_sellc_dp(matrix,vec_x,vec_y,alpha,beta,op)
         !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
         type(SELLC_dp_type), intent(in) :: matrix
@@ -202,32 +223,55 @@ contains
         real(dp), intent(in), optional :: alpha
         real(dp), intent(in), optional :: beta
         character(1), intent(in), optional :: op
-        real(dp) :: alpha_
+        real(dp) :: alpha_, beta_
         character(1) :: op_
-        integer(ilp) :: i, nz, rowidx, num_chunks, rm
 
         op_ = sparse_op_none; if(present(op)) op_ = op
         alpha_ = one_dp
         if(present(alpha)) alpha_ = alpha
-        if(present(beta)) then
-            vec_y = beta * vec_y
-        else 
-            vec_y = zero_dp
-        endif
 
-        associate( data => matrix%data, ia => matrix%rowptr , ja => matrix%col, cs => matrix%chunk_size, &
-        &   nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage  )
+        beta_ = zero_dp
+        if(present(beta)) beta_ = beta
 
-        if( .not.any( [4, 8, 16] == cs ) ) then
+        call spmv_kernel_sellc_dp(op_,alpha_, &
+            matrix%data, matrix%rowptr, matrix%col, &
+            matrix%storage, &
+            vec_x,beta_,vec_y)
+
+    end subroutine
+
+    module subroutine spmv_kernel_sellc_dp(op,alpha,data,ia,ja,storage,vec_x,beta,vec_y)
+        !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
+        real(dp), intent(in), contiguous :: data(:,:)
+        integer(ilp), intent(in), contiguous :: ia(:)
+        integer(ilp), intent(in), contiguous :: ja(:,:)
+        integer, intent(in) :: storage
+        real(dp), intent(in), contiguous    :: vec_x(:)
+        real(dp), intent(inout), contiguous :: vec_y(:)
+        real(dp), intent(in) :: alpha
+        real(dp), intent(in) :: beta
+        character(1), intent(in) :: op
+        integer(ilp) :: i, nz, rowidx, num_chunks, rm
+        integer(ilp) :: nrows
+        integer :: chunk_size
+
+        chunk_size = size(data, 1)
+
+        if( .not.any( [4, 8, 16] == chunk_size ) ) then
             print *, "error: sellc chunk size not supported."
             return
         end if
 
-        num_chunks = nrows / cs
-        rm = nrows - num_chunks * cs
-        if( storage == sparse_full .and. op_==sparse_op_none ) then
+        vec_y = beta * vec_y
 
-            select case(cs)
+        nrows = merge(size(vec_y), size(vec_x), op==sparse_op_none)
+
+        num_chunks = nrows / chunk_size
+        rm = nrows - num_chunks * chunk_size
+
+        if( storage == sparse_full .and. op==sparse_op_none ) then
+
+            select case(chunk_size)
             case(4)
                 do i = 1, num_chunks
                     nz = ia(i+1) - ia(i)
@@ -252,13 +296,13 @@ contains
             if(rm>0)then 
                 i = num_chunks + 1 
                 nz = ia(i+1) - ia(i)
-                rowidx = (i - 1)*cs + 1
-                call chunk_kernel_rm(nz,cs,rm,data(:,ia(i)),ja(:,ia(i)),vec_x,vec_y(rowidx:))
+                rowidx = (i - 1)*chunk_size + 1
+                call chunk_kernel_rm(nz,chunk_size,rm,data(:,ia(i)),ja(:,ia(i)),vec_x,vec_y(rowidx:))
             end if
             
-        else if( storage == sparse_full .and. op_==sparse_op_transpose ) then
+        else if( storage == sparse_full .and. op==sparse_op_transpose ) then
 
-            select case(cs)
+            select case(chunk_size)
             case(4)
                 do i = 1, num_chunks
                     nz = ia(i+1) - ia(i)
@@ -283,15 +327,14 @@ contains
             if(rm>0)then 
                 i = num_chunks + 1 
                 nz = ia(i+1) - ia(i)
-                rowidx = (i - 1)*cs + 1
-                call chunk_kernel_rm_trans(nz,cs,rm,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
+                rowidx = (i - 1)*chunk_size + 1
+                call chunk_kernel_rm_trans(nz,chunk_size,rm,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
             end if
         
         else
             print *, "error: sellc format for spmv operation not yet supported."
             return
         end if
-        end associate
 
     contains
         pure subroutine chunk_kernel_4(n,a,col,x,y)
@@ -301,7 +344,7 @@ contains
             real(dp), intent(inout) :: y(4)
             integer :: j
             do j = 1, n
-                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_4(n,a,col,x,y)
@@ -312,7 +355,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, 4
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -323,7 +366,7 @@ contains
             real(dp), intent(inout) :: y(8)
             integer :: j
             do j = 1, n
-                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_8(n,a,col,x,y)
@@ -334,7 +377,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, 8
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -345,7 +388,7 @@ contains
             real(dp), intent(inout) :: y(16)
             integer :: j
             do j = 1, n
-                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_16(n,a,col,x,y)
@@ -356,7 +399,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, 16
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -368,7 +411,7 @@ contains
             real(dp), intent(inout) :: y(r)
             integer :: j
             do j = 1, n
-                y(1:r) = y(1:r) + alpha_ * a(1:r,j) * x(col(1:r,j))
+                y(1:r) = y(1:r) + alpha * a(1:r,j) * x(col(1:r,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_rm_trans(n,cs,r,a,col,x,y)
@@ -379,13 +422,12 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, r
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * a(k,j) * x(k)
                 end do
             end do
         end subroutine
 
     end subroutine
-    
     module subroutine spmv_sellc_csp(matrix,vec_x,vec_y,alpha,beta,op)
         !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
         type(SELLC_csp_type), intent(in) :: matrix
@@ -394,32 +436,55 @@ contains
         complex(sp), intent(in), optional :: alpha
         complex(sp), intent(in), optional :: beta
         character(1), intent(in), optional :: op
-        complex(sp) :: alpha_
+        complex(sp) :: alpha_, beta_
         character(1) :: op_
-        integer(ilp) :: i, nz, rowidx, num_chunks, rm
 
         op_ = sparse_op_none; if(present(op)) op_ = op
         alpha_ = one_csp
         if(present(alpha)) alpha_ = alpha
-        if(present(beta)) then
-            vec_y = beta * vec_y
-        else 
-            vec_y = zero_csp
-        endif
 
-        associate( data => matrix%data, ia => matrix%rowptr , ja => matrix%col, cs => matrix%chunk_size, &
-        &   nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage  )
+        beta_ = zero_csp
+        if(present(beta)) beta_ = beta
 
-        if( .not.any( [4, 8, 16] == cs ) ) then
+        call spmv_kernel_sellc_csp(op_,alpha_, &
+            matrix%data, matrix%rowptr, matrix%col, &
+            matrix%storage, &
+            vec_x,beta_,vec_y)
+
+    end subroutine
+
+    module subroutine spmv_kernel_sellc_csp(op,alpha,data,ia,ja,storage,vec_x,beta,vec_y)
+        !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
+        complex(sp), intent(in), contiguous :: data(:,:)
+        integer(ilp), intent(in), contiguous :: ia(:)
+        integer(ilp), intent(in), contiguous :: ja(:,:)
+        integer, intent(in) :: storage
+        complex(sp), intent(in), contiguous    :: vec_x(:)
+        complex(sp), intent(inout), contiguous :: vec_y(:)
+        complex(sp), intent(in) :: alpha
+        complex(sp), intent(in) :: beta
+        character(1), intent(in) :: op
+        integer(ilp) :: i, nz, rowidx, num_chunks, rm
+        integer(ilp) :: nrows
+        integer :: chunk_size
+
+        chunk_size = size(data, 1)
+
+        if( .not.any( [4, 8, 16] == chunk_size ) ) then
             print *, "error: sellc chunk size not supported."
             return
         end if
 
-        num_chunks = nrows / cs
-        rm = nrows - num_chunks * cs
-        if( storage == sparse_full .and. op_==sparse_op_none ) then
+        vec_y = beta * vec_y
 
-            select case(cs)
+        nrows = merge(size(vec_y), size(vec_x), op==sparse_op_none)
+
+        num_chunks = nrows / chunk_size
+        rm = nrows - num_chunks * chunk_size
+
+        if( storage == sparse_full .and. op==sparse_op_none ) then
+
+            select case(chunk_size)
             case(4)
                 do i = 1, num_chunks
                     nz = ia(i+1) - ia(i)
@@ -444,13 +509,13 @@ contains
             if(rm>0)then 
                 i = num_chunks + 1 
                 nz = ia(i+1) - ia(i)
-                rowidx = (i - 1)*cs + 1
-                call chunk_kernel_rm(nz,cs,rm,data(:,ia(i)),ja(:,ia(i)),vec_x,vec_y(rowidx:))
+                rowidx = (i - 1)*chunk_size + 1
+                call chunk_kernel_rm(nz,chunk_size,rm,data(:,ia(i)),ja(:,ia(i)),vec_x,vec_y(rowidx:))
             end if
             
-        else if( storage == sparse_full .and. op_==sparse_op_transpose ) then
+        else if( storage == sparse_full .and. op==sparse_op_transpose ) then
 
-            select case(cs)
+            select case(chunk_size)
             case(4)
                 do i = 1, num_chunks
                     nz = ia(i+1) - ia(i)
@@ -475,13 +540,13 @@ contains
             if(rm>0)then 
                 i = num_chunks + 1 
                 nz = ia(i+1) - ia(i)
-                rowidx = (i - 1)*cs + 1
-                call chunk_kernel_rm_trans(nz,cs,rm,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
+                rowidx = (i - 1)*chunk_size + 1
+                call chunk_kernel_rm_trans(nz,chunk_size,rm,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
             end if
         
-        else if( storage == sparse_full .and. op_==sparse_op_hermitian ) then
+        else if( storage == sparse_full .and. op==sparse_op_hermitian ) then
 
-            select case(cs)
+            select case(chunk_size)
             case(4)
                 do i = 1, num_chunks
                     nz = ia(i+1) - ia(i)
@@ -506,14 +571,13 @@ contains
             if(rm>0)then 
                 i = num_chunks + 1 
                 nz = ia(i+1) - ia(i)
-                rowidx = (i - 1)*cs + 1
-                call chunk_kernel_rm_herm(nz,cs,rm,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
+                rowidx = (i - 1)*chunk_size + 1
+                call chunk_kernel_rm_herm(nz,chunk_size,rm,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
             end if
         else
             print *, "error: sellc format for spmv operation not yet supported."
             return
         end if
-        end associate
 
     contains
         pure subroutine chunk_kernel_4(n,a,col,x,y)
@@ -523,7 +587,7 @@ contains
             complex(sp), intent(inout) :: y(4)
             integer :: j
             do j = 1, n
-                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_4(n,a,col,x,y)
@@ -534,7 +598,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, 4
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -546,7 +610,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, 4
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * conjg(a(k,j)) * x(k)
                 end do
             end do
         end subroutine
@@ -557,7 +621,7 @@ contains
             complex(sp), intent(inout) :: y(8)
             integer :: j
             do j = 1, n
-                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_8(n,a,col,x,y)
@@ -568,7 +632,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, 8
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -580,7 +644,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, 8
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * conjg(a(k,j)) * x(k)
                 end do
             end do
         end subroutine
@@ -591,7 +655,7 @@ contains
             complex(sp), intent(inout) :: y(16)
             integer :: j
             do j = 1, n
-                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_16(n,a,col,x,y)
@@ -602,7 +666,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, 16
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -614,7 +678,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, 16
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * conjg(a(k,j)) * x(k)
                 end do
             end do
         end subroutine
@@ -626,7 +690,7 @@ contains
             complex(sp), intent(inout) :: y(r)
             integer :: j
             do j = 1, n
-                y(1:r) = y(1:r) + alpha_ * a(1:r,j) * x(col(1:r,j))
+                y(1:r) = y(1:r) + alpha * a(1:r,j) * x(col(1:r,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_rm_trans(n,cs,r,a,col,x,y)
@@ -637,7 +701,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, r
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -649,13 +713,12 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, r
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * conjg(a(k,j)) * x(k)
                 end do
             end do
         end subroutine
 
     end subroutine
-    
     module subroutine spmv_sellc_cdp(matrix,vec_x,vec_y,alpha,beta,op)
         !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
         type(SELLC_cdp_type), intent(in) :: matrix
@@ -664,32 +727,55 @@ contains
         complex(dp), intent(in), optional :: alpha
         complex(dp), intent(in), optional :: beta
         character(1), intent(in), optional :: op
-        complex(dp) :: alpha_
+        complex(dp) :: alpha_, beta_
         character(1) :: op_
-        integer(ilp) :: i, nz, rowidx, num_chunks, rm
 
         op_ = sparse_op_none; if(present(op)) op_ = op
         alpha_ = one_cdp
         if(present(alpha)) alpha_ = alpha
-        if(present(beta)) then
-            vec_y = beta * vec_y
-        else 
-            vec_y = zero_cdp
-        endif
 
-        associate( data => matrix%data, ia => matrix%rowptr , ja => matrix%col, cs => matrix%chunk_size, &
-        &   nnz => matrix%nnz, nrows => matrix%nrows, ncols => matrix%ncols, storage => matrix%storage  )
+        beta_ = zero_cdp
+        if(present(beta)) beta_ = beta
 
-        if( .not.any( [4, 8, 16] == cs ) ) then
+        call spmv_kernel_sellc_cdp(op_,alpha_, &
+            matrix%data, matrix%rowptr, matrix%col, &
+            matrix%storage, &
+            vec_x,beta_,vec_y)
+
+    end subroutine
+
+    module subroutine spmv_kernel_sellc_cdp(op,alpha,data,ia,ja,storage,vec_x,beta,vec_y)
+        !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
+        complex(dp), intent(in), contiguous :: data(:,:)
+        integer(ilp), intent(in), contiguous :: ia(:)
+        integer(ilp), intent(in), contiguous :: ja(:,:)
+        integer, intent(in) :: storage
+        complex(dp), intent(in), contiguous    :: vec_x(:)
+        complex(dp), intent(inout), contiguous :: vec_y(:)
+        complex(dp), intent(in) :: alpha
+        complex(dp), intent(in) :: beta
+        character(1), intent(in) :: op
+        integer(ilp) :: i, nz, rowidx, num_chunks, rm
+        integer(ilp) :: nrows
+        integer :: chunk_size
+
+        chunk_size = size(data, 1)
+
+        if( .not.any( [4, 8, 16] == chunk_size ) ) then
             print *, "error: sellc chunk size not supported."
             return
         end if
 
-        num_chunks = nrows / cs
-        rm = nrows - num_chunks * cs
-        if( storage == sparse_full .and. op_==sparse_op_none ) then
+        vec_y = beta * vec_y
 
-            select case(cs)
+        nrows = merge(size(vec_y), size(vec_x), op==sparse_op_none)
+
+        num_chunks = nrows / chunk_size
+        rm = nrows - num_chunks * chunk_size
+
+        if( storage == sparse_full .and. op==sparse_op_none ) then
+
+            select case(chunk_size)
             case(4)
                 do i = 1, num_chunks
                     nz = ia(i+1) - ia(i)
@@ -714,13 +800,13 @@ contains
             if(rm>0)then 
                 i = num_chunks + 1 
                 nz = ia(i+1) - ia(i)
-                rowidx = (i - 1)*cs + 1
-                call chunk_kernel_rm(nz,cs,rm,data(:,ia(i)),ja(:,ia(i)),vec_x,vec_y(rowidx:))
+                rowidx = (i - 1)*chunk_size + 1
+                call chunk_kernel_rm(nz,chunk_size,rm,data(:,ia(i)),ja(:,ia(i)),vec_x,vec_y(rowidx:))
             end if
             
-        else if( storage == sparse_full .and. op_==sparse_op_transpose ) then
+        else if( storage == sparse_full .and. op==sparse_op_transpose ) then
 
-            select case(cs)
+            select case(chunk_size)
             case(4)
                 do i = 1, num_chunks
                     nz = ia(i+1) - ia(i)
@@ -745,13 +831,13 @@ contains
             if(rm>0)then 
                 i = num_chunks + 1 
                 nz = ia(i+1) - ia(i)
-                rowidx = (i - 1)*cs + 1
-                call chunk_kernel_rm_trans(nz,cs,rm,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
+                rowidx = (i - 1)*chunk_size + 1
+                call chunk_kernel_rm_trans(nz,chunk_size,rm,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
             end if
         
-        else if( storage == sparse_full .and. op_==sparse_op_hermitian ) then
+        else if( storage == sparse_full .and. op==sparse_op_hermitian ) then
 
-            select case(cs)
+            select case(chunk_size)
             case(4)
                 do i = 1, num_chunks
                     nz = ia(i+1) - ia(i)
@@ -776,14 +862,13 @@ contains
             if(rm>0)then 
                 i = num_chunks + 1 
                 nz = ia(i+1) - ia(i)
-                rowidx = (i - 1)*cs + 1
-                call chunk_kernel_rm_herm(nz,cs,rm,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
+                rowidx = (i - 1)*chunk_size + 1
+                call chunk_kernel_rm_herm(nz,chunk_size,rm,data(:,ia(i)),ja(:,ia(i)),vec_x(rowidx:),vec_y)
             end if
         else
             print *, "error: sellc format for spmv operation not yet supported."
             return
         end if
-        end associate
 
     contains
         pure subroutine chunk_kernel_4(n,a,col,x,y)
@@ -793,7 +878,7 @@ contains
             complex(dp), intent(inout) :: y(4)
             integer :: j
             do j = 1, n
-                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_4(n,a,col,x,y)
@@ -804,7 +889,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, 4
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -816,7 +901,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, 4
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * conjg(a(k,j)) * x(k)
                 end do
             end do
         end subroutine
@@ -827,7 +912,7 @@ contains
             complex(dp), intent(inout) :: y(8)
             integer :: j
             do j = 1, n
-                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_8(n,a,col,x,y)
@@ -838,7 +923,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, 8
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -850,7 +935,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, 8
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * conjg(a(k,j)) * x(k)
                 end do
             end do
         end subroutine
@@ -861,7 +946,7 @@ contains
             complex(dp), intent(inout) :: y(16)
             integer :: j
             do j = 1, n
-                y(:) = y(:) + alpha_ * a(:,j) * x(col(:,j))
+                y(:) = y(:) + alpha * a(:,j) * x(col(:,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_trans_16(n,a,col,x,y)
@@ -872,7 +957,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, 16
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -884,7 +969,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, 16
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * conjg(a(k,j)) * x(k)
                 end do
             end do
         end subroutine
@@ -896,7 +981,7 @@ contains
             complex(dp), intent(inout) :: y(r)
             integer :: j
             do j = 1, n
-                y(1:r) = y(1:r) + alpha_ * a(1:r,j) * x(col(1:r,j))
+                y(1:r) = y(1:r) + alpha * a(1:r,j) * x(col(1:r,j))
             end do
         end subroutine
         pure subroutine chunk_kernel_rm_trans(n,cs,r,a,col,x,y)
@@ -907,7 +992,7 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, r
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * a(k,j) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * a(k,j) * x(k)
                 end do
             end do
         end subroutine
@@ -919,12 +1004,11 @@ contains
             integer :: j, k
             do j = 1, n
                 do k = 1, r
-                    y(col(k,j)) = y(col(k,j)) + alpha_ * conjg(a(k,j)) * x(k)
+                    y(col(k,j)) = y(col(k,j)) + alpha * conjg(a(k,j)) * x(k)
                 end do
             end do
         end subroutine
 
     end subroutine
-    
 
 end submodule stdlib_sparse_spmv_sellc
