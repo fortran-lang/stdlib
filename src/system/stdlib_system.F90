@@ -1239,6 +1239,11 @@ subroutine set_environment_variable(name, value, overwrite, err)
     type(state_type) :: err0
     integer :: code
     integer :: overwrite_
+    ! Held in locals rather than passed as two function results in one call:
+    ! to_c_char returns an automatic-shape array sized from its argument, and
+    ! ifx 2024.1 crashes on two such temporaries in a single argument list.
+    ! Every other call to it in this file passes exactly one.
+    character(kind=c_char), allocatable :: c_name(:), c_value(:)
 
     interface
         integer function stdlib_setenv(name, val, overwrite) bind(C, name='stdlib_setenv')
@@ -1269,7 +1274,9 @@ subroutine set_environment_variable(name, value, overwrite, err)
         if (.not. overwrite) overwrite_ = 0
     end if
 
-    code = stdlib_setenv(to_c_char(name), to_c_char(value), overwrite_)
+    c_name = to_c_char(name)
+    c_value = to_c_char(value)
+    code = stdlib_setenv(c_name, c_value, overwrite_)
 
     if (code /= 0) then
         err0 = FS_ERROR_CODE(code, c_get_strerror())
