@@ -114,7 +114,7 @@ jobs:
 
     - name: Install project
       if: ${{ contains(matrix.build, 'cmake') }}
-      run: cmake --install ${{ env.BUILD_DIR }}
+      run: cmake --build ${{ env.BUILD_DIR }} --target install
 
     - name: Test pkg-config
       if: ${{ contains(matrix.build, 'cmake') }}
