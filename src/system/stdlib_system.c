@@ -183,13 +183,13 @@ int stdlib_exists(const char* path, int* stat){
 // `overwrite` selects whether an existing variable is replaced. `_putenv_s`
 // always replaces, so the flag has no effect on windows.
 // Returns 0 if successful, otherwise returns the `errno`.
-int stdlib_setenv(const char* name, const char* value, int overwrite){
+int stdlib_setenv(const char* name, const char* value, const int* overwrite){
     int code;
 #ifdef _WIN32
     (void) overwrite;
     code = _putenv_s(name, value);
 #else
-    code = setenv(name, value, overwrite);
+    code = setenv(name, value, *overwrite);
 #endif /* ifdef _WIN32 */
 
     return (!code) ? 0 : errno;

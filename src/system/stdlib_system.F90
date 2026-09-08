@@ -1238,16 +1238,14 @@ subroutine set_environment_variable(name, value, overwrite, err)
 
     type(state_type) :: err0
     integer :: code
-    integer(c_int) :: overwrite_
+    integer :: overwrite_
 
     interface
-        integer(c_int) function stdlib_setenv(name, val, overwrite) bind(C, name='stdlib_setenv')
-            import c_char, c_int
-            ! Not named `value`: that would put the identifier and the VALUE
-            ! attribute in one interface body, which ifx 2024.1 cannot compile.
+        integer function stdlib_setenv(name, val, overwrite) bind(C, name='stdlib_setenv')
+            import c_char
             character(kind=c_char), intent(in) :: name(*)
             character(kind=c_char), intent(in) :: val(*)
-            integer(c_int), value :: overwrite
+            integer, intent(in) :: overwrite
         end function stdlib_setenv
     end interface
 
@@ -1266,9 +1264,9 @@ subroutine set_environment_variable(name, value, overwrite, err)
         return
     end if
 
-    overwrite_ = 1_c_int
+    overwrite_ = 1
     if (present(overwrite)) then
-        if (.not. overwrite) overwrite_ = 0_c_int
+        if (.not. overwrite) overwrite_ = 0
     end if
 
     code = stdlib_setenv(to_c_char(name), to_c_char(value), overwrite_)
@@ -1290,8 +1288,8 @@ subroutine delete_environment_variable(name, err)
     integer :: code
 
     interface
-        integer(c_int) function stdlib_unsetenv(name) bind(C, name='stdlib_unsetenv')
-            import c_char, c_int
+        integer function stdlib_unsetenv(name) bind(C, name='stdlib_unsetenv')
+            import c_char
             character(kind=c_char), intent(in) :: name(*)
         end function stdlib_unsetenv
     end interface
