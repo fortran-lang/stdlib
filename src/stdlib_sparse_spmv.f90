@@ -329,6 +329,431 @@ module stdlib_sparse_spmv
             character(1), intent(in), optional :: op
         end subroutine
     end interface
+
+    !! Version experimental
+    !!
+    !! Apply the COO sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
+    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    interface spmv_kernel_coo
+        module subroutine spmv_kernel_coo_1d_sp(op,alpha,data,index,storage,vec_x,beta,vec_y)
+            real(sp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: index(:,:)
+            integer, intent(in) :: storage
+            real(sp), intent(in), contiguous    :: vec_x(:)
+            real(sp), intent(inout), contiguous :: vec_y(:)
+            real(sp), intent(in) :: alpha
+            real(sp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_coo_2d_sp(op,alpha,data,index,storage,vec_x,beta,vec_y)
+            real(sp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: index(:,:)
+            integer, intent(in) :: storage
+            real(sp), intent(in), contiguous    :: vec_x(:,:)
+            real(sp), intent(inout), contiguous :: vec_y(:,:)
+            real(sp), intent(in) :: alpha
+            real(sp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_coo_1d_dp(op,alpha,data,index,storage,vec_x,beta,vec_y)
+            real(dp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: index(:,:)
+            integer, intent(in) :: storage
+            real(dp), intent(in), contiguous    :: vec_x(:)
+            real(dp), intent(inout), contiguous :: vec_y(:)
+            real(dp), intent(in) :: alpha
+            real(dp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_coo_2d_dp(op,alpha,data,index,storage,vec_x,beta,vec_y)
+            real(dp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: index(:,:)
+            integer, intent(in) :: storage
+            real(dp), intent(in), contiguous    :: vec_x(:,:)
+            real(dp), intent(inout), contiguous :: vec_y(:,:)
+            real(dp), intent(in) :: alpha
+            real(dp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_coo_1d_csp(op,alpha,data,index,storage,vec_x,beta,vec_y)
+            complex(sp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: index(:,:)
+            integer, intent(in) :: storage
+            complex(sp), intent(in), contiguous    :: vec_x(:)
+            complex(sp), intent(inout), contiguous :: vec_y(:)
+            complex(sp), intent(in) :: alpha
+            complex(sp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_coo_2d_csp(op,alpha,data,index,storage,vec_x,beta,vec_y)
+            complex(sp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: index(:,:)
+            integer, intent(in) :: storage
+            complex(sp), intent(in), contiguous    :: vec_x(:,:)
+            complex(sp), intent(inout), contiguous :: vec_y(:,:)
+            complex(sp), intent(in) :: alpha
+            complex(sp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_coo_1d_cdp(op,alpha,data,index,storage,vec_x,beta,vec_y)
+            complex(dp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: index(:,:)
+            integer, intent(in) :: storage
+            complex(dp), intent(in), contiguous    :: vec_x(:)
+            complex(dp), intent(inout), contiguous :: vec_y(:)
+            complex(dp), intent(in) :: alpha
+            complex(dp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_coo_2d_cdp(op,alpha,data,index,storage,vec_x,beta,vec_y)
+            complex(dp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: index(:,:)
+            integer, intent(in) :: storage
+            complex(dp), intent(in), contiguous    :: vec_x(:,:)
+            complex(dp), intent(inout), contiguous :: vec_y(:,:)
+            complex(dp), intent(in) :: alpha
+            complex(dp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+    end interface
+
+    !! Version experimental
+    !!
+    !! Apply the CSC sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
+    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    interface spmv_kernel_csc
+        module subroutine spmv_kernel_csc_1d_sp(op,alpha,data,colptr,row,storage,vec_x,beta,vec_y)
+            real(sp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: colptr(:) !! matrix column pointer
+            integer(ilp), intent(in), contiguous :: row(:)  !! matrix row pointer
+            integer, intent(in) :: storage !! storage
+            real(sp), intent(in), contiguous    :: vec_x(:)
+            real(sp), intent(inout), contiguous :: vec_y(:)
+            real(sp), intent(in) :: alpha
+            real(sp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_csc_2d_sp(op,alpha,data,colptr,row,storage,vec_x,beta,vec_y)
+            real(sp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: colptr(:) !! matrix column pointer
+            integer(ilp), intent(in), contiguous :: row(:)  !! matrix row pointer
+            integer, intent(in) :: storage !! storage
+            real(sp), intent(in), contiguous    :: vec_x(:,:)
+            real(sp), intent(inout), contiguous :: vec_y(:,:)
+            real(sp), intent(in) :: alpha
+            real(sp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_csc_1d_dp(op,alpha,data,colptr,row,storage,vec_x,beta,vec_y)
+            real(dp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: colptr(:) !! matrix column pointer
+            integer(ilp), intent(in), contiguous :: row(:)  !! matrix row pointer
+            integer, intent(in) :: storage !! storage
+            real(dp), intent(in), contiguous    :: vec_x(:)
+            real(dp), intent(inout), contiguous :: vec_y(:)
+            real(dp), intent(in) :: alpha
+            real(dp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_csc_2d_dp(op,alpha,data,colptr,row,storage,vec_x,beta,vec_y)
+            real(dp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: colptr(:) !! matrix column pointer
+            integer(ilp), intent(in), contiguous :: row(:)  !! matrix row pointer
+            integer, intent(in) :: storage !! storage
+            real(dp), intent(in), contiguous    :: vec_x(:,:)
+            real(dp), intent(inout), contiguous :: vec_y(:,:)
+            real(dp), intent(in) :: alpha
+            real(dp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_csc_1d_csp(op,alpha,data,colptr,row,storage,vec_x,beta,vec_y)
+            complex(sp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: colptr(:) !! matrix column pointer
+            integer(ilp), intent(in), contiguous :: row(:)  !! matrix row pointer
+            integer, intent(in) :: storage !! storage
+            complex(sp), intent(in), contiguous    :: vec_x(:)
+            complex(sp), intent(inout), contiguous :: vec_y(:)
+            complex(sp), intent(in) :: alpha
+            complex(sp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_csc_2d_csp(op,alpha,data,colptr,row,storage,vec_x,beta,vec_y)
+            complex(sp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: colptr(:) !! matrix column pointer
+            integer(ilp), intent(in), contiguous :: row(:)  !! matrix row pointer
+            integer, intent(in) :: storage !! storage
+            complex(sp), intent(in), contiguous    :: vec_x(:,:)
+            complex(sp), intent(inout), contiguous :: vec_y(:,:)
+            complex(sp), intent(in) :: alpha
+            complex(sp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_csc_1d_cdp(op,alpha,data,colptr,row,storage,vec_x,beta,vec_y)
+            complex(dp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: colptr(:) !! matrix column pointer
+            integer(ilp), intent(in), contiguous :: row(:)  !! matrix row pointer
+            integer, intent(in) :: storage !! storage
+            complex(dp), intent(in), contiguous    :: vec_x(:)
+            complex(dp), intent(inout), contiguous :: vec_y(:)
+            complex(dp), intent(in) :: alpha
+            complex(dp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_csc_2d_cdp(op,alpha,data,colptr,row,storage,vec_x,beta,vec_y)
+            complex(dp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: colptr(:) !! matrix column pointer
+            integer(ilp), intent(in), contiguous :: row(:)  !! matrix row pointer
+            integer, intent(in) :: storage !! storage
+            complex(dp), intent(in), contiguous    :: vec_x(:,:)
+            complex(dp), intent(inout), contiguous :: vec_y(:,:)
+            complex(dp), intent(in) :: alpha
+            complex(dp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+    end interface
+
+    !! Version experimental
+    !!
+    !! Apply the CSR sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
+    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    interface spmv_kernel_csr
+        module subroutine spmv_kernel_csr_1d_sp(op,alpha,data,col,rowptr,storage,vec_x,beta,vec_y)
+            real(sp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: col(:) !! matrix column pointer
+            integer(ilp), intent(in), contiguous :: rowptr(:)  !! matrix row pointer
+            integer, intent(in) :: storage !! storage
+            real(sp), intent(in), contiguous    :: vec_x(:)
+            real(sp), intent(inout), contiguous :: vec_y(:)
+            real(sp), intent(in) :: alpha
+            real(sp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_csr_2d_sp(op,alpha,data,col,rowptr,storage,vec_x,beta,vec_y)
+            real(sp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: col(:) !! matrix column pointer
+            integer(ilp), intent(in), contiguous :: rowptr(:)  !! matrix row pointer
+            integer, intent(in) :: storage !! storage
+            real(sp), intent(in), contiguous    :: vec_x(:,:)
+            real(sp), intent(inout), contiguous :: vec_y(:,:)
+            real(sp), intent(in) :: alpha
+            real(sp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_csr_1d_dp(op,alpha,data,col,rowptr,storage,vec_x,beta,vec_y)
+            real(dp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: col(:) !! matrix column pointer
+            integer(ilp), intent(in), contiguous :: rowptr(:)  !! matrix row pointer
+            integer, intent(in) :: storage !! storage
+            real(dp), intent(in), contiguous    :: vec_x(:)
+            real(dp), intent(inout), contiguous :: vec_y(:)
+            real(dp), intent(in) :: alpha
+            real(dp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_csr_2d_dp(op,alpha,data,col,rowptr,storage,vec_x,beta,vec_y)
+            real(dp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: col(:) !! matrix column pointer
+            integer(ilp), intent(in), contiguous :: rowptr(:)  !! matrix row pointer
+            integer, intent(in) :: storage !! storage
+            real(dp), intent(in), contiguous    :: vec_x(:,:)
+            real(dp), intent(inout), contiguous :: vec_y(:,:)
+            real(dp), intent(in) :: alpha
+            real(dp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_csr_1d_csp(op,alpha,data,col,rowptr,storage,vec_x,beta,vec_y)
+            complex(sp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: col(:) !! matrix column pointer
+            integer(ilp), intent(in), contiguous :: rowptr(:)  !! matrix row pointer
+            integer, intent(in) :: storage !! storage
+            complex(sp), intent(in), contiguous    :: vec_x(:)
+            complex(sp), intent(inout), contiguous :: vec_y(:)
+            complex(sp), intent(in) :: alpha
+            complex(sp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_csr_2d_csp(op,alpha,data,col,rowptr,storage,vec_x,beta,vec_y)
+            complex(sp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: col(:) !! matrix column pointer
+            integer(ilp), intent(in), contiguous :: rowptr(:)  !! matrix row pointer
+            integer, intent(in) :: storage !! storage
+            complex(sp), intent(in), contiguous    :: vec_x(:,:)
+            complex(sp), intent(inout), contiguous :: vec_y(:,:)
+            complex(sp), intent(in) :: alpha
+            complex(sp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_csr_1d_cdp(op,alpha,data,col,rowptr,storage,vec_x,beta,vec_y)
+            complex(dp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: col(:) !! matrix column pointer
+            integer(ilp), intent(in), contiguous :: rowptr(:)  !! matrix row pointer
+            integer, intent(in) :: storage !! storage
+            complex(dp), intent(in), contiguous    :: vec_x(:)
+            complex(dp), intent(inout), contiguous :: vec_y(:)
+            complex(dp), intent(in) :: alpha
+            complex(dp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_csr_2d_cdp(op,alpha,data,col,rowptr,storage,vec_x,beta,vec_y)
+            complex(dp), intent(in), contiguous :: data(:)
+            integer(ilp), intent(in), contiguous :: col(:) !! matrix column pointer
+            integer(ilp), intent(in), contiguous :: rowptr(:)  !! matrix row pointer
+            integer, intent(in) :: storage !! storage
+            complex(dp), intent(in), contiguous    :: vec_x(:,:)
+            complex(dp), intent(inout), contiguous :: vec_y(:,:)
+            complex(dp), intent(in) :: alpha
+            complex(dp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+    end interface
+
+    !! Version experimental
+    !!
+    !! Apply the ELL sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
+    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    interface spmv_kernel_ell
+        module subroutine spmv_kernel_ell_1d_sp(op,alpha,data,index,storage,vec_x,beta,vec_y)
+            real(sp), intent(in), contiguous :: data(:,:)
+            integer(ilp), intent(in), contiguous :: index(:,:)
+            integer, intent(in) :: storage
+            real(sp), intent(in), contiguous    :: vec_x(:)
+            real(sp), intent(inout), contiguous :: vec_y(:)
+            real(sp), intent(in) :: alpha
+            real(sp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_ell_2d_sp(op,alpha,data,index,storage,vec_x,beta,vec_y)
+            real(sp), intent(in), contiguous :: data(:,:)
+            integer(ilp), intent(in), contiguous :: index(:,:)
+            integer, intent(in) :: storage
+            real(sp), intent(in), contiguous    :: vec_x(:,:)
+            real(sp), intent(inout), contiguous :: vec_y(:,:)
+            real(sp), intent(in) :: alpha
+            real(sp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_ell_1d_dp(op,alpha,data,index,storage,vec_x,beta,vec_y)
+            real(dp), intent(in), contiguous :: data(:,:)
+            integer(ilp), intent(in), contiguous :: index(:,:)
+            integer, intent(in) :: storage
+            real(dp), intent(in), contiguous    :: vec_x(:)
+            real(dp), intent(inout), contiguous :: vec_y(:)
+            real(dp), intent(in) :: alpha
+            real(dp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_ell_2d_dp(op,alpha,data,index,storage,vec_x,beta,vec_y)
+            real(dp), intent(in), contiguous :: data(:,:)
+            integer(ilp), intent(in), contiguous :: index(:,:)
+            integer, intent(in) :: storage
+            real(dp), intent(in), contiguous    :: vec_x(:,:)
+            real(dp), intent(inout), contiguous :: vec_y(:,:)
+            real(dp), intent(in) :: alpha
+            real(dp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_ell_1d_csp(op,alpha,data,index,storage,vec_x,beta,vec_y)
+            complex(sp), intent(in), contiguous :: data(:,:)
+            integer(ilp), intent(in), contiguous :: index(:,:)
+            integer, intent(in) :: storage
+            complex(sp), intent(in), contiguous    :: vec_x(:)
+            complex(sp), intent(inout), contiguous :: vec_y(:)
+            complex(sp), intent(in) :: alpha
+            complex(sp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_ell_2d_csp(op,alpha,data,index,storage,vec_x,beta,vec_y)
+            complex(sp), intent(in), contiguous :: data(:,:)
+            integer(ilp), intent(in), contiguous :: index(:,:)
+            integer, intent(in) :: storage
+            complex(sp), intent(in), contiguous    :: vec_x(:,:)
+            complex(sp), intent(inout), contiguous :: vec_y(:,:)
+            complex(sp), intent(in) :: alpha
+            complex(sp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_ell_1d_cdp(op,alpha,data,index,storage,vec_x,beta,vec_y)
+            complex(dp), intent(in), contiguous :: data(:,:)
+            integer(ilp), intent(in), contiguous :: index(:,:)
+            integer, intent(in) :: storage
+            complex(dp), intent(in), contiguous    :: vec_x(:)
+            complex(dp), intent(inout), contiguous :: vec_y(:)
+            complex(dp), intent(in) :: alpha
+            complex(dp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_ell_2d_cdp(op,alpha,data,index,storage,vec_x,beta,vec_y)
+            complex(dp), intent(in), contiguous :: data(:,:)
+            integer(ilp), intent(in), contiguous :: index(:,:)
+            integer, intent(in) :: storage
+            complex(dp), intent(in), contiguous    :: vec_x(:,:)
+            complex(dp), intent(inout), contiguous :: vec_y(:,:)
+            complex(dp), intent(in) :: alpha
+            complex(dp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+    end interface
+
+    !! Version experimental
+    !!
+    !! Apply the SELLC sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
+    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    interface spmv_kernel_sellc
+        module subroutine spmv_kernel_sellc_sp(op,alpha,data,ia,ja,storage,vec_x,beta,vec_y)
+            !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
+            real(sp), intent(in), contiguous :: data(:,:)
+            integer(ilp), intent(in), contiguous :: ia(:)
+            integer(ilp), intent(in), contiguous :: ja(:,:)
+            integer, intent(in) :: storage
+            real(sp), intent(in), contiguous    :: vec_x(:)
+            real(sp), intent(inout), contiguous :: vec_y(:)
+            real(sp), intent(in) :: alpha
+            real(sp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_sellc_dp(op,alpha,data,ia,ja,storage,vec_x,beta,vec_y)
+            !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
+            real(dp), intent(in), contiguous :: data(:,:)
+            integer(ilp), intent(in), contiguous :: ia(:)
+            integer(ilp), intent(in), contiguous :: ja(:,:)
+            integer, intent(in) :: storage
+            real(dp), intent(in), contiguous    :: vec_x(:)
+            real(dp), intent(inout), contiguous :: vec_y(:)
+            real(dp), intent(in) :: alpha
+            real(dp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_sellc_csp(op,alpha,data,ia,ja,storage,vec_x,beta,vec_y)
+            !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
+            complex(sp), intent(in), contiguous :: data(:,:)
+            integer(ilp), intent(in), contiguous :: ia(:)
+            integer(ilp), intent(in), contiguous :: ja(:,:)
+            integer, intent(in) :: storage
+            complex(sp), intent(in), contiguous    :: vec_x(:)
+            complex(sp), intent(inout), contiguous :: vec_y(:)
+            complex(sp), intent(in) :: alpha
+            complex(sp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        module subroutine spmv_kernel_sellc_cdp(op,alpha,data,ia,ja,storage,vec_x,beta,vec_y)
+            !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
+            complex(dp), intent(in), contiguous :: data(:,:)
+            integer(ilp), intent(in), contiguous :: ia(:)
+            integer(ilp), intent(in), contiguous :: ja(:,:)
+            integer, intent(in) :: storage
+            complex(dp), intent(in), contiguous    :: vec_x(:)
+            complex(dp), intent(inout), contiguous :: vec_y(:)
+            complex(dp), intent(in) :: alpha
+            complex(dp), intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+    end interface
+
     public :: spmv
+    public :: spmv_kernel_coo
+    public :: spmv_kernel_csc
+    public :: spmv_kernel_csr
+    public :: spmv_kernel_ell
+    public :: spmv_kernel_sellc
 
 end module
