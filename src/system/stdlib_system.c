@@ -183,7 +183,7 @@ int stdlib_exists(const char* path, int* stat){
 // `overwrite` selects whether an existing variable is replaced. `_putenv_s`
 // always replaces, so the flag has no effect on windows.
 // Returns 0 if successful, otherwise returns the `errno`.
-int stdlib_set_environment_variable(const char* name, const char* value, int overwrite){
+int stdlib_setenv(const char* name, const char* value, int overwrite){
     int code;
 #ifdef _WIN32
     (void) overwrite;
@@ -199,7 +199,7 @@ int stdlib_set_environment_variable(const char* name, const char* value, int ove
 // Uses `unsetenv` on unix. Windows has no `unsetenv`; assigning an empty value
 // with `_putenv_s` is how the CRT removes a variable from the environment.
 // Returns 0 if successful, otherwise returns the `errno`.
-int stdlib_delete_environment_variable(const char* name){
+int stdlib_unsetenv(const char* name){
     int code;
 #ifdef _WIN32
     code = _putenv_s(name, "");

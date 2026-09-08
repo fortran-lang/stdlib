@@ -1241,13 +1241,12 @@ subroutine set_environment_variable(name, value, overwrite, err)
     integer(c_int) :: overwrite_
 
     interface
-        integer(c_int) function stdlib_set_environment_variable(name, value, overwrite) &
-                bind(C, name='stdlib_set_environment_variable')
+        integer(c_int) function stdlib_setenv(name, value, overwrite) bind(C, name='stdlib_setenv')
             import c_char, c_int
             character(kind=c_char), intent(in) :: name(*)
             character(kind=c_char), intent(in) :: value(*)
             integer(c_int), value :: overwrite
-        end function stdlib_set_environment_variable
+        end function stdlib_setenv
     end interface
 
     ! Reject here rather than in C: `setenv` reports both of these as EINVAL,
@@ -1270,7 +1269,7 @@ subroutine set_environment_variable(name, value, overwrite, err)
         if (.not. overwrite) overwrite_ = 0_c_int
     end if
 
-    code = stdlib_set_environment_variable(to_c_char(name), to_c_char(value), overwrite_)
+    code = stdlib_setenv(to_c_char(name), to_c_char(value), overwrite_)
 
     if (code /= 0) then
         err0 = FS_ERROR_CODE(code, c_get_strerror())
@@ -1289,11 +1288,10 @@ subroutine delete_environment_variable(name, err)
     integer :: code
 
     interface
-        integer(c_int) function stdlib_delete_environment_variable(name) &
-                bind(C, name='stdlib_delete_environment_variable')
+        integer(c_int) function stdlib_unsetenv(name) bind(C, name='stdlib_unsetenv')
             import c_char, c_int
             character(kind=c_char), intent(in) :: name(*)
-        end function stdlib_delete_environment_variable
+        end function stdlib_unsetenv
     end interface
 
     if (len_trim(name) == 0) then
@@ -1308,7 +1306,7 @@ subroutine delete_environment_variable(name, err)
         return
     end if
 
-    code = stdlib_delete_environment_variable(to_c_char(name))
+    code = stdlib_unsetenv(to_c_char(name))
 
     if (code /= 0) then
         err0 = FS_ERROR_CODE(code, c_get_strerror())
