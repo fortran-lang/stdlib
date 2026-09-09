@@ -1239,11 +1239,14 @@ subroutine set_environment_variable(name, value, overwrite, err)
     type(state_type) :: err0
     integer :: code
     integer :: overwrite_
-    ! Held in locals rather than passed as two function results in one call:
-    ! to_c_char returns an automatic-shape array sized from its argument, and
-    ! ifx 2024.1 crashes on two such temporaries in a single argument list.
-    ! Every other call to it in this file passes exactly one.
-    character(kind=c_char), allocatable :: c_name(:), c_value(:)
+    ! Automatic arrays rather than allocatables. to_c_char is a generic whose
+    ! result is an automatic-shape array sized from its argument, and assigning
+    ! that to an allocatable is the one construct here that appears nowhere
+    ! else in this file; ifx 2024.1 raises error #5633 on the file while
+    ! ifort 2021.10 and gfortran compile it. Sizing the locals directly keeps
+    ! the shapes explicit and leaves nothing to allocate on assignment.
+    character(kind=c_char) :: c_name(len_trim(name) + 1)
+    character(kind=c_char) :: c_value(len(value) + 1)
 
     interface
         integer function stdlib_setenv(name, val, overwrite) bind(C, name='stdlib_setenv')
@@ -1274,7 +1277,7 @@ subroutine set_environment_variable(name, value, overwrite, err)
         if (.not. overwrite) overwrite_ = 0
     end if
 
-    c_name = to_c_char(name)
+    c_name = to_c_char(trim(name))
     c_value = to_c_char(value)
     code = stdlib_setenv(c_name, c_value, overwrite_)
 
