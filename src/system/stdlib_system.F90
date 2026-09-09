@@ -1,6 +1,6 @@
 module stdlib_system
 use, intrinsic :: iso_c_binding, only : c_int, c_long, c_ptr, c_null_ptr, c_int64_t, c_size_t, &
-    c_f_pointer
+    c_f_pointer, c_loc
 use stdlib_kinds, only: int64, dp, c_bool, c_char
 use stdlib_strings, only: to_c_char, find, to_string
 use stdlib_string_type, only: string_type
@@ -184,6 +184,37 @@ public :: get_cwd
 !! This subroutine sets the current working directory the process is executing from.
 !!
 public :: set_cwd
+
+!! version: experimental
+!!
+!! Sets an environment variable for the calling process
+!! ([Specification](../page/specs/stdlib_system.html#set_environment_variable))
+!!
+!! ### Summary
+!! Creates an environment variable, or changes the value of an existing one.
+!!
+!! ### Description
+!! The variable is visible to this process and to any process it starts
+!! afterwards. It is not written back to the parent shell, which is a property
+!! of the operating system rather than of this implementation.
+!!
+!! `overwrite` selects whether an existing variable is replaced, and defaults
+!! to `.true.`. It has no effect on Windows, whose `_putenv_s` always replaces.
+!!
+public :: set_environment_variable
+
+!! version: experimental
+!!
+!! Removes an environment variable from the calling process
+!! ([Specification](../page/specs/stdlib_system.html#delete_environment_variable))
+!!
+!! ### Summary
+!! Deletes an environment variable, if it is set.
+!!
+!! ### Description
+!! Removing a variable that is not set is not an error, which matches `unsetenv`.
+!!
+public :: delete_environment_variable
 
 !! version: experimental
 !!
@@ -1192,6 +1223,105 @@ subroutine set_cwd(path, err)
         call err0%handle(err)
     end if
 end subroutine set_cwd
+
+!> Sets an environment variable for the calling process.
+subroutine set_environment_variable(name, value, overwrite, err)
+    !> Name of the variable. Must not be empty or contain '='.
+    character(len=*), intent(in) :: name
+    !> Value to give it.
+    character(len=*), intent(in) :: value
+    !> Replace the variable if it already exists. Default `.true.`.
+    !> Ignored on Windows, where the underlying call always replaces.
+    logical, optional, intent(in) :: overwrite
+    !> Error handler
+    type(state_type), optional, intent(out) :: err
+
+    type(state_type) :: err0
+    integer :: code
+    integer :: overwrite_
+    ! `target` so c_loc can be taken of them below. A bind(C) interface with
+    ! two `character(kind=c_char) :: x(*)` dummies is the only one of its kind
+    ! in the whole source tree, and ifx 2024.1 aborts this file with
+    ! error #5633 on it; passing the two strings as c_ptr keeps the C side's
+    ! `const char*` ABI unchanged while avoiding that construct.
+    character(kind=c_char), target :: c_name(len_trim(name) + 1)
+    character(kind=c_char), target :: c_value(len(value) + 1)
+
+    interface
+        integer function stdlib_setenv(name, val, overwrite) bind(C, name='stdlib_setenv')
+            import c_ptr
+            type(c_ptr), value :: name
+            type(c_ptr), value :: val
+            integer, intent(in) :: overwrite
+        end function stdlib_setenv
+    end interface
+
+    ! Reject here rather than in C: `setenv` reports both of these as EINVAL,
+    ! which turns into "Invalid argument" and says nothing about which rule
+    ! was broken.
+    if (len_trim(name) == 0) then
+        err0 = FS_ERROR('the name of an environment variable cannot be empty')
+        call err0%handle(err)
+        return
+    end if
+
+    if (index(name, '=') > 0) then
+        err0 = FS_ERROR('the name of an environment variable cannot contain "=", got '//name)
+        call err0%handle(err)
+        return
+    end if
+
+    overwrite_ = 1
+    if (present(overwrite)) then
+        if (.not. overwrite) overwrite_ = 0
+    end if
+
+    c_name = to_c_char(trim(name))
+    c_value = to_c_char(value)
+    code = stdlib_setenv(c_loc(c_name), c_loc(c_value), overwrite_)
+
+    if (code /= 0) then
+        err0 = FS_ERROR_CODE(code, c_get_strerror())
+        call err0%handle(err)
+    end if
+end subroutine set_environment_variable
+
+!> Removes an environment variable from the calling process.
+subroutine delete_environment_variable(name, err)
+    !> Name of the variable. Must not be empty or contain '='.
+    character(len=*), intent(in) :: name
+    !> Error handler
+    type(state_type), optional, intent(out) :: err
+
+    type(state_type) :: err0
+    integer :: code
+
+    interface
+        integer function stdlib_unsetenv(name) bind(C, name='stdlib_unsetenv')
+            import c_char
+            character(kind=c_char), intent(in) :: name(*)
+        end function stdlib_unsetenv
+    end interface
+
+    if (len_trim(name) == 0) then
+        err0 = FS_ERROR('the name of an environment variable cannot be empty')
+        call err0%handle(err)
+        return
+    end if
+
+    if (index(name, '=') > 0) then
+        err0 = FS_ERROR('the name of an environment variable cannot contain "=", got '//name)
+        call err0%handle(err)
+        return
+    end if
+
+    code = stdlib_unsetenv(to_c_char(name))
+
+    if (code /= 0) then
+        err0 = FS_ERROR_CODE(code, c_get_strerror())
+        call err0%handle(err)
+    end if
+end subroutine delete_environment_variable
 
 !> Returns the file path of the null device for the current operating system.
 !>
