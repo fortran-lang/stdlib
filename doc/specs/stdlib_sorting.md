@@ -57,7 +57,7 @@ data:
   that are effectively unordered before the sort;
 * `RADIX_SORT` is intended to sort fixed width intrinsic data 
   types (integers and reals).
-* `UNIQUE` computes the distinct elements of a rank one array,
+* `UNIQUE` computes the distinct elements of a rank one-array,
   either preserving the order of first occurrence or returning the
   unique elements in sorted order.
 
@@ -653,8 +653,7 @@ Experimental
 
 ##### Description
 
-Computes the distinct elements of the input array and stores them in
-`output`.
+Returns the distinct elements of the input array in `output`.
 
 ##### Syntax
 
@@ -673,7 +672,7 @@ Generic subroutine.
 kind as `array`. It is an `intent(inout)` argument. On return, it
 contains one copy of each distinct element of `array`.
 
-`sorted_output` (optional): shall be a scalar of type default logical.
+`sorted_output` (optional): shall be a scalar of type default `logical`.
 It is an `intent(in)` argument. If `.true.`, the result contains
 the unique elements in increasing order. Otherwise, the result
 contains the unique elements in the order of their first occurrence.
