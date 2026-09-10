@@ -1,0 +1,170 @@
+#include "macros.inc"
+#:include "common.fypp"
+#:set INT_TYPES_ALT_NAME = list(zip(INT_TYPES, INT_TYPES, INT_KINDS, INT_CPPS))
+#:set REAL_TYPES_ALT_NAME = list(zip(REAL_TYPES, REAL_TYPES, REAL_KINDS, REAL_CPPS))
+#:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"], ["character(len=len(array))"], ["char"], [""]))
+#:set STRING_TYPES_ALT_NAME = list(zip(STRING_TYPES, STRING_TYPES, STRING_KINDS, STRING_CPPS))
+#:set CMPLX_TYPES_ALT_NAME = list(zip(CMPLX_TYPES, CMPLX_TYPES, CMPLX_SUFFIX, len(CMPLX_TYPES) * [""]))
+#:set IRSCX_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME &
+    & + CMPLX_TYPES_ALT_NAME
+
+submodule(stdlib_sorting) stdlib_sorting_unique
+#if STDLIB_HASHMAPS
+    use stdlib_hashmaps, only: chaining_hashmap_type
+    use stdlib_hashmap_wrappers, only: key_type, set
+#endif
+    use stdlib_constants
+    use stdlib_string_type, only: string_type, char_string => char, operator(==), operator(/=)
+    implicit none
+
+contains
+    #:for t1, t2, name1, cpp1 in IRSCX_INDEX_TYPES_ALT_NAME
+    module subroutine ${name1}$_unique(array, output${", sorted_output" if not t1.startswith('complex') else ""}$ &
+                                        ${", tolerance" if t1.startswith('real') else ""}$)
+        ${t1}$, intent(in) :: array(:)
+        ${t2}$, allocatable, intent(inout) :: output(:)
+        #:if not t1.startswith('complex')
+        logical, optional, intent(in) :: sorted_output
+        #:endif
+        #:if t1.startswith('real')
+        ${t1}$, optional, intent(in) :: tolerance
+        #:endif
+
+        #:if t1.startswith('real')
+        ${t1}$ :: tolerance_
+        #:endif
+        #:if not t1.startswith('complex')
+        logical :: sorted_output_
+        ${t2}$, allocatable :: temp(:)
+        #:endif
+
+        if(size(array) == 0) then
+            if (allocated(output)) then
+                deallocate(output)
+            end if
+            allocate(output(0))
+            return
+        end if
+
+        #:if not t1.startswith('complex')
+        sorted_output_ = optval(sorted_output, .false.)
+        #:endif
+
+        #:if t1.startswith('real')
+        if (.not. sorted_output_ .and. present(tolerance)) then
+            error stop "tolerance requires sorted_output=.true."
+        end if
+        tolerance_ = optval(tolerance, 0.0_${name1}$)
+        if(tolerance_ < 0.0_${name1}$) error stop "tolerance must be non-negative"
+        #:endif
+        #:if not t1.startswith('complex')
+        if(sorted_output_) then
+            allocate(temp, source=array)
+            call sort_unique(temp, output${", tolerance_" if t1.startswith('real') else ""}$)
+            deallocate(temp)
+        else
+        #:endif
+#if !STDLIB_HASHMAPS
+                error stop "unsorted version requires STDLIB_HASHMAPS"
+#endif
+        #:if name1 != 'xdp' and name1 != 'cxdp'
+            call unsorted_unique(array, output)
+        #:else
+            error stop 'unsorted version does not support xdp kinds'
+        #:endif
+        #:if not t1.startswith('complex')
+        end if
+        #:endif
+    end subroutine
+    #:endfor
+
+    #:for t1, t2, name1, cpp1 in IRSCX_INDEX_TYPES_ALT_NAME
+    #:if not t1.startswith('complex')
+    module subroutine ${name1}$_sort_unique(array, output${", tolerance" if t1.startswith('real') else ""}$)
+        ${t1}$, intent(inout) :: array(:)
+        ${t2}$, allocatable, intent(inout) :: output(:)
+        #:if t1.startswith('real')
+        ${t1}$, intent(in) :: tolerance
+        #:endif
+
+        logical, allocatable :: mask(:)
+        integer :: i
+        #:if t1.startswith('real')
+        ${t1}$ :: last_unique
+        #:endif
+
+        allocate(mask(size(array)))
+        mask(1) = .true.
+        call sort(array)
+        #:if t1.startswith('real')
+        last_unique = array(1)
+        #:endif
+        do i = 2, size(array)
+            #:if t1.startswith('real')
+            mask(i) = abs(array(i)-last_unique) > tolerance
+            if(mask(i)) last_unique = array(i)
+            #:else
+            mask(i) = array(i) /= array(i-1)
+            #:endif
+        end do
+        if (.not. allocated(output)) then
+            allocate(output(size(array)))
+        else if (size(output) < size(array)) then
+            deallocate(output)
+            allocate(output(size(array)))
+        end if
+        output = pack(array, mask)
+        deallocate(mask)
+    end subroutine
+    #:endif
+    #:endfor
+
+#if STDLIB_HASHMAPS
+    #:for t1, t2, name1, cpp1 in IRSCX_INDEX_TYPES_ALT_NAME
+    #:if name1 != 'xdp' and name1 != 'cxdp'
+    module subroutine ${name1}$_unsorted_unique(array, output)
+        ${t1}$, intent(in) :: array(:)
+        ${t2}$, allocatable, intent(inout) :: output(:)
+
+        type(chaining_hashmap_type) :: map
+        logical, allocatable :: mask(:)
+        logical :: present
+        integer :: i
+        #:if t1.startswith('char') or name1.startswith('string')
+        type(key_type) :: key
+        #:else
+        integer(int8) :: key(storage_size(array(1))/8)
+        #:endif
+
+        call map%init()
+        allocate(mask(size(array)))
+        do i = 1, size(array)
+            #:if t1.startswith('char')
+            call set(key, array(i))
+            #:elif name1.startswith('string')
+            call set(key, char_string(array(i)))
+            #:else
+            key = transfer(array(i), key)
+            #:endif
+            call map%key_test(key, present)
+            if (.not. present) then
+                call map%map_entry(key)
+                mask(i) = .true.
+            else
+                mask(i) = .false.
+            end if
+        end do
+        if (.not. allocated(output)) then
+            allocate(output(size(array)))
+        else if (size(output) < size(array)) then
+            deallocate(output)
+            allocate(output(size(array)))
+        end if
+        output = pack(array, mask)
+        deallocate(mask)
+    end subroutine
+    #:endif
+    #:endfor
+#endif
+
+end submodule stdlib_sorting_unique
