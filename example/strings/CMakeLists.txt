@@ -1,4 +1,8 @@
 ADD_EXAMPLE(chomp)
+ADD_EXAMPLE(base64_encode)
+ADD_EXAMPLE(base64_encode_into)
+ADD_EXAMPLE(base64_decode)
+ADD_EXAMPLE(base64_decode_into)
 ADD_EXAMPLE(count)
 ADD_EXAMPLE(ends_with)
 ADD_EXAMPLE(find)
