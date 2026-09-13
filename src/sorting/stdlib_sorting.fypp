@@ -479,6 +479,16 @@ module stdlib_sorting
 !!    end subroutine sort_a_data
 !!```
 
+    public is_sorted
+!! Version: experimental
+!!
+!! The generic function `is_sorted` checks whether an input array is sorted 
+!! in order of (non-)decreasing value. Its use has the syntax:
+!!
+!!     result = is_sorted( array[, reverse] )
+!!
+!! ([Specification](../page/specs/stdlib_sorting.html#is_sorted-checks-if-an-input-array-is-sorted))
+
     interface ord_sort
 !! Version: experimental
 !!
@@ -512,6 +522,7 @@ module stdlib_sorting
 #:endfor
 
     end interface ord_sort
+    
     interface radix_sort
 !! Version: experimental
 !!
@@ -653,6 +664,21 @@ module stdlib_sorting
 
     end interface sort_index
 
+    interface is_sorted
+!! Version: experimental
+!!
+!! The generic function interface for `IS_SORTED`. Checks if an array 
+!! is sorted in the specified direction.
+
+#:for t1, t2, name1, cpp1 in IRSCB_TYPES_ALT_NAME
+#:block generate_cpp(cpp_var=cpp1)
+        module procedure ${name1}$_is_sorted
+#:endblock
+#:endfor
+
+    end interface is_sorted
+
+
 contains
 
 #:for ki, ti, namei in INT_INDEX_TYPES_ALT_NAME
@@ -697,5 +723,45 @@ contains
     #:endfor
 #:endfor
 
+
+#:for t1, t2, name1, cpp1 in IRSCB_TYPES_ALT_NAME
+#:block generate_cpp(cpp_var=cpp1)
+    pure function ${name1}$_is_sorted( array, reverse ) result(sorted)
+!! Version: experimental
+!!
+!! Checks if the input `ARRAY` of type `${t1}$` is sorted.
+        ${t1}$, intent(in) :: array(0:)
+        logical, intent(in), optional :: reverse
+        logical :: sorted
+        
+        integer(int_index) :: i
+        logical :: is_rev
+        
+        is_rev = optval(reverse, .false.)
+        sorted = .true.
+        
+        if (size(array) <= 1) return
+        
+        if (is_rev) then
+            do i = 1, size(array, kind=int_index) - 1
+                ! Using `<` for descending check. If previous is strictly less than current, it's not sorted descending.
+                if (array(i-1) < array(i)) then
+                    sorted = .false.
+                    return
+                end if
+            end do
+        else
+            do i = 1, size(array, kind=int_index) - 1
+                ! Using `>` for ascending check. If previous is strictly greater than current, it's not sorted ascending.
+                if (array(i-1) > array(i)) then
+                    sorted = .false.
+                    return
+                end if
+            end do
+        end if
+    end function ${name1}$_is_sorted
+
+#:endblock
+#:endfor
 
 end module stdlib_sorting

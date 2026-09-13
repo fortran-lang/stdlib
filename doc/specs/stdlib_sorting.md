@@ -24,10 +24,9 @@ module's `string_type` type.
 
 ## Overview of the module
 
-The module `stdlib_sorting` defines several public entities, two
-default integer parameters, `int_index` and `int_index_low`, and four overloaded
-subroutines: `ORD_SORT`, `SORT`, `RADIX_SORT` and `SORT_INDEX`. The
-overloaded subroutines also each have several specific names for
+default integer parameters, `int_index` and `int_index_low`, and five overloaded
+procedures: `ORD_SORT`, `SORT`, `RADIX_SORT`, `SORT_INDEX`, and `IS_SORTED`. The
+overloaded procedures also each have several specific names for
 versions corresponding to different types of array arguments.
 
 ### The parameters `int_index` and `int_index_low`
@@ -57,6 +56,7 @@ data:
   that are effectively unordered before the sort;
 * `RADIX_SORT` is intended to sort fixed width intrinsic data 
   types (integers and reals).
+* `IS_SORTED` is a utility function to check if an array is already sorted, returning a logical scalar.  
 
 #### Licensing
 
@@ -624,6 +624,44 @@ Sorting an array of a derived type based on the data in one component
         ! Sort a_data based on the sorting of that component
         a_data(:) = a_data( index(1:size(a_data)) )
     end subroutine sort_a_data
+    #### `is_sorted` - checks if an input array is sorted
+
+##### Status
+
+Experimental
+
+##### Description
+
+Returns a logical scalar indicating whether the input `array` is sorted in order of increasing, or decreasing, value.
+
+##### Syntax
+
+`result = ` [[stdlib_sorting(module):is_sorted(interface)]] `( array[, reverse] )`
+
+##### Class
+
+Pure generic function.
+
+##### Arguments
+
+`array` : shall be a rank one array of any of the types:
+`integer(int8)`, `integer(int16)`, `integer(int32)`, `integer(int64)`,
+`real(sp)`, `real(dp)`, `real(qp)`, `character(*)`, `type(string_type)`,
+`type(bitset_64)`, or `type(bitset_large)`.
+It is an `intent(in)` argument. 
+
+`reverse` (optional): shall be a scalar of type default logical. It
+is an `intent(in)` argument. If present with a value of `.true.`, the function
+will check if `array` is sorted in order of non-increasing values. Otherwise, it will check if `array` is sorted in order of non-decreasing values.
+
+##### Return Value
+
+The result is a scalar of type default logical. It returns `.true.` if the array is sorted according to the requested order, and `.false.` otherwise. Returns `.true.` for arrays of size 0 or 1. If `array` is of any type `REAL` and contains a `NaN`, the result is `.false.`.
+
+##### Example
+
+```fortran
+{!example/sorting/example_is_sorted.f90!}
 ```
 
 
