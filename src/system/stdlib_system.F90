@@ -1,6 +1,6 @@
 module stdlib_system
 use, intrinsic :: iso_c_binding, only : c_int, c_long, c_ptr, c_null_ptr, c_int64_t, c_size_t, &
-    c_f_pointer, c_loc
+    c_f_pointer
 use stdlib_kinds, only: int64, dp, c_bool, c_char
 use stdlib_strings, only: to_c_char, find, to_string
 use stdlib_string_type, only: string_type
@@ -1239,19 +1239,12 @@ subroutine set_environment_variable(name, value, overwrite, err)
     type(state_type) :: err0
     integer :: code
     integer :: overwrite_
-    ! `target` so c_loc can be taken of them below. A bind(C) interface with
-    ! two `character(kind=c_char) :: x(*)` dummies is the only one of its kind
-    ! in the whole source tree, and ifx 2024.1 aborts this file with
-    ! error #5633 on it; passing the two strings as c_ptr keeps the C side's
-    ! `const char*` ABI unchanged while avoiding that construct.
-    character(kind=c_char), target :: c_name(len_trim(name) + 1)
-    character(kind=c_char), target :: c_value(len(value) + 1)
 
     interface
-        integer function stdlib_setenv(name, val, overwrite) bind(C, name='stdlib_setenv')
-            import c_ptr
-            type(c_ptr), value :: name
-            type(c_ptr), value :: val
+        integer function stdlib_setenv(cname, cval, overwrite) bind(C, name='stdlib_setenv')
+            import c_char
+            character(kind=c_char), intent(in) :: cname(*)
+            character(kind=c_char), intent(in) :: cval(*)
             integer, intent(in) :: overwrite
         end function stdlib_setenv
     end interface
@@ -1276,9 +1269,7 @@ subroutine set_environment_variable(name, value, overwrite, err)
         if (.not. overwrite) overwrite_ = 0
     end if
 
-    c_name = to_c_char(trim(name))
-    c_value = to_c_char(value)
-    code = stdlib_setenv(c_loc(c_name), c_loc(c_value), overwrite_)
+    code = stdlib_setenv(to_c_char(trim(name)), to_c_char(value), overwrite_)
 
     if (code /= 0) then
         err0 = FS_ERROR_CODE(code, c_get_strerror())
