@@ -258,7 +258,7 @@ If `days /= 0`, or `compact` is not present or `.false.`, the verbose form is pr
 
 #### Arguments
 
-`compact` (optional): `logical`, `intent(in)`. Will use the compact form if `.true.`.
+`compact` (optional): `logical`, `intent(in)`. Will use the compact form if `.true.`. The default value is `.false.`.
 
 #### Return value
 
