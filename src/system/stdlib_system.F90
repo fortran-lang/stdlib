@@ -1154,6 +1154,13 @@ subroutine get_cwd(cwd, err)
             integer(c_size_t), intent(out) :: len
             integer :: stat
         end function stdlib_get_cwd
+
+        ! Releases the buffer allocated by `stdlib_get_cwd`. Safe to call on the
+        ! failure path, where the returned pointer is null.
+        subroutine stdlib_free_cstr(ptr) bind(C, name='stdlib_free_cstr')
+            import c_ptr
+            type(c_ptr), value :: ptr
+        end subroutine stdlib_free_cstr
     end interface
 
     type(c_ptr) :: c_str_ptr
@@ -1168,6 +1175,9 @@ subroutine get_cwd(cwd, err)
     end if
 
     cwd = to_f_char(c_str_ptr, len)
+
+    ! `stdlib_get_cwd` hands over ownership of the buffer
+    call stdlib_free_cstr(c_str_ptr)
 
 end subroutine get_cwd
 
