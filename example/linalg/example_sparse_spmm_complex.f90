@@ -1,0 +1,55 @@
+program example_sparse_spmm_complex
+    use stdlib_linalg_constants, only: dp
+    use stdlib_sparse
+    implicit none
+
+    complex(dp), parameter :: alpha = (2._dp,-1._dp)
+    complex(dp), parameter :: beta = (-0.5_dp,0.25_dp)
+    real(dp), parameter :: tol = 100 * epsilon(1._dp)
+    complex(dp) :: a(2,3), b(3,2), left(2,3)
+    complex(dp) :: c(3,3), expected(3,3), right(2,2)
+    complex(dp) :: product_dense(2,2), eye2(2,2)
+    type(COO_cdp_type) :: coo_a, coo_b
+    type(CSR_cdp_type) :: csr_a
+    type(CSC_cdp_type) :: csc_b, csc_product
+
+    a = reshape([cmplx(1._dp,1._dp,dp), (0._dp,0._dp), &
+                 cmplx(2._dp,-1._dp,dp), cmplx(3._dp,2._dp,dp), &
+                 (0._dp,0._dp), cmplx(4._dp,-1._dp,dp)],shape(a))
+    b = reshape([cmplx(1._dp,-1._dp,dp), (0._dp,0._dp), &
+                 cmplx(2._dp,1._dp,dp), cmplx(3._dp,-2._dp,dp), &
+                 (0._dp,0._dp), cmplx(4._dp,1._dp,dp)],shape(b))
+    left = cmplx(1._dp,2._dp,dp)
+    call dense2coo(a,coo_a)
+    call coo2csr(coo_a,csr_a)
+    call dense2coo(b,coo_b)
+    call coo2csc(coo_b,csc_b)
+
+    ! Conjugate transpose of a rectangular sparse matrix.
+    c = (1._dp,1._dp)
+    expected = alpha * matmul(conjg(transpose(a)),left) + beta * c
+    call spmm(csr_a,left,c,alpha=alpha,beta=beta,op=sparse_op_hermitian)
+    call report('CSR^H x dense',maxval(abs(c-expected)))
+
+    ! The sparse operand can also appear on the right.
+    right = (0._dp,0._dp)
+    call spmm(left,coo_a,right,op=sparse_op_hermitian)
+    call report('dense x COO^H',maxval(abs(right-matmul(left,conjg(transpose(a))))))
+
+    ! COO x CSC returns the declared complex CSC result.
+    call spmm(coo_a,csc_b,csc_product)
+    eye2 = (0._dp,0._dp)
+    eye2(1,1) = (1._dp,0._dp)
+    eye2(2,2) = (1._dp,0._dp)
+    product_dense = (0._dp,0._dp)
+    call spmm(csc_product,eye2,product_dense)
+    call report('COO x CSC -> CSC',maxval(abs(product_dense-matmul(a,b))))
+
+contains
+    subroutine report(label, difference)
+        character(*), intent(in) :: label
+        real(dp), intent(in) :: difference
+        print '(a,": max error = ",es12.4)', label, difference
+        if (difference > tol) error stop 'SpMM example result differs from MATMUL'
+    end subroutine
+end program example_sparse_spmm_complex

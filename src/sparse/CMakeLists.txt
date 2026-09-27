@@ -4,6 +4,12 @@ set(sparse_fppFiles
     stdlib_sparse_kinds.fypp
     stdlib_sparse_operators.fypp
     stdlib_sparse_spmv.fypp
+    stdlib_sparse_spmm.fypp
+    stdlib_sparse_spmm_coo.fypp
+    stdlib_sparse_spmm_csr.fypp
+    stdlib_sparse_spmm_csc.fypp
+    stdlib_sparse_spmm_ell.fypp
+    stdlib_sparse_spmm_sellc.fypp
     stdlib_sparse_spmv_coo.fypp
     stdlib_sparse_spmv_csr.fypp
     stdlib_sparse_spmv_csc.fypp

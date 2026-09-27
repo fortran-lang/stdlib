@@ -1,5 +1,9 @@
 ## Unreleased
 
+New features
+  - Add sparse matrix-matrix products for COO, CSR, CSC, ELL, and SELLC
+    inputs, with a caller-selected sparse result format.
+
 Changes to the existing build system
   - Fixed absolute paths in generated pkg-config file for external BLAS/LAPACK 
     [#1109](https://github.com/fortran-lang/stdlib/issues/1109)

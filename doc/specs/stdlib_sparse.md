@@ -218,6 +218,47 @@ $$y=\alpha*op(M)*x+\beta*y$$
 `op`, `optional`: In-place operator identifier. Shall be a `character(1)` argument. It can have any of the following values: `N`: no transpose, `T`: transpose, `H`: hermitian or complex transpose. These values are provided as constants by the `stdlib_sparse` module: `sparse_op_none`, `sparse_op_transpose`, `sparse_op_hermitian`
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+## `spmm` - Sparse Matrix-Matrix product
+
+### Status
+
+Experimental
+
+### Description
+
+Multiply COO, CSR, CSC, ELL, or SELLC sparse matrices by dense matrices, multiply dense matrices by any of these sparse formats, or multiply any pair of these sparse formats. Dense results compute `C = alpha * op(S) * D + beta * C` or `C = alpha * D * op(S) + beta * C`, where `S` is the sparse operand and `D` is dense. Sparse products compute `C = alpha * A * B`; the declared sparse result type selects COO, CSR, CSC, ELL, or SELLC storage. Exact zeros are omitted. CSR and CSC results have sorted indices. CSR and CSC results use native compressed-row or compressed-column accumulation when both inputs have the matching format. Other combinations may convert the inputs or result. ELL allocates the same slot count for every row, and SELLC pads rows within each chunk; choosing these result formats can use more memory for irregular products. Single and double precision real and complex values are supported.
+
+### Syntax
+
+`call ` [[stdlib_sparse_spmm(module):spmm(interface)]] `(sparse,dense,result [,alpha,beta,op])`
+
+`call ` [[stdlib_sparse_spmm(module):spmm(interface)]] `(dense,sparse,result [,alpha,beta,op])`
+
+`call ` [[stdlib_sparse_spmm(module):spmm(interface)]] `(sparse_a,sparse_b,sparse_result [,alpha])`
+
+### Arguments
+
+`sparse`, `sparse_a`, `sparse_b`: COO, CSR, CSC, ELL, or SELLC inputs. Sparse-by-sparse operands must have the same numeric kind as the result and require `sparse_full` storage. Dense products follow the corresponding SpMV storage behavior.
+
+`dense`: Rank-2 dense input of the same kind as the sparse values.
+
+`result`: Rank-2 dense `intent(inout)` result, or sparse `intent(out)` result. The declared sparse type selects the output storage. The dense result must have the exact product shape. For a SELLC result, the left operand's chunk size is retained when it is also SELLC; otherwise the default chunk size is used.
+
+`alpha`, `optional`: Scalar product factor, default `1`.
+
+`beta`, `optional`: Scalar factor for the existing dense result, default `0`. Available only for dense results.
+
+`op`, `optional`: Operation on the sparse operand: `sparse_op_none` (`N`), `sparse_op_transpose` (`T`), or `sparse_op_hermitian` (`H`), default `N`. Available only for dense results.
+
+### Example
+
+{!example/linalg/example_sparse_spmm.f90!}
+
+The complex example exercises conjugate transposition:
+
+{!example/linalg/example_sparse_spmm_complex.f90!}
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ## `spmv_kernel` - Non-object-oriented sparse matrix-vector product
 
 ### Status

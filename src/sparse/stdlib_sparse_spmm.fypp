@@ -1,0 +1,74 @@
+#:include "common.fypp"
+#:set KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX)) + list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+!! Sparse matrix-matrix products for stdlib sparse formats.
+module stdlib_sparse_spmm
+    use stdlib_sparse_constants
+    use stdlib_sparse_kinds
+    use stdlib_sparse_spmv, only: spmv
+    use stdlib_sparse_conversion, only: coo2csr, coo2ordered, csc2coo, csr2coo, &
+        coo2csc, csr2ell, csr2sellc
+    use stdlib_sorting, only: sort
+    implicit none
+    private
+    public :: spmm
+
+    !! version: experimental
+    !!
+    !! Multiply sparse and dense matrices. For a sparse result, the declared
+    !! type of `matrix_c` selects COO, CSR, CSC, ELL, or SELLC storage.
+    !! Sparse products require full storage and operands of the result's kind.
+    !! [Specifications](../page/specs/stdlib_sparse.html#spmm)
+    interface spmm
+        #:for k, t, s in KINDS_TYPES
+        #:for fmt in ["COO", "CSR", "CSC", "ELL", "SELLC"]
+        module subroutine spmm_${fmt.lower()}$_dense_${s}$(sparse_a,dense_b,dense_c,alpha,beta,op)
+            type(${fmt}$_${s}$_type), intent(in) :: sparse_a !! Left sparse factor
+            ${t}$, intent(in) :: dense_b(:,:) !! Right dense factor
+            ${t}$, intent(inout) :: dense_c(:,:) !! Dense result
+            ${t}$, intent(in), optional :: alpha, beta !! Defaults 1 and 0
+            character(1), intent(in), optional :: op !! N, T, or H
+        end subroutine
+
+        module subroutine spmm_dense_${fmt.lower()}$_${s}$(dense_a,sparse_b,dense_c,alpha,beta,op)
+            ${t}$, intent(in) :: dense_a(:,:) !! Left dense factor
+            type(${fmt}$_${s}$_type), intent(in) :: sparse_b !! Right sparse factor
+            ${t}$, intent(inout) :: dense_c(:,:) !! Dense result
+            ${t}$, intent(in), optional :: alpha, beta !! Defaults 1 and 0
+            character(1), intent(in), optional :: op !! N, T, or H
+        end subroutine
+
+        module subroutine spmm_sparse_${fmt.lower()}$_${s}$(sparse_a,sparse_b,matrix_c,alpha)
+            class(sparse_type), intent(in) :: sparse_a, sparse_b !! Sparse factors
+            type(${fmt}$_${s}$_type), intent(out) :: matrix_c !! Selected result format
+            ${t}$, intent(in), optional :: alpha !! Product scale; default 1
+        end subroutine
+        #:endfor
+        #:endfor
+    end interface
+
+    interface
+        #:for k, t, s in KINDS_TYPES
+        module subroutine to_csr_${s}$(input,output)
+            class(sparse_type), intent(in) :: input
+            type(CSR_${s}$_type), intent(out) :: output
+        end subroutine
+
+        module subroutine csr_product_${s}$(matrix_a,matrix_b,matrix_c,alpha)
+            type(CSR_${s}$_type), intent(in) :: matrix_a, matrix_b
+            type(CSR_${s}$_type), intent(out) :: matrix_c
+            ${t}$, intent(in), optional :: alpha
+        end subroutine
+
+        module subroutine to_csc_${s}$(input,output)
+            class(sparse_type), intent(in) :: input
+            type(CSC_${s}$_type), intent(out) :: output
+        end subroutine
+
+        module subroutine csc_product_${s}$(matrix_a,matrix_b,matrix_c,alpha)
+            type(CSC_${s}$_type), intent(in) :: matrix_a, matrix_b
+            type(CSC_${s}$_type), intent(out) :: matrix_c
+            ${t}$, intent(in), optional :: alpha
+        end subroutine
+        #:endfor
+    end interface
+end module stdlib_sparse_spmm

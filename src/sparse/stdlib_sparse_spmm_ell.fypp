@@ -1,0 +1,138 @@
+#:include "common.fypp"
+#:set KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX)) + list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set fmt = "ELL"
+submodule (stdlib_sparse_spmm) stdlib_sparse_spmm_ell
+contains
+    #:for k, t, s in KINDS_TYPES
+    !> Multiply a ${fmt}$ sparse matrix by a dense matrix.
+    module subroutine spmm_${fmt.lower()}$_dense_${s}$(sparse_a, dense_b, dense_c, alpha, beta, op)
+        type(${fmt}$_${s}$_type), intent(in) :: sparse_a
+        ${t}$, intent(in) :: dense_b(:,:)
+        ${t}$, intent(inout) :: dense_c(:,:)
+        ${t}$, intent(in), optional :: alpha, beta
+        character(1), intent(in), optional :: op
+        character(1) :: op_
+        ${t}$ :: beta_
+        integer :: j
+        op_ = sparse_op_none
+        if (present(op)) op_ = op
+        if (op_ /= sparse_op_none .and. op_ /= sparse_op_transpose .and. op_ /= sparse_op_hermitian) &
+            error stop 'spmm: invalid op'
+        #:if not t.startswith('complex')
+        if (op_ == sparse_op_hermitian) op_ = sparse_op_transpose
+        #:endif
+        if (op_ == sparse_op_none) then
+            if (size(dense_b,1) /= sparse_a%ncols .or. size(dense_c,1) /= sparse_a%nrows) &
+                error stop 'spmm: incompatible matrix dimensions'
+        else
+            if (size(dense_b,1) /= sparse_a%nrows .or. size(dense_c,1) /= sparse_a%ncols) &
+                error stop 'spmm: incompatible matrix dimensions'
+        end if
+        if (size(dense_b,2) /= size(dense_c,2)) error stop 'spmm: incompatible matrix dimensions'
+        beta_ = zero_${s}$
+        if (present(beta)) beta_ = beta
+        if (beta_ == zero_${s}$) dense_c = zero_${s}$
+        do j = 1, size(dense_b,2)
+            call spmv(sparse_a, dense_b(:,j), dense_c(:,j), alpha, beta, op_)
+        end do
+    end subroutine spmm_${fmt.lower()}$_dense_${s}$
+
+    !> Multiply a dense matrix by a ${fmt}$ sparse matrix.
+    module subroutine spmm_dense_${fmt.lower()}$_${s}$(dense_a, sparse_b, dense_c, alpha, beta, op)
+        ${t}$, intent(in) :: dense_a(:,:)
+        type(${fmt}$_${s}$_type), intent(in) :: sparse_b
+        ${t}$, intent(inout) :: dense_c(:,:)
+        ${t}$, intent(in), optional :: alpha, beta
+        character(1), intent(in), optional :: op
+        character(1) :: op_, spmv_op
+        ${t}$ :: beta_
+        integer :: i
+        op_ = sparse_op_none
+        if (present(op)) op_ = op
+        if (op_ /= sparse_op_none .and. op_ /= sparse_op_transpose .and. op_ /= sparse_op_hermitian) &
+            error stop 'spmm: invalid op'
+        if (size(dense_a,1) /= size(dense_c,1)) error stop 'spmm: incompatible matrix dimensions'
+        if (op_ == sparse_op_none) then
+            if (size(dense_a,2) /= sparse_b%nrows .or. size(dense_c,2) /= sparse_b%ncols) &
+                error stop 'spmm: incompatible matrix dimensions'
+            spmv_op = sparse_op_transpose
+        else
+            if (size(dense_a,2) /= sparse_b%ncols .or. size(dense_c,2) /= sparse_b%nrows) &
+                error stop 'spmm: incompatible matrix dimensions'
+            spmv_op = sparse_op_none
+        end if
+        beta_ = zero_${s}$
+        if (present(beta)) beta_ = beta
+        if (beta_ == zero_${s}$) dense_c = zero_${s}$
+        #:if t.startswith('complex')
+        if (op_ == sparse_op_hermitian) then
+            block
+                ${t}$, allocatable :: temp(:)
+                ${t}$ :: alpha_, beta_
+                alpha_ = one_${s}$
+                beta_ = zero_${s}$
+                if (present(alpha)) alpha_ = alpha
+                if (present(beta)) beta_ = beta
+                allocate(temp(sparse_b%nrows))
+                do i = 1, size(dense_a,1)
+                    temp = zero_${s}$
+                    call spmv(sparse_b, conjg(dense_a(i,:)), temp, op=sparse_op_none)
+                    dense_c(i,:) = beta_*dense_c(i,:) + alpha_*conjg(temp)
+                end do
+            end block
+            return
+        end if
+        #:endif
+        do i = 1, size(dense_a,1)
+            call spmv(sparse_b, dense_a(i,:), dense_c(i,:), alpha, beta, spmv_op)
+        end do
+    end subroutine spmm_dense_${fmt.lower()}$_${s}$
+    !> Multiply sparse operands and return ${fmt}$ storage.
+    module subroutine spmm_sparse_${fmt.lower()}$_${s}$(sparse_a,sparse_b,matrix_c,alpha)
+        class(sparse_type), intent(in) :: sparse_a, sparse_b
+        type(${fmt}$_${s}$_type), intent(out) :: matrix_c
+        ${t}$, intent(in), optional :: alpha
+        type(CSR_${s}$_type) :: csr_a, csr_b, csr_c
+        #:if fmt == "CSC"
+        type(COO_${s}$_type) :: coo_c
+        select type(sparse_a)
+        type is(CSC_${s}$_type)
+            select type(sparse_b)
+            type is(CSC_${s}$_type)
+                call csc_product_${s}$(sparse_a,sparse_b,matrix_c,alpha)
+                return
+            end select
+        end select
+        #:elif fmt == "CSR"
+        select type(sparse_a)
+        type is(CSR_${s}$_type)
+            select type(sparse_b)
+            type is(CSR_${s}$_type)
+                call csr_product_${s}$(sparse_a,sparse_b,matrix_c,alpha)
+                return
+            end select
+        end select
+        #:endif
+        if (sparse_a%storage /= sparse_full .or. sparse_b%storage /= sparse_full) &
+            error stop 'spmm: sparse x sparse requires full storage'
+        if (sparse_a%ncols /= sparse_b%nrows) error stop 'spmm: incompatible matrix dimensions'
+        call to_csr_${s}$(sparse_a,csr_a)
+        call to_csr_${s}$(sparse_b,csr_b)
+        call csr_product_${s}$(csr_a,csr_b,csr_c,alpha)
+        #:if fmt == "COO"
+        call csr2coo(csr_c,matrix_c)
+        #:elif fmt == "CSR"
+        matrix_c = csr_c
+        #:elif fmt == "CSC"
+        call csr2coo(csr_c,coo_c)
+        call coo2csc(coo_c,matrix_c)
+        #:elif fmt == "ELL"
+        call csr2ell(csr_c,matrix_c)
+        matrix_c%nnz = csr_c%nnz
+        #:elif fmt == "SELLC"
+        call csr2sellc(csr_c,matrix_c)
+        #:endif
+    end subroutine spmm_sparse_${fmt.lower()}$_${s}$
+
+    #:endfor
+end submodule stdlib_sparse_spmm_ell
