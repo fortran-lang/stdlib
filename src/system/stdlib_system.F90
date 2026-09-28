@@ -1259,7 +1259,7 @@ subroutine set_environment_variable(name, value, overwrite, err)
     end if
 
     if (index(name, '=') > 0) then
-        err0 = FS_ERROR('the name of an environment variable cannot contain "=", got '//name)
+        err0 = FS_ERROR('the name of an environment variable cannot contain "=", got ',name)
         call err0%handle(err)
         return
     end if
