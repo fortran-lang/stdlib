@@ -207,7 +207,7 @@ contains
         type(state_type), intent(out), optional :: err
 
         type(string_type), allocatable :: candidates(:)
-        character(len=:), allocatable :: full, report
+        character(len=:), allocatable :: full, report, msg
         character(kind=c_char) :: errbuf(ERRBUF_LEN)
         type(state_type) :: err0
         type(c_ptr) :: h
@@ -216,8 +216,8 @@ contains
         integer :: i
 
         if (c_associated(self%handle)) then
-            err0 = state_type('open', STDLIB_VALUE_ERROR, "shared library", "'"//self%path//"'", &
-                              "is already loaded: call close() first")
+            msg = "shared library '"//self%path//"' is already loaded: call close() first"
+            err0 = state_type('open', STDLIB_VALUE_ERROR, msg)
             call err0%handle(err)
             return
         end if
@@ -247,10 +247,12 @@ contains
                 return
             end if
             if (i > 1) report = report//","
-            report = report//" '"//full//"' ("//from_c_buffer(errbuf)//")"
+            msg = from_c_buffer(errbuf)
+            report = report//" '"//full//"' ("//msg//")"
         end do
 
-        err0 = FS_ERROR("cannot load shared library", "'"//trim(name)//"';", "tried"//report)
+        msg = "cannot load shared library '"//trim(name)//"'; tried"//report
+        err0 = FS_ERROR(msg)
         call err0%update_location('open')
         call err0%handle(err)
     end subroutine lib_open
@@ -317,7 +319,7 @@ contains
         type(state_type), intent(out), optional :: err
 
         character(kind=c_char) :: errbuf(ERRBUF_LEN)
-        character(len=:), allocatable :: closed, reason
+        character(len=:), allocatable :: msg
         type(state_type) :: err0
         integer(c_int) :: rc
 
@@ -325,8 +327,7 @@ contains
 
         errbuf = c_null_char
         rc = c_loadlib_close(self%handle, errbuf, size(errbuf, kind=c_size_t))
-        closed = self%path
-        reason = from_c_buffer(errbuf)
+        msg = "cannot unload shared library '"//self%path//"': "//from_c_buffer(errbuf)
 
         ! The handle is dropped whatever the outcome: a failed unload leaves it
         ! in an unusable state, and retrying would only leak the reference count
@@ -334,7 +335,7 @@ contains
         if (allocated(self%path)) deallocate (self%path)
 
         if (rc /= 0) then
-            err0 = FS_ERROR("cannot unload shared library", "'"//closed//"':", reason)
+            err0 = FS_ERROR(msg)
             call err0%update_location('close')
             call err0%handle(err)
         end if
@@ -379,14 +380,15 @@ contains
         type(state_type), intent(out) :: err
 
         character(kind=c_char) :: errbuf(ERRBUF_LEN)
+        character(len=:), allocatable :: msg
         logical :: found
 
         fptr = c_null_funptr
         ptr = c_null_ptr
 
         if (.not. c_associated(self%handle)) then
-            err = state_type('symbol', STDLIB_VALUE_ERROR, "cannot look up symbol", &
-                             "'"//trim(name)//"':", "no library is loaded")
+            msg = "cannot look up symbol '"//trim(name)//"': no library is loaded"
+            err = state_type('symbol', STDLIB_VALUE_ERROR, msg)
             return
         end if
 
@@ -400,8 +402,8 @@ contains
         end if
 
         if (.not. found) then
-            err = FS_ERROR("symbol", "'"//trim(name)//"'", "not found in", &
-                           "'"//self%path//"':", from_c_buffer(errbuf))
+            msg = "symbol '"//trim(name)//"' not found in '"//self%path//"': "//from_c_buffer(errbuf)
+            err = FS_ERROR(msg)
             call err%update_location('symbol')
         end if
     end subroutine lookup
