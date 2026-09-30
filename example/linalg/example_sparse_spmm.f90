@@ -9,6 +9,7 @@ program example_sparse_spmm
     type(CSC_dp_type) :: csc, csc_product
     type(ELL_dp_type) :: ell, ell_product
     type(SELLC_dp_type) :: sellc, sellc_product
+    type(spmm_plan_type) :: plan
 
     a = reshape([1._dp,0._dp,2._dp, &
                  0._dp,3._dp,0._dp, &
@@ -39,15 +40,17 @@ program example_sparse_spmm
     call spmm(sellc,b,c,alpha=2._dp,beta=1._dp)
     print *, 'SELLC x dense:  ', c
 
-    ! The result variable selects the sparse output format.
-    call spmm(coo,csc,coo_product)
-    call spmm(coo,csc,product)
-    call spmm(coo,csc,csc_product)
-    call spmm(coo,csc,ell_product)
-    call spmm(coo,csc,sellc_product)
-    print *, 'COO x CSC -> COO nonzeros:', coo_product%nnz
-    print *, 'COO x CSC -> CSR nonzeros:', product%nnz
-    print *, 'COO x CSC -> CSC nonzeros:', csc_product%nnz
-    print *, 'COO x CSC -> ELL nonzeros:', ell_product%nnz
-    print *, 'COO x CSC -> SELLC chunk columns:', sellc_product%nnz
+    ! Sparse factors and result have the same format and numeric kind.
+    call spmm(coo,coo,coo_product)
+    call spmm(csc,csc,csc_product)
+    call spmm(ell,ell,ell_product)
+    call spmm(sellc,sellc,sellc_product)
+
+    ! Construct the CSR product pattern once, then update only values.
+    call spmm_prepare(csr,csr,product,plan)
+    call spmm_kernel(csr,csr,product,plan)
+    print *, 'CSR product values:', product%data
+    csr%data = 2._dp*csr%data
+    call spmm(csr,csr,product,plan=plan)
+    print *, 'Repeated CSR product values:', product%data
 end program example_sparse_spmm

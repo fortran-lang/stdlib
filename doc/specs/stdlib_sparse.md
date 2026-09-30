@@ -226,7 +226,22 @@ Experimental
 
 ### Description
 
-Multiply COO, CSR, CSC, ELL, or SELLC sparse matrices by dense matrices, multiply dense matrices by any of these sparse formats, or multiply any pair of these sparse formats. Dense results compute `C = alpha * op(S) * D + beta * C` or `C = alpha * D * op(S) + beta * C`, where `S` is the sparse operand and `D` is dense. Sparse products compute `C = alpha * A * B`; the declared sparse result type selects COO, CSR, CSC, ELL, or SELLC storage. Exact zeros are omitted. CSR and CSC results have sorted indices. CSR and CSC results use native compressed-row or compressed-column accumulation when both inputs have the matching format. Other combinations may convert the inputs or result. ELL allocates the same slot count for every row, and SELLC pads rows within each chunk; choosing these result formats can use more memory for irregular products. Single and double precision real and complex values are supported.
+Multiply sparse and dense matrices, or two sparse matrices of the same
+storage format and numeric kind. COO, CSR, CSC, ELL and SELLC are supported
+for the real and complex kinds enabled in the build. Sparse inputs and the
+sparse result must all have the same declared type; mixed formats are outside
+this interface.
+
+Dense results compute `C = alpha * op(S) * D + beta * C` or
+`C = alpha * D * op(S) + beta * C`, where `S` is sparse and `D` is dense.
+Their storage and operation behavior follows `spmv`.
+
+Sparse results compute `C = alpha * A * B` using full storage. A separate
+symbolic phase constructs the result indices from the stored input indices,
+independently of their numeric values. Stored zeros and cancellation do not
+remove product positions. CSR and CSC results have sorted indices. ELL and
+SELLC may add padding; SELLC results retain the left factor's chunk size.
+The structural pattern may therefore contain numerical zeros.
 
 ### Syntax
 
@@ -234,27 +249,90 @@ Multiply COO, CSR, CSC, ELL, or SELLC sparse matrices by dense matrices, multipl
 
 `call ` [[stdlib_sparse_spmm(module):spmm(interface)]] `(dense,sparse,result [,alpha,beta,op])`
 
-`call ` [[stdlib_sparse_spmm(module):spmm(interface)]] `(sparse_a,sparse_b,sparse_result [,alpha])`
+`call ` [[stdlib_sparse_spmm(module):spmm(interface)]] `(a,b,c [,alpha,plan,allow_resize,stat])`
 
 ### Arguments
 
-`sparse`, `sparse_a`, `sparse_b`: COO, CSR, CSC, ELL, or SELLC inputs. Sparse-by-sparse operands must have the same numeric kind as the result and require `sparse_full` storage. Dense products follow the corresponding SpMV storage behavior.
+`a`, `b`: Same-format, same-kind sparse factors, with `a%ncols == b%nrows`.
+Both require `sparse_full` storage. Their stored index order is part of the
+prepared structure; changing only their values is permitted.
 
-`dense`: Rank-2 dense input of the same kind as the sparse values.
+`c`: A same-format, same-kind sparse `intent(inout)` result. Numeric calls
+overwrite its values. It must not alias either input factor.
 
-`result`: Rank-2 dense `intent(inout)` result, or sparse `intent(out)` result. The declared sparse type selects the output storage. The dense result must have the exact product shape. For a SELLC result, the left operand's chunk size is retained when it is also SELLC; otherwise the default chunk size is used.
+`plan`, optional: A `spmm_plan_type` created by `spmm_prepare`. It holds
+structural snapshots and reusable integer workspace. With a compatible plan,
+`spmm` updates the values without allocating or resizing result/work arrays.
+Concurrent calls must use separate plans because the workspace is mutable.
 
-`alpha`, `optional`: Scalar product factor, default `1`.
+`allow_resize`, optional: Defaults to true without `plan` and false with
+`plan`. True permits preparing/rebuilding `c` and `plan` when necessary.
+False requires a prepared plan and compatible input/result structures.
+Failure leaves the result unchanged. Dimensions alone are insufficient to
+establish compatibility. Reordering or adding/removing stored indices, or
+changing ELL/SELLC layouts, requires preparation again.
 
-`beta`, `optional`: Scalar factor for the existing dense result, default `0`. Available only for dense results.
+`alpha`, optional: Product scale, default 1, of the factors' numeric type.
+For dense results, `beta` scales the old result and defaults to 0; `op` is
+`N`, `T`, or `H` and applies to the sparse factor. Sparse-by-sparse products
+do not provide `beta` or `op` in this interface.
 
-`op`, `optional`: Operation on the sparse operand: `sparse_op_none` (`N`), `sparse_op_transpose` (`T`), or `sparse_op_hermitian` (`H`), default `N`. Available only for dense results.
+`stat`, optional: Sparse-product error status. `spmm_success` indicates
+success, `spmm_invalid_input` invalid storage/dimensions/index buffers,
+`spmm_pattern_mismatch` a changed input or target structure, and
+`spmm_unprepared` a missing/unprepared plan. Without `stat`, a failed sparse
+call terminates through `stdlib_error:error_stop`.
 
-### Example
+## `spmm_prepare` - Prepare a sparse product structure
+
+### Status
+
+Experimental
+
+### Syntax
+
+`call ` [[stdlib_sparse_spmm(module):spmm_prepare(interface)]] `(a,b,c,plan [,stat])`
+
+### Description
+
+Public symbolic construction for same-type sparse factors. It allocates the
+structural product `c` and the workspace `plan`, and sets all result values
+to zero. No floating-point products are evaluated. Existing `c` remains
+unchanged on invalid input; an unsuccessful preparation leaves `plan`
+unprepared. Preparation may allocate or replace buffers.
+
+The arguments `a`, `b`, `c` and `stat` have the meanings described above;
+`plan` is a required `intent(out)` argument. The plan depends on stored
+indices, shapes and storage metadata, but not on numeric values or kind.
+
+## `spmm_kernel` - Reuse a prepared sparse product
+
+### Status
+
+Experimental
+
+### Syntax
+
+`call ` [[stdlib_sparse_spmm(module):spmm_kernel(interface)]] `(a,b,c,plan [,alpha,stat])`
+
+### Description
+
+Public numeric-only kernel for a target constructed by `spmm_prepare`.
+It validates the stored input and target structure before changing `c`,
+then recomputes only values using the plan's existing workspace. It never
+rebuilds indices or allocates result/work arrays. Numeric zeros, including
+`alpha=0`, preserve the prepared structure. The plan may be reused for
+another result object with exactly the same layout, and for another numeric
+kind when all three factors/results have that same kind.
+
+The required `plan` is `intent(inout)`; `alpha` defaults to 1. Other
+arguments and error statuses have the meanings described above.
+
+### Examples
 
 {!example/linalg/example_sparse_spmm.f90!}
 
-The complex example exercises conjugate transposition:
+The complex example prepares and reuses a same-format product:
 
 {!example/linalg/example_sparse_spmm_complex.f90!}
 

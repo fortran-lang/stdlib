@@ -1,8 +1,8 @@
 ## Unreleased
 
 New features
-  - Add sparse matrix-matrix products for COO, CSR, CSC, ELL, and SELLC
-    inputs, with a caller-selected sparse result format.
+  - Add same-format sparse matrix-matrix products for COO, CSR, CSC, ELL
+    and SELLC, with public symbolic preparation and a reusable numeric kernel.
 
 Changes to the existing build system
   - Fixed absolute paths in generated pkg-config file for external BLAS/LAPACK 
