@@ -5,6 +5,7 @@ set(sparse_fppFiles
     stdlib_sparse_operators.fypp
     stdlib_sparse_spmv.fypp
     stdlib_sparse_spmm.fypp
+    stdlib_sparse_spmm_implementation.fypp
     stdlib_sparse_spmm_coo.fypp
     stdlib_sparse_spmm_csr.fypp
     stdlib_sparse_spmm_csc.fypp
