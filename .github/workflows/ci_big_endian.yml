@@ -21,7 +21,7 @@ env:
 
 jobs:
   test-big-endian:
-    if: ${{ github.ref_name != 'jalvesz/sphinx' && github.head_ref != 'jalvesz/sphinx' }}
+    if: ${{ github.ref_name != 'sphinx' && github.head_ref != 'sphinx' }}
     runs-on: ubuntu-24.04
     name: Test on s390x (big-endian)
     strategy:

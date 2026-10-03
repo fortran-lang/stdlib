@@ -34,7 +34,7 @@ env:
 
 jobs:
   Build:
-    if: ${{ github.ref_name != 'jalvesz/sphinx' && github.head_ref != 'jalvesz/sphinx' }}
+    if: ${{ github.ref_name != 'sphinx' && github.head_ref != 'sphinx' }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false

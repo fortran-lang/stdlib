@@ -33,7 +33,7 @@ env:
 
 jobs:
   Build-API-Docs:
-    if: ${{ github.ref_name != 'jalvesz/sphinx' && github.head_ref != 'jalvesz/sphinx' }}
+    if: ${{ github.ref_name != 'sphinx' && github.head_ref != 'sphinx' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

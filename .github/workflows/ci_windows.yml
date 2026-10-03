@@ -27,7 +27,7 @@ env:
 
 jobs:
   msys2-build:
-    if: ${{ github.ref_name != 'jalvesz/sphinx' && github.head_ref != 'jalvesz/sphinx' }}
+    if: ${{ github.ref_name != 'sphinx' && github.head_ref != 'sphinx' }}
     runs-on: windows-latest
     strategy:
       fail-fast: false

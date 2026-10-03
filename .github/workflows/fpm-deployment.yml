@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   deploy:
-    if: ${{ github.ref_name != 'jalvesz/sphinx' && github.head_ref != 'jalvesz/sphinx' }}
+    if: ${{ github.ref_name != 'sphinx' && github.head_ref != 'sphinx' }}
     name: Run tests and deploys the fpm branches
     runs-on: ${{ matrix.os }}
     strategy:
@@ -74,7 +74,7 @@ jobs:
           FOLDER: stdlib-fpm-ilp64
 
   coverage:
-    if: ${{ github.ref_name != 'jalvesz/sphinx' && github.head_ref != 'jalvesz/sphinx' }}
+    if: ${{ github.ref_name != 'sphinx' && github.head_ref != 'sphinx' }}
     name: Generate and upload code coverage report
     needs: deploy
     runs-on: ${{ matrix.os }}

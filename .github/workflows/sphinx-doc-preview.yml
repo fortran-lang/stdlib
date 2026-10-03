@@ -35,7 +35,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Configure GitHub Pages
-        if: github.event_name == 'push' && github.ref_name == 'jalvesz/sphinx' && github.repository != 'fortran-lang/stdlib'
+        if: github.event_name == 'push' && github.ref_name == 'sphinx' && github.repository != 'fortran-lang/stdlib'
         uses: actions/configure-pages@v5
 
       - uses: actions/setup-python@v5
@@ -60,13 +60,13 @@ jobs:
           path: ./doc/_build/html/
 
       - name: Upload Pages artifact
-        if: github.event_name == 'push' && github.ref_name == 'jalvesz/sphinx' && github.repository != 'fortran-lang/stdlib'
+        if: github.event_name == 'push' && github.ref_name == 'sphinx' && github.repository != 'fortran-lang/stdlib'
         uses: actions/upload-pages-artifact@v4
         with:
           path: ./doc/_build/html/
 
   Deploy-Sphinx-Docs:
-    if: github.event_name == 'push' && github.ref_name == 'jalvesz/sphinx' && github.repository != 'fortran-lang/stdlib'
+    if: github.event_name == 'push' && github.ref_name == 'sphinx' && github.repository != 'fortran-lang/stdlib'
     needs: Build-Sphinx-Docs
     permissions:
       pages: write
