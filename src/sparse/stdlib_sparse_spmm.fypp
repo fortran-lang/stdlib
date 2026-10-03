@@ -1,0 +1,173 @@
+#:include "common.fypp"
+#:set KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX)) + list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+!! Sparse matrix-matrix multiplication with reusable sparse structures.
+module stdlib_sparse_spmm
+    use stdlib_sparse_constants
+    use stdlib_sparse_kinds
+    use stdlib_sparse_spmv, only: spmv
+    use stdlib_error, only: error_stop
+    implicit none
+    private
+    public :: spmm, spmm_prepare, spmm_kernel
+    public :: spmm_plan_type, spmm_success, spmm_invalid_input
+    public :: spmm_pattern_mismatch, spmm_unprepared
+
+    integer, parameter :: spmm_success = 0 !! Successful operation
+    integer, parameter :: spmm_invalid_input = 1 !! Invalid sparse storage
+    integer, parameter :: spmm_pattern_mismatch = 2 !! Changed sparse structure
+    integer, parameter :: spmm_unprepared = 3 !! Missing preparation
+    integer, parameter :: format_coo = 1, format_csr = 2, format_csc = 3
+    integer, parameter :: format_ell = 4, format_sellc = 5
+
+    type :: spmm_structure_type
+        integer(ilp) :: nrows = 0, ncols = 0, nnz = 0
+        integer :: storage = sparse_full, parameter = 0
+        integer(ilp) :: data_rows = 0, data_cols = 0
+        integer(ilp), allocatable :: raw_pointer(:), raw_index(:,:)
+        integer(ilp), allocatable :: pointer(:), index(:), slot(:)
+    end type spmm_structure_type
+
+    !! version: experimental
+    !!
+    !! Structural snapshots and reusable integer workspace for a sparse
+    !! product. Create a plan with spmm_prepare before using spmm_kernel.
+    !! Numeric values may change; indices and stored shapes must stay fixed.
+    type :: spmm_plan_type
+        private
+        logical :: ready = .false.
+        integer :: format = 0
+        type(spmm_structure_type) :: a, b, c
+        integer(ilp), allocatable :: marker(:)
+    end type spmm_plan_type
+
+    !! version: experimental
+    !!
+    !! Sparse/dense products retain the SpMV scaling and operation arguments.
+    !! Sparse/sparse products require the same format and numeric kind.
+    !! Without a plan, spmm constructs a new structural result. With a plan,
+    !! it reuses existing storage unless allow_resize is explicitly true.
+    !! [Specifications](../page/specs/stdlib_sparse.html#spmm-sparse-matrix-matrix-product)
+    interface spmm
+        #:for k, t, s in KINDS_TYPES
+        #:for fmt in ["COO", "CSR", "CSC", "ELL", "SELLC"]
+        module subroutine spmm_${fmt.lower()}$_dense_${s}$( &
+                sparse_a,dense_b,dense_c,alpha,beta,op)
+            type(${fmt}$_${s}$_type), intent(in) :: sparse_a !! Sparse factor
+            ${t}$, intent(in) :: dense_b(:,:) !! Dense factor
+            ${t}$, intent(inout) :: dense_c(:,:) !! Dense result
+            ${t}$, intent(in), optional :: alpha, beta !! Defaults 1 and 0
+            character(1), intent(in), optional :: op !! N, T, or H
+        end subroutine
+
+        module subroutine spmm_dense_${fmt.lower()}$_${s}$( &
+                dense_a,sparse_b,dense_c,alpha,beta,op)
+            ${t}$, intent(in) :: dense_a(:,:) !! Dense factor
+            type(${fmt}$_${s}$_type), intent(in) :: sparse_b !! Sparse factor
+            ${t}$, intent(inout) :: dense_c(:,:) !! Dense result
+            ${t}$, intent(in), optional :: alpha, beta !! Defaults 1 and 0
+            character(1), intent(in), optional :: op !! N, T, or H
+        end subroutine
+
+        module subroutine spmm_sparse_${fmt.lower()}$_${s}$( &
+                a,b,c,alpha,plan,allow_resize,stat)
+            type(${fmt}$_${s}$_type), intent(in) :: a, b !! Sparse factors
+            type(${fmt}$_${s}$_type), intent(inout) :: c !! Sparse result
+            ${t}$, intent(in), optional :: alpha !! Product scale; default 1
+            type(spmm_plan_type), intent(inout), optional :: plan
+                !! Reusable structure and workspace
+            logical, intent(in), optional :: allow_resize
+                !! Default true without a plan, false with a plan
+            integer, intent(out), optional :: stat !! Error status
+        end subroutine
+        #:endfor
+        #:endfor
+    end interface spmm
+
+    !! version: experimental
+    !!
+    !! Construct the structural product independently of numeric values.
+    !! Allocates c and plan; c values are zero. Cancellation and stored zeros
+    !! do not remove structural entries. Existing c is unchanged on failure.
+    interface spmm_prepare
+        #:for k, t, s in KINDS_TYPES
+        #:for fmt in ["COO", "CSR", "CSC", "ELL", "SELLC"]
+        module subroutine prepare_${fmt.lower()}$_${s}$(a,b,c,plan,stat)
+            type(${fmt}$_${s}$_type), intent(in) :: a, b !! Sparse factors
+            type(${fmt}$_${s}$_type), intent(inout) :: c !! Allocated result
+            type(spmm_plan_type), intent(out) :: plan !! Reusable workspace
+            integer, intent(out), optional :: stat !! Error status
+        end subroutine
+        #:endfor
+        #:endfor
+    end interface spmm_prepare
+
+    !! version: experimental
+    !!
+    !! Update only the values of a previously prepared sparse result.
+    !! Does not allocate or resize result/work arrays. Changed input or
+    !! result structures are rejected before changing c. If stat is absent,
+    !! an invalid call terminates through stdlib_error:error_stop.
+    interface spmm_kernel
+        #:for k, t, s in KINDS_TYPES
+        #:for fmt in ["COO", "CSR", "CSC", "ELL", "SELLC"]
+        module subroutine kernel_${fmt.lower()}$_${s}$(a,b,c,plan,alpha,stat)
+            type(${fmt}$_${s}$_type), intent(in) :: a, b !! Sparse factors
+            type(${fmt}$_${s}$_type), intent(inout) :: c !! Existing result
+            type(spmm_plan_type), intent(inout) :: plan !! Prepared workspace
+            ${t}$, intent(in), optional :: alpha !! Product scale; default 1
+            integer, intent(out), optional :: stat !! Error status
+        end subroutine
+        #:endfor
+        #:endfor
+    end interface spmm_kernel
+
+    ! Private separate module procedures keep symbols available to all
+    ! format submodules, including compilers that localize contained helpers.
+    interface
+        module subroutine set_status(code,stat)
+            integer, intent(in) :: code
+            integer, intent(out), optional :: stat
+        end subroutine set_status
+
+        logical module function valid_pointer(pointer,slices,entries) result(valid)
+            integer(ilp), intent(in) :: pointer(:), slices, entries
+        end function valid_pointer
+
+        module subroutine snapshot(matrix,data_rows,data_cols,pattern,code)
+            class(sparse_type), intent(in) :: matrix
+            integer(ilp), intent(in) :: data_rows, data_cols
+            type(spmm_structure_type), intent(inout) :: pattern
+            integer, intent(out) :: code
+        end subroutine snapshot
+
+        logical module function structure_matches(matrix,data_rows,data_cols,pattern) result(matches)
+            class(sparse_type), intent(in) :: matrix
+            integer(ilp), intent(in) :: data_rows, data_cols
+            type(spmm_structure_type), intent(in) :: pattern
+        end function structure_matches
+
+        module subroutine build_view(pattern,format)
+            type(spmm_structure_type), intent(inout) :: pattern
+            integer, intent(in) :: format
+        end subroutine build_view
+
+        module subroutine symbolic_product(plan,code)
+            type(spmm_plan_type), intent(inout) :: plan
+            integer, intent(out) :: code
+        end subroutine symbolic_product
+
+        module subroutine sort_indices(indices,scratch,count,span,marker,slice)
+            integer(ilp), intent(inout) :: indices(:), scratch(:)
+            integer(ilp), intent(in) :: count, span, marker(:), slice
+        end subroutine sort_indices
+
+        #:for k, t, s in KINDS_TYPES
+        module subroutine numeric_${s}$(plan,a_values,b_values,c_values,alpha)
+            type(spmm_plan_type), intent(inout) :: plan
+            ${t}$, intent(in) :: a_values(*), b_values(*)
+            ${t}$, intent(inout) :: c_values(*)
+            ${t}$, intent(in) :: alpha
+        end subroutine numeric_${s}$
+        #:endfor
+    end interface
+end module stdlib_sparse_spmm

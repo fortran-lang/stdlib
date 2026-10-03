@@ -1,0 +1,403 @@
+#:include "common.fypp"
+#:set KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX)) + list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+!! Shared structural preparation and numeric kernels for the format submodules.
+submodule (stdlib_sparse_spmm) stdlib_sparse_spmm_implementation
+    implicit none
+contains
+    module subroutine set_status(code,stat)
+        integer, intent(in) :: code
+        integer, intent(out), optional :: stat
+        if (present(stat)) then
+            stat = code
+        else if (code /= spmm_success) then
+            select case(code)
+            case(spmm_invalid_input)
+                call error_stop('spmm: invalid input or dimensions')
+            case(spmm_pattern_mismatch)
+                call error_stop('spmm: sparse structure has changed')
+            case default
+                call error_stop('spmm: spmm_prepare is required')
+            end select
+        end if
+    end subroutine set_status
+
+    logical module function valid_pointer(pointer,slices,entries) result(valid)
+        integer(ilp), intent(in) :: pointer(:), slices, entries
+        valid = .false.
+        if (size(pointer) /= slices+1) return
+        if (pointer(1) /= 1 .or. pointer(slices+1) /= entries+1) return
+        if (any(pointer < 1) .or. any(pointer > entries+1)) return
+        if (any(pointer(2:) < pointer(:slices))) return
+        valid = .true.
+    end function valid_pointer
+
+    module subroutine snapshot(matrix,data_rows,data_cols,pattern,code)
+        class(sparse_type), intent(in) :: matrix
+        integer(ilp), intent(in) :: data_rows, data_cols
+        type(spmm_structure_type), intent(inout) :: pattern
+        integer, intent(out) :: code
+        integer(ilp) :: slices
+        code = spmm_invalid_input
+        if (matrix%nrows < 0 .or. matrix%ncols < 0 .or. matrix%nnz < 0) return
+        if (matrix%storage /= sparse_full) return
+        select type(matrix)
+        class is(COO_type)
+            if (.not.allocated(matrix%index)) return
+            if (size(matrix%index,1) /= 2) return
+            if (size(matrix%index,2) < matrix%nnz) return
+            if (data_cols /= 1 .or. data_rows < matrix%nnz) return
+            if (any(matrix%index(:,1:matrix%nnz) < 1)) return
+            if (any(matrix%index(1,1:matrix%nnz) > matrix%nrows)) return
+            if (any(matrix%index(2,1:matrix%nnz) > matrix%ncols)) return
+            allocate(pattern%raw_pointer(0))
+            pattern%raw_index = matrix%index
+        class is(CSR_type)
+            if (.not.allocated(matrix%rowptr)) return
+            if (.not.allocated(matrix%col)) return
+            if (size(matrix%col) < matrix%nnz) return
+            if (data_cols /= 1 .or. data_rows < matrix%nnz) return
+            if (.not.valid_pointer(matrix%rowptr,matrix%nrows,matrix%nnz)) return
+            if (any(matrix%col(:matrix%nnz) < 1)) return
+            if (any(matrix%col(:matrix%nnz) > matrix%ncols)) return
+            pattern%raw_pointer = matrix%rowptr
+            allocate(pattern%raw_index(1,size(matrix%col)))
+            pattern%raw_index(1,:) = matrix%col
+        class is(CSC_type)
+            if (.not.allocated(matrix%colptr)) return
+            if (.not.allocated(matrix%row)) return
+            if (size(matrix%row) < matrix%nnz) return
+            if (data_cols /= 1 .or. data_rows < matrix%nnz) return
+            if (.not.valid_pointer(matrix%colptr,matrix%ncols,matrix%nnz)) return
+            if (any(matrix%row(:matrix%nnz) < 1)) return
+            if (any(matrix%row(:matrix%nnz) > matrix%nrows)) return
+            pattern%raw_pointer = matrix%colptr
+            allocate(pattern%raw_index(1,size(matrix%row)))
+            pattern%raw_index(1,:) = matrix%row
+        class is(ELL_type)
+            if (.not.allocated(matrix%index)) return
+            if (matrix%K < 0) return
+            if (size(matrix%index,1) /= matrix%nrows) return
+            if (size(matrix%index,2) /= matrix%K) return
+            if (data_rows /= matrix%nrows .or. data_cols /= matrix%K) return
+            if (any(matrix%index < 0) .or. any(matrix%index > matrix%ncols)) return
+            allocate(pattern%raw_pointer(0))
+            pattern%raw_index = matrix%index
+            pattern%parameter = matrix%K
+        class is(SELLC_type)
+            if (.not.allocated(matrix%rowptr)) return
+            if (.not.allocated(matrix%col)) return
+            if (.not.any(matrix%chunk_size == [4,8,16])) return
+            if (size(matrix%col,1) /= matrix%chunk_size) return
+            if (data_rows /= matrix%chunk_size) return
+            if (data_cols /= size(matrix%col,2)) return
+            slices = matrix%nrows/matrix%chunk_size
+            if (mod(matrix%nrows,matrix%chunk_size) /= 0) slices = slices+1
+            if (.not.valid_pointer(matrix%rowptr,slices,data_cols)) return
+            if (matrix%nnz /= data_cols) return
+            if (any(matrix%col < 1) .or. any(matrix%col > matrix%ncols)) return
+            pattern%raw_pointer = matrix%rowptr
+            pattern%raw_index = matrix%col
+            pattern%parameter = matrix%chunk_size
+        class default
+            return
+        end select
+        if (int(data_rows,int64)*int(data_cols,int64) > huge(1_ilp)) return
+        pattern%nrows = matrix%nrows
+        pattern%ncols = matrix%ncols
+        pattern%nnz = matrix%nnz
+        pattern%storage = matrix%storage
+        pattern%data_rows = data_rows
+        pattern%data_cols = data_cols
+        code = spmm_success
+    end subroutine snapshot
+
+    logical module function structure_matches(matrix,data_rows,data_cols,pattern) &
+            result(matches)
+        class(sparse_type), intent(in) :: matrix
+        integer(ilp), intent(in) :: data_rows, data_cols
+        type(spmm_structure_type), intent(in) :: pattern
+        matches = .false.
+        if (matrix%nrows /= pattern%nrows .or. matrix%ncols /= pattern%ncols) return
+        if (matrix%nnz /= pattern%nnz .or. matrix%storage /= pattern%storage) return
+        if (data_rows /= pattern%data_rows .or. data_cols /= pattern%data_cols) return
+        select type(matrix)
+        class is(COO_type)
+            if (.not.allocated(matrix%index)) return
+            if (size(matrix%index,1) /= size(pattern%raw_index,1)) return
+            if (size(matrix%index,2) /= size(pattern%raw_index,2)) return
+            if (any(matrix%index /= pattern%raw_index)) return
+        class is(CSR_type)
+            if (.not.allocated(matrix%rowptr)) return
+            if (.not.allocated(matrix%col)) return
+            if (size(matrix%rowptr) /= size(pattern%raw_pointer)) return
+            if (size(matrix%col) /= size(pattern%raw_index,2)) return
+            if (any(matrix%rowptr /= pattern%raw_pointer)) return
+            if (any(matrix%col /= pattern%raw_index(1,:))) return
+        class is(CSC_type)
+            if (.not.allocated(matrix%colptr)) return
+            if (.not.allocated(matrix%row)) return
+            if (size(matrix%colptr) /= size(pattern%raw_pointer)) return
+            if (size(matrix%row) /= size(pattern%raw_index,2)) return
+            if (any(matrix%colptr /= pattern%raw_pointer)) return
+            if (any(matrix%row /= pattern%raw_index(1,:))) return
+        class is(ELL_type)
+            if (.not.allocated(matrix%index)) return
+            if (matrix%K /= pattern%parameter) return
+            if (size(matrix%index,1) /= size(pattern%raw_index,1)) return
+            if (size(matrix%index,2) /= size(pattern%raw_index,2)) return
+            if (any(matrix%index /= pattern%raw_index)) return
+        class is(SELLC_type)
+            if (.not.allocated(matrix%rowptr)) return
+            if (.not.allocated(matrix%col)) return
+            if (matrix%chunk_size /= pattern%parameter) return
+            if (size(matrix%rowptr) /= size(pattern%raw_pointer)) return
+            if (size(matrix%col,1) /= size(pattern%raw_index,1)) return
+            if (size(matrix%col,2) /= size(pattern%raw_index,2)) return
+            if (any(matrix%rowptr /= pattern%raw_pointer)) return
+            if (any(matrix%col /= pattern%raw_index)) return
+        class default
+            return
+        end select
+        matches = .true.
+    end function structure_matches
+
+    module subroutine build_view(pattern,format)
+        type(spmm_structure_type), intent(inout) :: pattern
+        integer, intent(in) :: format
+        integer(ilp) :: row, entry, position, col, chunk, lane, entries
+        integer(ilp), allocatable :: next(:)
+        if (format == format_csr .or. format == format_csc) then
+            pattern%pointer = pattern%raw_pointer
+            pattern%index = pattern%raw_index(1,:pattern%nnz)
+            allocate(pattern%slot(pattern%nnz))
+            do entry = 1, pattern%nnz
+                pattern%slot(entry) = entry
+            end do
+            return
+        end if
+        allocate(pattern%pointer(pattern%nrows+1),source=0_ilp)
+        select case(format)
+        case(format_coo)
+            do entry = 1, pattern%nnz
+                row = pattern%raw_index(1,entry)
+                pattern%pointer(row+1) = pattern%pointer(row+1)+1
+            end do
+        case(format_ell)
+            do row = 1, pattern%nrows
+                pattern%pointer(row+1) = count(pattern%raw_index(row,:) > 0)
+            end do
+        case(format_sellc)
+            do row = 1, pattern%nrows
+                chunk = (row-1)/pattern%parameter+1
+                lane = mod(row-1,pattern%parameter)+1
+                do entry = pattern%raw_pointer(chunk),pattern%raw_pointer(chunk+1)-1
+                    if (pattern%raw_index(lane,entry) > 0) &
+                        pattern%pointer(row+1) = pattern%pointer(row+1)+1
+                end do
+            end do
+        end select
+        pattern%pointer(1) = 1
+        do row = 1, pattern%nrows
+            pattern%pointer(row+1) = pattern%pointer(row+1)+pattern%pointer(row)
+        end do
+        entries = pattern%pointer(pattern%nrows+1)-1
+        allocate(pattern%index(entries),pattern%slot(entries))
+        next = pattern%pointer(:pattern%nrows)
+        select case(format)
+        case(format_coo)
+            do entry = 1, pattern%nnz
+                row = pattern%raw_index(1,entry)
+                position = next(row)
+                pattern%index(position) = pattern%raw_index(2,entry)
+                pattern%slot(position) = entry
+                next(row) = position+1
+            end do
+        case(format_ell)
+            do row = 1, pattern%nrows
+                do entry = 1, pattern%parameter
+                    col = pattern%raw_index(row,entry)
+                    if (col <= 0) cycle
+                    position = next(row)
+                    pattern%index(position) = col
+                    pattern%slot(position) = row+(entry-1)*pattern%nrows
+                    next(row) = position+1
+                end do
+            end do
+        case(format_sellc)
+            do row = 1, pattern%nrows
+                chunk = (row-1)/pattern%parameter+1
+                lane = mod(row-1,pattern%parameter)+1
+                do entry = pattern%raw_pointer(chunk),pattern%raw_pointer(chunk+1)-1
+                    col = pattern%raw_index(lane,entry)
+                    if (col <= 0) cycle
+                    position = next(row)
+                    pattern%index(position) = col
+                    pattern%slot(position) = lane+(entry-1)*pattern%parameter
+                    next(row) = position+1
+                end do
+            end do
+        end select
+    end subroutine build_view
+
+    module subroutine symbolic_product(plan,code)
+        type(spmm_plan_type), intent(inout) :: plan
+        integer, intent(out) :: code
+        integer(ilp) :: slices, span, slice, p, q, inner, index
+        integer(ilp) :: count, entries, capacity
+        integer(int64) :: estimate
+        integer(ilp), allocatable :: touched(:), scratch(:), indices(:), grown(:)
+        code = spmm_success
+        if (plan%format == format_csc) then
+            slices = plan%b%ncols
+            span = plan%a%nrows
+        else
+            slices = plan%a%nrows
+            span = plan%b%ncols
+        end if
+        allocate(plan%marker(span),source=0_ilp)
+        allocate(touched(span),scratch(span))
+        allocate(plan%c%pointer(slices+1))
+        estimate = int(size(plan%a%index),int64)*int(size(plan%b%index),int64) / &
+            int(max(1_ilp,plan%a%ncols),int64)
+        estimate = min(estimate,int(plan%a%nrows,int64)*int(plan%b%ncols,int64))
+        capacity = int(max(1_int64,min(estimate,int(huge(1_ilp),int64))),ilp)
+        allocate(indices(capacity))
+        entries = 0
+        plan%c%pointer(1) = 1
+        do slice = 1, slices
+            count = 0
+            if (plan%format == format_csc) then
+                do p = plan%b%pointer(slice),plan%b%pointer(slice+1)-1
+                    inner = plan%b%index(p)
+                    do q = plan%a%pointer(inner),plan%a%pointer(inner+1)-1
+                        index = plan%a%index(q)
+                        if (plan%marker(index) == slice) cycle
+                        plan%marker(index) = slice
+                        count = count+1
+                        touched(count) = index
+                    end do
+                end do
+            else
+                do p = plan%a%pointer(slice),plan%a%pointer(slice+1)-1
+                    inner = plan%a%index(p)
+                    do q = plan%b%pointer(inner),plan%b%pointer(inner+1)-1
+                        index = plan%b%index(q)
+                        if (plan%marker(index) == slice) cycle
+                        plan%marker(index) = slice
+                        count = count+1
+                        touched(count) = index
+                    end do
+                end do
+            end if
+            call sort_indices(touched,scratch,count,span,plan%marker,slice)
+            if (int(entries,int64)+count > huge(1_ilp)-1_int64) then
+                code = spmm_invalid_input
+                return
+            end if
+            if (entries+count > capacity) then
+                capacity = int(min(int(huge(1_ilp)-1,int64), &
+                    max(2_int64*capacity,int(entries,int64)+count)),ilp)
+                allocate(grown(capacity))
+                grown(:entries) = indices(:entries)
+                call move_alloc(grown,indices)
+            end if
+            indices(entries+1:entries+count) = touched(:count)
+            entries = entries+count
+            plan%c%pointer(slice+1) = entries+1
+        end do
+        allocate(plan%c%index(entries),plan%c%slot(entries))
+        plan%c%index = indices(:entries)
+        plan%c%nrows = plan%a%nrows
+        plan%c%ncols = plan%b%ncols
+        plan%c%nnz = entries
+        plan%marker = 0
+    end subroutine symbolic_product
+
+    module subroutine sort_indices(indices,scratch,count,span,marker,slice)
+        integer(ilp), intent(inout) :: indices(:), scratch(:)
+        integer(ilp), intent(in) :: count, span, marker(:), slice
+        integer(ilp) :: i, j, value, shift, bucket, position
+        integer(ilp) :: counts(0:255), positions(0:255)
+        if (count <= 1) return
+        if (count >= span/2) then
+            position = 0
+            do value = 1, span
+                if (marker(value) /= slice) cycle
+                position = position+1
+                indices(position) = value
+            end do
+        else if (count <= 64) then
+            do i = 2, count
+                value = indices(i)
+                j = i-1
+                do while (j >= 1)
+                    if (indices(j) <= value) exit
+                    indices(j+1) = indices(j)
+                    j = j-1
+                end do
+                indices(j+1) = value
+            end do
+        else
+            do shift = 0, bit_size(1_ilp)-8, 8
+                if (ishft(span,-shift) == 0) exit
+                counts = 0
+                do i = 1, count
+                    bucket = ibits(indices(i),shift,8)
+                    counts(bucket) = counts(bucket)+1
+                end do
+                positions(0) = 1
+                do bucket = 1, 255
+                    positions(bucket) = positions(bucket-1)+counts(bucket-1)
+                end do
+                do i = 1, count
+                    bucket = ibits(indices(i),shift,8)
+                    scratch(positions(bucket)) = indices(i)
+                    positions(bucket) = positions(bucket)+1
+                end do
+                indices(:count) = scratch(:count)
+            end do
+        end if
+    end subroutine sort_indices
+
+    #:for k, t, s in KINDS_TYPES
+    module subroutine numeric_${s}$(plan,a_values,b_values,c_values,alpha)
+        type(spmm_plan_type), intent(inout) :: plan
+        ${t}$, intent(in) :: a_values(*), b_values(*)
+        ${t}$, intent(inout) :: c_values(*)
+        ${t}$, intent(in) :: alpha
+        ${t}$ :: value
+        integer(ilp) :: slice, p, q, inner, slot, index, slices
+        do p = 1, plan%c%data_rows*plan%c%data_cols
+            c_values(p) = zero_${s}$
+        end do
+        if (alpha == zero_${s}$) return
+        slices = size(plan%c%pointer)-1
+        do slice = 1, slices
+            do p = plan%c%pointer(slice),plan%c%pointer(slice+1)-1
+                plan%marker(plan%c%index(p)) = plan%c%slot(p)
+            end do
+            if (plan%format == format_csc) then
+                do p = plan%b%pointer(slice),plan%b%pointer(slice+1)-1
+                    inner = plan%b%index(p)
+                    value = alpha*b_values(plan%b%slot(p))
+                    do q = plan%a%pointer(inner),plan%a%pointer(inner+1)-1
+                        index = plan%a%index(q)
+                        slot = plan%marker(index)
+                        c_values(slot) = c_values(slot)+value*a_values(plan%a%slot(q))
+                    end do
+                end do
+            else
+                do p = plan%a%pointer(slice),plan%a%pointer(slice+1)-1
+                    inner = plan%a%index(p)
+                    value = alpha*a_values(plan%a%slot(p))
+                    do q = plan%b%pointer(inner),plan%b%pointer(inner+1)-1
+                        index = plan%b%index(q)
+                        slot = plan%marker(index)
+                        c_values(slot) = c_values(slot)+value*b_values(plan%b%slot(q))
+                    end do
+                end do
+            end if
+        end do
+    end subroutine numeric_${s}$
+    #:endfor
+end submodule stdlib_sparse_spmm_implementation

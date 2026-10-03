@@ -218,6 +218,125 @@ $$y=\alpha*op(M)*x+\beta*y$$
 `op`, `optional`: In-place operator identifier. Shall be a `character(1)` argument. It can have any of the following values: `N`: no transpose, `T`: transpose, `H`: hermitian or complex transpose. These values are provided as constants by the `stdlib_sparse` module: `sparse_op_none`, `sparse_op_transpose`, `sparse_op_hermitian`
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+## `spmm` - Sparse Matrix-Matrix product
+
+### Status
+
+Experimental
+
+### Description
+
+Multiply sparse and dense matrices, or two sparse matrices of the same
+storage format and numeric kind. COO, CSR, CSC, ELL and SELLC are supported
+for the real and complex kinds enabled in the build. Sparse inputs and the
+sparse result must all have the same declared type; mixed formats are outside
+this interface.
+
+Dense results compute `C = alpha * op(S) * D + beta * C` or
+`C = alpha * D * op(S) + beta * C`, where `S` is sparse and `D` is dense.
+Their storage and operation behavior follows `spmv`.
+
+Sparse results compute `C = alpha * A * B` using full storage. A separate
+symbolic phase constructs the result indices from the stored input indices,
+independently of their numeric values. Stored zeros and cancellation do not
+remove product positions. CSR and CSC results have sorted indices. ELL and
+SELLC may add padding; SELLC results retain the left factor's chunk size.
+The structural pattern may therefore contain numerical zeros.
+
+### Syntax
+
+`call ` [[stdlib_sparse_spmm(module):spmm(interface)]] `(sparse,dense,result [,alpha,beta,op])`
+
+`call ` [[stdlib_sparse_spmm(module):spmm(interface)]] `(dense,sparse,result [,alpha,beta,op])`
+
+`call ` [[stdlib_sparse_spmm(module):spmm(interface)]] `(a,b,c [,alpha,plan,allow_resize,stat])`
+
+### Arguments
+
+`a`, `b`: Same-format, same-kind sparse factors, with `a%ncols == b%nrows`.
+Both require `sparse_full` storage. Their stored index order is part of the
+prepared structure; changing only their values is permitted.
+
+`c`: A same-format, same-kind sparse `intent(inout)` result. Numeric calls
+overwrite its values. It must not alias either input factor.
+
+`plan`, optional: A `spmm_plan_type` created by `spmm_prepare`. It holds
+structural snapshots and reusable integer workspace. With a compatible plan,
+`spmm` updates the values without allocating or resizing result/work arrays.
+Concurrent calls must use separate plans because the workspace is mutable.
+
+`allow_resize`, optional: Defaults to true without `plan` and false with
+`plan`. True permits preparing/rebuilding `c` and `plan` when necessary.
+False requires a prepared plan and compatible input/result structures.
+Failure leaves the result unchanged. Dimensions alone are insufficient to
+establish compatibility. Reordering or adding/removing stored indices, or
+changing ELL/SELLC layouts, requires preparation again.
+
+`alpha`, optional: Product scale, default 1, of the factors' numeric type.
+For dense results, `beta` scales the old result and defaults to 0; `op` is
+`N`, `T`, or `H` and applies to the sparse factor. Sparse-by-sparse products
+do not provide `beta` or `op` in this interface.
+
+`stat`, optional: Sparse-product error status. `spmm_success` indicates
+success, `spmm_invalid_input` invalid storage/dimensions/index buffers,
+`spmm_pattern_mismatch` a changed input or target structure, and
+`spmm_unprepared` a missing/unprepared plan. Without `stat`, a failed sparse
+call terminates through `stdlib_error:error_stop`.
+
+## `spmm_prepare` - Prepare a sparse product structure
+
+### Status
+
+Experimental
+
+### Syntax
+
+`call ` [[stdlib_sparse_spmm(module):spmm_prepare(interface)]] `(a,b,c,plan [,stat])`
+
+### Description
+
+Public symbolic construction for same-type sparse factors. It allocates the
+structural product `c` and the workspace `plan`, and sets all result values
+to zero. No floating-point products are evaluated. Existing `c` remains
+unchanged on invalid input; an unsuccessful preparation leaves `plan`
+unprepared. Preparation may allocate or replace buffers.
+
+The arguments `a`, `b`, `c` and `stat` have the meanings described above;
+`plan` is a required `intent(out)` argument. The plan depends on stored
+indices, shapes and storage metadata, but not on numeric values or kind.
+
+## `spmm_kernel` - Reuse a prepared sparse product
+
+### Status
+
+Experimental
+
+### Syntax
+
+`call ` [[stdlib_sparse_spmm(module):spmm_kernel(interface)]] `(a,b,c,plan [,alpha,stat])`
+
+### Description
+
+Public numeric-only kernel for a target constructed by `spmm_prepare`.
+It validates the stored input and target structure before changing `c`,
+then recomputes only values using the plan's existing workspace. It never
+rebuilds indices or allocates result/work arrays. Numeric zeros, including
+`alpha=0`, preserve the prepared structure. The plan may be reused for
+another result object with exactly the same layout, and for another numeric
+kind when all three factors/results have that same kind.
+
+The required `plan` is `intent(inout)`; `alpha` defaults to 1. Other
+arguments and error statuses have the meanings described above.
+
+### Examples
+
+{!example/linalg/example_sparse_spmm.f90!}
+
+The complex example prepares and reuses a same-format product:
+
+{!example/linalg/example_sparse_spmm_complex.f90!}
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ## `spmv_kernel` - Non-object-oriented sparse matrix-vector product
 
 ### Status
