@@ -171,8 +171,8 @@ contains
             if (allocated(error)) exit check_loaded
         end block check_loaded
 
-        call libm%close(err)
-        if (allocated(error)) return
+        call libm%close(err) ! library has to be closed before allowing a return
+        if (allocated(error)) return ! check for an error hanging from within the block "check_loaded"
 
         call check(error, err%ok() .and. .not. libm%is_loaded(), "unloading: "//err%print())
         if (allocated(error)) return
