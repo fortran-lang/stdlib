@@ -105,7 +105,7 @@ Experimental
 
 ### Description
 
-Returns the file name a library would have on the current platform, e.g. `fft` becomes
+Returns the file name that a library would have on the current platform, e.g. `fft` becomes
 `libfft.so` on Linux, `libfft.dylib` on macOS and `fft.dll` on Windows. A name that
 already starts with `lib` is not decorated twice.
 
