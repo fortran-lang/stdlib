@@ -1,6 +1,6 @@
 module test_string_to_number
     use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
-    use stdlib_str2num, only: to_num
+    use stdlib_str2num, only: to_num, to_num_base
     use testdrive, only : new_unittest, unittest_type, error_type, check
     implicit none
     
@@ -13,7 +13,8 @@ contains
 
         testsuite = [ &
             new_unittest("to_sp", test_to_sp), &
-            new_unittest("to_dp", test_to_dp) &
+            new_unittest("to_dp", test_to_dp), &
+            new_unittest("to_num_base", test_to_num_base) &
             , new_unittest("to_int8", test_to_int8) &
             , new_unittest("to_int16", test_to_int16) &
             , new_unittest("to_int32", test_to_int32) &
@@ -508,7 +509,24 @@ contains
             end if
         end function
     end subroutine
-    
+
+    subroutine test_to_num_base(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer(int32) :: value
+        integer(int8) :: position, status
+
+        call to_num_base(" 123 rest", value, position, status)
+        call check(error, value == 123_int32)
+        if (allocated(error)) return
+        call check(error, position == 5_int8)
+        if (allocated(error)) return
+        call check(error, status == 0_int8)
+        if (allocated(error)) return
+
+        call to_num_base("2147483648", value, position, status)
+        call check(error, status /= 0_int8)
+    end subroutine
+
 end module test_string_to_number
 
 program tester
