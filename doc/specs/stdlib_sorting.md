@@ -498,10 +498,8 @@ different on return
 
 Sorting a rank one array with `sort_adjoint`:
 
-```Fortran
 ```{literalinclude} ../../example/sorting/example_sort_adjoint.f90
 :language: fortran
-```
 ```
 
 #### `sort_index` - creates an array of sorting indices for an input array, while also sorting the array.
@@ -579,10 +577,8 @@ different on return
 
 Sorting a rank one array with `sort_index`:
 
-```Fortran
 ```{literalinclude} ../../example/sorting/example_sort_index.f90
 :language: fortran
-```
 ```
 
 Sorting a related rank one array:
@@ -660,7 +656,7 @@ Returns the distinct elements of the input array in `output`.
 
 ##### Syntax
 
-`call ` [[stdlib_sorting(module):unique(interface)]] `( array, output[, sorted_output, tolerance] )`
+`call unique ( array, output[, sorted_output, tolerance] )`
 
 ##### Class
 
@@ -699,8 +695,8 @@ sufficiently portable for these kinds.
 
 ##### Example
 
-```Fortran
-{!example/sorting/example_unique.f90!}
+```{literalinclude} ../../example/sorting/example_unique.f90
+:language: fortran
 ```
 
 
