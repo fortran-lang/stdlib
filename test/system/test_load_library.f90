@@ -168,6 +168,7 @@ contains
             ! Loading into a handle that is already in use is a programming error
             call libm%open(name, err=err)
             call check(error, err%error(), "opening an already loaded handle must fail")
+            if (allocated(error)) exit check_loaded
         end block check_loaded
 
         call libm%close(err)
