@@ -488,27 +488,24 @@ module stdlib_sorting
 !! distinct elements of a rank-1 array. The result may either preserve the
 !! order of first occurrence or be returned in sorted order.
 !!
-!! Its use has the syntax:
-!!     call unique(array, output[, sorted_output, tolerance] )
+!! Its use has the syntax `call unique(array, output[, sorted_output, tolerance])`.
 !!
-!! with the arguments:
-!! * array: the rank-1 input array. It is an `intent(in)` argument of any
-!!   supported kind of the types `integer`, `real`, `character`, `string_type`
-!!   and `complex`.
+!! The `array` argument is the rank-1 input array. It is an `intent(in)`
+!! argument of any supported kind of the types `integer`, `real`, `character`,
+!! `string_type`, and `complex`.
 !!
-!! * sorted_output (optional): a scalar of type default logical. It is an
-!!   `intent(in)` argument. If `.true.`, the returned array contains the
-!!   unique elements sorted in increasing order. Otherwise, the unique
-!!   elements are returned in the order of their first appearance in
-!!   `array`. `SORTED_OUTPUT` is `.false.` by default. This argument is
-!!   not available for complex arrays for which only the unsorted implementation
-!!   is provided.
+!! The optional `sorted_output` argument is a scalar of default logical type.
+!! It is an `intent(in)` argument. If `.true.`, the returned array contains
+!! the unique elements sorted in increasing order. Otherwise, the unique
+!! elements are returned in the order of their first appearance in `array`.
+!! `sorted_output` is `.false.` by default. This argument is not available
+!! for complex arrays, for which only the unsorted implementation is provided.
 !!
-!! * `tolerance` (optional): It is an `intent(in)` argument available only
-!!    for real arrays. When `sorted_output` is `.true.`, two values
-!!    in sorted order whose absolute difference is less than or equal to
-!!    `tolerance` are considered equal. If omitted, `tolerance` defaults
-!!    to zero.
+!! The optional `tolerance` argument is an `intent(in)` argument available
+!! only for real arrays. When `sorted_output` is `.true.`, two values in
+!! sorted order whose absolute difference is less than or equal to
+!! `tolerance` are considered equal. If omitted, `tolerance` defaults to
+!! zero.
 !!
 !! The result is an allocatable rank-1 array of the same type as `array`
 !! containing one copy of each distinct element.
@@ -518,7 +515,7 @@ module stdlib_sorting
 !! hashing is performed on the underlying binary representation, which 
 !! is not sufficiently portable for these kinds.
 !!
-!!#### Examples
+!!## Examples
 !!
 !! Remove duplicates while preserving the original order:
 !!

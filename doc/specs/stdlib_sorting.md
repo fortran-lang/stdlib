@@ -656,7 +656,7 @@ Returns the distinct elements of the input array in `output`.
 
 ##### Syntax
 
-`call unique ( array, output[, sorted_output, tolerance] )`
+`call ` `unique` `( array, output[, sorted_output, tolerance] )`
 
 ##### Class
 
