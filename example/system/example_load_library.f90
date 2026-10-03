@@ -39,7 +39,7 @@ program example_load_library
     if (err%error()) then
         ! No C runtime under this name here: nothing else to demonstrate
         print *, err%print()
-        stop
+        error stop
     end if
     print *, "loaded                : ", libm%filename()
 
