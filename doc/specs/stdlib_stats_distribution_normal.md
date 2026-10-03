@@ -1,10 +1,9 @@
----
-title: stats_distribution_normal
----
-
 # Statistical Distributions -- Normal Distribution Module
 
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## `rvs_normal` - normal distribution random variates
 
@@ -25,14 +24,15 @@ With three arguments, the function returns a rank-1 array of normal distributed 
 
 With one or two arguments where the first is `array_size`, the function returns a rank-1 array of standard normal distributed random variates \(N(0,1)\). The `mold` argument determines the output type and kind; it is optional only for `real(dp)` (and defaults to `real(dp)` when omitted), but required for all other types.
 
-@note
+```{note}
 The algorithm used for generating exponential random variates is fundamentally limited to double precision.[^1]
+```
 
 ### Syntax
 
-`result = ` [[stdlib_stats_distribution_normal(module):rvs_normal(interface)]] `([loc, scale] [[, array_size]])`
+`result = ` `rvs_normal` `([loc, scale] `, array_size`)`
 
-`result = ` [[stdlib_stats_distribution_normal(module):rvs_normal(interface)]] `(array_size [, mold])`
+`result = ` `rvs_normal` `(array_size [, mold])`
 
 ### Class
 
@@ -56,8 +56,8 @@ The result is a scalar or rank-1 array, with a size of `array_size`, and the sam
 
 ### Example
 
-```fortran
-{!example/stats_distribution_normal/example_normal_rvs.f90!}
+```{literalinclude} ../../example/stats_distribution_normal/example_normal_rvs.f90
+:language: fortran
 ```
 
 ## `pdf_normal` - normal distribution probability density function
@@ -78,7 +78,7 @@ $$f(x + y \mathit{i}) = f(x) f(y) = \frac{1}{2\pi\sigma_{x}\sigma_{y}} \exp{\lef
 
 ### Syntax
 
-`result = ` [[stdlib_stats_distribution_normal(module):pdf_normal(interface)]] `(x, loc, scale)`
+`result = ` `pdf_normal` `(x, loc, scale)`
 
 ### Class
 
@@ -100,8 +100,8 @@ The result is a scalar or an array, with a shape conformable to the arguments, a
 
 ### Example
 
-```fortran
-{!example/stats_distribution_normal/example_normal_pdf.f90!}
+```{literalinclude} ../../example/stats_distribution_normal/example_normal_pdf.f90
+:language: fortran
 ```
 
 ## `cdf_normal` - normal distribution cumulative distribution function
@@ -124,7 +124,7 @@ $$ F(x+y\mathit{i})=F(x)F(y)=\frac{1}{4} \
 
 ### Syntax
 
-`result = ` [[stdlib_stats_distribution_normal(module):cdf_normal(interface)]] `(x, loc, scale)`
+`result = ` `cdf_normal` `(x, loc, scale)`
 
 ### Class
 
@@ -146,8 +146,8 @@ The result is a scalar or an array, with a shape conformable to the arguments, a
 
 ### Example
 
-```fortran
-{!example/stats_distribution_normal/example_normal_cdf.f90!}
+```{literalinclude} ../../example/stats_distribution_normal/example_normal_cdf.f90
+:language: fortran
 ```
 
 [^1]: Marsaglia, George, and Wai Wan Tsang. "The ziggurat method for generating random variables." _Journal of statistical software_ 5 (2000): 1-7.

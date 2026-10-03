@@ -1,10 +1,9 @@
----
-title: specialfunctions_activations
----
-
 # Special functions - Neural Networks activations and their gradients
 
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## `Gaussian` - Gaussian function
 
@@ -19,7 +18,7 @@ $$f(x)=\exp(-x^2)$$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):gaussian(interface)]] ` (x)`
+`result = ` `gaussian` ` (x)`
 
 ### Class
 
@@ -34,8 +33,8 @@ Elemental function
 The function returns a value with the same type and kind as input argument.
 
 ### Example
-```fortran
-{!example/specialfunctions_activations/example_gaussian.f90!}
+```{literalinclude} ../../example/specialfunctions_activations/example_gaussian.f90
+:language: fortran
 ```
 
 ## `Gaussian_grad` - Gradient of the Gaussian function
@@ -51,7 +50,7 @@ $$f(x)=-2 * x * \exp( - x ^ 2)$$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):gaussian_grad(interface)]] ` (x)`
+`result = ` `gaussian_grad` ` (x)`
 
 ### Class
 
@@ -84,7 +83,7 @@ $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):elu(interface)]] ` (x,a)`
+`result = ` `elu` ` (x,a)`
 
 ### Class
 
@@ -100,8 +99,8 @@ Elemental function
 The function returns a value with the same type and kind as input argument.
 
 ### Example
-```fortran
-{!example/specialfunctions_activations/example_elu.f90!}
+```{literalinclude} ../../example/specialfunctions_activations/example_elu.f90
+:language: fortran
 ```
 
 ## `Elu_grad` - Gradient of the Exponential Linear Unit function
@@ -123,7 +122,7 @@ $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):elu_grad(interface)]] ` (x,a)`
+`result = ` `elu_grad` ` (x,a)`
 
 ### Class
 
@@ -151,7 +150,7 @@ $$f(x) = \text{max}(0,x)$$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):relu(interface)]] ` (x)`
+`result = ` `relu` ` (x)`
 
 ### Class
 
@@ -166,8 +165,8 @@ Elemental function
 The function returns a value with the same type and kind as input argument.
 
 ### Example
-```fortran
-{!example/specialfunctions_activations/example_relu.f90!}
+```{literalinclude} ../../example/specialfunctions_activations/example_relu.f90
+:language: fortran
 ```
 
 ## `Relu_grad` - Gradient of the Rectified Linear Unit function
@@ -189,7 +188,7 @@ $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):relu_grad(interface)]] ` (x)`
+`result = ` `relu_grad` ` (x)`
 
 ### Class
 
@@ -222,7 +221,7 @@ $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):leaky_relu(interface)]] ` (x,a)`
+`result = ` `leaky_relu` ` (x,a)`
 
 ### Class
 
@@ -238,8 +237,8 @@ Elemental function
 The function returns a value with the same type and kind as input argument.
 
 ### Example
-```fortran
-{!example/specialfunctions_activations/example_leaky_relu.f90!}
+```{literalinclude} ../../example/specialfunctions_activations/example_leaky_relu.f90
+:language: fortran
 ```
 
 ## `leaky_relu_grad` - Gradient of the leaky Rectified Linear Unit function
@@ -261,7 +260,7 @@ $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):leaky_relu_grad(interface)]] ` (x,a)`
+`result = ` `leaky_relu_grad` ` (x,a)`
 
 ### Class
 
@@ -289,7 +288,7 @@ $$f(x) = \frac{1}{2} x ( 1 + \text{erf}(\frac{x}{\sqrt{2}}) ) $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):gelu(interface)]] ` (x)`
+`result = ` `gelu` ` (x)`
 
 ### Class
 
@@ -304,8 +303,8 @@ Elemental function
 The function returns a value with the same type and kind as input argument.
 
 ### Example
-```fortran
-{!example/specialfunctions_activations/example_gelu.f90!}
+```{literalinclude} ../../example/specialfunctions_activations/example_gelu.f90
+:language: fortran
 ```
 
 ## `Gelu_grad` - Gradient of the Gaussian Error Linear Unit function
@@ -323,7 +322,7 @@ $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):gelu_grad(interface)]] ` (x)`
+`result = ` `gelu_grad` ` (x)`
 
 ### Class
 
@@ -350,7 +349,7 @@ $$f(x) = \frac{1}{2} x ( 1 + \text{ferf}(\frac{x}{\sqrt{2}}) ) $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):gelu_approx(interface)]] ` (x)`
+`result = ` `gelu_approx` ` (x)`
 
 ### Class
 
@@ -379,7 +378,7 @@ $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):gelu_approx_grad(interface)]] ` (x)`
+`result = ` `gelu_approx_grad` ` (x)`
 
 ### Class
 
@@ -414,7 +413,7 @@ $$scale = 1.0507009873554804934193349852946$$ and $$\alpha = 1.67326324235437728
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):selu(interface)]] ` (x)`
+`result = ` `selu` ` (x)`
 
 ### Class
 
@@ -429,8 +428,8 @@ Elemental function
 The function returns a value with the same type and kind as input argument.
 
 ### Example
-```fortran
-{!example/specialfunctions_activations/example_selu.f90!}
+```{literalinclude} ../../example/specialfunctions_activations/example_selu.f90
+:language: fortran
 ```
 
 ## `selu_grad` - Gradient of the Scaled Exponential Linear Unit function
@@ -452,7 +451,7 @@ $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):selu_grad(interface)]] ` (x)`
+`result = ` `selu_grad` ` (x)`
 
 ### Class
 
@@ -479,7 +478,7 @@ $$f(x) = \frac{1}{1+\exp(-x)} $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):sigmoid(interface)]] ` (x)`
+`result = ` `sigmoid` ` (x)`
 
 ### Class
 
@@ -506,7 +505,7 @@ $$f(x) = \frac{\exp(x)}{(1+\exp(x))^2} $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):sigmoid_grad(interface)]] ` (x)`
+`result = ` `sigmoid_grad` ` (x)`
 
 ### Class
 
@@ -533,7 +532,7 @@ $$f(x) = \frac{x}{1+\exp(-x)} $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):silu(interface)]] ` (x)`
+`result = ` `silu` ` (x)`
 
 ### Class
 
@@ -548,8 +547,8 @@ Elemental function
 The function returns a value with the same type and kind as input argument.
 
 ### Example
-```fortran
-{!example/specialfunctions_activations/example_silu.f90!}
+```{literalinclude} ../../example/specialfunctions_activations/example_silu.f90
+:language: fortran
 ```
 
 ## `Silu_grad` - Gradient of the Sigmoid Linear Unit function
@@ -565,7 +564,7 @@ $$f(x) = \frac{\exp(x)*(x+(1+\exp(x))^2)}{(1+\exp(x))^2} $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):silu_grad(interface)]] ` (x)`
+`result = ` `silu_grad` ` (x)`
 
 ### Class
 
@@ -598,7 +597,7 @@ $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):step(interface)]] ` (x)`
+`result = ` `step` ` (x)`
 
 ### Class
 
@@ -613,8 +612,8 @@ Elemental function
 The function returns a value with the same type and kind as input argument.
 
 ### Example
-```fortran
-{!example/specialfunctions_activations/example_step.f90!}
+```{literalinclude} ../../example/specialfunctions_activations/example_step.f90
+:language: fortran
 ```
 
 ## `step_grad` - Gradient of the Step function
@@ -630,7 +629,7 @@ $$f(x) = 0 $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):step_grad(interface)]] ` (x)`
+`result = ` `step_grad` ` (x)`
 
 ### Class
 
@@ -657,7 +656,7 @@ $$f(x) = \frac{\exp(x)-\text{max}(x_j)}{\sum_j{\exp(x)-\text{max}(x_j)}}$$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):softmax(interface)]] ` (x,dim)`
+`result = ` `softmax` ` (x,dim)`
 
 ### Class
 
@@ -673,8 +672,8 @@ Pure function for ranks 1 to 4.
 The function returns an array with the same rank and kind as the input argument `x`.
 
 ### Example
-```fortran
-{!example/specialfunctions_activations/example_softmax.f90!}
+```{literalinclude} ../../example/specialfunctions_activations/example_softmax.f90
+:language: fortran
 ```
 
 ## `softmax_grad` - Gradient of the softmax function
@@ -690,7 +689,7 @@ $$f(x,dim) = \text{softmax}(x,dim)*(1-\text{softmax}(x,dim)) $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):softmax_grad(interface)]] ` (x,dim)`
+`result = ` `softmax_grad` ` (x,dim)`
 
 ### Class
 
@@ -718,7 +717,7 @@ $$f(x) = \log(\exp(x)+1)$$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):softplus(interface)]] ` (x)`
+`result = ` `softplus` ` (x)`
 
 ### Class
 
@@ -733,8 +732,8 @@ Elemental function
 The function returns a value with the same type and kind as input argument.
 
 ### Example
-```fortran
-{!example/specialfunctions_activations/example_softplus.f90!}
+```{literalinclude} ../../example/specialfunctions_activations/example_softplus.f90
+:language: fortran
 ```
 
 ## `softplus_grad` - Gradient of the softplus function
@@ -750,7 +749,7 @@ $$f(x) = \frac{\exp(x)}{\exp(x)+1} $$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):softplus_grad(interface)]] ` (x)`
+`result = ` `softplus_grad` ` (x)`
 
 ### Class
 
@@ -777,7 +776,7 @@ $$f(x)=\tanh(x)$$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):fast_tanh(interface)]] ` (x)`
+`result = ` `fast_tanh` ` (x)`
 
 ### Class
 
@@ -804,7 +803,7 @@ $$f(x)=1 - \fast_tanh(x)^2$$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):fast_tanh_grad(interface)]] ` (x)`
+`result = ` `fast_tanh_grad` ` (x)`
 
 ### Class
 
@@ -831,7 +830,7 @@ $$f(x)=\erf(x)$$
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions(module):fast_erf(interface)]] ` (x)`
+`result = ` `fast_erf` ` (x)`
 
 ### Class
 

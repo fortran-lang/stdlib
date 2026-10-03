@@ -1,13 +1,12 @@
----
-title: system
----
-
 # System and sub-processing module
 
 The `stdlib_system` module provides interface for interacting with external processes, enabling the execution 
 and monitoring of system commands or applications directly from Fortran. 
 
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## `run` - Execute an external process synchronously
 
@@ -24,7 +23,7 @@ Additionally, a callback function can be specified to execute upon process compl
 
 ### Syntax
 
-`process = ` [[stdlib_system(module):run(interface)]] `(args [, stdin] [, want_stdout] [, want_stderr] [, callback] [, payload])`
+`process = ` `run` `(args [, stdin] [, want_stdout] [, want_stderr] [, callback] [, payload])`
 
 ### Arguments
 
@@ -69,7 +68,7 @@ Additionally, a callback function can be specified to execute upon process compl
 
 ### Syntax
 
-`process = ` [[stdlib_system(module):runasync(interface)]] `(args [, stdin] [, want_stdout] [, want_stderr] [, callback] [, payload])`
+`process = ` `runasync` `(args [, stdin] [, want_stdout] [, want_stderr] [, callback] [, payload])`
 
 ### Arguments
 
@@ -91,8 +90,8 @@ Returns an object of type `process_type` that contains information about the sta
 
 ### Example
 
-```fortran
-{!example/system/example_process_1.f90!}
+```{literalinclude} ../../example/system/example_process_1.f90
+:language: fortran
 ```
 
 ## `is_running` - Check if a process is still running
@@ -108,7 +107,7 @@ This is useful for monitoring the status of asynchronous processes created with 
 
 ### Syntax
 
-`status = ` [[stdlib_system(module):is_running(interface)]] `(process)`
+`status = ` `is_running` `(process)`
 
 ### Arguments
 
@@ -122,8 +121,8 @@ After a call to `is_running`, the `type(process_type)` structure is also updated
 
 ### Example
 
-```fortran
-{!example/system/example_process_2.f90!}
+```{literalinclude} ../../example/system/example_process_2.f90
+:language: fortran
 ```
 
 ## `is_completed` - Check if a process has completed execution
@@ -139,7 +138,7 @@ This is useful for determining whether asynchronous processes created with the `
 
 ### Syntax
 
-`status = ` [[stdlib_system(module):is_completed(interface)]] `(process)`
+`status = ` `is_completed` `(process)`
 
 ### Arguments
 
@@ -155,8 +154,8 @@ After a call to `is_completed`, the `type(process_type)` structure is updated to
 
 ### Example
 
-```fortran
-{!example/system/example_process_1.f90!}
+```{literalinclude} ../../example/system/example_process_1.f90
+:language: fortran
 ```
 
 ## `elapsed` - Return process lifetime in seconds
@@ -174,7 +173,7 @@ The result is a real value representing the elapsed time in seconds, measured fr
 
 ### Syntax
 
-`delta_t = ` [[stdlib_system(module):elapsed(interface)]] `(process)`
+`delta_t = ` `elapsed` `(process)`
 
 ### Arguments
 
@@ -188,8 +187,8 @@ Otherwise, the total process duration from creation until completion is returned
 
 ### Example
 
-```fortran
-{!example/system/example_process_3.f90!}
+```{literalinclude} ../../example/system/example_process_3.f90
+:language: fortran
 ```
 
 ## `wait` - Wait until a running process is completed
@@ -212,7 +211,7 @@ in case of process hang or delay.
 
 ### Syntax
 
-`call ` [[stdlib_system(module):wait(interface)]] `(process [, max_wait_time])`
+`call ` `wait` `(process [, max_wait_time])`
 
 ### Arguments
 
@@ -224,8 +223,8 @@ If not provided, the subroutine will wait indefinitely until the process complet
 
 ### Example
 
-```fortran
-{!example/system/example_process_2.f90!}
+```{literalinclude} ../../example/system/example_process_2.f90
+:language: fortran
 ```
 
 ## `update` - Update the internal state of a process
@@ -243,7 +242,7 @@ This is especially useful for monitoring asynchronous processes and retrieving t
 
 ### Syntax
 
-`call ` [[stdlib_system(module):update(interface)]] `(process)`
+`call ` `update` `(process)`
 
 ### Arguments
 
@@ -252,8 +251,8 @@ This is an `intent(inout)` argument, and its internal state is updated on comple
 
 ### Example
 
-```fortran
-{!example/system/example_process_5.f90!}
+```{literalinclude} ../../example/system/example_process_5.f90
+:language: fortran
 ```
 
 ## `kill` - Terminate a running process
@@ -269,7 +268,7 @@ This interface is useful when a process needs to be forcefully stopped, for exam
 
 ### Syntax
 
-`call ` [[stdlib_system(module):kill(interface)]] `(process, success)`
+`call ` `kill` `(process, success)`
 
 ### Arguments
 
@@ -280,8 +279,8 @@ This is an `intent(inout)` argument, and on return is updated with the terminate
 
 ### Example
 
-```fortran
-{!example/system/example_process_4.f90!}
+```{literalinclude} ../../example/system/example_process_4.f90
+:language: fortran
 ```
 
 ## `sleep` - Pause execution for a specified time in milliseconds
@@ -298,7 +297,7 @@ It ensures that the requested sleep duration is honored on both Windows and Unix
 
 ### Syntax
 
-`call ` [[stdlib_system(module):sleep(interface)]] `(millisec)`
+`call ` `sleep` `(millisec)`
 
 ### Arguments
 
@@ -306,8 +305,8 @@ It ensures that the requested sleep duration is honored on both Windows and Unix
 
 ### Example
 
-```fortran
-{!example/system/example_sleep.f90!}
+```{literalinclude} ../../example/system/example_sleep.f90
+:language: fortran
 ```
 
 ## `is_windows` - Check if the system is running on Windows
@@ -324,7 +323,7 @@ This function is highly efficient and works during the compilation phase, avoidi
 
 ### Syntax
 
-`result = ` [[stdlib_system(module):is_windows(interface)]] `()`
+`result = ` `is_windows` `()`
 
 ### Return Value
 
@@ -332,8 +331,8 @@ Returns a `logical` flag: `.true.` if the system is Windows, or `.false.` otherw
 
 ### Example
 
-```fortran
-{!example/system/example_process_1.f90!}
+```{literalinclude} ../../example/system/example_process_1.f90
+:language: fortran
 ```
 
 ## `get_runtime_os` - Determine the OS type at runtime
@@ -359,7 +358,7 @@ If the OS cannot be identified, the function returns `OS_UNKNOWN`.
 
 ### Syntax
 
-`os = ` [[stdlib_system(module):get_runtime_os(function)]] `()`
+`os = ` `get_runtime_os` `()`
 
 ### Class
 
@@ -375,8 +374,8 @@ Returns one of the `integer` `OS_*` parameters representing the OS type, from th
 
 ### Example
 
-```fortran
-{!example/system/example_get_runtime_os.f90!}
+```{literalinclude} ../../example/system/example_get_runtime_os.f90
+:language: fortran
 ```
 
 ---
@@ -396,7 +395,7 @@ This caching mechanism ensures negligible overhead for repeated calls, unlike `g
 
 ### Syntax
 
-`os = ` [[stdlib_system(module):OS_TYPE(function)]]`()`
+`os = ` `OS_TYPE``()`
 
 ### Class
 
@@ -412,8 +411,8 @@ Returns one of the `integer` `OS_*` parameters representing the OS type, from th
 
 ### Example
 
-```fortran
-{!example/system/example_os_type.f90!}
+```{literalinclude} ../../example/system/example_os_type.f90
+:language: fortran
 ```
 
 ---
@@ -442,7 +441,7 @@ An arbitrary list of `integer`, `real`, `complex`, `character` or `string_type` 
 
 ### Behavior
 
-Formats all the arguments into a nice error message, utilizing the constructor of [[stdlib_system(module):state_type(type)]]
+Formats all the arguments into a nice error message, utilizing the constructor of `state_type`
 
 ### Return values
 
@@ -450,8 +449,8 @@ Formats all the arguments into a nice error message, utilizing the constructor o
 
 ### Example
 
-```fortran
-{!example/system/example_fs_error.f90!}
+```{literalinclude} ../../example/system/example_fs_error.f90
+:language: fortran
 ```
 
 ---
@@ -483,7 +482,7 @@ An arbitrary list of `integer`, `real`, `complex`, `character` or `string_type` 
 
 ### Behavior
 
-Formats all the arguments into a nice error message, utilizing the constructor of [[stdlib_system(module):state_type(type)]]
+Formats all the arguments into a nice error message, utilizing the constructor of `state_type`
 
 ### Return values
 
@@ -491,8 +490,8 @@ Formats all the arguments into a nice error message, utilizing the constructor o
 
 ### Example
 
-```fortran
-{!example/system/example_fs_error.f90!}
+```{literalinclude} ../../example/system/example_fs_error.f90
+:language: fortran
 ```
 
 ---
@@ -511,7 +510,7 @@ It is designed to work across multiple platforms. On Windows, paths with both fo
 
 ### Syntax
 
-`result = ` [[stdlib_system(module):is_file(function)]]`(path)`
+`result = ` `is_file``(path)`
 
 ### Class
 
@@ -530,8 +529,8 @@ The function returns a `logical` value:
 
 ### Example
 
-```fortran
-{!example/system/example_is_file.f90!}
+```{literalinclude} ../../example/system/example_is_file.f90
+:language: fortran
 ```
 
 ---
@@ -550,7 +549,7 @@ It is designed to work across multiple platforms. On Windows, paths with both fo
 
 ### Syntax
 
-`result = ` [[stdlib_system(module):is_directory(function)]]`(path)`
+`result = ` `is_directory``(path)`
 
 ### Class
 
@@ -569,8 +568,8 @@ The function returns a `logical` value:
 
 ### Example
 
-```fortran
-{!example/system/example_is_directory.f90!}
+```{literalinclude} ../../example/system/example_is_directory.f90
+:language: fortran
 ```
 
 ---
@@ -584,13 +583,13 @@ Experimental
 ### Description
 
 This function checks if a specified file system path is a symbolic link to either a file or a directory.
-Use [[stdlib_system(module):is_file(function)]] and [[stdlib_system(module):is_directory(function)]] functions
+Use `is_file` and `is_directory` functions
 to check further if the link is to a file or a directory respectively.
 It is designed to work across multiple platforms. On Windows, paths with both forward `/` and backward `\` slashes are accepted.
 
 ### Syntax
 
-`result = ` [[stdlib_system(module):is_symlink(function)]]`(path)`
+`result = ` `is_symlink``(path)`
 
 ### Class
 
@@ -609,8 +608,8 @@ The function returns a `logical` value:
 
 ### Example
 
-```fortran
-{!example/system/example_is_symlink.f90!}
+```{literalinclude} ../../example/system/example_is_symlink.f90
+:language: fortran
 ```
 
 ---
@@ -628,7 +627,7 @@ It is designed to work across multiple platforms. On Windows, paths with both fo
 
 ### Syntax
 
-`call [[stdlib_system(module):make_directory(subroutine)]] (path [,err])`
+`call `make_directory` (path [,err])`
 
 ### Class
 
@@ -646,8 +645,8 @@ Subroutine
 
 ### Example
 
-```fortran
-{!example/system/example_make_directory.f90!}
+```{literalinclude} ../../example/system/example_make_directory.f90
+:language: fortran
 ```
 
 ---
@@ -665,7 +664,7 @@ It also creates all the necessary parent directories in the path if they do not 
 
 ### Syntax
 
-`call [[stdlib_system(module):make_directory_all(subroutine)]] (path [,err])`
+`call `make_directory_all` (path [,err])`
 
 ### Class
 
@@ -683,8 +682,8 @@ Subroutine
 
 ### Example
 
-```fortran
-{!example/system/example_make_directory.f90!}
+```{literalinclude} ../../example/system/example_make_directory.f90
+:language: fortran
 ```
 
 ---
@@ -702,7 +701,7 @@ It is designed to work across multiple platforms. On Windows, paths with both fo
 
 ### Syntax
 
-`call [[stdlib_system(module):remove_directory(subroutine)]] (path, err)`
+`call `remove_directory` (path, err)`
 
 ### Class
 
@@ -720,8 +719,8 @@ Subroutine
 
 ### Example
 
-```fortran
-{!example/system/example_remove_directory.f90!}
+```{literalinclude} ../../example/system/example_remove_directory.f90
+:language: fortran
 ```
 
 ---
@@ -739,7 +738,7 @@ It is designed to work across multiple platforms. On Windows, paths with both fo
 
 ### Syntax
 
-`call [[stdlib_system(module):get_cwd(subroutine)]] (cwd [, err])`
+`call `get_cwd` (cwd [, err])`
 
 ### Class
 
@@ -757,8 +756,8 @@ Subroutine
 
 ### Example
 
-```fortran
-{!example/system/example_cwd.f90!}
+```{literalinclude} ../../example/system/example_cwd.f90
+:language: fortran
 ```
 
 ---
@@ -776,7 +775,7 @@ It is designed to work across multiple platforms. On Windows, paths with both fo
 
 ### Syntax
 
-`call [[stdlib_system(module):set_cwd(subroutine)]] (path [, err])`
+`call `set_cwd` (path [, err])`
 
 ### Class
 
@@ -794,8 +793,8 @@ Subroutine
 
 ### Example
 
-```fortran
-{!example/system/example_cwd.f90!}
+```{literalinclude} ../../example/system/example_cwd.f90
+:language: fortran
 ```
 
 ---
@@ -820,7 +819,7 @@ Any encountered errors are handled using `state_type`.
 
 ### Syntax
 
-`fs_type = [[stdlib_system(module):exists(function)]] (path [, err])`
+`fs_type = `exists` (path [, err])`
 
 ### Class
 
@@ -842,8 +841,8 @@ Function
 
 `err`(optional): It is an optional state return flag. If not requested and an error occurs, an `FS_ERROR` will trigger an error stop.
 
-```fortran
-{!example/system/example_exists.f90!}
+```{literalinclude} ../../example/system/example_exists.f90
+:language: fortran
 ```
 
 ---
@@ -863,7 +862,7 @@ It reads as an empty file. The null device's path varies by operating system:
 
 ### Syntax
 
-`path = ` [[stdlib_system(module):null_device(function)]]`()`
+`path = ` `null_device``()`
 
 ### Class
 
@@ -880,8 +879,8 @@ None.
 
 ### Example
 
-```fortran
-{!example/system/example_null_device.f90!}
+```{literalinclude} ../../example/system/example_null_device.f90
+:language: fortran
 ```
 
 ---
@@ -900,7 +899,7 @@ The function provides an optional error-handling mechanism via the `state_type` 
 
 ### Syntax
 
-`call ` [[stdlib_system(module):delete_file(subroutine)]]` (path [, err])`
+`call ` `delete_file`` (path [, err])`
 
 ### Class
 Subroutine
@@ -923,8 +922,8 @@ The file is removed from the filesystem if the operation is successful. If the o
 
 ### Example
 
-```fortran
-{!example/system/example_delete_file.f90!}
+```{literalinclude} ../../example/system/example_delete_file.f90
+:language: fortran
 ```
 
 ---
@@ -942,9 +941,9 @@ i.e `\` for windows and `/` for others
 
 ### Syntax
 
-`res = ` [[stdlib_system(module):join_path(interface)]] ` (p1, p2)`
+`res = ` `join_path` ` (p1, p2)`
 
-`res = ` [[stdlib_system(module):join_path(interface)]] ` (p)`
+`res = ` `join_path` ` (p)`
 
 ### Class
 Pure function
@@ -987,8 +986,8 @@ The result is an `allocatable` character string or `type(string_type)`
 
 #### Example
 
-```fortran
-{!example/system/example_path_join.f90!}
+```{literalinclude} ../../example/system/example_path_join.f90
+:language: fortran
 ```
 
 ---
@@ -1006,7 +1005,7 @@ splitting it into most of the times a directory and a file name.
 
 ### Syntax
 
-`call `[[stdlib_system(module):split_path(interface)]]`(p, head, tail)`
+`call ``split_path``(p, head, tail)`
 
 ### Class
 Subroutine
@@ -1029,8 +1028,8 @@ The splitted path. `head` and `tail`.
 
 ### Example
 
-```fortran
-{!example/system/example_path_split_path.f90!}
+```{literalinclude} ../../example/system/example_path_split_path.f90
+:language: fortran
 ```
 
 ---
@@ -1047,7 +1046,7 @@ This function returns the last part of a path after removing trailing path separ
 
 ### Syntax
 
-`res = ` [[stdlib_system(module):base_name(interface)]]`(p)`
+`res = ` `base_name``(p)`
 
 ### Class
 Function
@@ -1058,7 +1057,7 @@ Function
 
 ### Behavior
 
-- The `tail` of `[[stdlib_system(module):split_path(interface)]]` is exactly what is returned. Same Behavior.
+- The `tail` of ``split_path`` is exactly what is returned. Same Behavior.
 
 ### Return values
 
@@ -1066,8 +1065,8 @@ A character string or `type(string_type)`.
 
 ### Example
 
-```fortran
-{!example/system/example_path_base_name.f90!}
+```{literalinclude} ../../example/system/example_path_base_name.f90
+:language: fortran
 ```
 
 ---
@@ -1084,7 +1083,7 @@ This function returns everything except the last part of a path.
 
 ### Syntax
 
-`res = ` [[stdlib_system(module):dir_name(interface)]]`(p)`
+`res = ` `dir_name``(p)`
 
 ### Class
 Function
@@ -1095,7 +1094,7 @@ Function
 
 ### Behavior
 
-- The `head` of `[[stdlib_system(module):split_path(interface)]]` is exactly what is returned. Same Behavior.
+- The `head` of ``split_path`` is exactly what is returned. Same Behavior.
 
 ### Return values
 
@@ -1103,6 +1102,6 @@ A character string or `type(string_type)`.
 
 ### Example
 
-```fortran
-{!example/system/example_path_dir_name.f90!}
+```{literalinclude} ../../example/system/example_path_dir_name.f90
+:language: fortran
 ```

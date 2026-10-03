@@ -1,10 +1,9 @@
----
-title: stats
----
-
 # Descriptive statistics
 
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## `corr` - Pearson correlation of array elements
 
@@ -24,7 +23,7 @@ The Pearson correlation between two rows (or columns), say `x` and `y`, of `arra
 
 ### Syntax
 
-`result = ` [[stdlib_stats(module):corr(interface)]] `(array, dim [, mask])`
+`result = ` `corr` `(array, dim [, mask])`
 
 ### Class
 
@@ -51,8 +50,8 @@ If `mask` is specified, the result is the Pearson correlation of all elements of
 
 ### Example
 
-```fortran
-{!example/stats/example_corr.f90!}
+```{literalinclude} ../../example/stats/example_corr.f90
+:language: fortran
 ```
 
 ## `cov` - covariance of array elements
@@ -78,7 +77,7 @@ The scaling can be changed with the logical argument `corrected`. If `corrected`
 
 ### Syntax
 
-`result = ` [[stdlib_stats(module):cov(interface)]] `(array, dim [, mask [, corrected]])`
+`result = ` `cov` `(array, dim [, mask [, corrected]])`
 
 ### Class
 
@@ -107,8 +106,8 @@ If `mask` is specified, the result is the covariance of all elements of `array` 
 
 ### Example
 
-```fortran
-{!example/stats/example_cov.f90!}
+```{literalinclude} ../../example/stats/example_cov.f90
+:language: fortran
 ```
 
 ## `mean` - mean of array elements
@@ -123,9 +122,9 @@ Returns the mean of all the elements of `array`, or of the elements of `array` a
 
 ### Syntax
 
-`result = ` [[stdlib_stats(module):mean(interface)]] `(array [, mask])`
+`result = ` `mean` `(array [, mask])`
 
-`result = ` [[stdlib_stats(module):mean(interface)]] `(array, dim [, mask])`
+`result = ` `mean` `(array, dim [, mask])`
 
 ### Class
 
@@ -150,8 +149,8 @@ If `mask` is specified, the result is the mean of all elements of `array` corres
 
 ### Example
 
-```fortran
-{!example/stats/example_mean.f90!}
+```{literalinclude} ../../example/stats/example_mean.f90
+:language: fortran
 ```
 
 ## `median` - median of array elements
@@ -181,14 +180,14 @@ median(array) = mean( array_sorted( floor( (n + 1) / 2.):floor( (n + 1) / 2.) + 
 ```
 
 The current implementation relies on a selection algorithm applied on a copy of
-the whole array, using the subroutine [[stdlib_selection(module):select(interface)]]
-provided by the [[stdlib_selection(module)]] module.
+the whole array, using the subroutine `select`
+provided by the `stdlib_selection` module.
 
 ### Syntax
 
-`result = ` [[stdlib_stats(module):median(interface)]] `(array [, mask])`
+`result = ` `median` `(array [, mask])`
 
-`result = ` [[stdlib_stats(module):median(interface)]] `(array, dim [, mask])`
+`result = ` `median` `(array, dim [, mask])`
 
 ### Class
 
@@ -215,8 +214,8 @@ If `mask` is specified, the result is the median of all elements of `array` corr
 
 ### Example
 
-```fortran
-{!example/stats/example_median.f90!}
+```{literalinclude} ../../example/stats/example_median.f90
+:language: fortran
 ```
 
 ## `moment` - central moments of array elements
@@ -248,9 +247,9 @@ The _k_-th order moment about `center` is defined as :
 
 ### Syntax
 
-`result = ` [[stdlib_stats(module):moment(interface)]] `(array, order [, center [, mask]])`
+`result = ` `moment` `(array, order [, center [, mask]])`
 
-`result = ` [[stdlib_stats(module):moment(interface)]] `(array, order, dim [, center [, mask]])`
+`result = ` `moment` `(array, order, dim [, center [, mask]])`
 
 ### Class
 
@@ -279,8 +278,8 @@ If `mask` is specified, the result is the _k_-th  (central) moment of all elemen
 
 ### Example
 
-```fortran
-{!example/stats/example_moment.f90!}
+```{literalinclude} ../../example/stats/example_moment.f90
+:language: fortran
 ```
 
 ## `pca` - Principal Component Analysis
@@ -301,7 +300,7 @@ Two methods are supported:
 
 ### Syntax
 
-`call ` [[stdlib_stats(module):pca(interface)]] `(x, components, singular_values [, x_mean, method, overwrite_x, err])`
+`call ` `pca` `(x, components, singular_values [, x_mean, method, overwrite_x, err])`
 
 ### Class
 
@@ -325,8 +324,8 @@ Generic subroutine
 
 ### Example
 
-```fortran
-{!example/stats/example_pca.f90!}
+```{literalinclude} ../../example/stats/example_pca.f90
+:language: fortran
 ```
 
 ## `pca_transform` - Projects data into principal component space
@@ -342,7 +341,7 @@ The transformation is defined as `x_transformed = (x - x_mean) * components^T`.
 
 ### Syntax
 
-`call ` [[stdlib_stats(module):pca_transform(interface)]] `(x, components, x_transformed [, x_mean])`
+`call ` `pca_transform` `(x, components, x_transformed [, x_mean])`
 
 ### Class
 
@@ -371,7 +370,7 @@ The reconstruction is defined as `x_reconstructed = x_reduced * components + x_m
 
 ### Syntax
 
-`call ` [[stdlib_stats(module):pca_inverse_transform(interface)]] `(x_reduced, components, x_reconstructed [, x_mean])`
+`call ` `pca_inverse_transform` `(x_reduced, components, x_reconstructed [, x_mean])`
 
 ### Class
 
@@ -410,9 +409,9 @@ The use of the term `n-1` for scaling is called Bessel 's correction. The scalin
 
 ### Syntax
 
-`result = ` [[stdlib_stats(module):var(interface)]] `(array [, mask [, corrected]])`
+`result = ` `var` `(array [, mask [, corrected]])`
 
-`result = ` [[stdlib_stats(module):var(interface)]] `(array, dim [, mask [, corrected]])`
+`result = ` `var` `(array, dim [, mask [, corrected]])`
 
 ### Class
 
@@ -441,6 +440,6 @@ If the variance is computed with only one single element, then the result is IEE
 
 ### Example
 
-```fortran
-{!example/stats/example_var.f90!}
+```{literalinclude} ../../example/stats/example_var.f90
+:language: fortran
 ```

@@ -1,9 +1,9 @@
----
-title: logger
----
 # Loggers
 
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## Introduction
 
@@ -90,7 +90,7 @@ significant events encountered during the execution of a program.
 
 ### Syntax
 
-`type(` [[stdlib_logger(module):logger_type(type)]] `) :: variable`
+`type(` `logger_type` `) :: variable`
 
 ### Private attributes
 
@@ -120,19 +120,19 @@ methods are:
 
 Method               | Class      | Description
 ---------------------|------------|------------
-[`add_log_file`](./stdlib_logger.html#add_log_file-open-a-file-and-add-its-unit-to-self-log_units)       | Subroutine | Opens a file using `newunit`, and adds the resulting unit to the `log_units` list
-[`add_log_unit`](./stdlib_logger.html#add_log_unit-add-a-unit-to-the-array-self-log_units)       | Subroutine | Adds an existing unit to the `log_units` list
-[`configuration`](./stdlib_logger.html#configuration-report-a-loggers-configuration)      | Subroutine | Reports the details of the logging configuration
-[`configure`](./stdlib_logger.html#configure-configure-the-logging-process)          | Subroutine | Configures the details of the logging process
-[`log_debug`](./stdlib_logger.html#log_debug-writes-the-string-message-to-self-log_units)    | Subroutine | Sends a message prepended by `'DEBUG: '`
-[`log_error`](./stdlib_logger.html#log_error-writes-the-string-message-to-self-log_units)          | Subroutine | Sends a message prepended by `'ERROR: '` optionally followed by a `stat` or `errmsg`
-[`log_information`](./stdlib_logger.html#log_information-writes-the-string-message-to-self-log_units)    | Subroutine | Sends a message prepended by `'INFO: '`
-[`log_io_error`](./stdlib_logger.html#log_io_error-write-the-string-message-to-self-log_units)       | Subroutine | Sends a message prepended by `'I/O ERROR: '` optionally followed by an `iostat` or `iomsg`
-[`log_message`](./stdlib_logger.html#log_message-write-the-string-message-to-self-log_units)        | Subroutine | Sends a message
-[`log_text_error`](./stdlib_logger.html#log_text_error-send-a-message-to-self-log_units-describing-an-error)     | Subroutine | Sends a message describing an error found in a line of text
-[`log_units_assigned`](./stdlib_logger.html#log_units_assigned-returns-the-number-of-active-io-units) | Function   | Returns the number of active I/O units in `log_units`
-[`log_warning`](./stdlib_logger.html#log_warning-write-the-string-message-to-log_units)        | Subroutine | Sends a message prepended by `'WARN: '`
-[`remove_log_unit`](./stdlib_logger.html#remove_log_unit-remove-unit-from-self-log_units)    | Subroutine | Removes the `unit` number from the `log_units` array
+[`add_log_file`](./stdlib_logger.md#add_log_file-open-a-file-and-add-its-unit-to-self-log_units)       | Subroutine | Opens a file using `newunit`, and adds the resulting unit to the `log_units` list
+[`add_log_unit`](./stdlib_logger.md#add_log_unit-add-a-unit-to-the-array-self-log_units)       | Subroutine | Adds an existing unit to the `log_units` list
+[`configuration`](./stdlib_logger.md#configuration-report-a-loggers-configuration)      | Subroutine | Reports the details of the logging configuration
+[`configure`](./stdlib_logger.md#configure-configure-the-logging-process)          | Subroutine | Configures the details of the logging process
+[`log_debug`](./stdlib_logger.md#log_debug-writes-the-string-message-to-self-log_units)    | Subroutine | Sends a message prepended by `'DEBUG: '`
+[`log_error`](./stdlib_logger.md#log_error-writes-the-string-message-to-self-log_units)          | Subroutine | Sends a message prepended by `'ERROR: '` optionally followed by a `stat` or `errmsg`
+[`log_information`](./stdlib_logger.md#log_information-writes-the-string-message-to-self-log_units)    | Subroutine | Sends a message prepended by `'INFO: '`
+[`log_io_error`](./stdlib_logger.md#log_io_error-write-the-string-message-to-self-log_units)       | Subroutine | Sends a message prepended by `'I/O ERROR: '` optionally followed by an `iostat` or `iomsg`
+[`log_message`](./stdlib_logger.md#log_message-write-the-string-message-to-self-log_units)        | Subroutine | Sends a message
+[`log_text_error`](./stdlib_logger.md#log_text_error-send-a-message-to-self-log_units-describing-an-error)     | Subroutine | Sends a message describing an error found in a line of text
+[`log_units_assigned`](./stdlib_logger.md#log_units_assigned-returns-the-number-of-active-io-units) | Function   | Returns the number of active I/O units in `log_units`
+[`log_warning`](./stdlib_logger.md#log_warning-write-the-string-message-to-log_units)        | Subroutine | Sends a message prepended by `'WARN: '`
+[`remove_log_unit`](./stdlib_logger.md#remove_log_unit-remove-unit-from-self-log_units)    | Subroutine | Removes the `unit` number from the `log_units` array
 
 ## Specification of the `logger_type` methods
 
@@ -150,7 +150,7 @@ Opens a formatted, sequential access, output file, `filename` using
 
 #### Syntax
 
-`call self % ` [[logger_type(type):add_log_file(bound)]] `( filename [, unit, action, position, status, stat ] )`
+`call self % ` `add_log_file(bound)` `( filename [, unit, action, position, status, stat ] )`
 
 #### Class
 
@@ -194,8 +194,8 @@ an `intent(in)` argument. It shall be the name of the file to be opened.
 
 #### Example
 
-```fortran
-{!example/logger/example_global_logger.f90!}
+```{literalinclude} ../../example/logger/example_global_logger.f90
+:language: fortran
 ```
 
 ### `add_log_unit` - add a unit to the array `self % log_units`
@@ -216,7 +216,7 @@ the stop code.
 
 #### Syntax
 
-`call self % ` [[logger_type(type):add_log_unit(bound)]] `( unit [, stat ] )`
+`call self % ` `add_log_unit(bound)` `( unit [, stat ] )`
 
 #### Class. 
 
@@ -250,8 +250,8 @@ to `unit`.
 
 #### Example
 
-```fortran
-{!example/logger/example_add_log_unit.f90!}
+```{literalinclude} ../../example/logger/example_add_log_unit.f90
+:language: fortran
 ```
 
 ### `configuration` - report a logger's configuration
@@ -266,7 +266,7 @@ Reports the configuration of a logger.
 
 #### Syntax
 
-`call self % ` [[logger_type(type):configuration(bound)]] `( [ add_blankline, indent, level, max_width, time_stamp, log_units ] )`
+`call self % ` `configuration(bound)` `( [ add_blankline, indent, level, max_width, time_stamp, log_units ] )`
 
 #### Class
 
@@ -341,7 +341,7 @@ Configures the logging process for self.
 
 #### Syntax
 
-`call self % ` [[logger_type(type):configure(bound)]] `( [ add_blank_line, indent, level, max_width, time_stamp ] )`
+`call self % ` `configure(bound)` `( [ add_blank_line, indent, level, max_width, time_stamp ] )`
 
 #### Class
 
@@ -377,8 +377,8 @@ Pure subroutine
   
 #### Example
 
-```fortran
-{!example/logger/example_configure.f90!}
+```{literalinclude} ../../example/logger/example_configure.f90
+:language: fortran
 ```
 
 ### `log_debug` - Writes the string `message` to `self % log_units`
@@ -393,7 +393,7 @@ Writes the string `message` to `self % log_units` with optional additional text.
 
 #### Syntax
 
-`call self % ` [[logger_type(type):log_debug(bound)]] `( message [, module, procedure ] )`
+`call self % ` `log_debug(bound)` `( message [, module, procedure ] )`
 
 #### Behavior
 
@@ -464,7 +464,7 @@ Writes the string `message` to `self % log_units` with optional additional text.
 
 #### Syntax
 
-`call self % ` [[logger_type(type):log_error(bound)]] `( message [, module, procedure, stat, errmsg ] )`
+`call self % ` `log_error(bound)` `( message [, module, procedure, stat, errmsg ] )`
 
 #### Behavior
 
@@ -550,7 +550,7 @@ Writes the string `message` to `self % log_units` with optional additional text.
 
 #### Syntax
 
-`call self % ` [[logger_type(type):log_information(bound)]] `( message [, module, procedure ] )`
+`call self % ` `log_information(bound)` `( message [, module, procedure ] )`
 
 #### Behavior
 
@@ -632,7 +632,7 @@ It is ignored if the `level` of `self` is higher than `io_error_level`.
 
 #### Syntax
 
-`call self % ` [[logger_type(type):log_io_error(bound)]] `( message [, module, procedure, iostat, iomsg ] )`
+`call self % ` `log_io_error(bound)` `( message [, module, procedure, iostat, iomsg ] )`
 
 #### Class
 
@@ -667,8 +667,8 @@ Subroutine
 
 #### Example
 
-```fortran
-{!example/logger/example_log_io_error.f90!}
+```{literalinclude} ../../example/logger/example_log_io_error.f90
+:language: fortran
 ```
 
 ### `log_message` - write the string `message` to `self % log_units` 
@@ -692,7 +692,7 @@ No severity level is applied to `log_message`.
 
 #### Syntax
 
-`call self % ` [[logger_type(type):log_message(bound)]] `( message [, module, procedure, prefix ] )`
+`call self % ` `log_message(bound)` `( message [, module, procedure, prefix ] )`
 
 #### Class
 
@@ -770,7 +770,7 @@ It is ignored if the `level` of `self` is higher than `text_error_level`.
 
 #### Syntax
 
-`call self % ` [[logger_type(type):log_text_error(bound)]] `( line, column, summary [, filename, line_number, caret, stat ] )`
+`call self % ` `log_text_error(bound)` `( line, column, summary [, filename, line_number, caret, stat ] )`
 
 #### Class
 
@@ -816,8 +816,8 @@ Subroutine
 
 #### Example
 
-```fortran
-{!example/logger/example_log_text_error.f90!}
+```{literalinclude} ../../example/logger/example_log_text_error.f90
+:language: fortran
 ```
 
 ### `log_units_assigned` - returns the number of active I/O units
@@ -832,7 +832,7 @@ Returns the number of active I/O units in `self % log_units`
 
 #### Syntax
 
-`result = self % ` [[logger_type(type):log_units_assigned(bound)]] `()`
+`result = self % ` `log_units_assigned(bound)` `()`
 
 #### Class
 
@@ -893,7 +893,7 @@ then `module` and `procedure` if present, then
 
 #### Syntax
 
-`call self % ` [[logger_type(type):log_warning(bound)]] `( message [, module, procedure ] )`
+`call self % ` `log_warning(bound)` `( message [, module, procedure ] )`
 
 #### Class
 
@@ -958,7 +958,7 @@ closed. If `unit` is not in `self % log_units` then nothing is done.
 
 #### Syntax
 
-`call self % ` [[logger_type(type):remove_log_unit(bound)]] `( unit [, close_unit, stat ] )`
+`call self % ` `remove_log_unit(bound)` `( unit [, close_unit, stat ] )`
 
 #### Class
 

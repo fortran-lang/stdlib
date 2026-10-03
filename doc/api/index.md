@@ -1,0 +1,53 @@
+---
+title: API reference
+---
+
+# API reference
+
+This section uses `sphinx-fortran-domain` to preview generated module reference pages
+alongside the existing hand-written specifications.
+
+```{toctree}
+:maxdepth: 2
+
+stdlib_ansi
+stdlib_array
+stdlib_ascii
+stdlib_bitsets
+stdlib_codata
+stdlib_constants
+stdlib_datetime
+stdlib_error
+stdlib_hash_32bit
+stdlib_hash_64bit
+stdlib_hashmap_wrappers
+stdlib_hashmaps
+stdlib_intrinsics
+stdlib_io
+stdlib_kinds
+stdlib_linalg
+stdlib_linalg_iterative_solvers
+stdlib_linalg_state
+stdlib_logger
+stdlib_math
+stdlib_optval
+stdlib_quadrature
+stdlib_random
+stdlib_selection
+stdlib_sorting
+stdlib_sparse
+stdlib_specialfunctions
+stdlib_specialfunctions_gamma
+stdlib_specialmatrices
+stdlib_stats
+stdlib_stats_distribution_beta
+stdlib_stats_distribution_exponential
+stdlib_stats_distribution_normal
+stdlib_stats_distribution_uniform
+stdlib_str2num
+stdlib_string_type
+stdlib_stringlist_type
+stdlib_strings
+stdlib_system
+stdlib_version
+```

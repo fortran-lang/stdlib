@@ -1,10 +1,9 @@
----
-title: stats_distribution_uniform
----
-
 # Statistical Distributions -- Uniform Distribution Module
 
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## `shuffle` - Using Fisher-Yates algorithm to generate a random permutation of a list
 
@@ -18,7 +17,7 @@ Applying Fisher-Yates algorithm to generate an unbiased permutation for any list
 
 ### Syntax
 
-`result = ` [[stdlib_stats_distribution_uniform(module):shuffle(interface)]] `( list )`
+`result = ` `shuffle` `( list )`
 
 ### Class
 
@@ -34,8 +33,8 @@ Return a randomized rank one array of the input type.
 
 ### Example
 
-```fortran
-{!example/stats_distribution_uniform/example_shuffle.f90!}
+```{literalinclude} ../../example/stats_distribution_uniform/example_shuffle.f90
+:language: fortran
 ```
 
 ## `rvs_uniform` - uniform distribution random variates
@@ -62,7 +61,7 @@ Note: the algorithm used for generating uniform random variates is fundamentally
 
 ### Syntax
 
-`result = ` [[stdlib_stats_distribution_uniform(module):rvs_uniform(interface)]] `([[loc,] scale] [[[,array_size]]])`
+`result = ` `rvs_uniform` `([[loc,] scale] `[,array_size`])`
 
 ### Class
 
@@ -84,8 +83,8 @@ The result is a scalar or a rank one array with size of `array_size`, of type `i
 
 ### Example
 
-```fortran
-{!example/stats_distribution_uniform/example_uniform_rvs.f90!}
+```{literalinclude} ../../example/stats_distribution_uniform/example_uniform_rvs.f90
+:language: fortran
 ```
 
 ## `pdf_uniform` - Uniform distribution probability density function
@@ -110,7 +109,7 @@ f(x) = 1 / (scale%re * scale%im);  for complex uniform distribution.
 
 ### Syntax
 
-`result = ` [[stdlib_stats_distribution_uniform(module):pdf_uniform(interface)]] `(x, loc, scale)`
+`result = ` `pdf_uniform` `(x, loc, scale)`
 
 ### Class
 
@@ -132,8 +131,8 @@ The result is a scalar or an array, with a shape conformable to arguments, of ty
 
 ### Example
 
-```fortran
-{!example/stats_distribution_uniform/example_uniform_pdf.f90!}
+```{literalinclude} ../../example/stats_distribution_uniform/example_uniform_pdf.f90
+:language: fortran
 ```
 
 ## `cdf_uniform` - Uniform distribution cumulative distribution function
@@ -160,7 +159,7 @@ F(x) = (x%re - loc%re)(x%im - loc%im) / (scale%re * scale%im); for complex unifo
 
 ### Syntax
 
-`result = ` [[stdlib_stats_distribution_uniform(module):cdf_uniform(interface)]] `(x, loc, scale)`
+`result = ` `cdf_uniform` `(x, loc, scale)`
 
 ### Class
 
@@ -182,6 +181,6 @@ The result is a scalar or an array, with a shape conformable to arguments, of ty
 
 ### Example
 
-```fortran
-{!example/stats_distribution_uniform/example_uniform_cdf.f90!}
+```{literalinclude} ../../example/stats_distribution_uniform/example_uniform_cdf.f90
+:language: fortran
 ```

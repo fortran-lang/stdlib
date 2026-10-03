@@ -1,8 +1,9 @@
----
-title: datetime
----
+# `stdlib_datetime`
 
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## Introduction
 
@@ -61,7 +62,7 @@ Creates a `datetime_type` from individual components. All arguments are optional
 
 #### Syntax
 
-`dt = ` [[stdlib_datetime(module):datetime(function)]] `([year] [, month] [, day] [, hour] [, minute] [, second] [, millisecond] [, utc_offset_minutes])`
+`dt = ` `datetime` `([year] [, month] [, day] [, hour] [, minute] [, second] [, millisecond] [, utc_offset_minutes])`
 
 #### Arguments
 
@@ -87,7 +88,7 @@ Creates a normalized `timedelta_type`. Accepts mixed units (days, hours, minutes
 
 #### Syntax
 
-`td = ` [[stdlib_datetime(module):timedelta(function)]] `([days] [, hours] [, minutes] [, seconds] [, milliseconds])`
+`td = ` `timedelta` `([days] [, hours] [, minutes] [, seconds] [, milliseconds])`
 
 #### Arguments
 
@@ -113,7 +114,7 @@ Returns the current local date and time from the system clock.
 
 #### Syntax
 
-`dt = ` [[stdlib_datetime(module):now(function)]] `()`
+`dt = ` `now` `()`
 
 ### `now_utc` — Current UTC time
 
@@ -131,7 +132,7 @@ Returns the current UTC date and time.
 
 #### Syntax
 
-`dt = ` [[stdlib_datetime(module):now_utc(function)]] `()`
+`dt = ` `now_utc` `()`
 
 ### `epoch` — Unix epoch
 
@@ -149,7 +150,7 @@ Returns the Unix epoch: `1970-01-01T00:00:00Z`. This is a mathematical constant 
 
 #### Syntax
 
-`dt = ` [[stdlib_datetime(module):epoch(function)]] `()`
+`dt = ` `epoch` `()`
 
 ## Operators
 
@@ -189,7 +190,7 @@ Parses an ISO 8601 date/time string into a `datetime_type`.
 
 #### Syntax
 
-`dt = ` [[stdlib_datetime(module):parse_datetime(function)]] `(str [, stat])`
+`dt = ` `parse_datetime` `(str [, stat])`
 
 #### Arguments
 
@@ -224,7 +225,7 @@ Formats a `datetime_type` as an ISO 8601 string.
 
 #### Syntax
 
-`str = ` [[stdlib_datetime(module):format_datetime(function)]] `(dt)`
+`str = ` `format_datetime` `(dt)`
 
 #### Return value
 
@@ -246,7 +247,7 @@ Formats a `timedelta_type` as a human-readable string.
 
 #### Syntax
 
-`str = ` [[stdlib_datetime(module):format_timedelta(function)]] `(td)`
+`str = ` `format_timedelta` `(td)`
 
 #### Return value
 
@@ -270,7 +271,7 @@ Returns `.true.` if the given year (or datetime's year) is a leap year.
 
 #### Syntax
 
-`result = ` [[stdlib_datetime(module):is_leap_year(interface)]] `(year)` or `(dt)`
+`result = ` `is_leap_year` `(year)` or `(dt)`
 
 ### `days_in_month`
 
@@ -288,7 +289,7 @@ Returns the number of days in a given month and year.
 
 #### Syntax
 
-`d = ` [[stdlib_datetime(module):days_in_month(function)]] `(month, year)`
+`d = ` `days_in_month` `(month, year)`
 
 ### `days_in_year`
 
@@ -306,7 +307,7 @@ Returns 365 or 366.
 
 #### Syntax
 
-`d = ` [[stdlib_datetime(module):days_in_year(function)]] `(year)`
+`d = ` `days_in_year` `(year)`
 
 ### `day_of_year`
 
@@ -324,7 +325,7 @@ Returns the ordinal day (1–366).
 
 #### Syntax
 
-`doy = ` [[stdlib_datetime(module):day_of_year(function)]] `(dt)`
+`doy = ` `day_of_year` `(dt)`
 
 ### `day_of_week`
 
@@ -342,7 +343,7 @@ Returns the ISO weekday (1=Monday, ..., 7=Sunday).
 
 #### Syntax
 
-`dow = ` [[stdlib_datetime(module):day_of_week(function)]] `(dt)`
+`dow = ` `day_of_week` `(dt)`
 
 ### `to_utc`
 
@@ -360,7 +361,7 @@ Converts a `datetime_type` to UTC.
 
 #### Syntax
 
-`utc_dt = ` [[stdlib_datetime(module):to_utc(function)]] `(dt)`
+`utc_dt = ` `to_utc` `(dt)`
 
 ### `total_seconds`
 
@@ -378,10 +379,10 @@ Returns the total duration as `real(dp)`.
 
 #### Syntax
 
-`secs = ` [[stdlib_datetime(module):total_seconds(function)]] `(td)`
+`secs = ` `total_seconds` `(td)`
 
 ## Example
 
-```fortran
-{!example/datetime/example_datetime_usage.f90!}
+```{literalinclude} ../../example/datetime/example_datetime_usage.f90
+:language: fortran
 ```

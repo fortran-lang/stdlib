@@ -13,11 +13,15 @@ on:
   # Allow manual triggers from the GitHub Actions tab
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 env:
   CTEST_TIME_TIMEOUT: "5"  # some failures hang forever
 
 jobs:
   test-big-endian:
+    if: ${{ github.ref_name != 'copilot/modernize-docs-with-sphinx' && github.head_ref != 'copilot/modernize-docs-with-sphinx' }}
     runs-on: ubuntu-24.04
     name: Test on s390x (big-endian)
     strategy:

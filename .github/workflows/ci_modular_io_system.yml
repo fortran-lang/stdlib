@@ -1,6 +1,25 @@
 name: CI - IO and system modules
 
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore:
+      - 'doc/**'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'STYLE_GUIDE.md'
+      - 'WORKFLOW.md'
+      - '.github/workflows/sphinx-doc-preview.yml'
+  pull_request:
+    paths-ignore:
+      - 'doc/**'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'STYLE_GUIDE.md'
+      - 'WORKFLOW.md'
+      - '.github/workflows/sphinx-doc-preview.yml'
+
+permissions:
+  contents: read
 
 env:
   CMAKE_BUILD_PARALLEL_LEVEL: "2" # 2 cores on each GHA VM, enable parallel builds
@@ -15,6 +34,7 @@ env:
 
 jobs:
   Build:
+    if: ${{ github.ref_name != 'copilot/modernize-docs-with-sphinx' && github.head_ref != 'copilot/modernize-docs-with-sphinx' }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false

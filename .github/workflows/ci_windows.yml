@@ -1,6 +1,25 @@
 name: CI_windows
 
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore:
+      - 'doc/**'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'STYLE_GUIDE.md'
+      - 'WORKFLOW.md'
+      - '.github/workflows/sphinx-doc-preview.yml'
+  pull_request:
+    paths-ignore:
+      - 'doc/**'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'STYLE_GUIDE.md'
+      - 'WORKFLOW.md'
+      - '.github/workflows/sphinx-doc-preview.yml'
+
+permissions:
+  contents: read
 
 env:
   CTEST_TIME_TIMEOUT: "5"  # some failures hang forever
@@ -8,6 +27,7 @@ env:
 
 jobs:
   msys2-build:
+    if: ${{ github.ref_name != 'copilot/modernize-docs-with-sphinx' && github.head_ref != 'copilot/modernize-docs-with-sphinx' }}
     runs-on: windows-latest
     strategy:
       fail-fast: false

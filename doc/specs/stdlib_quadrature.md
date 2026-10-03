@@ -4,7 +4,10 @@ title: quadrature
 
 # Numerical integration
 
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## `trapz` - integrate sampled values using trapezoidal rule
 
@@ -18,9 +21,9 @@ Returns the trapezoidal rule integral of an array `y` representing discrete samp
 
 ### Syntax
 
-`result = ` [[stdlib_quadrature(module):trapz(interface)]] `(y, x)`
+`result = ` `trapz` `(y, x)`
 
-`result = ` [[stdlib_quadrature(module):trapz(interface)]] `(y, dx)`
+`result = ` `trapz` `(y, dx)`
 
 ### Arguments
 
@@ -38,8 +41,8 @@ If the size of `y` is zero or one, the result is zero.
 
 ### Example
 
-```fortran
-{!example/quadrature/example_trapz.f90!}
+```{literalinclude} ../../example/quadrature/example_trapz.f90
+:language: fortran
 ```
 
 ## `trapz_weights` - trapezoidal rule weights for given abscissas
@@ -54,7 +57,7 @@ Given an array of abscissas `x`, computes the array of weights `w` such that if 
 
 ### Syntax
 
-`result = ` [[stdlib_quadrature(module):trapz_weights(interface)]] `(x)`
+`result = ` `trapz_weights` `(x)`
 
 ### Arguments
 
@@ -68,8 +71,8 @@ If the size of `x` is one, then the sole element of the result is zero.
 
 ### Example
 
-```fortran
-{!example/quadrature/example_trapz_weights.f90!}
+```{literalinclude} ../../example/quadrature/example_trapz_weights.f90
+:language: fortran
 ```
 
 ## `simps` - integrate sampled values using Simpson's rule
@@ -86,9 +89,9 @@ Simpson's ordinary ("1/3") rule is used for odd-length arrays. For even-length a
 
 ### Syntax
 
-`result = ` [[stdlib_quadrature(module):simps(interface)]] `(y, x [, even])`
+`result = ` `simps` `(y, x [, even])`
 
-`result = ` [[stdlib_quadrature(module):simps(interface)]] `(y, dx [, even])`
+`result = ` `simps` `(y, dx [, even])`
 
 ### Arguments
 
@@ -110,8 +113,8 @@ If the size of `y` is two, the result is the same as if `trapz` had been called 
 
 ### Example
 
-```fortran
-{!example/quadrature/example_simps.f90!}
+```{literalinclude} ../../example/quadrature/example_simps.f90
+:language: fortran
 ```
 
 ## `simps_weights` - Simpson's rule weights for given abscissas
@@ -128,7 +131,7 @@ Simpson's ordinary ("1/3") rule is used for odd-length arrays. For even-length a
 
 ### Syntax
 
-`result = ` [[stdlib_quadrature(module):simps_weights(interface)]] `(x [, even])`
+`result = ` `simps_weights` `(x [, even])`
 
 ### Arguments
 
@@ -146,8 +149,8 @@ If the size of `x` is two, then the result is the same as if `trapz_weights` had
 
 ### Example
 
-```fortran
-{!example/quadrature/example_simps_weights.f90!}
+```{literalinclude} ../../example/quadrature/example_simps_weights.f90
+:language: fortran
 ```
 
 ## `gauss_legendre` - Gauss-Legendre quadrature (a.k.a. Gaussian quadrature) nodes and weights
@@ -169,7 +172,7 @@ Accuracy has been validated up to N=64 by comparing computed results to tablulat
 
 ### Syntax
 
-`subroutine ` [[stdlib_quadrature(module):gauss_legendre(interface)]] ` (x, w[, interval])`
+`subroutine ` `gauss_legendre` ` (x, w[, interval])`
 
 ### Arguments
 
@@ -184,8 +187,8 @@ If not specified, the default integral is -1 to 1.
 
 ### Example
 
-```fortran
-{!example/quadrature/example_gauss_legendre.f90!}
+```{literalinclude} ../../example/quadrature/example_gauss_legendre.f90
+:language: fortran
 ```
 
 ## `gauss_legendre_lobatto` - Gauss-Legendre-Lobatto quadrature nodes and weights
@@ -207,7 +210,7 @@ Accuracy has been validated up to N=64 by comparing computed results to tablulat
 
 ### Syntax
 
-`subroutine ` [[stdlib_quadrature(module):gauss_legendre_lobatto(interface)]] ` (x, w[, interval])`
+`subroutine ` `gauss_legendre_lobatto` ` (x, w[, interval])`
 
 ### Arguments
 
@@ -222,6 +225,6 @@ If not specified, the default integral is -1 to 1.
 
 ### Example
 
-```fortran
-{!example/quadrature/example_gauss_legendre_lobatto.f90!}
+```{literalinclude} ../../example/quadrature/example_gauss_legendre_lobatto.f90
+:language: fortran
 ```

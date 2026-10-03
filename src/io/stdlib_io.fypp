@@ -25,10 +25,10 @@ module stdlib_io
   !! Reads a whole ASCII file and loads its contents into a string variable. 
   !! ([Specification](../page/specs/stdlib_io.html#get-file-read-a-whole-ascii-file-into-a-character-or-a-string-variable))
   !! 
-  !!### Summary 
+  !!## Summary 
   !! Subroutine interface for reading the content of a file into a string.
   !!
-  !!### Description
+  !!## Description
   !! 
   !! This subroutine reads the entirety of a specified ASCII file and returns it as a string. The optional 
   !! `err` argument allows for handling errors through the library's `state_type` class. 
@@ -478,7 +478,7 @@ contains
     !! Opens a file
     !! ([Specification](../page/specs/stdlib_io.html#description_1))
     !!
-    !!##### Behavior
+    !!## Behavior
     !!
     !!
     !! To open a file to read:

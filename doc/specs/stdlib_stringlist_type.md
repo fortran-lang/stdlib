@@ -1,10 +1,9 @@
----
-title: stringlist_type
----
-
 # `stdlib_stringlist_type` module (1-D list of strings)
 
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## Introduction
 
@@ -49,8 +48,8 @@ Experimental
 
 #### Syntax
 
-For fidx: `res = ` [[stdlib_stringlist_type(module):fidx(interface)]] ` (idx)`
-For bidx: `res = ` [[stdlib_stringlist_type(module):bidx(interface)]] ` (idx)`
+For fidx: `res = ` `fidx` ` (idx)`
+For bidx: `res = ` `bidx` ` (idx)`
 
 #### Status
 
@@ -71,8 +70,8 @@ The result is of type `stringlist_index_type`.
 
 #### Example
 
-```fortran
-{!example/stringlist_type/example_stringlist_type_fidx_bidx.f90!}
+```{literalinclude} ../../example/stringlist_type/example_stringlist_type_fidx_bidx.f90
+:language: fortran
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -86,7 +85,7 @@ With argument: Initializes a stringlist equivalent to the input array `array` i.
 
 #### Syntax
 
-`res = ` [[stdlib_stringlist_type(module):stringlist_type(interface)]] ` ([array])`
+`res = ` `stringlist_type` ` ([array])`
 
 #### Status
 
@@ -98,7 +97,7 @@ Pure function.
 
 #### Argument
 
-- `array`: Shall be an array of `character` scalar or array of [[stdlib_string_type(module):string_type(type)]].
+- `array`: Shall be an array of `character` scalar or array of `string_type`.
  This argument is `intent(in)` and `optional`.
 
 #### Result value
@@ -107,8 +106,8 @@ The result is an instance of type `stringlist_type`.
 
 #### Example
 
-```fortran
-{!example/stringlist_type/example_stringlist_type_constructor.f90!}
+```{literalinclude} ../../example/stringlist_type/example_stringlist_type_constructor.f90
+:language: fortran
 ```
 
 
@@ -121,7 +120,7 @@ Inserts the string `string` _AT_ the index `idx`, so that the newly added elemen
 
 #### Syntax
 
-`call ` [[stdlib_stringlist_type(module):stringlist_type(type)]] `%` [[stringlist_type(type):insert_at(bound)]] ` (idx, string)`
+`call ` `stringlist_type` `%` `insert_at(bound)` ` (idx, string)`
 
 #### Status
 
@@ -133,16 +132,16 @@ Pure subroutine.
 
 #### Argument
 
-- `idx`: [[stdlib_stringlist_type(module):stringlist_index_type(type)]].
+- `idx`: `stringlist_index_type`.
   This argument is `intent(in)`.
 
-- `string`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+- `string`: Character scalar or `string_type`.
   This argument is `intent(in)`.
 
 #### Example
 
-```fortran
-{!example/stringlist_type/example_stringlist_type_insert_at.f90!}
+```{literalinclude} ../../example/stringlist_type/example_stringlist_type_insert_at.f90
+:language: fortran
 ```
 
 
@@ -155,7 +154,7 @@ Returns the string present currently at the index `idx` in a stringlist. If inde
 
 #### Syntax
 
-`res = ` [[stdlib_stringlist_type(module):stringlist_type(type)]] `%` [[stringlist_type(type):get(bound)]] ` (idx)`
+`res = ` `stringlist_type` `%` `get(bound)` ` (idx)`
 
 #### Status
 
@@ -167,7 +166,7 @@ Pure function.
 
 #### Argument
 
-- `idx`: [[stdlib_stringlist_type(module):stringlist_index_type(type)]].
+- `idx`: `stringlist_index_type`.
   This argument is `intent(in)`.
 
 #### Result value
@@ -176,8 +175,8 @@ The result is a string of type `string_type`.
 
 #### Example
 
-```fortran
-{!example/stringlist_type/example_stringlist_type_get.f90!}
+```{literalinclude} ../../example/stringlist_type/example_stringlist_type_get.f90
+:language: fortran
 ```
 
 
@@ -190,7 +189,7 @@ Returns the number of elements present currently in the stringlist.
 
 #### Syntax
 
-`res = ` [[stdlib_stringlist_type(module):stringlist_type(type)]] `%` [[stringlist_type(type):len(bound)]] ` ()`
+`res = ` `stringlist_type` `%` `len(bound)` ` ()`
 
 #### Status
 
@@ -210,8 +209,8 @@ The result is of type `integer`.
 
 #### Example
 
-```fortran
-{!example/stringlist_type/example_stringlist_type_len.f90!}
+```{literalinclude} ../../example/stringlist_type/example_stringlist_type_len.f90
+:language: fortran
 ```
 
 
@@ -224,7 +223,7 @@ Removes all elements from a stringlist.
 
 #### Syntax
 
-`call ` [[stdlib_stringlist_type(module):stringlist_type(type)]] `%` [[stringlist_type(type):clear(bound)]] ` ()`
+`call ` `stringlist_type` `%` `clear(bound)` ` ()`
 
 #### Status
 
@@ -240,8 +239,8 @@ No arguments.
 
 #### Example
 
-```fortran
-{!example/stringlist_type/example_stringlist_type_clear.f90!}
+```{literalinclude} ../../example/stringlist_type/example_stringlist_type_clear.f90
+:language: fortran
 ```
 
 
@@ -268,12 +267,12 @@ Pure function, `operator(==)` and `operator(.eq.)`.
 
 #### Argument
 
-- `lhs`: Shall be an array of `character` scalar or of [[stdlib_string_type(module):string_type(type)]] OR 
-a [[stdlib_stringlist_type(module):stringlist_type(type)]].
+- `lhs`: Shall be an array of `character` scalar or of `string_type` OR 
+a `stringlist_type`.
  This argument is `intent(in)`.
  
-- `rhs`: Shall be an array of `character` scalar or of [[stdlib_string_type(module):string_type(type)]] OR 
-a [[stdlib_stringlist_type(module):stringlist_type(type)]].
+- `rhs`: Shall be an array of `character` scalar or of `string_type` OR 
+a `stringlist_type`.
  This argument is `intent(in)`.
 
 #### Result value
@@ -282,8 +281,8 @@ The result is a default `logical` scalar value.
 
 #### Example
 
-```fortran
-{!example/stringlist_type/example_stringlist_type_equality_operator.f90!}
+```{literalinclude} ../../example/stringlist_type/example_stringlist_type_equality_operator.f90
+:language: fortran
 ```
 
 
@@ -310,12 +309,12 @@ Pure function, `operator(/=)` and `operator(.ne.)`.
 
 #### Argument
 
-- `lhs`: Shall be an array of `character` scalar or of [[stdlib_string_type(module):string_type(type)]] OR 
-a [[stdlib_stringlist_type(module):stringlist_type(type)]].
+- `lhs`: Shall be an array of `character` scalar or of `string_type` OR 
+a `stringlist_type`.
  This argument is `intent(in)`.
  
-- `rhs`: Shall be an array of `character` scalar or of [[stdlib_string_type(module):string_type(type)]] OR 
-a [[stdlib_stringlist_type(module):stringlist_type(type)]].
+- `rhs`: Shall be an array of `character` scalar or of `string_type` OR 
+a `stringlist_type`.
  This argument is `intent(in)`.
 
 #### Result value
@@ -324,8 +323,8 @@ The result is a default `logical` scalar value.
 
 #### Example
 
-```fortran
-{!example/stringlist_type/example_stringlist_type_inequality_operator.f90!}
+```{literalinclude} ../../example/stringlist_type/example_stringlist_type_inequality_operator.f90
+:language: fortran
 ```
 
 
@@ -350,20 +349,20 @@ Pure function, `operator(//)`.
 
 #### Argument
 
-- `lhs`: Shall be a `character` scalar or [[stdlib_string_type(module):string_type(type)]] OR an array of `character` scalar or of [[stdlib_string_type(module):string_type(type)]] OR 
-a [[stdlib_stringlist_type(module):stringlist_type(type)]].
+- `lhs`: Shall be a `character` scalar or `string_type` OR an array of `character` scalar or of `string_type` OR 
+a `stringlist_type`.
  This argument is `intent(in)`.
  
-- `rhs`: Shall be a `character` scalar or [[stdlib_string_type(module):string_type(type)]] OR an array of `character` scalar or of [[stdlib_string_type(module):string_type(type)]] OR 
-a [[stdlib_stringlist_type(module):stringlist_type(type)]].
+- `rhs`: Shall be a `character` scalar or `string_type` OR an array of `character` scalar or of `string_type` OR 
+a `stringlist_type`.
  This argument is `intent(in)`.
 
 #### Result value
 
-The result is an instance of [[stdlib_stringlist_type(module):stringlist_type(type)]].
+The result is an instance of `stringlist_type`.
 
 #### Example
 
-```fortran
-{!example/stringlist_type/example_stringlist_type_concatenate_operator.f90!}
+```{literalinclude} ../../example/stringlist_type/example_stringlist_type_concatenate_operator.f90
+:language: fortran
 ```

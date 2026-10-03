@@ -1,15 +1,19 @@
----
-title: kinds
----
+# `stdlib_kinds`
 
-# The `stdlib_kinds` module
-
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## Introduction
 
 The `stdlib_kinds` module provides kind parameters for the Fortran intrinsic data types,
 *integer*, *logical*, *real*, and *complex*.
+
+```{note}
+The generated API reference for this pilot module is available in
+[the Sphinx API section](../api/stdlib_kinds.rst).
+```
 
 
 ## Constants provided by `stdlib_kinds`

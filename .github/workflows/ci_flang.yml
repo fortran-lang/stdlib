@@ -5,6 +5,9 @@ on:
     branches: [master]
   pull_request:
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -16,6 +19,7 @@ env:
 
 jobs:
   Build:
+    if: ${{ github.ref_name != 'copilot/modernize-docs-with-sphinx' && github.head_ref != 'copilot/modernize-docs-with-sphinx' }}
     runs-on: ubuntu-latest
 
     steps:

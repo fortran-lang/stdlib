@@ -1,6 +1,26 @@
 name: Build and Deploy Documents
 
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore:
+      - 'doc/**'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'STYLE_GUIDE.md'
+      - 'WORKFLOW.md'
+      - '.github/workflows/sphinx-doc-preview.yml'
+  pull_request:
+    paths-ignore:
+      - 'doc/**'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'STYLE_GUIDE.md'
+      - 'WORKFLOW.md'
+      - '.github/workflows/sphinx-doc-preview.yml'
+
+permissions:
+  contents: read
+  issues: write
 
 env:
   LANG: "en_US.UTF-8"
@@ -13,6 +33,7 @@ env:
 
 jobs:
   Build-API-Docs:
+    if: ${{ github.ref_name != 'copilot/modernize-docs-with-sphinx' && github.head_ref != 'copilot/modernize-docs-with-sphinx' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

@@ -1,10 +1,9 @@
----
-title: sorting
----
+# `stdlib_sorting`
 
-# The `stdlib_sorting` module
-
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## Overview of sorting
 
@@ -247,7 +246,7 @@ increasing, or decreasing, value.
 
 ##### Syntax
 
-`call ` [[stdlib_sorting(module):ord_sort(interface)]] `( array[, work, reverse ] )`
+`call ` `ord_sort` `( array[, work, reverse ] )`
 
 ##### Class
 
@@ -297,8 +296,8 @@ function `LGT`.
 
 ##### Example
 
-```fortran
-{!example/sorting/example_ord_sort.f90!}
+```{literalinclude} ../../example/sorting/example_ord_sort.f90
+:language: fortran
 ```
 
 #### `sort` - sorts an input array
@@ -314,7 +313,7 @@ decreasing, value.
 
 ##### Syntax
 
-`call ` [[stdlib_sorting(module):sort(interface)]] `( array[, reverse] )`
+`call ` `sort` `( array[, reverse] )`
 
 ##### Class
 
@@ -352,8 +351,8 @@ element of `array` is a `NaN`.  Sorting of `CHARACTER(*)` and
 ##### Example
 
 
-```fortran
-{!example/sorting/example_sort.f90!}
+```{literalinclude} ../../example/sorting/example_sort.f90
+:language: fortran
 ```
 
 #### `radix_sort` - sorts an input array
@@ -369,7 +368,7 @@ decreasing, value.
 
 ##### Syntax
 
-`call ` [[stdlib_sorting(module):radix_sort(interface)]] `( array[, work, reverse] )`
+`call ` `radix_sort` `( array[, work, reverse] )`
 
 ##### Class
 
@@ -401,8 +400,8 @@ element of `array` is a `NaN`.
 
 ##### Example
 
-```fortran
-{!example/sorting/example_radix_sort.f90!}
+```{literalinclude} ../../example/sorting/example_radix_sort.f90
+:language: fortran
 ```
 
 #### `sort_adjoint` - sorts an associated array 
@@ -420,7 +419,7 @@ sorted according to the same permutations as for the input `array`.
 
 ##### Syntax
 
-`call ` [[stdlib_sorting(module):sort_adjoint(interface)]] `( array, adjoint_array[, work, iwork, reverse ] )`
+`call ` `sort_adjoint` `( array, adjoint_array[, work, iwork, reverse ] )`
 
 ##### Class
 
@@ -481,7 +480,9 @@ different on return
 Sorting a rank one array with `sort_adjoint`:
 
 ```Fortran
-{!example/sorting/example_sort_adjoint.f90!}
+```{literalinclude} ../../example/sorting/example_sort_adjoint.f90
+:language: fortran
+```
 ```
 
 #### `sort_index` - creates an array of sorting indices for an input array, while also sorting the array.
@@ -498,7 +499,7 @@ sort the input `array` to produce the output `array`.
 
 ##### Syntax
 
-`call ` [[stdlib_sorting(module):sort_index(interface)]] `( array, index[, work, iwork, reverse ] )`
+`call ` `sort_index` `( array, index[, work, iwork, reverse ] )`
 
 ##### Class
 
@@ -560,7 +561,9 @@ different on return
 Sorting a rank one array with `sort_index`:
 
 ```Fortran
-{!example/sorting/example_sort_index.f90!}
+```{literalinclude} ../../example/sorting/example_sort_index.f90
+:language: fortran
+```
 ```
 
 Sorting a related rank one array:

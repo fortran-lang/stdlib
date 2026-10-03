@@ -1,10 +1,9 @@
----
-title: linalg_iterative_solvers
----
+# `stdlib_linalg_iterative_solvers`
 
-# The `stdlib_linalg_iterative_solvers` module
-
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## Introduction
 
@@ -29,7 +28,7 @@ Proxy procedure for the matrix-vector product \( y = alpha * op(M) * x + beta * 
 
 #### Syntax
 
-`call ` [[stdlib_linalg_iterative_solvers(module):stdlib_linop_dp_type(type)]] `%matvec(x,y,alpha,beta,op)`
+`call ` `stdlib_linop_dp_type` `%matvec(x,y,alpha,beta,op)`
 
 ###### Class
 
@@ -53,7 +52,7 @@ Proxy procedure for the `dot_product`.
 
 #### Syntax
 
-`res = ` [[stdlib_linalg_iterative_solvers(module):stdlib_linop_dp_type(type)]] `%inner_product(x,y)`
+`res = ` `stdlib_linop_dp_type` `%inner_product(x,y)`
 
 ###### Class
 
@@ -99,7 +98,7 @@ Implements the Conjugate Gradient (CG) method for solving the linear system \( A
 
 #### Syntax
 
-`call ` [[stdlib_linalg_iterative_solvers(module):stdlib_solve_cg_kernel(interface)]] ` (A, b, x, tol, maxiter, workspace)`
+`call ` `stdlib_solve_cg_kernel` ` (A, b, x, tol, maxiter, workspace)`
 
 #### Status
 
@@ -132,7 +131,7 @@ Provides a user-friendly interface to the CG method for solving \( Ax = b \), su
 
 #### Syntax
 
-`call ` [[stdlib_linalg_iterative_solvers(module):stdlib_solve_cg(interface)]] ` (A, b, x [, di, rtol, atol, maxiter, restart, workspace])`
+`call ` `stdlib_solve_cg` ` (A, b, x [, di, rtol, atol, maxiter, restart, workspace])`
 
 #### Status
 
@@ -160,8 +159,8 @@ Subroutine
 
 #### Example
 
-```fortran
-{!example/linalg/example_solve_cg.f90!}
+```{literalinclude} ../../example/linalg/example_solve_cg.f90
+:language: fortran
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -173,7 +172,7 @@ Implements the Preconditioned Conjugate Gradient (PCG) method for solving the li
 
 #### Syntax
 
-`call ` [[stdlib_linalg_iterative_solvers(module):stdlib_solve_cg_kernel(interface)]] ` (A, M, b, x, tol, maxiter, workspace)`
+`call ` `stdlib_solve_cg_kernel` ` (A, M, b, x, tol, maxiter, workspace)`
 
 #### Status
 
@@ -201,8 +200,8 @@ Subroutine
 
 #### Example
 
-```fortran
-{!example/linalg/example_solve_custom.f90!}
+```{literalinclude} ../../example/linalg/example_solve_custom.f90
+:language: fortran
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -214,7 +213,7 @@ Provides a user-friendly interface to the PCG method for solving \( Ax = b \), s
 
 #### Syntax
 
-`call ` [[stdlib_linalg_iterative_solvers(module):stdlib_solve_pcg(interface)]] ` (A, b, x [, di, tol, maxiter, restart, precond, M, workspace])`
+`call ` `stdlib_solve_pcg` ` (A, b, x [, di, tol, maxiter, restart, precond, M, workspace])`
 
 #### Status
 
@@ -246,8 +245,8 @@ Subroutine
 
 #### Example
 
-```fortran
-{!example/linalg/example_solve_pcg.f90!}
+```{literalinclude} ../../example/linalg/example_solve_pcg.f90
+:language: fortran
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -259,7 +258,7 @@ Implements the Biconjugate Gradient Stabilized (BiCGSTAB) method for solving the
 
 #### Syntax
 
-`call ` [[stdlib_linalg_iterative_solvers(module):stdlib_solve_bicgstab_kernel(interface)]] ` (A, M, b, x, rtol, atol, maxiter, workspace)`
+`call ` `stdlib_solve_bicgstab_kernel` ` (A, M, b, x, rtol, atol, maxiter, workspace)`
 
 #### Status
 
@@ -298,7 +297,7 @@ Provides a user-friendly interface to the BiCGSTAB method for solving \( Ax = b 
 
 #### Syntax
 
-`call ` [[stdlib_linalg_iterative_solvers(module):stdlib_solve_bicgstab(interface)]] ` (A, b, x [, di, rtol, atol, maxiter, restart, precond, M, workspace])`
+`call ` `stdlib_solve_bicgstab` ` (A, b, x [, di, rtol, atol, maxiter, restart, precond, M, workspace])`
 
 #### Status
 
@@ -341,13 +340,13 @@ The method uses 8 auxiliary vectors internally, requiring more memory than simpl
 
 #### Example 1
 
-```fortran
-{!example/linalg/example_solve_bicgstab.f90!}
+```{literalinclude} ../../example/linalg/example_solve_bicgstab.f90
+:language: fortran
 ```
 
 #### Example 2
-```fortran
-{!example/linalg/example_solve_bicgstab_wilkinson.f90!}
+```{literalinclude} ../../example/linalg/example_solve_bicgstab_wilkinson.f90
+:language: fortran
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -359,7 +358,7 @@ Implements the restarted Generalized Minimal Residual (GMRES) method for solving
 
 #### Syntax
 
-`call ` [[stdlib_linalg_iterative_solvers(module):stdlib_solve_gmres_kernel(interface)]] ` (A, M, b, x, rtol, atol, maxiter, kdim, workspace, compact)`
+`call ` `stdlib_solve_gmres_kernel` ` (A, M, b, x, rtol, atol, maxiter, kdim, workspace, compact)`
 
 #### Status
 
@@ -402,7 +401,7 @@ Provides a user-friendly interface to the restarted GMRES method for solving \( 
 
 #### Syntax
 
-`call ` [[stdlib_linalg_iterative_solvers(module):stdlib_solve_gmres(interface)]] ` (A, b, x [, di, rtol, atol, maxiter, restart, kdim, precond, M, workspace, compact])`
+`call ` `stdlib_solve_gmres` ` (A, b, x [, di, rtol, atol, maxiter, restart, kdim, precond, M, workspace, compact])`
 
 #### Status
 
@@ -444,6 +443,6 @@ GMRES is especially useful for general non-symmetric systems where CG and PCG do
 
 #### Example
 
-```fortran
-{!example/linalg/example_solve_gmres.f90!}
+```{literalinclude} ../../example/linalg/example_solve_gmres.f90
+:language: fortran
 ```

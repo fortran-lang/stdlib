@@ -1,10 +1,9 @@
----
-title: error
----
+# `stdlib_error`
 
-# The `stdlib_error` module
-
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## Introduction
 
@@ -25,7 +24,7 @@ Checks the value of a logical condition.
 
 #### Syntax
 
-`call ` [[check(subroutine)]] `(condition, msg, code, warn)`
+`call ` `check` `(condition, msg, code, warn)`
 
 
 #### Arguments
@@ -52,17 +51,17 @@ If `condition` is `.false.`, and:
 
 #### Examples
 
-```fortran
-{!example/error/example_check1.f90!}
+```{literalinclude} ../../example/error/example_check1.f90
+:language: fortran
 ```
-```fortran
-{!example/error/example_check2.f90!}
+```{literalinclude} ../../example/error/example_check2.f90
+:language: fortran
 ```
-```fortran
-{!example/error/example_check3.f90!}
+```{literalinclude} ../../example/error/example_check3.f90
+:language: fortran
 ```
-```fortran
-{!example/error/example_check4.f90!}
+```{literalinclude} ../../example/error/example_check4.f90
+:language: fortran
 ```
 
 ### `error_stop` - aborts the program
@@ -77,7 +76,7 @@ Aborts the program with a message and a nonzero exit code.
 
 #### Syntax
 
-`call ` [[stdlib_error(module):error_stop(interface)]] `(msg, code)`
+`call ` `error_stop` `(msg, code)`
 
 #### Arguments
 
@@ -93,12 +92,12 @@ Aborts the program with printing the message `msg` to `stderr` and a nonzero exi
 
 Without error code:
 
-```fortran
-{!example/error/example_error_stop1.f90!}
+```{literalinclude} ../../example/error/example_error_stop1.f90
+:language: fortran
 ```
 
 With error code:
 
-```fortran
-{!example/error/example_error_stop2.f90!}
+```{literalinclude} ../../example/error/example_error_stop2.f90
+:language: fortran
 ```

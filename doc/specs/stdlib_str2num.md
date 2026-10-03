@@ -1,12 +1,11 @@
----
-title: str2num
----
-
-# The `stdlib_str2num` module
+# `stdlib_str2num`
 
 This module proposes a function-style interface for string-to-number conversion. It also profits from Fortran's interfaces to implement precision-dependant algorithms to maximize runtime efficiency.
 
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## `to_num` - conversion of strings to numbers
 
@@ -20,7 +19,7 @@ Convert a string or an array of strings to numerical types.
 
 ### Syntax
 
-`number = ` [[stdlib_str2num(module):to_num(interface)]] `(string, mold)`
+`number = ` `to_num` `(string, mold)`
 
 ### Arguments
 
@@ -34,8 +33,8 @@ Return a scalar of numerical type (i.e., `integer`, or `real`).
 
 ### Example
 
-```fortran
-{!example/strings/example_string_to_number.f90!}
+```{literalinclude} ../../example/strings/example_string_to_number.f90
+:language: fortran
 ```
 
 ## `to_num_from_stream` - conversion of a stream of values in a string to numbers
@@ -50,7 +49,7 @@ Convert a stream of values in a string to an array of values.
 
 ### Syntax
 
-`number = ` [[stdlib_str2num(module):to_num_from_stream(interface)]] `(string, mold)`
+`number = ` `to_num_from_stream` `(string, mold)`
 
 ### Arguments
 
@@ -64,8 +63,8 @@ Return a scalar of numerical type (i.e., `integer` or `real`).
 
 ### Example
 
-```fortran
-{!example/strings/example_stream_of_strings_to_numbers.f90!}
+```{literalinclude} ../../example/strings/example_stream_of_strings_to_numbers.f90
+:language: fortran
 ```
 
 ## Note

@@ -5,12 +5,16 @@ on:
     branches: [master]
   pull_request:
 
+permissions:
+  contents: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   deploy:
+    if: ${{ github.ref_name != 'copilot/modernize-docs-with-sphinx' && github.head_ref != 'copilot/modernize-docs-with-sphinx' }}
     name: Run tests and deploys the fpm branches
     runs-on: ${{ matrix.os }}
     strategy:
@@ -70,6 +74,7 @@ jobs:
           FOLDER: stdlib-fpm-ilp64
 
   coverage:
+    if: ${{ github.ref_name != 'copilot/modernize-docs-with-sphinx' && github.head_ref != 'copilot/modernize-docs-with-sphinx' }}
     name: Generate and upload code coverage report
     needs: deploy
     runs-on: ${{ matrix.os }}

@@ -1,0 +1,81 @@
+name: Build Sphinx Documentation Preview
+
+on:
+  push:
+    paths:
+      - 'doc/**'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'STYLE_GUIDE.md'
+      - 'WORKFLOW.md'
+      - '.github/workflows/**'
+  pull_request:
+    paths:
+      - 'doc/**'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'STYLE_GUIDE.md'
+      - 'WORKFLOW.md'
+      - '.github/workflows/**'
+
+env:
+  LANG: "en_US.UTF-8"
+  LC_ALL: "en_US.UTF-8"
+  PIP_DISABLE_PIP_VERSION_CHECK: "ON"
+  PIP_NO_CLEAN: "ON"
+  PIP_PREFER_BINARY: "ON"
+  TZ: "UTC"
+
+jobs:
+  Build-Sphinx-Docs:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure GitHub Pages
+        if: github.event_name == 'push' && github.ref_name == 'copilot/modernize-docs-with-sphinx' && github.repository != 'fortran-lang/stdlib'
+        uses: actions/configure-pages@v5
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install -r doc/requirements.txt
+          python --version
+          sphinx-build --version
+          fypp --version
+
+      - name: Build Docs
+        run: |
+          sphinx-build -W -b html doc doc/_build/html
+
+      - name: Upload Documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: sphinx-html-preview
+          path: ./doc/_build/html/
+
+      - name: Upload Pages artifact
+        if: github.event_name == 'push' && github.ref_name == 'copilot/modernize-docs-with-sphinx' && github.repository != 'fortran-lang/stdlib'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./doc/_build/html/
+
+  Deploy-Sphinx-Docs:
+    if: github.event_name == 'push' && github.ref_name == 'copilot/modernize-docs-with-sphinx' && github.repository != 'fortran-lang/stdlib'
+    needs: Build-Sphinx-Docs
+    permissions:
+      pages: write
+      id-token: write
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy Sphinx preview
+        id: deployment
+        uses: actions/deploy-pages@v4

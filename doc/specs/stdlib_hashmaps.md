@@ -1,10 +1,9 @@
----
-title: Hash maps
----
+# `stdlib_hashmap_wrappers` and `stdlib_hashmaps`
 
-# The `stdlib_hashmap_wrappers`, and `stdlib_hashmaps` modules
-
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## Overview of hash maps
 
@@ -186,7 +185,7 @@ Returns a copy of an input of type `key_type`.
 
 ##### Syntax
 
-`call ` [[stdlib_hashmap_wrappers:copy_key]] `( old_key, new_key )`
+`call ` `copy_key` `( old_key, new_key )`
 
 ##### Class
 
@@ -202,8 +201,8 @@ is an `intent(out)` argument.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_copy_key.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_copy_key.f90
+:language: fortran
 ```
 
 
@@ -233,7 +232,7 @@ Calculates a 32 bit hash code from an input of type `key_type`.
 
 ##### Syntax
 
-`code = ` [[stdlib_hashmap_wrappers:fnv_1_hasher]] `( key )`
+`code = ` `fnv_1_hasher` `( key )`
 
 ##### Class
 
@@ -267,8 +266,8 @@ expected to be minor compared to its faster hashing rate.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_fnv_1_hasher.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_fnv_1_hasher.f90
+:language: fortran
 ```
 
 
@@ -284,7 +283,7 @@ Calculates a 32 bit hash code from an input of type `key_type`.
 
 ##### Syntax
 
-`code = ` [[stdlib_hashmap_wrappers:fnv_1a_hasher]] `( key )`
+`code = ` `fnv_1a_hasher` `( key )`
 
 ##### Class
 
@@ -318,8 +317,8 @@ expected to be minor compared to its faster hashing rate.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_fnv_1a_hasher.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_fnv_1a_hasher.f90
+:language: fortran
 ```
 
 #### `free_key` - frees the memory associated with a key
@@ -335,7 +334,7 @@ Deallocates the memory associated with a variable of type
 
 ##### Syntax
 
-`call ` [[stdlib_hashmap_wrappers:free_key]] `( key )`
+`call ` `free_key` `( key )`
 
 ##### Class
 
@@ -348,8 +347,8 @@ is an `intent(out)` argument.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_free_key.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_free_key.f90
+:language: fortran
 ```
 
 
@@ -366,7 +365,7 @@ variable `value`.
 
 ##### Syntax
 
-`call ` [[stdlib_hashmap_wrappers:get]] `( key, value )`
+`call ` `get` `( key, value )`
 
 ##### Class
 
@@ -383,8 +382,8 @@ or an allocatable vector variable of type `integer` and kind `int8` or
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_get.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_get.f90
+:language: fortran
 ```
 
 
@@ -401,7 +400,7 @@ argument of type `key_type` returning an `int32` hash value.
 
 ##### Syntax
 
-`type(` [[stdlib_hashmap_wrappers:hasher_fun]] `), pointer :: fun_pointer`
+`type(` `hasher_fun` `), pointer :: fun_pointer`
 
 ##### Class
 
@@ -427,8 +426,8 @@ pointers intended for use as a hash function for the hash maps.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_hasher_fun.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_hasher_fun.f90
+:language: fortran
 ```
 
 
@@ -469,7 +468,9 @@ The result is `.true.` if the keys are equal, otherwise `.falss.`.
 ##### Example 
 
 ```fortran 
-{!example/hashmaps/example_hashmaps_equal_keys.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_equal_keys.f90
+:language: fortran
+```
 ```
 
 
@@ -485,7 +486,7 @@ Calculates a 32 bit hash code from an input of type `key_type`.
 
 ##### Syntax
 
-`code = ` [[stdlib_hashmap_wrappers:seeded_nmhash32_hasher]] `( key )`
+`code = ` `seeded_nmhash32_hasher` `( key )`
 
 ##### Class
 
@@ -518,8 +519,8 @@ This code passes the SMHasher tests.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_seeded_nmhash32_hasher.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_seeded_nmhash32_hasher.f90
+:language: fortran
 ```
 
 
@@ -535,7 +536,7 @@ Calculates a 32 bit hash code from an input of type `key_type`.
 
 ##### Syntax
 
-`code = ` [[stdlib_hashmap_wrappers:seeded_nmhash32x_hasher]] `( key )`
+`code = ` `seeded_nmhash32x_hasher` `( key )`
 
 ##### Class
 
@@ -568,8 +569,8 @@ This code passes the SMHasher tests.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_seeded_nmhash32x_hasher.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_seeded_nmhash32x_hasher.f90
+:language: fortran
 ```
 
 
@@ -585,7 +586,7 @@ Calculates a 32 bit hash code from an input of type `key_type`.
 
 ##### Syntax
 
-`code = ` [[stdlib_hashmap_wrappers:seeded_water_hasher]] `( key )`
+`code = ` `seeded_water_hasher` `( key )`
 
 ##### Class
 
@@ -618,8 +619,8 @@ This code passes the SMHasher tests.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_seeded_water_hasher.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_seeded_water_hasher.f90
+:language: fortran
 ```
 
 
@@ -635,7 +636,7 @@ Places the data from `value` in a `key_type`.
 
 ##### Syntax
 
-`call ` [[stdlib_hashmap_wrappers:set]] `( key, value )`
+`call ` `set` `( key, value )`
 
 ##### Class
 
@@ -658,8 +659,8 @@ value to an `int8` vector.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_set.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_set.f90
+:language: fortran
 ```
 
 
@@ -1139,7 +1140,7 @@ Returns the number of procedure calls on a hash map.
 
 ##### Syntax
 
-`value = map % ` [[hashmap_type(type):calls(bound)]] `()`
+`value = map % ` `calls(bound)` `()`
 
 ##### Class
 
@@ -1160,8 +1161,8 @@ The result will be the number of procedure calls on the hash map.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_calls.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_calls.f90
+:language: fortran
 ```
 
 
@@ -1177,7 +1178,7 @@ Returns the number of entries in a hash map.
 
 ##### Syntax
 
-`value = map % ` [[hashmap_type(type):entries(bound)]] `()`
+`value = map % ` `entries(bound)` `()`
 
 ##### Class
 
@@ -1198,8 +1199,8 @@ The result will be the number of entries in the hash map.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_entries.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_entries.f90
+:language: fortran
 ```
 
 
@@ -1215,7 +1216,7 @@ Returns all the keys contained in a map.
 
 ##### Syntax
 
-`call map % ` [[hashmap_type(type):get_all_keys(bound)]] `( all_keys )`
+`call map % ` `get_all_keys(bound)` `( all_keys )`
 
 ##### Class
 
@@ -1233,8 +1234,8 @@ Subroutine
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_get_all_keys.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_get_all_keys.f90
+:language: fortran
 ```
 
 
@@ -1250,7 +1251,7 @@ Returns the value associated with the `key`,
 
 ##### Syntax
 
-`value = map % ` [[hashmap_type(type):get_other_data(bound)]] `( key, other [, exists] )`
+`value = map % ` `get_other_data(bound)` `( key, other [, exists] )`
 
 ##### Class
 
@@ -1280,8 +1281,8 @@ undefined.
  The following is an example of the retrieval of other data
   associated with a `key`:
 
-```fortran
-{!example/hashmaps/example_hashmaps_get_other_data.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_get_other_data.f90
+:language: fortran
 ```
 
 
@@ -1297,7 +1298,7 @@ Initializes a `hashmap_type` object.
 
 ##### Syntax
 
-`call map % ` [[hashmap_type(type):init(bound)]] `( [hasher, slots_bits, status ] )`
+`call map % ` `init(bound)` `( [hasher, slots_bits, status ] )`
 
 ##### Class
 
@@ -1344,8 +1345,8 @@ has the value `alloc_fault`.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_init.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_init.f90
+:language: fortran
 ```
 
 
@@ -1362,7 +1363,7 @@ entry in the map.
 
 ##### Syntax
 
-`call map % ` [[hashmap_type(type):key_test(bound)]] `( key, present )`
+`call map % ` `key_test(bound)` `( key, present )`
 
 ##### Class
 
@@ -1386,8 +1387,8 @@ It is an `intent(out)` argument. It is a logical flag where
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_key_test.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_key_test.f90
+:language: fortran
 ```
 
 
@@ -1404,7 +1405,7 @@ slots in the hash map.
 
 ##### Syntax
 
-`value = map % ` [[hashmap_type(type):loading(bound)]] `( )`
+`value = map % ` `loading(bound)` `( )`
 
 ##### Class
 
@@ -1426,8 +1427,8 @@ number of slots in the hash map.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_loading.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_loading.f90
+:language: fortran
 ```
 
 
@@ -1443,7 +1444,7 @@ Inserts an entry into the hash map if it is not already present.
 
 ##### Syntax
 
-`call map % ` [[hashmap_type(type):map_entry(bound)]] `( key[, other, conflict ] )`
+`call map % ` `map_entry(bound)` `( key[, other, conflict ] )`
 
 ##### Class
 
@@ -1477,8 +1478,8 @@ been provided then it routine will error stop.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_map_entry.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_map_entry.f90
+:language: fortran
 ```
 
 
@@ -1494,7 +1495,7 @@ Returns the total number of table probes on the hash map.
 
 ##### Syntax
 
-`result = map % ` [[hashmap_type(type):map_probes(bound)]] `( )`
+`result = map % ` `map_probes(bound)` `( )`
 
 ##### Class
 
@@ -1517,8 +1518,8 @@ rehashing.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_probes.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_probes.f90
+:language: fortran
 ```
 
 
@@ -1534,7 +1535,7 @@ Returns the total number of slots on a hash map
 
 ##### Syntax
 
-`result = map % ` [[hashmap_type(type):num_slots(bound)]] `( )`
+`result = map % ` `num_slots(bound)` `( )`
 
 ##### Class
 
@@ -1556,8 +1557,8 @@ The result is the number of slots in `map`.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_num_slots.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_num_slots.f90
+:language: fortran
 ```
 
 
@@ -1573,7 +1574,7 @@ Changes the hashing function for the map entries to that of `hasher`.
 
 ##### Syntax
 
-`call map % ` [[hashmap_type(type):rehash(bound)]] `( hasher )`
+`call map % ` `rehash(bound)` `( hasher )`
 
 ##### Class
 
@@ -1591,8 +1592,8 @@ It is the hash method to be used by `map`.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_rehash.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_rehash.f90
+:language: fortran
 ```
 
 
@@ -1608,7 +1609,7 @@ Removes an entry from the hash map, `map`.
 
 ##### Syntax
 
-`call map % ` [[hashmap_type(type):remove(bound)]] `( key[, existed ])`
+`call map % ` `remove(bound)` `( key[, existed ])`
 
 ##### Class
 
@@ -1633,8 +1634,8 @@ absent, the procedure returns with no entry with the given key.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_remove.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_remove.f90
+:language: fortran
 ```
 
 
@@ -1651,7 +1652,7 @@ Replaces the other data in the map for the entry with the key value,
 
 ##### Syntax
 
-`call map % ` [[hashmap_type(type):set_other_data(bound)]] `( key, other[, exists] )`
+`call map % ` `set_other_data(bound)` `( key, other[, exists] )`
 
 ##### Class
 
@@ -1683,8 +1684,8 @@ been provided then the routine will error stop.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_set_other_data.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_set_other_data.f90
+:language: fortran
 ```
 
 
@@ -1700,7 +1701,7 @@ Returns the total number of bits used to address the hash map slots.
 
 ##### Syntax
 
-`result = map % ` [[hashmap_type(type):slots_bits(bound)]] `( )`
+`result = map % ` `slots_bits(bound)` `( )`
 
 ##### Class
 
@@ -1722,8 +1723,8 @@ The result is the number of bits used in addressing the slots in `map`.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_slots_bits.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_slots_bits.f90
+:language: fortran
 ```
 
 
@@ -1740,7 +1741,7 @@ their slot index for a hash map
 
 ##### Syntax
 
-`result = map % ` [[hashmap_type:total_depth]] `( )`
+`result = map % ` `total_depth` `( )`
 
 ##### Class
 
@@ -1763,6 +1764,6 @@ from their slot index the map.
 
 ##### Example
 
-```fortran
-{!example/hashmaps/example_hashmaps_total_depth.f90!}
+```{literalinclude} ../../example/hashmaps/example_hashmaps_total_depth.f90
+:language: fortran
 ```
