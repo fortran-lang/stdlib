@@ -468,7 +468,7 @@ module stdlib_linalg_lapack_aux
 
 #:for rk,rt,ri in RC_KINDS_TYPES
      pure integer(${ik}$) function stdlib${ii}$_ila${ri}$lc( m, n, a, lda )
-     !! ILADLC: scans A for its last non-zero column.
+   !! Scan A for its last non-zero column.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -500,7 +500,7 @@ module stdlib_linalg_lapack_aux
      end function stdlib${ii}$_ila${ri}$lc
      
      pure integer(${ik}$) function stdlib${ii}$_ila${ri}$lr( m, n, a, lda )
-     !! ILADLR: scans A for its last non-zero row.
+     !! Scan A for its last non-zero row.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--

@@ -50,7 +50,7 @@ conversion stopped together with a status code.
 
 ### Syntax
 
-`call ` [[stdlib_str2num(module):to_num_base(interface)]] `(string, number, position, status)`
+`call ` `to_num_base` `(string, number, position, status)`
 
 ### Arguments
 

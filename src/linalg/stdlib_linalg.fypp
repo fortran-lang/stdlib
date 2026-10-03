@@ -89,7 +89,8 @@ module stdlib_linalg
     !! Cholesky factorization of a `real` symmetric or `complex` Hermitian matrix.
     !! Supported data types include `real` and `complex`.    
     !! 
-    !!@note The solution is based on LAPACK's `*POTRF` methods.
+    !!## Notes
+    !! The solution is based on LAPACK's `*POTRF` methods.
     !!     
      #:for rk,rt,ri in RC_KINDS_TYPES
      pure module function stdlib_linalg_${ri}$_cholesky_fun(a,lower,other_zeroed) result(c)
@@ -124,7 +125,8 @@ module stdlib_linalg
     !! lower factorization; the `other_zeroed` optional `logical` flag allows to choose whether the unused
     !! part of the triangular matrix should be filled with zeroes.
     !! 
-    !!@note The solution is based on LAPACK's `*POTRF` methods.
+    !!## Notes
+    !! The solution is based on LAPACK's `*POTRF` methods.
     !!         
      #:for rk,rt,ri in RC_KINDS_TYPES
      pure module subroutine stdlib_linalg_${ri}$_cholesky_inplace(a,lower,other_zeroed,err) 
@@ -396,7 +398,8 @@ module stdlib_linalg
      !! The function can solve simultaneously either one (from a 1-d right-hand-side vector `b(:)`) 
      !! or several (from a 2-d right-hand-side vector `b(:,:)`) systems.
      !! 
-     !!@note The solution is based on LAPACK's generic LU decomposition based solvers `*GESV`.
+    !!## Notes
+    !! The solution is based on LAPACK's generic LU decomposition based solvers `*GESV`.
      !!    
      #:for nd,ndsuf,nde in ALL_RHS
      #:for rk,rt,ri in RC_KINDS_TYPES
@@ -444,7 +447,8 @@ module stdlib_linalg
      !! The function can solve simultaneously either one (from a 1-d right-hand-side vector `b(:)`) 
      !! or several (from a 2-d right-hand-side vector `b(:,:)`) systems.
      !! 
-     !!@note The solution is based on LAPACK's generic LU decomposition based solvers `*GESV`.
+    !!## Notes
+    !! The solution is based on LAPACK's generic LU decomposition based solvers `*GESV`.
      !!        
      #:for nd,ndsuf,nde in ALL_RHS
      #:for rk,rt,ri in RC_KINDS_TYPES
@@ -487,7 +491,8 @@ module stdlib_linalg
      !! By default, A is not overwritten. Set `overwrite_a=.true.` to allow in-place 
      !! factorization for better performance.
      !! 
-     !!@note The solution is based on LAPACK's `*POSV` routines.
+     !!## Notes
+     !! The solution is based on LAPACK's `*POSV` routines.
      !!        
      #:for nd,ndsuf,nde in ALL_RHS
      #:for rk,rt,ri in RC_KINDS_TYPES
@@ -527,7 +532,8 @@ module stdlib_linalg
      !! call to `cholesky` with `lower=.true.`.
      !! Supported data types include `real` and `complex`.
      !! 
-     !!@note The solution is based on LAPACK's `*POTRS` routines.
+     !!## Notes
+     !! The solution is based on LAPACK's `*POTRS` routines.
      !!        
      #:for nd,ndsuf,nde in ALL_RHS
      #:for rk,rt,ri in RC_KINDS_TYPES
@@ -563,7 +569,8 @@ module stdlib_linalg
      !! call to `cholesky` with `lower=.false.`.
      !! Supported data types include `real` and `complex`.
      !! 
-     !!@note The solution is based on LAPACK's `*POTRS` routines.
+    !!## Notes
+    !! The solution is based on LAPACK's `*POTRS` routines.
      !!        
      #:for nd,ndsuf,nde in ALL_RHS
      #:for rk,rt,ri in RC_KINDS_TYPES
@@ -596,7 +603,8 @@ module stdlib_linalg
     !! This interface provides methods for computing the least squares of a linear matrix system.
     !! Supported data types include `real` and `complex`.
     !! 
-    !!@note The solution is based on LAPACK's singular value decomposition `*GELSD` methods.
+    !!## Notes
+    !! The solution is based on LAPACK's singular value decomposition `*GELSD` methods.
     !! 
     #:for nd,ndsuf,nde in ALL_RHS
     #:for rk,rt,ri in RC_KINDS_TYPES
@@ -636,7 +644,8 @@ module stdlib_linalg
     !! a subroutine. Supported data types include `real` and `complex`. If pre-allocated work spaces 
     !! are provided, no internal memory allocations take place when using this interface.
     !! 
-    !!@note The solution is based on LAPACK's singular value decomposition `*GELSD` methods.
+    !!## Notes
+    !! The solution is based on LAPACK's singular value decomposition `*GELSD` methods.
     !! 
     #:for nd,ndsuf,nde in ALL_RHS
     #:for rk,rt,ri in RC_KINDS_TYPES
@@ -718,7 +727,8 @@ module stdlib_linalg
     !!  least-squares problem using a function. Supported data types include `real` and
     !!  `complex`. 
     !!
-    !!  @note The solution is based on LAPACK's `*GGLSE` methods.
+    !!## Notes
+    !! The solution is based on LAPACK's `*GGLSE` methods.
     #:for rk, rt, ri in RC_KINDS_TYPES
     module function stdlib_linalg_${ri}$_constrained_lstsq(A, b, C, d, overwrite_matrices, err) result(x)
         !> Least-squares cost
@@ -755,7 +765,8 @@ module stdlib_linalg
     !!  `complex`. If a pre-allocated workspace is provided, no internal memory allocation takes
     !!  place.
     !!
-    !!  @note The solution is based on LAPACK's `*GGLSE` methods.
+    !!## Notes
+    !! The solution is based on LAPACK's `*GGLSE` methods.
     #:for rk, rt, ri in RC_KINDS_TYPES
     module subroutine stdlib_linalg_${ri}$_solve_constrained_lstsq(A, b, C, d, x, storage, overwrite_matrices, err)
         !> Least-squares cost.
@@ -815,9 +826,10 @@ module stdlib_linalg
     !! transforming to ordinary least-squares through row scaling.
     !! Supported data types include `real` and `complex`.
     !!
-    !!@note The solution is based on LAPACK's `*GELSD` after applying diagonal weights.
-    !!@warning Avoid extreme weight ratios (e.g., max(w)/min(w) > 1e6) as this may 
-    !!         cause loss of precision in the SVD-based solver.
+    !!## Notes
+    !! The solution is based on LAPACK's `*GELSD` after applying diagonal weights.
+    !! Avoid extreme weight ratios (e.g., max(w)/min(w) > 1e6) as this may cause loss
+    !! of precision in the SVD-based solver.
     !!
     #:for rk,rt,ri in RC_KINDS_TYPES
     module function stdlib_linalg_${ri}$_weighted_lstsq(w,a,b,cond,overwrite_a,rank,err) result(x)
@@ -857,9 +869,10 @@ module stdlib_linalg
     !! transforming to ordinary least-squares through row scaling, using a subroutine.
     !! Supported data types include `real` and `complex`.
     !!
-    !!@note The solution is based on LAPACK's `*GELSD` after applying diagonal weights.
-    !!@warning Avoid extreme weight ratios (e.g., max(w)/min(w) > 1e6) as this may
-    !!         cause loss of precision in the SVD-based solver.
+    !!## Notes
+    !! The solution is based on LAPACK's `*GELSD` after applying diagonal weights.
+    !! Avoid extreme weight ratios (e.g., max(w)/min(w) > 1e6) as this may cause loss
+    !! of precision in the SVD-based solver.
     !!
     #:for rk,rt,ri in RC_KINDS_TYPES
     module subroutine stdlib_linalg_${ri}$_solve_weighted_lstsq(w,a,b,x,cond,overwrite_a,rank,err)
@@ -904,7 +917,8 @@ module stdlib_linalg
     !! The user may want the full problem (provide `shape(Q)==[m,m]`, `shape(R)==[m,n]`) or the reduced  
     !! problem only: \( A = Q_1 R_1 \) (provide `shape(Q)==[m,k]`, `shape(R)==[k,n]`).
     !! 
-    !!@note The solution is based on LAPACK's QR factorization (`*GEQRF`) and ordered matrix output (`*ORGQR`, `*UNGQR`). 
+    !!## Notes
+    !! The solution is based on LAPACK's QR factorization (`*GEQRF`) and ordered matrix output (`*ORGQR`, `*UNGQR`).
     !!     
     #:for rk,rt,ri in RC_KINDS_TYPES
       pure module subroutine stdlib_linalg_${ri}$_qr(a,q,r,overwrite_a,storage,err) 
@@ -999,7 +1013,8 @@ module stdlib_linalg
     !! The output matrix \( T \) is upper-triangular for `complex` input matrices and quasi-upper-triangular
     !! for `real` input matrices (with possible \( 2 \times 2 \) blocks on the diagonal).
     !!
-    !!@note The solution is based on LAPACK's Schur decomposition routines (`*GEES`). 
+    !!## Notes
+    !! The solution is based on LAPACK's Schur decomposition routines (`*GEES`).
     !! 
     #:for rk,rt,ri in RC_KINDS_TYPES
       module subroutine stdlib_linalg_${ri}$_schur(a, t, z, eigvals, overwrite_a, storage, err)
@@ -1080,7 +1095,8 @@ module stdlib_linalg
     !! This interface provides methods for computing the determinant of a matrix.
     !! Supported data types include `real` and `complex`.
     !! 
-    !!@note The provided functions are intended for square matrices only.
+    !!## Notes
+    !! The provided functions are intended for square matrices only.
     !! 
     !!## Example
     !!
@@ -1120,7 +1136,8 @@ module stdlib_linalg
     !! This pure operator interface provides a convenient way to compute the determinant of a matrix.
     !! Supported data types include real and complex.
     !!
-    !!@note The provided functions are intended for square matrices.
+    !!## Notes
+    !! The provided functions are intended for square matrices.
     !!
     !!## Example
     !!
@@ -1179,7 +1196,8 @@ module stdlib_linalg
     !! Exceptions are raised in case of singular matrix or invalid size, and trigger an `error stop` if 
     !! the state flag `err` is not provided. 
     !!
-    !!@note The provided functions are intended for square matrices.
+    !!## Notes
+    !! The provided functions are intended for square matrices.
     !!       
     #:for rk,rt,ri in RC_KINDS_TYPES
     module function stdlib_linalg_inverse_${ri}$(a,err) result(inva)
@@ -1214,7 +1232,8 @@ module stdlib_linalg
     !! Pre-allocated storage may be provided for the array of pivot indices, `pivot`. If all pre-allocated 
     !! work spaces are provided, no internal memory allocations take place when using this interface.             
     !!
-    !!@note The provided subroutines are intended for square matrices.
+    !!## Notes
+    !! The provided subroutines are intended for square matrices.
     !!      
     #:for rk,rt,ri in RC_KINDS_TYPES
     module subroutine stdlib_linalg_invert_inplace_${ri}$(a,pivot,err)
@@ -1255,7 +1274,8 @@ module stdlib_linalg
     !! Supported data types include `real` and `complex`. On input errors or singular matrix, 
     !! NaNs will be returned.
     !!
-    !!@note The provided functions are intended for square matrices.
+    !!## Notes
+    !! The provided functions are intended for square matrices.
     !!
     #:for rk,rt,ri in RC_KINDS_TYPES
     module function stdlib_linalg_inverse_${ri}$_operator(a) result(inva)
@@ -1297,7 +1317,8 @@ module stdlib_linalg
     !! Exceptions are raised in case of computational errors or invalid input, and trigger an `error stop` 
     !! if the state flag `err` is not provided. 
     !!
-    !!@note The provided functions are intended for both rectangular and square matrices.
+    !!## Notes
+    !! The provided functions are intended for both rectangular and square matrices.
     !!       
     #:for rk,rt,ri in RC_KINDS_TYPES
     module function stdlib_linalg_pseudoinverse_${ri}$(a,rtol,err) result(pinva)
@@ -1345,7 +1366,8 @@ module stdlib_linalg
     !! Exceptions are raised in case of computational errors or invalid input, and trigger an `error stop` 
     !! if the state flag `err` is not provided.
     !!
-    !!@note The provided subroutines are intended for both rectangular and square matrices.
+    !!## Notes
+    !! The provided subroutines are intended for both rectangular and square matrices.
     !!       
     #:for rk,rt,ri in RC_KINDS_TYPES
     module subroutine stdlib_linalg_pseudoinvert_${ri}$(a,pinva,rtol,err)
@@ -1380,7 +1402,8 @@ module stdlib_linalg
     !! 
     !! For computational errors or invalid input, the function may return a matrix filled with NaNs.
     !!
-    !!@note The provided functions are intended for both rectangular and square matrices.
+    !!## Notes
+    !! The provided functions are intended for both rectangular and square matrices.
     !!
     #:for rk,rt,ri in RC_KINDS_TYPES
     module function stdlib_linalg_pinv_${ri}$_operator(a) result(pinva)
@@ -1411,7 +1434,8 @@ module stdlib_linalg
      !! eigenvectors to be returned. They are returned as columns of a square matrix with the same size as `A`. 
      !! Preallocated space for both eigenvalues `lambda` and the eigenvector matrices must be user-provided.      
      !! 
-     !!@note The solution is based on LAPACK's general eigenproblem solvers `*GEEV`.
+    !!## Notes
+    !! The solution is based on LAPACK's general eigenproblem solvers `*GEEV`.
      !!       
     #:for rk,rt,ri in RC_KINDS_TYPES
     #:for ep,ei in EIG_PROBLEM_LIST
@@ -1488,7 +1512,8 @@ module stdlib_linalg
      !! An `error stop` is thrown in case of failure; otherwise, error information can be returned 
      !! as an optional `type(linalg_state_type)` output flag. 
      !! 
-     !!@note The solution is based on LAPACK's general eigenproblem solvers `*GEEV`.
+     !!## Notes
+     !! The solution is based on LAPACK's general eigenproblem solvers `*GEEV`.
      !!       
     #:for rk,rt,ri in RC_KINDS_TYPES
     #:for ep,ei in EIG_PROBLEM_LIST
@@ -1542,7 +1567,8 @@ module stdlib_linalg
      !! matrix `vectors` with the same kind and size as `A`. 
      !! Preallocated space for both eigenvalues `lambda` and the eigenvector matrix must be user-provided.      
      !! 
-     !!@note The solution is based on LAPACK's eigenproblem solvers `*SYEV`/`*HEEV`.
+     !!## Notes
+     !! The solution is based on LAPACK's eigenproblem solvers `*SYEV`/`*HEEV`.
      !!      
     #:for rk,rt,ri in RC_KINDS_TYPES
     module subroutine stdlib_linalg_eigh_${ri}$(a,lambda,vectors,upper_a,overwrite_a,err)
@@ -1584,7 +1610,8 @@ module stdlib_linalg
      !! An `error stop` is thrown in case of failure; otherwise, error information can be returned 
      !! as an optional `type(linalg_state_type)` output flag. 
      !! 
-     !!@note The solution is based on LAPACK's eigenproblem solvers `*SYEV`/`*HEEV`.
+     !!## Notes
+     !! The solution is based on LAPACK's eigenproblem solvers `*SYEV`/`*HEEV`.
      !!         
     #:for rk,rt,ri in RC_KINDS_TYPES
     module function stdlib_linalg_eigvalsh_${ri}$(a,upper_a,err) result(lambda)
@@ -1629,7 +1656,8 @@ module stdlib_linalg
     !! For a matrix `A` with size [m,n], full matrix storage for `U` and `V` should be [m,m] and [n,n]. 
     !! It is possible to use partial storage [m,k] and [k,n], `k=min(m,n)`, choosing `full_matrices=.false.`.
     !! 
-    !!@note The solution is based on LAPACK's singular value decomposition `*GESDD` methods.
+    !!## Notes
+    !! The solution is based on LAPACK's singular value decomposition `*GESDD` methods.
     !! 
     !!## Example
     !!
@@ -1698,7 +1726,8 @@ module stdlib_linalg
     !! Supported data types include `real` and `complex`. The function returns a `real` array of 
     !! singular values, with size [min(m,n)]. 
     !! 
-    !!@note The solution is based on LAPACK's singular value decomposition `*GESDD` methods.
+    !!## Notes
+    !! The solution is based on LAPACK's singular value decomposition `*GESDD` methods.
     !! 
     !!## Example
     !!

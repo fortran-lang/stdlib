@@ -18,7 +18,7 @@
 #:set IRSCX_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME &
     & + CMPLX_TYPES_ALT_NAME
 
-!! Licensing:
+!! ## Licensing
 !!
 !! This file is subject both to the Fortran Standard Library license, and
 !! to additional licensing requirements as it contains translations of

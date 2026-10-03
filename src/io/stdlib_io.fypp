@@ -34,7 +34,8 @@ module stdlib_io
   !! `err` argument allows for handling errors through the library's `state_type` class. 
   !! An optional `logical` flag can be passed to delete the file after reading.  
   !! 
-  !!@note Handles errors using the library's `state_type` error-handling class. If not provided, 
+  !!## Notes
+  !! Handles errors using the library's `state_type` error-handling class. If not provided, 
   !! exceptions will trigger an `error stop`. 
   !!         
   interface get_file
