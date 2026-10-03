@@ -13,7 +13,7 @@ permissions:
   pull-requests: write
 jobs:
   misspell:
-    if: ${{ github.ref_name != 'copilot/modernize-docs-with-sphinx' && github.head_ref != 'copilot/modernize-docs-with-sphinx' }}
+    if: ${{ github.ref_name != 'jalvesz/sphinx' && github.head_ref != 'jalvesz/sphinx' }}
     name: review-dog / misspell
     runs-on: ubuntu-latest
     steps:

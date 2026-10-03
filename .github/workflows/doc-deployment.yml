@@ -33,7 +33,7 @@ env:
 
 jobs:
   Build-API-Docs:
-    if: ${{ github.ref_name != 'copilot/modernize-docs-with-sphinx' && github.head_ref != 'copilot/modernize-docs-with-sphinx' }}
+    if: ${{ github.ref_name != 'jalvesz/sphinx' && github.head_ref != 'jalvesz/sphinx' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
