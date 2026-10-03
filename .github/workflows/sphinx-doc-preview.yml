@@ -34,10 +34,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Configure GitHub Pages
-        if: github.event_name == 'push' && github.ref_name == 'sphinx' && github.repository != 'fortran-lang/stdlib'
-        uses: actions/configure-pages@v5
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
@@ -59,23 +55,23 @@ jobs:
           name: sphinx-html-preview
           path: ./doc/_build/html/
 
-      - name: Upload Pages artifact
-        if: github.event_name == 'push' && github.ref_name == 'sphinx' && github.repository != 'fortran-lang/stdlib'
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: ./doc/_build/html/
-
   Deploy-Sphinx-Docs:
     if: github.event_name == 'push' && github.ref_name == 'sphinx' && github.repository != 'fortran-lang/stdlib'
     needs: Build-Sphinx-Docs
     permissions:
-      pages: write
-      id-token: write
+      contents: write
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Sphinx preview artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: sphinx-html-preview
+          path: ./doc-preview
+
       - name: Deploy Sphinx preview
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: JamesIves/github-pages-deploy-action@4.1.5
+        with:
+          branch: gh-pages
+          folder: ./doc-preview
