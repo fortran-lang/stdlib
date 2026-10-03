@@ -4,9 +4,11 @@
 set(fppFiles
     test_specialfunctions_activations.fypp
     test_specialfunctions_gamma.fypp
+    test_specialfunctions_gamma_invalid.fypp
 )
 
 fypp_f90("${fyppFlags}" "${fppFiles}" outFiles)
 
 ADDTEST(specialfunctions_gamma)
+ADDTEST(specialfunctions_gamma_invalid)
 ADDTEST(specialfunctions_activations)
