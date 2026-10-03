@@ -1,8 +1,4 @@
----
-title: quadrature
----
-
-# Numerical integration
+# `stdlib_quadrature`
 
 ```{contents}
 :local:
