@@ -1,10 +1,9 @@
----
-title: sparse
----
+# `stdlib_sparse`
 
-# The `stdlib_sparse` module
-
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## Introduction
 
@@ -182,8 +181,8 @@ Type-bound procedures to enable requesting data from a sparse matrix.
 `v` : Shall be a `real` or `complex` value in accordance to the declared sparse matrix object. If the `ij` tuple is within the sparse pattern, `v` contains the value in the data buffer. If the `ij` tuple is outside the sparse pattern, `v` is equal `0`. If the `ij` tuple is outside the matrix pattern `(nrows,ncols)`, `v` is `NaN`.
 
 ### Example
-```fortran
-{!example/linalg/example_sparse_data_accessors.f90!}
+```{literalinclude} ../../example/linalg/example_sparse_data_accessors.f90
+:language: fortran
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -201,7 +200,7 @@ $$y=\alpha*op(M)*x+\beta*y$$
 
 ### Syntax
 
-`call ` [[stdlib_sparse_spmv(module):spmv(interface)]] `(matrix,vec_x,vec_y [,alpha,beta,op])`
+`call ` `spmv` `(matrix,vec_x,vec_y [,alpha,beta,op])`
 
 ### Arguments
 
@@ -305,7 +304,7 @@ This module provides facility functions for converting between storage formats.
 
 ### Syntax
 
-`call ` [[stdlib_sparse_conversion(module):coo2ordered(interface)]] `(coo[,sort_data])`
+`call ` `coo2ordered` `(coo[,sort_data])`
 
 ### Arguments
 
@@ -315,7 +314,7 @@ This module provides facility functions for converting between storage formats.
 
 ### Syntax
 
-`call ` [[stdlib_sparse_conversion(module):from_ijv(interface)]] `(sparse,row,col[,data,nrows,ncols,num_nz_rows,chunk])`
+`call ` `from_ijv` `(sparse,row,col[,data,nrows,ncols,num_nz_rows,chunk])`
 
 ### Arguments
 
@@ -336,12 +335,12 @@ This module provides facility functions for converting between storage formats.
 `chunk`, `optional`: chunk size, only valid in the case of a `SELLC` matrix, by default it will be taken from the `SELLC` default attribute chunk size. It is an `intent(in)` argument.
 
 ### Example
-```fortran
-{!example/linalg/example_sparse_from_ijv.f90!}
+```{literalinclude} ../../example/linalg/example_sparse_from_ijv.f90
+:language: fortran
 ```
 ### Syntax
 
-`call ` [[stdlib_sparse_conversion(module):diag(interface)]] `(matrix,diagonal)`
+`call ` `diag` `(matrix,diagonal)`
 
 ### Arguments
 
@@ -354,7 +353,7 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` [[stdlib_sparse_conversion(module):dense2coo(interface)]] `(dense,coo)`
+`call ` `dense2coo` `(dense,coo)`
 
 ### Arguments
 
@@ -364,7 +363,7 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` [[stdlib_sparse_conversion(module):coo2dense(interface)]] `(coo,dense)`
+`call ` `coo2dense` `(coo,dense)`
 
 ### Arguments
 
@@ -374,7 +373,7 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` [[stdlib_sparse_conversion(module):csc2dense(interface)]] `(csc,dense)`
+`call ` `csc2dense` `(csc,dense)`
 
 ### Arguments
 
@@ -384,7 +383,7 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` [[stdlib_sparse_conversion(module):coo2csr(interface)]] `(coo,csr[,sort_data])`
+`call ` `coo2csr` `(coo,csr[,sort_data])`
 
 ### Arguments
 
@@ -396,7 +395,7 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` [[stdlib_sparse_conversion(module):coo2csc(interface)]] `(coo,csc)`
+`call ` `coo2csc` `(coo,csc)`
 
 ### Arguments
 
@@ -406,7 +405,7 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` [[stdlib_sparse_conversion(module):csr2coo(interface)]] `(csr,coo)`
+`call ` `csr2coo` `(csr,coo)`
 
 ### Arguments
 
@@ -416,7 +415,7 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` [[stdlib_sparse_conversion(module):csr2sellc(interface)]] `(csr,sellc[,chunk])`
+`call ` `csr2sellc` `(csr,sellc[,chunk])`
 
 ### Arguments
 
@@ -428,7 +427,7 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` [[stdlib_sparse_conversion(module):csr2ell(interface)]] `(csr,ell[,num_nz_rows])`
+`call ` `csr2ell` `(csr,ell[,num_nz_rows])`
 
 ### Arguments
 
@@ -440,7 +439,7 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` [[stdlib_sparse_conversion(module):csc2coo(interface)]] `(csc,coo)`
+`call ` `csc2coo` `(csc,coo)`
 
 ### Arguments
 
@@ -449,8 +448,8 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 `coo` : Shall be a `COO` type of `real` or `complex` type. It is an `intent(out)` argument.
 
 ### Example
-```fortran
-{!example/linalg/example_sparse_spmv.f90!}
+```{literalinclude} ../../example/linalg/example_sparse_spmv.f90
+:language: fortran
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->

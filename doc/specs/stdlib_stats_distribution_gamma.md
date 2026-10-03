@@ -1,11 +1,9 @@
----
-
-title: stats_distribution_gamma
----
-
 # Statistical Distributions -- Gamma Distribution Module
 
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## `rvs_gamma` - gamma distribution random variates
 
@@ -29,13 +27,14 @@ With three or more arguments including `array_size`, the function returns a rank
 
 For complex shape and rate parameters, the real and imaginary parts are sampled independently of each other.
 
-@note
+```{note}
 The algorithm used for generating gamma random variates is fundamentally limited to double precision.[^1]
+```
 
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_gamma(module):rvs_gamma(interface)]]([[shape] [[, rate]] [[, loc]] [[, array_size]]])`
+`result = `rvs_gamma`([[shape] `, rate` `, loc` `, array_size`])`
 
 ### Class
 
@@ -60,8 +59,8 @@ The result is a scalar or rank-1 array with a size of `array_size`, and the same
 
 ### Example
 
-```fortran
-{!example/stats_distribution_gamma/example_gamma_rvs.f90!}
+```{literalinclude} ../../example/stats_distribution_gamma/example_gamma_rvs.f90
+:language: fortran
 ```
 
 ## `pdf_gamma` - gamma distribution probability density function
@@ -86,7 +85,7 @@ $$f(x+\mathit{i}y)=f(x)f(y)$$
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_gamma(module):pdf_gamma(interface)]](x, shape, rate [[, loc]])`
+`result = `pdf_gamma`(x, shape, rate `, loc`)`
 
 ### Class
 
@@ -112,8 +111,8 @@ The result is a scalar or an array, with a shape conformable to the arguments, a
 
 ### Example
 
-```fortran
-{!example/stats_distribution_gamma/example_gamma_pdf.f90!}
+```{literalinclude} ../../example/stats_distribution_gamma/example_gamma_pdf.f90
+:language: fortran
 ```
 
 ## `cdf_gamma` - gamma distribution cumulative distribution function
@@ -138,7 +137,7 @@ $$F(x+\mathit{i}y)=F(x)F(y)$$
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_gamma(module):cdf_gamma(interface)]](x, shape, rate [[, loc]])`
+`result = `cdf_gamma`(x, shape, rate `, loc`)`
 
 ### Class
 
@@ -164,8 +163,8 @@ The result is a scalar or an array, with a shape conformable to the arguments, a
 
 ### Example
 
-```fortran
-{!example/stats_distribution_gamma/example_gamma_cdf.f90!}
+```{literalinclude} ../../example/stats_distribution_gamma/example_gamma_cdf.f90
+:language: fortran
 ```
 [^1]: Marsaglia, George, and Wai Wan Tsang. "The ziggurat method for generating random variables." _Journal of statistical software_ 5 (2000): 1-7.
 

@@ -1,8 +1,8 @@
+!> version: experimental
+!>
+!> Date, time, and time interval handling for Fortran.
+!> ([Specification](../page/specs/stdlib_datetime.html))
 module stdlib_datetime
-    !! version: experimental
-    !!
-    !! Date, time, and time interval handling for Fortran.
-    !! ([Specification](../page/specs/stdlib_datetime.html))
     use stdlib_kinds, only: dp, int64
     use stdlib_strings, only: to_string
     implicit none
@@ -35,9 +35,7 @@ module stdlib_datetime
     type :: timedelta_type
         !! version: experimental
         !!
-        !! Represents a duration or time interval.
-        !! Normalized: seconds in [0,86399], ms in [0,999].
-        !! Days can be negative for negative durations.
+        !! Represents a duration or time interval. Normalized: seconds in [0,86399], ms in [0,999]. Days can be negative for negative durations.
         integer :: days         = 0   !! Number of days
         integer :: seconds      = 0   !! Seconds (0-86399)
         integer :: milliseconds = 0   !! Milliseconds (0-999)
@@ -643,8 +641,7 @@ contains
     end function total_seconds
 
     pure function days_from_civil(y, m, d) result(days)
-        !! Convert civil date to days since 1970-01-01.
-        !! Howard Hinnant's algorithm (public domain).
+        !! Convert civil date to days since 1970-01-01. Howard Hinnant's algorithm (public domain).
         integer, intent(in) :: y, m, d
         integer(int64) :: days
         integer :: yr, era, yoe, doy, doe, mp
@@ -668,8 +665,7 @@ contains
     end function days_from_civil
 
     pure subroutine civil_from_days(z, y, m, d)
-        !! Convert days since 1970-01-01 to civil date.
-        !! Howard Hinnant's algorithm (public domain).
+        !! Convert days since 1970-01-01 to civil date. Howard Hinnant's algorithm (public domain).
         integer(int64), intent(in) :: z
         integer, intent(out) :: y, m, d
         integer(int64) :: zz, era64

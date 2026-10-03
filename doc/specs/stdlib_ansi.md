@@ -1,11 +1,9 @@
----
-title: terminal colors
-...
+# `stdlib_ansi`
 
-
-# The `stdlib_ansi` module
-
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## Introduction
 
@@ -27,8 +25,8 @@ Experimental
 
 #### Example
 
-```fortran
-{!example/ansi/example_ansi_color.f90!}
+```{literalinclude} ../../example/ansi/example_ansi_color.f90
+:language: fortran
 ```
 
 
@@ -182,7 +180,7 @@ Generic interface to turn a style, foreground or background enumerator into an a
 
 #### Syntax
 
-`string =` [[stdlib_ansi(module):to_string(interface)]] `(code)`
+`string =` `to_string` `(code)`
 
 #### Class
 
@@ -203,8 +201,8 @@ Experimental
 
 #### Example
 
-```fortran
-{!example/ansi/example_ansi_to_string.f90!}
+```{literalinclude} ../../example/ansi/example_ansi_to_string.f90
+:language: fortran
 ```
 
 
@@ -237,8 +235,8 @@ Experimental
 
 #### Example
 
-```fortran
-{!example/ansi/example_ansi_combine.f90!}
+```{literalinclude} ../../example/ansi/example_ansi_combine.f90
+:language: fortran
 ```
 
 
@@ -271,6 +269,6 @@ Experimental
 
 #### Example
 
-```fortran
-{!example/ansi/example_ansi_concat.f90!}
+```{literalinclude} ../../example/ansi/example_ansi_concat.f90
+:language: fortran
 ```

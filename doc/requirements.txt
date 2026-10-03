@@ -1,0 +1,7 @@
+sphinx
+myst-parser
+ford
+pydata_sphinx_theme
+sphinx-fortran-domain
+fypp
+joblib

@@ -68,7 +68,7 @@ module stdlib_specialmatrices
         !!    \end{bmatrix}.
         !! \]
         !!
-        !! #### Syntax
+        !!## Syntax
         !!
         !! - Construct a real `tridiagonal` matrix from rank-1 arrays:
         !!
@@ -155,7 +155,7 @@ module stdlib_specialmatrices
         !!    \end{bmatrix}.
         !! \]
         !!
-        !! #### Syntax
+        !!## Syntax
         !!
         !! - Construct a real `symmetric tridiagonal` matrix from rank-1 arrays:
         !!

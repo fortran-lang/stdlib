@@ -15,10 +15,10 @@ public :: sleep
 !! Cached OS type retrieval with negligible runtime overhead.
 !! ([Specification](../page/specs/stdlib_system.html#os_type-cached-os-type-retrieval))
 !!
-!! ### Summary
+!!## Summary
 !! Provides a cached value for the runtime OS type. 
 !!
-!! ### Description
+!!## Description
 !! 
 !! This function caches the result of `get_runtime_os` after the first invocation. 
 !! Subsequent calls return the cached value, ensuring minimal overhead.
@@ -30,10 +30,10 @@ public :: OS_TYPE
 !! Determine the current operating system (OS) type at runtime.
 !! ([Specification](../page/specs/stdlib_system.html#get_runtime_os-determine-the-os-type-at-runtime))
 !!
-!! ### Summary
+!!## Summary
 !! This function inspects the runtime environment to identify the OS type. 
 !!
-!! ### Description
+!!## Description
 !! 
 !! The function evaluates environment variables (`OSTYPE` or `OS`) and filesystem attributes
 !! to identify the OS. It distinguishes between several common operating systems:
@@ -99,10 +99,10 @@ public :: dir_name
 !! Tests if a given path matches an existing directory.
 !! ([Specification](../page/specs/stdlib_system.html#is_directory-test-if-a-path-is-a-directory))
 !!
-!!### Summary
+!!## Summary
 !! Function to evaluate whether a specified path corresponds to an existing directory.
 !!
-!!### Description
+!!## Description
 !! 
 !! This function checks if a given file system path is a directory. 
 !! It follows symbolic links to return the status of the `target`.
@@ -118,12 +118,12 @@ public :: is_directory
 !! Makes an empty directory.
 !! ([Specification](../page/specs/stdlib_system.html#make_directory))
 !!
-!! ### Summary
+!!## Summary
 !! Creates an empty directory with default permissions.
 !!
-!! ### Description
+!!## Description
 !! This function makes an empty directory according to the path provided.
-!! Relative paths are supported. On Windows, paths involving either `/` or `\` are accepted.
+!! Relative paths are supported. On Windows, paths involving either ``/`` or ``\`` are accepted.
 !! An appropriate error message is returned whenever any error occurs.
 !!
 public :: make_directory
@@ -133,10 +133,10 @@ public :: make_directory
 !! Makes an empty directory, also creating all the parent directories required.
 !! ([Specification](../page/specs/stdlib_system.html#make_directory))
 !!
-!! ### Summary
+!!## Summary
 !! Creates an empty directory with all the parent directories required to do so.
 !!
-!! ### Description
+!!## Description
 !! This function makes an empty directory according to the path provided.
 !! It also creates all the necessary parent directories in the path if they do not exist already.
 !! Relative paths are supported.
@@ -149,12 +149,12 @@ public :: make_directory_all
 !! Removes an empty directory.
 !! ([Specification](../page/specs/stdlib_system.html#remove_directory))
 !!
-!! ### Summary
+!!## Summary
 !! Removes an empty directory.
 !!
-!! ### Description
+!!## Description
 !! This function Removes an empty directory according to the path provided.
-!! Relative paths are supported. On Windows paths involving either `/` or `\` are accepted.
+!! Relative paths are supported. On Windows paths involving either ``/`` or ``\`` are accepted.
 !! An appropriate error message is returned whenever any error occurs.
 !!
 public :: remove_directory
@@ -164,10 +164,10 @@ public :: remove_directory
 !! Gets the current working directory of the process
 !! ([Specification](../page/specs/stdlib_system.html#get_cwd))
 !!
-!! ### Summary
+!!## Summary
 !! Gets the current working directory.
 !!
-!! ### Description
+!!## Description
 !! This subroutine gets the current working directory the process is executing from.
 !!
 public :: get_cwd
@@ -177,10 +177,10 @@ public :: get_cwd
 !! Sets the current working directory of the process
 !! ([Specification](../page/specs/stdlib_system.html#set_cwd))
 !!
-!! ### Summary
+!!## Summary
 !! Changes the current working directory to the one specified.
 !!
-!! ### Description
+!!## Description
 !! This subroutine sets the current working directory the process is executing from.
 !!
 public :: set_cwd
@@ -190,10 +190,10 @@ public :: set_cwd
 !! Deletes a specified file from the filesystem.
 !! ([Specification](../page/specs/stdlib_system.html#delete_file-delete-a-file))
 !!
-!!### Summary
+!!## Summary
 !! Subroutine to safely delete a file from the filesystem. It handles errors gracefully using the library's `state_type`.
 !!
-!!### Description
+!!## Description
 !! 
 !! This subroutine deletes a specified file. If the file is a directory or inaccessible, an error is raised.
 !! If the file does not exist, a warning is returned, but no error state. Errors are handled using the 
@@ -207,10 +207,10 @@ public :: delete_file
 !! Returns the file path of the null device, which discards all data written to it.
 !! ([Specification](../page/specs/stdlib_system.html#null_device-return-the-null-device-file-path))
 !!
-!! ### Summary
+!!## Summary
 !! Function that provides the file path of the null device appropriate for the current operating system.
 !!
-!! ### Description
+!!## Description
 !!
 !! The null device is a special file that discards all data written to it and always reads as 
 !! an empty file. This function returns the null device path, adapted for the operating system in use.
@@ -253,11 +253,11 @@ integer, parameter, public :: &
 !! Checks if a path exists in the filesystem.
 !! ([Specification](../page/specs/stdlib_system.html#exists))
 !!
-!!### Summary
+!!## Summary
 !! Function to check whether the path exists in the fileystem at all.
 !! If the path does exist, returns the type of the path.
 !!
-!!### Description
+!!## Description
 !!
 !! This function makes a system call (syscall) to retrieve metadata for the specified path and determines its type.
 !! It can distinguish between the following path types:
@@ -278,10 +278,10 @@ public :: exists
 !! Tests if a given path is a symbolic link.
 !! ([Specification](../page/specs/stdlib_system.html#is_symlink))
 !!
-!!### Summary
+!!## Summary
 !! Function to evaluate whether a specified path corresponds to a symbolic link.
 !!
-!!### Description
+!!## Description
 !! 
 !! This function checks if a given file system path is a symbolic link either to a 
 !! file or a directory. It is cross-platform and utilizes native system calls. 
@@ -294,10 +294,10 @@ public :: is_symlink
 !! Tests if a given path is a regular file.
 !! ([Specification](../page/specs/stdlib_system.html#is_file))
 !!
-!!### Summary
+!!## Summary
 !! Function to evaluate whether a specified path corresponds to a regular file.
 !!
-!!### Description
+!!## Description
 !! 
 !! This function checks if a given file system path is a regular file. 
 !! It follows symbolic links to return the status of the `target`.
@@ -376,11 +376,11 @@ interface runasync
     !! Executes an external process asynchronously.
     !! ([Specification](../page/specs/stdlib_system.html#runasync-execute-an-external-process-asynchronously))
     !!
-    !! ### Summary
+    !!## Summary
     !! Provides methods for executing external processes asynchronously, using either a single command string 
     !! or an argument list, with options for output collection and standard input.
     !!
-    !! ### Description
+    !!## Description
     !! 
     !! This interface allows the user to spawn external processes asynchronously (non-blocking). 
     !! Processes can be executed via a single command string or a list of arguments, with options to collect 
@@ -388,7 +388,8 @@ interface runasync
     !! Additionally, a callback function can be provided, which will be called upon process completion.
     !! A user-defined payload can be attached and passed to the callback for handling process-specific data.
     !!
-    !! @note The implementation depends on system-level process management capabilities.
+    !!## Notes
+    !! The implementation depends on system-level process management capabilities.
     !!
     module function run_async_cmd(cmd, stdin, want_stdout, want_stderr, callback, payload) result(process)
         !> The command line string to execute.
@@ -432,11 +433,11 @@ interface run
     !! Executes an external process synchronously.
     !! ([Specification](../page/specs/stdlib_system.html#run-execute-an-external-process-synchronously))
     !!
-    !! ### Summary
+    !!## Summary
     !! Provides methods for executing external processes synchronously, using either a single command string 
     !! or an argument list, with options for output collection and standard input.
     !!
-    !! ### Description
+    !!## Description
     !! 
     !! This interface allows the user to spawn external processes synchronously (blocking), 
     !! via either a single command string or a list of arguments. It also includes options to collect 
@@ -445,7 +446,8 @@ interface run
     !! allowing users to process results dynamically. A user-defined payload can also be provided, 
     !! which is passed to the callback function to facilitate contextual processing.
     !!
-    !! @note The implementation depends on system-level process management capabilities.
+    !!## Notes
+    !! The implementation depends on system-level process management capabilities.
     !!
     module function run_sync_cmd(cmd, stdin, want_stdout, want_stderr, callback, payload) result(process)
         !> The command line string to execute.
@@ -489,16 +491,17 @@ interface is_running
     !! Checks if an external process is still running.
     !! ([Specification](../page/specs/stdlib_system.html#is_running-check-if-a-process-is-still-running))
     !!
-    !! ### Summary
+    !!## Summary
     !! Provides a method to determine if an external process is still actively running.
     !!
-    !! ### Description
+    !!## Description
     !! 
     !! This interface checks the status of an external process to determine whether it is still actively running. 
     !! It is particularly useful for monitoring asynchronous processes created using the `run` interface. 
     !! The internal state of the `process_type` object is updated after the call to reflect the current process status.
     !!
-    !! @note The implementation relies on system-level process management capabilities.
+    !!## Notes
+    !! The implementation relies on system-level process management capabilities.
     !!
     logical module function process_is_running(process) result(is_running)
         !> The process object to check.
@@ -513,16 +516,17 @@ interface is_completed
     !! Checks if an external process has completed execution.
     !! ([Specification](../page/specs/stdlib_system.html#is_completed-check-if-a-process-has-completed-execution))
     !!
-    !! ### Summary
+    !!## Summary
     !! Provides a method to determine if an external process has finished execution.
     !!
-    !! ### Description
+    !!## Description
     !! 
     !! This interface checks the status of an external process to determine whether it has finished execution. 
     !! It is particularly useful for monitoring asynchronous processes created using the `run` interface. 
     !! The internal state of the `process_type` object is updated after the call to reflect the current process status.
     !!
-    !! @note The implementation relies on system-level process management capabilities.
+    !!## Notes
+    !! The implementation relies on system-level process management capabilities.
     !!
     logical module function process_is_completed(process) result(is_completed)
         !> The process object to check.
@@ -537,10 +541,10 @@ interface elapsed
     !! Returns the lifetime of a process, in seconds.
     !! ([Specification](../page/specs/stdlib_system.html#elapsed-return-process-lifetime-in-seconds))
     !!
-    !! ### Summary
+    !!## Summary
     !! Provides the total elapsed time (in seconds) since the creation of the specified process.
     !!
-    !! ### Description
+    !!## Description
     !! 
     !! This interface returns the total elapsed time (in seconds) for a given process since it was started. 
     !! If the process is still running, the value returned reflects the time from the creation of the process 
@@ -561,17 +565,18 @@ interface wait
     !! Waits for a running process to complete.
     !! ([Specification](../page/specs/stdlib_system.html#wait-wait-until-a-running-process-is-completed))
     !!
-    !! ### Summary
+    !!## Summary
     !! Provides a method to block the execution and wait until the specified process finishes.
     !! Supports an optional maximum wait time, after which the function returns regardless of process completion.
     !!
-    !! ### Description
+    !!## Description
     !! 
     !! This interface allows waiting for a process to complete. If the process is running asynchronously, this subroutine
     !! will block further execution until the process finishes. Optionally, a maximum wait time can be specified; if 
     !! the process doesn't complete within this time, the subroutine returns without further waiting.
     !!
-    !! @note The process state is accordingly updated on return from this call.
+    !!## Notes
+    !! The process state is accordingly updated on return from this call.
     !!
     module subroutine wait_for_completion(process, max_wait_time)
         !> The process object to monitor.
@@ -587,17 +592,18 @@ interface update
     !! Updates the internal state of a process variable.
     !! ([Specification](../page/specs/stdlib_system.html#update-update-the-internal-state-of-a-process))
     !!
-    !! ### Summary
+    !!## Summary
     !! Provides a method to query the system and update the internal state of the specified process variable.
     !!
-    !! ### Description
+    !!## Description
     !! 
     !! This subroutine queries the system to retrieve and update information about the state of the process.
     !! Once the process is completed, and if standard output or standard error were requested, their respective
     !! data is loaded into the `process%stdout` and `process%stderr` variables. This routine is useful for keeping
     !! track of the latest state and output of a process, particularly for asynchronous processes.
     !!
-    !! @note This subroutine should be called periodically for asynchronous processes to check their completion
+    !!## Notes
+    !! This subroutine should be called periodically for asynchronous processes to check their completion
     !! and retrieve the output.
     !!
     module subroutine update_process_state(process)
@@ -612,18 +618,19 @@ interface kill
     !! Terminates a running process.
     !! ([Specification](../page/specs/stdlib_system.html#kill-terminate-a-running-process))
     !!
-    !! ### Summary
+    !!## Summary
     !! Provides a method to kill or terminate a running process.
     !! Returns a boolean flag indicating whether the termination was successful.
     !!
-    !! ### Description
+    !!## Description
     !! 
     !! This interface allows for the termination of an external process that is still running.  
     !! If the process is successfully killed, the `success` output flag is set to `.true.`, otherwise `.false.`.
     !! This function is useful for controlling and managing processes that are no longer needed or for forcefully
     !! stopping an unresponsive process.
     !!
-    !! @note This operation may be system-dependent and could fail if the underlying user does not have 
+    !!## Notes
+    !! This operation may be system-dependent and could fail if the underlying user does not have 
     !! the necessary rights to kill a process.
     !!
     module subroutine process_kill(process, success)
@@ -640,18 +647,19 @@ interface sleep
     !! Pauses execution for a specified time in milliseconds.
     !! ([Specification](../page/specs/stdlib_system.html#sleep-pause-execution-for-a-specified-time=in-milliseconds))
     !!
-    !! ### Summary
+    !!## Summary
     !! Pauses code execution for a specified number of milliseconds. This routine is a cross-platform
     !! wrapper around platform-specific sleep functions, providing consistent behavior on different operating systems.
     !!
-    !! ### Description
+    !!## Description
     !! 
     !! This interface allows the user to pause the execution of a program for a specified duration, expressed in
     !! milliseconds. It provides a cross-platform wrapper around native sleep functions, ensuring that the program 
     !! will sleep for the requested amount of time on different systems (e.g., using `Sleep` on Windows or `nanosleep`
     !! on Unix-like systems).
     !!
-    !! @note The precision of the sleep may vary depending on the system and platform.
+    !!## Notes
+    !! The precision of the sleep may vary depending on the system and platform.
     !!
     module subroutine sleep(millisec)
         !> The number of milliseconds to pause execution for.
@@ -665,7 +673,7 @@ abstract interface
     !!
     !! Process callback interface
     !! 
-    !! ### Summary 
+    !!## Summary 
     !!
     !! The `process_callback` interface defines a user-provided subroutine that will be called 
     !! upon process completion. It provides access to process metadata, including the process ID, 
@@ -697,10 +705,10 @@ interface
     !! Returns a `logical` flag indicating if the system is Windows.
     !! ([Specification](../page/specs/stdlib_system.html#is_windows-check-if-the-system-is-running-on-windows))
     !!
-    !! ### Summary
+    !!## Summary
     !! A fast, compile-time check to determine if the system is running Windows, based on the `_WIN32` macro.
     !!
-    !! ### Description
+    !!## Description
     !! 
     !! This interface provides a function to check if the current system is Windows. The check is performed by
     !! wrapping a C function that tests if the `_WIN32` macro is defined. This check is fast and occurs at
@@ -709,7 +717,8 @@ interface
     !! The `is_windows` function is particularly useful for conditional compilation or system-specific code paths
     !! that are dependent on whether the code is running on Windows.
     !!
-    !! @note This function relies on the `_WIN32` macro, which is defined in C compilers when targeting Windows.
+    !!## Notes
+    !! This function relies on the `_WIN32` macro, which is defined in C compilers when targeting Windows.
     !!
     logical module function is_windows()
     end function is_windows
@@ -725,7 +734,7 @@ end interface
 interface join_path
     !! version: experimental
     !!
-    !!### Summary
+    !!## Summary
     !! join the paths provided according to the OS-specific path-separator
     !! ([Specification](../page/specs/stdlib_system.html#join_path))
     !!
@@ -765,7 +774,7 @@ end interface join_path
 interface operator(/)
     !! version: experimental
     !!
-    !!### Summary
+    !!## Summary
     !! A binary operator to join the paths provided according to the OS-specific path-separator
     !! ([Specification](../page/specs/stdlib_system.html#operator(/)))
     !!
@@ -795,12 +804,12 @@ end interface operator(/)
 interface split_path
     !! version: experimental
     !!
-    !!### Summary
+    !!## Summary
     !! splits the path immediately following the final path-separator
     !! separating into typically a directory and a file name.
     !! ([Specification](../page/specs/stdlib_system.html#split_path))
     !!
-    !!### Description
+    !!## Description
     !! If the path is empty `head`='.' and tail=''
     !! If the path only consists of separators, `head` is set to the separator and tail is empty
     !! If the path is a root directory, `head` is set to that directory and tail is empty
@@ -819,11 +828,11 @@ end interface split_path
 interface base_name
     !! version: experimental
     !!
-    !!### Summary
+    !!## Summary
     !! returns the base name (last component) of the provided path
     !! ([Specification](../page/specs/stdlib_system.html#base_name))
     !!
-    !!### Description
+    !!## Description
     !! The value returned is the `tail` of the interface `split_path`
     module function base_name_char(p) result(base)
         character(:), allocatable :: base
@@ -839,11 +848,11 @@ end interface base_name
 interface dir_name
     !! version: experimental
     !!
-    !!### Summary
+    !!## Summary
     !! returns everything but the last component of the provided path
     !! ([Specification](../page/specs/stdlib_system.html#dir_name))
     !!
-    !!### Description
+    !!## Description
     !! The value returned is the `head` of the interface `split_path`
     module function dir_name_char(p) result(dir)
         character(:), allocatable :: dir
@@ -862,7 +871,7 @@ contains
 integer function get_runtime_os() result(os)
     !! The function identifies the OS by inspecting environment variables and filesystem attributes.
     !!
-    !! ### Returns:
+    !!## Returns:
     !! - **OS_UNKNOWN**: If the OS cannot be determined.
     !! - **OS_LINUX**, **OS_MACOS**, **OS_WINDOWS**, **OS_CYGWIN**, **OS_SOLARIS**, **OS_FREEBSD**, or **OS_OPENBSD**.
     !!

@@ -1,37 +1,11 @@
 #:include "common.fypp"
-!> The `stdlib_str2num` module provides procedures and interfaces for conversion
-!> of characters to numerical types. Currently supported: `integer` and `real`.
+!> The `stdlib_str2num` module provides procedures and interfaces for converting
+!> character data to numerical types. Currently supported: `integer` and `real`.
 !> ([Specification](../page/specs/stdlib_str2num.html))
 !>
-!> This code was modified from https://github.com/jalvesz/Fortran-String-to-Num by Alves Jose
-!> And was possible thanks to all the discussions in this thread https://fortran-lang.discourse.group/t/faster-string-to-double/
-!>
-!> Known precisions limits of current proposal :
-!> Conversion to double precision is exact up to epsilon(0.0_dp)
-!>   example:
-!>
-!>   input          : 123456.78901234567890123456789012345678901234567890+2
-!>
-!>   formatted read : 12345678.90123457
-!>
-!>   to_num         : 12345678.90123457
-!>
-!>   difference abs :                 0.1862645149230957E-08
-!>
-!>   difference rel :                 0.1508742584455759E-13%
-!>    
-!> Conversion to quadruple precision can deviate at about 200*epsilon(0.0_qp)
-!>   example:
-!>
-!>   input          : 0.140129846432481707092372958328991613128026194187651577175706828388979108268586060148663818836212158203125E-443
-!>
-!>   formatted read : 0.140129846432481707092372958328991608E-443
-!>
-!>   to_num         : 0.140129846432481707092372958328996233E-443
-!>
-!>   difference abs :                                 0.4625E-475 
-!>
-!>   difference rel :                                 0.3300E-029%
+!> This code was adapted from
+!> https://github.com/jalvesz/Fortran-String-to-Num and related design discussion
+!> at https://fortran-lang.discourse.group/t/faster-string-to-double/.
 
 module stdlib_str2num
     use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64

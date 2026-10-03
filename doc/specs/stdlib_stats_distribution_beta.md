@@ -1,10 +1,9 @@
----
-title: stats_distribution_beta
----
-
 # Statistical Distributions -- Beta Distribution Module
 
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## `rvs_beta` - beta distribution random variates
 
@@ -24,12 +23,13 @@ With three or more arguments including `array_size`, the function returns a rank
 
 For complex shape parameters, the real and imaginary parts are sampled independently of each other.
 
-@note
+```{note}
 For shape parameters less than 1, the function uses a uniform method. For parameters greater than or equal to 1, it uses the gamma ratio method[^1], where \\(X \\sim \\text{Beta}(a,b)\\) is generated as \\(X = \\frac{Y_1}{Y_1 + Y_2}\\) where \\(Y_1 \\sim \\Gamma(a,1)\\) and \\(Y_2 \\sim \\Gamma(b,1)\\).
+```
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_beta(module):rvs_beta(interface)]](a, b [[, loc]] [[, array_size]])`
+`result = `rvs_beta`(a, b `, loc` `, array_size`)`
 
 ### Class
 
@@ -54,8 +54,8 @@ The result is a scalar or rank-1 array with a size of `array_size`, and the same
 
 ### Example
 
-```fortran
-{!example/stats_distribution_beta/example_beta_rvs.f90!}
+```{literalinclude} ../../example/stats_distribution_beta/example_beta_rvs.f90
+:language: fortran
 ```
 
 ## `pdf_beta` - beta distribution probability density function
@@ -80,7 +80,7 @@ $$f(x+\\mathit{i}y)=f(x)f(y)$$
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_beta(module):pdf_beta(interface)]](x, a, b [[, loc]])`
+`result = `pdf_beta`(x, a, b `, loc`)`
 
 ### Class
 
@@ -106,8 +106,8 @@ The result is a scalar or an array, with a shape conformable to the arguments, a
 
 ### Example
 
-```fortran
-{!example/stats_distribution_beta/example_beta_pdf.f90!}
+```{literalinclude} ../../example/stats_distribution_beta/example_beta_pdf.f90
+:language: fortran
 ```
 
 ## `cdf_beta` - beta distribution cumulative distribution function
@@ -132,7 +132,7 @@ $$F(x+\\mathit{i}y)=F(x)F(y)$$
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_beta(module):cdf_beta(interface)]](x, a, b [[, loc]])`
+`result = `cdf_beta`(x, a, b `, loc`)`
 
 ### Class
 
@@ -158,8 +158,8 @@ The result is a scalar or an array, with a shape conformable to the arguments, a
 
 ### Example
 
-```fortran
-{!example/stats_distribution_beta/example_beta_cdf.f90!}
+```{literalinclude} ../../example/stats_distribution_beta/example_beta_cdf.f90
+:language: fortran
 ```
 
 [^1]: Devroye, Luc. _Non-Uniform Random Variate Generation_. Springer-Verlag, 1986 (Chapter IX, Section 3).

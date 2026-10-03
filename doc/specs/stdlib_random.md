@@ -1,10 +1,9 @@
----
-title: random
----
-
 # Statistical Distributions -- Pseudorandom Number Generator Module
 
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## `random_seed` - set or get a value of seed to the probability distribution pseudorandom number generator
 
@@ -18,7 +17,7 @@ Set or get the seed value before calling the probability distribution pseudorand
 
 ### Syntax
 
-`call ` [[stdlib_random(module):random_seed(interface)]] `(put, get)`
+`call ` `random_seed` `(put, get)`
 
 ### Arguments
 
@@ -32,8 +31,8 @@ Return a scalar of type `integer`.
 
 ### Example
 
-```fortran
-{!example/random/example_random_seed.f90!}
+```{literalinclude} ../../example/random/example_random_seed.f90
+:language: fortran
 ```
 
 ## `dist_rand` - Get a random integer with specified kind
@@ -48,7 +47,7 @@ Generate an integer pseudorandom number in a specific range [-2^k, 2^k - 1] acco
 
 ### Syntax
 
-`result = ` [[stdlib_random(module):dist_rand(interface)]] `(n)`
+`result = ` `dist_rand` `(n)`
 
 ### Arguments
 
@@ -60,6 +59,6 @@ Return a scalar of type `integer`.
 
 ### Example
 
-```fortran
-{!example/random/example_dist_rand.f90!}
+```{literalinclude} ../../example/random/example_dist_rand.f90
+:language: fortran
 ```

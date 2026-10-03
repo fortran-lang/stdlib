@@ -1,10 +1,9 @@
----
-title: array
----
+# `stdlib_array`
 
-# The `stdlib_array` module
-
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## Introduction
 
@@ -27,7 +26,7 @@ The built-in / intrinsics are usually preferable to `trueloc`, unless the access
 
 #### Syntax
 
-`loc =` [[trueloc(function)]] `(array[, lbound])`
+`loc =` `trueloc` `(array[, lbound])`
 
 #### Class
 
@@ -45,8 +44,8 @@ Returns an array of default integer size, with a maximum length of `size(array)`
 
 #### Examples
 
-```fortran
-{!example/array/example_trueloc.f90!}
+```{literalinclude} ../../example/array/example_trueloc.f90
+:language: fortran
 ```
 
 
@@ -64,7 +63,7 @@ The built-in / intrinsics are usually preferable to `falseloc`, unless the acces
 
 #### Syntax
 
-`loc =` [[falseloc(function)]] `(array[, lbound])`
+`loc =` `falseloc` `(array[, lbound])`
 
 #### Class
 
@@ -82,6 +81,6 @@ Returns an array of default integer size, with a maximum length of `size(array)`
 
 #### Examples
 
-```fortran
-{!example/array/example_falseloc.f90!}
+```{literalinclude} ../../example/array/example_falseloc.f90
+:language: fortran
 ```

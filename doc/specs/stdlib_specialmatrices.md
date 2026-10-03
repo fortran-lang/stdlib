@@ -1,10 +1,9 @@
----
-title: specialmatrices
----
+# `stdlib_specialmatrices`
 
-# The `stdlib_specialmatrices` module
-
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## Introduction
 
@@ -64,11 +63,11 @@ Tridiagonal matrices are available with all supported data types as `tridiagonal
 
 - To construct a tridiagonal matrix from already allocated arrays `dl` (lower diagonal, size `n-1`), `dv` (main diagonal, size `n`) and `du` (upper diagonal, size `n-1`):
 
-`A = ` [[stdlib_specialmatrices(module):tridiagonal(interface)]] `(dl, dv, du [, err])`
+`A = ` `tridiagonal` `(dl, dv, du [, err])`
 
 - To construct a tridiagonal matrix of size `n x n` with scalar diagonal elements `dl` (lower diagonal), `dv` (main diagonal), and `du` (upper diagonal):
 
-`A = ` [[stdlib_specialmatrices(module):tridiagonal(interface)]] `(dl, dv, du, n [, err])`
+`A = ` `tridiagonal` `(dl, dv, du, n [, err])`
 
 Where `err` is an optional `intent(out)` argument of type `linalg_state_type`. When `err` is not present, the corresponding `tridiagonal` call is `pure` and signals invalid sizes or array shape mismatches via an internal `error stop`. When `err` is present, the impure overload is used instead, and any such error is reported by setting the `err` variable rather than executing an `error stop`.
 
@@ -103,8 +102,8 @@ In either case, the elements of the resulting matrix `A` are unassigned.
 
 #### Example
 
-```fortran
-{!example/specialmatrices/example_tridiagonal_dp_type.f90!}
+```{literalinclude} ../../example/specialmatrices/example_tridiagonal_dp_type.f90
+:language: fortran
 ```
 
 ### Symmetric tridiagonal matrices {#Sym_tridiagonal}
@@ -147,11 +146,11 @@ Symmetric tridiagonal matrices are available with all supported data types as `s
 
 - To construct a symmetric tridiagonal matrix from already allocated arrays `du` (off-diagonal, size `n-1`) and `dv` (main diagonal, size `n`):
 
-`A = ` [[stdlib_specialmatrices(module):sym_tridiagonal(interface)]] `(du, dv [, err])`
+`A = ` `sym_tridiagonal` `(du, dv [, err])`
 
 - To construct a symmetric tridiagonal matrix of size `n x n` with scalar diagonal elements `du` (off-diagonal) and `dv` (main diagonal):
 
-`A = ` [[stdlib_specialmatrices(module):sym_tridiagonal(interface)]] `(du, dv, n [, err])`
+`A = ` `sym_tridiagonal` `(du, dv, n [, err])`
 
 #### Arguments
 
@@ -182,8 +181,8 @@ In either case, the elements of the resulting matrix `A` are unassigned.
 
 #### Example
 
-```fortran
-{!example/specialmatrices/example_sym_tridiagonal_dp_type.f90!}
+```{literalinclude} ../../example/specialmatrices/example_sym_tridiagonal_dp_type.f90
+:language: fortran
 ```
 
 
@@ -205,7 +204,7 @@ With the exception of `extended precision` and `quadruple precision`, all the ty
 
 #### Syntax
 
-`call ` [[stdlib_specialmatrices(module):spmv(interface)]] `(A, x, y [, alpha, beta, op])`
+`call ` `spmv` `(A, x, y [, alpha, beta, op])`
 
 #### Arguments
 
@@ -223,11 +222,11 @@ With the exception of `extended precision` and `quadruple precision`, all the ty
 
 #### Examples
 
-```fortran
-{!example/specialmatrices/example_specialmatrices_dp_spmv.f90!}
+```{literalinclude} ../../example/specialmatrices/example_specialmatrices_dp_spmv.f90
+:language: fortran
 ```
-```fortran
-{!example/specialmatrices/example_specialmatrices_cdp_spmv.f90!}
+```{literalinclude} ../../example/specialmatrices/example_specialmatrices_cdp_spmv.f90
+:language: fortran
 ```
 
 ## Utility functions
@@ -244,7 +243,7 @@ Utility function to convert all the matrix types provided by `stdlib_specialmatr
 
 #### Syntax
 
-`B = ` [[stdlib_specialmatrices(module):dense(interface)]] `(A)`
+`B = ` `dense` `(A)`
 
 #### Arguments
 
@@ -264,7 +263,7 @@ Utility function returning the transpose of a special matrix. The returned matri
 
 #### Syntax
 
-`B = ` [[stdlib_specialmatrices(module):transpose(interface)]] `(A)`
+`B = ` `transpose` `(A)`
 
 #### Arguments
 
@@ -284,7 +283,7 @@ Utility function returning the complex-conjugate transpose of a special matrix. 
 
 #### Syntax
 
-`B = ` [[stdlib_specialmatrices(module):hermitian(interface)]] `(A)`
+`B = ` `hermitian` `(A)`
 
 #### Arguments
 
@@ -310,16 +309,16 @@ The definition of all standard arithmetic operators have been overloaded to be a
 
 - Adding two matrices of the same type:
 
-`C = A` [[stdlib_specialmatrices(module):operator(+)(interface)]] `B`
+`C = A` `operator(+)` `B`
 
 - Subtracting two matrices of the same type:
 
-`C = A` [[stdlib_specialmatrices(module):operator(-)(interface)]] `B`
+`C = A` `operator(-)` `B`
 
 - Scalar multiplication
 
-`B = alpha` [[stdlib_specialmatrices(module):operator(*)(interface)]] `A`
+`B = alpha` `operator(*)` `A`
 
-@note
+```{note}
 For addition (`+`) and subtraction (`-`), the operand matrices `A` and `B` must be of the same type and kind and must have matching dimensions (`n`). The result `C` of the expression will then have the same dimensions as `A` (and `B`) when the operation is valid. For scalar multiplication (`*`), `A` and `B` need to be of the same type and kind, while `alpha` is either `real` or `complex` (with the same kind again) depending on the type being used.
-@endnote
+```

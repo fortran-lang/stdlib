@@ -82,10 +82,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
      ! Compute the least-squares solution to a real system of linear equations Ax = b
      module function stdlib_linalg_${ri}$_lstsq_${ndsuf}$(a,b,cond,overwrite_a,rank,err) result(x)
-     !!### Summary
+     !!## Summary
      !! Compute least-squares solution to a real system of linear equations \( Ax = b \) 
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the least-squares solution of a linear matrix problem.
      !!
@@ -135,10 +135,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
      module subroutine stdlib_linalg_${ri}$_solve_lstsq_${ndsuf}$(a,b,x,real_storage,int_storage, &
              #{if rt.startswith('c')}#cmpl_storage,#{endif}# cond,singvals,overwrite_a,rank,err) 
              
-     !!### Summary
+     !!## Summary
      !! Compute least-squares solution to a real system of linear equations \( Ax = b \) 
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the least-squares solution of a linear matrix problem.
      !!
@@ -602,10 +602,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
     ! Weighted least-squares subroutine: minimize ||D(Ax - b)||^2 where D = diag(sqrt(w))
     module subroutine stdlib_linalg_${ri}$_solve_weighted_lstsq(w,a,b,x,cond,overwrite_a,rank,err)
-    !!### Summary
+    !!## Summary
     !! Compute weighted least-squares solution to a system of linear equations \( Ax = b \)
     !!
-    !!### Description
+    !!## Description
     !!
     !! This subroutine computes the weighted least-squares solution of a linear matrix problem.
     !!

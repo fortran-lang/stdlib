@@ -1,10 +1,9 @@
----
-title: linalg_state_type
----
-
 # Linear Algebra -- State and Error Handling Module
 
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## Introduction
 
@@ -36,8 +35,8 @@ Experimental
 
 #### Example
 
-```fortran
-{!example/linalg/example_state1.f90!}
+```{literalinclude} ../../example/linalg/example_state1.f90
+:language: fortran
 ```
 
 ## Error flags provided

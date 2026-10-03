@@ -1,10 +1,9 @@
----
-title: specialfunctions_gamma
----
-
 # Special functions gamma
 
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## `gamma` - Calculate the gamma function
 
@@ -22,7 +21,7 @@ Fortran 2018 standard implements the intrinsic gamma function of real type argum
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions_gamma(module):gamma(interface)]] ` (x)`
+`result = ` `gamma` ` (x)`
 
 ### Class
 
@@ -37,8 +36,8 @@ Elemental function
 The function returns a value with the same type and kind as input argument.
 
 ### Example
-```fortran
-{!example/specialfunctions_gamma/example_gamma.f90!}
+```{literalinclude} ../../example/specialfunctions_gamma/example_gamma.f90
+:language: fortran
 ```
 
 ## `log_gamma` - Calculate the natural logarithm of the gamma function
@@ -55,7 +54,7 @@ Fortran 2018 standard implements intrinsic log_gamma function of absolute value 
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions_gamma(module):log_gamma(interface)]] ` (x)`
+`result = ` `log_gamma` ` (x)`
 
 ### Class
 
@@ -71,8 +70,8 @@ The function returns real single precision values for integer input arguments, w
 
 ### Example
 
-```fortran
-{!example/specialfunctions_gamma/example_log_gamma.f90!}
+```{literalinclude} ../../example/specialfunctions_gamma/example_log_gamma.f90
+:language: fortran
 ```
 
 ## `log_factorial` - calculate the logarithm of a factorial
@@ -87,7 +86,7 @@ Compute the natural logarithm of factorial, log(n!)
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions_gamma(module):log_factorial(interface)]] ` (x)`
+`result = ` `log_factorial` ` (x)`
 
 ### Class
 
@@ -102,8 +101,8 @@ Elemental function
 The function returns real type values with single precision.
 
 ### Example
-```fortran
-{!example/specialfunctions_gamma/example_log_factorial.f90!}
+```{literalinclude} ../../example/specialfunctions_gamma/example_log_factorial.f90
+:language: fortran
 ```
 
 ## `lower_incomplete_gamma` - calculate lower incomplete gamma integral
@@ -122,7 +121,7 @@ When x < 0, p must be positive integer.
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions_gamma(module):lower_incomplete_gamma(interface)]] ` (p, x)`
+`result = ` `lower_incomplete_gamma` ` (p, x)`
 
 ### Class
 
@@ -139,8 +138,8 @@ Elemental function
 The function returns a real type value with the same kind as argument x.
 
 ### Example
-```fortran
-{!example/specialfunctions_gamma/example_ligamma.f90!}
+```{literalinclude} ../../example/specialfunctions_gamma/example_ligamma.f90
+:language: fortran
 ```
 
 ## `upper_incomplete_gamma` - calculate the upper incomplete gamma integral
@@ -159,7 +158,7 @@ When x < 0, p must be a positive integer.
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions_gamma(module):upper_incomplete_gamma(interface)]] ` (p, x)`
+`result = ` `upper_incomplete_gamma` ` (p, x)`
 
 ### Class
 
@@ -176,8 +175,8 @@ Elemental function
 The function returns a real type value with the same kind as argument x.
 
 ### Example
-```fortran
-{!example/specialfunctions_gamma/example_uigamma.f90!}
+```{literalinclude} ../../example/specialfunctions_gamma/example_uigamma.f90
+:language: fortran
 ```
 
 ## `log_lower_incomplete_gamma` - calculate the natural logarithm of the lower incomplete gamma integral
@@ -192,7 +191,7 @@ Compute the natural logarithm of the absolute value of the lower incomplete gamm
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions_gamma(module):log_lower_incomplete_gamma(interface)]] ` (p, x)`
+`result = ` `log_lower_incomplete_gamma` ` (p, x)`
 
 ### Class
 
@@ -221,7 +220,7 @@ Compute the natural logarithm of the absolute value of the upper incomplete gamm
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions_gamma(module):log_upper_incomplete_gamma(interface)]] ` (p, x)`
+`result = ` `log_upper_incomplete_gamma` ` (p, x)`
 
 ### Class
 
@@ -254,7 +253,7 @@ The values of regularized gamma P is in the range of [0, 1]
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions_gamma(module):regularized_gamma_p(interface)]] ` (p, x)`
+`result = ` `regularized_gamma_p` ` (p, x)`
 
 ### Class
 
@@ -271,8 +270,8 @@ Elemental function
 The function returns a real type value with the same kind as argument x.
 
 ### Example
-```fortran
-{!example/specialfunctions_gamma/example_gamma_p.f90!}
+```{literalinclude} ../../example/specialfunctions_gamma/example_gamma_p.f90
+:language: fortran
 ```
 
 ## `regularized_gamma_q` - calculate the gamma quotient Q
@@ -291,7 +290,7 @@ The values of regularized gamma Q is in the range of [0, 1]
 
 ### Syntax
 
-`result = ` [[stdlib_specialfunctions_gamma(module):regularized_gamma_q(interface)]] ` (p, x)`
+`result = ` `regularized_gamma_q` ` (p, x)`
 
 ### Class
 
@@ -308,6 +307,6 @@ Elemental function
 The function returns a real type value with the same kind as argument x.
 
 ### Example
-```fortran
-{!example/specialfunctions_gamma/example_gamma_q.f90!}
+```{literalinclude} ../../example/specialfunctions_gamma/example_gamma_q.f90
+:language: fortran
 ```

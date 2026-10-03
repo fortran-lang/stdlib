@@ -1,5 +1,5 @@
 module stdlib_logger
-!!### Module stdlib_logger
+!!## Module stdlib_logger
 !!
 !! This module defines a derived type, procedures, a variable, and
 !! constants to be used for logging information and reporting errors
@@ -170,8 +170,8 @@ contains
 !! * `open_failure` - the `open` statement failed
 
 
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!     program main
 !!         use stdlib_logger
 !!         ...
@@ -184,6 +184,7 @@ contains
 !!         end if
 !!         ...
 !!     end program main
+!!```
 
         character(16)  :: aaction, aposition, astatus
         integer        :: aunit
@@ -279,8 +280,8 @@ contains
 !! * `unformatted_in_error` - `unit` was an `'unformatted'` file
 !! * `unopened_in_error` - `unit` was not opened
 
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!     program main
 !!         use stdlib_logger
 !!         ...
@@ -299,9 +300,10 @@ contains
 !!         ...
 !!         end select
 !!         ...
-!!     999 error stop 'Unable to open "error_log.txt".
+!!     999 error stop 'Unable to open "error_log.txt".'
 !!         ...
 !!     end program main
+!!```
 
         integer, allocatable :: dummy(:)
         character(*), parameter :: procedure_name = 'set_log_unit'
@@ -439,8 +441,8 @@ contains
         integer, intent(out), allocatable, optional :: log_units(:)
 !! The I/O units used in output
 
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!     module example_mod
 !!       use stdlib_logger
 !!       ...
@@ -459,6 +461,7 @@ contains
 !!       end subroutine example_sub
 !!       ...
 !!     end module example_mod
+!!```
 
         if ( present(add_blank_line) ) add_blank_line = self % add_blank_line
         if ( present(indent) ) indent = self % indent_lines
@@ -496,13 +499,14 @@ contains
 !!    will have a time stamp, and `.false.` implying that there will be no
 !!    time stamp. `time_stamp` has a startup value of `.true.`.
 !!([Specification](../page/specs/stdlib_logger.html#configure-configure-the-logging-process))
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!     program main
 !!         use stdlib_logger
 !!         ...
 !!         call global_logger % configure( indent=.false., max_width=72 )
 !!         ...
+!!```
 
         class(logger_type), intent(inout) :: self
         logical, intent(in), optional     :: add_blank_line
@@ -797,14 +801,14 @@ contains
 !! text.
 !!([Specification](../page/specs/stdlib_logger.html#log_debug-writes-the-string-message-to-self-log_units))
 !!
-!!##### Behavior
+!!## Behavior
 !!
 !! If time stamps are active, a time stamp is written, followed by
 !! `module` and `procedure` if present, and then `message` is
 !! written with the prefix 'DEBUG: '.
 !!
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!     module  example_mod
 !!       use stdlib_logger
 !!       ...
@@ -828,7 +832,7 @@ contains
 !!       end subroutine example_sub
 !!       ...
 !!     end module example_mod
-!!
+!!```
 
         class(logger_type), intent(in)          :: self
 !! The logger used to send the message
@@ -857,15 +861,15 @@ contains
 !! text.
 !! ([Specification](../specs/stdlib_logger.html#log_error-writes-the-string-message-to-self-log_units))
 
-!!##### Behavior
+!!## Behavior
 !!
 !! If time stamps are active, a time stamp is written, followed by
 !! `module` and `procedure` if present, then `message` is
 !! written with the prefix 'ERROR: ', and then if `stat` or `errmsg`
 !! are present they are written.
 !!
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!     module  example_mod
 !!       use stdlib_logger
 !!       ...
@@ -892,7 +896,7 @@ contains
 !!       end subroutine example_sub
 !!       ...
 !!     end module example_mod
-!!
+!!```
 
         class(logger_type), intent(in)          :: self
 !! The logger to be used in logging the message
@@ -952,14 +956,14 @@ contains
 !! text.
 !!([Specification](../page/specs/stdlib_logger.html#log_information-writes-the-string-message-to-self-log_units))
 !!
-!!##### Behavior
+!!## Behavior
 !!
 !! If time stamps are active, a time stamp is written, followed by
 !! `module` and `procedure` if present, and then `message` is
 !! written with the prefix 'INFO: '.
 !!
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!     module  example_mod
 !!       use stdlib_logger
 !!       ...
@@ -983,7 +987,7 @@ contains
 !!       end subroutine example_sub
 !!       ...
 !!     end module example_mod
-!!
+!!```
 
         class(logger_type), intent(in)          :: self
 !! The logger used to send the message
@@ -1013,15 +1017,15 @@ contains
 !! additional text.
 !!([Specification](../page/specs/stdlib_logger.html#log_io_error-write-the-string-message-to-self-log_units))
 !!
-!!##### Behavior
+!!## Behavior
 !!
 !! If time stamps are active, a time stamp is written, followed by
 !! `module` and `procedure` if present, then `message` is
 !! written with a prefix 'I/O ERROR: ', and then if `iostat` or `iomsg`
 !! are present they are also written.
 !!
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!    program example
 !!      use stdlib_logger
 !!      ...
@@ -1039,6 +1043,7 @@ contains
 !!      end if
 !!      ...
 !!    end program example
+!!```
 
         class(logger_type), intent(in)          :: self
 !! The logger variable to receivee the message
@@ -1097,14 +1102,14 @@ contains
 !! additional text.
 !!([Specification](../page/specs/stdlib_logger.html#log_message-write-the-string-message-to-self-log_units))
 !!
-!!##### Behavior
+!!## Behavior
 !!
 !! If time stamps are active, a time stamp is written, followed by `module`
 !! and `procedure` if present, followed by `prefix // ': '` if present,
 !! and then `message`.
 !!
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!    module  example_mod
 !!      use stdlib_logger
 !!      ...
@@ -1126,7 +1131,7 @@ contains
 !!      end subroutine example_sub
 !!      ...
 !!    end module example_mod
-!!
+!!```
 
         class(logger_type), intent(in)          :: self
 !! The logger variable to receive the message
@@ -1216,15 +1221,15 @@ contains
 !! in a line of text.
 !!([Specification](../page/specs/stdlib_logger.html#log_text_error-send-a-message-to-self-log_units-describing-an-error))
 
-!!##### Behavior
+!!## Behavior
 !!
 !! If time stamps are active first a time stamp is written. Then if
 !! `filename` or `line_number` or `column` are present they are written.
 !! Then `line` is written. Then the symbol `caret` is written below `line`
 !! at the column indicated by `column`. Then `summary` is written.
 !
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!    program example
 !!      ...
 !!      character(*), parameter :: filename = 'dummy.txt'
@@ -1248,7 +1253,7 @@ contains
 !!900   continue
 !!      ...
 !!    end program example
-!!
+!!```
         class(logger_type), intent(in)        :: self
 !! The logger variable to receive the message
         character(*), intent(in)              :: line
@@ -1396,8 +1401,8 @@ contains
         class(logger_type), intent(in) :: self
 !! The logger subject to the inquiry
         integer                        :: log_units_assigned
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!     module  example_mod
 !!       use stdlib_logger
 !!       ...
@@ -1417,6 +1422,7 @@ contains
 !!       end subroutine example_sub
 !!       ...
 !!     end module example_mod
+!!```
 
         log_units_assigned = self % units
 
@@ -1430,14 +1436,14 @@ contains
 !! text.
 !!([Specification](../page/specs/stdlib_logger.html#log_warning-write-the-string-message-to-log_units))
 
-!!##### Behavior
+!!## Behavior
 !!
 !! If time stamps are active, a time stamp is written, followed by
 !! `module` and `procedure` if present, then `message` is
 !! written with the prefix 'WARN: '.
 !!
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!     module  example_mod
 !!       use stdlib_logger
 !!       ...
@@ -1461,7 +1467,7 @@ contains
 !!       end subroutine example_sub
 !!       ...
 !!     end module example_mod
-!!
+!!```
         class(logger_type), intent(in)          :: self
 !! The logger to which the message is written
         character(len=*), intent(in)            :: message
@@ -1503,8 +1509,8 @@ contains
 !! * success - no problems found
 !! * close_failure - the close statement for unit failed
 !!
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!     module  example_mod
 !!       use stdlib_logger
 !!       ...
@@ -1519,6 +1525,7 @@ contains
 !!       end subroutine example_sub
 !!       ...
 !!     end module example_mod
+!!```
 
         character(128) :: errmsg
         integer :: lun, lun_old

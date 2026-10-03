@@ -197,7 +197,7 @@ module stdlib_sorting
 !!   order. Otherwise index will sort `array` in order of non-decreasing
 !!   values in stable order.
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    ...
@@ -240,7 +240,7 @@ module stdlib_sorting
 !!   order. Otherwise index will sort `array` in order of non-decreasing
 !!   values in unstable order.
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    ...
@@ -287,7 +287,7 @@ module stdlib_sorting
 !!   order. Otherwise index will sort `array` in order of non-decreasing
 !!   values in stable order.
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    ...
@@ -346,7 +346,7 @@ module stdlib_sorting
 !!   order. Otherwise `array` will be sorted in order of non-decreasing
 !!   values in stable order.
 !!
-!!#### Examples
+!!## Examples
 !!
 !! Sorting a related rank one array:
 !!
@@ -415,7 +415,7 @@ module stdlib_sorting
 !!   order. Otherwise index will sort `array` in order of non-decreasing
 !!   values in stable order.
 !!
-!!#### Examples
+!!## Examples
 !!
 !! Sorting a related rank one array:
 !!
