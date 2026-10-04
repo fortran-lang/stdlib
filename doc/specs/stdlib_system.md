@@ -837,8 +837,8 @@ Subroutine
 
 ### Example
 
-```fortran
-{!example/system/example_environment_variable.f90!}
+```{literalinclude} ../../example/system/example_environment_variable.f90
+:language: fortran
 ```
 
 ---
@@ -877,8 +877,8 @@ Subroutine
 
 ### Example
 
-```fortran
-{!example/system/example_environment_variable.f90!}
+```{literalinclude} ../../example/system/example_environment_variable.f90
+:language: fortran
 ```
 
 ---

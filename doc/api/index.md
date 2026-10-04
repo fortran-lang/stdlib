@@ -28,6 +28,7 @@ stdlib_kinds
 stdlib_linalg
 stdlib_linalg_iterative_solvers
 stdlib_linalg_state
+stdlib_load_library
 stdlib_logger
 stdlib_math
 stdlib_optval
