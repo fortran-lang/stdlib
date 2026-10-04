@@ -4,6 +4,9 @@ on:
   push:
     paths:
       - 'doc/**'
+      - 'src/**'
+      - 'include/**'
+      - 'config/**'
       - 'README.md'
       - 'CONTRIBUTING.md'
       - 'STYLE_GUIDE.md'
@@ -12,6 +15,9 @@ on:
   pull_request:
     paths:
       - 'doc/**'
+      - 'src/**'
+      - 'include/**'
+      - 'config/**'
       - 'README.md'
       - 'CONTRIBUTING.md'
       - 'STYLE_GUIDE.md'
