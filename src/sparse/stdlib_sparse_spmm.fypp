@@ -1,6 +1,6 @@
 #:include "common.fypp"
 #:set KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX)) + list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
-!! Sparse matrix-matrix multiplication with reusable sparse structures.
+!! Sparse matrix-matrix multiplication with separate construction and array kernels.
 module stdlib_sparse_spmm
     use stdlib_sparse_constants
     use stdlib_sparse_kinds
@@ -8,76 +8,42 @@ module stdlib_sparse_spmm
     use stdlib_error, only: error_stop
     implicit none
     private
-    public :: spmm, spmm_prepare, spmm_kernel
-    public :: spmm_plan_type, spmm_success, spmm_invalid_input
-    public :: spmm_pattern_mismatch, spmm_unprepared
-
+    public :: spmm, spmm_prepare, spmm_success, spmm_invalid_input
+    public :: spmm_kernel_coo, spmm_kernel_csr, spmm_kernel_csc
+    public :: spmm_kernel_ell, spmm_kernel_sellc
     integer, parameter :: spmm_success = 0 !! Successful operation
-    integer, parameter :: spmm_invalid_input = 1 !! Invalid sparse storage
-    integer, parameter :: spmm_pattern_mismatch = 2 !! Changed sparse structure
-    integer, parameter :: spmm_unprepared = 3 !! Missing preparation
-    integer, parameter :: format_coo = 1, format_csr = 2, format_csc = 3
-    integer, parameter :: format_ell = 4, format_sellc = 5
-
-    type :: spmm_structure_type
-        integer(ilp) :: nrows = 0, ncols = 0, nnz = 0
-        integer :: storage = sparse_full, parameter = 0
-        integer(ilp) :: data_rows = 0, data_cols = 0
-        integer(ilp), allocatable :: raw_pointer(:), raw_index(:,:)
-        integer(ilp), allocatable :: pointer(:), index(:), slot(:)
-    end type spmm_structure_type
+    integer, parameter :: spmm_invalid_input = 1 !! Invalid dimensions, storage or workspace
 
     !! version: experimental
     !!
-    !! Structural snapshots and reusable integer workspace for a sparse
-    !! product. Create a plan with spmm_prepare before using spmm_kernel.
-    !! Numeric values may change; indices and stored shapes must stay fixed.
-    type :: spmm_plan_type
-        private
-        logical :: ready = .false.
-        integer :: format = 0
-        type(spmm_structure_type) :: a, b, c
-        integer(ilp), allocatable :: marker(:)
-    end type spmm_plan_type
-
-    !! version: experimental
-    !!
-    !! Sparse/dense products retain the SpMV scaling and operation arguments.
-    !! Sparse/sparse products require the same format and numeric kind.
-    !! Without a plan, spmm constructs a new structural result. With a plan,
-    !! it reuses existing storage unless allow_resize is explicitly true.
+    !! Sparse products optionally prepare C, then apply a plain-array kernel.
+    !! With allow_resize=false, C must already contain the complete product pattern.
     !! [Specifications](../page/specs/stdlib_sparse.html#spmm-sparse-matrix-matrix-product)
     interface spmm
         #:for k, t, s in KINDS_TYPES
         #:for fmt in ["COO", "CSR", "CSC", "ELL", "SELLC"]
-        module subroutine spmm_${fmt.lower()}$_dense_${s}$( &
-                sparse_a,dense_b,dense_c,alpha,beta,op)
-            type(${fmt}$_${s}$_type), intent(in) :: sparse_a !! Sparse factor
-            ${t}$, intent(in) :: dense_b(:,:) !! Dense factor
-            ${t}$, intent(inout) :: dense_c(:,:) !! Dense result
-            ${t}$, intent(in), optional :: alpha, beta !! Defaults 1 and 0
-            character(1), intent(in), optional :: op !! N, T, or H
+        module subroutine spmm_${fmt.lower()}$_dense_${s}$(sparse_a,dense_b,dense_c,alpha,beta,op)
+            type(${fmt}$_${s}$_type), intent(in) :: sparse_a
+            ${t}$, intent(in) :: dense_b(:,:)
+            ${t}$, intent(inout) :: dense_c(:,:)
+            ${t}$, intent(in), optional :: alpha, beta
+            character(1), intent(in), optional :: op
         end subroutine
-
-        module subroutine spmm_dense_${fmt.lower()}$_${s}$( &
-                dense_a,sparse_b,dense_c,alpha,beta,op)
-            ${t}$, intent(in) :: dense_a(:,:) !! Dense factor
-            type(${fmt}$_${s}$_type), intent(in) :: sparse_b !! Sparse factor
-            ${t}$, intent(inout) :: dense_c(:,:) !! Dense result
-            ${t}$, intent(in), optional :: alpha, beta !! Defaults 1 and 0
-            character(1), intent(in), optional :: op !! N, T, or H
+        module subroutine spmm_dense_${fmt.lower()}$_${s}$(dense_a,sparse_b,dense_c,alpha,beta,op)
+            ${t}$, intent(in) :: dense_a(:,:)
+            type(${fmt}$_${s}$_type), intent(in) :: sparse_b
+            ${t}$, intent(inout) :: dense_c(:,:)
+            ${t}$, intent(in), optional :: alpha, beta
+            character(1), intent(in), optional :: op
         end subroutine
-
-        module subroutine spmm_sparse_${fmt.lower()}$_${s}$( &
-                a,b,c,alpha,plan,allow_resize,stat)
-            type(${fmt}$_${s}$_type), intent(in) :: a, b !! Sparse factors
-            type(${fmt}$_${s}$_type), intent(inout) :: c !! Sparse result
-            ${t}$, intent(in), optional :: alpha !! Product scale; default 1
-            type(spmm_plan_type), intent(inout), optional :: plan
-                !! Reusable structure and workspace
+        module subroutine spmm_sparse_${fmt.lower()}$_${s}$(a,b,c,alpha,op_a,op_b,allow_resize,work,stat)
+            type(${fmt}$_${s}$_type), intent(in) :: a, b
+            type(${fmt}$_${s}$_type), intent(inout) :: c
+            ${t}$, intent(in), optional :: alpha
+            character(1), intent(in), optional :: op_a, op_b
             logical, intent(in), optional :: allow_resize
-                !! Default true without a plan, false with a plan
-            integer, intent(out), optional :: stat !! Error status
+            integer(ilp), intent(inout), optional, contiguous, target :: work(:)
+            integer, intent(out), optional :: stat
         end subroutine
         #:endfor
         #:endfor
@@ -85,17 +51,16 @@ module stdlib_sparse_spmm
 
     !! version: experimental
     !!
-    !! Construct the structural product independently of numeric values.
-    !! Allocates c and plan; c values are zero. Cancellation and stored zeros
-    !! do not remove structural entries. Existing c is unchanged on failure.
+    !! Allocate C and construct the structural product of op(A) and op(B).
+    !! Numerical values do not affect the pattern; result values are initially zero.
     interface spmm_prepare
         #:for k, t, s in KINDS_TYPES
         #:for fmt in ["COO", "CSR", "CSC", "ELL", "SELLC"]
-        module subroutine prepare_${fmt.lower()}$_${s}$(a,b,c,plan,stat)
-            type(${fmt}$_${s}$_type), intent(in) :: a, b !! Sparse factors
-            type(${fmt}$_${s}$_type), intent(inout) :: c !! Allocated result
-            type(spmm_plan_type), intent(out) :: plan !! Reusable workspace
-            integer, intent(out), optional :: stat !! Error status
+        module subroutine prepare_${fmt.lower()}$_${s}$(a,b,c,op_a,op_b,stat)
+            type(${fmt}$_${s}$_type), intent(in) :: a, b
+            type(${fmt}$_${s}$_type), intent(inout) :: c
+            character(1), intent(in), optional :: op_a, op_b
+            integer, intent(out), optional :: stat
         end subroutine
         #:endfor
         #:endfor
@@ -103,71 +68,186 @@ module stdlib_sparse_spmm
 
     !! version: experimental
     !!
-    !! Update only the values of a previously prepared sparse result.
-    !! Does not allocate or resize result/work arrays. Changed input or
-    !! result structures are rejected before changing c. If stat is absent,
-    !! an invalid call terminates through stdlib_error:error_stop.
-    interface spmm_kernel
-        #:for k, t, s in KINDS_TYPES
-        #:for fmt in ["COO", "CSR", "CSC", "ELL", "SELLC"]
-        module subroutine kernel_${fmt.lower()}$_${s}$(a,b,c,plan,alpha,stat)
-            type(${fmt}$_${s}$_type), intent(in) :: a, b !! Sparse factors
-            type(${fmt}$_${s}$_type), intent(inout) :: c !! Existing result
-            type(spmm_plan_type), intent(inout) :: plan !! Prepared workspace
-            ${t}$, intent(in), optional :: alpha !! Product scale; default 1
-            integer, intent(out), optional :: stat !! Error status
-        end subroutine
-        #:endfor
-        #:endfor
-    end interface spmm_kernel
+    !! Apply the product using conforming arrays and caller-owned integer workspace.
+    !! C must contain every product position. No pattern validation is performed.
+    interface spmm_kernel_coo
+    #:for k, t, s in KINDS_TYPES
+    module subroutine spmm_kernel_coo_${s}$(op_a,op_b,alpha,shape_a,shape_b, &
+        a_data,a_index, &
+        b_data,b_index, &
+        c_data,c_index,work)
+        character(1), intent(in) :: op_a, op_b
+        ${t}$, intent(in) :: alpha
+        integer(ilp), intent(in) :: shape_a(2), shape_b(2)
+        ${t}$, intent(in), contiguous, target :: a_data(:)
+        integer(ilp), intent(in), contiguous :: a_index(:,:)
+        ${t}$, intent(in), contiguous, target :: b_data(:)
+        integer(ilp), intent(in), contiguous :: b_index(:,:)
+        ${t}$, intent(inout), contiguous, target :: c_data(:)
+        integer(ilp), intent(in), contiguous :: c_index(:,:)
+        integer(ilp), intent(inout), contiguous :: work(:)
+    end subroutine spmm_kernel_coo_${s}$
+    #:endfor
+    end interface spmm_kernel_coo
 
-    ! Private separate module procedures keep symbols available to all
-    ! format submodules, including compilers that localize contained helpers.
+    !! version: experimental
+    !!
+    !! Apply the product using conforming arrays and caller-owned integer workspace.
+    !! C must contain every product position. No pattern validation is performed.
+    interface spmm_kernel_csr
+    #:for k, t, s in KINDS_TYPES
+    module subroutine spmm_kernel_csr_${s}$(op_a,op_b,alpha,shape_a,shape_b, &
+        a_data,a_rowptr,a_col, &
+        b_data,b_rowptr,b_col, &
+        c_data,c_rowptr,c_col,work)
+        character(1), intent(in) :: op_a, op_b
+        ${t}$, intent(in) :: alpha
+        integer(ilp), intent(in) :: shape_a(2), shape_b(2)
+        ${t}$, intent(in), contiguous, target :: a_data(:)
+        integer(ilp), intent(in), contiguous :: a_rowptr(:)
+        integer(ilp), intent(in), contiguous :: a_col(:)
+        ${t}$, intent(in), contiguous, target :: b_data(:)
+        integer(ilp), intent(in), contiguous :: b_rowptr(:)
+        integer(ilp), intent(in), contiguous :: b_col(:)
+        ${t}$, intent(inout), contiguous, target :: c_data(:)
+        integer(ilp), intent(in), contiguous :: c_rowptr(:)
+        integer(ilp), intent(in), contiguous :: c_col(:)
+        integer(ilp), intent(inout), contiguous :: work(:)
+    end subroutine spmm_kernel_csr_${s}$
+    #:endfor
+    end interface spmm_kernel_csr
+
+    !! version: experimental
+    !!
+    !! Apply the product using conforming arrays and caller-owned integer workspace.
+    !! C must contain every product position. No pattern validation is performed.
+    interface spmm_kernel_csc
+    #:for k, t, s in KINDS_TYPES
+    module subroutine spmm_kernel_csc_${s}$(op_a,op_b,alpha,shape_a,shape_b, &
+        a_data,a_colptr,a_row, &
+        b_data,b_colptr,b_row, &
+        c_data,c_colptr,c_row,work)
+        character(1), intent(in) :: op_a, op_b
+        ${t}$, intent(in) :: alpha
+        integer(ilp), intent(in) :: shape_a(2), shape_b(2)
+        ${t}$, intent(in), contiguous, target :: a_data(:)
+        integer(ilp), intent(in), contiguous :: a_colptr(:)
+        integer(ilp), intent(in), contiguous :: a_row(:)
+        ${t}$, intent(in), contiguous, target :: b_data(:)
+        integer(ilp), intent(in), contiguous :: b_colptr(:)
+        integer(ilp), intent(in), contiguous :: b_row(:)
+        ${t}$, intent(inout), contiguous, target :: c_data(:)
+        integer(ilp), intent(in), contiguous :: c_colptr(:)
+        integer(ilp), intent(in), contiguous :: c_row(:)
+        integer(ilp), intent(inout), contiguous :: work(:)
+    end subroutine spmm_kernel_csc_${s}$
+    #:endfor
+    end interface spmm_kernel_csc
+
+    !! version: experimental
+    !!
+    !! Apply the product using conforming arrays and caller-owned integer workspace.
+    !! C must contain every product position. No pattern validation is performed.
+    interface spmm_kernel_ell
+    #:for k, t, s in KINDS_TYPES
+    module subroutine spmm_kernel_ell_${s}$(op_a,op_b,alpha,shape_a,shape_b, &
+        a_data,a_index, &
+        b_data,b_index, &
+        c_data,c_index,work)
+        character(1), intent(in) :: op_a, op_b
+        ${t}$, intent(in) :: alpha
+        integer(ilp), intent(in) :: shape_a(2), shape_b(2)
+        ${t}$, intent(in), contiguous, target :: a_data(:,:)
+        integer(ilp), intent(in), contiguous :: a_index(:,:)
+        ${t}$, intent(in), contiguous, target :: b_data(:,:)
+        integer(ilp), intent(in), contiguous :: b_index(:,:)
+        ${t}$, intent(inout), contiguous, target :: c_data(:,:)
+        integer(ilp), intent(in), contiguous :: c_index(:,:)
+        integer(ilp), intent(inout), contiguous :: work(:)
+    end subroutine spmm_kernel_ell_${s}$
+    #:endfor
+    end interface spmm_kernel_ell
+
+    !! version: experimental
+    !!
+    !! Apply the product using conforming arrays and caller-owned integer workspace.
+    !! C must contain every product position. No pattern validation is performed.
+    interface spmm_kernel_sellc
+    #:for k, t, s in KINDS_TYPES
+    module subroutine spmm_kernel_sellc_${s}$(op_a,op_b,alpha,shape_a,shape_b, &
+        a_data,a_rowptr,a_col, &
+        b_data,b_rowptr,b_col, &
+        c_data,c_rowptr,c_col,work)
+        character(1), intent(in) :: op_a, op_b
+        ${t}$, intent(in) :: alpha
+        integer(ilp), intent(in) :: shape_a(2), shape_b(2)
+        ${t}$, intent(in), contiguous, target :: a_data(:,:)
+        integer(ilp), intent(in), contiguous :: a_rowptr(:)
+        integer(ilp), intent(in), contiguous :: a_col(:,:)
+        ${t}$, intent(in), contiguous, target :: b_data(:,:)
+        integer(ilp), intent(in), contiguous :: b_rowptr(:)
+        integer(ilp), intent(in), contiguous :: b_col(:,:)
+        ${t}$, intent(inout), contiguous, target :: c_data(:,:)
+        integer(ilp), intent(in), contiguous :: c_rowptr(:)
+        integer(ilp), intent(in), contiguous :: c_col(:,:)
+        integer(ilp), intent(inout), contiguous :: work(:)
+    end subroutine spmm_kernel_sellc_${s}$
+    #:endfor
+    end interface spmm_kernel_sellc
+
+    ! Shared private array procedures have explicit separate interfaces for portability.
     interface
         module subroutine set_status(code,stat)
             integer, intent(in) :: code
             integer, intent(out), optional :: stat
         end subroutine set_status
-
-        logical module function valid_pointer(pointer,slices,entries) result(valid)
-            integer(ilp), intent(in) :: pointer(:), slices, entries
-        end function valid_pointer
-
-        module subroutine snapshot(matrix,data_rows,data_cols,pattern,code)
-            class(sparse_type), intent(in) :: matrix
-            integer(ilp), intent(in) :: data_rows, data_cols
-            type(spmm_structure_type), intent(inout) :: pattern
+        module subroutine product_shape(sa,sb,op_a,op_b,oa,ob,sc,inner,code)
+            integer(ilp), intent(in) :: sa(2), sb(2)
+            character(1), intent(in), optional :: op_a, op_b
+            character(1), intent(out) :: oa, ob
+            integer(ilp), intent(out) :: sc(2), inner
             integer, intent(out) :: code
-        end subroutine snapshot
-
-        logical module function structure_matches(matrix,data_rows,data_cols,pattern) result(matches)
-            class(sparse_type), intent(in) :: matrix
-            integer(ilp), intent(in) :: data_rows, data_cols
-            type(spmm_structure_type), intent(in) :: pattern
-        end function structure_matches
-
-        module subroutine build_view(pattern,format)
-            type(spmm_structure_type), intent(inout) :: pattern
-            integer, intent(in) :: format
-        end subroutine build_view
-
-        module subroutine symbolic_product(plan,code)
-            type(spmm_plan_type), intent(inout) :: plan
+        end subroutine product_shape
+        module subroutine compressed_view(outer,inner,pointer,index,transposed,ptr,col,slot)
+            integer(ilp), intent(in) :: outer, inner, pointer(:), index(:)
+            logical, intent(in) :: transposed
+            integer(ilp), allocatable, intent(out) :: ptr(:), col(:)
+            integer(ilp), allocatable, intent(out), optional :: slot(:)
+        end subroutine compressed_view
+        module subroutine coo_view(matrix_shape,index,transposed,ptr,col,slot)
+            integer(ilp), intent(in) :: matrix_shape(2), index(:,:)
+            logical, intent(in) :: transposed
+            integer(ilp), allocatable, intent(out) :: ptr(:), col(:)
+            integer(ilp), allocatable, intent(out), optional :: slot(:)
+        end subroutine coo_view
+        module subroutine ell_view(matrix_shape,index,transposed,ptr,col,slot)
+            integer(ilp), intent(in) :: matrix_shape(2), index(:,:)
+            logical, intent(in) :: transposed
+            integer(ilp), allocatable, intent(out) :: ptr(:), col(:)
+            integer(ilp), allocatable, intent(out), optional :: slot(:)
+        end subroutine ell_view
+        module subroutine sellc_view(matrix_shape,pointer,index,transposed,ptr,col,slot)
+            integer(ilp), intent(in) :: matrix_shape(2), pointer(:), index(:,:)
+            logical, intent(in) :: transposed
+            integer(ilp), allocatable, intent(out) :: ptr(:), col(:)
+            integer(ilp), allocatable, intent(out), optional :: slot(:)
+        end subroutine sellc_view
+        module subroutine product_pattern(outer,span,inner,ap,ai,bp,bi,cp,ci,code)
+            integer(ilp), intent(in) :: outer, span, inner, ap(:), ai(:), bp(:), bi(:)
+            integer(ilp), allocatable, intent(out) :: cp(:), ci(:)
             integer, intent(out) :: code
-        end subroutine symbolic_product
-
+        end subroutine product_pattern
         module subroutine sort_indices(indices,scratch,count,span,marker,slice)
             integer(ilp), intent(inout) :: indices(:), scratch(:)
             integer(ilp), intent(in) :: count, span, marker(:), slice
         end subroutine sort_indices
-
         #:for k, t, s in KINDS_TYPES
-        module subroutine numeric_${s}$(plan,a_values,b_values,c_values,alpha)
-            type(spmm_plan_type), intent(inout) :: plan
-            ${t}$, intent(in) :: a_values(*), b_values(*)
-            ${t}$, intent(inout) :: c_values(*)
-            ${t}$, intent(in) :: alpha
-        end subroutine numeric_${s}$
+        module subroutine numeric_slice_${s}$(row,alpha,ap,ai,as,av,bp,bi,bs,bv,cv,work,conj_a,conj_b)
+            integer(ilp), intent(in) :: row, ap(:), ai(:), as(:), bp(:), bi(:), bs(:), work(:)
+            ${t}$, intent(in) :: alpha, av(:), bv(:)
+            ${t}$, intent(inout) :: cv(:)
+            logical, intent(in) :: conj_a, conj_b
+        end subroutine numeric_slice_${s}$
         #:endfor
     end interface
 end module stdlib_sparse_spmm

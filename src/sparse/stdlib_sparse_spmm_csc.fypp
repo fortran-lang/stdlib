@@ -4,9 +4,9 @@
 submodule (stdlib_sparse_spmm) stdlib_sparse_spmm_csc
 contains
     #:for k, t, s in KINDS_TYPES
-    !> Multiply a ${fmt}$ sparse matrix by a dense matrix.
-    module subroutine spmm_${fmt.lower()}$_dense_${s}$(sparse_a, dense_b, dense_c, alpha, beta, op)
-        type(${fmt}$_${s}$_type), intent(in) :: sparse_a
+    !> Multiply a CSC sparse matrix by a dense matrix.
+    module subroutine spmm_csc_dense_${s}$(sparse_a, dense_b, dense_c, alpha, beta, op)
+        type(CSC_${s}$_type), intent(in) :: sparse_a
         ${t}$, intent(in) :: dense_b(:,:)
         ${t}$, intent(inout) :: dense_c(:,:)
         ${t}$, intent(in), optional :: alpha, beta
@@ -35,12 +35,12 @@ contains
         do j = 1, size(dense_b,2)
             call spmv(sparse_a, dense_b(:,j), dense_c(:,j), alpha, beta, op_)
         end do
-    end subroutine spmm_${fmt.lower()}$_dense_${s}$
+    end subroutine spmm_csc_dense_${s}$
 
-    !> Multiply a dense matrix by a ${fmt}$ sparse matrix.
-    module subroutine spmm_dense_${fmt.lower()}$_${s}$(dense_a, sparse_b, dense_c, alpha, beta, op)
+    !> Multiply a dense matrix by a CSC sparse matrix.
+    module subroutine spmm_dense_csc_${s}$(dense_a, sparse_b, dense_c, alpha, beta, op)
         ${t}$, intent(in) :: dense_a(:,:)
-        type(${fmt}$_${s}$_type), intent(in) :: sparse_b
+        type(CSC_${s}$_type), intent(in) :: sparse_b
         ${t}$, intent(inout) :: dense_c(:,:)
         ${t}$, intent(in), optional :: alpha, beta
         character(1), intent(in), optional :: op
@@ -86,126 +86,170 @@ contains
         do i = 1, size(dense_a,1)
             call spmv(sparse_b, dense_a(i,:), dense_c(i,:), alpha, beta, spmv_op)
         end do
-    end subroutine spmm_dense_${fmt.lower()}$_${s}$
-    !> Construct the same-format product structure and reusable workspace.
-    module subroutine prepare_${fmt.lower()}$_${s}$(a,b,c,plan,stat)
-        type(${fmt}$_${s}$_type), intent(in) :: a, b
-        type(${fmt}$_${s}$_type), intent(inout) :: c
-        type(spmm_plan_type), intent(out) :: plan
-        integer, intent(out), optional :: stat
-        type(${fmt}$_${s}$_type) :: prepared
-        integer :: code
-        integer(ilp) :: p
-        call set_status(spmm_success,stat)
-        if (.not.allocated(a%data) .or. .not.allocated(b%data)) then
-            call set_status(spmm_invalid_input,stat)
-            return
-        end if
-        if (a%ncols /= b%nrows) then
-            call set_status(spmm_invalid_input,stat)
-            return
-        end if
-        plan%format = format_csc
-        call snapshot(a,size(a%data),1_ilp,plan%a,code)
-        if (code /= spmm_success) then
-            call set_status(code,stat)
-            return
-        end if
-        call snapshot(b,size(b%data),1_ilp,plan%b,code)
-        if (code /= spmm_success) then
-            call set_status(code,stat)
-            return
-        end if
-        call build_view(plan%a,plan%format)
-        call build_view(plan%b,plan%format)
-        call symbolic_product(plan,code)
-        if (code /= spmm_success) then
-            call set_status(code,stat)
-            return
-        end if
-        call prepared%malloc(a%nrows,b%ncols,size(plan%c%index))
-        prepared%colptr = plan%c%pointer
-        prepared%row = plan%c%index
-        do p = 1, size(plan%c%slot)
-            plan%c%slot(p) = p
-        end do
-        c = prepared
-        call snapshot(c,size(c%data),1_ilp,plan%c,code)
-        plan%ready = code == spmm_success
-        call set_status(code,stat)
-    end subroutine prepare_${fmt.lower()}$_${s}$
+    end subroutine spmm_dense_csc_${s}$
 
-    !> Recompute only values without allocating or changing sparse indices.
-    module subroutine kernel_${fmt.lower()}$_${s}$(a,b,c,plan,alpha,stat)
-        type(${fmt}$_${s}$_type), intent(in) :: a, b
-        type(${fmt}$_${s}$_type), intent(inout) :: c
-        type(spmm_plan_type), intent(inout) :: plan
-        ${t}$, intent(in), optional :: alpha
+    !> Build C from the stored indices of op(A) and op(B), independent of values.
+    module subroutine prepare_csc_${s}$(a,b,c,op_a,op_b,stat)
+        type(CSC_${s}$_type), intent(in) :: a, b
+        type(CSC_${s}$_type), intent(inout) :: c
+        character(1), intent(in), optional :: op_a, op_b
         integer, intent(out), optional :: stat
-        ${t}$ :: alpha_
+        integer(ilp) :: shape_c(2), inner, entries
+        integer(ilp), allocatable :: ap(:), ai(:), bp(:), bi(:), cp(:), ci(:)
+        character(1) :: oa, ob
         integer :: code
-        code = spmm_unprepared
-        if (.not.plan%ready) then
+        call product_shape([a%nrows,a%ncols],[b%nrows,b%ncols],op_a,op_b,oa,ob,shape_c,inner,code)
+        if (code /= spmm_success .or. .not.valid_csc_${s}$(a) .or. .not.valid_csc_${s}$(b)) then
+            call set_status(spmm_invalid_input,stat)
+            return
+        end if
+        if (oa == sparse_op_none .and. ob == sparse_op_none) then
+            call product_pattern(shape_c(2),shape_c(1),inner,b%colptr,b%row(:b%nnz),a%colptr,a%row(:a%nnz),cp,ci,code)
+        else
+            call compressed_view(a%ncols,a%nrows,a%colptr,a%row(:a%nnz),oa /= sparse_op_none, &
+                ap,ai)
+            call compressed_view(b%ncols,b%nrows,b%colptr,b%row(:b%nnz),ob /= sparse_op_none, &
+                bp,bi)
+            call product_pattern(shape_c(2),shape_c(1),inner,bp,bi,ap,ai,cp,ci,code)
+        end if
+        if (code /= spmm_success) then
             call set_status(code,stat)
             return
         end if
-        code = spmm_pattern_mismatch
-        if (plan%format /= format_csc) then
-            call set_status(code,stat)
+        entries = size(ci)
+        call move_alloc(cp,c%colptr)
+        call move_alloc(ci,c%row)
+        if (allocated(c%data)) deallocate(c%data)
+        allocate(c%data(entries),source=zero_${s}$)
+        c%nnz = entries
+        c%nrows = shape_c(1)
+        c%ncols = shape_c(2)
+        c%storage = sparse_full
+        call set_status(spmm_success,stat)
+    end subroutine prepare_csc_${s}$
+
+    !> Optionally construct C, then apply the array kernel to existing buffers.
+    module subroutine spmm_sparse_csc_${s}$(a,b,c,alpha,op_a,op_b,allow_resize,work,stat)
+        type(CSC_${s}$_type), intent(in) :: a, b
+        type(CSC_${s}$_type), intent(inout) :: c
+        ${t}$, intent(in), optional :: alpha
+        character(1), intent(in), optional :: op_a, op_b
+        logical, intent(in), optional :: allow_resize
+        integer(ilp), intent(inout), optional, contiguous, target :: work(:)
+        integer, intent(out), optional :: stat
+        integer(ilp), allocatable, target :: local_work(:)
+        integer(ilp), pointer, contiguous :: scratch(:)
+        integer(ilp) :: shape_c(2), inner, span
+        character(1) :: oa, ob
+        ${t}$ :: alpha_
+        logical :: resize
+        integer :: code
+        call product_shape([a%nrows,a%ncols],[b%nrows,b%ncols],op_a,op_b,oa,ob,shape_c,inner,code)
+        if (code /= spmm_success .or. .not.valid_csc_${s}$(a) .or. .not.valid_csc_${s}$(b)) then
+            call set_status(spmm_invalid_input,stat)
             return
         end if
-        if (.not.allocated(a%data) .or. .not.allocated(b%data) .or. &
-                .not.allocated(c%data)) then
-            call set_status(code,stat)
-            return
+        span = shape_c(1)
+        if (present(work)) then
+            if (size(work) < span) then
+                call set_status(spmm_invalid_input,stat)
+                return
+            end if
+            scratch => work
+        else
+            allocate(local_work(span))
+            scratch => local_work
         end if
-        if (.not.structure_matches(a,size(a%data),1_ilp,plan%a)) then
-            call set_status(code,stat)
-            return
+        resize = .true.
+        if (present(allow_resize)) resize = allow_resize
+        if (resize) then
+            call prepare_csc_${s}$(a,b,c,oa,ob,code)
+            if (code /= spmm_success) then
+                call set_status(code,stat)
+                return
+            end if
         end if
-        if (.not.structure_matches(b,size(b%data),1_ilp,plan%b)) then
-            call set_status(code,stat)
-            return
-        end if
-        if (.not.structure_matches(c,size(c%data),1_ilp,plan%c)) then
-            call set_status(code,stat)
+        if (.not.valid_csc_${s}$(c) .or. any([c%nrows,c%ncols] /= shape_c)) then
+            call set_status(spmm_invalid_input,stat)
             return
         end if
         alpha_ = one_${s}$
         if (present(alpha)) alpha_ = alpha
-        call numeric_${s}$(plan,a%data,b%data,c%data,alpha_)
+        call spmm_kernel_csc_${s}$(oa,ob,alpha_,[a%nrows,a%ncols],[b%nrows,b%ncols], &
+            a%data(:a%nnz),a%colptr,a%row(:a%nnz), &
+            b%data(:b%nnz),b%colptr,b%row(:b%nnz), &
+            c%data(:c%nnz),c%colptr,c%row(:c%nnz),scratch)
         call set_status(spmm_success,stat)
-    end subroutine kernel_${fmt.lower()}$_${s}$
+    end subroutine spmm_sparse_csc_${s}$
 
-    !> Convenience product with explicit control over structural rebuilding.
-    module subroutine spmm_sparse_${fmt.lower()}$_${s}$( &
-            a,b,c,alpha,plan,allow_resize,stat)
-        type(${fmt}$_${s}$_type), intent(in) :: a, b
-        type(${fmt}$_${s}$_type), intent(inout) :: c
-        ${t}$, intent(in), optional :: alpha
-        type(spmm_plan_type), intent(inout), optional :: plan
-        logical, intent(in), optional :: allow_resize
-        integer, intent(out), optional :: stat
-        type(spmm_plan_type) :: local_plan
-        logical :: resize
-        integer :: code
-        resize = .not.present(plan)
-        if (present(allow_resize)) resize = allow_resize
-        if (present(plan)) then
-            call kernel_${fmt.lower()}$_${s}$(a,b,c,plan,alpha,code)
-            if (code /= spmm_success .and. resize) then
-                call prepare_${fmt.lower()}$_${s}$(a,b,c,plan,code)
-                if (code == spmm_success) &
-                    call kernel_${fmt.lower()}$_${s}$(a,b,c,plan,alpha,code)
-            end if
-        else if (resize) then
-            call prepare_${fmt.lower()}$_${s}$(a,b,c,local_plan,code)
-            if (code == spmm_success) &
-                call kernel_${fmt.lower()}$_${s}$(a,b,c,local_plan,alpha,code)
-        else
-            code = spmm_unprepared
+    !> Apply a conforming sparse product using arrays and caller-owned workspace.
+    module subroutine spmm_kernel_csc_${s}$(op_a,op_b,alpha,shape_a,shape_b, &
+        a_data,a_colptr,a_row, &
+        b_data,b_colptr,b_row, &
+        c_data,c_colptr,c_row,work)
+        character(1), intent(in) :: op_a, op_b
+        ${t}$, intent(in) :: alpha
+        integer(ilp), intent(in) :: shape_a(2), shape_b(2)
+        ${t}$, intent(in), contiguous, target :: a_data(:)
+        integer(ilp), intent(in), contiguous :: a_colptr(:)
+        integer(ilp), intent(in), contiguous :: a_row(:)
+        ${t}$, intent(in), contiguous, target :: b_data(:)
+        integer(ilp), intent(in), contiguous :: b_colptr(:)
+        integer(ilp), intent(in), contiguous :: b_row(:)
+        ${t}$, intent(inout), contiguous, target :: c_data(:)
+        integer(ilp), intent(in), contiguous :: c_colptr(:)
+        integer(ilp), intent(in), contiguous :: c_row(:)
+        integer(ilp), intent(inout), contiguous :: work(:)
+        integer(ilp) :: shape_c(2), i, p, q, inner, slot
+        integer(ilp), allocatable :: ap(:), ai(:), as(:), bp(:), bi(:), bs(:)
+        ${t}$ :: value
+        shape_c = [shape_a(1),shape_b(2)]
+        if (op_a /= sparse_op_none) shape_c(1) = shape_a(2)
+        if (op_b /= sparse_op_none) shape_c(2) = shape_b(1)
+        c_data = zero_${s}$
+        if (alpha == zero_${s}$) return
+        if (op_a == sparse_op_none .and. op_b == sparse_op_none) then
+            do i = 1, shape_c(2)
+                do p = c_colptr(i), c_colptr(i+1)-1
+                    work(c_row(p)) = p
+                end do
+                do p = b_colptr(i), b_colptr(i+1)-1
+                    inner = b_row(p)
+                    value = alpha*b_data(p)
+                    do q = a_colptr(inner), a_colptr(inner+1)-1
+                        slot = work(a_row(q))
+                        c_data(slot) = c_data(slot)+value*a_data(q)
+                    end do
+                end do
+            end do
+            return
         end if
-        call set_status(code,stat)
-    end subroutine spmm_sparse_${fmt.lower()}$_${s}$
+        call compressed_view(shape_a(2),shape_a(1),a_colptr,a_row,op_a /= sparse_op_none, &
+            ap,ai,as)
+        call compressed_view(shape_b(2),shape_b(1),b_colptr,b_row,op_b /= sparse_op_none, &
+            bp,bi,bs)
+        do i = 1, shape_c(2)
+            do p = c_colptr(i), c_colptr(i+1)-1
+                work(c_row(p)) = p
+            end do
+            call numeric_slice_${s}$(i,alpha,bp,bi,bs,b_data,ap,ai,as,a_data,c_data,work, &
+                op_b == sparse_op_hermitian,op_a == sparse_op_hermitian)
+        end do
+    end subroutine spmm_kernel_csc_${s}$
+
+    logical function valid_csc_${s}$(matrix) result(valid)
+        type(CSC_${s}$_type), intent(in) :: matrix
+        valid = .false.
+        if (min(matrix%nrows,matrix%ncols,matrix%nnz) < 0) return
+        if (matrix%storage /= sparse_full) return
+        if (.not.allocated(matrix%data)) return
+        if (.not.allocated(matrix%colptr)) return
+        if (.not.allocated(matrix%row)) return
+        if (size(matrix%colptr) /= matrix%ncols+1) return
+        if (min(size(matrix%data),size(matrix%row)) < matrix%nnz) return
+        if (matrix%colptr(1) /= 1 .or. matrix%colptr(matrix%ncols+1) /= matrix%nnz+1) return
+        valid = .true.
+    end function valid_csc_${s}$
+
     #:endfor
 end submodule stdlib_sparse_spmm_csc

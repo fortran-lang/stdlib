@@ -9,7 +9,7 @@ program example_sparse_spmm
     type(CSC_dp_type) :: csc, csc_product
     type(ELL_dp_type) :: ell, ell_product
     type(SELLC_dp_type) :: sellc, sellc_product
-    type(spmm_plan_type) :: plan
+    integer :: work(3)
 
     a = reshape([1._dp,0._dp,2._dp, &
                  0._dp,3._dp,0._dp, &
@@ -47,10 +47,12 @@ program example_sparse_spmm
     call spmm(sellc,sellc,sellc_product)
 
     ! Construct the CSR product pattern once, then update only values.
-    call spmm_prepare(csr,csr,product,plan)
-    call spmm_kernel(csr,csr,product,plan)
+    call spmm_prepare(csr,csr,product)
+    call spmm_kernel_csr('N','N',1._dp,[csr%nrows,csr%ncols],[csr%nrows,csr%ncols], &
+        csr%data,csr%rowptr,csr%col,csr%data,csr%rowptr,csr%col, &
+        product%data,product%rowptr,product%col,work)
     print *, 'CSR product values:', product%data
     csr%data = 2._dp*csr%data
-    call spmm(csr,csr,product,plan=plan)
+    call spmm(csr,csr,product,allow_resize=.false.,work=work)
     print *, 'Repeated CSR product values:', product%data
 end program example_sparse_spmm

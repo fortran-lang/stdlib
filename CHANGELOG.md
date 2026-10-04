@@ -2,7 +2,8 @@
 
 New features
   - Add same-format sparse matrix-matrix products for COO, CSR, CSC, ELL
-    and SELLC, with public symbolic preparation and a reusable numeric kernel.
+    and SELLC, with public symbolic preparation, array-based numeric kernels,
+    independent transpose/conjugate operations, and explicit result reuse.
 
 Changes to the existing build system
   - Fixed absolute paths in generated pkg-config file for external BLAS/LAPACK 
