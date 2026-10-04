@@ -11,7 +11,7 @@ program example_environment_variable
     call set_environment_variable("STDLIB_EXAMPLE", "hello", err=err)
     if (err%error()) then
         print *, "Error setting the variable: "//err%print()
-        stop 1
+        error stop 1
     end if
 
     call get_environment_variable("STDLIB_EXAMPLE", value, length, stat)
@@ -26,7 +26,7 @@ program example_environment_variable
     call delete_environment_variable("STDLIB_EXAMPLE", err=err)
     if (err%error()) then
         print *, "Error deleting the variable: "//err%print()
-        stop 1
+        error stop 1
     end if
 
     call get_environment_variable("STDLIB_EXAMPLE", value, length, stat)

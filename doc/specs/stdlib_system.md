@@ -810,11 +810,9 @@ Experimental
 
 This subroutine creates an environment variable for the calling process, or changes the value of one that already exists.
 
-The variable is visible to this process and to any process it starts afterwards. It is not written back to the parent shell; that is a property of the operating system rather than of this implementation.
+The environment variable is visible to this process and to any process it starts afterwards. It is not exported back to the parent shell; that is a property of the operating system rather than of this implementation.
 
-`overwrite` selects whether an existing variable is replaced, and defaults to `.true.`. Windows has no equivalent of the POSIX flag -- `_putenv_s` always replaces -- so the argument has no effect there.
-
-The name must not be empty and must not contain `=`. Both are rejected before the call reaches the operating system, which reports them only as `EINVAL`.
+`overwrite` selects whether an existing variable is replaced, and defaults to `.true.`. Windows has no equivalent of the POSIX flag -- `_putenv_s` always replaces -- so the argument has no effect under the Windows environment.
 
 ### Syntax
 
@@ -826,11 +824,11 @@ Subroutine
 
 ### Arguments
 
-`name`: Shall be a character string holding the name of the variable. It is an `intent(in)` argument.
+`name`: Shall be a character string holding the name of the variable. It must not be empty and must not contain `=`; both are rejected before the call reaches the operating system, which reports them only as `EINVAL`. It is an `intent(in)` argument.
 
-`value`: Shall be a character string holding the value to give it. It is an `intent(in)` argument.
+`value`: Shall be a character string holding the value of `name`. It is an `intent(in)` argument.
 
-`overwrite`(optional): Shall be a `logical` selecting whether an existing variable is replaced. Defaults to `.true.`, and has no effect on Windows. It is an `intent(in)` argument.
+`overwrite`(optional): Shall be a `logical` selecting whether an existing variable is replaced. Defaults to `.true.`. If the variable exists and `overwrite` is `.false.`, its value is left unchanged and no error is returned. Has no effect on Windows, where the value is always replaced. It is an `intent(in)` argument.
 
 `err`(optional): Shall be of type `state_type`, and is used for error handling. It is an `intent(out)` argument.
 

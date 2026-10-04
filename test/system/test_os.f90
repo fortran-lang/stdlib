@@ -113,6 +113,7 @@ contains
         call set_environment_variable(name, 'second', overwrite=.true., err=err)
         call check(error, err%ok(), 'overwriting a variable failed: '//err%print())
         if (allocated(error)) return
+
         call get_environment_variable(name, value, length, stat)
         call check(error, value(:length) == 'second', 'overwrite=.true. left '//value(:length))
         if (allocated(error)) return
