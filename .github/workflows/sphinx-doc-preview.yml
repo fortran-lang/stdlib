@@ -56,7 +56,7 @@ jobs:
           path: ./doc/_build/html/
 
   Deploy-Sphinx-Docs:
-    if: github.event_name == 'push' && github.ref_name == 'sphinx' && github.repository != 'fortran-lang/stdlib'
+    if: github.event_name == 'push' && github.repository != 'fortran-lang/stdlib'
     needs: Build-Sphinx-Docs
     permissions:
       contents: write
