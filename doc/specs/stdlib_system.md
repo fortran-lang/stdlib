@@ -815,7 +815,7 @@ The environment variable is visible to this process and to any process it starts
 
 ### Syntax
 
-`call [[stdlib_system(module):set_environment_variable(subroutine)]] (name, value [, overwrite] [, err])`
+`call ` {f:subr}`set_environment_variable` `(name, value [, overwrite] [, err])`
 
 ### Class
 
@@ -859,7 +859,7 @@ As with `set_environment_variable`, the name must not be empty and must not cont
 
 ### Syntax
 
-`call [[stdlib_system(module):delete_environment_variable(subroutine)]] (name [, err])`
+`call `{f:subr}`delete_environment_variable` `(name [, err])`
 
 ### Class
 
