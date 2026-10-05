@@ -8,9 +8,7 @@ submodule (stdlib_system) stdlib_system_subprocess
     ! Number of CPU ticks between status updates
     integer(TICKS), parameter :: CHECK_EVERY_TICKS = 100
     
-    ! `exit` is a GNU intrinsic, so `implicit none(external)` does not accept it
-    ! under -std=f2018. Bind it to C's `exit`, which is what the intrinsic calls,
-    ! keeping the behaviour that made it preferable to `stop` here.
+    ! C's exit, since the GNU intrinsic is not available under -std=f2018.
     interface
         subroutine exit(status) bind(C, name='exit')
             import c_int
@@ -261,8 +259,6 @@ contains
 
            ! If the process was forked 
            ! Note: use `exit` rather than `stop` to prevent the mandatory stdout STOP message.
-           ! It is bound to C's `exit` explicitly because the GNU intrinsic of the
-           ! same name is not declared under -std=f2018.
            if (asynchronous) then 
                if (command_state/=0) then 
                    ! Invalid command: didn't even start

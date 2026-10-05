@@ -58,9 +58,7 @@ contains
         if (allocated(error)) return
     end subroutine test_fs_error
 
-    !> A failing operation must carry the operating system's own description,
-    !> not an empty string. This is the only cover for c_get_strerror, which
-    !> every FS_ERROR_CODE call site reaches with no argument.
+    !> A failing operation carries the OS error description, not just the code.
     subroutine test_fs_error_message_from_os(error)
         type(error_type), allocatable, intent(out) :: error
         type(state_type) :: err
@@ -73,10 +71,7 @@ contains
         call check(error, err%error(), "Expected an error changing to a missing directory")
         if (allocated(error)) return
 
-        ! The state formats as "code - <n>, <description>", where the
-        ! description is what c_get_strerror returned. Checking only that the
-        ! message is non-empty would still pass on the code alone, so require
-        ! text after the comma.
+        ! The message is "code - <n>, <description>": require text after the comma.
         comma = index(err%message, ",")
         call check(error, comma > 0, "Expected a formatted error code in: "//err%message)
         if (allocated(error)) return

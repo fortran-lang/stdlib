@@ -109,13 +109,7 @@ module stdlib_str2num
         integer(int8) :: err
         !----------------------------------------------
         call to_num_base(s,v,p,err)
-        ! `p` is int8 and `len` returns a default integer, so comparing them
-        ! directly is a GNU extension that -std=f2018 rejects. Promote `p`
-        ! rather than asking for `len(s, kind=int8)`: the string is not bounded
-        ! by 127, and that form wraps silently, with no diagnostic even under
-        ! -std=f2018 -Wall. For a 200 character string it returns -56, so the
-        ! `min` yields -56 and the `s(p:)` below is then a bad substring bound.
-        ! The result here is never larger than `p`, so it fits back into int8.
+        ! Promote p: mixing int8 with len() is a GNU extension, and len(s, kind=int8) overflows.
         p = min( int(p), len(s) )
         s => s(p:)
         if(present(stat)) stat = err

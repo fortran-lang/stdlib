@@ -1028,14 +1028,7 @@ function c_get_strerror(winapi) result(str)
             import c_size_t, c_ptr, c_bool
             implicit none
             integer(c_size_t), intent(out) :: len
-            ! The C side takes a `bool` by value. A default `logical` passed by
-            ! reference is neither: -std=f2018 rejects the kind, and the pointer
-            ! that reached C was read as the flag, so it was always true. On
-            ! Windows that meant FormatMessageA(GetLastError()) described the
-            ! failure while the code stored beside it came from errno, since
-            ! stdlib_make_directory and friends return errno from the CRT
-            ! calls -- two different error spaces in one message. Every call
-            ! site here passes no argument, so both halves now come from errno.
+            ! The C side takes a bool by value.
             logical(c_bool), intent(in), value :: winapi
         end function strerror
     end interface
