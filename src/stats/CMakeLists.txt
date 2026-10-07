@@ -3,6 +3,7 @@ set(stats_cppFiles
 
 set(stats_fppFiles
     stdlib_random.fypp
+    stdlib_stats.f90
     stdlib_stats_corr.fypp
     stdlib_stats_cov.fypp
     stdlib_stats_pca.fypp
@@ -11,7 +12,7 @@ set(stats_fppFiles
     stdlib_stats_distribution_uniform.fypp
     stdlib_stats_distribution_beta.fypp
     stdlib_stats_distribution_gamma.fypp
-    stdlib_stats.fypp
+    stdlib_stats_descriptive.fypp
     stdlib_stats_mean.fypp
     stdlib_stats_median.fypp
     stdlib_stats_moment_all.fypp
