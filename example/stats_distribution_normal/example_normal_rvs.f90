@@ -1,6 +1,6 @@
 program example_normal_rvs
-  use stdlib_random, only: random_seed
-  use stdlib_stats_distribution_normal, only: norm => rvs_normal
+  use stdlib_stats, only: random_seed
+  use stdlib_stats, only: norm => rvs_normal
 
   implicit none
   real ::  a(2, 3, 4), b(2, 3, 4)

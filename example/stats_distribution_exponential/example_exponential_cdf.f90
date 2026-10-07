@@ -1,6 +1,6 @@
 program example_exponential_cdf
-  use stdlib_random, only: random_seed
-  use stdlib_stats_distribution_exponential, only: exp_cdf => cdf_exp, &
+  use stdlib_stats, only: random_seed
+  use stdlib_stats, only: exp_cdf => cdf_exp, &
                                                    rexp => rvs_exp
 
   implicit none
