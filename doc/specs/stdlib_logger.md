@@ -1,4 +1,4 @@
-# Loggers
+# `stdlib_logger`
 
 ```{contents}
 :local:

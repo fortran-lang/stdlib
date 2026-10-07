@@ -1,4 +1,4 @@
-# Statistical Distributions -- Pseudorandom Number Generator Module
+# `stdlib_random`
 
 ```{contents}
 :local:

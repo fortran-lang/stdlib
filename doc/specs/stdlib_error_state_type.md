@@ -1,4 +1,4 @@
-# `stdlib_error` State and Error Handling Derived Type
+# `stdlib_error`
 
 ```{contents}
 :local:

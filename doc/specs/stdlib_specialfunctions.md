@@ -1,4 +1,4 @@
-# Special functions
+# `stdlib_specialfunctions_legendre`
 
 ```{contents}
 :local:

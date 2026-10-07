@@ -1,4 +1,4 @@
-# `stdlib_stringlist_type` module (1-D list of strings)
+# `stdlib_stringlist_type`
 
 ```{contents}
 :local:

@@ -1,4 +1,4 @@
-# Statistical Distributions -- Beta Distribution Module
+# `stdlib_stats_distribution_beta`
 
 ```{contents}
 :local:

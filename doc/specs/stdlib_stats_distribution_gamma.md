@@ -1,4 +1,4 @@
-# Statistical Distributions -- Gamma Distribution Module
+# `stdlib_stats_distribution_gamma`
 
 ```{contents}
 :local:

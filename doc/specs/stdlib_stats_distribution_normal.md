@@ -1,4 +1,4 @@
-# Statistical Distributions -- Normal Distribution Module
+# `stdlib_stats_distribution_normal`
 
 ```{contents}
 :local:

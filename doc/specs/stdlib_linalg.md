@@ -1,4 +1,4 @@
-# Linear Algebra
+# `stdlib_linalg`
 
 ```{contents}
 :local:

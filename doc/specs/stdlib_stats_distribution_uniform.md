@@ -1,4 +1,4 @@
-# Statistical Distributions -- Uniform Distribution Module
+# `stdlib_stats_distribution_uniform`
 
 ```{contents}
 :local:

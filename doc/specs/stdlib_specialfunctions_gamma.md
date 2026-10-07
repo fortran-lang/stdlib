@@ -1,4 +1,4 @@
-# Special functions gamma
+# `stdlib_specialfunctions_gamma`
 
 ```{contents}
 :local:

@@ -1,4 +1,4 @@
-# Descriptive statistics
+# `stdlib_stats`
 
 ```{contents}
 :local:

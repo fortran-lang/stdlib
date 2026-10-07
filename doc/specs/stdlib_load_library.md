@@ -1,4 +1,4 @@
-# Run-time loading of dynamically linked libraries
+# `stdlib_load_library`
 
 ```{contents}
 :local:

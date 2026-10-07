@@ -1,4 +1,4 @@
-# Default values for optional arguments
+# `stdlib_optval`
 
 ```{contents}
 :local:

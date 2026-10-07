@@ -1,4 +1,4 @@
-# Special functions - Neural Networks activations and their gradients
+# `stdlib_specialfunctions`
 
 ```{contents}
 :local:

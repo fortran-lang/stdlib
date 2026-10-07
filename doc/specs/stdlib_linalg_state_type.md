@@ -1,4 +1,4 @@
-# Linear Algebra -- State and Error Handling Module
+# `stdlib_linal_state`
 
 ```{contents}
 :local:

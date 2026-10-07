@@ -1,4 +1,4 @@
-# Statistical Distributions -- Exponential Distribution Module
+# `stdlib_stats_distribution_exponential`
 
 ```{contents}
 :local:
