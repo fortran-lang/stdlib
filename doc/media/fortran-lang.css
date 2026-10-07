@@ -3,11 +3,22 @@ html {
   --pst-color-primary-highlight: #5d3f7d;
 }
 
+html:not([data-theme]),
 html[data-theme="light"] {
+  --pst-color-primary: #734f96;
+  --pst-color-primary-highlight: #5d3f7d;
+  --pst-color-link: #734f96;
+  --pst-color-link-hover: #5d3f7d;
+  --pst-color-link-higher-contrast: #5d3f7d;
   --pst-color-border: white;
 }
 
 html[data-theme="dark"] {
+  --pst-color-primary: #734f96;
+  --pst-color-primary-highlight: #5d3f7d;
+  --pst-color-link: #734f96;
+  --pst-color-link-hover: #5d3f7d;
+  --pst-color-link-higher-contrast: #5d3f7d;
   --pst-color-border: #14181e;
 }
 
