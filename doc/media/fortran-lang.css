@@ -1,0 +1,16 @@
+html {
+  --pst-color-primary: #734f96;
+  --pst-color-primary-highlight: #5d3f7d;
+}
+
+html[data-theme="light"] {
+  --pst-color-border: white;
+}
+
+html[data-theme="dark"] {
+  --pst-color-border: #14181e;
+}
+
+h1 {
+  color: var(--pst-color-primary);
+}

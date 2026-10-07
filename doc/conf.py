@@ -26,6 +26,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 html_theme = 'pydata_sphinx_theme'
 html_title = 'Fortran-lang stdlib'
 html_static_path = ['media']
+html_css_files = ['fortran-lang.css']
 html_favicon = 'media/favicon.ico'
 suppress_warnings = [
     'misc.highlighting_failure',
