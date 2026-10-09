@@ -1,16 +1,20 @@
----
-title: string_type
----
+# `stdlib_string_type`
 
-# The `stdlib_string_type` module
-
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## Introduction
 
 The `stdlib_string_type` provides a derived type holding an arbitrary sequence
 of characters compatible with most Fortran intrinsic character procedures as
 well as operators for working with character variables and constants.
+
+```{note}
+The generated API reference for this pilot module is available in
+[the Sphinx API section](../api/stdlib_string_type.rst).
+```
 
 
 ## Derived types provided
@@ -50,7 +54,7 @@ Creates a string instance representing an empty string.
 
 #### Syntax
 
-`res = ` [[stdlib_string_type(module):string_type(interface)]] ` ()`
+`res = ` `string_type` ` ()`
 
 #### Class
 
@@ -66,8 +70,8 @@ The result is an instance of `string_type` with zero length.
 
 #### Example
 
-```fortran
-{!example/string_type/example_constructor_empty.f90!}
+```{literalinclude} ../../example/string_type/example_constructor_empty.f90
+:language: fortran
 ```
 
 
@@ -88,7 +92,7 @@ character variable is passed.
 
 #### Syntax
 
-`res = ` [[stdlib_string_type(module):string_type(interface)]] ` (string)`
+`res = ` `string_type` ` (string)`
 
 #### Class
 
@@ -104,8 +108,8 @@ The result is an instance of `string_type`.
 
 #### Example
 
-```fortran
-{!example/string_type/example_constructor_scalar.f90!}
+```{literalinclude} ../../example/string_type/example_constructor_scalar.f90
+:language: fortran
 ```
 
 
@@ -122,7 +126,7 @@ The module defines a constructor to create a string type from an integer scalar.
 
 #### Syntax
 
-`res = ` [[stdlib_string_type(module):string_type(interface)]] ` (string)`
+`res = ` `string_type` ` (string)`
 
 #### Class
 
@@ -138,8 +142,8 @@ The result is an instance of `string_type`.
 
 #### Example
 
-```fortran
-{!example/string_type/example_constructor_integer.f90!}
+```{literalinclude} ../../example/string_type/example_constructor_integer.f90
+:language: fortran
 ```
 
 
@@ -156,7 +160,7 @@ The module defines a constructor to create a string type from a logical scalar.
 
 #### Syntax
 
-`res = ` [[stdlib_string_type(module):string_type(interface)]] ` (string)`
+`res = ` `string_type` ` (string)`
 
 #### Class
 
@@ -172,8 +176,8 @@ The result is an instance of `string_type`.
 
 #### Example
 
-```fortran
-{!example/string_type/example_constructor_logical.f90!}
+```{literalinclude} ../../example/string_type/example_constructor_logical.f90
+:language: fortran
 ```
 
 
@@ -201,8 +205,8 @@ Elemental subroutine, `assignment(=)`.
 
 #### Example
 
-```fortran
-{!example/string_type/example_constructor_character.f90!}
+```{literalinclude} ../../example/string_type/example_constructor_character.f90
+:language: fortran
 ```
 
 
@@ -219,7 +223,7 @@ Returns the length of the string.
 
 #### Syntax
 
-`res = ` [[stdlib_string_type(module):len(interface)]] ` (string)`
+`res = ` `len` ` (string)`
 
 #### Class
 
@@ -235,8 +239,8 @@ The result is a default integer scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_len.f90!}
+```{literalinclude} ../../example/string_type/example_len.f90
+:language: fortran
 ```
 
 
@@ -254,7 +258,7 @@ represented by the string.
 
 #### Syntax
 
-`res = ` [[stdlib_string_type(module):len_trim(interface)]] ` (string)`
+`res = ` `len_trim` ` (string)`
 
 #### Class
 
@@ -270,8 +274,8 @@ The result is a default integer scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_len_trim.f90!}
+```{literalinclude} ../../example/string_type/example_len_trim.f90
+:language: fortran
 ```
 
 
@@ -289,7 +293,7 @@ represented by a `string_type`.
 
 #### Syntax
 
-`res = ` [[stdlib_string_type(module):trim(interface)]] ` (string)`
+`res = ` `trim` ` (string)`
 
 #### Class
 
@@ -305,8 +309,8 @@ The result is a scalar `string_type` value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_trim.f90!}
+```{literalinclude} ../../example/string_type/example_trim.f90
+:language: fortran
 ```
 
 
@@ -324,7 +328,7 @@ The length of the character sequence remains unchanged.
 
 #### Syntax
 
-`res = ` [[stdlib_string_type(module):adjustl(interface)]] ` (string)`
+`res = ` `adjustl` ` (string)`
 
 #### Class
 
@@ -340,8 +344,8 @@ The result is a scalar `string_type` value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_adjustl.f90!}
+```{literalinclude} ../../example/string_type/example_adjustl.f90
+:language: fortran
 ```
 
 
@@ -359,7 +363,7 @@ The length of the character sequence remains unchanged.
 
 #### Syntax
 
-`res = ` [[stdlib_string_type(module):adjustr(interface)]] ` (string)`
+`res = ` `adjustr` ` (string)`
 
 #### Class
 
@@ -375,8 +379,8 @@ The result is a scalar `string_type` value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_adjustr.f90!}
+```{literalinclude} ../../example/string_type/example_adjustr.f90
+:language: fortran
 ```
 
 
@@ -394,7 +398,7 @@ specified copies.
 
 #### Syntax
 
-`res = ` [[stdlib_string_type(module):repeat(interface)]] ` (string, ncopies)`
+`res = ` `repeat` ` (string, ncopies)`
 
 #### Class
 
@@ -411,8 +415,8 @@ The result is a scalar `string_type` value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_repeat.f90!}
+```{literalinclude} ../../example/string_type/example_repeat.f90
+:language: fortran
 ```
 
 
@@ -429,7 +433,7 @@ Return the character sequence represented by the string.
 
 #### Syntax
 
-`res = ` [[stdlib_string_type(module):char(interface)]] ` (string)`
+`res = ` `char` ` (string)`
 
 #### Class
 
@@ -445,8 +449,8 @@ The result is a scalar character value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_char.f90!}
+```{literalinclude} ../../example/string_type/example_char.f90
+:language: fortran
 ```
 
 
@@ -463,7 +467,7 @@ Return the character at a certain position in the string.
 
 #### Syntax
 
-`res = ` [[stdlib_string_type(module):char(interface)]] ` (string, pos)`
+`res = ` `char` ` (string, pos)`
 
 #### Class
 
@@ -480,8 +484,8 @@ The result is a scalar character value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_char_position.f90!}
+```{literalinclude} ../../example/string_type/example_char_position.f90
+:language: fortran
 ```
 
 
@@ -498,7 +502,7 @@ Return a substring from the character sequence of the string.
 
 #### Syntax
 
-`res = ` [[stdlib_string_type(module):char(interface)]] ` (string, start, last)`
+`res = ` `char` ` (string, start, last)`
 
 #### Class
 
@@ -516,8 +520,8 @@ The result is a scalar character value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_char_range.f90!}
+```{literalinclude} ../../example/string_type/example_char_range.f90
+:language: fortran
 ```
 
 
@@ -537,7 +541,7 @@ character sequence in the system's native character set.
 
 #### Syntax
 
-`res = ` [[stdlib_string_type(module):ichar(interface)]] ` (string)`
+`res = ` `ichar` ` (string)`
 
 #### Class
 
@@ -553,8 +557,8 @@ The result is a default integer scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_ichar.f90!}
+```{literalinclude} ../../example/string_type/example_ichar.f90
+:language: fortran
 ```
 
 
@@ -574,7 +578,7 @@ the character sequences represent by the string.
 
 #### Syntax
 
-`res = ` [[stdlib_string_type(module):iachar(interface)]] ` (string)`
+`res = ` `iachar` ` (string)`
 
 #### Class
 
@@ -590,8 +594,8 @@ The result is a default integer scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_iachar.f90!}
+```{literalinclude} ../../example/string_type/example_iachar.f90
+:language: fortran
 ```
 
 
@@ -612,7 +616,7 @@ present in *string*, zero is returned.
 
 #### Syntax
 
-`res = ` [[stdlib_string_type(module):index(interface)]] ` (string, substring[, back])`
+`res = ` `index` ` (string, substring[, back])`
 
 #### Class
 
@@ -630,8 +634,8 @@ The result is a default integer scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_index.f90!}
+```{literalinclude} ../../example/string_type/example_index.f90
+:language: fortran
 ```
 
 
@@ -652,7 +656,7 @@ the rightmost position is returned. If no character of *set* is found in
 
 #### Syntax
 
-`res = ` [[stdlib_string_type(module):scan(interface)]] ` (string, set[, back])`
+`res = ` `scan` ` (string, set[, back])`
 
 #### Class
 
@@ -670,8 +674,8 @@ The result is a default integer scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_scan.f90!}
+```{literalinclude} ../../example/string_type/example_scan.f90
+:language: fortran
 ```
 
 
@@ -692,7 +696,7 @@ in *set*, the result is zero.
 
 #### Syntax
 
-`res = ` [[stdlib_string_type(module):verify(interface)]] ` (string, set[, back])`
+`res = ` `verify` ` (string, set[, back])`
 
 #### Class
 
@@ -710,8 +714,8 @@ The result is a default integer scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_verify.f90!}
+```{literalinclude} ../../example/string_type/example_verify.f90
+:language: fortran
 ```
 
 
@@ -732,7 +736,7 @@ This defines three procedures overloading the intrinsic `lgt` procedure.
 
 #### Syntax
 
-`res = ` [[stdlib_string_type(module):lgt(interface)]] ` (lhs, rhs)`
+`res = ` `lgt` ` (lhs, rhs)`
 
 #### Class
 
@@ -749,8 +753,8 @@ The result is a default logical scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_lgt.f90!}
+```{literalinclude} ../../example/string_type/example_lgt.f90
+:language: fortran
 ```
 
 
@@ -771,7 +775,7 @@ This defines three procedures overloading the intrinsic `llt` procedure.
 
 #### Syntax
 
-`res = ` [[stdlib_string_type(module):llt(interface)]] ` (lhs, rhs)`
+`res = ` `llt` ` (lhs, rhs)`
 
 #### Class
 
@@ -788,8 +792,8 @@ The result is a default logical scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_llt.f90!}
+```{literalinclude} ../../example/string_type/example_llt.f90
+:language: fortran
 ```
 
 
@@ -811,7 +815,7 @@ This defines three procedures overloading the intrinsic `lge` procedure.
 
 #### Syntax
 
-`res = ` [[stdlib_string_type(module):lge(interface)]] ` (lhs, rhs)`
+`res = ` `lge` ` (lhs, rhs)`
 
 #### Class
 
@@ -828,8 +832,8 @@ The result is a default logical scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_lge.f90!}
+```{literalinclude} ../../example/string_type/example_lge.f90
+:language: fortran
 ```
 
 
@@ -851,7 +855,7 @@ This defines three procedures overloading the intrinsic `lle` procedure.
 
 #### Syntax
 
-`res = ` [[stdlib_string_type(module):lle(interface)]] ` (lhs, rhs)`
+`res = ` `lle` ` (lhs, rhs)`
 
 #### Class
 
@@ -868,8 +872,8 @@ The result is a default logical scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_lle.f90!}
+```{literalinclude} ../../example/string_type/example_lle.f90
+:language: fortran
 ```
 
 
@@ -887,7 +891,7 @@ character sequence hold by the input string.
 
 #### Syntax
 
-`lowercase_string = ` [[stdlib_string_type(module):to_lower(interface)]] ` (string)`
+`lowercase_string = ` `to_lower` ` (string)`
 
 #### Class
 
@@ -903,8 +907,8 @@ The result is a scalar `string_type` value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_to_lower.f90!}
+```{literalinclude} ../../example/string_type/example_to_lower.f90
+:language: fortran
 ```
 
 
@@ -922,7 +926,7 @@ character sequence hold by the input string.
 
 #### Syntax
 
-`uppercase_string = ` [[stdlib_string_type(module):to_upper(interface)]] ` (string)`
+`uppercase_string = ` `to_upper` ` (string)`
 
 #### Class
 
@@ -938,8 +942,8 @@ The result is a scalar `string_type` value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_to_upper.f90!}
+```{literalinclude} ../../example/string_type/example_to_upper.f90
+:language: fortran
 ```
 
 
@@ -962,7 +966,7 @@ or numeral present next to either of its 2 ends.
 
 #### Syntax
 
-`titlecase_string = ` [[stdlib_string_type(module):to_title(interface)]] ` (string)`
+`titlecase_string = ` `to_title` ` (string)`
 
 #### Class
 
@@ -978,8 +982,8 @@ The result is a scalar `string_type` value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_to_title.f90!}
+```{literalinclude} ../../example/string_type/example_to_title.f90
+:language: fortran
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -999,7 +1003,7 @@ characters in the sequence are transformed to lowercase.
 
 #### Syntax
 
-`sentencecase_string = ` [[stdlib_string_type(module):to_sentence(interface)]] ` (string)`
+`sentencecase_string = ` `to_sentence` ` (string)`
 
 #### Class
 
@@ -1015,8 +1019,8 @@ The result is a scalar `string_type` value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_to_sentence.f90!}
+```{literalinclude} ../../example/string_type/example_to_sentence.f90
+:language: fortran
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -1033,7 +1037,7 @@ character sequence hold by the input string.
 
 #### Syntax
 
-`reverse_string = ` [[stdlib_string_type(module):reverse(interface)]] ` (string)`
+`reverse_string = ` `reverse` ` (string)`
 
 #### Class
 
@@ -1049,8 +1053,8 @@ The result is a scalar `string_type` value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_reverse.f90!}
+```{literalinclude} ../../example/string_type/example_reverse.f90
+:language: fortran
 ```
 
 
@@ -1091,8 +1095,8 @@ The result is a default logical scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_gt.f90!}
+```{literalinclude} ../../example/string_type/example_gt.f90
+:language: fortran
 ```
 
 
@@ -1133,8 +1137,8 @@ The result is a default logical scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_lt.f90!}
+```{literalinclude} ../../example/string_type/example_lt.f90
+:language: fortran
 ```
 
 
@@ -1175,8 +1179,8 @@ The result is a default logical scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_ge.f90!}
+```{literalinclude} ../../example/string_type/example_ge.f90
+:language: fortran
 ```
 
 
@@ -1217,8 +1221,8 @@ The result is a default logical scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_le.f90!}
+```{literalinclude} ../../example/string_type/example_le.f90
+:language: fortran
 ```
 
 
@@ -1259,8 +1263,8 @@ The result is a default logical scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_eq.f90!}
+```{literalinclude} ../../example/string_type/example_eq.f90
+:language: fortran
 ```
 
 
@@ -1301,8 +1305,8 @@ The result is a default logical scalar value.
 
 #### Example
 
-```fortran
-{!example/string_type/example_ne.f90!}
+```{literalinclude} ../../example/string_type/example_ne.f90
+:language: fortran
 ```
 
 
@@ -1340,8 +1344,8 @@ The result is an instance of `string_type`.
 
 #### Example
 
-```fortran
-{!example/string_type/example_cont.f90!}
+```{literalinclude} ../../example/string_type/example_cont.f90
+:language: fortran
 ```
 
 
@@ -1377,8 +1381,8 @@ Unformatted user defined derived type output.
 
 #### Example
 
-```fortran
-{!example/string_type/example_uwrite.f90!}
+```{literalinclude} ../../example/string_type/example_uwrite.f90
+:language: fortran
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -1420,8 +1424,8 @@ Formatted user defined derived type output.
 
 #### Example
 
-```fortran
-{!example/string_type/example_fwrite.f90!}
+```{literalinclude} ../../example/string_type/example_fwrite.f90
+:language: fortran
 ```
 
 
@@ -1459,8 +1463,8 @@ Unformatted derived type input.
 
 #### Example
 
-```fortran
-{!example/string_type/example_uread.f90!}
+```{literalinclude} ../../example/string_type/example_uread.f90
+:language: fortran
 ```
 
 
@@ -1506,8 +1510,8 @@ Formatted derived type input.
 
 #### Example
 
-```fortran
-{!example/string_type/example_fread.f90!}
+```{literalinclude} ../../example/string_type/example_fread.f90
+:language: fortran
 ```
 
 
@@ -1527,7 +1531,7 @@ If `from` and `to` are the same variable, then `from` remains unchanged.
 
 #### Syntax
 
-`call ` [[stdlib_string_type(module):move(interface)]] ` (from, to)`
+`call ` `move` ` (from, to)`
 
 #### Class
 
@@ -1535,14 +1539,14 @@ Pure subroutine (Elemental subroutine, only when both `from` and `to` are `type(
 
 #### Argument
 
-- `from`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+- `from`: Character scalar or `string_type`.
   This argument is `intent(inout)`.
-- `to`: Character scalar or [[stdlib_string_type(module):string_type(type)]].
+- `to`: Character scalar or `string_type`.
   This argument is `intent(inout)` when both `from` and `to` are `type(string_type)`,
   otherwise `intent(out)`.
 
 #### Example
 
-```fortran
-{!example/string_type/example_move.f90!}
+```{literalinclude} ../../example/string_type/example_move.f90
+:language: fortran
 ```

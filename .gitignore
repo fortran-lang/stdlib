@@ -3,6 +3,8 @@ build/
 # FORD generated documentation
 # !WARNING! This folder gets deleted and overwritten
 API-doc/
+doc/_build/
+doc/_generated/
 
 # Prerequisites
 *.d

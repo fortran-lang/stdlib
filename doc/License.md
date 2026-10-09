@@ -2,4 +2,7 @@
 title: Fortran stdlib License (MIT)
 ---
 
-{!LICENSE!}
+# Fortran stdlib License (MIT)
+
+```{include} ../LICENSE
+```

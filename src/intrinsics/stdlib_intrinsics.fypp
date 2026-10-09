@@ -15,11 +15,11 @@ module stdlib_intrinsics
     interface stdlib_sum
         !! version: experimental 
         !!
-        !!### Summary 
+        !!## Summary 
         !! Sum elements of rank N arrays. 
         !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_sum))
         !!
-        !!### Description
+        !!## Description
         !! 
         !! This interface provides standard conforming call for sum of elements of any rank.
         !! The 1-D base implementation follows a chunked approach for optimizing performance and increasing accuracy.
@@ -56,11 +56,11 @@ module stdlib_intrinsics
     interface stdlib_sum_kahan
         !! version: experimental 
         !!
-        !!### Summary 
+        !!## Summary 
         !! Sum elements of rank N arrays. 
         !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_sum_kahan))
         !!
-        !!### Description
+        !!## Description
         !! 
         !! This interface provides standard conforming call for sum of elements of any rank.
         !! The 1-D base implementation follows a chunked approach combined with a kahan kernel for optimizing performance and increasing accuracy.
@@ -97,11 +97,11 @@ module stdlib_intrinsics
     interface stdlib_dot_product
         !! version: experimental 
         !!
-        !!### Summary 
+        !!## Summary 
         !! dot_product of rank 1 arrays. 
         !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_dot_product))
         !!
-        !!### Description
+        !!## Description
         !! 
         !! compute the dot_product of rank 1 arrays.
         !! The 1-D base implementation follows a chunked approach for optimizing performance and increasing accuracy.
@@ -120,11 +120,11 @@ module stdlib_intrinsics
     interface stdlib_dot_product_kahan
         !! version: experimental 
         !!
-        !!### Summary 
+        !!## Summary 
         !! dot_product of rank 1 arrays. 
         !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_dot_product_kahan))
         !!
-        !!### Description
+        !!## Description
         !! 
         !! compute the dot_product of rank 1 arrays.
         !! The implementation follows a chunked approach combined with a kahan kernel for optimizing performance and increasing accuracy.
@@ -151,11 +151,11 @@ module stdlib_intrinsics
     interface stdlib_matmul
         !! version: experimental
         !!
-        !!### Summary
+        !!## Summary
         !! compute the matrix multiplication of more than two matrices with a single function call.
         !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_matmul))
         !!
-        !!### Description
+        !!## Description
         !!
         !! matrix multiply more than two matrices with a single function call
         !! the multiplication with the optimal parenthesization for efficiency of computation is done automatically

@@ -1,10 +1,9 @@
----
-title: version
----
+# `stdlib_version`
 
-# The `stdlib_version` module
-
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## Introduction
 
@@ -38,7 +37,7 @@ Getter subroutine to retrieve version information
 
 #### Syntax
 
-`call ` [[stdlib_version(module):get_stdlib_version(subroutine)]] ` ([major], [minor], [patch], [string])`
+`call ` `get_stdlib_version` ` ([major], [minor], [patch], [string])`
 
 #### Class
 
@@ -53,6 +52,6 @@ Pure subroutine.
 
 #### Example
 
-```fortran
-{!example/version/example_version.f90!}
+```{literalinclude} ../../example/version/example_version.f90
+:language: fortran
 ``` 

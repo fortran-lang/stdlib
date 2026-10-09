@@ -1,10 +1,9 @@
----
-title: io
----
+# `stdlib_io`
 
-# IO
-
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## `loadtxt` - load a 2D array from a text file
 
@@ -17,7 +16,7 @@ Loads a rank-2 `array` from a text file.
 
 ### Syntax
 
-`call ` [[stdlib_io(module):loadtxt(interface)]] `(filename, array [, skiprows] [, max_rows] [, fmt] [, delimiter])`
+`call ` `loadtxt` `(filename, array [, skiprows] [, max_rows] [, fmt] [, delimiter])`
 
 ### Arguments
 
@@ -39,8 +38,8 @@ Returns an allocated rank-2 `array` with the content of `filename`.
 
 ### Example
 
-```fortran
-{!example/io/example_loadtxt.f90!}
+```{literalinclude} ../../example/io/example_loadtxt.f90
+:language: fortran
 ```
 
 
@@ -57,7 +56,7 @@ Text files are opened using a sequential access, while binary files are opened u
 
 ### Syntax
 
-`u = ` [[stdlib_io(module):open(function)]] `(filename [, mode] [, iostat])`
+`u = ` `open` `(filename [, mode] [, iostat])`
 
 ### Arguments
 
@@ -90,8 +89,8 @@ The result is a scalar of type `integer`.
 
 ### Example
 
-```fortran
-{!example/io/example_open.f90!}
+```{literalinclude} ../../example/io/example_open.f90
+:language: fortran
 ```
 
 
@@ -110,9 +109,9 @@ If the text file already exists:
 
 ### Syntax
 
-`call ` [[stdlib_io(module):savetxt(interface)]] `(filename, array [,  delimiter] [, fmt] [, header] [, footer] [, comments])`
+`call ` `savetxt` `(filename, array [,  delimiter] [, fmt] [, header] [, footer] [, comments])`
 
-`call ` [[stdlib_io(module):savetxt(interface)]] `(unit, array [,  delimiter] [, fmt] [, header] [, footer] [, comments])`
+`call ` `savetxt` `(unit, array [,  delimiter] [, fmt] [, header] [, footer] [, comments])`
 
 ### Arguments
 
@@ -138,8 +137,8 @@ Provides a text file called `filename` that contains the rank-2 `array` with opt
 
 ### Example
 
-```fortran
-{!example/io/example_savetxt.f90!}
+```{literalinclude} ../../example/io/example_savetxt.f90
+:language: fortran
 ```
 
 
@@ -155,7 +154,7 @@ Loads an `array` from a npy formatted binary file.
 
 ### Syntax
 
-`call ` [[stdlib_io_npy(module):load_npy(interface)]] `(filename, array[, iostat][, iomsg])`
+`call ` `load_npy` `(filename, array[, iostat][, iomsg])`
 
 ### Arguments
 
@@ -179,8 +178,8 @@ Returns an allocated `array` with the content of `filename` in case of success.
 
 ### Example
 
-```fortran
-{!example/io/example_loadnpy.f90!}
+```{literalinclude} ../../example/io/example_loadnpy.f90
+:language: fortran
 ```
 
 
@@ -196,7 +195,7 @@ Saves an `array` into a npy formatted binary file.
 
 ### Syntax
 
-`call ` [[stdlib_io_npy(module):save_npy(interface)]] `(filename, array[, iostat][, iomsg])`
+`call ` `save_npy` `(filename, array[, iostat][, iomsg])`
 
 ### Arguments
 
@@ -220,8 +219,8 @@ Provides a npy file called `filename` that contains the rank-2 `array`.
 
 ### Example
 
-```fortran
-{!example/io/example_savenpy.f90!}
+```{literalinclude} ../../example/io/example_savenpy.f90
+:language: fortran
 ```
 
 ## `get_line`
@@ -236,9 +235,9 @@ Read a whole line from a formatted unit into a string variable
 
 ### Syntax
 
-`call ` [[stdlib_io(module):get_line(interface)]] ` (unit, line[, iostat][, iomsg])`
+`call ` `get_line` ` (unit, line[, iostat][, iomsg])`
 
-`call ` [[stdlib_io(module):get_line(interface)]] ` (line[, iostat][, iomsg])`
+`call ` `get_line` ` (line[, iostat][, iomsg])`
 
 ### Arguments
 
@@ -259,8 +258,8 @@ Read a whole line from a formatted unit into a string variable
 
 ### Example
 
-```fortran
-{!example/io/example_get_line.f90!}
+```{literalinclude} ../../example/io/example_get_line.f90
+:language: fortran
 ```
 
 ## Formatting constants {formatting-constants}
@@ -276,8 +275,8 @@ Provides formats for all kinds as defined in the `stdlib_kinds` module.
 
 ### Example
 
-```fortran
-{!example/io/example_fmt_constants.f90!}
+```{literalinclude} ../../example/io/example_fmt_constants.f90
+:language: fortran
 ```
 
 ## `get_file` - Read a whole ASCII file into a `character` or a `string` variable
@@ -293,7 +292,7 @@ The function provides an optional error-handling mechanism via the `state_type` 
 
 ### Syntax
 
-`call ` [[stdlib_io(module):get_file(subroutine)]] ` (filename, file [, err] [, delete=.false.])`
+`call ` `get_file` ` (filename, file [, err] [, delete=.false.])`
 
 ### Class
 Function
@@ -317,8 +316,8 @@ Exceptions trigger an `error stop` unless the optional `err` argument is provide
 
 ### Example
 
-```fortran
-{!example/io/example_get_file.f90!}
+```{literalinclude} ../../example/io/example_get_file.f90
+:language: fortran
 ```
 
 ## Matrix Market Format I/O
@@ -339,17 +338,17 @@ Loads a 2D matrix from a Matrix Market format file. Symmetric matrices are expan
 
 - To load a matrix of `array` format:
 
-`call ` [[stdlib_io_mm(module):load_mm(interface)]] `(filename, matrix [, iostat, iomsg])`
+`call ` `load_mm` `(filename, matrix [, iostat, iomsg])`
 
 - To load a matrix of `coordinate` format:
 
-`call ` [[stdlib_io_mm(module):load_mm(interface)]] `(filename, index, data [, iostat, iomsg])`
+`call ` `load_mm` `(filename, index, data [, iostat, iomsg])`
 
 #### Arguments
 
 **`Array` format**
 
-`call ` [[stdlib_io_mm(module):load_mm(interface)]] `(filename, matrix [, iostat, iomsg])`
+`call ` `load_mm` `(filename, matrix [, iostat, iomsg])`
 
 - `filename`: Shall be a character expression containing the Matrix Market file name to read from.
 
@@ -361,7 +360,7 @@ Loads a 2D matrix from a Matrix Market format file. Symmetric matrices are expan
 
 **`Coordinate` format**
 
-`call ` [[stdlib_io_mm(module):load_mm(interface)]] `(filename, index, data [, iostat, iomsg])`
+`call ` `load_mm` `(filename, index, data [, iostat, iomsg])`
 
 - `filename`: Shall be a character expression containing the Matrix Market file name to read from.
 
@@ -381,17 +380,17 @@ Saves a 2D matrix to Matrix Market format file.
 
 - To save a matrix of `array` format:
 
-`call ` [[stdlib_io_mm(module):save_mm(interface)]] `(filename, matrix [, comment, format, symmetry, iostat, iomsg])`
+`call ` `save_mm` `(filename, matrix [, comment, format, symmetry, iostat, iomsg])`
 
 - To save a matrix of `coordinate` format:
 
-`call ` [[stdlib_io_mm(module):save_mm(interface)]] `(filename, index, data [, comment, format, symmetry, iostat, iomsg])`
+`call ` `save_mm` `(filename, index, data [, comment, format, symmetry, iostat, iomsg])`
 
 #### Arguments
 
 **`Array` format**
 
-`call ` [[stdlib_io_mm(module):save_mm(interface)]] `(filename, matrix [, comment, format, symmetry, iostat, iomsg])`
+`call ` `save_mm` `(filename, matrix [, comment, format, symmetry, iostat, iomsg])`
 
 - `filename`: Shall be a character expression containing the Matrix Market file name to write to.
 
@@ -415,7 +414,7 @@ Saves a 2D matrix to Matrix Market format file.
 
 **`Coordinate` format**
 
-`call ` [[stdlib_io_mm(module):save_mm(interface)]] `(filename, index, data [, comment, format, symmetry, iostat, iomsg])`
+`call ` `save_mm` `(filename, index, data [, comment, format, symmetry, iostat, iomsg])`
 
 - `filename`: Shall be a character expression containing the Matrix Market file name to write to.
 
@@ -451,6 +450,6 @@ The Matrix Market format supports:
 
 ### Example
 
-```fortran
-{!example/io/example_matrix_market.f90!}
+```{literalinclude} ../../example/io/example_matrix_market.f90
+:language: fortran
 ```

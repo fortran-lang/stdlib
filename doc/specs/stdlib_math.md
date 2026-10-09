@@ -1,10 +1,9 @@
----
-title: math
----
+# `stdlib_math`
 
-# The `stdlib_math` module
-
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## Introduction
 
@@ -23,7 +22,7 @@ Returns a value which lies in the given interval [`xmin`, `xmax`] (interval is `
 
 #### Syntax
 
-`res = ` [[stdlib_math(module):clip(interface)]] ` (x, xmin, xmax)`
+`res = ` `clip` ` (x, xmin, xmax)`
 
 #### Status
 
@@ -50,15 +49,15 @@ The output is a scalar of `type` and `kind` same as to that of the arguments.
 ##### Example 1:
 
 Here inputs are of type `integer` and kind `int32`
-```fortran
-{!example/math/example_clip_integer.f90!}
+```{literalinclude} ../../example/math/example_clip_integer.f90
+:language: fortran
 ```
 
 ##### Example 2:
 
 Here inputs are of type `real` and kind `sp`
-```fortran
-{!example/math/example_clip_real.f90!}
+```{literalinclude} ../../example/math/example_clip_real.f90
+:language: fortran
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -70,7 +69,7 @@ Swaps the values in `lhs` and `rhs`.
 
 #### Syntax
 
-`call` [[stdlib_math(module):swap(interface)]] ` (lhs, rhs)`
+`call` `swap` ` (lhs, rhs)`
 
 #### Status
 
@@ -92,8 +91,8 @@ All arguments must have same `type` and same `kind`.
 
 #### Examples
 
-```fortran
-{!example/math/example_math_swap.F90!}
+```{literalinclude} ../../example/math/example_math_swap.F90
+:language: fortran
 ```
 
 ### `gcd` function
@@ -104,7 +103,7 @@ Returns the greatest common divisor of two integers.
 
 #### Syntax
 
-`res = ` [[stdlib_math(module):gcd(interface)]] ` (a, b)`
+`res = ` `gcd` ` (a, b)`
 
 #### Status
 
@@ -129,8 +128,8 @@ Returns an integer of the same `kind` as that of the arguments.
 
 ##### Example 1:
 
-```fortran
-{!example/math/example_gcd.f90!}
+```{literalinclude} ../../example/math/example_gcd.f90
+:language: fortran
 ```
 
 ### `linspace` - Create a linearly spaced rank one array
@@ -141,7 +140,7 @@ Returns a linearly spaced rank 1 array from [`start`, `end`]. Optionally, you ca
 
 #### Syntax
 
-`res = ` [[stdlib_math(module):linspace(interface)]] ` (start, end [, n])`
+`res = ` `linspace` ` (start, end [, n])`
 
 #### Status
 
@@ -172,15 +171,15 @@ If `start`/`end` are `integer` types, the `result` will default to a `real(dp)` 
 ##### Example 1:
 
 Here inputs are of type `complex` and kind `dp`
-```fortran
-{!example/math/example_linspace_complex.f90!}
+```{literalinclude} ../../example/math/example_linspace_complex.f90
+:language: fortran
 ```
 
 ##### Example 2:
 
 Here inputs are of type `integer` and kind `int16`, with the result defaulting to `real(dp)`.
-```fortran
-{!example/math/example_linspace_int16.f90!}
+```{literalinclude} ../../example/math/example_linspace_int16.f90
+:language: fortran
 ```
 
 ### `logspace` - Create a logarithmically spaced rank one array
@@ -191,7 +190,7 @@ Returns a logarithmically spaced rank 1 array from [`base`^`start`, `base`^`end`
 
 #### Syntax
 
-`res = ` [[stdlib_math(module):logspace(interface)]] ` (start, end [, n [, base]])`
+`res = ` `logspace` ` (start, end [, n [, base]])`
 
 #### Status
 
@@ -241,22 +240,22 @@ For function calls where the `base` is specified, the `type` and `kind` of the r
 ##### Example 1:
 
 Here inputs are of type `complex` and kind `dp`. `n` and `base` is not specified and thus default to 50 and 10, respectively.
-```fortran
-{!example/math/example_logspace_complex.f90!}
+```{literalinclude} ../../example/math/example_logspace_complex.f90
+:language: fortran
 ```
 
 ##### Example 2:
 
 Here inputs are of type `integer` and default kind. `base` is not specified and thus defaults to 10.
-```fortran
-{!example/math/example_logspace_int.f90!}
+```{literalinclude} ../../example/math/example_logspace_int.f90
+:language: fortran
 ```
 
 ##### Example 3:
 
 Here `start`/`end` are of type `real` and double precision. `base` is type `complex` and also double precision.
-```fortran
-{!example/math/example_logspace_rstart_cbase.f90!}
+```{literalinclude} ../../example/math/example_logspace_rstart_cbase.f90
+:language: fortran
 ```
 ### `arange` function
 
@@ -274,7 +273,7 @@ Creates a rank-1 `array` of the `integer/real` type with fixed-spaced values of 
 
 #### Syntax
 
-`result = ` [[stdlib_math(module):arange(interface)]] `(start [, end, step])`
+`result = ` `arange` `(start [, end, step])`
 
 #### Arguments
 
@@ -305,8 +304,8 @@ For `real` type arguments, the length of the result vector is `floor((end - star
 
 #### Example
 
-```fortran
-{!example/math/example_math_arange.f90!}
+```{literalinclude} ../../example/math/example_math_arange.f90
+:language: fortran
 ```
 
 ### `arg` function
@@ -326,7 +325,7 @@ The angles in `θ` are such that `z = abs(z)*exp((0.0, θ))`.
 
 #### Syntax
 
-`result = ` [[stdlib_math(module):arg(interface)]] `(z)`
+`result = ` `arg` `(z)`
 
 #### Arguments
 
@@ -341,8 +340,8 @@ Notes: Although the angle of the complex number `0` is undefined, `arg((0,0))` r
 
 #### Example
 
-```fortran
-{!example/math/example_math_arg.f90!}
+```{literalinclude} ../../example/math/example_math_arg.f90
+:language: fortran
 ```
 
 ### `argd` function
@@ -362,7 +361,7 @@ The angles in `θ` are such that `z = abs(z)*exp((0.0, θ*π/180.0))`.
 
 #### Syntax
 
-`result = ` [[stdlib_math(module):argd(interface)]] `(z)`
+`result = ` `argd` `(z)`
 
 #### Arguments
 
@@ -377,8 +376,8 @@ Notes: Although the angle of the complex number `0` is undefined, `argd((0,0))` 
 
 #### Example
 
-```fortran
-{!example/math/example_math_argd.f90!}
+```{literalinclude} ../../example/math/example_math_argd.f90
+:language: fortran
 ```
 
 ### `argpi` function
@@ -398,7 +397,7 @@ The angles in `θ` are such that `z = abs(z)*exp((0.0, θ*π))`.
 
 #### Syntax
 
-`result = ` [[stdlib_math(module):argpi(interface)]] `(z)`
+`result = ` `argpi` `(z)`
 
 #### Arguments
 
@@ -413,8 +412,8 @@ Notes: Although the angle of the complex number `0` is undefined, `argpi((0,0))`
 
 #### Example
 
-```fortran
-{!example/math/example_math_argpi.f90!}
+```{literalinclude} ../../example/math/example_math_argpi.f90
+:language: fortran
 ```
 
 ### `deg2rad`
@@ -433,7 +432,7 @@ Elemenal function.
 
 #### Syntax
 
-`result = ` [[stdlib_math(module):deg2rad(interface)]] `(theta)`
+`result = ` `deg2rad` `(theta)`
 
 #### Arguments
 
@@ -445,8 +444,8 @@ Returns the `real` phase angle in radians.
 
 #### Example
 
-```fortran
-{!example/math/example_math_deg2rad.f90!}
+```{literalinclude} ../../example/math/example_math_deg2rad.f90
+:language: fortran
 ```
 
 ### `rad2deg`
@@ -465,7 +464,7 @@ Elemenal function.
 
 #### Syntax
 
-`result = ` [[stdlib_math(module):rad2deg(interface)]] `(theta)`
+`result = ` `rad2deg` `(theta)`
 
 #### Arguments
 
@@ -477,8 +476,8 @@ Returns the `real` phase angle in degrees.
 
 #### Example
 
-```fortran
-{!example/math/example_math_rad2deg.f90!}
+```{literalinclude} ../../example/math/example_math_rad2deg.f90
+:language: fortran
 ```
 
 ### `is_close` function
@@ -498,7 +497,7 @@ is_close(a, b, rel_tol, abs_tol) = is_close(a%re, b%re, rel_tol, abs_tol) .and. 
 
 #### Syntax
 
-`bool = ` [[stdlib_math(module):is_close(interface)]] ` (a, b [, rel_tol, abs_tol, equal_nan])`
+`bool = ` `is_close` ` (a, b [, rel_tol, abs_tol, equal_nan])`
 
 #### Status
 
@@ -537,8 +536,8 @@ Returns a `logical` scalar/array.
 
 #### Example
 
-```fortran
-{!example/math/example_math_is_close.f90!}
+```{literalinclude} ../../example/math/example_math_is_close.f90
+:language: fortran
 ```
 
 ### `all_close` function
@@ -549,7 +548,7 @@ Returns a boolean scalar where two arrays are element-wise equal within a tolera
 
 #### Syntax
 
-`bool = ` [[stdlib_math(module):all_close(interface)]] ` (a, b [, rel_tol, abs_tol, equal_nan])`
+`bool = ` `all_close` ` (a, b [, rel_tol, abs_tol, equal_nan])`
 
 #### Status
 
@@ -588,8 +587,8 @@ Returns a `logical` scalar.
 
 #### Example
 
-```fortran
-{!example/math/example_math_all_close.f90!}
+```{literalinclude} ../../example/math/example_math_all_close.f90
+:language: fortran
 ```
 
 ### `diff` function
@@ -601,10 +600,10 @@ Computes differences between adjacent elements of an array.
 #### Syntax
 
 For a rank-1 array:  
-`y = ` [[stdlib_math(module):diff(interface)]] `(x [, n, prepend, append])`
+`y = ` `diff` `(x [, n, prepend, append])`
 
 and for a rank-2 array:  
-`y = ` [[stdlib_math(module):diff(interface)]] `(x [, n, dim, prepend, append])`
+`y = ` `diff` `(x [, n, dim, prepend, append])`
 
 #### Status
 
@@ -650,8 +649,8 @@ When both `prepend` and `append` are not present, the result `y` has one fewer e
 
 #### Example
 
-```fortran
-{!example/math/example_diff.f90!}
+```{literalinclude} ../../example/math/example_diff.f90
+:language: fortran
 ```
 
 ### `meshgrid` subroutine
@@ -667,13 +666,13 @@ For $n \geq 1$ coordinate vectors $(x_1, x_2, ..., x_n)$ of sizes $(s_1, s_2, ..
 #### Syntax
 
 For a 2D problem in Cartesian indexing:
-`call ` [[stdlib_math(module):meshgrid(interface)]] `(x, y, xm, ym)`
+`call ` `meshgrid` `(x, y, xm, ym)`
 
 For a 3D problem in Cartesian indexing:
-`call ` [[stdlib_math(module):meshgrid(interface)]] `(x, y, z, xm, ym, zm)`
+`call ` `meshgrid` `(x, y, z, xm, ym, zm)`
 
 For a 3D problem in matrix indexing:
-`call ` [[stdlib_math(module):meshgrid(interface)]] `(x, y, z, xm, ym, zm, indexing="ij")`
+`call ` `meshgrid` `(x, y, z, xm, ym, zm, indexing="ij")`
 
 The subroutine can be called in `n`-dimensional situations, as long as `n` is inferior to the maximum allowed array rank.
 
@@ -706,6 +705,6 @@ This argument is `intent(in)` and `optional`, and is equal to `stdlib_meshgrid_x
 
 #### Example
 
-```fortran
-{!example/math/example_meshgrid.f90!}
+```{literalinclude} ../../example/math/example_meshgrid.f90
+:language: fortran
 ```
