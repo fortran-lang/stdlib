@@ -6,8 +6,13 @@ Changes to the existing modules
       [#1187](https://github.com/fortran-lang/stdlib/issues/1187)
 
 Changes to the existing build system
-  - Fixed absolute paths in generated pkg-config file for external BLAS/LAPACK 
+  - Fixed absolute paths in generated pkg-config file for external BLAS/LAPACK
     [#1109](https://github.com/fortran-lang/stdlib/issues/1109)
+
+New features
+  - Add same-format sparse matrix-matrix products for COO, CSR, CSC, ELL
+    and SELLC, with public symbolic preparation, array-based numeric kernels,
+    independent transpose/conjugate operations, and explicit result reuse.
 
 # Version 0.8.1
 

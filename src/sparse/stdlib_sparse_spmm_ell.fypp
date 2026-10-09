@@ -1,0 +1,271 @@
+#:include "common.fypp"
+#:set KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX)) + list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set fmt = "ELL"
+submodule (stdlib_sparse_spmm) stdlib_sparse_spmm_ell
+contains
+    #:for k, t, s in KINDS_TYPES
+    !> Multiply a ELL sparse matrix by a dense matrix.
+    module subroutine spmm_ell_dense_${s}$(sparse_a, dense_b, dense_c, alpha, beta, op)
+        type(ELL_${s}$_type), intent(in) :: sparse_a
+        ${t}$, intent(in) :: dense_b(:,:)
+        ${t}$, intent(inout) :: dense_c(:,:)
+        ${t}$, intent(in), optional :: alpha, beta
+        character(1), intent(in), optional :: op
+        character(1) :: op_
+        ${t}$ :: beta_
+        integer :: j
+        op_ = sparse_op_none
+        if (present(op)) op_ = op
+        if (op_ /= sparse_op_none .and. op_ /= sparse_op_transpose .and. op_ /= sparse_op_hermitian) &
+            error stop 'spmm: invalid op'
+        #:if not t.startswith('complex')
+        if (op_ == sparse_op_hermitian) op_ = sparse_op_transpose
+        #:endif
+        if (op_ == sparse_op_none) then
+            if (size(dense_b,1) /= sparse_a%ncols .or. size(dense_c,1) /= sparse_a%nrows) &
+                error stop 'spmm: incompatible matrix dimensions'
+        else
+            if (size(dense_b,1) /= sparse_a%nrows .or. size(dense_c,1) /= sparse_a%ncols) &
+                error stop 'spmm: incompatible matrix dimensions'
+        end if
+        if (size(dense_b,2) /= size(dense_c,2)) error stop 'spmm: incompatible matrix dimensions'
+        beta_ = zero_${s}$
+        if (present(beta)) beta_ = beta
+        if (beta_ == zero_${s}$) dense_c = zero_${s}$
+        do j = 1, size(dense_b,2)
+            call spmv(sparse_a, dense_b(:,j), dense_c(:,j), alpha, beta, op_)
+        end do
+    end subroutine spmm_ell_dense_${s}$
+
+    !> Multiply a dense matrix by a ELL sparse matrix.
+    module subroutine spmm_dense_ell_${s}$(dense_a, sparse_b, dense_c, alpha, beta, op)
+        ${t}$, intent(in) :: dense_a(:,:)
+        type(ELL_${s}$_type), intent(in) :: sparse_b
+        ${t}$, intent(inout) :: dense_c(:,:)
+        ${t}$, intent(in), optional :: alpha, beta
+        character(1), intent(in), optional :: op
+        character(1) :: op_, spmv_op
+        ${t}$ :: beta_
+        integer :: i
+        op_ = sparse_op_none
+        if (present(op)) op_ = op
+        if (op_ /= sparse_op_none .and. op_ /= sparse_op_transpose .and. op_ /= sparse_op_hermitian) &
+            error stop 'spmm: invalid op'
+        if (size(dense_a,1) /= size(dense_c,1)) error stop 'spmm: incompatible matrix dimensions'
+        if (op_ == sparse_op_none) then
+            if (size(dense_a,2) /= sparse_b%nrows .or. size(dense_c,2) /= sparse_b%ncols) &
+                error stop 'spmm: incompatible matrix dimensions'
+            spmv_op = sparse_op_transpose
+        else
+            if (size(dense_a,2) /= sparse_b%ncols .or. size(dense_c,2) /= sparse_b%nrows) &
+                error stop 'spmm: incompatible matrix dimensions'
+            spmv_op = sparse_op_none
+        end if
+        beta_ = zero_${s}$
+        if (present(beta)) beta_ = beta
+        if (beta_ == zero_${s}$) dense_c = zero_${s}$
+        #:if t.startswith('complex')
+        if (op_ == sparse_op_hermitian) then
+            block
+                ${t}$, allocatable :: temp(:)
+                ${t}$ :: alpha_, beta_
+                alpha_ = one_${s}$
+                beta_ = zero_${s}$
+                if (present(alpha)) alpha_ = alpha
+                if (present(beta)) beta_ = beta
+                allocate(temp(sparse_b%nrows))
+                do i = 1, size(dense_a,1)
+                    temp = zero_${s}$
+                    call spmv(sparse_b, conjg(dense_a(i,:)), temp, op=sparse_op_none)
+                    dense_c(i,:) = beta_*dense_c(i,:) + alpha_*conjg(temp)
+                end do
+            end block
+            return
+        end if
+        #:endif
+        do i = 1, size(dense_a,1)
+            call spmv(sparse_b, dense_a(i,:), dense_c(i,:), alpha, beta, spmv_op)
+        end do
+    end subroutine spmm_dense_ell_${s}$
+
+    !> Build C from the stored indices of op(A) and op(B), independent of values.
+    module subroutine prepare_ell_${s}$(a,b,c,op_a,op_b,stat)
+        type(ELL_${s}$_type), intent(in) :: a, b
+        type(ELL_${s}$_type), intent(inout) :: c
+        character(1), intent(in), optional :: op_a, op_b
+        integer, intent(out), optional :: stat
+        integer(ilp) :: shape_c(2), inner, entries, row, p, width
+        integer(ilp), allocatable :: ap(:), ai(:), bp(:), bi(:), cp(:), ci(:)
+        character(1) :: oa, ob
+        integer :: code
+        call product_shape([a%nrows,a%ncols],[b%nrows,b%ncols],op_a,op_b,oa,ob,shape_c,inner,code)
+        if (code /= spmm_success .or. .not.valid_ell_${s}$(a) .or. .not.valid_ell_${s}$(b)) then
+            call set_status(spmm_invalid_input,stat)
+            return
+        end if
+        call ell_view([a%nrows,a%ncols],a%index,oa /= sparse_op_none, &
+            ap,ai)
+        call ell_view([b%nrows,b%ncols],b%index,ob /= sparse_op_none, &
+            bp,bi)
+        call product_pattern(shape_c(1),shape_c(2),inner,ap,ai,bp,bi,cp,ci,code)
+        if (code /= spmm_success) then
+            call set_status(code,stat)
+            return
+        end if
+        entries = size(ci)
+        width = 0
+        do row = 1, shape_c(1)
+            width = max(width,cp(row+1)-cp(row))
+        end do
+        if (int(shape_c(1),int64)*width > huge(1_ilp)) then
+            call set_status(spmm_invalid_input,stat)
+            return
+        end if
+        if (allocated(c%index)) deallocate(c%index)
+        if (allocated(c%data)) deallocate(c%data)
+        allocate(c%index(shape_c(1),width),source=0_ilp)
+        allocate(c%data(shape_c(1),width),source=zero_${s}$)
+        c%K = width
+        c%nnz = entries
+        do row = 1, shape_c(1)
+            do p = cp(row),cp(row+1)-1
+                c%index(row,p-cp(row)+1) = ci(p)
+            end do
+        end do
+        c%nrows = shape_c(1)
+        c%ncols = shape_c(2)
+        c%storage = sparse_full
+        call set_status(spmm_success,stat)
+    end subroutine prepare_ell_${s}$
+
+    !> Optionally construct C, then apply the array kernel to existing buffers.
+    module subroutine spmm_sparse_ell_${s}$(a,b,c,alpha,op_a,op_b,allow_resize,work,stat)
+        type(ELL_${s}$_type), intent(in) :: a, b
+        type(ELL_${s}$_type), intent(inout) :: c
+        ${t}$, intent(in), optional :: alpha
+        character(1), intent(in), optional :: op_a, op_b
+        logical, intent(in), optional :: allow_resize
+        integer(ilp), intent(inout), optional, contiguous, target :: work(:)
+        integer, intent(out), optional :: stat
+        integer(ilp), allocatable, target :: local_work(:)
+        integer(ilp), pointer, contiguous :: scratch(:)
+        integer(ilp) :: shape_c(2), inner, span
+        character(1) :: oa, ob
+        ${t}$ :: alpha_
+        logical :: resize
+        integer :: code
+        call product_shape([a%nrows,a%ncols],[b%nrows,b%ncols],op_a,op_b,oa,ob,shape_c,inner,code)
+        if (code /= spmm_success .or. .not.valid_ell_${s}$(a) .or. .not.valid_ell_${s}$(b)) then
+            call set_status(spmm_invalid_input,stat)
+            return
+        end if
+        span = shape_c(2)
+        if (present(work)) then
+            if (size(work) < span) then
+                call set_status(spmm_invalid_input,stat)
+                return
+            end if
+            scratch => work
+        else
+            allocate(local_work(span))
+            scratch => local_work
+        end if
+        resize = .true.
+        if (present(allow_resize)) resize = allow_resize
+        if (resize) then
+            call prepare_ell_${s}$(a,b,c,oa,ob,code)
+            if (code /= spmm_success) then
+                call set_status(code,stat)
+                return
+            end if
+        end if
+        if (.not.valid_ell_${s}$(c) .or. any([c%nrows,c%ncols] /= shape_c)) then
+            call set_status(spmm_invalid_input,stat)
+            return
+        end if
+        alpha_ = one_${s}$
+        if (present(alpha)) alpha_ = alpha
+        call spmm_kernel_ell_${s}$(oa,ob,alpha_,[a%nrows,a%ncols],[b%nrows,b%ncols], &
+            a%data,a%index, &
+            b%data,b%index, &
+            c%data,c%index,scratch)
+        call set_status(spmm_success,stat)
+    end subroutine spmm_sparse_ell_${s}$
+
+    !> Apply a conforming sparse product using arrays and caller-owned workspace.
+    module subroutine spmm_kernel_ell_${s}$(op_a,op_b,alpha,shape_a,shape_b, &
+        a_data,a_index, &
+        b_data,b_index, &
+        c_data,c_index,work)
+        character(1), intent(in) :: op_a, op_b
+        ${t}$, intent(in) :: alpha
+        integer(ilp), intent(in) :: shape_a(2), shape_b(2)
+        ${t}$, intent(in), contiguous, target :: a_data(:,:)
+        integer(ilp), intent(in), contiguous :: a_index(:,:)
+        ${t}$, intent(in), contiguous, target :: b_data(:,:)
+        integer(ilp), intent(in), contiguous :: b_index(:,:)
+        ${t}$, intent(inout), contiguous, target :: c_data(:,:)
+        integer(ilp), intent(in), contiguous :: c_index(:,:)
+        integer(ilp), intent(inout), contiguous :: work(:)
+        integer(ilp) :: shape_c(2), i, p, q, inner, index, slot
+        integer(ilp), allocatable :: ap(:), ai(:), as(:), bp(:), bi(:), bs(:)
+        ${t}$ :: value
+        ${t}$, pointer, contiguous :: a_flat(:), b_flat(:), c_flat(:)
+        a_flat(1:size(a_data)) => a_data
+        b_flat(1:size(b_data)) => b_data
+        c_flat(1:size(c_data)) => c_data
+        shape_c = [shape_a(1),shape_b(2)]
+        if (op_a /= sparse_op_none) shape_c(1) = shape_a(2)
+        if (op_b /= sparse_op_none) shape_c(2) = shape_b(1)
+        c_data = zero_${s}$
+        if (alpha == zero_${s}$) return
+        if (op_a == sparse_op_none .and. op_b == sparse_op_none) then
+            do i = 1, shape_c(1)
+                do p = 1, size(c_index,2)
+                    if (c_index(i,p) == 0) cycle
+                    work(c_index(i,p)) = i+(p-1)*shape_c(1)
+                end do
+                do p = 1, size(a_index,2)
+                    inner = a_index(i,p)
+                    if (inner == 0) cycle
+                    value = alpha*a_data(i,p)
+                    do q = 1, size(b_index,2)
+                        index = b_index(inner,q)
+                        if (index == 0) cycle
+                        slot = work(index)
+                        c_flat(slot) = c_flat(slot)+value*b_data(inner,q)
+                    end do
+                end do
+            end do
+            return
+        end if
+        call ell_view(shape_a,a_index,op_a /= sparse_op_none, &
+            ap,ai,as)
+        call ell_view(shape_b,b_index,op_b /= sparse_op_none, &
+            bp,bi,bs)
+        do i = 1, shape_c(1)
+            do p = 1, size(c_index,2)
+                if (c_index(i,p) == 0) cycle
+                work(c_index(i,p)) = i+(p-1)*shape_c(1)
+            end do
+            call numeric_slice_${s}$(i,alpha,ap,ai,as,a_flat,bp,bi,bs,b_flat, &
+                c_flat,work,op_a == sparse_op_hermitian,op_b == sparse_op_hermitian)
+        end do
+    end subroutine spmm_kernel_ell_${s}$
+
+    logical function valid_ell_${s}$(matrix) result(valid)
+        type(ELL_${s}$_type), intent(in) :: matrix
+        valid = .false.
+        if (min(matrix%nrows,matrix%ncols,matrix%nnz) < 0) return
+        if (matrix%storage /= sparse_full) return
+        if (.not.allocated(matrix%data)) return
+        if (.not.allocated(matrix%index)) return
+        if (matrix%K < 0) return
+        if (any(shape(matrix%index) /= [matrix%nrows,matrix%K])) return
+        if (any(shape(matrix%data) /= shape(matrix%index))) return
+        if (int(size(matrix%data,1),int64)*size(matrix%data,2) > huge(1_ilp)) return
+        valid = .true.
+    end function valid_ell_${s}$
+
+    #:endfor
+end submodule stdlib_sparse_spmm_ell

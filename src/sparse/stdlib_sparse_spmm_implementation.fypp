@@ -1,0 +1,345 @@
+#:include "common.fypp"
+#:set KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX)) + list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+submodule (stdlib_sparse_spmm) stdlib_sparse_spmm_implementation
+    implicit none
+contains
+    module subroutine set_status(code,stat)
+        integer, intent(in) :: code
+        integer, intent(out), optional :: stat
+        if (present(stat)) then
+            stat = code
+        else if (code /= spmm_success) then
+            call error_stop('spmm: invalid dimensions, storage, operation or workspace')
+        end if
+    end subroutine set_status
+
+    module subroutine product_shape(sa,sb,op_a,op_b,oa,ob,sc,inner,code)
+        integer(ilp), intent(in) :: sa(2), sb(2)
+        character(1), intent(in), optional :: op_a, op_b
+        character(1), intent(out) :: oa, ob
+        integer(ilp), intent(out) :: sc(2), inner
+        integer, intent(out) :: code
+        integer(ilp) :: rows_b
+        code = spmm_invalid_input
+        oa = sparse_op_none
+        ob = sparse_op_none
+        if (present(op_a)) oa = op_a
+        if (present(op_b)) ob = op_b
+        select case(oa)
+        case('n','N')
+            oa = sparse_op_none
+        case('t','T')
+            oa = sparse_op_transpose
+        case('h','H')
+            oa = sparse_op_hermitian
+        case default
+            return
+        end select
+        select case(ob)
+        case('n','N')
+            ob = sparse_op_none
+        case('t','T')
+            ob = sparse_op_transpose
+        case('h','H')
+            ob = sparse_op_hermitian
+        case default
+            return
+        end select
+        if (any(sa < 0) .or. any(sb < 0)) return
+        sc = [sa(1),sb(2)]
+        inner = sa(2)
+        rows_b = sb(1)
+        if (oa /= sparse_op_none) then
+            sc(1) = sa(2)
+            inner = sa(1)
+        end if
+        if (ob /= sparse_op_none) then
+            sc(2) = sb(1)
+            rows_b = sb(2)
+        end if
+        if (inner /= rows_b) return
+        code = spmm_success
+    end subroutine product_shape
+
+    module subroutine compressed_view(outer,inner,pointer,index,transposed,ptr,col,slot)
+        integer(ilp), intent(in) :: outer, inner, pointer(:), index(:)
+        logical, intent(in) :: transposed
+        integer(ilp), allocatable, intent(out) :: ptr(:), col(:)
+        integer(ilp), allocatable, intent(out), optional :: slot(:)
+        integer(ilp) :: row, p, position
+        integer(ilp), allocatable :: next(:)
+        if (.not.transposed) then
+            ptr = pointer
+            col = index
+            if (present(slot)) then
+                allocate(slot(size(index)))
+                do p = 1, size(index)
+                    slot(p) = p
+                end do
+            end if
+            return
+        end if
+        allocate(ptr(inner+1),source=0_ilp)
+        do p = 1, size(index)
+            ptr(index(p)+1) = ptr(index(p)+1)+1
+        end do
+        ptr(1) = 1
+        do row = 1, inner
+            ptr(row+1) = ptr(row+1)+ptr(row)
+        end do
+        allocate(col(size(index)))
+        if (present(slot)) allocate(slot(size(index)))
+        next = ptr(:inner)
+        do row = 1, outer
+            do p = pointer(row),pointer(row+1)-1
+                position = next(index(p))
+                col(position) = row
+                if (present(slot)) slot(position) = p
+                next(index(p)) = position+1
+            end do
+        end do
+    end subroutine compressed_view
+
+    module subroutine coo_view(matrix_shape,index,transposed,ptr,col,slot)
+        integer(ilp), intent(in) :: matrix_shape(2), index(:,:)
+        logical, intent(in) :: transposed
+        integer(ilp), allocatable, intent(out) :: ptr(:), col(:)
+        integer(ilp), allocatable, intent(out), optional :: slot(:)
+        integer(ilp) :: rows, axis, p, row, position
+        integer(ilp), allocatable :: next(:)
+        axis = 1
+        if (transposed) axis = 2
+        rows = matrix_shape(axis)
+        allocate(ptr(rows+1),source=0_ilp)
+        do p = 1, size(index,2)
+            row = index(axis,p)
+            ptr(row+1) = ptr(row+1)+1
+        end do
+        ptr(1) = 1
+        do row = 1, rows
+            ptr(row+1) = ptr(row+1)+ptr(row)
+        end do
+        allocate(col(size(index,2)))
+        if (present(slot)) allocate(slot(size(index,2)))
+        next = ptr(:rows)
+        do p = 1, size(index,2)
+            row = index(axis,p)
+            position = next(row)
+            col(position) = index(3-axis,p)
+            if (present(slot)) slot(position) = p
+            next(row) = position+1
+        end do
+    end subroutine coo_view
+
+    module subroutine ell_view(matrix_shape,index,transposed,ptr,col,slot)
+        integer(ilp), intent(in) :: matrix_shape(2), index(:,:)
+        logical, intent(in) :: transposed
+        integer(ilp), allocatable, intent(out) :: ptr(:), col(:)
+        integer(ilp), allocatable, intent(out), optional :: slot(:)
+        integer(ilp) :: rows, row, column, group, entry, p, position, chunk, lane
+        integer(ilp), allocatable :: next(:)
+        rows = matrix_shape(1)
+        if (transposed) rows = matrix_shape(2)
+        allocate(ptr(rows+1),source=0_ilp)
+        do row = 1, matrix_shape(1)
+            do p = 1, size(index,2)
+                column = index(row,p)
+                if (column == 0) cycle
+                group = row
+                if (transposed) group = column
+                ptr(group+1) = ptr(group+1)+1
+            end do
+        end do
+        ptr(1) = 1
+        do row = 1, rows
+            ptr(row+1) = ptr(row+1)+ptr(row)
+        end do
+        allocate(col(ptr(rows+1)-1))
+        if (present(slot)) allocate(slot(size(col)))
+        next = ptr(:rows)
+        do row = 1, matrix_shape(1)
+            do p = 1, size(index,2)
+                column = index(row,p)
+                if (column == 0) cycle
+                group = row
+                entry = column
+                if (transposed) then
+                    group = column
+                    entry = row
+                end if
+                position = next(group)
+                col(position) = entry
+                if (present(slot)) slot(position) = row+(p-1)*matrix_shape(1)
+                next(group) = position+1
+            end do
+        end do
+    end subroutine ell_view
+
+    module subroutine sellc_view(matrix_shape,pointer,index,transposed,ptr,col,slot)
+        integer(ilp), intent(in) :: matrix_shape(2), pointer(:), index(:,:)
+        logical, intent(in) :: transposed
+        integer(ilp), allocatable, intent(out) :: ptr(:), col(:)
+        integer(ilp), allocatable, intent(out), optional :: slot(:)
+        integer(ilp) :: rows, row, column, group, entry, p, position, chunk, lane
+        integer(ilp), allocatable :: next(:)
+        rows = matrix_shape(1)
+        if (transposed) rows = matrix_shape(2)
+        allocate(ptr(rows+1),source=0_ilp)
+        do row = 1, matrix_shape(1)
+            chunk = (row-1)/size(index,1)+1
+            lane = mod(row-1,size(index,1))+1
+            do p = pointer(chunk),pointer(chunk+1)-1
+                column = index(lane,p)
+                group = row
+                if (transposed) group = column
+                ptr(group+1) = ptr(group+1)+1
+            end do
+        end do
+        ptr(1) = 1
+        do row = 1, rows
+            ptr(row+1) = ptr(row+1)+ptr(row)
+        end do
+        allocate(col(ptr(rows+1)-1))
+        if (present(slot)) allocate(slot(size(col)))
+        next = ptr(:rows)
+        do row = 1, matrix_shape(1)
+            chunk = (row-1)/size(index,1)+1
+            lane = mod(row-1,size(index,1))+1
+            do p = pointer(chunk),pointer(chunk+1)-1
+                column = index(lane,p)
+                group = row
+                entry = column
+                if (transposed) then
+                    group = column
+                    entry = row
+                end if
+                position = next(group)
+                col(position) = entry
+                if (present(slot)) slot(position) = lane+(p-1)*size(index,1)
+                next(group) = position+1
+            end do
+        end do
+    end subroutine sellc_view
+
+    module subroutine product_pattern(outer,span,inner,ap,ai,bp,bi,cp,ci,code)
+        integer(ilp), intent(in) :: outer, span, inner, ap(:), ai(:), bp(:), bi(:)
+        integer(ilp), allocatable, intent(out) :: cp(:), ci(:)
+        integer, intent(out) :: code
+        integer(ilp) :: row, p, q, k, index, count, entries, capacity
+        integer(int64) :: estimate
+        integer(ilp), allocatable :: marker(:), touched(:), scratch(:), indices(:), grown(:)
+        code = spmm_success
+        allocate(marker(span),source=0_ilp)
+        allocate(touched(span),scratch(span),cp(outer+1))
+        estimate = int(size(ai),int64)*int(size(bi),int64)/max(1_ilp,inner)
+        estimate = min(estimate,int(outer,int64)*span)
+        capacity = int(max(1_int64,min(estimate,int(huge(1_ilp)-1,int64))),ilp)
+        allocate(indices(capacity))
+        entries = 0
+        cp(1) = 1
+        do row = 1, outer
+            count = 0
+            do p = ap(row),ap(row+1)-1
+                k = ai(p)
+                do q = bp(k),bp(k+1)-1
+                    index = bi(q)
+                    if (marker(index) == row) cycle
+                    marker(index) = row
+                    count = count+1
+                    touched(count) = index
+                end do
+            end do
+            call sort_indices(touched,scratch,count,span,marker,row)
+            if (int(entries,int64)+count > huge(1_ilp)-1_int64) then
+                code = spmm_invalid_input
+                return
+            end if
+            if (entries+count > capacity) then
+                capacity = int(min(int(huge(1_ilp)-1,int64), &
+                    max(2_int64*capacity,int(entries,int64)+count)),ilp)
+                allocate(grown(capacity))
+                grown(:entries) = indices(:entries)
+                call move_alloc(grown,indices)
+            end if
+            indices(entries+1:entries+count) = touched(:count)
+            entries = entries+count
+            cp(row+1) = entries+1
+        end do
+        allocate(ci(entries))
+        ci = indices(:entries)
+    end subroutine product_pattern
+
+    module subroutine sort_indices(indices,scratch,count,span,marker,slice)
+        integer(ilp), intent(inout) :: indices(:), scratch(:)
+        integer(ilp), intent(in) :: count, span, marker(:), slice
+        integer(ilp) :: i, j, value, shift, bucket, position
+        integer(ilp) :: counts(0:255), positions(0:255)
+        if (count <= 1) return
+        if (count >= span/2) then
+            position = 0
+            do value = 1, span
+                if (marker(value) /= slice) cycle
+                position = position+1
+                indices(position) = value
+            end do
+        else if (count <= 64) then
+            do i = 2, count
+                value = indices(i)
+                j = i-1
+                do while (j >= 1)
+                    if (indices(j) <= value) exit
+                    indices(j+1) = indices(j)
+                    j = j-1
+                end do
+                indices(j+1) = value
+            end do
+        else
+            do shift = 0, bit_size(1_ilp)-8, 8
+                if (ishft(span,-shift) == 0) exit
+                counts = 0
+                do i = 1, count
+                    bucket = ibits(indices(i),shift,8)
+                    counts(bucket) = counts(bucket)+1
+                end do
+                positions(0) = 1
+                do bucket = 1, 255
+                    positions(bucket) = positions(bucket-1)+counts(bucket-1)
+                end do
+                do i = 1, count
+                    bucket = ibits(indices(i),shift,8)
+                    scratch(positions(bucket)) = indices(i)
+                    positions(bucket) = positions(bucket)+1
+                end do
+                indices(:count) = scratch(:count)
+            end do
+        end if
+    end subroutine sort_indices
+
+    #:for k, t, s in KINDS_TYPES
+    module subroutine numeric_slice_${s}$(row,alpha,ap,ai,as,av,bp,bi,bs,bv,cv,work,conj_a,conj_b)
+        integer(ilp), intent(in) :: row, ap(:), ai(:), as(:), bp(:), bi(:), bs(:), work(:)
+        ${t}$, intent(in) :: alpha, av(:), bv(:)
+        ${t}$, intent(inout) :: cv(:)
+        logical, intent(in) :: conj_a, conj_b
+        integer(ilp) :: p, q, k, slot
+        ${t}$ :: value, right
+        do p = ap(row),ap(row+1)-1
+            k = ai(p)
+            value = av(as(p))
+            #:if t.startswith('complex')
+            if (conj_a) value = conjg(value)
+            #:endif
+            value = alpha*value
+            do q = bp(k),bp(k+1)-1
+                right = bv(bs(q))
+                #:if t.startswith('complex')
+                if (conj_b) right = conjg(right)
+                #:endif
+                slot = work(bi(q))
+                cv(slot) = cv(slot)+value*right
+            end do
+        end do
+    end subroutine numeric_slice_${s}$
+
+    #:endfor
+end submodule stdlib_sparse_spmm_implementation

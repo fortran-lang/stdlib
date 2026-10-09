@@ -1,6 +1,7 @@
 #:include "common.fypp"
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
 #:set KINDS_TYPES = R_KINDS_TYPES
+#:set SPMM_KINDS_TYPES = R_KINDS_TYPES + list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
 #:set OP_NAMES = ["add","sub","mul","div"]
 #:set OP_SYMBOLS = ["+","-","*","/"]
 #:set OPERATORS = list(zip(OP_NAMES, OP_SYMBOLS))
@@ -8,6 +9,9 @@ module test_sparse_spmv
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
     use stdlib_sparse
+    use stdlib_constants
+    use iso_c_binding, only: c_ptr, c_loc, c_associated
+    use ieee_arithmetic, only: ieee_value, ieee_quiet_nan
 
     implicit none
 
@@ -19,6 +23,11 @@ contains
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
+            new_unittest('spmm', test_spmm), &
+            new_unittest('spmm_radix', test_spmm_radix), &
+            new_unittest('spmm_reuse', test_spmm_reuse), &
+            new_unittest('spmm_sparse_ops', test_spmm_sparse_ops), &
+            new_unittest('spmm_empty', test_spmm_empty), &
             new_unittest('coo', test_coo), &
             new_unittest('coo2ordered', test_coo2ordered), &
             new_unittest('csr', test_csr), &
@@ -33,6 +42,521 @@ contains
             new_unittest('csc2dense', test_csc2dense) &
         ]
     end subroutine
+
+    !> Check all SpMM overloads against intrinsic dense products.
+    subroutine test_spmm(error)
+        type(error_type), allocatable, intent(out) :: error
+        #:for k, t, s in SPMM_KINDS_TYPES
+        block
+            integer, parameter :: wp = ${k}$
+            integer :: stat, nnz_before
+            integer(int32) :: work(8)
+            type(c_ptr) :: data_address, index_address
+            ${t}$ :: a(2,3), b(3,2), x(4,2), y(4,3)
+            ${t}$ :: result(2,2), reference(2,2), left_result(4,3)
+            ${t}$ :: transposed(3,2), expected(3,2)
+            ${t}$ :: right_input(4,3), right_result(4,2), right_expected(4,2)
+            type(COO_${s}$_type), target :: coo_a, coo_b, coo_c
+            type(CSR_${s}$_type), target :: csr_a, csr_b, csr_c
+            type(CSC_${s}$_type), target :: csc_a, csc_b, csc_c
+            type(ELL_${s}$_type), target :: ell_a, ell_b, ell_c
+            type(SELLC_${s}$_type), target :: sellc_a, sellc_b, sellc_c
+            a = reshape(real([1,0,2,3,0,4],kind=wp),shape(a))
+            b = reshape(real([2,0,0,3,1,4],kind=wp),shape(b))
+            #:if t.startswith('complex')
+            a(1,2) = cmplx(2,1,kind=wp)
+            #:endif
+            x = one_${s}$
+            call dense2coo(a,coo_a)
+            call coo2csr(coo_a,csr_a)
+            call coo2csc(coo_a,csc_a)
+            call csr2ell(csr_a,ell_a)
+            call csr2sellc(csr_a,sellc_a,chunk=4)
+            call dense2coo(b,coo_b)
+            call coo2csr(coo_b,csr_b)
+            call coo2csc(coo_b,csc_b)
+            call csr2ell(csr_b,ell_b)
+            call csr2sellc(csr_b,sellc_b)
+            result = 2 * one_${s}$
+            reference = 2 * matmul(a,b) + result
+            call spmm(csr_a,b,result,alpha=2*one_${s}$,beta=one_${s}$)
+            call check(error, all(abs(result-reference) < 20*epsilon(1._wp)), 'CSR x dense ${s}$')
+            if (allocated(error)) return
+            y = one_${s}$
+            left_result = y
+            left_result = 2*matmul(x,a) + left_result
+            call spmm(x,csr_a,y,alpha=2*one_${s}$,beta=one_${s}$)
+            call check(error, all(abs(y-left_result) < 20*epsilon(1._wp)), 'dense x CSR ${s}$')
+            if (allocated(error)) return
+            transposed = zero_${s}$
+            expected = matmul(transpose(a),transpose(a(:,1:2)))
+            call spmm(csr_a,transpose(a(:,1:2)),transposed,op=sparse_op_transpose)
+            call check(error, all(abs(transposed-expected) < 20*epsilon(1._wp)), 'CSR transpose ${s}$')
+            if (allocated(error)) return
+            right_input = one_${s}$
+            right_result = zero_${s}$
+            right_expected = matmul(right_input,transpose(a))
+            call spmm(right_input,csr_a,right_result,op=sparse_op_transpose)
+            call check(error, all(abs(right_result-right_expected) < 20*epsilon(1._wp)), 'dense x CSR transpose ${s}$')
+            if (allocated(error)) return
+            #:for fmt in ["coo", "csc", "ell", "sellc"]
+            result = 2 * one_${s}$
+            call spmm(${fmt}$_a,b,result,alpha=2*one_${s}$,beta=one_${s}$)
+            call check(error, all(abs(result-reference) < 20*epsilon(1._wp)), '${fmt.upper()}$ x dense ${s}$')
+            if (allocated(error)) return
+            y = one_${s}$
+            call spmm(x,${fmt}$_a,y,alpha=2*one_${s}$,beta=one_${s}$)
+            call check(error, all(abs(y-left_result) < 20*epsilon(1._wp)), 'dense x ${fmt.upper()}$ ${s}$')
+            if (allocated(error)) return
+            transposed = zero_${s}$
+            call spmm(${fmt}$_a,transpose(a(:,1:2)),transposed,op=sparse_op_transpose)
+            call check(error, all(abs(transposed-expected) < 20*epsilon(1._wp)), '${fmt.upper()}$ transpose ${s}$')
+            if (allocated(error)) return
+            right_result = zero_${s}$
+            call spmm(right_input,${fmt}$_a,right_result,op=sparse_op_transpose)
+            call check(error, all(abs(right_result-right_expected) < 20*epsilon(1._wp)), &
+                'dense x ${fmt.upper()}$ transpose ${s}$')
+            if (allocated(error)) return
+            #:endfor
+            #:if t.startswith('complex')
+            #:for fmt in ["coo", "csc", "ell", "sellc"]
+            transposed = zero_${s}$
+            call spmm(${fmt}$_a,transpose(a(:,1:2)),transposed,op=sparse_op_hermitian)
+            call check(error, all(abs(transposed-matmul(conjg(transpose(a)),transpose(a(:,1:2)))) &
+                < 20*epsilon(1._wp)), '${fmt.upper()}$ hermitian ${s}$')
+            if (allocated(error)) return
+            right_result = zero_${s}$
+            call spmm(right_input,${fmt}$_a,right_result,op=sparse_op_hermitian)
+            call check(error, all(abs(right_result-matmul(right_input,conjg(transpose(a)))) &
+                < 20*epsilon(1._wp)), 'dense x ${fmt.upper()}$ hermitian ${s}$')
+            if (allocated(error)) return
+            #:endfor
+            #:endif
+            #:for fmt in ["coo", "csr", "csc", "ell", "sellc"]
+            call spmm(${fmt}$_a,${fmt}$_b,${fmt}$_c,stat=stat)
+            call check(error, stat == spmm_success, '${fmt.upper()}$ one-shot ${s}$')
+            if (allocated(error)) return
+            result = zero_${s}$
+            call spmm(${fmt}$_c,reshape([one_${s}$,zero_${s}$,zero_${s}$,one_${s}$],[2,2]),result)
+            call check(error, all(abs(result-matmul(a,b)) < 20*epsilon(1._wp)), &
+                '${fmt.upper()}$ sparse product ${s}$')
+            if (allocated(error)) return
+            call spmm_prepare(${fmt}$_a,${fmt}$_b,${fmt}$_c,stat=stat)
+            call check(error, stat == spmm_success .and. all(${fmt}$_c%data == zero_${s}$), &
+                '${fmt.upper()}$ independent symbolic preparation ${s}$')
+            if (allocated(error)) return
+            data_address = c_loc(${fmt}$_c%data)
+            #:if fmt in ["coo", "ell"]
+            index_address = c_loc(${fmt}$_c%index)
+            #:elif fmt == "csc"
+            index_address = c_loc(${fmt}$_c%row)
+            #:else
+            index_address = c_loc(${fmt}$_c%col)
+            #:endif
+            nnz_before = ${fmt}$_c%nnz
+            call spmm(${fmt}$_a,${fmt}$_b,${fmt}$_c,allow_resize=.false.,work=work,stat=stat)
+            call check(error, stat == spmm_success, '${fmt.upper()}$ prepared numeric product ${s}$')
+            if (allocated(error)) return
+            ${fmt}$_a%data = 2*${fmt}$_a%data
+            call spmm(${fmt}$_a,${fmt}$_b,${fmt}$_c,allow_resize=.false.,work=work,stat=stat)
+            result = zero_${s}$
+            call spmm(${fmt}$_c,reshape([one_${s}$,zero_${s}$,zero_${s}$,one_${s}$],[2,2]),result)
+            call check(error, stat == spmm_success .and. &
+                all(abs(result-2*matmul(a,b)) < 40*epsilon(1._wp)), &
+                '${fmt.upper()}$ changed values ${s}$')
+            if (allocated(error)) return
+            ${fmt}$_b%data = 2*${fmt}$_b%data
+            call spmm(${fmt}$_a,${fmt}$_b,${fmt}$_c,alpha=one_${s}$/4, &
+                allow_resize=.false.,work=work,stat=stat)
+            result = zero_${s}$
+            call spmm(${fmt}$_c,reshape([one_${s}$,zero_${s}$,zero_${s}$,one_${s}$],[2,2]),result)
+            call check(error, stat == spmm_success .and. &
+                all(abs(result-matmul(a,b)) < 40*epsilon(1._wp)), '${fmt.upper()}$ scaling ${s}$')
+            if (allocated(error)) return
+            call spmm(${fmt}$_a,${fmt}$_b,${fmt}$_c,alpha=zero_${s}$, &
+                allow_resize=.false.,work=work,stat=stat)
+            call check(error, stat == spmm_success .and. all(${fmt}$_c%data == zero_${s}$) .and. &
+                ${fmt}$_c%nnz == nnz_before .and. c_associated(data_address,c_loc(${fmt}$_c%data)), &
+                '${fmt.upper()}$ zero scale preserves result storage ${s}$')
+            if (allocated(error)) return
+            #:if fmt in ["coo", "ell"]
+            call check(error, c_associated(index_address,c_loc(${fmt}$_c%index)), 'fixed index address')
+            #:elif fmt == "csc"
+            call check(error, c_associated(index_address,c_loc(${fmt}$_c%row)), 'fixed index address')
+            #:else
+            call check(error, c_associated(index_address,c_loc(${fmt}$_c%col)), 'fixed index address')
+            #:endif
+            if (allocated(error)) return
+            #:endfor
+        end block
+        #:endfor
+    end subroutine
+
+    !> Exercise the sorted CSC result path with many entries per column.
+    subroutine test_spmm_radix(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer, parameter :: n = 1024, entries_per_column = 20
+        integer :: column, entry, row, position
+        type(COO_dp_type) :: coo, coo_csc, coo_csr, duplicate_coo, duplicate_result, identity_coo
+        type(CSC_dp_type) :: csc, csc_result
+        type(CSR_dp_type) :: csr, csr_result
+        real(dp) :: dense_result(2,2), eye2(2,2)
+
+        call coo%malloc(n,n,n*entries_per_column)
+        position = 0
+        do column = 1, n
+            do entry = 1, entries_per_column
+                row = mod(column + 97*entry*entry + 17*entry - 1,n) + 1
+                position = position + 1
+                coo%index(:,position) = [row,column]
+                coo%data(position) = real(mod(37*column + entry,19) + 1,dp) / 19._dp
+            end do
+        end do
+        call coo2csc(coo,csc)
+        call coo2csr(coo,csr,sort_data=.true.)
+        call spmm(csc,csc,csc_result)
+        call spmm(csr,csr,csr_result)
+        call check(error, csc_result%nnz == csr_result%nnz, 'CSC product nnz')
+        if (allocated(error)) return
+        do column = 1, n
+            call check(error, all(csc_result%row(csc_result%colptr(column)+1: &
+                csc_result%colptr(column+1)-1) > &
+                csc_result%row(csc_result%colptr(column): &
+                csc_result%colptr(column+1)-2)), 'CSC rows must be sorted')
+            if (allocated(error)) return
+        end do
+        call csc2coo(csc_result,coo_csc)
+        call csr2coo(csr_result,coo_csr)
+        call check(error, all(coo_csc%index == coo_csr%index), 'CSC product positions')
+        if (allocated(error)) return
+        call check(error, all(abs(coo_csc%data-coo_csr%data) < &
+            100*epsilon(1._dp)*max(1._dp,abs(coo_csr%data))), 'CSC product values')
+        if (allocated(error)) return
+
+        ! Duplicate COO positions contribute to the same product entry.
+        call duplicate_coo%malloc(2,2,3)
+        duplicate_coo%index(:,1) = [1,1]
+        duplicate_coo%index(:,2) = [1,1]
+        duplicate_coo%index(:,3) = [2,2]
+        duplicate_coo%data = [2._dp,3._dp,1._dp]
+        call identity_coo%malloc(2,2,2)
+        identity_coo%index(:,1) = [1,1]
+        identity_coo%index(:,2) = [2,2]
+        identity_coo%data = 1._dp
+        call spmm(duplicate_coo,identity_coo,duplicate_result)
+        eye2 = 0._dp
+        eye2(1,1) = 1._dp
+        eye2(2,2) = 1._dp
+        dense_result = 0._dp
+        call spmm(duplicate_result,eye2,dense_result)
+        call check(error, all(abs(dense_result-reshape([5._dp,0._dp,0._dp,1._dp],[2,2])) &
+            < 100*epsilon(1._dp)), 'duplicate COO input')
+    end subroutine
+
+    !> Verify plan-free reuse, reconstruction, and shape/workspace checks.
+    subroutine test_spmm_reuse(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(CSR_dp_type), target :: a, b, c, missing
+        type(c_ptr) :: values_address, columns_address, pointer_address
+        integer(int32) :: work(3)
+        integer :: stat
+        real(dp) :: saved(2)
+        call a%malloc(2,2,3)
+        a%rowptr = [1,3,4]
+        a%col = [1,2,2]
+        a%data = [1._dp,-1._dp,2._dp]
+        call b%malloc(2,2,2)
+        b%rowptr = [1,2,3]
+        b%col = [2,2]
+        b%data = 1._dp
+        call spmm_prepare(a,b,c,stat=stat)
+        call check(error, stat == spmm_success .and. c%nnz == 2 .and. &
+            all(c%data == 0._dp), 'prepared structure independent of cancellation')
+        if (allocated(error)) return
+        values_address = c_loc(c%data)
+        columns_address = c_loc(c%col)
+        pointer_address = c_loc(c%rowptr)
+        call spmm(a,b,c,allow_resize=.false.,work=work,stat=stat)
+        call check(error, stat == spmm_success .and. &
+            all(abs(c%data-[0._dp,2._dp]) < 10*epsilon(1._dp)), 'cancellation')
+        if (allocated(error)) return
+        a%data = [1._dp,3._dp,2._dp]
+        call spmm(a,b,c,allow_resize=.false.,work=work,stat=stat)
+        call check(error, stat == spmm_success .and. all(c%data == [4._dp,2._dp]) &
+            .and. c_associated(values_address,c_loc(c%data)) &
+            .and. c_associated(columns_address,c_loc(c%col)) &
+            .and. c_associated(pointer_address,c_loc(c%rowptr)), 'result buffers reused')
+        if (allocated(error)) return
+        block
+            type(CSR_dp_type), target :: superset
+            type(c_ptr) :: original_address
+            call superset%malloc(2,2,4)
+            superset%rowptr = [1,3,5]
+            superset%col = [1,2,1,2]
+            superset%data = -17._dp
+            original_address = c_loc(superset%data)
+            call spmm(a,b,superset,allow_resize=.false.,work=work,stat=stat)
+            call check(error, stat == spmm_success .and. all(superset%data == [0._dp,4._dp,0._dp,2._dp]) &
+                .and. c_associated(original_address,c_loc(superset%data)), 'independently precomputed superset')
+            if (allocated(error)) return
+        end block
+        a%data = ieee_value(0._dp,ieee_quiet_nan)
+        call spmm_prepare(a,b,c,stat=stat)
+        call check(error, stat == spmm_success .and. c%nnz == 2 .and. &
+            all(c%data == 0._dp), 'symbolic construction ignores NaNs')
+        if (allocated(error)) return
+        call spmm(a,b,c,alpha=0._dp,allow_resize=.false.,work=work,stat=stat)
+        call check(error, stat == spmm_success .and. all(c%data == 0._dp), 'zero alpha skips values')
+        if (allocated(error)) return
+        a%data = 1._dp
+        b%col = [1,1]
+        call spmm(a,b,c,allow_resize=.true.,stat=stat)
+        call check(error, stat == spmm_success .and. all(c%col == 1) .and. &
+            all(c%data == [2._dp,1._dp]), 'explicit reconstruction after a structure change')
+        if (allocated(error)) return
+        saved = c%data
+        call spmm(a,b,missing,allow_resize=.false.,stat=stat)
+        call check(error, stat == spmm_invalid_input, 'reuse requires an allocated target')
+        if (allocated(error)) return
+        call spmm(a,b,c,allow_resize=.false.,work=work(:1),stat=stat)
+        call check(error, stat == spmm_invalid_input .and. all(c%data == saved), 'workspace size')
+        if (allocated(error)) return
+        call spmm(a,b,c,op_a='Q',stat=stat)
+        call check(error, stat == spmm_invalid_input .and. all(c%data == saved), 'invalid operation')
+        if (allocated(error)) return
+        c%ncols = 3
+        call spmm(a,b,c,allow_resize=.false.,stat=stat)
+        call check(error, stat == spmm_invalid_input .and. all(c%data == saved), 'target dimensions')
+        if (allocated(error)) return
+        c%ncols = 2
+        b%nrows = 3
+        call spmm_prepare(a,b,c,stat=stat)
+        call check(error, stat == spmm_invalid_input .and. all(c%data == saved), 'input dimensions')
+        if (allocated(error)) return
+        b%nrows = 2
+        a%storage = sparse_lower
+        call spmm_prepare(a,b,c,stat=stat)
+        call check(error, stat == spmm_invalid_input .and. all(c%data == saved), 'full storage required')
+        if (allocated(error)) return
+        a%storage = sparse_full
+        b%rowptr = [1,3]
+        call spmm_prepare(a,b,c,stat=stat)
+        call check(error, stat == spmm_invalid_input .and. all(c%data == saved), 'pointer array shape')
+        if (allocated(error)) return
+        block
+            type(COO_dp_type) :: coo
+            type(CSR_dp_type) :: csr
+            type(SELLC_dp_type) :: sellc, product
+            real(dp) :: matrix(3,3), identity(3,3), actual(3,3)
+            integer :: i
+            matrix = reshape([1._dp,0._dp,2._dp,0._dp,3._dp,0._dp,4._dp,0._dp,5._dp],[3,3])
+            call dense2coo(matrix,coo)
+            call coo2csr(coo,csr)
+            call csr2sellc(csr,sellc)
+            call spmm(sellc,sellc,product,work=work)
+            identity = 0._dp
+            do i = 1, 3
+                identity(i,i) = 1._dp
+            end do
+            actual = 0._dp
+            call spmm(product,identity,actual)
+            call check(error, all(abs(actual-matmul(matrix,matrix)) < 100*epsilon(1._dp)), &
+                'SELLC product with uneven row lengths')
+            if (allocated(error)) return
+            call check(error, product%col(1,3) == 1 .and. product%data(1,3) == 0._dp &
+                .and. product%data(1,1) == 9._dp, 'SELLC column-one padding remains zero')
+            if (allocated(error)) return
+        end block
+        block
+            type(CSR_dp_type) :: empty_a, empty_b, empty_c
+            call empty_a%malloc(2,0,0)
+            empty_a%rowptr = 1
+            call empty_b%malloc(0,3,0)
+            empty_b%rowptr = 1
+            call spmm_prepare(empty_a,empty_b,empty_c,stat=stat)
+            call check(error, stat == spmm_success .and. empty_c%nrows == 2 &
+                .and. empty_c%ncols == 3 .and. empty_c%nnz == 0, 'empty preparation')
+            if (allocated(error)) return
+            call spmm(empty_a,empty_b,empty_c,allow_resize=.false.,work=work,stat=stat)
+            call check(error, stat == spmm_success, 'empty numeric product')
+            if (allocated(error)) return
+        end block
+        block
+            type(CSC_dp_type) :: zero_a, zero_b, zero_c
+            call zero_a%malloc(0,2,0)
+            zero_a%colptr = 1
+            call zero_b%malloc(2,3,0)
+            zero_b%colptr = 1
+            call spmm_prepare(zero_a,zero_b,zero_c,stat=stat)
+            call check(error, stat == spmm_success .and. zero_c%nrows == 0 &
+                .and. zero_c%ncols == 3 .and. zero_c%nnz == 0, 'zero-row preparation')
+            if (allocated(error)) return
+            call spmm(zero_a,zero_b,zero_c,allow_resize=.false.,work=work,stat=stat)
+            call check(error, stat == spmm_success, 'zero-row product')
+        end block
+    end subroutine test_spmm_reuse
+
+    !> Check every operation pair and every public array kernel on rectangular inputs.
+    subroutine test_spmm_sparse_ops(error)
+        type(error_type), allocatable, intent(out) :: error
+        character(1), parameter :: ops(3) = ['N','T','H']
+        #:for k, t, s in SPMM_KINDS_TYPES
+        #:for fmt in ["coo", "csr", "csc", "ell", "sellc"]
+        block
+            integer, parameter :: wp = ${k}$
+            ${t}$ :: base_a(2,3), base_b(3,4), effective_a(2,3), effective_b(3,4)
+            ${t}$ :: expected(2,4), actual(2,4), eye4(4,4)
+            ${t}$, allocatable :: a(:,:), b(:,:)
+            type(COO_${s}$_type) :: coo_a, coo_b
+            type(CSR_${s}$_type) :: csr_a, csr_b
+            type(${fmt.upper()}$_${s}$_type), target :: sa, sb, sc
+            integer(int32) :: work(4)
+            integer :: ia, ib, j, stat
+            type(c_ptr) :: address
+            base_a = reshape(real([1,0,2,3,0,4],wp),[2,3])
+            base_b = reshape(real([2,0,1,3,1,0,0,2,1,1,0,3],wp),[3,4])
+            #:if t.startswith('complex')
+            base_a(1,2) = cmplx(2._wp,1._wp,wp)
+            base_b(2,2) = cmplx(1._wp,-2._wp,wp)
+            #:endif
+            eye4 = zero_${s}$
+            do j = 1, 4
+                eye4(j,j) = one_${s}$
+            end do
+            do ia = 1, 3
+                do ib = 1, 3
+                    a = base_a
+                    b = base_b
+                    if (ia > 1) a = transpose(base_a)
+                    if (ib > 1) b = transpose(base_b)
+                    effective_a = base_a
+                    effective_b = base_b
+                    #:if t.startswith('complex')
+                    if (ia == 3) effective_a = conjg(base_a)
+                    if (ib == 3) effective_b = conjg(base_b)
+                    #:endif
+                    expected = matmul(effective_a,effective_b)
+                    call dense2coo(a,coo_a)
+                    call dense2coo(b,coo_b)
+                    #:if fmt == 'coo'
+                    ! Input coordinates may be unordered; preparation orders only C.
+                    coo_a%index = coo_a%index(:,coo_a%nnz:1:-1)
+                    coo_a%data = coo_a%data(coo_a%nnz:1:-1)
+                    coo_a%is_sorted = .false.
+                    sa = coo_a
+                    sb = coo_b
+                    #:elif fmt == 'csr'
+                    call coo2csr(coo_a,sa)
+                    call coo2csr(coo_b,sb)
+                    #:elif fmt == 'csc'
+                    call coo2csc(coo_a,sa)
+                    call coo2csc(coo_b,sb)
+                    #:else
+                    call coo2csr(coo_a,csr_a)
+                    call coo2csr(coo_b,csr_b)
+                    call csr2${fmt}$(csr_a,sa)
+                    call csr2${fmt}$(csr_b,sb)
+                    #:endif
+                    call spmm_prepare(sa,sb,sc,op_a=ops(ia),op_b=ops(ib),stat=stat)
+                    call check(error, stat == spmm_success .and. sc%nrows == 2 .and. sc%ncols == 4, &
+                        '${fmt.upper()}$ operated preparation ${s}$')
+                    if (allocated(error)) return
+                    address = c_loc(sc%data)
+                    call spmm(sa,sb,sc,op_a=ops(ia),op_b=ops(ib),allow_resize=.false.,work=work,stat=stat)
+                    call check(error, stat == spmm_success .and. c_associated(address,c_loc(sc%data)), &
+                        '${fmt.upper()}$ operated reuse ${s}$')
+                    if (allocated(error)) return
+                    actual = zero_${s}$
+                    call spmm(sc,eye4,actual)
+                    call check(error, all(abs(actual-expected) < 100*epsilon(1._wp)), &
+                        '${fmt.upper()}$ op(A)*op(B) ${s}$')
+                    if (allocated(error)) return
+                    #:if fmt in ['coo','ell']
+                    call spmm_kernel_${fmt}$(ops(ia),ops(ib),one_${s}$,[sa%nrows,sa%ncols], &
+                        [sb%nrows,sb%ncols],sa%data,sa%index,sb%data,sb%index,sc%data,sc%index,work)
+                    #:elif fmt == 'csc'
+                    call spmm_kernel_csc(ops(ia),ops(ib),one_${s}$,[sa%nrows,sa%ncols], &
+                        [sb%nrows,sb%ncols],sa%data,sa%colptr,sa%row,sb%data,sb%colptr,sb%row, &
+                        sc%data,sc%colptr,sc%row,work)
+                    #:else
+                    call spmm_kernel_${fmt}$(ops(ia),ops(ib),one_${s}$,[sa%nrows,sa%ncols], &
+                        [sb%nrows,sb%ncols],sa%data,sa%rowptr,sa%col,sb%data,sb%rowptr,sb%col, &
+                        sc%data,sc%rowptr,sc%col,work)
+                    #:endif
+                    actual = zero_${s}$
+                    call spmm(sc,eye4,actual)
+                    call check(error, all(abs(actual-expected) < 100*epsilon(1._wp)), &
+                        '${fmt.upper()}$ public array kernel ${s}$')
+                    if (allocated(error)) return
+                end do
+            end do
+        end block
+        #:endfor
+        #:endfor
+    end subroutine test_spmm_sparse_ops
+
+    !> Empty dimensions must also work for padding formats and transposed factors.
+    subroutine test_spmm_empty(error)
+        type(error_type), allocatable, intent(out) :: error
+        integer :: scenario
+        #:for fmt in ["coo", "csr", "csc", "ell", "sellc"]
+        do scenario = 1, 4
+            block
+                type(${fmt.upper()}$_dp_type) :: a, b, c
+                integer(int32) :: work(3)
+                integer :: stat, expected_rows, expected_cols
+                character(1) :: op_a
+                a%nrows = 2
+                a%ncols = 0
+                b%nrows = 0
+                b%ncols = 3
+                op_a = 'N'
+                expected_rows = 2
+                expected_cols = 3
+                if (scenario == 2) then
+                    a%nrows = 0
+                    a%ncols = 2
+                    op_a = 'T'
+                else if (scenario == 3) then
+                    a%nrows = 0
+                    a%ncols = 2
+                    b%nrows = 2
+                    expected_rows = 0
+                else if (scenario == 4) then
+                    a%ncols = 3
+                    b%nrows = 3
+                    b%ncols = 0
+                    expected_cols = 0
+                end if
+                #:for x in ['a','b']
+                #:if fmt == 'coo'
+                allocate(${x}$%index(2,0),${x}$%data(0))
+                #:elif fmt == 'csr'
+                allocate(${x}$%rowptr(${x}$%nrows+1),source=1_int32)
+                allocate(${x}$%col(0),${x}$%data(0))
+                #:elif fmt == 'csc'
+                allocate(${x}$%colptr(${x}$%ncols+1),source=1_int32)
+                allocate(${x}$%row(0),${x}$%data(0))
+                #:elif fmt == 'ell'
+                ${x}$%K = 0
+                allocate(${x}$%index(${x}$%nrows,0),${x}$%data(${x}$%nrows,0))
+                #:else
+                ${x}$%chunk_size = 4
+                allocate(${x}$%rowptr((${x}$%nrows+3)/4+1),source=1_int32)
+                allocate(${x}$%col(4,0),${x}$%data(4,0))
+                #:endif
+                #:endfor
+                call spmm_prepare(a,b,c,op_a=op_a,stat=stat)
+                call check(error, stat == spmm_success .and. c%nrows == expected_rows &
+                    .and. c%ncols == expected_cols .and. size(c%data) == 0, '${fmt.upper()}$ empty structure')
+                if (allocated(error)) return
+                call spmm(a,b,c,op_a=op_a,allow_resize=.false.,work=work,stat=stat)
+                call check(error, stat == spmm_success, '${fmt.upper()}$ empty numeric product')
+                if (allocated(error)) return
+            end block
+        end do
+        #:endfor
+    end subroutine test_spmm_empty
 
     subroutine test_coo(error)
         !> Error handling
