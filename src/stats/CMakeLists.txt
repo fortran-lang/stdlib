@@ -3,7 +3,6 @@ set(stats_cppFiles
 
 set(stats_fppFiles
     stdlib_random.fypp
-    stdlib_stats.f90
     stdlib_stats_corr.fypp
     stdlib_stats_cov.fypp
     stdlib_stats_pca.fypp
@@ -23,6 +22,7 @@ set(stats_fppFiles
 )
 
 set(stats_f90Files
+    stdlib_stats.f90
     )
 
 configure_stdlib_target(${PROJECT_NAME}_stats stats_f90Files stats_fppFiles stats_cppFiles)
