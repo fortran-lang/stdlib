@@ -5,8 +5,8 @@ program test_distribution_normal
     use stdlib_kinds, only : sp, dp, xdp, qp
     use stdlib_error, only : check
     use stdlib_random, only : random_seed
-    use stdlib_stats_distribution_uniform, only : uni => rvs_uniform
-    use stdlib_stats_distribution_normal, only : nor_rvs => rvs_normal,        &
+    use stdlib_stats, only : uni => rvs_uniform
+    use stdlib_stats, only : nor_rvs => rvs_normal,        &
                           nor_pdf => pdf_normal, nor_cdf => cdf_normal
 
     implicit none

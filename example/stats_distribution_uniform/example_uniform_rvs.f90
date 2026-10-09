@@ -1,6 +1,6 @@
 program example_uniform_rvs
-  use stdlib_random, only: random_seed
-  use stdlib_stats_distribution_uniform, only: uni => rvs_uniform
+  use stdlib_stats, only: random_seed
+  use stdlib_stats, only: uni => rvs_uniform
 
   implicit none
   complex :: loc, scale

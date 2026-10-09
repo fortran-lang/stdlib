@@ -1,6 +1,6 @@
 program example_exponential_pdf
-  use stdlib_random, only: random_seed
-  use stdlib_stats_distribution_exponential, only: exp_pdf => pdf_exp, &
+  use stdlib_stats, only: random_seed
+  use stdlib_stats, only: exp_pdf => pdf_exp, &
                                                     rexp => rvs_exp
 
   implicit none

@@ -1,6 +1,6 @@
 program example_normal_pdf
-  use stdlib_random, only: random_seed
-  use stdlib_stats_distribution_normal, only: norm_pdf => pdf_normal, &
+  use stdlib_stats, only: random_seed
+  use stdlib_stats, only: norm_pdf => pdf_normal, &
                                               norm => rvs_normal
 
   implicit none

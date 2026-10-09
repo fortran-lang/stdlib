@@ -1,6 +1,6 @@
 program example_normal_cdf
-  use stdlib_random, only: random_seed
-  use stdlib_stats_distribution_normal, only: norm_cdf => cdf_normal, &
+  use stdlib_stats, only: random_seed
+  use stdlib_stats, only: norm_cdf => cdf_normal, &
                                               norm => rvs_normal
 
   implicit none

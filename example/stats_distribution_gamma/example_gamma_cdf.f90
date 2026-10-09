@@ -1,6 +1,6 @@
 program example_gamma_cdf
-  use stdlib_random, only: random_seed
-  use stdlib_stats_distribution_gamma, only: rgamma => rvs_gamma, &
+  use stdlib_stats, only: random_seed
+  use stdlib_stats, only: rgamma => rvs_gamma, &
                                                gamma_cdf => cdf_gamma
 
   implicit none
