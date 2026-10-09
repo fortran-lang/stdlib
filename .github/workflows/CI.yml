@@ -114,4 +114,19 @@ jobs:
 
     - name: Install project
       if: ${{ contains(matrix.build, 'cmake') }}
-      run: cmake --install ${{ env.BUILD_DIR }}
+      run: cmake --build ${{ env.BUILD_DIR }} --target install
+
+    - name: Test pkg-config
+      if: ${{ contains(matrix.build, 'cmake') }}
+      run: |
+        export PKG_CONFIG_PATH="$(find $PWD/_dist -name pkgconfig -type d | head -n 1):$PWD/_dist/lib/pkgconfig:$PWD/_dist/lib64/pkgconfig:$PKG_CONFIG_PATH"
+        echo "PKG_CONFIG_PATH is $PKG_CONFIG_PATH"
+        pkg-config --cflags --libs fortran_stdlib
+        cat << 'EOF' > test_pkgconfig.f90
+        program test
+          use stdlib_kinds, only: dp
+          print *, "pkg-config workflow works!"
+        end program test
+        EOF
+        ${FC:-gfortran} test_pkgconfig.f90 $(pkg-config --cflags --libs fortran_stdlib)
+        ./a.out
