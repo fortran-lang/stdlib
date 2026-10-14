@@ -22,6 +22,8 @@ module test_linalg_eigenvalues
 
         #:for rk,rt,ri in REAL_KINDS_TYPES
         call add_test(tests,new_unittest("test_eig_real_${ri}$",test_eig_real_${ri}$))
+        call add_test(tests,new_unittest("test_eig_repeated_pairs_${ri}$", &
+                                        test_eig_repeated_pairs_${ri}$))
         call add_test(tests,new_unittest("test_eigvals_identity_${ri}$",test_eigvals_identity_${ri}$))
         call add_test(tests,new_unittest("test_eigvals_diagonal_B_${ri}$",test_eigvals_diagonal_B_${ri}$))
         call add_test(tests,new_unittest("test_eigvals_nondiagonal_B_${ri}$",test_eigvals_nondiagonal_B_${ri}$))
@@ -83,6 +85,48 @@ module test_linalg_eigenvalues
         if (allocated(error)) return        
                 
     end subroutine test_eig_real_${ri}$
+
+    !> Repeated conjugate pairs must not overlap when unpacking eigenvectors
+    subroutine test_eig_repeated_pairs_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        real(${rk}$), parameter :: tol = sqrt(epsilon(0.0_${rk}$))
+        type(linalg_state_type) :: state
+        ${rt}$ :: a(4,4), b(4,4)
+        complex(${rk}$) :: lambda(4), right(4,4), left(4,4)
+        integer :: problem
+
+        a = 0.0_${rk}$
+        a(1,2) = -1.0_${rk}$
+        a(2,1) = 1.0_${rk}$
+        a(3,4) = -1.0_${rk}$
+        a(4,3) = 1.0_${rk}$
+        b = eye(4, mold=0.0_${rk}$)
+
+        do problem = 1, 2
+            if (problem == 1) then
+                call eig(a,lambda,right=right,left=left,err=state)
+            else
+                call eig(a,b,lambda,right=right,left=left,err=state)
+            endif
+
+            call check(error,state%ok(),state%print())
+            if (allocated(error)) return
+
+            call check(error, all(sum(abs(right)**2,dim=1)>tol) .and. &
+                              all(sum(abs(left)**2,dim=1)>tol), &
+                       'nonzero eigenvectors')
+            if (allocated(error)) return
+
+            call check(error, all(abs(matmul(a,right)-matmul(right,diag(lambda)))<=tol), &
+                       'right eigenvectors for repeated conjugate pairs')
+            if (allocated(error)) return
+
+            call check(error, all(abs(matmul(transpose(a),left)-matmul(left,diag(conjg(lambda))))<=tol), &
+                       'left eigenvectors for repeated conjugate pairs')
+            if (allocated(error)) return
+        end do
+    end subroutine test_eig_repeated_pairs_${ri}$
 
     ! Symmetric matrix eigenvalues
     subroutine test_eigh_real_${ri}$(error)
