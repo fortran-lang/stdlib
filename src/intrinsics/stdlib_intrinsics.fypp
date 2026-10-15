@@ -6,7 +6,7 @@
 
 module stdlib_intrinsics
     !!Alternative implementations of some Fortran intrinsic functions offering either faster and/or more accurate evaluation.
-    !! ([Specification](../page/specs/stdlib_intrinsics.html))
+    !! (Specification: :doc:`/specs/stdlib_intrinsics`)
     use stdlib_kinds
     use stdlib_linalg_state, only: linalg_state_type
     implicit none

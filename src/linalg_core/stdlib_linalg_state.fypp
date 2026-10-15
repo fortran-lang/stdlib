@@ -5,7 +5,7 @@ module stdlib_linalg_state
      !!
      !! Provides a state/error handling derived type for advanced error handling of
      !! BLAS/LAPACK based linear algebra procedures. All procedures are pure.
-     !! ([Specification](../page/specs/stdlib_linalg.html))
+     !! (Specification: :doc:`/specs/stdlib_linalg`)
      use stdlib_linalg_constants,only: ilp
      use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp, lk
      use stdlib_error, only: state_type, operator(==), operator(/=), operator(<), operator(>), &

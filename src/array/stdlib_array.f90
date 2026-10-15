@@ -2,7 +2,8 @@
 
 !> Module for index manipulation and general array handling
 !>
-!> The specification of this module is available [here](../page/specs/stdlib_array.html).
+!> The specification of this module is available :doc:`here </specs/stdlib_array>`.
+
 module stdlib_array
   implicit none
   private
@@ -14,7 +15,9 @@ contains
   !> Version: experimental
   !>
   !> Return the positions of the true elements in array.
-  !> [Specification](../page/specs/stdlib_array.html#trueloc)
+  !> (Specification: :doc:`/specs/stdlib_array`)
+
+
   pure function trueloc(array, lbound) result(loc)
     !> Mask of logicals
     logical, intent(in) :: array(:)
@@ -29,7 +32,7 @@ contains
   !> Version: experimental
   !>
   !> Return the positions of the false elements in array.
-  !> [Specification](../page/specs/stdlib_array.html#falseloc)
+  !> (Specification: :doc:`/specs/stdlib_array`)
   pure function falseloc(array, lbound) result(loc)
     !> Mask of logicals
     logical, intent(in) :: array(:)

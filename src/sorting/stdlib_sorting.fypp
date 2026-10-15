@@ -84,7 +84,7 @@ module stdlib_sorting
 !! `SORT_INDEX`, and `SORT`, that each can be used to sort four kinds
 !! of `INTEGER` arrays, three kinds of `REAL` arrays, `character(len=*)` arrays,
 !! and arrays of `type(string_type)`.
-!! ([Specification](../page/specs/stdlib_sorting.html))
+!! (Specification: :doc:`/specs/stdlib_sorting`)
 !!
 !! By default sorting is in order of 
 !! increasing value, but there is an option to sort in decreasing order. 

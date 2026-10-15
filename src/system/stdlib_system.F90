@@ -52,7 +52,7 @@ public :: get_runtime_os
 !> Version: experimental
 !>
 !> Integer constants representing known operating system (OS) types
-!> ([Specification](../page/specs/stdlib_system.html))
+!> (Specification: :doc:`/specs/stdlib_system`)
 integer, parameter, public :: &
     !> Represents an unknown operating system
     OS_UNKNOWN = 0, &

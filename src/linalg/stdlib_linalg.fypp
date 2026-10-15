@@ -10,7 +10,7 @@
 #:set EIG_PROBLEM_LIST = list(zip(EIG_PROBLEM, EIG_FUNCTION))
 module stdlib_linalg
   !!Provides a support for various linear algebra procedures
-  !! ([Specification](../page/specs/stdlib_linalg.html))
+  !! (Specification: :doc:`/specs/stdlib_linalg`)
   use stdlib_kinds, only: xdp, int8, int16, int32, int64
   use stdlib_linalg_constants, only: sp, dp, qp, lk, ilp
   use stdlib_error, only: error_stop

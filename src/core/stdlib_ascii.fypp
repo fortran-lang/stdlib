@@ -3,7 +3,7 @@
 !> The `stdlib_ascii` module provides procedures for handling and manipulating
 !> intrinsic character variables and constants.
 !>
-!> The specification of this module is available [here](../page/specs/stdlib_ascii.html).
+!> The specification of this module is available :doc:`here </specs/stdlib_ascii>`.
 module stdlib_ascii
     use stdlib_kinds, only : int8, int16, int32, int64, lk, c_bool
 

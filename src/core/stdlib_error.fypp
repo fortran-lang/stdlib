@@ -2,7 +2,7 @@
 #:set KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES + CMPLX_KINDS_TYPES
 module stdlib_error
     !! Provides support for catching and handling errors
-    !! ([Specification](../page/specs/stdlib_error.html))
+    !! (Specification: :doc:`/specs/stdlib_error`)
     use, intrinsic :: iso_fortran_env, only: stderr => error_unit, ilp => int32
     use stdlib_optval, only: optval
     use stdlib_kinds, only: int8, int16, int32, int64, sp, dp, xdp, qp, lk
@@ -14,7 +14,7 @@ module stdlib_error
             !! version: experimental
             !!
             !! Provides a call to `error stop` and allows the user to specify a code and message
-            !! ([Specification](..//page/specs/stdlib_error.html#description_1))
+            !! (see also :doc:`/specs/stdlib_error.html#description_1`)
             character(*), intent(in) :: msg
             integer, intent(in), optional :: code
         end subroutine error_stop

@@ -4,7 +4,7 @@ module stdlib_bitsets
 !! The current code uses 64 bit integers to store the bits and uses all 64 bits.
 !! The code assumes two's complement integers, and treats negative integers as
 !! having the sign bit set.
-!!([Specification](../page/specs/stdlib_bitsets.html))
+!!(Specification: :doc:`/specs/stdlib_bitsets`)
 
     use :: stdlib_kinds, only:  &
            bits_kind  => int32, & ! If changed change also max_digits, and
