@@ -4,6 +4,7 @@ module test_linalg_eigenvalues
     use stdlib_linalg_constants
     use stdlib_linalg_state
     use stdlib_linalg, only: eig, eigh, eigvals, eigvalsh, diag, eye
+    use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_positive_inf, ieee_is_finite
     use testdrive, only: error_type, check, new_unittest, unittest_type    
 
     implicit none (type,external)
@@ -24,6 +25,9 @@ module test_linalg_eigenvalues
         call add_test(tests,new_unittest("test_eig_real_${ri}$",test_eig_real_${ri}$))
         call add_test(tests,new_unittest("test_eig_repeated_pairs_${ri}$", &
                                         test_eig_repeated_pairs_${ri}$))
+        call add_test(tests,new_unittest("test_eig_near_conjugate_${ri}$",test_eig_near_conjugate_${ri}$))
+        call add_test(tests,new_unittest("test_eig_infinite_pair_${ri}$",test_eig_infinite_pair_${ri}$))
+        call add_test(tests,new_unittest("test_eig_not_conjugate_${ri}$",test_eig_not_conjugate_${ri}$))
         call add_test(tests,new_unittest("test_eigvals_identity_${ri}$",test_eigvals_identity_${ri}$))
         call add_test(tests,new_unittest("test_eigvals_diagonal_B_${ri}$",test_eigvals_diagonal_B_${ri}$))
         call add_test(tests,new_unittest("test_eigvals_nondiagonal_B_${ri}$",test_eigvals_nondiagonal_B_${ri}$))
@@ -127,6 +131,93 @@ module test_linalg_eigenvalues
             if (allocated(error)) return
         end do
     end subroutine test_eig_repeated_pairs_${ri}$
+
+    !> Dividing GGEV's alpha by beta can round the two imaginary magnitudes differently.
+    subroutine test_eig_near_conjugate_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        real(${rk}$), parameter :: tol = 32*epsilon(0.0_${rk}$)
+        type(linalg_state_type) :: state
+        ${rt}$ :: a(2,2), b(2,2)
+        complex(${rk}$) :: lambda(2), right(2,2), left(2,2)
+
+        a = reshape([1.0_${rk}$,1.0_${rk}$,-2.0_${rk}$,1.0_${rk}$],[2,2])
+        b = diag([2.0_${rk}$,1.0_${rk}$])
+        call eig(a,b,lambda,right=right,left=left,err=state)
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return
+
+        call check(error, all(abs(matmul(a,right)-matmul(b,matmul(right,diag(lambda))))<=tol), &
+                   'right eigenvectors for a near-conjugate pair')
+        if (allocated(error)) return
+        call check(error, all(abs(matmul(transpose(a),left)- &
+                                  matmul(transpose(b),matmul(left,diag(conjg(lambda)))))<=tol), &
+                   'left eigenvectors for a near-conjugate pair')
+    end subroutine test_eig_near_conjugate_${ri}$
+
+    !> Overflow in alpha/beta returns +Inf and -Inf imaginary parts. The packed
+    !> vectors still describe the unscaled problem, including when the finite real
+    !> parts differ slightly. Never subtract infinities in the pair comparison.
+    subroutine test_eig_infinite_pair_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        real(${rk}$), parameter :: tol = 32*epsilon(0.0_${rk}$)
+        type(linalg_state_type) :: state
+        real(${rk}$), parameter :: shift = 0.001_${rk}$
+        ${rt}$ :: a(2,2), b(2,2), unscaled_b(2,2), inf
+        complex(${rk}$) :: lambda(2), right(2,2), left(2,2), unscaled(2)
+
+        a = reshape([shift,1.0_${rk}$,-2.0_${rk}$,shift],[2,2])
+        unscaled_b = diag([2.0_${rk}$,1.0_${rk}$])
+        b = (tiny(0.0_${rk}$)/16)*unscaled_b
+        inf = ieee_value(0.0_${rk}$,ieee_positive_inf)
+        unscaled = cmplx(3*shift/4,[1.0_${rk}$,-1.0_${rk}$]*sqrt(16-shift**2)/4,kind=${rk}$)
+        call eig(a,b,lambda,right=right,left=left,err=state)
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return
+
+        call check(error, all(aimag(lambda)==[inf,-inf]),'opposite infinite imaginary parts')
+        if (allocated(error)) return
+        call check(error, all(ieee_is_finite(real(right))) .and. all(ieee_is_finite(aimag(right))) .and. &
+                          all(ieee_is_finite(real(left))) .and. all(ieee_is_finite(aimag(left))), &
+                   'finite eigenvectors for infinite eigenvalues')
+        if (allocated(error)) return
+        call check(error, all(sum(abs(right)**2,dim=1)>tol) .and. all(sum(abs(left)**2,dim=1)>tol), &
+                   'nonzero eigenvectors for infinite eigenvalues')
+        if (allocated(error)) return
+        call check(error, all(abs(matmul(a,right)-matmul(unscaled_b,matmul(right,diag(unscaled))))<=tol), &
+                   'right eigenvectors for an infinite conjugate pair')
+        if (allocated(error)) return
+        call check(error, all(abs(matmul(transpose(a),left)- &
+                                  matmul(transpose(unscaled_b),matmul(left,diag(conjg(unscaled)))))<=tol), &
+                   'left eigenvectors for an infinite conjugate pair')
+    end subroutine test_eig_infinite_pair_${ri}$
+
+    !> beta=0 represents real infinite eigenvalues as (Inf,Inf). Equal imaginary
+    !> signs do not form a conjugate pair: keep the separate real eigenvectors.
+    subroutine test_eig_not_conjugate_${ri}$(error)
+        type(error_type), allocatable, intent(out) :: error
+
+        real(${rk}$), parameter :: tol = 32*epsilon(0.0_${rk}$)
+        type(linalg_state_type) :: state
+        ${rt}$ :: a(2,2), b(2,2), inf
+        complex(${rk}$) :: lambda(2), right(2,2), left(2,2)
+
+        a = diag([1.0_${rk}$,2.0_${rk}$])
+        b = 0.0_${rk}$
+        inf = ieee_value(0.0_${rk}$,ieee_positive_inf)
+        call eig(a,b,lambda,right=right,left=left,err=state)
+        call check(error,state%ok(),state%print())
+        if (allocated(error)) return
+
+        call check(error, all(lambda==cmplx(inf,inf,kind=${rk}$)),'real infinite eigenvalues')
+        if (allocated(error)) return
+        call check(error, all(abs(right-eye(2,mold=0.0_${rk}$))<=tol), &
+                   'separate right eigenvectors for non-conjugate eigenvalues')
+        if (allocated(error)) return
+        call check(error, all(abs(left-eye(2,mold=0.0_${rk}$))<=tol), &
+                   'separate left eigenvectors for non-conjugate eigenvalues')
+    end subroutine test_eig_not_conjugate_${ri}$
 
     ! Symmetric matrix eigenvalues
     subroutine test_eigh_real_${ri}$(error)

@@ -10,7 +10,7 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      use stdlib_linalg_lapack_aux, only: handle_geev_info, handle_ggev_info, handle_heev_info
      use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
           LINALG_INTERNAL_ERROR, LINALG_VALUE_ERROR, LINALG_SUCCESS     
-     use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_positive_inf, ieee_quiet_nan
+     use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_positive_inf, ieee_quiet_nan, ieee_is_finite
      implicit none
      
      character(*), parameter :: this = 'eigenvalues'
@@ -516,6 +516,21 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
      #:endfor
      
      #:for rk,rt,ri in REAL_KINDS_TYPES
+     pure elemental logical function eigenvalue_component_is_close_${rk}$(a,b) result(close)
+        ${rt}$, intent(in) :: a,b
+        real(${rk}$) :: scale
+
+        ! Match infinities exactly, without subtracting them or using an infinite tolerance.
+        close = a==b
+        if (close) return
+        if (.not.ieee_is_finite(a) .or. .not.ieee_is_finite(b)) return
+
+        ! Unequal finite values have a nonzero scale. Normalize before subtracting.
+        scale = max(abs(a),abs(b))
+        ! GGEV scales and divides the two members separately.
+        close = abs(a/scale-b/scale)<=8*epsilon(scale)
+     end function eigenvalue_component_is_close_${rk}$
+
      pure subroutine assign_real_eigenvectors_${rk}$(n,lambda,lmat,out_mat)
      !! GEEV for real matrices returns complex eigenvalues in real arrays, where two consecutive
      !! reals at [j,j+1] locations represent the real and imaginary parts of two complex conjugate 
@@ -543,7 +558,10 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
         ! Convert these to complex numbers here.   
         ! Each pair starts with the eigenvalue with positive imaginary part.
         do j=1,n-1
-           if (aimag(lambda(j))>0.0_${rk}$) then
+           if (aimag(lambda(j))>0.0_${rk}$ .and. aimag(lambda(j+1))<0.0_${rk}$) then
+              if (.not.eigenvalue_component_is_close_${rk}$( &
+                  real(lambda(j),kind=${rk}$),real(lambda(j+1),kind=${rk}$))) cycle
+              if (.not.eigenvalue_component_is_close_${rk}$(aimag(lambda(j)),-aimag(lambda(j+1)))) cycle
               out_mat(:,  j) = cmplx(lmat(:,j), lmat(:,j+1),kind=${rk}$)
               out_mat(:,j+1) = cmplx(lmat(:,j),-lmat(:,j+1),kind=${rk}$)
            endif
