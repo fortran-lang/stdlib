@@ -50,7 +50,7 @@ conversion stopped together with a status code.
 
 ### Syntax
 
-`call ` `to_num_base` `(string, number, position, status)`
+`call ` {f:iface}`to_num_base` `(string, number, position, status)`
 
 ### Arguments
 

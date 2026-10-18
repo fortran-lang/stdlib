@@ -1531,7 +1531,7 @@ If `from` and `to` are the same variable, then `from` remains unchanged.
 
 #### Syntax
 
-`call ` `move` ` (from, to)`
+`call ` {f:iface}`move` ` (from, to)`
 
 #### Class
 

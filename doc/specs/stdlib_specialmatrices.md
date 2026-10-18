@@ -204,7 +204,7 @@ With the exception of `extended precision` and `quadruple precision`, all the ty
 
 #### Syntax
 
-`call ` `spmv` `(A, x, y [, alpha, beta, op])`
+`call ` {f:iface}`spmv` `(A, x, y [, alpha, beta, op])`
 
 #### Arguments
 

@@ -69,7 +69,7 @@ Swaps the values in `lhs` and `rhs`.
 
 #### Syntax
 
-`call` `swap` ` (lhs, rhs)`
+`call` {f:iface}`swap` ` (lhs, rhs)`
 
 #### Status
 

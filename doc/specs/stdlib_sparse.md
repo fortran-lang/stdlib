@@ -200,7 +200,7 @@ $$y=\alpha*op(M)*x+\beta*y$$
 
 ### Syntax
 
-`call ` `spmv` `(matrix,vec_x,vec_y [,alpha,beta,op])`
+`call ` {f:iface}`spmv` `(matrix,vec_x,vec_y [,alpha,beta,op])`
 
 ### Arguments
 
@@ -304,7 +304,7 @@ This module provides facility functions for converting between storage formats.
 
 ### Syntax
 
-`call ` `coo2ordered` `(coo[,sort_data])`
+`call ` {f:iface}`coo2ordered` `(coo[,sort_data])`
 
 ### Arguments
 
@@ -314,7 +314,7 @@ This module provides facility functions for converting between storage formats.
 
 ### Syntax
 
-`call ` `from_ijv` `(sparse,row,col[,data,nrows,ncols,num_nz_rows,chunk])`
+`call ` {f:iface}`from_ijv` `(sparse,row,col[,data,nrows,ncols,num_nz_rows,chunk])`
 
 ### Arguments
 
@@ -340,7 +340,7 @@ This module provides facility functions for converting between storage formats.
 ```
 ### Syntax
 
-`call ` `diag` `(matrix,diagonal)`
+`call ` {f:iface}`diag` `(matrix,diagonal)`
 
 ### Arguments
 
@@ -353,7 +353,7 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` `dense2coo` `(dense,coo)`
+`call ` {f:iface}`dense2coo` `(dense,coo)`
 
 ### Arguments
 
@@ -363,7 +363,7 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` `coo2dense` `(coo,dense)`
+`call ` {f:iface}`coo2dense` `(coo,dense)`
 
 ### Arguments
 
@@ -373,7 +373,7 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` `csc2dense` `(csc,dense)`
+`call ` {f:iface}`csc2dense` `(csc,dense)`
 
 ### Arguments
 
@@ -383,7 +383,7 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` `coo2csr` `(coo,csr[,sort_data])`
+`call ` {f:iface}`coo2csr` `(coo,csr[,sort_data])`
 
 ### Arguments
 
@@ -395,7 +395,7 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` `coo2csc` `(coo,csc)`
+`call ` {f:iface}`coo2csc` `(coo,csc)`
 
 ### Arguments
 
@@ -405,7 +405,7 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` `csr2coo` `(csr,coo)`
+`call ` {f:iface}`csr2coo` `(csr,coo)`
 
 ### Arguments
 
@@ -415,7 +415,7 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` `csr2sellc` `(csr,sellc[,chunk])`
+`call ` {f:iface}`csr2sellc` `(csr,sellc[,chunk])`
 
 ### Arguments
 
@@ -427,7 +427,7 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` `csr2ell` `(csr,ell[,num_nz_rows])`
+`call ` {f:iface}`csr2ell` `(csr,ell[,num_nz_rows])`
 
 ### Arguments
 
@@ -439,7 +439,7 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` `csc2coo` `(csc,coo)`
+`call ` {f:iface}`csc2coo` `(csc,coo)`
 
 ### Arguments
 

@@ -677,7 +677,7 @@ seed for `nmhash32` and is also different from the input seed.
 
 ##### Syntax
 
-`call ` `new_nmhash32_seed` `( seed )`
+`call ` {f:iface}`new_nmhash32_seed` `( seed )`
 
 ##### Class
 
@@ -715,7 +715,7 @@ seed for `nmhash32x` and is also different from the input seed.
 
 ##### Syntax
 
-`call ` `new_nmhash32x_seed` `( seed )`
+`call ` {f:iface}`new_nmhash32x_seed` `( seed )`
 
 ##### Class
 
@@ -753,7 +753,7 @@ seed for `water_hash` and is also different from the input seed.
 
 ##### Syntax
 
-`call ` `new_water_hash_seed` `( seed )`
+`call ` {f:iface}`new_water_hash_seed` `( seed )`
 
 ##### Class
 
@@ -792,7 +792,7 @@ character string, and the input `seed`.
 
 ##### Syntax
 
-`code = ` `nmhash32` `( key, seed )`
+`code = ` {f:iface}`nmhash32` `( key, seed )`
 
 ##### Class
 
@@ -894,7 +894,7 @@ Returns a random 32-bit integer distributed uniformly over the odd values.
 
 ##### Syntax
 
-`call ` `odd_random_integer` `( harvest )`
+`call ` {f:subr}`odd_random_integer` `( harvest )`
 
 ##### Class
 
@@ -1236,7 +1236,7 @@ seed for `pengy_hash` and is also different from the input seed.
 
 ##### Syntax
 
-`call ` `new_pengy_hash_seed` `( seed )`
+`call ` {f:iface}`new_pengy_hash_seed` `( seed )`
 
 ##### Class
 
@@ -1275,7 +1275,7 @@ from the input seed.
 
 ##### Syntax
 
-`call ` `new_spooky_hash_seed` `( seed )`
+`call ` {f:iface}`new_spooky_hash_seed` `( seed )`
 
 ##### Class
 
@@ -1312,7 +1312,7 @@ Returns a random 64-bit integer distributed uniformly over the odd values.
 
 ##### Syntax
 
-`call ` `odd_random_integer` `( harvest )`
+`call ` {f:subr}`odd_random_integer` `( harvest )`
 
 ##### Class
 
@@ -1348,7 +1348,7 @@ value also depends on a scalar 32-bit integer, `seed`.
 
 ##### Syntax
 
-`code = ` `pengy_hash` `( key, seed )`
+`code = ` {f:iface}`pengy_hash` `( key, seed )`
 
 #####  Class
 

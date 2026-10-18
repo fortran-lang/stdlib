@@ -265,7 +265,7 @@ increasing, or decreasing, value.
 
 ##### Syntax
 
-`call ` `ord_sort` `( array[, work, reverse ] )`
+`call ` {f:iface}`ord_sort` `( array[, work, reverse ] )`
 
 ##### Class
 
@@ -332,7 +332,7 @@ decreasing, value.
 
 ##### Syntax
 
-`call ` `sort` `( array[, reverse] )`
+`call ` {f:iface}`sort` `( array[, reverse] )`
 
 ##### Class
 
@@ -387,7 +387,7 @@ decreasing, value.
 
 ##### Syntax
 
-`call ` `radix_sort` `( array[, work, reverse] )`
+`call ` {f:iface}`radix_sort` `( array[, work, reverse] )`
 
 ##### Class
 
@@ -438,7 +438,7 @@ sorted according to the same permutations as for the input `array`.
 
 ##### Syntax
 
-`call ` `sort_adjoint` `( array, adjoint_array[, work, iwork, reverse ] )`
+`call ` {f:iface}`sort_adjoint` `( array, adjoint_array[, work, iwork, reverse ] )`
 
 ##### Class
 
@@ -516,7 +516,7 @@ sort the input `array` to produce the output `array`.
 
 ##### Syntax
 
-`call ` `sort_index` `( array, index[, work, iwork, reverse ] )`
+`call ` {f:iface}`sort_index` `( array, index[, work, iwork, reverse ] )`
 
 ##### Class
 
@@ -656,7 +656,7 @@ Returns the distinct elements of the input array in `output`.
 
 ##### Syntax
 
-`call ` `unique` `( array, output[, sorted_output, tolerance] )`
+`call ` {f:iface}`unique` `( array, output[, sorted_output, tolerance] )`
 
 ##### Class
 

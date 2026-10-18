@@ -338,17 +338,17 @@ Loads a 2D matrix from a Matrix Market format file. Symmetric matrices are expan
 
 - To load a matrix of `array` format:
 
-`call ` `load_mm` `(filename, matrix [, iostat, iomsg])`
+`call ` {f:iface}`load_mm` `(filename, matrix [, iostat, iomsg])`
 
 - To load a matrix of `coordinate` format:
 
-`call ` `load_mm` `(filename, index, data [, iostat, iomsg])`
+`call ` {f:iface}`load_mm` `(filename, index, data [, iostat, iomsg])`
 
 #### Arguments
 
 **`Array` format**
 
-`call ` `load_mm` `(filename, matrix [, iostat, iomsg])`
+`call ` {f:iface}`load_mm` `(filename, matrix [, iostat, iomsg])`
 
 - `filename`: Shall be a character expression containing the Matrix Market file name to read from.
 
@@ -360,7 +360,7 @@ Loads a 2D matrix from a Matrix Market format file. Symmetric matrices are expan
 
 **`Coordinate` format**
 
-`call ` `load_mm` `(filename, index, data [, iostat, iomsg])`
+`call ` {f:iface}`load_mm` `(filename, index, data [, iostat, iomsg])`
 
 - `filename`: Shall be a character expression containing the Matrix Market file name to read from.
 
@@ -380,17 +380,17 @@ Saves a 2D matrix to Matrix Market format file.
 
 - To save a matrix of `array` format:
 
-`call ` `save_mm` `(filename, matrix [, comment, format, symmetry, iostat, iomsg])`
+`call ` {f:iface}`save_mm` `(filename, matrix [, comment, format, symmetry, iostat, iomsg])`
 
 - To save a matrix of `coordinate` format:
 
-`call ` `save_mm` `(filename, index, data [, comment, format, symmetry, iostat, iomsg])`
+`call ` {f:iface}`save_mm` `(filename, index, data [, comment, format, symmetry, iostat, iomsg])`
 
 #### Arguments
 
 **`Array` format**
 
-`call ` `save_mm` `(filename, matrix [, comment, format, symmetry, iostat, iomsg])`
+`call ` {f:iface}`save_mm` `(filename, matrix [, comment, format, symmetry, iostat, iomsg])`
 
 - `filename`: Shall be a character expression containing the Matrix Market file name to write to.
 
@@ -414,7 +414,7 @@ Saves a 2D matrix to Matrix Market format file.
 
 **`Coordinate` format**
 
-`call ` `save_mm` `(filename, index, data [, comment, format, symmetry, iostat, iomsg])`
+`call ` {f:iface}`save_mm` `(filename, index, data [, comment, format, symmetry, iostat, iomsg])`
 
 - `filename`: Shall be a character expression containing the Matrix Market file name to write to.
 

@@ -185,7 +185,7 @@ Returns a copy of an input of type `key_type`.
 
 ##### Syntax
 
-`call ` `copy_key` `( old_key, new_key )`
+`call ` {f:subr}`copy_key` `( old_key, new_key )`
 
 ##### Class
 
@@ -232,7 +232,7 @@ Calculates a 32 bit hash code from an input of type `key_type`.
 
 ##### Syntax
 
-`code = ` `fnv_1_hasher` `( key )`
+`code = ` {f:func}`fnv_1_hasher` `( key )`
 
 ##### Class
 
@@ -334,7 +334,7 @@ Deallocates the memory associated with a variable of type
 
 ##### Syntax
 
-`call ` `free_key` `( key )`
+`call ` {f:subr}`free_key` `( key )`
 
 ##### Class
 
@@ -365,7 +365,7 @@ variable `value`.
 
 ##### Syntax
 
-`call ` `get` `( key, value )`
+`call ` {f:subr}`get` `( key, value )`
 
 ##### Class
 
@@ -636,7 +636,7 @@ Places the data from `value` in a `key_type`.
 
 ##### Syntax
 
-`call ` `set` `( key, value )`
+`call ` {f:subr}`set` `( key, value )`
 
 ##### Class
 
