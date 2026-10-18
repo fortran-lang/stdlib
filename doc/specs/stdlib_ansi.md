@@ -180,7 +180,7 @@ Generic interface to turn a style, foreground or background enumerator into an a
 
 #### Syntax
 
-`string =` `to_string` `(code)`
+`string =` {f:func}`to_string` `(code)`
 
 #### Class
 

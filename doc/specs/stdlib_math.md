@@ -666,13 +666,13 @@ For $n \geq 1$ coordinate vectors $(x_1, x_2, ..., x_n)$ of sizes $(s_1, s_2, ..
 #### Syntax
 
 For a 2D problem in Cartesian indexing:
-`call ` `meshgrid` `(x, y, xm, ym)`
+`call ` {f:iface}`meshgrid` `(x, y, xm, ym)`
 
 For a 3D problem in Cartesian indexing:
-`call ` `meshgrid` `(x, y, z, xm, ym, zm)`
+`call ` {f:iface}`meshgrid` `(x, y, z, xm, ym, zm)`
 
 For a 3D problem in matrix indexing:
-`call ` `meshgrid` `(x, y, z, xm, ym, zm, indexing="ij")`
+`call ` {f:iface}`meshgrid` `(x, y, z, xm, ym, zm, indexing="ij")`
 
 The subroutine can be called in `n`-dimensional situations, as long as `n` is inferior to the maximum allowed array rank.
 

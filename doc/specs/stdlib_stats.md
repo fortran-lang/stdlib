@@ -23,7 +23,7 @@ The Pearson correlation between two rows (or columns), say `x` and `y`, of `arra
 
 ### Syntax
 
-`result = ` `corr` `(array, dim [, mask])`
+`result = ` {f:iface}`corr` `(array, dim [, mask])`
 
 ### Class
 
@@ -77,7 +77,7 @@ The scaling can be changed with the logical argument `corrected`. If `corrected`
 
 ### Syntax
 
-`result = ` `cov` `(array, dim [, mask [, corrected]])`
+`result = ` {f:iface}`cov` `(array, dim [, mask [, corrected]])`
 
 ### Class
 
@@ -122,9 +122,9 @@ Returns the mean of all the elements of `array`, or of the elements of `array` a
 
 ### Syntax
 
-`result = ` `mean` `(array [, mask])`
+`result = ` {f:iface}`mean` `(array [, mask])`
 
-`result = ` `mean` `(array, dim [, mask])`
+`result = ` {f:iface}`mean` `(array, dim [, mask])`
 
 ### Class
 
@@ -185,9 +185,9 @@ provided by the `stdlib_selection` module.
 
 ### Syntax
 
-`result = ` `median` `(array [, mask])`
+`result = ` {f:iface}`median` `(array [, mask])`
 
-`result = ` `median` `(array, dim [, mask])`
+`result = ` {f:iface}`median` `(array, dim [, mask])`
 
 ### Class
 
@@ -247,9 +247,9 @@ The _k_-th order moment about `center` is defined as :
 
 ### Syntax
 
-`result = ` `moment` `(array, order [, center [, mask]])`
+`result = ` {f:iface}`moment` `(array, order [, center [, mask]])`
 
-`result = ` `moment` `(array, order, dim [, center [, mask]])`
+`result = ` {f:iface}`moment` `(array, order, dim [, center [, mask]])`
 
 ### Class
 
@@ -300,7 +300,7 @@ Two methods are supported:
 
 ### Syntax
 
-`call ` `pca` `(x, components, singular_values [, x_mean, method, overwrite_x, err])`
+`call ` {f:subr}`pca` `(x, components, singular_values [, x_mean, method, overwrite_x, err])`
 
 ### Class
 
@@ -341,7 +341,7 @@ The transformation is defined as `x_transformed = (x - x_mean) * components^T`.
 
 ### Syntax
 
-`call ` `pca_transform` `(x, components, x_transformed [, x_mean])`
+`call ` {f:subr}`pca_transform` `(x, components, x_transformed [, x_mean])`
 
 ### Class
 
@@ -370,7 +370,7 @@ The reconstruction is defined as `x_reconstructed = x_reduced * components + x_m
 
 ### Syntax
 
-`call ` `pca_inverse_transform` `(x_reduced, components, x_reconstructed [, x_mean])`
+`call ` {f:subr}`pca_inverse_transform` `(x_reduced, components, x_reconstructed [, x_mean])`
 
 ### Class
 
@@ -409,9 +409,9 @@ The use of the term `n-1` for scaling is called Bessel 's correction. The scalin
 
 ### Syntax
 
-`result = ` `var` `(array [, mask [, corrected]])`
+`result = ` {f:iface}`var` `(array [, mask [, corrected]])`
 
-`result = ` `var` `(array, dim [, mask [, corrected]])`
+`result = ` {f:iface}`var` `(array, dim [, mask [, corrected]])`
 
 ### Class
 

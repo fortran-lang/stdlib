@@ -24,7 +24,7 @@ Checks the value of a logical condition.
 
 #### Syntax
 
-`call ` `check` `(condition, msg, code, warn)`
+`call ` {f:subr}`check` `(condition, msg, code, warn)`
 
 
 #### Arguments
@@ -76,7 +76,7 @@ Aborts the program with a message and a nonzero exit code.
 
 #### Syntax
 
-`call ` `error_stop` `(msg, code)`
+`call ` {f:subr}`error_stop` `(msg, code)`
 
 #### Arguments
 

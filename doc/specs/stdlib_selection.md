@@ -55,7 +55,7 @@ such that `all(array(1:k) <= array(k))`  and `all(array(k) <= array((k+1):size(a
 
 ### Syntax
 
-`call ` `select` `( array, k, kth_smallest [, left, right ] )`
+`call ` {f:iface}`select` `( array, k, kth_smallest [, left, right ] )`
 
 ### Class
 
@@ -123,7 +123,7 @@ the index-array `indx(:)` such that `all(array(indx(1:k)) <= array(indx(k)))`  a
 
 ### Syntax
 
-`call ` `arg_select` `( array, indx, k, kth_smallest [, left, right ] )`
+`call ` {f:iface}`arg_select` `( array, indx, k, kth_smallest [, left, right ] )`
 
 ### Class
 

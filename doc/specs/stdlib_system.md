@@ -211,7 +211,7 @@ in case of process hang or delay.
 
 ### Syntax
 
-`call ` `wait` `(process [, max_wait_time])`
+`call ` {f:subr}`wait` `(process [, max_wait_time])`
 
 ### Arguments
 
@@ -242,7 +242,7 @@ This is especially useful for monitoring asynchronous processes and retrieving t
 
 ### Syntax
 
-`call ` `update` `(process)`
+`call ` {f:subr}`update` `(process)`
 
 ### Arguments
 
@@ -268,7 +268,7 @@ This interface is useful when a process needs to be forcefully stopped, for exam
 
 ### Syntax
 
-`call ` `kill` `(process, success)`
+`call ` {f:subr}`kill` `(process, success)`
 
 ### Arguments
 
@@ -297,7 +297,7 @@ It ensures that the requested sleep duration is honored on both Windows and Unix
 
 ### Syntax
 
-`call ` `sleep` `(millisec)`
+`call ` {f:subr}`sleep` `(millisec)`
 
 ### Arguments
 
@@ -627,7 +627,7 @@ It is designed to work across multiple platforms. On Windows, paths with both fo
 
 ### Syntax
 
-`call `make_directory` (path [,err])`
+`call ` {f:subr}`make_directory` (path [,err])`
 
 ### Class
 
@@ -664,7 +664,7 @@ It also creates all the necessary parent directories in the path if they do not 
 
 ### Syntax
 
-`call `make_directory_all` (path [,err])`
+`call ` {f:subr}`make_directory_all` (path [,err])`
 
 ### Class
 
@@ -701,7 +701,7 @@ It is designed to work across multiple platforms. On Windows, paths with both fo
 
 ### Syntax
 
-`call `remove_directory` (path, err)`
+`call ` {f:subr}`remove_directory` (path, err)`
 
 ### Class
 
@@ -738,7 +738,7 @@ It is designed to work across multiple platforms. On Windows, paths with both fo
 
 ### Syntax
 
-`call `get_cwd` (cwd [, err])`
+`call ` {f:subr}`get_cwd` (cwd [, err])`
 
 ### Class
 
@@ -775,7 +775,7 @@ It is designed to work across multiple platforms. On Windows, paths with both fo
 
 ### Syntax
 
-`call `set_cwd` (path [, err])`
+`call ` {f:subr}`set_cwd` (path [, err])`
 
 ### Class
 
@@ -983,7 +983,7 @@ The function provides an optional error-handling mechanism via the `state_type` 
 
 ### Syntax
 
-`call ` `delete_file`` (path [, err])`
+`call ` {f:subr}`delete_file` (path [, err])`
 
 ### Class
 Subroutine
@@ -1025,9 +1025,9 @@ i.e `\` for windows and `/` for others
 
 ### Syntax
 
-`res = ` `join_path` ` (p1, p2)`
+`res = ` {f:func}`join_path` ` (p1, p2)`
 
-`res = ` `join_path` ` (p)`
+`res = ` {f:func}`join_path` ` (p)`
 
 ### Class
 Pure function
@@ -1089,7 +1089,7 @@ splitting it into most of the times a directory and a file name.
 
 ### Syntax
 
-`call ``split_path``(p, head, tail)`
+`call ` {f:subr}`split_path` `(p, head, tail)`
 
 ### Class
 Subroutine

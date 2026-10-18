@@ -26,7 +26,7 @@ The built-in / intrinsics are usually preferable to `trueloc`, unless the access
 
 #### Syntax
 
-`loc =` `trueloc` `(array[, lbound])`
+`loc =` {f:func}`trueloc` `(array[, lbound])`
 
 #### Class
 
@@ -63,7 +63,7 @@ The built-in / intrinsics are usually preferable to `falseloc`, unless the acces
 
 #### Syntax
 
-`loc =` `falseloc` `(array[, lbound])`
+`loc =` {f:func}`falseloc` `(array[, lbound])`
 
 #### Class
 

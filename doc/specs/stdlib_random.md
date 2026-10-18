@@ -17,7 +17,7 @@ Set or get the seed value before calling the probability distribution pseudorand
 
 ### Syntax
 
-`call ` `random_seed` `(put, get)`
+`call ` {f:subr}`random_seed` `(put, get)`
 
 ### Arguments
 

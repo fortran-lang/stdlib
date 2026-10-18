@@ -37,7 +37,7 @@ Getter subroutine to retrieve version information
 
 #### Syntax
 
-`call ` `get_stdlib_version` ` ([major], [minor], [patch], [string])`
+`call ` {f:subr}`get_stdlib_version` ` ([major], [minor], [patch], [string])`
 
 #### Class
 

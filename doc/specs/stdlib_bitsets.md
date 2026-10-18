@@ -275,7 +275,7 @@ number of bits, otherwise the result is undefined.
 
 #### Syntax
 
-`call ` `and` `(set1, set2)`
+`call ` {f:subr}`and` `(set1, set2)`
 
 #### Class
 
@@ -313,7 +313,7 @@ result is undefined.
 
 #### Syntax
 
-`call ` `and_not` `(set1, set2)`
+`call ` {f:subr}`and_not` `(set1, set2)`
 
 #### Class
 
@@ -506,7 +506,7 @@ informative message.
 
 #### Syntax
 
-`call ` `extract` `(new, old, start_pos, stop_pos, status )`
+`call ` {f:subr}`extract` `(new, old, start_pos, stop_pos, status )`
 
 #### Class
 
@@ -823,7 +823,7 @@ same number of bits, otherwise the result is undefined.
 
 #### Syntax
 
-`call ` `or` `(set1, set2)`
+`call ` {f:subr}`or` `(set1, set2)`
 
 #### Class
 
