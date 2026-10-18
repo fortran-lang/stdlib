@@ -1,0 +1,185 @@
+#:include "common.fypp"
+#:set IKT = list(zip(INT_KINDS, INT_TYPES, INT_KINDS))
+#:set RKT = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set CKT = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+module test_sum_mask
+    use testdrive, only: new_unittest, unittest_type, error_type, check
+    use stdlib_kinds
+    use stdlib_intrinsics, only: stdlib_sum, stdlib_sum_kahan, kahan_kernel
+    use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_positive_inf
+    use, intrinsic :: ieee_exceptions, only: ieee_set_flag, ieee_get_flag, ieee_invalid, ieee_overflow
+    implicit none
+    private
+    public :: collect_mask_suite
+contains
+subroutine collect_mask_suite(testsuite)
+    type(unittest_type), allocatable, intent(out) :: testsuite(:)
+    testsuite = [ &
+    #:for k,t,s in IKT + RKT + CKT
+        new_unittest('sum_mask_${s}$', test_mask_${s}$), &
+    #:endfor
+    #:for k,t,s in RKT + CKT
+        new_unittest('sum_mask_state_${s}$', test_state_${s}$) &
+        #:if s != CKT[-1][2]
+        , &
+        #:endif
+    #:endfor
+    ]
+end subroutine
+#:for k,t,s in IKT + RKT + CKT
+subroutine test_mask_${s}$(error)
+    type(error_type), allocatable, intent(out) :: error
+    integer, parameter :: lengths(*) = [0,1,63,64,65,127,128,129]
+    integer :: n, j, mode, step, idx
+    ${t}$ :: x(258)
+    logical :: mask(258)
+    block
+        ${t}$ :: a(3)
+        a = [1,2,8]
+        call check(error, stdlib_sum(a,[.true.,.false.,.false.]) == 1, 'asymmetric selected subset')
+        if (allocated(error)) return
+    end block
+    do j=1,size(x)
+        #:if (k,t,s) in CKT
+        x(j) = cmplx(mod(j,7)-3,mod(j,5)-2,kind=${k}$)
+        #:else
+        x(j) = mod(j,7)-3
+        #:endif
+    end do
+    do j=1,size(lengths)
+        n=lengths(j)
+        do step=1,2
+            do mode=1,3
+                select case(mode)
+                case(1)
+                    mask=.false.
+                case(2)
+                    mask=.true.
+                case(3)
+                    mask=[(mod(idx,5)==1,idx=1,size(mask))]
+                end select
+                call check(error, stdlib_sum(x(1:n*step:step),mask(1:n*step:step)) == &
+                    sum(pack(x(1:n*step:step),mask(1:n*step:step))), 'plain boundary or stride subset')
+                if (allocated(error)) return
+                #:if (k,t,s) in RKT + CKT
+                call check(error, stdlib_sum_kahan(x(1:n*step:step),mask(1:n*step:step)) == &
+                    sum(x(1:n*step:step),mask=mask(1:n*step:step)), 'compensated boundary or stride subset')
+                if (allocated(error)) return
+                #:endif
+                block
+                    ${t}$ :: b(258,3)
+                    logical :: m(258,3)
+                    b=spread(x,2,3)
+                    m=spread(mask,2,3)
+                    if (mode==3) m(:,2)=.false.
+                    call check(error, stdlib_sum(b(1:n*step:step,:),mask=m(1:n*step:step,:)) == &
+                        sum(b(1:n*step:step,:),mask=m(1:n*step:step,:)), 'rank 2 boundary selected total')
+                    if (allocated(error)) return
+                    #:for dim in [1,2]
+                    call check(error, all(stdlib_sum(b(1:n*step:step,:),dim=${dim}$,mask=m(1:n*step:step,:)) == &
+                        sum(b(1:n*step:step,:),dim=${dim}$,mask=m(1:n*step:step,:))), 'DIM ${dim}$ selected subset with stride')
+                    if (allocated(error)) return
+                    #:endfor
+                    #:if (k,t,s) in RKT + CKT
+                    call check(error, stdlib_sum_kahan(b(1:n*step:step,:),mask=m(1:n*step:step,:)) == &
+                        sum(b(1:n*step:step,:),mask=m(1:n*step:step,:)), 'rank 2 compensated boundary total')
+                    if (allocated(error)) return
+                    #:for dim in [1,2]
+                    call check(error, all(stdlib_sum_kahan(b(1:n*step:step,:),dim=${dim}$,mask=m(1:n*step:step,:)) == &
+                        sum(b(1:n*step:step,:),dim=${dim}$,mask=m(1:n*step:step,:))), 'Kahan DIM ${dim}$ selected subset with stride')
+                    if (allocated(error)) return
+                    #:endfor
+                    #:endif
+                end block
+            end do
+        end do
+    end do
+    #:for rank in range(2,5)
+    block
+        ${t}$ :: a(${','.join(['3']+['2']*(rank-1))}$)
+        logical :: m(${','.join(['3']+['2']*(rank-1))}$)
+        a=reshape(x(1:size(a)),shape(a))
+        m=reshape([(mod(idx,5)==1,idx=1,size(a))],shape(m))
+        call check(error, stdlib_sum(a,m)==sum(a,mask=m), 'rank ${rank}$ selected total')
+        if (allocated(error)) return
+        #:if (k,t,s) in RKT + CKT
+        call check(error, stdlib_sum_kahan(a,m)==sum(a,mask=m), 'rank ${rank}$ compensated total')
+        if (allocated(error)) return
+        #:endif
+        #:for dim in range(1,rank+1)
+        call check(error, all(stdlib_sum(a,dim=${dim}$,mask=m)==sum(a,dim=${dim}$,mask=m)), &
+            'rank ${rank}$ DIM ${dim}$ selected subset and shape')
+        if (allocated(error)) return
+        #:if (k,t,s) in RKT + CKT
+        call check(error, all(stdlib_sum_kahan(a,dim=${dim}$,mask=m)==sum(a,dim=${dim}$,mask=m)), &
+            'rank ${rank}$ DIM ${dim}$ compensated subset and shape')
+        if (allocated(error)) return
+        #:endif
+        #:endfor
+    end block
+    #:endfor
+    block
+        ${t}$ :: a(0,3)
+        logical :: m(0,3)
+        call check(error, all(stdlib_sum(a,dim=1,mask=m)==sum(a,dim=1,mask=m)), 'empty DIM 1')
+        if (allocated(error)) return
+        call check(error, size(stdlib_sum(a,dim=2,mask=m))==0, 'empty DIM 2 shape')
+        if (allocated(error)) return
+        #:if (k,t,s) in RKT + CKT
+        call check(error, all(stdlib_sum_kahan(a,dim=1,mask=m)==sum(a,dim=1,mask=m)), 'empty Kahan DIM 1')
+        if (allocated(error)) return
+        call check(error, size(stdlib_sum_kahan(a,dim=2,mask=m))==0, 'empty Kahan DIM 2 shape')
+        if (allocated(error)) return
+        #:endif
+    end block
+end subroutine
+#:endfor
+#:for k,t,s in RKT + CKT
+subroutine test_state_${s}$(error)
+    type(error_type), allocatable, intent(out) :: error
+    ${t}$ :: s,c,a(129),excluded(${6 if (k,t,s) in CKT else 3}$), result
+    logical :: m(129), invalid, overflow
+    integer :: j
+    excluded(1:3) = [ieee_value(1._${k}$,ieee_quiet_nan), &
+        ieee_value(1._${k}$,ieee_positive_inf),huge(1._${k}$)]
+    #:if (k,t,s) in CKT
+    excluded(4:6)=cmplx(0._${k}$,real(excluded(1:3),kind=${k}$),kind=${k}$)
+    #:endif
+    do j=1,size(excluded)
+        s=16
+        c=0.5_${k}$
+        call ieee_set_flag(ieee_invalid,.false.)
+        call ieee_set_flag(ieee_overflow,.false.)
+        call kahan_kernel(excluded(j),s,c,.false.)
+        call ieee_get_flag(ieee_invalid,invalid)
+        call ieee_get_flag(ieee_overflow,overflow)
+        call check(error,s==16.and.c==0.5_${k}$, 'excluded term preserves sum and compensation')
+        if (allocated(error)) return
+        call check(error,.not.invalid.and..not.overflow,'excluded kernel does no invalid or overflowing arithmetic')
+        if (allocated(error)) return
+        call kahan_kernel(${ 'cmplx(0.5_'+k+',0._'+k+',kind='+k+')' if (k,t,s) in CKT else '0.5_'+k }$,s,c,.true.)
+        call check(error,s==16.and.c==0,'next included update uses preserved compensation')
+        if (allocated(error)) return
+        a=excluded(j)
+        a(1)=1
+        m=.false.
+        m(1)=.true.
+        call ieee_set_flag(ieee_invalid,.false.)
+        call ieee_set_flag(ieee_overflow,.false.)
+        result=stdlib_sum(a,m)
+        call check(error,result==1,'plain excludes nonfinite and extreme lanes')
+        if (allocated(error)) return
+        result=stdlib_sum_kahan(a,m)
+        call check(error,result==1,'compensated excludes nonfinite and extreme lanes')
+        if (allocated(error)) return
+        call ieee_get_flag(ieee_invalid,invalid)
+        call ieee_get_flag(ieee_overflow,overflow)
+        call check(error,.not.invalid.and..not.overflow,'excluded reductions avoid invalid and overflow')
+        if (allocated(error)) return
+        m=.false.
+        call check(error,stdlib_sum(a,m)==0.and.stdlib_sum_kahan(a,m)==0,'all excluded special values')
+        if (allocated(error)) return
+    end do
+end subroutine
+#:endfor
+end module

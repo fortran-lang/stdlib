@@ -1,6 +1,9 @@
 ## Unreleased
 
 Changes to the existing modules
+  - Change in module `stdlib_intrinsics`
+    - Fix inverted MASK inclusion in `stdlib_sum` and `stdlib_sum_kahan`.
+      Update masked Kahan sum and compensation only for selected elements.
   - Change in module `stdlib_system`
     - Added `set_environment_variable` and `delete_environment_variable`
       [#1187](https://github.com/fortran-lang/stdlib/issues/1187)

@@ -4,6 +4,7 @@
 #:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
 
 module test_intrinsics
+    use test_sum_mask, only: collect_mask_suite
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
     use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
     use stdlib_intrinsics
@@ -19,10 +20,14 @@ subroutine collect_suite(testsuite)
     !> Collection of tests
     type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
+    type(unittest_type), allocatable :: mask_suite(:)
+
+    call collect_mask_suite(mask_suite)
     testsuite = [ &
         new_unittest('sum', test_sum), &
         new_unittest('dot_product', test_dot_product), &
-        new_unittest('matmul', test_matmul) &
+        new_unittest('matmul', test_matmul), &
+        mask_suite &
     ]
 end subroutine
 
