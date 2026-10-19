@@ -47,8 +47,11 @@ function(resolve_pc_libs out_var root_target)
                 string(REGEX REPLACE "\\.framework$" "" _fw_name "${_fw_name}")
                 get_filename_component(_fw_dir "${target}" DIRECTORY)
                 list(APPEND _result "-F${_fw_dir} -framework ${_fw_name}")
-            else()
+            elseif("${target}" MATCHES "^-" OR IS_ABSOLUTE "${target}")
                 list(APPEND _result "${target}")
+            else()
+                # A plain library name like dl (CMAKE_DL_LIBS) -> -ldl
+                list(APPEND _result "-l${target}")
             endif()
         endif()
 
