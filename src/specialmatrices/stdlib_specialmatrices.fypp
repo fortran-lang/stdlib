@@ -52,11 +52,12 @@ module stdlib_specialmatrices
     !--------------------------------
 
     interface tridiagonal
-        !! ([Specifications](../page/specs/stdlib_specialmatrices.html#Tridiagonal)) This
+        !! (Specification: :doc:`/specs/stdlib_specialmatrices`) This
         !! interface provides different methods to construct a `tridiagonal` matrix. Only
-        !! the non-zero elements of \( A \) are stored, i.e.
+        !! the non-zero elements of :math:`A` are stored, i.e.
         !!
-        !! \[
+        !! .. math::
+        !!
         !!    A
         !!    =
         !!    \begin{bmatrix}
@@ -66,7 +67,6 @@ module stdlib_specialmatrices
         !!             &           &  c_{n-2} &  a_{n-1}  &  b_{n-1} \\
         !!             &           &           &  c_{n-1} &  a_n
         !!    \end{bmatrix}.
-        !! \]
         !!
         !!## Syntax
         !!
@@ -139,11 +139,12 @@ module stdlib_specialmatrices
     end interface
 
     interface sym_tridiagonal
-        !! ([Specifications](../page/specs/stdlib_specialmatrices.html#Sym_tridiagonal)) This
+        !! (Specification: :doc:`/specs/stdlib_specialmatrices`) This
         !! interface provides different methods to construct a `symmetric tridiagonal` matrix. Only
-        !! the non-zero elements of \( A \) are stored, i.e.
+        !! the non-zero elements of :math:`A` are stored, i.e.
         !!
-        !! \[
+        !! .. math::
+        !!
         !!    A
         !!    =
         !!    \begin{bmatrix}
@@ -153,7 +154,6 @@ module stdlib_specialmatrices
         !!             &           &  b_{n-2} &  a_{n-1}  &  b_{n-1} \\
         !!             &           &           &  b_{n-1} &  a_n
         !!    \end{bmatrix}.
-        !! \]
         !!
         !!## Syntax
         !!

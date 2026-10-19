@@ -14,7 +14,7 @@ module stdlib_error
             !! version: experimental
             !!
             !! Provides a call to `error stop` and allows the user to specify a code and message
-            !! (see also :doc:`/specs/stdlib_error.html#description_1`)
+            !! (see also :doc:`/specs/stdlib_error`)
             character(*), intent(in) :: msg
             integer, intent(in), optional :: code
         end subroutine error_stop
