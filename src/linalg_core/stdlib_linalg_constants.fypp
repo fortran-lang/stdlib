@@ -1,7 +1,7 @@
 #:include "common.fypp"
 module stdlib_linalg_constants
      use stdlib_kinds, only: sp, dp, xdp, qp, int32, int64, lk
-     use, intrinsic :: ieee_arithmetic, only: ieee_is_nan 
+     use, intrinsic :: ieee_arithmetic, only: ieee_is_nan, ieee_is_finite
      !$ use omp_lib
      implicit none
      public
@@ -37,5 +37,51 @@ module stdlib_linalg_constants
      integer, parameter :: ilp   = int32
      integer, parameter :: ilp64 = #{if WITH_ILP64}# int64 #{else}# -1 #{endif}#
      private            :: int32, int64
+
+     !> Check for an ordered complex conjugate pair with componentwise relative tolerance.
+     interface are_complex_conjugate
+        #:for ck,ct,ci in CMPLX_KINDS_TYPES
+        module procedure are_complex_conjugate_${ck}$
+        #:endfor
+     end interface are_complex_conjugate
+
+     private :: ieee_is_finite
+     #:for rk,rt,ri in REAL_KINDS_TYPES
+     private :: eigenvalue_component_is_close_${rk}$
+     #:endfor
+     #:for ck,ct,ci in CMPLX_KINDS_TYPES
+     private :: are_complex_conjugate_${ck}$
+     #:endfor
+
+     contains
+
+     #:for rk,rt,ri in REAL_KINDS_TYPES
+     elemental logical(lk) function eigenvalue_component_is_close_${rk}$(a,b) result(close)
+        ${rt}$, intent(in) :: a,b
+        real(${rk}$) :: scale
+
+        ! Match infinities exactly, without subtracting them or using an infinite tolerance.
+        close = a==b
+        if (close) return
+        if (.not.ieee_is_finite(a) .or. .not.ieee_is_finite(b)) return
+
+        ! Unequal finite values have a nonzero scale. Normalize before subtracting.
+        scale = max(abs(a),abs(b))
+        ! GGEV scales and divides the two members separately.
+        close = abs(a/scale-b/scale)<=8*epsilon(scale)
+     end function eigenvalue_component_is_close_${rk}$
+     #:endfor
+
+     #:for ck,ct,ci in CMPLX_KINDS_TYPES
+     elemental logical(lk) function are_complex_conjugate_${ck}$(a,b) result(conjugate)
+        ${ct}$, intent(in) :: a,b
+
+        conjugate = aimag(a)>0.0_${ck}$ .and. aimag(b)<0.0_${ck}$
+        if (.not.conjugate) return
+        conjugate = eigenvalue_component_is_close_${ck}$(real(a,kind=${ck}$),real(b,kind=${ck}$))
+        if (.not.conjugate) return
+        conjugate = eigenvalue_component_is_close_${ck}$(aimag(a),-aimag(b))
+     end function are_complex_conjugate_${ck}$
+     #:endfor
      
 end module stdlib_linalg_constants

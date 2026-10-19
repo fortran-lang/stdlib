@@ -541,8 +541,9 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
         ! u(j)   = VL(:,j) + i*VL(:,j+1) and
         ! u(j+1) = VL(:,j) - i*VL(:,j+1). 
         ! Convert these to complex numbers here.   
+        ! Each pair starts with the eigenvalue with positive imaginary part.
         do j=1,n-1
-           if (lambda(j)==conjg(lambda(j+1))) then  
+           if (are_complex_conjugate(lambda(j),lambda(j+1))) then
               out_mat(:,  j) = cmplx(lmat(:,j), lmat(:,j+1),kind=${rk}$)
               out_mat(:,j+1) = cmplx(lmat(:,j),-lmat(:,j+1),kind=${rk}$)
            endif
