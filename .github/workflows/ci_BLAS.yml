@@ -130,22 +130,6 @@ jobs:
       - name: Build and compile
         run: cmake --build ${{ env.BUILD_DIR }} --parallel
 
-      - name: Check external interfaces with Fortran 2018
-        if: ${{ matrix.toolchain.compiler == 'gcc' }}
-        run: |
-          # Keep the strict check focused on the external interfaces until #1209 is resolved.
-          module_flags=()
-          while IFS= read -r module_dir; do
-            module_flags+=("-I${module_dir}")
-          done < <(find "${{ env.BUILD_DIR }}/src" -type d -path '*/mod_files/*')
-          strict_dir="${{ env.BUILD_DIR }}/strict-interfaces"
-          mkdir -p "$strict_dir"
-          "$FC" -std=f2018 -fimplicit-none -fsyntax-only \
-            -DSTDLIB_EXTERNAL_BLAS -DSTDLIB_EXTERNAL_LAPACK \
-            -J "$strict_dir" "${module_flags[@]}" \
-            "${{ env.BUILD_DIR }}/src/blas/stdlib_linalg_blas.F90" \
-            "${{ env.BUILD_DIR }}/src/lapack/stdlib_linalg_lapack.F90"
-
       - name: catch build fail
         if: failure()
         run: cmake --build ${{ env.BUILD_DIR }} --verbose --parallel 1

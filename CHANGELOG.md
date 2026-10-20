@@ -9,7 +9,6 @@ Changes to the existing modules
       [#1187](https://github.com/fortran-lang/stdlib/issues/1187)
 
 Changes to the existing build system
-  - Fixed missing `-l` prefixes for system libraries in generated pkg-config files
   - Fixed absolute paths in generated pkg-config file for external BLAS/LAPACK 
     [#1109](https://github.com/fortran-lang/stdlib/issues/1109)
 
