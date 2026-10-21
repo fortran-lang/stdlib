@@ -29,7 +29,7 @@ experienced contributors will help it through all 5 steps.
    public facing API, please provide the initial draft of the specification
    document as well as the initial reference implementation of this
    specification.  The
-   [specification is a document](https://stdlib.fortran-lang.org/page/specs/index.html)
+   [specification is a document](https://github.com/fortran-lang/stdlib/tree/HEAD/doc/specs)
    that describes the API and
    the functionality, so that anyone can use it to create an implementation
    from scratch without looking at `stdlib`. The `stdlib` library then provides

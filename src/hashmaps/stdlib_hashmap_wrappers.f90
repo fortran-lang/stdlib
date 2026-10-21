@@ -21,7 +21,7 @@ module stdlib_hashmap_wrappers
 
     private
 
-!! Public procedures
+! Public procedures
     public ::                    &
         copy_key,                &
         fibonacci_hash,          &
@@ -36,11 +36,11 @@ module stdlib_hashmap_wrappers
         seeded_water_hasher,     &
         set
 
-!! Public types
+! Public types
     public ::      &
         key_type
 
-!! Public integers
+! Public integers
     public ::   &
         int_hash
 
@@ -104,9 +104,9 @@ contains
 !! Copies the contents of the key, old_key, to the key, new_key
 !! ([Specifications](../page/specs/stdlib_hashmaps.html#copy_key-returns-a-copy-of-the-key))
 !!
-!! Arguments:
-!!     old_key - the input key
-!!     new_key - the output copy of old_key
+!! ## Arguments
+!! old_key : the input key
+!! new_key : the output copy of old_key
         type(key_type), intent(in)  :: old_key
         type(key_type), intent(out) :: new_key
 
@@ -121,9 +121,9 @@ contains
 !! Compares two keys for equality
 !! ([Specifications](../page/specs/stdlib_hashmaps.html#operator(==)-compares-two-keys-for-equality))
 !!
-!! Arguments:
-!!     key1 - the first key
-!!     key2 - the second key
+!! ## Arguments
+!! key1 : the first key
+!! key2 : the second key
         logical                    :: test
         type(key_type), intent(in) :: key1
         type(key_type), intent(in) :: key2
@@ -149,8 +149,8 @@ contains
 !! Frees the memory in a key
 !! ([Specifications](../page/specs/stdlib_hashmaps.html#free_key-frees-the-memory-associated-with-a-key))
 !!
-!! Arguments:
-!!     key  - the key
+!! ## Arguments
+!! key : the key
         type(key_type), intent(inout) :: key
 
         if ( allocated( key % value ) ) deallocate( key % value )
@@ -162,9 +162,9 @@ contains
 !! Version: Experimental
 !!
 !! Gets the contents of the key as a CHARACTER string
-!! Arguments:
-!!     key   - the input key
-!!     value - the contents of key mapped to a CHARACTER string
+!! ## Arguments
+!! key : the input key
+!! value : the contents of key mapped to a CHARACTER string
         type(key_type), intent(in)             :: key
         character(:), allocatable, intent(out) :: value
         character(*), parameter :: procedure = "GET"
@@ -210,9 +210,9 @@ contains
 !! Version: Experimental
 !!
 !! Gets the contents of the key as an INTEGER(INT8) vector
-!! Arguments:
-!!     key   - the input key
-!!     value - the contents of key mapped to an INTEGER(INT8) vector
+!! ## Arguments
+!! key : the input key
+!! value : the contents of key mapped to an INTEGER(INT8) vector
         type(key_type), intent(in)              :: key
         integer(int8), allocatable, intent(out) :: value(:)
 
@@ -225,9 +225,9 @@ contains
 !! Version: Experimental
 !!
 !! Gets the contents of the key as an INTEGER(INT32) vector
-!! Arguments:
-!!     key   - the input key
-!!     value - the contents of key mapped to an INTEGER(INT32) vector
+!! ## Arguments
+!! key : the input key
+!! value : the contents of key mapped to an INTEGER(INT32) vector
         type(key_type), intent(in)              :: key
         integer(int32), allocatable, intent(out) :: value(:)
         
@@ -240,9 +240,9 @@ contains
 !! Version: Experimental
 !!
 !! Sets the contents of the key from a CHARACTER string
-!! Arguments:
-!!     key   - the output key
-!!     value - the input CHARACTER string
+!! ## Arguments
+!! key : the output key
+!! value : the input CHARACTER string
         type(key_type), intent(out) :: key
         character(*), intent(in)    :: value
 
@@ -256,9 +256,9 @@ contains
 !! Version: Experimental
 !!
 !! Sets the contents of the key from an INTEGER(INT8) vector
-!! Arguments:
-!!     key   - the output key
-!!     value - the input INTEGER(INT8) vector
+!! ## Arguments
+!! key : the output key
+!! value : the input INTEGER(INT8) vector
         type(key_type), intent(out) :: key
         integer(int8), intent(in)   :: value(:)
 
@@ -271,9 +271,9 @@ contains
 !! Version: Experimental
 !!
 !! Sets the contents of the key from an INTEGER(INT32) vector
-!! Arguments:
-!!     key   - the output key
-!!     value - the input INTEGER(INT32) vector
+!! ## Arguments
+!! key : the output key
+!! value : the input INTEGER(INT32) vector
         type(key_type), intent(out) :: key
         integer(int32), intent(in)   :: value(:)
                 
@@ -286,8 +286,8 @@ contains
 !! Version: Experimental
 !!
 !! Hashes a key with the FNV_1 algorithm
-!! Arguments:
-!!     key  - the key to be hashed
+!! ## Arguments
+!! key : the key to be hashed
         type(key_type), intent(in)    :: key
         integer(int_hash)             :: fnv_1_hasher
 
@@ -302,8 +302,8 @@ contains
 !! Hashes a key with the FNV_1a algorithm
 !! ([Specifications](../page/specs/stdlib_hashmaps.html#fnv_1a_hasher-calculates-a-hash-code-from-a-key))
 !!
-!! Arguments:
-!!     key  - the key to be hashed
+!! ## Arguments
+!! key : the key to be hashed
         type(key_type), intent(in)    :: key
         integer(int_hash)             :: fnv_1a_hasher
 
@@ -318,9 +318,8 @@ contains
 !! Hashes a key with the NMHASH32 hash algorithm
 !! ([Specifications](../page/specs/stdlib_hashmaps.html#seeded_nmhash32_hasher-calculates-a-hash-code-from-a-key))
 !!
-!! Arguments:
-!!     key  - the key to be hashed
-!!     seed - the seed (unused) for the hashing algorithm
+!! ## Arguments
+!! key : the key to be hashed
         type(key_type), intent(in)    :: key
         integer(int_hash)             :: seeded_nmhash32_hasher
 
@@ -335,9 +334,8 @@ contains
 !!
 !! Hashes a key with the NMHASH32X hash algorithm
 !! ([Specifications](../page/specs/stdlib_hashmaps.html#seeded_nmhash32x_hasher-calculates-a-hash-code-from-a-key))
-!! Arguments:
-!!     key  - the key to be hashed
-!!     seed - the seed (unused) for the hashing algorithm
+!! ## Arguments
+!! key : the key to be hashed
         type(key_type), intent(in)    :: key
         integer(int_hash)             :: seeded_nmhash32x_hasher
 
@@ -353,8 +351,8 @@ contains
 !! Hashes a key with the waterhash algorithm
 !! ([Specifications](../page/specs/stdlib_hashmaps.html#seeded_water_hasher-calculates-a-hash-code-from-a-key))
 !!
-!! Arguments:
-!!     key  - the key to be hashed
+!! ## Arguments
+!! key : the key to be hashed
         type(key_type), intent(in)  :: key
         integer(int_hash)           :: seeded_water_hasher
 

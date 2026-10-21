@@ -1,11 +1,10 @@
 module stdlib_logger
-!!### Module stdlib_logger
+!!## Module stdlib_logger
 !!
 !! This module defines a derived type, procedures, a variable, and
 !! constants to be used for logging information and reporting errors
-!! in Fortran applications.
-!!([Specification](../page/specs/stdlib_logger.html))
-
+!! in Fortran applications. See also :doc:`/specs/stdlib_logger`.
+!!
 !! The derived type, `logger_type`, is to be used to define variables to
 !! serve as both local and global loggers. A logger directs its messages
 !! to selected I/O units so the user has a record (a log) of major events.
@@ -16,15 +15,17 @@ module stdlib_logger
 !! Each entity of type `logger_type` also maintains an internal state
 !! controlling the formatting of output.
 !!
-!! The procedures are as follows. The logical function
-!! `log_units_assigned` returns the number of I/O units in `log_units`. The
-!! subroutines `add_log_file` and `add_log_unit` include the specified file
-!! in `log_units`. `remove_log_units` removes the specified logical unit from
-!! the `log_units` array and optionally closes the file. `configure`
-!! configures the details of the logging process. `configuration`
-!! reports the details of that configuration. The subroutines
-!! `log_error`, `log_information`, `log_io_error`, `log_message`,
-!! `log_text_error`, and `log_warning` send messages to the log units.
+!! The procedures are as follows. The logical function :f:func:`log_units_assigned`
+!! returns the number of I/O units in `log_units`. The subroutines
+!! :f:subr:`add_log_file` and :f:subr:`add_log_unit` include the specified file
+!! in `log_units`. :f:subr:`remove_log_unit` removes the specified logical unit
+!! from the `log_units` array and optionally closes the file.
+!! :f:subr:`configure` configures the details of the logging process and
+!! :f:subr:`configuration` reports the details of that configuration.
+!! The subroutines :f:subr:`log_error`, :f:subr:`log_information`,
+!! :f:subr:`log_io_error`, :f:subr:`log_message`,
+!! :f:subr:`log_text_error`, and :f:subr:`log_warning`
+!! send messages to the log units.
 !!
 !! The variable `global_logger` of type `logger_type` can be used
 !! as a default global logger anywhere in the source code.
@@ -95,7 +96,7 @@ module stdlib_logger
     type :: logger_type
         !! version: experimental
         
-        !! Public derived type ([Specification](../page/specs/stdlib_logger.html#the-derived-type-logger_type))
+        !! Public derived type. See :doc:`/specs/stdlib_logger`.
         private
 
         logical                   :: add_blank_line = .false.
@@ -149,7 +150,6 @@ contains
 !! and has the default value of `"REPLACE"`. `stat`, if present, has the value
 !! `success` if `filename` could be opened, `read_only_error` if `action` is
 !! `"read"`, and `open_failure` otherwise.
-!!([Specification](../page/specs/stdlib_logger.html#add_log_file-open-a-file-and-add-its-unit-to-self-log_units))
         class(logger_type), intent(inout)  :: self
 !! The logger variable to which the file is to be added
         character(*), intent(in)           :: filename
@@ -157,21 +157,19 @@ contains
         integer, intent(out), optional     :: unit
 !! The resulting I/O unit number
         character(*), intent(in), optional :: action
-!! The `action` specifier for the `open`` statement
+!! The `action` specifier for the `open` statement
         character(*), intent(in), optional :: position
 !! The `position` specifier for the `open` statement
         character(*), intent(in), optional :: status
 !! The `status` specifier for the  `open`  statement
         integer, intent(out), optional     :: stat
-!! The error status on exit with the possible values
-!! * `success` - no errors found
-!! * `read_only_error` - file unopened as `action1 was `"read"` for an output
-!!   file
-!! * `open_failure` - the `open` statement failed
+!! The error status on exit. The possible values are `success` if no errors
+!! are found, `read_only_error` if `action` is `"read"` for an output file,
+!! and `open_failure` if the `open` statement fails.
 
 
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!     program main
 !!         use stdlib_logger
 !!         ...
@@ -184,6 +182,7 @@ contains
 !!         end if
 !!         ...
 !!     end program main
+!!```
 
         character(16)  :: aaction, aposition, astatus
         integer        :: aunit
@@ -264,23 +263,21 @@ contains
 !! file, of `form` `"formatted"`, with `"sequential"` `access`, and an `action`
 !! of `"write"` or `"readwrite"`, otherwise either `stat`, if present, has a
 !! value other than `success` and `unit` is not entered into `log_units`,
-!! or, if `stat` is not presecn, processing stops.
-!!([Specification](../page/specs/stdlib_logger.html#add_log_unit-add-a-unit-to-the-array-self-log_units))
+!! or, if `stat` is not present, processing stops.
 
         class(logger_type), intent(inout) :: self
 !! The logger variable to which the I/O unit is to be added
         integer, intent(in)               :: unit
 !! The input logical unit number
         integer, intent(out), optional    :: stat
-!! An error code with the possible values
-!! * `success` - no problems were found
-!! * `non_sequential_error` - `unit` did not have sequential access
-!! * `read_only_error` - `unit` was not writeable
-!! * `unformatted_in_error` - `unit` was an `'unformatted'` file
-!! * `unopened_in_error` - `unit` was not opened
+!! An error code. The possible values are `success` if no problems are found,
+!! `non_sequential_error` if `unit` does not have sequential access,
+!! `read_only_error` if `unit` is not writeable, `unformatted_in_error` if
+!! `unit` is an `'unformatted'` file, and `unopened_in_error` if `unit`
+!! is not opened.
 
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!     program main
 !!         use stdlib_logger
 !!         ...
@@ -299,9 +296,10 @@ contains
 !!         ...
 !!         end select
 !!         ...
-!!     999 error stop 'Unable to open "error_log.txt".
+!!     999 error stop 'Unable to open "error_log.txt".'
 !!         ...
 !!     end program main
+!!```
 
         integer, allocatable :: dummy(:)
         character(*), parameter :: procedure_name = 'set_log_unit'
@@ -409,20 +407,16 @@ contains
 !! version: experimental
 
 !! Reports the logging configuration of `self`. The following attributes are
-!! reported:
-!! 1. `add_blank_line` is a logical flag with `.true.` implying that output
-!!    starts with a blank line, and `.false.` implying no blank line.
-!! 2. `indent` is a logical flag with `.true.` implying that subsequent columns
-!!    will be indented 4 spaces and `.false.` implying no indentation.
-!! 3. `level` is the lowest level for printing a message
-!! 4. `max_width` is the maximum number of columns of output text with
-!!    `max_width` == 0 => no bounds on output width.
-!! 5. `time_stamp` is a logical flag with `.true.` implying that the output
-!!    will have a time stamp, and `.false.` implying that there will be no
-!!    time stamp.
-!! 6. `log_units` is an array of the I/O unit numbers to which log output
-!!    will be written.
-!!([Specification](../page/specs/stdlib_logger.html#configuration-report-a-loggers-configuration))
+!! reported. `add_blank_line` is a logical flag with `.true.` implying that
+!! output starts with a blank line and `.false.` implying no blank line.
+!! `indent` is a logical flag with `.true.` implying that subsequent columns
+!! are indented 4 spaces and `.false.` implying no indentation. `level` is
+!! the lowest level for printing a message. `max_width` is the maximum number
+!! of columns of output text, with `max_width == 0` meaning that the output
+!! width is unbounded. `time_stamp` is a logical flag with `.true.` implying
+!! that the output includes a time stamp and `.false.` implying that there is
+!! no time stamp. `log_units` is an array of the I/O unit numbers to which
+!! log output is written.
 
         class(logger_type), intent(in)              :: self
 !! The logger variable whose configuration is being reported
@@ -439,8 +433,8 @@ contains
         integer, intent(out), allocatable, optional :: log_units(:)
 !! The I/O units used in output
 
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!     module example_mod
 !!       use stdlib_logger
 !!       ...
@@ -459,6 +453,7 @@ contains
 !!       end subroutine example_sub
 !!       ...
 !!     end module example_mod
+!!```
 
         if ( present(add_blank_line) ) add_blank_line = self % add_blank_line
         if ( present(indent) ) indent = self % indent_lines
@@ -481,28 +476,25 @@ contains
 !! version: experimental
 
 !! Configures the logging process for SELF. The following attributes are
-!! configured:
-!! 1. `add_blank_line` is a logical flag with `.true.` implying that output
-!!    starts with a blank line, and `.false.` implying no blank line.
-!!    `add_blank_line` has a startup value of `.false.`.
-!! 2. `indent` is a logical flag with `.true.` implying that subsequent lines
-!!    will be indented 4 spaces and `.false.` implying no indentation. `indent`
-!!    has a startup value of `.true.`.
-!! 3. `level` is the lowest level for printing a message
-!! 4. `max_width` is the maximum number of columns of output text with
-!!    `max_width == 0` => no bounds on output width. `max_width` has a startup
-!!    value of 0.
-!! 5. `time_stamp` is a logical flag with `.true.` implying that the output
-!!    will have a time stamp, and `.false.` implying that there will be no
-!!    time stamp. `time_stamp` has a startup value of `.true.`.
-!!([Specification](../page/specs/stdlib_logger.html#configure-configure-the-logging-process))
-!!##### Example
+!! configured. `add_blank_line` is a logical flag with `.true.` implying that
+!! output starts with a blank line and `.false.` implying no blank line; its
+!! startup value is `.false.`. `indent` is a logical flag with `.true.`
+!! implying that subsequent lines are indented 4 spaces and `.false.`
+!! implying no indentation; its startup value is `.true.`. `level` is the
+!! lowest level for printing a message. `max_width` is the maximum number of
+!! columns of output text, with `max_width == 0` meaning that the output
+!! width is unbounded; its startup value is 0. `time_stamp` is a logical flag
+!! with `.true.` implying that the output includes a time stamp and `.false.`
+!! implying that there is no time stamp; its startup value is `.true.`.
 !!
+!!## Example
+!!```fortran
 !!     program main
 !!         use stdlib_logger
 !!         ...
 !!         call global_logger % configure( indent=.false., max_width=72 )
 !!         ...
+!!```
 
         class(logger_type), intent(inout) :: self
         logical, intent(in), optional     :: add_blank_line
@@ -795,16 +787,15 @@ contains
 
 !! Writes the string `message` to `self % log_units` with optional additional
 !! text.
-!!([Specification](../page/specs/stdlib_logger.html#log_debug-writes-the-string-message-to-self-log_units))
 !!
-!!##### Behavior
+!!## Behavior
 !!
 !! If time stamps are active, a time stamp is written, followed by
 !! `module` and `procedure` if present, and then `message` is
 !! written with the prefix 'DEBUG: '.
 !!
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!     module  example_mod
 !!       use stdlib_logger
 !!       ...
@@ -819,7 +810,7 @@ contains
 !!         integer        :: stat
 !!         write(*,'(a)') "Enter an integer to select a widget"
 !!         read(*,'(i0)') selection
-!!         write( message, `(a, i0)' )           &
+!!         write( message, '(a, i0)' )           &
 !!               "The user selected ", selection
 !!         call alogger % log_debug( message,                   &
 !!                                   module = 'EXAMPLE_MOD',    &
@@ -828,7 +819,7 @@ contains
 !!       end subroutine example_sub
 !!       ...
 !!     end module example_mod
-!!
+!!```
 
         class(logger_type), intent(in)          :: self
 !! The logger used to send the message
@@ -855,17 +846,16 @@ contains
 
 !! Writes the string `message` to `self % log_units` with optional additional
 !! text.
-!! ([Specification](../specs/stdlib_logger.html#log_error-writes-the-string-message-to-self-log_units))
 
-!!##### Behavior
+!!## Behavior
 !!
 !! If time stamps are active, a time stamp is written, followed by
 !! `module` and `procedure` if present, then `message` is
 !! written with the prefix 'ERROR: ', and then if `stat` or `errmsg`
 !! are present they are written.
 !!
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!     module  example_mod
 !!       use stdlib_logger
 !!       ...
@@ -881,9 +871,9 @@ contains
 !!         integer        :: stat
 !!         allocate( a(size), stat=stat, errmsg=errmsg )
 !!         if ( stat /= 0 ) then
-!!           write( message, `(a, i0)' )                    &
+!!           write( message, '(a, i0)' )                    &
 !!               "Allocation of A failed with SIZE = ", size
-!!           alogger % call log_error( message,                   &
+!!           call alogger % log_error( message,                   &
 !!                                     module = 'EXAMPLE_MOD',    &
 !!                                     procedure = 'EXAMPLE_SUB', &
 !!                                     stat = stat,               &
@@ -892,7 +882,7 @@ contains
 !!       end subroutine example_sub
 !!       ...
 !!     end module example_mod
-!!
+!!```
 
         class(logger_type), intent(in)          :: self
 !! The logger to be used in logging the message
@@ -950,16 +940,15 @@ contains
 
 !! Writes the string `message` to `self % log_units` with optional additional
 !! text.
-!!([Specification](../page/specs/stdlib_logger.html#log_information-writes-the-string-message-to-self-log_units))
 !!
-!!##### Behavior
+!!## Behavior
 !!
 !! If time stamps are active, a time stamp is written, followed by
 !! `module` and `procedure` if present, and then `message` is
 !! written with the prefix 'INFO: '.
 !!
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!     module  example_mod
 !!       use stdlib_logger
 !!       ...
@@ -974,7 +963,7 @@ contains
 !!         integer        :: stat
 !!         write(*,'(a)') "Enter an integer to select a widget"
 !!         read(*,'(i0)') selection
-!!         write( message, `(a, i0)' )           &
+!!         write( message, '(a, i0)' )           &
 !!               "The user selected ", selection
 !!         call alogger % log_information( message,                   &
 !!                                         module = 'EXAMPLE_MOD',    &
@@ -983,7 +972,7 @@ contains
 !!       end subroutine example_sub
 !!       ...
 !!     end module example_mod
-!!
+!!```
 
         class(logger_type), intent(in)          :: self
 !! The logger used to send the message
@@ -1011,17 +1000,16 @@ contains
 
 !! Writes the string `message` to the `self % log_units` with optional
 !! additional text.
-!!([Specification](../page/specs/stdlib_logger.html#log_io_error-write-the-string-message-to-self-log_units))
 !!
-!!##### Behavior
+!!## Behavior
 !!
 !! If time stamps are active, a time stamp is written, followed by
 !! `module` and `procedure` if present, then `message` is
 !! written with a prefix 'I/O ERROR: ', and then if `iostat` or `iomsg`
 !! are present they are also written.
 !!
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!    program example
 !!      use stdlib_logger
 !!      ...
@@ -1039,6 +1027,7 @@ contains
 !!      end if
 !!      ...
 !!    end program example
+!!```
 
         class(logger_type), intent(in)          :: self
 !! The logger variable to receivee the message
@@ -1095,16 +1084,15 @@ contains
 
 !! Writes the string `message` to the `self % log_units` with optional
 !! additional text.
-!!([Specification](../page/specs/stdlib_logger.html#log_message-write-the-string-message-to-self-log_units))
 !!
-!!##### Behavior
+!!## Behavior
 !!
 !! If time stamps are active, a time stamp is written, followed by `module`
 !! and `procedure` if present, followed by `prefix // ': '` if present,
 !! and then `message`.
 !!
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!    module  example_mod
 !!      use stdlib_logger
 !!      ...
@@ -1117,7 +1105,7 @@ contains
 !!        integer        :: stat
 !!        write(*,'(a)') "Enter an integer to select a widget"
 !!        read(*,'(i0)') selection
-!!        write( message, `(a, i0)' )          &
+!!        write( message, '(a, i0)' )          &
 !!              "The user selected ", selection
 !!        call global_logger % log_message( message,                   &
 !!                                          module = 'example_mod',    &
@@ -1126,7 +1114,7 @@ contains
 !!      end subroutine example_sub
 !!      ...
 !!    end module example_mod
-!!
+!!```
 
         class(logger_type), intent(in)          :: self
 !! The logger variable to receive the message
@@ -1214,17 +1202,16 @@ contains
 
 !! Sends a message to `self % log_units` describing an error found
 !! in a line of text.
-!!([Specification](../page/specs/stdlib_logger.html#log_text_error-send-a-message-to-self-log_units-describing-an-error))
 
-!!##### Behavior
+!!## Behavior
 !!
 !! If time stamps are active first a time stamp is written. Then if
 !! `filename` or `line_number` or `column` are present they are written.
 !! Then `line` is written. Then the symbol `caret` is written below `line`
 !! at the column indicated by `column`. Then `summary` is written.
-!
-!!##### Example
 !!
+!!## Example
+!!```fortran
 !!    program example
 !!      ...
 !!      character(*), parameter :: filename = 'dummy.txt'
@@ -1248,7 +1235,7 @@ contains
 !!900   continue
 !!      ...
 !!    end program example
-!!
+!!```
         class(logger_type), intent(in)        :: self
 !! The logger variable to receive the message
         character(*), intent(in)              :: line
@@ -1391,13 +1378,12 @@ contains
 !! version: experimental
 
 !! Returns the number of units assigned to `self % log_units`
-!!([Specification](../page/specs/stdlib_logger.html#log_units_assigned-returns-the-number-of-active-io-units))
 
         class(logger_type), intent(in) :: self
 !! The logger subject to the inquiry
         integer                        :: log_units_assigned
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!     module  example_mod
 !!       use stdlib_logger
 !!       ...
@@ -1417,6 +1403,7 @@ contains
 !!       end subroutine example_sub
 !!       ...
 !!     end module example_mod
+!!```
 
         log_units_assigned = self % units
 
@@ -1428,16 +1415,15 @@ contains
 
 !! Writes the string `message` to `self % log_units` with optional additional
 !! text.
-!!([Specification](../page/specs/stdlib_logger.html#log_warning-write-the-string-message-to-log_units))
 
-!!##### Behavior
+!!## Behavior
 !!
 !! If time stamps are active, a time stamp is written, followed by
 !! `module` and `procedure` if present, then `message` is
 !! written with the prefix 'WARN: '.
 !!
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!     module  example_mod
 !!       use stdlib_logger
 !!       ...
@@ -1452,7 +1438,7 @@ contains
 !!         integer, intent(out) :: stat
 !!         allocate( a(size) )
 !!         if ( stat /= 0 ) then
-!!           write( message, `(a, i0)' )                    &
+!!           write( message, '(a, i0)' )                    &
 !!               "Allocation of A failed with SIZE = ", size
 !!           call alogger % log_warning( message,                   &
 !!                                       module = 'EXAMPLE_MOD',    &
@@ -1461,7 +1447,7 @@ contains
 !!       end subroutine example_sub
 !!       ...
 !!     end module example_mod
-!!
+!!```
         class(logger_type), intent(in)          :: self
 !! The logger to which the message is written
         character(len=*), intent(in)            :: message
@@ -1490,7 +1476,6 @@ contains
 !! default, has the value `success`. If closing the `unit` fails, then if
 !! `stat` is present it has the value `close_failure`, otherwise processing
 !! stops with an informative message.
-!!([Specification](../page/specs/stdlib_logger.html#remove_log_unit-remove-unit-from-self-log_units))
 
         class(logger_type), intent(inout) :: self
 !! The logger variable whose unit is to be removed
@@ -1499,12 +1484,11 @@ contains
         logical, intent(in), optional     :: close_unit
 !! A logical flag to close the unit while removing it from the SELF list
         integer, intent(out), optional    :: stat
-!! An error status with the values
-!! * success - no problems found
-!! * close_failure - the close statement for unit failed
+!! An error status. The possible values are `success` if no problems are
+!! found and `close_failure` if the `close` statement for `unit` fails.
 !!
-!!##### Example
-!!
+!!## Example
+!!```fortran
 !!     module  example_mod
 !!       use stdlib_logger
 !!       ...
@@ -1519,6 +1503,7 @@ contains
 !!       end subroutine example_sub
 !!       ...
 !!     end module example_mod
+!!```
 
         character(128) :: errmsg
         integer :: lun, lun_old

@@ -11,7 +11,7 @@
 !> to a string type. Generally, the string type behaves similar to a deferred
 !> length character in most regards but adds memory access safety.
 !>
-!> The specification of this module is available [here](../page/specs/stdlib_string_type.html).
+!> The specification of this module is available in :doc:`/specs/stdlib_string_type`.
 module stdlib_string_type
     use stdlib_ascii, only: to_lower_ => to_lower, to_upper_ => to_upper, &
        & to_title_ => to_title, to_sentence_ => to_sentence, reverse_ => reverse

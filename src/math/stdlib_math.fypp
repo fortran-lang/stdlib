@@ -73,13 +73,9 @@ module stdlib_math
     #:endfor
     end interface gcd
 
+    !> Create rank 1 arrays of linearly spaced elements.
+    !> ([Specification](../page/specs/stdlib_math.html#linspace-create-a-linearly-spaced-rank-one-array))
     interface linspace
-    !! Version: Experimental
-    !!
-    !! Create rank 1 array of linearly spaced elements
-    !! If the number of elements is not specified, create an array with size 100. If n is a negative value,
-    !! return an array with size 0. If n = 1, return an array whose only element is end
-    !!([Specification](../page/specs/stdlib_math.html#linspace-create-a-linearly-spaced-rank-one-array))
     #:for k1, t1 in RC_KINDS_TYPES
       #:set RName = rname("linspace_default", 1, t1, k1)
       pure module function ${RName}$(start, end) result(res)
@@ -102,9 +98,8 @@ module stdlib_math
     #:endfor
 
 
-    ! Add support for integer linspace
-    !!
-    !! When dealing with integers as the `start` and `end` parameters, the return type is always a `real(dp)`.
+    ! Add support for integer linspace.
+    ! The integer overloads always return `real(dp)`.
     #:for k1, t1 in INT_KINDS_TYPES
       #:set RName = rname("linspace_default", 1, t1, k1)
       #! The interface for INT_KINDS_TYPES cannot be combined with RC_KINDS_TYPES
@@ -130,15 +125,9 @@ module stdlib_math
 
   end interface
 
+  !> Create rank 1 arrays of logarithmically spaced elements.
+  !> ([Specification](../page/specs/stdlib_math.html#logspace-create-a-logarithmically-spaced-rank-one-array))
   interface logspace
-  !! Version: Experimental
-  !!
-  !! Create rank 1 array of logarithmically spaced elements from base**start to base**end.
-  !! If the number of elements is not specified, create an array with size 50. If n is a negative value,
-  !! return an array with size 0. If n = 1, return an array whose only element is base**end. If no base
-  !! is specified, logspace will default to using a base of 10
-  !!
-  !!([Specification](../page/specs/stdlib_math.html#logspace-create-a-logarithmically-spaced-rank-one-array))
   #!=========================================================
   #!=     logspace(start, end)                              =
   #!=========================================================
@@ -310,8 +299,8 @@ module stdlib_math
 
     !> Version: experimental
     !>
-    !> `arange` creates a one-dimensional `array` of the `integer/real` type 
-    !>  with fixed-spaced values of given spacing, within a given interval.
+    !> `arange` creates a one-dimensional `array` of the `integer/real` type
+    !> with fixed-spaced values of given spacing, within a given interval.
     !> ([Specification](../page/specs/stdlib_math.html#arange-function))
     interface arange
         #:set RI_KINDS_TYPES = REAL_KINDS_TYPES + INT_KINDS_TYPES

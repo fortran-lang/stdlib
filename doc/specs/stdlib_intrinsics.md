@@ -1,10 +1,9 @@
----
-title: intrinsics
----
+# `stdlib_intrinsics`
 
-# The `stdlib_intrinsics` module
-
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## Introduction
 
@@ -19,9 +18,9 @@ The `stdlib_sum` function can replace the intrinsic `sum` for `real`, `complex` 
 
 #### Syntax
 
-`res = ` [[stdlib_intrinsics(module):stdlib_sum(interface)]] ` (x [,mask] )`
+`res = ` `stdlib_sum` ` (x [,mask] )`
 
-`res = ` [[stdlib_intrinsics(module):stdlib_sum(interface)]] ` (x, dim [,mask] )`
+`res = ` `stdlib_sum` ` (x, dim [,mask] )`
 
 #### Status
 
@@ -65,9 +64,9 @@ end subroutine
 
 #### Syntax
 
-`res = ` [[stdlib_intrinsics(module):stdlib_sum_kahan(interface)]] ` (x [,mask] )`
+`res = ` `stdlib_sum_kahan` ` (x [,mask] )`
 
-`res = ` [[stdlib_intrinsics(module):stdlib_sum_kahan(interface)]] ` (x, dim [,mask] )`
+`res = ` `stdlib_sum_kahan` ` (x, dim [,mask] )`
 
 #### Status
 
@@ -91,8 +90,8 @@ If `dim` is absent, the output is a scalar of the same type and kind as to that 
 
 #### Example
 
-```fortran
-{!example/intrinsics/example_sum.f90!}
+```{literalinclude} ../../example/intrinsics/example_sum.f90
+:language: fortran
 ```
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
@@ -104,7 +103,7 @@ The `stdlib_dot_product` function can replace the intrinsic `dot_product` for 1D
 
 #### Syntax
 
-`res = ` [[stdlib_intrinsics(module):stdlib_dot_product(interface)]] ` (x, y)`
+`res = ` `stdlib_dot_product` ` (x, y)`
 
 #### Status
 
@@ -133,7 +132,7 @@ The `stdlib_dot_product_kahan` function can replace the intrinsic `dot_product` 
 
 #### Syntax
 
-`res = ` [[stdlib_intrinsics(module):stdlib_dot_product_kahan(interface)]] ` (x, y)`
+`res = ` `stdlib_dot_product_kahan` ` (x, y)`
 
 #### Status
 
@@ -153,8 +152,8 @@ Pure function.
 
 The output is a scalar of the same type and kind as to that of `x` and `y`.
 
-```fortran
-{!example/intrinsics/example_dot_product.f90!}
+```{literalinclude} ../../example/intrinsics/example_dot_product.f90
+:language: fortran
 ```
 
 ### `stdlib_matmul` function
@@ -168,7 +167,7 @@ It supports only `real` and `complex` matrices.
 
 #### Syntax
 
-`res = ` [[stdlib_intrinsics(module):stdlib_matmul(interface)]] ` (m1, m2, m3, m4, m5, err)`
+`res = ` `stdlib_matmul` ` (m1, m2, m3, m4, m5, err)`
 
 #### Status
 
@@ -191,6 +190,6 @@ The output is a matrix of the appropriate size.
 
 #### Example
 
-```fortran
-{!example/intrinsics/example_matmul.f90!}
+```{literalinclude} ../../example/intrinsics/example_matmul.f90
+:language: fortran
 ```

@@ -2,7 +2,7 @@
 !>
 !> Cross-platform run-time loading of shared libraries (`.so` / `.dll` / `.dylib`),
 !> in the spirit of `numpy.ctypeslib.load_library`.
-!> ([Specification](../page/specs/stdlib_load_library.html))
+!> (Specification: :doc:`/specs/stdlib_load_library`)
 !>
 !> This file is standard Fortran 2008 and needs no preprocessing: the OS-specific
 !> calls (`dlopen` / `LoadLibraryExW`, ...) live in `stdlib_load_library_c.c`,

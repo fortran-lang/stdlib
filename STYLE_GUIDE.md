@@ -77,20 +77,18 @@ Fortran allows certain block constructs or scopes to include the name of the pro
 The convention adopted herein is to include procedure names, `module` names and `program` names in the `end` statement,
 unless the closing statement can reasonably be expected to be on the same screen or page, within about 25 lines.
 
-## Document public API code with FORD
+## Document public API code for Sphinx
 
 Documentation strings should be provided for all public and protected entities and their arguments or parameters.
-This is currently accomplished using the [FORD tool](https://github.com/Fortran-FOSS-Programmers/ford).
-For help writing FORD style documentation please see the [FORD wiki](https://github.com/Fortran-FOSS-Programmers/ford/wiki).
-The following two sections are most relevant for contributing new code:
+The documentation preview is now built with [Sphinx](https://www.sphinx-doc.org/)
+using [MyST Markdown](https://myst-parser.readthedocs.io/) for the hand-written pages
+and [sphinx-fortran-domain](https://github.com/fortran-lang/sphinx-fortran-domain)
+for incremental API auto-documentation from source comments.
+The current convention is:
 
-* [Writing Documentation](https://github.com/Fortran-FOSS-Programmers/ford/wiki/Writing-Documentation)
-* [Documentation Meta Data](https://github.com/Fortran-FOSS-Programmers/ford/wiki/Documentation-Meta-Data)
-* [Limitations](https://github.com/Fortran-FOSS-Programmers/ford/wiki/Limitations)
+* Keep proposal/specification documents in [`doc/specs/`](https://github.com/fortran-lang/stdlib/tree/HEAD/doc/specs) as Markdown pages.
+* Write public API source comments using the existing Fortran doc-comment style (`!>` / `!!`).
+* Prefer Sphinx/MyST-compatible Markdown and reStructuredText constructs in new documentation content.
 
 To write the "spec" (specification) for a new proposal, please place it in the
-[FORD "pages"](https://github.com/Fortran-FOSS-Programmers/ford/wiki/Writing-Pages) directory at
 [`doc/specs/`](https://github.com/fortran-lang/stdlib/tree/HEAD/doc/specs).
-To get help please see the ["Writing Pages"](https://github.com/Fortran-FOSS-Programmers/ford/wiki/Writing-Pages)
-and ["Writing Documentation"](https://github.com/Fortran-FOSS-Programmers/ford/wiki/Writing-Documentation) pages
-on the [FORD wiki](https://github.com/Fortran-FOSS-Programmers/ford/wiki).

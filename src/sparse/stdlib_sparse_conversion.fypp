@@ -445,7 +445,7 @@ contains
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     subroutine csr2sellc_${s1}$(CSR,SELLC,chunk)
-        !! csr2sellc: This function enables transfering data from a CSR matrix to a SELL-C matrix
+        !! Transfer data from a CSR matrix to a SELL-C matrix.
         !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves
         type(CSR_${s1}$_type), intent(in)    :: CSR
         type(SELLC_${s1}$_type), intent(out) :: SELLC

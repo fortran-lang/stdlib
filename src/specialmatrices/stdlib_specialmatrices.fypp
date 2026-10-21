@@ -7,7 +7,7 @@ module stdlib_specialmatrices
     !! Provides derived-types and associated specialized linear algebra drivers
     !! for highly-structured matrices commonly encountered in the discretization
     !! of partial differential equations, as well as control and signal processing
-    !! applications. ([Specifications](../page/specs/stdlib_specialmatrices.html))
+    !! applications. (Specification: :doc:`/specs/stdlib_specialmatrices`)
     use stdlib_linalg_constants
     use stdlib_constants
     use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
@@ -52,11 +52,12 @@ module stdlib_specialmatrices
     !--------------------------------
 
     interface tridiagonal
-        !! ([Specifications](../page/specs/stdlib_specialmatrices.html#Tridiagonal)) This
+        !! (Specification: :doc:`/specs/stdlib_specialmatrices`) This
         !! interface provides different methods to construct a `tridiagonal` matrix. Only
-        !! the non-zero elements of \( A \) are stored, i.e.
+        !! the non-zero elements of :math:`A` are stored, i.e.
         !!
-        !! \[
+        !! .. math::
+        !!
         !!    A
         !!    =
         !!    \begin{bmatrix}
@@ -66,9 +67,8 @@ module stdlib_specialmatrices
         !!             &           &  c_{n-2} &  a_{n-1}  &  b_{n-1} \\
         !!             &           &           &  c_{n-1} &  a_n
         !!    \end{bmatrix}.
-        !! \]
         !!
-        !! #### Syntax
+        !!## Syntax
         !!
         !! - Construct a real `tridiagonal` matrix from rank-1 arrays:
         !!
@@ -139,11 +139,12 @@ module stdlib_specialmatrices
     end interface
 
     interface sym_tridiagonal
-        !! ([Specifications](../page/specs/stdlib_specialmatrices.html#Sym_tridiagonal)) This
+        !! (Specification: :doc:`/specs/stdlib_specialmatrices`) This
         !! interface provides different methods to construct a `symmetric tridiagonal` matrix. Only
-        !! the non-zero elements of \( A \) are stored, i.e.
+        !! the non-zero elements of :math:`A` are stored, i.e.
         !!
-        !! \[
+        !! .. math::
+        !!
         !!    A
         !!    =
         !!    \begin{bmatrix}
@@ -153,9 +154,8 @@ module stdlib_specialmatrices
         !!             &           &  b_{n-2} &  a_{n-1}  &  b_{n-1} \\
         !!             &           &           &  b_{n-1} &  a_n
         !!    \end{bmatrix}.
-        !! \]
         !!
-        !! #### Syntax
+        !!## Syntax
         !!
         !! - Construct a real `symmetric tridiagonal` matrix from rank-1 arrays:
         !!

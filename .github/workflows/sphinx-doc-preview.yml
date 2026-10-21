@@ -1,0 +1,100 @@
+name: Build Sphinx Documentation Preview
+
+on:
+  push:
+    paths:
+      - 'doc/**'
+      - 'src/**'
+      - 'include/**'
+      - 'config/**'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'STYLE_GUIDE.md'
+      - 'WORKFLOW.md'
+      - '.github/workflows/**'
+  pull_request:
+    paths:
+      - 'doc/**'
+      - 'src/**'
+      - 'include/**'
+      - 'config/**'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'STYLE_GUIDE.md'
+      - 'WORKFLOW.md'
+      - '.github/workflows/**'
+
+env:
+  LANG: "en_US.UTF-8"
+  LC_ALL: "en_US.UTF-8"
+  PIP_DISABLE_PIP_VERSION_CHECK: "ON"
+  PIP_NO_CLEAN: "ON"
+  PIP_PREFER_BINARY: "ON"
+  TZ: "UTC"
+
+jobs:
+  Build-Sphinx-Docs:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install -r doc/requirements.txt
+          python --version
+          sphinx-build --version
+          fypp --version
+
+      - name: Build Docs
+        run: |
+          sphinx-build -W -b html doc doc/_build/html
+
+      - name: Upload Documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: sphinx-html-preview
+          path: ./doc/_build/html/
+
+  Deploy-Sphinx-Docs:
+    if: github.event_name == 'push' && github.repository != 'fortran-lang/stdlib'
+    needs: Build-Sphinx-Docs
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Sphinx preview artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: sphinx-html-preview
+          path: ./doc-preview
+
+      - name: Deploy Sphinx preview
+        uses: JamesIves/github-pages-deploy-action@4.1.5
+        with:
+          branch: gh-pages
+          folder: ./doc-preview
+
+      - name: Ensure GitHub Pages serves Sphinx assets
+        run: |
+          tempdir="$(mktemp -d)"
+          git fetch origin gh-pages
+          git worktree add "$tempdir" origin/gh-pages
+          touch "$tempdir/.nojekyll"
+          cd "$tempdir"
+          if [[ -n "$(git status --porcelain .nojekyll)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add .nojekyll
+            git commit -m "Ensure GitHub Pages serves Sphinx assets"
+            git push origin HEAD:gh-pages
+          fi
+          cd - >/dev/null
+          git worktree remove "$tempdir" --force

@@ -1,6 +1,6 @@
 #:include "common.fypp"
 module stdlib_quadrature
-    !! ([Specification](../page/specs/stdlib_quadrature.html#description))
+    !! (Specification: :doc:`/specs/stdlib_quadrature`)
     use stdlib_kinds, only: sp, dp, xdp, qp
 
     implicit none
