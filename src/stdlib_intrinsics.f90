@@ -772,10 +772,12 @@ elemental subroutine kahan_kernel_m_sp(a,s,c,m)
     real(sp), intent(inout) :: c
     logical, intent(in) :: m
     real(sp) :: t, y
-    y = a - c
-    t = s + y
-    c = (t - s) - y
-    s = merge( s , t , m )
+    if (m) then
+        y = a - c
+        t = s + y
+        c = (t - s) - y
+        s = t
+    end if
 end subroutine 
 elemental subroutine kahan_kernel_dp(a,s,c)
     real(dp), intent(in) :: a
@@ -793,10 +795,12 @@ elemental subroutine kahan_kernel_m_dp(a,s,c,m)
     real(dp), intent(inout) :: c
     logical, intent(in) :: m
     real(dp) :: t, y
-    y = a - c
-    t = s + y
-    c = (t - s) - y
-    s = merge( s , t , m )
+    if (m) then
+        y = a - c
+        t = s + y
+        c = (t - s) - y
+        s = t
+    end if
 end subroutine 
 elemental subroutine kahan_kernel_csp(a,s,c)
     complex(sp), intent(in) :: a
@@ -814,10 +818,12 @@ elemental subroutine kahan_kernel_m_csp(a,s,c,m)
     complex(sp), intent(inout) :: c
     logical, intent(in) :: m
     complex(sp) :: t, y
-    y = a - c
-    t = s + y
-    c = (t - s) - y
-    s = merge( s , t , m )
+    if (m) then
+        y = a - c
+        t = s + y
+        c = (t - s) - y
+        s = t
+    end if
 end subroutine 
 elemental subroutine kahan_kernel_cdp(a,s,c)
     complex(dp), intent(in) :: a
@@ -835,10 +841,12 @@ elemental subroutine kahan_kernel_m_cdp(a,s,c,m)
     complex(dp), intent(inout) :: c
     logical, intent(in) :: m
     complex(dp) :: t, y
-    y = a - c
-    t = s + y
-    c = (t - s) - y
-    s = merge( s , t , m )
+    if (m) then
+        y = a - c
+        t = s + y
+        c = (t - s) - y
+        s = t
+    end if
 end subroutine 
 
 end module stdlib_intrinsics
