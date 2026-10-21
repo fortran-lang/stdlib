@@ -1,6 +1,6 @@
 program example_uniform_pdf
-  use stdlib_random, only: random_seed
-  use stdlib_stats_distribution_uniform, only: uni_pdf => pdf_uniform, &
+  use stdlib_stats, only: random_seed
+  use stdlib_stats, only: uni_pdf => pdf_uniform, &
                                                uni => rvs_uniform
 
   implicit none

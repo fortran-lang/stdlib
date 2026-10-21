@@ -1,6 +1,6 @@
 program example_beta_pdf
-  use stdlib_random, only: random_seed
-  use stdlib_stats_distribution_beta, only: rbeta => rvs_beta, &
+  use stdlib_stats, only: random_seed
+  use stdlib_stats, only: rbeta => rvs_beta, &
                                              beta_pdf => pdf_beta
 
   implicit none
