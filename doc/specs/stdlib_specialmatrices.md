@@ -292,6 +292,26 @@ Utility function returning the complex-conjugate transpose of a special matrix. 
 
 - `B` : Shall be a matrix of one of the same type and kind as `A`.
 
+### `trace` : Trace of a special matrix {#trace}
+
+#### Status
+
+Experimental
+
+#### Description
+
+Utility function returning the trace (i.e. the sum of the diagonal elements) of a special matrix. The trace is computed directly from the stored diagonal, without forming the dense representation of the matrix.
+
+#### Syntax
+
+`tr = ` [[stdlib_specialmatrices(module):trace(interface)]] `(A)`
+
+#### Arguments
+
+- `A` : Shall be a matrix of one of the types provided by `stdlib_specialmatrices`. It is an `intent(in)` argument.
+
+- `tr` : Scalar of the same type and kind as `A`.
+
 ### Operator overloading (`+`, `-`, `*`) {#operators}
 
 #### Status

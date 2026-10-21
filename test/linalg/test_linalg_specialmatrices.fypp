@@ -25,7 +25,9 @@ contains
             new_unittest('symmetric tridiagonal 1x1 dense', test_sym_tridiagonal_1x1), &
             new_unittest('symmetric tridiagonal arithmetic', test_sym_tridiagonal_arithmetic), &
             new_unittest('tridiagonal 1x1 edge case', test_tridiagonal_1x1), &
-            new_unittest('tridiagonal arithmetic', test_tridiagonal_arithmetic) &
+            new_unittest('tridiagonal arithmetic', test_tridiagonal_arithmetic), &
+            new_unittest('tridiagonal trace', test_tridiagonal_trace), &
+            new_unittest('sym_tridiagonal trace', test_sym_tridiagonal_trace) &
         ]
     end subroutine
 
@@ -446,6 +448,65 @@ contains
             ! Scalar multiplication test
             C = 3.0_wp * A
             call check(error, all_close(dense(C), 3.0_wp * dense(A)), .true.)
+            if (allocated(error)) return
+        end block
+        #:endfor
+    end subroutine
+
+    subroutine test_tridiagonal_trace(error)
+        !> Test the trace of a general tridiagonal matrix, including the n=1 edge case.
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in KINDS_TYPES
+        block
+            integer, parameter :: wp = ${k1}$
+            integer, parameter :: n = 5
+            type(tridiagonal_${s1}$_type) :: A, A1
+            ${t1}$, allocatable :: dl(:), dv(:), du(:)
+
+            allocate(dl(n-1), dv(n), du(n-1))
+            call random_number(dl)
+            call random_number(dv)
+            call random_number(du)
+            A = tridiagonal(dl, dv, du)
+
+            call check(error, is_close(trace(A), sum(dv)), .true., &
+                "Tridiagonal trace failed")
+            if (allocated(error)) return
+
+            ! n = 1 edge case: the off-diagonals are empty and the trace
+            ! reduces to the single diagonal entry.
+            A1 = tridiagonal(dl(1:0), dv(1:1), du(1:0))
+            call check(error, is_close(trace(A1), dv(1)), .true., &
+                "Tridiagonal trace failed (n=1)")
+            if (allocated(error)) return
+        end block
+        #:endfor
+    end subroutine
+
+    subroutine test_sym_tridiagonal_trace(error)
+        !> Test the trace of a symmetric tridiagonal matrix, including the n=1 edge case.
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in KINDS_TYPES
+        block
+            integer, parameter :: wp = ${k1}$
+            integer, parameter :: n = 5
+            type(sym_tridiagonal_${s1}$_type) :: A, A1
+            ${t1}$, allocatable :: dv(:), du(:)
+
+            allocate(dv(n), du(n-1))
+            call random_number(dv)
+            call random_number(du)
+            A = sym_tridiagonal(du, dv)
+
+            call check(error, is_close(trace(A), sum(dv)), .true., &
+                "Symmetric tridiagonal trace failed")
+            if (allocated(error)) return
+
+            ! n = 1 edge case: the off-diagonal is empty and the trace
+            ! reduces to the single diagonal entry.
+            A1 = sym_tridiagonal(du(1:0), dv(1:1))
+            call check(error, is_close(trace(A1), dv(1)), .true., &
+                "Symmetric tridiagonal trace failed (n=1)")
             if (allocated(error)) return
         end block
         #:endfor
