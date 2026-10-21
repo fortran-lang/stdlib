@@ -17,6 +17,9 @@ subroutine collect_suite(testsuite)
 
     testsuite = [ &
         new_unittest('sum', test_sum), &
+        new_unittest('sum_mask_chunks', test_sum_mask_chunks), &
+        new_unittest('sum_mask_dim', test_sum_mask_dim), &
+        new_unittest('kahan_kernel_mask', test_kahan_kernel_mask), &
         new_unittest('dot_product', test_dot_product), &
         new_unittest('matmul', test_matmul) &
     ]
@@ -285,6 +288,158 @@ subroutine test_sum(error)
         end do
     end block ndarray
 
+end subroutine
+
+subroutine test_sum_mask_chunks(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+    integer :: i
+    logical :: mask(129)
+
+    ! 129 = 1 remainder element + 2 chunks of 64; selects 1, 4, ..., 127
+    mask = [(mod(i, 3) == 1, i = 1, 129)]
+    block
+        integer(int32) :: x(129)
+
+        x = [(i, i = 1, 129)]
+        call check(error, stdlib_sum(x, mask) == 2752, "masked sum over chunks, int32")
+        if (allocated(error)) return
+    end block
+    block
+        real(sp) :: x(129)
+
+        x = [(i, i = 1, 129)]
+        call check(error, stdlib_sum(x, mask) == 2752, "masked sum over chunks, sp")
+        if (allocated(error)) return
+        call check(error, stdlib_sum_kahan(x, mask) == 2752, "masked Kahan sum over chunks, sp")
+        if (allocated(error)) return
+    end block
+    block
+        real(dp) :: x(129)
+
+        x = [(i, i = 1, 129)]
+        call check(error, stdlib_sum(x, mask) == 2752, "masked sum over chunks, dp")
+        if (allocated(error)) return
+        call check(error, stdlib_sum_kahan(x, mask) == 2752, "masked Kahan sum over chunks, dp")
+        if (allocated(error)) return
+    end block
+    block
+        complex(dp) :: x(129)
+
+        x = [(i, i = 1, 129)]
+        call check(error, stdlib_sum(x, mask) == 2752, "masked sum over chunks, cdp")
+        if (allocated(error)) return
+        call check(error, stdlib_sum_kahan(x, mask) == 2752, "masked Kahan sum over chunks, cdp")
+        if (allocated(error)) return
+    end block
+end subroutine
+
+subroutine test_sum_mask_dim(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+    logical, parameter :: mask(2, 3) = reshape([.true., .false., .false., .true., .true., .false.], [2, 3])
+    block
+        integer(int32), parameter :: x(2, 3) = reshape([1, 2, 4, 8, 16, 32], [2, 3])
+
+        call check(error, stdlib_sum(x, mask=mask) == 25, "masked rank-2 sum, int32")
+        if (allocated(error)) return
+        call check(error, all(stdlib_sum(x, dim=1, mask=mask) == [1, 8, 16]), "masked sum along dim 1, int32")
+        if (allocated(error)) return
+        call check(error, all(stdlib_sum(x, dim=2, mask=mask) == [17, 8]), "masked sum along dim 2, int32")
+        if (allocated(error)) return
+    end block
+    block
+        real(sp), parameter :: x(2, 3) = reshape([1, 2, 4, 8, 16, 32], [2, 3])
+
+        call check(error, stdlib_sum(x, mask=mask) == 25, "masked rank-2 sum, sp")
+        if (allocated(error)) return
+        call check(error, all(stdlib_sum(x, dim=1, mask=mask) == [1, 8, 16]), "masked sum along dim 1, sp")
+        if (allocated(error)) return
+        call check(error, all(stdlib_sum(x, dim=2, mask=mask) == [17, 8]), "masked sum along dim 2, sp")
+        if (allocated(error)) return
+        call check(error, stdlib_sum_kahan(x, mask=mask) == 25, "masked rank-2 Kahan sum, sp")
+        if (allocated(error)) return
+        call check(error, all(stdlib_sum_kahan(x, dim=1, mask=mask) == [1, 8, 16]), "masked Kahan sum along dim 1, sp")
+        if (allocated(error)) return
+        call check(error, all(stdlib_sum_kahan(x, dim=2, mask=mask) == [17, 8]), "masked Kahan sum along dim 2, sp")
+        if (allocated(error)) return
+    end block
+    block
+        real(dp), parameter :: x(2, 3) = reshape([1, 2, 4, 8, 16, 32], [2, 3])
+
+        call check(error, stdlib_sum(x, mask=mask) == 25, "masked rank-2 sum, dp")
+        if (allocated(error)) return
+        call check(error, all(stdlib_sum(x, dim=1, mask=mask) == [1, 8, 16]), "masked sum along dim 1, dp")
+        if (allocated(error)) return
+        call check(error, all(stdlib_sum(x, dim=2, mask=mask) == [17, 8]), "masked sum along dim 2, dp")
+        if (allocated(error)) return
+        call check(error, stdlib_sum_kahan(x, mask=mask) == 25, "masked rank-2 Kahan sum, dp")
+        if (allocated(error)) return
+        call check(error, all(stdlib_sum_kahan(x, dim=1, mask=mask) == [1, 8, 16]), "masked Kahan sum along dim 1, dp")
+        if (allocated(error)) return
+        call check(error, all(stdlib_sum_kahan(x, dim=2, mask=mask) == [17, 8]), "masked Kahan sum along dim 2, dp")
+        if (allocated(error)) return
+    end block
+    block
+        complex(dp), parameter :: x(2, 3) = reshape([1, 2, 4, 8, 16, 32], [2, 3])
+
+        call check(error, stdlib_sum(x, mask=mask) == 25, "masked rank-2 sum, cdp")
+        if (allocated(error)) return
+        call check(error, all(stdlib_sum(x, dim=1, mask=mask) == [1, 8, 16]), "masked sum along dim 1, cdp")
+        if (allocated(error)) return
+        call check(error, all(stdlib_sum(x, dim=2, mask=mask) == [17, 8]), "masked sum along dim 2, cdp")
+        if (allocated(error)) return
+        call check(error, stdlib_sum_kahan(x, mask=mask) == 25, "masked rank-2 Kahan sum, cdp")
+        if (allocated(error)) return
+        call check(error, all(stdlib_sum_kahan(x, dim=1, mask=mask) == [1, 8, 16]), "masked Kahan sum along dim 1, cdp")
+        if (allocated(error)) return
+        call check(error, all(stdlib_sum_kahan(x, dim=2, mask=mask) == [17, 8]), "masked Kahan sum along dim 2, cdp")
+        if (allocated(error)) return
+    end block
+end subroutine
+
+subroutine test_kahan_kernel_mask(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+    block
+        real(sp), parameter :: a = 2
+        real(sp) :: s, c
+
+        s = 1
+        c = 0.25_sp
+        call kahan_kernel(a, s, c, .false.)
+        call check(error, s == 1 .and. c == 0.25_sp, "excluded term keeps sum and compensation, sp")
+        if (allocated(error)) return
+        call kahan_kernel(a, s, c, .true.)
+        call check(error, s == 2.75_sp .and. c == 0, "included term updates sum and compensation, sp")
+        if (allocated(error)) return
+    end block
+    block
+        real(dp), parameter :: a = 2
+        real(dp) :: s, c
+
+        s = 1
+        c = 0.25_dp
+        call kahan_kernel(a, s, c, .false.)
+        call check(error, s == 1 .and. c == 0.25_dp, "excluded term keeps sum and compensation, dp")
+        if (allocated(error)) return
+        call kahan_kernel(a, s, c, .true.)
+        call check(error, s == 2.75_dp .and. c == 0, "included term updates sum and compensation, dp")
+        if (allocated(error)) return
+    end block
+    block
+        complex(dp), parameter :: a = 2
+        complex(dp) :: s, c
+
+        s = 1
+        c = 0.25_dp
+        call kahan_kernel(a, s, c, .false.)
+        call check(error, s == 1 .and. c == 0.25_dp, "excluded term keeps sum and compensation, cdp")
+        if (allocated(error)) return
+        call kahan_kernel(a, s, c, .true.)
+        call check(error, s == 2.75_dp .and. c == 0, "included term updates sum and compensation, cdp")
+        if (allocated(error)) return
+    end block
 end subroutine
 
 subroutine test_dot_product(error)

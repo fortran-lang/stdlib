@@ -44,10 +44,10 @@ pure module function stdlib_sum_1d_int8_mask(a,mask) result(s)
     n = size(a,kind=ilp)
     r = mod(n,chunk)
 
-    abatch(1:r)       = merge( zero_int8 , a(1:r) , mask(1:r) )
+    abatch(1:r)       = merge( a(1:r) , zero_int8 , mask(1:r) )
     abatch(r+1:chunk) = zero_int8
     do i = r+1, n-r, chunk
-        abatch(1:chunk) = abatch(1:chunk) + merge( zero_int8 , a(i:i+chunk-1), mask(i:i+chunk-1) )
+        abatch(1:chunk) = abatch(1:chunk) + merge( a(i:i+chunk-1), zero_int8 , mask(i:i+chunk-1) )
     end do
     
     s = zero_int8
@@ -88,10 +88,10 @@ pure module function stdlib_sum_1d_int16_mask(a,mask) result(s)
     n = size(a,kind=ilp)
     r = mod(n,chunk)
 
-    abatch(1:r)       = merge( zero_int16 , a(1:r) , mask(1:r) )
+    abatch(1:r)       = merge( a(1:r) , zero_int16 , mask(1:r) )
     abatch(r+1:chunk) = zero_int16
     do i = r+1, n-r, chunk
-        abatch(1:chunk) = abatch(1:chunk) + merge( zero_int16 , a(i:i+chunk-1), mask(i:i+chunk-1) )
+        abatch(1:chunk) = abatch(1:chunk) + merge( a(i:i+chunk-1), zero_int16 , mask(i:i+chunk-1) )
     end do
     
     s = zero_int16
@@ -132,10 +132,10 @@ pure module function stdlib_sum_1d_int32_mask(a,mask) result(s)
     n = size(a,kind=ilp)
     r = mod(n,chunk)
 
-    abatch(1:r)       = merge( zero_int32 , a(1:r) , mask(1:r) )
+    abatch(1:r)       = merge( a(1:r) , zero_int32 , mask(1:r) )
     abatch(r+1:chunk) = zero_int32
     do i = r+1, n-r, chunk
-        abatch(1:chunk) = abatch(1:chunk) + merge( zero_int32 , a(i:i+chunk-1), mask(i:i+chunk-1) )
+        abatch(1:chunk) = abatch(1:chunk) + merge( a(i:i+chunk-1), zero_int32 , mask(i:i+chunk-1) )
     end do
     
     s = zero_int32
@@ -176,10 +176,10 @@ pure module function stdlib_sum_1d_int64_mask(a,mask) result(s)
     n = size(a,kind=ilp)
     r = mod(n,chunk)
 
-    abatch(1:r)       = merge( zero_int64 , a(1:r) , mask(1:r) )
+    abatch(1:r)       = merge( a(1:r) , zero_int64 , mask(1:r) )
     abatch(r+1:chunk) = zero_int64
     do i = r+1, n-r, chunk
-        abatch(1:chunk) = abatch(1:chunk) + merge( zero_int64 , a(i:i+chunk-1), mask(i:i+chunk-1) )
+        abatch(1:chunk) = abatch(1:chunk) + merge( a(i:i+chunk-1), zero_int64 , mask(i:i+chunk-1) )
     end do
     
     s = zero_int64
@@ -220,10 +220,10 @@ pure module function stdlib_sum_1d_sp_mask(a,mask) result(s)
     n = size(a,kind=ilp)
     r = mod(n,chunk)
 
-    abatch(1:r)       = merge( zero_sp , a(1:r) , mask(1:r) )
+    abatch(1:r)       = merge( a(1:r) , zero_sp , mask(1:r) )
     abatch(r+1:chunk) = zero_sp
     do i = r+1, n-r, chunk
-        abatch(1:chunk) = abatch(1:chunk) + merge( zero_sp , a(i:i+chunk-1), mask(i:i+chunk-1) )
+        abatch(1:chunk) = abatch(1:chunk) + merge( a(i:i+chunk-1), zero_sp , mask(i:i+chunk-1) )
     end do
     
     s = zero_sp
@@ -264,10 +264,10 @@ pure module function stdlib_sum_1d_dp_mask(a,mask) result(s)
     n = size(a,kind=ilp)
     r = mod(n,chunk)
 
-    abatch(1:r)       = merge( zero_dp , a(1:r) , mask(1:r) )
+    abatch(1:r)       = merge( a(1:r) , zero_dp , mask(1:r) )
     abatch(r+1:chunk) = zero_dp
     do i = r+1, n-r, chunk
-        abatch(1:chunk) = abatch(1:chunk) + merge( zero_dp , a(i:i+chunk-1), mask(i:i+chunk-1) )
+        abatch(1:chunk) = abatch(1:chunk) + merge( a(i:i+chunk-1), zero_dp , mask(i:i+chunk-1) )
     end do
     
     s = zero_dp
@@ -308,10 +308,10 @@ pure module function stdlib_sum_1d_csp_mask(a,mask) result(s)
     n = size(a,kind=ilp)
     r = mod(n,chunk)
 
-    abatch(1:r)       = merge( zero_csp , a(1:r) , mask(1:r) )
+    abatch(1:r)       = merge( a(1:r) , zero_csp , mask(1:r) )
     abatch(r+1:chunk) = zero_csp
     do i = r+1, n-r, chunk
-        abatch(1:chunk) = abatch(1:chunk) + merge( zero_csp , a(i:i+chunk-1), mask(i:i+chunk-1) )
+        abatch(1:chunk) = abatch(1:chunk) + merge( a(i:i+chunk-1), zero_csp , mask(i:i+chunk-1) )
     end do
     
     s = zero_csp
@@ -352,10 +352,10 @@ pure module function stdlib_sum_1d_cdp_mask(a,mask) result(s)
     n = size(a,kind=ilp)
     r = mod(n,chunk)
 
-    abatch(1:r)       = merge( zero_cdp , a(1:r) , mask(1:r) )
+    abatch(1:r)       = merge( a(1:r) , zero_cdp , mask(1:r) )
     abatch(r+1:chunk) = zero_cdp
     do i = r+1, n-r, chunk
-        abatch(1:chunk) = abatch(1:chunk) + merge( zero_cdp , a(i:i+chunk-1), mask(i:i+chunk-1) )
+        abatch(1:chunk) = abatch(1:chunk) + merge( a(i:i+chunk-1), zero_cdp , mask(i:i+chunk-1) )
     end do
     
     s = zero_cdp
@@ -400,7 +400,7 @@ pure module function stdlib_sum_kahan_1d_sp_mask(a,mask) result(s)
     n = size(a,kind=ilp)
     r = mod(n,chunk)
     
-    sbatch(1:r) = merge( zero_sp , a(1:r) , mask(1:r) )
+    sbatch(1:r) = merge( a(1:r) , zero_sp , mask(1:r) )
     sbatch(r+1:chunk)  = zero_sp
     cbatch = zero_sp
     do i = r+1, n-r, chunk
@@ -448,7 +448,7 @@ pure module function stdlib_sum_kahan_1d_dp_mask(a,mask) result(s)
     n = size(a,kind=ilp)
     r = mod(n,chunk)
     
-    sbatch(1:r) = merge( zero_dp , a(1:r) , mask(1:r) )
+    sbatch(1:r) = merge( a(1:r) , zero_dp , mask(1:r) )
     sbatch(r+1:chunk)  = zero_dp
     cbatch = zero_dp
     do i = r+1, n-r, chunk
@@ -496,7 +496,7 @@ pure module function stdlib_sum_kahan_1d_csp_mask(a,mask) result(s)
     n = size(a,kind=ilp)
     r = mod(n,chunk)
     
-    sbatch(1:r) = merge( zero_csp , a(1:r) , mask(1:r) )
+    sbatch(1:r) = merge( a(1:r) , zero_csp , mask(1:r) )
     sbatch(r+1:chunk)  = zero_csp
     cbatch = zero_csp
     do i = r+1, n-r, chunk
@@ -544,7 +544,7 @@ pure module function stdlib_sum_kahan_1d_cdp_mask(a,mask) result(s)
     n = size(a,kind=ilp)
     r = mod(n,chunk)
     
-    sbatch(1:r) = merge( zero_cdp , a(1:r) , mask(1:r) )
+    sbatch(1:r) = merge( a(1:r) , zero_cdp , mask(1:r) )
     sbatch(r+1:chunk)  = zero_cdp
     cbatch = zero_cdp
     do i = r+1, n-r, chunk
