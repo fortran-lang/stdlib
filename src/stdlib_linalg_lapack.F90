@@ -12436,8 +12436,8 @@ module stdlib_linalg_lapack
 
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,ab(ldab,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,ldab,m,n,kl,ku,trans
+                    real(dp), intent(in) :: alpha,beta,ab(ldab,*),x(*)
                     real(dp), intent(inout) :: y(*)
                end subroutine dla_gbamv
 #else
@@ -12448,8 +12448,8 @@ module stdlib_linalg_lapack
 
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,ab(ldab,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,ldab,m,n,kl,ku,trans
+                    real(sp), intent(in) :: alpha,beta,ab(ldab,*),x(*)
                     real(sp), intent(inout) :: y(*)
                end subroutine sla_gbamv
 #else
@@ -12486,8 +12486,8 @@ module stdlib_linalg_lapack
 
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,ab(ldab,*),x(*)
                     integer(ilp64), intent(in) :: incx,incy,ldab,m,n,kl,ku,trans
+                    real(dp), intent(in) :: alpha,beta,ab(ldab,*),x(*)
                     real(dp), intent(inout) :: y(*)
                end subroutine dla_gbamv
 #else
@@ -12498,8 +12498,8 @@ module stdlib_linalg_lapack
 
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,ab(ldab,*),x(*)
                     integer(ilp64), intent(in) :: incx,incy,ldab,m,n,kl,ku,trans
+                    real(sp), intent(in) :: alpha,beta,ab(ldab,*),x(*)
                     real(sp), intent(inout) :: y(*)
                end subroutine sla_gbamv
 #else
@@ -12788,8 +12788,8 @@ module stdlib_linalg_lapack
                subroutine dla_geamv ( trans, m, n, alpha, a, lda, x, incx, beta,y, incy )
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,m,n,trans
+                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     real(dp), intent(inout) :: y(*)
                end subroutine dla_geamv
 #else
@@ -12799,8 +12799,8 @@ module stdlib_linalg_lapack
                subroutine sla_geamv( trans, m, n, alpha, a, lda, x, incx, beta,y, incy )
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,m,n,trans
+                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     real(sp), intent(inout) :: y(*)
                end subroutine sla_geamv
 #else
@@ -12834,8 +12834,8 @@ module stdlib_linalg_lapack
                subroutine dla_geamv ( trans, m, n, alpha, a, lda, x, incx, beta,y, incy )
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp64), intent(in) :: incx,incy,lda,m,n,trans
+                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     real(dp), intent(inout) :: y(*)
                end subroutine dla_geamv
 #else
@@ -12845,8 +12845,8 @@ module stdlib_linalg_lapack
                subroutine sla_geamv( trans, m, n, alpha, a, lda, x, incx, beta,y, incy )
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp64), intent(in) :: incx,incy,lda,m,n,trans
+                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     real(sp), intent(inout) :: y(*)
                end subroutine sla_geamv
 #else
@@ -13668,8 +13668,8 @@ module stdlib_linalg_lapack
                subroutine dla_syamv( uplo, n, alpha, a, lda, x, incx, beta, y,incy )
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,n,uplo
+                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     real(dp), intent(inout) :: y(*)
                end subroutine dla_syamv
 #else
@@ -13679,8 +13679,8 @@ module stdlib_linalg_lapack
                subroutine sla_syamv( uplo, n, alpha, a, lda, x, incx, beta, y,incy )
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,n,uplo
+                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     real(sp), intent(inout) :: y(*)
                end subroutine sla_syamv
 #else
@@ -13714,8 +13714,8 @@ module stdlib_linalg_lapack
                subroutine dla_syamv( uplo, n, alpha, a, lda, x, incx, beta, y,incy )
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp64), intent(in) :: incx,incy,lda,n,uplo
+                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     real(dp), intent(inout) :: y(*)
                end subroutine dla_syamv
 #else
@@ -13725,8 +13725,8 @@ module stdlib_linalg_lapack
                subroutine sla_syamv( uplo, n, alpha, a, lda, x, incx, beta, y,incy )
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp64), intent(in) :: incx,incy,lda,n,uplo
+                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     real(sp), intent(inout) :: y(*)
                end subroutine sla_syamv
 #else
@@ -20059,8 +20059,8 @@ module stdlib_linalg_lapack
                pure subroutine claqr1( n, h, ldh, s1, s2, v )
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(sp), intent(in) :: s1,s2,h(ldh,*)
                     integer(ilp), intent(in) :: ldh,n
+                    complex(sp), intent(in) :: s1,s2,h(ldh,*)
                     complex(sp), intent(out) :: v(*)
                end subroutine claqr1
 #else
@@ -20070,8 +20070,8 @@ module stdlib_linalg_lapack
                pure subroutine dlaqr1( n, h, ldh, sr1, si1, sr2, si2, v )
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(dp), intent(in) :: si1,si2,sr1,sr2,h(ldh,*)
                     integer(ilp), intent(in) :: ldh,n
+                    real(dp), intent(in) :: si1,si2,sr1,sr2,h(ldh,*)
                     real(dp), intent(out) :: v(*)
                end subroutine dlaqr1
 #else
@@ -20081,8 +20081,8 @@ module stdlib_linalg_lapack
                pure subroutine slaqr1( n, h, ldh, sr1, si1, sr2, si2, v )
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(sp), intent(in) :: si1,si2,sr1,sr2,h(ldh,*)
                     integer(ilp), intent(in) :: ldh,n
+                    real(sp), intent(in) :: si1,si2,sr1,sr2,h(ldh,*)
                     real(sp), intent(out) :: v(*)
                end subroutine slaqr1
 #else
@@ -20092,8 +20092,8 @@ module stdlib_linalg_lapack
                pure subroutine zlaqr1( n, h, ldh, s1, s2, v )
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(dp), intent(in) :: s1,s2,h(ldh,*)
                     integer(ilp), intent(in) :: ldh,n
+                    complex(dp), intent(in) :: s1,s2,h(ldh,*)
                     complex(dp), intent(out) :: v(*)
                end subroutine zlaqr1
 #else
@@ -20103,8 +20103,8 @@ module stdlib_linalg_lapack
                pure subroutine claqr1( n, h, ldh, s1, s2, v )
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(sp), intent(in) :: s1,s2,h(ldh,*)
                     integer(ilp64), intent(in) :: ldh,n
+                    complex(sp), intent(in) :: s1,s2,h(ldh,*)
                     complex(sp), intent(out) :: v(*)
                end subroutine claqr1
 #else
@@ -20114,8 +20114,8 @@ module stdlib_linalg_lapack
                pure subroutine dlaqr1( n, h, ldh, sr1, si1, sr2, si2, v )
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(dp), intent(in) :: si1,si2,sr1,sr2,h(ldh,*)
                     integer(ilp64), intent(in) :: ldh,n
+                    real(dp), intent(in) :: si1,si2,sr1,sr2,h(ldh,*)
                     real(dp), intent(out) :: v(*)
                end subroutine dlaqr1
 #else
@@ -20125,8 +20125,8 @@ module stdlib_linalg_lapack
                pure subroutine slaqr1( n, h, ldh, sr1, si1, sr2, si2, v )
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(sp), intent(in) :: si1,si2,sr1,sr2,h(ldh,*)
                     integer(ilp64), intent(in) :: ldh,n
+                    real(sp), intent(in) :: si1,si2,sr1,sr2,h(ldh,*)
                     real(sp), intent(out) :: v(*)
                end subroutine slaqr1
 #else
@@ -20136,8 +20136,8 @@ module stdlib_linalg_lapack
                pure subroutine zlaqr1( n, h, ldh, s1, s2, v )
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(dp), intent(in) :: s1,s2,h(ldh,*)
                     integer(ilp64), intent(in) :: ldh,n
+                    complex(dp), intent(in) :: s1,s2,h(ldh,*)
                     complex(dp), intent(out) :: v(*)
                end subroutine zlaqr1
 #else
@@ -24266,9 +24266,8 @@ module stdlib_linalg_lapack
                          info )
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    integer(ilp), intent(out) :: givptr,info,k,givcol(ldgcol,*),iwork(*),perm(*)
-
                     integer(ilp), intent(in) :: icompq,ldgcol,ldgnum,nl,nr,sqre
+                    integer(ilp), intent(out) :: givptr,info,k,givcol(ldgcol,*),iwork(*),perm(*)
                     real(dp), intent(inout) :: alpha,beta,d(*),vf(*),vl(*)
                     real(dp), intent(out) :: c,s,difl(*),difr(*),givnum(ldgnum,*),poles(ldgnum,*),&
                               work(*),z(*)
@@ -24283,9 +24282,8 @@ module stdlib_linalg_lapack
                          info )
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    integer(ilp), intent(out) :: givptr,info,k,givcol(ldgcol,*),iwork(*),perm(*)
-
                     integer(ilp), intent(in) :: icompq,ldgcol,ldgnum,nl,nr,sqre
+                    integer(ilp), intent(out) :: givptr,info,k,givcol(ldgcol,*),iwork(*),perm(*)
                     real(sp), intent(inout) :: alpha,beta,d(*),vf(*),vl(*)
                     real(sp), intent(out) :: c,s,difl(*),difr(*),givnum(ldgnum,*),poles(ldgnum,*),&
                               work(*),z(*)
@@ -24300,9 +24298,8 @@ module stdlib_linalg_lapack
                          info )
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    integer(ilp64), intent(out) :: givptr,info,k,givcol(ldgcol,*),iwork(*),perm(*)
-
                     integer(ilp64), intent(in) :: icompq,ldgcol,ldgnum,nl,nr,sqre
+                    integer(ilp64), intent(out) :: givptr,info,k,givcol(ldgcol,*),iwork(*),perm(*)
                     real(dp), intent(inout) :: alpha,beta,d(*),vf(*),vl(*)
                     real(dp), intent(out) :: c,s,difl(*),difr(*),givnum(ldgnum,*),poles(ldgnum,*),&
                               work(*),z(*)
@@ -24317,9 +24314,8 @@ module stdlib_linalg_lapack
                          info )
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    integer(ilp64), intent(out) :: givptr,info,k,givcol(ldgcol,*),iwork(*),perm(*)
-
                     integer(ilp64), intent(in) :: icompq,ldgcol,ldgnum,nl,nr,sqre
+                    integer(ilp64), intent(out) :: givptr,info,k,givcol(ldgcol,*),iwork(*),perm(*)
                     real(sp), intent(inout) :: alpha,beta,d(*),vf(*),vl(*)
                     real(sp), intent(out) :: c,s,difl(*),difr(*),givnum(ldgnum,*),poles(ldgnum,*),&
                               work(*),z(*)
@@ -24344,9 +24340,9 @@ module stdlib_linalg_lapack
                          info )
                     import sp,dp,qp,ilp,lk
                     implicit none
+                    integer(ilp), intent(in) :: icompq,ldgcol,ldgnum,nl,nr,sqre
                     integer(ilp), intent(out) :: givptr,info,k,givcol(ldgcol,*),idx(*),idxp(*),&
                               perm(*)
-                    integer(ilp), intent(in) :: icompq,ldgcol,ldgnum,nl,nr,sqre
                     real(dp), intent(in) :: alpha,beta
                     real(dp), intent(out) :: c,s,dsigma(*),givnum(ldgnum,*),vfw(*),vlw(*),z(*),zw(&
                               *)
@@ -24362,9 +24358,9 @@ module stdlib_linalg_lapack
                          info )
                     import sp,dp,qp,ilp,lk
                     implicit none
+                    integer(ilp), intent(in) :: icompq,ldgcol,ldgnum,nl,nr,sqre
                     integer(ilp), intent(out) :: givptr,info,k,givcol(ldgcol,*),idx(*),idxp(*),&
                               perm(*)
-                    integer(ilp), intent(in) :: icompq,ldgcol,ldgnum,nl,nr,sqre
                     real(sp), intent(in) :: alpha,beta
                     real(sp), intent(out) :: c,s,dsigma(*),givnum(ldgnum,*),vfw(*),vlw(*),z(*),zw(&
                               *)
@@ -24380,9 +24376,9 @@ module stdlib_linalg_lapack
                          info )
                     import sp,dp,qp,ilp64,lk
                     implicit none
+                    integer(ilp64), intent(in) :: icompq,ldgcol,ldgnum,nl,nr,sqre
                     integer(ilp64), intent(out) :: givptr,info,k,givcol(ldgcol,*),idx(*),idxp(*),&
                               perm(*)
-                    integer(ilp64), intent(in) :: icompq,ldgcol,ldgnum,nl,nr,sqre
                     real(dp), intent(in) :: alpha,beta
                     real(dp), intent(out) :: c,s,dsigma(*),givnum(ldgnum,*),vfw(*),vlw(*),z(*),zw(&
                               *)
@@ -24398,9 +24394,9 @@ module stdlib_linalg_lapack
                          info )
                     import sp,dp,qp,ilp64,lk
                     implicit none
+                    integer(ilp64), intent(in) :: icompq,ldgcol,ldgnum,nl,nr,sqre
                     integer(ilp64), intent(out) :: givptr,info,k,givcol(ldgcol,*),idx(*),idxp(*),&
                               perm(*)
-                    integer(ilp64), intent(in) :: icompq,ldgcol,ldgnum,nl,nr,sqre
                     real(sp), intent(in) :: alpha,beta
                     real(sp), intent(out) :: c,s,dsigma(*),givnum(ldgnum,*),vfw(*),vlw(*),z(*),zw(&
                               *)
@@ -32295,8 +32291,8 @@ module stdlib_linalg_lapack
                     import sp,dp,qp,ilp,lk
                     implicit none
                     real(sp), intent(in) :: tol
-                    integer(ilp), intent(out) :: info,rank,piv(n)
                     integer(ilp), intent(in) :: lda,n
+                    integer(ilp), intent(out) :: info,rank,piv(n)
                     character, intent(in) :: uplo
                     complex(sp), intent(inout) :: a(lda,*)
                     real(sp), intent(out) :: work(2*n)
@@ -32309,8 +32305,8 @@ module stdlib_linalg_lapack
                     import sp,dp,qp,ilp,lk
                     implicit none
                     real(dp), intent(in) :: tol
-                    integer(ilp), intent(out) :: info,rank,piv(n)
                     integer(ilp), intent(in) :: lda,n
+                    integer(ilp), intent(out) :: info,rank,piv(n)
                     character, intent(in) :: uplo
                     real(dp), intent(inout) :: a(lda,*)
                     real(dp), intent(out) :: work(2*n)
@@ -32323,8 +32319,8 @@ module stdlib_linalg_lapack
                     import sp,dp,qp,ilp,lk
                     implicit none
                     real(sp), intent(in) :: tol
-                    integer(ilp), intent(out) :: info,rank,piv(n)
                     integer(ilp), intent(in) :: lda,n
+                    integer(ilp), intent(out) :: info,rank,piv(n)
                     character, intent(in) :: uplo
                     real(sp), intent(inout) :: a(lda,*)
                     real(sp), intent(out) :: work(2*n)
@@ -32337,8 +32333,8 @@ module stdlib_linalg_lapack
                     import sp,dp,qp,ilp,lk
                     implicit none
                     real(dp), intent(in) :: tol
-                    integer(ilp), intent(out) :: info,rank,piv(n)
                     integer(ilp), intent(in) :: lda,n
+                    integer(ilp), intent(out) :: info,rank,piv(n)
                     character, intent(in) :: uplo
                     complex(dp), intent(inout) :: a(lda,*)
                     real(dp), intent(out) :: work(2*n)
@@ -32351,8 +32347,8 @@ module stdlib_linalg_lapack
                     import sp,dp,qp,ilp64,lk
                     implicit none
                     real(sp), intent(in) :: tol
-                    integer(ilp64), intent(out) :: info,rank,piv(n)
                     integer(ilp64), intent(in) :: lda,n
+                    integer(ilp64), intent(out) :: info,rank,piv(n)
                     character, intent(in) :: uplo
                     complex(sp), intent(inout) :: a(lda,*)
                     real(sp), intent(out) :: work(2*n)
@@ -32365,8 +32361,8 @@ module stdlib_linalg_lapack
                     import sp,dp,qp,ilp64,lk
                     implicit none
                     real(dp), intent(in) :: tol
-                    integer(ilp64), intent(out) :: info,rank,piv(n)
                     integer(ilp64), intent(in) :: lda,n
+                    integer(ilp64), intent(out) :: info,rank,piv(n)
                     character, intent(in) :: uplo
                     real(dp), intent(inout) :: a(lda,*)
                     real(dp), intent(out) :: work(2*n)
@@ -32379,8 +32375,8 @@ module stdlib_linalg_lapack
                     import sp,dp,qp,ilp64,lk
                     implicit none
                     real(sp), intent(in) :: tol
-                    integer(ilp64), intent(out) :: info,rank,piv(n)
                     integer(ilp64), intent(in) :: lda,n
+                    integer(ilp64), intent(out) :: info,rank,piv(n)
                     character, intent(in) :: uplo
                     real(sp), intent(inout) :: a(lda,*)
                     real(sp), intent(out) :: work(2*n)
@@ -32393,8 +32389,8 @@ module stdlib_linalg_lapack
                     import sp,dp,qp,ilp64,lk
                     implicit none
                     real(dp), intent(in) :: tol
-                    integer(ilp64), intent(out) :: info,rank,piv(n)
                     integer(ilp64), intent(in) :: lda,n
+                    integer(ilp64), intent(out) :: info,rank,piv(n)
                     character, intent(in) :: uplo
                     complex(dp), intent(inout) :: a(lda,*)
                     real(dp), intent(out) :: work(2*n)
@@ -33649,8 +33645,8 @@ module stdlib_linalg_lapack
                pure subroutine dsfrk( transr, uplo, trans, n, k, alpha, a, lda, beta,c )
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,a(lda,*)
                     integer(ilp), intent(in) :: k,lda,n
+                    real(dp), intent(in) :: alpha,beta,a(lda,*)
                     character, intent(in) :: trans,transr,uplo
                     real(dp), intent(inout) :: c(*)
                end subroutine dsfrk
@@ -33661,8 +33657,8 @@ module stdlib_linalg_lapack
                pure subroutine ssfrk( transr, uplo, trans, n, k, alpha, a, lda, beta,c )
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,a(lda,*)
                     integer(ilp), intent(in) :: k,lda,n
+                    real(sp), intent(in) :: alpha,beta,a(lda,*)
                     character, intent(in) :: trans,transr,uplo
                     real(sp), intent(inout) :: c(*)
                end subroutine ssfrk
@@ -33673,8 +33669,8 @@ module stdlib_linalg_lapack
                pure subroutine dsfrk( transr, uplo, trans, n, k, alpha, a, lda, beta,c )
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,a(lda,*)
                     integer(ilp64), intent(in) :: k,lda,n
+                    real(dp), intent(in) :: alpha,beta,a(lda,*)
                     character, intent(in) :: trans,transr,uplo
                     real(dp), intent(inout) :: c(*)
                end subroutine dsfrk
@@ -33685,8 +33681,8 @@ module stdlib_linalg_lapack
                pure subroutine ssfrk( transr, uplo, trans, n, k, alpha, a, lda, beta,c )
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,a(lda,*)
                     integer(ilp64), intent(in) :: k,lda,n
+                    real(sp), intent(in) :: alpha,beta,a(lda,*)
                     character, intent(in) :: trans,transr,uplo
                     real(sp), intent(inout) :: c(*)
                end subroutine ssfrk

@@ -419,8 +419,8 @@ module stdlib_linalg_blas
                pure subroutine cgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,kl,ku,lda,m,n
+                    complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: trans
                     complex(sp), intent(inout) :: y(*)
                end subroutine cgbmv
@@ -431,8 +431,8 @@ module stdlib_linalg_blas
                pure subroutine dgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,kl,ku,lda,m,n
+                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: trans
                     real(dp), intent(inout) :: y(*)
                end subroutine dgbmv
@@ -443,8 +443,8 @@ module stdlib_linalg_blas
                pure subroutine sgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,kl,ku,lda,m,n
+                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: trans
                     real(sp), intent(inout) :: y(*)
                end subroutine sgbmv
@@ -455,8 +455,8 @@ module stdlib_linalg_blas
                pure subroutine zgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,kl,ku,lda,m,n
+                    complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: trans
                     complex(dp), intent(inout) :: y(*)
                end subroutine zgbmv
@@ -467,8 +467,8 @@ module stdlib_linalg_blas
                pure subroutine cgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp64), intent(in) :: incx,incy,kl,ku,lda,m,n
+                    complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: trans
                     complex(sp), intent(inout) :: y(*)
                end subroutine cgbmv
@@ -479,8 +479,8 @@ module stdlib_linalg_blas
                pure subroutine dgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp64), intent(in) :: incx,incy,kl,ku,lda,m,n
+                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: trans
                     real(dp), intent(inout) :: y(*)
                end subroutine dgbmv
@@ -491,8 +491,8 @@ module stdlib_linalg_blas
                pure subroutine sgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp64), intent(in) :: incx,incy,kl,ku,lda,m,n
+                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: trans
                     real(sp), intent(inout) :: y(*)
                end subroutine sgbmv
@@ -503,8 +503,8 @@ module stdlib_linalg_blas
                pure subroutine zgbmv(trans,m,n,kl,ku,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp64), intent(in) :: incx,incy,kl,ku,lda,m,n
+                    complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: trans
                     complex(dp), intent(inout) :: y(*)
                end subroutine zgbmv
@@ -524,8 +524,8 @@ module stdlib_linalg_blas
                pure subroutine cgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: k,lda,ldb,ldc,m,n
+                    complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: transa,transb
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine cgemm
@@ -536,8 +536,8 @@ module stdlib_linalg_blas
                pure subroutine dgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: k,lda,ldb,ldc,m,n
+                    real(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: transa,transb
                     real(dp), intent(inout) :: c(ldc,*)
                end subroutine dgemm
@@ -548,8 +548,8 @@ module stdlib_linalg_blas
                pure subroutine sgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: k,lda,ldb,ldc,m,n
+                    real(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: transa,transb
                     real(sp), intent(inout) :: c(ldc,*)
                end subroutine sgemm
@@ -560,8 +560,8 @@ module stdlib_linalg_blas
                pure subroutine zgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: k,lda,ldb,ldc,m,n
+                    complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: transa,transb
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zgemm
@@ -572,8 +572,8 @@ module stdlib_linalg_blas
                pure subroutine cgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp64), intent(in) :: k,lda,ldb,ldc,m,n
+                    complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: transa,transb
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine cgemm
@@ -584,8 +584,8 @@ module stdlib_linalg_blas
                pure subroutine dgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp64), intent(in) :: k,lda,ldb,ldc,m,n
+                    real(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: transa,transb
                     real(dp), intent(inout) :: c(ldc,*)
                end subroutine dgemm
@@ -596,8 +596,8 @@ module stdlib_linalg_blas
                pure subroutine sgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp64), intent(in) :: k,lda,ldb,ldc,m,n
+                    real(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: transa,transb
                     real(sp), intent(inout) :: c(ldc,*)
                end subroutine sgemm
@@ -608,8 +608,8 @@ module stdlib_linalg_blas
                pure subroutine zgemm(transa,transb,m,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp64), intent(in) :: k,lda,ldb,ldc,m,n
+                    complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: transa,transb
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zgemm
@@ -628,8 +628,8 @@ module stdlib_linalg_blas
                pure subroutine cgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,m,n
+                    complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: trans
                     complex(sp), intent(inout) :: y(*)
                end subroutine cgemv
@@ -640,8 +640,8 @@ module stdlib_linalg_blas
                pure subroutine dgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,m,n
+                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: trans
                     real(dp), intent(inout) :: y(*)
                end subroutine dgemv
@@ -652,8 +652,8 @@ module stdlib_linalg_blas
                pure subroutine sgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,m,n
+                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: trans
                     real(sp), intent(inout) :: y(*)
                end subroutine sgemv
@@ -664,8 +664,8 @@ module stdlib_linalg_blas
                pure subroutine zgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,m,n
+                    complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: trans
                     complex(dp), intent(inout) :: y(*)
                end subroutine zgemv
@@ -676,8 +676,8 @@ module stdlib_linalg_blas
                pure subroutine cgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp64), intent(in) :: incx,incy,lda,m,n
+                    complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: trans
                     complex(sp), intent(inout) :: y(*)
                end subroutine cgemv
@@ -688,8 +688,8 @@ module stdlib_linalg_blas
                pure subroutine dgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp64), intent(in) :: incx,incy,lda,m,n
+                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: trans
                     real(dp), intent(inout) :: y(*)
                end subroutine dgemv
@@ -700,8 +700,8 @@ module stdlib_linalg_blas
                pure subroutine sgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp64), intent(in) :: incx,incy,lda,m,n
+                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: trans
                     real(sp), intent(inout) :: y(*)
                end subroutine sgemv
@@ -712,8 +712,8 @@ module stdlib_linalg_blas
                pure subroutine zgemv(trans,m,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp64), intent(in) :: incx,incy,lda,m,n
+                    complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: trans
                     complex(dp), intent(inout) :: y(*)
                end subroutine zgemv
@@ -884,8 +884,8 @@ module stdlib_linalg_blas
                pure subroutine chbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,k,lda,n
+                    complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: uplo
                     complex(sp), intent(inout) :: y(*)
                end subroutine chbmv
@@ -896,8 +896,8 @@ module stdlib_linalg_blas
                pure subroutine zhbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,k,lda,n
+                    complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: uplo
                     complex(dp), intent(inout) :: y(*)
                end subroutine zhbmv
@@ -908,8 +908,8 @@ module stdlib_linalg_blas
                pure subroutine chbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp64), intent(in) :: incx,incy,k,lda,n
+                    complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: uplo
                     complex(sp), intent(inout) :: y(*)
                end subroutine chbmv
@@ -920,8 +920,8 @@ module stdlib_linalg_blas
                pure subroutine zhbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp64), intent(in) :: incx,incy,k,lda,n
+                    complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: uplo
                     complex(dp), intent(inout) :: y(*)
                end subroutine zhbmv
@@ -941,8 +941,8 @@ module stdlib_linalg_blas
                pure subroutine chemm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: lda,ldb,ldc,m,n
+                    complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: side,uplo
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine chemm
@@ -953,8 +953,8 @@ module stdlib_linalg_blas
                pure subroutine zhemm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: lda,ldb,ldc,m,n
+                    complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: side,uplo
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zhemm
@@ -965,8 +965,8 @@ module stdlib_linalg_blas
                pure subroutine chemm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp64), intent(in) :: lda,ldb,ldc,m,n
+                    complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: side,uplo
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine chemm
@@ -977,8 +977,8 @@ module stdlib_linalg_blas
                pure subroutine zhemm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp64), intent(in) :: lda,ldb,ldc,m,n
+                    complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: side,uplo
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zhemm
@@ -996,8 +996,8 @@ module stdlib_linalg_blas
                pure subroutine chemv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,n
+                    complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: uplo
                     complex(sp), intent(inout) :: y(*)
                end subroutine chemv
@@ -1008,8 +1008,8 @@ module stdlib_linalg_blas
                pure subroutine zhemv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,n
+                    complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: uplo
                     complex(dp), intent(inout) :: y(*)
                end subroutine zhemv
@@ -1020,8 +1020,8 @@ module stdlib_linalg_blas
                pure subroutine chemv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp64), intent(in) :: incx,incy,lda,n
+                    complex(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: uplo
                     complex(sp), intent(inout) :: y(*)
                end subroutine chemv
@@ -1032,8 +1032,8 @@ module stdlib_linalg_blas
                pure subroutine zhemv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp64), intent(in) :: incx,incy,lda,n
+                    complex(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: uplo
                     complex(dp), intent(inout) :: y(*)
                end subroutine zhemv
@@ -1168,9 +1168,9 @@ module stdlib_linalg_blas
                pure subroutine cher2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
                     implicit none
+                    integer(ilp), intent(in) :: k,lda,ldb,ldc,n
                     complex(sp), intent(in) :: alpha,a(lda,*),b(ldb,*)
                     real(sp), intent(in) :: beta
-                    integer(ilp), intent(in) :: k,lda,ldb,ldc,n
                     character, intent(in) :: trans,uplo
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine cher2k
@@ -1181,9 +1181,9 @@ module stdlib_linalg_blas
                pure subroutine zher2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
                     implicit none
+                    integer(ilp), intent(in) :: k,lda,ldb,ldc,n
                     complex(dp), intent(in) :: alpha,a(lda,*),b(ldb,*)
                     real(dp), intent(in) :: beta
-                    integer(ilp), intent(in) :: k,lda,ldb,ldc,n
                     character, intent(in) :: trans,uplo
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zher2k
@@ -1194,9 +1194,9 @@ module stdlib_linalg_blas
                pure subroutine cher2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp64,lk
                     implicit none
+                    integer(ilp64), intent(in) :: k,lda,ldb,ldc,n
                     complex(sp), intent(in) :: alpha,a(lda,*),b(ldb,*)
                     real(sp), intent(in) :: beta
-                    integer(ilp64), intent(in) :: k,lda,ldb,ldc,n
                     character, intent(in) :: trans,uplo
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine cher2k
@@ -1207,9 +1207,9 @@ module stdlib_linalg_blas
                pure subroutine zher2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp64,lk
                     implicit none
+                    integer(ilp64), intent(in) :: k,lda,ldb,ldc,n
                     complex(dp), intent(in) :: alpha,a(lda,*),b(ldb,*)
                     real(dp), intent(in) :: beta
-                    integer(ilp64), intent(in) :: k,lda,ldb,ldc,n
                     character, intent(in) :: trans,uplo
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zher2k
@@ -1801,8 +1801,8 @@ module stdlib_linalg_blas
                pure subroutine dsbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,k,lda,n
+                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: uplo
                     real(dp), intent(inout) :: y(*)
                end subroutine dsbmv
@@ -1813,8 +1813,8 @@ module stdlib_linalg_blas
                pure subroutine ssbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,k,lda,n
+                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: uplo
                     real(sp), intent(inout) :: y(*)
                end subroutine ssbmv
@@ -1825,8 +1825,8 @@ module stdlib_linalg_blas
                pure subroutine dsbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp64), intent(in) :: incx,incy,k,lda,n
+                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: uplo
                     real(dp), intent(inout) :: y(*)
                end subroutine dsbmv
@@ -1837,8 +1837,8 @@ module stdlib_linalg_blas
                pure subroutine ssbmv(uplo,n,k,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp64), intent(in) :: incx,incy,k,lda,n
+                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: uplo
                     real(sp), intent(inout) :: y(*)
                end subroutine ssbmv
@@ -2282,8 +2282,8 @@ module stdlib_linalg_blas
                pure subroutine csymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: lda,ldb,ldc,m,n
+                    complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: side,uplo
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine csymm
@@ -2294,8 +2294,8 @@ module stdlib_linalg_blas
                pure subroutine dsymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: lda,ldb,ldc,m,n
+                    real(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: side,uplo
                     real(dp), intent(inout) :: c(ldc,*)
                end subroutine dsymm
@@ -2306,8 +2306,8 @@ module stdlib_linalg_blas
                pure subroutine ssymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: lda,ldb,ldc,m,n
+                    real(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: side,uplo
                     real(sp), intent(inout) :: c(ldc,*)
                end subroutine ssymm
@@ -2318,8 +2318,8 @@ module stdlib_linalg_blas
                pure subroutine zsymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: lda,ldb,ldc,m,n
+                    complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: side,uplo
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zsymm
@@ -2330,8 +2330,8 @@ module stdlib_linalg_blas
                pure subroutine csymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp64), intent(in) :: lda,ldb,ldc,m,n
+                    complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: side,uplo
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine csymm
@@ -2342,8 +2342,8 @@ module stdlib_linalg_blas
                pure subroutine dsymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp64), intent(in) :: lda,ldb,ldc,m,n
+                    real(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: side,uplo
                     real(dp), intent(inout) :: c(ldc,*)
                end subroutine dsymm
@@ -2354,8 +2354,8 @@ module stdlib_linalg_blas
                pure subroutine ssymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp64), intent(in) :: lda,ldb,ldc,m,n
+                    real(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: side,uplo
                     real(sp), intent(inout) :: c(ldc,*)
                end subroutine ssymm
@@ -2366,8 +2366,8 @@ module stdlib_linalg_blas
                pure subroutine zsymm(side,uplo,m,n,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp64), intent(in) :: lda,ldb,ldc,m,n
+                    complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: side,uplo
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zsymm
@@ -2385,8 +2385,8 @@ module stdlib_linalg_blas
                pure subroutine dsymv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,n
+                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: uplo
                     real(dp), intent(inout) :: y(*)
                end subroutine dsymv
@@ -2397,8 +2397,8 @@ module stdlib_linalg_blas
                pure subroutine ssymv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp), intent(in) :: incx,incy,lda,n
+                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: uplo
                     real(sp), intent(inout) :: y(*)
                end subroutine ssymv
@@ -2409,8 +2409,8 @@ module stdlib_linalg_blas
                pure subroutine dsymv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp64), intent(in) :: incx,incy,lda,n
+                    real(dp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: uplo
                     real(dp), intent(inout) :: y(*)
                end subroutine dsymv
@@ -2421,8 +2421,8 @@ module stdlib_linalg_blas
                pure subroutine ssymv(uplo,n,alpha,a,lda,x,incx,beta,y,incy)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     integer(ilp64), intent(in) :: incx,incy,lda,n
+                    real(sp), intent(in) :: alpha,beta,a(lda,*),x(*)
                     character, intent(in) :: uplo
                     real(sp), intent(inout) :: y(*)
                end subroutine ssymv
@@ -2553,8 +2553,8 @@ module stdlib_linalg_blas
                pure subroutine csyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: k,lda,ldb,ldc,n
+                    complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: trans,uplo
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine csyr2k
@@ -2565,8 +2565,8 @@ module stdlib_linalg_blas
                pure subroutine dsyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: k,lda,ldb,ldc,n
+                    real(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: trans,uplo
                     real(dp), intent(inout) :: c(ldc,*)
                end subroutine dsyr2k
@@ -2577,8 +2577,8 @@ module stdlib_linalg_blas
                pure subroutine ssyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: k,lda,ldb,ldc,n
+                    real(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: trans,uplo
                     real(sp), intent(inout) :: c(ldc,*)
                end subroutine ssyr2k
@@ -2589,8 +2589,8 @@ module stdlib_linalg_blas
                pure subroutine zsyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp), intent(in) :: k,lda,ldb,ldc,n
+                    complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: trans,uplo
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zsyr2k
@@ -2601,8 +2601,8 @@ module stdlib_linalg_blas
                pure subroutine csyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp64), intent(in) :: k,lda,ldb,ldc,n
+                    complex(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: trans,uplo
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine csyr2k
@@ -2613,8 +2613,8 @@ module stdlib_linalg_blas
                pure subroutine dsyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp64), intent(in) :: k,lda,ldb,ldc,n
+                    real(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: trans,uplo
                     real(dp), intent(inout) :: c(ldc,*)
                end subroutine dsyr2k
@@ -2625,8 +2625,8 @@ module stdlib_linalg_blas
                pure subroutine ssyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp64), intent(in) :: k,lda,ldb,ldc,n
+                    real(sp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: trans,uplo
                     real(sp), intent(inout) :: c(ldc,*)
                end subroutine ssyr2k
@@ -2637,8 +2637,8 @@ module stdlib_linalg_blas
                pure subroutine zsyr2k(uplo,trans,n,k,alpha,a,lda,b,ldb,beta,c,ldc)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     integer(ilp64), intent(in) :: k,lda,ldb,ldc,n
+                    complex(dp), intent(in) :: alpha,beta,a(lda,*),b(ldb,*)
                     character, intent(in) :: trans,uplo
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zsyr2k
@@ -2659,8 +2659,8 @@ module stdlib_linalg_blas
                pure subroutine csyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(sp), intent(in) :: alpha,beta,a(lda,*)
                     integer(ilp), intent(in) :: k,lda,ldc,n
+                    complex(sp), intent(in) :: alpha,beta,a(lda,*)
                     character, intent(in) :: trans,uplo
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine csyrk
@@ -2671,8 +2671,8 @@ module stdlib_linalg_blas
                pure subroutine dsyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,a(lda,*)
                     integer(ilp), intent(in) :: k,lda,ldc,n
+                    real(dp), intent(in) :: alpha,beta,a(lda,*)
                     character, intent(in) :: trans,uplo
                     real(dp), intent(inout) :: c(ldc,*)
                end subroutine dsyrk
@@ -2683,8 +2683,8 @@ module stdlib_linalg_blas
                pure subroutine ssyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,a(lda,*)
                     integer(ilp), intent(in) :: k,lda,ldc,n
+                    real(sp), intent(in) :: alpha,beta,a(lda,*)
                     character, intent(in) :: trans,uplo
                     real(sp), intent(inout) :: c(ldc,*)
                end subroutine ssyrk
@@ -2695,8 +2695,8 @@ module stdlib_linalg_blas
                pure subroutine zsyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(dp), intent(in) :: alpha,beta,a(lda,*)
                     integer(ilp), intent(in) :: k,lda,ldc,n
+                    complex(dp), intent(in) :: alpha,beta,a(lda,*)
                     character, intent(in) :: trans,uplo
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zsyrk
@@ -2707,8 +2707,8 @@ module stdlib_linalg_blas
                pure subroutine csyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(sp), intent(in) :: alpha,beta,a(lda,*)
                     integer(ilp64), intent(in) :: k,lda,ldc,n
+                    complex(sp), intent(in) :: alpha,beta,a(lda,*)
                     character, intent(in) :: trans,uplo
                     complex(sp), intent(inout) :: c(ldc,*)
                end subroutine csyrk
@@ -2719,8 +2719,8 @@ module stdlib_linalg_blas
                pure subroutine dsyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,beta,a(lda,*)
                     integer(ilp64), intent(in) :: k,lda,ldc,n
+                    real(dp), intent(in) :: alpha,beta,a(lda,*)
                     character, intent(in) :: trans,uplo
                     real(dp), intent(inout) :: c(ldc,*)
                end subroutine dsyrk
@@ -2731,8 +2731,8 @@ module stdlib_linalg_blas
                pure subroutine ssyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,beta,a(lda,*)
                     integer(ilp64), intent(in) :: k,lda,ldc,n
+                    real(sp), intent(in) :: alpha,beta,a(lda,*)
                     character, intent(in) :: trans,uplo
                     real(sp), intent(inout) :: c(ldc,*)
                end subroutine ssyrk
@@ -2743,8 +2743,8 @@ module stdlib_linalg_blas
                pure subroutine zsyrk(uplo,trans,n,k,alpha,a,lda,beta,c,ldc)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(dp), intent(in) :: alpha,beta,a(lda,*)
                     integer(ilp64), intent(in) :: k,lda,ldc,n
+                    complex(dp), intent(in) :: alpha,beta,a(lda,*)
                     character, intent(in) :: trans,uplo
                     complex(dp), intent(inout) :: c(ldc,*)
                end subroutine zsyrk
@@ -3180,8 +3180,8 @@ module stdlib_linalg_blas
                pure subroutine ctrmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(sp), intent(in) :: alpha,a(lda,*)
                     integer(ilp), intent(in) :: lda,ldb,m,n
+                    complex(sp), intent(in) :: alpha,a(lda,*)
                     character, intent(in) :: diag,side,transa,uplo
                     complex(sp), intent(inout) :: b(ldb,*)
                end subroutine ctrmm
@@ -3192,8 +3192,8 @@ module stdlib_linalg_blas
                pure subroutine dtrmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,a(lda,*)
                     integer(ilp), intent(in) :: lda,ldb,m,n
+                    real(dp), intent(in) :: alpha,a(lda,*)
                     character, intent(in) :: diag,side,transa,uplo
                     real(dp), intent(inout) :: b(ldb,*)
                end subroutine dtrmm
@@ -3204,8 +3204,8 @@ module stdlib_linalg_blas
                pure subroutine strmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,a(lda,*)
                     integer(ilp), intent(in) :: lda,ldb,m,n
+                    real(sp), intent(in) :: alpha,a(lda,*)
                     character, intent(in) :: diag,side,transa,uplo
                     real(sp), intent(inout) :: b(ldb,*)
                end subroutine strmm
@@ -3216,8 +3216,8 @@ module stdlib_linalg_blas
                pure subroutine ztrmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(dp), intent(in) :: alpha,a(lda,*)
                     integer(ilp), intent(in) :: lda,ldb,m,n
+                    complex(dp), intent(in) :: alpha,a(lda,*)
                     character, intent(in) :: diag,side,transa,uplo
                     complex(dp), intent(inout) :: b(ldb,*)
                end subroutine ztrmm
@@ -3228,8 +3228,8 @@ module stdlib_linalg_blas
                pure subroutine ctrmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(sp), intent(in) :: alpha,a(lda,*)
                     integer(ilp64), intent(in) :: lda,ldb,m,n
+                    complex(sp), intent(in) :: alpha,a(lda,*)
                     character, intent(in) :: diag,side,transa,uplo
                     complex(sp), intent(inout) :: b(ldb,*)
                end subroutine ctrmm
@@ -3240,8 +3240,8 @@ module stdlib_linalg_blas
                pure subroutine dtrmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,a(lda,*)
                     integer(ilp64), intent(in) :: lda,ldb,m,n
+                    real(dp), intent(in) :: alpha,a(lda,*)
                     character, intent(in) :: diag,side,transa,uplo
                     real(dp), intent(inout) :: b(ldb,*)
                end subroutine dtrmm
@@ -3252,8 +3252,8 @@ module stdlib_linalg_blas
                pure subroutine strmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,a(lda,*)
                     integer(ilp64), intent(in) :: lda,ldb,m,n
+                    real(sp), intent(in) :: alpha,a(lda,*)
                     character, intent(in) :: diag,side,transa,uplo
                     real(sp), intent(inout) :: b(ldb,*)
                end subroutine strmm
@@ -3264,8 +3264,8 @@ module stdlib_linalg_blas
                pure subroutine ztrmm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(dp), intent(in) :: alpha,a(lda,*)
                     integer(ilp64), intent(in) :: lda,ldb,m,n
+                    complex(dp), intent(in) :: alpha,a(lda,*)
                     character, intent(in) :: diag,side,transa,uplo
                     complex(dp), intent(inout) :: b(ldb,*)
                end subroutine ztrmm
@@ -3388,8 +3388,8 @@ module stdlib_linalg_blas
                pure subroutine ctrsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(sp), intent(in) :: alpha,a(lda,*)
                     integer(ilp), intent(in) :: lda,ldb,m,n
+                    complex(sp), intent(in) :: alpha,a(lda,*)
                     character, intent(in) :: diag,side,transa,uplo
                     complex(sp), intent(inout) :: b(ldb,*)
                end subroutine ctrsm
@@ -3400,8 +3400,8 @@ module stdlib_linalg_blas
                pure subroutine dtrsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,a(lda,*)
                     integer(ilp), intent(in) :: lda,ldb,m,n
+                    real(dp), intent(in) :: alpha,a(lda,*)
                     character, intent(in) :: diag,side,transa,uplo
                     real(dp), intent(inout) :: b(ldb,*)
                end subroutine dtrsm
@@ -3412,8 +3412,8 @@ module stdlib_linalg_blas
                pure subroutine strsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,a(lda,*)
                     integer(ilp), intent(in) :: lda,ldb,m,n
+                    real(sp), intent(in) :: alpha,a(lda,*)
                     character, intent(in) :: diag,side,transa,uplo
                     real(sp), intent(inout) :: b(ldb,*)
                end subroutine strsm
@@ -3424,8 +3424,8 @@ module stdlib_linalg_blas
                pure subroutine ztrsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp,lk
                     implicit none
-                    complex(dp), intent(in) :: alpha,a(lda,*)
                     integer(ilp), intent(in) :: lda,ldb,m,n
+                    complex(dp), intent(in) :: alpha,a(lda,*)
                     character, intent(in) :: diag,side,transa,uplo
                     complex(dp), intent(inout) :: b(ldb,*)
                end subroutine ztrsm
@@ -3436,8 +3436,8 @@ module stdlib_linalg_blas
                pure subroutine ctrsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(sp), intent(in) :: alpha,a(lda,*)
                     integer(ilp64), intent(in) :: lda,ldb,m,n
+                    complex(sp), intent(in) :: alpha,a(lda,*)
                     character, intent(in) :: diag,side,transa,uplo
                     complex(sp), intent(inout) :: b(ldb,*)
                end subroutine ctrsm
@@ -3448,8 +3448,8 @@ module stdlib_linalg_blas
                pure subroutine dtrsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(dp), intent(in) :: alpha,a(lda,*)
                     integer(ilp64), intent(in) :: lda,ldb,m,n
+                    real(dp), intent(in) :: alpha,a(lda,*)
                     character, intent(in) :: diag,side,transa,uplo
                     real(dp), intent(inout) :: b(ldb,*)
                end subroutine dtrsm
@@ -3460,8 +3460,8 @@ module stdlib_linalg_blas
                pure subroutine strsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    real(sp), intent(in) :: alpha,a(lda,*)
                     integer(ilp64), intent(in) :: lda,ldb,m,n
+                    real(sp), intent(in) :: alpha,a(lda,*)
                     character, intent(in) :: diag,side,transa,uplo
                     real(sp), intent(inout) :: b(ldb,*)
                end subroutine strsm
@@ -3472,8 +3472,8 @@ module stdlib_linalg_blas
                pure subroutine ztrsm(side,uplo,transa,diag,m,n,alpha,a,lda,b,ldb)
                     import sp,dp,qp,ilp64,lk
                     implicit none
-                    complex(dp), intent(in) :: alpha,a(lda,*)
                     integer(ilp64), intent(in) :: lda,ldb,m,n
+                    complex(dp), intent(in) :: alpha,a(lda,*)
                     character, intent(in) :: diag,side,transa,uplo
                     complex(dp), intent(inout) :: b(ldb,*)
                end subroutine ztrsm

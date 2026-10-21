@@ -118,7 +118,7 @@ module test_linalg_mnorm
                        one_nrm = mnorm(one_mat,order)
                     
                        write(msg,"('dim=[',i0,',',i0,'] order=',a,' sp ',i0,'-th norm is wrong')") dim, order, l
-                       call check(error, abs(one_nrm-bnrm((l)))<tol*one_nrm, trim(msg))
+                       call check(error, abs(one_nrm-bnrm(l))<tol*one_nrm, trim(msg))
                        if (allocated(error)) return    
                        deallocate(one_mat) 
                     
@@ -222,7 +222,7 @@ module test_linalg_mnorm
                        one_nrm = mnorm(one_mat,order)
                     
                        write(msg,"('dim=[',i0,',',i0,'] order=',a,' dp ',i0,'-th norm is wrong')") dim, order, l
-                       call check(error, abs(one_nrm-bnrm((l)))<tol*one_nrm, trim(msg))
+                       call check(error, abs(one_nrm-bnrm(l))<tol*one_nrm, trim(msg))
                        if (allocated(error)) return    
                        deallocate(one_mat) 
                     
@@ -326,7 +326,7 @@ module test_linalg_mnorm
                        one_nrm = mnorm(one_mat,order)
                     
                        write(msg,"('dim=[',i0,',',i0,'] order=',a,' sp ',i0,'-th norm is wrong')") dim, order, l
-                       call check(error, abs(one_nrm-bnrm((l)))<tol*one_nrm, trim(msg))
+                       call check(error, abs(one_nrm-bnrm(l))<tol*one_nrm, trim(msg))
                        if (allocated(error)) return    
                        deallocate(one_mat) 
                     
@@ -430,7 +430,7 @@ module test_linalg_mnorm
                        one_nrm = mnorm(one_mat,order)
                     
                        write(msg,"('dim=[',i0,',',i0,'] order=',a,' dp ',i0,'-th norm is wrong')") dim, order, l
-                       call check(error, abs(one_nrm-bnrm((l)))<tol*one_nrm, trim(msg))
+                       call check(error, abs(one_nrm-bnrm(l))<tol*one_nrm, trim(msg))
                        if (allocated(error)) return    
                        deallocate(one_mat) 
                     
