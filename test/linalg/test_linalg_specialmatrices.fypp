@@ -21,6 +21,7 @@ contains
             new_unittest('tridiagonal', test_tridiagonal), &
             new_unittest('tridiagonal error handling', test_tridiagonal_error_handling), &
             new_unittest('sym_tridiagonal', test_sym_tridiagonal), &
+            new_unittest('symmetric tridiagonal cancellation', test_sym_tridiagonal_cancellation), &
             new_unittest('sym_tridiagonal error handling', test_sym_tridiagonal_error_handling), &
             new_unittest('symmetric tridiagonal 1x1 dense', test_sym_tridiagonal_1x1), &
             new_unittest('symmetric tridiagonal arithmetic', test_sym_tridiagonal_arithmetic), &
@@ -141,6 +142,29 @@ contains
         #:endfor
     end subroutine
 
+    !> Compare cancellation with the same reference operation as the random test.
+    subroutine test_sym_tridiagonal_cancellation(error)
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in KINDS_TYPES
+        block
+            integer, parameter :: wp = ${k1}$
+            type(sym_tridiagonal_${s1}$_type) :: a
+            ${t1}$ :: x(3), y(3), reference(3), amat(3,3), tolerance
+            a = sym_tridiagonal([0.4_wp,0.5_wp],[0.1_wp,0.2_wp,0.3_wp])
+            x = [0.6_wp,0.7_wp,0.8_wp]
+            amat = dense(a)
+            y = matmul(amat,x)
+            tolerance = 4*size(x)*epsilon(1.0_wp) * &
+                (maxval(matmul(abs(amat),abs(x)))+maxval(abs(y)))
+            reference = -matmul(amat,x)+y
+            call spmv(a,x,y,alpha=-1.0_wp,beta=1.0_wp)
+            call check(error, all_close(reference,y,abs_tol=tolerance), &
+                'symmetric SpMV cancellation ${s1}$')
+            if (allocated(error)) return
+        end block
+        #:endfor
+    end subroutine test_sym_tridiagonal_cancellation
+
     subroutine test_sym_tridiagonal(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
@@ -152,7 +176,7 @@ contains
             ${t1}$, allocatable :: Amat(:,:), du(:), dv(:)
             ${t1}$, allocatable :: x(:)
             ${t1}$, allocatable :: y1(:), y2(:)
-            ${t1}$ :: alpha, beta
+            ${t1}$ :: alpha, beta, tolerance
 
             integer :: i, j
             ${t1}$, parameter :: coeffs(3) = [-1.0_wp, 0.0_wp, 1.0_wp]
@@ -205,9 +229,12 @@ contains
 
                     y1 = 0.0_wp
                     call random_number(y2)
+                    ! Include a rounding-error bound when terms cancel near zero.
+                    tolerance = 4*n*epsilon(1.0_wp) * &
+                        (abs(alpha)*maxval(matmul(abs(Amat),abs(x)))+abs(beta)*maxval(abs(y2)))
                     y1 = alpha * matmul(Amat, x) + beta * y2
                     call spmv(A, x, y2, alpha=alpha, beta=beta)
-                    call check(error, all_close(y1, y2), .true.,&
+                    call check(error, all_close(y1, y2,abs_tol=tolerance), .true.,&
                         "spmv(fail): y = alpha*A*x + beta*y, alpha: "//to_string(alpha)//", beta: "//to_string(beta))
                     if (allocated(error)) return
                 end do
@@ -218,9 +245,11 @@ contains
             call random_number(alpha)
             call random_number(beta)
             call random_number(y2)
+            tolerance = 4*n*epsilon(1.0_wp) * &
+                (abs(alpha)*maxval(matmul(abs(Amat),abs(x)))+abs(beta)*maxval(abs(y2)))
             y1 = alpha * matmul(Amat, x) + beta * y2
             call spmv(A, x, y2, alpha=alpha, beta=beta)
-            call check(error, all_close(y1, y2), .true.,&
+            call check(error, all_close(y1, y2,abs_tol=tolerance), .true.,&
                 "spmv(fail): y = alpha*A*x + beta*y, alpha: "//to_string(alpha)//", beta: "//to_string(beta))
             if (allocated(error)) return
 
@@ -229,9 +258,11 @@ contains
             call random_number(alpha)
             call random_number(beta)
             call random_number(y2)
+            tolerance = 4*n*epsilon(1.0_wp) * &
+                (abs(alpha)*maxval(matmul(abs(Amat),abs(x)))+abs(beta)*maxval(abs(y2)))
             y1 = alpha * matmul(transpose(Amat), x) + beta * y2
             call spmv(A, x, y2, alpha=alpha, beta=beta, op="T")
-            call check(error, all_close(y1, y2), .true.,&
+            call check(error, all_close(y1, y2,abs_tol=tolerance), .true.,&
                 "spmv(fail): y = alpha*A.T*x + beta*y, alpha: "//to_string(alpha)//", beta: "//to_string(beta))
             if (allocated(error)) return
 
@@ -241,9 +272,11 @@ contains
             call random_number(alpha)
             call random_number(beta)
             call random_number(y2)
+            tolerance = 4*n*epsilon(1.0_wp) * &
+                (abs(alpha)*maxval(matmul(abs(Amat),abs(x)))+abs(beta)*maxval(abs(y2)))
             y1 = alpha * matmul(transpose(conjg((Amat))), x) + beta * y2
             call spmv(A, x, y2, alpha=alpha, beta=beta, op="H")
-            call check(error, all_close(y1, y2), .true.,&
+            call check(error, all_close(y1, y2,abs_tol=tolerance), .true.,&
                 "spmv(fail): y = alpha*A.H*x + beta*y, alpha: "//to_string(alpha)//", beta: "//to_string(beta))
             if (allocated(error)) return
             #:endif
