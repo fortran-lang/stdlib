@@ -44,6 +44,7 @@ add_subdirectory(datetime)
 ADD_SUBDIR(system)
 
 ADD_SUBDIR(stats)
+ADD_SUBDIR(regex)
 
 add_subdirectory(sparse)
 
