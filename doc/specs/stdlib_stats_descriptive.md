@@ -1,5 +1,5 @@
 ---
-title: stats
+title: stats_descriptive
 ---
 
 # Descriptive statistics
