@@ -799,7 +799,7 @@ Experimental
 ### Description
 
 Computes the gradient of the `fast_tanh` function:
-$$f(x)=1 - \fast_tanh(x)^2$$
+$$f(x)=1 - \text{fast\_tanh}(x)^2$$
 
 ### Syntax
 
@@ -826,7 +826,7 @@ Experimental
 ### Description
 
 Computes an approximated but faster solution to:
-$$f(x)=\erf(x)$$
+$$f(x)=\text{erf}(x)$$
 
 ### Syntax
 

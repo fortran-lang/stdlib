@@ -231,11 +231,15 @@ $$y=\alpha*op(M)*x+\beta*y$$
 
 ### Syntax
 
-`call ` [[stdlib_sparse_spmv(module):spmv_kernel_coo(interface)]] `(op,alpha,data,index,storage,vec_x,beta,vec_y)`
-`call ` [[stdlib_sparse_spmv(module):spmv_kernel_csc(interface)]] `(op,alpha,data,colptr,row,storage,vec_x,beta,vec_y)`
-`call ` [[stdlib_sparse_spmv(module):spmv_kernel_csr(interface)]] `(op,alpha,data,col,rowptr,storage,vec_x,beta,vec_y)`
-`call ` [[stdlib_sparse_spmv(module):spmv_kernel_ell(interface)]] `(op,alpha,data,index,storage,vec_x,beta,vec_y)`
-`call ` [[stdlib_sparse_spmv(module):spmv_kernel_sellc(interface)]] `(op,alpha,data,ia,ja,storage,vec_x,beta,vec_y)`
+`call ` {f:iface}`spmv_kernel_coo` `(op,alpha,data,index,storage,vec_x,beta,vec_y)`
+
+`call ` {f:iface}`spmv_kernel_csc` `(op,alpha,data,colptr,row,storage,vec_x,beta,vec_y)`
+
+`call ` {f:iface}`spmv_kernel_csr` `(op,alpha,data,col,rowptr,storage,vec_x,beta,vec_y)`
+
+`call ` {f:iface}`spmv_kernel_ell` `(op,alpha,data,index,storage,vec_x,beta,vec_y)`
+
+`call ` {f:iface}`spmv_kernel_sellc` `(op,alpha,data,ia,ja,storage,vec_x,beta,vec_y)`
 
 ### Arguments
 

@@ -67,8 +67,8 @@ zero indicates a successful conversion.
 
 ### Example
 
-```fortran
-{!example/strings/example_to_num_base.f90!}
+```{literalinclude} ../../example/strings/example_to_num_base.f90
+:language: fortran
 ```
 
 ## `to_num_from_stream` - conversion of a stream of values in a string to numbers

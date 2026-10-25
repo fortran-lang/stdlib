@@ -216,7 +216,7 @@ Experimental
 
 `fibonacci_hash` is just a re-export of the function of the same name
 implemented in
-[`stdlib_hash_32bit`](https://stdlib.fortran-lang.org/page/spec/stdlib_hash_functions.html#fibonacci_hash-maps-an-integer-to-a-smaller-number-of-bits).
+[`stdlib_hash_32bit`](stdlib_hash_procedures.md).
 It reduces the value of a 32 bit integer to a smaller number of bits.
 
 

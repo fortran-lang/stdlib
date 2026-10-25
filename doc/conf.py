@@ -37,7 +37,8 @@ suppress_warnings = [
 todo_include_todos = True
 
 myst_heading_anchors = 3
-myst_enable_extensions = ['colon_fence', 'deflist', 'substitution']
+myst_enable_extensions = ['amsmath', 'colon_fence', 'deflist', 'dollarmath', 'substitution']
+myst_dmath_double_inline = True
 
 DOCS_DIR = Path(__file__).resolve().parent
 REPO_ROOT = DOCS_DIR.parent
