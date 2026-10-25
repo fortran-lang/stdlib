@@ -49,7 +49,7 @@ module stdlib_load_library
     !> Version: experimental
     !>
     !> Handle on a loaded shared library.
-    !> ([Specification](../page/specs/stdlib_load_library.html#shared_library_type))
+    !> (Specification: :doc:`/specs/stdlib_load_library`)
     type :: shared_library_type
         private
         !> OS handle returned by `dlopen` / `LoadLibraryExW`
@@ -155,7 +155,7 @@ contains
     !> Version: experimental
     !>
     !> Platform-decorated file name of a library, e.g. `"fft"` -> `"libfft.so"` / `"fft.dll"`.
-    !> ([Specification](../page/specs/stdlib_load_library.html#library_filename))
+    !> (Specification: :doc:`/specs/stdlib_load_library`)
     function library_filename(name) result(fname)
         !> Undecorated library name
         character(len=*), intent(in) :: name
@@ -174,7 +174,7 @@ contains
     !> Version: experimental
     !>
     !> Shared library file extension on this platform (`".so"`, `".dll"`, `".dylib"`).
-    !> ([Specification](../page/specs/stdlib_load_library.html#shared_library_suffix))
+    !> (Specification: :doc:`/specs/stdlib_load_library`)
     function shared_library_suffix() result(suffix)
         !> Platform-specific extension, dot included
         character(len=:), allocatable :: suffix

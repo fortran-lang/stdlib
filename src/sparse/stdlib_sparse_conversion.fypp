@@ -26,7 +26,7 @@ module stdlib_sparse_conversion
     !! Conversion from dense to coo
     !! Enables extracting the non-zero elements of a dense 2D matrix and
     !! storing those values in a COO format. The coo matrix is (re)allocated on the fly.
-    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface dense2coo
         #:for k1, t1, s1 in (KINDS_TYPES)
         module procedure :: dense2coo_${s1}$
@@ -39,7 +39,7 @@ module stdlib_sparse_conversion
     !! Conversion from coo to dense
     !! Enables creating a dense 2D matrix from the non-zero values stored in a COO format
     !! The dense matrix can be allocated on the fly if not pre-allocated by the user.
-    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface coo2dense
         #:for k1, t1, s1 in (KINDS_TYPES)
         module procedure :: coo2dense_${s1}$
@@ -52,7 +52,7 @@ module stdlib_sparse_conversion
     !! Conversion from coo to csr
     !! Enables transferring data from a COO matrix to a CSR matrix
     !! under the hypothesis that the COO is already ordered.
-    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface coo2csr
         #:for k1, t1, s1 in (KINDS_TYPES)
         module procedure :: coo2csr_${s1}$
@@ -65,7 +65,7 @@ module stdlib_sparse_conversion
     !! Conversion from coo to csc
     !! Enables transferring data from a COO matrix to a CSC matrix
     !! under the hypothesis that the COO is already ordered.
-    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface coo2csc
         #:for k1, t1, s1 in (KINDS_TYPES)
         module procedure :: coo2csc_${s1}$
@@ -78,7 +78,7 @@ module stdlib_sparse_conversion
     !! Conversion from csr to dense
     !! Enables creating a dense 2D matrix from the non-zero values stored in a CSR format
     !! The dense matrix can be allocated on the fly if not pre-allocated by the user.
-    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface csr2dense
         #:for k1, t1, s1 in (KINDS_TYPES)
         module procedure :: csr2dense_${s1}$
@@ -91,7 +91,7 @@ module stdlib_sparse_conversion
     !! Conversion from csc to dense
     !! Enables creating a dense 2D matrix from the non-zero values stored in a CSC format
     !! The dense matrix can be allocated on the fly if not pre-allocated by the user.
-    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface csc2dense
         #:for k1, t1, s1 in (KINDS_TYPES)
         module procedure :: csc2dense_${s1}$
@@ -104,7 +104,7 @@ module stdlib_sparse_conversion
     !! Conversion from csr to coo
     !! Enables transferring data from a CSR matrix to a COO matrix
     !! under the hypothesis that the CSR is already ordered.
-    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface csr2coo
         #:for k1, t1, s1 in (KINDS_TYPES)
         module procedure :: csr2coo_${s1}$
@@ -117,7 +117,7 @@ module stdlib_sparse_conversion
     !! Conversion from csr to ell
     !! Enables transferring data from a CSR matrix to a ELL matrix
     !! under the hypothesis that the CSR is already ordered.
-    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface csr2ell
         #:for k1, t1, s1 in (KINDS_TYPES)
         module procedure :: csr2ell_${s1}$
@@ -130,7 +130,7 @@ module stdlib_sparse_conversion
     !! Conversion from csr to SELL-C
     !! Enables transferring data from a CSR matrix to a SELL-C matrix
     !! It takes an optional parameter to decide the chunck size 4, 8 or 16
-    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface csr2sellc
     #:for k1, t1, s1 in (KINDS_TYPES)
         module procedure :: csr2sellc_${s1}$
@@ -143,7 +143,7 @@ module stdlib_sparse_conversion
     !! Conversion from csc to coo
     !! Enables transferring data from a CSC matrix to a COO matrix
     !! under the hypothesis that the CSC is already ordered.
-    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface csc2coo
         #:for k1, t1, s1 in (KINDS_TYPES)
         module procedure :: csc2coo_${s1}$
@@ -154,7 +154,7 @@ module stdlib_sparse_conversion
     !! version: experimental
     !!
     !! Extraction of diagonal values
-    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface diag
     #:for k1, t1, s1 in (KINDS_TYPES)
         module procedure :: dense2diagonal_${s1}$
@@ -169,7 +169,7 @@ module stdlib_sparse_conversion
     !! version: experimental
     !!
     !! Enable creating a sparse matrix from ijv (row,col,data) triplet
-    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface from_ijv
         module procedure :: coo_from_ijv_type
         #:for k1, t1, s1 in (KINDS_TYPES)
@@ -658,7 +658,7 @@ contains
     !! version: experimental
     !!
     !! Transform COO matrix to canonical form with ordered and unique entries
-    !! [Specifications](../page/specs/stdlib_sparse.html#sparse_conversion)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     subroutine coo2ordered(COO,sort_data)
         class(COO_type), intent(inout) :: COO
         logical, intent(in), optional :: sort_data

@@ -23,8 +23,7 @@ module stdlib_stats_distribution_exponential
     !! Version experimental
     !!
     !! Exponential Distribution Random Variates
-    !! ([Specification](../page/specs/stdlib_stats_distribution_exponential.html#
-    !! rvs_exp-exponential-distribution-random-variates))
+    !! (Specification: :doc:`/specs/stdlib_stats_distribution_exponential`)
     !!
         module procedure rvs_exp_0_rsp                        !0 dummy variable
 
@@ -55,8 +54,7 @@ module stdlib_stats_distribution_exponential
     !! Version experimental
     !!
     !! Exponential Distribution Probability Density Function
-    !! ([Specification](../page/specs/stdlib_stats_distribution_exponential.html#
-    !! pdf_exp-exponential-distribution-probability-density-function))
+    !! (Specification: :doc:`/specs/stdlib_stats_distribution_exponential`)
     !!
         ! new interfaces using loc and scale
 
@@ -77,8 +75,7 @@ module stdlib_stats_distribution_exponential
     !! Version experimental
     !!
     !! Exponential Cumulative Distribution Function
-    !! ([Specification](../page/specs/stdlib_stats_distribution_exponential.html#
-    !! cdf_exp-exponential-distribution-cumulative-distribution-function))
+    !! (Specification: :doc:`/specs/stdlib_stats_distribution_exponential`)
     !!
         ! new interfaces using loc and scale
 

@@ -218,7 +218,7 @@ module stdlib_string_type
     !> Version: experimental
     !>
     !> Moves the allocated character scalar from 'from' to 'to'
-    !> [Specifications](../page/specs/stdlib_string_type.html#move)
+    !> Specifications: :doc:`/specs/stdlib_string_type`
     interface move
         module procedure :: move_string_string
         module procedure :: move_string_char

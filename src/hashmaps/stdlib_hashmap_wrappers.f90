@@ -102,7 +102,7 @@ contains
 !! Version: Experimental
 !!
 !! Copies the contents of the key, old_key, to the key, new_key
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#copy_key-returns-a-copy-of-the-key))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
 !!
 !! ## Arguments
 !! old_key : the input key
@@ -119,7 +119,7 @@ contains
 !! Version: Experimental
 !!
 !! Compares two keys for equality
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#operator(==)-compares-two-keys-for-equality))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
 !!
 !! ## Arguments
 !! key1 : the first key
@@ -147,7 +147,7 @@ contains
 !! Version: Experimental
 !!
 !! Frees the memory in a key
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#free_key-frees-the-memory-associated-with-a-key))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
 !!
 !! ## Arguments
 !! key : the key
@@ -300,7 +300,7 @@ contains
 !! Version: Experimental
 !!
 !! Hashes a key with the FNV_1a algorithm
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#fnv_1a_hasher-calculates-a-hash-code-from-a-key))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
 !!
 !! ## Arguments
 !! key : the key to be hashed
@@ -316,7 +316,7 @@ contains
 !! Version: Experimental
 !!
 !! Hashes a key with the NMHASH32 hash algorithm
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#seeded_nmhash32_hasher-calculates-a-hash-code-from-a-key))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
 !!
 !! ## Arguments
 !! key : the key to be hashed
@@ -333,7 +333,7 @@ contains
 !! Version: Experimental
 !!
 !! Hashes a key with the NMHASH32X hash algorithm
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#seeded_nmhash32x_hasher-calculates-a-hash-code-from-a-key))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
 !! ## Arguments
 !! key : the key to be hashed
         type(key_type), intent(in)    :: key
@@ -349,7 +349,7 @@ contains
 !! Version: Experimental
 !!
 !! Hashes a key with the waterhash algorithm
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#seeded_water_hasher-calculates-a-hash-code-from-a-key))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
 !!
 !! ## Arguments
 !! key : the key to be hashed

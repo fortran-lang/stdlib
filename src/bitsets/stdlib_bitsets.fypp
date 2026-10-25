@@ -97,7 +97,7 @@ module stdlib_bitsets
     type, abstract :: bitset_type
 !! version: experimental
 !!
-!! Parent type for bitset_64 and bitset_large ([Specification](../page/specs/stdlib_bitsets.html#the-stdlib_bitsets-derived-types))
+!! Parent type for bitset_64 and bitset_large (Specification: :doc:`/specs/stdlib_bitsets`)
 
         private
         integer(bits_kind) :: num_bits = 0_bits_kind
@@ -820,7 +820,7 @@ module stdlib_bitsets
     type, extends(bitset_type) :: bitset_large
 !! Version: experimental
 !!
-!! Type for bitsets with more than 64 bits ([Specification](../page/specs/stdlib_bitsets.html#the-stdlib_bitsets-derived-types))
+!! Type for bitsets with more than 64 bits (Specification: :doc:`/specs/stdlib_bitsets`)
 
         private
         integer(block_kind), private, allocatable :: blocks(:)
@@ -1135,7 +1135,7 @@ module stdlib_bitsets
 !! Version: experimental
 !!
 !! Used to define assignment for `bitset_large`.
-!! ([Specification](../page/specs/stdlib_bitsets.html#-compare-two-bitsets-to-determine-whether-the-bits-have-the-same-value))
+!! (Specification: :doc:`/specs/stdlib_bitsets`)
 !!
 !!## Example
 !!
@@ -1193,7 +1193,7 @@ module stdlib_bitsets
     type, extends(bitset_type) :: bitset_64
 !! Version: experimental
 !!
-!! Type for bitsets with no more than 64 bits ([Specification](../page/specs/stdlib_bitsets.html#the-stdlib_bitsets-derived-types))
+!! Type for bitsets with no more than 64 bits (Specification: :doc:`/specs/stdlib_bitsets`)
         private
         integer(block_kind), private :: block = 0
 
@@ -1533,7 +1533,7 @@ module stdlib_bitsets
 !! Sets the bits in `set1` to the bitwise `and` of the original bits in `set1`
 !! and `set2`. The sets must have the same number of bits
 !! otherwise the result is undefined.
-!! ([Specification](../page/specs/stdlib_bitsets.html#and-bitwise-and-of-the-bits-of-two-bitsets))
+!! (Specification: :doc:`/specs/stdlib_bitsets`)
 !!
 !!## Example
 !!
@@ -1576,7 +1576,7 @@ module stdlib_bitsets
 !! with the bitwise negation of `set2`. The sets must have the same
 !! number of bits otherwise the result is undefined.
 !!
-!! ([Specification](../page/specs/stdlib_bitsets.html#and_not-bitwise-and-of-one-bitset-with-the-negation-of-another))
+!! (Specification: :doc:`/specs/stdlib_bitsets`)
 !!
 !!## Example
 !!
@@ -1622,7 +1622,7 @@ module stdlib_bitsets
 !! `bits(old)-1` then if `status` is present it has the value
 !! `index_invalid_error` and `new` is undefined, otherwise processing stops
 !! with an informative message.
-!! ([Specification](../page/specs/stdlib_bitsets.html#extract-create-a-new-bitset-from-a-range-in-an-old-bitset))
+!! (Specification: :doc:`/specs/stdlib_bitsets`)
 !!
 !!## Example
 !!
@@ -1662,7 +1662,7 @@ module stdlib_bitsets
 !! Sets the bits in `set1` to the bitwise `or` of the original bits in `set1`
 !! and `set2`. The sets must have the same number of bits otherwise
 !! the result is undefined.
-!! ([Specification](../page/specs/stdlib_bitsets.html#or-bitwise-or-of-the-bits-of-two-bitsets))
+!! (Specification: :doc:`/specs/stdlib_bitsets`)
 !!
 !!## Example
 !!
@@ -1705,7 +1705,7 @@ module stdlib_bitsets
 !! Sets the bits in `set1` to the bitwise `xor` of the original bits in `set1`
 !! and `set2`. The sets must have the same number of bits
 !! otherwise the result is undefined.
-!!([Specification](../page/specs/stdlib_bitsets.html#xor-bitwise-exclusive-or))
+!!(Specification: :doc:`/specs/stdlib_bitsets`)
 !!
 !!## Example
 !!
@@ -1748,7 +1748,7 @@ module stdlib_bitsets
 !! Returns `.true.` if all bits in `set1` and `set2` have the same value,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
-!!([Specification](../page/specs/stdlib_bitsets.html#-compare-two-bitsets-to-determine-whether-the-bits-have-the-same-value))
+!!(Specification: :doc:`/specs/stdlib_bitsets`)
 !!
 !!## Example
 !!
@@ -1789,7 +1789,7 @@ module stdlib_bitsets
 !! Returns `.true.` if not all bits in `set1` and `set2` have the same value,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
-!!([Specification](../page/specs/stdlib_bitsets.html#-compare-two-bitsets-to-determine-whether-any-bits-differ-in-value))
+!!(Specification: :doc:`/specs/stdlib_bitsets`)
 !!
 !!## Example
 !!
@@ -1831,7 +1831,7 @@ module stdlib_bitsets
 !! highest order different bit is set to 1 in `set1` and to 0 in `set2`,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
-!!([Specification](../page/specs/stdlib_bitsets.html#gt-compare-two-bitsets-to-determine-whether-the-first-is-greater-than-the-other))
+!!(Specification: :doc:`/specs/stdlib_bitsets`)
 !!
 !!## Example
 !!
@@ -1873,7 +1873,7 @@ module stdlib_bitsets
 !! highest order different bit is set to 1 in `set1` and to 0 in `set2`,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
-!! ([Specification](../page/specs/stdlib_bitsets.html#gt-compare-two-bitsets-to-determine-whether-the-first-is-greater-than-or-equal-to-the-second))
+!! (Specification: :doc:`/specs/stdlib_bitsets`)
 !!
 !!## Example
 !!
@@ -1916,7 +1916,7 @@ module stdlib_bitsets
 !! highest order different bit is set to 0 in `set1` and to 1 in `set2`,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
-!!([Specification](../page/specs/stdlib_bitsets.html#lt-compare-two-bitsets-to-determine-whether-the-first-is-less-than-the-other))
+!!(Specification: :doc:`/specs/stdlib_bitsets`)
 !!
 !!## Example
 !!
@@ -1958,7 +1958,7 @@ module stdlib_bitsets
 !! highest order different bit is set to 0 in `set1` and to 1 in `set2`,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
-!!([Specification](../page/specs/stdlib_bitsets.html#lt-compare-two-bitsets-to-determine-whether-the-first-is-less-than-or-equal-to-the-other))
+!!(Specification: :doc:`/specs/stdlib_bitsets`)
 !!
 !!## Example
 !!

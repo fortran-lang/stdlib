@@ -31,7 +31,7 @@ module stdlib_str2num
         !! version: experimental
         !!
         !! Conversion of strings to numbers
-        !! ([Specification](../page/specs/stdlib_str2num.html#to-num-conversion-of-strings-to-numbers)) 
+        !! (Specification: :doc:`/specs/stdlib_str2num`) 
         #:for k1, t1 in (INT_KINDS_TYPES + REAL_KINDS_TYPES)
         module procedure to_${k1}$
         #:endfor
@@ -41,7 +41,7 @@ module stdlib_str2num
         !! version: experimental
         !!
         !! Conversion of a stream of values in a string to numbers
-        !! ([Specification](../page/specs/stdlib_str2num.html#to-num-p-conversion-of-a-stream-of-values-in-a-strings-to-numbers)) 
+        !! (Specification: :doc:`/specs/stdlib_str2num`) 
         #:for k1, t1 in (INT_KINDS_TYPES + REAL_KINDS_TYPES)
         module procedure to_${k1}$_from_stream
         #:endfor

@@ -546,7 +546,7 @@ module stdlib_sorting
 !! https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs#L2159
 !! `ORD_SORT` is a hybrid stable comparison algorithm combining `merge sort`,
 !! and `insertion sort`.
-!! ([Specification](../page/specs/stdlib_sorting.html#ord_sort-sorts-an-input-array))
+!! (Specification: :doc:`/specs/stdlib_sorting`)
 !!
 !! It is always at worst O(N Ln(N)) in sorting random
 !! data, having a performance about 25% slower than `SORT` on such
@@ -576,7 +576,7 @@ module stdlib_sorting
 !! The generic subroutine interface implementing the LSD radix sort algorithm,
 !! see https://en.wikipedia.org/wiki/Radix_sort for more details.
 !! It is always O(N) in sorting random data, but need a O(N) buffer.
-!! ([Specification](../page/specs/stdlib_sorting.html#radix_sort-sorts-an-input-array))
+!! (Specification: :doc:`/specs/stdlib_sorting`)
 !!
 
         pure module subroutine int8_radix_sort(array, reverse)
@@ -620,7 +620,7 @@ module stdlib_sorting
 !!
 !! The generic subroutine interface implementing the `SORT` algorithm, based
 !! on the `introsort` of David Musser.
-!! ([Specification](../page/specs/stdlib_sorting.html#sort-sorts-an-input-array))
+!! (Specification: :doc:`/specs/stdlib_sorting`)
 
 #:for t1, t2, name1, cpp1 in IRSCB_TYPES_ALT_NAME
 #:block generate_cpp(cpp_var=cpp1)
@@ -649,7 +649,7 @@ module stdlib_sorting
 !! https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs#L2159
 !! but modified to return an array of indices that would provide a stable
 !! sort of the rank one `ARRAY` input.
-!! ([Specification](../page/specs/stdlib_sorting.html#sort_adjoint-creates-an-array-of-sorting-indices-for-an-input-array-while-also-sorting-the-array))
+!! (Specification: :doc:`/specs/stdlib_sorting`)
 !!
 !! The indices by default correspond to a
 !! non-decreasing sort, but if the optional argument `REVERSE` is present
@@ -688,7 +688,7 @@ module stdlib_sorting
 !! https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs#L2159
 !! but modified to return an array of indices that would provide a stable
 !! sort of the rank one `ARRAY` input.
-!! ([Specification](../page/specs/stdlib_sorting.html#sort_index-creates-an-array-of-sorting-indices-for-an-input-array-while-also-sorting-the-array))
+!! (Specification: :doc:`/specs/stdlib_sorting`)
 !!
 !! The indices by default correspond to a
 !! non-decreasing sort, but if the optional argument `REVERSE` is present

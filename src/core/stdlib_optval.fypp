@@ -28,7 +28,7 @@ module stdlib_optval
     !! version: experimental
     !!
     !! Fallback value for optional arguments
-    !! ([Specification](../page/specs/stdlib_optval.html#description))
+    !! (Specification: :doc:`/specs/stdlib_optval`)
     #:for k1, t1 in KINDS_TYPES
       module procedure optval_${t1[0]}$${k1}$
     #:endfor

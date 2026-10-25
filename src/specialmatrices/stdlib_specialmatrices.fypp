@@ -277,7 +277,7 @@ module stdlib_specialmatrices
     !----------------------------------
 
     interface spmv
-        !! ([Specifications](../page/specs/stdlib_specialmatrices.html#spmv)) This
+        !! (Specifications: :doc:`/specs/stdlib_specialmatrices`) This
         !! interface provides methods to compute the matrix-vector product
         !!
         !!  $$ y = \alpha \mathrm{op}(A) x + \beta y$$
@@ -319,7 +319,7 @@ module stdlib_specialmatrices
     interface dense
         !! This interface provides methods to convert a matrix of one of the
         !! types defined by `stdlib_specialmatrices` to a standard rank-2 array.
-        !! ([Specifications](../page/specs/stdlib_specialmatrices.html#dense))
+        !! (Specifications: :doc:`/specs/stdlib_specialmatrices`)
         #:for k1, t1, s1 in KINDS_TYPES
         pure module function tridiagonal_to_dense_${s1}$(A) result(B)
             !! Convert a `tridiagonal` matrix to its dense representation.
@@ -344,7 +344,7 @@ module stdlib_specialmatrices
     interface transpose
         !! This interface provides methods to compute the transpose operation for
         !! the different matrix types defined by `stdlib_specialmatrices`.
-        !! [Specifications](../page/specs/stdlib_specialmatrices.html#transpose)
+        !! Specifications: :doc:`/specs/stdlib_specialmatrices`
         #:for k1, t1, s1 in KINDS_TYPES
         pure module function transpose_tridiagonal_${s1}$(A) result(B)
             type(tridiagonal_${s1}$_type), intent(in) :: A
@@ -366,7 +366,7 @@ module stdlib_specialmatrices
         !! This interface provides methods to compute the hermitian operation for
         !! the different matrix types defined by `stdlib_specialmatrices`. For
         !! real-valued matrices, this is equivalent to the standard `transpose`.
-        !! [Specifications](../page/specs/stdlib_specialmatrices.html#hermitian)
+        !! Specifications: :doc:`/specs/stdlib_specialmatrices`
         #:for k1, t1, s1 in KINDS_TYPES
         pure module function hermitian_tridiagonal_${s1}$(A) result(B)
             type(tridiagonal_${s1}$_type), intent(in) :: A
@@ -393,7 +393,7 @@ module stdlib_specialmatrices
     interface operator(*)
         !! Overload the `*` for scalar-matrix multiplications for the different matrix
         !! types provided by `stdlib_specialmatrices`.
-        !! [Specifications](../page/specs/stdlib_specialmatrices.html#operators)
+        !! Specifications: :doc:`/specs/stdlib_specialmatrices`
         #:for k1, t1, s1 in KINDS_TYPES
         pure module function scalar_multiplication_tridiagonal_${s1}$(alpha, A) result(B)
             ${t1}$, intent(in) :: alpha
@@ -424,7 +424,7 @@ module stdlib_specialmatrices
     interface operator(+)
         !! Overload the `+` operator for matrix-matrix addition. The two matrices need to
         !! be of the same type and kind.
-        !! [Specifications](../page/specs/stdlib_specialmatrices.html#operators)
+        !! Specifications: :doc:`/specs/stdlib_specialmatrices`
         #:for k1, t1, s1 in KINDS_TYPES
         pure module function matrix_add_tridiagonal_${s1}$(A, B) result(C)
             type(tridiagonal_${s1}$_type), intent(in) :: A
@@ -445,7 +445,7 @@ module stdlib_specialmatrices
     interface operator(-)
         !! Overload the `-` operator for matrix-matrix subtraction. The two matrices need to
         !! be of the same type and kind.
-        !! [Specifications](../page/specs/stdlib_specialmatrices.html#operators)
+        !! Specifications: :doc:`/specs/stdlib_specialmatrices`
         #:for k1, t1, s1 in KINDS_TYPES
         pure module function matrix_sub_tridiagonal_${s1}$(A, B) result(C)
             type(tridiagonal_${s1}$_type), intent(in) :: A

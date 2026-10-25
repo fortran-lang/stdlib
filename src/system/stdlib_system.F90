@@ -13,7 +13,7 @@ public :: sleep
 !! version: experimental
 !!
 !! Cached OS type retrieval with negligible runtime overhead.
-!! ([Specification](../page/specs/stdlib_system.html#os_type-cached-os-type-retrieval))
+!! (Specification: :doc:`/specs/stdlib_system`)
 !!
 !!## Summary
 !! Provides a cached value for the runtime OS type. 
@@ -28,7 +28,7 @@ public :: OS_TYPE
 !! version: experimental
 !!
 !! Determine the current operating system (OS) type at runtime.
-!! ([Specification](../page/specs/stdlib_system.html#get_runtime_os-determine-the-os-type-at-runtime))
+!! (Specification: :doc:`/specs/stdlib_system`)
 !!
 !!## Summary
 !! This function inspects the runtime environment to identify the OS type. 
@@ -97,7 +97,7 @@ public :: dir_name
 !! version: experimental
 !!
 !! Tests if a given path matches an existing directory.
-!! ([Specification](../page/specs/stdlib_system.html#is_directory-test-if-a-path-is-a-directory))
+!! (Specification: :doc:`/specs/stdlib_system`)
 !!
 !!## Summary
 !! Function to evaluate whether a specified path corresponds to an existing directory.
@@ -116,7 +116,7 @@ public :: is_directory
 !! version: experimental
 !!
 !! Makes an empty directory.
-!! ([Specification](../page/specs/stdlib_system.html#make_directory))
+!! (Specification: :doc:`/specs/stdlib_system`)
 !!
 !!## Summary
 !! Creates an empty directory with default permissions.
@@ -131,7 +131,7 @@ public :: make_directory
 !! version: experimental
 !!
 !! Makes an empty directory, also creating all the parent directories required.
-!! ([Specification](../page/specs/stdlib_system.html#make_directory))
+!! (Specification: :doc:`/specs/stdlib_system`)
 !!
 !!## Summary
 !! Creates an empty directory with all the parent directories required to do so.
@@ -147,7 +147,7 @@ public :: make_directory_all
 !! version: experimental
 !!
 !! Removes an empty directory.
-!! ([Specification](../page/specs/stdlib_system.html#remove_directory))
+!! (Specification: :doc:`/specs/stdlib_system`)
 !!
 !!## Summary
 !! Removes an empty directory.
@@ -162,7 +162,7 @@ public :: remove_directory
 !! version: experimental
 !!
 !! Gets the current working directory of the process
-!! ([Specification](../page/specs/stdlib_system.html#get_cwd))
+!! (Specification: :doc:`/specs/stdlib_system`)
 !!
 !!## Summary
 !! Gets the current working directory.
@@ -175,7 +175,7 @@ public :: get_cwd
 !! version: experimental
 !!
 !! Sets the current working directory of the process
-!! ([Specification](../page/specs/stdlib_system.html#set_cwd))
+!! (Specification: :doc:`/specs/stdlib_system`)
 !!
 !!## Summary
 !! Changes the current working directory to the one specified.
@@ -188,7 +188,7 @@ public :: set_cwd
 !! version: experimental
 !!
 !! Sets an environment variable for the calling process
-!! ([Specification](../page/specs/stdlib_system.html#set_environment_variable))
+!! (Specification: :doc:`/specs/stdlib_system`)
 !!
 !! ### Summary
 !! Creates an environment variable, or changes the value of an existing one.
@@ -206,7 +206,7 @@ public :: set_environment_variable
 !! version: experimental
 !!
 !! Removes an environment variable from the calling process
-!! ([Specification](../page/specs/stdlib_system.html#delete_environment_variable))
+!! (Specification: :doc:`/specs/stdlib_system`)
 !!
 !! ### Summary
 !! Deletes an environment variable, if it is set.
@@ -219,7 +219,7 @@ public :: delete_environment_variable
 !! version: experimental
 !!
 !! Deletes a specified file from the filesystem.
-!! ([Specification](../page/specs/stdlib_system.html#delete_file-delete-a-file))
+!! (Specification: :doc:`/specs/stdlib_system`)
 !!
 !!## Summary
 !! Subroutine to safely delete a file from the filesystem. It handles errors gracefully using the library's `state_type`.
@@ -236,7 +236,7 @@ public :: delete_file
 !! version: experimental
 !!
 !! Returns the file path of the null device, which discards all data written to it.
-!! ([Specification](../page/specs/stdlib_system.html#null_device-return-the-null-device-file-path))
+!! (Specification: :doc:`/specs/stdlib_system`)
 !!
 !!## Summary
 !! Function that provides the file path of the null device appropriate for the current operating system.
@@ -253,7 +253,7 @@ public :: null_device
 !! version: experimental
 !!
 !! A helper function for returning the `type(state_type)` with the flag `STDLIB_FS_ERROR` set.
-!! ([Specification](../page/specs/stdlib_system.html#FS_ERROR))
+!! (Specification: :doc:`/specs/stdlib_system`)
 !!
 public :: FS_ERROR
 
@@ -261,14 +261,14 @@ public :: FS_ERROR
 !!
 !! A helper function for returning the `type(state_type)` with the flag `STDLIB_FS_ERROR` set.
 !! It also formats and prefixes the `code` passed to it as the first argument
-!! ([Specification](../page/specs/stdlib_system.html#FS_ERROR_CODE))
+!! (Specification: :doc:`/specs/stdlib_system`)
 !!
 public :: FS_ERROR_CODE
 
 !> Version: experimental
 !>
 !> Integer constants representing the most common path types.
-!> ([Specification](../page/specs/stdlib_system.html))
+!> (Specification: :doc:`/specs/stdlib_system`)
 integer, parameter, public :: &
     !> Represents an unknown path type
     fs_type_unknown      = 0, &
@@ -282,7 +282,7 @@ integer, parameter, public :: &
 !! version: experimental
 !!
 !! Checks if a path exists in the filesystem.
-!! ([Specification](../page/specs/stdlib_system.html#exists))
+!! (Specification: :doc:`/specs/stdlib_system`)
 !!
 !!## Summary
 !! Function to check whether the path exists in the fileystem at all.
@@ -307,7 +307,7 @@ public :: exists
 !! version: experimental
 !!
 !! Tests if a given path is a symbolic link.
-!! ([Specification](../page/specs/stdlib_system.html#is_symlink))
+!! (Specification: :doc:`/specs/stdlib_system`)
 !!
 !!## Summary
 !! Function to evaluate whether a specified path corresponds to a symbolic link.
@@ -323,7 +323,7 @@ public :: is_symlink
 !! version: experimental
 !!
 !! Tests if a given path is a regular file.
-!! ([Specification](../page/specs/stdlib_system.html#is_file))
+!! (Specification: :doc:`/specs/stdlib_system`)
 !!
 !!## Summary
 !! Function to evaluate whether a specified path corresponds to a regular file.
@@ -405,7 +405,7 @@ interface runasync
     !! version: experimental
     !!
     !! Executes an external process asynchronously.
-    !! ([Specification](../page/specs/stdlib_system.html#runasync-execute-an-external-process-asynchronously))
+    !! (Specification: :doc:`/specs/stdlib_system`)
     !!
     !!## Summary
     !! Provides methods for executing external processes asynchronously, using either a single command string 
@@ -462,7 +462,7 @@ interface run
     !! version: experimental
     !!
     !! Executes an external process synchronously.
-    !! ([Specification](../page/specs/stdlib_system.html#run-execute-an-external-process-synchronously))
+    !! (Specification: :doc:`/specs/stdlib_system`)
     !!
     !!## Summary
     !! Provides methods for executing external processes synchronously, using either a single command string 
@@ -520,7 +520,7 @@ interface is_running
     !! version: experimental
     !!
     !! Checks if an external process is still running.
-    !! ([Specification](../page/specs/stdlib_system.html#is_running-check-if-a-process-is-still-running))
+    !! (Specification: :doc:`/specs/stdlib_system`)
     !!
     !!## Summary
     !! Provides a method to determine if an external process is still actively running.
@@ -545,7 +545,7 @@ interface is_completed
     !! version: experimental
     !!
     !! Checks if an external process has completed execution.
-    !! ([Specification](../page/specs/stdlib_system.html#is_completed-check-if-a-process-has-completed-execution))
+    !! (Specification: :doc:`/specs/stdlib_system`)
     !!
     !!## Summary
     !! Provides a method to determine if an external process has finished execution.
@@ -570,7 +570,7 @@ interface elapsed
     !! version: experimental
     !!
     !! Returns the lifetime of a process, in seconds.
-    !! ([Specification](../page/specs/stdlib_system.html#elapsed-return-process-lifetime-in-seconds))
+    !! (Specification: :doc:`/specs/stdlib_system`)
     !!
     !!## Summary
     !! Provides the total elapsed time (in seconds) since the creation of the specified process.
@@ -594,7 +594,7 @@ interface wait
     !! version: experimental
     !!
     !! Waits for a running process to complete.
-    !! ([Specification](../page/specs/stdlib_system.html#wait-wait-until-a-running-process-is-completed))
+    !! (Specification: :doc:`/specs/stdlib_system`)
     !!
     !!## Summary
     !! Provides a method to block the execution and wait until the specified process finishes.
@@ -621,7 +621,7 @@ interface update
     !! version: experimental
     !!
     !! Updates the internal state of a process variable.
-    !! ([Specification](../page/specs/stdlib_system.html#update-update-the-internal-state-of-a-process))
+    !! (Specification: :doc:`/specs/stdlib_system`)
     !!
     !!## Summary
     !! Provides a method to query the system and update the internal state of the specified process variable.
@@ -647,7 +647,7 @@ interface kill
     !! version: experimental
     !!
     !! Terminates a running process.
-    !! ([Specification](../page/specs/stdlib_system.html#kill-terminate-a-running-process))
+    !! (Specification: :doc:`/specs/stdlib_system`)
     !!
     !!## Summary
     !! Provides a method to kill or terminate a running process.
@@ -676,7 +676,7 @@ interface sleep
     !! version: experimental
     !!
     !! Pauses execution for a specified time in milliseconds.
-    !! ([Specification](../page/specs/stdlib_system.html#sleep-pause-execution-for-a-specified-time=in-milliseconds))
+    !! (Specification: :doc:`/specs/stdlib_system`)
     !!
     !!## Summary
     !! Pauses code execution for a specified number of milliseconds. This routine is a cross-platform
@@ -734,7 +734,7 @@ interface
     !! version: experimental
     !!
     !! Returns a `logical` flag indicating if the system is Windows.
-    !! ([Specification](../page/specs/stdlib_system.html#is_windows-check-if-the-system-is-running-on-windows))
+    !! (Specification: :doc:`/specs/stdlib_system`)
     !!
     !!## Summary
     !! A fast, compile-time check to determine if the system is running Windows, based on the `_WIN32` macro.
@@ -767,7 +767,7 @@ interface join_path
     !!
     !!## Summary
     !! join the paths provided according to the OS-specific path-separator
-    !! ([Specification](../page/specs/stdlib_system.html#join_path))
+    !! (Specification: :doc:`/specs/stdlib_system`)
     !!
     module function join2_char_char(p1, p2) result(path)
         character(:), allocatable :: path
@@ -807,7 +807,7 @@ interface operator(/)
     !!
     !!## Summary
     !! A binary operator to join the paths provided according to the OS-specific path-separator
-    !! ([Specification](../page/specs/stdlib_system.html#operator(/)))
+    !! (Specification: :doc:`/specs/stdlib_system`)
     !!
     module function join_op_char_char(p1, p2) result(path)
         character(:), allocatable :: path
@@ -838,7 +838,7 @@ interface split_path
     !!## Summary
     !! splits the path immediately following the final path-separator
     !! separating into typically a directory and a file name.
-    !! ([Specification](../page/specs/stdlib_system.html#split_path))
+    !! (Specification: :doc:`/specs/stdlib_system`)
     !!
     !!## Description
     !! If the path is empty `head`='.' and tail=''
@@ -861,7 +861,7 @@ interface base_name
     !!
     !!## Summary
     !! returns the base name (last component) of the provided path
-    !! ([Specification](../page/specs/stdlib_system.html#base_name))
+    !! (Specification: :doc:`/specs/stdlib_system`)
     !!
     !!## Description
     !! The value returned is the `tail` of the interface `split_path`
@@ -881,7 +881,7 @@ interface dir_name
     !!
     !!## Summary
     !! returns everything but the last component of the provided path
-    !! ([Specification](../page/specs/stdlib_system.html#dir_name))
+    !! (Specification: :doc:`/specs/stdlib_system`)
     !!
     !!## Description
     !! The value returned is the `head` of the interface `split_path`

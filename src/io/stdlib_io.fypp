@@ -23,7 +23,7 @@ module stdlib_io
   !! version: experimental 
   !!
   !! Reads a whole ASCII file and loads its contents into a string variable. 
-  !! ([Specification](../page/specs/stdlib_io.html#get-file-read-a-whole-ascii-file-into-a-character-or-a-string-variable))
+  !! (Specification: :doc:`/specs/stdlib_io`)
   !! 
   !!## Summary 
   !! Subroutine interface for reading the content of a file into a string.
@@ -68,7 +68,7 @@ module stdlib_io
     !! version: experimental
     !!
     !! Loads a 2D array from a text file
-    !! ([Specification](../page/specs/stdlib_io.html#description))
+    !! (Specification: :doc:`/specs/stdlib_io`)
     #:for k1, t1 in KINDS_TYPES
       module procedure loadtxt_${t1[0]}$${k1}$
     #:endfor
@@ -78,7 +78,7 @@ module stdlib_io
     !! version: experimental
     !!
     !! Saves a 2D array into a text file
-    !! ([Specification](../page/specs/stdlib_io.html#description_2))
+    !! (Specification: :doc:`/specs/stdlib_io`)
     #:for arg1 in ['filename', 'unit']
     #:for k1, t1 in KINDS_TYPES
       module procedure savetxt_${t1[0]}$${k1}$${arg1[0]}$
@@ -477,7 +477,7 @@ contains
     !! version: experimental
     !!
     !! Opens a file
-    !! ([Specification](../page/specs/stdlib_io.html#description_1))
+    !! (Specification: :doc:`/specs/stdlib_io`)
     !!
     !!## Behavior
     !!

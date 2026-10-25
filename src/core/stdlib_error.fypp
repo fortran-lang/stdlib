@@ -142,7 +142,7 @@ contains
         !! version: experimental
         !!
         !! Checks the value of a logical condition
-        !! ([Specification](../page/specs/stdlib_error.html#description))
+        !! (Specification: :doc:`/specs/stdlib_error`)
         !!
         !!## Behavior
         !!

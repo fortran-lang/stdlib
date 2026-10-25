@@ -17,7 +17,7 @@ module stdlib_intrinsics
         !!
         !!## Summary 
         !! Sum elements of rank N arrays. 
-        !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_sum))
+        !! (Specification: :doc:`/specs/stdlib_intrinsics`)
         !!
         !!## Description
         !! 
@@ -58,7 +58,7 @@ module stdlib_intrinsics
         !!
         !!## Summary 
         !! Sum elements of rank N arrays. 
-        !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_sum_kahan))
+        !! (Specification: :doc:`/specs/stdlib_intrinsics`)
         !!
         !!## Description
         !! 
@@ -99,7 +99,7 @@ module stdlib_intrinsics
         !!
         !!## Summary 
         !! dot_product of rank 1 arrays. 
-        !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_dot_product))
+        !! (Specification: :doc:`/specs/stdlib_intrinsics`)
         !!
         !!## Description
         !! 
@@ -122,7 +122,7 @@ module stdlib_intrinsics
         !!
         !!## Summary 
         !! dot_product of rank 1 arrays. 
-        !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_dot_product_kahan))
+        !! (Specification: :doc:`/specs/stdlib_intrinsics`)
         !!
         !!## Description
         !! 
@@ -153,7 +153,7 @@ module stdlib_intrinsics
         !!
         !!## Summary
         !! compute the matrix multiplication of more than two matrices with a single function call.
-        !! ([Specification](../page/specs/stdlib_intrinsics.html#stdlib_matmul))
+        !! (Specification: :doc:`/specs/stdlib_intrinsics`)
         !!
         !!## Description
         !!
