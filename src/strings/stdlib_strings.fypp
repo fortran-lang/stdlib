@@ -5,6 +5,7 @@
 !> The specification of this module is available [here](../page/specs/stdlib_strings.html).
 module stdlib_strings
     use stdlib_ascii, only: whitespace
+    use stdlib_base64, only: base64_encode, base64_decode
     use stdlib_string_type, only: string_type, char, verify, repeat, len, len_trim, move
     use stdlib_optval, only: optval
     use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64, lk, c_bool, c_char
@@ -13,6 +14,7 @@ module stdlib_strings
     private
 
     public :: to_string
+    public :: base64_encode, base64_decode
     public :: to_c_char
     public :: strip, chomp
     public :: starts_with, ends_with
