@@ -38,9 +38,9 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.x'
 
@@ -56,7 +56,7 @@ jobs:
           sphinx-build -W -b html doc doc/_build/html
 
       - name: Upload Documentation
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: sphinx-html-preview
           path: ./doc/_build/html/
@@ -68,33 +68,21 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Download Sphinx preview artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: sphinx-html-preview
           path: ./doc-preview
 
+      # Without .nojekyll, GitHub Pages drops Sphinx's _static/ and _sources/ folders.
+      # It is created here because upload-artifact skips hidden files.
+      - name: Disable Jekyll processing
+        run: touch ./doc-preview/.nojekyll
+
       - name: Deploy Sphinx preview
-        uses: JamesIves/github-pages-deploy-action@4.1.5
+        uses: JamesIves/github-pages-deploy-action@v4.9.0
         with:
           branch: gh-pages
           folder: ./doc-preview
-
-      - name: Ensure GitHub Pages serves Sphinx assets
-        run: |
-          tempdir="$(mktemp -d)"
-          git fetch origin gh-pages
-          git worktree add "$tempdir" origin/gh-pages
-          touch "$tempdir/.nojekyll"
-          cd "$tempdir"
-          if [[ -n "$(git status --porcelain .nojekyll)" ]]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add .nojekyll
-            git commit -m "Ensure GitHub Pages serves Sphinx assets"
-            git push origin HEAD:gh-pages
-          fi
-          cd - >/dev/null
-          git worktree remove "$tempdir" --force
