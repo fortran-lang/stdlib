@@ -1,0 +1,88 @@
+name: Build Sphinx Documentation Preview
+
+on:
+  push:
+    paths:
+      - 'doc/**'
+      - 'src/**'
+      - 'include/**'
+      - 'config/**'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'STYLE_GUIDE.md'
+      - 'WORKFLOW.md'
+      - '.github/workflows/**'
+  pull_request:
+    paths:
+      - 'doc/**'
+      - 'src/**'
+      - 'include/**'
+      - 'config/**'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'STYLE_GUIDE.md'
+      - 'WORKFLOW.md'
+      - '.github/workflows/**'
+
+env:
+  LANG: "en_US.UTF-8"
+  LC_ALL: "en_US.UTF-8"
+  PIP_DISABLE_PIP_VERSION_CHECK: "ON"
+  PIP_NO_CLEAN: "ON"
+  PIP_PREFER_BINARY: "ON"
+  TZ: "UTC"
+
+jobs:
+  Build-Sphinx-Docs:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install -r doc/requirements.txt
+          python --version
+          sphinx-build --version
+          fypp --version
+
+      - name: Build Docs
+        run: |
+          sphinx-build -W -b html doc doc/_build/html
+
+      - name: Upload Documentation
+        uses: actions/upload-artifact@v7
+        with:
+          name: sphinx-html-preview
+          path: ./doc/_build/html/
+
+  Deploy-Sphinx-Docs:
+    if: github.event_name == 'push' && github.repository != 'fortran-lang/stdlib'
+    needs: Build-Sphinx-Docs
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Download Sphinx preview artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: sphinx-html-preview
+          path: ./doc-preview
+
+      # Without .nojekyll, GitHub Pages drops Sphinx's _static/ and _sources/ folders.
+      # It is created here because upload-artifact skips hidden files.
+      - name: Disable Jekyll processing
+        run: touch ./doc-preview/.nojekyll
+
+      - name: Deploy Sphinx preview
+        uses: JamesIves/github-pages-deploy-action@v4.9.0
+        with:
+          branch: gh-pages
+          folder: ./doc-preview

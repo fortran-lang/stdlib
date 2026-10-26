@@ -388,9 +388,13 @@ moduledir := $(build_dir)/src/mod_files
 ## Documentation
 
 Documentation is a work in progress (see issue [#4](https://github.com/fortran-lang/stdlib/issues/4)) but already available at [stdlib.fortran-lang.org](https://stdlib.fortran-lang.org).
-This includes API documentation automatically generated from static analysis and markup comments in the source files
-using the [FORD](https://github.com/Fortran-FOSS-programmers/ford/wiki) tool,
-as well as a specification document or ["spec"](https://stdlib.fortran-lang.org/page/specs/index.html) for each proposed feature.
+The published site currently contains the project documentation and specifications,
+and the repository now also contains an experimental Sphinx-based documentation build
+under [`doc/`](./doc/) that can be rendered as a downloadable HTML artifact in CI.
+The Sphinx preview uses MyST Markdown for the existing spec pages and
+[`sphinx-fortran-domain`](https://github.com/fortran-lang/sphinx-fortran-domain)
+for incremental API auto-documentation, while each proposed feature continues to
+have a specification document or ["spec"](./doc/specs/index.md).
 
 Some discussions and prototypes of proposed APIs along with a list of popular open source Fortran projects are available on the
 [wiki](https://github.com/fortran-lang/stdlib/wiki).

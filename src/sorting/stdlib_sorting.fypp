@@ -18,7 +18,7 @@
 #:set IRSCX_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME + CHAR_TYPES_ALT_NAME + STRING_TYPES_ALT_NAME &
     & + CMPLX_TYPES_ALT_NAME
 
-!! Licensing:
+!! ## Licensing
 !!
 !! This file is subject both to the Fortran Standard Library license, and
 !! to additional licensing requirements as it contains translations of
@@ -84,7 +84,7 @@ module stdlib_sorting
 !! `SORT_INDEX`, and `SORT`, that each can be used to sort four kinds
 !! of `INTEGER` arrays, three kinds of `REAL` arrays, `character(len=*)` arrays,
 !! and arrays of `type(string_type)`.
-!! ([Specification](../page/specs/stdlib_sorting.html))
+!! (Specification: :doc:`/specs/stdlib_sorting`)
 !!
 !! By default sorting is in order of 
 !! increasing value, but there is an option to sort in decreasing order. 
@@ -199,7 +199,7 @@ module stdlib_sorting
 !!   order. Otherwise index will sort `array` in order of non-decreasing
 !!   values in stable order.
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    ...
@@ -242,7 +242,7 @@ module stdlib_sorting
 !!   order. Otherwise index will sort `array` in order of non-decreasing
 !!   values in unstable order.
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    ...
@@ -289,7 +289,7 @@ module stdlib_sorting
 !!   order. Otherwise index will sort `array` in order of non-decreasing
 !!   values in stable order.
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    ...
@@ -348,7 +348,7 @@ module stdlib_sorting
 !!   order. Otherwise `array` will be sorted in order of non-decreasing
 !!   values in stable order.
 !!
-!!#### Examples
+!!## Examples
 !!
 !! Sorting a related rank one array:
 !!
@@ -417,7 +417,7 @@ module stdlib_sorting
 !!   order. Otherwise index will sort `array` in order of non-decreasing
 !!   values in stable order.
 !!
-!!#### Examples
+!!## Examples
 !!
 !! Sorting a related rank one array:
 !!
@@ -488,27 +488,24 @@ module stdlib_sorting
 !! distinct elements of a rank-1 array. The result may either preserve the
 !! order of first occurrence or be returned in sorted order.
 !!
-!! Its use has the syntax:
-!!     call unique(array, output[, sorted_output, tolerance] )
+!! Its use has the syntax `call unique(array, output[, sorted_output, tolerance])`.
 !!
-!! with the arguments:
-!! * array: the rank-1 input array. It is an `intent(in)` argument of any
-!!   supported kind of the types `integer`, `real`, `character`, `string_type`
-!!   and `complex`.
+!! The `array` argument is the rank-1 input array. It is an `intent(in)`
+!! argument of any supported kind of the types `integer`, `real`, `character`,
+!! `string_type`, and `complex`.
 !!
-!! * sorted_output (optional): a scalar of type default logical. It is an
-!!   `intent(in)` argument. If `.true.`, the returned array contains the
-!!   unique elements sorted in increasing order. Otherwise, the unique
-!!   elements are returned in the order of their first appearance in
-!!   `array`. `SORTED_OUTPUT` is `.false.` by default. This argument is
-!!   not available for complex arrays for which only the unsorted implementation
-!!   is provided.
+!! The optional `sorted_output` argument is a scalar of default logical type.
+!! It is an `intent(in)` argument. If `.true.`, the returned array contains
+!! the unique elements sorted in increasing order. Otherwise, the unique
+!! elements are returned in the order of their first appearance in `array`.
+!! `sorted_output` is `.false.` by default. This argument is not available
+!! for complex arrays, for which only the unsorted implementation is provided.
 !!
-!! * `tolerance` (optional): It is an `intent(in)` argument available only
-!!    for real arrays. When `sorted_output` is `.true.`, two values
-!!    in sorted order whose absolute difference is less than or equal to
-!!    `tolerance` are considered equal. If omitted, `tolerance` defaults
-!!    to zero.
+!! The optional `tolerance` argument is an `intent(in)` argument available
+!! only for real arrays. When `sorted_output` is `.true.`, two values in
+!! sorted order whose absolute difference is less than or equal to
+!! `tolerance` are considered equal. If omitted, `tolerance` defaults to
+!! zero.
 !!
 !! The result is an allocatable rank-1 array of the same type as `array`
 !! containing one copy of each distinct element.
@@ -518,7 +515,7 @@ module stdlib_sorting
 !! hashing is performed on the underlying binary representation, which 
 !! is not sufficiently portable for these kinds.
 !!
-!!#### Examples
+!!## Examples
 !!
 !! Remove duplicates while preserving the original order:
 !!
@@ -549,7 +546,7 @@ module stdlib_sorting
 !! https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs#L2159
 !! `ORD_SORT` is a hybrid stable comparison algorithm combining `merge sort`,
 !! and `insertion sort`.
-!! ([Specification](../page/specs/stdlib_sorting.html#ord_sort-sorts-an-input-array))
+!! (Specification: :doc:`/specs/stdlib_sorting`)
 !!
 !! It is always at worst O(N Ln(N)) in sorting random
 !! data, having a performance about 25% slower than `SORT` on such
@@ -579,7 +576,7 @@ module stdlib_sorting
 !! The generic subroutine interface implementing the LSD radix sort algorithm,
 !! see https://en.wikipedia.org/wiki/Radix_sort for more details.
 !! It is always O(N) in sorting random data, but need a O(N) buffer.
-!! ([Specification](../page/specs/stdlib_sorting.html#radix_sort-sorts-an-input-array))
+!! (Specification: :doc:`/specs/stdlib_sorting`)
 !!
 
         pure module subroutine int8_radix_sort(array, reverse)
@@ -623,7 +620,7 @@ module stdlib_sorting
 !!
 !! The generic subroutine interface implementing the `SORT` algorithm, based
 !! on the `introsort` of David Musser.
-!! ([Specification](../page/specs/stdlib_sorting.html#sort-sorts-an-input-array))
+!! (Specification: :doc:`/specs/stdlib_sorting`)
 
 #:for t1, t2, name1, cpp1 in IRSCB_TYPES_ALT_NAME
 #:block generate_cpp(cpp_var=cpp1)
@@ -652,7 +649,7 @@ module stdlib_sorting
 !! https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs#L2159
 !! but modified to return an array of indices that would provide a stable
 !! sort of the rank one `ARRAY` input.
-!! ([Specification](../page/specs/stdlib_sorting.html#sort_adjoint-creates-an-array-of-sorting-indices-for-an-input-array-while-also-sorting-the-array))
+!! (Specification: :doc:`/specs/stdlib_sorting`)
 !!
 !! The indices by default correspond to a
 !! non-decreasing sort, but if the optional argument `REVERSE` is present
@@ -691,7 +688,7 @@ module stdlib_sorting
 !! https://github.com/rust-lang/rust/blob/90eb44a5897c39e3dff9c7e48e3973671dcd9496/src/liballoc/slice.rs#L2159
 !! but modified to return an array of indices that would provide a stable
 !! sort of the rank one `ARRAY` input.
-!! ([Specification](../page/specs/stdlib_sorting.html#sort_index-creates-an-array-of-sorting-indices-for-an-input-array-while-also-sorting-the-array))
+!! (Specification: :doc:`/specs/stdlib_sorting`)
 !!
 !! The indices by default correspond to a
 !! non-decreasing sort, but if the optional argument `REVERSE` is present
