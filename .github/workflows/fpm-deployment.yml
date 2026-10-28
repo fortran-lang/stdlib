@@ -77,7 +77,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-latest
+          # lcov 2.4 on ubuntu-26.04 fails capture with "inconsistent" errors
+          - os: ubuntu-24.04
             toolchain: {compiler: gcc, version: '13' }
 
     steps:
