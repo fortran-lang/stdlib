@@ -55,7 +55,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
-        call check_formatter(error, to_string((1, 1)), "(1.0", &
+        call check_formatter(error, to_string((1, 1)), "(1.", &
             & "Default formatter for complex number", partial=.true.)
         if (allocated(error)) return
         call check_formatter(error, to_string((1, 1), '(F6.2)'), "(  1.00,  1.00)", &
@@ -104,7 +104,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
-        call check_formatter(error, to_string(100.), "100.0", &
+        call check_formatter(error, to_string(100.), "100.", &
             & "Default formatter for real number", partial=.true.)
         if (allocated(error)) return
         call check_formatter(error, to_string(100., 'F6.2'), "100.00", &

@@ -94,7 +94,7 @@ CSR%rowptr(:) = [1,3,5,8,11]
 Experimental
 
 #### Description
-The Compressed Sparse Colum `CSC` is similar to the `CSR` format but values are accesed first by column, thus an index counter is given by `colptr` which enables to know the first and last non-zero row index of a given colum. 
+The Compressed Sparse Colum `CSC` is similar to the `CSR` format but values are accessed first by column, thus an index counter is given by `colptr` which enables to know the first and last non-zero row index of a given colum.
 
 ```Fortran
 type(CSC_sp_type) :: CSC
@@ -146,7 +146,10 @@ Type-bound procedures to enable adding data in a sparse matrix.
 
 ### Syntax
 
-`call matrix%add(i,j,v)` or
+* Add single value
+`call matrix%add(i,j,v)` 
+
+* Add a block of values
 `call matrix%add(i(:),j(:),v(:,:))`
 
 ### Arguments
@@ -213,6 +216,81 @@ $$y=\alpha*op(M)*x+\beta*y$$
 `beta`, `optional` : Shall be a scalar value of the same type as `vec_x`. Default value `beta=0`. It is an `intent(in)` argument.
 
 `op`, `optional`: In-place operator identifier. Shall be a `character(1)` argument. It can have any of the following values: `N`: no transpose, `T`: transpose, `H`: hermitian or complex transpose. These values are provided as constants by the `stdlib_sparse` module: `sparse_op_none`, `sparse_op_transpose`, `sparse_op_hermitian`
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+## `spmv_kernel` - Non-object-oriented sparse matrix-vector product
+
+### Status
+
+Experimental
+
+### Description
+
+Provide non-object-oriented sparse matrix-vector product kernels for the current supported sparse matrix types.
+
+$$y=\alpha*op(M)*x+\beta*y$$
+
+### Syntax
+
+`call ` [[stdlib_sparse_spmv(module):spmv_kernel_coo(interface)]] `(op,alpha,data,index,storage,vec_x,beta,vec_y)`
+`call ` [[stdlib_sparse_spmv(module):spmv_kernel_csc(interface)]] `(op,alpha,data,colptr,row,storage,vec_x,beta,vec_y)`
+`call ` [[stdlib_sparse_spmv(module):spmv_kernel_csr(interface)]] `(op,alpha,data,col,rowptr,storage,vec_x,beta,vec_y)`
+`call ` [[stdlib_sparse_spmv(module):spmv_kernel_ell(interface)]] `(op,alpha,data,index,storage,vec_x,beta,vec_y)`
+`call ` [[stdlib_sparse_spmv(module):spmv_kernel_sellc(interface)]] `(op,alpha,data,ia,ja,storage,vec_x,beta,vec_y)`
+
+### Arguments
+
+Common arguments for all formats
+
+`op`: In-place operator identifier. Shall be a `character(1)` argument. It can have any of the following values: `N`: no transpose, `T`: transpose, `H`: hermitian or complex transpose. These values are provided as constants by the `stdlib_sparse` module: `sparse_op_none`, `sparse_op_transpose`, `sparse_op_hermitian`
+
+`alpha`: Shall be a scalar value of the same type as `vec_x`. Default value `alpha=1`. It is an `intent(in)` argument.
+
+`storage`: Shall be a scalar of `integer` type. It is an `intent(in)` argument. It defines the symmetry storage of the sparse matrix and must be one of `sparse_full`, `sparse_lower`, or `sparse_upper`.
+
+`vec_x`: Shall be a rank-1 or rank-2 array of `real` or `complex` type array. It is an `intent(in)` argument.
+
+`beta`: Shall be a scalar value of the same type as `vec_x`. Default value `beta=0`. It is an `intent(in)` argument.
+
+`vec_y`: Shall be a rank-1 or rank-2 array of `real` or `complex` type array. . It is an `intent(inout)` argument.
+
+For the `COO` format:
+
+`data`: Shall be a rank-1 array of `real` or `complex` type. It is an `intent(in)` argument.
+
+`index`: Shall be a rank-2 array of `integer(ilp)` type. It is an `intent(in)` argument.
+
+For the `CSC` format:
+
+`data`: Shall be a rank-1 array of `real` or `complex` type. It is an `intent(in)` argument.
+
+`colptr`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument.
+
+`row`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument.
+
+
+For the `CSR` format:
+
+`data`: Shall be a rank-1 array of `real` or `complex` type array. It is an `intent(in)` argument.
+
+`col`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument.
+
+`rowptr`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument.
+
+For the `ELL` format:
+
+`data`: Shall be a rank-2 array of `real` or `complex` type. It is an `intent(in)` argument.
+
+`index`: Shall be a rank-2 array of `integer(ilp)` type. It is an `intent(in)` argument.
+
+For the `SELLC` format:
+
+`data`: Shall be a rank-2 array of `real` or `complex` type array. It is an `intent(in)` argument.
+
+`ia`: Shall be a rank-1 array of `integer(ilp)` type. It is an `intent(in)` argument.
+
+`ja`: Shall be a rank-2 array of `integer(ilp)` type. It is an `intent(in)` argument.
+
 
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ## Sparse matrix to matrix conversions
@@ -296,13 +374,25 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` [[stdlib_sparse_conversion(module):coo2csr(interface)]] `(coo,csr)`
+`call ` [[stdlib_sparse_conversion(module):csc2dense(interface)]] `(csc,dense)`
+
+### Arguments
+
+`csc` : Shall be a `CSC` type of `real` or `complex` type. It is an `intent(in)` argument.
+
+`dense` : Shall be a rank-2 array of `real` or `complex` type. It is an `intent(out)` argument.
+
+### Syntax
+
+`call ` [[stdlib_sparse_conversion(module):coo2csr(interface)]] `(coo,csr[,sort_data])`
 
 ### Arguments
 
 `coo` : Shall be a `COO` type of `real` or `complex` type. It is an `intent(in)` argument.
 
 `csr` : Shall be a `CSR` type of `real` or `complex` type. It is an `intent(out)` argument.
+
+`sort_data`, `optional` : Shall be a `logical` argument to determine whether data in the COO graph should be sorted before obtaining the CSR representation. The transformation from COO to CSR depends on the former being sorted in row-major order and not having duplicate pairs. Using this boolean will call a sorting routine at the cost of extra runtime, default `.false.`. It is an `intent(in)` argument.
 
 ### Syntax
 
@@ -338,7 +428,7 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Syntax
 
-`call ` [[stdlib_sparse_conversion(module):csr2sellc(interface)]] `(csr,ell[,num_nz_rows])`
+`call ` [[stdlib_sparse_conversion(module):csr2ell(interface)]] `(csr,ell[,num_nz_rows])`
 
 ### Arguments
 
@@ -362,3 +452,38 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 ```fortran
 {!example/linalg/example_sparse_spmv.f90!}
 ```
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+## Operator overloading (`+`, `-`, `*`, `/`) {#operators}
+
+### Status
+
+Experimental
+
+### Description
+
+The definition of all standard arithmetic operators have been overloaded to be applicable for the matrix types defined by `stdlib_sparse`. The operators have been overloaded to support the following tuple combinations of the left-hand-side of the operation: same type and kind matrix-matrix, matrix-scalar and scalar-matrix.
+
+### Syntax
+
+- Matrix-matrix operators :
+
+`C = A + B`
+
+`C = A - B`
+
+`C = A * B`
+
+`C = A / B`
+
+- Matrix scalar operators : 
+
+`B = A + alpha` or `B = alpha + A` 
+
+`B = A - alpha` or `B = alpha - A`
+
+`B = A * alpha` or `B = alpha * A`
+
+`B = A / alpha` or `B = alpha / A`
+
+*Note*: scalar addition and subtraction operators perform element-wise operations only on the stored (non-zero) values, not on the full mathematical matrix. Meaning, the sparsity pattern is preserved.

@@ -104,21 +104,37 @@ Experimental
 ### Description
 Saves a rank-2 `array` into a text file.
 
+If the text file already exists:
+ - When called with a character expression `filename` as the first argument it will overwrite the file.
+ - When called with an integer number `unit` to an open file as the first argument, it will save data to the file with no further manipulation.
+
 ### Syntax
 
-`call ` [[stdlib_io(module):savetxt(interface)]] `(filename, array [, delimiter])`
+`call ` [[stdlib_io(module):savetxt(interface)]] `(filename, array [,  delimiter] [, fmt] [, header] [, footer] [, comments])`
+
+`call ` [[stdlib_io(module):savetxt(interface)]] `(unit, array [,  delimiter] [, fmt] [, header] [, footer] [, comments])`
 
 ### Arguments
 
-`filename`: Shall be  a character expression containing the name of the file that will contain the 2D `array`.
+`filename` or `unit`: Shall be either a character expression containing the name of the file or an integer containing the unit of an already open file, that will contain the 2D `array`. 
 
 `array`: Shall be a rank-2 array of type `real`, `complex` or `integer`.
 
-`delimiter` (optional): Shall be a character expression of length 1 that contains the delimiter used to separate the columns. The default is `' '`.
+`delimiter` (optional): Shall be a character expression of any length that contains the delimiter used to separate the columns. The default is a single space `' '`.
+
+`fmt` (optional): Fortran format specifier for the text save. Defaults to the write format for the data type as defined in the [formatting constants]{formatting-constants}.
+
+`header` (optional): Shall be a character expression that will be written at the beginning of the file.
+
+`footer` (optional): Shall be a character expression that will be written at the end of the file.
+
+`comments` (optional): Shall  be a character expression of any length that will be prepended to the ``header`` and ``footer`` strings to mark them as comments. Default: `#`.
+
 
 ### Output
 
-Provides a text file called `filename` that contains the rank-2 `array`.
+Provides a text file called `filename` that contains the rank-2 `array` with optional `header` and `footer` lines.
+
 
 ### Example
 
@@ -247,7 +263,7 @@ Read a whole line from a formatted unit into a string variable
 {!example/io/example_get_line.f90!}
 ```
 
-## Formatting constants
+## Formatting constants {formatting-constants}
 
 ### Status
 
@@ -277,7 +293,7 @@ The function provides an optional error-handling mechanism via the `state_type` 
 
 ### Syntax
 
-`call [[stdlib_io(module):get_file(subroutine)]] (filename, file [, err] [, delete=.false.])`
+`call ` [[stdlib_io(module):get_file(subroutine)]] ` (filename, file [, err] [, delete=.false.])`
 
 ### Class
 Function
@@ -305,3 +321,136 @@ Exceptions trigger an `error stop` unless the optional `err` argument is provide
 {!example/io/example_get_file.f90!}
 ```
 
+## Matrix Market Format I/O
+
+### Status
+
+Experimental
+
+### Description
+
+The Matrix Market I/O module provides support for reading and writing matrices in the Matrix Market format, a simple ASCII format for sparse and dense matrices developed at NIST. The format supports real, complex, and integer matrices with various symmetry properties.
+
+### `load_mm` - load a matrix from Matrix Market file
+
+Loads a 2D matrix from a Matrix Market format file. Symmetric matrices are expanded to full storage.
+
+#### Syntax
+
+- To load a matrix of `array` format:
+
+`call ` [[stdlib_io_mm(module):load_mm(interface)]] `(filename, matrix [, iostat, iomsg])`
+
+- To load a matrix of `coordinate` format:
+
+`call ` [[stdlib_io_mm(module):load_mm(interface)]] `(filename, index, data [, iostat, iomsg])`
+
+#### Arguments
+
+**`Array` format**
+
+`call ` [[stdlib_io_mm(module):load_mm(interface)]] `(filename, matrix [, iostat, iomsg])`
+
+- `filename`: Shall be a character expression containing the Matrix Market file name to read from.
+
+- `matrix`: Shall be an allocatable rank-2 array of type `real`, `complex`, or `integer` that will contain the loaded matrix.
+
+- `iostat` (optional): Shall be a scalar of type `integer` that receives the error status. Zero indicates success.
+
+- `iomsg` (optional): Shall be an allocatable character string that receives the error message if iostat is non-zero.
+
+**`Coordinate` format**
+
+`call ` [[stdlib_io_mm(module):load_mm(interface)]] `(filename, index, data [, iostat, iomsg])`
+
+- `filename`: Shall be a character expression containing the Matrix Market file name to read from.
+
+- `index`: Shall be an allocatable rank-2 array of type `integer` that will contain the indices of the loaded matrix.
+
+- `data`: Shall be an allocatable rank-1 array of type `real`, `complex`, or `integer` that will contain the values of the loaded matrix.
+
+- `iostat` (optional): Shall be a scalar of type `integer` that receives the error status. Zero indicates success.
+
+- `iomsg` (optional): Shall be an allocatable character string that receives the error message if iostat is non-zero.
+
+### `save_mm` - save a matrix to Matrix Market file
+
+Saves a 2D matrix to Matrix Market format file.
+
+#### Syntax
+
+- To save a matrix of `array` format:
+
+`call ` [[stdlib_io_mm(module):save_mm(interface)]] `(filename, matrix [, comment, format, symmetry, iostat, iomsg])`
+
+- To save a matrix of `coordinate` format:
+
+`call ` [[stdlib_io_mm(module):save_mm(interface)]] `(filename, index, data [, comment, format, symmetry, iostat, iomsg])`
+
+#### Arguments
+
+**`Array` format**
+
+`call ` [[stdlib_io_mm(module):save_mm(interface)]] `(filename, matrix [, comment, format, symmetry, iostat, iomsg])`
+
+- `filename`: Shall be a character expression containing the Matrix Market file name to write to.
+
+- `matrix`: Shall be a rank-2 array of type `real`, `complex`, or `integer` to save.
+
+- `comment` (optional): Shall be a character expression containing additional comments for the file header.
+
+- `format` (optional): Shall be a character expression specifying how entries are written.
+
+- `symmetry` (optional): Shall be a character expression defining the symmetry of the matrix. Allowed values: `auto`, `general`, `symmetric`, `skew-symmetric`, `hermitian`.
+    - `auto`: Detects the symmetry automatically, falls back to `general` if no symmetry is found.
+    - `general`: all entries are stored
+    - `symmetric` / `hermitian`: only the lower triangle (including diagonal) is stored
+    - `skew-symmetric`: only the strictly lower triangle (excluding diagonal) is stored
+
+  Default: `general`
+
+- `iostat` (optional): Shall be a scalar of type `integer` that receives the error status. Zero indicates success.
+
+- `iomsg` (optional): Shall be an allocatable character string that receives the error message if iostat is non-zero.
+
+**`Coordinate` format**
+
+`call ` [[stdlib_io_mm(module):save_mm(interface)]] `(filename, index, data [, comment, format, symmetry, iostat, iomsg])`
+
+- `filename`: Shall be a character expression containing the Matrix Market file name to write to.
+
+- `index`: Shall be a rank-2 `integer` array of shape `(2, n)` specifying the indices of the entries. 
+    - index(1,:) shall contain row indices
+    - index(2,:) shall contain column indices
+
+- `data`: Shall be a rank-1 array of type `real`, `complex`, or `integer` to save. 
+    - If `size(data) == n`, the values for each index are written.
+    - If `size(data) == 1`, a `pattern` matrix is written (no explicit values)
+
+- `comment` (optional): Shall be a character expression containing additional comments for the file header.
+
+- `format` (optional): Shall be a character expression specifying how entries are written.
+
+- `symmetry` (optional): Shall be a character expression defining the symmetry of the matrix. Allowed values: `general`, `symmetric`, `skew-symmetric`, `hermitian`. 
+    - `general`: all entries are stored
+    - `symmetric` / `hermitian`: only the lower triangle (including diagonal) is stored
+    - `skew-symmetric`: only the strictly lower triangle (excluding diagonal) is stored
+
+- `iostat` (optional): Shall be a scalar of type `integer` that receives the error status. Zero indicates success.
+
+- `iomsg` (optional): Shall be an allocatable character string that receives the error message if iostat is non-zero.
+
+### Matrix Market Format Details
+
+The Matrix Market format supports:
+
+- **Object types**: Currently only `matrix` is supported
+- **Formats**: `coordinate` (sparse) and `array` (dense)  
+- **Data types**: `real`, `complex`, `integer`, `pattern`
+- **Symmetry**: `general`, `symmetric`, `skew-symmetric`, `hermitian`, `auto` (Currently only supported for `array` format)
+
+### Example
+
+```fortran
+{!example/io/example_matrix_market.f90!}
+```

@@ -94,6 +94,7 @@ GCC Fortran (MSYS) | 13 | Windows Server 2022 (10.0.20348 Build 1547) | x86_64
 GCC Fortran (MinGW) | 13 | Windows Server 2022 (10.0.20348 Build 1547) | x86_64
 Intel oneAPI LLVM | 2024.1 | Ubuntu 24.04.3 LTS | x86_64
 Intel oneAPI classic | 2021.10 | Ubuntu 22.04.5 LTS | x86_64
+[Flang LLVM](https://flang.llvm.org/docs/) | 22 | Ubuntu 24.04.3 LTS | x86_64
 
 The following combinations are known to work, but they are not tested in the CI:
 

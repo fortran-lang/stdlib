@@ -31,7 +31,8 @@ contains
             new_unittest("logspace_default", test_logspace_default), &
             new_unittest("logspace_base_2", test_logspace_base_2), &
             new_unittest("logspace_base_2_cmplx_start", test_logspace_base_2_cmplx_start), &
-            new_unittest("logspace_base_i_int_start", test_logspace_base_i_int_start) &
+            new_unittest("logspace_base_i_int_start", test_logspace_base_i_int_start), &
+            new_unittest("logspace_int_overflow", test_logspace_int_overflow) &
             ]
 
     end subroutine collect_logspace
@@ -238,6 +239,43 @@ contains
                 & thr=abs(expected_proportion) * TOLERANCE_DP)
             if (allocated(error)) return
 
+        end do
+
+    end subroutine
+
+    ! Regression test for issue #1055: integer start/end caused overflow in
+    ! intermediate integer arithmetic, producing garbage results.
+    subroutine test_logspace_int_overflow(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        integer, parameter :: n = 3
+        integer, parameter :: start = 10
+        integer, parameter :: end = 23
+        real(dp) :: expected_proportion
+        integer :: i
+
+        real(dp), allocatable :: x(:)
+
+        x = logspace(start, end, n)
+
+        expected_proportion = 10.0_dp ** ( real(end - start, dp) / real(n - 1, dp) )
+
+        call check(error, size(x), n, "Array not allocated to appropriate size")
+        if (allocated(error)) return
+        call check(error, x(1), 10.0_dp ** start, &
+            & "Initial value not equal to 10^start (possible integer overflow)", &
+            & thr=abs(10.0_dp ** start) * TOLERANCE_DP)
+        if (allocated(error)) return
+        call check(error, x(n), 10.0_dp ** end, &
+            & "Final value not equal to 10^end (possible integer overflow)", &
+            & thr=abs(10.0_dp ** end) * TOLERANCE_DP)
+        if (allocated(error)) return
+
+        do i = 1, n-1
+            call check(error, x(i + 1) / x(i), expected_proportion, &
+                & thr=abs(expected_proportion) * TOLERANCE_DP)
+            if (allocated(error)) return
         end do
 
     end subroutine

@@ -1,10 +1,12 @@
 prefix=@CMAKE_INSTALL_PREFIX@
-libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
-includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
-moduledir=${prefix}/@CMAKE_INSTALL_MODULEDIR@
+libdir=@PC_LIBDIR@
+includedir=@PC_INCLUDEDIR@
+moduledir=@PC_MODULEDIR@
 
 Name: @PROJECT_NAME@
 Description: @PROJECT_DESCRIPTION@
 Version: @PROJECT_VERSION@
-Libs: -L${libdir} @PC_CONTENT@
+Requires.private: @PC_REQUIRES_PRIVATE@
 Cflags: -I${includedir} -I${moduledir}
+Libs: -L${libdir} @PC_CONTENT@
+Libs.private: @PC_LIBS_PRIVATE@

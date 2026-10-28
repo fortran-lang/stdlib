@@ -69,24 +69,30 @@ contains
   #:for k1 in REAL_KINDS
     #:set RName = rname("logspace", 1, "integer(int32)", "int32", "n_r" + str(k1) + "base")
     module procedure ${RName}$
-      integer :: exponents(max(n, 0))
-      exponents = linspace(start, end, n)
+      real(${k1}$) :: exponents(max(n, 0))
+      exponents = linspace(real(start, kind=${k1}$), real(end, kind=${k1}$), n)
       res = base ** exponents
+      if (n > 1) res(1) = base ** start
+      if (n > 0) res(n) = base ** end
     end procedure
 
     #:set RName = rname("logspace", 1, "integer(int32)", "int32", "n_c" + str(k1) + "base")
     module procedure ${RName}$
-      integer :: exponents(max(n, 0))
-      exponents = linspace(start, end, n)
+      complex(${k1}$) :: exponents(max(n, 0))
+      exponents = cmplx(linspace(real(start, kind=${k1}$), real(end, kind=${k1}$), n), 0.0_${k1}$)
       res = base ** exponents
+      if (n > 1) res(1) = base ** start
+      if (n > 0) res(n) = base ** end
     end procedure
   #:endfor
 
     #:set RName = rname("logspace", 1, "integer(int32)", "int32", "n_ibase")
     module procedure ${RName}$
-      integer :: exponents(max(n, 0))
-      exponents = linspace(start, end, n)
+      real(dp) :: exponents(max(n, 0))
+      exponents = linspace(real(start, kind=dp), real(end, kind=dp), n)
       res = base ** exponents
+      if (n > 1) res(1) = base ** real(start, kind=dp)
+      if (n > 0) res(n) = base ** real(end, kind=dp)
     end procedure
 
 

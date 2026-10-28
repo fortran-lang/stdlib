@@ -178,6 +178,38 @@ int stdlib_exists(const char* path, int* stat){
     return type;
 }
 
+// Wrapper to the platform's call to set an environment variable.
+// Uses `setenv` on unix, `_putenv_s` on windows.
+// `overwrite` selects whether an existing variable is replaced. `_putenv_s`
+// always replaces, so the flag has no effect on windows.
+// Returns 0 if successful, otherwise returns the `errno`.
+int stdlib_setenv(const char* name, const char* value, const int* overwrite){
+    int code;
+#ifdef _WIN32
+    (void) overwrite;
+    code = _putenv_s(name, value);
+#else
+    code = setenv(name, value, *overwrite);
+#endif /* ifdef _WIN32 */
+
+    return (!code) ? 0 : errno;
+}
+
+// Wrapper to the platform's call to remove an environment variable.
+// Uses `unsetenv` on unix. Windows has no `unsetenv`; assigning an empty value
+// with `_putenv_s` is how the CRT removes a variable from the environment.
+// Returns 0 if successful, otherwise returns the `errno`.
+int stdlib_unsetenv(const char* name){
+    int code;
+#ifdef _WIN32
+    code = _putenv_s(name, "");
+#else
+    code = unsetenv(name);
+#endif /* ifdef _WIN32 */
+
+    return (!code) ? 0 : errno;
+}
+
 // `stat` and `_stat` follow symlinks automatically.
 // so no need for winapi functions.
 bool stdlib_is_file(const char* path) {

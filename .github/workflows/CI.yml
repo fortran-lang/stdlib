@@ -44,6 +44,8 @@ jobs:
             toolchain: {compiler: intel, version: '2024.1'}
           - os: macos-14
             toolchain: {compiler: gcc, version: 10}
+          - os: macos-14
+            toolchain: {compiler: gcc, version: 11}
           - os: ubuntu-latest
             toolchain: {compiler: gcc, version: 15}
     env:
@@ -63,7 +65,7 @@ jobs:
 
     - name: Install cmake-3.14
       if: ${{ matrix.build == 'cmake-3.14' }}
-      run: pip install cmake==3.14.3
+      run: pip install  cmake==3.14.3.post1
 
     - name: Setup Fortran compiler
       uses: fortran-lang/setup-fortran@v1.6.2
@@ -72,7 +74,7 @@ jobs:
         compiler: ${{ matrix.toolchain.compiler }}
         version: ${{ matrix.toolchain.version }}
 
-    # Build and test with built-in BLAS and LAPACK
+  # Build and test with built-in BLAS and LAPACK
     - name: Configure with CMake
       if: ${{ contains(matrix.build, 'cmake')  && matrix.build != 'cmake-3.14' }}
       run: >-
@@ -112,4 +114,19 @@ jobs:
 
     - name: Install project
       if: ${{ contains(matrix.build, 'cmake') }}
-      run: cmake --install ${{ env.BUILD_DIR }}
+      run: cmake --build ${{ env.BUILD_DIR }} --target install
+
+    - name: Test pkg-config
+      if: ${{ contains(matrix.build, 'cmake') }}
+      run: |
+        export PKG_CONFIG_PATH="$(find $PWD/_dist -name pkgconfig -type d | head -n 1):$PWD/_dist/lib/pkgconfig:$PWD/_dist/lib64/pkgconfig:$PKG_CONFIG_PATH"
+        echo "PKG_CONFIG_PATH is $PKG_CONFIG_PATH"
+        pkg-config --cflags --libs fortran_stdlib
+        cat << 'EOF' > test_pkgconfig.f90
+        program test
+          use stdlib_kinds, only: dp
+          print *, "pkg-config workflow works!"
+        end program test
+        EOF
+        ${FC:-gfortran} test_pkgconfig.f90 $(pkg-config --cflags --libs fortran_stdlib)
+        ./a.out

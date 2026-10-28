@@ -331,14 +331,14 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
-        logical(int8)  :: log1(64) = .true.
-        logical(int16) :: log2(31) = .false.
-        logical(int32) :: log3(15) = .true.
-        logical(int64) :: log4(33) = .false.
-        logical(int8)  :: log11(66) = .true.
-        logical(int16) :: log12(99) = .false.
-        logical(int32) :: log13(132) = .true.
-        logical(int64) :: log14(165) = .false.
+        logical(int8),  parameter :: log1(64)   = .true.
+        logical(int16), parameter :: log2(31)   = .false.
+        logical(int32), parameter :: log3(15)   = .true.
+        logical(int64), parameter :: log4(33)   = .false.
+        logical(int8),  parameter :: log11(66)  = .true.
+        logical(int16), parameter :: log12(99)  = .false.
+        logical(int32), parameter :: log13(132) = .true.
+        logical(int64), parameter :: log14(165) = .false.
         logical(int8), allocatable  :: log5(:)
         logical(int16), allocatable :: log6(:)
         logical(int32), allocatable :: log7(:)
@@ -572,7 +572,7 @@ contains
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
 
-        logical(int8)  :: log1(64) = .true.
+        logical(int8), parameter :: log1(64) = .true.
         
         integer :: i
         type(bitset_large) :: set1(0:4)

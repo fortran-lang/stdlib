@@ -1,0 +1,663 @@
+#include "macros.inc"
+#:include "common.fypp"
+#:set INT_TYPES_ALT_NAME = list(zip(INT_TYPES, INT_TYPES, INT_KINDS, INT_CPPS))
+#:set REAL_TYPES_ALT_NAME = list(zip(REAL_TYPES, REAL_TYPES, REAL_KINDS, REAL_CPPS))
+#:set CHAR_TYPES_ALT_NAME = list(zip(["character(len=*)"], ["character(len=len(array))"], ["char"], [""]))
+#:set STRING_TYPES_ALT_NAME = list(zip(STRING_TYPES, STRING_TYPES, STRING_KINDS, STRING_CPPS))
+#:set CMPLX_TYPES_ALT_NAME = list(zip(CMPLX_TYPES, CMPLX_TYPES, CMPLX_KINDS, len(CMPLX_TYPES) * [""]))
+module test_sorting_unique
+    use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
+    use stdlib_kinds
+    use stdlib_sorting, only: unique
+    use stdlib_math, only: all_close
+    use stdlib_string_type, only : string_type, operator(==), operator(/=)
+    implicit none
+contains
+
+    !> Collect all exported unit tests
+    subroutine collect_suite(testsuite)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [ &
+            new_unittest('int', test_int),&
+            new_unittest('real', test_real),&
+#if STDLIB_HASHMAPS
+            new_unittest('complex', test_complex),&
+#endif
+            new_unittest('char', test_char),&
+            new_unittest('string', test_string)&
+        ]
+    end subroutine
+
+    subroutine test_int(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for t1, t2, name1, cpp1 in INT_TYPES_ALT_NAME
+        block
+            ${t1}$, allocatable :: A(:)
+            ${t1}$, allocatable :: output(:)
+            ${t1}$, allocatable :: expected_sorted(:)
+            ${t1}$, allocatable :: expected_unsorted(:)
+
+            ! Initialize matrix.
+            allocate(A(0))
+            call unique(A, output, .true.)
+            allocate(expected_sorted(0))
+            call check(error, all(output==expected_sorted), .true.,&
+                "Sorted(${name1}$): empty array")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            allocate(expected_unsorted(0))
+            call check(error, all(output==expected_unsorted), .true.,&
+                "Unsorted(${name1}$): empty array")
+            if(allocated(error)) return
+#endif
+
+            A = [1_${name1}$]
+            call unique(A, output, .true.)
+            expected_sorted = [1_${name1}$]
+            call check(error, all(output==expected_sorted), .true.,&
+                "Sorted(${name1}$): single element")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            expected_unsorted = [1_${name1}$]
+            call check(error, all(output==expected_unsorted), .true.,&
+                "Unsorted(${name1}$): single element")
+            if(allocated(error)) return
+#endif
+
+            A = [4_${name1}$, 4_${name1}$, 4_${name1}$, 4_${name1}$]
+            call unique(A, output, .true.)
+            expected_sorted = [4_${name1}$]
+            call check(error, all(output==expected_sorted), .true.,&
+                "Sorted(${name1}$): all duplicates")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            expected_unsorted = [4_${name1}$]
+            call check(error, all(output==expected_unsorted), .true.,&
+                "Unsorted(${name1}$): all duplicates")
+            if(allocated(error)) return
+#endif
+
+            A = [1_${name1}$, 2_${name1}$, 3_${name1}$, 4_${name1}$]
+            call unique(A, output, .true.)
+            expected_sorted = [1_${name1}$, 2_${name1}$, 3_${name1}$, 4_${name1}$]
+            call check(error, all(output==expected_sorted), .true.,&
+                "Sorted(${name1}$): already unique")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            expected_unsorted = [1_${name1}$, 2_${name1}$, 3_${name1}$, 4_${name1}$]
+            call check(error, all(output==expected_unsorted), .true.,&
+                "Unsorted(${name1}$): already unique")
+            if(allocated(error)) return
+#endif
+
+            A = [5_${name1}$, 2_${name1}$, 3_${name1}$, 5_${name1}$, 2_${name1}$, 1_${name1}$]
+            call unique(A, output, .true.)
+            expected_sorted = [1_${name1}$, 2_${name1}$, 3_${name1}$, 5_${name1}$]
+            call check(error, all(output==expected_sorted), .true.,&
+                "Sorted(${name1}$): mixed duplicates")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            expected_unsorted = [5_${name1}$, 2_${name1}$, 3_${name1}$, 1_${name1}$]
+            call check(error, all(output==expected_unsorted), .true.,&
+                "Unsorted(${name1}$): mixed duplicates")
+            if(allocated(error)) return
+#endif
+
+            A = [-2_${name1}$, 5_${name1}$, -2_${name1}$, 1_${name1}$, 5_${name1}$]
+            call unique(A, output, .true.)
+            expected_sorted = [-2_${name1}$, 1_${name1}$, 5_${name1}$]
+            call check(error, all(output==expected_sorted), .true.,&
+                "Sorted(${name1}$): negatives and duplicates")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            expected_unsorted = [-2_${name1}$, 5_${name1}$, 1_${name1}$]
+            call check(error, all(output==expected_unsorted), .true.,&
+                "Unsorted(${name1}$): negatives and duplicates")
+            if(allocated(error)) return
+#endif
+        end block
+        #:endfor
+    end subroutine
+
+    subroutine test_real(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        #:for t1, t2, name1, cpp1 in REAL_TYPES_ALT_NAME
+        #:if name1 != 'xdp'
+        block
+            ${t1}$, allocatable :: A(:)
+            ${t1}$, allocatable :: output(:)
+            ${t1}$, allocatable :: expected_sorted(:)
+            ${t1}$, allocatable :: expected_unsorted(:)
+
+            ! Initialize matrix.
+            allocate(A(0))
+            call unique(A, output, .true.)
+            allocate(expected_sorted(0))
+            call check(error, all_close(output, expected_sorted), .true.,&
+                "Sorted(${name1}$): empty array")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            allocate(expected_unsorted(0))
+            call check(error, all_close(output, expected_unsorted), .true.,&
+                "Unsorted(${name1}$): empty array")
+            if(allocated(error)) return
+#endif
+
+            A = [1.0_${name1}$]
+            call unique(A, output, .true.)
+            expected_sorted = [1.0_${name1}$]
+            call check(error, all_close(output, expected_sorted), .true.,&
+                "Sorted(${name1}$): single element")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            expected_unsorted = [1.0_${name1}$]
+            call check(error, all_close(output, expected_unsorted), .true.,&
+                "Unsorted(${name1}$): single element")
+            if(allocated(error)) return
+#endif
+
+            A = [4.0_${name1}$, 4.0_${name1}$, 4.0_${name1}$, 4.0_${name1}$]
+            call unique(A, output, .true.)
+            expected_sorted = [4.0_${name1}$]
+            call check(error, all_close(output, expected_sorted), .true.,&
+                "Sorted(${name1}$): all duplicates")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            expected_unsorted = [4.0_${name1}$]
+            call check(error, all_close(output, expected_unsorted), .true.,&
+                "Unsorted(${name1}$): all duplicates")
+            if(allocated(error)) return
+#endif
+
+            A = [1.0_${name1}$, 2.0_${name1}$, 3.0_${name1}$, 4.0_${name1}$]
+            call unique(A, output, .true.)
+            expected_sorted = [1.0_${name1}$, 2.0_${name1}$, 3.0_${name1}$, 4.0_${name1}$]
+            call check(error, all_close(output, expected_sorted), .true.,&
+                "Sorted(${name1}$): already unique")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            expected_unsorted = [1.0_${name1}$, 2.0_${name1}$, 3.0_${name1}$, 4.0_${name1}$]
+            call check(error, all_close(output, expected_unsorted), .true.,&
+                "Unsorted(${name1}$): already unique")
+            if(allocated(error)) return
+#endif
+
+            A = [5.0_${name1}$, 2.0_${name1}$, 3.0_${name1}$, 5.0_${name1}$, 2.0_${name1}$, 1.0_${name1}$]
+            call unique(A, output, .true.)
+            expected_sorted = [1.0_${name1}$, 2.0_${name1}$, 3.0_${name1}$, 5.0_${name1}$]
+            call check(error, all_close(output, expected_sorted), .true.,&
+                "Sorted(${name1}$): mixed duplicates")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            expected_unsorted = [5.0_${name1}$, 2.0_${name1}$, 3.0_${name1}$, 1.0_${name1}$]
+            call check(error, all_close(output, expected_unsorted), .true.,&
+                "Unsorted(${name1}$): mixed duplicates")
+            if(allocated(error)) return
+#endif
+
+            A = [-2.0_${name1}$, 5.0_${name1}$, -2.0_${name1}$, 1.0_${name1}$, 5.0_${name1}$]
+            call unique(A, output, .true.)
+            expected_sorted = [-2.0_${name1}$, 1.0_${name1}$, 5.0_${name1}$]
+            call check(error, all_close(output, expected_sorted), .true.,&
+                "Sorted(${name1}$): negatives and duplicates")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            expected_unsorted = [-2.0_${name1}$, 5.0_${name1}$, 1.0_${name1}$]
+            call check(error, all_close(output, expected_unsorted), .true.,&
+                "Unsorted(${name1}$): negatives and duplicates")
+            if(allocated(error)) return
+#endif
+            ! Tolerance tests
+            A = [3.00_${name1}$, 1.05_${name1}$, 1.00_${name1}$, 2.05_${name1}$, 2.00_${name1}$]
+            call unique(A, output, .true., 0.1_${name1}$)
+            expected_sorted = [1.00_${name1}$, 2.00_${name1}$, 3.00_${name1}$]
+            call check(error, all_close(output, expected_sorted), .true.,&
+                "Sorted(${name1}$): basic tolerance case")
+            if (allocated(error)) return
+
+            A = [1.00_${name1}$, 2.00_${name1}$, 1.00_${name1}$, 1.0001_${name1}$, 2.00_${name1}$]
+            call unique(A, output, .true., 0.0_${name1}$)
+            expected_sorted = [1.00_${name1}$, 1.0001_${name1}$, 2.00_${name1}$]
+            call check(error, all_close(output, expected_sorted), .true.,&
+                "Sorted(${name1}$): zero tolerance")
+            if (allocated(error)) return
+
+            A = [1.18_${name1}$, 1.09_${name1}$, 1.00_${name1}$]
+            call unique(A, output, .true., 0.1_${name1}$)
+            expected_sorted = [1.0_${name1}$, 1.18_${name1}$]
+            call check(error, all_close(output, expected_sorted), .true.,&
+                "Sorted(${name1}$): representative tolerance")
+            if (allocated(error)) return
+
+            A = [5.0_${name1}$, 1.0_${name1}$, 3.0_${name1}$]
+            call unique(A, output, .true., 10.0_${name1}$)
+            expected_sorted = [1.0_${name1}$]
+            call check(error, all_close(output, expected_sorted), .true.,&
+                "Sorted(${name1}$): large tolerance")
+            if (allocated(error)) return
+
+            A = [1.0_${name1}$, 1.05_${name1}$, 1.005_${name1}$]
+            call unique(A, output, .true., 0.01_${name1}$)
+            expected_sorted = [1.0_${name1}$, 1.05_${name1}$]
+            call check(error, all_close(output, expected_sorted), .true.,&
+                "Sorted(${name1}$): small tolerance")
+            if (allocated(error)) return
+        end block
+        #:endif
+        #:endfor
+    end subroutine
+
+#if STDLIB_HASHMAPS
+    subroutine test_complex(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for t1, t2, name1, cpp1 in CMPLX_TYPES_ALT_NAME
+        #:if name1 != 'xdp'
+        block
+            ${t1}$, allocatable :: A(:)
+            ${t1}$, allocatable :: output(:)
+            ${t1}$, allocatable :: expected(:)
+
+            allocate(A(0))
+            call unique(A, output)
+            allocate(expected(0))
+            call check(error, all(output == expected), .true., &
+                "Unsorted(${name1}$): empty array")
+            if (allocated(error)) return
+
+            A = [complex(${name1}$) :: &
+                (1.0_${name1}$, 2.0_${name1}$)]
+            call unique(A, output)
+            expected = [complex(${name1}$) :: &
+                        (1.0_${name1}$, 2.0_${name1}$)]
+            call check(error, all(output == expected), .true., &
+                "Unsorted(${name1}$): single element")
+            if (allocated(error)) return
+
+            A = [complex(${name1}$) :: &
+                (1.0_${name1}$, 2.0_${name1}$), &
+                (1.0_${name1}$, 2.0_${name1}$), &
+                (1.0_${name1}$, 2.0_${name1}$), &
+                (1.0_${name1}$, 2.0_${name1}$)]
+            call unique(A, output)
+            expected = [complex(${name1}$) :: &
+                        (1.0_${name1}$, 2.0_${name1}$)]
+            call check(error, all(output == expected), .true., &
+                "Unsorted(${name1}$): all duplicates")
+            if (allocated(error)) return
+
+            A = [complex(${name1}$) :: &
+                (1.0_${name1}$, 1.0_${name1}$), &
+                (2.0_${name1}$, 2.0_${name1}$), &
+                (3.0_${name1}$, 3.0_${name1}$), &
+                (4.0_${name1}$, 4.0_${name1}$)]
+            call unique(A, output)
+            expected = [complex(${name1}$) :: &
+                        (1.0_${name1}$, 1.0_${name1}$), &
+                        (2.0_${name1}$, 2.0_${name1}$), &
+                        (3.0_${name1}$, 3.0_${name1}$), &
+                        (4.0_${name1}$, 4.0_${name1}$)]
+            call check(error, all(output == expected), .true., &
+                "Unsorted(${name1}$): already unique")
+            if (allocated(error)) return
+
+            A = [complex(${name1}$) :: &
+                (5.0_${name1}$, 2.0_${name1}$), &
+                (2.0_${name1}$, 3.0_${name1}$), &
+                (5.0_${name1}$, 2.0_${name1}$), &
+                (3.0_${name1}$, 4.0_${name1}$), &
+                (2.0_${name1}$, 3.0_${name1}$), &
+                (1.0_${name1}$, 5.0_${name1}$)]
+            call unique(A, output)
+            expected = [complex(${name1}$) :: &
+                        (5.0_${name1}$, 2.0_${name1}$), &
+                        (2.0_${name1}$, 3.0_${name1}$), &
+                        (3.0_${name1}$, 4.0_${name1}$), &
+                        (1.0_${name1}$, 5.0_${name1}$)]
+            call check(error, all(output == expected), .true., &
+                "Unsorted(${name1}$): mixed duplicates")
+            if (allocated(error)) return
+
+            A = [complex(${name1}$) :: &
+                (1.0_${name1}$, 0.0_${name1}$), &
+                (0.0_${name1}$, 1.0_${name1}$), &
+                (1.0_${name1}$, 0.0_${name1}$), &
+                (0.0_${name1}$, -1.0_${name1}$), &
+                (0.0_${name1}$, 1.0_${name1}$)]
+            call unique(A, output)
+            expected = [complex(${name1}$) :: &
+                        (1.0_${name1}$, 0.0_${name1}$), &
+                        (0.0_${name1}$, 1.0_${name1}$), &
+                        (0.0_${name1}$, -1.0_${name1}$)]
+            call check(error, all(output == expected), .true., &
+                "Unsorted(${name1}$): real and imaginary parts")
+            if (allocated(error)) return
+
+            A = [complex(${name1}$) :: &
+                (3.5_${name1}$, -1.2_${name1}$), &
+                (-2.1_${name1}$, 4.7_${name1}$), &
+                (0.5_${name1}$, 2.3_${name1}$), &
+                (3.5_${name1}$, -1.2_${name1}$), &
+                (-4.8_${name1}$, 0.9_${name1}$), &
+                (1.7_${name1}$, -3.6_${name1}$), &
+                (0.5_${name1}$, 2.3_${name1}$), &
+                (-2.1_${name1}$, 4.7_${name1}$), &
+                (6.2_${name1}$, -0.4_${name1}$), &
+                (1.7_${name1}$, -3.6_${name1}$)]
+            call unique(A, output)
+            expected = [complex(${name1}$) :: &
+                        (3.5_${name1}$, -1.2_${name1}$), &
+                        (-2.1_${name1}$, 4.7_${name1}$), &
+                        (0.5_${name1}$, 2.3_${name1}$), &
+                        (-4.8_${name1}$, 0.9_${name1}$), &
+                        (1.7_${name1}$, -3.6_${name1}$), &
+                        (6.2_${name1}$, -0.4_${name1}$)]
+            call check(error, all(output == expected), .true., &
+                "Unsorted(${name1}$): random values with duplicates")
+            if (allocated(error)) return
+        end block
+        #:endif
+        #:endfor
+    end subroutine
+#endif
+
+    subroutine test_char(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for t1, t2, name1, cpp1 in CHAR_TYPES_ALT_NAME
+        block
+            character(len=10), allocatable :: A(:)
+            character(len=10), allocatable :: output(:)
+            character(len=10), allocatable :: expected_sorted(:)
+            character(len=10), allocatable :: expected_unsorted(:)
+
+            ! Initialize matrix.
+            allocate(A(0))
+            call unique(A, output, .true.)
+            allocate(expected_sorted(0))
+            call check(error, all(output == expected_sorted), .true.,&
+                "Sorted(${name1}$): empty array")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            allocate(expected_unsorted(0))
+
+            call check(error, all(output == expected_unsorted), .true.,&
+                "Unsorted(${name1}$): empty array")
+            if(allocated(error)) return
+#endif
+
+            A = [character(len=10) :: "apple"]
+            call unique(A, output, .true.)
+            expected_sorted = [character(len=10) :: "apple"]
+            call check(error, all(output == expected_sorted), .true.,&
+                "Sorted(${name1}$): single element")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            expected_unsorted = [character(len=10) :: "apple"]
+            call check(error, all(output == expected_unsorted), .true.,&
+                "Unsorted(${name1}$): single element")
+            if(allocated(error)) return
+#endif
+
+            A = [character(len=10) :: &
+                "apple", "apple", "apple", "apple"]
+            call unique(A, output, .true.)
+            expected_sorted = [character(len=10) :: "apple"]
+            call check(error, all(output == expected_sorted), .true.,&
+                "Sorted(${name1}$): all duplicates")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            expected_unsorted = [character(len=10) :: "apple"]
+            call check(error, all(output == expected_unsorted), .true.,&
+                "Unsorted(${name1}$): all duplicates")
+            if(allocated(error)) return
+#endif
+
+            A = [character(len=10) :: &
+                "apple", "banana", "cherry", "orange"]
+            call unique(A, output, .true.)
+            expected_sorted = [character(len=10) :: &
+                "apple", "banana", "cherry", "orange"]
+            call check(error, all(output == expected_sorted), .true.,&
+                "Sorted(${name1}$): already unique")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            expected_unsorted = [character(len=10) :: &
+                "apple", "banana", "cherry", "orange"]
+
+            call check(error, all(output == expected_unsorted), .true.,&
+                "Unsorted(${name1}$): already unique")
+            if(allocated(error)) return
+#endif
+
+            A = [character(len=10) :: &
+                "banana", "apple", "orange", "banana", "apple", "grape", "orange"]
+            call unique(A, output, .true.)
+            expected_sorted = [character(len=10) :: &
+                "apple", "banana", "grape", "orange"]
+            call check(error, all(output == expected_sorted), .true.,&
+                "Sorted(${name1}$): mixed duplicates")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            expected_unsorted = [character(len=10) :: &
+                "banana", "apple", "orange", "grape"]
+
+            call check(error, all(output == expected_unsorted), .true.,&
+                "Unsorted(${name1}$): mixed duplicates")
+            if(allocated(error)) return
+#endif
+
+            A = [character(len=10) :: &
+                "apple", "Apple", "APPLE", "apple"]
+            call unique(A, output, .true.)
+            expected_sorted = [character(len=10) :: &
+                "APPLE", "Apple", "apple"]
+            call check(error, all(output == expected_sorted), .true.,&
+                "Sorted(${name1}$): case-sensitive values")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            expected_unsorted = [character(len=10) :: &
+                "apple", "Apple", "APPLE"]
+
+            call check(error, all(output == expected_unsorted), .true.,&
+                "Unsorted(${name1}$): case-sensitive values")
+            if(allocated(error)) return
+#endif
+
+            A = [character(len=10) :: &
+                "dog", "cat", "bird", "dog",&
+                "fish", "cat", "bird"]
+            call unique(A, output, .true.)
+            expected_sorted = [character(len=10) :: &
+                "bird", "cat", "dog", "fish"]
+            call check(error, all(output == expected_sorted), .true.,&
+                "Sorted(${name1}$): non-adjacent duplicates")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            expected_unsorted = [character(len=10) :: &
+                "dog", "cat", "bird", "fish"]
+            call check(error, all(output == expected_unsorted), .true.,&
+                "Unsorted(${name1}$): non-adjacent duplicates")
+            if(allocated(error)) return
+#endif
+        end block
+        #:endfor
+    end subroutine
+
+    subroutine test_string(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for t1, t2, name1, cpp1 in STRING_TYPES_ALT_NAME
+        block
+            ${t1}$, allocatable :: A(:)
+            ${t1}$, allocatable :: output(:)
+            ${t1}$, allocatable :: expected_sorted(:)
+            ${t1}$, allocatable :: expected_unsorted(:)
+
+            ! Initialize matrix.
+            allocate(A(0))
+            call unique(A, output, .true.)
+            allocate(expected_sorted(0))
+            call check(error, all(output == expected_sorted), .true., &
+                "Sorted(${name1}$): empty array")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            allocate(expected_unsorted(0))
+            call check(error, all(output == expected_unsorted), .true., &
+                "Unsorted(${name1}$): empty array")
+            if(allocated(error)) return
+#endif
+
+            A = [${name1}$("apple")]
+            call unique(A, output, .true.)
+            expected_sorted = [${name1}$("apple")]
+            call check(error, all(output == expected_sorted), .true., &
+                "Sorted(${name1}$): single element")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            expected_unsorted = [${name1}$("apple")]
+            call check(error, all(output == expected_unsorted), .true., &
+                "Unsorted(${name1}$): single element")
+            if(allocated(error)) return
+#endif
+
+            A = [${name1}$("apple"), ${name1}$("apple"), ${name1}$("apple"), ${name1}$("apple")]
+            call unique(A, output, .true.)
+            expected_sorted = [${name1}$("apple")]
+            call check(error, all(output == expected_sorted), .true., &
+                "Sorted(${name1}$): all duplicates")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            expected_unsorted = [${name1}$("apple")]
+            call check(error, all(output == expected_unsorted), .true., &
+                "Unsorted(${name1}$): all duplicates")
+            if(allocated(error)) return
+#endif
+            A = [${name1}$("apple"), ${name1}$("banana"), &
+                 ${name1}$("cherry"), ${name1}$("orange")]
+            call unique(A, output, .true.)
+            expected_sorted = [${name1}$("apple"), ${name1}$("banana"), &
+                               ${name1}$("cherry"), ${name1}$("orange")]
+            call check(error, all(output == expected_sorted), .true., &
+                "Sorted(${name1}$): already unique")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            expected_unsorted = [${name1}$("apple"), ${name1}$("banana"), &
+                                 ${name1}$("cherry"), ${name1}$("orange")]
+            call check(error, all(output == expected_unsorted), .true., &
+                "Unsorted(${name1}$): already unique")
+            if(allocated(error)) return
+#endif
+
+            A = [${name1}$("banana"), ${name1}$("apple"), ${name1}$("orange"), &
+                 ${name1}$("banana"), ${name1}$("apple"), ${name1}$("grape"), &
+                 ${name1}$("orange")]
+            call unique(A, output, .true.)
+            expected_sorted = [${name1}$("apple"), ${name1}$("banana"), &
+                               ${name1}$("grape"), ${name1}$("orange")]
+            call check(error, all(output == expected_sorted), .true., &
+                "Sorted(${name1}$): mixed duplicates")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            expected_unsorted = [${name1}$("banana"), ${name1}$("apple"), &
+                                 ${name1}$("orange"), ${name1}$("grape")]
+            call check(error, all(output == expected_unsorted), .true., &
+                "Unsorted(${name1}$): mixed duplicates")
+            if(allocated(error)) return
+#endif
+
+            A = [${name1}$("apple"), ${name1}$("Apple"), &
+                 ${name1}$("APPLE"), ${name1}$("apple")]
+            call unique(A, output, .true.)
+            expected_sorted = [${name1}$("APPLE"), ${name1}$("Apple"), &
+                               ${name1}$("apple")]
+            call check(error, all(output == expected_sorted), .true., &
+                "Sorted(${name1}$): case-sensitive values")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            expected_unsorted = [${name1}$("apple"), ${name1}$("Apple"), &
+                                 ${name1}$("APPLE")]
+            call check(error, all(output == expected_unsorted), .true., &
+                "Unsorted(${name1}$): case-sensitive values")
+            if(allocated(error)) return
+#endif
+
+            A = [${name1}$("dog"), ${name1}$("cat"), ${name1}$("bird"), &
+                 ${name1}$("dog"), ${name1}$("fish"), ${name1}$("cat"), &
+                 ${name1}$("bird")]
+            call unique(A, output, .true.)
+            expected_sorted = [${name1}$("bird"), ${name1}$("cat"), &
+                               ${name1}$("dog"), ${name1}$("fish")]
+            call check(error, all(output == expected_sorted), .true., &
+                "Sorted(${name1}$): non-adjacent duplicates")
+            if(allocated(error)) return
+#if STDLIB_HASHMAPS
+            call unique(A, output, .false.)
+            expected_unsorted = [${name1}$("dog"), ${name1}$("cat"), &
+                                 ${name1}$("bird"), ${name1}$("fish")]
+            call check(error, all(output == expected_unsorted), .true., &
+                "Unsorted(${name1}$): non-adjacent duplicates")
+            if(allocated(error)) return
+#endif
+        end block
+        #:endfor
+    end subroutine
+end module
+
+program tester
+    use, intrinsic :: iso_fortran_env, only : error_unit
+    use testdrive, only : run_testsuite, new_testsuite, testsuite_type
+    use test_sorting_unique, only : collect_suite
+    implicit none
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+
+    testsuites = [ &
+        new_testsuite("sorting_unique", collect_suite) &
+        ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program

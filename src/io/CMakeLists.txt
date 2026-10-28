@@ -3,6 +3,9 @@ set(io_fppFiles
     stdlib_io_npy.fypp
     stdlib_io_npy_load.fypp
     stdlib_io_npy_save.fypp
+    stdlib_io_mm.fypp
+    stdlib_io_mm_load.fypp
+    stdlib_io_mm_save.fypp
     )
 
 set(io_cppFiles
