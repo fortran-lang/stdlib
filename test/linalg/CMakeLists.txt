@@ -21,6 +21,7 @@ set(
   "test_linalg_cholesky.fypp"
   "test_linalg_solve_chol.fypp"
   "test_linalg_expm.fypp"
+  "test_linalg_permutation.fypp"
 )
 
 # Preprocessed files to contain preprocessor directives -> .F90
@@ -57,4 +58,5 @@ ADDTEST(linalg_sparse)
 if (STDLIB_SPECIALMATRICES)
   ADDTEST(linalg_specialmatrices)
 endif()
+ADDTEST(linalg_permutation)
 ADDTESTPP(blas_lapack)
