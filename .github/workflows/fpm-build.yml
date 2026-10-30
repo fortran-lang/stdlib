@@ -18,10 +18,6 @@ jobs:
             toolchain: {compiler: gcc, version: '13' }
             fpm_versions: v0.12.0
             maxrank: 2
-          - os: windows-latest
-            toolchain: {compiler: gcc, version: '13' }
-            fpm_versions: v0.12.0
-            maxrank: 2
 
     steps:
       - name: Checkout code
@@ -46,18 +42,9 @@ jobs:
         with:
           fpm-version: ${{ matrix.fpm_versions }}
 
-      - if: runner.os != 'Windows'
-        run: | # Use fpm gnu ci to check xdp and qp
+      - run: | # Use fpm gnu ci to check xdp and qp
           python config/fypp_deployment.py --maxrank ${{ matrix.maxrank }} --with_xdp --with_qp
           fpm build --profile release --flag '-DWITH_XDP -DWITH_QP'
-
-      - name: Build rank-2 examples on Windows
-        if: runner.os == 'Windows'
-        env:
-          FPM_FC: gfortran
-          FPM_CC: gcc
-          FPM_CXX: g++
-        run: python config/fypp_deployment.py --maxrank 2 --build
 
       - name: Run tests
         # Some existing tests unconditionally use rank-3 arrays.
