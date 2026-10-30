@@ -4,6 +4,7 @@ program example_mnorm
     implicit none
     real(sp) :: a(3,3), na
     real(sp) :: b(3,3,4), nb(4)  ! Array of 4 3x3 matrices
+    integer :: i
     
     ! Initialize example matrix
     a = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], [3, 3])
@@ -18,8 +19,10 @@ program example_mnorm
     b(:,:,3) = 3*a
     b(:,:,4) = 4*a
     
-    ! Compute infinity norm of each 3x3 matrix in b
-    nb = mnorm(b, 'inf', dim=[1,2])
+    ! Use rank-2 slices to support builds with maximum rank 2.
+    do i = 1, size(b,3)
+        nb(i) = mnorm(b(:,:,i), 'inf')
+    end do
 
     ! 18.0000000       36.0000000       54.0000000       72.0000000
     print *, "Infinity norms of matrices in b:", nb

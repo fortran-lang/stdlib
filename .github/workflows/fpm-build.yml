@@ -12,6 +12,12 @@ jobs:
         os: [ubuntu-latest]
         toolchain: [{compiler: gcc, version: '13' }]
         fpm_versions: [v0.12.0, current]
+        maxrank: [4]
+        include:
+          - os: ubuntu-latest
+            toolchain: {compiler: gcc, version: '13' }
+            fpm_versions: v0.12.0
+            maxrank: 2
 
     steps:
       - name: Checkout code
@@ -37,5 +43,10 @@ jobs:
           fpm-version: ${{ matrix.fpm_versions }}
 
       - run: | # Use fpm gnu ci to check xdp and qp
-          python config/fypp_deployment.py --with_xdp --with_qp
-          fpm test --profile release --flag '-DWITH_XDP -DWITH_QP'
+          python config/fypp_deployment.py --maxrank ${{ matrix.maxrank }} --with_xdp --with_qp
+          fpm build --profile release --flag '-DWITH_XDP -DWITH_QP'
+
+      - name: Run tests
+        # Some existing tests unconditionally use rank-3 arrays.
+        if: matrix.maxrank == 4
+        run: fpm test --profile release --flag '-DWITH_XDP -DWITH_QP'
