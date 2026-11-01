@@ -16,7 +16,8 @@ env:
 
 jobs:
   Build:
-    runs-on: ubuntu-latest
+    # setup-fortran's Flang installer supports Ubuntu 22.04 and 24.04 only
+    runs-on: ubuntu-24.04
 
     steps:
     - name: Checkout code
