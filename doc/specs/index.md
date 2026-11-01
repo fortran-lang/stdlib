@@ -34,12 +34,7 @@ This is an index/directory of the specifications (specs) for each new module/fea
  - [quadrature](./stdlib_quadrature.md) - Numerical integration
  - [random](./stdlib_random.md) - Probability Distributions random number generator
  - [sorting](./stdlib_sorting.md) - Sorting of rank one arrays
- - [stats](./stdlib_stats.md) - Descriptive Statistics
- - [stats_distributions_uniform](./stdlib_stats_distribution_uniform.md) - Uniform Probability Distribution
- - [stats_distributions_normal](./stdlib_stats_distribution_normal.md) - Normal Probability Distribution
- - [stats_distributions_exponential](./stdlib_stats_distribution_exponential.md) - Exponential Probability Distribution
- - [stats_distributions_beta](./stdlib_stats_distribution_beta.md) - Beta Probability Distribution
- - [stats_distributions_gamma](./stdlib_stats_distribution_gamma.md) - Gamma Probability Distribution
+ - [stats](./stdlib_stats.md) - Statistical descriptive
  - [string\_type](./stdlib_string_type.md) - Basic string support
  - [stringlist_type](./stdlib_stringlist_type.md) - 1-Dimensional list of strings
  - [strings](./stdlib_strings.md) - String handling and manipulation routines
@@ -83,11 +78,6 @@ stdlib_specialfunctions_activations
 stdlib_specialfunctions_gamma
 stdlib_specialmatrices
 stdlib_stats
-stdlib_stats_distribution_beta
-stdlib_stats_distribution_exponential
-stdlib_stats_distribution_gamma
-stdlib_stats_distribution_normal
-stdlib_stats_distribution_uniform
 stdlib_str2num
 stdlib_string_type
 stdlib_stringlist_type
