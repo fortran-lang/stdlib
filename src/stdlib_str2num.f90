@@ -116,7 +116,8 @@ module stdlib_str2num
         integer(int8) :: err
         !----------------------------------------------
         call to_num_base(s,v,p,err)
-        p = min( p , len(s) )
+        ! Promote p: mixing int8 with len() is a GNU extension, and len(s, kind=int8) overflows.
+        p = min( int(p), len(s) )
         s => s(p:)
         if(present(stat)) stat = err
     end function
@@ -144,7 +145,8 @@ module stdlib_str2num
         integer(int8) :: err
         !----------------------------------------------
         call to_num_base(s,v,p,err)
-        p = min( p , len(s) )
+        ! Promote p: mixing int8 with len() is a GNU extension, and len(s, kind=int8) overflows.
+        p = min( int(p), len(s) )
         s => s(p:)
         if(present(stat)) stat = err
     end function
@@ -172,7 +174,8 @@ module stdlib_str2num
         integer(int8) :: err
         !----------------------------------------------
         call to_num_base(s,v,p,err)
-        p = min( p , len(s) )
+        ! Promote p: mixing int8 with len() is a GNU extension, and len(s, kind=int8) overflows.
+        p = min( int(p), len(s) )
         s => s(p:)
         if(present(stat)) stat = err
     end function
@@ -200,7 +203,8 @@ module stdlib_str2num
         integer(int8) :: err
         !----------------------------------------------
         call to_num_base(s,v,p,err)
-        p = min( p , len(s) )
+        ! Promote p: mixing int8 with len() is a GNU extension, and len(s, kind=int8) overflows.
+        p = min( int(p), len(s) )
         s => s(p:)
         if(present(stat)) stat = err
     end function
@@ -228,7 +232,8 @@ module stdlib_str2num
         integer(int8) :: err
         !----------------------------------------------
         call to_num_base(s,v,p,err)
-        p = min( p , len(s) )
+        ! Promote p: mixing int8 with len() is a GNU extension, and len(s, kind=int8) overflows.
+        p = min( int(p), len(s) )
         s => s(p:)
         if(present(stat)) stat = err
     end function
@@ -256,7 +261,8 @@ module stdlib_str2num
         integer(int8) :: err
         !----------------------------------------------
         call to_num_base(s,v,p,err)
-        p = min( p , len(s) )
+        ! Promote p: mixing int8 with len() is a GNU extension, and len(s, kind=int8) overflows.
+        p = min( int(p), len(s) )
         s => s(p:)
         if(present(stat)) stat = err
     end function
