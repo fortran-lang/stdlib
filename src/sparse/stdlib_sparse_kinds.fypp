@@ -52,11 +52,11 @@ module stdlib_sparse_kinds
 
     !! version: experimental
     !!
-    !! BSR: Compressed sparse row or Yale format
-    type, public, extends(sparse_type) :: BSR_type  
+    !! BSR: Block Sparse Row format
+    type, public, extends(sparse_type) :: BSR_type
       integer(ilp) :: block_shape(2) = [1,1] !! shape of the blocks
-      integer(ilp), allocatable  :: col(:)    !! matrix column pointer
-      integer(ilp), allocatable  :: rowptr(:) !! matrix row pointer
+      integer(ilp), allocatable  :: col(:)    !! block column index
+      integer(ilp), allocatable  :: rowptr(:) !! block row pointer
     contains
       procedure :: malloc => malloc_bsr
     end type
@@ -733,7 +733,8 @@ contains
         end if
 
         ik_ = ik; jk_ = jk
-        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        ! symmetric storage: fetch elements of the non-stored triangle from their mirror
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
         if(transpose) then
             ik_ = jk; jk_ = ik
         end if

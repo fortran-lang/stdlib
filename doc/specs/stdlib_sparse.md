@@ -88,6 +88,36 @@ CSR%col(:)    = [1,5,1,2,2,3,4,1,3,4]
 CSR%rowptr(:) = [1,3,5,8,11]
 ```
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+### `BSR`: The Block Sparse Row format
+#### Status
+
+Experimental
+
+#### Description
+The Block Sparse Row format `BSR` generalizes `CSR` to matrices whose non-zero entries come in dense blocks of fixed shape `block_shape = [br, bc]`, as is typical for discretizations with several coupled degrees of freedom per node. The block row pointer `rowptr` and the block column index `col` describe the block structure exactly as `rowptr` and `col` do for `CSR`, and the values are stored block by block in `data(br, bc, bnnz)`. A single index is stored per block instead of per value, and the matrix-vector product kernels are specialized for square blocks of size 2 to 8.
+
+With symmetric storage (`sparse_lower` or `sparse_upper`), blocks must be square, only the blocks of one triangle are stored, and diagonal blocks are stored in full (they must be symmetric).
+
+```Fortran
+!  |1 0| |6 7|  0 0
+!  |2 1| |8 2|  0 0
+!  ----------------
+!   0 0  |1 4|  0 0
+!   0 0  |5 1|  0 0
+!  ----------------
+!   0 0  |4 3| |7 2|
+!   0 0  |0 0| |0 0|
+type(BSR_sp_type) :: BSR
+call BSR%malloc(block_shape=[2,2], num_brows=3, num_bcols=3, bnnz=5)
+BSR%rowptr(:) = [1,3,4,6]
+BSR%col(:)    = [1,2,2,2,3]
+BSR%data(:,:,1) = reshape(real([1,2,0,1]),[2,2])
+BSR%data(:,:,2) = reshape(real([6,8,7,2]),[2,2])
+BSR%data(:,:,3) = reshape(real([1,5,4,1]),[2,2])
+BSR%data(:,:,4) = reshape(real([4,0,3,0]),[2,2])
+BSR%data(:,:,5) = reshape(real([7,0,2,0]),[2,2])
+```
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### `CSC`: The Compressed Sparse Column format
 #### Status
 
@@ -217,6 +247,8 @@ $$y=\alpha*op(M)*x+\beta*y$$
 
 `vec_y`: Shall be a rank-1 or rank-2 array of `real` or `complex` type array. . It is an `intent(inout)` argument.
 
+For rank-2 arrays, the first dimension indexes the vectors that are multiplied simultaneously and the second dimension spans the matrix rows or columns, i.e. `vec_x(k, ncols)` and `vec_y(k, nrows)` for `op='N'`. The same matrix is thus applied to `k` vectors in a single pass over its data. For a `BSR` matrix with `block_shape = [dim, dim]` acting on `k` vector fields of `dim` components over `num_points` nodes, this is the memory layout of `vec_x(k, dim, num_points)`.
+
 `alpha`, `optional` : Shall be a scalar value of the same type as `vec_x`. Default value `alpha=1`. It is an `intent(in)` argument.
 
 `beta`, `optional` : Shall be a scalar value of the same type as `vec_x`. Default value `beta=0`. It is an `intent(in)` argument.
@@ -239,6 +271,7 @@ $$y=\alpha*op(M)*x+\beta*y$$
 ### Syntax
 
 `call ` [[stdlib_sparse_spmv(module):spmv_kernel_coo(interface)]] `(op,alpha,data,index,storage,vec_x,beta,vec_y)`
+`call ` [[stdlib_sparse_spmv(module):spmv_kernel_bsr(interface)]] `(op,alpha,data,col,rowptr,storage,vec_x,beta,vec_y)`
 `call ` [[stdlib_sparse_spmv(module):spmv_kernel_csc(interface)]] `(op,alpha,data,colptr,row,storage,vec_x,beta,vec_y)`
 `call ` [[stdlib_sparse_spmv(module):spmv_kernel_csr(interface)]] `(op,alpha,data,col,rowptr,storage,vec_x,beta,vec_y)`
 `call ` [[stdlib_sparse_spmv(module):spmv_kernel_ell(interface)]] `(op,alpha,data,index,storage,vec_x,beta,vec_y)`
@@ -265,6 +298,14 @@ For the `COO` format:
 `data`: Shall be a rank-1 array of `real` or `complex` type. It is an `intent(in)` argument.
 
 `index`: Shall be a rank-2 array of `integer(ilp)` type. It is an `intent(in)` argument.
+
+For the `BSR` format:
+
+`data`: Shall be a rank-3 array of `real` or `complex` type of shape `(br, bc, bnnz)` holding the non-zero blocks. It is an `intent(in)` argument.
+
+`col`: Shall be a rank-1 array of `integer(ilp)` type holding the block column index of each block. It is an `intent(in)` argument.
+
+`rowptr`: Shall be a rank-1 array of `integer(ilp)` type holding the block row pointer. It is an `intent(in)` argument.
 
 For the `CSC` format:
 

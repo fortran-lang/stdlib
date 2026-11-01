@@ -34,8 +34,8 @@ module stdlib_sparse_spmv
 
         module subroutine spmv_bsr_${rank}$d_${s1}$(matrix,vec_x,vec_y,alpha,beta,op)
             type(BSR_${s1}$_type), intent(in) :: matrix
-            ${t1}$, intent(in)    :: vec_x${ranksuffix(rank)}$
-            ${t1}$, intent(inout) :: vec_y${ranksuffix(rank)}$
+            ${t1}$, intent(in), contiguous    :: vec_x${ranksuffix(rank)}$
+            ${t1}$, intent(inout), contiguous :: vec_y${ranksuffix(rank)}$
             ${t1}$, intent(in), optional :: alpha
             ${t1}$, intent(in), optional :: beta
             character(1), intent(in), optional :: op
@@ -91,6 +91,28 @@ module stdlib_sparse_spmv
             ${t1}$, intent(in), contiguous :: data(:)
             integer(ilp), intent(in), contiguous :: index(:,:)
             integer, intent(in) :: storage
+            ${t1}$, intent(in), contiguous    :: vec_x${ranksuffix(rank)}$
+            ${t1}$, intent(inout), contiguous :: vec_y${ranksuffix(rank)}$
+            ${t1}$, intent(in) :: alpha
+            ${t1}$, intent(in) :: beta
+            character(1), intent(in) :: op
+        end subroutine
+        #:endfor
+        #:endfor
+    end interface
+
+    !! Version experimental
+    !!
+    !! Apply the BSR sparse matrix-vector product $$y = lpha * op(M) * x + eta * y $$
+    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    interface spmv_kernel_bsr
+        #:for k1, t1, s1 in (KINDS_TYPES)
+        #:for rank in RANKS
+        module subroutine spmv_kernel_bsr_${rank}$d_${s1}$(op,alpha,data,col,rowptr,storage,vec_x,beta,vec_y)
+            ${t1}$, intent(in), contiguous :: data(:,:,:)
+            integer(ilp), intent(in), contiguous :: col(:) !! block column index
+            integer(ilp), intent(in), contiguous :: rowptr(:)  !! block row pointer
+            integer, intent(in) :: storage !! storage
             ${t1}$, intent(in), contiguous    :: vec_x${ranksuffix(rank)}$
             ${t1}$, intent(inout), contiguous :: vec_y${ranksuffix(rank)}$
             ${t1}$, intent(in) :: alpha
@@ -189,6 +211,7 @@ module stdlib_sparse_spmv
 
     public :: spmv
     public :: spmv_kernel_coo
+    public :: spmv_kernel_bsr
     public :: spmv_kernel_csc
     public :: spmv_kernel_csr
     public :: spmv_kernel_ell
