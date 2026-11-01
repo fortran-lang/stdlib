@@ -1,6 +1,6 @@
 program example_shuffle
-  use stdlib_random, only: random_seed
-  use stdlib_stats_distribution_uniform, only: shuffle
+  use stdlib_stats, only: random_seed
+  use stdlib_stats, only: shuffle
   implicit none
   integer :: seed_put, seed_get, i
   real :: x(10)
