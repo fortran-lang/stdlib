@@ -1,6 +1,6 @@
 program example_beta_rvs
-  use stdlib_random, only: random_seed
-  use stdlib_stats_distribution_beta, only: rbeta => rvs_beta
+  use stdlib_stats, only: random_seed
+  use stdlib_stats, only: rbeta => rvs_beta
 
   implicit none
   real :: a_arr(2, 3, 4)

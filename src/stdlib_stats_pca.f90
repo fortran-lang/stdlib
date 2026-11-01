@@ -1,4 +1,4 @@
-submodule (stdlib_stats) stdlib_stats_pca
+submodule (stdlib_stats_descriptive) stdlib_stats_pca
   use stdlib_kinds, only: sp, dp, xdp, qp
   use stdlib_optval, only: optval
   use stdlib_linalg, only: svd, eigh

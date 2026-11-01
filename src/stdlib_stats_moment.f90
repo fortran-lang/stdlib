@@ -1,4 +1,4 @@
-submodule (stdlib_stats) stdlib_stats_moment
+submodule (stdlib_stats_descriptive) stdlib_stats_moment
 
   use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan
   use stdlib_error, only: error_stop

@@ -1,5 +1,5 @@
 
-submodule (stdlib_stats) stdlib_stats_median
+submodule (stdlib_stats_descriptive) stdlib_stats_median
 
   use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
   use stdlib_error, only: error_stop
