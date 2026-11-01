@@ -1,26 +1,6 @@
 name: Build and Deploy Documents
 
-on:
-  push:
-    paths-ignore:
-      - 'doc/**'
-      - 'README.md'
-      - 'CONTRIBUTING.md'
-      - 'STYLE_GUIDE.md'
-      - 'WORKFLOW.md'
-      - '.github/workflows/sphinx-doc-preview.yml'
-  pull_request:
-    paths-ignore:
-      - 'doc/**'
-      - 'README.md'
-      - 'CONTRIBUTING.md'
-      - 'STYLE_GUIDE.md'
-      - 'WORKFLOW.md'
-      - '.github/workflows/sphinx-doc-preview.yml'
-
-permissions:
-  contents: read
-  issues: write
+on: [push, pull_request]
 
 env:
   LANG: "en_US.UTF-8"
@@ -29,59 +9,81 @@ env:
   PIP_NO_CLEAN: "ON"
   PIP_PREFER_BINARY: "ON"
   TZ: "UTC"
-  FORD_FILE: "API-doc-FORD-file.md"
 
 jobs:
-  Build-API-Docs:
-    if: ${{ github.ref_name != 'sphinx' && github.head_ref != 'sphinx' }}
+  Build-Docs:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v1
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # tags are needed by git describe
+
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.x'
 
       - name: Install dependencies
         run: |
-          pip install -v ford==7.0.12
-          pip install fypp
+          pip install -r doc/requirements.txt
           python --version
-          ford --version
+          sphinx-build --version
           fypp --version
-
-      - name: Skip graph and search unless deploying
-        if: github.ref != 'refs/heads/master' && ! startsWith( github.ref, 'refs/tags/' )
-        run: |
-            sed -i 's/^[[:blank:]]*graph:  *[Tt]rue/graph: false/' "${FORD_FILE}"
-            echo "MAYBE_SKIP_SEARCH=--no-search" >> $GITHUB_ENV
 
       - name: Build Docs
         run: |
-          git fetch --all --tags
-          ford -r $(git describe --always) --debug ${MAYBE_SKIP_SEARCH} "${FORD_FILE}"
+          sphinx-build -W -D release="$(git describe --always)" -b html doc doc/_build/html
 
       - name: Upload Documentation
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: FORD-API-docs
-          path: ./API-doc/
+          name: sphinx-html
+          path: ./doc/_build/html/
 
-      - name: Broken Link Check
-        uses: technote-space/broken-link-checker-action@v1
+  Deploy-Docs:
+    if: github.event_name == 'push' && github.repository == 'fortran-lang/stdlib' && ( startsWith( github.ref, 'refs/tags/' ) || github.ref == 'refs/heads/master' )
+    needs: Build-Docs
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Documentation
+        uses: actions/download-artifact@v8
         with:
-          TARGET: file://${{ github.workspace }}/API-doc/index.html
-          RECURSIVE: true
-          ASSIGNEES: ${{ github.actor }}
+          name: sphinx-html
+          path: ./doc-html
 
-      - name: Deploy API Docs
-        uses: peaceiris/actions-gh-pages@v3
-        if: github.event_name == 'push' && github.repository == 'fortran-lang/stdlib' && ( startsWith( github.ref, 'refs/tags/' ) || github.ref == 'refs/heads/master' )
+      - name: Deploy Docs
+        uses: peaceiris/actions-gh-pages@v4.1.0
         with:
           deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           cname: 'stdlib.fortran-lang.org'
           external_repository: fortran-lang/stdlib-docs
-          publish_dir: ./API-doc
+          publish_dir: ./doc-html
           publish_branch: master
           allow_empty_commit: true
           force_orphan: false
           commit_message: "From https://github.com/${{ github.repository }}/commit/${{ github.sha }} ${{ github.ref }}"
+
+  # Opt-in preview on forks: set the repository variable DOCS_PREVIEW to 'true'
+  # to publish every push to the fork's gh-pages branch.
+  Deploy-Docs-Preview:
+    if: github.event_name == 'push' && github.repository != 'fortran-lang/stdlib' && vars.DOCS_PREVIEW == 'true'
+    needs: Build-Docs
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Documentation
+        uses: actions/download-artifact@v8
+        with:
+          name: sphinx-html
+          path: ./doc-html
+
+      - name: Deploy Docs Preview
+        uses: peaceiris/actions-gh-pages@v4.1.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./doc-html
+          publish_branch: gh-pages

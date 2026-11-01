@@ -5,9 +5,6 @@ on:
     branches: [master]
   pull_request:
 
-permissions:
-  contents: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -19,7 +16,6 @@ env:
 
 jobs:
   Build:
-    if: ${{ github.ref_name != 'sphinx' && github.head_ref != 'sphinx' }}
     runs-on: ubuntu-latest
 
     steps:
