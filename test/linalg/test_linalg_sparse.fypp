@@ -296,8 +296,7 @@ contains
         character(1), parameter :: ops(3) = [sparse_op_none, sparse_op_transpose, sparse_op_hermitian]
         type(BSR_${s1}$_type) :: BSR
         ${t1}$ :: dense(nb*br, nb*bc)
-        ${t1}$, allocatable :: opA(:,:), x(:), y(:), yref(:), x2(:,:), y2(:,:), y2ref(:,:)
-        integer :: bi, bj, i, j, p, iop
+        integer :: bi, bj, i, j, p, iop, m, n
         character(64) :: ctx
 
         ! blocks on the diagonal, the first super-diagonal and in the corner (3,1)
@@ -332,32 +331,38 @@ contains
 
         do iop = 1, size(ops)
             write(ctx,'(a,i0,a,i0,a,i0,a)') "BSR ${s1}$ block ",br,"x",bc," storage ",storage," op "//ops(iop)
-            select case(ops(iop))
-            case(sparse_op_none);      opA = dense
-            case(sparse_op_transpose); opA = transpose(dense)
-            #:if t1.startswith('complex')
-            case default;              opA = conjg(transpose(dense))
-            #:else
-            case default;              opA = transpose(dense)
-            #:endif
-            end select
+            ! op(A) is m x n
+            m = merge(nb*br, nb*bc, ops(iop) == sparse_op_none)
+            n = merge(nb*bc, nb*br, ops(iop) == sparse_op_none)
+            block
+                ${t1}$ :: opA(m,n), x(n), y(m), yref(m), x2(2,n), y2(2,m), y2ref(2,m)
 
-            ! rank-1: y = 2*op(A)*x - y
-            x = [(real(mod(j,3) + 1, wp), j = 1, size(opA,2))]
-            y = [(real(mod(i,2) + 1, wp), i = 1, size(opA,1))]
-            yref = 2*matmul(opA, x) - y
-            call spmv(BSR, x, y, alpha=2*one_${s1}$, beta=-one_${s1}$, op=ops(iop))
-            call check(error, all(y == yref), trim(ctx)//": rank-1")
-            if (allocated(error)) return
+                select case(ops(iop))
+                case(sparse_op_none);      opA = dense
+                case(sparse_op_transpose); opA = transpose(dense)
+                #:if t1.startswith('complex')
+                case default;              opA = conjg(transpose(dense))
+                #:else
+                case default;              opA = transpose(dense)
+                #:endif
+                end select
 
-            ! rank-2, 2 right-hand sides: y2 = op(A)*x2, with beta = 0 y2 must not be read
-            x2 = reshape([(real(mod(j,4) + 1, wp), j = 1, 2*size(opA,2))], [2,size(opA,2)])
-            y2ref = transpose(matmul(opA, transpose(x2)))
-            y2 = y2ref
-            y2 = ieee_value(0._wp, ieee_quiet_nan)
-            call spmv(BSR, x2, y2, op=ops(iop))
-            call check(error, all(y2 == y2ref), trim(ctx)//": rank-2")
-            if (allocated(error)) return
+                ! rank-1: y = 2*op(A)*x - y
+                x = [(real(mod(j,3) + 1, wp), j = 1, n)]
+                y = [(real(mod(i,2) + 1, wp), i = 1, m)]
+                yref = 2*matmul(opA, x) - y
+                call spmv(BSR, x, y, alpha=2*one_${s1}$, beta=-one_${s1}$, op=ops(iop))
+                call check(error, all(y == yref), trim(ctx)//": rank-1")
+                if (allocated(error)) return
+
+                ! rank-2, 2 right-hand sides: y2 = op(A)*x2, with beta = 0 y2 must not be read
+                x2 = reshape([(real(mod(j,4) + 1, wp), j = 1, 2*n)], [2,n])
+                y2ref = transpose(matmul(opA, transpose(x2)))
+                y2 = ieee_value(0._wp, ieee_quiet_nan)
+                call spmv(BSR, x2, y2, op=ops(iop))
+                call check(error, all(y2 == y2ref), trim(ctx)//": rank-2")
+                if (allocated(error)) return
+            end block
         end do
 
     contains
