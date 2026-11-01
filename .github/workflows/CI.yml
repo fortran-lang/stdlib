@@ -21,29 +21,30 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-14]
         toolchain:
-          - {compiler: gcc, version: 10}
           - {compiler: gcc, version: 11}
           - {compiler: gcc, version: 12}
           - {compiler: gcc, version: 13}
           - {compiler: gcc, version: 14}
           - {compiler: gcc, version: 15}
-          - {compiler: intel, version: '2024.1'}          
-        build: [cmake]        
+        build: [cmake]
         include:
           - os: ubuntu-22.04
             build: cmake
-            toolchain: {compiler: intel-classic, version: '2021.10'}            
-          - os: ubuntu-latest
+            toolchain: {compiler: intel-classic, version: '2021.10'}
+          # ubuntu-26.04 ships neither gcc-10 nor apt-key (needed by the Intel installer)
+          - os: ubuntu-24.04
+            build: cmake
+            toolchain: {compiler: intel, version: '2024.1'}
+          - os: ubuntu-24.04
+            build: cmake
+            toolchain: {compiler: gcc, version: 10}
+          - os: ubuntu-24.04
             build: cmake-inline
             toolchain: {compiler: gcc, version: 10}
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             build: cmake-3.14
             toolchain: {compiler: gcc, version: 10}
         exclude:
-          - os: macos-14
-            toolchain: {compiler: intel, version: '2024.1'}
-          - os: macos-14
-            toolchain: {compiler: gcc, version: 10}
           - os: macos-14
             toolchain: {compiler: gcc, version: 11}
           - os: ubuntu-latest

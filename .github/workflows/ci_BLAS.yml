@@ -70,7 +70,8 @@ jobs:
         run: PATH=$PATH:/ucrt64/bin/ cmake --install build
 
   Build:
-    runs-on: ubuntu-latest
+    # ubuntu-26.04 has no apt-key, needed by the Intel installer
+    runs-on: ${{ matrix.toolchain.compiler == 'intel' && 'ubuntu-24.04' || 'ubuntu-latest' }}
     strategy:
       fail-fast: false
       matrix:
