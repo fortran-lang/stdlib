@@ -17,7 +17,7 @@ module stdlib_specialmatrices
     private
     public :: tridiagonal, sym_tridiagonal
     public :: spmv
-    public :: dense, transpose, hermitian
+    public :: dense, transpose, hermitian, trace
     public :: operator(*), operator(+), operator(-)
 
     !--------------------------------------
@@ -380,6 +380,30 @@ module stdlib_specialmatrices
             type(sym_tridiagonal_${s1}$_type), intent(in) :: A
             !! Input matrix.
             type(sym_tridiagonal_${s1}$_type) :: B
+        end function
+        #:endfor
+    end interface
+
+    interface trace
+        !! This interface provides methods to compute the trace (i.e. the sum of the
+        !! diagonal elements) of the different matrix types defined by
+        !! `stdlib_specialmatrices`, without forming the dense representation of the
+        !! matrix. [Specifications](../page/specs/stdlib_specialmatrices.html#trace)
+        #:for k1, t1, s1 in KINDS_TYPES
+        pure module function trace_tridiagonal_${s1}$(A) result(tr)
+            type(tridiagonal_${s1}$_type), intent(in) :: A
+            !! Input matrix.
+            ${t1}$ :: tr
+            !! Trace of the matrix.
+        end function
+        #:endfor
+
+        #:for k1, t1, s1 in KINDS_TYPES
+        pure module function trace_sym_tridiagonal_${s1}$(A) result(tr)
+            type(sym_tridiagonal_${s1}$_type), intent(in) :: A
+            !! Input matrix.
+            ${t1}$ :: tr
+            !! Trace of the matrix.
         end function
         #:endfor
     end interface
