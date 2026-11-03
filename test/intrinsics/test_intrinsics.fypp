@@ -2,6 +2,8 @@
 #:set I_KINDS_TYPES = list(zip(INT_KINDS, INT_TYPES, INT_KINDS))
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
 #:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set KAHAN_MASK_KINDS_TYPES = [x for x in R_KINDS_TYPES + C_KINDS_TYPES if x[2] in ["sp", "dp", "cdp"]]
+#:set SUM_MASK_KINDS_TYPES = [x for x in I_KINDS_TYPES if x[0] == "int32"] + KAHAN_MASK_KINDS_TYPES
 
 module test_intrinsics
     use testdrive, only : new_unittest, unittest_type, error_type, check, skip_test
@@ -21,6 +23,9 @@ subroutine collect_suite(testsuite)
 
     testsuite = [ &
         new_unittest('sum', test_sum), &
+        new_unittest('sum_mask_chunks', test_sum_mask_chunks), &
+        new_unittest('sum_mask_dim', test_sum_mask_dim), &
+        new_unittest('kahan_kernel_mask', test_kahan_kernel_mask), &
         new_unittest('dot_product', test_dot_product), &
         new_unittest('matmul', test_matmul) &
     ]
@@ -185,6 +190,75 @@ subroutine test_sum(error)
         end do
     end block ndarray
 
+end subroutine
+
+subroutine test_sum_mask_chunks(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+    integer :: i
+    logical :: mask(129)
+
+    ! 129 = 1 remainder element + 2 chunks of 64; selects 1, 4, ..., 127
+    mask = [(mod(i, 3) == 1, i = 1, 129)]
+    #:for k, t, s in SUM_MASK_KINDS_TYPES
+    block
+        ${t}$ :: x(129)
+
+        x = [(i, i = 1, 129)]
+        call check(error, stdlib_sum(x, mask) == 2752, "masked sum over chunks, ${s}$")
+        if (allocated(error)) return
+        #:if (k, t, s) in KAHAN_MASK_KINDS_TYPES
+        call check(error, stdlib_sum_kahan(x, mask) == 2752, "masked Kahan sum over chunks, ${s}$")
+        if (allocated(error)) return
+        #:endif
+    end block
+    #:endfor
+end subroutine
+
+subroutine test_sum_mask_dim(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+    logical, parameter :: mask(2, 3) = reshape([.true., .false., .false., .true., .true., .false.], [2, 3])
+    #:for k, t, s in SUM_MASK_KINDS_TYPES
+    block
+        ${t}$, parameter :: x(2, 3) = reshape([1, 2, 4, 8, 16, 32], [2, 3])
+
+        call check(error, stdlib_sum(x, mask=mask) == 25, "masked rank-2 sum, ${s}$")
+        if (allocated(error)) return
+        call check(error, all(stdlib_sum(x, dim=1, mask=mask) == [1, 8, 16]), "masked sum along dim 1, ${s}$")
+        if (allocated(error)) return
+        call check(error, all(stdlib_sum(x, dim=2, mask=mask) == [17, 8]), "masked sum along dim 2, ${s}$")
+        if (allocated(error)) return
+        #:if (k, t, s) in KAHAN_MASK_KINDS_TYPES
+        call check(error, stdlib_sum_kahan(x, mask=mask) == 25, "masked rank-2 Kahan sum, ${s}$")
+        if (allocated(error)) return
+        call check(error, all(stdlib_sum_kahan(x, dim=1, mask=mask) == [1, 8, 16]), "masked Kahan sum along dim 1, ${s}$")
+        if (allocated(error)) return
+        call check(error, all(stdlib_sum_kahan(x, dim=2, mask=mask) == [17, 8]), "masked Kahan sum along dim 2, ${s}$")
+        if (allocated(error)) return
+        #:endif
+    end block
+    #:endfor
+end subroutine
+
+subroutine test_kahan_kernel_mask(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+    #:for k, t, s in KAHAN_MASK_KINDS_TYPES
+    block
+        ${t}$, parameter :: a = 2
+        ${t}$ :: s, c
+
+        s = 1
+        c = 0.25_${k}$
+        call kahan_kernel(a, s, c, .false.)
+        call check(error, s == 1 .and. c == 0.25_${k}$, "excluded term keeps sum and compensation, ${s}$")
+        if (allocated(error)) return
+        call kahan_kernel(a, s, c, .true.)
+        call check(error, s == 2.75_${k}$ .and. c == 0, "included term updates sum and compensation, ${s}$")
+        if (allocated(error)) return
+    end block
+    #:endfor
 end subroutine
 
 subroutine test_dot_product(error)

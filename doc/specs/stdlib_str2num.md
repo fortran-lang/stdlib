@@ -38,6 +38,40 @@ Return a scalar of numerical type (i.e., `integer`, or `real`).
 {!example/strings/example_string_to_number.f90!}
 ```
 
+## `to_num_base` - conversion of strings to numbers with status
+
+### Status
+
+Experimental
+
+### Description
+
+Convert the initial number in a string and return the position where
+conversion stopped together with a status code.
+
+### Syntax
+
+`call ` [[stdlib_str2num(module):to_num_base(interface)]] `(string, number, position, status)`
+
+### Arguments
+
+`string`: argument has `intent(in)` and is of type `character(*)`.
+
+`number`: argument has `intent(out)` and is of numerical type (that is of
+`integer` or of `real`).
+
+`position`: argument has `intent(out)` and is of type `integer(int8)`. It is
+the position of the first character after the converted number.
+
+`status`: argument has `intent(out)` and is of type `integer(int8)`. A value of
+zero indicates a successful conversion.
+
+### Example
+
+```fortran
+{!example/strings/example_to_num_base.f90!}
+```
+
 ## `to_num_from_stream` - conversion of a stream of values in a string to numbers
 
 ### Status

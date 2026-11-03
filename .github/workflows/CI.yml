@@ -21,29 +21,30 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-14]
         toolchain:
-          - {compiler: gcc, version: 10}
           - {compiler: gcc, version: 11}
           - {compiler: gcc, version: 12}
           - {compiler: gcc, version: 13}
           - {compiler: gcc, version: 14}
           - {compiler: gcc, version: 15}
-          - {compiler: intel, version: '2024.1'}          
-        build: [cmake]        
+        build: [cmake]
         include:
           - os: ubuntu-22.04
             build: cmake
-            toolchain: {compiler: intel-classic, version: '2021.10'}            
-          - os: ubuntu-latest
+            toolchain: {compiler: intel-classic, version: '2021.10'}
+          # ubuntu-26.04 ships neither gcc-10 nor apt-key (needed by the Intel installer)
+          - os: ubuntu-24.04
+            build: cmake
+            toolchain: {compiler: intel, version: '2024.1'}
+          - os: ubuntu-24.04
+            build: cmake
+            toolchain: {compiler: gcc, version: 10}
+          - os: ubuntu-24.04
             build: cmake-inline
             toolchain: {compiler: gcc, version: 10}
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             build: cmake-3.14
             toolchain: {compiler: gcc, version: 10}
         exclude:
-          - os: macos-14
-            toolchain: {compiler: intel, version: '2024.1'}
-          - os: macos-14
-            toolchain: {compiler: gcc, version: 10}
           - os: macos-14
             toolchain: {compiler: gcc, version: 11}
           - os: ubuntu-latest
@@ -114,4 +115,19 @@ jobs:
 
     - name: Install project
       if: ${{ contains(matrix.build, 'cmake') }}
-      run: cmake --install ${{ env.BUILD_DIR }}
+      run: cmake --build ${{ env.BUILD_DIR }} --target install
+
+    - name: Test pkg-config
+      if: ${{ contains(matrix.build, 'cmake') }}
+      run: |
+        export PKG_CONFIG_PATH="$(find $PWD/_dist -name pkgconfig -type d | head -n 1):$PWD/_dist/lib/pkgconfig:$PWD/_dist/lib64/pkgconfig:$PKG_CONFIG_PATH"
+        echo "PKG_CONFIG_PATH is $PKG_CONFIG_PATH"
+        pkg-config --cflags --libs fortran_stdlib
+        cat << 'EOF' > test_pkgconfig.f90
+        program test
+          use stdlib_kinds, only: dp
+          print *, "pkg-config workflow works!"
+        end program test
+        EOF
+        ${FC:-gfortran} test_pkgconfig.f90 $(pkg-config --cflags --libs fortran_stdlib)
+        ./a.out

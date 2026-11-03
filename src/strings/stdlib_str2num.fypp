@@ -38,7 +38,7 @@ module stdlib_str2num
     use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_positive_inf, ieee_quiet_nan
     implicit none
     private
-    public :: to_num, to_num_from_stream
+    public :: to_num, to_num_from_stream, to_num_base
     
     integer(int8), parameter :: digit_0    = ichar('0',int8)
     integer(int8), parameter :: period     = ichar('.',int8) - digit_0
@@ -109,7 +109,8 @@ module stdlib_str2num
         integer(int8) :: err
         !----------------------------------------------
         call to_num_base(s,v,p,err)
-        p = min( p , len(s) )
+        ! Promote p: mixing int8 with len() is a GNU extension, and len(s, kind=int8) overflows.
+        p = min( int(p), len(s) )
         s => s(p:)
         if(present(stat)) stat = err
     end function

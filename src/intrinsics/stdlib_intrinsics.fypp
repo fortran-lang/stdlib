@@ -210,10 +210,12 @@ elemental subroutine kahan_kernel_m_${s}$(a,s,c,m)
     ${t}$, intent(inout) :: c
     logical, intent(in) :: m
     ${t}$ :: t, y
-    y = a - c
-    t = s + y
-    c = (t - s) - y
-    s = merge( s , t , m )
+    if (m) then
+        y = a - c
+        t = s + y
+        c = (t - s) - y
+        s = t
+    end if
 end subroutine 
 #:endfor
 
