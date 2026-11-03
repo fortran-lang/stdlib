@@ -1,5 +1,6 @@
 #:include "common.fypp"
 #:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
 #:set KINDS_TYPES = R_KINDS_TYPES
 #:set OP_NAMES = ["add","sub","mul","div"]
 #:set OP_SYMBOLS = ["+","-","*","/"]
@@ -30,7 +31,9 @@ contains
             new_unittest('add_get_values', test_add_get_values),  &
             new_unittest('sparse_operators', test_sparse_operators), &
             new_unittest('add_block_symmetric_skip', test_add_block_symmetric_skip), &
-            new_unittest('csc2dense', test_csc2dense) &
+            new_unittest('csc2dense', test_csc2dense), &
+            new_unittest('coo2dense', test_coo2dense), &
+            new_unittest('csr2dense', test_csr2dense) &
         ]
     end subroutine
 
@@ -753,6 +756,91 @@ contains
         #:endfor
         
     end subroutine
+
+    subroutine test_coo2dense(error)
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in R_KINDS_TYPES + C_KINDS_TYPES
+        block
+            integer, parameter :: wp = ${k1}$
+            integer, parameter :: rows(*) = [3, 2, 2]
+            integer, parameter :: cols(*) = [2, 3, 2]
+            integer :: i, j, matrix
+            type(COO_${s1}$_type) :: coo
+            ${t1}$, allocatable :: original(:,:), converted(:,:)
+
+            ! Tall, wide and square inputs must retain both shape and values.
+            do matrix = 1, size(rows)
+                allocate(original(rows(matrix), cols(matrix)))
+                original = 0
+                do j = 1, size(original, 2)
+                    do i = 1, size(original, 1)
+                        if (mod(i + j, 2) /= 0) original(i,j) = real(10*j + i, wp)
+                    end do
+                end do
+                #:if s1 in CMPLX_SUFFIX
+                original(1, size(original, 2)) = cmplx(7, -2, kind=wp)
+                #:endif
+
+                call dense2coo(original, coo)
+                call coo2dense(coo, converted)
+                call check(error, all(shape(converted) == shape(original)), &
+                    'coo2dense: wrong shape for ${s1}$')
+                if (allocated(error)) return
+                call check(error, all(converted == original), &
+                    'coo2dense: wrong values for ${s1}$')
+                if (allocated(error)) return
+                deallocate(original)
+            end do
+        end block
+        #:endfor
+    end subroutine test_coo2dense
+
+    subroutine test_csr2dense(error)
+        type(error_type), allocatable, intent(out) :: error
+        #:for k1, t1, s1 in R_KINDS_TYPES + C_KINDS_TYPES
+        block
+            integer, parameter :: wp = ${k1}$
+            integer, parameter :: rows(*) = [3, 2, 2, 3]
+            integer, parameter :: cols(*) = [2, 3, 2, 3]
+            integer :: i, j, matrix
+            type(COO_${s1}$_type) :: coo
+            type(CSR_${s1}$_type) :: csr
+            ${t1}$, allocatable :: original(:,:), converted(:,:)
+
+            do matrix = 1, size(rows)
+                allocate(original(rows(matrix), cols(matrix)))
+                original = 0
+                do j = 1, size(original, 2)
+                    do i = 1, size(original, 1)
+                        if (mod(i + j, 2) /= 0) original(i,j) = real(10*j + i, wp)
+                    end do
+                end do
+                #:if s1 in CMPLX_SUFFIX
+                original(1, size(original, 2)) = cmplx(7, -2, kind=wp)
+                #:endif
+                if (matrix == 4) then
+                    ! Keep lower-triangle symmetric storage working as well.
+                    original = reshape(real([1,0,2, 0,3,0, 0,0,4], wp), [3,3])
+                end if
+
+                call dense2coo(original, coo)
+                if (matrix == 4) coo%storage = sparse_lower
+                call coo2csr(coo, csr)
+                call csr2dense(csr, converted)
+                if (matrix == 4) then
+                    original = reshape(real([1,0,2, 0,3,0, 2,0,4], wp), [3,3])
+                end if
+                call check(error, all(shape(converted) == shape(original)), &
+                    'csr2dense: wrong shape for ${s1}$')
+                if (allocated(error)) return
+                call check(error, all(converted == original), &
+                    'csr2dense: wrong values for ${s1}$')
+                if (allocated(error)) return
+                deallocate(original)
+            end do
+        end block
+        #:endfor
+    end subroutine test_csr2dense
 
     subroutine test_csc2dense(error)
         !> Error handling
