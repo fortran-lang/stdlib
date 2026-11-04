@@ -82,6 +82,13 @@ function(configure_stdlib_target target_name regular_sources_var fypp_files_var 
       PROPERTIES
       POSITION_INDEPENDENT_CODE ON
       WINDOWS_EXPORT_ALL_SYMBOLS ON
+      # The C sources use C99 constructs (// comments, mixed declarations), so
+      # state the requirement instead of relying on the compiler's default
+      # dialect. C_EXTENSIONS is deliberately left at its default (ON): the
+      # sources define the POSIX feature-test macros they need themselves, so
+      # they also build under a strict -std=c99, but keeping the extensions on
+      # avoids hiding platform APIs on MinGW and Darwin.
+      C_STANDARD 99
     )
 
     if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU AND CMAKE_Fortran_COMPILER_VERSION VERSION_LESS 10.0)
