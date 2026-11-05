@@ -325,7 +325,7 @@ contains
         real(sp), allocatable, intent(out) :: dense(:,:)
         integer(ilp) :: idx
 
-        if(.not.allocated(dense)) allocate(dense(COO%nrows,COO%nrows),source=zero_sp)
+        if(.not.allocated(dense)) allocate(dense(COO%nrows,COO%ncols),source=zero_sp)
         do concurrent(idx = 1:COO%nnz)
             dense( COO%index(1,idx) , COO%index(2,idx) ) = COO%data(idx)
         end do
@@ -336,7 +336,7 @@ contains
         real(dp), allocatable, intent(out) :: dense(:,:)
         integer(ilp) :: idx
 
-        if(.not.allocated(dense)) allocate(dense(COO%nrows,COO%nrows),source=zero_dp)
+        if(.not.allocated(dense)) allocate(dense(COO%nrows,COO%ncols),source=zero_dp)
         do concurrent(idx = 1:COO%nnz)
             dense( COO%index(1,idx) , COO%index(2,idx) ) = COO%data(idx)
         end do
@@ -347,7 +347,7 @@ contains
         complex(sp), allocatable, intent(out) :: dense(:,:)
         integer(ilp) :: idx
 
-        if(.not.allocated(dense)) allocate(dense(COO%nrows,COO%nrows),source=zero_csp)
+        if(.not.allocated(dense)) allocate(dense(COO%nrows,COO%ncols),source=zero_csp)
         do concurrent(idx = 1:COO%nnz)
             dense( COO%index(1,idx) , COO%index(2,idx) ) = COO%data(idx)
         end do
@@ -358,7 +358,7 @@ contains
         complex(dp), allocatable, intent(out) :: dense(:,:)
         integer(ilp) :: idx
 
-        if(.not.allocated(dense)) allocate(dense(COO%nrows,COO%nrows),source=zero_cdp)
+        if(.not.allocated(dense)) allocate(dense(COO%nrows,COO%ncols),source=zero_cdp)
         do concurrent(idx = 1:COO%nnz)
             dense( COO%index(1,idx) , COO%index(2,idx) ) = COO%data(idx)
         end do
@@ -664,7 +664,7 @@ contains
         real(sp), allocatable, intent(out) :: dense(:,:)
         integer(ilp) :: i, j
 
-        if(.not.allocated(dense)) allocate(dense(CSR%nrows,CSR%nrows),source=zero_sp)
+        if(.not.allocated(dense)) allocate(dense(CSR%nrows,CSR%ncols),source=zero_sp)
         if( CSR%storage == sparse_full) then
             do i = 1, CSR%nrows
                 do j = CSR%rowptr(i), CSR%rowptr(i+1)-1
@@ -687,7 +687,7 @@ contains
         real(dp), allocatable, intent(out) :: dense(:,:)
         integer(ilp) :: i, j
 
-        if(.not.allocated(dense)) allocate(dense(CSR%nrows,CSR%nrows),source=zero_dp)
+        if(.not.allocated(dense)) allocate(dense(CSR%nrows,CSR%ncols),source=zero_dp)
         if( CSR%storage == sparse_full) then
             do i = 1, CSR%nrows
                 do j = CSR%rowptr(i), CSR%rowptr(i+1)-1
@@ -710,7 +710,7 @@ contains
         complex(sp), allocatable, intent(out) :: dense(:,:)
         integer(ilp) :: i, j
 
-        if(.not.allocated(dense)) allocate(dense(CSR%nrows,CSR%nrows),source=zero_csp)
+        if(.not.allocated(dense)) allocate(dense(CSR%nrows,CSR%ncols),source=zero_csp)
         if( CSR%storage == sparse_full) then
             do i = 1, CSR%nrows
                 do j = CSR%rowptr(i), CSR%rowptr(i+1)-1
@@ -733,7 +733,7 @@ contains
         complex(dp), allocatable, intent(out) :: dense(:,:)
         integer(ilp) :: i, j
 
-        if(.not.allocated(dense)) allocate(dense(CSR%nrows,CSR%nrows),source=zero_cdp)
+        if(.not.allocated(dense)) allocate(dense(CSR%nrows,CSR%ncols),source=zero_cdp)
         if( CSR%storage == sparse_full) then
             do i = 1, CSR%nrows
                 do j = CSR%rowptr(i), CSR%rowptr(i+1)-1
