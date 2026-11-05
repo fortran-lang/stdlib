@@ -24,7 +24,9 @@ contains
             new_unittest('add_get_values', test_add_get_values),  &
             new_unittest('sparse_operators', test_sparse_operators), &
             new_unittest('add_block_symmetric_skip', test_add_block_symmetric_skip), &
-            new_unittest('csc2dense', test_csc2dense) &
+            new_unittest('csc2dense', test_csc2dense), &
+            new_unittest('coo2dense', test_coo2dense), &
+            new_unittest('csr2dense', test_csr2dense) &
         ]
     end subroutine
 
@@ -1702,6 +1704,286 @@ contains
         end block
         
     end subroutine
+
+    subroutine test_coo2dense(error)
+        type(error_type), allocatable, intent(out) :: error
+        block
+            integer, parameter :: wp = sp
+            integer, parameter :: rows(*) = [3, 2, 2]
+            integer, parameter :: cols(*) = [2, 3, 2]
+            integer :: i, j, matrix
+            type(COO_sp_type) :: coo
+            real(sp), allocatable :: original(:,:), converted(:,:)
+
+            ! Tall, wide and square inputs must retain both shape and values.
+            do matrix = 1, size(rows)
+                allocate(original(rows(matrix), cols(matrix)))
+                original = 0
+                do j = 1, size(original, 2)
+                    do i = 1, size(original, 1)
+                        if (mod(i + j, 2) /= 0) original(i,j) = real(10*j + i, wp)
+                    end do
+                end do
+
+                call dense2coo(original, coo)
+                call coo2dense(coo, converted)
+                call check(error, all(shape(converted) == shape(original)), &
+                    'coo2dense: wrong shape for sp')
+                if (allocated(error)) return
+                call check(error, all(converted == original), &
+                    'coo2dense: wrong values for sp')
+                if (allocated(error)) return
+                deallocate(original)
+            end do
+        end block
+        block
+            integer, parameter :: wp = dp
+            integer, parameter :: rows(*) = [3, 2, 2]
+            integer, parameter :: cols(*) = [2, 3, 2]
+            integer :: i, j, matrix
+            type(COO_dp_type) :: coo
+            real(dp), allocatable :: original(:,:), converted(:,:)
+
+            ! Tall, wide and square inputs must retain both shape and values.
+            do matrix = 1, size(rows)
+                allocate(original(rows(matrix), cols(matrix)))
+                original = 0
+                do j = 1, size(original, 2)
+                    do i = 1, size(original, 1)
+                        if (mod(i + j, 2) /= 0) original(i,j) = real(10*j + i, wp)
+                    end do
+                end do
+
+                call dense2coo(original, coo)
+                call coo2dense(coo, converted)
+                call check(error, all(shape(converted) == shape(original)), &
+                    'coo2dense: wrong shape for dp')
+                if (allocated(error)) return
+                call check(error, all(converted == original), &
+                    'coo2dense: wrong values for dp')
+                if (allocated(error)) return
+                deallocate(original)
+            end do
+        end block
+        block
+            integer, parameter :: wp = sp
+            integer, parameter :: rows(*) = [3, 2, 2]
+            integer, parameter :: cols(*) = [2, 3, 2]
+            integer :: i, j, matrix
+            type(COO_csp_type) :: coo
+            complex(sp), allocatable :: original(:,:), converted(:,:)
+
+            ! Tall, wide and square inputs must retain both shape and values.
+            do matrix = 1, size(rows)
+                allocate(original(rows(matrix), cols(matrix)))
+                original = 0
+                do j = 1, size(original, 2)
+                    do i = 1, size(original, 1)
+                        if (mod(i + j, 2) /= 0) original(i,j) = real(10*j + i, wp)
+                    end do
+                end do
+                original(1, size(original, 2)) = cmplx(7, -2, kind=wp)
+
+                call dense2coo(original, coo)
+                call coo2dense(coo, converted)
+                call check(error, all(shape(converted) == shape(original)), &
+                    'coo2dense: wrong shape for csp')
+                if (allocated(error)) return
+                call check(error, all(converted == original), &
+                    'coo2dense: wrong values for csp')
+                if (allocated(error)) return
+                deallocate(original)
+            end do
+        end block
+        block
+            integer, parameter :: wp = dp
+            integer, parameter :: rows(*) = [3, 2, 2]
+            integer, parameter :: cols(*) = [2, 3, 2]
+            integer :: i, j, matrix
+            type(COO_cdp_type) :: coo
+            complex(dp), allocatable :: original(:,:), converted(:,:)
+
+            ! Tall, wide and square inputs must retain both shape and values.
+            do matrix = 1, size(rows)
+                allocate(original(rows(matrix), cols(matrix)))
+                original = 0
+                do j = 1, size(original, 2)
+                    do i = 1, size(original, 1)
+                        if (mod(i + j, 2) /= 0) original(i,j) = real(10*j + i, wp)
+                    end do
+                end do
+                original(1, size(original, 2)) = cmplx(7, -2, kind=wp)
+
+                call dense2coo(original, coo)
+                call coo2dense(coo, converted)
+                call check(error, all(shape(converted) == shape(original)), &
+                    'coo2dense: wrong shape for cdp')
+                if (allocated(error)) return
+                call check(error, all(converted == original), &
+                    'coo2dense: wrong values for cdp')
+                if (allocated(error)) return
+                deallocate(original)
+            end do
+        end block
+    end subroutine test_coo2dense
+
+    subroutine test_csr2dense(error)
+        type(error_type), allocatable, intent(out) :: error
+        block
+            integer, parameter :: wp = sp
+            integer, parameter :: rows(*) = [3, 2, 2, 3]
+            integer, parameter :: cols(*) = [2, 3, 2, 3]
+            integer :: i, j, matrix
+            type(COO_sp_type) :: coo
+            type(CSR_sp_type) :: csr
+            real(sp), allocatable :: original(:,:), converted(:,:)
+
+            do matrix = 1, size(rows)
+                allocate(original(rows(matrix), cols(matrix)))
+                original = 0
+                do j = 1, size(original, 2)
+                    do i = 1, size(original, 1)
+                        if (mod(i + j, 2) /= 0) original(i,j) = real(10*j + i, wp)
+                    end do
+                end do
+                if (matrix == 4) then
+                    ! Keep lower-triangle symmetric storage working as well.
+                    original = reshape(real([1,0,2, 0,3,0, 0,0,4], wp), [3,3])
+                end if
+
+                call dense2coo(original, coo)
+                if (matrix == 4) coo%storage = sparse_lower
+                call coo2csr(coo, csr)
+                call csr2dense(csr, converted)
+                if (matrix == 4) then
+                    original = reshape(real([1,0,2, 0,3,0, 2,0,4], wp), [3,3])
+                end if
+                call check(error, all(shape(converted) == shape(original)), &
+                    'csr2dense: wrong shape for sp')
+                if (allocated(error)) return
+                call check(error, all(converted == original), &
+                    'csr2dense: wrong values for sp')
+                if (allocated(error)) return
+                deallocate(original)
+            end do
+        end block
+        block
+            integer, parameter :: wp = dp
+            integer, parameter :: rows(*) = [3, 2, 2, 3]
+            integer, parameter :: cols(*) = [2, 3, 2, 3]
+            integer :: i, j, matrix
+            type(COO_dp_type) :: coo
+            type(CSR_dp_type) :: csr
+            real(dp), allocatable :: original(:,:), converted(:,:)
+
+            do matrix = 1, size(rows)
+                allocate(original(rows(matrix), cols(matrix)))
+                original = 0
+                do j = 1, size(original, 2)
+                    do i = 1, size(original, 1)
+                        if (mod(i + j, 2) /= 0) original(i,j) = real(10*j + i, wp)
+                    end do
+                end do
+                if (matrix == 4) then
+                    ! Keep lower-triangle symmetric storage working as well.
+                    original = reshape(real([1,0,2, 0,3,0, 0,0,4], wp), [3,3])
+                end if
+
+                call dense2coo(original, coo)
+                if (matrix == 4) coo%storage = sparse_lower
+                call coo2csr(coo, csr)
+                call csr2dense(csr, converted)
+                if (matrix == 4) then
+                    original = reshape(real([1,0,2, 0,3,0, 2,0,4], wp), [3,3])
+                end if
+                call check(error, all(shape(converted) == shape(original)), &
+                    'csr2dense: wrong shape for dp')
+                if (allocated(error)) return
+                call check(error, all(converted == original), &
+                    'csr2dense: wrong values for dp')
+                if (allocated(error)) return
+                deallocate(original)
+            end do
+        end block
+        block
+            integer, parameter :: wp = sp
+            integer, parameter :: rows(*) = [3, 2, 2, 3]
+            integer, parameter :: cols(*) = [2, 3, 2, 3]
+            integer :: i, j, matrix
+            type(COO_csp_type) :: coo
+            type(CSR_csp_type) :: csr
+            complex(sp), allocatable :: original(:,:), converted(:,:)
+
+            do matrix = 1, size(rows)
+                allocate(original(rows(matrix), cols(matrix)))
+                original = 0
+                do j = 1, size(original, 2)
+                    do i = 1, size(original, 1)
+                        if (mod(i + j, 2) /= 0) original(i,j) = real(10*j + i, wp)
+                    end do
+                end do
+                original(1, size(original, 2)) = cmplx(7, -2, kind=wp)
+                if (matrix == 4) then
+                    ! Keep lower-triangle symmetric storage working as well.
+                    original = reshape(real([1,0,2, 0,3,0, 0,0,4], wp), [3,3])
+                end if
+
+                call dense2coo(original, coo)
+                if (matrix == 4) coo%storage = sparse_lower
+                call coo2csr(coo, csr)
+                call csr2dense(csr, converted)
+                if (matrix == 4) then
+                    original = reshape(real([1,0,2, 0,3,0, 2,0,4], wp), [3,3])
+                end if
+                call check(error, all(shape(converted) == shape(original)), &
+                    'csr2dense: wrong shape for csp')
+                if (allocated(error)) return
+                call check(error, all(converted == original), &
+                    'csr2dense: wrong values for csp')
+                if (allocated(error)) return
+                deallocate(original)
+            end do
+        end block
+        block
+            integer, parameter :: wp = dp
+            integer, parameter :: rows(*) = [3, 2, 2, 3]
+            integer, parameter :: cols(*) = [2, 3, 2, 3]
+            integer :: i, j, matrix
+            type(COO_cdp_type) :: coo
+            type(CSR_cdp_type) :: csr
+            complex(dp), allocatable :: original(:,:), converted(:,:)
+
+            do matrix = 1, size(rows)
+                allocate(original(rows(matrix), cols(matrix)))
+                original = 0
+                do j = 1, size(original, 2)
+                    do i = 1, size(original, 1)
+                        if (mod(i + j, 2) /= 0) original(i,j) = real(10*j + i, wp)
+                    end do
+                end do
+                original(1, size(original, 2)) = cmplx(7, -2, kind=wp)
+                if (matrix == 4) then
+                    ! Keep lower-triangle symmetric storage working as well.
+                    original = reshape(real([1,0,2, 0,3,0, 0,0,4], wp), [3,3])
+                end if
+
+                call dense2coo(original, coo)
+                if (matrix == 4) coo%storage = sparse_lower
+                call coo2csr(coo, csr)
+                call csr2dense(csr, converted)
+                if (matrix == 4) then
+                    original = reshape(real([1,0,2, 0,3,0, 2,0,4], wp), [3,3])
+                end if
+                call check(error, all(shape(converted) == shape(original)), &
+                    'csr2dense: wrong shape for cdp')
+                if (allocated(error)) return
+                call check(error, all(converted == original), &
+                    'csr2dense: wrong values for cdp')
+                if (allocated(error)) return
+                deallocate(original)
+            end do
+        end block
+    end subroutine test_csr2dense
 
     subroutine test_csc2dense(error)
         !> Error handling
