@@ -1,6 +1,6 @@
 program example_exponential_rvs
-  use stdlib_random, only: random_seed
-  use stdlib_stats_distribution_exponential, only: rexp => rvs_exp
+  use stdlib_stats, only: random_seed
+  use stdlib_stats, only: rexp => rvs_exp
 
   implicit none
   complex :: cloc, cscale

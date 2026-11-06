@@ -8,6 +8,15 @@ submodule (stdlib_system) stdlib_system_subprocess
     ! Number of CPU ticks between status updates
     integer(TICKS), parameter :: CHECK_EVERY_TICKS = 100
     
+    ! C's exit, since the GNU intrinsic is not available under -std=f2018.
+    interface
+        subroutine exit(status) bind(C, name='exit')
+            import c_int
+            implicit none
+            integer(c_int), value :: status
+        end subroutine exit
+    end interface
+
     ! Interface to C support functions from stdlib_system_subprocess.c
     interface
         
@@ -249,14 +258,14 @@ contains
            call save_completed_state(process,delete_files=.not.asynchronous)
 
            ! If the process was forked 
-           ! Note: use `exit` rather than `stop` to prevent the mandatory stdout STOP message           
+           ! Note: use `exit` rather than `stop` to prevent the mandatory stdout STOP message.
            if (asynchronous) then 
                if (command_state/=0) then 
                    ! Invalid command: didn't even start
-                   call exit(command_state)
+                   call exit(int(command_state, c_int))
                else
                    ! Return exit state
-                   call exit(exit_state)                   
+                   call exit(int(exit_state, c_int))
                end if                   
            endif            
            
@@ -371,7 +380,7 @@ contains
 
         ! Determine the wait time
         if (present(max_wait_time)) then
-            wait_time = max(0.0_RTICKS, max_wait_time)
+            wait_time = max(0.0_RTICKS, real(max_wait_time, RTICKS))
         else
             ! No limit if max_wait_time is not provided
             wait_time = huge(wait_time)  

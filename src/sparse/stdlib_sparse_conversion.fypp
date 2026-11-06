@@ -220,7 +220,7 @@ contains
         ${t1}$, allocatable, intent(out) :: dense(:,:)
         integer(ilp) :: idx
 
-        if(.not.allocated(dense)) allocate(dense(COO%nrows,COO%nrows),source=zero_${s1}$)
+        if(.not.allocated(dense)) allocate(dense(COO%nrows,COO%ncols),source=zero_${s1}$)
         do concurrent(idx = 1:COO%nnz)
             dense( COO%index(1,idx) , COO%index(2,idx) ) = COO%data(idx)
         end do
@@ -313,7 +313,7 @@ contains
         ${t1}$, allocatable, intent(out) :: dense(:,:)
         integer(ilp) :: i, j
 
-        if(.not.allocated(dense)) allocate(dense(CSR%nrows,CSR%nrows),source=zero_${s1}$)
+        if(.not.allocated(dense)) allocate(dense(CSR%nrows,CSR%ncols),source=zero_${s1}$)
         if( CSR%storage == sparse_full) then
             do i = 1, CSR%nrows
                 do j = CSR%rowptr(i), CSR%rowptr(i+1)-1
