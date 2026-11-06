@@ -96,6 +96,9 @@ module test_linalg_pseudoinverse
         
         call random_number(a)
         #:endif
+
+        ! Keep the square matrix well conditioned for the absolute-error checks.
+        a = eye(n) + a/(2*n)
         
         inva = pinv(a, err=state)
         call check(error,state%ok(),'${ri}$ pseudoinverse (square): '//state%print())
