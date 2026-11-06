@@ -1,4 +1,7 @@
 module stdlib_stats
+  !! Provides a single entry point to the statistical procedures of stdlib:
+  !! descriptive statistics, random number generation and probability distributions
+  !! (Specification: :doc:`/specs/stdlib_stats`)
   use stdlib_random, only: random_seed, dist_rand
   use stdlib_stats_descriptive, only: corr, cov, mean, median, moment, var, &
                                       pca, pca_transform, pca_inverse_transform

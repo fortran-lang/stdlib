@@ -3,7 +3,7 @@
 
 module stdlib_selection
 !! Quickly find the k-th smallest value of an array, or the index of the k-th smallest value.
-!! ([Specification](../page/specs/stdlib_selection.html))
+!! (Specification: :doc:`/specs/stdlib_selection`)
 !
 ! This code was modified from the "Coretran" implementation "quickSelect" by
 ! Leon Foks, https://github.com/leonfoks/coretran/tree/HEAD/src/sorting
@@ -22,7 +22,7 @@ public :: select, arg_select
 
 interface select
     !! version: experimental
-    !! ([Specification](..//page/specs/stdlib_selection.html#select-find-the-k-th-smallest-value-in-an-input-array))
+    !! (Specification: :doc:`/specs/stdlib_selection`)
 
       module procedure select_1_iint8_int8
       module procedure select_1_iint8_int16
@@ -52,7 +52,7 @@ end interface
 
 interface arg_select
     !! version: experimental
-    !! ([Specification](..//page/specs/stdlib_selection.html#arg_select-find-the-index-of-the-k-th-smallest-value-in-an-input-array))
+    !! (Specification: :doc:`/specs/stdlib_selection`)
       module procedure arg_select_1_iint8_int8
       module procedure arg_select_1_iint8_int16
       module procedure arg_select_1_iint8_int32
@@ -100,11 +100,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int8), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -203,11 +203,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int16), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -306,11 +306,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int32), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -409,11 +409,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int64), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -512,11 +512,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int8), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -615,11 +615,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int16), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -718,11 +718,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int32), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -821,11 +821,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int64), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -924,11 +924,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int8), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -1027,11 +1027,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int16), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -1130,11 +1130,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int32), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -1233,11 +1233,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int64), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -1336,11 +1336,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int8), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -1439,11 +1439,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int16), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -1542,11 +1542,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int32), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -1645,11 +1645,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int64), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -1748,11 +1748,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int8), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -1851,11 +1851,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int16), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -1954,11 +1954,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int32), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -2057,11 +2057,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int64), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -2160,11 +2160,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int8), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -2263,11 +2263,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int16), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -2366,11 +2366,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int32), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -2469,11 +2469,11 @@ contains
               !! On output contains the k-th smallest value of `a(:)`
           integer(int64), intent(in), optional :: left, right
               !! If we know that:
-              !!    the k-th smallest entry of `a` is in `a(left:right)`
-              !! and also that:
-              !!    `maxval(a(1:(left-1))) <= minval(a(left:right))`
-              !! and:
-              !!    `maxval(a(left:right))) <= minval(a((right+1):size(a)))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(left:right)`,
+              !! - `maxval(a(1:(left-1))) <= minval(a(left:right))`, and
+              !! - `maxval(a(left:right)) <= minval(a((right+1):size(a)))`,
+              !!
               !! then one or both bounds can be specified to narrow the search.
               !! The constraints are available if we have previously called the
               !! subroutine with different `k` (because of how `a(:)` becomes
@@ -2566,9 +2566,10 @@ contains
           integer(int8), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int8), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -2577,11 +2578,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int8), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
@@ -2678,9 +2679,10 @@ contains
           integer(int16), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int16), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -2689,11 +2691,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int16), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
@@ -2790,9 +2792,10 @@ contains
           integer(int32), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int32), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -2801,11 +2804,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int32), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
@@ -2902,9 +2905,10 @@ contains
           integer(int64), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int64), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -2913,11 +2917,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int64), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
@@ -3014,9 +3018,10 @@ contains
           integer(int8), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int8), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -3025,11 +3030,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int8), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
@@ -3126,9 +3131,10 @@ contains
           integer(int16), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int16), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -3137,11 +3143,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int16), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
@@ -3238,9 +3244,10 @@ contains
           integer(int32), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int32), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -3249,11 +3256,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int32), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
@@ -3350,9 +3357,10 @@ contains
           integer(int64), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int64), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -3361,11 +3369,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int64), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
@@ -3462,9 +3470,10 @@ contains
           integer(int8), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int8), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -3473,11 +3482,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int8), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
@@ -3574,9 +3583,10 @@ contains
           integer(int16), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int16), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -3585,11 +3595,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int16), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
@@ -3686,9 +3696,10 @@ contains
           integer(int32), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int32), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -3697,11 +3708,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int32), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
@@ -3798,9 +3809,10 @@ contains
           integer(int64), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int64), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -3809,11 +3821,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int64), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
@@ -3910,9 +3922,10 @@ contains
           integer(int8), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int8), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -3921,11 +3934,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int8), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
@@ -4022,9 +4035,10 @@ contains
           integer(int16), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int16), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -4033,11 +4047,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int16), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
@@ -4134,9 +4148,10 @@ contains
           integer(int32), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int32), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -4145,11 +4160,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int32), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
@@ -4246,9 +4261,10 @@ contains
           integer(int64), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int64), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -4257,11 +4273,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int64), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
@@ -4358,9 +4374,10 @@ contains
           integer(int8), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int8), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -4369,11 +4386,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int8), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
@@ -4470,9 +4487,10 @@ contains
           integer(int16), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int16), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -4481,11 +4499,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int16), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
@@ -4582,9 +4600,10 @@ contains
           integer(int32), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int32), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -4593,11 +4612,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int32), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
@@ -4694,9 +4713,10 @@ contains
           integer(int64), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int64), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -4705,11 +4725,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int64), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
@@ -4806,9 +4826,10 @@ contains
           integer(int8), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int8), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -4817,11 +4838,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int8), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
@@ -4918,9 +4939,10 @@ contains
           integer(int16), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int16), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -4929,11 +4951,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int16), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
@@ -5030,9 +5052,10 @@ contains
           integer(int32), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int32), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -5041,11 +5064,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int32), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that
@@ -5142,9 +5165,10 @@ contains
           integer(int64), intent(inout) :: indx(:)
               !! Array of indices into `a(:)`. Must contain each integer
               !! from `1:size(a)` exactly once. On output it will be partially
-              !! sorted such that
-              !! `all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
-              !!  all( a(indx(k))  <= a(indx( (k+1):size(a) )) )`.
+              !! sorted such that::
+              !!
+              !!     all( a(indx(1:(k-1)))) <= a(indx(k)) ) .AND.
+              !!     all( a(indx(k))  <= a(indx( (k+1):size(a) )) )
           integer(int64), intent(in) :: k
               !! We want index of the k-th smallest entry. E.G. `k=1` leads to
               !! `a(kth_smallest) = min(a)`, and `k=size(a)` leads to
@@ -5153,11 +5177,11 @@ contains
               !! On output contains the index with the k-th smallest value of `a(:)`
           integer(int64), intent(in), optional :: left, right
               !! If we know that:
-              !!  the k-th smallest entry of `a` is in `a(indx(left:right))`
-              !! and also that:
-              !!  `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`
-              !! and:
-              !!  `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`
+              !!
+              !! - the k-th smallest entry of `a` is in `a(indx(left:right))`,
+              !! - `maxval(a(indx(1:(left-1)))) <= minval(a(indx(left:right)))`, and
+              !! - `maxval(a(indx(left:right))) <= minval(a(indx((right+1):size(a))))`,
+              !!
               !! then one or both bounds can be specified to reduce the search
               !! time. These constraints are available if we have previously
               !! called the subroutine with a different `k` (due to the way that

@@ -5,7 +5,7 @@ module stdlib_optval
   !! Provides a generic function `optval`, which can be used to
   !! conveniently implement fallback values for optional arguments
   !! to subprograms
-  !! ([Specification](../page/specs/stdlib_optval.html))
+  !! (Specification: :doc:`/specs/stdlib_optval`)
   !!
   !! If `x` is an `optional` parameter of a
   !! subprogram, then the expression `optval(x, default)` inside that
@@ -25,7 +25,7 @@ module stdlib_optval
     !! version: experimental
     !!
     !! Fallback value for optional arguments
-    !! ([Specification](../page/specs/stdlib_optval.html#description))
+    !! (Specification: :doc:`/specs/stdlib_optval`)
       module procedure optval_rsp
       module procedure optval_rdp
       module procedure optval_iint8

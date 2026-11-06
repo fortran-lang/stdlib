@@ -33,7 +33,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! gaussian function
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#gaussian))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         elemental module function gaussian_sp( x ) result( y )
             real(sp), intent(in) :: x
             real(sp) :: y
@@ -49,7 +49,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! gradient of the gaussian function
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#gaussian_grad))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         elemental module function gaussian_grad_sp( x ) result( y )
             real(sp), intent(in) :: x
             real(sp) :: y
@@ -65,7 +65,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! exponential linear unit function
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#elu))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         elemental module function elu_sp( x , a ) result( y )
             real(sp), intent(in) :: x
             real(sp), intent(in) :: a
@@ -83,7 +83,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! gradient of the exponential linear unit function
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#elu_grad))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         elemental module function elu_grad_sp( x , a ) result( y )
             real(sp), intent(in) :: x
             real(sp), intent(in) :: a
@@ -101,7 +101,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Rectified linear unit function
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#relu))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         elemental module function relu_sp( x ) result( y )
             real(sp), intent(in) :: x
             real(sp) :: y
@@ -117,7 +117,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Gradient rectified linear unit function
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#relu_grad))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         elemental module function relu_grad_sp( x ) result( y )
             real(sp), intent(in) :: x
             real(sp) :: y
@@ -133,7 +133,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! leaky Rectified linear unit function
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#leaky_relu))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         elemental module function leaky_relu_sp( x , a ) result( y )
             real(sp), intent(in) :: x
             real(sp), intent(in) :: a
@@ -151,7 +151,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Gradient of the leaky Rectified linear unit function
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#leaky_relu_grad))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         elemental module function leaky_relu_grad_sp( x , a ) result( y )
             real(sp), intent(in) :: x
             real(sp), intent(in) :: a
@@ -169,7 +169,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Gaussian error linear unit function
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#gelu))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         elemental module function gelu_sp( x ) result( y )
             real(sp), intent(in) :: x
             real(sp) :: y
@@ -185,7 +185,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Gradient of the gaussian error linear unit function
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#gelu_grad))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         elemental module function gelu_grad_sp( x ) result( y )
             real(sp), intent(in) :: x
             real(sp) :: y
@@ -201,7 +201,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Approximated gaussian error linear unit function
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#gelu_approx))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         elemental module function gelu_approx_sp( x ) result( y )
             real(sp), intent(in) :: x
             real(sp) :: y
@@ -217,7 +217,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Gradient of the approximated gaussian error linear unit function
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#gelu_approx_grad))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         elemental module function gelu_approx_grad_sp( x ) result( y )
             real(sp), intent(in) :: x
             real(sp) :: y
@@ -233,7 +233,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Scaled Exponential Linear Unit
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#selu))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         elemental module function selu_sp( x ) result( y )
             real(sp), intent(in) :: x
             real(sp) :: y
@@ -249,7 +249,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Scaled Exponential Linear Unit
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#selu_grad))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         elemental module function selu_grad_sp( x ) result( y )
             real(sp), intent(in) :: x
             real(sp) :: y
@@ -265,7 +265,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Sigmoid function
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#sigmoid))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         elemental module function sigmoid_sp( x ) result( y )
             real(sp), intent(in) :: x
             real(sp) :: y
@@ -281,7 +281,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Gradient of the sigmoid function
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#sigmoid_grad))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         elemental module function sigmoid_grad_sp( x ) result( y )
             real(sp), intent(in) :: x
             real(sp) :: y
@@ -297,7 +297,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Sigmoid Linear Unit function
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#silu))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         elemental module function silu_sp( x ) result( y )
             real(sp), intent(in) :: x
             real(sp) :: y
@@ -313,7 +313,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Gradient of the Sigmoid Linear Unit function
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#silu_grad))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         elemental module function silu_grad_sp( x ) result( y )
             real(sp), intent(in) :: x
             real(sp) :: y
@@ -329,7 +329,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Step function
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#step))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         elemental module function step_sp( x ) result( y )
             real(sp), intent(in) :: x
             real(sp) :: y
@@ -345,7 +345,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Gradient of the step function
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#step_grad))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         elemental module function step_grad_sp( x ) result( y )
             real(sp), intent(in) :: x
             real(sp) :: y
@@ -361,7 +361,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! softmax function. Available for ranks 1 to 4
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#softmax))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         pure module function softmax_r1_sp( x ) result( y )
             real(sp), intent(in) :: x(:)
             real(sp) :: y(size(x))
@@ -407,7 +407,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Gradient of the softmax function. Available for ranks 1 to 4
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#softmax_grad))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         pure module function softmax_grad_r1_sp( x ) result( y )
             real(sp), intent(in) :: x(:)
             real(sp) :: y(size(x))
@@ -453,7 +453,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! softmax function. Available for ranks 1 to 4
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#logsoftmax))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         pure module function logsoftmax_r1_sp( x ) result( y )
             real(sp), intent(in) :: x(:)
             real(sp) :: y(size(x))
@@ -499,7 +499,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! softplus function
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#softplus))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         elemental module function softplus_sp( x ) result( y )
             real(sp), intent(in) :: x
             real(sp) :: y
@@ -515,7 +515,7 @@ module stdlib_specialfunctions
         !! Version: experimental
         !!
         !! Gradient of the softplus function
-        !> ([Specification](../page/specs/stdlib_specialfunctions.html#softplus_grad))
+        !> (Specification: :doc:`/specs/stdlib_specialfunctions`)
         elemental module function softplus_grad_sp( x ) result( y )
             real(sp), intent(in) :: x
             real(sp) :: y

@@ -167,10 +167,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
      ! Compute the least-squares solution to a real system of linear equations Ax = b
      module function stdlib_linalg_s_lstsq_one(a,b,cond,overwrite_a,rank,err) result(x)
-     !!### Summary
+     !!## Summary
      !! Compute least-squares solution to a real system of linear equations \( Ax = b \) 
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the least-squares solution of a linear matrix problem.
      !!
@@ -216,10 +216,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
      module subroutine stdlib_linalg_s_solve_lstsq_one(a,b,x,real_storage,int_storage, &
               cond,singvals,overwrite_a,rank,err) 
              
-     !!### Summary
+     !!## Summary
      !! Compute least-squares solution to a real system of linear equations \( Ax = b \) 
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the least-squares solution of a linear matrix problem.
      !!
@@ -409,10 +409,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
      ! Compute the least-squares solution to a real system of linear equations Ax = b
      module function stdlib_linalg_d_lstsq_one(a,b,cond,overwrite_a,rank,err) result(x)
-     !!### Summary
+     !!## Summary
      !! Compute least-squares solution to a real system of linear equations \( Ax = b \) 
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the least-squares solution of a linear matrix problem.
      !!
@@ -458,10 +458,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
      module subroutine stdlib_linalg_d_solve_lstsq_one(a,b,x,real_storage,int_storage, &
               cond,singvals,overwrite_a,rank,err) 
              
-     !!### Summary
+     !!## Summary
      !! Compute least-squares solution to a real system of linear equations \( Ax = b \) 
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the least-squares solution of a linear matrix problem.
      !!
@@ -651,10 +651,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
      ! Compute the least-squares solution to a real system of linear equations Ax = b
      module function stdlib_linalg_c_lstsq_one(a,b,cond,overwrite_a,rank,err) result(x)
-     !!### Summary
+     !!## Summary
      !! Compute least-squares solution to a real system of linear equations \( Ax = b \) 
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the least-squares solution of a linear matrix problem.
      !!
@@ -700,10 +700,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
      module subroutine stdlib_linalg_c_solve_lstsq_one(a,b,x,real_storage,int_storage, &
              cmpl_storage, cond,singvals,overwrite_a,rank,err) 
              
-     !!### Summary
+     !!## Summary
      !! Compute least-squares solution to a real system of linear equations \( Ax = b \) 
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the least-squares solution of a linear matrix problem.
      !!
@@ -906,10 +906,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
      ! Compute the least-squares solution to a real system of linear equations Ax = b
      module function stdlib_linalg_z_lstsq_one(a,b,cond,overwrite_a,rank,err) result(x)
-     !!### Summary
+     !!## Summary
      !! Compute least-squares solution to a real system of linear equations \( Ax = b \) 
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the least-squares solution of a linear matrix problem.
      !!
@@ -955,10 +955,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
      module subroutine stdlib_linalg_z_solve_lstsq_one(a,b,x,real_storage,int_storage, &
              cmpl_storage, cond,singvals,overwrite_a,rank,err) 
              
-     !!### Summary
+     !!## Summary
      !! Compute least-squares solution to a real system of linear equations \( Ax = b \) 
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the least-squares solution of a linear matrix problem.
      !!
@@ -1161,10 +1161,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
      ! Compute the least-squares solution to a real system of linear equations Ax = b
      module function stdlib_linalg_s_lstsq_many(a,b,cond,overwrite_a,rank,err) result(x)
-     !!### Summary
+     !!## Summary
      !! Compute least-squares solution to a real system of linear equations \( Ax = b \) 
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the least-squares solution of a linear matrix problem.
      !!
@@ -1210,10 +1210,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
      module subroutine stdlib_linalg_s_solve_lstsq_many(a,b,x,real_storage,int_storage, &
               cond,singvals,overwrite_a,rank,err) 
              
-     !!### Summary
+     !!## Summary
      !! Compute least-squares solution to a real system of linear equations \( Ax = b \) 
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the least-squares solution of a linear matrix problem.
      !!
@@ -1403,10 +1403,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
      ! Compute the least-squares solution to a real system of linear equations Ax = b
      module function stdlib_linalg_d_lstsq_many(a,b,cond,overwrite_a,rank,err) result(x)
-     !!### Summary
+     !!## Summary
      !! Compute least-squares solution to a real system of linear equations \( Ax = b \) 
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the least-squares solution of a linear matrix problem.
      !!
@@ -1452,10 +1452,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
      module subroutine stdlib_linalg_d_solve_lstsq_many(a,b,x,real_storage,int_storage, &
               cond,singvals,overwrite_a,rank,err) 
              
-     !!### Summary
+     !!## Summary
      !! Compute least-squares solution to a real system of linear equations \( Ax = b \) 
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the least-squares solution of a linear matrix problem.
      !!
@@ -1645,10 +1645,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
      ! Compute the least-squares solution to a real system of linear equations Ax = b
      module function stdlib_linalg_c_lstsq_many(a,b,cond,overwrite_a,rank,err) result(x)
-     !!### Summary
+     !!## Summary
      !! Compute least-squares solution to a real system of linear equations \( Ax = b \) 
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the least-squares solution of a linear matrix problem.
      !!
@@ -1694,10 +1694,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
      module subroutine stdlib_linalg_c_solve_lstsq_many(a,b,x,real_storage,int_storage, &
              cmpl_storage, cond,singvals,overwrite_a,rank,err) 
              
-     !!### Summary
+     !!## Summary
      !! Compute least-squares solution to a real system of linear equations \( Ax = b \) 
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the least-squares solution of a linear matrix problem.
      !!
@@ -1900,10 +1900,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
      ! Compute the least-squares solution to a real system of linear equations Ax = b
      module function stdlib_linalg_z_lstsq_many(a,b,cond,overwrite_a,rank,err) result(x)
-     !!### Summary
+     !!## Summary
      !! Compute least-squares solution to a real system of linear equations \( Ax = b \) 
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the least-squares solution of a linear matrix problem.
      !!
@@ -1949,10 +1949,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
      module subroutine stdlib_linalg_z_solve_lstsq_many(a,b,x,real_storage,int_storage, &
              cmpl_storage, cond,singvals,overwrite_a,rank,err) 
              
-     !!### Summary
+     !!## Summary
      !! Compute least-squares solution to a real system of linear equations \( Ax = b \) 
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the least-squares solution of a linear matrix problem.
      !!
@@ -2906,10 +2906,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
     ! Weighted least-squares subroutine: minimize ||D(Ax - b)||^2 where D = diag(sqrt(w))
     module subroutine stdlib_linalg_s_solve_weighted_lstsq(w,a,b,x,cond,overwrite_a,rank,err)
-    !!### Summary
+    !!## Summary
     !! Compute weighted least-squares solution to a system of linear equations \( Ax = b \)
     !!
-    !!### Description
+    !!## Description
     !!
     !! This subroutine computes the weighted least-squares solution of a linear matrix problem.
     !!
@@ -3049,10 +3049,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
     ! Weighted least-squares subroutine: minimize ||D(Ax - b)||^2 where D = diag(sqrt(w))
     module subroutine stdlib_linalg_d_solve_weighted_lstsq(w,a,b,x,cond,overwrite_a,rank,err)
-    !!### Summary
+    !!## Summary
     !! Compute weighted least-squares solution to a system of linear equations \( Ax = b \)
     !!
-    !!### Description
+    !!## Description
     !!
     !! This subroutine computes the weighted least-squares solution of a linear matrix problem.
     !!
@@ -3192,10 +3192,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
     ! Weighted least-squares subroutine: minimize ||D(Ax - b)||^2 where D = diag(sqrt(w))
     module subroutine stdlib_linalg_c_solve_weighted_lstsq(w,a,b,x,cond,overwrite_a,rank,err)
-    !!### Summary
+    !!## Summary
     !! Compute weighted least-squares solution to a system of linear equations \( Ax = b \)
     !!
-    !!### Description
+    !!## Description
     !!
     !! This subroutine computes the weighted least-squares solution of a linear matrix problem.
     !!
@@ -3335,10 +3335,10 @@ submodule (stdlib_linalg) stdlib_linalg_least_squares
 
     ! Weighted least-squares subroutine: minimize ||D(Ax - b)||^2 where D = diag(sqrt(w))
     module subroutine stdlib_linalg_z_solve_weighted_lstsq(w,a,b,x,cond,overwrite_a,rank,err)
-    !!### Summary
+    !!## Summary
     !! Compute weighted least-squares solution to a system of linear equations \( Ax = b \)
     !!
-    !!### Description
+    !!## Description
     !!
     !! This subroutine computes the weighted least-squares solution of a linear matrix problem.
     !!

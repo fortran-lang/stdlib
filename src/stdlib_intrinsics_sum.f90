@@ -1,6 +1,6 @@
 
 submodule(stdlib_intrinsics) stdlib_intrinsics_sum
-    !! ([Specification](../page/specs/stdlib_intrinsics.html))
+    !! (Specification :doc:`/specs/stdlib_intrinsics`)
     use stdlib_kinds
     use stdlib_constants
     implicit none

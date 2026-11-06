@@ -90,7 +90,7 @@ module stdlib_hash_64bit
 !! Version: experimental
 !!
 !! FNV_1 interfaces
-!! ([Specification](../page/specs/stdlib_hash_procedures.html#fnv_1-calculates-a-hash-code-from-a-key))
+!! (Specification: :doc:`/specs/stdlib_hash_procedures`)
           pure module function int8_fnv_1( key ) result(hash_code)
 !! FNV_1 hash function for rank 1 arrays of kind int8
               integer(int8), intent(in) :: key(:)
@@ -125,7 +125,7 @@ module stdlib_hash_64bit
 !! Version: experimental
 !!
 !! FNV_1A interfaces
-!! ([Specification](../page/specs/stdlib_hash_procedures.html#fnv_1a-calculates-a-hash-code-from-a-key))
+!! (Specification: :doc:`/specs/stdlib_hash_procedures`)
           pure module function int8_fnv_1a( key ) result(hash_code)
 !! FNV_1A hash function for rank 1 arrays of kind int8
               integer(int8), intent(in) :: key(:)
@@ -159,7 +159,7 @@ module stdlib_hash_64bit
 !! Version: experimental
 !!
 !! SPOOKY_HASH interfaces
-!!([Specification](../page/specs/stdlib_hash_procedures.html#spooky_hash-maps-a-character-string-or-integer-vector-to-an-integer))
+!!(Specification: :doc:`/specs/stdlib_hash_procedures`)
            module function int8_spooky_hash( key, seed ) &
               result(hash_code)
 !! SPOOKY HASH function for rank 1 arrays of kind int8
@@ -261,7 +261,7 @@ interface
 !! Version: experimental
 !!
 !! PENGY_HASH interfaces
-!! ([Specification](../page/specs/stdlib_hash_procedures.html#pengy_hash-maps-a-character-string-or-integer-vector-to-an-integer))
+!! (Specification: :doc:`/specs/stdlib_hash_procedures`)
     pure module function int8_pengy_hash( key, seed ) result(hash_code)
 !! PENGY_HASH hash function for rank 1 array keys of kind int8
         integer(int8), intent(in) :: key(:)
@@ -315,7 +315,7 @@ contains
 !!
 !! Maps the 64 bit integer `key` to an unsigned integer value with only `nbits`
 !! bits where `nbits` is less than 64
-!! ([Specification](../page/specs/stdlib_hash_procedures.html#fibonacci_hash-maps-an-integer-to-a-smaller-number-of-bits_1))
+!! (Specification: :doc:`/specs/stdlib_hash_procedures`)
 
         integer(int64), intent(in) :: key
         integer, intent(in)        :: nbits
@@ -330,7 +330,7 @@ contains
 !!
 !! Uses the "random" odd 64 bit integer `seed` to map the 64 bit integer `key` to
 !! an unsigned integer value with only `nbits` bits where `nbits` is less than 64.
-!! ([Specification](../page/specs/stdlib_hash_procedures.html#universal_mult_hash-maps-an-integer-to-a-smaller-number-of-bits_1))
+!! (Specification: :doc:`/specs/stdlib_hash_procedures`)
 
         integer(int64), intent(in) :: key
         integer(int64), intent(in) :: seed
@@ -346,7 +346,7 @@ contains
 !!
 !! Returns a 64 bit pseudo random integer, `harvest`, distributed uniformly over
 !! the odd integers of the 64 bit kind.
-!! ([Specification](../page/specs/stdlib_hash_procedures.html#odd_random_integer-returns-odd-integer))
+!! (Specification: :doc:`/specs/stdlib_hash_procedures`)
 
         integer(int64), intent(out) :: harvest
         real(dp) :: sample(2)

@@ -20,8 +20,7 @@ Module stdlib_stats_distribution_gamma
     !! Version experimental
     !!
     !! Gamma Distribution Random Variates
-    !! ([Specification](../page/specs/stdlib_stats_distribution_gamma.html#
-    !! rvs_gamma-gamma-distribution-random-variates))
+    !! (Specification: :doc:`/specs/stdlib_stats_distribution_gamma`)
     !!
         module procedure gamma_dist_rvs_1_rsp     ! 1 argument
         module procedure gamma_dist_rvs_1_rdp     ! 1 argument
@@ -44,8 +43,7 @@ Module stdlib_stats_distribution_gamma
     !! Version experimental
     !!
     !! Gamma Distribution Probability Density Function
-    !! ([Specification](../page/specs/stdlib_stats_distribution_gamma.html#
-    !! pdf_gamma-gamma-distribution-probability-density-function))
+    !! (Specification: :doc:`/specs/stdlib_stats_distribution_gamma`)
     !!
         module procedure gamma_dist_pdf_rsp
         module procedure gamma_dist_pdf_rdp
@@ -63,8 +61,7 @@ Module stdlib_stats_distribution_gamma
     !! Version experimental
     !!
     !! Gamma Distribution Cumulative Distribution Function
-    !! ([Specification](../page/specs/stdlib_stats_distribution_gamma.html#
-    !! cdf_gamma-gamma-distribution-cumulative-distribution-function))
+    !! (Specification: :doc:`/specs/stdlib_stats_distribution_gamma`)
     !!
         module procedure gamma_dist_cdf_rsp
         module procedure gamma_dist_cdf_rdp

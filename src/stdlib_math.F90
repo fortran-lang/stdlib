@@ -39,7 +39,7 @@ module stdlib_math
     end interface clip
 
     !> Swap the values of the lhs and rhs arguments
-    !> ([Specification](../page/specs/stdlib_math.html#swap_subroutine))
+    !> (Specification: :doc:`/specs/stdlib_math`)
     !>
     !> Version: experimental
     interface swap
@@ -63,7 +63,7 @@ module stdlib_math
     end interface
 
     !> Returns the greatest common divisor of two integers
-    !> ([Specification](../page/specs/stdlib_math.html#gcd))
+    !> (Specification: :doc:`/specs/stdlib_math`)
     !>
     !> Version: experimental
     interface gcd
@@ -73,13 +73,9 @@ module stdlib_math
         module procedure gcd_int64
     end interface gcd
 
+    !> Create rank 1 arrays of linearly spaced elements.
+    !> (Specification: :doc:`/specs/stdlib_math`)
     interface linspace
-    !! Version: Experimental
-    !!
-    !! Create rank 1 array of linearly spaced elements
-    !! If the number of elements is not specified, create an array with size 100. If n is a negative value,
-    !! return an array with size 0. If n = 1, return an array whose only element is end
-    !!([Specification](../page/specs/stdlib_math.html#linspace-create-a-linearly-spaced-rank-one-array))
       pure module function linspace_default_1_rsp_rsp(start, end) result(res)
         real(sp), intent(in) :: start
         real(sp), intent(in) :: end
@@ -135,9 +131,8 @@ module stdlib_math
       end function linspace_n_1_cdp_cdp
 
 
-    ! Add support for integer linspace
-    !!
-    !! When dealing with integers as the `start` and `end` parameters, the return type is always a `real(dp)`.
+    ! Add support for integer linspace.
+    ! The integer overloads always return `real(dp)`.
       pure module function linspace_default_1_iint8_iint8(start, end) result(res)
         integer(int8), intent(in) :: start
         integer(int8), intent(in) :: end
@@ -194,15 +189,9 @@ module stdlib_math
 
   end interface
 
+  !> Create rank 1 arrays of logarithmically spaced elements.
+  !> (Specification: :doc:`/specs/stdlib_math`)
   interface logspace
-  !! Version: Experimental
-  !!
-  !! Create rank 1 array of logarithmically spaced elements from base**start to base**end.
-  !! If the number of elements is not specified, create an array with size 50. If n is a negative value,
-  !! return an array with size 0. If n = 1, return an array whose only element is base**end. If no base
-  !! is specified, logspace will default to using a base of 10
-  !!
-  !!([Specification](../page/specs/stdlib_math.html#logspace-create-a-logarithmically-spaced-rank-one-array))
     pure module function logspace_1_rsp_default(start, end) result(res)
 
       real(sp), intent(in) :: start
@@ -453,9 +442,9 @@ module stdlib_math
 
     !> Version: experimental
     !>
-    !> `arange` creates a one-dimensional `array` of the `integer/real` type 
-    !>  with fixed-spaced values of given spacing, within a given interval.
-    !> ([Specification](../page/specs/stdlib_math.html#arange-function))
+    !> `arange` creates a one-dimensional `array` of the `integer/real` type
+    !> with fixed-spaced values of given spacing, within a given interval.
+    !> (Specification: :doc:`/specs/stdlib_math`)
     interface arange
         pure module function arange_r_sp(start, end, step) result(result)
             real(sp), intent(in) :: start
@@ -492,7 +481,7 @@ module stdlib_math
     !> Version: experimental
     !>
     !> `arg` computes the phase angle in the interval (-π,π].
-    !> ([Specification](../page/specs/stdlib_math.html#arg-function))
+    !> (Specification: :doc:`/specs/stdlib_math`)
     interface arg
         procedure :: arg_sp
         procedure :: arg_dp
@@ -501,7 +490,7 @@ module stdlib_math
     !> Version: experimental
     !>
     !> `argd` computes the phase angle of degree version in the interval (-180.0,180.0].
-    !> ([Specification](../page/specs/stdlib_math.html#argd-function))
+    !> (Specification: :doc:`/specs/stdlib_math`)
     interface argd
         procedure :: argd_sp
         procedure :: argd_dp
@@ -510,7 +499,7 @@ module stdlib_math
     !> Version: experimental
     !>
     !> `argpi` computes the phase angle of circular version in the interval (-1.0,1.0].
-    !> ([Specification](../page/specs/stdlib_math.html#argpi-function))
+    !> (Specification: :doc:`/specs/stdlib_math`)
     interface argpi
         procedure :: argpi_sp
         procedure :: argpi_dp
@@ -519,7 +508,7 @@ module stdlib_math
     !> Version: experimental
     !> 
     !> `deg2rad` converts phase angles from degrees to radians.
-    !> ([Specification](../page/specs/stdlib_math.html#deg2rad-function))
+    !> (Specification: :doc:`/specs/stdlib_math`)
     interface deg2rad
         procedure :: deg2rad_sp
         procedure :: deg2rad_dp
@@ -528,14 +517,14 @@ module stdlib_math
     !> Version: experimental
     !> 
     !> `rad2deg` converts phase angles from radians to degrees.
-    !> ([Specification](../page/specs/stdlib_math.html#rad2deg-function))
+    !> (Specification: :doc:`/specs/stdlib_math`)
     interface rad2deg
         procedure :: rad2deg_sp
         procedure :: rad2deg_dp
     end interface rad2deg
     
     !> Returns a boolean scalar/array where two scalar/arrays are element-wise equal within a tolerance.
-    !> ([Specification](../page/specs/stdlib_math.html#is_close-function))
+    !> (Specification: :doc:`/specs/stdlib_math`)
     interface is_close
         elemental logical module function is_close_rsp(a, b, rel_tol, abs_tol, equal_nan) result(close)
             real(sp), intent(in) :: a, b
@@ -562,7 +551,7 @@ module stdlib_math
     !> Version: experimental
     !>
     !> Returns a boolean scalar where two arrays are element-wise equal within a tolerance.
-    !> ([Specification](../page/specs/stdlib_math.html#all_close-function))
+    !> (Specification: :doc:`/specs/stdlib_math`)
     interface all_close
         logical pure module function all_close_1_rsp(a, b, rel_tol, abs_tol, equal_nan) result(close)
             real(sp), intent(in) :: a(:), b(:)
@@ -649,7 +638,7 @@ module stdlib_math
     !> Version: experimental
     !>
     !> Computes differences between adjacent elements of an array.
-    !> ([Specification](../page/specs/stdlib_math.html#diff-function))
+    !> (Specification: :doc:`/specs/stdlib_math`)
     interface diff
         pure module function diff_1_sp(x, n, prepend, append) result(y)
             real(sp), intent(in) :: x(:)
@@ -729,7 +718,7 @@ module stdlib_math
     !> Version: experimental
     !>
     !> Computes a list of coordinate matrices from coordinate vectors.
-    !> ([Specification](../page/specs/stdlib_math.html#meshgrid))
+    !> (Specification: :doc:`/specs/stdlib_math`)
     interface meshgrid
         module subroutine meshgrid_1_iint8_iint8(&
                 x1,  &

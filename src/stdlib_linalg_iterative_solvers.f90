@@ -22,7 +22,7 @@ module stdlib_linalg_iterative_solvers
     
     !! version: experimental
     !!
-    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_linop)
+    !! Specifications: :doc:`/specs/stdlib_linalg_iterative_solvers`
     !!
     !! linop type holding the linear operator and its associated methods.
     !! The `linop` type is used to define the linear operator for the iterative solvers.
@@ -37,7 +37,7 @@ module stdlib_linalg_iterative_solvers
 
     !! version: experimental
     !!
-    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solver_workspace)
+    !! Specifications: :doc:`/specs/stdlib_linalg_iterative_solvers`
     !!
     !! solver_workspace type holding temporal array data for the iterative solvers.
     type, public :: stdlib_solver_workspace_sp_type
@@ -95,7 +95,7 @@ module stdlib_linalg_iterative_solvers
     !! version: experimental
     !!
     !! stdlib_solve_cg_kernel interface for the conjugate gradient method.
-    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_cg_kernel)
+    !! Specifications: :doc:`/specs/stdlib_linalg_iterative_solvers`
     interface stdlib_solve_cg_kernel
         module subroutine stdlib_solve_cg_kernel_sp(A,b,x,rtol,atol,maxiter,workspace)
             class(stdlib_linop_sp_type), intent(in) :: A !! linear operator
@@ -120,7 +120,7 @@ module stdlib_linalg_iterative_solvers
     
     !! version: experimental
     !!
-    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_cg)
+    !! Specifications: :doc:`/specs/stdlib_linalg_iterative_solvers`
     interface stdlib_solve_cg
         module subroutine stdlib_solve_cg_dense_sp(A,b,x,di,rtol,atol,maxiter,restart,workspace)
             !! linear operator matrix
@@ -176,7 +176,7 @@ module stdlib_linalg_iterative_solvers
     !! version: experimental
     !!
     !! stdlib_solve_pcg_kernel interface for the preconditionned conjugate gradient method.
-    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_pcg_kernel)
+    !! Specifications: :doc:`/specs/stdlib_linalg_iterative_solvers`
     interface stdlib_solve_pcg_kernel
         module subroutine stdlib_solve_pcg_kernel_sp(A,M,b,x,rtol,atol,maxiter,workspace)
             class(stdlib_linop_sp_type), intent(in) :: A !! linear operator
@@ -204,7 +204,7 @@ module stdlib_linalg_iterative_solvers
     !! version: experimental
     !!
     !! stdlib_solve_bicgstab_kernel interface for the biconjugate gradient stabilized method.
-    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_bicgstab_kernel)
+    !! Specifications: :doc:`/specs/stdlib_linalg_iterative_solvers`
     interface stdlib_solve_bicgstab_kernel
         module subroutine stdlib_solve_bicgstab_kernel_sp(A,M,b,x,rtol,atol,maxiter,workspace)
             class(stdlib_linop_sp_type), intent(in) :: A !! linear operator
@@ -232,7 +232,7 @@ module stdlib_linalg_iterative_solvers
     !! version: experimental
     !!
     !! stdlib_solve_gmres_kernel interface for the restarted generalized minimal residual method.
-    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_gmres_kernel)
+    !! Specifications: :doc:`/specs/stdlib_linalg_iterative_solvers`
     interface stdlib_solve_gmres_kernel
         module subroutine stdlib_solve_gmres_kernel_sp(A,M,b,x,rtol,atol,maxiter,kdim,workspace,compact)
             class(stdlib_linop_sp_type), intent(in) :: A !! linear operator
@@ -263,7 +263,7 @@ module stdlib_linalg_iterative_solvers
 
     !! version: experimental
     !!
-    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_pcg)
+    !! Specifications: :doc:`/specs/stdlib_linalg_iterative_solvers`
     interface stdlib_solve_pcg
         module subroutine stdlib_solve_pcg_dense_sp(A,b,x,di,rtol,atol,maxiter,restart,precond,M,workspace)
             !! linear operator matrix
@@ -326,7 +326,7 @@ module stdlib_linalg_iterative_solvers
 
     !! version: experimental
     !!
-    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_bicgstab)
+    !! Specifications: :doc:`/specs/stdlib_linalg_iterative_solvers`
     interface stdlib_solve_bicgstab
         module subroutine stdlib_solve_bicgstab_dense_sp(A,b,x,di,rtol,atol,maxiter,restart,precond,M,workspace)
             !! linear operator matrix
@@ -389,7 +389,7 @@ module stdlib_linalg_iterative_solvers
 
     !! version: experimental
     !!
-    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_gmres)
+    !! Specifications: :doc:`/specs/stdlib_linalg_iterative_solvers`
     interface stdlib_solve_gmres
         module subroutine stdlib_solve_gmres_dense_sp(A,b,x,di,rtol,atol,maxiter,restart,kdim,precond,M,workspace,compact)
             !! linear operator matrix

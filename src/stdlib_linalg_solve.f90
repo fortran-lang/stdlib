@@ -974,7 +974,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
      
 
     !---------------------------------------------------------------------------
-    !> solve_chol: One-shot factorize + solve (POSV)
+    !> One-shot factorize + solve using POSV.
     !---------------------------------------------------------------------------
     
     !> Factorize and solve A*x = b in one call (uses LAPACK POSV)
@@ -1961,7 +1961,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
     
 
     !---------------------------------------------------------------------------
-    !> solve_lower_chol: Solve using PRE-COMPUTED LOWER Cholesky factor (POTRS)
+    !> Solve using a pre-computed lower Cholesky factor with POTRS.
     !---------------------------------------------------------------------------
     
     !> Solve the linear system A*x = b using pre-computed lower Cholesky factor
@@ -2086,7 +2086,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
     
 
     !---------------------------------------------------------------------------
-    !> solve_upper_chol: Solve using PRE-COMPUTED UPPER Cholesky factor (POTRS)
+    !> Solve using a pre-computed upper Cholesky factor with POTRS.
     !---------------------------------------------------------------------------
     
     !> Solve the linear system A*x = b using pre-computed upper Cholesky factor

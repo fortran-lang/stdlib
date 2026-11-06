@@ -2,7 +2,7 @@
 
 module stdlib_io
   !! Provides a support for file handling
-  !! ([Specification](../page/specs/stdlib_io.html))
+  !! (Specification: :doc:`/specs/stdlib_io`)
 
   use, intrinsic :: iso_fortran_env, only : input_unit
   use stdlib_kinds, only: sp, dp, xdp, qp, &
@@ -21,18 +21,19 @@ module stdlib_io
   !! version: experimental 
   !!
   !! Reads a whole ASCII file and loads its contents into a string variable. 
-  !! ([Specification](../page/specs/stdlib_io.html#get-file-read-a-whole-ascii-file-into-a-character-or-a-string-variable))
+  !! (Specification: :doc:`/specs/stdlib_io`)
   !! 
-  !!### Summary 
+  !!## Summary 
   !! Subroutine interface for reading the content of a file into a string.
   !!
-  !!### Description
+  !!## Description
   !! 
   !! This subroutine reads the entirety of a specified ASCII file and returns it as a string. The optional 
   !! `err` argument allows for handling errors through the library's `state_type` class. 
   !! An optional `logical` flag can be passed to delete the file after reading.  
   !! 
-  !!@note Handles errors using the library's `state_type` error-handling class. If not provided, 
+  !!## Notes
+  !! Handles errors using the library's `state_type` error-handling class. If not provided, 
   !! exceptions will trigger an `error stop`. 
   !!         
   interface get_file
@@ -65,7 +66,7 @@ module stdlib_io
     !! version: experimental
     !!
     !! Loads a 2D array from a text file
-    !! ([Specification](../page/specs/stdlib_io.html#description))
+    !! (Specification: :doc:`/specs/stdlib_io`)
       module procedure loadtxt_rsp
       module procedure loadtxt_rdp
       module procedure loadtxt_iint8
@@ -80,7 +81,7 @@ module stdlib_io
     !! version: experimental
     !!
     !! Saves a 2D array into a text file
-    !! ([Specification](../page/specs/stdlib_io.html#description_2))
+    !! (Specification: :doc:`/specs/stdlib_io`)
       module procedure savetxt_rspf
       module procedure savetxt_rdpf
       module procedure savetxt_iint8f
@@ -2988,9 +2989,9 @@ contains
     !! version: experimental
     !!
     !! Opens a file
-    !! ([Specification](../page/specs/stdlib_io.html#description_1))
+    !! (Specification: :doc:`/specs/stdlib_io`)
     !!
-    !!##### Behavior
+    !!## Behavior
     !!
     !!
     !! To open a file to read:

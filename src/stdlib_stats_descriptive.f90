@@ -1,7 +1,7 @@
 module stdlib_stats_descriptive
   !! Provides support for various statistical methods. This includes currently
   !! descriptive statistics
-  !! ([Specification](../page/specs/stdlib_stats_descriptive.html))
+  !! (Specification: :doc:`/specs/stdlib_stats_descriptive`)
   use stdlib_kinds, only: sp, dp, xdp, qp, &
       int8, int16, int32, int64
   use stdlib_linalg_state, only: linalg_state_type
@@ -16,7 +16,7 @@ module stdlib_stats_descriptive
     !! version: experimental
     !!
     !! Pearson correlation of array elements
-    !! ([Specification](../page/specs/stdlib_stats_descriptive.html#corr-pearson-correlation-of-array-elements))
+    !! (Specification: :doc:`/specs/stdlib_stats_descriptive`)
       module function corr_1_rsp_rsp(x, dim, mask) result(res)
         real(sp), intent(in) :: x(:)
         integer, intent(in) :: dim
@@ -240,7 +240,7 @@ module stdlib_stats_descriptive
     !! version: experimental
     !!
     !! Covariance of array elements
-    !! ([Specification](../page/specs/stdlib_stats_descriptive.html#cov-covariance-of-array-elements))
+    !! (Specification: :doc:`/specs/stdlib_stats_descriptive`)
       module function cov_1_rsp_rsp(x, dim, mask, corrected) result(res)
         real(sp), intent(in) :: x(:)
         integer, intent(in) :: dim
@@ -495,7 +495,7 @@ module stdlib_stats_descriptive
     !! version: experimental
     !!
     !! Mean of array elements
-    !! ([Specification](../page/specs/stdlib_stats_descriptive.html#mean-mean-of-array-elements))
+    !! (Specification: :doc:`/specs/stdlib_stats_descriptive`)
         module function mean_all_1_rsp_rsp (x, mask) result(res)
           real(sp), intent(in) :: x(:)
           logical, intent(in), optional :: mask
@@ -1231,7 +1231,7 @@ module stdlib_stats_descriptive
     !! version: experimental
     !!
     !! Median of array elements
-    !! ([Specification](../page/specs/stdlib_stats_descriptive.html#median-median-of-array-elements))
+    !! (Specification: :doc:`/specs/stdlib_stats_descriptive`)
         module function median_all_1_iint8_dp (x, mask) result(res)
           integer(int8), intent(in) :: x(:)
           logical, intent(in), optional :: mask
@@ -1783,7 +1783,7 @@ module stdlib_stats_descriptive
     !! version: experimental
     !!
     !! Variance of array elements
-    !! ([Specification](../page/specs/stdlib_stats_descriptive.html#var-variance-of-array-elements))
+    !! (Specification: :doc:`/specs/stdlib_stats_descriptive`)
 
         module function var_all_1_rsp_rsp(x, mask, corrected) result(res)
           real(sp), intent(in) :: x(:)
@@ -2648,7 +2648,7 @@ module stdlib_stats_descriptive
     !! version: experimental
     !!
     !! Central moment of array elements
-    !! ([Specification](../page/specs/stdlib_stats_descriptive.html#moment-central-moments-of-array-elements))
+    !! (Specification: :doc:`/specs/stdlib_stats_descriptive`)
         module function moment_all_1_rsp_rsp(x, order, center, mask) result(res)
           real(sp), intent(in) :: x(:)
           integer, intent(in) :: order
@@ -4075,7 +4075,7 @@ module stdlib_stats_descriptive
     !! version: experimental
     !!
     !! Principal Component Analysis (PCA)
-    !! ([Specification](../page/specs/stdlib_stats_descriptive.html#pca))
+    !! (Specification: :doc:`/specs/stdlib_stats_descriptive`)
       module subroutine pca_sp(x, components, singular_values, x_mean, &
                                   method, overwrite_x, err)
         real(sp), intent(inout) :: x(:,:)
@@ -4103,7 +4103,7 @@ module stdlib_stats_descriptive
     !! version: experimental
     !!
     !! Projects data into the reduced dimensional space
-    !! ([Specification](../page/specs/stdlib_stats_descriptive.html#pca_transform))
+    !! (Specification: :doc:`/specs/stdlib_stats_descriptive`)
       module subroutine pca_transform_sp(x, components, x_transformed, x_mean)
         real(sp), intent(in) :: x(:,:)
         real(sp), intent(in) :: components(:,:)
@@ -4123,7 +4123,7 @@ module stdlib_stats_descriptive
     !! version: experimental
     !!
     !! Reconstructs original data from the reduced space
-    !! ([Specification](../page/specs/stdlib_stats_descriptive.html#pca_inverse_transform))
+    !! (Specification: :doc:`/specs/stdlib_stats_descriptive`)
       module subroutine pca_inverse_transform_sp(x_reduced, components, x_reconstructed, x_mean)
         real(sp), intent(in) :: x_reduced(:,:)
         real(sp), intent(in) :: components(:,:)

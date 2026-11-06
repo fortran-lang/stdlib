@@ -237,7 +237,7 @@ module stdlib_sparse_kinds
     end type
 
     !! Overload the `+` operator for sparse matrices
-    !! [Specifications](../page/specs/stdlib_sparse.html#operators)    
+    !! Specifications: :doc:`/specs/stdlib_sparse`    
     interface operator(+)
         pure module function sparse_add_COO_sp(a, b) result(c)
         type(COO_sp_type), intent(in) :: a, b
@@ -498,7 +498,7 @@ module stdlib_sparse_kinds
     end interface
 
     !! Overload the `-` operator for sparse matrices
-    !! [Specifications](../page/specs/stdlib_sparse.html#operators)    
+    !! Specifications: :doc:`/specs/stdlib_sparse`    
     interface operator(-)
         pure module function sparse_sub_COO_sp(a, b) result(c)
         type(COO_sp_type), intent(in) :: a, b
@@ -759,7 +759,7 @@ module stdlib_sparse_kinds
     end interface
 
     !! Overload the `*` operator for sparse matrices
-    !! [Specifications](../page/specs/stdlib_sparse.html#operators)    
+    !! Specifications: :doc:`/specs/stdlib_sparse`    
     interface operator(*)
         pure module function sparse_mul_COO_sp(a, b) result(c)
         type(COO_sp_type), intent(in) :: a, b
@@ -1020,7 +1020,7 @@ module stdlib_sparse_kinds
     end interface
 
     !! Overload the `/` operator for sparse matrices
-    !! [Specifications](../page/specs/stdlib_sparse.html#operators)    
+    !! Specifications: :doc:`/specs/stdlib_sparse`    
     interface operator(/)
         pure module function sparse_div_COO_sp(a, b) result(c)
         type(COO_sp_type), intent(in) :: a, b

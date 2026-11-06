@@ -23,7 +23,7 @@ module stdlib_io_mm
     !> Version: experimental
     !>
     !> Load a matrix from a Matrix Market file
-    !> ([Specification](../page/specs/stdlib_io.html#load_mm))
+    !> (Specification: :doc:`/specs/stdlib_io`)
     interface load_mm
         module subroutine load_mm_dense_sp(filename, matrix, iostat, iomsg)
             !> Name of the Matrix Market file to load from
@@ -207,7 +207,7 @@ module stdlib_io_mm
     !> Version: experimental
     !>
     !> Save a matrix to a Matrix Market file
-    !> ([Specification](../page/specs/stdlib_io.html#save_mm))
+    !> (Specification: :doc:`/specs/stdlib_io`)
     interface save_mm
         module subroutine save_mm_dense_sp(filename, matrix, comment, format, symmetry, iostat, iomsg)
         character(len=*), intent(in) :: filename
