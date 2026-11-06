@@ -27,7 +27,7 @@ module stdlib_linalg_iterative_solvers
     
     !! version: experimental
     !!
-    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_linop)
+    !! Specifications: :doc:`/specs/stdlib_linalg_iterative_solvers`
     !!
     !! linop type holding the linear operator and its associated methods.
     !! The `linop` type is used to define the linear operator for the iterative solvers.
@@ -40,7 +40,7 @@ module stdlib_linalg_iterative_solvers
 
     !! version: experimental
     !!
-    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solver_workspace)
+    !! Specifications: :doc:`/specs/stdlib_linalg_iterative_solvers`
     !!
     !! solver_workspace type holding temporal array data for the iterative solvers.
     #:for k, t, s in R_KINDS_TYPES
@@ -78,7 +78,7 @@ module stdlib_linalg_iterative_solvers
     !! version: experimental
     !!
     !! stdlib_solve_cg_kernel interface for the conjugate gradient method.
-    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_cg_kernel)
+    !! Specifications: :doc:`/specs/stdlib_linalg_iterative_solvers`
     interface stdlib_solve_cg_kernel
         #:for k, t, s in R_KINDS_TYPES
         module subroutine stdlib_solve_cg_kernel_${s}$(A,b,x,rtol,atol,maxiter,workspace)
@@ -96,7 +96,7 @@ module stdlib_linalg_iterative_solvers
     
     !! version: experimental
     !!
-    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_cg)
+    !! Specifications: :doc:`/specs/stdlib_linalg_iterative_solvers`
     interface stdlib_solve_cg
         #:for matrix in MATRIX_TYPES
         #:for k, t, s in R_KINDS_TYPES
@@ -124,7 +124,7 @@ module stdlib_linalg_iterative_solvers
     !! version: experimental
     !!
     !! stdlib_solve_pcg_kernel interface for the preconditionned conjugate gradient method.
-    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_pcg_kernel)
+    !! Specifications: :doc:`/specs/stdlib_linalg_iterative_solvers`
     interface stdlib_solve_pcg_kernel
         #:for k, t, s in R_KINDS_TYPES
         module subroutine stdlib_solve_pcg_kernel_${s}$(A,M,b,x,rtol,atol,maxiter,workspace)
@@ -144,7 +144,7 @@ module stdlib_linalg_iterative_solvers
     !! version: experimental
     !!
     !! stdlib_solve_bicgstab_kernel interface for the biconjugate gradient stabilized method.
-    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_bicgstab_kernel)
+    !! Specifications: :doc:`/specs/stdlib_linalg_iterative_solvers`
     interface stdlib_solve_bicgstab_kernel
         #:for k, t, s in R_KINDS_TYPES
         module subroutine stdlib_solve_bicgstab_kernel_${s}$(A,M,b,x,rtol,atol,maxiter,workspace)
@@ -164,7 +164,7 @@ module stdlib_linalg_iterative_solvers
     !! version: experimental
     !!
     !! stdlib_solve_gmres_kernel interface for the restarted generalized minimal residual method.
-    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_gmres_kernel)
+    !! Specifications: :doc:`/specs/stdlib_linalg_iterative_solvers`
     interface stdlib_solve_gmres_kernel
         #:for k, t, s in R_KINDS_TYPES
         module subroutine stdlib_solve_gmres_kernel_${s}$(A,M,b,x,rtol,atol,maxiter,kdim,workspace,compact)
@@ -185,7 +185,7 @@ module stdlib_linalg_iterative_solvers
 
     !! version: experimental
     !!
-    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_pcg)
+    !! Specifications: :doc:`/specs/stdlib_linalg_iterative_solvers`
     interface stdlib_solve_pcg
         #:for matrix in MATRIX_TYPES
         #:for k, t, s in R_KINDS_TYPES
@@ -214,7 +214,7 @@ module stdlib_linalg_iterative_solvers
 
     !! version: experimental
     !!
-    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_bicgstab)
+    !! Specifications: :doc:`/specs/stdlib_linalg_iterative_solvers`
     interface stdlib_solve_bicgstab
         #:for matrix in MATRIX_TYPES
         #:for k, t, s in R_KINDS_TYPES
@@ -243,7 +243,7 @@ module stdlib_linalg_iterative_solvers
 
     !! version: experimental
     !!
-    !! [Specifications](../page/specs/stdlib_linalg_iterative_solvers.html#stdlib_solve_gmres)
+    !! Specifications: :doc:`/specs/stdlib_linalg_iterative_solvers`
     interface stdlib_solve_gmres
         #:for matrix in MATRIX_TYPES
         #:for k, t, s in R_KINDS_TYPES

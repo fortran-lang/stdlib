@@ -1,7 +1,7 @@
 #:include "common.fypp"
 !> Version: experimental
 !>
-!> The specification of this module is available [here](../page/specs/stdlib_kinds.html).
+!> The specification of this module is available in :doc:`/specs/stdlib_kinds`.
 module stdlib_kinds
   use iso_fortran_env, only: int8, int16, int32, int64
   use iso_c_binding, only: c_bool, c_char

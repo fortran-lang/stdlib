@@ -18,6 +18,7 @@ contains
 
         testsuite = [ &
             new_unittest("fs_error", test_fs_error), &
+            new_unittest("fs_error_message_from_os", test_fs_error_message_from_os), &
             new_unittest("fs_exists_not_exists", test_exists_not_exists), &
             new_unittest("fs_exists_reg_file", test_exists_reg_file), &
             new_unittest("fs_exists_dir", test_exists_dir), &
@@ -56,6 +57,28 @@ contains
             "FS_ERROR: Could not construct state without code correctly")
         if (allocated(error)) return
     end subroutine test_fs_error
+
+    !> A failing operation carries the OS error description, not just the code.
+    subroutine test_fs_error_message_from_os(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(state_type) :: err
+        integer :: comma
+
+        character(*), parameter :: missing = "stdlib_no_such_directory_here"
+
+        call set_cwd(missing, err)
+
+        call check(error, err%error(), "Expected an error changing to a missing directory")
+        if (allocated(error)) return
+
+        ! The message is "code - <n>, <description>": require text after the comma.
+        comma = index(err%message, ",")
+        call check(error, comma > 0, "Expected a formatted error code in: "//err%message)
+        if (allocated(error)) return
+
+        call check(error, len_trim(err%message(comma + 1:)) > 0, &
+            "The failure carried no description from the operating system: "//err%message)
+    end subroutine test_fs_error_message_from_os
 
     subroutine test_exists_not_exists(error)
         type(error_type), allocatable, intent(out) :: error
