@@ -10,7 +10,7 @@ module stdlib_sparse_spmv
     !! Version experimental
     !!
     !! Apply the sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
-    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface spmv
         module subroutine spmv_coo_1d_sp(matrix,vec_x,vec_y,alpha,beta,op)
             type(COO_sp_type), intent(in) :: matrix
@@ -333,7 +333,7 @@ module stdlib_sparse_spmv
     !! Version experimental
     !!
     !! Apply the COO sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
-    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface spmv_kernel_coo
         module subroutine spmv_kernel_coo_1d_sp(op,alpha,data,index,storage,vec_x,beta,vec_y)
             real(sp), intent(in), contiguous :: data(:)
@@ -420,7 +420,7 @@ module stdlib_sparse_spmv
     !! Version experimental
     !!
     !! Apply the CSC sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
-    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface spmv_kernel_csc
         module subroutine spmv_kernel_csc_1d_sp(op,alpha,data,colptr,row,storage,vec_x,beta,vec_y)
             real(sp), intent(in), contiguous :: data(:)
@@ -515,7 +515,7 @@ module stdlib_sparse_spmv
     !! Version experimental
     !!
     !! Apply the CSR sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
-    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface spmv_kernel_csr
         module subroutine spmv_kernel_csr_1d_sp(op,alpha,data,col,rowptr,storage,vec_x,beta,vec_y)
             real(sp), intent(in), contiguous :: data(:)
@@ -610,7 +610,7 @@ module stdlib_sparse_spmv
     !! Version experimental
     !!
     !! Apply the ELL sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
-    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface spmv_kernel_ell
         module subroutine spmv_kernel_ell_1d_sp(op,alpha,data,index,storage,vec_x,beta,vec_y)
             real(sp), intent(in), contiguous :: data(:,:)
@@ -697,7 +697,7 @@ module stdlib_sparse_spmv
     !! Version experimental
     !!
     !! Apply the SELLC sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
-    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface spmv_kernel_sellc
         module subroutine spmv_kernel_sellc_sp(op,alpha,data,ia,ja,storage,vec_x,beta,vec_y)
             !! This algorithm was gracefully provided by Ivan Privec and adapted by Jose Alves

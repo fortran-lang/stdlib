@@ -527,7 +527,7 @@ module stdlib_linalg_lapack_aux
      
 
      pure integer(ilp) function stdlib_ilaslc( m, n, a, lda )
-     !! ILADLC: scans A for its last non-zero column.
+   !! Scan A for its last non-zero column.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -559,7 +559,7 @@ module stdlib_linalg_lapack_aux
      end function stdlib_ilaslc
      
      pure integer(ilp) function stdlib_ilaslr( m, n, a, lda )
-     !! ILADLR: scans A for its last non-zero row.
+     !! Scan A for its last non-zero row.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -594,7 +594,7 @@ module stdlib_linalg_lapack_aux
      end function stdlib_ilaslr     
      
      pure integer(ilp) function stdlib_iladlc( m, n, a, lda )
-     !! ILADLC: scans A for its last non-zero column.
+   !! Scan A for its last non-zero column.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -626,7 +626,7 @@ module stdlib_linalg_lapack_aux
      end function stdlib_iladlc
      
      pure integer(ilp) function stdlib_iladlr( m, n, a, lda )
-     !! ILADLR: scans A for its last non-zero row.
+     !! Scan A for its last non-zero row.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -661,7 +661,7 @@ module stdlib_linalg_lapack_aux
      end function stdlib_iladlr     
      
      pure integer(ilp) function stdlib_ilaclc( m, n, a, lda )
-     !! ILADLC: scans A for its last non-zero column.
+   !! Scan A for its last non-zero column.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -693,7 +693,7 @@ module stdlib_linalg_lapack_aux
      end function stdlib_ilaclc
      
      pure integer(ilp) function stdlib_ilaclr( m, n, a, lda )
-     !! ILADLR: scans A for its last non-zero row.
+     !! Scan A for its last non-zero row.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -728,7 +728,7 @@ module stdlib_linalg_lapack_aux
      end function stdlib_ilaclr     
      
      pure integer(ilp) function stdlib_ilazlc( m, n, a, lda )
-     !! ILADLC: scans A for its last non-zero column.
+   !! Scan A for its last non-zero column.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -760,7 +760,7 @@ module stdlib_linalg_lapack_aux
      end function stdlib_ilazlc
      
      pure integer(ilp) function stdlib_ilazlr( m, n, a, lda )
-     !! ILADLR: scans A for its last non-zero row.
+     !! Scan A for its last non-zero row.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -1989,7 +1989,7 @@ module stdlib_linalg_lapack_aux
      
 
      pure integer(ilp64) function stdlib_I64_ilaslc( m, n, a, lda )
-     !! ILADLC: scans A for its last non-zero column.
+   !! Scan A for its last non-zero column.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -2021,7 +2021,7 @@ module stdlib_linalg_lapack_aux
      end function stdlib_I64_ilaslc
      
      pure integer(ilp64) function stdlib_I64_ilaslr( m, n, a, lda )
-     !! ILADLR: scans A for its last non-zero row.
+     !! Scan A for its last non-zero row.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -2056,7 +2056,7 @@ module stdlib_linalg_lapack_aux
      end function stdlib_I64_ilaslr     
      
      pure integer(ilp64) function stdlib_I64_iladlc( m, n, a, lda )
-     !! ILADLC: scans A for its last non-zero column.
+   !! Scan A for its last non-zero column.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -2088,7 +2088,7 @@ module stdlib_linalg_lapack_aux
      end function stdlib_I64_iladlc
      
      pure integer(ilp64) function stdlib_I64_iladlr( m, n, a, lda )
-     !! ILADLR: scans A for its last non-zero row.
+     !! Scan A for its last non-zero row.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -2123,7 +2123,7 @@ module stdlib_linalg_lapack_aux
      end function stdlib_I64_iladlr     
      
      pure integer(ilp64) function stdlib_I64_ilaclc( m, n, a, lda )
-     !! ILADLC: scans A for its last non-zero column.
+   !! Scan A for its last non-zero column.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -2155,7 +2155,7 @@ module stdlib_linalg_lapack_aux
      end function stdlib_I64_ilaclc
      
      pure integer(ilp64) function stdlib_I64_ilaclr( m, n, a, lda )
-     !! ILADLR: scans A for its last non-zero row.
+     !! Scan A for its last non-zero row.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -2190,7 +2190,7 @@ module stdlib_linalg_lapack_aux
      end function stdlib_I64_ilaclr     
      
      pure integer(ilp64) function stdlib_I64_ilazlc( m, n, a, lda )
-     !! ILADLC: scans A for its last non-zero column.
+   !! Scan A for its last non-zero column.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -2222,7 +2222,7 @@ module stdlib_linalg_lapack_aux
      end function stdlib_I64_ilazlc
      
      pure integer(ilp64) function stdlib_I64_ilazlr( m, n, a, lda )
-     !! ILADLR: scans A for its last non-zero row.
+     !! Scan A for its last non-zero row.
         ! -- lapack auxiliary routine --
         ! -- lapack is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--

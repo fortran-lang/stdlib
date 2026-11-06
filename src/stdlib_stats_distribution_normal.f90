@@ -20,8 +20,7 @@ module stdlib_stats_distribution_normal
     !! version: experimental
     !!
     !! Normal Distribution Random Variates
-    !! ([Specification](../page/specs/stdlib_stats_distribution_normal.html#
-    !! rvs_normal-normal-distribution-random-variates))
+    !! (Specification: :doc:`/specs/stdlib_stats_distribution_normal`)
     !!
         module procedure rvs_norm_0_rsp                  !0 dummy variable
 
@@ -44,8 +43,7 @@ module stdlib_stats_distribution_normal
     !! version: experimental
     !!
     !! Normal Distribution Probability Density Function
-    !! ([Specification](../page/specs/stdlib_stats_distribution_normal.html#
-    !! pdf_normal-normal-distribution-probability-density-function))
+    !! (Specification: :doc:`/specs/stdlib_stats_distribution_normal`)
     !!
             module procedure pdf_norm_rsp
             module procedure pdf_norm_rdp
@@ -57,8 +55,7 @@ module stdlib_stats_distribution_normal
     !! version: experimental
     !!
     !! Normal Distribution Cumulative Distribution Function
-    !! ([Specification](../page/specs/stdlib_stats_distribution_normal.html#
-    !! cdf_normal-normal-distribution-cumulative-distribution-function))
+    !! (Specification: :doc:`/specs/stdlib_stats_distribution_normal`)
     !!
             module procedure cdf_norm_rsp
             module procedure cdf_norm_rdp

@@ -1,7 +1,7 @@
 ! SPDX-Identifier: MIT
 !> This module implements basic string handling routines.
 !>
-!> The specification of this module is available [here](../page/specs/stdlib_strings.html).
+!> The specification of this module is available in :doc:`/specs/stdlib_strings`.
 module stdlib_strings
     use stdlib_ascii, only: whitespace
     use stdlib_string_type, only: string_type, char, verify, repeat, len, len_trim, move
@@ -20,7 +20,7 @@ module stdlib_strings
     !> Version: experimental
     !>
     !> Format or transfer other types as a string.
-    !> ([Specification](../page/specs/stdlib_strings.html#to_string))
+    !> (Specification: :doc:`/specs/stdlib_strings`)
     interface to_string
         pure module function to_string_r_sp(value, format) result(string)
             real(sp), intent(in) :: value
@@ -92,7 +92,7 @@ module stdlib_strings
     !> Version: experimental
     !>
     !> Format or transfer other types as a string.
-    !> ([Specification](../page/specs/stdlib_strings.html#to_c_char))
+    !> (Specification: :doc:`/specs/stdlib_strings`)
     interface to_c_char
         module procedure to_c_char_from_char
         module procedure to_c_char_from_string
@@ -179,7 +179,7 @@ module stdlib_strings
     !> Version: experimental
     !>
     !> Left pad the input string
-    !> [Specifications](../page/specs/stdlib_strings.html#padl)
+    !> Specifications: :doc:`/specs/stdlib_strings`
     interface padl
         module procedure :: padl_string_default
         module procedure :: padl_string_pad_with
@@ -190,7 +190,7 @@ module stdlib_strings
     !> Version: experimental
     !>
     !> Right pad the input string
-    !> [Specifications](../page/specs/stdlib_strings.html#padr)
+    !> Specifications: :doc:`/specs/stdlib_strings`
     interface padr
         module procedure :: padr_string_default
         module procedure :: padr_string_pad_with
@@ -202,7 +202,7 @@ module stdlib_strings
     !>
     !> Returns the number of times substring 'pattern' has appeared in the
     !> input string 'string'
-    !> [Specifications](../page/specs/stdlib_strings.html#count)
+    !> Specifications: :doc:`/specs/stdlib_strings`
     interface count
         module procedure :: count_string_string
         module procedure :: count_string_char
@@ -213,7 +213,7 @@ module stdlib_strings
     !> Version: experimental
     !>
     !> Left pad the input string with zeros.
-    !> [Specifications](../page/specs/stdlib_strings.html#zfill)
+    !> Specifications: :doc:`/specs/stdlib_strings`
     interface zfill
         module procedure :: zfill_string
         module procedure :: zfill_char
@@ -223,7 +223,7 @@ module stdlib_strings
     !>
     !> Joins an array of strings into a single string. 
     !> The chunks are separated with a space, or an optional user-defined separator.
-    !> [Specifications](../page/specs/stdlib_strings.html#join)
+    !> Specifications: :doc:`/specs/stdlib_strings`
     interface join
         module procedure :: join_string
         module procedure :: join_char

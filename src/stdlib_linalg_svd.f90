@@ -28,10 +28,10 @@ submodule(stdlib_linalg) stdlib_linalg_svd
 
      !> Singular values of matrix A
      module function stdlib_linalg_svdvals_s(a,err) result(s)
-     !!### Summary
+     !!## Summary
      !! Compute singular values \(S \) from the singular-value decomposition of a matrix \( A = U \cdot S \cdot \V^T \).
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function returns the array of singular values from the singular value decomposition of a `real` 
      !! or `complex` matrix \( A = U \cdot S \cdot V^T \).
@@ -39,7 +39,7 @@ submodule(stdlib_linalg) stdlib_linalg_svd
      !! param: a Input matrix of size [m,n].
      !! param: err [optional] State return flag.      
      !!
-     !!### Return value
+     !!## Return value
      !! 
      !! param: s `real` array of size [min(m,n)] returning a list of singular values.
      !!                
@@ -71,10 +71,10 @@ submodule(stdlib_linalg) stdlib_linalg_svd
 
      !> SVD of matrix A = U S V^T, returning S and optionally U and V^T
      module subroutine stdlib_linalg_svd_s(a,s,u,vt,overwrite_a,full_matrices,err)
-     !!### Summary
+     !!## Summary
      !! Compute singular value decomposition of a matrix \( A = U \cdot S \cdot \V^T \)
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the singular value decomposition of a `real` or `complex` matrix \( A \), 
      !! and returns the array of singular values, and optionally the left matrix \( U \) containing the 
@@ -249,10 +249,10 @@ submodule(stdlib_linalg) stdlib_linalg_svd
 
      !> Singular values of matrix A
      module function stdlib_linalg_svdvals_d(a,err) result(s)
-     !!### Summary
+     !!## Summary
      !! Compute singular values \(S \) from the singular-value decomposition of a matrix \( A = U \cdot S \cdot \V^T \).
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function returns the array of singular values from the singular value decomposition of a `real` 
      !! or `complex` matrix \( A = U \cdot S \cdot V^T \).
@@ -260,7 +260,7 @@ submodule(stdlib_linalg) stdlib_linalg_svd
      !! param: a Input matrix of size [m,n].
      !! param: err [optional] State return flag.      
      !!
-     !!### Return value
+     !!## Return value
      !! 
      !! param: s `real` array of size [min(m,n)] returning a list of singular values.
      !!                
@@ -292,10 +292,10 @@ submodule(stdlib_linalg) stdlib_linalg_svd
 
      !> SVD of matrix A = U S V^T, returning S and optionally U and V^T
      module subroutine stdlib_linalg_svd_d(a,s,u,vt,overwrite_a,full_matrices,err)
-     !!### Summary
+     !!## Summary
      !! Compute singular value decomposition of a matrix \( A = U \cdot S \cdot \V^T \)
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the singular value decomposition of a `real` or `complex` matrix \( A \), 
      !! and returns the array of singular values, and optionally the left matrix \( U \) containing the 
@@ -470,10 +470,10 @@ submodule(stdlib_linalg) stdlib_linalg_svd
 
      !> Singular values of matrix A
      module function stdlib_linalg_svdvals_c(a,err) result(s)
-     !!### Summary
+     !!## Summary
      !! Compute singular values \(S \) from the singular-value decomposition of a matrix \( A = U \cdot S \cdot \V^T \).
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function returns the array of singular values from the singular value decomposition of a `real` 
      !! or `complex` matrix \( A = U \cdot S \cdot V^T \).
@@ -481,7 +481,7 @@ submodule(stdlib_linalg) stdlib_linalg_svd
      !! param: a Input matrix of size [m,n].
      !! param: err [optional] State return flag.      
      !!
-     !!### Return value
+     !!## Return value
      !! 
      !! param: s `real` array of size [min(m,n)] returning a list of singular values.
      !!                
@@ -513,10 +513,10 @@ submodule(stdlib_linalg) stdlib_linalg_svd
 
      !> SVD of matrix A = U S V^T, returning S and optionally U and V^T
      module subroutine stdlib_linalg_svd_c(a,s,u,vt,overwrite_a,full_matrices,err)
-     !!### Summary
+     !!## Summary
      !! Compute singular value decomposition of a matrix \( A = U \cdot S \cdot \V^T \)
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the singular value decomposition of a `real` or `complex` matrix \( A \), 
      !! and returns the array of singular values, and optionally the left matrix \( U \) containing the 
@@ -697,10 +697,10 @@ submodule(stdlib_linalg) stdlib_linalg_svd
 
      !> Singular values of matrix A
      module function stdlib_linalg_svdvals_z(a,err) result(s)
-     !!### Summary
+     !!## Summary
      !! Compute singular values \(S \) from the singular-value decomposition of a matrix \( A = U \cdot S \cdot \V^T \).
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function returns the array of singular values from the singular value decomposition of a `real` 
      !! or `complex` matrix \( A = U \cdot S \cdot V^T \).
@@ -708,7 +708,7 @@ submodule(stdlib_linalg) stdlib_linalg_svd
      !! param: a Input matrix of size [m,n].
      !! param: err [optional] State return flag.      
      !!
-     !!### Return value
+     !!## Return value
      !! 
      !! param: s `real` array of size [min(m,n)] returning a list of singular values.
      !!                
@@ -740,10 +740,10 @@ submodule(stdlib_linalg) stdlib_linalg_svd
 
      !> SVD of matrix A = U S V^T, returning S and optionally U and V^T
      module subroutine stdlib_linalg_svd_z(a,s,u,vt,overwrite_a,full_matrices,err)
-     !!### Summary
+     !!## Summary
      !! Compute singular value decomposition of a matrix \( A = U \cdot S \cdot \V^T \)
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the singular value decomposition of a `real` or `complex` matrix \( A \), 
      !! and returns the array of singular values, and optionally the left matrix \( U \) containing the 

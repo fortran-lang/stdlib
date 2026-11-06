@@ -1,6 +1,5 @@
 module stdlib_codata_type
-    !! Codata constant type
-    !! ([Specification](../page/specs/stdlib_constants.html))
+    !! Codata constant type. See also :doc:`/specs/stdlib_constants`.
     use stdlib_kinds, only: sp, dp
     use stdlib_io_aux, only: FMT_REAL_DP
     use stdlib_optval, only: optval 
@@ -10,7 +9,7 @@ module stdlib_codata_type
         !! version: experimental
         !!
         !! Derived type for representing a Codata constant.
-        !! ([Specification](../page/specs/stdlib_constants.html))
+        !! See also :doc:`/specs/stdlib_constants`.
         character(len=64) :: name
         real(dp) :: value
         real(dp) :: uncertainty
@@ -39,15 +38,14 @@ subroutine print(self)
 end subroutine
 
 elemental pure real(sp) function to_real_sp(self, mold, uncertainty) result(r)
-    !! version: experimental
+    !!version: experimental
     !!
-    !! Get the constant value or uncertainty for the kind sp
-    !! ([Specification](../page/specs/stdlib_constants.html))
+    !!Get the constant value or uncertainty for the kind sp.
+    !!See also :doc:`/specs/stdlib_constants`.
     
-    class(codata_constant_type), intent(in) :: self !! Codata constant
+    class(codata_constant_type), intent(in) :: self
     real(sp), intent(in) :: mold !! dummy argument to disambiguate at compile time the generic interface
     logical, intent(in), optional :: uncertainty !! Set to true if the uncertainty is required. Default to .false..
-        !! 
     logical :: u
     
     u = optval(uncertainty, .false.)
@@ -59,15 +57,14 @@ elemental pure real(sp) function to_real_sp(self, mold, uncertainty) result(r)
     end if
 end function
 elemental pure real(dp) function to_real_dp(self, mold, uncertainty) result(r)
-    !! version: experimental
+    !!version: experimental
     !!
-    !! Get the constant value or uncertainty for the kind dp
-    !! ([Specification](../page/specs/stdlib_constants.html))
+    !!Get the constant value or uncertainty for the kind dp.
+    !!See also :doc:`/specs/stdlib_constants`.
     
-    class(codata_constant_type), intent(in) :: self !! Codata constant
+    class(codata_constant_type), intent(in) :: self
     real(dp), intent(in) :: mold !! dummy argument to disambiguate at compile time the generic interface
     logical, intent(in), optional :: uncertainty !! Set to true if the uncertainty is required. Default to .false..
-        !! 
     logical :: u
     
     u = optval(uncertainty, .false.)

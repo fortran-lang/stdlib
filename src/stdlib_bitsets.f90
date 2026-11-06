@@ -3,7 +3,7 @@ module stdlib_bitsets
 !! The current code uses 64 bit integers to store the bits and uses all 64 bits.
 !! The code assumes two's complement integers, and treats negative integers as
 !! having the sign bit set.
-!!([Specification](../page/specs/stdlib_bitsets.html))
+!!(Specification: :doc:`/specs/stdlib_bitsets`)
 
     use :: stdlib_kinds, only:  &
            bits_kind  => int32, & ! If changed change also max_digits, and
@@ -96,7 +96,7 @@ module stdlib_bitsets
     type, abstract :: bitset_type
 !! version: experimental
 !!
-!! Parent type for bitset_64 and bitset_large ([Specification](../page/specs/stdlib_bitsets.html#the-stdlib_bitsets-derived-types))
+!! Parent type for bitset_64 and bitset_large (Specification: :doc:`/specs/stdlib_bitsets`)
 
         private
         integer(bits_kind) :: num_bits = 0_bits_kind
@@ -147,7 +147,7 @@ module stdlib_bitsets
 !!
 !! Returns `.true.` if all bits in `self` are 1, `.false.` otherwise.
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_all
@@ -178,7 +178,7 @@ module stdlib_bitsets
 !!
 !! Returns `.true.` if any bit in `self` is 1, `.false.` otherwise.
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_any
@@ -207,7 +207,7 @@ module stdlib_bitsets
 !!
 !! Returns the number of non-zero bits in `self`.
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_bit_count
@@ -237,7 +237,7 @@ module stdlib_bitsets
 !! Sets to zero the `pos` position in `self`. If `pos` is less than zero or
 !! greater than `bits(self)-1` it is ignored.
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_clear
@@ -275,7 +275,7 @@ module stdlib_bitsets
 !! valid. If `pos` is less than 0 or greater than `bits(self)-1`, no value is
 !! changed.
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_flip
@@ -315,7 +315,7 @@ module stdlib_bitsets
 !! * `char_string_too_large_error` - if `string` was too large, or
 !! * `char_string_invalid_error` - if string had an invalid character.
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_from_string
@@ -352,7 +352,7 @@ module stdlib_bitsets
 !! * `array_size_invalid_error` - if `bits` is either negative or larger
 !!   than 64 with `self` of class `bitset_64`, or
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_init
@@ -383,7 +383,7 @@ module stdlib_bitsets
 !!   or greater than 64 for a `bitset_64` input.
 !! * `read_failure` - if it failed during the reads from `unit`
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_input
@@ -428,7 +428,7 @@ module stdlib_bitsets
 !!
 !! Returns `.true.` if none of the bits in `self` have the value 1.
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_none
@@ -457,7 +457,7 @@ module stdlib_bitsets
 !!
 !! Sets the bits in `self` to their logical complement
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_not
@@ -487,7 +487,7 @@ module stdlib_bitsets
 !! informative stop code. If `status` is present it has the default
 !! value of `success`, or the value `write_failure` if the write failed.
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_output
@@ -546,7 +546,7 @@ module stdlib_bitsets
 !! * `integer_overflow_error` - if the bitset literal has a `bits(self)`
 !!   value too large to be represented,
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_read_bitset
@@ -626,7 +626,7 @@ module stdlib_bitsets
 !! valid. If the position is less than 0 or greater than `bits(self)-1`
 !! then `self` is unchanged.
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_set
@@ -662,7 +662,7 @@ module stdlib_bitsets
 !! Returns `.true.` if the `pos` position is set, `.false.` otherwise. If `pos`
 !! is negative or greater than `bits(self) - 1` the result is `.false.`.
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_test
@@ -689,7 +689,7 @@ module stdlib_bitsets
 !! Represents the value of `self` as a binary literal in `string`
 !! Status may have the values `success` or `alloc_fault`.
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_to_string
@@ -719,7 +719,7 @@ module stdlib_bitsets
 !! Returns 1 if the `pos` position is set, 0 otherwise. If `pos` is negative
 !! or greater than `bits(set) - 1` the result is 0.
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_value
@@ -750,7 +750,7 @@ module stdlib_bitsets
 !! value of `success`, or the value `alloc_fault` if allocation of
 !! the output string failed.
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_write_bitset
@@ -819,7 +819,7 @@ module stdlib_bitsets
     type, extends(bitset_type) :: bitset_large
 !! Version: experimental
 !!
-!! Type for bitsets with more than 64 bits ([Specification](../page/specs/stdlib_bitsets.html#the-stdlib_bitsets-derived-types))
+!! Type for bitsets with more than 64 bits (Specification: :doc:`/specs/stdlib_bitsets`)
 
         private
         integer(block_kind), private, allocatable :: blocks(:)
@@ -1134,9 +1134,9 @@ module stdlib_bitsets
 !! Version: experimental
 !!
 !! Used to define assignment for `bitset_large`.
-!! ([Specification](../page/specs/stdlib_bitsets.html#-compare-two-bitsets-to-determine-whether-the-bits-have-the-same-value))
+!! (Specification: :doc:`/specs/stdlib_bitsets`)
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_assignment
@@ -1241,7 +1241,7 @@ module stdlib_bitsets
     type, extends(bitset_type) :: bitset_64
 !! Version: experimental
 !!
-!! Type for bitsets with no more than 64 bits ([Specification](../page/specs/stdlib_bitsets.html#the-stdlib_bitsets-derived-types))
+!! Type for bitsets with no more than 64 bits (Specification: :doc:`/specs/stdlib_bitsets`)
         private
         integer(block_kind), private :: block = 0
 
@@ -1630,9 +1630,9 @@ module stdlib_bitsets
 !! Sets the bits in `set1` to the bitwise `and` of the original bits in `set1`
 !! and `set2`. The sets must have the same number of bits
 !! otherwise the result is undefined.
-!! ([Specification](../page/specs/stdlib_bitsets.html#and-bitwise-and-of-the-bits-of-two-bitsets))
+!! (Specification: :doc:`/specs/stdlib_bitsets`)
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_and
@@ -1673,9 +1673,9 @@ module stdlib_bitsets
 !! with the bitwise negation of `set2`. The sets must have the same
 !! number of bits otherwise the result is undefined.
 !!
-!! ([Specification](../page/specs/stdlib_bitsets.html#and_not-bitwise-and-of-one-bitset-with-the-negation-of-another))
+!! (Specification: :doc:`/specs/stdlib_bitsets`)
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_and_not
@@ -1719,9 +1719,9 @@ module stdlib_bitsets
 !! `bits(old)-1` then if `status` is present it has the value
 !! `index_invalid_error` and `new` is undefined, otherwise processing stops
 !! with an informative message.
-!! ([Specification](../page/specs/stdlib_bitsets.html#extract-create-a-new-bitset-from-a-range-in-an-old-bitset))
+!! (Specification: :doc:`/specs/stdlib_bitsets`)
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_extract
@@ -1759,9 +1759,9 @@ module stdlib_bitsets
 !! Sets the bits in `set1` to the bitwise `or` of the original bits in `set1`
 !! and `set2`. The sets must have the same number of bits otherwise
 !! the result is undefined.
-!! ([Specification](../page/specs/stdlib_bitsets.html#or-bitwise-or-of-the-bits-of-two-bitsets))
+!! (Specification: :doc:`/specs/stdlib_bitsets`)
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_or
@@ -1802,9 +1802,9 @@ module stdlib_bitsets
 !! Sets the bits in `set1` to the bitwise `xor` of the original bits in `set1`
 !! and `set2`. The sets must have the same number of bits
 !! otherwise the result is undefined.
-!!([Specification](../page/specs/stdlib_bitsets.html#xor-bitwise-exclusive-or))
+!!(Specification: :doc:`/specs/stdlib_bitsets`)
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_xor
@@ -1845,9 +1845,9 @@ module stdlib_bitsets
 !! Returns `.true.` if all bits in `set1` and `set2` have the same value,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
-!!([Specification](../page/specs/stdlib_bitsets.html#-compare-two-bitsets-to-determine-whether-the-bits-have-the-same-value))
+!!(Specification: :doc:`/specs/stdlib_bitsets`)
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_equality
@@ -1886,9 +1886,9 @@ module stdlib_bitsets
 !! Returns `.true.` if not all bits in `set1` and `set2` have the same value,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
-!!([Specification](../page/specs/stdlib_bitsets.html#-compare-two-bitsets-to-determine-whether-any-bits-differ-in-value))
+!!(Specification: :doc:`/specs/stdlib_bitsets`)
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_inequality
@@ -1928,9 +1928,9 @@ module stdlib_bitsets
 !! highest order different bit is set to 1 in `set1` and to 0 in `set2`,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
-!!([Specification](../page/specs/stdlib_bitsets.html#gt-compare-two-bitsets-to-determine-whether-the-first-is-greater-than-the-other))
+!!(Specification: :doc:`/specs/stdlib_bitsets`)
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_gt
@@ -1970,9 +1970,9 @@ module stdlib_bitsets
 !! highest order different bit is set to 1 in `set1` and to 0 in `set2`,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
-!! ([Specification](../page/specs/stdlib_bitsets.html#gt-compare-two-bitsets-to-determine-whether-the-first-is-greater-than-or-equal-to-the-second))
+!! (Specification: :doc:`/specs/stdlib_bitsets`)
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_ge
@@ -2013,9 +2013,9 @@ module stdlib_bitsets
 !! highest order different bit is set to 0 in `set1` and to 1 in `set2`,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
-!!([Specification](../page/specs/stdlib_bitsets.html#lt-compare-two-bitsets-to-determine-whether-the-first-is-less-than-the-other))
+!!(Specification: :doc:`/specs/stdlib_bitsets`)
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_lt
@@ -2055,9 +2055,9 @@ module stdlib_bitsets
 !! highest order different bit is set to 0 in `set1` and to 1 in `set2`,
 !! `.false.`  otherwise. The sets must have the same number of bits
 !! otherwise the result is undefined.
-!!([Specification](../page/specs/stdlib_bitsets.html#lt-compare-two-bitsets-to-determine-whether-the-first-is-less-than-or-equal-to-the-other))
+!!(Specification: :doc:`/specs/stdlib_bitsets`)
 !!
-!!#### Example
+!!## Example
 !!
 !!```fortran
 !!    program example_le

@@ -1,6 +1,6 @@
 module stdlib_linalg
   !!Provides a support for various linear algebra procedures
-  !! ([Specification](../page/specs/stdlib_linalg.html))
+  !! (Specification: :doc:`/specs/stdlib_linalg`)
   use stdlib_kinds, only: xdp, int8, int16, int32, int64
   use stdlib_linalg_constants, only: sp, dp, qp, lk, ilp
   use stdlib_error, only: error_stop
@@ -68,18 +68,19 @@ module stdlib_linalg
     !! version: experimental 
     !!
     !! Computes the Cholesky factorization \( A = L \cdot L^T \), or \( A = U^T \cdot U \). 
-    !! ([Specification](../page/specs/stdlib_linalg.html#chol-compute-the-cholesky-factorization-of-a-rank-2-square-array-matrix))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
     !! 
-    !!### Summary 
+    !!## Summary 
     !! Pure function interface for computing the Cholesky triangular factors. 
     !!
-    !!### Description
+    !!## Description
     !! 
     !! This interface provides methods for computing the lower- or upper- triangular matrix from the 
     !! Cholesky factorization of a `real` symmetric or `complex` Hermitian matrix.
     !! Supported data types include `real` and `complex`.    
     !! 
-    !!@note The solution is based on LAPACK's `*POTRF` methods.
+    !!## Notes
+    !! The solution is based on LAPACK's `*POTRF` methods.
     !!     
      pure module function stdlib_linalg_s_cholesky_fun(a,lower,other_zeroed) result(c)
          !> Input matrix a[m,n]
@@ -127,12 +128,12 @@ module stdlib_linalg
     !! version: experimental 
     !!
     !! Computes the Cholesky factorization \( A = L \cdot L^T \), or \( A = U^T \cdot U \). 
-    !! ([Specification](../page/specs/stdlib_linalg.html#cholesky-compute-the-cholesky-factorization-of-a-rank-2-square-array-matrix))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
     !! 
-    !!### Summary 
+    !!## Summary 
     !! Pure subroutine interface for computing the Cholesky triangular factors. 
     !!
-    !!### Description
+    !!## Description
     !! 
     !! This interface provides methods for computing the lower- or upper- triangular matrix from the 
     !! Cholesky factorization of a `real` symmetric or `complex` Hermitian matrix.
@@ -142,7 +143,8 @@ module stdlib_linalg
     !! lower factorization; the `other_zeroed` optional `logical` flag allows to choose whether the unused
     !! part of the triangular matrix should be filled with zeroes.
     !! 
-    !!@note The solution is based on LAPACK's `*POTRF` methods.
+    !!## Notes
+    !! The solution is based on LAPACK's `*POTRF` methods.
     !!         
      pure module subroutine stdlib_linalg_s_cholesky_inplace(a,lower,other_zeroed,err) 
          !> Input matrix a[m,n]
@@ -242,8 +244,7 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Creates a diagonal array or extract the diagonal elements of an array
-    !! ([Specification](../page/specs/stdlib_linalg.html#
-    !! diag-create-a-diagonal-array-or-extract-the-diagonal-elements-of-an-array))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
       !
       ! Vector to matrix
       !
@@ -403,8 +404,7 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Computes the trace of a matrix
-    !! ([Specification](../page/specs/stdlib_linalg.html#
-    !! trace-trace-of-a-matrix))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
       module procedure trace_rsp
       module procedure trace_rdp
       module procedure trace_csp
@@ -420,7 +420,7 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Constructs the identity matrix
-    !! ([Specification](../page/specs/stdlib_linalg.html#eye-construct-the-identity-matrix))    
+    !! (Specification: :doc:`/specs/stdlib_linalg`)    
       module procedure eye_rsp
       module procedure eye_rdp
       module procedure eye_csp
@@ -436,8 +436,7 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Computes the outer product of two vectors, returning a rank-2 array
-    !! ([Specification](../page/specs/stdlib_linalg.html#
-    !! outer_product-computes-the-outer-product-of-two-vectors))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
       pure module function outer_product_rsp(u, v) result(res)
         real(sp), intent(in) :: u(:), v(:)
         real(sp) :: res(size(u),size(v))
@@ -476,8 +475,7 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Computes the Kronecker product of two arrays of size M1xN1, and of M2xN2, returning an (M1*M2)x(N1*N2) array
-    !! ([Specification](../page/specs/stdlib_linalg.html#
-    !! kronecker_product-computes-the-kronecker-product-of-two-matrices))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
       pure module function kronecker_product_rsp(A, B) result(C)
         real(sp), intent(in) :: A(:,:), B(:,:)
         real(sp) :: C(size(A,dim=1)*size(B,dim=1),size(A,dim=2)*size(B,dim=2))
@@ -518,7 +516,7 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Computes the cross product of two vectors, returning a rank-1 and size-3 array
-    !! ([Specification](../page/specs/stdlib_linalg.html#cross_product-computes-the-cross-product-of-two-3-d-vectors))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
       pure module function cross_product_rsp(a, b) result(res)
         real(sp), intent(in) :: a(3), b(3)
         real(sp) :: res(3)
@@ -559,8 +557,7 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Checks if a matrix (rank-2 array) is square
-    !! ([Specification](../page/specs/stdlib_linalg.html#
-    !! is_square-checks-if-a-matrix-is-square))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
       module procedure is_square_rsp
       module procedure is_square_rdp
       module procedure is_square_csp
@@ -577,8 +574,7 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Checks if a matrix (rank-2 array) is diagonal
-    !! ([Specification](../page/specs/stdlib_linalg.html#
-    !! is_diagonal-checks-if-a-matrix-is-diagonal))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
       module procedure is_diagonal_rsp
       module procedure is_diagonal_rdp
       module procedure is_diagonal_csp
@@ -595,8 +591,7 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Checks if a matrix (rank-2 array) is symmetric
-    !! ([Specification](../page/specs/stdlib_linalg.html#
-    !! is_symmetric-checks-if-a-matrix-is-symmetric))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
       module procedure is_symmetric_rsp
       module procedure is_symmetric_rdp
       module procedure is_symmetric_csp
@@ -613,8 +608,7 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Checks if a matrix (rank-2 array) is skew-symmetric
-    !! ([Specification](../page/specs/stdlib_linalg.html#
-    !! is_skew_symmetric-checks-if-a-matrix-is-skew-symmetric))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
       module procedure is_skew_symmetric_rsp
       module procedure is_skew_symmetric_rdp
       module procedure is_skew_symmetric_csp
@@ -631,8 +625,7 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Checks if a matrix (rank-2 array) is Hermitian
-    !! ([Specification](../page/specs/stdlib_linalg.html#
-    !! is_hermitian-checks-if-a-matrix-is-hermitian))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
       module procedure is_hermitian_rsp
       module procedure is_hermitian_rdp
       module procedure is_hermitian_csp
@@ -656,7 +649,7 @@ module stdlib_linalg
     !! AH = hermitian(A)
     !! ```
     !!
-    !! [Specification](../page/specs/stdlib_linalg.html#hermitian-compute-the-hermitian-version-of-a-rank-2-matrix)
+    !! Specification: :doc:`/specs/stdlib_linalg`
     !!
 
     pure module function hermitian_rsp(a) result(ah)
@@ -700,8 +693,7 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Checks if a matrix (rank-2 array) is triangular
-    !! ([Specification](../page/specs/stdlib_linalg.html#
-    !! is_triangular-checks-if-a-matrix-is-triangular))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
       module procedure is_triangular_rsp
       module procedure is_triangular_rdp
       module procedure is_triangular_csp
@@ -718,8 +710,7 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Checks if a matrix (rank-2 array) is Hessenberg
-    !! ([Specification](../page/specs/stdlib_linalg.html#
-    !! is_hessenberg-checks-if-a-matrix-is-hessenberg))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
       module procedure is_Hessenberg_rsp
       module procedure is_Hessenberg_rdp
       module procedure is_Hessenberg_csp
@@ -735,12 +726,12 @@ module stdlib_linalg
      !! version: experimental 
      !!
      !! Solves the linear system \( A \cdot x = b \) for the unknown vector \( x \) from a square matrix \( A \). 
-     !! ([Specification](../page/specs/stdlib_linalg.html#solve-solves-a-linear-matrix-equation-or-a-linear-system-of-equations))
+     !! (Specification: :doc:`/specs/stdlib_linalg`)
      !!
-     !!### Summary 
+     !!## Summary 
      !! Interface for solving a linear system arising from a general matrix.
      !!
-     !!### Description
+     !!## Description
      !! 
      !! This interface provides methods for computing the solution of a linear matrix system.
      !! Supported data types include `real` and `complex`. No assumption is made on the matrix 
@@ -748,7 +739,8 @@ module stdlib_linalg
      !! The function can solve simultaneously either one (from a 1-d right-hand-side vector `b(:)`) 
      !! or several (from a 2-d right-hand-side vector `b(:,:)`) systems.
      !! 
-     !!@note The solution is based on LAPACK's generic LU decomposition based solvers `*GESV`.
+    !!## Notes
+    !! The solution is based on LAPACK's generic LU decomposition based solvers `*GESV`.
      !!    
      module function stdlib_linalg_s_solve_one(a,b,overwrite_a,err) result(x)
          !> Input matrix a[n,n]
@@ -917,12 +909,12 @@ module stdlib_linalg
      !! version: experimental 
      !!
      !! Solves the linear system \( A \cdot x = b \) for the unknown vector \( x \) from a square matrix \( A \). 
-     !! ([Specification](../page/specs/stdlib_linalg.html#solve-lu-solves-a-linear-matrix-equation-or-a-linear-system-of-equations-subroutine-interface))
+     !! (Specification: :doc:`/specs/stdlib_linalg`)
      !!
-     !!### Summary 
+     !!## Summary 
      !! Subroutine interface for solving a linear system using LU decomposition.
      !!
-     !!### Description
+     !!## Description
      !! 
      !! This interface provides methods for computing the solution of a linear matrix system using
      !! a subroutine. Supported data types include `real` and `complex`. No assumption is made on the matrix 
@@ -932,7 +924,8 @@ module stdlib_linalg
      !! The function can solve simultaneously either one (from a 1-d right-hand-side vector `b(:)`) 
      !! or several (from a 2-d right-hand-side vector `b(:,:)`) systems.
      !! 
-     !!@note The solution is based on LAPACK's generic LU decomposition based solvers `*GESV`.
+    !!## Notes
+    !! The solution is based on LAPACK's generic LU decomposition based solvers `*GESV`.
      !!        
      pure module subroutine stdlib_linalg_s_solve_lu_one(a,b,x,pivot,overwrite_a,err)     
          !> Input matrix a[n,n]
@@ -1054,12 +1047,12 @@ module stdlib_linalg
      !!
      !! Solves the linear system \( A \cdot x = b \) for the unknown vector \( x \) from a 
      !! symmetric positive definite matrix \( A \). Combines factorization and solve in one call.
-     !! ([Specification](../page/specs/stdlib_linalg.html#solve_chol-solve-spd-system-with-cholesky-factorization))
+     !! (Specification: :doc:`/specs/stdlib_linalg`)
      !!
-     !!### Summary 
+     !!## Summary 
      !! One-shot factorization and solve for SPD systems (wraps LAPACK POSV).
      !!
-     !!### Description
+     !!## Description
      !! 
      !! This interface computes both the Cholesky factorization and solves the linear system
      !! in a single call. Use this for one-time solves. For repeated solves with the same 
@@ -1069,7 +1062,8 @@ module stdlib_linalg
      !! By default, A is not overwritten. Set `overwrite_a=.true.` to allow in-place 
      !! factorization for better performance.
      !! 
-     !!@note The solution is based on LAPACK's `*POSV` routines.
+     !!## Notes
+     !! The solution is based on LAPACK's `*POSV` routines.
      !!        
      pure module subroutine stdlib_linalg_s_solve_chol_one(a,b,x,lower,overwrite_a,err)     
          !> Input SPD matrix a[n,n]
@@ -1191,19 +1185,20 @@ module stdlib_linalg
      !!
      !! Solves the linear system \( A \cdot x = b \) for the unknown vector \( x \) from a 
      !! symmetric positive definite matrix \( A \) using pre-computed LOWER Cholesky factor \( L \).
-     !! ([Specification](../page/specs/stdlib_linalg.html#solve_lower_chol-solve-using-lower-cholesky-factor))
+     !! (Specification: :doc:`/specs/stdlib_linalg`)
      !!
-     !!### Summary 
+     !!## Summary 
      !! Subroutine interface for solving a linear system using pre-computed lower Cholesky factor.
      !!
-     !!### Description
+     !!## Description
      !! 
      !! This interface solves a linear system using a pre-computed lower triangular Cholesky
      !! factor \( L \) where \( A = L \cdot L^T \). The input matrix must come from a prior 
      !! call to `cholesky` with `lower=.true.`.
      !! Supported data types include `real` and `complex`.
      !! 
-     !!@note The solution is based on LAPACK's `*POTRS` routines.
+     !!## Notes
+     !! The solution is based on LAPACK's `*POTRS` routines.
      !!        
      pure module subroutine stdlib_linalg_s_solve_lower_chol_one(l,b,x,err)     
          !> Input matrix l[n,n] containing lower Cholesky factor L from cholesky(...,lower=.true.)
@@ -1293,19 +1288,20 @@ module stdlib_linalg
      !!
      !! Solves the linear system \( A \cdot x = b \) for the unknown vector \( x \) from a 
      !! symmetric positive definite matrix \( A \) using pre-computed UPPER Cholesky factor \( U \).
-     !! ([Specification](../page/specs/stdlib_linalg.html#solve_upper_chol-solve-using-upper-cholesky-factor))
+     !! (Specification: :doc:`/specs/stdlib_linalg`)
      !!
-     !!### Summary 
+     !!## Summary 
      !! Subroutine interface for solving a linear system using pre-computed upper Cholesky factor.
      !!
-     !!### Description
+     !!## Description
      !! 
      !! This interface solves a linear system using a pre-computed upper triangular Cholesky
      !! factor \( U \) where \( A = U^T \cdot U \). The input matrix must come from a prior 
      !! call to `cholesky` with `lower=.false.`.
      !! Supported data types include `real` and `complex`.
      !! 
-     !!@note The solution is based on LAPACK's `*POTRS` routines.
+    !!## Notes
+    !! The solution is based on LAPACK's `*POTRS` routines.
      !!        
      pure module subroutine stdlib_linalg_s_solve_upper_chol_one(u,b,x,err)     
          !> Input matrix u[n,n] containing upper Cholesky factor U from cholesky(...,lower=.false.)
@@ -1394,17 +1390,18 @@ module stdlib_linalg
     !! version: experimental 
     !!
     !! Computes the squares solution to system \( A \cdot x = b \). 
-    !! ([Specification](../page/specs/stdlib_linalg.html#lstsq-computes-the-least-squares-solution-to-a-linear-matrix-equation))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
     !! 
-    !!### Summary 
+    !!## Summary 
     !! Interface for computing least squares, i.e. the 2-norm \( || (b-A \cdot x ||_2 \) minimizing solution.
     !!
-    !!### Description
+    !!## Description
     !! 
     !! This interface provides methods for computing the least squares of a linear matrix system.
     !! Supported data types include `real` and `complex`.
     !! 
-    !!@note The solution is based on LAPACK's singular value decomposition `*GELSD` methods.
+    !!## Notes
+    !! The solution is based on LAPACK's singular value decomposition `*GELSD` methods.
     !! 
       module function stdlib_linalg_s_lstsq_one(a,b,cond,overwrite_a,rank,err) result(x)
          !> Input matrix a[n,n]
@@ -1541,18 +1538,19 @@ module stdlib_linalg
     !! version: experimental 
     !!
     !! Computes the squares solution to system \( A \cdot x = b \). 
-    !! ([Specification](../page/specs/stdlib_linalg.html#solve-lstsq-compute-the-least-squares-solution-to-a-linear-matrix-equation-subroutine-interface))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
     !! 
-    !!### Summary 
+    !!## Summary 
     !! Subroutine interface for computing least squares, i.e. the 2-norm \( || (b-A \cdot x ||_2 \) minimizing solution.
     !!
-    !!### Description
+    !!## Description
     !! 
     !! This interface provides methods for computing the least squares of a linear matrix system using 
     !! a subroutine. Supported data types include `real` and `complex`. If pre-allocated work spaces 
     !! are provided, no internal memory allocations take place when using this interface.
     !! 
-    !!@note The solution is based on LAPACK's singular value decomposition `*GELSD` methods.
+    !!## Notes
+    !! The solution is based on LAPACK's singular value decomposition `*GELSD` methods.
     !! 
       module subroutine stdlib_linalg_s_solve_lstsq_one(a,b,x,real_storage,int_storage,&
                         cond,singvals,overwrite_a,rank,err) 
@@ -1753,9 +1751,9 @@ module stdlib_linalg
     !! version: experimental 
     !!
     !! Computes the integer, real [, complex] working space required by the least-squares solver
-    !! ([Specification](../page/specs/stdlib_linalg.html#lstsq-space-compute-internal-working-space-requirements-for-the-least-squares-solver))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
     !! 
-    !!### Description
+    !!## Description
     !! 
     !! This interface provides sizes of integer, real [, complex] working spaces required by the 
     !! least-squares solver. These sizes can be used to pre-allocated working arrays in case several 
@@ -1839,7 +1837,7 @@ module stdlib_linalg
     !!  subject to      Cx = d
     !!
     !!  where A is of size `m x n` and C of size `p x n`.
-    !!  ([Specification](../page/specs/stdlib_linalg.html#constrained-lstsq))
+    !!  (Specification: :doc:`/specs/stdlib_linalg`)
     !!
     !!  ### Description
     !!
@@ -1847,7 +1845,8 @@ module stdlib_linalg
     !!  least-squares problem using a function. Supported data types include `real` and
     !!  `complex`. 
     !!
-    !!  @note The solution is based on LAPACK's `*GGLSE` methods.
+    !!## Notes
+    !! The solution is based on LAPACK's `*GGLSE` methods.
     module function stdlib_linalg_s_constrained_lstsq(A, b, C, d, overwrite_matrices, err) result(x)
         !> Least-squares cost
         real(sp), intent(inout), target :: A(:, :), b(:)
@@ -1909,7 +1908,7 @@ module stdlib_linalg
     !!  subject to      Cx = d
     !!
     !!  where A is of size `m x n` and C of size `p x n`.
-    !!  ([Specification](../page/specs/stdlib_linalg.html#solve-constrained-lstsq))
+    !!  (Specification: :doc:`/specs/stdlib_linalg`)
     !!
     !!  ### Description
     !!
@@ -1918,7 +1917,8 @@ module stdlib_linalg
     !!  `complex`. If a pre-allocated workspace is provided, no internal memory allocation takes
     !!  place.
     !!
-    !!  @note The solution is based on LAPACK's `*GGLSE` methods.
+    !!## Notes
+    !! The solution is based on LAPACK's `*GGLSE` methods.
     module subroutine stdlib_linalg_s_solve_constrained_lstsq(A, b, C, d, x, storage, overwrite_matrices, err)
         !> Least-squares cost.
         real(sp), intent(inout), target :: A(:, :), b(:)
@@ -1981,7 +1981,7 @@ module stdlib_linalg
     !!  version: experimental
     !!
     !!  Computes the size of the workspace required by the constrained least-squares solver.
-    !!  ([Specification](../page/specs/stdlib_linalg.html#constrained-lstsq-space))
+    !!  (Specification: :doc:`/specs/stdlib_linalg`)
     !!
     !!  ### Description
     !!
@@ -2029,20 +2029,21 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Computes the weighted least-squares solution to \( \min_x \|D(Ax - b)\|_2^2 \)
-    !! ([Specification](../page/specs/stdlib_linalg.html#weighted-lstsq))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
     !!
-    !!### Summary
+    !!## Summary
     !! Function interface for computing weighted least-squares via row scaling.
     !!
-    !!### Description
+    !!## Description
     !!
     !! This interface provides methods for computing weighted least-squares by
     !! transforming to ordinary least-squares through row scaling.
     !! Supported data types include `real` and `complex`.
     !!
-    !!@note The solution is based on LAPACK's `*GELSD` after applying diagonal weights.
-    !!@warning Avoid extreme weight ratios (e.g., max(w)/min(w) > 1e6) as this may 
-    !!         cause loss of precision in the SVD-based solver.
+    !!## Notes
+    !! The solution is based on LAPACK's `*GELSD` after applying diagonal weights.
+    !! Avoid extreme weight ratios (e.g., max(w)/min(w) > 1e6) as this may cause loss
+    !! of precision in the SVD-based solver.
     !!
     module function stdlib_linalg_s_weighted_lstsq(w,a,b,cond,overwrite_a,rank,err) result(x)
         !> Weight vector (must be positive, always real)
@@ -2123,20 +2124,21 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Computes the weighted least-squares solution to \( \min_x \|D(Ax - b)\|_2^2 \)
-    !! ([Specification](../page/specs/stdlib_linalg.html#solve-weighted-lstsq-compute-the-weighted-least-squares-solution-to-a-linear-matrix-equation-subroutine-interface))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
     !!
-    !!### Summary
+    !!## Summary
     !! Subroutine interface for computing weighted least-squares via row scaling.
     !!
-    !!### Description
+    !!## Description
     !!
     !! This interface provides methods for computing weighted least-squares by
     !! transforming to ordinary least-squares through row scaling, using a subroutine.
     !! Supported data types include `real` and `complex`.
     !!
-    !!@note The solution is based on LAPACK's `*GELSD` after applying diagonal weights.
-    !!@warning Avoid extreme weight ratios (e.g., max(w)/min(w) > 1e6) as this may
-    !!         cause loss of precision in the SVD-based solver.
+    !!## Notes
+    !! The solution is based on LAPACK's `*GELSD` after applying diagonal weights.
+    !! Avoid extreme weight ratios (e.g., max(w)/min(w) > 1e6) as this may cause loss
+    !! of precision in the SVD-based solver.
     !!
     module subroutine stdlib_linalg_s_solve_weighted_lstsq(w,a,b,x,cond,overwrite_a,rank,err)
         !> Weight vector (must be positive, always real)
@@ -2217,13 +2219,13 @@ module stdlib_linalg
     !! version: experimental 
     !!
     !! Computes the QR factorization of matrix \( A = Q R \). 
-    !! ([Specification](../page/specs/stdlib_linalg.html#qr-compute-the-qr-factorization-of-a-matrix))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
     !! 
-    !!### Summary 
+    !!## Summary 
     !! Compute the QR factorization of a `real` or `complex` matrix: \( A = Q R \), where \( Q \)  is orthonormal 
     !! and \( R \) is upper-triangular. Matrix \( A \) has size `[m,n]`, with \( m\ge n \). 
     !!
-    !!### Description
+    !!## Description
     !! 
     !! This interface provides methods for computing the QR factorization of a matrix. 
     !! Supported data types include `real` and `complex`. If a pre-allocated work space 
@@ -2233,7 +2235,8 @@ module stdlib_linalg
     !! The user may want the full problem (provide `shape(Q)==[m,m]`, `shape(R)==[m,n]`) or the reduced  
     !! problem only: \( A = Q_1 R_1 \) (provide `shape(Q)==[m,k]`, `shape(R)==[k,n]`).
     !! 
-    !!@note The solution is based on LAPACK's QR factorization (`*GEQRF`) and ordered matrix output (`*ORGQR`, `*UNGQR`). 
+    !!## Notes
+    !! The solution is based on LAPACK's QR factorization (`*GEQRF`) and ordered matrix output (`*ORGQR`, `*UNGQR`).
     !!     
       pure module subroutine stdlib_linalg_s_qr(a,q,r,overwrite_a,storage,err) 
          !> Input matrix a[m,n]
@@ -2366,9 +2369,9 @@ module stdlib_linalg
     !! version: experimental 
     !!
     !! Computes the working array space required by the QR factorization solver
-    !! ([Specification](../page/specs/stdlib_linalg.html#qr-space-compute-internal-working-space-requirements-for-the-qr-factorization))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
     !! 
-    !!### Description
+    !!## Description
     !! 
     !! This interface returns the size of the `real` or `complex` working storage required by the 
     !! QR factorization solver. The working size only depends on the kind (`real` or `complex`) and size of
@@ -2459,13 +2462,13 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Computes the Schur decomposition of matrix \( A = Z T Z^H \).
-    !! ([Specification](../page/specs/stdlib_linalg.html#schur-compute-the-schur-decomposition-of-a-matrix))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
     !!
-    !!### Summary
+    !!## Summary
     !! Compute the Schur decomposition of a `real` or `complex` matrix: \( A = Z T Z^H \), where \( Z \) is
     !! orthonormal/unitary and \( T \) is upper-triangular or quasi-upper-triangular. Matrix \( A \) has size `[m,m]`.
     !!
-    !!### Description
+    !!## Description
     !! 
     !! This interface provides methods for computing the Schur decomposition of a matrix.
     !! Supported data types include `real` and `complex`. If a pre-allocated workspace is provided, no internal 
@@ -2474,7 +2477,8 @@ module stdlib_linalg
     !! The output matrix \( T \) is upper-triangular for `complex` input matrices and quasi-upper-triangular
     !! for `real` input matrices (with possible \( 2 \times 2 \) blocks on the diagonal).
     !!
-    !!@note The solution is based on LAPACK's Schur decomposition routines (`*GEES`). 
+    !!## Notes
+    !! The solution is based on LAPACK's Schur decomposition routines (`*GEES`).
     !! 
       module subroutine stdlib_linalg_s_schur(a, t, z, eigvals, overwrite_a, storage, err)
          !> Input matrix a[m,m]
@@ -2619,9 +2623,9 @@ module stdlib_linalg
     !! version: experimental
     !!
     !! Computes the working array space required by the Schur decomposition solver
-    !! ([Specification](../page/specs/stdlib_linalg.html#schur-space-compute-internal-working-space-requirements-for-the-schur-decomposition))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
     !!
-    !!### Description
+    !!## Description
     !! 
     !! This interface returns the size of the `real` or `complex` working storage required by the 
     !! Schur decomposition solver. The working size only depends on the kind (`real` or `complex`) and size of
@@ -2667,19 +2671,20 @@ module stdlib_linalg
     !! version: experimental 
     !!
     !! Computes the determinant of a square matrix
-    !! ([Specification](../page/specs/stdlib_linalg.html#det-computes-the-determinant-of-a-square-matrix))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
     !! 
-    !!### Summary 
+    !!## Summary 
     !! Interface for computing matrix determinant.
     !!
-    !!### Description
+    !!## Description
     !! 
     !! This interface provides methods for computing the determinant of a matrix.
     !! Supported data types include `real` and `complex`.
     !! 
-    !!@note The provided functions are intended for square matrices only.
+    !!## Notes
+    !! The provided functions are intended for square matrices only.
     !! 
-    !!### Example
+    !!## Example
     !!
     !!```fortran
     !!
@@ -2711,19 +2716,20 @@ module stdlib_linalg
     !! version: experimental 
     !!
     !! Determinant operator of a square matrix
-    !! ([Specification](../page/specs/stdlib_linalg.html#det-determinant-operator-of-a-square-matrix))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
     !!
-    !!### Summary
+    !!## Summary
     !! Pure operator interface for computing matrix determinant.
     !!
-    !!### Description
+    !!## Description
     !! 
     !! This pure operator interface provides a convenient way to compute the determinant of a matrix.
     !! Supported data types include real and complex.
     !!
-    !!@note The provided functions are intended for square matrices.
+    !!## Notes
+    !! The provided functions are intended for square matrices.
     !!
-    !!### Example
+    !!## Example
     !!
     !!```fortran
     !!
@@ -2813,13 +2819,13 @@ module stdlib_linalg
     !! version: experimental 
     !!
     !! Inverse of a square matrix
-    !! ([Specification](../page/specs/stdlib_linalg.html#inv-inverse-of-a-square-matrix))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
     !!
-    !!### Summary
+    !!## Summary
     !! This interface provides methods for computing the inverse of a square `real` or `complex` matrix.
     !! The inverse \( A^{-1} \) is defined such that \( A \cdot A^{-1} = A^{-1} \cdot A = I_n \).
     !!
-    !!### Description
+    !!## Description
     !!     
     !! This function interface provides methods that return the inverse of a square matrix.    
     !! Supported data types include `real` and `complex`. 
@@ -2827,7 +2833,8 @@ module stdlib_linalg
     !! Exceptions are raised in case of singular matrix or invalid size, and trigger an `error stop` if 
     !! the state flag `err` is not provided. 
     !!
-    !!@note The provided functions are intended for square matrices.
+    !!## Notes
+    !! The provided functions are intended for square matrices.
     !!       
     module function stdlib_linalg_inverse_s(a,err) result(inva)
          !> Input matrix a[n,n]
@@ -2868,13 +2875,13 @@ module stdlib_linalg
     !! version: experimental 
     !!
     !! Inversion of a square matrix
-    !! ([Specification](../page/specs/stdlib_linalg.html#invert-inversion-of-a-square-matrix))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
     !!
-    !!### Summary
+    !!## Summary
     !! This interface provides methods for inverting a square `real` or `complex` matrix in-place.
     !! The inverse \( A^{-1} \) is defined such that \( A \cdot A^{-1} = A^{-1} \cdot A = I_n \).
     !!
-    !!### Description
+    !!## Description
     !!     
     !! This subroutine interface provides a way to compute the inverse of a matrix.    
     !! Supported data types include `real` and `complex`. 
@@ -2884,7 +2891,8 @@ module stdlib_linalg
     !! Pre-allocated storage may be provided for the array of pivot indices, `pivot`. If all pre-allocated 
     !! work spaces are provided, no internal memory allocations take place when using this interface.             
     !!
-    !!@note The provided subroutines are intended for square matrices.
+    !!## Notes
+    !! The provided subroutines are intended for square matrices.
     !!      
     module subroutine stdlib_linalg_invert_inplace_s(a,pivot,err)
          !> Input matrix a[n,n]
@@ -2969,18 +2977,19 @@ module stdlib_linalg
     !! version: experimental 
     !!
     !! Inverse operator of a square matrix
-    !! ([Specification](../page/specs/stdlib_linalg.html#inv-inverse-operator-of-a-square-matrix))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
     !!
-    !!### Summary
+    !!## Summary
     !! Operator interface for computing the inverse of a square `real` or `complex` matrix.
     !!
-    !!### Description
+    !!## Description
     !! 
     !! This operator interface provides a convenient way to compute the inverse of a matrix.
     !! Supported data types include `real` and `complex`. On input errors or singular matrix, 
     !! NaNs will be returned.
     !!
-    !!@note The provided functions are intended for square matrices.
+    !!## Notes
+    !! The provided functions are intended for square matrices.
     !!
     module function stdlib_linalg_inverse_s_operator(a) result(inva)
          !> Input matrix a[n,n]
@@ -3014,9 +3023,9 @@ module stdlib_linalg
     !! version: experimental 
     !!
     !! Pseudo-inverse of a matrix
-    !! ([Specification](../page/specs/stdlib_linalg.html#pinv-moore-penrose-pseudo-inverse-of-a-matrix))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
     !!
-    !!### Summary
+    !!## Summary
     !! This interface provides methods for computing the Moore-Penrose pseudo-inverse of a matrix.
     !! The pseudo-inverse \( A^{+} \) is a generalization of the matrix inverse, computed for square, singular, 
     !! or rectangular matrices. It is defined such that it satisfies the conditions:
@@ -3025,7 +3034,7 @@ module stdlib_linalg
     !! - \( (A \cdot A^{+})^T = A \cdot A^{+} \)
     !! - \( (A^{+} \cdot A)^T = A^{+} \cdot A \)
     !!
-    !!### Description
+    !!## Description
     !!     
     !! This function interface provides methods that return the Moore-Penrose pseudo-inverse of a matrix.    
     !! Supported data types include `real` and `complex`. 
@@ -3038,7 +3047,8 @@ module stdlib_linalg
     !! Exceptions are raised in case of computational errors or invalid input, and trigger an `error stop` 
     !! if the state flag `err` is not provided. 
     !!
-    !!@note The provided functions are intended for both rectangular and square matrices.
+    !!## Notes
+    !! The provided functions are intended for both rectangular and square matrices.
     !!       
     module function stdlib_linalg_pseudoinverse_s(a,rtol,err) result(pinva)
         !> Input matrix a[m,n]
@@ -3087,9 +3097,9 @@ module stdlib_linalg
     !! version: experimental 
     !!
     !! Computation of the Moore-Penrose pseudo-inverse
-    !! ([Specification](../page/specs/stdlib_linalg.html#pseudoinvert-moore-penrose-pseudo-inverse-of-a-matrix))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
     !!
-    !!### Summary
+    !!## Summary
     !! This interface provides methods for computing the Moore-Penrose pseudo-inverse of a rectangular 
     !! or square `real` or `complex` matrix.
     !! The pseudo-inverse \( A^{+} \) generalizes the matrix inverse and satisfies the properties:
@@ -3098,7 +3108,7 @@ module stdlib_linalg
     !! - \( (A \cdot A^{+})^T = A \cdot A^{+} \)
     !! - \( (A^{+} \cdot A)^T = A^{+} \cdot A \)
     !!
-    !!### Description
+    !!## Description
     !!     
     !! This subroutine interface provides a way to compute the Moore-Penrose pseudo-inverse of a matrix.    
     !! Supported data types include `real` and `complex`. 
@@ -3114,7 +3124,8 @@ module stdlib_linalg
     !! Exceptions are raised in case of computational errors or invalid input, and trigger an `error stop` 
     !! if the state flag `err` is not provided.
     !!
-    !!@note The provided subroutines are intended for both rectangular and square matrices.
+    !!## Notes
+    !! The provided subroutines are intended for both rectangular and square matrices.
     !!       
     module subroutine stdlib_linalg_pseudoinvert_s(a,pinva,rtol,err)
         !> Input matrix a[m,n]
@@ -3163,12 +3174,12 @@ module stdlib_linalg
     !! version: experimental 
     !!
     !! Pseudo-inverse operator of a matrix
-    !! ([Specification](../page/specs/stdlib_linalg.html#pinv-moore-penrose-pseudo-inverse-operator))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
     !!
-    !!### Summary
+    !!## Summary
     !! Operator interface for computing the Moore-Penrose pseudo-inverse of a `real` or `complex` matrix.
     !!
-    !!### Description
+    !!## Description
     !! 
     !! This operator interface provides a convenient way to compute the Moore-Penrose pseudo-inverse 
     !! of a matrix. Supported data types include `real` and `complex`. The pseudo-inverse \( A^{+} \) 
@@ -3177,7 +3188,8 @@ module stdlib_linalg
     !! 
     !! For computational errors or invalid input, the function may return a matrix filled with NaNs.
     !!
-    !!@note The provided functions are intended for both rectangular and square matrices.
+    !!## Notes
+    !! The provided functions are intended for both rectangular and square matrices.
     !!
     module function stdlib_linalg_pinv_s_operator(a) result(pinva)
          !> Input matrix a[m,n]
@@ -3211,12 +3223,12 @@ module stdlib_linalg
      !! version: experimental 
      !!
      !! Solves the eigendecomposition \( A \cdot \bar{v} - \lambda \cdot \bar{v} \) for square matrix \( A \). 
-     !! ([Specification](../page/specs/stdlib_linalg.html#eig-eigenvalues-and-eigenvectors-of-a-square-matrix))
+     !! (Specification: :doc:`/specs/stdlib_linalg`)
      !!
-     !!### Summary 
+     !!## Summary 
      !! Subroutine interface for computing eigenvalues and eigenvectors of a square matrix.
      !!
-     !!### Description
+     !!## Description
      !! 
      !! This interface provides methods for computing the eigenvalues, and optionally eigenvectors, 
      !! of a general square matrix. Supported data types include `real` and `complex`, and no assumption is 
@@ -3224,7 +3236,8 @@ module stdlib_linalg
      !! eigenvectors to be returned. They are returned as columns of a square matrix with the same size as `A`. 
      !! Preallocated space for both eigenvalues `lambda` and the eigenvector matrices must be user-provided.      
      !! 
-     !!@note The solution is based on LAPACK's general eigenproblem solvers `*GEEV`.
+    !!## Notes
+    !! The solution is based on LAPACK's general eigenproblem solvers `*GEEV`.
      !!       
     module subroutine stdlib_linalg_eig_standard_s(a,lambda,right,left, &
                                                       overwrite_a,err)
@@ -3553,19 +3566,20 @@ module stdlib_linalg
      !! version: experimental 
      !!
      !! Returns the eigenvalues \( lambda \), \( A \cdot \bar{v} - \lambda \cdot \bar{v} \), for square matrix \( A \). 
-     !! ([Specification](../page/specs/stdlib_linalg.html#eigvals-eigenvalues-of-a-square-matrix))
+     !! (Specification: :doc:`/specs/stdlib_linalg`)
      !!
-     !!### Summary 
+     !!## Summary 
      !! Function interface for computing the eigenvalues of a square matrix.
      !!
-     !!### Description
+     !!## Description
      !! 
      !! This interface provides functions for returning the eigenvalues of a general square matrix. 
      !! Supported data types include `real` and `complex`, and no assumption is made on the matrix structure. 
      !! An `error stop` is thrown in case of failure; otherwise, error information can be returned 
      !! as an optional `type(linalg_state_type)` output flag. 
      !! 
-     !!@note The solution is based on LAPACK's general eigenproblem solvers `*GEEV`.
+     !!## Notes
+     !! The solution is based on LAPACK's general eigenproblem solvers `*GEEV`.
      !!       
     module function stdlib_linalg_eigvals_standard_s(a,err) result(lambda)
      !! Return an array of eigenvalues of matrix A.
@@ -3727,12 +3741,12 @@ module stdlib_linalg
      !!
      !! Solves the eigendecomposition \( A \cdot \bar{v} - \lambda \cdot \bar{v} \) for a real symmetric 
      !! \( A = A^T \) or complex Hermitian \( A = A^H \) square matrix. 
-     !! ([Specification](../page/specs/stdlib_linalg.html#eigh-eigenvalues-and-eigenvectors-of-a-real-symmetric-or-complex-hermitian-square-matrix))
+     !! (Specification: :doc:`/specs/stdlib_linalg`)
      !!
-     !!### Summary 
+     !!## Summary 
      !! Subroutine interface for computing eigenvalues and eigenvectors of a real symmetric or complex Hermitian square matrix.
      !!
-     !!### Description
+     !!## Description
      !! 
      !! This interface provides methods for computing the eigenvalues, and optionally eigenvectors, 
      !! of a real symmetric or complex Hermitian square matrix. Supported data types include `real` and `complex`. 
@@ -3742,7 +3756,8 @@ module stdlib_linalg
      !! matrix `vectors` with the same kind and size as `A`. 
      !! Preallocated space for both eigenvalues `lambda` and the eigenvector matrix must be user-provided.      
      !! 
-     !!@note The solution is based on LAPACK's eigenproblem solvers `*SYEV`/`*HEEV`.
+     !!## Notes
+     !! The solution is based on LAPACK's eigenproblem solvers `*SYEV`/`*HEEV`.
      !!      
     module subroutine stdlib_linalg_eigh_s(a,lambda,vectors,upper_a,overwrite_a,err)
      !! Eigendecomposition of a real symmetric or complex Hermitian matrix A returning an array `lambda` 
@@ -3816,12 +3831,12 @@ module stdlib_linalg
      !!
      !! Returns the eigenvalues \( lambda \), \( A \cdot \bar{v} - \lambda \cdot \bar{v} \), for a real
      !! symmetric \( A = A^T \) or complex Hermitian \( A = A^H \) square matrix. 
-     !! ([Specification](../page/specs/stdlib_linalg.html#eigvalsh-eigenvalues-of-a-real-symmetric-or-complex-hermitian-square-matrix))
+     !! (Specification: :doc:`/specs/stdlib_linalg`)
      !!
-     !!### Summary 
+     !!## Summary 
      !! Function interface for computing the eigenvalues of a real symmetric or complex hermitian square matrix.
      !!
-     !!### Description
+     !!## Description
      !! 
      !! This interface provides functions for returning the eigenvalues of a real symmetric or complex Hermitian
      !! square matrix. Supported data types include `real` and `complex`. The matrix must be symmetric 
@@ -3830,7 +3845,8 @@ module stdlib_linalg
      !! An `error stop` is thrown in case of failure; otherwise, error information can be returned 
      !! as an optional `type(linalg_state_type)` output flag. 
      !! 
-     !!@note The solution is based on LAPACK's eigenproblem solvers `*SYEV`/`*HEEV`.
+     !!## Notes
+     !! The solution is based on LAPACK's eigenproblem solvers `*SYEV`/`*HEEV`.
      !!         
     module function stdlib_linalg_eigvalsh_s(a,upper_a,err) result(lambda)
      !! Return an array of eigenvalues of real symmetric / complex hermitian A
@@ -3923,12 +3939,12 @@ module stdlib_linalg
     !! version: experimental 
     !!
     !! Computes the singular value decomposition of a `real` or `complex` 2d matrix.
-    !! ([Specification](../page/specs/stdlib_linalg.html#svd-compute-the-singular-value-decomposition-of-a-rank-2-array-matrix))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
     !! 
-    !!### Summary 
+    !!## Summary 
     !! Interface for computing the singular value decomposition of a `real` or `complex` 2d matrix.
     !!
-    !!### Description
+    !!## Description
     !! 
     !! This interface provides methods for computing the singular value decomposition of a matrix.
     !! Supported data types include `real` and `complex`. The subroutine returns a `real` array of 
@@ -3936,9 +3952,10 @@ module stdlib_linalg
     !! For a matrix `A` with size [m,n], full matrix storage for `U` and `V` should be [m,m] and [n,n]. 
     !! It is possible to use partial storage [m,k] and [k,n], `k=min(m,n)`, choosing `full_matrices=.false.`.
     !! 
-    !!@note The solution is based on LAPACK's singular value decomposition `*GESDD` methods.
+    !!## Notes
+    !! The solution is based on LAPACK's singular value decomposition `*GESDD` methods.
     !! 
-    !!### Example
+    !!## Example
     !!
     !!```fortran
     !!    real(sp) :: a(2,3), s(2), u(2,2), vt(3,3) 
@@ -3949,10 +3966,10 @@ module stdlib_linalg
     !!```
     !!         
     module subroutine stdlib_linalg_svd_s(a,s,u,vt,overwrite_a,full_matrices,err)
-     !!### Summary
+     !!## Summary
      !! Compute singular value decomposition of a matrix \( A = U \cdot S \cdot \V^T \)
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the singular value decomposition of a `real` or `complex` matrix \( A \), 
      !! and returns the array of singular values, and optionally the left matrix \( U \) containing the 
@@ -3984,10 +4001,10 @@ module stdlib_linalg
          type(linalg_state_type), optional, intent(out) :: err
       end subroutine stdlib_linalg_svd_s
     module subroutine stdlib_linalg_svd_d(a,s,u,vt,overwrite_a,full_matrices,err)
-     !!### Summary
+     !!## Summary
      !! Compute singular value decomposition of a matrix \( A = U \cdot S \cdot \V^T \)
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the singular value decomposition of a `real` or `complex` matrix \( A \), 
      !! and returns the array of singular values, and optionally the left matrix \( U \) containing the 
@@ -4019,10 +4036,10 @@ module stdlib_linalg
          type(linalg_state_type), optional, intent(out) :: err
       end subroutine stdlib_linalg_svd_d
     module subroutine stdlib_linalg_svd_c(a,s,u,vt,overwrite_a,full_matrices,err)
-     !!### Summary
+     !!## Summary
      !! Compute singular value decomposition of a matrix \( A = U \cdot S \cdot \V^T \)
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the singular value decomposition of a `real` or `complex` matrix \( A \), 
      !! and returns the array of singular values, and optionally the left matrix \( U \) containing the 
@@ -4054,10 +4071,10 @@ module stdlib_linalg
          type(linalg_state_type), optional, intent(out) :: err
       end subroutine stdlib_linalg_svd_c
     module subroutine stdlib_linalg_svd_z(a,s,u,vt,overwrite_a,full_matrices,err)
-     !!### Summary
+     !!## Summary
      !! Compute singular value decomposition of a matrix \( A = U \cdot S \cdot \V^T \)
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the singular value decomposition of a `real` or `complex` matrix \( A \), 
      !! and returns the array of singular values, and optionally the left matrix \( U \) containing the 
@@ -4095,22 +4112,23 @@ module stdlib_linalg
     !! version: experimental 
     !!
     !! Computes the singular values of a `real` or `complex` 2d matrix.
-    !! ([Specification](../page/specs/stdlib_linalg.html#svdvals-compute-the-singular-values-of-a-rank-2-array-matrix))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
     !! 
-    !!### Summary 
+    !!## Summary 
     !! 
     !! Function interface for computing the array of singular values from the singular value decomposition 
     !! of a `real` or `complex` 2d matrix.
     !!
-    !!### Description
+    !!## Description
     !! 
     !! This interface provides methods for computing the singular values a 2d matrix.
     !! Supported data types include `real` and `complex`. The function returns a `real` array of 
     !! singular values, with size [min(m,n)]. 
     !! 
-    !!@note The solution is based on LAPACK's singular value decomposition `*GESDD` methods.
+    !!## Notes
+    !! The solution is based on LAPACK's singular value decomposition `*GESDD` methods.
     !! 
-    !!### Example
+    !!## Example
     !!
     !!```fortran
     !!    real(sp) :: a(2,3), s(2)
@@ -4121,10 +4139,10 @@ module stdlib_linalg
     !!```
     !!   
     module function stdlib_linalg_svdvals_s(a,err) result(s)
-     !!### Summary
+     !!## Summary
      !! Compute singular values \(S \) from the singular-value decomposition of a matrix \( A = U \cdot S \cdot \V^T \).
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function returns the array of singular values from the singular value decomposition of a `real` 
      !! or `complex` matrix \( A = U \cdot S \cdot V^T \).
@@ -4132,7 +4150,7 @@ module stdlib_linalg
      !! param: a Input matrix of size [m,n].
      !! param: err [optional] State return flag.      
      !!
-     !!### Return value
+     !!## Return value
      !! 
      !! param: s `real` array of size [min(m,n)] returning a list of singular values.
      !!           
@@ -4144,10 +4162,10 @@ module stdlib_linalg
          real(sp), allocatable :: s(:)
       end function stdlib_linalg_svdvals_s
     module function stdlib_linalg_svdvals_d(a,err) result(s)
-     !!### Summary
+     !!## Summary
      !! Compute singular values \(S \) from the singular-value decomposition of a matrix \( A = U \cdot S \cdot \V^T \).
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function returns the array of singular values from the singular value decomposition of a `real` 
      !! or `complex` matrix \( A = U \cdot S \cdot V^T \).
@@ -4155,7 +4173,7 @@ module stdlib_linalg
      !! param: a Input matrix of size [m,n].
      !! param: err [optional] State return flag.      
      !!
-     !!### Return value
+     !!## Return value
      !! 
      !! param: s `real` array of size [min(m,n)] returning a list of singular values.
      !!           
@@ -4167,10 +4185,10 @@ module stdlib_linalg
          real(dp), allocatable :: s(:)
       end function stdlib_linalg_svdvals_d
     module function stdlib_linalg_svdvals_c(a,err) result(s)
-     !!### Summary
+     !!## Summary
      !! Compute singular values \(S \) from the singular-value decomposition of a matrix \( A = U \cdot S \cdot \V^T \).
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function returns the array of singular values from the singular value decomposition of a `real` 
      !! or `complex` matrix \( A = U \cdot S \cdot V^T \).
@@ -4178,7 +4196,7 @@ module stdlib_linalg
      !! param: a Input matrix of size [m,n].
      !! param: err [optional] State return flag.      
      !!
-     !!### Return value
+     !!## Return value
      !! 
      !! param: s `real` array of size [min(m,n)] returning a list of singular values.
      !!           
@@ -4190,10 +4208,10 @@ module stdlib_linalg
          real(sp), allocatable :: s(:)
       end function stdlib_linalg_svdvals_c
     module function stdlib_linalg_svdvals_z(a,err) result(s)
-     !!### Summary
+     !!## Summary
      !! Compute singular values \(S \) from the singular-value decomposition of a matrix \( A = U \cdot S \cdot \V^T \).
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function returns the array of singular values from the singular value decomposition of a `real` 
      !! or `complex` matrix \( A = U \cdot S \cdot V^T \).
@@ -4201,7 +4219,7 @@ module stdlib_linalg
      !! param: a Input matrix of size [m,n].
      !! param: err [optional] State return flag.      
      !!
-     !!### Return value
+     !!## Return value
      !! 
      !! param: s `real` array of size [min(m,n)] returning a list of singular values.
      !!           
@@ -4220,9 +4238,9 @@ module stdlib_linalg
      !! version: experimental 
      !!
      !! Computes the vector norm of a generic-rank array \( A \). 
-     !! ([Specification](../page/specs/stdlib_linalg.html#norm-computes-the-vector-norm-of-a-generic-rank-array))
+     !! (Specification: :doc:`/specs/stdlib_linalg`)
      !! 
-     !!### Summary 
+     !!## Summary 
      !! Return one of several scalar norm metrics of a `real` or `complex` input array \( A \), 
      !! that can have any rank. For generic rank-n arrays, the scalar norm over the whole 
      !! array is returned by default. If `n>=2` and the optional input dimension `dim` is specified, 
@@ -4230,7 +4248,7 @@ module stdlib_linalg
      !! evaluated along dimension `dim` only.
      !! 
      !!
-     !!### Description
+     !!## Description
      !! 
      !! This interface provides methods for computing the vector norm(s) of an array.  
      !! Supported data types include `real` and `complex`. 
@@ -4245,7 +4263,7 @@ module stdlib_linalg
      !! - Infinity norm \( \max_i{ \left|a_i\right| } \): order = huge(0) or 'inf'
      !! - Minus-infinity norm \( \min_i{ \left|a_i\right| } \): order = -huge(0) or '-inf'
      !! 
-     !!### Example
+     !!## Example
      !!
      !!```fortran
      !!
@@ -5403,9 +5421,9 @@ module stdlib_linalg
      !! version: experimental 
      !!
      !! Computes the vector norm of a generic-rank array \( A \). 
-     !! ([Specification](../page/specs/stdlib_linalg.html#get-norm-computes-the-vector-norm-of-a-generic-rank-array))
+     !! (Specification: :doc:`/specs/stdlib_linalg`)
      !! 
-     !!### Summary 
+     !!## Summary 
      !! Subroutine interface that returns one of several scalar norm metrics of a `real` or `complex` 
      !! input array \( A \), that can have any rank. For generic rank-n arrays, the scalar norm over 
      !! the whole array is returned by default. If `n>=2` and the optional input dimension `dim` is 
@@ -5413,7 +5431,7 @@ module stdlib_linalg
      !! array norms evaluated along dimension `dim` only.
      !! 
      !!
-     !!### Description
+     !!## Description
      !! 
      !! This `pure subroutine `interface provides methods for computing the vector norm(s) of an array.  
      !! Supported data types include `real` and `complex`. 
@@ -5428,7 +5446,7 @@ module stdlib_linalg
      !! - Infinity norm \( \max_i{ \left|a_i\right| } \): order = huge(0) or 'inf'
      !! - Minus-infinity norm \( \min_i{ \left|a_i\right| } \): order = -huge(0) or '-inf'
      !!     
-     !!### Example
+     !!## Example
      !!
      !!```fortran
      !!
@@ -6083,9 +6101,9 @@ module stdlib_linalg
      !! version: experimental 
      !!
      !! Computes the matrix norm of a generic-rank array \( A \). 
-     !! ([Specification](../page/specs/stdlib_linalg.html#mnorm-computes-the-matrix-norm-of-a-generic-rank-array))
+     !! (Specification: :doc:`/specs/stdlib_linalg`)
      !! 
-     !!### Summary 
+     !!## Summary 
      !! Return one of several matrix norm metrics of a `real` or `complex` input array \( A \), 
      !! that can have rank 2 or higher. For rank-2 arrays, the matrix norm is returned.
      !! If rank>2 and the optional input dimensions `dim` are specified, 
@@ -6093,7 +6111,7 @@ module stdlib_linalg
      !! matrix norms evaluated over the specified dimensions only. `dim==[1,2]` are assumed as default
      !! dimensions if not specified.
      !! 
-     !!### Description
+     !!## Description
      !! 
      !! This interface provides methods for computing the matrix norm(s) of an array.  
      !! Supported data types include `real` and `complex`. 
@@ -6109,7 +6127,7 @@ module stdlib_linalg
      !! 
      !! If an invalid norm type is provided, the routine returns an error state.
      !!
-     !!### Example
+     !!## Example
      !!
      !!```fortran
      !!    real(sp) :: a(3,3), na
@@ -6438,9 +6456,9 @@ module stdlib_linalg
     !! version : experimental
     !!
     !! Computes the exponential of a matrix using a rational Pade approximation.
-    !! ([Specification](../page/specs/stdlib_linalg.html#expm))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
     !!
-    !! ### Description
+    !!## Description
     !!
     !! This interface provides methods for computing the exponential of a matrix
     !! represented as a standard Fortran rank-2 array. Supported data types include
@@ -6452,7 +6470,7 @@ module stdlib_linalg
     !! If the input matrix is non-square or the order of the Pade approximation is
     !! negative, the function returns an error state.
     !!
-    !! ### Example
+    !!## Example
     !!
     !! ```fortran
     !!  real(dp) :: A(3, 3), E(3, 3)
@@ -6505,9 +6523,9 @@ module stdlib_linalg
     !! version : experimental
     !!
     !! Computes the exponential of a matrix using a rational Pade approximation.
-    !! ([Specification](../page/specs/stdlib_linalg.html#matrix_exp))
+    !! (Specification: :doc:`/specs/stdlib_linalg`)
     !!
-    !! ### Description
+    !!## Description
     !!
     !! This interface provides methods for computing the exponential of a matrix
     !! represented as a standard Fortran rank-2 array. Supported data types include
@@ -6519,7 +6537,7 @@ module stdlib_linalg
     !! If the input matrix is non-square or the order of the Pade approximation is
     !! negative, the function returns an error state.
     !!
-    !! ### Example
+    !!## Example
     !!
     !! ```fortran
     !!  real(dp) :: A(3, 3), E(3, 3)
@@ -6617,7 +6635,7 @@ contains
     !> Version: experimental
     !>
     !> Constructs the identity matrix.
-    !> ([Specification](../page/specs/stdlib_linalg.html#eye-construct-the-identity-matrix))
+    !> (Specification: :doc:`/specs/stdlib_linalg`)
     pure function eye_rsp(dim1, dim2, mold) result(result)
 
         integer, intent(in) :: dim1

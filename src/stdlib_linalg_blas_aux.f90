@@ -163,7 +163,7 @@ module stdlib_linalg_blas_aux
      end subroutine stdlib_xerbla_array
 
      pure integer(ilp) function stdlib_isamax(n,dx,incx) result(iamax)
-     !! IDAMAX: finds the index of the first element having maximum absolute value.
+   !! Find the index of the first element having maximum absolute value.
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -207,7 +207,7 @@ module stdlib_linalg_blas_aux
      end function stdlib_isamax
      
      pure integer(ilp) function stdlib_idamax(n,dx,incx) result(iamax)
-     !! IDAMAX: finds the index of the first element having maximum absolute value.
+   !! Find the index of the first element having maximum absolute value.
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -251,7 +251,7 @@ module stdlib_linalg_blas_aux
      end function stdlib_idamax
      
      pure integer(ilp) function stdlib_icamax(n,zx,incx) result(iamax)
-     !! IZAMAX: finds the index of the first element having maximum |Re(.)| + |Im(.)|
+   !! Find the index of the first element having maximum |Re(.)| + |Im(.)|.
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -293,7 +293,7 @@ module stdlib_linalg_blas_aux
      end function stdlib_icamax
      
      pure integer(ilp) function stdlib_izamax(n,zx,incx) result(iamax)
-     !! IZAMAX: finds the index of the first element having maximum |Re(.)| + |Im(.)|
+   !! Find the index of the first element having maximum |Re(.)| + |Im(.)|.
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -396,7 +396,7 @@ module stdlib_linalg_blas_aux
      end subroutine stdlib_I64_xerbla_array
 
      pure integer(ilp64) function stdlib_I64_isamax(n,dx,incx) result(iamax)
-     !! IDAMAX: finds the index of the first element having maximum absolute value.
+   !! Find the index of the first element having maximum absolute value.
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -440,7 +440,7 @@ module stdlib_linalg_blas_aux
      end function stdlib_I64_isamax
      
      pure integer(ilp64) function stdlib_I64_idamax(n,dx,incx) result(iamax)
-     !! IDAMAX: finds the index of the first element having maximum absolute value.
+   !! Find the index of the first element having maximum absolute value.
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -484,7 +484,7 @@ module stdlib_linalg_blas_aux
      end function stdlib_I64_idamax
      
      pure integer(ilp64) function stdlib_I64_icamax(n,zx,incx) result(iamax)
-     !! IZAMAX: finds the index of the first element having maximum |Re(.)| + |Im(.)|
+   !! Find the index of the first element having maximum |Re(.)| + |Im(.)|.
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -526,7 +526,7 @@ module stdlib_linalg_blas_aux
      end function stdlib_I64_icamax
      
      pure integer(ilp64) function stdlib_I64_izamax(n,zx,incx) result(iamax)
-     !! IZAMAX: finds the index of the first element having maximum |Re(.)| + |Im(.)|
+   !! Find the index of the first element having maximum |Re(.)| + |Im(.)|.
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--

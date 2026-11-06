@@ -1,5 +1,5 @@
 module stdlib_quadrature
-    !! ([Specification](../page/specs/stdlib_quadrature.html#description))
+    !! (Specification: :doc:`/specs/stdlib_quadrature`)
     use stdlib_kinds, only: sp, dp, xdp, qp
 
     implicit none
@@ -19,7 +19,7 @@ module stdlib_quadrature
         !! version: experimental
         !!
         !! Integrates sampled values using trapezoidal rule
-        !! ([Specification](../page/specs/stdlib_quadrature.html#description))
+        !! (Specification: :doc:`/specs/stdlib_quadrature`)
         pure module function trapz_dx_sp(y, dx) result(integral)
           real(sp), dimension(:), intent(in) :: y
           real(sp), intent(in) :: dx
@@ -47,7 +47,7 @@ module stdlib_quadrature
         !! version: experimental
         !!
         !! Integrates sampled values using trapezoidal rule weights for given abscissas
-        !! ([Specification](../page/specs/stdlib_quadrature.html#description_1))
+        !! (Specification: :doc:`/specs/stdlib_quadrature`)
         pure module function trapz_weights_sp(x) result(w)
             real(sp), dimension(:), intent(in) :: x
             real(sp), dimension(size(x)) :: w
@@ -63,7 +63,7 @@ module stdlib_quadrature
         !! version: experimental
         !!
         !! Integrates sampled values using Simpson's rule
-        !! ([Specification](../page/specs/stdlib_quadrature.html#description_3))
+        !! (Specification: :doc:`/specs/stdlib_quadrature`)
         ! "recursive" is an implementation detail
         pure recursive module function simps_dx_sp(y, dx, even) result(integral)
             real(sp), dimension(:), intent(in) :: y
@@ -96,7 +96,7 @@ module stdlib_quadrature
         !! version: experimental
         !!
         !! Integrates sampled values using trapezoidal rule weights for given abscissas
-        !! ([Specification](../page/specs/stdlib_quadrature.html#description_3))
+        !! (Specification: :doc:`/specs/stdlib_quadrature`)
         pure recursive module function simps_weights_sp(x, even) result(w)
             real(sp), dimension(:), intent(in) :: x
             integer, intent(in), optional :: even

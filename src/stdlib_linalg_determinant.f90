@@ -12,17 +12,17 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
      contains
 
      pure module function stdlib_linalg_pure_rspdeterminant(a) result(det)     
-     !!### Summary
+     !!## Summary
      !! Compute determinant of a real square matrix (pure interface).
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the determinant of a real square matrix.
      !!
      !! param: a Input matrix of size [m,n].
      !! return: det Matrix determinant.
      !!
-     !!### Example
+     !!## Example
      !!
      !!```fortran
      !!
@@ -111,10 +111,10 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
      end function stdlib_linalg_pure_rspdeterminant
      
      module function stdlib_linalg_rspdeterminant(a,overwrite_a,err) result(det)
-     !!### Summary
+     !!## Summary
      !! Compute determinant of a square matrix (with error control).
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the determinant of a square matrix with error control.
      !!
@@ -123,7 +123,7 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
      !! param: err State return flag. 
      !! return: det Matrix determinant.
      !!
-     !!### Example
+     !!## Example
      !!
      !!```fortran
      !!
@@ -229,17 +229,17 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
      end function stdlib_linalg_rspdeterminant
 
      pure module function stdlib_linalg_pure_rdpdeterminant(a) result(det)     
-     !!### Summary
+     !!## Summary
      !! Compute determinant of a real square matrix (pure interface).
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the determinant of a real square matrix.
      !!
      !! param: a Input matrix of size [m,n].
      !! return: det Matrix determinant.
      !!
-     !!### Example
+     !!## Example
      !!
      !!```fortran
      !!
@@ -328,10 +328,10 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
      end function stdlib_linalg_pure_rdpdeterminant
      
      module function stdlib_linalg_rdpdeterminant(a,overwrite_a,err) result(det)
-     !!### Summary
+     !!## Summary
      !! Compute determinant of a square matrix (with error control).
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the determinant of a square matrix with error control.
      !!
@@ -340,7 +340,7 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
      !! param: err State return flag. 
      !! return: det Matrix determinant.
      !!
-     !!### Example
+     !!## Example
      !!
      !!```fortran
      !!
@@ -446,17 +446,17 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
      end function stdlib_linalg_rdpdeterminant
 
      pure module function stdlib_linalg_pure_cspdeterminant(a) result(det)     
-     !!### Summary
+     !!## Summary
      !! Compute determinant of a real square matrix (pure interface).
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the determinant of a real square matrix.
      !!
      !! param: a Input matrix of size [m,n].
      !! return: det Matrix determinant.
      !!
-     !!### Example
+     !!## Example
      !!
      !!```fortran
      !!
@@ -545,10 +545,10 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
      end function stdlib_linalg_pure_cspdeterminant
      
      module function stdlib_linalg_cspdeterminant(a,overwrite_a,err) result(det)
-     !!### Summary
+     !!## Summary
      !! Compute determinant of a square matrix (with error control).
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the determinant of a square matrix with error control.
      !!
@@ -557,7 +557,7 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
      !! param: err State return flag. 
      !! return: det Matrix determinant.
      !!
-     !!### Example
+     !!## Example
      !!
      !!```fortran
      !!
@@ -663,17 +663,17 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
      end function stdlib_linalg_cspdeterminant
 
      pure module function stdlib_linalg_pure_cdpdeterminant(a) result(det)     
-     !!### Summary
+     !!## Summary
      !! Compute determinant of a real square matrix (pure interface).
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the determinant of a real square matrix.
      !!
      !! param: a Input matrix of size [m,n].
      !! return: det Matrix determinant.
      !!
-     !!### Example
+     !!## Example
      !!
      !!```fortran
      !!
@@ -762,10 +762,10 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
      end function stdlib_linalg_pure_cdpdeterminant
      
      module function stdlib_linalg_cdpdeterminant(a,overwrite_a,err) result(det)
-     !!### Summary
+     !!## Summary
      !! Compute determinant of a square matrix (with error control).
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the determinant of a square matrix with error control.
      !!
@@ -774,7 +774,7 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
      !! param: err State return flag. 
      !! return: det Matrix determinant.
      !!
-     !!### Example
+     !!## Example
      !!
      !!```fortran
      !!

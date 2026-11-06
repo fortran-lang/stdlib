@@ -71,7 +71,7 @@ module stdlib_hash_32bit
 !! Version: experimental
 !!
 !! FNV_1 interfaces
-!! ([Specification](../page/specs/stdlib_hash_procedures.html#fnv_1_hash-calculates-a-hash-code-from-a-key))
+!! (Specification: :doc:`/specs/stdlib_hash_procedures`)
           pure module function int8_fnv_1( key ) result(hash_code)
 !! FNV_1 hash function for rank 1 array keys of kind int8
               integer(int8), intent(in) :: key(:)
@@ -109,7 +109,7 @@ module stdlib_hash_32bit
 !! Version: experimental
 !!
 !! FNV_1A interfaces
-!! ([Specification](../page/specs/stdlib_hash_procedures.html#fnv_1a_hash-calculates-a-hash-code-from-a-key))
+!! (Specification: :doc:`/specs/stdlib_hash_procedures`)
           pure module function int8_fnv_1a( key ) result(hash_value)
 !! FNV_1A hash function for rank 1 array keys of kind int8
               integer(int8), intent(in)   :: key(:)
@@ -147,7 +147,7 @@ module stdlib_hash_32bit
 !! Version: experimental
 !!
 !! NMHASH32 interfaces
-!! ([Specification](../page/specs/stdlib_hash_procedures.html#nmhash32-calculates-a-hash-code-from-a-key-and-a-seed))
+!! (Specification: :doc:`/specs/stdlib_hash_procedures`)
           pure module function int8_nmhash32( key, seed ) &
               result(hash_value)
 !! NMHASH32 hash function for rank 1 array keys of kind int8
@@ -195,7 +195,7 @@ module stdlib_hash_32bit
 !! Version: experimental
 !!
 !! NMHASH32X interfaces
-!! ([Specification](file:///home/jvandenp/stdlib/API-doc/page/specs/stdlib_hash_procedures.html#nmhash32x-calculates-a-hash-code-from-a-key-and-a-seed))
+!! (Specification: :doc:`/specs/stdlib_hash_procedures`)
           pure module function int8_nmhash32x( key, seed ) &
               result(hash_value)
 !! NMHASH32 hash function for rank 1 array keys of kind int8
@@ -243,7 +243,7 @@ module stdlib_hash_32bit
 !! Version: experimental
 !!
 !! WATER_HASH interfaces
-!! ([Specification](../page/specs/stdlib_hash_procedures.html#water_hash-calculates-a-hash-code-from-a-key-and-a-seed))
+!! (Specification: :doc:`/specs/stdlib_hash_procedures`)
           pure module function int8_water_hash( key, seed ) &
               result(hash_code)
 !! WATER HASH function for rank 1 array keys of kind int8
@@ -286,7 +286,7 @@ module stdlib_hash_32bit
     interface new_water_hash_seed
 !! Version: experimental
 !!
-!! ([Specification](file:///home/jvandenp/stdlib/API-doc/page/specs/stdlib_hash_procedures.html#new_water_hash_seed-returns-a-valid-input-seed-for-water_hash))
+!! (Specification: :doc:`/specs/stdlib_hash_procedures`)
         module subroutine new_water_hash_seed( seed )
             integer(int64), intent(inout) :: seed
         end subroutine new_water_hash_seed
@@ -296,7 +296,7 @@ module stdlib_hash_32bit
     interface new_nmhash32_seed
 !! Version: experimental
 !!
-!! ([Specification](../page/specs/stdlib_hash_procedures.html#new_nmhash32_seed-returns-a-valid-input-seed-for-nmhash32)
+!! (Specification: :doc:`/specs/stdlib_hash_procedures`)
 
         module subroutine new_nmhash32_seed( seed )
             integer(int32), intent(inout) :: seed
@@ -307,7 +307,7 @@ module stdlib_hash_32bit
     interface new_nmhash32x_seed
 !! Version: experimental
 !!
-!! ([Specification](../page/specs/stdlib_hash_procedures.html#new_nmhash32x_seed-returns-a-valid-input-seed-for-nmhash32x))
+!! (Specification: :doc:`/specs/stdlib_hash_procedures`)
 
         module subroutine new_nmhash32x_seed( seed )
             integer(int32), intent(inout) :: seed
@@ -322,7 +322,7 @@ contains
 !!
 !! Maps the 32 bit integer `key` to an unsigned integer value with only `nbits`
 !! bits where `nbits` is less than 32
-!! ([Specification](../page/specs/stdlib_hash_procedures.html#fibonacci_hash-maps-an-integer-to-a-smaller-number-of-bits))
+!! (Specification: :doc:`/specs/stdlib_hash_procedures`)
 
         integer(int32), intent(in) :: key
         integer, intent(in)        :: nbits
@@ -337,7 +337,7 @@ contains
 !!
 !! Uses the "random" odd 32 bit integer `seed` to map the 32 bit integer `key` to
 !! an unsigned integer value with only `nbits` bits where `nbits` is less than 32
-!! ([Specification](../page/specs/stdlib_hash_procedures.html#universal_mult_hash-maps-an-integer-to-a-smaller-number-of-bits))
+!! (Specification: :doc:`/specs/stdlib_hash_procedures`)
         integer(int32), intent(in) :: key
         integer(int32), intent(in) :: seed
         integer, intent(in)        :: nbits
@@ -352,7 +352,7 @@ contains
 !!
 !! Returns a 32 bit pseudo random integer, `harvest`, distributed uniformly over
 !! the odd integers of the `int32` kind.
-!! ([Specification](../page/specs/stdlib_hash_procedures.html#odd_random_integer-returns-an-odd-integer))
+!! (Specification: :doc:`/specs/stdlib_hash_procedures`)
         integer(int32), intent(out) :: harvest
         real(dp) :: sample
 

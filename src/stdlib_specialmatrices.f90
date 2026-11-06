@@ -2,7 +2,7 @@ module stdlib_specialmatrices
     !! Provides derived-types and associated specialized linear algebra drivers
     !! for highly-structured matrices commonly encountered in the discretization
     !! of partial differential equations, as well as control and signal processing
-    !! applications. ([Specifications](../page/specs/stdlib_specialmatrices.html))
+    !! applications. (Specification: :doc:`/specs/stdlib_specialmatrices`)
     use stdlib_linalg_constants
     use stdlib_constants
     use stdlib_linalg_state, only: linalg_state_type, linalg_error_handling, LINALG_ERROR, &
@@ -79,11 +79,12 @@ module stdlib_specialmatrices
     !--------------------------------
 
     interface tridiagonal
-        !! ([Specifications](../page/specs/stdlib_specialmatrices.html#Tridiagonal)) This
+        !! (Specification: :doc:`/specs/stdlib_specialmatrices`) This
         !! interface provides different methods to construct a `tridiagonal` matrix. Only
-        !! the non-zero elements of \( A \) are stored, i.e.
+        !! the non-zero elements of :math:`A` are stored, i.e.
         !!
-        !! \[
+        !! .. math::
+        !!
         !!    A
         !!    =
         !!    \begin{bmatrix}
@@ -93,9 +94,8 @@ module stdlib_specialmatrices
         !!             &           &  c_{n-2} &  a_{n-1}  &  b_{n-1} \\
         !!             &           &           &  c_{n-1} &  a_n
         !!    \end{bmatrix}.
-        !! \]
         !!
-        !! #### Syntax
+        !!## Syntax
         !!
         !! - Construct a real `tridiagonal` matrix from rank-1 arrays:
         !!
@@ -287,11 +287,12 @@ module stdlib_specialmatrices
     end interface
 
     interface sym_tridiagonal
-        !! ([Specifications](../page/specs/stdlib_specialmatrices.html#Sym_tridiagonal)) This
+        !! (Specification: :doc:`/specs/stdlib_specialmatrices`) This
         !! interface provides different methods to construct a `symmetric tridiagonal` matrix. Only
-        !! the non-zero elements of \( A \) are stored, i.e.
+        !! the non-zero elements of :math:`A` are stored, i.e.
         !!
-        !! \[
+        !! .. math::
+        !!
         !!    A
         !!    =
         !!    \begin{bmatrix}
@@ -301,9 +302,8 @@ module stdlib_specialmatrices
         !!             &           &  b_{n-2} &  a_{n-1}  &  b_{n-1} \\
         !!             &           &           &  b_{n-1} &  a_n
         !!    \end{bmatrix}.
-        !! \]
         !!
-        !! #### Syntax
+        !!## Syntax
         !!
         !! - Construct a real `symmetric tridiagonal` matrix from rank-1 arrays:
         !!
@@ -650,7 +650,7 @@ module stdlib_specialmatrices
     !----------------------------------
 
     interface spmv
-        !! ([Specifications](../page/specs/stdlib_specialmatrices.html#spmv)) This
+        !! (Specifications: :doc:`/specs/stdlib_specialmatrices`) This
         !! interface provides methods to compute the matrix-vector product
         !!
         !!  $$ y = \alpha \mathrm{op}(A) x + \beta y$$
@@ -796,7 +796,7 @@ module stdlib_specialmatrices
     interface dense
         !! This interface provides methods to convert a matrix of one of the
         !! types defined by `stdlib_specialmatrices` to a standard rank-2 array.
-        !! ([Specifications](../page/specs/stdlib_specialmatrices.html#dense))
+        !! (Specifications: :doc:`/specs/stdlib_specialmatrices`)
         pure module function tridiagonal_to_dense_sp(A) result(B)
             !! Convert a `tridiagonal` matrix to its dense representation.
             type(tridiagonal_sp_type), intent(in) :: A
@@ -859,7 +859,7 @@ module stdlib_specialmatrices
     interface transpose
         !! This interface provides methods to compute the transpose operation for
         !! the different matrix types defined by `stdlib_specialmatrices`.
-        !! [Specifications](../page/specs/stdlib_specialmatrices.html#transpose)
+        !! Specifications: :doc:`/specs/stdlib_specialmatrices`
         pure module function transpose_tridiagonal_sp(A) result(B)
             type(tridiagonal_sp_type), intent(in) :: A
             !! Input matrix.
@@ -907,7 +907,7 @@ module stdlib_specialmatrices
         !! This interface provides methods to compute the hermitian operation for
         !! the different matrix types defined by `stdlib_specialmatrices`. For
         !! real-valued matrices, this is equivalent to the standard `transpose`.
-        !! [Specifications](../page/specs/stdlib_specialmatrices.html#hermitian)
+        !! Specifications: :doc:`/specs/stdlib_specialmatrices`
         pure module function hermitian_tridiagonal_sp(A) result(B)
             type(tridiagonal_sp_type), intent(in) :: A
             !! Input matrix.
@@ -960,7 +960,7 @@ module stdlib_specialmatrices
     interface operator(*)
         !! Overload the `*` for scalar-matrix multiplications for the different matrix
         !! types provided by `stdlib_specialmatrices`.
-        !! [Specifications](../page/specs/stdlib_specialmatrices.html#operators)
+        !! Specifications: :doc:`/specs/stdlib_specialmatrices`
         pure module function scalar_multiplication_tridiagonal_sp(alpha, A) result(B)
             real(sp), intent(in) :: alpha
             type(tridiagonal_sp_type), intent(in) :: A
@@ -1047,7 +1047,7 @@ module stdlib_specialmatrices
     interface operator(+)
         !! Overload the `+` operator for matrix-matrix addition. The two matrices need to
         !! be of the same type and kind.
-        !! [Specifications](../page/specs/stdlib_specialmatrices.html#operators)
+        !! Specifications: :doc:`/specs/stdlib_specialmatrices`
         pure module function matrix_add_tridiagonal_sp(A, B) result(C)
             type(tridiagonal_sp_type), intent(in) :: A
             type(tridiagonal_sp_type), intent(in) :: B
@@ -1094,7 +1094,7 @@ module stdlib_specialmatrices
     interface operator(-)
         !! Overload the `-` operator for matrix-matrix subtraction. The two matrices need to
         !! be of the same type and kind.
-        !! [Specifications](../page/specs/stdlib_specialmatrices.html#operators)
+        !! Specifications: :doc:`/specs/stdlib_specialmatrices`
         pure module function matrix_sub_tridiagonal_sp(A, B) result(C)
             type(tridiagonal_sp_type), intent(in) :: A
             type(tridiagonal_sp_type), intent(in) :: B

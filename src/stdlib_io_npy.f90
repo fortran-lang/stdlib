@@ -76,7 +76,7 @@ module stdlib_io_npy
     !> Version: experimental
     !>
     !> Save multidimensional array in npy format
-    !> ([Specification](../page/specs/stdlib_io.html#save_npy))
+    !> (Specification: :doc:`/specs/stdlib_io`)
     interface save_npy
         module subroutine save_npy_rsp_1(filename, array, iostat, iomsg)
             character(len=*), intent(in) :: filename
@@ -275,7 +275,7 @@ module stdlib_io_npy
     !> Version: experimental
     !>
     !> Load multidimensional array in npy format
-    !> ([Specification](../page/specs/stdlib_io.html#load_npy))
+    !> (Specification: :doc:`/specs/stdlib_io`)
     interface load_npy
         module subroutine load_npy_rsp_1(filename, array, iostat, iomsg)
             character(len=*), intent(in) :: filename

@@ -2,7 +2,7 @@
 !> The `stdlib_ascii` module provides procedures for handling and manipulating
 !> intrinsic character variables and constants.
 !>
-!> The specification of this module is available [here](../page/specs/stdlib_ascii.html).
+!> The specification of this module is available :doc:`here </specs/stdlib_ascii>`.
 module stdlib_ascii
     use stdlib_kinds, only : int8, int16, int32, int64, lk, c_bool
 
@@ -246,7 +246,7 @@ contains
     end function char_to_upper
 
     !> Convert character variable to lower case
-    !> ([Specification](../page/specs/stdlib_ascii.html#to_lower))
+    !> (Specification: :doc:`/specs/stdlib_ascii`)
     !>
     !> Version: experimental
     elemental function to_lower(string) result(lower_string)
@@ -261,7 +261,7 @@ contains
     end function to_lower
 
     !> Convert character variable to upper case
-    !> ([Specification](../page/specs/stdlib_ascii.html#to_upper))
+    !> (Specification: :doc:`/specs/stdlib_ascii`)
     !>
     !> Version: experimental
     elemental function to_upper(string) result(upper_string)
@@ -276,7 +276,7 @@ contains
     end function to_upper
 
     !> Converts character sequence to title case
-    !> ([Specification](../page/specs/stdlib_ascii.html#to_title))
+    !> (Specification: :doc:`/specs/stdlib_ascii`)
     !>
     !> Version: experimental
     elemental function to_title(string) result(title_string)
@@ -303,7 +303,7 @@ contains
     end function to_title
 
     !> Converts character sequence to sentence case
-    !> ([Specification](../page/specs/stdlib_ascii.html#to_sentence))
+    !> (Specification: :doc:`/specs/stdlib_ascii`)
     !>
     !> Version: experimental
     elemental function to_sentence(string) result(sentence_string)
@@ -329,7 +329,7 @@ contains
     end function to_sentence
 
     !> Reverse the character order in the input character variable
-    !> ([Specification](../page/specs/stdlib_ascii.html#reverse))
+    !> (Specification: :doc:`/specs/stdlib_ascii`)
     !>
     !> Version: experimental
     elemental function reverse(string) result(reverse_string)
