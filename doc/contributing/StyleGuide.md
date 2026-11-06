@@ -2,11 +2,16 @@
 title: Style Guide
 ---
 
-@note
+```{note}
 This is a living document.
 You are welcome to propose changes to this workflow by opening an
 [issue](https://github.com/fortran-lang/stdlib/issues).
+```
 
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
-{!STYLE_GUIDE.md!}
+```{include} ../../STYLE_GUIDE.md
+```

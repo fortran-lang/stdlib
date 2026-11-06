@@ -144,7 +144,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
     #:endfor
 
     !---------------------------------------------------------------------------
-    !> solve_chol: One-shot factorize + solve (POSV)
+    !> One-shot factorize + solve using POSV.
     !---------------------------------------------------------------------------
     
     #:for nd,ndsuf,nde in ALL_RHS
@@ -285,7 +285,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
     #:endfor
 
     !---------------------------------------------------------------------------
-    !> solve_lower_chol: Solve using PRE-COMPUTED LOWER Cholesky factor (POTRS)
+    !> Solve using a pre-computed lower Cholesky factor with POTRS.
     !---------------------------------------------------------------------------
     
     #:for nd,ndsuf,nde in ALL_RHS
@@ -309,7 +309,7 @@ submodule (stdlib_linalg) stdlib_linalg_solve
     #:endfor
 
     !---------------------------------------------------------------------------
-    !> solve_upper_chol: Solve using PRE-COMPUTED UPPER Cholesky factor (POTRS)
+    !> Solve using a pre-computed upper Cholesky factor with POTRS.
     !---------------------------------------------------------------------------
     
     #:for nd,ndsuf,nde in ALL_RHS

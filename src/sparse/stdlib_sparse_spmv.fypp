@@ -19,7 +19,7 @@ module stdlib_sparse_spmv
     !! Version experimental
     !!
     !! Apply the sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
-    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface spmv
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
@@ -74,7 +74,7 @@ module stdlib_sparse_spmv
     !! Version experimental
     !!
     !! Apply the COO sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
-    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface spmv_kernel_coo
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
@@ -95,7 +95,7 @@ module stdlib_sparse_spmv
     !! Version experimental
     !!
     !! Apply the CSC sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
-    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface spmv_kernel_csc
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
@@ -117,7 +117,7 @@ module stdlib_sparse_spmv
     !! Version experimental
     !!
     !! Apply the CSR sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
-    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface spmv_kernel_csr
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
@@ -139,7 +139,7 @@ module stdlib_sparse_spmv
     !! Version experimental
     !!
     !! Apply the ELL sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
-    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface spmv_kernel_ell
         #:for k1, t1, s1 in (KINDS_TYPES)
         #:for rank in RANKS
@@ -160,7 +160,7 @@ module stdlib_sparse_spmv
     !! Version experimental
     !!
     !! Apply the SELLC sparse matrix-vector product $$y = \alpha * op(M) * x + \beta * y $$
-    !! [Specifications](../page/specs/stdlib_sparse.html#spmv)
+    !! Specifications: :doc:`/specs/stdlib_sparse`
     interface spmv_kernel_sellc
         #:for k1, t1, s1 in (KINDS_TYPES)
         module subroutine spmv_kernel_sellc_${s1}$(op,alpha,data,ia,ja,storage,vec_x,beta,vec_y)
