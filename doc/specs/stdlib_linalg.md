@@ -2234,7 +2234,7 @@ If `err` is not present, exceptions trigger an `error stop`.
 ### Example
 
 ```fortran
-{!example/linalg/example_mnorm.f90!}
+{!example/linalg/example_mnorm.inc!}
 ```
 
 ## `expm` - Computes the matrix exponential {#expm}
