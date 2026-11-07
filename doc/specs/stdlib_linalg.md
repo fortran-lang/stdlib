@@ -2241,7 +2241,7 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```{literalinclude} ../../example/linalg/example_mnorm.f90
+```{literalinclude} ../../example/linalg/example_mnorm.inc
 :language: fortran
 ```
 

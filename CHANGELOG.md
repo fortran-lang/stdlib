@@ -1,6 +1,8 @@
 ## Unreleased
 
 Changes to the existing modules
+  - Skip the matrix norm example when the maximum array rank is below 4
+    [#1224](https://github.com/fortran-lang/stdlib/issues/1224)
   - Preserve rectangular matrix dimensions in `coo2dense` and `csr2dense`.
     [#1228](https://github.com/fortran-lang/stdlib/issues/1228)
   - Change in module `stdlib_intrinsics`

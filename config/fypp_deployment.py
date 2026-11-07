@@ -52,7 +52,7 @@ def pre_process_fypp(args):
     os.makedirs('test'+os.sep+'temp', exist_ok=True)
 
     # Define the folders to search for *.fypp files
-    folders = ['src','test']
+    folders = ['src','test','example']
     # Process all folders
     fypp_files = [os.path.join(root, file) for folder in folders
                   for root, _, files in os.walk(folder)

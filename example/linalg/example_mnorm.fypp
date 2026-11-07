@@ -1,0 +1,5 @@
+#:if MAXRANK >= 4
+#:include "example_mnorm.inc"
+#:else
+! This example requires a maximum rank of at least 4.
+#:endif
