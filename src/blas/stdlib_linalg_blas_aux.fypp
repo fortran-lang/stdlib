@@ -152,7 +152,7 @@ module stdlib_linalg_blas_aux
 
 #:for rk,rt,ri in REAL_KINDS_TYPES
      pure integer(${ik}$) function stdlib${ii}$_i${ri}$amax(n,dx,incx) result(iamax)
-     !! IDAMAX: finds the index of the first element having maximum absolute value.
+   !! Find the index of the first element having maximum absolute value.
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--
@@ -198,7 +198,7 @@ module stdlib_linalg_blas_aux
 #:endfor
 #:for ck,ct,ci in CMPLX_KINDS_TYPES
      pure integer(${ik}$) function stdlib${ii}$_i${ci}$amax(n,zx,incx) result(iamax)
-     !! IZAMAX: finds the index of the first element having maximum |Re(.)| + |Im(.)|
+   !! Find the index of the first element having maximum |Re(.)| + |Im(.)|.
         ! -- reference blas level1 routine --
         ! -- reference blas is a software package provided by univ. of tennessee,    --
         ! -- univ. of california berkeley, univ. of colorado denver and nag ltd..--

@@ -13,7 +13,7 @@
     & + BITSETS_TYPES_ALT_NAME
 #:set IR_INDEX_TYPES_ALT_NAME = INT_TYPES_ALT_NAME + REAL_TYPES_ALT_NAME
 
-!! Licensing:
+!! ## Licensing
 !!
 !! This file is subjec† both to the Fortran Standard Library license, and
 !! to additional licensing requirements as it contains translations of

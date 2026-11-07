@@ -2,4 +2,7 @@
 title: Changelog
 ---
 
-{!CHANGELOG.md!}
+# Changelog
+
+```{include} ../CHANGELOG.md
+```

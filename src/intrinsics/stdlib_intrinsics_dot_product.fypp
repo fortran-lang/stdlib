@@ -13,7 +13,7 @@ ${expression}$
 
 submodule(stdlib_intrinsics) stdlib_intrinsics_dot_product
     !!Replacement for certain Fortran intrinsic functions offering either faster and/or more accurate implementations.
-    !! ([Specification](../page/specs/stdlib_intrinsics.html))
+    !! (Specification: :doc:`/specs/stdlib_intrinsics`)
     use stdlib_kinds
     use stdlib_constants
     implicit none
