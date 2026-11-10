@@ -32,10 +32,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
     - name: Set up Python 3.x
-      uses: actions/setup-python@v5 # Use pip to install latest CMake, & FORD/Jin2For, etc.
+      uses: actions/setup-python@v7 # Use pip to install latest CMake, & FORD/Jin2For, etc.
       with:
         python-version: 3.x
 
@@ -43,7 +43,7 @@ jobs:
       run: pip install --upgrade fypp ninja
 
     - name: Setup Fortran compiler
-      uses: fortran-lang/setup-fortran@v1.6.2
+      uses: fortran-lang/setup-fortran@v1.11.0
       id: setup-fortran
       with:
         compiler: ${{ matrix.toolchain.compiler }}

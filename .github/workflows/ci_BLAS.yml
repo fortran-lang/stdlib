@@ -17,7 +17,7 @@ jobs:
       run:
         shell: msys2 {0}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
 
       - name: Setup MinGW native environment
         uses: msys2/setup-msys2@v2
@@ -60,7 +60,7 @@ jobs:
       - name: CTest with OpenBLAS
         run: PATH=$PATH:/ucrt64/bin/ ctest --test-dir build --output-on-failure --parallel -V -LE quadruple_precision
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: WindowsCMakeTestlog_openblas
@@ -86,10 +86,10 @@ jobs:
         intel-oneapi-mkl-devel
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Python 3.x
-        uses: actions/setup-python@v5 # Use pip to install latest CMake, & FORD/Jin2For, etc.
+        uses: actions/setup-python@v7 # Use pip to install latest CMake, & FORD/Jin2For, etc.
         with:
           python-version: 3.x
 
@@ -97,7 +97,7 @@ jobs:
         run: pip install --upgrade fypp ninja
 
       - name: Setup Fortran compiler
-        uses: fortran-lang/setup-fortran@v1.6.1
+        uses: fortran-lang/setup-fortran@v1.11.0
         id: setup-fortran
         with:
           compiler: ${{ matrix.toolchain.compiler }}
