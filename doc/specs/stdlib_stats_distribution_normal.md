@@ -14,15 +14,15 @@ Experimental
 ### Description
 
 A normal continuous random variate distribution, also known as Gaussian, or Gauss or Laplace-Gauss distribution.
-The location `loc` specifies the mean or expectation (\(\mu\)). The `scale` specifies the standard deviation (\(\sigma\)).
+The location `loc` specifies the mean or expectation ($\mu$). The `scale` specifies the standard deviation ($\sigma$).
 
-Without argument, the function returns a standard normal distributed random variate \(N(0,1)\).
+Without argument, the function returns a standard normal distributed random variate $N(0,1)$.
 
-With two arguments, the function returns a normal distributed random variate \(N(\mu=\text{loc}, \sigma^2=\text{scale}^2)\). For complex arguments, the real and imaginary parts are independent of each other.
+With two arguments, the function returns a normal distributed random variate $N(\mu=\text{loc}, \sigma^2=\text{scale}^2)$. For complex arguments, the real and imaginary parts are independent of each other.
 
 With three arguments, the function returns a rank-1 array of normal distributed random variates.
 
-With one or two arguments where the first is `array_size`, the function returns a rank-1 array of standard normal distributed random variates \(N(0,1)\). The `mold` argument determines the output type and kind; it is optional only for `real(dp)` (and defaults to `real(dp)` when omitted), but required for all other types.
+With one or two arguments where the first is `array_size`, the function returns a rank-1 array of standard normal distributed random variates $N(0,1)$. The `mold` argument determines the output type and kind; it is optional only for `real(dp)` (and defaults to `real(dp)` when omitted), but required for all other types.
 
 ```{note}
 The algorithm used for generating exponential random variates is fundamentally limited to double precision.[^1]
@@ -46,7 +46,7 @@ Elemental function (passing both `loc` and `scale`).
 
 `array_size`: optional argument has `intent(in)` and is a scalar of type `integer`. When used with `loc` and `scale`, specifies the size of the output array. When used alone or with `mold`, must be provided as the first argument.
 
-`mold`: optional argument (only for `real(dp)`; required for other types) has `intent(in)` and is a scalar of type `real` or `complex`. Used only to determine the type and kind of the output; its value is not referenced. When omitted (only allowed for `real(dp)`), defaults to `real(dp)`. When provided, generates standard normal variates \(N(0,1)\) of the specified type and kind.
+`mold`: optional argument (only for `real(dp)`; required for other types) has `intent(in)` and is a scalar of type `real` or `complex`. Used only to determine the type and kind of the output; its value is not referenced. When omitted (only allowed for `real(dp)`), defaults to `real(dp)`. When provided, generates standard normal variates $N(0,1)$ of the specified type and kind.
 
 `loc` and `scale` arguments must be of the same type.
 
@@ -72,7 +72,7 @@ The probability density function (pdf) of the single real variable normal distri
 
 $$f(x) = \frac{1}{\sigma \sqrt{2\pi}} \exp{\left[-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^{2}\right]}$$
 
-For a complex varible \( z=(x + y i) \) with independent real \( x \) and imaginary \( y \) parts, the joint probability density function is the product of the the corresponding real and imaginary marginal pdfs:[^2]
+For a complex varible $z=(x + y i)$ with independent real $x$ and imaginary $y$ parts, the joint probability density function is the product of the the corresponding real and imaginary marginal pdfs:[^2]
 
 $$f(x + y \mathit{i}) = f(x) f(y) = \frac{1}{2\pi\sigma_{x}\sigma_{y}} \exp{\left[-\frac{1}{2}\left(\left(\frac{x-\mu_x}{\sigma_{x}}\right)^{2}+\left(\frac{y-\mu_y}{\sigma_{y}}\right)^{2}\right)\right]}$$
 
@@ -116,7 +116,7 @@ Cumulative distribution function of the single real variable normal distribution
 
 $$F(x) = \frac{1}{2}\left [ 1+\text{erf}\left(\frac{x-\mu}{\sigma \sqrt{2}}\right) \right ]$$
 
-For the complex variable \( z=(x + y i) \) with independent real \( x \) and imaginary \( y \) parts, the joint cumulative distribution function is the product of the corresponding real and imaginary marginal cdfs:[^2]
+For the complex variable $z=(x + y i)$ with independent real $x$ and imaginary $y$ parts, the joint cumulative distribution function is the product of the corresponding real and imaginary marginal cdfs:[^2]
 
 $$ F(x+y\mathit{i})=F(x)F(y)=\frac{1}{4} \
 \left[ 1+\text{erf}\left(\frac{x-\mu_x}{\sigma_x \sqrt{2}}\right) \right] \

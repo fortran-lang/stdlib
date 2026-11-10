@@ -13,13 +13,13 @@ Experimental
 
 ### Description
 
-The gamma distribution is a continuous probability distribution widely used in modeling waiting times, queue lengths, and other non-negative quantities. It is defined by a shape parameter (\\(k\\) or \\(\\alpha\\)) that controls the distribution's form and a rate parameter (\\(\\lambda\\)) that controls its scale.
+The gamma distribution is a continuous probability distribution widely used in modeling waiting times, queue lengths, and other non-negative quantities. It is defined by a shape parameter ($k$ or $\alpha$) that controls the distribution's form and a rate parameter ($\lambda$) that controls its scale.
 
-Without arguments, the function returns a random sample from the standard gamma distribution \\(\\Gamma(k=1, \\lambda=1)\\).
+Without arguments, the function returns a random sample from the standard gamma distribution $\Gamma(k=1, \lambda=1)$.
 
-With a single argument for shape parameter, the function returns a random sample from the gamma distribution \\(\\Gamma(k=\\text{shape}, \\lambda=1)\\).
+With a single argument for shape parameter, the function returns a random sample from the gamma distribution $\Gamma(k=\text{shape}, \lambda=1)$.
 
-With two arguments (shape, rate), the function returns a random sample from the gamma distribution \\(\\Gamma(k=\\text{shape}, \\lambda=\\text{rate})\\).
+With two arguments (shape, rate), the function returns a random sample from the gamma distribution $\Gamma(k=\text{shape}, \lambda=\text{rate})$.
 
 The optional `loc` parameter specifies the location (shift) of the distribution.
 
@@ -43,10 +43,10 @@ Impure elemental function
 ### Arguments
 
 `shape`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`. 
-If `shape` is `real`, its value must be positive. If `shape` is `complex`, both the real and imaginary components must be positive. This is the shape (or "form") parameter \\(k\\) of the distribution. Default value is 1.0.
+If `shape` is `real`, its value must be positive. If `shape` is `complex`, both the real and imaginary components must be positive. This is the shape (or "form") parameter $k$ of the distribution. Default value is 1.0.
 
 `rate`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`. 
-If `rate` is `real`, its value must be positive. If `rate` is `complex`, both the real and imaginary components must be positive. This is the rate parameter \(\\lambda\) (inverse of scale). Default value is 1.0.
+If `rate` is `real`, its value must be positive. If `rate` is `complex`, both the real and imaginary components must be positive. This is the rate parameter $\lambda$ (inverse of scale). Default value is 1.0.
 
 `loc`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`. 
 Specifies the location (shift) of the distribution with default value 0.0. The distribution support is x > loc.
@@ -75,11 +75,11 @@ The probability density function (pdf) of the single real variable gamma distrib
 
 $$ f(x)= \frac{\lambda^{k}}{\Gamma (k)}x^{k-1}e^{-\lambda x} ,\quad x>0,\ k>0,\ \lambda>0 $$
 
-where \\(k\\) is the shape parameter, \\(\\lambda\\) is the rate parameter, and \\(\\Gamma(k)\\) is the gamma function.
+where $k$ is the shape parameter, $\lambda$ is the rate parameter, and $\Gamma(k)$ is the gamma function.
 
 An optional `loc` parameter specifies the location (shift) of the distribution.
 
-For a complex variable \\(z=(x + y i)\\) with independent real \\(x\\) and imaginary \\(y\\) parts, the joint probability density function is the product of the corresponding real and imaginary marginal pdfs:[^2]
+For a complex variable $z=(x + y i)$ with independent real $x$ and imaginary $y$ parts, the joint probability density function is the product of the corresponding real and imaginary marginal pdfs:[^2]
 
 $$f(x+\mathit{i}y)=f(x)f(y)$$
 
@@ -95,10 +95,10 @@ Impure elemental function
 
 `x`: has `intent(in)` and is a scalar of type `real` or `complex`. The point at which to evaluate the pdf.
 
-`shape`: has `intent(in)` and is a scalar of type `real` or `complex`. The shape parameter \\(k\\). 
+`shape`: has `intent(in)` and is a scalar of type `real` or `complex`. The shape parameter $k$. 
 If `shape` is `real`, its value must be positive. If `shape` is `complex`, both the real and imaginary components must be positive.
 
-`rate`: has `intent(in)` and is a scalar of type `real` or `complex`. The rate parameter \\(\\lambda\\). 
+`rate`: has `intent(in)` and is a scalar of type `real` or `complex`. The rate parameter $\lambda$. 
 If `rate` is `real`, its value must be positive. If `rate` is `complex`, both the real and imaginary components must be positive.
 
 `loc`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`. The location (shift) parameter with default value 0.0.
@@ -127,11 +127,11 @@ Cumulative distribution function (cdf) of the single real variable gamma distrib
 
 $$ F(x)= \frac{\gamma (k, \lambda x)}{\Gamma (k)},\quad x>0,\ k>0,\ \lambda>0 $$
 
-where \\(\\gamma(k, z)\\) is the lower incomplete gamma function, and \\(\\Gamma(k)\\) is the gamma function. This is often referred to as the regularized gamma P function.
+where $\gamma(k, z)$ is the lower incomplete gamma function, and $\Gamma(k)$ is the gamma function. This is often referred to as the regularized gamma P function.
 
 An optional `loc` parameter specifies the location (shift) of the distribution.
 
-For a complex variable \\(z=(x + y i)\\) with independent real \\(x\\) and imaginary \\(y\\) parts, the joint cumulative distribution function is the product of the corresponding real and imaginary marginal cdfs:[^2]
+For a complex variable $z=(x + y i)$ with independent real $x$ and imaginary $y$ parts, the joint cumulative distribution function is the product of the corresponding real and imaginary marginal cdfs:[^2]
 
 $$F(x+\mathit{i}y)=F(x)F(y)$$
 
@@ -147,10 +147,10 @@ Impure elemental function
 
 `x`: has `intent(in)` and is a scalar of type `real` or `complex`. The point at which to evaluate the cdf.
 
-`shape`: has `intent(in)` and is a scalar of type `real` or `complex`. The shape parameter \(k\). 
+`shape`: has `intent(in)` and is a scalar of type `real` or `complex`. The shape parameter $k$. 
 If `shape` is `real`, its value must be positive. If `shape` is `complex`, both the real and imaginary components must be positive.
 
-`rate`: has `intent(in)` and is a scalar of type `real` or `complex`. The rate parameter \(\lambda\). 
+`rate`: has `intent(in)` and is a scalar of type `real` or `complex`. The rate parameter $\lambda$. 
 If `rate` is `real`, its value must be positive. If `rate` is `complex`, both the real and imaginary components must be positive.
 
 `loc`: optional argument has `intent(in)` and is a scalar of type `real` or `complex`. The location (shift) parameter with default value 0.0.
