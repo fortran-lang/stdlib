@@ -24,7 +24,7 @@ The following type-bound procedure pointers enable customization of the solver:
 
 ##### `matvec`
 
-Proxy procedure for the matrix-vector product \( y = alpha * op(M) * x + beta * y \).
+Proxy procedure for the matrix-vector product $y = alpha * op(M) * x + beta * y$.
 
 #### Syntax
 
@@ -94,7 +94,7 @@ Subroutine
 
 #### Description
 
-Implements the Conjugate Gradient (CG) method for solving the linear system \( Ax = b \), where \( A \) is a symmetric positive-definite linear operator defined via the `stdlib_linop` type. This is the core implementation, allowing flexibility for custom matrix types or parallel environments.
+Implements the Conjugate Gradient (CG) method for solving the linear system $Ax = b$, where $A$ is a symmetric positive-definite linear operator defined via the `stdlib_linop` type. This is the core implementation, allowing flexibility for custom matrix types or parallel environments.
 
 #### Syntax
 
@@ -116,7 +116,7 @@ Subroutine
 
 `x`: 1-D array of `real(<kind>)` which serves as the input initial guess and the output solution. This argument is `intent(inout)`.
 
-`rtol` and `atol`: scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used \( || b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 ) \). These arguments are `intent(in)`.
+`rtol` and `atol`: scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used $|| b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 )$. These arguments are `intent(in)`.
 
 `maxiter`: scalar of type `integer` defining the maximum allowed number of iterations. This argument is `intent(in)`.
 
@@ -127,7 +127,7 @@ Subroutine
 
 #### Description
 
-Provides a user-friendly interface to the CG method for solving \( Ax = b \), supporting `dense` and `CSR_<kind>_type` matrices. It handles workspace allocation and optional parameters for customization.
+Provides a user-friendly interface to the CG method for solving $Ax = b$, supporting `dense` and `CSR_<kind>_type` matrices. It handles workspace allocation and optional parameters for customization.
 
 #### Syntax
 
@@ -151,7 +151,7 @@ Subroutine
 
 `di` (optional): 1-D mask array of type `logical(int8)` defining the degrees of freedom subject to dirichlet boundary conditions. The actual boundary conditions values should be stored in the `b` load array. This argument is `intent(in)`.
 
-`rtol` and `atol` (optional): scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used \( || b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 ) \). Defaults values are `rtol=1.e-5` and `atol=epsilon(1._<kind>)`. These arguments are `intent(in)`.
+`rtol` and `atol` (optional): scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used $|| b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 )$. Defaults values are `rtol=1.e-5` and `atol=epsilon(1._<kind>)`. These arguments are `intent(in)`.
 
 `maxiter` (optional): scalar of type `integer` defining the maximum allowed number of iterations. If no value is given, a default of `N` is set, where `N = size(b)`. This argument is `intent(in)`.
 
@@ -168,7 +168,7 @@ Subroutine
 
 #### Description
 
-Implements the Preconditioned Conjugate Gradient (PCG) method for solving the linear system \( Ax = b \), where \( A \) is a symmetric positive-definite linear operator defined via the `stdlib_linop` type. This is the core implementation, allowing flexibility for custom matrix types or parallel environments.
+Implements the Preconditioned Conjugate Gradient (PCG) method for solving the linear system $Ax = b$, where $A$ is a symmetric positive-definite linear operator defined via the `stdlib_linop` type. This is the core implementation, allowing flexibility for custom matrix types or parallel environments.
 
 #### Syntax
 
@@ -192,7 +192,7 @@ Subroutine
 
 `x`: 1-D array of `real(<kind>)` which serves as the input initial guess and the output solution. This argument is `intent(inout)`.
 
-`rtol` and `atol` (optional): scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used \( || b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 ) \). These arguments are `intent(in)`.
+`rtol` and `atol` (optional): scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used $|| b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 )$. These arguments are `intent(in)`.
 
 `maxiter`: scalar of type `integer` defining the maximum allowed number of iterations. This argument is `intent(in)`.
 
@@ -209,7 +209,7 @@ Subroutine
 
 #### Description
 
-Provides a user-friendly interface to the PCG method for solving \( Ax = b \), supporting `dense` and `CSR_<kind>_type` matrices. It supports optional preconditioners and handles workspace allocation.
+Provides a user-friendly interface to the PCG method for solving $Ax = b$, supporting `dense` and `CSR_<kind>_type` matrices. It supports optional preconditioners and handles workspace allocation.
 
 #### Syntax
 
@@ -233,7 +233,7 @@ Subroutine
 
 `di` (optional): 1-D mask array of type `logical(int8)` defining the degrees of freedom subject to dirichlet boundary conditions. The actual boundary conditions values should be stored in the `b` load array. This argument is `intent(in)`.
 
-`rtol` and `atol` (optional): scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used \( || b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 ) \). Defaults values are `rtol=1.e-5` and `atol=epsilon(1._<kind>)`. These arguments are `intent(in)`.
+`rtol` and `atol` (optional): scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used $|| b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 )$. Defaults values are `rtol=1.e-5` and `atol=epsilon(1._<kind>)`. These arguments are `intent(in)`.
 
 `maxiter` (optional): scalar of type `integer` defining the maximum allowed number of iterations. If no value is given, a default of `N` is set, where `N = size(b)`. This argument is `intent(in)`.
 
@@ -254,7 +254,7 @@ Subroutine
 
 #### Description
 
-Implements the Biconjugate Gradient Stabilized (BiCGSTAB) method for solving the linear system \( Ax = b \), where \( A \) is a general (non-symmetric) linear operator defined via the `stdlib_linop` type. BiCGSTAB is particularly suitable for solving non-symmetric linear systems and provides better stability than the basic BiCG method. This is the core implementation, allowing flexibility for custom matrix types or parallel environments.
+Implements the Biconjugate Gradient Stabilized (BiCGSTAB) method for solving the linear system $Ax = b$, where $A$ is a general (non-symmetric) linear operator defined via the `stdlib_linop` type. BiCGSTAB is particularly suitable for solving non-symmetric linear systems and provides better stability than the basic BiCG method. This is the core implementation, allowing flexibility for custom matrix types or parallel environments.
 
 #### Syntax
 
@@ -278,7 +278,7 @@ Subroutine
 
 `x`: 1-D array of `real(<kind>)` which serves as the input initial guess and the output solution. This argument is `intent(inout)`.
 
-`rtol` and `atol`: scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used \( || b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 ) \). These arguments are `intent(in)`.
+`rtol` and `atol`: scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used $|| b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 )$. These arguments are `intent(in)`.
 
 `maxiter`: scalar of type `integer` defining the maximum allowed number of iterations. This argument is `intent(in)`.
 
@@ -293,7 +293,7 @@ The BiCGSTAB method requires 8 auxiliary vectors in its workspace, making it mor
 
 #### Description
 
-Provides a user-friendly interface to the BiCGSTAB method for solving \( Ax = b \), supporting `dense` and `CSR_<kind>_type` matrices. BiCGSTAB is suitable for general (non-symmetric) linear systems and supports optional preconditioners for improved convergence. It handles workspace allocation and optional parameters for customization.
+Provides a user-friendly interface to the BiCGSTAB method for solving $Ax = b$, supporting `dense` and `CSR_<kind>_type` matrices. BiCGSTAB is suitable for general (non-symmetric) linear systems and supports optional preconditioners for improved convergence. It handles workspace allocation and optional parameters for customization.
 
 #### Syntax
 
@@ -317,7 +317,7 @@ Subroutine
 
 `di` (optional): 1-D mask array of type `logical(int8)` defining the degrees of freedom subject to dirichlet boundary conditions. The actual boundary condition values should be stored in the `b` load array. This argument is `intent(in)`.
 
-`rtol` and `atol` (optional): scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used \( || b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 ) \). Default values are `rtol=1.e-5` and `atol=epsilon(1._<kind>)`. These arguments are `intent(in)`.
+`rtol` and `atol` (optional): scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used $|| b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 )$. Default values are `rtol=1.e-5` and `atol=epsilon(1._<kind>)`. These arguments are `intent(in)`.
 
 `maxiter` (optional): scalar of type `integer` defining the maximum allowed number of iterations. If no value is given, a default of `N` is set, where `N = size(b)`. This argument is `intent(in)`.
 
@@ -354,7 +354,7 @@ The method uses 8 auxiliary vectors internally, requiring more memory than simpl
 
 #### Description
 
-Implements the restarted Generalized Minimal Residual (GMRES) method for solving the linear system \( Ax = b \), where \( A \) is a general linear operator defined via the `stdlib_linop` type. This is the core implementation, allowing custom matrix types, custom preconditioners, and user-managed workspace.
+Implements the restarted Generalized Minimal Residual (GMRES) method for solving the linear system $Ax = b$, where $A$ is a general linear operator defined via the `stdlib_linop` type. This is the core implementation, allowing custom matrix types, custom preconditioners, and user-managed workspace.
 
 #### Syntax
 
@@ -378,7 +378,7 @@ Subroutine
 
 `x`: 1-D array of `real(<kind>)` which serves as the input initial guess and the output solution. This argument is `intent(inout)`.
 
-`rtol` and `atol`: scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used \( || b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 ) \). These arguments are `intent(in)`.
+`rtol` and `atol`: scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used $|| b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 )$. These arguments are `intent(in)`.
 
 `maxiter`: scalar of type `integer` defining the maximum allowed number of iterations. This argument is `intent(in)`.
 
@@ -397,7 +397,7 @@ GMRES trades increasing memory and orthogonalization cost for robust convergence
 
 #### Description
 
-Provides a user-friendly interface to the restarted GMRES method for solving \( Ax = b \), supporting `dense` and `CSR_<kind>_type` matrices. GMRES is suitable for general non-symmetric systems and supports optional preconditioning, workspace reuse, and a storage-mode choice for balancing memory use against cycle-end update speed.
+Provides a user-friendly interface to the restarted GMRES method for solving $Ax = b$, supporting `dense` and `CSR_<kind>_type` matrices. GMRES is suitable for general non-symmetric systems and supports optional preconditioning, workspace reuse, and a storage-mode choice for balancing memory use against cycle-end update speed.
 
 #### Syntax
 
@@ -421,7 +421,7 @@ Subroutine
 
 `di` (optional): 1-D mask array of type `logical(int8)` defining the degrees of freedom subject to dirichlet boundary conditions. The actual boundary condition values should be stored in the `b` load array. This argument is `intent(in)`.
 
-`rtol` and `atol` (optional): scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used \( || b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 ) \). Default values are `rtol=1.e-5` and `atol=epsilon(1._<kind>)`. These arguments are `intent(in)`.
+`rtol` and `atol` (optional): scalars of type `real(<kind>)` specifying the convergence test. For convergence, the following criterion is used $|| b - Ax ||^2 <= max(rtol^2 * || b ||^2 , atol^2 )$. Default values are `rtol=1.e-5` and `atol=epsilon(1._<kind>)`. These arguments are `intent(in)`.
 
 `maxiter` (optional): scalar of type `integer` defining the maximum allowed number of iterations. If no value is given, a default of `N` is set, where `N = size(b)`. This argument is `intent(in)`.
 
