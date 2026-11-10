@@ -117,9 +117,9 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p ${{ env.COV_DIR }}
-          mv ./build/gfortran_*/*/* ${{ env.COV_DIR }}
-          lcov --capture --initial --base-directory . --directory ${{ env.COV_DIR }} --output-file ${{ env.COV_DIR }}/coverage.base --ignore-errors mismatch
-          lcov --capture           --base-directory . --directory ${{ env.COV_DIR }} --output-file ${{ env.COV_DIR }}/coverage.capture --ignore-errors mismatch
+          mv ./build/"${FC##*/}"_*/*/* ${{ env.COV_DIR }}
+          lcov --capture --initial --gcov-tool gcov-${{ matrix.toolchain.version }} --base-directory . --directory ${{ env.COV_DIR }} --output-file ${{ env.COV_DIR }}/coverage.base --ignore-errors mismatch
+          lcov --capture           --gcov-tool gcov-${{ matrix.toolchain.version }} --base-directory . --directory ${{ env.COV_DIR }} --output-file ${{ env.COV_DIR }}/coverage.capture --ignore-errors mismatch
           lcov --add-tracefile ${{ env.COV_DIR }}/coverage.base --add-tracefile ${{ env.COV_DIR }}/coverage.capture --output-file ${{ env.COV_DIR }}/coverage.full.info --ignore-errors mismatch
           # Keep only src files in final coverage report to avoid example/ and test/ sources affecting the metric.
           lcov --extract ${{ env.COV_DIR }}/coverage.full.info '*/src/*' 'src/**' --output-file ${{ env.COV_DIR }}/coverage.info --ignore-errors unused,mismatch,inconsistent
