@@ -237,6 +237,18 @@ submodule (stdlib_specialmatrices) tridiagonal_matrices
     #:endfor
 
     #:for k1, t1, s1 in KINDS_TYPES
+    pure module function trace_tridiagonal_${s1}$(A) result(tr)
+        !! Compute the trace of a `tridiagonal` matrix directly from its main
+        !! diagonal, without forming the dense matrix.
+        type(tridiagonal_${s1}$_type), intent(in) :: A
+        !! Input tridiagonal matrix.
+        ${t1}$ :: tr
+        !! Trace of the matrix.
+        tr = sum(A%dv)
+    end function
+    #:endfor
+
+    #:for k1, t1, s1 in KINDS_TYPES
     pure module function transpose_tridiagonal_${s1}$(A) result(B)
         type(tridiagonal_${s1}$_type), intent(in) :: A
         !! Input matrix.
