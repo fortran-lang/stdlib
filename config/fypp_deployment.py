@@ -1,4 +1,5 @@
 import os
+import shutil
 import fypp
 import argparse
 from joblib import Parallel, delayed
@@ -46,6 +47,14 @@ def pre_process_fypp(args):
     if args.lnumbering:
         options.line_numbering = True
     tool = fypp.Fypp(options)
+
+    # Remove generated 'temp' folders from previous runs, so that files from
+    # older versions of stdlib cannot linger and clash with the new ones
+    for folder in ('src', 'test'):
+        for root, dirs, _ in os.walk(folder):
+            if 'temp' in dirs:
+                shutil.rmtree(os.path.join(root, 'temp'))
+                dirs.remove('temp')
 
     # Create destination folders for preprocessing
     os.makedirs('src'+os.sep+'temp', exist_ok=True)
