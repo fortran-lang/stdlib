@@ -640,7 +640,7 @@ Stable
 
 ### Description
 
-This function computes the solution to a linear matrix equation \( A \cdot x = b \), where \( A \) is a square, full-rank, `real` or `complex` matrix.
+This function computes the solution to a linear matrix equation $A \cdot x = b$, where $A$ is a square, full-rank, `real` or `complex` matrix.
 
 Result vector or array `x` returns the exact solution to within numerical precision, provided that the matrix is not ill-conditioned. 
 An error is returned if the matrix is rank-deficient or singular to working precision. 
@@ -692,7 +692,7 @@ Stable
 
 ### Description
 
-This subroutine computes the solution to a linear matrix equation \( A \cdot x = b \), where \( A \) is a square, full-rank, `real` or `complex` matrix.
+This subroutine computes the solution to a linear matrix equation $A \cdot x = b$, where $A$ is a square, full-rank, `real` or `complex` matrix.
 
 Result vector or array `x` returns the exact solution to within numerical precision, provided that the matrix is not ill-conditioned. 
 An error is returned if the matrix is rank-deficient or singular to working precision. 
@@ -745,7 +745,7 @@ Experimental
 
 ### Description
 
-This subroutine computes the solution to a linear matrix equation \( A \cdot x = b \), where \( A \) is a symmetric (or Hermitian) positive definite matrix. It combines Cholesky factorization and the solve step in a single call.
+This subroutine computes the solution to a linear matrix equation $A \cdot x = b$, where $A$ is a symmetric (or Hermitian) positive definite matrix. It combines Cholesky factorization and the solve step in a single call.
 
 Result vector or array `x` returns the exact solution to within numerical precision, provided that the matrix is positive definite.
 An error is returned if the matrix is not positive definite or has incompatible sizes with the right-hand-side.
@@ -798,7 +798,7 @@ Experimental
 
 ### Description
 
-This subroutine computes the solution to a linear matrix equation \( A \cdot x = b \), where \( A \) is a symmetric (or Hermitian) positive definite matrix that has been **previously factorized** using the Cholesky decomposition (via `cholesky` with `lower=.true.`).
+This subroutine computes the solution to a linear matrix equation $A \cdot x = b$, where $A$ is a symmetric (or Hermitian) positive definite matrix that has been **previously factorized** using the Cholesky decomposition (via `cholesky` with `lower=.true.`).
 
 Result vector or array `x` returns the exact solution to within numerical precision, provided that the factorization is correct.
 An error is returned if the matrix and right-hand-side have incompatible sizes.
@@ -839,7 +839,7 @@ Experimental
 
 ### Description
 
-This subroutine computes the solution to a linear matrix equation \( A \cdot x = b \), where \( A \) is a symmetric (or Hermitian) positive definite matrix that has been **previously factorized** using the Cholesky decomposition (via `cholesky` with `lower=.false.`).
+This subroutine computes the solution to a linear matrix equation $A \cdot x = b$, where $A$ is a symmetric (or Hermitian) positive definite matrix that has been **previously factorized** using the Cholesky decomposition (via `cholesky` with `lower=.false.`).
 
 Result vector or array `x` returns the exact solution to within numerical precision, provided that the factorization is correct.
 An error is returned if the matrix and right-hand-side have incompatible sizes.
@@ -880,9 +880,9 @@ Stable
 
 ### Description
 
-This function computes the least-squares solution to a linear matrix equation \( A \cdot x = b \).
+This function computes the least-squares solution to a linear matrix equation $A \cdot x = b$.
 
-Result vector `x` returns the approximate solution that minimizes the 2-norm \( || A \cdot x - b ||_2 \), i.e., it contains the least-squares solution to the problem. Matrix `A` may be full-rank, over-determined, or under-determined. The solver is based on LAPACK's `*GELSD` backends.
+Result vector `x` returns the approximate solution that minimizes the 2-norm $|| A \cdot x - b ||_2$, i.e., it contains the least-squares solution to the problem. Matrix `A` may be full-rank, over-determined, or under-determined. The solver is based on LAPACK's `*GELSD` backends.
 
 ### Syntax
 
@@ -924,9 +924,9 @@ Stable
 
 ### Description
 
-This subroutine computes the least-squares solution to a linear matrix equation \( A \cdot x = b \).
+This subroutine computes the least-squares solution to a linear matrix equation $A \cdot x = b$.
 
-Result vector `x` returns the approximate solution that minimizes the 2-norm \( || A \cdot x - b ||_2 \), i.e., it contains the least-squares solution to the problem. Matrix `A` may be full-rank, over-determined, or under-determined. The solver is based on LAPACK's `*GELSD` backends.
+Result vector `x` returns the approximate solution that minimizes the 2-norm $|| A \cdot x - b ||_2$, i.e., it contains the least-squares solution to the problem. Matrix `A` may be full-rank, over-determined, or under-determined. The solver is based on LAPACK's `*GELSD` backends.
 
 ### Syntax
 
@@ -1004,15 +1004,17 @@ Experimental
 
 ### Description
 
-This function computes the solution \(x\) of the equality-constrained linear least-squares problem
+This function computes the solution $x$ of the equality-constrained linear least-squares problem
+
 $$
 \begin{aligned}
     \mathrm{minimize}   &   \quad \| Ax - b \|^2 \\
     \mathrm{subject~to} &   \quad   Cx = d,
 \end{aligned}
 $$
-where \(A\) is an \( m \times n \) matrix (with \(m \geq n\)) and 
-\(C\) a \( p \times n\) matrix (with \(p \leq n\)). The solver is based on LAPACK's `*GLSE` backends.
+
+where $A$ is an $m \times n$ matrix (with $m \geq n$) and 
+$C$ a $p \times n$ matrix (with $p \leq n$). The solver is based on LAPACK's `*GLSE` backends.
 
 ### Syntax
 
@@ -1054,15 +1056,17 @@ Experimental
 
 ### Description
 
-This subroutine computes the solution \(x\) of the equality-constrained linear least-squares problem
+This subroutine computes the solution $x$ of the equality-constrained linear least-squares problem
+
 $$
 \begin{aligned}
     \mathrm{minimize}   &   \quad \| Ax - b \|^2 \\
     \mathrm{subject~to} &   \quad   Cx = d,
 \end{aligned}
 $$
-where \(A\) is an \( m \times n \) matrix (with \(m \geq n\)) and 
-\(C\) a \( p \times n\) matrix (with \(p \leq n\)). The solver is based on LAPACK's `*GLSE` backends.
+
+where $A$ is an $m \times n$ matrix (with $m \geq n$) and 
+$C$ a $p \times n$ matrix (with $p \leq n$). The solver is based on LAPACK's `*GLSE` backends.
 
 ### Syntax
 
@@ -1122,9 +1126,9 @@ Experimental
 
 ### Description
 
-This function computes the weighted least-squares solution to a linear matrix equation \( A \cdot x = b \) where each observation has a different weight.
+This function computes the weighted least-squares solution to a linear matrix equation $A \cdot x = b$ where each observation has a different weight.
 
-The solver minimizes the weighted 2-norm \( \| D(Ax - b) \|_2^2 \) where \( D = \mathrm{diag}(\sqrt{w}) \) is a diagonal matrix formed from the square roots of the weight vector. This is equivalent to transforming the problem to ordinary least-squares through row scaling. The solver is based on LAPACK's `*GELSD` backends.
+The solver minimizes the weighted 2-norm $\| D(Ax - b) \|_2^2$ where $D = \mathrm{diag}(\sqrt{w})$ is a diagonal matrix formed from the square roots of the weight vector. This is equivalent to transforming the problem to ordinary least-squares through row scaling. The solver is based on LAPACK's `*GELSD` backends.
 
 ### Syntax
 
@@ -1168,9 +1172,9 @@ Experimental
 
 ### Description
 
-This subroutine computes the weighted least-squares solution to a linear matrix equation \( A \cdot x = b \) where each observation has a different weight.
+This subroutine computes the weighted least-squares solution to a linear matrix equation $A \cdot x = b$ where each observation has a different weight.
 
-The solver minimizes the weighted 2-norm \( \| D(Ax - b) \|_2^2 \) where \( D = \mathrm{diag}(\sqrt{w}) \) is a diagonal matrix formed from the square roots of the weight vector. This is equivalent to transforming the problem to ordinary least-squares through row scaling. The solver is based on LAPACK's `*GELSD` backends.
+The solver minimizes the weighted 2-norm $\| D(Ax - b) \|_2^2$ where $D = \mathrm{diag}(\sqrt{w})$ is a diagonal matrix formed from the square roots of the weight vector. This is equivalent to transforming the problem to ordinary least-squares through row scaling. The solver is based on LAPACK's `*GELSD` backends.
 
 ### Syntax
 
@@ -1290,12 +1294,12 @@ Experimental
 
 ### Description
 
-This subroutine computes the QR factorization of a `real` or `complex` matrix: \( A = Q R \) where \( Q \) 
-is orthonormal and \( R \) is upper-triangular. Matrix \( A \) has size `[m,n]`, with \( m \ge n \). 
+This subroutine computes the QR factorization of a `real` or `complex` matrix: $A = Q R$ where $Q$ 
+is orthonormal and $R$ is upper-triangular. Matrix $A$ has size `[m,n]`, with $m \ge n$. 
 
-The results are returned in output matrices \( Q \) and \(R \), that have the same type and kind as \( A \). 
-Given `k = min(m,n)`, one can write \( A = \( Q_1  Q_2 \) \cdot \( \frac{R_1}{0}\) \). 
-Because the lower rows of \( R \) are zeros, a reduced problem \( A = Q_1 R_1 \) may be solved. The size of 
+The results are returned in output matrices $Q$ and $R$, that have the same type and kind as $A$. 
+Given `k = min(m,n)`, one can write $A = \begin{pmatrix} Q_1 & Q_2 \end{pmatrix} \cdot \begin{pmatrix} R_1 \\ 0 \end{pmatrix}$. 
+Because the lower rows of $R$ are zeros, a reduced problem $A = Q_1 R_1$ may be solved. The size of 
 the input arguments determines what problem is solved: on full matrices (`shape(Q)==[m,m]`, `shape(R)==[m,n]`), 
 the full problem is solved. On reduced matrices (`shape(Q)==[m,k]`, `shape(R)==[k,n]`), the reduced problem is solved.
 
@@ -1321,7 +1325,7 @@ the full problem is solved. On reduced matrices (`shape(Q)==[m,k]`, `shape(R)==[
 
 ### Return value
 
-Returns the QR factorization matrices into the \( Q \) and \( R \) arguments and the optional pivots in `pivots`.
+Returns the QR factorization matrices into the $Q$ and $R$ arguments and the optional pivots in `pivots`.
 
 Raises `LINALG_VALUE_ERROR` if any of the matrices has invalid or unsuitable size for the full/reduced problem.
 Raises `LINALG_ERROR` on insufficient user storage space.
@@ -1379,9 +1383,9 @@ Experimental
 
 ### Description
 
-This subroutine computes the Schur decomposition of a `real` or `complex` matrix: \( A = Z T Z^H \), where \( Z \) is unitary (orthonormal) and \( T \) is upper-triangular (for complex matrices) or quasi-upper-triangular (for real matrices, with possible \( 2 \times 2 \) blocks on the diagonal). Matrix \( A \) has size `[n,n]`.
+This subroutine computes the Schur decomposition of a `real` or `complex` matrix: $A = Z T Z^H$, where $Z$ is unitary (orthonormal) and $T$ is upper-triangular (for complex matrices) or quasi-upper-triangular (for real matrices, with possible $2 \times 2$ blocks on the diagonal). Matrix $A$ has size `[n,n]`.
 
-The results are returned in output matrices \( T \) and \( Z \). Matrix \( T \) is the Schur form, and matrix \( Z \) is the unitary transformation matrix such that \( A = Z T Z^H \). If requested, the eigenvalues of \( T \) can also be returned as a `complex` array of size `[n]`.
+The results are returned in output matrices $T$ and $Z$. Matrix $T$ is the Schur form, and matrix $Z$ is the unitary transformation matrix such that $A = Z T Z^H$. If requested, the eigenvalues of $T$ can also be returned as a `complex` array of size `[n]`.
 
 ### Syntax
 
@@ -1391,11 +1395,11 @@ The results are returned in output matrices \( T \) and \( Z \). Matrix \( T \) 
 
 - `a`: Shall be a rank-2 `real` or `complex` array containing the matrix to be decomposed. It is an `intent(inout)` argument if `overwrite_a = .true.`; otherwise, it is an `intent(in)` argument.
 
-- `t`: Shall be a rank-2 array of the same kind as `a`, containing the Schur form \( T \) of the matrix. It is an `intent(out)` argument and should have a shape of `[n,n]`.
+- `t`: Shall be a rank-2 array of the same kind as `a`, containing the Schur form $T$ of the matrix. It is an `intent(out)` argument and should have a shape of `[n,n]`.
 
-- `z`: Shall be a rank-2 array of the same kind as `a`, containing the unitary matrix \( Z \). It is an `intent(out)` argument and is optional. If provided, it should have the shape `[n,n]`.
+- `z`: Shall be a rank-2 array of the same kind as `a`, containing the unitary matrix $Z$. It is an `intent(out)` argument and is optional. If provided, it should have the shape `[n,n]`.
 
-- `eigvals` (optional): Shall be a rank-1 `complex` or `real` array of the same kind as `a`, containing the eigenvalues of \( A \) (the diagonal elements of \( T \)), or their `real` component only. The array must be of size `[n]`. If not provided, the eigenvalues are not returned. It is an `intent(out)` argument.
+- `eigvals` (optional): Shall be a rank-1 `complex` or `real` array of the same kind as `a`, containing the eigenvalues of $A$ (the diagonal elements of $T$), or their `real` component only. The array must be of size `[n]`. If not provided, the eigenvalues are not returned. It is an `intent(out)` argument.
 
 - `overwrite_a` (optional): Shall be a `logical` flag (default: `.false.`). If `.true.`, the input matrix `a` will be overwritten and destroyed upon return, avoiding internal data allocation. It is an `intent(in)` argument.
 
@@ -1405,7 +1409,7 @@ The results are returned in output matrices \( T \) and \( Z \). Matrix \( T \) 
 
 ### Return value
 
-Returns the Schur decomposition matrices into the \( T \) and \( Z \) arguments. If `eigvals` is provided, it will also return the eigenvalues of the matrix \( A \).
+Returns the Schur decomposition matrices into the $T$ and $Z$ arguments. If `eigvals` is provided, it will also return the eigenvalues of the matrix $A$.
 
 Raises `LINALG_VALUE_ERROR` if any of the matrices have invalid or unsuitable size for the decomposition.  
 Raises `LINALG_VALUE_ERROR` if the `real` component is only requested, but the eigenvalues have non-trivial imaginary parts.
@@ -1455,11 +1459,11 @@ Stable
 
 ### Description
 
-This subroutine computes the solution to the eigenproblem \( A \cdot \bar{v} - \lambda \cdot \bar{v} \), 
-where \( A \) is a square, full-rank, `real` or `complex` matrix, or to the generalized eigenproblem \( A \cdot \bar{v} - \lambda \cdot B \cdot \bar{v} \), 
-where \( B \) is a square matrix with the same type, kind and size as \( A \).
+This subroutine computes the solution to the eigenproblem $A \cdot \bar{v} - \lambda \cdot \bar{v}$, 
+where $A$ is a square, full-rank, `real` or `complex` matrix, or to the generalized eigenproblem $A \cdot \bar{v} - \lambda \cdot B \cdot \bar{v}$, 
+where $B$ is a square matrix with the same type, kind and size as $A$.
 
-Result array `lambda` returns the eigenvalues of \( A \). The user can request eigenvectors to be returned: if provided, on output `left` will contain the left eigenvectors, `right` the right eigenvectors of \( A \).
+Result array `lambda` returns the eigenvalues of $A$. The user can request eigenvectors to be returned: if provided, on output `left` will contain the left eigenvectors, `right` the right eigenvectors of $A$.
 Both `left` and `right` are rank-2 arrays, where eigenvectors are stored as columns.
 The solver is based on LAPACK's `*GEEV` (standard eigenproblem) and `*GGEV` (generalized eigenproblem) backends.
 
@@ -1512,13 +1516,13 @@ Stable
 
 ### Description
 
-This subroutine computes the solution to the eigendecomposition \( A \cdot \bar{v} - \lambda \cdot \bar{v} \),
-where \( A \) is a square, full-rank, `real` symmetric \( A = A^T \) or `complex` Hermitian \( A = A^H \) matrix.
+This subroutine computes the solution to the eigendecomposition $A \cdot \bar{v} - \lambda \cdot \bar{v}$,
+where $A$ is a square, full-rank, `real` symmetric $A = A^T$ or `complex` Hermitian $A = A^H$ matrix.
 
-Result array `lambda` returns the `real` eigenvalues of \( A \). The user can request the orthogonal eigenvectors 
+Result array `lambda` returns the `real` eigenvalues of $A$. The user can request the orthogonal eigenvectors 
 to be returned: on output `vectors` may contain the matrix of eigenvectors, returned as a column.
 
-Normally, only the lower triangular part of \( A \) is accessed. On input, `logical` flag `upper_a` 
+Normally, only the lower triangular part of $A$ is accessed. On input, `logical` flag `upper_a` 
 allows the user to request what triangular part of the matrix should be used.
 
 The solver is based on LAPACK's `*SYEV` and `*HEEV` backends.
@@ -1563,8 +1567,8 @@ Stable
 
 This function computes the eigenvalues for either a standard or generalized eigenproblem:
 
-- **Standard eigenproblem**: \( A \cdot \bar{v} - \lambda \cdot \bar{v} \), where \( A \) is a square, full-rank `real` or `complex` matrix.
-- **Generalized eigenproblem**: \( A \cdot \bar{v} - \lambda \cdot B \cdot \bar{v} \), where \( B \) is a square matrix with the same type and kind as \( A \).
+- **Standard eigenproblem**: $A \cdot \bar{v} - \lambda \cdot \bar{v}$, where $A$ is a square, full-rank `real` or `complex` matrix.
+- **Generalized eigenproblem**: $A \cdot \bar{v} - \lambda \cdot B \cdot \bar{v}$, where $B$ is a square matrix with the same type and kind as $A$.
 
 The eigenvalues are stored in the result array `lambda`, which is `complex` (even for real input matrices).  
 The solver uses LAPACK's `*GEEV` and `*GGEV` backends for the standard and generalized problems, respectively.
@@ -1612,11 +1616,11 @@ Stable
 
 ### Description
 
-This function returns the eigenvalues to matrix \( A \): a where \( A \) is a square, full-rank, 
-`real` symmetric \( A = A^T \) or `complex` Hermitian \( A = A^H \) matrix.
-The eigenvalues are solutions to the eigenproblem \( A \cdot \bar{v} - \lambda \cdot \bar{v} \).
+This function returns the eigenvalues to matrix $A$: a where $A$ is a square, full-rank, 
+`real` symmetric $A = A^T$ or `complex` Hermitian $A = A^H$ matrix.
+The eigenvalues are solutions to the eigenproblem $A \cdot \bar{v} - \lambda \cdot \bar{v}$.
 
-Result array `lambda` is `real`, and returns the eigenvalues of \( A \). 
+Result array `lambda` is `real`, and returns the eigenvalues of $A$. 
 The solver is based on LAPACK's `*SYEV` and `*HEEV` backends.
 
 ### Syntax
@@ -1653,12 +1657,12 @@ Stable
 
 ### Description
 
-This subroutine computes the singular value decomposition of a `real` or `complex` rank-2 array (matrix) \( A = U \cdot S \cdot \V^T \).
+This subroutine computes the singular value decomposition of a `real` or `complex` rank-2 array (matrix) $A = U \cdot S \cdot V^T$.
 The solver is based on LAPACK's `*GESDD` backends.
 
-Result vector `s` returns the array of singular values on the diagonal of \( S \). 
-If requested, `u` contains the left singular vectors, as columns of \( U \).
-If requested, `vt` contains the right singular vectors, as rows of \( V^T \).
+Result vector `s` returns the array of singular values on the diagonal of $S$. 
+If requested, `u` contains the left singular vectors, as columns of $U$.
+If requested, `vt` contains the right singular vectors, as rows of $V^T$.
  
 ### Syntax
 
@@ -1710,9 +1714,9 @@ Stable
 ### Description
 
 This subroutine computes the singular values of a `real` or `complex` rank-2 array (matrix) from its singular 
-value decomposition \( A = U \cdot S \cdot \V^T \). The solver is based on LAPACK's `*GESDD` backends.
+value decomposition $A = U \cdot S \cdot V^T$. The solver is based on LAPACK's `*GESDD` backends.
 
-Result vector `s` returns the array of singular values on the diagonal of \( S \). 
+Result vector `s` returns the array of singular values on the diagonal of $S$. 
  
 ### Syntax
 
@@ -1748,8 +1752,8 @@ Experimental
 ### Description
 
 This subroutine computes the Cholesky factorization of a `real` or `complex` rank-2 square array (matrix), 
-\( A = L \cdot L^T \), or \( A = U^T \cdot U \). \( A \) is symmetric or complex Hermitian, and \( L \), 
-\( U \) are lower- or upper-triangular, respectively. 
+$A = L \cdot L^T$, or $A = U^T \cdot U$. $A$ is symmetric or complex Hermitian, and $L$, 
+$U$ are lower- or upper-triangular, respectively. 
 The solver is based on LAPACK's `*POTRF` backends.
  
 ### Syntax
@@ -1765,7 +1769,7 @@ Subroutine
 
 `c` (optional): Shall be a rank-2 square `real` or `complex` of the same size and kind as `a`. It is an `intent(out)` argument, that returns the triangular Cholesky matrix `L` or `U`.
 
-`lower`: Shall be an input `logical` flag. If `.true.`, the lower triangular decomposition \( A = L \cdot L^T \) will be performed. If `.false.`, the upper decomposition \( A = U^T \cdot U \) will be performed.
+`lower`: Shall be an input `logical` flag. If `.true.`, the lower triangular decomposition $A = L \cdot L^T$ will be performed. If `.false.`, the upper decomposition $A = U^T \cdot U$ will be performed.
 
 `other_zeroed` (optional): Shall be an input `logical` flag. If `.true.`, the unused part of the output matrix will contain zeroes. Otherwise, it will not be accessed. This saves cpu time. By default, `other_zeroed=.true.`. It is an `intent(in)` argument.
 
@@ -1800,8 +1804,8 @@ Experimental
 ### Description
 
 This is a `pure` functional interface for the Cholesky factorization of a `real` or
-`complex` rank-2 square array (matrix) computed as \( A = L \cdot L^T \), or \( A = U^T \cdot U \). 
-\( A \) is symmetric or complex Hermitian, and \( L \), \( U \) are lower- or upper-triangular, respectively. 
+`complex` rank-2 square array (matrix) computed as $A = L \cdot L^T$, or $A = U^T \cdot U$. 
+$A$ is symmetric or complex Hermitian, and $L$, $U$ are lower- or upper-triangular, respectively. 
 The solver is based on LAPACK's `*POTRF` backends.
 
 Result matrix `c` has the same size and kind as `a`, and returns the lower or upper triangular factor. 
@@ -1814,7 +1818,7 @@ Result matrix `c` has the same size and kind as `a`, and returns the lower or up
 
 `a`: Shall be a rank-2 square `real` or `complex` array containing the coefficient matrix of size `[n,n]`. It is an `intent(inout)` argument, but returns unchanged if argument `c` is present.
 
-`lower`: Shall be an input `logical` flag. If `.true.`, the lower triangular decomposition \( A = L \cdot L^T \) will be performed. If `.false.`, the upper decomposition \( A = U^T \cdot U \) will be performed.
+`lower`: Shall be an input `logical` flag. If `.true.`, the lower triangular decomposition $A = L \cdot L^T$ will be performed. If `.false.`, the upper decomposition $A = U^T \cdot U$ will be performed.
 
 `other_zeroed` (optional): Shall be an input `logical` flag. If `.true.`, the unused part of the output matrix will contain zeroes. Otherwise, it will not be accessed. This saves cpu time. By default, `other_zeroed=.true.`. It is an `intent(in)` argument.
 
@@ -1841,8 +1845,8 @@ Stable
 
 ### Description
 
-This operator returns the inverse of a `real` or `complex` square matrix \( A \).
-The inverse \( A^{-1} \) is defined such that \( A \cdot A^{-1} = A^{-1} \cdot A = I_n \).
+This operator returns the inverse of a `real` or `complex` square matrix $A$.
+The inverse $A^{-1}$ is defined such that $A \cdot A^{-1} = A^{-1} \cdot A = I_n$.
 
 This interface is equivalent to the function  `inv`. 
 
@@ -1877,7 +1881,7 @@ Stable
 ### Description
 
 This subroutine inverts a square `real` or `complex` matrix in-place.
-The inverse \( A^{-1} \) is defined such that \( A \cdot A^{-1} = A^{-1} \cdot A = I_n \).
+The inverse $A^{-1}$ is defined such that $A \cdot A^{-1} = A^{-1} \cdot A = I_n$.
 
 On return, the input matrix `a` is replaced by its inverse.
 The solver is based on LAPACK's `*GETRF` and `*GETRI` backends.
@@ -1901,7 +1905,7 @@ On output, it contains the inverse of `a`.
 
 ### Return value
 
-Computes the inverse of the matrix \( A \), \(A^{-1}\, and returns it either in \( A \) or in another matrix.
+Computes the inverse of the matrix $A$, $A^{-1}$, and returns it either in $A$ or in another matrix.
 
 Raises `LINALG_ERROR` if the matrix is singular or has invalid size.
 Raises `LINALG_VALUE_ERROR` if `inva` and `a` do not have the same size.
@@ -1926,7 +1930,7 @@ Stable
 ### Description
 
 This function returns the inverse of a square `real` or `complex` matrix in-place.
-The inverse, \( A^{-1} \), is defined such that \( A \cdot A^{-1} = A^{-1} \cdot A = I_n \).
+The inverse, $A^{-1}$, is defined such that $A \cdot A^{-1} = A^{-1} \cdot A = I_n$.
 
 The solver is based on LAPACK's `*GETRF` and `*GETRI` backends.
 
@@ -1942,7 +1946,7 @@ The solver is based on LAPACK's `*GETRF` and `*GETRI` backends.
 
 ### Return value
 
-Returns an array value of the same type, kind and rank as `a`, that contains the inverse matrix \(A^{-1}\).
+Returns an array value of the same type, kind and rank as `a`, that contains the inverse matrix $A^{-1}$.
 
 Raises `LINALG_ERROR` if the matrix is singular or has invalid size.
 If `err` is not present, exceptions trigger an `error stop`.
@@ -1962,14 +1966,14 @@ Experimental
 ### Description
 
 This function computes the Moore-Penrose pseudo-inverse of a `real` or `complex` matrix.  
-The pseudo-inverse, \( A^{+} \), generalizes the matrix inverse and satisfies the conditions:
-- \( A \cdot A^{+} \cdot A = A \)
-- \( A^{+} \cdot A \cdot A^{+} = A^{+} \)
-- \( (A \cdot A^{+})^T = A \cdot A^{+} \)
-- \( (A^{+} \cdot A)^T = A^{+} \cdot A \)
+The pseudo-inverse, $A^{+}$, generalizes the matrix inverse and satisfies the conditions:
+- $A \cdot A^{+} \cdot A = A$
+- $A^{+} \cdot A \cdot A^{+} = A^{+}$
+- $(A \cdot A^{+})^T = A \cdot A^{+}$
+- $(A^{+} \cdot A)^T = A^{+} \cdot A$
 
 The computation is based on singular value decomposition (SVD). Singular values below a relative 
-tolerance threshold \( \text{rtol} \cdot \sigma_{\max} \), where \( \sigma_{\max} \) is the largest 
+tolerance threshold $\text{rtol} \cdot \sigma_{\max}$, where $\sigma_{\max}$ is the largest 
 singular value, are treated as zero.
 
 ### Syntax
@@ -1982,14 +1986,14 @@ singular value, are treated as zero.
 It is an `intent(in)` argument.
 
 `rtol` (optional): Shall be a scalar `real` value specifying the relative tolerance for singular value cutoff.  
-If `rtol` is not provided, the default relative tolerance is \( \text{rtol} = \text{max}(m, n) \cdot \epsilon \),  
-where \( \epsilon \) is the machine precision for the element type of `a`. It is an `intent(in)` argument.
+If `rtol` is not provided, the default relative tolerance is $\text{rtol} = \text{max}(m, n) \cdot \epsilon$,  
+where $\epsilon$ is the machine precision for the element type of `a`. It is an `intent(in)` argument.
 
 `err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument.
 
 ### Return value
 
-Returns an array value of the same type, kind, and rank as `a` with shape `[n, m]`, that contains the pseudo-inverse matrix \( A^{+} \).
+Returns an array value of the same type, kind, and rank as `a` with shape `[n, m]`, that contains the pseudo-inverse matrix $A^{+}$.
 
 Raises `LINALG_ERROR` if the underlying SVD did not converge.
 Raises `LINALG_VALUE_ERROR` if `a` has invalid size.
@@ -2010,14 +2014,14 @@ Experimental
 ### Description
 
 This subroutine computes the Moore-Penrose pseudo-inverse of a `real` or `complex` matrix.
-The pseudo-inverse \( A^{+} \) is a generalization of the matrix inverse and satisfies the following properties:
-- \( A \cdot A^{+} \cdot A = A \)
-- \( A^{+} \cdot A \cdot A^{+} = A^{+} \)
-- \( (A \cdot A^{+})^T = A \cdot A^{+} \)
-- \( (A^{+} \cdot A)^T = A^{+} \cdot A \)
+The pseudo-inverse $A^{+}$ is a generalization of the matrix inverse and satisfies the following properties:
+- $A \cdot A^{+} \cdot A = A$
+- $A^{+} \cdot A \cdot A^{+} = A^{+}$
+- $(A \cdot A^{+})^T = A \cdot A^{+}$
+- $(A^{+} \cdot A)^T = A^{+} \cdot A$
 
 The computation is based on singular value decomposition (SVD). Singular values below a relative 
-tolerance threshold \( \text{rtol} \cdot \sigma_{\max} \), where \( \sigma_{\max} \) is the largest 
+tolerance threshold $\text{rtol} \cdot \sigma_{\max}$, where $\sigma_{\max}$ is the largest 
 singular value, are treated as zero.
 
 On return, matrix `pinva` `[n, m]` will store the pseudo-inverse of `a` `[m, n]`.
@@ -2035,14 +2039,14 @@ It is an `intent(in)` argument.
 On output, it contains the Moore-Penrose pseudo-inverse of `a`.
 
 `rtol` (optional): Shall be a scalar `real` value specifying the relative tolerance for singular value cutoff.  
-If not provided, the default threshold is \( \text{max}(m, n) \cdot \epsilon \), where \( \epsilon \) is the 
+If not provided, the default threshold is $\text{max}(m, n) \cdot \epsilon$, where $\epsilon$ is the 
 machine precision for the element type of `a`.
 
 `err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument.
 
 ### Return value
 
-Computes the Moore-Penrose pseudo-inverse of the matrix \( A \), \( A^{+} \), and returns it in matrix `pinva`.
+Computes the Moore-Penrose pseudo-inverse of the matrix $A$, $A^{+}$, and returns it in matrix `pinva`.
 
 Raises `LINALG_ERROR` if the underlying SVD did not converge.
 Raises `LINALG_VALUE_ERROR` if `pinva` and `a` have degenerate or incompatible sizes.
@@ -2062,8 +2066,8 @@ Experimental
 
 ### Description
 
-This operator returns the Moore-Penrose pseudo-inverse of a `real` or `complex` matrix \( A \).
-The pseudo-inverse \( A^{+} \) is computed using Singular Value Decomposition (SVD), and singular values 
+This operator returns the Moore-Penrose pseudo-inverse of a `real` or `complex` matrix $A$.
+The pseudo-inverse $A^{+}$ is computed using Singular Value Decomposition (SVD), and singular values 
 below a given threshold are treated as zero.
 
 This interface is equivalent to the function `pinv`.
@@ -2074,7 +2078,7 @@ This interface is equivalent to the function `pinv`.
 
 ### Arguments
 
-`a`: Shall be a rank-2 array of any `real` or `complex` kinds, with arbitrary dimensions \( m \times n \). It is an `intent(in)` argument.
+`a`: Shall be a rank-2 array of any `real` or `complex` kinds, with arbitrary dimensions $m \times n$. It is an `intent(in)` argument.
 
 ### Return value
 
@@ -2097,11 +2101,11 @@ Experimental
 
 ### Description
 
-This `pure subroutine` interface computes one of several vector norms of `real` or `complex` array \( A \), depending on 
-the value of the `order` input argument. \( A \) may be an array of any rank. 
+This `pure subroutine` interface computes one of several vector norms of `real` or `complex` array $A$, depending on 
+the value of the `order` input argument. $A$ may be an array of any rank. 
 
 Result `nrm` returns a `real`, scalar norm value for the whole array; if `dim` is specified, `nrm` is a rank n-1 
-array with the same shape as \(A \) and dimension `dim` dropped, containing all norms evaluated along `dim`.
+array with the same shape as $A$ and dimension `dim` dropped, containing all norms evaluated along `dim`.
 
 ### Syntax
 
@@ -2118,11 +2122,11 @@ to that of `a` with dimension `dim` dropped.
 
 | Integer input    | Character Input  | Norm type                                               |
 |------------------|------------------|---------------------------------------------------------|
-| `-huge(0)`       | `'-inf', '-Inf'` | Minimum absolute value \( \min_i{ \left|a_i\right| } \) |
-| `1`              | `'1'`            | 1-norm \( \sum_i{ \left|a_i\right| } \)                 |
-| `2`              | `'2'`            | Euclidean norm \( \sqrt{\sum_i{ a_i^2 }} \)             |
-| `>=3`            | `'3','4',...`    | p-norm \( \left( \sum_i{ \left|a_i\right|^p }\right) ^{1/p} \) |
-| `huge(0)`        | `'inf', 'Inf'`   | Maximum absolute value \( \max_i{ \left|a_i\right| } \) |
+| `-huge(0)`       | `'-inf', '-Inf'` | Minimum absolute value $\min_i{ \left|a_i\right| }$ |
+| `1`              | `'1'`            | 1-norm $\sum_i{ \left|a_i\right| }$                 |
+| `2`              | `'2'`            | Euclidean norm $\sqrt{\sum_i{ a_i^2 }}$             |
+| `>=3`            | `'3','4',...`    | p-norm $\left( \sum_i{ \left|a_i\right|^p }\right) ^{1/p}$ |
+| `huge(0)`        | `'inf', 'Inf'`   | Maximum absolute value $\max_i{ \left|a_i\right| }$ |
 
 `dim` (optional): Shall be a scalar `integer` value with a value in the range from `1` to `n`, where `n` is the rank of the array. It is an `intent(in)` argument.
 
@@ -2130,9 +2134,9 @@ to that of `a` with dimension `dim` dropped.
 
 ### Return value
 
-By default, the return value `nrm` is a scalar, and contains the norm as evaluated over all elements of the generic-rank array \( A \). 
-If the optional `dim` argument is present, `nrm` is a rank `n-1` array with the same shape as \( A \) except 
-for dimension `dim`, that is collapsed. Each element of `nrm` contains the 1D norm of the elements of \( A \), 
+By default, the return value `nrm` is a scalar, and contains the norm as evaluated over all elements of the generic-rank array $A$. 
+If the optional `dim` argument is present, `nrm` is a rank `n-1` array with the same shape as $A$ except 
+for dimension `dim`, that is collapsed. Each element of `nrm` contains the 1D norm of the elements of $A$, 
 evaluated along dimension `dim` only.
 
 Raises `LINALG_ERROR` if the requested norm type is invalid.
@@ -2153,8 +2157,8 @@ Experimental
 
 ### Description
 
-This function computes one of several vector norms of `real` or `complex` array \( A \), depending on 
-the value of the `order` input argument. \( A \) may be an array of any rank. 
+This function computes one of several vector norms of `real` or `complex` array $A$, depending on 
+the value of the `order` input argument. $A$ may be an array of any rank. 
 
 ### Syntax
 
@@ -2168,11 +2172,11 @@ the value of the `order` input argument. \( A \) may be an array of any rank.
 
 | Integer input    | Character Input  | Norm type                                               |
 |------------------|------------------|---------------------------------------------------------|
-| `-huge(0)`       | `'-inf', '-Inf'` | Minimum absolute value \( \min_i{ \left|a_i\right| } \) |
-| `1`              | `'1'`            | 1-norm \( \sum_i{ \left|a_i\right| } \)                 |
-| `2`              | `'2'`            | Euclidean norm \( \sqrt{\sum_i{ a_i^2 }} \)             |
-| `>=3`            | `'3','4',...`    | p-norm \( \left( \sum_i{ \left|a_i\right|^p }\right) ^{1/p} \) |
-| `huge(0)`        | `'inf', 'Inf'`   | Maximum absolute value \( \max_i{ \left|a_i\right| } \) |
+| `-huge(0)`       | `'-inf', '-Inf'` | Minimum absolute value $\min_i{ \left|a_i\right| }$ |
+| `1`              | `'1'`            | 1-norm $\sum_i{ \left|a_i\right| }$                 |
+| `2`              | `'2'`            | Euclidean norm $\sqrt{\sum_i{ a_i^2 }}$             |
+| `>=3`            | `'3','4',...`    | p-norm $\left( \sum_i{ \left|a_i\right|^p }\right) ^{1/p}$ |
+| `huge(0)`        | `'inf', 'Inf'`   | Maximum absolute value $\max_i{ \left|a_i\right| }$ |
 
 `dim` (optional): Shall be a scalar `integer` value with a value in the range from `1` to `n`, where `n` is the rank of the array. It is an `intent(in)` argument.
 
@@ -2180,9 +2184,9 @@ the value of the `order` input argument. \( A \) may be an array of any rank.
 
 ### Return value
 
-By default, the return value `x` is a scalar, and contains the norm as evaluated over all elements of the generic-rank array \( A \). 
-If the optional `dim` argument is present, `x` is a rank `n-1` array with the same shape as \( A \) except 
-for dimension `dim`, that is dropped. Each element of `x` contains the 1D norm of the elements of \( A \), 
+By default, the return value `x` is a scalar, and contains the norm as evaluated over all elements of the generic-rank array $A$. 
+If the optional `dim` argument is present, `x` is a rank `n-1` array with the same shape as $A$ except 
+for dimension `dim`, that is dropped. Each element of `x` contains the 1D norm of the elements of $A$, 
 evaluated along dimension `dim` only.
 
 Raises `LINALG_ERROR` if the requested norm type is invalid.
@@ -2203,8 +2207,8 @@ Experimental
 
 ### Description
 
-This function computes one of several matrix norms of `real` or `complex` array \( A \), depending on 
-the value of the `order` input argument. \( A \) must be an array of rank 2 or higher. For arrays of rank > 2,
+This function computes one of several matrix norms of `real` or `complex` array $A$, depending on 
+the value of the `order` input argument. $A$ must be an array of rank 2 or higher. For arrays of rank > 2,
 matrix norms are computed over specified dimensions.
 
 ### Syntax
@@ -2219,10 +2223,10 @@ matrix norms are computed over specified dimensions.
 
 | Integer input    | Character Input                 | Norm type                                                                   |
 |------------------|---------------------------------|-----------------------------------------------------------------------------|
-| `1`              | `'1'`                           | 1-norm (maximum column sum) \( \max_j \sum_i{ \left|a_{i,j}\right| } \)     |
+| `1`              | `'1'`                           | 1-norm (maximum column sum) $\max_j \sum_i{ \left|a_{i,j}\right| }$     |
 | `2`              | `'2'`                           | 2-norm (largest singular value)                                             |
-| (not prov.)      | `'Euclidean','Frobenius','Fro'` | Frobenius norm \( \sqrt{\sum_{i,j}{ \left|a_{i,j}\right|^2 }} \)            |
-| `huge(0)`        | `'inf', 'Inf', 'INF'`           | Infinity norm (maximum row sum) \( \max_i \sum_j{ \left|a_{i,j}\right| } \) |
+| (not prov.)      | `'Euclidean','Frobenius','Fro'` | Frobenius norm $\sqrt{\sum_{i,j}{ \left|a_{i,j}\right|^2 }}$            |
+| `huge(0)`        | `'inf', 'Inf', 'INF'`           | Infinity norm (maximum row sum) $\max_i \sum_j{ \left|a_{i,j}\right| }$ |
 
 `dim` (optional): For arrays of rank > 2, shall be an integer array of size 2 specifying the dimensions over which to compute the matrix norm. Default value is `[1,2]`. It is an `intent(in)` argument.
 
@@ -2231,8 +2235,8 @@ matrix norms are computed over specified dimensions.
 ### Return value
 
 For rank-2 input arrays, the return value `x` is a scalar containing the matrix norm.
-For arrays of rank > 2, if the optional `dim` argument is present, `x` is a rank `n-2` array with the same shape as \( A \) except 
-for dimensions `dim(1)` and `dim(2)`, which are dropped. Each element of `x` contains the matrix norm of the corresponding submatrix of \( A \),
+For arrays of rank > 2, if the optional `dim` argument is present, `x` is a rank `n-2` array with the same shape as $A$ except 
+for dimensions `dim(1)` and `dim(2)`, which are dropped. Each element of `x` contains the matrix norm of the corresponding submatrix of $A$,
 evaluated over the specified dimensions only, with the given order.
 
 If an invalid norm type is provided, defaults to 1-norm and raises `LINALG_ERROR`.
@@ -2253,7 +2257,7 @@ Experimental
 
 ### Description
 
-Given a matrix \(A\), this function computes its matrix exponential \(E = \exp(A)\) using a Pade approximation.
+Given a matrix $A$, this function computes its matrix exponential $E = \exp(A)$ using a Pade approximation.
 
 ### Syntax
 
@@ -2267,7 +2271,7 @@ Given a matrix \(A\), this function computes its matrix exponential \(E = \exp(A
 
 ### Return value
 
-The returned array `E` contains the Pade approximation of \(\exp(A)\).
+The returned array `E` contains the Pade approximation of $\exp(A)$.
 
 If `A` is non-square or `order` is negative, it raises a `LINALG_VALUE_ERROR`.
 
@@ -2285,7 +2289,7 @@ Experimental
 
 ### Description
 
-Given a matrix \(A\), this function computes its matrix exponential \(E = \exp(A)\) using a Pade approximation.
+Given a matrix $A$, this function computes its matrix exponential $E = \exp(A)$ using a Pade approximation.
 
 ### Syntax
 
@@ -2303,7 +2307,7 @@ Given a matrix \(A\), this function computes its matrix exponential \(E = \exp(A
 
 ### Return value
 
-The returned array `A` (in-place) or `E` (out-of-place) contains the Pade approximation of \(\exp(A)\).
+The returned array `A` (in-place) or `E` (out-of-place) contains the Pade approximation of $\exp(A)$.
 
 If `A` is non-square or `order` is negative, it raises a `LINALG_VALUE_ERROR`.
 If `err` is not present, exceptions trigger an `error stop`.

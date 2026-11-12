@@ -13,9 +13,9 @@ Experimental
 
 ### Description
 
-The beta distribution is a continuous probability distribution defined on the interval [0, 1], widely used for modeling random variables that represent proportions, probabilities, and other bounded quantities. It is defined by two shape parameters (\\(a\\) and \\(b\\)) that control the distribution's form.
+The beta distribution is a continuous probability distribution defined on the interval [0, 1], widely used for modeling random variables that represent proportions, probabilities, and other bounded quantities. It is defined by two shape parameters ($a$ and $b$) that control the distribution's form.
 
-With two arguments (a, b), the function returns a random sample from the beta distribution \\(\\text{Beta}(a, b)\\).
+With two arguments (a, b), the function returns a random sample from the beta distribution $\text{Beta}(a, b)$.
 
 The optional `loc` parameter specifies the location (shift) of the distribution.
 
@@ -24,7 +24,7 @@ With three or more arguments including `array_size`, the function returns a rank
 For complex shape parameters, the real and imaginary parts are sampled independently of each other.
 
 ```{note}
-For shape parameters less than 1, the function uses a uniform method. For parameters greater than or equal to 1, it uses the gamma ratio method[^1], where \\(X \\sim \\text{Beta}(a,b)\\) is generated as \\(X = \\frac{Y_1}{Y_1 + Y_2}\\) where \\(Y_1 \\sim \\Gamma(a,1)\\) and \\(Y_2 \\sim \\Gamma(b,1)\\).
+For shape parameters less than 1, the function uses a uniform method. For parameters greater than or equal to 1, it uses the gamma ratio method[^1], where $X \sim \text{Beta}(a,b)$ is generated as $X = \frac{Y_1}{Y_1 + Y_2}$ where $Y_1 \sim \Gamma(a,1)$ and $Y_2 \sim \Gamma(b,1)$.
 ```
 
 ### Syntax
@@ -68,15 +68,15 @@ Experimental
 
 The probability density function (pdf) of the single real variable beta distribution is:
 
-$$ f(x)= \\frac{x^{a-1}(1-x)^{b-1}}{B(a,b)} ,\\quad 0<x<1,\\ a>0,\\ b>0 $$
+$$ f(x)= \frac{x^{a-1}(1-x)^{b-1}}{B(a,b)} ,\quad 0<x<1,\ a>0,\ b>0 $$
 
-where \\(a\\) and \\(b\\) are the shape parameters, and \\(B(a,b)\\) is the beta function.
+where $a$ and $b$ are the shape parameters, and $B(a,b)$ is the beta function.
 
 An optional `loc` parameter specifies the location (shift) of the distribution.
 
-For a complex variable \\(z=(x + y i)\\) with independent real \\(x\\) and imaginary \\(y\\) parts, the joint probability density function is the product of the corresponding real and imaginary marginal pdfs:[^2]
+For a complex variable $z=(x + y i)$ with independent real $x$ and imaginary $y$ parts, the joint probability density function is the product of the corresponding real and imaginary marginal pdfs:[^2]
 
-$$f(x+\\mathit{i}y)=f(x)f(y)$$
+$$f(x+\mathit{i}y)=f(x)f(y)$$
 
 ### Syntax
 
@@ -120,15 +120,15 @@ Experimental
 
 Cumulative distribution function (cdf) of the single real variable beta distribution is:
 
-$$ F(x)= I_x(a, b),\\quad 0<x<1,\\ a>0,\\ b>0 $$
+$$ F(x)= I_x(a, b),\quad 0<x<1,\ a>0,\ b>0 $$
 
-where \\(I_x(a,b)\\) is the regularized incomplete beta function.
+where $I_x(a,b)$ is the regularized incomplete beta function.
 
 An optional `loc` parameter specifies the location (shift) of the distribution.
 
-For a complex variable \\(z=(x + y i)\\) with independent real \\(x\\) and imaginary \\(y\\) parts, the joint cumulative distribution function is the product of the corresponding real and imaginary marginal cdfs:[^2]
+For a complex variable $z=(x + y i)$ with independent real $x$ and imaginary $y$ parts, the joint cumulative distribution function is the product of the corresponding real and imaginary marginal cdfs:[^2]
 
-$$F(x+\\mathit{i}y)=F(x)F(y)$$
+$$F(x+\mathit{i}y)=F(x)F(y)$$
 
 ### Syntax
 
