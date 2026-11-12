@@ -1,0 +1,387 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
+#! Square block sizes with dedicated kernels (compile-time block shape enables full unrolling).
+#! Any other block shape is handled by the generic kernels.
+#:set BLOCK_SIZES = [2, 3, 4, 5, 6, 7, 8]
+#:set VARIANTS = [('b%d' % bs, str(bs), str(bs)) for bs in BLOCK_SIZES] + [('gen', 'br', 'bc')]
+#! Dispatch a call to the block-size specialised worker, falling back to the generic one
+#:def bsr_dispatch(worker, s1, args, square=False, ind=12)
+#:set sp = ' ' * ind
+${sp}$select case (merge(br, 0_ilp, br == bc))
+#:for tag, BR, BC in VARIANTS[:-1]
+${sp}$case (${BR}$)
+${sp}$    call ${worker}$_${tag}$_${s1}$(${args}$)
+#:endfor
+${sp}$case default
+${sp}$    call ${worker}$_gen_${s1}$(${'br, ' if square else 'br, bc, '}$${args}$)
+${sp}$end select
+#:enddef
+submodule (stdlib_sparse_spmv) stdlib_sparse_spmv_bsr
+contains
+
+    !! spmv_bsr
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    module subroutine spmv_bsr_1d_${s1}$(matrix,vec_x,vec_y,alpha,beta,op)
+        type(BSR_${s1}$_type), intent(in) :: matrix
+        ${t1}$, intent(in), contiguous    :: vec_x(:)
+        ${t1}$, intent(inout), contiguous :: vec_y(:)
+        ${t1}$, intent(in), optional :: alpha
+        ${t1}$, intent(in), optional :: beta
+        character(1), intent(in), optional :: op
+        ${t1}$ :: alpha_, beta_
+        character(1) :: op_
+
+        op_ = sparse_op_none; if(present(op)) op_ = op
+        alpha_ = one_${k1}$;  if(present(alpha)) alpha_ = alpha
+        beta_ = zero_${k1}$;  if(present(beta)) beta_ = beta
+
+        call spmv_kernel_bsr_1d_${s1}$(op_, alpha_, &
+            matrix%data, matrix%col, matrix%rowptr, matrix%storage, &
+            vec_x, beta_, vec_y)
+
+    end subroutine
+
+    module subroutine spmv_bsr_2d_${s1}$(matrix,vec_x,vec_y,alpha,beta,op)
+        type(BSR_${s1}$_type), intent(in) :: matrix
+        ${t1}$, intent(in), contiguous    :: vec_x(:,:)
+        ${t1}$, intent(inout), contiguous :: vec_y(:,:)
+        ${t1}$, intent(in), optional :: alpha
+        ${t1}$, intent(in), optional :: beta
+        character(1), intent(in), optional :: op
+        ${t1}$ :: alpha_, beta_
+        character(1) :: op_
+
+        op_ = sparse_op_none; if(present(op)) op_ = op
+        alpha_ = one_${k1}$;  if(present(alpha)) alpha_ = alpha
+        beta_ = zero_${k1}$;  if(present(beta)) beta_ = beta
+
+        call spmv_kernel_bsr_2d_${s1}$(op_, alpha_, &
+            matrix%data, matrix%col, matrix%rowptr, matrix%storage, &
+            vec_x, beta_, vec_y)
+
+    end subroutine
+
+    module subroutine spmv_kernel_bsr_1d_${s1}$(op,alpha,data,col,rowptr,storage,vec_x,beta,vec_y)
+        ${t1}$, intent(in), contiguous :: data(:,:,:)
+        integer(ilp), intent(in), contiguous :: col(:) !! block column index
+        integer(ilp), intent(in), contiguous :: rowptr(:)  !! block row pointer
+        integer, intent(in) :: storage !! storage
+        ${t1}$, intent(in), contiguous    :: vec_x(:)
+        ${t1}$, intent(inout), contiguous :: vec_y(:)
+        ${t1}$, intent(in) :: alpha
+        ${t1}$, intent(in) :: beta
+        character(1), intent(in) :: op
+        integer(ilp) :: br, bc, nbrow
+
+        br = size(data,dim=1)
+        bc = size(data,dim=2)
+        nbrow = size(rowptr) - 1
+
+        if( storage == sparse_full .and. op==sparse_op_none ) then
+            ! beta is applied while writing each block row of vec_y
+            $:bsr_dispatch('bsr_gather_1d', s1, 'nbrow, alpha, data, col, rowptr, vec_x, beta, vec_y', ind=12)
+            return
+        end if
+
+        if( storage /= sparse_full .and. br /= bc ) then
+            print *, "error: bsr symmetric storage requires square blocks."
+            return
+        end if
+
+        if( beta == zero_${s1}$ ) then
+            vec_y = zero_${s1}$
+        else
+            vec_y = beta * vec_y
+        end if
+
+        if( storage == sparse_full ) then
+            #:if t1.startswith('complex')
+            if( op==sparse_op_hermitian ) then
+                $:bsr_dispatch('bsr_scatter_h_1d', s1, 'nbrow, alpha, data, col, rowptr, vec_x, vec_y', ind=16)
+            else
+                $:bsr_dispatch('bsr_scatter_1d', s1, 'nbrow, alpha, data, col, rowptr, vec_x, vec_y', ind=16)
+            end if
+            #:else
+            $:bsr_dispatch('bsr_scatter_1d', s1, 'nbrow, alpha, data, col, rowptr, vec_x, vec_y', ind=12)
+            #:endif
+        else
+            #:if t1.startswith('complex')
+            if( op==sparse_op_hermitian ) then
+                $:bsr_dispatch('bsr_symm_h_1d', s1, 'nbrow, alpha, data, col, rowptr, vec_x, vec_y', square=True, ind=16)
+            else
+                $:bsr_dispatch('bsr_symm_1d', s1, 'nbrow, alpha, data, col, rowptr, vec_x, vec_y', square=True, ind=16)
+            end if
+            #:else
+            $:bsr_dispatch('bsr_symm_1d', s1, 'nbrow, alpha, data, col, rowptr, vec_x, vec_y', square=True, ind=12)
+            #:endif
+        end if
+    end subroutine
+
+    module subroutine spmv_kernel_bsr_2d_${s1}$(op,alpha,data,col,rowptr,storage,vec_x,beta,vec_y)
+        ${t1}$, intent(in), contiguous :: data(:,:,:)
+        integer(ilp), intent(in), contiguous :: col(:) !! block column index
+        integer(ilp), intent(in), contiguous :: rowptr(:)  !! block row pointer
+        integer, intent(in) :: storage !! storage
+        ${t1}$, intent(in), contiguous    :: vec_x(:,:)
+        ${t1}$, intent(inout), contiguous :: vec_y(:,:)
+        ${t1}$, intent(in) :: alpha
+        ${t1}$, intent(in) :: beta
+        character(1), intent(in) :: op
+        integer(ilp) :: br, bc, nbrow, k
+
+        br = size(data,dim=1)
+        bc = size(data,dim=2)
+        nbrow = size(rowptr) - 1
+        k = size(vec_x,dim=1)
+
+        if( storage == sparse_full .and. op==sparse_op_none ) then
+            ! beta is applied while writing each block row of vec_y
+            $:bsr_dispatch('bsr_gather_2d', s1, 'k, nbrow, alpha, data, col, rowptr, vec_x, beta, vec_y', ind=12)
+            return
+        end if
+
+        if( storage /= sparse_full .and. br /= bc ) then
+            print *, "error: bsr symmetric storage requires square blocks."
+            return
+        end if
+
+        if( beta == zero_${s1}$ ) then
+            vec_y = zero_${s1}$
+        else
+            vec_y = beta * vec_y
+        end if
+
+        if( storage == sparse_full ) then
+            #:if t1.startswith('complex')
+            if( op==sparse_op_hermitian ) then
+                $:bsr_dispatch('bsr_scatter_h_2d', s1, 'k, nbrow, alpha, data, col, rowptr, vec_x, vec_y', ind=16)
+            else
+                $:bsr_dispatch('bsr_scatter_2d', s1, 'k, nbrow, alpha, data, col, rowptr, vec_x, vec_y', ind=16)
+            end if
+            #:else
+            $:bsr_dispatch('bsr_scatter_2d', s1, 'k, nbrow, alpha, data, col, rowptr, vec_x, vec_y', ind=12)
+            #:endif
+        else
+            #:if t1.startswith('complex')
+            if( op==sparse_op_hermitian ) then
+                $:bsr_dispatch('bsr_symm_h_2d', s1, 'k, nbrow, alpha, data, col, rowptr, vec_x, vec_y', square=True, ind=16)
+            else
+                $:bsr_dispatch('bsr_symm_2d', s1, 'k, nbrow, alpha, data, col, rowptr, vec_x, vec_y', square=True, ind=16)
+            end if
+            #:else
+            $:bsr_dispatch('bsr_symm_2d', s1, 'k, nbrow, alpha, data, col, rowptr, vec_x, vec_y', square=True, ind=12)
+            #:endif
+        end if
+    end subroutine
+
+    #:endfor
+
+    !! Block kernels. Vectors are viewed through explicit-shape dummies as
+    !! vec(block_size, num_blocks) for rank-1 and vec(k, block_size, num_blocks) for rank-2,
+    !! which is the same memory as the caller's vec(n) and vec(k, n).
+    #:for k1, t1, s1 in (KINDS_TYPES)
+    #:set HERM = [False, True] if t1.startswith('complex') else [False]
+    #:for tag, BR, BC in VARIANTS
+    #:set SZ = 'br, bc, ' if tag == 'gen' else ''
+    #:set SQ = 'br, ' if tag == 'gen' else ''
+
+    !> y = beta * y + alpha * A * x
+    pure subroutine bsr_gather_1d_${tag}$_${s1}$(${SZ}$nbrow, alpha, data, col, rowptr, vec_x, beta, vec_y)
+        #:if tag == 'gen'
+        integer(ilp), intent(in) :: br, bc
+        #:endif
+        integer(ilp), intent(in) :: nbrow
+        ${t1}$, intent(in) :: alpha, beta
+        ${t1}$, intent(in) :: data(${BR}$,${BC}$,*)
+        integer(ilp), intent(in) :: col(*), rowptr(*)
+        ${t1}$, intent(in) :: vec_x(${BC}$,*)
+        ${t1}$, intent(inout) :: vec_y(${BR}$,*)
+        ${t1}$ :: aux(${BR}$)
+        integer(ilp) :: i, j, jj
+
+        do i = 1, nbrow
+            aux = zero_${s1}$
+            do j = rowptr(i), rowptr(i+1)-1
+                do jj = 1, ${BC}$
+                    aux = aux + data(:,jj,j) * vec_x(jj,col(j))
+                end do
+            end do
+            if( beta == zero_${s1}$ ) then
+                vec_y(:,i) = alpha * aux
+            else
+                vec_y(:,i) = beta * vec_y(:,i) + alpha * aux
+            end if
+        end do
+    end subroutine
+
+    !> y = beta * y + alpha * A * x
+    pure subroutine bsr_gather_2d_${tag}$_${s1}$(${SZ}$k, nbrow, alpha, data, col, rowptr, vec_x, beta, vec_y)
+        #:if tag == 'gen'
+        integer(ilp), intent(in) :: br, bc
+        #:endif
+        integer(ilp), intent(in) :: k
+        integer(ilp), intent(in) :: nbrow
+        ${t1}$, intent(in) :: alpha, beta
+        ${t1}$, intent(in) :: data(${BR}$,${BC}$,*)
+        integer(ilp), intent(in) :: col(*), rowptr(*)
+        ${t1}$, intent(in) :: vec_x(k,${BC}$,*)
+        ${t1}$, intent(inout) :: vec_y(k,${BR}$,*)
+        ${t1}$ :: aux(${BR}$,k)
+        integer(ilp) :: i, j, jj, r
+
+        do i = 1, nbrow
+            aux = zero_${s1}$
+            do j = rowptr(i), rowptr(i+1)-1
+                do r = 1, k
+                    do jj = 1, ${BC}$
+                        aux(:,r) = aux(:,r) + data(:,jj,j) * vec_x(r,jj,col(j))
+                    end do
+                end do
+            end do
+            if( beta == zero_${s1}$ ) then
+                do r = 1, k
+                    vec_y(r,:,i) = alpha * aux(:,r)
+                end do
+            else
+                do r = 1, k
+                    vec_y(r,:,i) = beta * vec_y(r,:,i) + alpha * aux(:,r)
+                end do
+            end if
+        end do
+    end subroutine
+
+    #:for herm in HERM
+    #:set H = '_h' if herm else ''
+    #:set cj = (lambda e: 'conjg(%s)' % e) if herm else (lambda e: e)
+    !> y = y + alpha * A^${'H' if herm else 'T'}$ * x
+    pure subroutine bsr_scatter${H}$_1d_${tag}$_${s1}$(${SZ}$nbrow, alpha, data, col, rowptr, vec_x, vec_y)
+        #:if tag == 'gen'
+        integer(ilp), intent(in) :: br, bc
+        #:endif
+        integer(ilp), intent(in) :: nbrow
+        ${t1}$, intent(in) :: alpha
+        ${t1}$, intent(in) :: data(${BR}$,${BC}$,*)
+        integer(ilp), intent(in) :: col(*), rowptr(*)
+        ${t1}$, intent(in) :: vec_x(${BR}$,*)
+        ${t1}$, intent(inout) :: vec_y(${BC}$,*)
+        ${t1}$ :: aux(${BR}$)
+        integer(ilp) :: i, j, jj
+
+        do i = 1, nbrow
+            aux = alpha * vec_x(:,i)
+            do j = rowptr(i), rowptr(i+1)-1
+                do jj = 1, ${BC}$
+                    vec_y(jj,col(j)) = vec_y(jj,col(j)) + sum( ${cj('data(:,jj,j)')}$ * aux )
+                end do
+            end do
+        end do
+    end subroutine
+
+    !> y = y + alpha * A^${'H' if herm else 'T'}$ * x
+    pure subroutine bsr_scatter${H}$_2d_${tag}$_${s1}$(${SZ}$k, nbrow, alpha, data, col, rowptr, vec_x, vec_y)
+        #:if tag == 'gen'
+        integer(ilp), intent(in) :: br, bc
+        #:endif
+        integer(ilp), intent(in) :: k
+        integer(ilp), intent(in) :: nbrow
+        ${t1}$, intent(in) :: alpha
+        ${t1}$, intent(in) :: data(${BR}$,${BC}$,*)
+        integer(ilp), intent(in) :: col(*), rowptr(*)
+        ${t1}$, intent(in) :: vec_x(k,${BR}$,*)
+        ${t1}$, intent(inout) :: vec_y(k,${BC}$,*)
+        ${t1}$ :: aux(${BR}$,k)
+        integer(ilp) :: i, j, jj, r
+
+        do i = 1, nbrow
+            do r = 1, k
+                aux(:,r) = alpha * vec_x(r,:,i)
+            end do
+            do j = rowptr(i), rowptr(i+1)-1
+                do jj = 1, ${BC}$
+                    do r = 1, k
+                        vec_y(r,jj,col(j)) = vec_y(r,jj,col(j)) + sum( ${cj('data(:,jj,j)')}$ * aux(:,r) )
+                    end do
+                end do
+            end do
+        end do
+    end subroutine
+
+    !> y = y + alpha * ${'conjg(A)' if herm else 'A'}$ * x, A symmetric with a single triangle of blocks
+    !> stored (lower or upper, the operation is the same) and full diagonal blocks
+    pure subroutine bsr_symm${H}$_1d_${tag}$_${s1}$(${SQ}$nbrow, alpha, data, col, rowptr, vec_x, vec_y)
+        #:if tag == 'gen'
+        integer(ilp), intent(in) :: br
+        #:endif
+        integer(ilp), intent(in) :: nbrow
+        ${t1}$, intent(in) :: alpha
+        ${t1}$, intent(in) :: data(${BR}$,${BR}$,*)
+        integer(ilp), intent(in) :: col(*), rowptr(*)
+        ${t1}$, intent(in) :: vec_x(${BR}$,*)
+        ${t1}$, intent(inout) :: vec_y(${BR}$,*)
+        ${t1}$ :: aux(${BR}$), aux2(${BR}$)
+        integer(ilp) :: i, j, jj, bj
+
+        do i = 1, nbrow
+            aux  = zero_${s1}$
+            aux2 = alpha * vec_x(:,i)
+            do j = rowptr(i), rowptr(i+1)-1
+                bj = col(j)
+                do jj = 1, ${BR}$
+                    aux = aux + ${cj('data(:,jj,j)')}$ * vec_x(jj,bj)
+                end do
+                if( bj == i ) cycle
+                do jj = 1, ${BR}$
+                    vec_y(jj,bj) = vec_y(jj,bj) + sum( ${cj('data(:,jj,j)')}$ * aux2 )
+                end do
+            end do
+            vec_y(:,i) = vec_y(:,i) + alpha * aux
+        end do
+    end subroutine
+
+    !> y = y + alpha * ${'conjg(A)' if herm else 'A'}$ * x, A symmetric with a single triangle of blocks
+    !> stored (lower or upper, the operation is the same) and full diagonal blocks
+    pure subroutine bsr_symm${H}$_2d_${tag}$_${s1}$(${SQ}$k, nbrow, alpha, data, col, rowptr, vec_x, vec_y)
+        #:if tag == 'gen'
+        integer(ilp), intent(in) :: br
+        #:endif
+        integer(ilp), intent(in) :: k
+        integer(ilp), intent(in) :: nbrow
+        ${t1}$, intent(in) :: alpha
+        ${t1}$, intent(in) :: data(${BR}$,${BR}$,*)
+        integer(ilp), intent(in) :: col(*), rowptr(*)
+        ${t1}$, intent(in) :: vec_x(k,${BR}$,*)
+        ${t1}$, intent(inout) :: vec_y(k,${BR}$,*)
+        ${t1}$ :: aux(${BR}$,k), aux2(${BR}$,k)
+        integer(ilp) :: i, j, jj, bj, r
+
+        do i = 1, nbrow
+            aux = zero_${s1}$
+            do r = 1, k
+                aux2(:,r) = alpha * vec_x(r,:,i)
+            end do
+            do j = rowptr(i), rowptr(i+1)-1
+                bj = col(j)
+                do r = 1, k
+                    do jj = 1, ${BR}$
+                        aux(:,r) = aux(:,r) + ${cj('data(:,jj,j)')}$ * vec_x(r,jj,bj)
+                    end do
+                end do
+                if( bj == i ) cycle
+                do jj = 1, ${BR}$
+                    do r = 1, k
+                        vec_y(r,jj,bj) = vec_y(r,jj,bj) + sum( ${cj('data(:,jj,j)')}$ * aux2(:,r) )
+                    end do
+                end do
+            end do
+            do r = 1, k
+                vec_y(r,:,i) = vec_y(r,:,i) + alpha * aux(:,r)
+            end do
+        end do
+    end subroutine
+    #:endfor
+    #:endfor
+    #:endfor
+
+end submodule stdlib_sparse_spmv_bsr
