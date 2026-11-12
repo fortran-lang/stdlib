@@ -1105,6 +1105,8 @@ Subroutine
 - If `p` is empty, `head` is set to `.` and `tail` is left empty.
 - If `p` consists entirely of path-separators, `head` is set to the path-separator and `tail` is left empty.
 - `head` ends with a path-separator if and only if `p` appears to be a root directory or child of one.
+- If `p` contains no path-separator (for example `MyFile`), `head` is left empty and `tail` is set to `p`.
+- On Windows, both `\` and `/` are accepted as path-separators in `p`. On other platforms only `/` is.
 
 ### Return values
 

@@ -85,7 +85,33 @@ contains
         call checkpath(error, 'split_path-tail', '', tail)
         if (allocated(error)) return
 
+        ! No separator: just a file name
+        call split_path('MyFile', head, tail)
+        call checkpath(error, 'split_path-head', '', head)
+        if (allocated(error)) return
+        call checkpath(error, 'split_path-tail', 'MyFile', tail)
+        if (allocated(error)) return
+
         if (OS_TYPE() == OS_WINDOWS) then
+            ! Forward slashes (and mixed separators) are accepted on Windows
+            call split_path('C:/Users/Alice', head, tail)
+            call checkpath(error, 'split_path-head', 'C:/Users', head)
+            if (allocated(error)) return
+            call checkpath(error, 'split_path-tail', 'Alice', tail)
+            if (allocated(error)) return
+
+            call split_path('C:/', head, tail)
+            call checkpath(error, 'split_path-head', 'C:\', head)
+            if (allocated(error)) return
+            call checkpath(error, 'split_path-tail', '', tail)
+            if (allocated(error)) return
+
+            call split_path('C:\Users/Alice/', head, tail)
+            call checkpath(error, 'split_path-head', 'C:\Users', head)
+            if (allocated(error)) return
+            call checkpath(error, 'split_path-tail', 'Alice', tail)
+            if (allocated(error)) return
+
             call split_path('\\\\', head, tail)
             call checkpath(error, 'split_path-head', '\', head)
             if (allocated(error)) return
