@@ -116,6 +116,10 @@ BSR%data(:,:,3) = reshape(real([1,5,4,1]),[2,2])
 BSR%data(:,:,4) = reshape(real([4,0,3,0]),[2,2])
 BSR%data(:,:,5) = reshape(real([7,0,2,0]),[2,2])
 ```
+
+```{literalinclude} ../../example/linalg/example_sparse_bsr_grid.f90
+:language: fortran
+```
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 ### `CSC`: The Compressed Sparse Column format
 #### Status
