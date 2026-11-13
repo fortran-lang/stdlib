@@ -190,19 +190,10 @@ module stdlib_sparse_conversion
 
 contains
 
-    subroutine coo2csr_type(COO, CSR, sort_data)
-        type(COO_type), intent(inout) :: COO
+    subroutine coo2csr_type(COO, CSR)
+        type(COO_type), intent(in) :: COO
         type(CSR_type), intent(out) :: CSR
-        logical, intent(in), optional :: sort_data
         integer(ilp) :: i
-
-        if (optval(x=sort_data, default=.false.)) then
-            if (COO%nnz > 0) call sort_coo_unique(COO%index, COO%nnz, COO%nrows, COO%ncols)
-            if (allocated(COO%index)) then
-                if (size(COO%index, 2) /= COO%nnz) COO%index = COO%index(:,1:COO%nnz)
-            end if
-            COO%is_sorted = .true.
-        end if
 
         CSR%nnz = COO%nnz; CSR%nrows = COO%nrows; CSR%ncols = COO%ncols
         CSR%storage = COO%storage

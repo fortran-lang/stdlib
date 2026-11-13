@@ -125,7 +125,8 @@ contains
             .and. all(result%index(2,:) == [2, 5, 1, 4, 2]), 'CSC to COO pattern')
         if (allocated(error)) return
 
-        call coo2csr(coo, csr, sort_data=.true.)
+        call coo2ordered(coo)
+        call coo2csr(coo, csr)
         call check(error, coo%nnz == 5 .and. size(coo%index, 2) == coo%nnz .and. coo%is_sorted .and. csr%nnz == 5 &
             .and. csr%nrows == 4 .and. csr%ncols == 5 .and. csr%storage == sparse_lower, 'COO to CSR metadata')
         if (allocated(error)) return
@@ -159,7 +160,7 @@ contains
 
         block
             type(COO_type) :: empty
-            call coo2csr(empty, csr, sort_data=.true.)
+            call coo2csr(empty, csr)
             call check(error, csr%nnz == 0 .and. all(csr%rowptr == [1]), 'empty COO to CSR')
             if (allocated(error)) return
             call csr2coo(csr, result)
