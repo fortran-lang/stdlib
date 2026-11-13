@@ -143,16 +143,19 @@ contains
             .and. all(csr%col == [2, 5, 1, 4, 2]), 'COO to CSR without sorting')
         if (allocated(error)) return
 
-        call csc%malloc(3, 2, 3)
-        csc%colptr = [1, 3, 4]
-        csc%row = [2, 2, 1]
-        call csc2coo(csc, result)
-        call check(error, result%nnz == 2 .and. size(result%index, 2) == 2 &
-            .and. result%is_sorted, 'CSC duplicate removal')
-        if (allocated(error)) return
-        call check(error, all(result%index(1,:) == [1, 2]) &
-            .and. all(result%index(2,:) == [2, 1]), 'CSC duplicate pattern')
-        if (allocated(error)) return
+        block
+            type(CSC_type) :: duplicates
+            call duplicates%malloc(3, 2, 3)
+            duplicates%colptr = [1, 3, 4]
+            duplicates%row = [2, 2, 1]
+            call csc2coo(duplicates, result)
+            call check(error, result%nnz == 2 .and. size(result%index, 2) == 2 &
+                .and. result%is_sorted, 'CSC duplicate removal')
+            if (allocated(error)) return
+            call check(error, all(result%index(1,:) == [1, 2]) &
+                .and. all(result%index(2,:) == [2, 1]), 'CSC duplicate pattern')
+            if (allocated(error)) return
+        end block
 
         block
             type(COO_type) :: empty
