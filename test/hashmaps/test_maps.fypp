@@ -334,9 +334,60 @@ contains
               #:endfor
             #:endfor
             , new_unittest("open-maps-removal-spec", test_removal_spec) &
+            , new_unittest("open-maps-removal-wraparound", test_removal_wraparound) &
             ]
 
     end subroutine collect_stdlib_open_maps
+
+    !> Removing a key from a wrapped collision run must preserve its successors.
+    subroutine test_removal_wraparound(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(open_hashmap_type) :: map
+        class(*), allocatable :: data
+        integer :: i
+        logical :: conflict, found
+
+        ! Hash 55 maps to slot 63 in a 64-slot table. The three colliding
+        ! keys occupy slots 63, 0 and 1, so deleting key 2 must move key 3.
+        call check(error, fibonacci_hash(55_int_hash,6), 63_int_hash, &
+            "wraparound fixture must start in the last slot")
+        if (allocated(error)) return
+        call map%init(wraparound_hasher,slots_bits=6)
+        do i = 1, 3
+            call map%map_entry([int(i,int32)],10*i,conflict)
+            call check(error, .not.conflict, "distinct colliding keys must be inserted")
+            if (allocated(error)) return
+        end do
+
+        call map%remove([2_int32],found)
+        call check(error, found, "wrapped key must be found for removal")
+        if (allocated(error)) return
+        call map%key_test([2_int32],found)
+        call check(error, .not.found, "removed key must be absent")
+        if (allocated(error)) return
+        call check(error, map%entries(), 2, "removal must decrement the entry count")
+        if (allocated(error)) return
+
+        do i = 1, 3, 2
+            call map%get_other_data([int(i,int32)],data,found)
+            call check(error, found, "surviving key must remain reachable after relocation")
+            if (allocated(error)) return
+            select type(data)
+            type is(integer)
+                call check(error, data, 10*i, "relocation must preserve the stored value")
+            class default
+                call check(error, .false., "relocation must preserve the stored value type")
+            end select
+            if (allocated(error)) return
+        end do
+    end subroutine test_removal_wraparound
+
+    pure function wraparound_hasher(key) result(hash_value)
+        type(key_type), intent(in) :: key
+        integer(int_hash) :: hash_value
+        ! All keys intentionally share one hash to make the collision deterministic.
+        hash_value = 55_int_hash
+    end function wraparound_hasher
 
     #:for hash_ in HASH_NAME
       #:for size_ in SIZE_NAME
