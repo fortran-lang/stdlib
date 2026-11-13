@@ -391,11 +391,11 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Arguments
 
-`coo` : Shall be a `COO` type of `real` or `complex` type. It is an `intent(in)` argument.
+`coo` : Shall be a `COO_type`, or a `COO` type of `real` or `complex` type. It is an `intent(inout)` argument.
 
-`csr` : Shall be a `CSR` type of `real` or `complex` type. It is an `intent(out)` argument.
+`csr` : Shall be a `CSR_type` for a pattern-only `coo`, or a `CSR` type of the same data type as `coo`. It is an `intent(out)` argument.
 
-`sort_data`, `optional` : Shall be a `logical` argument to determine whether data in the COO graph should be sorted before obtaining the CSR representation. The transformation from COO to CSR depends on the former being sorted in row-major order and not having duplicate pairs. Using this boolean will call a sorting routine at the cost of extra runtime, default `.false.`. It is an `intent(in)` argument.
+`sort_data`, `optional` : Shall be a `logical` argument to determine whether the COO graph should be sorted before obtaining the CSR representation, including its data when present. The transformation from COO to CSR depends on the former being sorted in row-major order and not having duplicate pairs. When true, sorting removes duplicates and modifies `coo`; the default is `.false.`. It is an `intent(in)` argument.
 
 ### Syntax
 
@@ -403,9 +403,9 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Arguments
 
-`coo` : Shall be a `COO` type of `real` or `complex` type. It is an `intent(in)` argument.
+`coo` : Shall be a `COO_type`, or a `COO` type of `real` or `complex` type. It is an `intent(in)` argument.
 
-`csc` : Shall be a `CSC` type of `real` or `complex` type. It is an `intent(out)` argument.
+`csc` : Shall be a `CSC_type` for a pattern-only `coo`, or a `CSC` type of the same data type as `coo`. It is an `intent(out)` argument. Pattern-only conversion sorts and removes duplicate coordinates.
 
 ### Syntax
 
@@ -413,9 +413,9 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Arguments
 
-`csr` : Shall be a `CSR` type of `real` or `complex` type. It is an `intent(in)` argument.
+`csr` : Shall be a `CSR_type`, or a `CSR` type of `real` or `complex` type. It is an `intent(in)` argument.
 
-`coo` : Shall be a `COO` type of `real` or `complex` type. It is an `intent(out)` argument.
+`coo` : Shall be a `COO_type` for a pattern-only `csr`, or a `COO` type of the same data type as `csr`. It is an `intent(out)` argument.
 
 ### Syntax
 
@@ -447,9 +447,9 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Arguments
 
-`csc` : Shall be a `CSC` type of `real` or `complex` type. It is an `intent(in)` argument.
+`csc` : Shall be a `CSC_type`, or a `CSC` type of `real` or `complex` type. It is an `intent(in)` argument.
 
-`coo` : Shall be a `COO` type of `real` or `complex` type. It is an `intent(out)` argument.
+`coo` : Shall be a `COO_type` for a pattern-only `csc`, or a `COO` type of the same data type as `csc`. It is an `intent(out)` argument. Pattern-only conversion returns coordinates sorted in row-major order without duplicates.
 
 ### Example
 ```{literalinclude} ../../example/linalg/example_sparse_spmv.f90

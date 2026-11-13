@@ -54,6 +54,7 @@ module stdlib_sparse_conversion
     !! under the hypothesis that the COO is already ordered.
     !! Specifications: :doc:`/specs/stdlib_sparse`
     interface coo2csr
+        module procedure :: coo2csr_type
         #:for k1, t1, s1 in (KINDS_TYPES)
         module procedure :: coo2csr_${s1}$
         #:endfor
@@ -67,6 +68,7 @@ module stdlib_sparse_conversion
     !! under the hypothesis that the COO is already ordered.
     !! Specifications: :doc:`/specs/stdlib_sparse`
     interface coo2csc
+        module procedure :: coo2csc_type
         #:for k1, t1, s1 in (KINDS_TYPES)
         module procedure :: coo2csc_${s1}$
         #:endfor
@@ -106,6 +108,7 @@ module stdlib_sparse_conversion
     !! under the hypothesis that the CSR is already ordered.
     !! Specifications: :doc:`/specs/stdlib_sparse`
     interface csr2coo
+        module procedure :: csr2coo_type
         #:for k1, t1, s1 in (KINDS_TYPES)
         module procedure :: csr2coo_${s1}$
         #:endfor
@@ -145,6 +148,7 @@ module stdlib_sparse_conversion
     !! under the hypothesis that the CSC is already ordered.
     !! Specifications: :doc:`/specs/stdlib_sparse`
     interface csc2coo
+        module procedure :: csc2coo_type
         #:for k1, t1, s1 in (KINDS_TYPES)
         module procedure :: csc2coo_${s1}$
         #:endfor
@@ -185,6 +189,92 @@ module stdlib_sparse_conversion
     public :: coo2ordered
 
 contains
+
+    subroutine coo2csr_type(COO, CSR, sort_data)
+        type(COO_type), intent(inout) :: COO
+        type(CSR_type), intent(out) :: CSR
+        logical, intent(in), optional :: sort_data
+        integer(ilp) :: i
+
+        if (optval(x=sort_data, default=.false.)) then
+            if (COO%nnz > 0) call sort_coo_unique(COO%index, COO%nnz, COO%nrows, COO%ncols)
+            COO%is_sorted = .true.
+        end if
+
+        CSR%nnz = COO%nnz; CSR%nrows = COO%nrows; CSR%ncols = COO%ncols
+        CSR%storage = COO%storage
+        allocate(CSR%col(CSR%nnz), CSR%rowptr(CSR%nrows+1))
+        if (CSR%nnz > 0) CSR%col = COO%index(2,1:CSR%nnz)
+        CSR%rowptr = 0
+        CSR%rowptr(1) = 1
+        do i = 1, COO%nnz
+            CSR%rowptr(COO%index(1,i)+1) = CSR%rowptr(COO%index(1,i)+1) + 1
+        end do
+        do i = 1, CSR%nrows
+            CSR%rowptr(i+1) = CSR%rowptr(i+1) + CSR%rowptr(i)
+        end do
+    end subroutine
+
+    subroutine coo2csc_type(COO, CSC)
+        type(COO_type), intent(in) :: COO
+        type(CSC_type), intent(out) :: CSC
+        integer(ilp), allocatable :: temp(:,:)
+        integer(ilp) :: i, nnz
+
+        allocate(temp(2,COO%nnz))
+        if (COO%nnz > 0) then
+            temp(1,:) = COO%index(2,1:COO%nnz)
+            temp(2,:) = COO%index(1,1:COO%nnz)
+        end if
+        nnz = COO%nnz
+        call sort_coo_unique(temp, nnz, COO%ncols, COO%nrows)
+
+        CSC%nnz = nnz; CSC%nrows = COO%nrows; CSC%ncols = COO%ncols
+        CSC%storage = COO%storage
+        allocate(CSC%row(nnz), CSC%colptr(CSC%ncols+1))
+        CSC%row = temp(2,1:nnz)
+        CSC%colptr = 0
+        CSC%colptr(1) = 1
+        do i = 1, nnz
+            CSC%colptr(temp(1,i)+1) = CSC%colptr(temp(1,i)+1) + 1
+        end do
+        do i = 1, CSC%ncols
+            CSC%colptr(i+1) = CSC%colptr(i+1) + CSC%colptr(i)
+        end do
+    end subroutine
+
+    subroutine csr2coo_type(CSR, COO)
+        type(CSR_type), intent(in) :: CSR
+        type(COO_type), intent(out) :: COO
+        integer(ilp) :: i, j
+
+        COO%nnz = CSR%nnz; COO%nrows = CSR%nrows; COO%ncols = CSR%ncols
+        COO%storage = CSR%storage
+        allocate(COO%index(2,COO%nnz))
+        do i = 1, CSR%nrows
+            do j = CSR%rowptr(i), CSR%rowptr(i+1)-1
+                COO%index(:,j) = [i, CSR%col(j)]
+            end do
+        end do
+    end subroutine
+
+    subroutine csc2coo_type(CSC, COO)
+        type(CSC_type), intent(in) :: CSC
+        type(COO_type), intent(out) :: COO
+        integer(ilp) :: i, j
+
+        COO%nnz = CSC%nnz; COO%nrows = CSC%nrows; COO%ncols = CSC%ncols
+        COO%storage = CSC%storage
+        allocate(COO%index(2,COO%nnz))
+        do j = 1, CSC%ncols
+            do i = CSC%colptr(j), CSC%colptr(j+1)-1
+                COO%index(:,i) = [CSC%row(i), j]
+            end do
+        end do
+        call sort_coo_unique(COO%index, COO%nnz, COO%nrows, COO%ncols)
+        if (size(COO%index, 2) /= COO%nnz) COO%index = COO%index(:,1:COO%nnz)
+        COO%is_sorted = .true.
+    end subroutine
 
     #:for k1, t1, s1 in (KINDS_TYPES)
     subroutine dense2coo_${s1}$(dense,COO)

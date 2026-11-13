@@ -22,6 +22,7 @@ contains
         testsuite = [ &
             new_unittest('coo', test_coo), &
             new_unittest('coo2ordered', test_coo2ordered), &
+            new_unittest('pattern_conversions', test_pattern_conversions), &
             new_unittest('csr', test_csr), &
             new_unittest('csc', test_csc), &
             new_unittest('ell', test_ell),  &
@@ -96,6 +97,85 @@ contains
  
         end block
         #:endfor
+    end subroutine
+
+    subroutine test_pattern_conversions(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(COO_type) :: coo, result
+        type(CSR_type) :: csr
+        type(CSC_type) :: csc
+
+        call coo%malloc(4, 5, 6)
+        coo%index(1,:) = [3, 1, 3, 1, 3, 4]
+        coo%index(2,:) = [4, 5, 1, 2, 4, 2]
+        coo%storage = sparse_lower
+
+        call coo2csc(coo, csc)
+        call check(error, csc%nnz == 5 .and. csc%nrows == 4 .and. csc%ncols == 5 &
+            .and. csc%storage == sparse_lower .and. coo%nnz == 6, 'COO to CSC metadata')
+        if (allocated(error)) return
+        call check(error, all(csc%colptr == [1, 2, 4, 4, 5, 6]) &
+            .and. all(csc%row == [3, 1, 4, 3, 1]), 'COO to CSC pattern')
+        if (allocated(error)) return
+        call csc2coo(csc, result)
+        call check(error, result%nnz == 5 .and. result%nrows == 4 .and. result%ncols == 5 &
+            .and. result%storage == sparse_lower .and. result%is_sorted, 'CSC to COO metadata')
+        if (allocated(error)) return
+        call check(error, all(result%index(1,:) == [1, 1, 3, 3, 4]) &
+            .and. all(result%index(2,:) == [2, 5, 1, 4, 2]), 'CSC to COO pattern')
+        if (allocated(error)) return
+
+        call coo2csr(coo, csr, sort_data=.true.)
+        call check(error, coo%nnz == 5 .and. coo%is_sorted .and. csr%nnz == 5 &
+            .and. csr%nrows == 4 .and. csr%ncols == 5 .and. csr%storage == sparse_lower, 'COO to CSR metadata')
+        if (allocated(error)) return
+        call check(error, all(csr%rowptr == [1, 3, 3, 5, 6]) &
+            .and. all(csr%col == [2, 5, 1, 4, 2]), 'COO to CSR pattern')
+        if (allocated(error)) return
+        call csr2coo(csr, result)
+        call check(error, result%nnz == 5 .and. result%nrows == 4 .and. result%ncols == 5 &
+            .and. result%storage == sparse_lower, 'CSR to COO metadata')
+        if (allocated(error)) return
+        call check(error, all(result%index == coo%index(:,1:coo%nnz)), 'CSR to COO pattern')
+        if (allocated(error)) return
+        call coo2csr(result, csr)
+        call check(error, all(csr%rowptr == [1, 3, 3, 5, 6]) &
+            .and. all(csr%col == [2, 5, 1, 4, 2]), 'COO to CSR without sorting')
+        if (allocated(error)) return
+
+        call csc%malloc(3, 2, 3)
+        csc%colptr = [1, 3, 4]
+        csc%row = [2, 2, 1]
+        call csc2coo(csc, result)
+        call check(error, result%nnz == 2 .and. size(result%index, 2) == 2 &
+            .and. result%is_sorted, 'CSC duplicate removal')
+        if (allocated(error)) return
+        call check(error, all(result%index(1,:) == [1, 2]) &
+            .and. all(result%index(2,:) == [2, 1]), 'CSC duplicate pattern')
+        if (allocated(error)) return
+
+        block
+            type(COO_type) :: empty
+            call coo2csr(empty, csr, sort_data=.true.)
+            call check(error, csr%nnz == 0 .and. all(csr%rowptr == [1]), 'empty COO to CSR')
+            if (allocated(error)) return
+            call csr2coo(csr, result)
+            call check(error, result%nnz == 0 .and. size(result%index, 2) == 0, 'empty CSR to COO')
+            if (allocated(error)) return
+            call coo2csc(empty, csc)
+            call check(error, csc%nnz == 0 .and. all(csc%colptr == [1]), 'empty COO to CSC')
+            if (allocated(error)) return
+            call csc2coo(csc, result)
+            call check(error, result%nnz == 0 .and. size(result%index, 2) == 0, 'empty CSC to COO')
+            if (allocated(error)) return
+            call empty%malloc(3, 5, 0)
+            call coo2csr(empty, csr)
+            call check(error, all(csr%rowptr == [1, 1, 1, 1]), 'empty rectangular CSR')
+            if (allocated(error)) return
+            call coo2csc(empty, csc)
+            call check(error, all(csc%colptr == [1, 1, 1, 1, 1, 1]), 'empty rectangular CSC')
+            if (allocated(error)) return
+        end block
     end subroutine
 
     subroutine test_coo2ordered(error)
