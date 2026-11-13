@@ -142,19 +142,18 @@ foreach(method ${${_pkg}_FIND_METHOD})
 
     # test-drive's own self-test executable is not needed to use the library;
     # skip building it (some older compilers, e.g. ifx 2022.0, fail on it).
-    if(TARGET "${_lib}-tester")
+    # Disabling its registered tests (so they don't report "Not Run") needs
+    # CMake 3.28, so older versions keep building it.
+    if(TARGET "${_lib}-tester" AND NOT CMAKE_VERSION VERSION_LESS 3.28)
       set_target_properties("${_lib}-tester" PROPERTIES EXCLUDE_FROM_ALL TRUE)
-      if(NOT CMAKE_VERSION VERSION_LESS 3.28)
-        # Its registered tests would otherwise report "Not Run"
-        FetchContent_GetProperties("${_lib}" SOURCE_DIR _td_src)
-        get_property(_td_tests DIRECTORY "${_td_src}/test" PROPERTY TESTS)
-        if(_td_tests)
-          set_tests_properties(
-            ${_td_tests}
-            DIRECTORY "${_td_src}/test"
-            PROPERTIES DISABLED TRUE
-          )
-        endif()
+      FetchContent_GetProperties("${_lib}" SOURCE_DIR _td_src)
+      get_property(_td_tests DIRECTORY "${_td_src}/test" PROPERTY TESTS)
+      if(_td_tests)
+        set_tests_properties(
+          ${_td_tests}
+          DIRECTORY "${_td_src}/test"
+          PROPERTIES DISABLED TRUE
+        )
       endif()
     endif()
 
