@@ -126,7 +126,7 @@ contains
         if (allocated(error)) return
 
         call coo2csr(coo, csr, sort_data=.true.)
-        call check(error, coo%nnz == 5 .and. coo%is_sorted .and. csr%nnz == 5 &
+        call check(error, coo%nnz == 5 .and. size(coo%index, 2) == coo%nnz .and. coo%is_sorted .and. csr%nnz == 5 &
             .and. csr%nrows == 4 .and. csr%ncols == 5 .and. csr%storage == sparse_lower, 'COO to CSR metadata')
         if (allocated(error)) return
         call check(error, all(csr%rowptr == [1, 3, 3, 5, 6]) &

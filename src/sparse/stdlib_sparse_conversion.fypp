@@ -198,6 +198,9 @@ contains
 
         if (optval(x=sort_data, default=.false.)) then
             if (COO%nnz > 0) call sort_coo_unique(COO%index, COO%nnz, COO%nrows, COO%ncols)
+            if (allocated(COO%index)) then
+                if (size(COO%index, 2) /= COO%nnz) COO%index = COO%index(:,1:COO%nnz)
+            end if
             COO%is_sorted = .true.
         end if
 
