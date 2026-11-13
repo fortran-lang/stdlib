@@ -391,13 +391,11 @@ If the `diagonal` array has not been previously allocated, the `diag` subroutine
 
 ### Arguments
 
-`coo` : Shall be a `COO_type`, or a `COO` type of `real` or `complex` type. It is an `intent(in)` argument for `COO_type` and an `intent(inout)` argument for data-bearing types.
+`coo` : Shall be a `COO_type`, or a `COO` type of `real` or `complex` type. It is an `intent(inout)` argument.
 
 `csr` : Shall be a `CSR_type` for a pattern-only `coo`, or a `CSR` type of the same data type as `coo`. It is an `intent(out)` argument.
 
-`sort_data`, `optional` : Only available for data-bearing types. Shall be a `logical` argument to determine whether the COO graph and its data should be sorted before obtaining the CSR representation. When true, sorting removes duplicates and modifies `coo`; the default is `.false.`. It is an `intent(in)` argument.
-
-The COO graph must be sorted in row-major order without duplicate pairs. For a pattern-only graph, use `coo2ordered` before conversion if needed.
+`sort_data`, `optional` : Shall be a `logical` argument to determine whether the COO graph should be sorted before obtaining the CSR representation, including its data when present. The transformation from COO to CSR depends on the former being sorted in row-major order and not having duplicate pairs. When true, sorting removes duplicates and modifies `coo`; the default is `.false.`. It is an `intent(in)` argument.
 
 ### Syntax
 
