@@ -1,5 +1,6 @@
 import os
 import shutil
+import sys
 import fypp
 import argparse
 from joblib import Parallel, delayed
@@ -18,6 +19,15 @@ C_PREPROCESSED = (
     "test_stdlib_math",
     "test_sorting"
 )
+
+def clean_temp_folders():
+    """remove the 'temp' folders holding preprocessed files under src and test.
+    """
+    for folder in ('src', 'test'):
+        for root, dirs, _ in os.walk(folder):
+            if 'temp' in dirs:
+                shutil.rmtree(os.path.join(root, 'temp'))
+                dirs.remove('temp')
 
 def pre_process_fypp(args):
     """use fypp to preprocess all source files. 
@@ -50,11 +60,7 @@ def pre_process_fypp(args):
 
     # Remove generated 'temp' folders from previous runs, so that files from
     # older versions of stdlib cannot linger and clash with the new ones
-    for folder in ('src', 'test'):
-        for root, dirs, _ in os.walk(folder):
-            if 'temp' in dirs:
-                shutil.rmtree(os.path.join(root, 'temp'))
-                dirs.remove('temp')
+    clean_temp_folders()
 
     # Create destination folders for preprocessing
     os.makedirs('src'+os.sep+'temp', exist_ok=True)
@@ -151,10 +157,14 @@ if __name__ == "__main__":
     parser.add_argument("--with_ilp64",action='store_true', help="Include WITH_ILP64 to build 64-bit integer BLAS/LAPACK")
     parser.add_argument("--lnumbering",action='store_true', help="Add line numbering in preprocessed files")
     parser.add_argument("--deploy_stdlib_fpm",action='store_true', help="create the stdlib-fpm folder")    
+    parser.add_argument("--clean", action='store_true', help="Remove the preprocessed 'temp' folders and exit")
     # external libraries arguments
     parser.add_argument("--build", action='store_true', help="Build the project")
 
     args, unknown = parser.parse_known_args()
+    if args.clean:
+        clean_temp_folders()
+        sys.exit(0)
     #==========================================
     # read current manifest
     with open('VERSION', 'r') as file:
