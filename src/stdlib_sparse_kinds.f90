@@ -1698,7 +1698,7 @@ contains
             return
         end if
         ik_ = ik; jk_ = jk
-        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
         if(transpose) then ! allow extraction of symmetric elements
             ik_ = jk; jk_ = ik
         end if
@@ -1757,7 +1757,7 @@ contains
             return
         end if
         ik_ = ik; jk_ = jk
-        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
         if(transpose) then ! allow extraction of symmetric elements
             ik_ = jk; jk_ = ik
         end if
@@ -1816,7 +1816,7 @@ contains
             return
         end if
         ik_ = ik; jk_ = jk
-        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
         if(transpose) then ! allow extraction of symmetric elements
             ik_ = jk; jk_ = ik
         end if
@@ -1875,7 +1875,7 @@ contains
             return
         end if
         ik_ = ik; jk_ = jk
-        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
         if(transpose) then ! allow extraction of symmetric elements
             ik_ = jk; jk_ = ik
         end if
@@ -1935,7 +1935,7 @@ contains
             return
         end if
         ik_ = ik; jk_ = jk
-        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
         if(transpose) then ! allow extraction of symmetric elements
             ik_ = jk; jk_ = ik
         end if
@@ -1994,7 +1994,7 @@ contains
             return
         end if
         ik_ = ik; jk_ = jk
-        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
         if(transpose) then ! allow extraction of symmetric elements
             ik_ = jk; jk_ = ik
         end if
@@ -2053,7 +2053,7 @@ contains
             return
         end if
         ik_ = ik; jk_ = jk
-        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
         if(transpose) then ! allow extraction of symmetric elements
             ik_ = jk; jk_ = ik
         end if
@@ -2112,7 +2112,7 @@ contains
             return
         end if
         ik_ = ik; jk_ = jk
-        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
         if(transpose) then ! allow extraction of symmetric elements
             ik_ = jk; jk_ = ik
         end if
@@ -2172,7 +2172,7 @@ contains
             return
         end if
         ik_ = ik; jk_ = jk
-        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
         if(transpose) then ! allow extraction of symmetric elements
             ik_ = jk; jk_ = ik
         end if
@@ -2231,7 +2231,7 @@ contains
             return
         end if
         ik_ = ik; jk_ = jk
-        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
         if(transpose) then ! allow extraction of symmetric elements
             ik_ = jk; jk_ = ik
         end if
@@ -2290,7 +2290,7 @@ contains
             return
         end if
         ik_ = ik; jk_ = jk
-        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
         if(transpose) then ! allow extraction of symmetric elements
             ik_ = jk; jk_ = ik
         end if
@@ -2349,7 +2349,7 @@ contains
             return
         end if
         ik_ = ik; jk_ = jk
-        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
         if(transpose) then ! allow extraction of symmetric elements
             ik_ = jk; jk_ = ik
         end if
@@ -2409,7 +2409,7 @@ contains
             return
         end if
         ik_ = ik; jk_ = jk
-        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
         if(transpose) then ! allow extraction of symmetric elements
             ik_ = jk; jk_ = ik
         end if
@@ -2468,7 +2468,7 @@ contains
             return
         end if
         ik_ = ik; jk_ = jk
-        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
         if(transpose) then ! allow extraction of symmetric elements
             ik_ = jk; jk_ = ik
         end if
@@ -2527,7 +2527,7 @@ contains
             return
         end if
         ik_ = ik; jk_ = jk
-        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
         if(transpose) then ! allow extraction of symmetric elements
             ik_ = jk; jk_ = ik
         end if
@@ -2586,7 +2586,7 @@ contains
             return
         end if
         ik_ = ik; jk_ = jk
-        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
         if(transpose) then ! allow extraction of symmetric elements
             ik_ = jk; jk_ = ik
         end if
@@ -2638,7 +2638,7 @@ contains
     pure real(sp) function at_value_sellc_sp(self,ik,jk) result(val)
         class(SELLC_sp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
-        integer(ilp) :: k, ik_, jk_, idx
+        integer(ilp) :: k, ik_, jk_, ic, ri
         logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
@@ -2646,15 +2646,17 @@ contains
             return
         end if
         ik_ = ik; jk_ = jk
-        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
         if(transpose) then ! allow extraction of symmetric elements
             ik_ = jk; jk_ = ik
         end if
 
-        idx = self%rowptr((ik_ - 1)/self%chunk_size + 1)
-        do k = 1, self%chunk_size
-            if ( jk_ == self%col(k,idx) )then
-                val = self%data(k,idx)
+        ! row ik_ is row ri of chunk ic, its entries are col(ri,rowptr(ic):rowptr(ic+1)-1)
+        ic = (ik_ - 1)/self%chunk_size + 1
+        ri = ik_ - (ic - 1)*self%chunk_size
+        do k = self%rowptr(ic), self%rowptr(ic+1)-1
+            if ( jk_ == self%col(ri,k) )then
+                val = self%data(ri,k)
                 return
             endif
         end do
@@ -2665,12 +2667,13 @@ contains
         class(SELLC_sp_type), intent(inout) :: self
         real(sp), intent(in) :: val
         integer(ilp), intent(in)  :: ik, jk
-        integer(ilp) :: k, idx
+        integer(ilp) :: k, ic, ri
         ! naive implementation
-        idx = self%rowptr((ik - 1)/self%chunk_size + 1)
-        do k = 1, self%chunk_size
-            if ( jk == self%col(k,idx) )then
-                self%data(k,idx) = self%data(k,idx) + val
+        ic = (ik - 1)/self%chunk_size + 1
+        ri = ik - (ic - 1)*self%chunk_size
+        do k = self%rowptr(ic), self%rowptr(ic+1)-1
+            if ( jk == self%col(ri,k) )then
+                self%data(ri,k) = self%data(ri,k) + val
                 return
             endif
         end do
@@ -2680,17 +2683,19 @@ contains
         class(SELLC_sp_type), intent(inout) :: self
         real(sp), intent(in) :: val(:,:)
         integer(ilp), intent(in)  :: ik(:), jk(:)
-        integer(ilp) :: k, i, j, idx, row, col
+        integer(ilp) :: k, i, j, ic, ri, row, col
         ! naive implementation
-        do k = 1 , self%chunk_size
+        do i = 1, size(ik)
+            row = ik(i)
+            ic = (row - 1)/self%chunk_size + 1
+            ri = row - (ic - 1)*self%chunk_size
             do j = 1, size(jk)
                 col = jk(j)
-                do i = 1, size(ik)
-                    row = ik(i)
-                    idx = self%rowptr((row - 1)/self%chunk_size + 1)
-                    if( skip(self%storage,row,col) ) cycle
-                    if( col == self%col(k,idx) ) then
-                        self%data(k,idx) = self%data(k,idx) + val(i,j)
+                if( skip(self%storage,row,col) ) cycle
+                ! stop at the first match: padding slots of short rows also hold column 1
+                do k = self%rowptr(ic), self%rowptr(ic+1)-1
+                    if( col == self%col(ri,k) ) then
+                        self%data(ri,k) = self%data(ri,k) + val(i,j)
                         exit
                     end if
                 end do
@@ -2701,7 +2706,7 @@ contains
     pure real(dp) function at_value_sellc_dp(self,ik,jk) result(val)
         class(SELLC_dp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
-        integer(ilp) :: k, ik_, jk_, idx
+        integer(ilp) :: k, ik_, jk_, ic, ri
         logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
@@ -2709,15 +2714,17 @@ contains
             return
         end if
         ik_ = ik; jk_ = jk
-        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
         if(transpose) then ! allow extraction of symmetric elements
             ik_ = jk; jk_ = ik
         end if
 
-        idx = self%rowptr((ik_ - 1)/self%chunk_size + 1)
-        do k = 1, self%chunk_size
-            if ( jk_ == self%col(k,idx) )then
-                val = self%data(k,idx)
+        ! row ik_ is row ri of chunk ic, its entries are col(ri,rowptr(ic):rowptr(ic+1)-1)
+        ic = (ik_ - 1)/self%chunk_size + 1
+        ri = ik_ - (ic - 1)*self%chunk_size
+        do k = self%rowptr(ic), self%rowptr(ic+1)-1
+            if ( jk_ == self%col(ri,k) )then
+                val = self%data(ri,k)
                 return
             endif
         end do
@@ -2728,12 +2735,13 @@ contains
         class(SELLC_dp_type), intent(inout) :: self
         real(dp), intent(in) :: val
         integer(ilp), intent(in)  :: ik, jk
-        integer(ilp) :: k, idx
+        integer(ilp) :: k, ic, ri
         ! naive implementation
-        idx = self%rowptr((ik - 1)/self%chunk_size + 1)
-        do k = 1, self%chunk_size
-            if ( jk == self%col(k,idx) )then
-                self%data(k,idx) = self%data(k,idx) + val
+        ic = (ik - 1)/self%chunk_size + 1
+        ri = ik - (ic - 1)*self%chunk_size
+        do k = self%rowptr(ic), self%rowptr(ic+1)-1
+            if ( jk == self%col(ri,k) )then
+                self%data(ri,k) = self%data(ri,k) + val
                 return
             endif
         end do
@@ -2743,17 +2751,19 @@ contains
         class(SELLC_dp_type), intent(inout) :: self
         real(dp), intent(in) :: val(:,:)
         integer(ilp), intent(in)  :: ik(:), jk(:)
-        integer(ilp) :: k, i, j, idx, row, col
+        integer(ilp) :: k, i, j, ic, ri, row, col
         ! naive implementation
-        do k = 1 , self%chunk_size
+        do i = 1, size(ik)
+            row = ik(i)
+            ic = (row - 1)/self%chunk_size + 1
+            ri = row - (ic - 1)*self%chunk_size
             do j = 1, size(jk)
                 col = jk(j)
-                do i = 1, size(ik)
-                    row = ik(i)
-                    idx = self%rowptr((row - 1)/self%chunk_size + 1)
-                    if( skip(self%storage,row,col) ) cycle
-                    if( col == self%col(k,idx) ) then
-                        self%data(k,idx) = self%data(k,idx) + val(i,j)
+                if( skip(self%storage,row,col) ) cycle
+                ! stop at the first match: padding slots of short rows also hold column 1
+                do k = self%rowptr(ic), self%rowptr(ic+1)-1
+                    if( col == self%col(ri,k) ) then
+                        self%data(ri,k) = self%data(ri,k) + val(i,j)
                         exit
                     end if
                 end do
@@ -2764,7 +2774,7 @@ contains
     pure complex(sp) function at_value_sellc_csp(self,ik,jk) result(val)
         class(SELLC_csp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
-        integer(ilp) :: k, ik_, jk_, idx
+        integer(ilp) :: k, ik_, jk_, ic, ri
         logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
@@ -2772,15 +2782,17 @@ contains
             return
         end if
         ik_ = ik; jk_ = jk
-        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
         if(transpose) then ! allow extraction of symmetric elements
             ik_ = jk; jk_ = ik
         end if
 
-        idx = self%rowptr((ik_ - 1)/self%chunk_size + 1)
-        do k = 1, self%chunk_size
-            if ( jk_ == self%col(k,idx) )then
-                val = self%data(k,idx)
+        ! row ik_ is row ri of chunk ic, its entries are col(ri,rowptr(ic):rowptr(ic+1)-1)
+        ic = (ik_ - 1)/self%chunk_size + 1
+        ri = ik_ - (ic - 1)*self%chunk_size
+        do k = self%rowptr(ic), self%rowptr(ic+1)-1
+            if ( jk_ == self%col(ri,k) )then
+                val = self%data(ri,k)
                 return
             endif
         end do
@@ -2791,12 +2803,13 @@ contains
         class(SELLC_csp_type), intent(inout) :: self
         complex(sp), intent(in) :: val
         integer(ilp), intent(in)  :: ik, jk
-        integer(ilp) :: k, idx
+        integer(ilp) :: k, ic, ri
         ! naive implementation
-        idx = self%rowptr((ik - 1)/self%chunk_size + 1)
-        do k = 1, self%chunk_size
-            if ( jk == self%col(k,idx) )then
-                self%data(k,idx) = self%data(k,idx) + val
+        ic = (ik - 1)/self%chunk_size + 1
+        ri = ik - (ic - 1)*self%chunk_size
+        do k = self%rowptr(ic), self%rowptr(ic+1)-1
+            if ( jk == self%col(ri,k) )then
+                self%data(ri,k) = self%data(ri,k) + val
                 return
             endif
         end do
@@ -2806,17 +2819,19 @@ contains
         class(SELLC_csp_type), intent(inout) :: self
         complex(sp), intent(in) :: val(:,:)
         integer(ilp), intent(in)  :: ik(:), jk(:)
-        integer(ilp) :: k, i, j, idx, row, col
+        integer(ilp) :: k, i, j, ic, ri, row, col
         ! naive implementation
-        do k = 1 , self%chunk_size
+        do i = 1, size(ik)
+            row = ik(i)
+            ic = (row - 1)/self%chunk_size + 1
+            ri = row - (ic - 1)*self%chunk_size
             do j = 1, size(jk)
                 col = jk(j)
-                do i = 1, size(ik)
-                    row = ik(i)
-                    idx = self%rowptr((row - 1)/self%chunk_size + 1)
-                    if( skip(self%storage,row,col) ) cycle
-                    if( col == self%col(k,idx) ) then
-                        self%data(k,idx) = self%data(k,idx) + val(i,j)
+                if( skip(self%storage,row,col) ) cycle
+                ! stop at the first match: padding slots of short rows also hold column 1
+                do k = self%rowptr(ic), self%rowptr(ic+1)-1
+                    if( col == self%col(ri,k) ) then
+                        self%data(ri,k) = self%data(ri,k) + val(i,j)
                         exit
                     end if
                 end do
@@ -2827,7 +2842,7 @@ contains
     pure complex(dp) function at_value_sellc_cdp(self,ik,jk) result(val)
         class(SELLC_cdp_type), intent(in) :: self
         integer(ilp), intent(in) :: ik, jk
-        integer(ilp) :: k, ik_, jk_, idx
+        integer(ilp) :: k, ik_, jk_, ic, ri
         logical(c_bool) :: transpose
         ! naive implementation
         if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
@@ -2835,15 +2850,17 @@ contains
             return
         end if
         ik_ = ik; jk_ = jk
-        transpose = (self%storage == sparse_lower .and. ik > jk) .or. (self%storage == sparse_upper .and. ik < jk)
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
         if(transpose) then ! allow extraction of symmetric elements
             ik_ = jk; jk_ = ik
         end if
 
-        idx = self%rowptr((ik_ - 1)/self%chunk_size + 1)
-        do k = 1, self%chunk_size
-            if ( jk_ == self%col(k,idx) )then
-                val = self%data(k,idx)
+        ! row ik_ is row ri of chunk ic, its entries are col(ri,rowptr(ic):rowptr(ic+1)-1)
+        ic = (ik_ - 1)/self%chunk_size + 1
+        ri = ik_ - (ic - 1)*self%chunk_size
+        do k = self%rowptr(ic), self%rowptr(ic+1)-1
+            if ( jk_ == self%col(ri,k) )then
+                val = self%data(ri,k)
                 return
             endif
         end do
@@ -2854,12 +2871,13 @@ contains
         class(SELLC_cdp_type), intent(inout) :: self
         complex(dp), intent(in) :: val
         integer(ilp), intent(in)  :: ik, jk
-        integer(ilp) :: k, idx
+        integer(ilp) :: k, ic, ri
         ! naive implementation
-        idx = self%rowptr((ik - 1)/self%chunk_size + 1)
-        do k = 1, self%chunk_size
-            if ( jk == self%col(k,idx) )then
-                self%data(k,idx) = self%data(k,idx) + val
+        ic = (ik - 1)/self%chunk_size + 1
+        ri = ik - (ic - 1)*self%chunk_size
+        do k = self%rowptr(ic), self%rowptr(ic+1)-1
+            if ( jk == self%col(ri,k) )then
+                self%data(ri,k) = self%data(ri,k) + val
                 return
             endif
         end do
@@ -2869,17 +2887,19 @@ contains
         class(SELLC_cdp_type), intent(inout) :: self
         complex(dp), intent(in) :: val(:,:)
         integer(ilp), intent(in)  :: ik(:), jk(:)
-        integer(ilp) :: k, i, j, idx, row, col
+        integer(ilp) :: k, i, j, ic, ri, row, col
         ! naive implementation
-        do k = 1 , self%chunk_size
+        do i = 1, size(ik)
+            row = ik(i)
+            ic = (row - 1)/self%chunk_size + 1
+            ri = row - (ic - 1)*self%chunk_size
             do j = 1, size(jk)
                 col = jk(j)
-                do i = 1, size(ik)
-                    row = ik(i)
-                    idx = self%rowptr((row - 1)/self%chunk_size + 1)
-                    if( skip(self%storage,row,col) ) cycle
-                    if( col == self%col(k,idx) ) then
-                        self%data(k,idx) = self%data(k,idx) + val(i,j)
+                if( skip(self%storage,row,col) ) cycle
+                ! stop at the first match: padding slots of short rows also hold column 1
+                do k = self%rowptr(ic), self%rowptr(ic+1)-1
+                    if( col == self%col(ri,k) ) then
+                        self%data(ri,k) = self%data(ri,k) + val(i,j)
                         exit
                     end if
                 end do
