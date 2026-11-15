@@ -27,6 +27,8 @@ contains
             new_unittest('symmetries', test_symmetries), &
             new_unittest('diagonal', test_diagonal), &
             new_unittest('add_get_values', test_add_get_values),  &
+            new_unittest('at_symmetric', test_at_symmetric),  &
+            new_unittest('sellc_add_get_values', test_sellc_add_get_values),  &
             new_unittest('sparse_operators', test_sparse_operators), &
             new_unittest('add_block_symmetric_skip', test_add_block_symmetric_skip), &
             new_unittest('csc2dense', test_csc2dense), &
@@ -2383,6 +2385,202 @@ contains
 
         end block
 
+    end subroutine
+
+    subroutine test_at_symmetric(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        block
+            integer, parameter :: wp = sp
+            integer, parameter :: ndim = 5
+            real(sp), parameter :: dense(ndim,ndim) = reshape(real([1,2,0,8,0, &
+                                                            2,3,4,0,0, &
+                                                            0,4,5,6,0, &
+                                                            8,0,6,7,9, &
+                                                            0,0,0,9,1], kind=wp), [ndim,ndim])
+            real(sp) :: dense_tri(ndim,ndim)
+            type(COO_sp_type) :: COO
+            type(CSR_sp_type) :: CSR
+            type(CSC_sp_type) :: CSC
+            type(ELL_sp_type) :: ELL
+            type(SELLC_sp_type) :: SELLC
+            integer :: storage, i, j
+            logical :: ok(5)
+
+            do storage = sparse_full, sparse_upper
+                dense_tri = dense
+                do j = 1, ndim
+                    do i = 1, ndim
+                        if( storage == sparse_lower .and. i < j ) dense_tri(i,j) = 0._wp
+                        if( storage == sparse_upper .and. i > j ) dense_tri(i,j) = 0._wp
+                    end do
+                end do
+
+                call dense2coo(dense_tri, COO)
+                COO%storage = storage
+                call coo2csr(COO, CSR)
+                call coo2csc(COO, CSC)
+                call csr2ell(CSR, ELL)
+                call csr2sellc(CSR, SELLC, 2)
+
+                do j = 1, ndim
+                    do i = 1, ndim
+                        ok(1) = COO%at(i,j) == dense(i,j)
+                        ok(2) = CSR%at(i,j) == dense(i,j)
+                        ok(3) = CSC%at(i,j) == dense(i,j)
+                        ok(4) = ELL%at(i,j) == dense(i,j)
+                        ok(5) = SELLC%at(i,j) == dense(i,j)
+                        call check(error, all(ok), "error in sp at() with storage "//char(48+storage)// &
+                            ", formats COO/CSR/CSC/ELL/SELLC: "//merge('T','F',ok(1))//merge('T','F',ok(2))// &
+                            merge('T','F',ok(3))//merge('T','F',ok(4))//merge('T','F',ok(5)))
+                        if (allocated(error)) return
+                    end do
+                end do
+            end do
+        end block
+        block
+            integer, parameter :: wp = dp
+            integer, parameter :: ndim = 5
+            real(dp), parameter :: dense(ndim,ndim) = reshape(real([1,2,0,8,0, &
+                                                            2,3,4,0,0, &
+                                                            0,4,5,6,0, &
+                                                            8,0,6,7,9, &
+                                                            0,0,0,9,1], kind=wp), [ndim,ndim])
+            real(dp) :: dense_tri(ndim,ndim)
+            type(COO_dp_type) :: COO
+            type(CSR_dp_type) :: CSR
+            type(CSC_dp_type) :: CSC
+            type(ELL_dp_type) :: ELL
+            type(SELLC_dp_type) :: SELLC
+            integer :: storage, i, j
+            logical :: ok(5)
+
+            do storage = sparse_full, sparse_upper
+                dense_tri = dense
+                do j = 1, ndim
+                    do i = 1, ndim
+                        if( storage == sparse_lower .and. i < j ) dense_tri(i,j) = 0._wp
+                        if( storage == sparse_upper .and. i > j ) dense_tri(i,j) = 0._wp
+                    end do
+                end do
+
+                call dense2coo(dense_tri, COO)
+                COO%storage = storage
+                call coo2csr(COO, CSR)
+                call coo2csc(COO, CSC)
+                call csr2ell(CSR, ELL)
+                call csr2sellc(CSR, SELLC, 2)
+
+                do j = 1, ndim
+                    do i = 1, ndim
+                        ok(1) = COO%at(i,j) == dense(i,j)
+                        ok(2) = CSR%at(i,j) == dense(i,j)
+                        ok(3) = CSC%at(i,j) == dense(i,j)
+                        ok(4) = ELL%at(i,j) == dense(i,j)
+                        ok(5) = SELLC%at(i,j) == dense(i,j)
+                        call check(error, all(ok), "error in dp at() with storage "//char(48+storage)// &
+                            ", formats COO/CSR/CSC/ELL/SELLC: "//merge('T','F',ok(1))//merge('T','F',ok(2))// &
+                            merge('T','F',ok(3))//merge('T','F',ok(4))//merge('T','F',ok(5)))
+                        if (allocated(error)) return
+                    end do
+                end do
+            end do
+        end block
+    end subroutine
+
+    subroutine test_sellc_add_get_values(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+        block
+            integer, parameter :: wp = sp
+            real(wp) :: dense(5,5), mat(2,2)
+            type(COO_sp_type) :: COO
+            type(CSR_sp_type) :: CSR
+            type(SELLC_sp_type) :: SELLC, SELLC_ref
+            integer :: i, j, locdof(2)
+
+            mat(:,1) = [1,2]; mat(:,2) = [2,1]
+            dense = 0._wp
+            do i = 0, 3
+                dense(1+i:2+i,1+i:2+i) = dense(1+i:2+i,1+i:2+i) + mat
+            end do
+
+            call dense2coo(dense,COO)
+            call coo2csr(COO,CSR)
+            call csr2sellc(CSR,SELLC_ref,2)
+            call csr2sellc(CSR,SELLC,2)
+
+            ! block assembly
+            SELLC%data = 0._wp
+            do i = 0, 3
+                locdof(1:2) = [1+i,2+i]
+                call SELLC%add(locdof,locdof,mat)
+            end do
+            call check(error, all(SELLC%data == SELLC_ref%data), "error in SELLC sp add block" )
+            if (allocated(error)) return
+
+            ! element-wise assembly
+            SELLC%data = 0._wp
+            do j = 1, 5
+                do i = 1, 5
+                    if( dense(i,j) /= 0._wp ) call SELLC%add(i,j,dense(i,j))
+                end do
+            end do
+            call check(error, all(SELLC%data == SELLC_ref%data), "error in SELLC sp add value" )
+            if (allocated(error)) return
+
+            do j = 1, 5
+                do i = 1, 5
+                    call check(error, SELLC%at(i,j) == dense(i,j), "error in SELLC sp at()" )
+                    if (allocated(error)) return
+                end do
+            end do
+        end block
+        block
+            integer, parameter :: wp = dp
+            real(wp) :: dense(5,5), mat(2,2)
+            type(COO_dp_type) :: COO
+            type(CSR_dp_type) :: CSR
+            type(SELLC_dp_type) :: SELLC, SELLC_ref
+            integer :: i, j, locdof(2)
+
+            mat(:,1) = [1,2]; mat(:,2) = [2,1]
+            dense = 0._wp
+            do i = 0, 3
+                dense(1+i:2+i,1+i:2+i) = dense(1+i:2+i,1+i:2+i) + mat
+            end do
+
+            call dense2coo(dense,COO)
+            call coo2csr(COO,CSR)
+            call csr2sellc(CSR,SELLC_ref,2)
+            call csr2sellc(CSR,SELLC,2)
+
+            ! block assembly
+            SELLC%data = 0._wp
+            do i = 0, 3
+                locdof(1:2) = [1+i,2+i]
+                call SELLC%add(locdof,locdof,mat)
+            end do
+            call check(error, all(SELLC%data == SELLC_ref%data), "error in SELLC dp add block" )
+            if (allocated(error)) return
+
+            ! element-wise assembly
+            SELLC%data = 0._wp
+            do j = 1, 5
+                do i = 1, 5
+                    if( dense(i,j) /= 0._wp ) call SELLC%add(i,j,dense(i,j))
+                end do
+            end do
+            call check(error, all(SELLC%data == SELLC_ref%data), "error in SELLC dp add value" )
+            if (allocated(error)) return
+
+            do j = 1, 5
+                do i = 1, 5
+                    call check(error, SELLC%at(i,j) == dense(i,j), "error in SELLC dp at()" )
+                    if (allocated(error)) return
+                end do
+            end do
+        end block
     end subroutine
 
     subroutine test_add_block_symmetric_skip(error)
