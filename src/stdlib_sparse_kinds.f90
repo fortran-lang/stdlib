@@ -66,6 +66,50 @@ module stdlib_sparse_kinds
 
     !! version: experimental
     !!
+    !! BSR: Block Sparse Row format
+    type, public, extends(sparse_type) :: BSR_type
+      integer(ilp) :: block_shape(2) = [1,1] !! shape of the blocks
+      integer(ilp), allocatable  :: col(:)    !! block column index
+      integer(ilp), allocatable  :: rowptr(:) !! block row pointer
+    contains
+      procedure :: malloc => malloc_bsr
+    end type
+  
+    type, public, extends(BSR_type) :: BSR_sp_type
+        real(sp), allocatable :: data(:,:,:) 
+    contains
+        procedure, non_overridable :: at => at_value_bsr_sp
+        procedure, non_overridable :: add_value => add_bvalue_bsr_sp
+        procedure, non_overridable :: add_block => add_block_bsr_sp
+        generic :: add => add_value, add_block
+    end type
+    type, public, extends(BSR_type) :: BSR_dp_type
+        real(dp), allocatable :: data(:,:,:) 
+    contains
+        procedure, non_overridable :: at => at_value_bsr_dp
+        procedure, non_overridable :: add_value => add_bvalue_bsr_dp
+        procedure, non_overridable :: add_block => add_block_bsr_dp
+        generic :: add => add_value, add_block
+    end type
+    type, public, extends(BSR_type) :: BSR_csp_type
+        complex(sp), allocatable :: data(:,:,:) 
+    contains
+        procedure, non_overridable :: at => at_value_bsr_csp
+        procedure, non_overridable :: add_value => add_bvalue_bsr_csp
+        procedure, non_overridable :: add_block => add_block_bsr_csp
+        generic :: add => add_value, add_block
+    end type
+    type, public, extends(BSR_type) :: BSR_cdp_type
+        complex(dp), allocatable :: data(:,:,:) 
+    contains
+        procedure, non_overridable :: at => at_value_bsr_cdp
+        procedure, non_overridable :: add_value => add_bvalue_bsr_cdp
+        procedure, non_overridable :: add_block => add_block_bsr_cdp
+        generic :: add => add_value, add_block
+    end type
+
+    !! version: experimental
+    !!
     !! CSR: Compressed sparse row or Yale format
     type, public, extends(sparse_type) :: CSR_type  
       integer(ilp), allocatable  :: col(:)    !! matrix column pointer
@@ -1557,6 +1601,83 @@ contains
         end select
     end subroutine
 
+    !! (re)Allocate matrix memory for the BSR type
+    subroutine malloc_bsr(self,block_shape,num_brows,num_bcols,bnnz)
+        class(BSR_type) :: self
+        integer(ilp), intent(in) :: block_shape(2) !! shape of the blocks
+        integer(ilp), intent(in) :: num_brows !! number of block rows
+        integer(ilp), intent(in) :: num_bcols !! number of block columns
+        integer(ilp), intent(in) :: bnnz      !! number of non-zero blocks
+        integer(ilp), allocatable :: temp_idx(:)
+        integer(ilp) :: br, bc
+        !-----------------------------------------------------
+
+        br = max(block_shape(1), 1)
+        bc = max(block_shape(2), 1)
+
+        self%block_shape = [br,bc]
+        self%nrows = num_brows * br
+        self%ncols = num_bcols * bc
+        self%nnz   = br*bc*bnnz
+
+        if(.not.allocated(self%col)) then
+            allocate(temp_idx(bnnz) , source = 0_ilp )
+        else
+            allocate(temp_idx(bnnz) , source = self%col )
+        end if
+        call move_alloc(from=temp_idx,to=self%col)
+
+        if(.not.allocated(self%rowptr)) then
+            allocate(temp_idx(num_brows+1) , source = 0_ilp )
+        else
+            allocate(temp_idx(num_brows+1) , source = self%rowptr )
+        end if
+        call move_alloc(from=temp_idx,to=self%rowptr)
+
+        select type(self)
+            type is(BSR_sp_type)
+                block
+                real(sp), allocatable :: temp_data_sp(:,:,:)
+                if(.not.allocated(self%data)) then
+                    allocate(temp_data_sp(br,bc,bnnz) , source = zero_sp )
+                else
+                    allocate(temp_data_sp(br,bc,bnnz) , source = self%data )
+                end if
+                call move_alloc(from=temp_data_sp,to=self%data)
+                end block
+            type is(BSR_dp_type)
+                block
+                real(dp), allocatable :: temp_data_dp(:,:,:)
+                if(.not.allocated(self%data)) then
+                    allocate(temp_data_dp(br,bc,bnnz) , source = zero_dp )
+                else
+                    allocate(temp_data_dp(br,bc,bnnz) , source = self%data )
+                end if
+                call move_alloc(from=temp_data_dp,to=self%data)
+                end block
+            type is(BSR_csp_type)
+                block
+                complex(sp), allocatable :: temp_data_csp(:,:,:)
+                if(.not.allocated(self%data)) then
+                    allocate(temp_data_csp(br,bc,bnnz) , source = zero_csp )
+                else
+                    allocate(temp_data_csp(br,bc,bnnz) , source = self%data )
+                end if
+                call move_alloc(from=temp_data_csp,to=self%data)
+                end block
+            type is(BSR_cdp_type)
+                block
+                complex(dp), allocatable :: temp_data_cdp(:,:,:)
+                if(.not.allocated(self%data)) then
+                    allocate(temp_data_cdp(br,bc,bnnz) , source = zero_cdp )
+                else
+                    allocate(temp_data_cdp(br,bc,bnnz) , source = self%data )
+                end if
+                call move_alloc(from=temp_data_cdp,to=self%data)
+                end block
+        end select
+    end subroutine
+
     !==================================================================
     ! data accessors
     !==================================================================
@@ -2766,5 +2887,313 @@ contains
         end do
     end subroutine
 
+
+    pure real(sp) function at_value_bsr_sp(self,ik,jk) result(val)
+        class(BSR_sp_type), intent(in) :: self
+        integer(ilp), intent(in) :: ik, jk
+        integer(ilp) :: k, br, bc, ib, jb, ii, jj, ik_, jk_
+        logical(c_bool) :: transpose
+
+        if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
+            val = ieee_value( 0._sp , ieee_quiet_nan)
+            return
+        end if
+
+        ik_ = ik; jk_ = jk
+        ! symmetric storage: fetch elements of the non-stored triangle from their mirror
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
+        if(transpose) then
+            ik_ = jk; jk_ = ik
+        end if
+
+        br = self%block_shape(1)
+        bc = self%block_shape(2)
+
+        ib = (ik_ - 1) / br + 1
+        jb = (jk_ - 1) / bc + 1
+        ii = modulo(ik_ - 1, br) + 1
+        jj = modulo(jk_ - 1, bc) + 1
+
+        if(.not.allocated(self%rowptr) .or. ib < 1 .or. ib >= size(self%rowptr)) then
+            val = zero_sp
+            return
+        end if
+
+        do k = self%rowptr(ib), self%rowptr(ib+1)-1
+            if( jb == self%col(k) ) then
+                val = self%data(ii,jj,k)
+                return
+            end if
+        end do
+        val = zero_sp
+    end function
+
+    !> add a single block value to the BSR matrix
+    subroutine add_bvalue_bsr_sp(self,ik,jk,val)
+        class(BSR_sp_type), intent(inout) :: self
+        real(sp), intent(in) :: val(:,:)
+        integer(ilp), intent(in) :: ik, jk
+        integer(ilp) :: k
+        ! naive implementation
+        do k = self%rowptr(ik), self%rowptr(ik+1)-1
+            if( jk == self%col(k) ) then
+                self%data(:,:,k) = self%data(:,:,k) + val(:,:)
+                return
+            end if
+        end do
+
+    end subroutine
+
+    !> add a blocks matrices to the BSR matrix
+    subroutine add_block_bsr_sp(self,ik,jk,val)
+        class(BSR_sp_type), intent(inout) :: self
+        real(sp), intent(in) :: val(:,:,:,:) !> 4D array to hold multiple blocks
+        integer(ilp), intent(in) :: ik(:), jk(:)
+        integer(ilp) :: i, j, k, brow, bcol
+        ! naive implementation
+        do i = 1, size(ik)
+            brow = ik(i)
+            do k = self%rowptr(brow), self%rowptr(brow+1)-1
+                do j = 1, size(jk)
+                    bcol = jk(j)
+                    if( skip(self%storage,brow,bcol) ) cycle
+                    if( bcol == self%col(k) ) then
+                        self%data(:,:,k) = self%data(:,:,k) + val(:,:,i,j)
+                    end if
+                end do
+            end do
+        end do
+    end subroutine
+
+    pure real(dp) function at_value_bsr_dp(self,ik,jk) result(val)
+        class(BSR_dp_type), intent(in) :: self
+        integer(ilp), intent(in) :: ik, jk
+        integer(ilp) :: k, br, bc, ib, jb, ii, jj, ik_, jk_
+        logical(c_bool) :: transpose
+
+        if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
+            val = ieee_value( 0._dp , ieee_quiet_nan)
+            return
+        end if
+
+        ik_ = ik; jk_ = jk
+        ! symmetric storage: fetch elements of the non-stored triangle from their mirror
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
+        if(transpose) then
+            ik_ = jk; jk_ = ik
+        end if
+
+        br = self%block_shape(1)
+        bc = self%block_shape(2)
+
+        ib = (ik_ - 1) / br + 1
+        jb = (jk_ - 1) / bc + 1
+        ii = modulo(ik_ - 1, br) + 1
+        jj = modulo(jk_ - 1, bc) + 1
+
+        if(.not.allocated(self%rowptr) .or. ib < 1 .or. ib >= size(self%rowptr)) then
+            val = zero_dp
+            return
+        end if
+
+        do k = self%rowptr(ib), self%rowptr(ib+1)-1
+            if( jb == self%col(k) ) then
+                val = self%data(ii,jj,k)
+                return
+            end if
+        end do
+        val = zero_dp
+    end function
+
+    !> add a single block value to the BSR matrix
+    subroutine add_bvalue_bsr_dp(self,ik,jk,val)
+        class(BSR_dp_type), intent(inout) :: self
+        real(dp), intent(in) :: val(:,:)
+        integer(ilp), intent(in) :: ik, jk
+        integer(ilp) :: k
+        ! naive implementation
+        do k = self%rowptr(ik), self%rowptr(ik+1)-1
+            if( jk == self%col(k) ) then
+                self%data(:,:,k) = self%data(:,:,k) + val(:,:)
+                return
+            end if
+        end do
+
+    end subroutine
+
+    !> add a blocks matrices to the BSR matrix
+    subroutine add_block_bsr_dp(self,ik,jk,val)
+        class(BSR_dp_type), intent(inout) :: self
+        real(dp), intent(in) :: val(:,:,:,:) !> 4D array to hold multiple blocks
+        integer(ilp), intent(in) :: ik(:), jk(:)
+        integer(ilp) :: i, j, k, brow, bcol
+        ! naive implementation
+        do i = 1, size(ik)
+            brow = ik(i)
+            do k = self%rowptr(brow), self%rowptr(brow+1)-1
+                do j = 1, size(jk)
+                    bcol = jk(j)
+                    if( skip(self%storage,brow,bcol) ) cycle
+                    if( bcol == self%col(k) ) then
+                        self%data(:,:,k) = self%data(:,:,k) + val(:,:,i,j)
+                    end if
+                end do
+            end do
+        end do
+    end subroutine
+
+    pure complex(sp) function at_value_bsr_csp(self,ik,jk) result(val)
+        class(BSR_csp_type), intent(in) :: self
+        integer(ilp), intent(in) :: ik, jk
+        integer(ilp) :: k, br, bc, ib, jb, ii, jj, ik_, jk_
+        logical(c_bool) :: transpose
+
+        if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
+            val = ieee_value( 0._sp , ieee_quiet_nan)
+            return
+        end if
+
+        ik_ = ik; jk_ = jk
+        ! symmetric storage: fetch elements of the non-stored triangle from their mirror
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
+        if(transpose) then
+            ik_ = jk; jk_ = ik
+        end if
+
+        br = self%block_shape(1)
+        bc = self%block_shape(2)
+
+        ib = (ik_ - 1) / br + 1
+        jb = (jk_ - 1) / bc + 1
+        ii = modulo(ik_ - 1, br) + 1
+        jj = modulo(jk_ - 1, bc) + 1
+
+        if(.not.allocated(self%rowptr) .or. ib < 1 .or. ib >= size(self%rowptr)) then
+            val = zero_csp
+            return
+        end if
+
+        do k = self%rowptr(ib), self%rowptr(ib+1)-1
+            if( jb == self%col(k) ) then
+                val = self%data(ii,jj,k)
+                return
+            end if
+        end do
+        val = zero_csp
+    end function
+
+    !> add a single block value to the BSR matrix
+    subroutine add_bvalue_bsr_csp(self,ik,jk,val)
+        class(BSR_csp_type), intent(inout) :: self
+        complex(sp), intent(in) :: val(:,:)
+        integer(ilp), intent(in) :: ik, jk
+        integer(ilp) :: k
+        ! naive implementation
+        do k = self%rowptr(ik), self%rowptr(ik+1)-1
+            if( jk == self%col(k) ) then
+                self%data(:,:,k) = self%data(:,:,k) + val(:,:)
+                return
+            end if
+        end do
+
+    end subroutine
+
+    !> add a blocks matrices to the BSR matrix
+    subroutine add_block_bsr_csp(self,ik,jk,val)
+        class(BSR_csp_type), intent(inout) :: self
+        complex(sp), intent(in) :: val(:,:,:,:) !> 4D array to hold multiple blocks
+        integer(ilp), intent(in) :: ik(:), jk(:)
+        integer(ilp) :: i, j, k, brow, bcol
+        ! naive implementation
+        do i = 1, size(ik)
+            brow = ik(i)
+            do k = self%rowptr(brow), self%rowptr(brow+1)-1
+                do j = 1, size(jk)
+                    bcol = jk(j)
+                    if( skip(self%storage,brow,bcol) ) cycle
+                    if( bcol == self%col(k) ) then
+                        self%data(:,:,k) = self%data(:,:,k) + val(:,:,i,j)
+                    end if
+                end do
+            end do
+        end do
+    end subroutine
+
+    pure complex(dp) function at_value_bsr_cdp(self,ik,jk) result(val)
+        class(BSR_cdp_type), intent(in) :: self
+        integer(ilp), intent(in) :: ik, jk
+        integer(ilp) :: k, br, bc, ib, jb, ii, jj, ik_, jk_
+        logical(c_bool) :: transpose
+
+        if( (ik<1 .or. ik>self%nrows) .or. (jk<1 .or. jk>self%ncols) ) then
+            val = ieee_value( 0._dp , ieee_quiet_nan)
+            return
+        end if
+
+        ik_ = ik; jk_ = jk
+        ! symmetric storage: fetch elements of the non-stored triangle from their mirror
+        transpose = (self%storage == sparse_lower .and. ik < jk) .or. (self%storage == sparse_upper .and. ik > jk)
+        if(transpose) then
+            ik_ = jk; jk_ = ik
+        end if
+
+        br = self%block_shape(1)
+        bc = self%block_shape(2)
+
+        ib = (ik_ - 1) / br + 1
+        jb = (jk_ - 1) / bc + 1
+        ii = modulo(ik_ - 1, br) + 1
+        jj = modulo(jk_ - 1, bc) + 1
+
+        if(.not.allocated(self%rowptr) .or. ib < 1 .or. ib >= size(self%rowptr)) then
+            val = zero_cdp
+            return
+        end if
+
+        do k = self%rowptr(ib), self%rowptr(ib+1)-1
+            if( jb == self%col(k) ) then
+                val = self%data(ii,jj,k)
+                return
+            end if
+        end do
+        val = zero_cdp
+    end function
+
+    !> add a single block value to the BSR matrix
+    subroutine add_bvalue_bsr_cdp(self,ik,jk,val)
+        class(BSR_cdp_type), intent(inout) :: self
+        complex(dp), intent(in) :: val(:,:)
+        integer(ilp), intent(in) :: ik, jk
+        integer(ilp) :: k
+        ! naive implementation
+        do k = self%rowptr(ik), self%rowptr(ik+1)-1
+            if( jk == self%col(k) ) then
+                self%data(:,:,k) = self%data(:,:,k) + val(:,:)
+                return
+            end if
+        end do
+
+    end subroutine
+
+    !> add a blocks matrices to the BSR matrix
+    subroutine add_block_bsr_cdp(self,ik,jk,val)
+        class(BSR_cdp_type), intent(inout) :: self
+        complex(dp), intent(in) :: val(:,:,:,:) !> 4D array to hold multiple blocks
+        integer(ilp), intent(in) :: ik(:), jk(:)
+        integer(ilp) :: i, j, k, brow, bcol
+        ! naive implementation
+        do i = 1, size(ik)
+            brow = ik(i)
+            do k = self%rowptr(brow), self%rowptr(brow+1)-1
+                do j = 1, size(jk)
+                    bcol = jk(j)
+                    if( skip(self%storage,brow,bcol) ) cycle
+                    if( bcol == self%col(k) ) then
+                        self%data(:,:,k) = self%data(:,:,k) + val(:,:,i,j)
+                    end if
+                end do
+            end do
+        end do
+    end subroutine
 
 end module stdlib_sparse_kinds
