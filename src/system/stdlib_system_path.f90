@@ -1,6 +1,5 @@
 submodule(stdlib_system) stdlib_system_path
-    use stdlib_ascii, only: reverse
-    use stdlib_strings, only: chomp, join
+    use stdlib_strings, only: join
     use stdlib_string_type, only: string_type, char, move
 contains
     module function join2_char_char(p1, p2) result(path)
@@ -86,44 +85,64 @@ contains
     module subroutine split_path_char(p, head, tail)
         character(*), intent(in) :: p
         character(:), allocatable, intent(out) :: head, tail
-        character(:), allocatable :: temp
-        integer :: i
+        character(:), allocatable :: temp, sep_chars
+        integer :: n, i
+        logical :: is_windows
         character(len=1) :: sep
         sep = path_sep()
+        is_windows = OS_TYPE() == OS_WINDOWS
+
+        ! sep: the separator used when building results (OS native)
+        ! sep_chars: every character accepted as a separator in the input
+        !            (both `\` and `/` on Windows)
+        if (is_windows) then
+            sep_chars = '/\'
+        else
+            sep_chars = sep
+        end if
 
         ! Empty string, return (.,'')
-        if (trim(p) == '') then
+        if (len_trim(p) == 0) then
             head = '.'
             tail = ''
             return
         end if
 
         ! Remove trailing path separators
-        temp = trim(chomp(trim(p), sep))
+        n = verify(p(:len_trim(p)), sep_chars, back=.true.)
 
-        if (temp == '') then
+        if (n == 0) then
             head = sep
             tail = ''
             return
         end if
 
-        i = find(reverse(temp), sep)
+        temp = p(:n)
+        i = scan(temp, sep_chars, back=.true.)
 
-        ! if no `pathsep`, then it probably was a root dir like `C:\`
         if (i == 0) then
-            head = temp // sep
-            tail = ''
+            if (is_windows .and. n < len_trim(p) .and. n == 2) then
+                ! drive root such as `C:\`
+                if (temp(2:2) == ':') then
+                    head = temp // sep
+                    tail = ''
+                    return
+                end if
+            end if
+            ! no separator at all, so it is just a file name
+            head = ''
+            tail = temp
             return
         end if
 
-        head = temp(:len(temp)-i)
+        head = temp(:i-1)
 
         ! child of a root directory
-        if (find(head, sep) == 0) then
+        if (scan(head, sep_chars) == 0) then
             head = head // sep
         end if
 
-        tail = temp(len(temp)-i+2:)
+        tail = temp(i+1:)
     end subroutine split_path_char
 
     module subroutine split_path_string(p, head, tail)
