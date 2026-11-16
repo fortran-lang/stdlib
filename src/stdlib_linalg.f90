@@ -32,6 +32,7 @@ module stdlib_linalg
   public :: constrained_lstsq_space
   public :: weighted_lstsq
   public :: solve_weighted_lstsq
+  public :: generalized_lstsq
   public :: norm
   public :: mnorm
   public :: get_norm
@@ -42,6 +43,7 @@ module stdlib_linalg
   public :: solve_upper_chol
   public :: solve_lstsq
   public :: solve_constrained_lstsq
+  public :: solve_generalized_lstsq
   public :: trace
   public :: svd
   public :: svdvals
@@ -2213,6 +2215,188 @@ module stdlib_linalg
         type(linalg_state_type), optional, intent(out) :: err
     end subroutine stdlib_linalg_z_solve_weighted_lstsq
   end interface solve_weighted_lstsq
+
+  interface generalized_lstsq
+    !! version: experimental
+    !!
+    !! Computes the generalized least-squares solution to \( \min_x (Ax-b)^T W^{-1} (Ax-b) \)
+    !! ([Specification](../page/specs/stdlib_linalg.html#generalized-lstsq))
+    !!
+    !!### Summary
+    !! Function interface for computing generalized least-squares via GGGLM.
+    !!
+    !!### Description
+    !!
+    !! This interface provides methods for computing generalized least-squares
+    !! with a symmetric (real) or Hermitian (complex) positive definite covariance matrix.
+    !! Supported data types include `real` and `complex`.
+    !!
+    !!@note The solution is based on LAPACK's `*GGGLM` routine.
+    !!
+    module function stdlib_linalg_s_generalized_lstsq(w,a,b,prefactored_w,overwrite_a,overwrite_w,err) result(x)
+        !> Covariance matrix W(m,m) (symmetric/Hermitian positive definite) or its matrix square root
+        real(sp), intent(inout), target :: w(:,:)
+        !> Input matrix a(m,n)
+        real(sp), intent(inout), target :: a(:,:)
+        !> Right hand side vector b(m)
+        real(sp), intent(in) :: b(:)
+        !> [optional] Is W already a matrix square root (e.g., Cholesky factor)? Default: .false.
+        logical(lk), optional, intent(in) :: prefactored_w
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> [optional] Can W data be overwritten and destroyed? Default: .false.
+        logical(lk), optional, intent(in) :: overwrite_w
+        !> [optional] state return flag. On error if not requested, the code will trigger an error stop
+        type(linalg_state_type), optional, intent(out) :: err
+        !> Result array x(n)
+        real(sp), allocatable :: x(:)
+    end function stdlib_linalg_s_generalized_lstsq
+    module function stdlib_linalg_d_generalized_lstsq(w,a,b,prefactored_w,overwrite_a,overwrite_w,err) result(x)
+        !> Covariance matrix W(m,m) (symmetric/Hermitian positive definite) or its matrix square root
+        real(dp), intent(inout), target :: w(:,:)
+        !> Input matrix a(m,n)
+        real(dp), intent(inout), target :: a(:,:)
+        !> Right hand side vector b(m)
+        real(dp), intent(in) :: b(:)
+        !> [optional] Is W already a matrix square root (e.g., Cholesky factor)? Default: .false.
+        logical(lk), optional, intent(in) :: prefactored_w
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> [optional] Can W data be overwritten and destroyed? Default: .false.
+        logical(lk), optional, intent(in) :: overwrite_w
+        !> [optional] state return flag. On error if not requested, the code will trigger an error stop
+        type(linalg_state_type), optional, intent(out) :: err
+        !> Result array x(n)
+        real(dp), allocatable :: x(:)
+    end function stdlib_linalg_d_generalized_lstsq
+    module function stdlib_linalg_c_generalized_lstsq(w,a,b,prefactored_w,overwrite_a,overwrite_w,err) result(x)
+        !> Covariance matrix W(m,m) (symmetric/Hermitian positive definite) or its matrix square root
+        complex(sp), intent(inout), target :: w(:,:)
+        !> Input matrix a(m,n)
+        complex(sp), intent(inout), target :: a(:,:)
+        !> Right hand side vector b(m)
+        complex(sp), intent(in) :: b(:)
+        !> [optional] Is W already a matrix square root (e.g., Cholesky factor)? Default: .false.
+        logical(lk), optional, intent(in) :: prefactored_w
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> [optional] Can W data be overwritten and destroyed? Default: .false.
+        logical(lk), optional, intent(in) :: overwrite_w
+        !> [optional] state return flag. On error if not requested, the code will trigger an error stop
+        type(linalg_state_type), optional, intent(out) :: err
+        !> Result array x(n)
+        complex(sp), allocatable :: x(:)
+    end function stdlib_linalg_c_generalized_lstsq
+    module function stdlib_linalg_z_generalized_lstsq(w,a,b,prefactored_w,overwrite_a,overwrite_w,err) result(x)
+        !> Covariance matrix W(m,m) (symmetric/Hermitian positive definite) or its matrix square root
+        complex(dp), intent(inout), target :: w(:,:)
+        !> Input matrix a(m,n)
+        complex(dp), intent(inout), target :: a(:,:)
+        !> Right hand side vector b(m)
+        complex(dp), intent(in) :: b(:)
+        !> [optional] Is W already a matrix square root (e.g., Cholesky factor)? Default: .false.
+        logical(lk), optional, intent(in) :: prefactored_w
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> [optional] Can W data be overwritten and destroyed? Default: .false.
+        logical(lk), optional, intent(in) :: overwrite_w
+        !> [optional] state return flag. On error if not requested, the code will trigger an error stop
+        type(linalg_state_type), optional, intent(out) :: err
+        !> Result array x(n)
+        complex(dp), allocatable :: x(:)
+    end function stdlib_linalg_z_generalized_lstsq
+  end interface generalized_lstsq
+
+  interface solve_generalized_lstsq
+    !! version: experimental
+    !!
+    !! Computes the generalized least-squares solution to \( \min_x (Ax-b)^T W^{-1} (Ax-b) \)
+    !! ([Specification](../page/specs/stdlib_linalg.html#solve-generalized-lstsq))
+    !!
+    !!### Summary
+    !! Subroutine interface for computing generalized least-squares via GGGLM.
+    !!
+    !!### Description
+    !!
+    !! This interface provides methods for computing generalized least-squares
+    !! with a symmetric (real) or Hermitian (complex) positive definite covariance matrix.
+    !! Supported data types include `real` and `complex`.
+    !!
+    !!@note The solution is based on LAPACK's `*GGGLM` routine.
+    !!
+    module subroutine stdlib_linalg_s_solve_generalized_lstsq(w,a,b,x,prefactored_w,overwrite_a,overwrite_w,err)
+        !> Covariance matrix W(m,m) (symmetric/Hermitian positive definite) or its matrix square root
+        real(sp), intent(inout), target :: w(:,:)
+        !> Input matrix a(m,n)
+        real(sp), intent(inout), target :: a(:,:)
+        !> Right hand side vector b(m)
+        real(sp), intent(in) :: b(:)
+        !> Solution vector x(n)
+        real(sp), intent(out) :: x(:)
+        !> [optional] Is W already a matrix square root (e.g., Cholesky factor)? Default: .false.
+        logical(lk), optional, intent(in) :: prefactored_w
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> [optional] Can W data be overwritten and destroyed? Default: .false.
+        logical(lk), optional, intent(in) :: overwrite_w
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_s_solve_generalized_lstsq
+    module subroutine stdlib_linalg_d_solve_generalized_lstsq(w,a,b,x,prefactored_w,overwrite_a,overwrite_w,err)
+        !> Covariance matrix W(m,m) (symmetric/Hermitian positive definite) or its matrix square root
+        real(dp), intent(inout), target :: w(:,:)
+        !> Input matrix a(m,n)
+        real(dp), intent(inout), target :: a(:,:)
+        !> Right hand side vector b(m)
+        real(dp), intent(in) :: b(:)
+        !> Solution vector x(n)
+        real(dp), intent(out) :: x(:)
+        !> [optional] Is W already a matrix square root (e.g., Cholesky factor)? Default: .false.
+        logical(lk), optional, intent(in) :: prefactored_w
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> [optional] Can W data be overwritten and destroyed? Default: .false.
+        logical(lk), optional, intent(in) :: overwrite_w
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_d_solve_generalized_lstsq
+    module subroutine stdlib_linalg_c_solve_generalized_lstsq(w,a,b,x,prefactored_w,overwrite_a,overwrite_w,err)
+        !> Covariance matrix W(m,m) (symmetric/Hermitian positive definite) or its matrix square root
+        complex(sp), intent(inout), target :: w(:,:)
+        !> Input matrix a(m,n)
+        complex(sp), intent(inout), target :: a(:,:)
+        !> Right hand side vector b(m)
+        complex(sp), intent(in) :: b(:)
+        !> Solution vector x(n)
+        complex(sp), intent(out) :: x(:)
+        !> [optional] Is W already a matrix square root (e.g., Cholesky factor)? Default: .false.
+        logical(lk), optional, intent(in) :: prefactored_w
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> [optional] Can W data be overwritten and destroyed? Default: .false.
+        logical(lk), optional, intent(in) :: overwrite_w
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_c_solve_generalized_lstsq
+    module subroutine stdlib_linalg_z_solve_generalized_lstsq(w,a,b,x,prefactored_w,overwrite_a,overwrite_w,err)
+        !> Covariance matrix W(m,m) (symmetric/Hermitian positive definite) or its matrix square root
+        complex(dp), intent(inout), target :: w(:,:)
+        !> Input matrix a(m,n)
+        complex(dp), intent(inout), target :: a(:,:)
+        !> Right hand side vector b(m)
+        complex(dp), intent(in) :: b(:)
+        !> Solution vector x(n)
+        complex(dp), intent(out) :: x(:)
+        !> [optional] Is W already a matrix square root (e.g., Cholesky factor)? Default: .false.
+        logical(lk), optional, intent(in) :: prefactored_w
+        !> [optional] Can A data be overwritten and destroyed?
+        logical(lk), optional, intent(in) :: overwrite_a
+        !> [optional] Can W data be overwritten and destroyed? Default: .false.
+        logical(lk), optional, intent(in) :: overwrite_w
+        !> [optional] state return flag. On error if not requested, the code will stop
+        type(linalg_state_type), optional, intent(out) :: err
+    end subroutine stdlib_linalg_z_solve_generalized_lstsq
+  end interface solve_generalized_lstsq
 
   ! QR factorization of rank-2 array A
   interface qr
