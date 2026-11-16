@@ -55,6 +55,7 @@ module stdlib_linalg_lapack_aux
      public :: handle_ggev_info
      public :: handle_heev_info
      public :: handle_gglse_info
+     public :: handle_ggglm_info
      public :: handle_geqrt_info
      public :: handle_gemqrt_info
      
