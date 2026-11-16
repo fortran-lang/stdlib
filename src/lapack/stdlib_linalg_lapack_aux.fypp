@@ -1768,7 +1768,6 @@ module stdlib_linalg_lapack_aux
                 err = linalg_state_type(this, LINALG_INTERNAL_ERROR, 'catastrophic error.')
         end select
     end subroutine handle_geqrt_info
->>>>>>> 1241e5c0 (Working implementation for qrfact.)
 
     elemental subroutine handle_gemqrt_info(this, info, side, trans, m, n, k, nb, ldv, ldt, ldc, err)
         character(len=*), intent(in) :: this, side, trans
