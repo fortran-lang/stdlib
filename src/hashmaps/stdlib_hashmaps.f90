@@ -77,7 +77,7 @@ module stdlib_hashmaps
 !! Version: Experimental
 !!
 !! Type implementing an abstract hash map
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#the-hashmap_type-abstract-type))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
         private
         integer(int_calls) :: call_count = 0
 !! Number of calls
@@ -151,7 +151,7 @@ module stdlib_hashmaps
 !! Version: Experimental
 !!
 !! Returns the all keys contained in a hash map
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#get_all_keys-returns-all-the-keys-contained-in-a-map))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
 !!
 !! Arguments:
 !!     map - a hash map
@@ -212,7 +212,7 @@ module stdlib_hashmaps
 !! Version: Experimental
 !!
 !! Returns a logical flag indicating whether KEY exists in the hash map
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#key_test-indicates-whether-key-is-present))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
 !!
 !! Arguments:
 !!     map     - the hash map of interest
@@ -230,7 +230,7 @@ module stdlib_hashmaps
 !! Version: Experimental
 !!
 !! Returns the number of entries relative to slots in a hash map
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#loading-returns-the-ratio-of-entries-to-slots))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
 !!
 !! Arguments:
 !!       map - a hash map
@@ -243,7 +243,7 @@ module stdlib_hashmaps
 !! Version: Experimental
 !!
 !! Inserts an entry into the hash table
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#map_entry-inserts-an-entry-into-the-hash-map))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
 !!
             import hashmap_type, key_type
             class(hashmap_type), intent(inout)     :: map
@@ -305,7 +305,7 @@ module stdlib_hashmaps
 !!
 !! Returns the total number of ones based offsets of slot entriesyy from
 !! their slot index for a hash map
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#total_depth-returns-the-total-depth-of-the-hash-map-entries))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
 !! Arguments:
 !!     map - a hash map
             import hashmap_type, int64
@@ -321,7 +321,7 @@ module stdlib_hashmaps
 !! Version: Experimental
 !!
 !! Chaining hash map entry type
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#the-chaining_map_entry_type-derived-type))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
         private
         integer(int_hash)  :: hash_val
 !! Full hash value
@@ -340,7 +340,7 @@ module stdlib_hashmaps
 !! Version: Experimental
 !!
 !! Wrapper for a pointer to a chaining map entry type object
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#the-chaining_map_entry_type_ptr-derived-type))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
         type(chaining_map_entry_type), pointer :: target => null()
     end type chaining_map_entry_ptr
 
@@ -349,7 +349,7 @@ module stdlib_hashmaps
 !! Version: Experimental
 !!
 !! Type implementing a pool of allocated `chaining_map_entry_type`
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#the-chaining_map_entry_pool-derived-type))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
         private
 ! Index of next bucket
         integer(int_index)                         :: next = 0
@@ -362,7 +362,7 @@ module stdlib_hashmaps
 !! Version: Experimental
 !!
 !! Type implementing the `chaining_hashmap_type` types
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#the-chaining_hashmap_type-derived-type))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
         private
         type(chaining_map_entry_pool), pointer    :: cache => null()
 !! Pool of allocated chaining_map_entry_type objects
@@ -565,7 +565,7 @@ module stdlib_hashmaps
 !! Version: Experimental
 !!
 !! Open hash map entry type
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#the-open_map_entry_type-derived-type))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
         private
         integer(int_hash) :: hash_val
 !! Full hash value
@@ -591,7 +591,7 @@ module stdlib_hashmaps
 !! Version: Experimental
 !!
 !! Wrapper for a pointer to an open hash map entry type object
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#the-open_map_entry_ptr-derived-type))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
         type(open_map_entry_type), pointer :: target => null()
     end type open_map_entry_ptr
 
@@ -941,7 +941,7 @@ module stdlib_hashmaps
         subroutine int8_map_entry(map, value, other, conflict)
     !! Version: Experimental
     !! Int8 generic interface for map entry
-    !! ([Specifications](../page/specs/stdlib_hashmaps.html#map_entry-inserts-an-entry-into-the-hash-map))
+    !! (Specifications: :doc:`/specs/stdlib_hashmaps`)
     !!
                 class(hashmap_type), intent(inout)     :: map
                 integer(int8), intent(in)              :: value(:)
@@ -961,7 +961,7 @@ module stdlib_hashmaps
 !! Version: Experimental
 !!
 !! Inserts an entry into the hash table
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#map_entry-inserts-an-entry-into-the-hash-map))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
 !!
             class(hashmap_type), intent(inout)     :: map
             integer(int32), intent(in)             :: value(:)
@@ -981,7 +981,7 @@ module stdlib_hashmaps
 !! Version: Experimental
 !!
 !! Inserts an entry into the hash table
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#map_entry-inserts-an-entry-into-the-hash-map))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
 !!
             class(hashmap_type), intent(inout)     :: map
             character(len=*), intent(in)           :: value
@@ -1001,7 +1001,7 @@ module stdlib_hashmaps
 !! Version: Experimental
 !!
 !! Returns a logical flag indicating whether KEY exists in the hash map
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#key_test-indicates-whether-key-is-present))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
 !!
 !! Arguments:
 !!     map     - the hash map of interest
@@ -1027,7 +1027,7 @@ module stdlib_hashmaps
 !! Version: Experimental
 !!
 !! Returns a logical flag indicating whether KEY exists in the hash map
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#key_test-indicates-whether-key-is-present))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
 !!
 !! Arguments:
 !!     map     - the hash map of interest
@@ -1051,7 +1051,7 @@ module stdlib_hashmaps
 !! Version: Experimental
 !!
 !! Returns a logical flag indicating whether KEY exists in the hash map
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#key_test-indicates-whether-key-is-present))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
 !!
 !! Arguments:
 !!     map     - the hash map of interest
@@ -1153,7 +1153,7 @@ module stdlib_hashmaps
 !! Version: Experimental
 !!
 !! Returns the number of subroutine calls on an open hash map
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#calls-returns-the-number-of-calls-on-the-hash-map))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
 !!
 !! Arguments:
 !!     map - an open hash map
@@ -1168,7 +1168,7 @@ module stdlib_hashmaps
 !! Version: Experimental
 !!
 !! Returns the number of entries in a hash map
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#entries-returns-the-number-of-entries-in-the-hash-map))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
 !!
 !! Arguments:
 !!     map - an open hash map
@@ -1184,7 +1184,7 @@ module stdlib_hashmaps
 !! Version: Experimental
 !!
 !! Returns the total number of table probes on a hash map
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#map_probes-returns-the-number-of-hash-map-probes))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
 !!
 !! Arguments:
 !!     map - an open hash map
@@ -1200,7 +1200,7 @@ module stdlib_hashmaps
 !! Version: Experimental
 !!
 !! Returns the number of allocated slots in a hash map
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#num_slots-returns-the-number-of-hash-map-slots))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
 !!
 !! Arguments:
 !!     map - an open hash map
@@ -1217,7 +1217,7 @@ module stdlib_hashmaps
 !!
 !! Returns the number of bits used to specify the number of allocated
 !! slots in a hash map
-!! ([Specifications](../page/specs/stdlib_hashmaps.html#slots_bits-returns-the-number-of-bits-used-to-address-the-hash-map-slots))
+!! (Specifications: :doc:`/specs/stdlib_hashmaps`)
 !!
 !! Arguments:
 !!     map - an open hash map

@@ -1,12 +1,11 @@
----
-title: str2num
----
-
-# The `stdlib_str2num` module
+# `stdlib_str2num`
 
 This module proposes a function-style interface for string-to-number conversion. It also profits from Fortran's interfaces to implement precision-dependant algorithms to maximize runtime efficiency.
 
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## `to_num` - conversion of strings to numbers
 
@@ -20,7 +19,7 @@ Convert a string or an array of strings to numerical types.
 
 ### Syntax
 
-`number = ` [[stdlib_str2num(module):to_num(interface)]] `(string, mold)`
+`number = ` `to_num` `(string, mold)`
 
 ### Arguments
 
@@ -34,8 +33,42 @@ Return a scalar of numerical type (i.e., `integer`, or `real`).
 
 ### Example
 
-```fortran
-{!example/strings/example_string_to_number.f90!}
+```{literalinclude} ../../example/strings/example_string_to_number.f90
+:language: fortran
+```
+
+## `to_num_base` - conversion of strings to numbers with status
+
+### Status
+
+Experimental
+
+### Description
+
+Convert the initial number in a string and return the position where
+conversion stopped together with a status code.
+
+### Syntax
+
+`call ` {f:iface}`to_num_base` `(string, number, position, status)`
+
+### Arguments
+
+`string`: argument has `intent(in)` and is of type `character(*)`.
+
+`number`: argument has `intent(out)` and is of numerical type (that is of
+`integer` or of `real`).
+
+`position`: argument has `intent(out)` and is of type `integer(int8)`. It is
+the position of the first character after the converted number.
+
+`status`: argument has `intent(out)` and is of type `integer(int8)`. A value of
+zero indicates a successful conversion.
+
+### Example
+
+```{literalinclude} ../../example/strings/example_to_num_base.f90
+:language: fortran
 ```
 
 ## `to_num_from_stream` - conversion of a stream of values in a string to numbers
@@ -50,7 +83,7 @@ Convert a stream of values in a string to an array of values.
 
 ### Syntax
 
-`number = ` [[stdlib_str2num(module):to_num_from_stream(interface)]] `(string, mold)`
+`number = ` `to_num_from_stream` `(string, mold)`
 
 ### Arguments
 
@@ -64,8 +97,8 @@ Return a scalar of numerical type (i.e., `integer` or `real`).
 
 ### Example
 
-```fortran
-{!example/strings/example_stream_of_strings_to_numbers.f90!}
+```{literalinclude} ../../example/strings/example_stream_of_strings_to_numbers.f90
+:language: fortran
 ```
 
 ## Note

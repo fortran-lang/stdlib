@@ -23,8 +23,7 @@ module stdlib_stats_distribution_uniform
     !!
     !! Get uniformly distributed random variate for integer, real and complex
     !! variables.
-    !! ([Specification](../page/specs/stdlib_stats_distribution_uniform.html#
-    !! rvs_uniform-uniform-distribution-random-variates))
+    !! (Specification: :doc:`/specs/stdlib_stats_distribution_uniform`)
 
         module procedure rvs_unif_0_rsp                 ! 0 dummy variable
 
@@ -47,8 +46,7 @@ module stdlib_stats_distribution_uniform
     !!
     !! Get uniform distribution probability density (pdf) for integer, real and
     !! complex variables.
-    !! ([Specification](../page/specs/stdlib_stats_distribution_uniform.html#
-    !! pdf_uniform-uniform-probability-density-function))
+    !! (Specification: :doc:`/specs/stdlib_stats_distribution_uniform`)
 
         #:for k1, t1 in ALL_KINDS_TYPES
         module procedure pdf_unif_${t1[0]}$${k1}$
@@ -61,8 +59,7 @@ module stdlib_stats_distribution_uniform
     !!
     !! Get uniform distribution cumulative distribution function (cdf) for integer,
     !! real and complex variables.
-    !! ([Specification](../page/specs/stdlib_stats_distribution_uniform.html#
-    !! cdf_uniform-uniform-cumulative-distribution-function))
+    !! (Specification: :doc:`/specs/stdlib_stats_distribution_uniform`)
     !!
         #:for k1, t1 in ALL_KINDS_TYPES
         module procedure cdf_unif_${t1[0]}$${k1}$
@@ -75,8 +72,7 @@ module stdlib_stats_distribution_uniform
     !!
     !! Fisher-Yates shuffle algorithm for a rank one array of integer, real and
     !! complex variables.
-    !! ([Specification](../page/specs/stdlib_stats_distribution_uniform.html#
-    !! shuffle-using-fisher-yates-algorithm-to-generate-a-random-permutation-of-a-list))
+    !! (Specification: :doc:`/specs/stdlib_stats_distribution_uniform`)
     !!
         #:for k1, t1 in ALL_KINDS_TYPES
         module procedure shuffle_${t1[0]}$${k1}$

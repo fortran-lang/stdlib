@@ -586,10 +586,9 @@ contains
    #:for k1, t1 in REAL_KINDS_TYPES
     subroutine test_diff_real_${k1}$(error)
         type(error_type), allocatable, intent(out) :: error
-        ${t1}$ :: x(6) = [${t1}$ :: 0, 5, 15, 30, 50, 75]
-        ${t1}$ :: A(1, 3) = reshape([${t1}$ :: 1, 3, 5], [1, 3])
-        ${t1}$ :: B(2) = [${t1}$ :: 1, 2]
-        
+        ${t1}$, parameter :: x(6) = [${t1}$ :: 0, 5, 15, 30, 50, 75]
+        ${t1}$, parameter :: A(1, 3) = reshape([${t1}$ :: 1, 3, 5], [1, 3])
+        ${t1}$, parameter :: B(2) = [${t1}$ :: 1, 2]
         !> rank-1 diff
         call check(error, all_close(diff(x), [${t1}$ :: 5, 10, 15, 20, 25]), &
             "diff(<rank-1>) in test_diff_real_${k1}$ failed")
@@ -635,9 +634,9 @@ contains
     #:for k1, t1 in INT_KINDS_TYPES
     subroutine test_diff_int_${k1}$(error)
         type(error_type), allocatable, intent(out) :: error
-        ${t1}$ :: x(6) = [${t1}$ :: 0, 5, 15, 30, 50, 75]
-        ${t1}$ :: A(1, 3) = reshape([${t1}$ :: 1, 3, 5], [1, 3])
-        ${t1}$ :: B(2) = [${t1}$ :: 1, 2]
+        ${t1}$, parameter :: x(6) = [${t1}$ :: 0, 5, 15, 30, 50, 75]
+        ${t1}$, parameter :: A(1, 3) = reshape([${t1}$ :: 1, 3, 5], [1, 3])
+        ${t1}$, parameter :: B(2) = [${t1}$ :: 1, 2]
         
         !> rank-1 diff
         call check(error, all(diff(x) == [${t1}$ :: 5, 10, 15, 20, 25]), &

@@ -1,6 +1,6 @@
 program example_gamma_rvs
-  use stdlib_random, only: random_seed
-  use stdlib_stats_distribution_gamma, only: rgamma => rvs_gamma
+  use stdlib_stats, only: random_seed
+  use stdlib_stats, only: rgamma => rvs_gamma
 
   implicit none
   real :: shape_arr(2, 3, 4)

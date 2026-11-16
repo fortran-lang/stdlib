@@ -1,6 +1,6 @@
 program example_uniform_cdf
-  use stdlib_random, only: random_seed
-  use stdlib_stats_distribution_uniform, only: uni_cdf => cdf_uniform, &
+  use stdlib_stats, only: random_seed
+  use stdlib_stats, only: uni_cdf => cdf_uniform, &
                                                uni => rvs_uniform
 
   implicit none

@@ -1,10 +1,9 @@
----
-title: sorting
----
+# `stdlib_sorting`
 
-# The `stdlib_sorting` module
-
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## Overview of sorting
 
@@ -26,8 +25,8 @@ module's `string_type` type.
 
 The module `stdlib_sorting` defines several public entities, two
 default integer parameters, `int_index` and `int_index_low`, and four overloaded
-subroutines: `ORD_SORT`, `SORT`, `RADIX_SORT` and `SORT_INDEX`. The
-overloaded subroutines also each have several specific names for
+subroutines: `ORD_SORT`, `SORT`, `RADIX_SORT`, `SORT_INDEX` and `UNIQUE`.
+The overloaded subroutines also each have several specific names for
 versions corresponding to different types of array arguments.
 
 ### The parameters `int_index` and `int_index_low`
@@ -57,6 +56,9 @@ data:
   that are effectively unordered before the sort;
 * `RADIX_SORT` is intended to sort fixed width intrinsic data 
   types (integers and reals).
+* `UNIQUE` computes the distinct elements of a rank one-array,
+  either preserving the order of first occurrence or returning the
+  unique elements in sorted order.
 
 #### Licensing
 
@@ -232,6 +234,22 @@ The `RADIX_SORT` needs a buffer that have same size of the input data.
 Your can provide it using `work` argument, if not the subroutine will
 allocate the buffer and deallocate before return.
 
+#### The `UNIQUE` subroutine
+
+`UNIQUE` computes the distinct elements of a rank one array.
+
+When the argument `sorted_output` is `.true.`, the implementation
+sorts a copy of the input array before removing adjacent duplicate
+elements, producing the unique values in increasing order.
+
+When `sorted_output` is `.false.`, the implementation preserves the
+order of first occurrence by using a hash map to identify values that
+have already been encountered.
+
+The sorted implementation has `O(N Log(N))` runtime complexity, while
+the order-preserving implementation has expected `O(N)` runtime
+complexity. Both require `O(N)` additional memory.
+
 ### Specifications of the `stdlib_sorting` procedures
 
 #### `ord_sort` - sorts an input array
@@ -247,7 +265,7 @@ increasing, or decreasing, value.
 
 ##### Syntax
 
-`call ` [[stdlib_sorting(module):ord_sort(interface)]] `( array[, work, reverse ] )`
+`call ` {f:iface}`ord_sort` `( array[, work, reverse ] )`
 
 ##### Class
 
@@ -297,8 +315,8 @@ function `LGT`.
 
 ##### Example
 
-```fortran
-{!example/sorting/example_ord_sort.f90!}
+```{literalinclude} ../../example/sorting/example_ord_sort.f90
+:language: fortran
 ```
 
 #### `sort` - sorts an input array
@@ -314,7 +332,7 @@ decreasing, value.
 
 ##### Syntax
 
-`call ` [[stdlib_sorting(module):sort(interface)]] `( array[, reverse] )`
+`call ` {f:iface}`sort` `( array[, reverse] )`
 
 ##### Class
 
@@ -352,8 +370,8 @@ element of `array` is a `NaN`.  Sorting of `CHARACTER(*)` and
 ##### Example
 
 
-```fortran
-{!example/sorting/example_sort.f90!}
+```{literalinclude} ../../example/sorting/example_sort.f90
+:language: fortran
 ```
 
 #### `radix_sort` - sorts an input array
@@ -369,7 +387,7 @@ decreasing, value.
 
 ##### Syntax
 
-`call ` [[stdlib_sorting(module):radix_sort(interface)]] `( array[, work, reverse] )`
+`call ` {f:iface}`radix_sort` `( array[, work, reverse] )`
 
 ##### Class
 
@@ -401,8 +419,8 @@ element of `array` is a `NaN`.
 
 ##### Example
 
-```fortran
-{!example/sorting/example_radix_sort.f90!}
+```{literalinclude} ../../example/sorting/example_radix_sort.f90
+:language: fortran
 ```
 
 #### `sort_adjoint` - sorts an associated array 
@@ -420,7 +438,7 @@ sorted according to the same permutations as for the input `array`.
 
 ##### Syntax
 
-`call ` [[stdlib_sorting(module):sort_adjoint(interface)]] `( array, adjoint_array[, work, iwork, reverse ] )`
+`call ` {f:iface}`sort_adjoint` `( array, adjoint_array[, work, iwork, reverse ] )`
 
 ##### Class
 
@@ -480,8 +498,8 @@ different on return
 
 Sorting a rank one array with `sort_adjoint`:
 
-```Fortran
-{!example/sorting/example_sort_adjoint.f90!}
+```{literalinclude} ../../example/sorting/example_sort_adjoint.f90
+:language: fortran
 ```
 
 #### `sort_index` - creates an array of sorting indices for an input array, while also sorting the array.
@@ -498,7 +516,7 @@ sort the input `array` to produce the output `array`.
 
 ##### Syntax
 
-`call ` [[stdlib_sorting(module):sort_index(interface)]] `( array, index[, work, iwork, reverse ] )`
+`call ` {f:iface}`sort_index` `( array, index[, work, iwork, reverse ] )`
 
 ##### Class
 
@@ -559,8 +577,8 @@ different on return
 
 Sorting a rank one array with `sort_index`:
 
-```Fortran
-{!example/sorting/example_sort_index.f90!}
+```{literalinclude} ../../example/sorting/example_sort_index.f90
+:language: fortran
 ```
 
 Sorting a related rank one array:
@@ -624,6 +642,61 @@ Sorting an array of a derived type based on the data in one component
         ! Sort a_data based on the sorting of that component
         a_data(:) = a_data( index(1:size(a_data)) )
     end subroutine sort_a_data
+```
+
+#### `unique` - computes the distinct elements of an input array
+
+##### Status
+
+Experimental
+
+##### Description
+
+Returns the distinct elements of the input array in `output`.
+
+##### Syntax
+
+`call ` {f:iface}`unique` `( array, output[, sorted_output, tolerance] )`
+
+##### Class
+
+Generic subroutine.
+
+##### Arguments
+
+`array`: shall be a rank one array of any supported kind of the types `integer`,
+`real`, `character`, `string_type` and `complex`. It is an `intent(in)` argument.
+
+`output`: shall be an allocatable rank-one array of the same type and
+kind as `array`. It is an `intent(inout)` argument. On return, it
+contains one copy of each distinct element of `array`.
+
+`sorted_output` (optional): shall be a scalar of type default `logical`.
+It is an `intent(in)` argument. If `.true.`, the result contains
+the unique elements in increasing order. Otherwise, the result
+contains the unique elements in the order of their first occurrence.
+`SORTED_OUTPUT` is `.false.` by default. This argument is not available
+for complex arrays.
+
+`tolerance` (optional): shall be a scalar of the same real kind as `array`.
+It is an `intent(in)` argument specifying the tolerance used when
+comparing values in sorted order. Two values whose absolute
+difference is less than or equal to `tolerance` are considered
+equal. If omitted, tolerance defaults to zero. This argument is only
+available for real arrays. `tolerance` may only be supplied when `sorted_output`
+is `.true.`.
+
+##### Notes
+
+The unsorted (`sorted_output = .false.`) implementation is currently
+unavailable for `real(xdp)` and `complex(`xdp`)` because hashing is
+performed on the underlying binary representation, which is not
+sufficiently portable for these kinds.
+
+##### Example
+
+```{literalinclude} ../../example/sorting/example_unique.f90
+:language: fortran
 ```
 
 

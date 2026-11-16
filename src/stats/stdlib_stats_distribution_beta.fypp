@@ -23,8 +23,7 @@ module stdlib_stats_distribution_beta
     !! Version experimental
     !!
     !! Beta Distribution Random Variates
-    !! ([Specification](../page/specs/stdlib_stats_distribution_beta.html#
-    !! rvs_beta-beta-distribution-random-variates))
+    !! (Specification: :doc:`/specs/stdlib_stats_distribution_beta`)
     !!
         #:for k1, t1 in RC_KINDS_TYPES
         module procedure beta_dist_rvs_${t1[0]}$${k1}$       ! 2 arguments
@@ -40,8 +39,7 @@ module stdlib_stats_distribution_beta
     !! Version experimental
     !!
     !! Beta Distribution Probability Density Function
-    !! ([Specification](../page/specs/stdlib_stats_distribution_beta.html#
-    !! pdf_beta-beta-distribution-probability-density-function))
+    !! (Specification: :doc:`/specs/stdlib_stats_distribution_beta`)
     !!
         #:for k1, t1 in RC_KINDS_TYPES
         module procedure beta_dist_pdf_${t1[0]}$${k1}$
@@ -57,8 +55,7 @@ module stdlib_stats_distribution_beta
     !! Version experimental
     !!
     !! Beta Distribution Cumulative Distribution Function
-    !! ([Specification](../page/specs/stdlib_stats_distribution_beta.html#
-    !! cdf_beta-beta-distribution-cumulative-distribution-function))
+    !! (Specification: :doc:`/specs/stdlib_stats_distribution_beta`)
     !!
         #:for k1, t1 in RC_KINDS_TYPES
         module procedure beta_dist_cdf_${t1[0]}$${k1}$

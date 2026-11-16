@@ -1,8 +1,8 @@
+!> version: experimental
+!>
+!> Date, time, and time interval handling for Fortran.
+!> (Specification: :doc:`/specs/stdlib_datetime`)
 module stdlib_datetime
-    !! version: experimental
-    !!
-    !! Date, time, and time interval handling for Fortran.
-    !! ([Specification](../page/specs/stdlib_datetime.html))
     use stdlib_kinds, only: dp, int64
     use stdlib_strings, only: to_string
     implicit none
@@ -35,9 +35,7 @@ module stdlib_datetime
     type :: timedelta_type
         !! version: experimental
         !!
-        !! Represents a duration or time interval.
-        !! Normalized: seconds in [0,86399], ms in [0,999].
-        !! Days can be negative for negative durations.
+        !! Represents a duration or time interval. Normalized: seconds in [0,86399], ms in [0,999]. Days can be negative for negative durations.
         integer :: days         = 0   !! Number of days
         integer :: seconds      = 0   !! Seconds (0-86399)
         integer :: milliseconds = 0   !! Milliseconds (0-999)
@@ -336,25 +334,66 @@ contains
         end if
     end function format_datetime
 
-    pure function format_timedelta(td) result(str)
+    pure function format_timedelta(td, compact) result(str)
         !! version: experimental
         !!
         !! Format a timedelta_type as a readable string.
+        !! When days == 0 and compact is present and .true., sub-second/sub-minute durations are
+        !! formatted compactly (e.g. "5ms", "1.500s", "05:30[.mmm]"); the "0 days, " prefix is omitted.
+        !! When compact is absent or .false., or when days /= 0, the original verbose format is preserved.
         type(timedelta_type), intent(in) :: td
+        logical, intent(in), optional :: compact
         character(:), allocatable :: str
-        integer :: h, m, s
+        integer :: h, m, s, ms
+        logical :: show_compact
 
-        h = td%seconds / 3600
-        m = mod(td%seconds, 3600) / 60
-        s = mod(td%seconds, 60)
+        h  = td%seconds / 3600
+        m  = mod(td%seconds, 3600) / 60
+        s  = mod(td%seconds, 60)
+        ms = td%milliseconds
+        show_compact = .false. ! .false. by default
+        if (present(compact)) show_compact = compact
 
-        str = to_string(td%days, '(I0)') // ' days, ' // &
-              to_string(h, '(I2.2)') // ':' // &
-              to_string(m, '(I2.2)') // ':' // &
-              to_string(s, '(I2.2)')
+        if (td%days == 0 .and. show_compact) then
+            ! Compact formatting for zero-day durations
+            if (h == 0 .and. m == 0 .and. s == 0) then
+                if (ms == 0) then
+                    str = "0s"
+                else
+                    str = to_string(ms, '(I0)') // "ms"
+                end if
+                return
+            end if
 
-        if (td%milliseconds /= 0) then
-            str = str // '.' // to_string(td%milliseconds, '(I3.3)')
+            if (h == 0 .and. m == 0) then
+                if (ms == 0) then
+                    str = to_string(s, '(I0)') // "s"
+                else
+                    str = to_string(s, '(I0)') // "." // to_string(ms, '(I3.3)') // "s"
+                end if
+                return
+            end if
+
+            if (h > 0) then
+                str = to_string(h, '(I2.2)') // ":" // &
+                      to_string(m, '(I2.2)') // ":" // &
+                      to_string(s, '(I2.2)')
+            else
+                str = to_string(m, '(I2.2)') // ":" // &
+                      to_string(s, '(I2.2)')
+            end if
+
+            if (ms /= 0) str = str // "." // to_string(ms, '(I3.3)')
+        else
+            ! Original format for durations with days
+            str = to_string(td%days, '(I0)') // ' days, ' // &
+                  to_string(h, '(I2.2)') // ':' // &
+                  to_string(m, '(I2.2)') // ':' // &
+                  to_string(s, '(I2.2)')
+
+            if (ms /= 0) then
+                str = str // '.' // to_string(ms, '(I3.3)')
+            end if
         end if
     end function format_timedelta
 
@@ -643,8 +682,7 @@ contains
     end function total_seconds
 
     pure function days_from_civil(y, m, d) result(days)
-        !! Convert civil date to days since 1970-01-01.
-        !! Howard Hinnant's algorithm (public domain).
+        !! Convert civil date to days since 1970-01-01. Howard Hinnant's algorithm (public domain).
         integer, intent(in) :: y, m, d
         integer(int64) :: days
         integer :: yr, era, yoe, doy, doe, mp
@@ -668,8 +706,7 @@ contains
     end function days_from_civil
 
     pure subroutine civil_from_days(z, y, m, d)
-        !! Convert days since 1970-01-01 to civil date.
-        !! Howard Hinnant's algorithm (public domain).
+        !! Convert days since 1970-01-01 to civil date. Howard Hinnant's algorithm (public domain).
         integer(int64), intent(in) :: z
         integer, intent(out) :: y, m, d
         integer(int64) :: zz, era64

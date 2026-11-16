@@ -1,9 +1,20 @@
 ## Unreleased
 
-Changes to existing modules
+Changes to the existing modules
   - Enforce incomplete gamma argument domains and fix uninitialized-result
     diagnostics
     [#898](https://github.com/fortran-lang/stdlib/issues/898)
+  - Preserve rectangular matrix dimensions in `coo2dense` and `csr2dense`.
+    [#1228](https://github.com/fortran-lang/stdlib/issues/1228)
+  - Change in module `stdlib_intrinsics`
+    - Fix inverted MASK inclusion in `stdlib_sum` and `stdlib_sum_kahan`.
+      Update masked Kahan sum and compensation only for selected elements.
+  - Fixed declaration order in external BLAS/LAPACK interfaces for compilation
+    with gfortran under `-std=f2018`
+    [#1210](https://github.com/fortran-lang/stdlib/issues/1210)
+  - Change in module `stdlib_system`
+    - Added `set_environment_variable` and `delete_environment_variable`
+      [#1187](https://github.com/fortran-lang/stdlib/issues/1187)
 
 Changes to the existing build system
   - Fixed absolute paths in generated pkg-config file for external BLAS/LAPACK 

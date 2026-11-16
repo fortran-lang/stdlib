@@ -36,7 +36,7 @@ module stdlib_stringlist_type
     !> Version: experimental
     !> 
     !> Returns an instance of type 'stringlist_index_type' representing forward index
-    !> [Specifications](../page/specs/stdlib_stringlist_type.html#fidx)
+    !> Specifications: :doc:`/specs/stdlib_stringlist_type`
     interface fidx
         module procedure forward_index
     end interface
@@ -44,7 +44,7 @@ module stdlib_stringlist_type
     !> Version: experimental
     !> 
     !> Returns an instance of type 'stringlist_index_type' representing backward index
-    !> [Specifications](../page/specs/stdlib_stringlist_type.html#bidx)
+    !> Specifications: :doc:`/specs/stdlib_stringlist_type`
     interface bidx
         module procedure backward_index
     end interface
@@ -93,7 +93,7 @@ module stdlib_stringlist_type
     !>
     !> Constructor for stringlist
     !> Returns an instance of type stringlist_type
-    !> [Specifications](../page/specs/stdlib_stringlist_type.html#stringlist_type)
+    !> Specifications: :doc:`/specs/stdlib_stringlist_type`
     interface stringlist_type
         module procedure new_stringlist
         module procedure new_stringlist_carray
@@ -104,7 +104,7 @@ module stdlib_stringlist_type
     !> 
     !> Concatenates stringlist with the input entity
     !> Returns a new stringlist
-    !> [Specifications](../page/specs/stdlib_stringlist_type.html#append-operator)
+    !> Specifications: :doc:`/specs/stdlib_stringlist_type`
     interface operator(//)
         module procedure append_char
         module procedure append_string
@@ -121,7 +121,7 @@ module stdlib_stringlist_type
     !> 
     !> Compares stringlist for equality with the input entity
     !> Returns a logical
-    !> [Specifications](../page/specs/stdlib_stringlist_type.html#equality-operator)
+    !> Specifications: :doc:`/specs/stdlib_stringlist_type`
     interface operator(==)
         module procedure eq_stringlist
         module procedure eq_stringlist_carray
@@ -134,7 +134,7 @@ module stdlib_stringlist_type
     !> 
     !> Compares stringlist for inequality with the input entity
     !> Returns a logical
-    !> [Specifications](../page/specs/stdlib_stringlist_type.html#inequality-operator)
+    !> Specifications: :doc:`/specs/stdlib_stringlist_type`
     interface operator(/=)
         module procedure ineq_stringlist
         module procedure ineq_stringlist_carray

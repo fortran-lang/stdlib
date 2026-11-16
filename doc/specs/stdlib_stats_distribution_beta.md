@@ -1,10 +1,9 @@
----
-title: stats_distribution_beta
----
+# `stdlib_stats_distribution_beta`
 
-# Statistical Distributions -- Beta Distribution Module
-
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## `rvs_beta` - beta distribution random variates
 
@@ -14,9 +13,9 @@ Experimental
 
 ### Description
 
-The beta distribution is a continuous probability distribution defined on the interval [0, 1], widely used for modeling random variables that represent proportions, probabilities, and other bounded quantities. It is defined by two shape parameters (\\(a\\) and \\(b\\)) that control the distribution's form.
+The beta distribution is a continuous probability distribution defined on the interval [0, 1], widely used for modeling random variables that represent proportions, probabilities, and other bounded quantities. It is defined by two shape parameters ($a$ and $b$) that control the distribution's form.
 
-With two arguments (a, b), the function returns a random sample from the beta distribution \\(\\text{Beta}(a, b)\\).
+With two arguments (a, b), the function returns a random sample from the beta distribution $\text{Beta}(a, b)$.
 
 The optional `loc` parameter specifies the location (shift) of the distribution.
 
@@ -24,12 +23,13 @@ With three or more arguments including `array_size`, the function returns a rank
 
 For complex shape parameters, the real and imaginary parts are sampled independently of each other.
 
-@note
-For shape parameters less than 1, the function uses a uniform method. For parameters greater than or equal to 1, it uses the gamma ratio method[^1], where \\(X \\sim \\text{Beta}(a,b)\\) is generated as \\(X = \\frac{Y_1}{Y_1 + Y_2}\\) where \\(Y_1 \\sim \\Gamma(a,1)\\) and \\(Y_2 \\sim \\Gamma(b,1)\\).
+```{note}
+For shape parameters less than 1, the function uses a uniform method. For parameters greater than or equal to 1, it uses the gamma ratio method[^1], where $X \sim \text{Beta}(a,b)$ is generated as $X = \frac{Y_1}{Y_1 + Y_2}$ where $Y_1 \sim \Gamma(a,1)$ and $Y_2 \sim \Gamma(b,1)$.
+```
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_beta(module):rvs_beta(interface)]](a, b [[, loc]] [[, array_size]])`
+`result = `rvs_beta`(a, b `, loc` `, array_size`)`
 
 ### Class
 
@@ -54,8 +54,8 @@ The result is a scalar or rank-1 array with a size of `array_size`, and the same
 
 ### Example
 
-```fortran
-{!example/stats_distribution_beta/example_beta_rvs.f90!}
+```{literalinclude} ../../example/stats_distribution_beta/example_beta_rvs.f90
+:language: fortran
 ```
 
 ## `pdf_beta` - beta distribution probability density function
@@ -68,19 +68,19 @@ Experimental
 
 The probability density function (pdf) of the single real variable beta distribution is:
 
-$$ f(x)= \\frac{x^{a-1}(1-x)^{b-1}}{B(a,b)} ,\\quad 0<x<1,\\ a>0,\\ b>0 $$
+$$ f(x)= \frac{x^{a-1}(1-x)^{b-1}}{B(a,b)} ,\quad 0<x<1,\ a>0,\ b>0 $$
 
-where \\(a\\) and \\(b\\) are the shape parameters, and \\(B(a,b)\\) is the beta function.
+where $a$ and $b$ are the shape parameters, and $B(a,b)$ is the beta function.
 
 An optional `loc` parameter specifies the location (shift) of the distribution.
 
-For a complex variable \\(z=(x + y i)\\) with independent real \\(x\\) and imaginary \\(y\\) parts, the joint probability density function is the product of the corresponding real and imaginary marginal pdfs:[^2]
+For a complex variable $z=(x + y i)$ with independent real $x$ and imaginary $y$ parts, the joint probability density function is the product of the corresponding real and imaginary marginal pdfs:[^2]
 
-$$f(x+\\mathit{i}y)=f(x)f(y)$$
+$$f(x+\mathit{i}y)=f(x)f(y)$$
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_beta(module):pdf_beta(interface)]](x, a, b [[, loc]])`
+`result = `pdf_beta`(x, a, b `, loc`)`
 
 ### Class
 
@@ -106,8 +106,8 @@ The result is a scalar or an array, with a shape conformable to the arguments, a
 
 ### Example
 
-```fortran
-{!example/stats_distribution_beta/example_beta_pdf.f90!}
+```{literalinclude} ../../example/stats_distribution_beta/example_beta_pdf.f90
+:language: fortran
 ```
 
 ## `cdf_beta` - beta distribution cumulative distribution function
@@ -120,19 +120,19 @@ Experimental
 
 Cumulative distribution function (cdf) of the single real variable beta distribution is:
 
-$$ F(x)= I_x(a, b),\\quad 0<x<1,\\ a>0,\\ b>0 $$
+$$ F(x)= I_x(a, b),\quad 0<x<1,\ a>0,\ b>0 $$
 
-where \\(I_x(a,b)\\) is the regularized incomplete beta function.
+where $I_x(a,b)$ is the regularized incomplete beta function.
 
 An optional `loc` parameter specifies the location (shift) of the distribution.
 
-For a complex variable \\(z=(x + y i)\\) with independent real \\(x\\) and imaginary \\(y\\) parts, the joint cumulative distribution function is the product of the corresponding real and imaginary marginal cdfs:[^2]
+For a complex variable $z=(x + y i)$ with independent real $x$ and imaginary $y$ parts, the joint cumulative distribution function is the product of the corresponding real and imaginary marginal cdfs:[^2]
 
-$$F(x+\\mathit{i}y)=F(x)F(y)$$
+$$F(x+\mathit{i}y)=F(x)F(y)$$
 
 ### Syntax
 
-`result = [[stdlib_stats_distribution_beta(module):cdf_beta(interface)]](x, a, b [[, loc]])`
+`result = `cdf_beta`(x, a, b `, loc`)`
 
 ### Class
 
@@ -158,8 +158,8 @@ The result is a scalar or an array, with a shape conformable to the arguments, a
 
 ### Example
 
-```fortran
-{!example/stats_distribution_beta/example_beta_cdf.f90!}
+```{literalinclude} ../../example/stats_distribution_beta/example_beta_cdf.f90
+:language: fortran
 ```
 
 [^1]: Devroye, Luc. _Non-Uniform Random Variate Generation_. Springer-Verlag, 1986 (Chapter IX, Section 3).

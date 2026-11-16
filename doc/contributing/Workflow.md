@@ -2,9 +2,11 @@
 title: Workflow for Contributors
 ---
 
-@note
+```{note}
 This is a living document.
 You are welcome to propose changes to this workflow by opening an
 [issue](https://github.com/fortran-lang/stdlib/issues).
+```
 
-{!WORKFLOW.md!}
+```{include} ../../WORKFLOW.md
+```
