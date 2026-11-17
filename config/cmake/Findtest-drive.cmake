@@ -133,29 +133,22 @@ foreach(method ${${_pkg}_FIND_METHOD})
   if("${method}" STREQUAL "fetch")
     message(STATUS "Retrieving ${_lib} from ${_url}")
     include(FetchContent)
+    # test-drive's own tester is not needed
+    if(NOT DEFINED TESTDRIVE_BUILD_TESTING)
+      set(TESTDRIVE_BUILD_TESTING OFF)
+    endif()
+    # test-drive 0.6.1 does not pass WITH_QP/WITH_XDP on to its library
+    foreach(_opt QP XDP)
+      if(NOT DEFINED TESTDRIVE_WITH_${_opt} AND DEFINED WITH_${_opt})
+        set(TESTDRIVE_WITH_${_opt} ${WITH_${_opt}})
+      endif()
+    endforeach()
     FetchContent_Declare(
       "${_lib}"
       GIT_REPOSITORY "${_url}"
-      GIT_TAG "v0.4.0"
+      GIT_TAG "v0.6.1"
       )
     FetchContent_MakeAvailable("${_lib}")
-
-    # test-drive's own self-test executable is not needed to use the library;
-    # skip building it (some older compilers, e.g. ifx 2022.0, fail on it).
-    # Disabling its registered tests (so they don't report "Not Run") needs
-    # CMake 3.28, so older versions keep building it.
-    if(TARGET "${_lib}-tester" AND NOT CMAKE_VERSION VERSION_LESS 3.28)
-      set_target_properties("${_lib}-tester" PROPERTIES EXCLUDE_FROM_ALL TRUE)
-      FetchContent_GetProperties("${_lib}" SOURCE_DIR _td_src)
-      get_property(_td_tests DIRECTORY "${_td_src}/test" PROPERTY TESTS)
-      if(_td_tests)
-        set_tests_properties(
-          ${_td_tests}
-          DIRECTORY "${_td_src}/test"
-          PROPERTIES DISABLED TRUE
-        )
-      endif()
-    endif()
 
     add_library("${_lib}::${_lib}" INTERFACE IMPORTED)
     target_link_libraries("${_lib}::${_lib}" INTERFACE "${_lib}")
