@@ -19,8 +19,6 @@ module test_linalg_solve_iterative
         !> Collection of tests
         type(unittest_type), allocatable, intent(out) :: tests(:)
 
-        allocate(tests(0))
-
         tests = [ new_unittest("stdlib_solve_cg",test_stdlib_solve_cg), &
                   new_unittest("stdlib_solve_pcg",test_stdlib_solve_pcg), &
                   new_unittest("stdlib_solve_gmres",test_stdlib_solve_gmres), &
