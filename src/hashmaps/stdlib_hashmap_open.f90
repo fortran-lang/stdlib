@@ -241,8 +241,7 @@ contains
         free_free_list: do while( map % num_free > 0 )
             free_list => map % free_list
             map % free_list => map % free_list % next
-            free_list % next => null()
-            free_list % target => null()
+            deallocate( free_list )
             map % num_free = map % num_free - 1
         end do free_free_list
         map % num_free = 0
@@ -608,8 +607,7 @@ contains
                 free_list => map % free_list
                 bucket => free_list % target
                 map % free_list => free_list % next
-                free_list % target => null()
-                free_list % next => null()
+                deallocate( free_list )
                 if (bucket % inmap <= 0) &
                     error stop submodule_name // " % " // procedure_name // &
                     ": Failed consistency check: BUCKET % INMAP <= 0"
