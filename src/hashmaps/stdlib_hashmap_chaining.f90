@@ -746,7 +746,6 @@ contains
         if ( present(existed) ) existed = .true.
         hash_val = bucket % hash_val
         k = fibonacci_hash( hash_val, map % nbits )
-        allocate(aentry)
         aentry => map % slots(k) % target
         if ( associated(aentry) ) then
             if ( aentry % inmap == inmap ) then
