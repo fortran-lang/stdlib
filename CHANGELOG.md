@@ -2,8 +2,10 @@
 
 Changes to the existing modules
   - Change in module `stdlib_hashmaps`
-    - Fix memory leak in `open_hashmap_type`: free-list nodes created by
-      `remove` are now deallocated when reused and when the map is freed.
+    - Fix memory leak in `open_hashmap_type`: `remove` allocated a separate
+      free-list node per removed entry that was never deallocated. Removed
+      entries are now linked into the free list directly, so no extra
+      allocation is made and the private `open_map_entry_list` type is gone.
   - Preserve rectangular matrix dimensions in `coo2dense` and `csr2dense`.
     [#1228](https://github.com/fortran-lang/stdlib/issues/1228)
   - Change in module `stdlib_intrinsics`
