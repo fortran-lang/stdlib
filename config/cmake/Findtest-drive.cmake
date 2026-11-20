@@ -133,10 +133,20 @@ foreach(method ${${_pkg}_FIND_METHOD})
   if("${method}" STREQUAL "fetch")
     message(STATUS "Retrieving ${_lib} from ${_url}")
     include(FetchContent)
+    # test-drive's own tester is not needed
+    if(NOT DEFINED TESTDRIVE_BUILD_TESTING)
+      set(TESTDRIVE_BUILD_TESTING OFF)
+    endif()
+    # test-drive 0.6.1 does not pass WITH_QP/WITH_XDP on to its library
+    foreach(_opt QP XDP)
+      if(NOT DEFINED TESTDRIVE_WITH_${_opt} AND DEFINED WITH_${_opt})
+        set(TESTDRIVE_WITH_${_opt} ${WITH_${_opt}})
+      endif()
+    endforeach()
     FetchContent_Declare(
       "${_lib}"
       GIT_REPOSITORY "${_url}"
-      GIT_TAG "v0.4.0"
+      GIT_TAG "v0.6.1"
       )
     FetchContent_MakeAvailable("${_lib}")
 
