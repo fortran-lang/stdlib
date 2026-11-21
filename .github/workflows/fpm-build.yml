@@ -11,7 +11,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         toolchain: [{compiler: gcc, version: '13' }]
-        fpm_versions: [v0.12.0, current]
+        fpm_versions: [v0.12.0, v0.14.0, current]
 
     steps:
       - name: Checkout code
@@ -32,7 +32,7 @@ jobs:
           version: ${{ matrix.toolchain.version }}
 
       - name: Setup Fortran Package Manager
-        uses: fortran-lang/setup-fpm@v11
+        uses: fortran-lang/setup-fpm@v12
         with:
           fpm-version: ${{ matrix.fpm_versions }}
 
