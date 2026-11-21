@@ -1,6 +1,9 @@
 ## Unreleased
 
 Changes to the existing modules
+  - Enforce incomplete gamma argument domains and fix uninitialized-result
+    diagnostics
+    [#898](https://github.com/fortran-lang/stdlib/issues/898)
   - Preserve rectangular matrix dimensions in `coo2dense` and `csr2dense`.
     [#1228](https://github.com/fortran-lang/stdlib/issues/1228)
   - Change in module `stdlib_intrinsics`

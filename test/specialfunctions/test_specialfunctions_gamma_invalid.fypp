@@ -1,0 +1,55 @@
+#:include "common.fypp"
+program test_specialfunctions_gamma_invalid
+    use stdlib_kinds, only : sp, dp
+    use stdlib_specialfunctions_gamma, only : lower_incomplete_gamma, &
+        upper_incomplete_gamma, log_lower_incomplete_gamma, &
+        log_upper_incomplete_gamma
+    implicit none
+
+    integer :: i, exit_status
+    character(len=256) :: executable
+    character(len=32) :: test_case
+    character(len=32), parameter :: cases(*) = [character(len=32) :: &
+        #:for op in ["lower", "log_lower", "upper", "log_upper"]
+          #:for k in ["sp", "dp"]
+            #:for domain in ["negative_real", "zero_real", "negative_p_real", "zero_integer", "negative_p_integer"]
+        "${op}$_${k}$_${domain}$", &
+            #:endfor
+          #:endfor
+        #:endfor
+        ""]
+
+    call get_command_argument(2, test_case)
+    if (len_trim(test_case) == 0) then
+        call get_command_argument(0, executable)
+        do i = 1, size(cases) - 1
+            call execute_command_line(trim(executable)//" child " &
+                //trim(cases(i)), &
+                exitstat=exit_status)
+            if (exit_status == 0) then
+                error stop "Invalid incomplete gamma arguments were accepted: " &
+                    //trim(cases(i))
+            end if
+        end do
+        stop
+    end if
+
+    select case (trim(test_case))
+    #:for op in ["lower", "log_lower", "upper", "log_upper"]
+      #:for k in ["sp", "dp"]
+    case ("${op}$_${k}$_negative_real")
+        print *, ${op}$_incomplete_gamma(1.5_${k}$, -1.0_${k}$)
+    case ("${op}$_${k}$_zero_real")
+        print *, ${op}$_incomplete_gamma(0.0_${k}$, 0.0_${k}$)
+    case ("${op}$_${k}$_negative_p_real")
+        print *, ${op}$_incomplete_gamma(-1.0_${k}$, 0.0_${k}$)
+    case ("${op}$_${k}$_zero_integer")
+        print *, ${op}$_incomplete_gamma(0, 0.0_${k}$)
+    case ("${op}$_${k}$_negative_p_integer")
+        print *, ${op}$_incomplete_gamma(-1, 0.0_${k}$)
+      #:endfor
+    #:endfor
+    case default
+        error stop "Unknown test case"
+    end select
+end program test_specialfunctions_gamma_invalid
