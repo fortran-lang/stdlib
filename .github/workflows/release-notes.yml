@@ -1,0 +1,42 @@
+name: Release Notes
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag name for release draft (e.g. v0.9.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  draft-release:
+    name: Generate Release Notes Draft
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create or update draft release with auto-generated notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG_NAME: ${{ inputs.tag_name || github.ref_name }}
+        run: |
+          echo "Generating release notes for tag: ${TAG_NAME}"
+          if gh release view "${TAG_NAME}" >/dev/null 2>&1; then
+            echo "Draft release for ${TAG_NAME} already exists. Updating notes..."
+            gh release edit "${TAG_NAME}" --generate-notes --draft
+          else
+            echo "Creating new draft release for ${TAG_NAME}..."
+            gh release create "${TAG_NAME}" \
+              --title "${TAG_NAME}" \
+              --generate-notes \
+              --draft
+          fi
