@@ -1,3 +1,29 @@
+/*
+ * Feature-test macros must be defined before *any* system header is included:
+ * once the C library's own configuration header has been pulled in, it has
+ * already decided which symbols to expose and a later definition has no effect
+ * (and is reported as a redefinition). Without them, a strict-conformance build
+ * (`-std=c99`, or the Intel compilers in strict mode) hides POSIX declarations
+ * such as `fork`, while the GNU default dialect happens to expose them.
+ *
+ * Each macro is guarded so that a build system which already supplies its own
+ * conformance level wins instead of clashing with the values chosen here.
+ */
+#if !defined(_WIN32)
+#  if !defined(_POSIX_C_SOURCE)
+#    define _POSIX_C_SOURCE 200809L /* POSIX.1-2008: fork, waitpid, nanosleep, ... */
+#  endif
+#  if !defined(_XOPEN_SOURCE)
+#    define _XOPEN_SOURCE 700 /* XSI extensions of the same revision */
+#  endif
+#  if !defined(_DEFAULT_SOURCE)
+#    define _DEFAULT_SOURCE 1 /* glibc: keep the BSD/misc declarations visible */
+#  endif
+#  if defined(__APPLE__) && !defined(_DARWIN_C_SOURCE)
+#    define _DARWIN_C_SOURCE 1 /* Darwin: ditto, restricted by _POSIX_C_SOURCE */
+#  endif
+#endif /* !defined(_WIN32) */
+
 #include <sys/types.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,7 +34,6 @@
 #ifdef _WIN32
 #include <windows.h>
 #else
-#define _POSIX_C_SOURCE 199309L
 #include <sys/wait.h>
 #include <sys/stat.h>  
 #include <unistd.h>

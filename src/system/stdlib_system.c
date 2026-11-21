@@ -1,3 +1,29 @@
+/*
+ * Feature-test macros must be defined before *any* system header is included:
+ * once the C library's own configuration header has been pulled in, it has
+ * already decided which symbols to expose and a later definition has no effect
+ * (and is reported as a redefinition). Without them, a strict-conformance build
+ * (`-std=c99`, or the Intel compilers in strict mode) hides POSIX declarations
+ * such as `lstat`, while the GNU default dialect happens to expose them.
+ *
+ * Each macro is guarded so that a build system which already supplies its own
+ * conformance level wins instead of clashing with the values chosen here.
+ */
+#if !defined(_WIN32)
+#  if !defined(_POSIX_C_SOURCE)
+#    define _POSIX_C_SOURCE 200809L /* POSIX.1-2008: lstat, getcwd, nanosleep, ... */
+#  endif
+#  if !defined(_XOPEN_SOURCE)
+#    define _XOPEN_SOURCE 700 /* XSI extensions of the same revision */
+#  endif
+#  if !defined(_DEFAULT_SOURCE)
+#    define _DEFAULT_SOURCE 1 /* glibc: keep the BSD/misc declarations visible */
+#  endif
+#  if defined(__APPLE__) && !defined(_DARWIN_C_SOURCE)
+#    define _DARWIN_C_SOURCE 1 /* Darwin: ditto, restricted by _POSIX_C_SOURCE */
+#  endif
+#endif /* !defined(_WIN32) */
+
 #include <stdbool.h>
 #include <limits.h>
 #include <stddef.h>
@@ -85,6 +111,9 @@ int stdlib_remove_directory(const char* path){
 // Uses `getcwd` on unix, `_getcwd` on windows.
 // Returns the cwd, sets the length of cwd and the `stat` of the operation.
 char* stdlib_get_cwd(size_t* len, int* stat){
+    // Always leave the outputs in a defined state: callers read `len` even when
+    // the call fails, so it must never be left uninitialized.
+    *len = 0;
     *stat = 0;
 #ifdef _WIN32
     char* buffer;
@@ -98,23 +127,45 @@ char* stdlib_get_cwd(size_t* len, int* stat){
     *len = strlen(buffer);
     return buffer;
 #else
-    char buffer[PATH_MAX + 1];
-    if (!getcwd(buffer, sizeof(buffer))) {
-        *stat = errno;
+    // `PATH_MAX` is optional in POSIX: it is left undefined whenever the limit is
+    // indeterminate (GNU/Hurd) and, where it is defined, it is not necessarily an
+    // upper bound for the working directory. Grow the buffer until `getcwd` fits.
+    size_t size = 256;
+    char* buffer = NULL;
+
+    for (;;) {
+        char* grown = realloc(buffer, size);
+
+        if (grown == NULL) {
+            free(buffer);
+            *stat = ENOMEM;  // Memory allocation failure
+            return NULL;
+        }
+        buffer = grown;
+
+        if (getcwd(buffer, size) != NULL) break;
+
+        if (errno != ERANGE || size > ((size_t) -1) / 2) {
+            // Either a hard failure, or a path that cannot be represented
+            *stat = (errno == ERANGE) ? ENAMETOOLONG : errno;
+            free(buffer);
+            return NULL;
+        }
+        size *= 2;
     }
 
     *len = strlen(buffer);
-
-    char* res = malloc(*len + 1);  // Allocate space for null terminator
-    if (res == NULL) {
-        *stat = ENOMEM;  // Set error code for memory allocation failure
-        return NULL;
-    }
-    strncpy(res, buffer, *len);
-    res[*len] = '\0';  // Ensure null termination
-
-    return res;
+    return buffer;
 #endif /* ifdef _WIN32 */
+}
+
+// Releases a buffer returned by `stdlib_get_cwd`.
+// The release happens on the C side on purpose: it keeps the allocation and the
+// matching `free` inside the same C runtime, which matters on Windows where the
+// Fortran and C objects may well be linked against different CRTs.
+// Passing NULL is safe, so callers need not check the failure path.
+void stdlib_free_cstr(char* ptr){
+    free(ptr);
 }
 
 // Wrapper to the platform's `chdir`(change directory) call.
@@ -168,12 +219,13 @@ int stdlib_exists(const char* path, int* stat){
         return fs_type_unknown;
     }
 
-    switch (buf.st_mode & S_IFMT) {
-        case S_IFREG: type = fs_type_regular_file; break;
-        case S_IFDIR: type = fs_type_directory;    break;
-        case S_IFLNK: type = fs_type_symlink;      break;
-        default:      type = fs_type_unknown;      break;
-    }
+    // Use the `S_IS*` predicates rather than masking with `S_IFMT`: the former are
+    // required by POSIX and always visible, whereas `S_IFMT` and friends are
+    // XSI-only and stay hidden in a strict-conformance build.
+    if      (S_ISREG(buf.st_mode)) type = fs_type_regular_file;
+    else if (S_ISDIR(buf.st_mode)) type = fs_type_directory;
+    else if (S_ISLNK(buf.st_mode)) type = fs_type_symlink;
+    else                           type = fs_type_unknown;
 #endif /* ifdef _WIN32 */
     return type;
 }
