@@ -749,14 +749,14 @@ greater than `max_bits`.
 ### The `stdlib_hashmaps` module's derived types
 
 The `stdlib_hashmaps` module defines three public derived types and
-seven private types used in the implementation of the public
+six private types used in the implementation of the public
 types. The public types are the abstract `hashmap_type` and its
 extensions: `chaining_hashmap_type` and `open_hashmap_type`. The three
 private derived types, `chaining_map_entry_type`,
 `chaining_map_entry_ptr`, and `chaining_map_entry_pool` are used in
 the implementation of the `chaining_hashmap_type` public type. The
-four private derived types, `open_map_entry_type`,
-`open_map_entry_list`, `open_map_entry_ptr`, and `open_map_entry_pool`
+three private derived types, `open_map_entry_type`,
+`open_map_entry_ptr`, and `open_map_entry_pool`
 are used in the implementation of the `open_hashmap_type` public
 type. Each of these types are described below. 
 
@@ -999,6 +999,7 @@ the inverse table. The type's definition is below:
         type(key_type)     :: key ! The entry's key
         class(*), allocatable  :: other ! Other entry data
         integer(int_index) :: index ! Index into inverse table
+        type(open_map_entry_type), pointer :: next_free => null() ! Free list link
     end type open_map_entry_type
 ```
 
@@ -1047,7 +1048,7 @@ as follows:
         private
         integer(int_index) :: index_mask = 2_int_index**default_bits-1
         type(open_map_entry_pool), pointer    :: cache => null()
-        type(open_map_entry_list), pointer    :: free_list => null()
+        type(open_map_entry_type), pointer    :: free_list => null()
         type(open_map_entry_ptr), allocatable  :: inverse(:)
         integer(int_index), allocatable        :: slots(:)
     contains
