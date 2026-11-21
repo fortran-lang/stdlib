@@ -96,6 +96,27 @@ You are welcome to propose changes to the workflow by
   [Fortran stdlib style guide](https://github.com/fortran-lang/stdlib/blob/HEAD/STYLE_GUIDE.md).
 
 
+## Authorship and AI tools
+
+Whoever opens a PR owns it: you are responsible for every change in it,
+whatever tools helped you write it. Authorship is for people, so:
+
+* do not credit AI coding tools in commit messages or in the PR title and
+  body: no `Co-authored-by:` trailer that names a tool, no "Generated with"
+  footer, no product names or session links;
+* commit under your own name, and do not open the PR from a branch named after
+  a tool (such as `copilot/...`);
+* do credit the people who helped you, with a `Co-authored-by:` trailer.
+
+When you commit a review suggestion from an AI reviewer in GitHub's web
+interface, GitHub adds a `Co-authored-by:` trailer for the tool: reword that
+commit (for example with `git rebase -i`) and force-push.
+
+The `authorship` check runs on every PR. To check your branch before you push,
+run `python3 .github/check_ai_attribution.py`. See also the
+[discussion on Fortran Discourse](https://fortran-lang.discourse.group/t/symengine-f90-repeatedly-evaluate-an-expression/9911/9).
+
+
 ## For new contributors
 
 If you have never created a pull request before, welcome :tada:.

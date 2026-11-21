@@ -1,0 +1,47 @@
+name: authorship
+
+# Whoever opens a pull request owns it, and authorship is for people: commits
+# and pull-request text carry no AI attribution (co-author trailers, generated-with
+# footers, product names or links), and commits are authored by people. Human
+# co-authors stay welcome. See CONTRIBUTING.md and
+# https://fortran-lang.discourse.group/t/symengine-f90-repeatedly-evaluate-an-expression/9911/9
+#
+# .github/check_ai_attribution.py does the checking; run it locally before pushing:
+#   python3 .github/check_ai_attribution.py
+#
+# Text from the pull request reaches the script through the environment only,
+# never on a command line, so no shell ever parses it.
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: authorship-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  no-ai-attribution:
+    # Dependabot quotes upstream release notes, which credit their own tools.
+    if: github.event.pull_request.user.login != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Self-test
+      run: python3 .github/check_ai_attribution.py --selftest
+
+    - name: Check commits, title, body and branch
+      env:
+        ATTRIBUTION_BASE: ${{ github.event.pull_request.base.sha }}
+        ATTRIBUTION_BASE_REF: ${{ github.event.pull_request.base.ref }}
+        ATTRIBUTION_HEAD: ${{ github.event.pull_request.head.sha }}
+        ATTRIBUTION_PR_TITLE: ${{ github.event.pull_request.title }}
+        ATTRIBUTION_PR_BODY: ${{ github.event.pull_request.body }}
+        ATTRIBUTION_PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+      run: python3 .github/check_ai_attribution.py
