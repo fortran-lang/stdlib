@@ -1,0 +1,41 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+#:set C_KINDS_TYPES = list(zip(CMPLX_KINDS, CMPLX_TYPES, CMPLX_SUFFIX))
+#:set KINDS_TYPES = R_KINDS_TYPES+C_KINDS_TYPES
+module stdlib_spatial
+    use stdlib_kinds, only: sp, dp, xdp, qp
+    use stdlib_constants
+    implicit none
+    private
+    public :: kabsch_umeyama
+
+    interface kabsch_umeyama
+        !! ([Specifications](../page/specs/stdlib_spatial.html#kabsch_umeyama))
+        !! This interface computes the optimal similarity transform (Kabsch–Umeyama):
+        !! \[
+        !!      P \approx c \, R \, Q + t
+        !! \]
+        !! The transformation minimizes the RMSD between corresponding columns
+        !! of P and Q, optionally using weights and with optional scaling.
+        #:for k, t, s in (KINDS_TYPES)
+        module subroutine kabsch_umeyama_${s}$(P, Q, R, t, c, rmsd, W, scale)
+            ${t}$, intent(in) :: P(:, :)
+            !! Target point set (d × N)
+            ${t}$, intent(in) :: Q(:, :)
+            !! Reference point set (d × N)
+            ${t}$, intent(out) :: R(:, :)
+            !! Optimal rotation matrix (d × d)
+            ${t}$, intent(out) :: t(:)
+            !! Translation vector (d)
+            ${t}$, intent(out) :: c
+            !! Scale factor
+            real(${k}$), intent(out) :: rmsd
+            !! Root-mean-square deviation
+            real(${k}$), intent(in), optional :: W(:)
+            !! Optional weights
+            logical, intent(in), optional :: scale
+            !! Enable scaling
+        end subroutine
+        #:endfor
+    end interface
+end module stdlib_spatial
