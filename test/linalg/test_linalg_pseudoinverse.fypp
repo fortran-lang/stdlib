@@ -5,6 +5,7 @@ module test_linalg_pseudoinverse
     use testdrive, only: error_type, check, new_unittest, unittest_type
     use stdlib_linalg
     use stdlib_linalg_constants
+    use stdlib_strings, only: to_string
 
     implicit none (type,external)
     private
@@ -99,7 +100,7 @@ module test_linalg_pseudoinverse
 
         ! Compare with the exact pseudoinverse instead of checking residuals that scale with 1/sigma_min
         call check(error,maxval(abs(inva - exact))<tol,'${ri}$ pseudoinverse (square, convergence): max error '//&
-                   trim(adjustl(real_str(real(maxval(abs(inva - exact)), dp)))))
+                   to_string(maxval(abs(inva - exact))))
         if (allocated(error)) return
 
     end subroutine test_${ri}$_square_pseudoinverse
@@ -126,7 +127,7 @@ module test_linalg_pseudoinverse
 
         ! Compare with the exact pseudoinverse instead of checking residuals that scale with 1/sigma_min
         call check(error,maxval(abs(inva - exact))<tol,'${ri}$ pseudoinverse (tall, convergence): max error '//&
-                   trim(adjustl(real_str(real(maxval(abs(inva - exact)), dp)))))
+                   to_string(maxval(abs(inva - exact))))
         if (allocated(error)) return
 
     end subroutine test_${ri}$_tall_pseudoinverse
@@ -153,7 +154,7 @@ module test_linalg_pseudoinverse
 
         ! Compare with the exact pseudoinverse instead of checking residuals that scale with 1/sigma_min
         call check(error,maxval(abs(inva - exact))<tol,'${ri}$ pseudoinverse (wide, convergence): max error '//&
-                   trim(adjustl(real_str(real(maxval(abs(inva - exact)), dp)))))
+                   to_string(maxval(abs(inva - exact))))
         if (allocated(error)) return
 
     end subroutine test_${ri}$_wide_pseudoinverse
@@ -182,7 +183,7 @@ module test_linalg_pseudoinverse
 
         ! Compare with the exact pseudoinverse instead of checking residuals that scale with 1/sigma_min
         call check(error,maxval(abs(inva - exact))<tol,'${ri}$ pseudoinverse (singular, convergence): max error '//&
-                   trim(adjustl(real_str(real(maxval(abs(inva - exact)), dp)))))
+                   to_string(maxval(abs(inva - exact))))
         if (allocated(error)) return
 
     end subroutine test_${ri}$_singular_pseudoinverse
@@ -198,11 +199,9 @@ module test_linalg_pseudoinverse
         real(${rk}$), intent(in) :: s(:)
         ${rt}$, intent(out) :: a(:,:), pa(:,:)
 
-        integer(ilp) :: i, m, n
+        integer(ilp) :: i
         ${rt}$ :: u(size(a,1),size(a,1)), v(size(a,2),size(a,2)), sig(size(a,1),size(a,2)), psig(size(a,2),size(a,1))
 
-        m = size(a,1)
-        n = size(a,2)
         call random_reflector_${ri}$(u)
         call random_reflector_${ri}$(v)
 
@@ -214,15 +213,14 @@ module test_linalg_pseudoinverse
         end do
 
         ! a = U*S*V^H, and its pseudoinverse is V*S^+*U^H
-        a  = matmul(u, matmul(sig, ${"conjg(transpose(v))" if rt.startswith("complex") else "transpose(v)"}$))
-        pa = matmul(v, matmul(psig, ${"conjg(transpose(u))" if rt.startswith("complex") else "transpose(u)"}$))
+        a  = matmul(u, matmul(sig, hermitian(v)))
+        pa = matmul(v, matmul(psig, hermitian(u)))
     end subroutine make_${ri}$_matrix
 
     !> Random Householder reflector H = I - 2*v*v^H/(v^H*v), which is orthogonal (unitary) and Hermitian
     subroutine random_reflector_${ri}$(h)
         ${rt}$, intent(out) :: h(:,:)
 
-        integer(ilp) :: i, j, n
         ${rt}$ :: v(size(h,1))
         #:if rt.startswith('complex')
         real(${rk}$) :: rea(size(h,1), 2)
@@ -237,25 +235,14 @@ module test_linalg_pseudoinverse
         v = v/sqrt(sum(v*v))
         #:endif
 
-        n = size(h,1)
-        do j = 1, n
-            do i = 1, n
-                #:if rt.startswith('complex')
-                h(i,j) = merge(1.0_${rk}$, 0.0_${rk}$, i==j) - 2*v(i)*conjg(v(j))
-                #:else
-                h(i,j) = merge(1.0_${rk}$, 0.0_${rk}$, i==j) - 2*v(i)*v(j)
-                #:endif
-            end do
-        end do
+        #:if rt.startswith('complex')
+        h = eye(size(h,1), mold=v(1)) - 2*outer_product(v, conjg(v))
+        #:else
+        h = eye(size(h,1), mold=v(1)) - 2*outer_product(v, v)
+        #:endif
     end subroutine random_reflector_${ri}$
 
     #:endfor
-
-    pure function real_str(x) result(str)
-        real(dp), intent(in) :: x
-        character(len=16) :: str
-        write(str,'(es12.4)') x
-    end function real_str
 
     ! gcc-15 bugfix utility
     subroutine add_test(tests,new_test)
