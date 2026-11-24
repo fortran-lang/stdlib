@@ -86,7 +86,7 @@ For a complex variable $z=(x + y i)$ with independent real $x$ and imaginary $y$
 
 $$f(x+\mathit{i}y)=f(x)f(y)=\begin{cases} \lambda_{x} \lambda_{y} e^{-(\lambda_{x} x + \lambda_{y} y)} &x\geqslant 0, y\geqslant 0 \\ 0 &\text{otherwise}\end{cases}$$
 
-Instead of of the inverse scale parameter `lambda`, it is possible to pass `loc` and `scale`, where $scale = \frac{1}{\lambda}$ and `loc` specifies the value by which the distribution is shifted.
+Instead of the inverse scale parameter `lambda`, it is possible to pass `loc` and `scale`, where $scale = \frac{1}{\lambda}$ and `loc` specifies the value by which the distribution is shifted.
 
 ### Syntax
 
