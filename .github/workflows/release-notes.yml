@@ -32,7 +32,10 @@ jobs:
           echo "Generating release notes for tag: ${TAG_NAME}"
           if gh release view "${TAG_NAME}" >/dev/null 2>&1; then
             echo "Draft release for ${TAG_NAME} already exists. Updating notes..."
-            gh release edit "${TAG_NAME}" --generate-notes --draft
+            gh api --method POST \
+              "repos/${GITHUB_REPOSITORY}/releases/generate-notes" \
+              -f tag_name="${TAG_NAME}" --jq '.body' > "${RUNNER_TEMP}/release-notes.md"
+            gh release edit "${TAG_NAME}" --notes-file "${RUNNER_TEMP}/release-notes.md"
           else
             echo "Creating new draft release for ${TAG_NAME}..."
             gh release create "${TAG_NAME}" \

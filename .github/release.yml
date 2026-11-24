@@ -29,6 +29,8 @@ changelog:
         - "automation"
         - "ci"
         - "build"
+        - "build: cmake"
+        - "build: fpm"
         - "cmake"
         - "fpm"
     - title: "🔬 Mathematical & Algorithmic Components"
