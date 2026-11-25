@@ -291,6 +291,7 @@ The table below lists all *C preprocessing* macros and flags currently used by `
 | `STDLIB_EXTERNAL_BLAS_I64` |  Links against an external BLAS with ILP64 (64-bit integer) interfaces. Usually paired with `STDLIB_EXTERNAL_LAPACK_I64`. |
 | `STDLIB_EXTERNAL_LAPACK_I64` |  Links against an external LAPACK with ILP64 (64-bit integer) interfaces. |
 | `STDLIB_HASHMAPS` | Enables compilation of the `stdlib_hashmaps` module when set to 1 (default). Set via CMake with `-DSTDLIB_HASHMAPS=On/Off`. |
+| `STDLIB_INTERPOLATION` | Enables compilation of the `stdlib_interpolation` module when set to 1 (default). Set via CMake with `-DSTDLIB_INTERPOLATION=On/Off`. |
 | `STDLIB_IO` | Enables compilation of the `stdlib_io` module when set to 1 (default). Set via CMake with `-DSTDLIB_IO=On/Off`. |
 | `STDLIB_LINALG_ITERATIVE` | Enables compilation of the `stdlib_linalg_iterative_solvers` module when set to 1 (default). Set via CMake with `-DSTDLIB_LINALG_ITERATIVE=On/Off`. |
 | `STDLIB_LOGGER` | Enables compilation of the `stdlib_logger` module when set to 1 (default). Set via CMake with `-DSTDLIB_LOGGER=On/Off`. |

@@ -1,0 +1,1 @@
+ADD_EXAMPLE(linear_interp1d)

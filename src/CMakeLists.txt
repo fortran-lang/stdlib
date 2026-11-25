@@ -24,6 +24,7 @@ add_subdirectory(hash)
 ADD_SUBDIR(hashmaps)
 
 add_subdirectory(intrinsics)
+ADD_SUBDIR(interpolation)
 ADD_SUBDIR(io)
 
 add_subdirectory(lapack)

@@ -1,0 +1,332 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+submodule (stdlib_interpolation) stdlib_interpolation_linear
+    use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, &
+        ieee_is_nan
+    use stdlib_optval, only: optval
+    implicit none
+
+    character(len=*), parameter :: this = "linear_interp1d"
+
+contains
+
+    #:for k1, t1, s1 in R_KINDS_TYPES
+    pure subroutine check_grid_${s1}$(x, y, extrap_, err0)
+        ${t1}$, intent(in) :: x(:)
+        ${t1}$, intent(in) :: y(:)
+        integer, intent(in) :: extrap_
+        type(state_type), intent(out) :: err0
+
+        ! Internal variables.
+        integer :: i, n
+
+        ! Sanity check.
+        n = size(x)
+        if (n < 2) then
+            err0 = state_type(this, STDLIB_VALUE_ERROR, &
+                "At least 2 points are required, size(x) =", n)
+            return
+        end if
+
+        if (size(y) /= n) then
+            err0 = state_type(this, STDLIB_VALUE_ERROR, &
+                "Arrays x and y must have the same size:", n, size(y))
+            return
+        end if
+
+        if (.not. (extrap_ == interp_extrap_linear .or. &
+                   extrap_ == interp_extrap_clamp .or. &
+                   extrap_ == interp_extrap_nan)) then
+            err0 = state_type(this, STDLIB_VALUE_ERROR, &
+                "Invalid extrapolation mode:", extrap_)
+            return
+        end if
+
+        if (ieee_is_nan(x(1))) then
+            err0 = state_type(this, STDLIB_VALUE_ERROR, &
+                "Abscissa array x contains NaN.")
+            return
+        end if
+
+        do i = 1, n - 1
+            if (.not. (x(i + 1) > x(i))) then
+                err0 = state_type(this, STDLIB_VALUE_ERROR, &
+                    "Abscissa array x must be strictly increasing at index", i)
+                return
+            end if
+        end do
+
+        err0 = state_type(this, STDLIB_SUCCESS)
+    end subroutine check_grid_${s1}$
+
+    pure function eval_raw_${s1}$(xq, x, y, extrap_) result(yq)
+        ${t1}$, intent(in) :: xq
+        ${t1}$, intent(in) :: x(:)
+        ${t1}$, intent(in) :: y(:)
+        integer, intent(in) :: extrap_
+        ${t1}$ :: yq
+
+        integer :: n, idx
+        ${t1}$ :: slope
+
+        if (ieee_is_nan(xq)) then
+            yq = ieee_value(0.0_${k1}$, ieee_quiet_nan)
+            return
+        end if
+
+        n = size(x)
+        if (xq < x(1)) then
+            select case (extrap_)
+            case (interp_extrap_clamp)
+                yq = y(1)
+            case (interp_extrap_nan)
+                yq = ieee_value(0.0_${k1}$, ieee_quiet_nan)
+            case default
+                slope = (y(2) - y(1)) / (x(2) - x(1))
+                yq = y(1) + slope * (xq - x(1))
+            end select
+            return
+        elseif (xq > x(n)) then
+            select case (extrap_)
+            case (interp_extrap_clamp)
+                yq = y(n)
+            case (interp_extrap_nan)
+                yq = ieee_value(0.0_${k1}$, ieee_quiet_nan)
+            case default
+                slope = (y(n) - y(n - 1)) / (x(n) - x(n - 1))
+                yq = y(n) + slope * (xq - x(n))
+            end select
+            return
+        elseif (xq >= x(n)) then
+            yq = y(n)
+            return
+        end if
+
+        idx = bisect_interval_${s1}$(x, xq)
+        slope = (y(idx + 1) - y(idx)) / (x(idx + 1) - x(idx))
+        yq = y(idx) + slope * (xq - x(idx))
+    end function eval_raw_${s1}$
+
+    !--------------------------------
+    !-----                      -----
+    !-----     CONSTRUCTORS     -----
+    !-----                      -----
+    !--------------------------------
+
+    pure module function initialize_linear_pure_${s1}$(x, y, extrap) &
+        result(interp)
+        ${t1}$, intent(in) :: x(:)
+        ${t1}$, intent(in) :: y(:)
+        integer, intent(in), optional :: extrap
+        type(linear_interp1d_${s1}$_type) :: interp
+
+        call interp%initialize(x, y, extrap=extrap)
+    end function initialize_linear_pure_${s1}$
+
+    module function initialize_linear_impure_${s1}$(x, y, err, extrap) &
+        result(interp)
+        ${t1}$, intent(in) :: x(:)
+        ${t1}$, intent(in) :: y(:)
+        type(state_type), intent(out) :: err
+        integer, intent(in), optional :: extrap
+        type(linear_interp1d_${s1}$_type) :: interp
+
+        call interp%initialize(x, y, extrap=extrap, err=err)
+    end function initialize_linear_impure_${s1}$
+
+    pure module subroutine linear_initialize_${s1}$(self, x, y, extrap, err)
+        class(linear_interp1d_${s1}$_type), intent(inout) :: self
+        ${t1}$, intent(in) :: x(:)
+        ${t1}$, intent(in) :: y(:)
+        integer, intent(in), optional :: extrap
+        type(state_type), intent(out), optional :: err
+
+        ! Internal variables.
+        type(state_type) :: err0
+        integer :: extrap_, i, n
+
+        call self%destroy()
+
+        extrap_ = optval(extrap, interp_extrap_linear)
+        call check_grid_${s1}$(x, y, extrap_, err0)
+        call err0%handle(err)
+
+        if (err0%ok()) then
+            n = size(x)
+            self%n = n
+            self%extrap = extrap_
+            allocate(self%x(n), source=x)
+            allocate(self%y(n), source=y)
+            allocate(self%slopes(n - 1))
+
+            do i = 1, n - 1
+                self%slopes(i) = (y(i + 1) - y(i)) / (x(i + 1) - x(i))
+            end do
+        end if
+    end subroutine linear_initialize_${s1}$
+
+    !--------------------------------
+    !-----                      -----
+    !-----      EVALUATION      -----
+    !-----                      -----
+    !--------------------------------
+
+    pure module function linear_eval_scalar_${s1}$(self, xq) result(yq)
+        class(linear_interp1d_${s1}$_type), intent(in) :: self
+        ${t1}$, intent(in) :: xq
+        ${t1}$ :: yq
+
+        integer :: n, idx
+
+        if (.not. self%is_initialized() .or. .not. allocated(self%slopes)) then
+            error stop "linear_interp1d: interpolator is not initialized."
+        end if
+
+        if (ieee_is_nan(xq)) then
+            yq = ieee_value(0.0_${k1}$, ieee_quiet_nan)
+            return
+        end if
+
+        n = self%n
+        if (xq < self%x(1)) then
+            select case (self%extrap)
+            case (interp_extrap_clamp)
+                yq = self%y(1)
+            case (interp_extrap_nan)
+                yq = ieee_value(0.0_${k1}$, ieee_quiet_nan)
+            case default
+                yq = self%y(1) + self%slopes(1) * (xq - self%x(1))
+            end select
+            return
+        elseif (xq > self%x(n)) then
+            select case (self%extrap)
+            case (interp_extrap_clamp)
+                yq = self%y(n)
+            case (interp_extrap_nan)
+                yq = ieee_value(0.0_${k1}$, ieee_quiet_nan)
+            case default
+                yq = self%y(n) + self%slopes(n - 1) * (xq - self%x(n))
+            end select
+            return
+        elseif (xq >= self%x(n)) then
+            yq = self%y(n)
+            return
+        end if
+
+        idx = bisect_interval_${s1}$(self%x, xq)
+        yq = self%y(idx) + self%slopes(idx) * (xq - self%x(idx))
+    end function linear_eval_scalar_${s1}$
+
+    pure module function linear_eval_1d_${s1}$(self, xq) result(yq)
+        class(linear_interp1d_${s1}$_type), intent(in) :: self
+        ${t1}$, intent(in) :: xq(:)
+        ${t1}$ :: yq(size(xq))
+
+        integer :: i
+
+        if (.not. self%is_initialized() .or. .not. allocated(self%slopes)) then
+            error stop "linear_interp1d: interpolator is not initialized."
+        end if
+
+        do i = 1, size(xq)
+            yq(i) = linear_eval_scalar_${s1}$(self, xq(i))
+        end do
+    end function linear_eval_1d_${s1}$
+
+    pure module subroutine linear_destroy_${s1}$(self)
+        class(linear_interp1d_${s1}$_type), intent(inout) :: self
+
+        call self%destroy_base()
+        if (allocated(self%slopes)) deallocate(self%slopes)
+    end subroutine linear_destroy_${s1}$
+
+    !-----------------------------------
+    !-----                         -----
+    !-----     ONE-SHOT DRIVER     -----
+    !-----                         -----
+    !-----------------------------------
+
+    pure module function interp1d_scalar_pure_${s1}$(xq, x, y, extrap) &
+        result(yq)
+        ${t1}$, intent(in) :: xq
+        ${t1}$, intent(in) :: x(:)
+        ${t1}$, intent(in) :: y(:)
+        integer, intent(in), optional :: extrap
+        ${t1}$ :: yq
+
+        type(state_type) :: err0
+        integer :: extrap_
+
+        extrap_ = optval(extrap, interp_extrap_linear)
+        call check_grid_${s1}$(x, y, extrap_, err0)
+        call err0%handle()
+
+        yq = eval_raw_${s1}$(xq, x, y, extrap_)
+    end function interp1d_scalar_pure_${s1}$
+
+    module function interp1d_scalar_impure_${s1}$(xq, x, y, err, extrap) &
+        result(yq)
+        ${t1}$, intent(in) :: xq
+        ${t1}$, intent(in) :: x(:)
+        ${t1}$, intent(in) :: y(:)
+        type(state_type), intent(out) :: err
+        integer, intent(in), optional :: extrap
+        ${t1}$ :: yq
+
+        integer :: extrap_
+
+        extrap_ = optval(extrap, interp_extrap_linear)
+        call check_grid_${s1}$(x, y, extrap_, err)
+        if (err%error()) then
+            yq = ieee_value(0.0_${k1}$, ieee_quiet_nan)
+            return
+        end if
+
+        yq = eval_raw_${s1}$(xq, x, y, extrap_)
+    end function interp1d_scalar_impure_${s1}$
+
+    pure module function interp1d_1d_pure_${s1}$(xq, x, y, extrap) &
+        result(yq)
+        ${t1}$, intent(in) :: xq(:)
+        ${t1}$, intent(in) :: x(:)
+        ${t1}$, intent(in) :: y(:)
+        integer, intent(in), optional :: extrap
+        ${t1}$ :: yq(size(xq))
+
+        type(state_type) :: err0
+        integer :: extrap_, i
+
+        extrap_ = optval(extrap, interp_extrap_linear)
+        call check_grid_${s1}$(x, y, extrap_, err0)
+        call err0%handle()
+
+        do i = 1, size(xq)
+            yq(i) = eval_raw_${s1}$(xq(i), x, y, extrap_)
+        end do
+    end function interp1d_1d_pure_${s1}$
+
+    module function interp1d_1d_impure_${s1}$(xq, x, y, err, extrap) &
+        result(yq)
+        ${t1}$, intent(in) :: xq(:)
+        ${t1}$, intent(in) :: x(:)
+        ${t1}$, intent(in) :: y(:)
+        type(state_type), intent(out) :: err
+        integer, intent(in), optional :: extrap
+        ${t1}$ :: yq(size(xq))
+
+        integer :: extrap_, i
+
+        extrap_ = optval(extrap, interp_extrap_linear)
+        call check_grid_${s1}$(x, y, extrap_, err)
+        if (err%error()) then
+            yq = ieee_value(0.0_${k1}$, ieee_quiet_nan)
+            return
+        end if
+
+        do i = 1, size(xq)
+            yq(i) = eval_raw_${s1}$(xq(i), x, y, extrap_)
+        end do
+    end function interp1d_1d_impure_${s1}$
+    #:endfor
+
+end submodule stdlib_interpolation_linear

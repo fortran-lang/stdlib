@@ -1,0 +1,244 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+module stdlib_interpolation
+    !! Provides derived types and drivers for 1D data interpolation.
+    !! (Specification: :doc:`/specs/stdlib_interpolation`)
+    use stdlib_kinds, only: sp, dp, xdp, qp
+    use stdlib_error, only: state_type, STDLIB_SUCCESS, STDLIB_VALUE_ERROR
+    implicit none
+    private
+
+    enum, bind(c)
+        enumerator :: interp_extrap_linear = 0 !! Linear extrapolation outside domain bounds
+        enumerator :: interp_extrap_clamp      !! Constant clamping to boundary values
+        enumerator :: interp_extrap_nan        !! Return quiet IEEE NaN outside domain bounds
+    end enum
+    public :: interp_extrap_linear, interp_extrap_clamp, interp_extrap_nan
+
+    public :: linear_interp1d
+    public :: interp1d
+
+    !--------------------------------------
+    !-----                           ------
+    !-----     TYPE DEFINITIONS      ------
+    !-----                           ------
+    !--------------------------------------
+
+    #:for k1, t1, s1 in R_KINDS_TYPES
+    type, abstract, public :: interp1d_${s1}$_type
+        !! version: experimental
+        !!
+        !! Abstract base type for 1D interpolators (`${s1}$` precision).
+        private
+        integer :: n = 0
+        integer :: extrap = interp_extrap_linear
+        ${t1}$, allocatable :: x(:)
+        ${t1}$, allocatable :: y(:)
+    contains
+        procedure(eval_scalar_${s1}$_iface), deferred :: eval_scalar
+        procedure :: eval_1d => interp1d_eval_1d_${s1}$
+        generic :: evaluate => eval_scalar, eval_1d
+        procedure :: num_points => interp1d_num_points_${s1}$
+        procedure :: is_initialized => interp1d_is_initialized_${s1}$
+        procedure :: destroy_base => interp1d_destroy_base_${s1}$
+        procedure :: destroy => interp1d_destroy_base_${s1}$
+    end type interp1d_${s1}$_type
+
+    type, extends(interp1d_${s1}$_type), public :: linear_interp1d_${s1}$_type
+        !! version: experimental
+        !!
+        !! Piecewise 1D linear interpolator (`${s1}$` precision).
+        private
+        ${t1}$, allocatable :: slopes(:)
+    contains
+        procedure :: initialize => linear_initialize_${s1}$
+        procedure :: eval_scalar => linear_eval_scalar_${s1}$
+        procedure :: eval_1d => linear_eval_1d_${s1}$
+        procedure :: destroy => linear_destroy_${s1}$
+    end type linear_interp1d_${s1}$_type
+    #:endfor
+
+    abstract interface
+        #:for k1, t1, s1 in R_KINDS_TYPES
+        pure function eval_scalar_${s1}$_iface(self, xq) result(yq)
+            import :: interp1d_${s1}$_type, ${k1}$
+            class(interp1d_${s1}$_type), intent(in) :: self
+            ${t1}$, intent(in) :: xq
+            ${t1}$ :: yq
+        end function eval_scalar_${s1}$_iface
+        #:endfor
+    end interface
+
+    !--------------------------------
+    !-----                      -----
+    !-----     CONSTRUCTORS     -----
+    !-----                      -----
+    !--------------------------------
+
+    interface linear_interp1d
+        !! version: experimental
+        !!
+        !! Construct a 1D piecewise linear interpolator from strictly
+        !! increasing abscissas `x` and sampled values `y`.
+        !! (Specification: :doc:`/specs/stdlib_interpolation`)
+        #:for k1, t1, s1 in R_KINDS_TYPES
+        pure module function initialize_linear_pure_${s1}$(x, y, extrap) &
+            result(interp)
+            !! Construct a `linear_interp1d` object (pure overload).
+            ${t1}$, intent(in) :: x(:)
+            !! Strictly increasing abscissas.
+            ${t1}$, intent(in) :: y(:)
+            !! Function values at `x`.
+            integer, intent(in), optional :: extrap
+            !! Extrapolation mode outside `[x(1), x(n)]`.
+            type(linear_interp1d_${s1}$_type) :: interp
+            !! Initialized linear interpolator.
+        end function initialize_linear_pure_${s1}$
+
+        module function initialize_linear_impure_${s1}$(x, y, err, extrap) &
+            result(interp)
+            !! Construct a `linear_interp1d` object with error state output.
+            ${t1}$, intent(in) :: x(:)
+            !! Strictly increasing abscissas.
+            ${t1}$, intent(in) :: y(:)
+            !! Function values at `x`.
+            type(state_type), intent(out) :: err
+            !! Error handling state.
+            integer, intent(in), optional :: extrap
+            !! Extrapolation mode outside `[x(1), x(n)]`.
+            type(linear_interp1d_${s1}$_type) :: interp
+            !! Initialized linear interpolator.
+        end function initialize_linear_impure_${s1}$
+        #:endfor
+    end interface linear_interp1d
+
+    !-----------------------------------
+    !-----                         -----
+    !-----     ONE-SHOT DRIVER     -----
+    !-----                         -----
+    !-----------------------------------
+
+    interface interp1d
+        !! version: experimental
+        !!
+        !! Evaluate 1D piecewise linear interpolation at scalar or rank-1
+        !! query points `xq` from abscissas `x` and values `y`.
+        !! (Specification: :doc:`/specs/stdlib_interpolation`)
+        #:for k1, t1, s1 in R_KINDS_TYPES
+        pure module function interp1d_scalar_pure_${s1}$(xq, x, y, extrap) &
+            result(yq)
+            ${t1}$, intent(in) :: xq
+            !! Query coordinate.
+            ${t1}$, intent(in) :: x(:)
+            !! Strictly increasing abscissas.
+            ${t1}$, intent(in) :: y(:)
+            !! Function values at `x`.
+            integer, intent(in), optional :: extrap
+            !! Extrapolation mode outside `[x(1), x(n)]`.
+            ${t1}$ :: yq
+            !! Interpolated value at `xq`.
+        end function interp1d_scalar_pure_${s1}$
+
+        module function interp1d_scalar_impure_${s1}$(xq, x, y, err, extrap) &
+            result(yq)
+            ${t1}$, intent(in) :: xq
+            !! Query coordinate.
+            ${t1}$, intent(in) :: x(:)
+            !! Strictly increasing abscissas.
+            ${t1}$, intent(in) :: y(:)
+            !! Function values at `x`.
+            type(state_type), intent(out) :: err
+            !! Error handling state.
+            integer, intent(in), optional :: extrap
+            !! Extrapolation mode outside `[x(1), x(n)]`.
+            ${t1}$ :: yq
+            !! Interpolated value at `xq`.
+        end function interp1d_scalar_impure_${s1}$
+
+        pure module function interp1d_1d_pure_${s1}$(xq, x, y, extrap) &
+            result(yq)
+            ${t1}$, intent(in) :: xq(:)
+            !! Query coordinates.
+            ${t1}$, intent(in) :: x(:)
+            !! Strictly increasing abscissas.
+            ${t1}$, intent(in) :: y(:)
+            !! Function values at `x`.
+            integer, intent(in), optional :: extrap
+            !! Extrapolation mode outside `[x(1), x(n)]`.
+            ${t1}$ :: yq(size(xq))
+            !! Interpolated values at `xq`.
+        end function interp1d_1d_pure_${s1}$
+
+        module function interp1d_1d_impure_${s1}$(xq, x, y, err, extrap) &
+            result(yq)
+            ${t1}$, intent(in) :: xq(:)
+            !! Query coordinates.
+            ${t1}$, intent(in) :: x(:)
+            !! Strictly increasing abscissas.
+            ${t1}$, intent(in) :: y(:)
+            !! Function values at `x`.
+            type(state_type), intent(out) :: err
+            !! Error handling state.
+            integer, intent(in), optional :: extrap
+            !! Extrapolation mode outside `[x(1), x(n)]`.
+            ${t1}$ :: yq(size(xq))
+            !! Interpolated values at `xq`.
+        end function interp1d_1d_impure_${s1}$
+        #:endfor
+    end interface interp1d
+
+    interface
+        #:for k1, t1, s1 in R_KINDS_TYPES
+        pure module function bisect_interval_${s1}$(x, xq) result(idx)
+            ${t1}$, intent(in) :: x(:)
+            ${t1}$, intent(in) :: xq
+            integer :: idx
+        end function bisect_interval_${s1}$
+
+        pure module function interp1d_eval_1d_${s1}$(self, xq) result(yq)
+            class(interp1d_${s1}$_type), intent(in) :: self
+            ${t1}$, intent(in) :: xq(:)
+            ${t1}$ :: yq(size(xq))
+        end function interp1d_eval_1d_${s1}$
+
+        pure module function interp1d_num_points_${s1}$(self) result(n)
+            class(interp1d_${s1}$_type), intent(in) :: self
+            integer :: n
+        end function interp1d_num_points_${s1}$
+
+        pure module function interp1d_is_initialized_${s1}$(self) result(res)
+            class(interp1d_${s1}$_type), intent(in) :: self
+            logical :: res
+        end function interp1d_is_initialized_${s1}$
+
+        pure module subroutine interp1d_destroy_base_${s1}$(self)
+            class(interp1d_${s1}$_type), intent(inout) :: self
+        end subroutine interp1d_destroy_base_${s1}$
+
+        pure module subroutine linear_initialize_${s1}$(self, x, y, extrap, err)
+            class(linear_interp1d_${s1}$_type), intent(inout) :: self
+            ${t1}$, intent(in) :: x(:)
+            ${t1}$, intent(in) :: y(:)
+            integer, intent(in), optional :: extrap
+            type(state_type), intent(out), optional :: err
+        end subroutine linear_initialize_${s1}$
+
+        pure module function linear_eval_scalar_${s1}$(self, xq) result(yq)
+            class(linear_interp1d_${s1}$_type), intent(in) :: self
+            ${t1}$, intent(in) :: xq
+            ${t1}$ :: yq
+        end function linear_eval_scalar_${s1}$
+
+        pure module function linear_eval_1d_${s1}$(self, xq) result(yq)
+            class(linear_interp1d_${s1}$_type), intent(in) :: self
+            ${t1}$, intent(in) :: xq(:)
+            ${t1}$ :: yq(size(xq))
+        end function linear_eval_1d_${s1}$
+
+        pure module subroutine linear_destroy_${s1}$(self)
+            class(linear_interp1d_${s1}$_type), intent(inout) :: self
+        end subroutine linear_destroy_${s1}$
+        #:endfor
+    end interface
+
+end module stdlib_interpolation

@@ -1,0 +1,75 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+submodule (stdlib_interpolation) stdlib_interpolation_search
+    implicit none
+
+contains
+
+    #:for k1, t1, s1 in R_KINDS_TYPES
+    pure module function bisect_interval_${s1}$(x, xq) result(idx)
+        ${t1}$, intent(in) :: x(:)
+        ${t1}$, intent(in) :: xq
+        integer :: idx
+
+        ! Internal variables.
+        integer :: n, low, high, mid
+
+        n = size(x)
+        if (xq <= x(1)) then
+            idx = 1
+            return
+        elseif (xq >= x(n)) then
+            idx = n - 1
+            return
+        end if
+
+        low = 1
+        high = n
+        do while (high - low > 1)
+            mid = low + (high - low) / 2
+            if (xq < x(mid)) then
+                high = mid
+            else
+                low = mid
+            end if
+        end do
+        idx = low
+    end function bisect_interval_${s1}$
+
+    pure module function interp1d_eval_1d_${s1}$(self, xq) result(yq)
+        class(interp1d_${s1}$_type), intent(in) :: self
+        ${t1}$, intent(in) :: xq(:)
+        ${t1}$ :: yq(size(xq))
+
+        integer :: i
+
+        do i = 1, size(xq)
+            yq(i) = self%eval_scalar(xq(i))
+        end do
+    end function interp1d_eval_1d_${s1}$
+
+    pure module function interp1d_num_points_${s1}$(self) result(n)
+        class(interp1d_${s1}$_type), intent(in) :: self
+        integer :: n
+
+        n = self%n
+    end function interp1d_num_points_${s1}$
+
+    pure module function interp1d_is_initialized_${s1}$(self) result(res)
+        class(interp1d_${s1}$_type), intent(in) :: self
+        logical :: res
+
+        res = (self%n >= 2) .and. allocated(self%x) .and. allocated(self%y)
+    end function interp1d_is_initialized_${s1}$
+
+    pure module subroutine interp1d_destroy_base_${s1}$(self)
+        class(interp1d_${s1}$_type), intent(inout) :: self
+
+        self%n = 0
+        self%extrap = interp_extrap_linear
+        if (allocated(self%x)) deallocate(self%x)
+        if (allocated(self%y)) deallocate(self%y)
+    end subroutine interp1d_destroy_base_${s1}$
+    #:endfor
+
+end submodule stdlib_interpolation_search

@@ -1,5 +1,11 @@
 ## Unreleased
 
+New modules
+  - Added experimental `stdlib_interpolation` module with 1D piecewise linear
+    interpolation (`interp1d_<kind>_type`, `linear_interp1d_<kind>_type`,
+    `linear_interp1d`, and `interp1d`)
+    [#1138](https://github.com/fortran-lang/stdlib/issues/1138)
+
 Changes to the existing modules
   - Change in module `stdlib_hashmaps`
     - Fix memory leak in `chaining_hashmap_type` `remove`: a map entry was

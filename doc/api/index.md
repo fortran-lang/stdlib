@@ -22,6 +22,7 @@ stdlib_hash_32bit
 stdlib_hash_64bit
 stdlib_hashmap_wrappers
 stdlib_hashmaps
+stdlib_interpolation
 stdlib_intrinsics
 stdlib_io
 stdlib_kinds
