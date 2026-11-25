@@ -72,6 +72,13 @@ It specifies if the uncertainty needs to be returned instead of the value. Defau
 
 Returns a scalar of `real` type which is either the value or the uncertainty of a codata constant.
 
+## Mathematical Constants
+
+The module provides mathematical constants:
+* `PI_<kind>`: $\pi$ constant computed to each supported floating-point kind.
+* `factorials_int32(0:12)`: Precomputed factorials from $0!$ to $12!$ fitting within 32-bit integers (`int32`).
+* `factorials_int64(0:20)`: Precomputed factorials from $0!$ to $20!$ fitting within 64-bit integers (`int64`).
+
 ## Example
 
 ```{literalinclude} ../../example/constants/example_constants.f90

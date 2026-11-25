@@ -1,6 +1,9 @@
 ## Unreleased
 
 Changes to the existing modules
+  - Change in module `stdlib_constants`
+    - Added precomputed factorial constants `factorials_int32` and `factorials_int64`
+      [#864](https://github.com/fortran-lang/stdlib/issues/864)
   - Change in module `stdlib_hashmaps`
     - Fix memory leak in `chaining_hashmap_type` `remove`: a map entry was
       allocated and immediately orphaned on every call.
