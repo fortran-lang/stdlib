@@ -134,7 +134,7 @@ contains
         type(stdlib_solver_workspace_${s}$_type), optional, intent(inout), target :: workspace
         !-------------------------
         type(stdlib_linop_${s}$_type) :: op
-        type(stdlib_linop_${s}$_type), pointer :: M_ => null()
+        type(stdlib_linop_${s}$_type), pointer :: M_
         type(stdlib_solver_workspace_${s}$_type), pointer :: workspace_
         integer :: n, maxiter_
         ${t}$ :: rtol_, atol_
@@ -206,6 +206,7 @@ contains
             deallocate( workspace_%tmp )
             deallocate( workspace_ )
         end if
+        if(.not.present(M)) deallocate( M_ )
         M_ => null()
         workspace_ => null()
         contains

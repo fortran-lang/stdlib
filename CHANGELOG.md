@@ -1,6 +1,12 @@
 ## Unreleased
 
 Changes to the existing modules
+  - Change in module `stdlib_linalg_iterative_solvers`
+    - Fix memory leak in `stdlib_solve_pcg`, `stdlib_solve_bicgstab` and
+      `stdlib_solve_gmres`: the internal preconditioner operator was not
+      deallocated when `M` is not passed. The operator pointer is no longer
+      shared between calls.
+      [#1254](https://github.com/fortran-lang/stdlib/issues/1254)
   - Change in module `stdlib_hashmaps`
     - Fix memory leak in `chaining_hashmap_type` `remove`: a map entry was
       allocated and immediately orphaned on every call.
