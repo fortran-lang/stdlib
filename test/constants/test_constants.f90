@@ -1,7 +1,8 @@
 module test_constants
     !! Test constant values only for double precision.
     use testdrive, only : new_unittest, unittest_type, error_type, check
-    use stdlib_kinds, only : dp, int32
+    use stdlib_kinds, only : dp, int32, int64
+    use stdlib_constants, only : factorials_int32, factorials_int64
     use stdlib_codata, only: YEAR, &
                              ALPHA_PARTICLE_ELECTRON_MASS_RATIO, &
                              ALPHA_PARTICLE_MASS, &
@@ -52,7 +53,8 @@ subroutine collect_constants(testsuite)
                  new_unittest("U_MOLAR_VOLUME_OF_IDEAL_GAS__273_15K__101_325_KPA", test_U_MOLAR_VOLUME_NTP),&
                  new_unittest("U_PLANCK_CONSTANT", test_U_PLANCK_CONSTANT),&
                  new_unittest("U_SPEED_OF_LIGHT_IN_VACUUM", test_U_SPEED_OF_LIGHT),&
-                 new_unittest("U_STANDARD_ACCELERATION_OF_GRAVITY", test_U_STANDARD_ACCELERATION_OF_GRAVITY)]
+                 new_unittest("U_STANDARD_ACCELERATION_OF_GRAVITY", test_U_STANDARD_ACCELERATION_OF_GRAVITY),&
+                 new_unittest("FACTORIALS", test_factorials)]
 end subroutine
 
 subroutine test_year(error)
@@ -215,6 +217,41 @@ subroutine test_U_STANDARD_ACCELERATION_OF_GRAVITY(error)
     type(error_type), allocatable, intent(out) :: error
     call check(error, STANDARD_ACCELERATION_OF_GRAVITY%to_real(1.0_dp, uncertainty=.true.), 0.0_dp)
     if (allocated(error)) return
+end subroutine
+
+subroutine test_factorials(error)
+    type(error_type), allocatable, intent(out) :: error
+    integer :: i
+
+    ! Check 0! = 1
+    call check(error, factorials_int32(0), 1_int32)
+    if (allocated(error)) return
+    call check(error, factorials_int64(0), 1_int64)
+    if (allocated(error)) return
+
+    ! Check known small values
+    call check(error, factorials_int32(1), 1_int32)
+    if (allocated(error)) return
+    call check(error, factorials_int32(5), 120_int32)
+    if (allocated(error)) return
+    call check(error, factorials_int32(12), 479001600_int32)
+    if (allocated(error)) return
+
+    call check(error, factorials_int64(10), 3628800_int64)
+    if (allocated(error)) return
+    call check(error, factorials_int64(20), 2432902008176640000_int64)
+    if (allocated(error)) return
+
+    ! Check factorial recurrence relation: n! = n * (n-1)!
+    do i = 1, 12
+        call check(error, factorials_int32(i), int(i, int32) * factorials_int32(i - 1))
+        if (allocated(error)) return
+    end do
+
+    do i = 1, 20
+        call check(error, factorials_int64(i), int(i, int64) * factorials_int64(i - 1))
+        if (allocated(error)) return
+    end do
 end subroutine
 
 end module test_constants

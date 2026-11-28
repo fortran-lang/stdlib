@@ -68,6 +68,47 @@ module stdlib_constants
     ${t}$, parameter, public :: zero_${s}$ = 0_${k}$
     ${t}$, parameter, public :: one_${s}$  = 1_${k}$
     #:endfor
+
+    ! Mathematical factorials (0! to 20! for 64-bit integer, and 0! to 12! for 32-bit integer)
+    integer(int64), parameter, public :: factorials_int64(0:20) = [ &
+        1_int64, &
+        1_int64, &
+        2_int64, &
+        6_int64, &
+        24_int64, &
+        120_int64, &
+        720_int64, &
+        5040_int64, &
+        40320_int64, &
+        362880_int64, &
+        3628800_int64, &
+        39916800_int64, &
+        479001600_int64, &
+        6227020800_int64, &
+        87178291200_int64, &
+        1307674368000_int64, &
+        20922789888000_int64, &
+        355687428096000_int64, &
+        6402373705728000_int64, &
+        121645100408832000_int64, &
+        2432902008176640000_int64  &
+    ] !! Factorials 0! to 20! in int64 precision
+
+    integer(int32), parameter, public :: factorials_int32(0:12) = [ &
+        1_int32, &
+        1_int32, &
+        2_int32, &
+        6_int32, &
+        24_int32, &
+        120_int32, &
+        720_int32, &
+        5040_int32, &
+        40320_int32, &
+        362880_int32, &
+        3628800_int32, &
+        39916800_int32, &
+        479001600_int32  &
+    ] !! Factorials 0! to 12! in int32 precision
     #:for k, t, s in R_KINDS_TYPES
     ${t}$, parameter, public :: zero_${s}$ = 0._${k}$
     ${t}$, parameter, public :: one_${s}$  = 1._${k}$
