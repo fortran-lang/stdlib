@@ -3,6 +3,7 @@
 Statistical procedures
 
  - [stats_descriptive](./stdlib_stats_descriptive.md) - Descriptive Statistics
+ - [stats_decomposition](./stdlib_stats_decomposition.md) - Statistical Decomposition
  - [stats_distributions_uniform](./stdlib_stats_distribution_uniform.md) - Uniform Probability Distribution
  - [stats_distributions_normal](./stdlib_stats_distribution_normal.md) - Normal Probability Distribution
  - [stats_distributions_exponential](./stdlib_stats_distribution_exponential.md) - Exponential Probability Distribution
@@ -13,6 +14,7 @@ Statistical procedures
 :hidden:
 
 stdlib_stats_descriptive
+stdlib_stats_decomposition
 stdlib_stats_distribution_uniform
 stdlib_stats_distribution_normal
 stdlib_stats_distribution_exponential

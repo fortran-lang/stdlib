@@ -1,11 +1,12 @@
 #:include "common.fypp"
-submodule (stdlib_stats_descriptive) stdlib_stats_pca
+submodule (stdlib_stats_decomposition) stdlib_stats_decomposition_pca
   use stdlib_kinds, only: sp, dp, xdp, qp
   use stdlib_optval, only: optval
   use stdlib_linalg, only: svd, eigh
   use stdlib_linalg_constants, only: ilp
   use stdlib_linalg_blas, only: gemm, syrk
   use stdlib_linalg_state, only: linalg_state_type, LINALG_ERROR, LINALG_VALUE_ERROR
+  use stdlib_stats_descriptive, only: mean
   use stdlib_ascii, only: to_lower
   use stdlib_error, only: error_stop
   implicit none
@@ -288,4 +289,4 @@ contains
     end subroutine pca_inverse_transform_${k1}$
   #:endfor
 
-end submodule stdlib_stats_pca
+end submodule stdlib_stats_decomposition_pca
