@@ -13,6 +13,10 @@ See also the specification page: :doc:`/specs/stdlib_stats`.
 
 See also the specification page: :doc:`/specs/stdlib_stats_descriptive`.
 
+.. f:module:: stdlib_stats_decomposition
+
+See also the specification page: :doc:`/specs/stdlib_stats_decomposition`.
+
 .. f:module:: stdlib_stats_distribution_beta
 
 See also the specification page: :doc:`/specs/stdlib_stats_distribution_beta`.
