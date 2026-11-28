@@ -24,6 +24,7 @@ This is an index/directory of the specifications (specs) for each new module/fea
  - [hash](./stdlib_hash_procedures.md) - Hashing integer
  vectors or character strings
  - [hashmaps](./stdlib_hashmaps.md) - Hash maps/tables
+ - [interpolation](./stdlib_interpolation.md) - 1D data interpolation
  - [io](./stdlib_io.md) - Input/output helper & convenience
  - [kinds](./stdlib_kinds.md) - Kind parameters
  - [linalg](./stdlib_linalg.md) - Linear Algebra
@@ -58,6 +59,7 @@ stdlib_error
 stdlib_error_state_type
 stdlib_hash_procedures
 stdlib_hashmaps
+stdlib_interpolation
 stdlib_intrinsics
 stdlib_io
 stdlib_kinds

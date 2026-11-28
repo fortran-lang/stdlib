@@ -1,0 +1,333 @@
+#:include "common.fypp"
+#:set R_KINDS_TYPES = list(zip(REAL_KINDS, REAL_TYPES, REAL_SUFFIX))
+module test_interpolation_linear
+    use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, &
+        ieee_is_nan
+    use testdrive, only: new_unittest, unittest_type, error_type, check
+    use stdlib_kinds
+    use stdlib_error, only: state_type, STDLIB_SUCCESS, STDLIB_VALUE_ERROR, &
+        operator(==)
+    use stdlib_math, only: all_close, is_close
+    use stdlib_interpolation
+    implicit none
+
+contains
+
+    !> Collect all exported unit tests
+    subroutine collect_suite(testsuite)
+        !> Collection of tests
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [ &
+            new_unittest("linear_interp1d knots and midpoints", &
+                test_knots_and_midpoints), &
+            new_unittest("linear_interp1d array and polymorphic", &
+                test_array_and_polymorphic), &
+            new_unittest("linear_interp1d extrapolation modes", &
+                test_extrapolation), &
+            new_unittest("interp1d one-shot and large grid", &
+                test_oneshot_and_large_grid), &
+            new_unittest("linear_interp1d error handling", &
+                test_error_handling) &
+        ]
+    end subroutine collect_suite
+
+    subroutine test_knots_and_midpoints(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for k1, t1, s1 in R_KINDS_TYPES
+        block
+            integer, parameter :: wp = ${k1}$
+            ${t1}$ :: x(5), y_lin(5), x_quad(4), y_quad(4)
+            ${t1}$ :: yq, tol
+            type(linear_interp1d_${s1}$_type) :: interp
+            integer :: i
+
+            tol = 10.0_wp * epsilon(1.0_wp)
+            x = [-2.0_wp, -0.5_wp, 0.0_wp, 1.5_wp, 4.0_wp]
+            y_lin = 2.5_wp * x - 1.25_wp
+
+            interp = linear_interp1d(x, y_lin)
+            call check(error, interp%is_initialized())
+            if (allocated(error)) return
+            call check(error, interp%num_points(), 5)
+            if (allocated(error)) return
+
+            ! Exact reproduction at knots.
+            do i = 1, size(x)
+                yq = interp%evaluate(x(i))
+                call check(error, yq, y_lin(i))
+                if (allocated(error)) return
+            end do
+
+            ! Affine function between knots.
+            yq = interp%evaluate(-1.25_wp)
+            call check(error, is_close(yq, 2.5_wp * (-1.25_wp) - 1.25_wp, &
+                rel_tol=tol, abs_tol=tol))
+            if (allocated(error)) return
+
+            yq = interp%evaluate(2.75_wp)
+            call check(error, is_close(yq, 2.5_wp * 2.75_wp - 1.25_wp, &
+                rel_tol=tol, abs_tol=tol))
+            if (allocated(error)) return
+
+            ! Re-initialize on nonlinear samples y = x^2.
+            x_quad = [0.0_wp, 1.0_wp, 3.0_wp, 6.0_wp]
+            y_quad = [0.0_wp, 1.0_wp, 9.0_wp, 36.0_wp]
+            call interp%initialize(x_quad, y_quad)
+            call check(error, interp%num_points(), 4)
+            if (allocated(error)) return
+
+            call check(error, is_close(interp%evaluate(0.5_wp), 0.5_wp, &
+                rel_tol=tol, abs_tol=tol))
+            if (allocated(error)) return
+            call check(error, is_close(interp%evaluate(2.0_wp), 5.0_wp, &
+                rel_tol=tol, abs_tol=tol))
+            if (allocated(error)) return
+            call check(error, is_close(interp%evaluate(4.0_wp), 18.0_wp, &
+                rel_tol=tol, abs_tol=tol))
+            if (allocated(error)) return
+
+            call interp%destroy()
+            call check(error, .not. interp%is_initialized())
+            if (allocated(error)) return
+            call check(error, interp%num_points(), 0)
+            if (allocated(error)) return
+        end block
+        #:endfor
+    end subroutine test_knots_and_midpoints
+
+    subroutine test_array_and_polymorphic(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for k1, t1, s1 in R_KINDS_TYPES
+        block
+            integer, parameter :: wp = ${k1}$
+            ${t1}$ :: x(4), y(4), xq(5), yq(5), expected(5), empty_x(0)
+            ${t1}$, allocatable :: empty_y(:)
+            ${t1}$ :: tol
+            class(interp1d_${s1}$_type), allocatable :: poly
+
+            tol = 10.0_wp * epsilon(1.0_wp)
+            x = [0.0_wp, 2.0_wp, 5.0_wp, 10.0_wp]
+            y = [1.0_wp, 5.0_wp, 2.0_wp, 12.0_wp]
+            xq = [0.0_wp, 1.0_wp, 3.5_wp, 7.5_wp, 10.0_wp]
+            expected = [1.0_wp, 3.0_wp, 3.5_wp, 7.0_wp, 12.0_wp]
+
+            allocate(poly, source=linear_interp1d(x, y))
+            call check(error, poly%is_initialized())
+            if (allocated(error)) return
+            call check(error, poly%num_points(), 4)
+            if (allocated(error)) return
+
+            yq = poly%evaluate(xq)
+            call check(error, all_close(yq, expected, rel_tol=tol, abs_tol=tol))
+            if (allocated(error)) return
+
+            empty_y = poly%evaluate(empty_x)
+            call check(error, size(empty_y), 0)
+            if (allocated(error)) return
+
+            call poly%destroy()
+            call check(error, .not. poly%is_initialized())
+            if (allocated(error)) return
+        end block
+        #:endfor
+    end subroutine test_array_and_polymorphic
+
+    subroutine test_extrapolation(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for k1, t1, s1 in R_KINDS_TYPES
+        block
+            integer, parameter :: wp = ${k1}$
+            ${t1}$ :: x(3), y(3), nan_val, tol
+            type(linear_interp1d_${s1}$_type) :: interp
+
+            tol = 10.0_wp * epsilon(1.0_wp)
+            x = [1.0_wp, 2.0_wp, 4.0_wp]
+            y = [10.0_wp, 12.0_wp, 20.0_wp]
+            nan_val = ieee_value(0.0_wp, ieee_quiet_nan)
+
+            ! Default linear extrapolation.
+            interp = linear_interp1d(x, y)
+            call check(error, is_close(interp%evaluate(0.0_wp), 8.0_wp, &
+                rel_tol=tol, abs_tol=tol))
+            if (allocated(error)) return
+            call check(error, is_close(interp%evaluate(5.0_wp), 24.0_wp, &
+                rel_tol=tol, abs_tol=tol))
+            if (allocated(error)) return
+            call check(error, ieee_is_nan(interp%evaluate(nan_val)))
+            if (allocated(error)) return
+
+            ! Boundary clamping.
+            interp = linear_interp1d(x, y, extrap=interp_extrap_clamp)
+            call check(error, interp%evaluate(-5.0_wp), 10.0_wp)
+            if (allocated(error)) return
+            call check(error, interp%evaluate(99.0_wp), 20.0_wp)
+            if (allocated(error)) return
+            call check(error, is_close(interp%evaluate(3.0_wp), 16.0_wp, &
+                rel_tol=tol, abs_tol=tol))
+            if (allocated(error)) return
+
+            ! Quiet NaN out of bounds.
+            interp = linear_interp1d(x, y, extrap=interp_extrap_nan)
+            call check(error, ieee_is_nan(interp%evaluate(0.99_wp)))
+            if (allocated(error)) return
+            call check(error, ieee_is_nan(interp%evaluate(4.01_wp)))
+            if (allocated(error)) return
+            call check(error, interp%evaluate(1.0_wp), 10.0_wp)
+            if (allocated(error)) return
+            call check(error, interp%evaluate(4.0_wp), 20.0_wp)
+            if (allocated(error)) return
+        end block
+        #:endfor
+    end subroutine test_extrapolation
+
+    subroutine test_oneshot_and_large_grid(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for k1, t1, s1 in R_KINDS_TYPES
+        block
+            integer, parameter :: wp = ${k1}$
+            integer, parameter :: n = 513
+            ${t1}$ :: x(n), y(n), x2(2), y2(2), xq(4), yq(4), y_ref(4), tol
+            type(linear_interp1d_${s1}$_type) :: interp
+            type(state_type) :: err
+            integer :: i
+
+            tol = 20.0_wp * epsilon(1.0_wp)
+
+            ! 2-point grid.
+            x2 = [0.0_wp, 10.0_wp]
+            y2 = [-5.0_wp, 15.0_wp]
+            call check(error, is_close(interp1d(2.5_wp, x2, y2), 0.0_wp, &
+                rel_tol=tol, abs_tol=tol))
+            if (allocated(error)) return
+
+            ! Non-uniform 513-point grid.
+            do i = 1, n
+                x(i) = real(i - 1, wp)**2 / real(n - 1, wp)
+                y(i) = -3.0_wp * x(i) + 7.5_wp
+            end do
+
+            interp = linear_interp1d(x, y)
+            xq = [0.0_wp, 0.001_wp, 123.45_wp, x(n)]
+            y_ref = -3.0_wp * xq + 7.5_wp
+            yq = interp1d(xq, x, y, err, extrap=interp_extrap_clamp)
+            call check(error, err%ok())
+            if (allocated(error)) return
+            call check(error, all_close(yq, interp%evaluate(xq), &
+                rel_tol=tol, abs_tol=tol))
+            if (allocated(error)) return
+            call check(error, all_close(yq, y_ref, rel_tol=tol, abs_tol=tol))
+            if (allocated(error)) return
+        end block
+        #:endfor
+    end subroutine test_oneshot_and_large_grid
+
+    subroutine test_error_handling(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+
+        #:for k1, t1, s1 in R_KINDS_TYPES
+        block
+            integer, parameter :: wp = ${k1}$
+            ${t1}$ :: x_good(3), y_good(3), x_one(1), y_one(1)
+            ${t1}$ :: x_dup(3), x_unsorted(3), x_nan(3), y_two(2)
+            ${t1}$ :: yq, yq_arr(2)
+            type(linear_interp1d_${s1}$_type) :: interp
+            type(state_type) :: err
+
+            x_good = [0.0_wp, 1.0_wp, 2.0_wp]
+            y_good = [0.0_wp, 2.0_wp, 4.0_wp]
+            x_one = [0.0_wp]
+            y_one = [1.0_wp]
+            y_two = [0.0_wp, 2.0_wp]
+            x_dup = [0.0_wp, 1.0_wp, 1.0_wp]
+            x_unsorted = [0.0_wp, 2.0_wp, 1.0_wp]
+            x_nan = [0.0_wp, ieee_value(0.0_wp, ieee_quiet_nan), 2.0_wp]
+
+            interp = linear_interp1d(x_good, y_good, err)
+            call check(error, err == STDLIB_SUCCESS)
+            if (allocated(error)) return
+            call check(error, interp%is_initialized())
+            if (allocated(error)) return
+
+            call interp%initialize(x_one, y_one, err=err)
+            call check(error, err == STDLIB_VALUE_ERROR)
+            if (allocated(error)) return
+            call check(error, .not. interp%is_initialized())
+            if (allocated(error)) return
+
+            interp = linear_interp1d(x_good, y_two, err)
+            call check(error, err == STDLIB_VALUE_ERROR)
+            if (allocated(error)) return
+
+            interp = linear_interp1d(x_dup, y_good, err)
+            call check(error, err == STDLIB_VALUE_ERROR)
+            if (allocated(error)) return
+
+            interp = linear_interp1d(x_unsorted, y_good, err)
+            call check(error, err == STDLIB_VALUE_ERROR)
+            if (allocated(error)) return
+
+            interp = linear_interp1d(x_nan, y_good, err)
+            call check(error, err == STDLIB_VALUE_ERROR)
+            if (allocated(error)) return
+
+            x_nan = [ieee_value(0.0_wp, ieee_quiet_nan), 1.0_wp, 2.0_wp]
+            interp = linear_interp1d(x_nan, y_good, err)
+            call check(error, err == STDLIB_VALUE_ERROR)
+            if (allocated(error)) return
+
+            interp = linear_interp1d(x_good, y_good, err, extrap=99)
+            call check(error, err == STDLIB_VALUE_ERROR)
+            if (allocated(error)) return
+
+            yq = interp1d(0.5_wp, x_dup, y_good, err)
+            call check(error, err == STDLIB_VALUE_ERROR)
+            if (allocated(error)) return
+            call check(error, ieee_is_nan(yq))
+            if (allocated(error)) return
+
+            yq_arr = interp1d([0.5_wp, 1.5_wp], x_dup, y_good, err)
+            call check(error, err == STDLIB_VALUE_ERROR)
+            if (allocated(error)) return
+            call check(error, all(ieee_is_nan(yq_arr)))
+            if (allocated(error)) return
+        end block
+        #:endfor
+    end subroutine test_error_handling
+
+end module test_interpolation_linear
+
+program tester
+    use, intrinsic :: iso_fortran_env, only: error_unit
+    use testdrive, only: run_testsuite, new_testsuite, testsuite_type
+    use test_interpolation_linear, only: collect_suite
+    implicit none
+
+    integer :: stat, is
+    type(testsuite_type), allocatable :: testsuites(:)
+    character(len=*), parameter :: fmt = '("#", *(1x, a))'
+
+    stat = 0
+    testsuites = [ &
+        new_testsuite("interpolation_linear", collect_suite) &
+    ]
+
+    do is = 1, size(testsuites)
+        write(error_unit, fmt) "Testing:", testsuites(is)%name
+        call run_testsuite(testsuites(is)%collect, error_unit, stat)
+    end do
+
+    if (stat > 0) then
+        write(error_unit, '(i0, 1x, a)') stat, "test(s) failed!"
+        error stop
+    end if
+end program tester
