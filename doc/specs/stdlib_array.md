@@ -7,79 +7,30 @@
 
 ## Introduction
 
-Module for index manipulation and array handling tasks.
+The `stdlib_array` module provides two functions that return the indices of
+true or false elements in a logical mask.
 
-## Procedures and methods provided
+Use these functions when the indices are needed. For other operations on a
+logical mask, use `where` for masked assignment, `pack` to collect selected
+values, or `merge` to choose between two values at each position.
 
+See the [API reference](../api/stdlib_array.rst) for the arguments and return values.
 
-### `trueloc`
+## `trueloc`
 
-#### Status
-
-Experimental
-
-#### Description
-
-Turn a logical mask into an index array by selecting all true values.
-Provides similar functionality like the built-in `where` or the intrinsic procedures `merge` and `pack` when working with logical mask.
-The built-in / intrinsics are usually preferable to `trueloc`, unless the access to the index array is required.
-
-#### Syntax
-
-`loc =` {f:func}`trueloc` `(array[, lbound])`
-
-#### Class
-
-Pure function.
-
-#### Arguments
-
-`array`: List of default logical arrays. This argument is `intent(in)`.
-
-`lbound`: Lower bound of the array to index. This argument is `optional` and `intent(in)`.
-
-#### Return value
-
-Returns an array of default integer size, with a maximum length of `size(array)` elements.
-
-#### Examples
+The following example sets elements greater than `0.5` to zero.
+The lower bound of `array` is 1, the default for `trueloc`.
 
 ```{literalinclude} ../../example/array/example_trueloc.f90
 :language: fortran
 ```
 
+## `falseloc`
 
-### `falseloc`
-
-#### Status
-
-Experimental
-
-#### Description
-
-Turn a logical mask into an index array by selecting all false values.
-Provides similar functionality like the built-in `where` or the intrinsic procedures `merge` and `pack` when working with logical mask.
-The built-in / intrinsics are usually preferable to `falseloc`, unless the access to the index array is required.
-
-#### Syntax
-
-`loc =` {f:func}`falseloc` `(array[, lbound])`
-
-#### Class
-
-Pure function.
-
-#### Arguments
-
-`array`: List of default logical arrays. This argument is `intent(in)`.
-
-`lbound`: Lower bound of the array to index. This argument is `optional` and `intent(in)`.
-
-#### Return value
-
-Returns an array of default integer size, with a maximum length of `size(array)` elements.
-
-#### Examples
+The following example sets elements greater than or equal to `0.5` to zero.
+The lower bound of `array` is `-200`. Passing `lbound(array, 1)` gives
+indices relative to that lower bound. If the argument is omitted, the first
+element of the mask has index 1.
 
 ```{literalinclude} ../../example/array/example_falseloc.f90
 :language: fortran

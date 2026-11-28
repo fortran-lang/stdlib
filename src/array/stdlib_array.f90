@@ -2,7 +2,7 @@
 
 !> Module for index manipulation and general array handling
 !>
-!> The specification of this module is available :doc:`here </specs/stdlib_array>`.
+!> Both public procedures are experimental.
 
 module stdlib_array
   implicit none
@@ -14,16 +14,17 @@ contains
 
   !> Version: experimental
   !>
-  !> Return the positions of the true elements in array.
-  !> (Specification: :doc:`/specs/stdlib_array`)
+  !> Return the indices of the true elements in the logical mask.
+  !> Indices are returned in array order. The result is empty if no elements match.
 
 
   pure function trueloc(array, lbound) result(loc)
-    !> Mask of logicals
+    !> Rank-one array of default logical kind.
     logical, intent(in) :: array(:)
-    !> Lower bound of array to index
+    !> Index to use for the first element of ``array``. Defaults to 1.
+    !> For an array with a different lower bound, pass that bound here.
     integer, intent(in), optional :: lbound
-    !> Locations of true elements
+    !> Array of default integers with one index for each true element.
     integer :: loc(count(array))
 
     call logicalloc(loc, array, .true., lbound)
@@ -31,14 +32,15 @@ contains
 
   !> Version: experimental
   !>
-  !> Return the positions of the false elements in array.
-  !> (Specification: :doc:`/specs/stdlib_array`)
+  !> Return the indices of the false elements in the logical mask.
+  !> Indices are returned in array order. The result is empty if no elements match.
   pure function falseloc(array, lbound) result(loc)
-    !> Mask of logicals
+    !> Rank-one array of default logical kind.
     logical, intent(in) :: array(:)
-    !> Lower bound of array to index
+    !> Index to use for the first element of ``array``. Defaults to 1.
+    !> For an array with a different lower bound, pass that bound here.
     integer, intent(in), optional :: lbound
-    !> Locations of false elements
+    !> Array of default integers with one index for each false element.
     integer :: loc(count(.not.array))
 
     call logicalloc(loc, array, .false., lbound)
