@@ -17,6 +17,7 @@ contains
         testsuite = [ &
             new_unittest('coo', test_coo), &
             new_unittest('coo2ordered', test_coo2ordered), &
+            new_unittest('pattern_conversions', test_pattern_conversions), &
             new_unittest('bsr', test_bsr), &
             new_unittest('bsr_symmetric', test_bsr_symmetric), &
             new_unittest('bsr_block_sizes', test_bsr_block_sizes), &
@@ -147,6 +148,141 @@ contains
             call check(error, all(vec_x == real([17,15,4,14,-3],kind=wp)), 'COO - transpose - low level API: wrong output' )
             if (allocated(error)) return
  
+        end block
+    end subroutine
+
+    subroutine test_pattern_conversions(error)
+        type(error_type), allocatable, intent(out) :: error
+        type(COO_type) :: coo, result
+        type(CSR_type) :: csr
+        type(CSC_type) :: csc
+
+        call coo%malloc(4, 5, 6)
+        coo%index(1,:) = [3, 1, 3, 1, 3, 4]
+        coo%index(2,:) = [4, 5, 1, 2, 4, 2]
+        coo%storage = sparse_lower
+
+        call coo2csc(coo, csc)
+        call check(error, csc%nnz == 5, 'COO to CSC nnz')
+        if (allocated(error)) return
+        call check(error, csc%nrows == 4, 'COO to CSC nrows')
+        if (allocated(error)) return
+        call check(error, csc%ncols == 5, 'COO to CSC ncols')
+        if (allocated(error)) return
+        call check(error, csc%storage == sparse_lower, 'COO to CSC storage')
+        if (allocated(error)) return
+        call check(error, coo%nnz == 6, 'COO to CSC input nnz')
+        if (allocated(error)) return
+        call check(error, all(csc%colptr == [1, 2, 4, 4, 5, 6]), 'COO to CSC colptr')
+        if (allocated(error)) return
+        call check(error, all(csc%row == [3, 1, 4, 3, 1]), 'COO to CSC row')
+        if (allocated(error)) return
+
+        call csc2coo(csc, result)
+        call check(error, result%nnz == 5, 'CSC to COO nnz')
+        if (allocated(error)) return
+        call check(error, result%nrows == 4, 'CSC to COO nrows')
+        if (allocated(error)) return
+        call check(error, result%ncols == 5, 'CSC to COO ncols')
+        if (allocated(error)) return
+        call check(error, result%storage == sparse_lower, 'CSC to COO storage')
+        if (allocated(error)) return
+        call check(error, result%is_sorted, 'CSC to COO sorted')
+        if (allocated(error)) return
+        call check(error, all(result%index(1,:) == [1, 1, 3, 3, 4]), 'CSC to COO index(1,:)')
+        if (allocated(error)) return
+        call check(error, all(result%index(2,:) == [2, 5, 1, 4, 2]), 'CSC to COO index(2,:)')
+        if (allocated(error)) return
+
+        call coo2csr(coo, csr, sort_data=.true.)
+        call check(error, coo%nnz == 5, 'COO to CSR input nnz')
+        if (allocated(error)) return
+        call check(error, size(coo%index, 2) == coo%nnz, 'COO to CSR input index size')
+        if (allocated(error)) return
+        call check(error, coo%is_sorted, 'COO to CSR input sorted')
+        if (allocated(error)) return
+        call check(error, csr%nnz == 5, 'COO to CSR nnz')
+        if (allocated(error)) return
+        call check(error, csr%nrows == 4, 'COO to CSR nrows')
+        if (allocated(error)) return
+        call check(error, csr%ncols == 5, 'COO to CSR ncols')
+        if (allocated(error)) return
+        call check(error, csr%storage == sparse_lower, 'COO to CSR storage')
+        if (allocated(error)) return
+        call check(error, all(csr%rowptr == [1, 3, 3, 5, 6]), 'COO to CSR rowptr')
+        if (allocated(error)) return
+        call check(error, all(csr%col == [2, 5, 1, 4, 2]), 'COO to CSR col')
+        if (allocated(error)) return
+
+        call csr2coo(csr, result)
+        call check(error, result%nnz == 5, 'CSR to COO nnz')
+        if (allocated(error)) return
+        call check(error, result%nrows == 4, 'CSR to COO nrows')
+        if (allocated(error)) return
+        call check(error, result%ncols == 5, 'CSR to COO ncols')
+        if (allocated(error)) return
+        call check(error, result%storage == sparse_lower, 'CSR to COO storage')
+        if (allocated(error)) return
+        call check(error, all(result%index == coo%index(:,1:coo%nnz)), 'CSR to COO pattern')
+        if (allocated(error)) return
+
+        call coo2csr(result, csr)
+        call check(error, all(csr%rowptr == [1, 3, 3, 5, 6]), 'COO to CSR without sorting : rowptr')
+        if (allocated(error)) return
+        call check(error, all(csr%col == [2, 5, 1, 4, 2]), 'COO to CSR without sorting : row')
+        if (allocated(error)) return
+
+        block
+            type(CSC_type) :: duplicates
+            call duplicates%malloc(3, 2, 3)
+            duplicates%colptr = [1, 3, 4]
+            duplicates%row = [2, 2, 1]
+            call csc2coo(duplicates, result)
+            call check(error, result%nnz == 2, 'CSC duplicate removal nnz')
+            if (allocated(error)) return
+            call check(error, size(result%index, 2) == 2, 'CSC duplicate removal index size')
+            if (allocated(error)) return
+            call check(error, result%is_sorted, 'CSC duplicate removal sorted')
+            if (allocated(error)) return
+            call check(error, all(result%index(1,:) == [1, 2]) &
+                .and. all(result%index(2,:) == [2, 1]), 'CSC duplicate pattern')
+            if (allocated(error)) return
+        end block
+
+        block
+            type(COO_type) :: empty
+            call coo2csr(empty, csr, sort_data=.true.)
+            call check(error, csr%nnz == 0, 'empty COO to CSR nnz')
+            if (allocated(error)) return
+            call check(error, all(csr%rowptr == [1]), 'empty COO to CSR rowptr')
+            if (allocated(error)) return
+
+            call csr2coo(csr, result)
+            call check(error, result%nnz == 0, 'empty CSR to COO nnz')
+            if (allocated(error)) return
+            call check(error, size(result%index, 2) == 0, 'empty CSR to COO index size')
+            if (allocated(error)) return
+
+            call coo2csc(empty, csc)
+            call check(error, csc%nnz == 0, 'empty COO to CSC nnz')
+            if (allocated(error)) return
+            call check(error, all(csc%colptr == [1]), 'empty COO to CSC colptr')
+            if (allocated(error)) return
+
+            call csc2coo(csc, result)
+            call check(error, result%nnz == 0, 'empty CSC to COO nnz')
+            if (allocated(error)) return
+            call check(error, size(result%index, 2) == 0, 'empty CSC to COO index size')
+            if (allocated(error)) return
+
+            call empty%malloc(3, 5, 0)
+            call coo2csr(empty, csr)
+            call check(error, all(csr%rowptr == [1, 1, 1, 1]), 'empty rectangular CSR')
+            if (allocated(error)) return
+
+            call coo2csc(empty, csc)
+            call check(error, all(csc%colptr == [1, 1, 1, 1, 1, 1]), 'empty rectangular CSC')
+            if (allocated(error)) return
         end block
     end subroutine
 

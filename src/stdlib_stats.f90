@@ -3,8 +3,8 @@ module stdlib_stats
   !! descriptive statistics, random number generation and probability distributions
   !! (Specification: :doc:`/specs/stdlib_stats`)
   use stdlib_random, only: random_seed, dist_rand
-  use stdlib_stats_descriptive, only: corr, cov, mean, median, moment, var, &
-                                      pca, pca_transform, pca_inverse_transform
+  use stdlib_stats_descriptive, only: corr, cov, mean, median, moment, var
+  use stdlib_stats_decomposition, only: pca, pca_transform, pca_inverse_transform
   use stdlib_stats_distribution_beta, only: rvs_beta, pdf_beta, cdf_beta
   use stdlib_stats_distribution_exponential, only: rvs_exp, pdf_exp, cdf_exp
   use stdlib_stats_distribution_gamma, only: rvs_gamma, pdf_gamma, cdf_gamma
