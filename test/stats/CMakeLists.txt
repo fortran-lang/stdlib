@@ -2,6 +2,7 @@
 
 # Create a list of the files to be preprocessed
 set(fppFiles
+    test_cov.fypp
     test_mean.fypp
     test_mean_f03.fypp
     test_median.fypp

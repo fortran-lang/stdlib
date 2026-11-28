@@ -64,10 +64,10 @@ Experimental
 
 Returns the covariance of the elements of `array` along dimension `dim` if the corresponding element in `mask` is `true`.
 
-Per default, the covariance is defined as:
+For one array, the covariance is defined as:
 
 ```
- cov(array) = 1/(n-1) sum_i (array(i) - mean(array) * (array(i) - mean(array)))
+ cov(array) = 1/(n-1) sum_i (array(i) - mean(array)) * (array(i) - mean(array))
 ```
 
 where `n` is the number of elements.
@@ -79,13 +79,15 @@ The scaling can be changed with the logical argument `corrected`. If `corrected`
 
 `result = ` {f:iface}`cov` `(array, dim [, mask [, corrected]])`
 
+`result = ` {f:iface}`cov` `(x, y [, corrected])`
+
 ### Class
 
-Generic subroutine
+Generic function
 
 ### Arguments
 
-`array`: Shall be a rank-1 or a rank-2 array of type `integer`, `real`, or `complex`. It is an `intent(in)` argument.
+`array`, `x`, `y`: Shall be a rank-1 or a rank-2 array of type `integer`, `real`, or `complex`. It is an `intent(in)` argument.
 
 `dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`. It is an `intent(in)` argument.
 
@@ -103,6 +105,29 @@ If `array` is of rank 1, a scalar with the covariance (that is the variance) of 
 If `array` is of rank 2, a rank-2 array is returned.
 
 If `mask` is specified, the result is the covariance of all elements of `array` corresponding to `true` elements of `mask`. If every element of `mask` is `false`, the result is IEEE `NaN`.
+
+If two rank-1 arrays are provided, `x` and `y` shall have the same size. The
+arrays are treated as two random variables and the result is a `2 x 2` matrix:
+
+```
+cov(x, y) = [ cov(x, x)  cov(x, y)
+              cov(y, x)  cov(y, y) ]
+```
+
+For complex arrays, covariance uses the Hermitian convention, so
+`cov(y, x)` is the complex conjugate of `cov(x, y)`. 
+If the arrays `x` and `y` have different sizes, the procedure raises an
+error.
+If the selected sample count is insufficient for the requested
+normalization, the result is filled with IEEE `NaN`.
+
+If two rank-2 arrays are provided, each row of `x` and `y` is an observation
+and each column is a variable. The arrays shall have the same number of rows.
+The result has shape `[size(x, 2), size(y, 2)]`, and its `(i,j)` element is the
+covariance between `x(:,i)` and `y(:,j)`. 
+For complex arrays, the result uses
+the Hermitian convention. The same normalization and insufficient-observation
+rules apply.
 
 ### Example
 

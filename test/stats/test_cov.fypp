@@ -1,6 +1,8 @@
 program test_cov
+    #:include "common.fypp"
+
     use stdlib_error, only: check
-    use stdlib_kinds, only: sp, dp, int32, int64
+    use stdlib_kinds, only: sp, dp, xdp, qp, int8, int16, int32, int64
     use stdlib_stats, only: cov, var
     use,intrinsic :: ieee_arithmetic, only : ieee_is_nan
     implicit none
@@ -38,6 +40,26 @@ program test_cov
     call test_csp(cmplx(cd1, kind = sp), cmplx(ds, kind = sp))
 
     call test_cdp(cd1, ds)
+
+    #:for k1, t1, i1, c1 in INT_KINDS_TYPES
+    call test_two_array_1d_integer_${k1}$()
+    #:endfor
+    #:for k1, t1, i1, c1 in REAL_KINDS_TYPES
+    call test_two_array_1d_real_${k1}$()
+    #:endfor
+    #:for k1, t1, i1 in CMPLX_KINDS_TYPES
+    call test_two_array_1d_complex_${k1}$()
+    #:endfor
+
+    #:for k1, t1 in INT_KINDS_TYPES
+    call test_two_array_2d_integer_${k1}$()
+    #:endfor
+    #:for k1, t1, i1, c1 in REAL_KINDS_TYPES
+    call test_two_array_2d_real_${k1}$()
+    #:endfor
+    #:for k1, t1, i1 in CMPLX_KINDS_TYPES
+    call test_two_array_2d_complex_${k1}$()
+    #:endfor
 
 contains
 
@@ -610,5 +632,149 @@ contains
             , 'cdp check 14')
 
     end subroutine test_cdp
+
+    #:for k1, t1, i1, c1 in INT_KINDS_TYPES
+    subroutine test_two_array_1d_integer_${k1}$()
+        ${t1}$, parameter :: x(4) = [1_${k1}$, 2_${k1}$, 3_${k1}$, 4_${k1}$]
+        ${t1}$, parameter :: y(4) = [2_${k1}$, 4_${k1}$, 5_${k1}$, 9_${k1}$]
+        real(dp), parameter :: expected(2, 2) = reshape([5._dp/3, 11._dp/3, 11._dp/3, 26._dp/3], [2, 2])
+
+        call check(all(abs(cov(x, y) - expected) < dptol), 'integer ${k1}$ two-array covariance')
+
+        call check(all(abs(cov(x, y, corrected=.false.) - expected * 3._dp/4) < dptol), &
+            'integer ${k1}$ two-array covariance uncorrected')
+
+        call check(all(abs(cov(x, x) - reshape([5._dp/3, 5._dp/3, 5._dp/3, 5._dp/3], [2, 2])) < dptol), &
+            'integer ${k1}$ two-array covariance diagonal form')
+
+        call check(all(ieee_is_nan(cov(x(1:1), y(1:1)))), &
+            'integer ${k1}$ two-array covariance invalid degrees of freedom')
+
+    end subroutine test_two_array_1d_integer_${k1}$
+    #:endfor
+
+    #:for k1, t1, i1, c1 in REAL_KINDS_TYPES
+    subroutine test_two_array_1d_real_${k1}$()
+        ${t1}$, parameter :: x(4) = [1._${k1}$, 2._${k1}$, 3._${k1}$, 4._${k1}$]
+        ${t1}$, parameter :: y(4) = [2._${k1}$, 4._${k1}$, 5._${k1}$, 9._${k1}$]
+        ${t1}$, parameter :: expected(2, 2) = reshape([5._${k1}$/3, 11._${k1}$/3, 11._${k1}$/3, 26._${k1}$/3], [2, 2])
+        ${t1}$, parameter :: expected_self(2, 2) = reshape([5._${k1}$/3, 5._${k1}$/3, 5._${k1}$/3, 5._${k1}$/3], [2, 2])
+        ${t1}$, parameter :: tol = 1000 * epsilon(1._${k1}$)
+
+        call check(all(abs(cov(x, y) - expected) < tol), 'real ${k1}$ two-array covariance')
+
+        call check(all(abs(cov(x, y, corrected=.false.) - expected * 3._${k1}$/4) < tol), &
+            'real ${k1}$ two-array covariance uncorrected')
+
+        call check(all(abs(cov(x, x) - expected_self) < tol), 'real ${k1}$ two-array covariance diagonal form')
+
+        call check(all(ieee_is_nan(cov(x(1:1), y(1:1)))), 'real ${k1}$ two-array covariance invalid degrees of freedom')
+
+    end subroutine test_two_array_1d_real_${k1}$
+    #:endfor
+
+    #:for k1, t1, i1 in CMPLX_KINDS_TYPES
+    subroutine test_two_array_1d_complex_${k1}$()
+        ${t1}$, parameter :: x(3) = [cmplx(1._${k1}$, 1._${k1}$, ${k1}$), cmplx(2._${k1}$, 2._${k1}$, ${k1}$), &
+                                      cmplx(4._${k1}$, 3._${k1}$, ${k1}$)]
+        ${t1}$, parameter :: y(3) = [cmplx(2._${k1}$, -1._${k1}$, ${k1}$), cmplx(3._${k1}$, 1._${k1}$, ${k1}$), &
+                                      cmplx(7._${k1}$, 2._${k1}$, ${k1}$)]
+        ${t1}$, parameter :: expected(2, 2) = reshape([cmplx(10._${k1}$/3, 0._${k1}$, ${k1}$), cmplx(11._${k1}$/2, 1._${k1}$/3, ${k1}$), &
+                                                        cmplx(11._${k1}$/2, -1._${k1}$/3, ${k1}$), cmplx(28._${k1}$/3, 0._${k1}$, ${k1}$)], [2, 2])
+        real(${k1}$), parameter :: tol = 1000 * epsilon(1._${k1}$)
+
+        call check(all(abs(cov(x, y) - expected) < tol), 'complex ${k1}$ two-array covariance')
+
+        call check(all(abs(cov(x, y, corrected=.false.) - expected * 2._${k1}$/3) < tol), &
+            'complex ${k1}$ two-array covariance uncorrected')
+
+        call check(all(abs(cov(x, x) - reshape([cmplx(10._${k1}$/3, 0._${k1}$, ${k1}$), &
+                                                cmplx(10._${k1}$/3, 0._${k1}$, ${k1}$), &
+                                                cmplx(10._${k1}$/3, 0._${k1}$, ${k1}$), &
+                                                cmplx(10._${k1}$/3, 0._${k1}$, ${k1}$)], [2, 2])) < tol), &
+            'complex ${k1}$ two-array covariance diagonal form')
+
+        call check(any(ieee_is_nan(real(cov(x(1:1), y(1:1))))), &
+            'complex ${k1}$ two-array covariance invalid degrees of freedom')
+
+    end subroutine test_two_array_1d_complex_${k1}$
+    #:endfor
+
+    #:for k1, t1, i1, c1 in INT_KINDS_TYPES
+    subroutine test_two_array_2d_integer_${k1}$()
+        ${t1}$, parameter :: x(4, 2) = reshape([1_${k1}$, 2_${k1}$, 2_${k1}$, 4_${k1}$, 3_${k1}$, 5_${k1}$, 4_${k1}$, 8_${k1}$], [4, 2])
+        ${t1}$, parameter :: y(4, 3) = reshape([2_${k1}$, 1_${k1}$, 4_${k1}$, 3_${k1}$, 6_${k1}$, 5_${k1}$, &
+                                                 8_${k1}$, 7_${k1}$, 10_${k1}$, 9_${k1}$, 12_${k1}$, 11_${k1}$], [4, 3])
+        real(dp), parameter :: expected(2, 3) = reshape([0.5_dp, 1._dp/3, 0.5_dp, 1._dp/3, 0.5_dp, 1._dp/3], [2, 3])
+
+        call check(all(abs(cov(x, y) - expected) < dptol), 'integer ${k1}$ matrix cross-covariance')
+
+        call check(all(abs(cov(x, y, corrected=.false.) - expected * 3._dp/4) < dptol), &
+            'integer ${k1}$ matrix cross-covariance uncorrected')
+
+        call check(all(abs(cov(x, x) - cov(x, 1)) < dptol), &
+            'integer ${k1}$ matrix covariance matches one-array covariance')
+
+        call check(all(ieee_is_nan(cov(x(1:1, :), y(1:1, :)))), &
+            'integer ${k1}$ matrix covariance invalid degrees of freedom')
+
+    end subroutine test_two_array_2d_integer_${k1}$
+    #:endfor
+
+    #:for k1, t1, i1, c1 in REAL_KINDS_TYPES
+    subroutine test_two_array_2d_real_${k1}$()
+        ${t1}$, parameter :: x(4, 2) = reshape([1._${k1}$, 2._${k1}$, 2._${k1}$, 4._${k1}$, 3._${k1}$, 5._${k1}$, 4._${k1}$, 8._${k1}$], [4, 2])
+        ${t1}$, parameter :: y(4, 3) = reshape([2._${k1}$, 1._${k1}$, 4._${k1}$, 3._${k1}$, 6._${k1}$, 5._${k1}$, &
+                                                 8._${k1}$, 7._${k1}$, 10._${k1}$, 9._${k1}$, 12._${k1}$, 11._${k1}$], [4, 3])
+        ${t1}$, parameter :: expected(2, 3) = reshape([0.5_${k1}$, 1._${k1}$/3, 0.5_${k1}$, 1._${k1}$/3, 0.5_${k1}$, 1._${k1}$/3], [2, 3])
+        ${t1}$, parameter :: tol = 1000 * epsilon(1._${k1}$)
+
+        call check(all(abs(cov(x, y) - expected) < tol), 'real ${k1}$ matrix cross-covariance')
+
+        call check(all(abs(cov(x, x) - cov(x, 1)) < tol), 'real ${k1}$ matrix covariance matches one-array covariance')
+
+        call check(all(abs(cov(x, y, corrected=.false.) - expected * 3._${k1}$/4) < tol), &
+            'real ${k1}$ matrix cross-covariance uncorrected')
+
+        call check(all(ieee_is_nan(cov(x(1:1, :), y(1:1, :)))), 'real ${k1}$ matrix covariance invalid degrees of freedom')
+
+    end subroutine test_two_array_2d_real_${k1}$
+    #:endfor
+
+    #:for k1, t1, i1 in CMPLX_KINDS_TYPES
+    subroutine test_two_array_2d_complex_${k1}$()
+        ${t1}$, parameter :: x(3, 2) = reshape([cmplx(1._${k1}$, 1._${k1}$, ${k1}$), cmplx(2._${k1}$, -1._${k1}$, ${k1}$), &
+                                                 cmplx(3._${k1}$, 2._${k1}$, ${k1}$), cmplx(4._${k1}$, 0._${k1}$, ${k1}$), &
+                                                 cmplx(5._${k1}$, 3._${k1}$, ${k1}$), cmplx(7._${k1}$, 1._${k1}$, ${k1}$)], [3, 2])
+        ${t1}$, parameter :: y(3, 2) = reshape([cmplx(2._${k1}$, -2._${k1}$, ${k1}$), cmplx(1._${k1}$, 1._${k1}$, ${k1}$), &
+                                                 cmplx(4._${k1}$, 0._${k1}$, ${k1}$), cmplx(3._${k1}$, 2._${k1}$, ${k1}$), &
+                                                 cmplx(6._${k1}$, 1._${k1}$, ${k1}$), cmplx(5._${k1}$, -1._${k1}$, ${k1}$)], [3, 2])
+        ${t1}$, parameter :: expected(2, 2) = reshape([cmplx(-1._${k1}$/6, -7._${k1}$/6, ${k1}$), &
+                                                        cmplx(4._${k1}$, 7._${k1}$/3, ${k1}$), &
+                                                        cmplx(-1._${k1}$/6, -1._${k1}$/3, ${k1}$), &
+                                                        cmplx(5._${k1}$/6, -9._${k1}$/2, ${k1}$)], [2, 2])
+        ${t1}$, parameter :: expected_self(2, 2) = reshape([cmplx(10._${k1}$/3, 0._${k1}$, ${k1}$), &
+                                                              cmplx(-1._${k1}$/3, 2._${k1}$/3, ${k1}$), &
+                                                              cmplx(-1._${k1}$/3, -2._${k1}$/3, ${k1}$), &
+                                                              cmplx(14._${k1}$/3, 0._${k1}$, ${k1}$)], [2, 2])
+        real(${k1}$), parameter :: tol = 1000 * epsilon(1._${k1}$)
+
+        call check(all(abs(cov(x, y) - expected) < tol), &
+            'complex ${k1}$ matrix cross-covariance')
+
+        call check(all(abs(cov(x, y, corrected=.false.) - expected * 2._${k1}$/3) < tol), &
+            'complex ${k1}$ matrix cross-covariance uncorrected')
+
+        call check(all(abs(cov(x, x) - expected_self) < tol), &
+            'complex ${k1}$ matrix covariance diagonal form')
+
+        call check(all(abs(cov(y, x) - transpose(conjg(cov(x, y)))) < tol), 'complex ${k1}$ matrix cross-covariance Hermitian')
+
+        call check(all(ieee_is_nan(real(cov(x(1:1, :), y(1:1, :))))), &
+            'complex ${k1}$ matrix covariance invalid degrees of freedom')
+
+    end subroutine test_two_array_2d_complex_${k1}$
+    #:endfor
+
 
 end program test_cov

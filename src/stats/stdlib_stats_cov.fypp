@@ -10,6 +10,158 @@ submodule (stdlib_stats_descriptive) stdlib_stats_cov
 contains
 
   #:for k1, t1 in RC_KINDS_TYPES
+    #:set RName = rname("cov_two",1, t1, k1)
+    module function ${RName}$(x, y, corrected) result(res)
+      ${t1}$, intent(in) :: x(:)
+      ${t1}$, intent(in) :: y(:)
+      logical, intent(in), optional :: corrected
+      ${t1}$ :: res(2, 2)
+
+      integer :: n
+      real(${k1}$) :: scale
+      ${t1}$ :: x_centered(size(x)), y_centered(size(y))
+
+      n = size(x)
+
+      if (n /= size(y)) then
+        call error_stop("ERROR (cov): x and y must have the same size")
+      end if
+
+      scale = real(n - merge(1, 0, optval(corrected, .true.)), ${k1}$)
+
+      if (scale < 1._${k1}$) then
+        res = ieee_value(1._${k1}$, ieee_quiet_nan)
+        return
+      end if
+
+      x_centered = x - sum(x) / n
+      y_centered = y - sum(y) / n
+
+      res(1, 1) = dot_product(x_centered, x_centered) / scale
+      res(1, 2) = dot_product(x_centered, y_centered) / scale
+      res(2, 1) = dot_product(y_centered, x_centered) / scale
+      res(2, 2) = dot_product(y_centered, y_centered) / scale
+
+    end function ${RName}$
+  #:endfor
+
+  #:for k1, t1 in INT_KINDS_TYPES
+    #:set RName = rname("cov_two",1, t1, k1, 'dp')
+    module function ${RName}$(x, y, corrected) result(res)
+      ${t1}$, intent(in) :: x(:)
+      ${t1}$, intent(in) :: y(:)
+      logical, intent(in), optional :: corrected
+      real(dp) :: res(2, 2)
+
+      integer :: n
+      real(dp) :: scale
+      real(dp) :: x_centered(size(x)), y_centered(size(y))
+
+      n = size(x)
+
+      if (n /= size(y)) then
+        call error_stop("ERROR (cov): x and y must have the same size")
+      end if
+
+      scale = real(n - merge(1, 0, optval(corrected, .true.)), dp)
+
+      if (scale < 1._dp) then
+        res = ieee_value(1._dp, ieee_quiet_nan)
+        return
+      end if
+
+      x_centered = real(x, dp) - sum(real(x, dp)) / n
+      y_centered = real(y, dp) - sum(real(y, dp)) / n
+
+      res(1, 1) = dot_product(x_centered, x_centered) / scale
+      res(1, 2) = dot_product(x_centered, y_centered) / scale
+      res(2, 1) = dot_product(y_centered, x_centered) / scale
+      res(2, 2) = dot_product(y_centered, y_centered) / scale
+
+    end function ${RName}$
+  #:endfor
+
+  #:for k1, t1 in RC_KINDS_TYPES
+    #:set RName = rname("cov_two",2, t1, k1)
+    module function ${RName}$(x, y, corrected) result(res)
+      ${t1}$, intent(in) :: x(:, :)
+      ${t1}$, intent(in) :: y(:, :)
+      logical, intent(in), optional :: corrected
+      ${t1}$ :: res(size(x, 2), size(y, 2))
+
+      integer :: n
+      real(${k1}$) :: scale
+      ${t1}$ :: x_centered(size(x, 1), size(x, 2))
+      ${t1}$ :: y_centered(size(y, 1), size(y, 2))
+      ${t1}$ :: x_mean(size(x, 2)), y_mean(size(y, 2))
+
+      n = size(x, 1)
+
+      if (n /= size(y, 1)) then
+        call error_stop("ERROR (cov): x and y must have the same number of observations")
+      end if
+
+      scale = real(n - merge(1, 0, optval(corrected, .true.)), ${k1}$)
+
+      if (scale < 1._${k1}$) then
+        res = ieee_value(1._${k1}$, ieee_quiet_nan)
+        return
+      end if
+
+      x_mean = sum(x, dim=1) / n
+      y_mean = sum(y, dim=1) / n
+
+      x_centered = x - spread(x_mean, 1, n)
+      y_centered = y - spread(y_mean, 1, n)
+
+      #:if t1[0] == 'r'
+        res = matmul(transpose(x_centered), y_centered) / scale
+      #:else
+        res = matmul(transpose(conjg(x_centered)), y_centered) / scale
+      #:endif
+
+    end function ${RName}$
+  #:endfor
+
+  #:for k1, t1 in INT_KINDS_TYPES
+    #:set RName = rname("cov_two",2, t1, k1, 'dp')
+    module function ${RName}$(x, y, corrected) result(res)
+      ${t1}$, intent(in) :: x(:, :)
+      ${t1}$, intent(in) :: y(:, :)
+      logical, intent(in), optional :: corrected
+      real(dp) :: res(size(x, 2), size(y, 2))
+
+      integer :: n
+      real(dp) :: scale
+      real(dp) :: x_centered(size(x, 1), size(x, 2))
+      real(dp) :: y_centered(size(y, 1), size(y, 2))
+      real(dp) :: x_mean(size(x, 2)), y_mean(size(y, 2))
+
+      n = size(x, 1)
+
+      if (n /= size(y, 1)) then
+        call error_stop("ERROR (cov): x and y must have the same number of observations")
+      end if
+
+      scale = real(n - merge(1, 0, optval(corrected, .true.)), dp)
+
+      if (scale < 1._dp) then
+        res = ieee_value(1._dp, ieee_quiet_nan)
+        return
+      end if
+
+      x_mean = sum(real(x, dp), dim=1) / n
+      y_mean = sum(real(y, dp), dim=1) / n
+
+      x_centered = real(x, dp) - spread(x_mean, 1, n)
+      y_centered = real(y, dp) - spread(y_mean, 1, n)
+
+      res = matmul(transpose(x_centered), y_centered) / scale
+
+    end function ${RName}$
+  #:endfor
+
+  #:for k1, t1 in RC_KINDS_TYPES
     #:set RName = rname("cov",1, t1, k1)
     module function ${RName}$(x, dim, mask, corrected) result(res)
       ${t1}$, intent(in) :: x(:)
