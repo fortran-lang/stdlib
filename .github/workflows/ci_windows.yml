@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         include: [
-          { msystem: MINGW64, arch: x86_64 }
+          { msystem: UCRT64, arch: ucrt-x86_64 }
         ]
     defaults:
       run:
@@ -25,7 +25,7 @@ jobs:
       uses: msys2/setup-msys2@v2
       with:
         msystem: ${{ matrix.msystem }}
-        update: false
+        update: true
         install: >-
           git
           mingw-w64-${{ matrix.arch }}-gcc
@@ -35,8 +35,9 @@ jobs:
           mingw-w64-${{ matrix.arch }}-cmake
           mingw-w64-${{ matrix.arch }}-ninja
 
-    - run: >-
-        PATH=$PATH:/mingw64/bin/ cmake
+    - name: Configure CMake
+      run: >-
+        cmake
         -Wdev
         -B build
         -DCMAKE_BUILD_TYPE=Debug
@@ -50,14 +51,14 @@ jobs:
         CXX: g++
 
     - name: CMake build
-      run: PATH=$PATH:/mingw64/bin/ cmake --build build --parallel
+      run: cmake --build build --parallel
 
     - name: catch build fail
-      run: PATH=$PATH:/mingw64/bin/ cmake --build build --verbose --parallel 1
+      run: cmake --build build --verbose --parallel 1
       if: failure()
 
     - name: CTest
-      run: PATH=$PATH:/mingw64/bin/ ctest --test-dir build --output-on-failure --parallel -V -LE quadruple_precision
+      run: ctest --test-dir build --output-on-failure --parallel -V -LE quadruple_precision
 
     - uses: actions/upload-artifact@v7
       if: failure()
@@ -66,4 +67,4 @@ jobs:
         path: build/Testing/Temporary/LastTest.log
 
     - name: Install project
-      run: PATH=$PATH:/mingw64/bin/ cmake --install build
+      run: cmake --install build
