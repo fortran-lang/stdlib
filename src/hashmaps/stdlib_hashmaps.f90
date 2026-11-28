@@ -575,16 +575,9 @@ module stdlib_hashmaps
 !! Other entry data
         integer(int_index) :: inmap
 !! Index into inverse table
+        type(open_map_entry_type), pointer :: next_free => null()
+!! Next entry in the map's free list (only used while the entry is free)
     end type open_map_entry_type
-
-    type :: open_map_entry_list
-!! Version: Experimental
-!!
-!! Open hash map entry type
-        private
-        type(open_map_entry_type), pointer :: target => null()
-        type(open_map_entry_list), pointer :: next => null()
-    end type open_map_entry_list
 
 
     type open_map_entry_ptr
@@ -617,8 +610,8 @@ module stdlib_hashmaps
 !! Mask used in linear addressing
         type(open_map_entry_pool), pointer    :: cache => null()
 !! Pool of allocated open_map_entry_type objects
-        type(open_map_entry_list), pointer    :: free_list => null()
-!! free list of map entries
+        type(open_map_entry_type), pointer    :: free_list => null()
+!! free list of map entries, linked through their next_free components
         type(open_map_entry_ptr), allocatable  :: inverse(:)
 !! Array of bucket lists (inverses) Note max_elts=size(inverse)
         integer(int_index), allocatable        :: slots(:)

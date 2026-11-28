@@ -224,7 +224,6 @@ contains
 !
         type(open_hashmap_type), intent(inout) :: map
 
-        type(open_map_entry_list), pointer :: free_list
         integer(int_index) :: i
 
         if ( allocated( map % slots ) ) then
@@ -238,13 +237,8 @@ contains
             deallocate( map % inverse )
         end if
 
-        free_free_list: do while( map % num_free > 0 )
-            free_list => map % free_list
-            map % free_list => map % free_list % next
-            free_list % next => null()
-            free_list % target => null()
-            map % num_free = map % num_free - 1
-        end do free_free_list
+!       Free entries live in the pools, which are deallocated below
+        map % free_list => null()
         map % num_free = 0
 
         if ( associated( map % cache ) ) call free_map_entry_pool(map % cache)
@@ -597,7 +591,6 @@ contains
 !         allocates a hash bucket
             type(open_hashmap_type), intent(inout) :: map
             type(open_map_entry_type), pointer, intent(out) :: bucket
-            type(open_map_entry_list), pointer :: free_list
             type(open_map_entry_pool), pointer :: pool
             character(*), parameter :: procedure_name = "ALLOCATE_MAP_ENTRY"
 
@@ -605,11 +598,9 @@ contains
             map % num_entries = map % num_entries + 1
             if ( associated(map % free_list) ) then
 !             Get hash bucket from free_list
-                free_list => map % free_list
-                bucket => free_list % target
-                map % free_list => free_list % next
-                free_list % target => null()
-                free_list % next => null()
+                bucket => map % free_list
+                map % free_list => bucket % next_free
+                bucket % next_free => null()
                 if (bucket % inmap <= 0) &
                     error stop submodule_name // " % " // procedure_name // &
                     ": Failed consistency check: BUCKET % INMAP <= 0"
@@ -711,7 +702,6 @@ contains
         type(key_type), intent(in)              :: key
         logical, intent(out), optional          :: existed
 
-        type(open_map_entry_list), pointer :: aentry
         type(open_map_entry_type), pointer :: bucket
         integer(int_index)                 :: base_slot
         integer(int_index)                 :: current_index
@@ -742,10 +732,8 @@ contains
         search_for_inmap: do
             slot_index = map % slots(current_slot)
             if ( slot_index == inmap ) then
-                allocate(aentry)
-                aentry % target => map % inverse(inmap) % target
-                aentry % next => map % free_list
-                map % free_list => aentry
+                bucket % next_free => map % free_list
+                map % free_list => bucket
                 map % num_free = map % num_free + 1
                 map % slots( current_slot ) = 0
                 map % inverse(inmap) % target => null()
