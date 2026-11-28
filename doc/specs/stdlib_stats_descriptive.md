@@ -87,7 +87,7 @@ Generic function
 
 ### Arguments
 
-`array`: Shall be a rank-1 or a rank-2 array of type `integer`, `real`, or `complex`. It is an `intent(in)` argument.
+`array`, `x`, `y`: Shall be a rank-1 or a rank-2 array of type `integer`, `real`, or `complex`. It is an `intent(in)` argument.
 
 `dim`: Shall be a scalar of type `integer` with a value in the range from 1 to `n`, where `n` is the rank of `array`. It is an `intent(in)` argument.
 
@@ -115,16 +115,17 @@ cov(x, y) = [ cov(x, x)  cov(x, y)
 ```
 
 For complex arrays, covariance uses the Hermitian convention, so
-`cov(y, x)` is the complex conjugate of `cov(x, y)`. The optional `corrected`
-argument selects normalization by `n-1` when `.true.` (the default), or by `n`
-when `.false.`. If the arrays have different sizes, the procedure raises an
-error. If the selected sample count is insufficient for the requested
+`cov(y, x)` is the complex conjugate of `cov(x, y)`. 
+If the arrays `x` and `y` have different sizes, the procedure raises an
+error.
+If the selected sample count is insufficient for the requested
 normalization, the result is filled with IEEE `NaN`.
 
 If two rank-2 arrays are provided, each row of `x` and `y` is an observation
 and each column is a variable. The arrays shall have the same number of rows.
 The result has shape `[size(x, 2), size(y, 2)]`, and its `(i,j)` element is the
-covariance between `x(:,i)` and `y(:,j)`. For complex arrays, the result uses
+covariance between `x(:,i)` and `y(:,j)`. 
+For complex arrays, the result uses
 the Hermitian convention. The same normalization and insufficient-observation
 rules apply.
 
