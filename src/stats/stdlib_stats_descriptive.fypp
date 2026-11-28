@@ -133,6 +133,26 @@ module stdlib_stats_descriptive
     #:endfor
 
     #:for k1, t1 in RC_KINDS_TYPES
+      #:set RName = rname("cov_two",2, t1, k1)
+      module function ${RName}$(x, y, corrected) result(res)
+        ${t1}$, intent(in) :: x(:, :)
+        ${t1}$, intent(in) :: y(:, :)
+        logical, intent(in), optional :: corrected
+        ${t1}$ :: res(size(x, 2), size(y, 2))
+      end function ${RName}$
+    #:endfor
+
+    #:for k1, t1 in INT_KINDS_TYPES
+      #:set RName = rname("cov_two",2, t1, k1, 'dp')
+      module function ${RName}$(x, y, corrected) result(res)
+        ${t1}$, intent(in) :: x(:, :)
+        ${t1}$, intent(in) :: y(:, :)
+        logical, intent(in), optional :: corrected
+        real(dp) :: res(size(x, 2), size(y, 2))
+      end function ${RName}$
+    #:endfor
+
+    #:for k1, t1 in RC_KINDS_TYPES
       #:set RName = rname("cov",1, t1, k1)
       module function ${RName}$(x, dim, mask, corrected) result(res)
         ${t1}$, intent(in) :: x(:)

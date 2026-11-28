@@ -106,9 +106,8 @@ If `array` is of rank 2, a rank-2 array is returned.
 
 If `mask` is specified, the result is the covariance of all elements of `array` corresponding to `true` elements of `mask`. If every element of `mask` is `false`, the result is IEEE `NaN`.
 
-If two arrays are provided, `x` and `y` shall be rank-1 arrays with the same
-size. The arrays are treated as two random variables and the result is a `2 x 2`
-matrix:
+If two rank-1 arrays are provided, `x` and `y` shall have the same size. The
+arrays are treated as two random variables and the result is a `2 x 2` matrix:
 
 ```
 cov(x, y) = [ cov(x, x)  cov(x, y)
@@ -121,6 +120,13 @@ argument selects normalization by `n-1` when `.true.` (the default), or by `n`
 when `.false.`. If the arrays have different sizes, the procedure raises an
 error. If the selected sample count is insufficient for the requested
 normalization, the result is filled with IEEE `NaN`.
+
+If two rank-2 arrays are provided, each row of `x` and `y` is an observation
+and each column is a variable. The arrays shall have the same number of rows.
+The result has shape `[size(x, 2), size(y, 2)]`, and its `(i,j)` element is the
+covariance between `x(:,i)` and `y(:,j)`. For complex arrays, the result uses
+the Hermitian convention. The same normalization and insufficient-observation
+rules apply.
 
 ### Example
 
