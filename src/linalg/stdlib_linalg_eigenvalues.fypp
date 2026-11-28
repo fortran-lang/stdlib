@@ -627,10 +627,17 @@ submodule (stdlib_linalg) stdlib_linalg_eigenvalues
                 lambda = ieee_value(1.0_${rk}$, ieee_quiet_nan)
             end if            
          else
+            #:if rt.startswith('real')
+            ! Divide each part by the real beta: a complex division can turn an
+            ! overflowing part into NaN instead of Inf, which also hides the
+            ! conjugate pair (seen with Flang).
+            lambda = cmplx(real(alpha,kind=${rk}$)/beta,aimag(alpha)/beta,kind=${rk}$)
+            #:else
             lambda = alpha/beta
+            #:endif
          end if
-         
-     end function scale_general_eig_${ri}$  
+
+     end function scale_general_eig_${ri}$
      
      #:endfor       
 
