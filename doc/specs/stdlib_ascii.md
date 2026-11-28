@@ -1,10 +1,9 @@
----
-title: ascii
----
+# `stdlib_ascii`
 
-# The `stdlib_ascii` module
-
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## Introduction
 
@@ -196,7 +195,7 @@ Checks whether input character is an ASCII letter (A-Z, a-z).
 
 #### Syntax
 
-`res =` [[stdlib_ascii(module):is_alpha(function)]] `(c)`
+`res =` `is_alpha` `(c)`
 
 #### Class
 
@@ -222,7 +221,7 @@ Checks whether input character is an ASCII letter or a number (A-Z, a-z, 0-9).
 
 #### Syntax
 
-`res =` [[stdlib_ascii(module):is_alphanum(function)]] `(c)`
+`res =` `is_alphanum` `(c)`
 
 #### Class
 
@@ -248,7 +247,7 @@ Checks whether input character is in the ASCII character set i.e in the range 0-
 
 #### Syntax
 
-`res =` [[stdlib_ascii(module):is_ascii(function)]] `(c)`
+`res =` `is_ascii` `(c)`
 
 #### Class
 
@@ -274,7 +273,7 @@ Checks whether input character is a control character.
 
 #### Syntax
 
-`res =` [[stdlib_ascii(module):is_control(function)]] `(c)`
+`res =` `is_control` `(c)`
 
 #### Class
 
@@ -300,7 +299,7 @@ Checks whether input character is a digit (0-9).
 
 #### Syntax
 
-`res =` [[stdlib_ascii(module):is_digit(function)]] `(c)`
+`res =` `is_digit` `(c)`
 
 #### Class
 
@@ -326,7 +325,7 @@ Checks whether input character is an octal digit (0-7)
 
 #### Syntax
 
-`res =` [[stdlib_ascii(module):is_octal_digit(function)]] `(c)`
+`res =` `is_octal_digit` `(c)`
 
 #### Class
 
@@ -352,7 +351,7 @@ Checks whether input character is a hexadecimal digit (0-9, A-F, a-f).
 
 #### Syntax
 
-`res =` [[stdlib_ascii(module):is_hex_digit(function)]] `(c)`
+`res =` `is_hex_digit` `(c)`
 
 #### Class
 
@@ -378,7 +377,7 @@ Checks whether input character is a punctuation character.
 
 #### Syntax
 
-`res =` [[stdlib_ascii(module):is_punctuation(function)]] `(c)`
+`res =` `is_punctuation` `(c)`
 
 #### Class
 
@@ -404,7 +403,7 @@ Checks whether input character is a graphical character (printable other than th
 
 #### Syntax
 
-`res =` [[stdlib_ascii(module):is_graphical(function)]] `(c)`
+`res =` `is_graphical` `(c)`
 
 #### Class
 
@@ -430,7 +429,7 @@ Checks whether input character is a printable character (including the space cha
 
 #### Syntax
 
-`res =` [[stdlib_ascii(module):is_printable(function)]] `(c)`
+`res =` `is_printable` `(c)`
 
 #### Class
 
@@ -456,7 +455,7 @@ Checks whether input character is a lowercase ASCII letter (a-z).
 
 #### Syntax
 
-`res =` [[stdlib_ascii(module):is_lower(function)]] `(c)`
+`res =` `is_lower` `(c)`
 
 #### Class
 
@@ -482,7 +481,7 @@ Checks whether input character is an uppercase ASCII letter (A-Z).
 
 #### Syntax
 
-`res =` [[stdlib_ascii(module):is_upper(function)]] `(c)`
+`res =` `is_upper` `(c)`
 
 #### Class
 
@@ -509,7 +508,7 @@ carriage return, linefeed and form feed characters)
 
 #### Syntax
 
-`res =` [[stdlib_ascii(module):is_white(function)]] `(c)`
+`res =` `is_white` `(c)`
 
 #### Class
 
@@ -535,7 +534,7 @@ Checks whether input character is a blank character (which includes space and ta
 
 #### Syntax
 
-`res =` [[stdlib_ascii(module):is_blank(function)]] `(c)`
+`res =` `is_blank` `(c)`
 
 #### Class
 
@@ -561,7 +560,7 @@ Converts input character variable to all lowercase.
 
 #### Syntax
 
-`res =` [[stdlib_ascii(module):to_lower(function)]] `(string)`
+`res =` `to_lower` `(string)`
 
 #### Class
 
@@ -577,8 +576,8 @@ The result is an intrinsic character type of the same length as `string`.
 
 #### Example
 
-```fortran
-{!example/ascii/example_ascii_to_lower.f90!}
+```{literalinclude} ../../example/ascii/example_ascii_to_lower.f90
+:language: fortran
 ```
 
 ### `to_upper`
@@ -593,7 +592,7 @@ Converts input character variable to all uppercase.
 
 #### Syntax
 
-`res =` [[stdlib_ascii(module):to_upper(function)]] `(string)`
+`res =` `to_upper` `(string)`
 
 #### Class
 
@@ -609,8 +608,8 @@ The result is an intrinsic character type of the same length as `string`.
 
 #### Example
 
-```fortran
-{!example/ascii/example_ascii_to_upper.f90!}
+```{literalinclude} ../../example/ascii/example_ascii_to_upper.f90
+:language: fortran
 ```
 
 ### `to_title`
@@ -630,7 +629,7 @@ or numeral present next to either of its 2 ends.
 
 #### Syntax
 
-`res =` [[stdlib_ascii(module):to_title(function)]] `(string)`
+`res =` `to_title` `(string)`
 
 #### Class
 
@@ -646,8 +645,8 @@ The result is an intrinsic character type of the same length as `string`.
 
 #### Example
 
-```fortran
-{!example/ascii/example_ascii_to_title.f90!}
+```{literalinclude} ../../example/ascii/example_ascii_to_title.f90
+:language: fortran
 ```
 
 ### `to_sentence`
@@ -665,7 +664,7 @@ transformed to lowercase.
 
 #### Syntax
 
-`res =` [[stdlib_ascii(module):to_sentence(function)]] `(string)`
+`res =` `to_sentence` `(string)`
 
 #### Class
 
@@ -681,8 +680,8 @@ The result is an intrinsic character type of the same length as `string`.
 
 #### Example
 
-```fortran
-{!example/ascii/example_ascii_to_sentence.f90!}
+```{literalinclude} ../../example/ascii/example_ascii_to_sentence.f90
+:language: fortran
 ```
 
 ### `reverse`
@@ -697,7 +696,7 @@ Reverses the order of all characters in the input character type.
 
 #### Syntax
 
-`res =` [[stdlib_ascii(module):reverse(function)]] `(string)`
+`res =` `reverse` `(string)`
 
 #### Class
 
@@ -713,6 +712,6 @@ The result is an intrinsic character type of the same length as `string`.
 
 #### Example
 
-```fortran
-{!example/ascii/example_ascii_reverse.f90!}
+```{literalinclude} ../../example/ascii/example_ascii_reverse.f90
+:language: fortran
 ```

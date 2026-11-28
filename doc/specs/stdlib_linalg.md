@@ -1,10 +1,9 @@
----
-title: linalg
----
+# `stdlib_linalg`
 
-# Linear Algebra
-
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 The `stdlib` linear algebra library provides high-level APIs for dealing with common linear algebra operations.
 
@@ -109,12 +108,12 @@ and `y` (extended-precision complex numbers).
 
 ### Example
 
-```fortran
-{!example/linalg/example_blas_gemv.f90!}
+```{literalinclude} ../../example/linalg/example_blas_gemv.f90
+:language: fortran
 ```
 
-```fortran
-{!example/linalg/example_lapack_getrf.f90!}
+```{literalinclude} ../../example/linalg/example_lapack_getrf.f90
+:language: fortran
 ```
 
 ### Licensing
@@ -197,11 +196,11 @@ Create a diagonal array or extract the diagonal elements of an array
 
 ### Syntax
 
-`d = ` [[stdlib_linalg(module):diag(interface)]] `(a [, k])`
+`d = ` `diag` `(a [, k])`
 
 ### Arguments
 
-`a`: Shall be a rank-1 or or rank-2 array. If `a` is a rank-1 array (i.e. a vector) then `diag` returns a rank-2 array with the elements of `a` on the diagonal. If `a` is a rank-2 array (i.e. a matrix) then `diag` returns a rank-1 array of the diagonal elements.
+`a`: Shall be a rank-1 or rank-2 array. If `a` is a rank-1 array (i.e. a vector) then `diag` returns a rank-2 array with the elements of `a` on the diagonal. If `a` is a rank-2 array (i.e. a matrix) then `diag` returns a rank-1 array of the diagonal elements.
 
 `k` (optional): Shall be a scalar of type `integer` and specifies the diagonal. The default `k = 0` represents the main diagonal, `k > 0` are diagonals above the main diagonal, `k < 0` are diagonals below the main diagonal.
 
@@ -211,24 +210,24 @@ Returns a diagonal array or a vector with the extracted diagonal elements.
 
 ### Example
 
-```fortran
-{!example/linalg/example_diag1.f90!}
+```{literalinclude} ../../example/linalg/example_diag1.f90
+:language: fortran
 ```
 
-```fortran
-{!example/linalg/example_diag2.f90!}
+```{literalinclude} ../../example/linalg/example_diag2.f90
+:language: fortran
 ```
 
-```fortran
-{!example/linalg/example_diag3.f90!}
+```{literalinclude} ../../example/linalg/example_diag3.f90
+:language: fortran
 ```
 
-```fortran
-{!example/linalg/example_diag4.f90!}
+```{literalinclude} ../../example/linalg/example_diag4.f90
+:language: fortran
 ```
 
-```fortran
-{!example/linalg/example_diag5.f90!}
+```{literalinclude} ../../example/linalg/example_diag5.f90
+:language: fortran
 ```
 
 ## `eye` - Construct the identity matrix
@@ -247,7 +246,7 @@ Constructs the identity matrix.
 
 ### Syntax
 
-`I = ` [[stdlib_linalg(module):eye(function)]] `(dim1 [, dim2] [, mold])`
+`I = ` `eye` `(dim1 [, dim2] [, mold])`
 
 ### Arguments
 
@@ -271,12 +270,12 @@ A = eye(2,2)/2             !! A == diag([0.5_dp, 0.5_dp])
 A = eye(2,2, mold=(0.0,0.0))/2   !! A == diag([(0.5,0.5), (0.5,0.5)])
 ```
 
-```fortran
-{!example/linalg/example_eye1.f90!}
+```{literalinclude} ../../example/linalg/example_eye1.f90
+:language: fortran
 ```
 
-```fortran
-{!example/linalg/example_eye2.f90!}
+```{literalinclude} ../../example/linalg/example_eye2.f90
+:language: fortran
 ```
 
 ## `trace` - Trace of a matrix
@@ -291,7 +290,7 @@ Trace of a matrix (rank-2 array)
 
 ### Syntax
 
-`result = ` [[stdlib_linalg(module):trace(interface)]] `(A)`
+`result = ` `trace` `(A)`
 
 ### Arguments
 
@@ -302,8 +301,8 @@ Trace of a matrix (rank-2 array)
 Returns the trace of the matrix, i.e. the sum of diagonal elements.
 
 ### Example
-```fortran
-{!example/linalg/example_trace.f90!}
+```{literalinclude} ../../example/linalg/example_trace.f90
+:language: fortran
 ```
 
 ## `outer_product` - Computes the outer product of two vectors
@@ -318,7 +317,7 @@ Computes the outer product of two vectors
 
 ### Syntax
 
-`d = ` [[stdlib_linalg(module):outer_product(interface)]] `(u, v)`
+`d = ` `outer_product` `(u, v)`
 
 ### Arguments
 
@@ -332,8 +331,8 @@ Returns a rank-2 array equal to `u v^T` (where `u, v` are considered column vect
 
 ### Example
 
-```fortran
-{!example/linalg/example_outer_product.f90!}
+```{literalinclude} ../../example/linalg/example_outer_product.f90
+:language: fortran
 ```
 
 ## `kronecker_product` - Computes the Kronecker product of two rank-2 arrays
@@ -348,7 +347,7 @@ Computes the Kronecker product of two rank-2 arrays
 
 ### Syntax
 
-`C = ` [[stdlib_linalg(module):kronecker_product(interface)]] `(A, B)`
+`C = ` `kronecker_product` `(A, B)`
 
 ### Arguments
 
@@ -362,8 +361,8 @@ Returns a rank-2 array equal to `A \otimes B`. The shape of the returned array i
 
 ### Example
 
-```fortran
-{!example/linalg/example_kronecker_product.f90!}
+```{literalinclude} ../../example/linalg/example_kronecker_product.f90
+:language: fortran
 ```
 
 
@@ -379,7 +378,7 @@ Computes the cross product of two vectors
 
 ### Syntax
 
-`c = ` [[stdlib_linalg(module):cross_product(interface)]] `(a, b)`
+`c = ` `cross_product` `(a, b)`
 
 ### Arguments
 
@@ -393,8 +392,8 @@ Returns a rank-1 and size-3 array which is perpendicular to both `a` and `b`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_cross_product.f90!}
+```{literalinclude} ../../example/linalg/example_cross_product.f90
+:language: fortran
 ```
 
 ## `is_square` - Checks if a matrix is square
@@ -409,7 +408,7 @@ Checks if a matrix is square
 
 ### Syntax
 
-`d = ` [[stdlib_linalg(module):is_square(interface)]] `(A)`
+`d = ` `is_square` `(A)`
 
 ### Arguments
 
@@ -421,8 +420,8 @@ Returns a `logical` scalar that is `.true.` if the input matrix is square, and `
 
 ### Example
 
-```fortran
-{!example/linalg/example_is_square.f90!}
+```{literalinclude} ../../example/linalg/example_is_square.f90
+:language: fortran
 ```
 
 ## `is_diagonal` - Checks if a matrix is diagonal
@@ -437,7 +436,7 @@ Checks if a matrix is diagonal
 
 ### Syntax
 
-`d = ` [[stdlib_linalg(module):is_diagonal(interface)]] `(A)`
+`d = ` `is_diagonal` `(A)`
 
 ### Arguments
 
@@ -450,8 +449,8 @@ Note that nonsquare matrices may be diagonal, so long as `a_ij = 0` when `i /= j
 
 ### Example
 
-```fortran
-{!example/linalg/example_is_diagonal.f90!}
+```{literalinclude} ../../example/linalg/example_is_diagonal.f90
+:language: fortran
 ```
 
 ## `is_symmetric` - Checks if a matrix is symmetric
@@ -466,7 +465,7 @@ Checks if a matrix is symmetric
 
 ### Syntax
 
-`d = ` [[stdlib_linalg(module):is_symmetric(interface)]] `(A)`
+`d = ` `is_symmetric` `(A)`
 
 ### Arguments
 
@@ -478,8 +477,8 @@ Returns a `logical` scalar that is `.true.` if the input matrix is symmetric, an
 
 ### Example
 
-```fortran
-{!example/linalg/example_is_symmetric.f90!}
+```{literalinclude} ../../example/linalg/example_is_symmetric.f90
+:language: fortran
 ```
 
 ## `is_skew_symmetric` - Checks if a matrix is skew-symmetric
@@ -494,7 +493,7 @@ Checks if a matrix is skew-symmetric
 
 ### Syntax
 
-`d = ` [[stdlib_linalg(module):is_skew_symmetric(interface)]] `(A)`
+`d = ` `is_skew_symmetric` `(A)`
 
 ### Arguments
 
@@ -506,8 +505,8 @@ Returns a `logical` scalar that is `.true.` if the input matrix is skew-symmetri
 
 ### Example
 
-```fortran
-{!example/linalg/example_is_skew_symmetric.f90!}
+```{literalinclude} ../../example/linalg/example_is_skew_symmetric.f90
+:language: fortran
 ```
 
 ## `hermitian` - Compute the Hermitian version of a rank-2 matrix
@@ -524,7 +523,7 @@ For `real` or `integer` matrices, the function returns the transpose (`transpose
 
 ### Syntax
 
-`h = ` [[stdlib_linalg(module):hermitian(interface)]] `(a)`
+`h = ` `hermitian` `(a)`
 
 ### Arguments
 
@@ -537,8 +536,8 @@ For `real` or `integer` types, it is equivalent to the intrinsic `transpose(a)`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_hermitian.f90!}
+```{literalinclude} ../../example/linalg/example_hermitian.f90
+:language: fortran
 ```
 
 ## `is_hermitian` - Checks if a matrix is Hermitian
@@ -553,7 +552,7 @@ Checks if a matrix is Hermitian
 
 ### Syntax
 
-`d = ` [[stdlib_linalg(module):is_hermitian(interface)]] `(A)`
+`d = ` `is_hermitian` `(A)`
 
 ### Arguments
 
@@ -565,8 +564,8 @@ Returns a `logical` scalar that is `.true.` if the input matrix is Hermitian, an
 
 ### Example
 
-```fortran
-{!example/linalg/example_is_hermitian.f90!}
+```{literalinclude} ../../example/linalg/example_is_hermitian.f90
+:language: fortran
 ```
 
 ## `is_triangular` - Checks if a matrix is triangular
@@ -581,7 +580,7 @@ Checks if a matrix is triangular
 
 ### Syntax
 
-`d = ` [[stdlib_linalg(module):is_triangular(interface)]] `(A,uplo)`
+`d = ` `is_triangular` `(A,uplo)`
 
 ### Arguments
 
@@ -597,8 +596,8 @@ Specifically, upper triangular matrices satisfy `a_ij = 0` when `j < i`, and low
 
 ### Example
 
-```fortran
-{!example/linalg/example_is_triangular.f90!}
+```{literalinclude} ../../example/linalg/example_is_triangular.f90
+:language: fortran
 ```
 
 ## `is_hessenberg` - Checks if a matrix is hessenberg
@@ -613,7 +612,7 @@ Checks if a matrix is Hessenberg
 
 ### Syntax
 
-`d = ` [[stdlib_linalg(module):is_hessenberg(interface)]] `(A,uplo)`
+`d = ` `is_hessenberg` `(A,uplo)`
 
 ### Arguments
 
@@ -629,8 +628,8 @@ Specifically, upper Hessenberg matrices satisfy `a_ij = 0` when `j < i-1`, and l
 
 ### Example
 
-```fortran
-{!example/linalg/example_is_hessenberg.f90!}
+```{literalinclude} ../../example/linalg/example_is_hessenberg.f90
+:language: fortran
 ```
 
 ## `solve` - Solves a linear matrix equation or a linear system of equations. 
@@ -641,7 +640,7 @@ Stable
 
 ### Description
 
-This function computes the solution to a linear matrix equation \( A \cdot x = b \), where \( A \) is a square, full-rank, `real` or `complex` matrix.
+This function computes the solution to a linear matrix equation $A \cdot x = b$, where $A$ is a square, full-rank, `real` or `complex` matrix.
 
 Result vector or array `x` returns the exact solution to within numerical precision, provided that the matrix is not ill-conditioned. 
 An error is returned if the matrix is rank-deficient or singular to working precision. 
@@ -651,11 +650,11 @@ The solver is based on LAPACK's `*GESV` backends.
 
 `Pure` interface:
 
-`x = ` [[stdlib_linalg(module):solve(interface)]] `(a, b)`
+`x = ` `solve` `(a, b)`
 
 Expert interface:
 
-`x = ` [[stdlib_linalg(module):solve(interface)]] `(a, b [, overwrite_a], err)`
+`x = ` `solve` `(a, b [, overwrite_a], err)`
 
 ### Arguments
  
@@ -677,10 +676,12 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_solve1.f90!}
+```{literalinclude} ../../example/linalg/example_solve1.f90
+:language: fortran
+```
 
-{!example/linalg/example_solve2.f90!}
+```{literalinclude} ../../example/linalg/example_solve2.f90
+:language: fortran
 ```
 
 ## `solve_lu` - Solves a linear matrix equation or a linear system of equations (subroutine interface). 
@@ -691,7 +692,7 @@ Stable
 
 ### Description
 
-This subroutine computes the solution to a linear matrix equation \( A \cdot x = b \), where \( A \) is a square, full-rank, `real` or `complex` matrix.
+This subroutine computes the solution to a linear matrix equation $A \cdot x = b$, where $A$ is a square, full-rank, `real` or `complex` matrix.
 
 Result vector or array `x` returns the exact solution to within numerical precision, provided that the matrix is not ill-conditioned. 
 An error is returned if the matrix is rank-deficient or singular to working precision. 
@@ -702,11 +703,11 @@ The solver is based on LAPACK's `*GESV` backends.
 
 Simple (`Pure`) interface:
 
-`call ` [[stdlib_linalg(module):solve_lu(interface)]] `(a, b, x)`
+`call ` `solve_lu` `(a, b, x)`
 
 Expert (`Pure`) interface:
 
-`call ` [[stdlib_linalg(module):solve_lu(interface)]] `(a, b, x [, pivot, overwrite_a, err])`
+`call ` `solve_lu` `(a, b, x [, pivot, overwrite_a, err])`
 
 ### Arguments
 
@@ -732,8 +733,8 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_solve3.f90!}
+```{literalinclude} ../../example/linalg/example_solve3.f90
+:language: fortran
 ```
 
 ## `solve_chol` - Solves a linear system using Cholesky factorization (one-shot interface). 
@@ -744,7 +745,7 @@ Experimental
 
 ### Description
 
-This subroutine computes the solution to a linear matrix equation \( A \cdot x = b \), where \( A \) is a symmetric (or Hermitian) positive definite matrix. It combines Cholesky factorization and the solve step in a single call.
+This subroutine computes the solution to a linear matrix equation $A \cdot x = b$, where $A$ is a symmetric (or Hermitian) positive definite matrix. It combines Cholesky factorization and the solve step in a single call.
 
 Result vector or array `x` returns the exact solution to within numerical precision, provided that the matrix is positive definite.
 An error is returned if the matrix is not positive definite or has incompatible sizes with the right-hand-side.
@@ -755,11 +756,11 @@ The solver is based on LAPACK's `*POSV` backends.
 
 Simple (`Pure`) interface:
 
-`call ` [[stdlib_linalg(module):solve_chol(interface)]] `(a, b, x)`
+`call ` `solve_chol` `(a, b, x)`
 
 Expert (`Pure`) interface:
 
-`call ` [[stdlib_linalg(module):solve_chol(interface)]] `(a, b, x [, lower, overwrite_a, err])`
+`call ` `solve_chol` `(a, b, x [, lower, overwrite_a, err])`
 
 ### Arguments
 
@@ -785,8 +786,8 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_solve_chol.f90!}
+```{literalinclude} ../../example/linalg/example_solve_chol.f90
+:language: fortran
 ```
 
 ## `solve_lower_chol` - Solves a linear system using pre-computed lower Cholesky factor. 
@@ -797,7 +798,7 @@ Experimental
 
 ### Description
 
-This subroutine computes the solution to a linear matrix equation \( A \cdot x = b \), where \( A \) is a symmetric (or Hermitian) positive definite matrix that has been **previously factorized** using the Cholesky decomposition (via `cholesky` with `lower=.true.`).
+This subroutine computes the solution to a linear matrix equation $A \cdot x = b$, where $A$ is a symmetric (or Hermitian) positive definite matrix that has been **previously factorized** using the Cholesky decomposition (via `cholesky` with `lower=.true.`).
 
 Result vector or array `x` returns the exact solution to within numerical precision, provided that the factorization is correct.
 An error is returned if the matrix and right-hand-side have incompatible sizes.
@@ -805,7 +806,7 @@ The solver is based on LAPACK's `*POTRS` backends.
 
 ### Syntax
 
-`call ` [[stdlib_linalg(module):solve_lower_chol(interface)]] `(l, b, x [, err])`
+`call ` `solve_lower_chol` `(l, b, x [, err])`
 
 ### Arguments
 
@@ -826,8 +827,8 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_solve_lower_chol.f90!}
+```{literalinclude} ../../example/linalg/example_solve_lower_chol.f90
+:language: fortran
 ```
 
 ## `solve_upper_chol` - Solves a linear system using pre-computed upper Cholesky factor. 
@@ -838,7 +839,7 @@ Experimental
 
 ### Description
 
-This subroutine computes the solution to a linear matrix equation \( A \cdot x = b \), where \( A \) is a symmetric (or Hermitian) positive definite matrix that has been **previously factorized** using the Cholesky decomposition (via `cholesky` with `lower=.false.`).
+This subroutine computes the solution to a linear matrix equation $A \cdot x = b$, where $A$ is a symmetric (or Hermitian) positive definite matrix that has been **previously factorized** using the Cholesky decomposition (via `cholesky` with `lower=.false.`).
 
 Result vector or array `x` returns the exact solution to within numerical precision, provided that the factorization is correct.
 An error is returned if the matrix and right-hand-side have incompatible sizes.
@@ -846,7 +847,7 @@ The solver is based on LAPACK's `*POTRS` backends.
 
 ### Syntax
 
-`call ` [[stdlib_linalg(module):solve_upper_chol(interface)]] `(u, b, x [, err])`
+`call ` `solve_upper_chol` `(u, b, x [, err])`
 
 ### Arguments
 
@@ -867,8 +868,8 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_solve_upper_chol.f90!}
+```{literalinclude} ../../example/linalg/example_solve_upper_chol.f90
+:language: fortran
 ```
 
 ## `lstsq` - Computes the least squares solution to a linear matrix equation. 
@@ -879,13 +880,13 @@ Stable
 
 ### Description
 
-This function computes the least-squares solution to a linear matrix equation \( A \cdot x = b \).
+This function computes the least-squares solution to a linear matrix equation $A \cdot x = b$.
 
-Result vector `x` returns the approximate solution that minimizes the 2-norm \( || A \cdot x - b ||_2 \), i.e., it contains the least-squares solution to the problem. Matrix `A` may be full-rank, over-determined, or under-determined. The solver is based on LAPACK's `*GELSD` backends.
+Result vector `x` returns the approximate solution that minimizes the 2-norm $|| A \cdot x - b ||_2$, i.e., it contains the least-squares solution to the problem. Matrix `A` may be full-rank, over-determined, or under-determined. The solver is based on LAPACK's `*GELSD` backends.
 
 ### Syntax
 
-`x = ` [[stdlib_linalg(module):lstsq(interface)]] `(a, b, [, cond, overwrite_a, rank, err])`
+`x = ` `lstsq` `(a, b, [, cond, overwrite_a, rank, err])`
 
 ### Arguments
 
@@ -911,8 +912,8 @@ Exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_lstsq1.f90!}
+```{literalinclude} ../../example/linalg/example_lstsq1.f90
+:language: fortran
 ```
 
 ## `solve_lstsq` - Compute the least squares solution to a linear matrix equation (subroutine interface). 
@@ -923,13 +924,13 @@ Stable
 
 ### Description
 
-This subroutine computes the least-squares solution to a linear matrix equation \( A \cdot x = b \).
+This subroutine computes the least-squares solution to a linear matrix equation $A \cdot x = b$.
 
-Result vector `x` returns the approximate solution that minimizes the 2-norm \( || A \cdot x - b ||_2 \), i.e., it contains the least-squares solution to the problem. Matrix `A` may be full-rank, over-determined, or under-determined. The solver is based on LAPACK's `*GELSD` backends.
+Result vector `x` returns the approximate solution that minimizes the 2-norm $|| A \cdot x - b ||_2$, i.e., it contains the least-squares solution to the problem. Matrix `A` may be full-rank, over-determined, or under-determined. The solver is based on LAPACK's `*GELSD` backends.
 
 ### Syntax
 
-`call ` [[stdlib_linalg(module):solve_lstsq(interface)]] `(a, b, x, [, real_storage, int_storage, [cmpl_storage, ] cond, singvals, overwrite_a, rank, err])`
+`call ` `solve_lstsq` `(a, b, x, [, real_storage, int_storage, [cmpl_storage, ] cond, singvals, overwrite_a, rank, err])`
 
 ### Arguments
 
@@ -939,11 +940,11 @@ Result vector `x` returns the approximate solution that minimizes the 2-norm \( 
 
 `x`: Shall be an array of same kind and rank as `b`, and leading dimension of at least `n`, containing the solution(s) to the least squares system. It is an `intent(inout)` argument.
 
-`real_storage` (optional): Shall be a `real` rank-1 array of the same kind `a`, providing working storage for the solver. It minimum size can be determined with a call to [[stdlib_linalg(module):lstsq_space(interface)]]. It is an `intent(inout)` argument.
+`real_storage` (optional): Shall be a `real` rank-1 array of the same kind `a`, providing working storage for the solver. It minimum size can be determined with a call to `lstsq_space`. It is an `intent(inout)` argument.
 
-`int_storage` (optional): Shall be an `integer` rank-1 array, providing working storage for the solver. It minimum size can be determined with a call to [[stdlib_linalg(module):lstsq_space(interface)]]. It is an `intent(inout)` argument.
+`int_storage` (optional): Shall be an `integer` rank-1 array, providing working storage for the solver. It minimum size can be determined with a call to `lstsq_space`. It is an `intent(inout)` argument.
 
-`cmpl_storage` (optional): For `complex` systems, it shall be a `complex` rank-1 array, providing working storage for the solver. It minimum size can be determined with a call to [[stdlib_linalg(module):lstsq_space(interface)]]. It is an `intent(inout)` argument.
+`cmpl_storage` (optional): For `complex` systems, it shall be a `complex` rank-1 array, providing working storage for the solver. It minimum size can be determined with a call to `lstsq_space`. It is an `intent(inout)` argument.
 
 `cond` (optional): Shall be a scalar `real` value cut-off threshold for rank evaluation: `s_i >= cond*maxval(s), i=1:rank`. Shall be a scalar, `intent(in)` argument.
 
@@ -965,8 +966,8 @@ Exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_lstsq2.f90!}
+```{literalinclude} ../../example/linalg/example_lstsq2.f90
+:language: fortran
 ```
 
 ## `lstsq_space` - Compute internal working space requirements for the least squares solver.
@@ -977,11 +978,11 @@ Stable
 
 ### Description
 
-This subroutine computes the internal working space requirements for the least-squares solver, [[stdlib_linalg(module):solve_lstsq(interface)]] .
+This subroutine computes the internal working space requirements for the least-squares solver, `solve_lstsq` .
 
 ### Syntax
 
-`call ` [[stdlib_linalg(module):lstsq_space(interface)]] `(a, b, lrwork, liwork [, lcwork])`
+`call ` `lstsq_space` `(a, b, lrwork, liwork [, lcwork])`
 
 ### Arguments
 
@@ -1003,18 +1004,21 @@ Experimental
 
 ### Description
 
-This function computes the solution \(x\) of the equality-constrained linear least-squares problem
+This function computes the solution $x$ of the equality-constrained linear least-squares problem
+
 $$
 \begin{aligned}
     \mathrm{minimize}   &   \quad \| Ax - b \|^2 \\
     \mathrm{subject~to} &   \quad   Cx = d,
 \end{aligned}
 $$
-where \(A\) is an \( m \times n \) matrix (with \(m \geq n\)) and \(C\) a \( p \times n\) matrix (with \(p \leq n\)). The solver is based on LAPACK's `*GLSE` backends.
+
+where $A$ is an $m \times n$ matrix (with $m \geq n$) and 
+$C$ a $p \times n$ matrix (with $p \leq n$). The solver is based on LAPACK's `*GLSE` backends.
 
 ### Syntax
 
-`x = ` [[stdlib_linalg(module):constrained_lstsq(interface)]] `(A, b, C, d[, overwrite_matrices, err])`
+`x = ` `constrained_lstsq` `(A, b, C, d[, overwrite_matrices, err])`
 
 ### Arguments
 
@@ -1040,8 +1044,8 @@ Exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_constrained_lstsq1.f90!}
+```{literalinclude} ../../example/linalg/example_constrained_lstsq1.f90
+:language: fortran
 ```
 
 ## `solve_constrained_lstsq` - Compute the solution of the equality-constrained least squares problem (subroutine interface) {#solve-constrained-lstsq}
@@ -1052,19 +1056,22 @@ Experimental
 
 ### Description
 
-This subroutine computes the solution \(x\) of the equality-constrained linear least-squares problem
+This subroutine computes the solution $x$ of the equality-constrained linear least-squares problem
+
 $$
 \begin{aligned}
     \mathrm{minimize}   &   \quad \| Ax - b \|^2 \\
     \mathrm{subject~to} &   \quad   Cx = d,
 \end{aligned}
 $$
-where \(A\) is an \( m \times n \) matrix (with \(m \geq n\)) and \(C\) a \( p \times n\) matrix (with \(p \leq n\)). The solver is based on LAPACK's `*GLSE` backends.
+
+where $A$ is an $m \times n$ matrix (with $m \geq n$) and 
+$C$ a $p \times n$ matrix (with $p \leq n$). The solver is based on LAPACK's `*GLSE` backends.
 
 ### Syntax
 
 
-`call ` [[stdlib_linalg(module):solve_constrained_lstsq(interface)]] `(a, b, c, d, x [, storage, overwrite_matrices, err])`
+`call ` `solve_constrained_lstsq` `(a, b, c, d, x [, storage, overwrite_matrices, err])`
 
 ### Arguments
 
@@ -1086,8 +1093,8 @@ where \(A\) is an \( m \times n \) matrix (with \(m \geq n\)) and \(C\) a \( p 
 
 ### Example
 
-```fortran
-{!example/linalg/example_constrained_lstsq2.f90!}
+```{literalinclude} ../../example/linalg/example_constrained_lstsq2.f90
+:language: fortran
 ```
 
 ## `constrained_lstsq_space` - Compute internal workspace requirements for the constrained least-square solver {#constrained-lstsq-space}
@@ -1119,13 +1126,13 @@ Experimental
 
 ### Description
 
-This function computes the weighted least-squares solution to a linear matrix equation \( A \cdot x = b \) where each observation has a different weight.
+This function computes the weighted least-squares solution to a linear matrix equation $A \cdot x = b$ where each observation has a different weight.
 
-The solver minimizes the weighted 2-norm \( \| D(Ax - b) \|_2^2 \) where \( D = \mathrm{diag}(\sqrt{w}) \) is a diagonal matrix formed from the square roots of the weight vector. This is equivalent to transforming the problem to ordinary least-squares through row scaling. The solver is based on LAPACK's `*GELSD` backends.
+The solver minimizes the weighted 2-norm $\| D(Ax - b) \|_2^2$ where $D = \mathrm{diag}(\sqrt{w})$ is a diagonal matrix formed from the square roots of the weight vector. This is equivalent to transforming the problem to ordinary least-squares through row scaling. The solver is based on LAPACK's `*GELSD` backends.
 
 ### Syntax
 
-`x = ` [[stdlib_linalg(module):weighted_lstsq(interface)]] `(w, a, b [, cond, overwrite_a, rank, err])`
+`x = ` `weighted_lstsq` `(w, a, b [, cond, overwrite_a, rank, err])`
 
 ### Arguments
 
@@ -1153,8 +1160,8 @@ Exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_weighted_lstsq.f90!}
+```{literalinclude} ../../example/linalg/example_weighted_lstsq.f90
+:language: fortran
 ```
 
 ## `solve_weighted_lstsq` - Compute the weighted least squares solution to a linear matrix equation (subroutine interface). {#solve-weighted-lstsq}
@@ -1165,13 +1172,13 @@ Experimental
 
 ### Description
 
-This subroutine computes the weighted least-squares solution to a linear matrix equation \( A \cdot x = b \) where each observation has a different weight.
+This subroutine computes the weighted least-squares solution to a linear matrix equation $A \cdot x = b$ where each observation has a different weight.
 
-The solver minimizes the weighted 2-norm \( \| D(Ax - b) \|_2^2 \) where \( D = \mathrm{diag}(\sqrt{w}) \) is a diagonal matrix formed from the square roots of the weight vector. This is equivalent to transforming the problem to ordinary least-squares through row scaling. The solver is based on LAPACK's `*GELSD` backends.
+The solver minimizes the weighted 2-norm $\| D(Ax - b) \|_2^2$ where $D = \mathrm{diag}(\sqrt{w})$ is a diagonal matrix formed from the square roots of the weight vector. This is equivalent to transforming the problem to ordinary least-squares through row scaling. The solver is based on LAPACK's `*GELSD` backends.
 
 ### Syntax
 
-`call ` [[stdlib_linalg(module):solve_weighted_lstsq(interface)]] `(w, a, b, x [, cond, overwrite_a, rank, err])`
+`call ` `solve_weighted_lstsq` `(w, a, b, x [, cond, overwrite_a, rank, err])`
 
 ### Arguments
 
@@ -1201,8 +1208,102 @@ Exceptions trigger an `error stop`.
 
 ### Example
 
+```{literalinclude} ../../example/linalg/example_weighted_lstsq.f90
+:language: fortran
+```
+
+## `generalized_lstsq` - Computes the generalized least squares solution {#generalized-lstsq}
+
+### Status
+
+Experimental
+
+### Description
+
+This function computes the generalized least-squares (GLS) solution to a linear matrix equation \( A \cdot x = b \) with correlated errors described by a covariance matrix \( W \).
+
+The solver minimizes the Mahalanobis distance \( (Ax - b)^T W^{-1} (Ax - b) \) where \( W \) is a symmetric (real) or Hermitian (complex) positive definite covariance matrix. This is useful when observations have correlated errors. The solver is based on LAPACK's `*GGGLM` backends.
+
+### Syntax
+
+`x = ` [[stdlib_linalg(module):generalized_lstsq(interface)]] `(w, a, b [, prefactored_w, overwrite_a, overwrite_w, err])`
+
+### Arguments
+
+`w`: Shall be a rank-2 `real` or `complex` symmetric (real) or Hermitian (complex) positive definite array containing the covariance matrix, or a valid matrix square root (e.g., Cholesky factor, SVD-based) if `prefactored_w=.true.`. It is an `intent(inout)` argument.
+
+`a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix. The matrix must have full column rank. It is an `intent(inout)` argument.
+
+`b`: Shall be a rank-1 array of the same kind as `a`, containing the right-hand-side vector. It is an `intent(in)` argument.
+
+`prefactored_w` (optional): Shall be an input `logical` flag. If `.true.`, `w` is assumed to contain a matrix square root \( B \) such that \( W = B \cdot B^T \). This can be a Cholesky factor or any other valid square root (e.g., SVD-based). If a Cholesky factor is used, the upper triangular part must be zeroed out. It is the user's responsibility to ensure that the prefactored matrix is valid. Default: `.false.`. This is an `intent(in)` argument.
+
+`overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. Default: `.false.`. This is an `intent(in)` argument.
+
+`overwrite_w` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `w` will be used as temporary storage and overwritten. This avoids internal data allocation. Default: `.false.`. This is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Returns a rank-1 array of the same kind as `a`, containing the generalized least-squares solution.
+
+Raises `LINALG_VALUE_ERROR` if the covariance matrix is not square or has incompatible dimensions.
+Raises `LINALG_ERROR` if the covariance matrix is not positive definite or if the design matrix does not have full column rank.
+Exceptions trigger an `error stop`.
+
+### Example
+
 ```fortran
-{!example/linalg/example_weighted_lstsq.f90!}
+{!example/linalg/example_generalized_lstsq.f90!}
+```
+
+## `solve_generalized_lstsq` - Solves the generalized least squares problem (subroutine) {#solve-generalized-lstsq}
+
+### Status
+
+Experimental
+
+### Description
+
+This subroutine computes the generalized least-squares (GLS) solution to a linear matrix equation \( A \cdot x = b \) with correlated errors described by a covariance matrix \( W \).
+
+The solver minimizes the Mahalanobis distance \( (Ax - b)^T W^{-1} (Ax - b) \) where \( W \) is a symmetric (real) or Hermitian (complex) positive definite covariance matrix. Unlike `generalized_lstsq`, this subroutine interface allows the user to provide a pre-allocated solution vector `x`. The solver is based on LAPACK's `*GGGLM` backends.
+
+### Syntax
+
+`call ` [[stdlib_linalg(module):solve_generalized_lstsq(interface)]] `(w, a, b, x [, prefactored_w, overwrite_a, overwrite_w, err])`
+
+### Arguments
+
+`w`: Shall be a rank-2 `real` or `complex` symmetric (real) or Hermitian (complex) positive definite array containing the covariance matrix, or a valid matrix square root (e.g., Cholesky factor, SVD-based) if `prefactored_w=.true.`. It is an `intent(inout)` argument.
+
+`a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix. The matrix must have full column rank. It is an `intent(inout)` argument.
+
+`b`: Shall be a rank-1 array of the same kind as `a`, containing the right-hand-side vector. It is an `intent(in)` argument.
+
+`x`: Shall be a rank-1 array of the same kind as `a`, containing the solution vector. It is an `intent(out)` argument.
+
+`prefactored_w` (optional): Shall be an input `logical` flag. If `.true.`, `w` is assumed to contain a matrix square root \( B \) such that \( W = B \cdot B^T \). This can be a Cholesky factor or any other valid square root (e.g., SVD-based). It is the user's responsibility to ensure that the prefactored matrix is valid. Default: `.false.`. This is an `intent(in)` argument.
+
+`overwrite_a` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. Default: `.false.`. This is an `intent(in)` argument.
+
+`overwrite_w` (optional): Shall be an input `logical` flag. If `.true.`, input matrix `w` will be used as temporary storage and overwritten. This avoids internal data allocation. Default: `.false.`. This is an `intent(in)` argument.
+
+`err` (optional): Shall be a `type(linalg_state_type)` value. This is an `intent(out)` argument.
+
+### Return value
+
+Returns the generalized least-squares solution in the pre-allocated rank-1 array `x`.
+
+Raises `LINALG_VALUE_ERROR` if the covariance matrix is not square or has incompatible dimensions.
+Raises `LINALG_ERROR` if the covariance matrix is not positive definite or if the design matrix does not have full column rank.
+Exceptions trigger an `error stop`.
+
+### Example
+
+```fortran
+{!example/linalg/example_generalized_lstsq.f90!}
 ```
 
 ## `det` - Computes the determinant of a square matrix
@@ -1220,7 +1321,7 @@ allows for more expert control.
 
 ### Syntax
 
-`c = ` [[stdlib_linalg(module):det(interface)]] `(a [, overwrite_a, err])`
+`c = ` `det` `(a [, overwrite_a, err])`
 
 ### Arguments
 
@@ -1241,8 +1342,8 @@ Exceptions are returned to the `err` argument if provided; an `error stop` is tr
 
 ### Example
 
-```fortran
-{!example/linalg/example_determinant.f90!}
+```{literalinclude} ../../example/linalg/example_determinant.f90
+:language: fortran
 ```
 
 ## `.det.` - Determinant operator of a square matrix
@@ -1255,11 +1356,11 @@ Stable
 
 This operator returns the determinant of a real square matrix.
 
-This interface is equivalent to the `pure` version of determinant [[stdlib_linalg(module):det(interface)]]. 
+This interface is equivalent to the `pure` version of determinant `det`. 
 
 ### Syntax
 
-`c = ` [[stdlib_linalg(module):operator(.det.)(interface)]] `a`
+`c = ` `operator(.det.)` `a`
 
 ### Arguments
 
@@ -1275,8 +1376,8 @@ Exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_determinant2.f90!}
+```{literalinclude} ../../example/linalg/example_determinant2.f90
+:language: fortran
 ```
 
 ## `qr` - Compute the QR factorization of a matrix
@@ -1287,18 +1388,18 @@ Experimental
 
 ### Description
 
-This subroutine computes the QR factorization of a `real` or `complex` matrix: \( A = Q R \) where \( Q \) 
-is orthonormal and \( R \) is upper-triangular. Matrix \( A \) has size `[m,n]`, with \( m \ge n \). 
+This subroutine computes the QR factorization of a `real` or `complex` matrix: $A = Q R$ where $Q$ 
+is orthonormal and $R$ is upper-triangular. Matrix $A$ has size `[m,n]`, with $m \ge n$. 
 
-The results are returned in output matrices \( Q \) and \(R \), that have the same type and kind as \( A \). 
-Given `k = min(m,n)`, one can write \( A = \( Q_1  Q_2 \) \cdot \( \frac{R_1}{0}\) \). 
-Because the lower rows of \( R \) are zeros, a reduced problem \( A = Q_1 R_1 \) may be solved. The size of 
+The results are returned in output matrices $Q$ and $R$, that have the same type and kind as $A$. 
+Given `k = min(m,n)`, one can write $A = \begin{pmatrix} Q_1 & Q_2 \end{pmatrix} \cdot \begin{pmatrix} R_1 \\ 0 \end{pmatrix}$. 
+Because the lower rows of $R$ are zeros, a reduced problem $A = Q_1 R_1$ may be solved. The size of 
 the input arguments determines what problem is solved: on full matrices (`shape(Q)==[m,m]`, `shape(R)==[m,n]`), 
 the full problem is solved. On reduced matrices (`shape(Q)==[m,k]`, `shape(R)==[k,n]`), the reduced problem is solved.
 
 ### Syntax
 
-`call ` [[stdlib_linalg(module):qr(interface)]] `(a, q, r [, pivots] [, overwrite_a] [, storage] [, err])`
+`call ` `qr` `(a, q, r [, pivots] [, overwrite_a] [, storage] [, err])`
 
 ### Arguments
 
@@ -1312,13 +1413,13 @@ the full problem is solved. On reduced matrices (`shape(Q)==[m,k]`, `shape(R)==[
 
 `overwrite_a` (optional): Shall be an input `logical` flag (default: `.false.`). If `.true.`, input matrix `a` will be used as temporary storage and overwritten. This avoids internal data allocation. It is an `intent(in)` argument.
 
-`storage` (optional): Shall be a rank-1 array of the same type and kind as `a`, providing working storage for the solver. Its minimum size can be determined with a call to [[stdlib_linalg(module):qr_space(interface)]]. It is an `intent(out)` argument.
+`storage` (optional): Shall be a rank-1 array of the same type and kind as `a`, providing working storage for the solver. Its minimum size can be determined with a call to `qr_space`. It is an `intent(out)` argument.
 
 `err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument.
 
 ### Return value
 
-Returns the QR factorization matrices into the \( Q \) and \( R \) arguments and the optional pivots in `pivots`.
+Returns the QR factorization matrices into the $Q$ and $R$ arguments and the optional pivots in `pivots`.
 
 Raises `LINALG_VALUE_ERROR` if any of the matrices has invalid or unsuitable size for the full/reduced problem.
 Raises `LINALG_ERROR` on insufficient user storage space.
@@ -1326,10 +1427,12 @@ If the state argument `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_qr.f90!}
+```{literalinclude} ../../example/linalg/example_qr.f90
+:language: fortran
+```
 
-{!example/linalg/example_pivoting_qr.f90!}
+```{literalinclude} ../../example/linalg/example_pivoting_qr.f90
+:language: fortran
 ```
 
 ## `qr_space` - Compute internal working space requirements for the QR factorization.
@@ -1340,17 +1443,17 @@ Experimental
 
 ### Description
 
-This subroutine computes the internal working space requirements for the QR factorization, [[stdlib_linalg(module):qr(interface)]] .
+This subroutine computes the internal working space requirements for the QR factorization, `qr` .
 
 ### Syntax
 
-`call ` [[stdlib_linalg(module):qr_space(interface)]] `(a, lwork, [, pivoting] [, err])`
+`call ` `qr_space` `(a, lwork, [, pivoting] [, err])`
 
 ### Arguments
 
 `a`: Shall be a rank-2 `real` or `complex` array containing the coefficient matrix. It is an `intent(in)` argument.
 
-`lwork`: Shall be an `integer` scalar, that returns the minimum array size required for the working storage in [[stdlib_linalg(module):qr(interface)]] to factorize `a`.
+`lwork`: Shall be an `integer` scalar, that returns the minimum array size required for the working storage in `qr` to factorize `a`.
 
 `pivoting` (optional): Shall a `logical` flag (default: `.false.`). If `.true.`, on exit `lwork` is the optimal workspace size for the QR factorization with column pivoting. If `.false.`, `lwork` is the optimal workspace size for the standard QR factorization. It is an `intent(in)` argument.
 
@@ -1358,10 +1461,12 @@ This subroutine computes the internal working space requirements for the QR fact
 
 ### Example
 
-```fortran
-{!example/linalg/example_qr_space.f90!}
+```{literalinclude} ../../example/linalg/example_qr_space.f90
+:language: fortran
+```
 
-{!example/linalg/example_pivoting_qr_space.f90!}
+```{literalinclude} ../../example/linalg/example_pivoting_qr_space.f90
+:language: fortran
 ```
 
 ## `schur` - Compute the Schur decomposition of a matrix
@@ -1372,33 +1477,33 @@ Experimental
 
 ### Description
 
-This subroutine computes the Schur decomposition of a `real` or `complex` matrix: \( A = Z T Z^H \), where \( Z \) is unitary (orthonormal) and \( T \) is upper-triangular (for complex matrices) or quasi-upper-triangular (for real matrices, with possible \( 2 \times 2 \) blocks on the diagonal). Matrix \( A \) has size `[n,n]`.
+This subroutine computes the Schur decomposition of a `real` or `complex` matrix: $A = Z T Z^H$, where $Z$ is unitary (orthonormal) and $T$ is upper-triangular (for complex matrices) or quasi-upper-triangular (for real matrices, with possible $2 \times 2$ blocks on the diagonal). Matrix $A$ has size `[n,n]`.
 
-The results are returned in output matrices \( T \) and \( Z \). Matrix \( T \) is the Schur form, and matrix \( Z \) is the unitary transformation matrix such that \( A = Z T Z^H \). If requested, the eigenvalues of \( T \) can also be returned as a `complex` array of size `[n]`.
+The results are returned in output matrices $T$ and $Z$. Matrix $T$ is the Schur form, and matrix $Z$ is the unitary transformation matrix such that $A = Z T Z^H$. If requested, the eigenvalues of $T$ can also be returned as a `complex` array of size `[n]`.
 
 ### Syntax
 
-`call ` [[stdlib_linalg(module):schur(interface)]] `(a, t [, z,] [, eigvals] [, overwrite_a] [, storage] [, err])`
+`call ` `schur` `(a, t [, z,] [, eigvals] [, overwrite_a] [, storage] [, err])`
 
 ### Arguments
 
 - `a`: Shall be a rank-2 `real` or `complex` array containing the matrix to be decomposed. It is an `intent(inout)` argument if `overwrite_a = .true.`; otherwise, it is an `intent(in)` argument.
 
-- `t`: Shall be a rank-2 array of the same kind as `a`, containing the Schur form \( T \) of the matrix. It is an `intent(out)` argument and should have a shape of `[n,n]`.
+- `t`: Shall be a rank-2 array of the same kind as `a`, containing the Schur form $T$ of the matrix. It is an `intent(out)` argument and should have a shape of `[n,n]`.
 
-- `z`: Shall be a rank-2 array of the same kind as `a`, containing the unitary matrix \( Z \). It is an `intent(out)` argument and is optional. If provided, it should have the shape `[n,n]`.
+- `z`: Shall be a rank-2 array of the same kind as `a`, containing the unitary matrix $Z$. It is an `intent(out)` argument and is optional. If provided, it should have the shape `[n,n]`.
 
-- `eigvals` (optional): Shall be a rank-1 `complex` or `real` array of the same kind as `a`, containing the eigenvalues of \( A \) (the diagonal elements of \( T \)), or their `real` component only. The array must be of size `[n]`. If not provided, the eigenvalues are not returned. It is an `intent(out)` argument.
+- `eigvals` (optional): Shall be a rank-1 `complex` or `real` array of the same kind as `a`, containing the eigenvalues of $A$ (the diagonal elements of $T$), or their `real` component only. The array must be of size `[n]`. If not provided, the eigenvalues are not returned. It is an `intent(out)` argument.
 
 - `overwrite_a` (optional): Shall be a `logical` flag (default: `.false.`). If `.true.`, the input matrix `a` will be overwritten and destroyed upon return, avoiding internal data allocation. It is an `intent(in)` argument.
 
-- `storage` (optional): Shall be a rank-1 array of the same type and kind as `a`, providing working storage for the solver. Its minimum size can be determined with a call to [[stdlib_linalg(module):schur_space(interface)]]. It is an `intent(inout)` argument.
+- `storage` (optional): Shall be a rank-1 array of the same type and kind as `a`, providing working storage for the solver. Its minimum size can be determined with a call to `schur_space`. It is an `intent(inout)` argument.
 
 - `err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument. If not provided, exceptions trigger an `error stop`.
 
 ### Return value
 
-Returns the Schur decomposition matrices into the \( T \) and \( Z \) arguments. If `eigvals` is provided, it will also return the eigenvalues of the matrix \( A \).
+Returns the Schur decomposition matrices into the $T$ and $Z$ arguments. If `eigvals` is provided, it will also return the eigenvalues of the matrix $A$.
 
 Raises `LINALG_VALUE_ERROR` if any of the matrices have invalid or unsuitable size for the decomposition.  
 Raises `LINALG_VALUE_ERROR` if the `real` component is only requested, but the eigenvalues have non-trivial imaginary parts.
@@ -1407,8 +1512,8 @@ If the state argument `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_schur_eigvals.f90!}
+```{literalinclude} ../../example/linalg/example_schur_eigvals.f90
+:language: fortran
 ```
 
 ---
@@ -1421,17 +1526,17 @@ Experimental
 
 ### Description
 
-This subroutine computes the internal working space requirements for the Schur decomposition, [[stdlib_linalg(module):schur(interface)]].
+This subroutine computes the internal working space requirements for the Schur decomposition, `schur`.
 
 ### Syntax
 
-`call ` [[stdlib_linalg(module):schur_space(interface)]] `(a, lwork, [, err])`
+`call ` `schur_space` `(a, lwork, [, err])`
 
 ### Arguments
 
 - `a`: Shall be a rank-2 `real` or `complex` array containing the matrix to be decomposed. It is an `intent(in)` argument.
 
-- `lwork`: Shall be an `integer` scalar that returns the minimum array size required for the working storage in [[stdlib_linalg(module):schur(interface)]] to decompose `a`. It is an `intent(out)` argument.
+- `lwork`: Shall be an `integer` scalar that returns the minimum array size required for the working storage in `schur` to decompose `a`. It is an `intent(out)` argument.
 
 - `err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument.
 
@@ -1448,11 +1553,11 @@ Stable
 
 ### Description
 
-This subroutine computes the solution to the eigenproblem \( A \cdot \bar{v} - \lambda \cdot \bar{v} \), 
-where \( A \) is a square, full-rank, `real` or `complex` matrix, or to the generalized eigenproblem \( A \cdot \bar{v} - \lambda \cdot B \cdot \bar{v} \), 
-where \( B \) is a square matrix with the same type, kind and size as \( A \).
+This subroutine computes the solution to the eigenproblem $A \cdot \bar{v} - \lambda \cdot \bar{v}$, 
+where $A$ is a square, full-rank, `real` or `complex` matrix, or to the generalized eigenproblem $A \cdot \bar{v} - \lambda \cdot B \cdot \bar{v}$, 
+where $B$ is a square matrix with the same type, kind and size as $A$.
 
-Result array `lambda` returns the eigenvalues of \( A \). The user can request eigenvectors to be returned: if provided, on output `left` will contain the left eigenvectors, `right` the right eigenvectors of \( A \).
+Result array `lambda` returns the eigenvalues of $A$. The user can request eigenvectors to be returned: if provided, on output `left` will contain the left eigenvectors, `right` the right eigenvectors of $A$.
 Both `left` and `right` are rank-2 arrays, where eigenvectors are stored as columns.
 The solver is based on LAPACK's `*GEEV` (standard eigenproblem) and `*GGEV` (generalized eigenproblem) backends.
 
@@ -1460,11 +1565,11 @@ The solver is based on LAPACK's `*GEEV` (standard eigenproblem) and `*GGEV` (gen
 
 For the standard eigenproblem: 
 
-`call ` [[stdlib_linalg(module):eig(interface)]] `(a, lambda [, right] [,left] [,overwrite_a] [,err])`
+`call ` `eig` `(a, lambda [, right] [,left] [,overwrite_a] [,err])`
 
 For the generalized eigenproblem: 
 
-`call ` [[stdlib_linalg(module):eig(interface)]] `(a, b, lambda [, right] [, left] [, overwrite_a] [, overwrite_b] [, err])
+`call ` `eig` `(a, b, lambda [, right] [, left] [, overwrite_a] [, overwrite_b] [, err])
 
 ### Arguments
 
@@ -1493,8 +1598,8 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_eig.f90!}
+```{literalinclude} ../../example/linalg/example_eig.f90
+:language: fortran
 ```
 
 ## `eigh` - Eigenvalues and Eigenvectors of a Real symmetric or Complex Hermitian Square Matrix
@@ -1505,20 +1610,20 @@ Stable
 
 ### Description
 
-This subroutine computes the solution to the eigendecomposition \( A \cdot \bar{v} - \lambda \cdot \bar{v} \),
-where \( A \) is a square, full-rank, `real` symmetric \( A = A^T \) or `complex` Hermitian \( A = A^H \) matrix.
+This subroutine computes the solution to the eigendecomposition $A \cdot \bar{v} - \lambda \cdot \bar{v}$,
+where $A$ is a square, full-rank, `real` symmetric $A = A^T$ or `complex` Hermitian $A = A^H$ matrix.
 
-Result array `lambda` returns the `real` eigenvalues of \( A \). The user can request the orthogonal eigenvectors 
+Result array `lambda` returns the `real` eigenvalues of $A$. The user can request the orthogonal eigenvectors 
 to be returned: on output `vectors` may contain the matrix of eigenvectors, returned as a column.
 
-Normally, only the lower triangular part of \( A \) is accessed. On input, `logical` flag `upper_a` 
+Normally, only the lower triangular part of $A$ is accessed. On input, `logical` flag `upper_a` 
 allows the user to request what triangular part of the matrix should be used.
 
 The solver is based on LAPACK's `*SYEV` and `*HEEV` backends.
 
 ### Syntax
 
-`call ` [[stdlib_linalg(module):eigh(interface)]] `(a, lambda [, vectors] [, upper_a] [, overwrite_a] [,err])`
+`call ` `eigh` `(a, lambda [, vectors] [, upper_a] [, overwrite_a] [,err])`
 
 ### Arguments
 
@@ -1542,8 +1647,8 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_eigh.f90!}
+```{literalinclude} ../../example/linalg/example_eigh.f90
+:language: fortran
 ```
 
 ## `eigvals` - Eigenvalues of a Square Matrix
@@ -1556,8 +1661,8 @@ Stable
 
 This function computes the eigenvalues for either a standard or generalized eigenproblem:
 
-- **Standard eigenproblem**: \( A \cdot \bar{v} - \lambda \cdot \bar{v} \), where \( A \) is a square, full-rank `real` or `complex` matrix.
-- **Generalized eigenproblem**: \( A \cdot \bar{v} - \lambda \cdot B \cdot \bar{v} \), where \( B \) is a square matrix with the same type and kind as \( A \).
+- **Standard eigenproblem**: $A \cdot \bar{v} - \lambda \cdot \bar{v}$, where $A$ is a square, full-rank `real` or `complex` matrix.
+- **Generalized eigenproblem**: $A \cdot \bar{v} - \lambda \cdot B \cdot \bar{v}$, where $B$ is a square matrix with the same type and kind as $A$.
 
 The eigenvalues are stored in the result array `lambda`, which is `complex` (even for real input matrices).  
 The solver uses LAPACK's `*GEEV` and `*GGEV` backends for the standard and generalized problems, respectively.
@@ -1566,11 +1671,11 @@ The solver uses LAPACK's `*GEEV` and `*GGEV` backends for the standard and gener
 
 For the standard eigenproblem:
 
-`lambda = ` [[stdlib_linalg(module):eigvals(interface)]] `(a [, err])`
+`lambda = ` `eigvals` `(a [, err])`
 
 For the generalized eigenproblem:
 
-`lambda = ` [[stdlib_linalg(module):eigvals(interface)]] `(a, b [, err])`
+`lambda = ` `eigvals` `(a, b [, err])`
 
 ### Arguments
 
@@ -1593,8 +1698,8 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_eigvals.f90!}
+```{literalinclude} ../../example/linalg/example_eigvals.f90
+:language: fortran
 ```
 
 ## `eigvalsh` - Eigenvalues of a Real Symmetric or Complex Hermitian Square Matrix
@@ -1605,16 +1710,16 @@ Stable
 
 ### Description
 
-This function returns the eigenvalues to matrix \( A \): a where \( A \) is a square, full-rank, 
-`real` symmetric \( A = A^T \) or `complex` Hermitian \( A = A^H \) matrix.
-The eigenvalues are solutions to the eigenproblem \( A \cdot \bar{v} - \lambda \cdot \bar{v} \).
+This function returns the eigenvalues to matrix $A$: a where $A$ is a square, full-rank, 
+`real` symmetric $A = A^T$ or `complex` Hermitian $A = A^H$ matrix.
+The eigenvalues are solutions to the eigenproblem $A \cdot \bar{v} - \lambda \cdot \bar{v}$.
 
-Result array `lambda` is `real`, and returns the eigenvalues of \( A \). 
+Result array `lambda` is `real`, and returns the eigenvalues of $A$. 
 The solver is based on LAPACK's `*SYEV` and `*HEEV` backends.
 
 ### Syntax
 
-`lambda = ` [[stdlib_linalg(module):eigvalsh(interface)]] `(a, [, upper_a] [,err])`
+`lambda = ` `eigvalsh` `(a, [, upper_a] [,err])`
 
 ### Arguments
 
@@ -1634,8 +1739,8 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_eigvalsh.f90!}
+```{literalinclude} ../../example/linalg/example_eigvalsh.f90
+:language: fortran
 ```
 
 ## `svd` - Compute the singular value decomposition of a rank-2 array (matrix).
@@ -1646,16 +1751,16 @@ Stable
 
 ### Description
 
-This subroutine computes the singular value decomposition of a `real` or `complex` rank-2 array (matrix) \( A = U \cdot S \cdot \V^T \).
+This subroutine computes the singular value decomposition of a `real` or `complex` rank-2 array (matrix) $A = U \cdot S \cdot V^T$.
 The solver is based on LAPACK's `*GESDD` backends.
 
-Result vector `s` returns the array of singular values on the diagonal of \( S \). 
-If requested, `u` contains the left singular vectors, as columns of \( U \).
-If requested, `vt` contains the right singular vectors, as rows of \( V^T \).
+Result vector `s` returns the array of singular values on the diagonal of $S$. 
+If requested, `u` contains the left singular vectors, as columns of $U$.
+If requested, `vt` contains the right singular vectors, as rows of $V^T$.
  
 ### Syntax
 
-`call ` [[stdlib_linalg(module):svd(interface)]] `(a, s, [, u, vt, overwrite_a, full_matrices, err])`
+`call ` `svd` `(a, s, [, u, vt, overwrite_a, full_matrices, err])`
 
 ### Class
 
@@ -1689,8 +1794,9 @@ Exceptions trigger an `error stop`, unless argument `err` is present.
 
 ### Example
 
-```fortran
-{!example/linalg/example_svd.f90!}
+```{literalinclude} ../../example/linalg/example_svd.f90
+:language: fortran
+:encoding: iso-8859-1
 ```
 
 ## `svdvals` - Compute the singular values of a rank-2 array (matrix).
@@ -1702,13 +1808,13 @@ Stable
 ### Description
 
 This subroutine computes the singular values of a `real` or `complex` rank-2 array (matrix) from its singular 
-value decomposition \( A = U \cdot S \cdot \V^T \). The solver is based on LAPACK's `*GESDD` backends.
+value decomposition $A = U \cdot S \cdot V^T$. The solver is based on LAPACK's `*GESDD` backends.
 
-Result vector `s` returns the array of singular values on the diagonal of \( S \). 
+Result vector `s` returns the array of singular values on the diagonal of $S$. 
  
 ### Syntax
 
-`s = ` [[stdlib_linalg(module):svdvals(interface)]] `(a [, err])`
+`s = ` `svdvals` `(a [, err])`
 
 ### Arguments
 
@@ -1726,8 +1832,8 @@ Exceptions trigger an `error stop`, unless argument `err` is present.
 
 ### Example
 
-```fortran
-{!example/linalg/example_svdvals.f90!}
+```{literalinclude} ../../example/linalg/example_svdvals.f90
+:language: fortran
 ```
 
 
@@ -1740,13 +1846,13 @@ Experimental
 ### Description
 
 This subroutine computes the Cholesky factorization of a `real` or `complex` rank-2 square array (matrix), 
-\( A = L \cdot L^T \), or \( A = U^T \cdot U \). \( A \) is symmetric or complex Hermitian, and \( L \), 
-\( U \) are lower- or upper-triangular, respectively. 
+$A = L \cdot L^T$, or $A = U^T \cdot U$. $A$ is symmetric or complex Hermitian, and $L$, 
+$U$ are lower- or upper-triangular, respectively. 
 The solver is based on LAPACK's `*POTRF` backends.
  
 ### Syntax
 
-`call ` [[stdlib_linalg(module):cholesky(interface)]] `(a, c, lower [, other_zeroed] [, err])`
+`call ` `cholesky` `(a, c, lower [, other_zeroed] [, err])`
 
 ### Class
 Subroutine
@@ -1757,7 +1863,7 @@ Subroutine
 
 `c` (optional): Shall be a rank-2 square `real` or `complex` of the same size and kind as `a`. It is an `intent(out)` argument, that returns the triangular Cholesky matrix `L` or `U`.
 
-`lower`: Shall be an input `logical` flag. If `.true.`, the lower triangular decomposition \( A = L \cdot L^T \) will be performed. If `.false.`, the upper decomposition \( A = U^T \cdot U \) will be performed.
+`lower`: Shall be an input `logical` flag. If `.true.`, the lower triangular decomposition $A = L \cdot L^T$ will be performed. If `.false.`, the upper decomposition $A = U^T \cdot U$ will be performed.
 
 `other_zeroed` (optional): Shall be an input `logical` flag. If `.true.`, the unused part of the output matrix will contain zeroes. Otherwise, it will not be accessed. This saves cpu time. By default, `other_zeroed=.true.`. It is an `intent(in)` argument.
 
@@ -1779,8 +1885,8 @@ Exceptions trigger an `error stop`, unless argument `err` is present.
 
 ### Example
 
-```fortran
-{!example/linalg/example_cholesky.f90!}
+```{literalinclude} ../../example/linalg/example_cholesky.f90
+:language: fortran
 ```
 
 ## `chol` - Compute the Cholesky factorization of a rank-2 square array (matrix)
@@ -1792,21 +1898,21 @@ Experimental
 ### Description
 
 This is a `pure` functional interface for the Cholesky factorization of a `real` or
-`complex` rank-2 square array (matrix) computed as \( A = L \cdot L^T \), or \( A = U^T \cdot U \). 
-\( A \) is symmetric or complex Hermitian, and \( L \), \( U \) are lower- or upper-triangular, respectively. 
+`complex` rank-2 square array (matrix) computed as $A = L \cdot L^T$, or $A = U^T \cdot U$. 
+$A$ is symmetric or complex Hermitian, and $L$, $U$ are lower- or upper-triangular, respectively. 
 The solver is based on LAPACK's `*POTRF` backends.
 
 Result matrix `c` has the same size and kind as `a`, and returns the lower or upper triangular factor. 
  
 ### Syntax
 
-`c = ` [[stdlib_linalg(module):chol(interface)]] `(a, lower [, other_zeroed])`
+`c = ` `chol` `(a, lower [, other_zeroed])`
 
 ### Arguments
 
 `a`: Shall be a rank-2 square `real` or `complex` array containing the coefficient matrix of size `[n,n]`. It is an `intent(inout)` argument, but returns unchanged if argument `c` is present.
 
-`lower`: Shall be an input `logical` flag. If `.true.`, the lower triangular decomposition \( A = L \cdot L^T \) will be performed. If `.false.`, the upper decomposition \( A = U^T \cdot U \) will be performed.
+`lower`: Shall be an input `logical` flag. If `.true.`, the lower triangular decomposition $A = L \cdot L^T$ will be performed. If `.false.`, the upper decomposition $A = U^T \cdot U$ will be performed.
 
 `other_zeroed` (optional): Shall be an input `logical` flag. If `.true.`, the unused part of the output matrix will contain zeroes. Otherwise, it will not be accessed. This saves cpu time. By default, `other_zeroed=.true.`. It is an `intent(in)` argument.
 
@@ -1820,8 +1926,8 @@ Exceptions trigger an `error stop`, unless argument `err` is present.
 
 ### Example
 
-```fortran
-{!example/linalg/example_chol.f90!}
+```{literalinclude} ../../example/linalg/example_chol.f90
+:language: fortran
 ```
 
 
@@ -1833,14 +1939,14 @@ Stable
 
 ### Description
 
-This operator returns the inverse of a `real` or `complex` square matrix \( A \).
-The inverse \( A^{-1} \) is defined such that \( A \cdot A^{-1} = A^{-1} \cdot A = I_n \).
+This operator returns the inverse of a `real` or `complex` square matrix $A$.
+The inverse $A^{-1}$ is defined such that $A \cdot A^{-1} = A^{-1} \cdot A = I_n$.
 
-This interface is equivalent to the function  [[stdlib_linalg(module):inv(interface)]]. 
+This interface is equivalent to the function  `inv`. 
 
 ### Syntax
 
-`b = ` [[stdlib_linalg(module):operator(.inv.)(interface)]] `a`
+`b = ` `operator(.inv.)` `a`
 
 ### Arguments
 
@@ -1856,8 +1962,8 @@ interfaces.
 
 ### Example
 
-```fortran
-{!example/linalg/example_inverse_operator.f90!}
+```{literalinclude} ../../example/linalg/example_inverse_operator.f90
+:language: fortran
 ```
 
 ## `invert` - Inversion of a square matrix
@@ -1869,14 +1975,14 @@ Stable
 ### Description
 
 This subroutine inverts a square `real` or `complex` matrix in-place.
-The inverse \( A^{-1} \) is defined such that \( A \cdot A^{-1} = A^{-1} \cdot A = I_n \).
+The inverse $A^{-1}$ is defined such that $A \cdot A^{-1} = A^{-1} \cdot A = I_n$.
 
 On return, the input matrix `a` is replaced by its inverse.
 The solver is based on LAPACK's `*GETRF` and `*GETRI` backends.
 
 ### Syntax
 
-`call ` [[stdlib_linalg(module):invert(interface)]] `(a, [,inva] [, pivot] [, err])`
+`call ` `invert` `(a, [,inva] [, pivot] [, err])`
 
 ### Arguments
 
@@ -1893,7 +1999,7 @@ On output, it contains the inverse of `a`.
 
 ### Return value
 
-Computes the inverse of the matrix \( A \), \(A^{-1}\, and returns it either in \( A \) or in another matrix.
+Computes the inverse of the matrix $A$, $A^{-1}$, and returns it either in $A$ or in another matrix.
 
 Raises `LINALG_ERROR` if the matrix is singular or has invalid size.
 Raises `LINALG_VALUE_ERROR` if `inva` and `a` do not have the same size.
@@ -1901,12 +2007,12 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_inverse_inplace.f90!}
+```{literalinclude} ../../example/linalg/example_inverse_inplace.f90
+:language: fortran
 ```
 
-```fortran
-{!example/linalg/example_inverse_subroutine.f90!}
+```{literalinclude} ../../example/linalg/example_inverse_subroutine.f90
+:language: fortran
 ```
 
 ## `inv` - Inverse of a square matrix. 
@@ -1918,13 +2024,13 @@ Stable
 ### Description
 
 This function returns the inverse of a square `real` or `complex` matrix in-place.
-The inverse, \( A^{-1} \), is defined such that \( A \cdot A^{-1} = A^{-1} \cdot A = I_n \).
+The inverse, $A^{-1}$, is defined such that $A \cdot A^{-1} = A^{-1} \cdot A = I_n$.
 
 The solver is based on LAPACK's `*GETRF` and `*GETRI` backends.
 
 ### Syntax
 
-`b ` [[stdlib_linalg(module):inv(interface)]] `(a, [, err])`
+`b ` `inv` `(a, [, err])`
 
 ### Arguments
 
@@ -1934,15 +2040,15 @@ The solver is based on LAPACK's `*GETRF` and `*GETRI` backends.
 
 ### Return value
 
-Returns an array value of the same type, kind and rank as `a`, that contains the inverse matrix \(A^{-1}\).
+Returns an array value of the same type, kind and rank as `a`, that contains the inverse matrix $A^{-1}$.
 
 Raises `LINALG_ERROR` if the matrix is singular or has invalid size.
 If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_inverse_function.f90!}
+```{literalinclude} ../../example/linalg/example_inverse_function.f90
+:language: fortran
 ```
 
 ## `pinv` - Moore-Penrose pseudo-inverse of a matrix
@@ -1954,19 +2060,19 @@ Experimental
 ### Description
 
 This function computes the Moore-Penrose pseudo-inverse of a `real` or `complex` matrix.  
-The pseudo-inverse, \( A^{+} \), generalizes the matrix inverse and satisfies the conditions:
-- \( A \cdot A^{+} \cdot A = A \)
-- \( A^{+} \cdot A \cdot A^{+} = A^{+} \)
-- \( (A \cdot A^{+})^T = A \cdot A^{+} \)
-- \( (A^{+} \cdot A)^T = A^{+} \cdot A \)
+The pseudo-inverse, $A^{+}$, generalizes the matrix inverse and satisfies the conditions:
+- $A \cdot A^{+} \cdot A = A$
+- $A^{+} \cdot A \cdot A^{+} = A^{+}$
+- $(A \cdot A^{+})^T = A \cdot A^{+}$
+- $(A^{+} \cdot A)^T = A^{+} \cdot A$
 
 The computation is based on singular value decomposition (SVD). Singular values below a relative 
-tolerance threshold \( \text{rtol} \cdot \sigma_{\max} \), where \( \sigma_{\max} \) is the largest 
+tolerance threshold $\text{rtol} \cdot \sigma_{\max}$, where $\sigma_{\max}$ is the largest 
 singular value, are treated as zero.
 
 ### Syntax
 
-`b =` [[stdlib_linalg(module):pinv(interface)]] `(a, [, rtol, err])`
+`b =` `pinv` `(a, [, rtol, err])`
 
 ### Arguments
 
@@ -1974,14 +2080,14 @@ singular value, are treated as zero.
 It is an `intent(in)` argument.
 
 `rtol` (optional): Shall be a scalar `real` value specifying the relative tolerance for singular value cutoff.  
-If `rtol` is not provided, the default relative tolerance is \( \text{rtol} = \text{max}(m, n) \cdot \epsilon \),  
-where \( \epsilon \) is the machine precision for the element type of `a`. It is an `intent(in)` argument.
+If `rtol` is not provided, the default relative tolerance is $\text{rtol} = \text{max}(m, n) \cdot \epsilon$,  
+where $\epsilon$ is the machine precision for the element type of `a`. It is an `intent(in)` argument.
 
 `err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument.
 
 ### Return value
 
-Returns an array value of the same type, kind, and rank as `a` with shape `[n, m]`, that contains the pseudo-inverse matrix \( A^{+} \).
+Returns an array value of the same type, kind, and rank as `a` with shape `[n, m]`, that contains the pseudo-inverse matrix $A^{+}$.
 
 Raises `LINALG_ERROR` if the underlying SVD did not converge.
 Raises `LINALG_VALUE_ERROR` if `a` has invalid size.
@@ -1989,8 +2095,8 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_pseudoinverse.f90!}
+```{literalinclude} ../../example/linalg/example_pseudoinverse.f90
+:language: fortran
 ```
 
 ## `pseudoinvert` - Moore-Penrose pseudo-inverse of a matrix
@@ -2002,21 +2108,21 @@ Experimental
 ### Description
 
 This subroutine computes the Moore-Penrose pseudo-inverse of a `real` or `complex` matrix.
-The pseudo-inverse \( A^{+} \) is a generalization of the matrix inverse and satisfies the following properties:
-- \( A \cdot A^{+} \cdot A = A \)
-- \( A^{+} \cdot A \cdot A^{+} = A^{+} \)
-- \( (A \cdot A^{+})^T = A \cdot A^{+} \)
-- \( (A^{+} \cdot A)^T = A^{+} \cdot A \)
+The pseudo-inverse $A^{+}$ is a generalization of the matrix inverse and satisfies the following properties:
+- $A \cdot A^{+} \cdot A = A$
+- $A^{+} \cdot A \cdot A^{+} = A^{+}$
+- $(A \cdot A^{+})^T = A \cdot A^{+}$
+- $(A^{+} \cdot A)^T = A^{+} \cdot A$
 
 The computation is based on singular value decomposition (SVD). Singular values below a relative 
-tolerance threshold \( \text{rtol} \cdot \sigma_{\max} \), where \( \sigma_{\max} \) is the largest 
+tolerance threshold $\text{rtol} \cdot \sigma_{\max}$, where $\sigma_{\max}$ is the largest 
 singular value, are treated as zero.
 
 On return, matrix `pinva` `[n, m]` will store the pseudo-inverse of `a` `[m, n]`.
 
 ### Syntax
 
-`call ` [[stdlib_linalg(module):pseudoinvert(interface)]] `(a, pinva [, rtol] [, err])`
+`call ` `pseudoinvert` `(a, pinva [, rtol] [, err])`
 
 ### Arguments
 
@@ -2027,14 +2133,14 @@ It is an `intent(in)` argument.
 On output, it contains the Moore-Penrose pseudo-inverse of `a`.
 
 `rtol` (optional): Shall be a scalar `real` value specifying the relative tolerance for singular value cutoff.  
-If not provided, the default threshold is \( \text{max}(m, n) \cdot \epsilon \), where \( \epsilon \) is the 
+If not provided, the default threshold is $\text{max}(m, n) \cdot \epsilon$, where $\epsilon$ is the 
 machine precision for the element type of `a`.
 
 `err` (optional): Shall be a `type(linalg_state_type)` value. It is an `intent(out)` argument.
 
 ### Return value
 
-Computes the Moore-Penrose pseudo-inverse of the matrix \( A \), \( A^{+} \), and returns it in matrix `pinva`.
+Computes the Moore-Penrose pseudo-inverse of the matrix $A$, $A^{+}$, and returns it in matrix `pinva`.
 
 Raises `LINALG_ERROR` if the underlying SVD did not converge.
 Raises `LINALG_VALUE_ERROR` if `pinva` and `a` have degenerate or incompatible sizes.
@@ -2042,8 +2148,8 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_pseudoinverse.f90!}
+```{literalinclude} ../../example/linalg/example_pseudoinverse.f90
+:language: fortran
 ```
 
 ## `.pinv.` - Moore-Penrose Pseudo-Inverse operator
@@ -2054,19 +2160,19 @@ Experimental
 
 ### Description
 
-This operator returns the Moore-Penrose pseudo-inverse of a `real` or `complex` matrix \( A \).
-The pseudo-inverse \( A^{+} \) is computed using Singular Value Decomposition (SVD), and singular values 
+This operator returns the Moore-Penrose pseudo-inverse of a `real` or `complex` matrix $A$.
+The pseudo-inverse $A^{+}$ is computed using Singular Value Decomposition (SVD), and singular values 
 below a given threshold are treated as zero.
 
-This interface is equivalent to the function [[stdlib_linalg(module):pinv(interface)]].
+This interface is equivalent to the function `pinv`.
 
 ### Syntax
 
-`b = ` [[stdlib_linalg(module):operator(.pinv.)(interface)]] `a`
+`b = ` `operator(.pinv.)` `a`
 
 ### Arguments
 
-`a`: Shall be a rank-2 array of any `real` or `complex` kinds, with arbitrary dimensions \( m \times n \). It is an `intent(in)` argument.
+`a`: Shall be a rank-2 array of any `real` or `complex` kinds, with arbitrary dimensions $m \times n$. It is an `intent(in)` argument.
 
 ### Return value
 
@@ -2077,8 +2183,8 @@ For more detailed error handling, it is recommended to use the `subroutine` or `
 
 ### Example
 
-```fortran
-{!example/linalg/example_pseudoinverse.f90!}
+```{literalinclude} ../../example/linalg/example_pseudoinverse.f90
+:language: fortran
 ```
 
 ## `get_norm` - Computes the vector norm of a generic-rank array.
@@ -2089,15 +2195,15 @@ Experimental
 
 ### Description
 
-This `pure subroutine` interface computes one of several vector norms of `real` or `complex` array \( A \), depending on 
-the value of the `order` input argument. \( A \) may be an array of any rank. 
+This `pure subroutine` interface computes one of several vector norms of `real` or `complex` array $A$, depending on 
+the value of the `order` input argument. $A$ may be an array of any rank. 
 
 Result `nrm` returns a `real`, scalar norm value for the whole array; if `dim` is specified, `nrm` is a rank n-1 
-array with the same shape as \(A \) and dimension `dim` dropped, containing all norms evaluated along `dim`.
+array with the same shape as $A$ and dimension `dim` dropped, containing all norms evaluated along `dim`.
 
 ### Syntax
 
-`call ` [[stdlib_linalg(module):get_norm(interface)]] `(a, nrm, order, [, dim, err])`
+`call ` `get_norm` `(a, nrm, order, [, dim, err])`
 
 ### Arguments
 
@@ -2110,11 +2216,11 @@ to that of `a` with dimension `dim` dropped.
 
 | Integer input    | Character Input  | Norm type                                               |
 |------------------|------------------|---------------------------------------------------------|
-| `-huge(0)`       | `'-inf', '-Inf'` | Minimum absolute value \( \min_i{ \left|a_i\right| } \) |
-| `1`              | `'1'`            | 1-norm \( \sum_i{ \left|a_i\right| } \)                 |
-| `2`              | `'2'`            | Euclidean norm \( \sqrt{\sum_i{ a_i^2 }} \)             |
-| `>=3`            | `'3','4',...`    | p-norm \( \left( \sum_i{ \left|a_i\right|^p }\right) ^{1/p} \) |
-| `huge(0)`        | `'inf', 'Inf'`   | Maximum absolute value \( \max_i{ \left|a_i\right| } \) |
+| `-huge(0)`       | `'-inf', '-Inf'` | Minimum absolute value $\min_i{ \left|a_i\right| }$ |
+| `1`              | `'1'`            | 1-norm $\sum_i{ \left|a_i\right| }$                 |
+| `2`              | `'2'`            | Euclidean norm $\sqrt{\sum_i{ a_i^2 }}$             |
+| `>=3`            | `'3','4',...`    | p-norm $\left( \sum_i{ \left|a_i\right|^p }\right) ^{1/p}$ |
+| `huge(0)`        | `'inf', 'Inf'`   | Maximum absolute value $\max_i{ \left|a_i\right| }$ |
 
 `dim` (optional): Shall be a scalar `integer` value with a value in the range from `1` to `n`, where `n` is the rank of the array. It is an `intent(in)` argument.
 
@@ -2122,9 +2228,9 @@ to that of `a` with dimension `dim` dropped.
 
 ### Return value
 
-By default, the return value `nrm` is a scalar, and contains the norm as evaluated over all elements of the generic-rank array \( A \). 
-If the optional `dim` argument is present, `nrm` is a rank `n-1` array with the same shape as \( A \) except 
-for dimension `dim`, that is collapsed. Each element of `nrm` contains the 1D norm of the elements of \( A \), 
+By default, the return value `nrm` is a scalar, and contains the norm as evaluated over all elements of the generic-rank array $A$. 
+If the optional `dim` argument is present, `nrm` is a rank `n-1` array with the same shape as $A$ except 
+for dimension `dim`, that is collapsed. Each element of `nrm` contains the 1D norm of the elements of $A$, 
 evaluated along dimension `dim` only.
 
 Raises `LINALG_ERROR` if the requested norm type is invalid.
@@ -2133,8 +2239,8 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_get_norm.f90!}
+```{literalinclude} ../../example/linalg/example_get_norm.f90
+:language: fortran
 ```
 
 ## `norm` - Computes the vector norm of a generic-rank array.
@@ -2145,12 +2251,12 @@ Experimental
 
 ### Description
 
-This function computes one of several vector norms of `real` or `complex` array \( A \), depending on 
-the value of the `order` input argument. \( A \) may be an array of any rank. 
+This function computes one of several vector norms of `real` or `complex` array $A$, depending on 
+the value of the `order` input argument. $A$ may be an array of any rank. 
 
 ### Syntax
 
-`x = ` [[stdlib_linalg(module):norm(interface)]] `(a, order, [, dim, err])`
+`x = ` `norm` `(a, order, [, dim, err])`
 
 ### Arguments
 
@@ -2160,11 +2266,11 @@ the value of the `order` input argument. \( A \) may be an array of any rank.
 
 | Integer input    | Character Input  | Norm type                                               |
 |------------------|------------------|---------------------------------------------------------|
-| `-huge(0)`       | `'-inf', '-Inf'` | Minimum absolute value \( \min_i{ \left|a_i\right| } \) |
-| `1`              | `'1'`            | 1-norm \( \sum_i{ \left|a_i\right| } \)                 |
-| `2`              | `'2'`            | Euclidean norm \( \sqrt{\sum_i{ a_i^2 }} \)             |
-| `>=3`            | `'3','4',...`    | p-norm \( \left( \sum_i{ \left|a_i\right|^p }\right) ^{1/p} \) |
-| `huge(0)`        | `'inf', 'Inf'`   | Maximum absolute value \( \max_i{ \left|a_i\right| } \) |
+| `-huge(0)`       | `'-inf', '-Inf'` | Minimum absolute value $\min_i{ \left|a_i\right| }$ |
+| `1`              | `'1'`            | 1-norm $\sum_i{ \left|a_i\right| }$                 |
+| `2`              | `'2'`            | Euclidean norm $\sqrt{\sum_i{ a_i^2 }}$             |
+| `>=3`            | `'3','4',...`    | p-norm $\left( \sum_i{ \left|a_i\right|^p }\right) ^{1/p}$ |
+| `huge(0)`        | `'inf', 'Inf'`   | Maximum absolute value $\max_i{ \left|a_i\right| }$ |
 
 `dim` (optional): Shall be a scalar `integer` value with a value in the range from `1` to `n`, where `n` is the rank of the array. It is an `intent(in)` argument.
 
@@ -2172,9 +2278,9 @@ the value of the `order` input argument. \( A \) may be an array of any rank.
 
 ### Return value
 
-By default, the return value `x` is a scalar, and contains the norm as evaluated over all elements of the generic-rank array \( A \). 
-If the optional `dim` argument is present, `x` is a rank `n-1` array with the same shape as \( A \) except 
-for dimension `dim`, that is dropped. Each element of `x` contains the 1D norm of the elements of \( A \), 
+By default, the return value `x` is a scalar, and contains the norm as evaluated over all elements of the generic-rank array $A$. 
+If the optional `dim` argument is present, `x` is a rank `n-1` array with the same shape as $A$ except 
+for dimension `dim`, that is dropped. Each element of `x` contains the 1D norm of the elements of $A$, 
 evaluated along dimension `dim` only.
 
 Raises `LINALG_ERROR` if the requested norm type is invalid.
@@ -2183,8 +2289,8 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_norm.f90!}
+```{literalinclude} ../../example/linalg/example_norm.f90
+:language: fortran
 ```
 
 ## `mnorm` - Computes the matrix norm of a generic-rank array.
@@ -2195,13 +2301,13 @@ Experimental
 
 ### Description
 
-This function computes one of several matrix norms of `real` or `complex` array \( A \), depending on 
-the value of the `order` input argument. \( A \) must be an array of rank 2 or higher. For arrays of rank > 2,
+This function computes one of several matrix norms of `real` or `complex` array $A$, depending on 
+the value of the `order` input argument. $A$ must be an array of rank 2 or higher. For arrays of rank > 2,
 matrix norms are computed over specified dimensions.
 
 ### Syntax
 
-`x = ` [[stdlib_linalg(module):mnorm(interface)]] `(a [, order, dim, err])`
+`x = ` `mnorm` `(a [, order, dim, err])`
 
 ### Arguments
 
@@ -2211,10 +2317,10 @@ matrix norms are computed over specified dimensions.
 
 | Integer input    | Character Input                 | Norm type                                                                   |
 |------------------|---------------------------------|-----------------------------------------------------------------------------|
-| `1`              | `'1'`                           | 1-norm (maximum column sum) \( \max_j \sum_i{ \left|a_{i,j}\right| } \)     |
+| `1`              | `'1'`                           | 1-norm (maximum column sum) $\max_j \sum_i{ \left|a_{i,j}\right| }$     |
 | `2`              | `'2'`                           | 2-norm (largest singular value)                                             |
-| (not prov.)      | `'Euclidean','Frobenius','Fro'` | Frobenius norm \( \sqrt{\sum_{i,j}{ \left|a_{i,j}\right|^2 }} \)            |
-| `huge(0)`        | `'inf', 'Inf', 'INF'`           | Infinity norm (maximum row sum) \( \max_i \sum_j{ \left|a_{i,j}\right| } \) |
+| (not prov.)      | `'Euclidean','Frobenius','Fro'` | Frobenius norm $\sqrt{\sum_{i,j}{ \left|a_{i,j}\right|^2 }}$            |
+| `huge(0)`        | `'inf', 'Inf', 'INF'`           | Infinity norm (maximum row sum) $\max_i \sum_j{ \left|a_{i,j}\right| }$ |
 
 `dim` (optional): For arrays of rank > 2, shall be an integer array of size 2 specifying the dimensions over which to compute the matrix norm. Default value is `[1,2]`. It is an `intent(in)` argument.
 
@@ -2223,8 +2329,8 @@ matrix norms are computed over specified dimensions.
 ### Return value
 
 For rank-2 input arrays, the return value `x` is a scalar containing the matrix norm.
-For arrays of rank > 2, if the optional `dim` argument is present, `x` is a rank `n-2` array with the same shape as \( A \) except 
-for dimensions `dim(1)` and `dim(2)`, which are dropped. Each element of `x` contains the matrix norm of the corresponding submatrix of \( A \),
+For arrays of rank > 2, if the optional `dim` argument is present, `x` is a rank `n-2` array with the same shape as $A$ except 
+for dimensions `dim(1)` and `dim(2)`, which are dropped. Each element of `x` contains the matrix norm of the corresponding submatrix of $A$,
 evaluated over the specified dimensions only, with the given order.
 
 If an invalid norm type is provided, defaults to 1-norm and raises `LINALG_ERROR`.
@@ -2233,8 +2339,8 @@ If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_mnorm.f90!}
+```{literalinclude} ../../example/linalg/example_mnorm.f90
+:language: fortran
 ```
 
 ## `expm` - Computes the matrix exponential {#expm}
@@ -2245,11 +2351,11 @@ Experimental
 
 ### Description
 
-Given a matrix \(A\), this function computes its matrix exponential \(E = \exp(A)\) using a Pade approximation.
+Given a matrix $A$, this function computes its matrix exponential $E = \exp(A)$ using a Pade approximation.
 
 ### Syntax
 
-`E = ` [[stdlib_linalg(module):expm(interface)]] `(a [, order])`
+`E = ` `expm` `(a [, order])`
 
 ### Arguments
 
@@ -2259,14 +2365,14 @@ Given a matrix \(A\), this function computes its matrix exponential \(E = \exp(A
 
 ### Return value
 
-The returned array `E` contains the Pade approximation of \(\exp(A)\).
+The returned array `E` contains the Pade approximation of $\exp(A)$.
 
 If `A` is non-square or `order` is negative, it raises a `LINALG_VALUE_ERROR`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_expm.f90!}
+```{literalinclude} ../../example/linalg/example_expm.f90
+:language: fortran
 ```
 
 ## `matrix_exp` - Computes the matrix exponential {#matrix_exp}
@@ -2277,11 +2383,11 @@ Experimental
 
 ### Description
 
-Given a matrix \(A\), this function computes its matrix exponential \(E = \exp(A)\) using a Pade approximation.
+Given a matrix $A$, this function computes its matrix exponential $E = \exp(A)$ using a Pade approximation.
 
 ### Syntax
 
-`call ` [[stdlib_linalg(module):matrix_exp(interface)]] `(a [, e, order, err])`
+`call ` `matrix_exp` `(a [, e, order, err])`
 
 ### Arguments
 
@@ -2295,14 +2401,13 @@ Given a matrix \(A\), this function computes its matrix exponential \(E = \exp(A
 
 ### Return value
 
-The returned array `A` (in-place) or `E` (out-of-place) contains the Pade approximation of \(\exp(A)\).
+The returned array `A` (in-place) or `E` (out-of-place) contains the Pade approximation of $\exp(A)$.
 
 If `A` is non-square or `order` is negative, it raises a `LINALG_VALUE_ERROR`.
 If `err` is not present, exceptions trigger an `error stop`.
 
 ### Example
 
-```fortran
-{!example/linalg/example_matrix_exp.f90!}
+```{literalinclude} ../../example/linalg/example_matrix_exp.f90
+:language: fortran
 ```
-

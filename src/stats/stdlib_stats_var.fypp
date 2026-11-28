@@ -1,7 +1,7 @@
 #:include "common.fypp"
 #:set RANKS = range(1, MAXRANK + 1)
 #:set RC_KINDS_TYPES = REAL_KINDS_TYPES + CMPLX_KINDS_TYPES
-submodule (stdlib_stats) stdlib_stats_var
+submodule (stdlib_stats_descriptive) stdlib_stats_var
 
   use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan
   use stdlib_error, only: error_stop

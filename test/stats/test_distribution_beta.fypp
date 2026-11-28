@@ -7,7 +7,7 @@ program test_distribution_beta
     use stdlib_kinds, only : sp, dp, xdp
     use stdlib_error, only : check
     use stdlib_random, only : random_seed
-    use stdlib_stats_distribution_beta, only : rbeta => rvs_beta,           &
+    use stdlib_stats, only : rbeta => rvs_beta,           &
                               beta_pdf => pdf_beta, beta_cdf => cdf_beta
 
     implicit none

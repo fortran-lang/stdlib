@@ -5,7 +5,7 @@
 #:set RANKS = range(2, MAXRANK + 1)
 
 submodule(stdlib_intrinsics) stdlib_intrinsics_sum
-    !! ([Specification](../page/specs/stdlib_intrinsics.html))
+    !! (Specification :doc:`/specs/stdlib_intrinsics`)
     use stdlib_kinds
     use stdlib_constants
     implicit none
@@ -50,10 +50,10 @@ pure module function stdlib_sum_1d_${s}$_mask(a,mask) result(s)
     n = size(a,kind=ilp)
     r = mod(n,chunk)
 
-    abatch(1:r)       = merge( zero_${s}$ , a(1:r) , mask(1:r) )
+    abatch(1:r)       = merge( a(1:r) , zero_${s}$ , mask(1:r) )
     abatch(r+1:chunk) = zero_${s}$
     do i = r+1, n-r, chunk
-        abatch(1:chunk) = abatch(1:chunk) + merge( zero_${s}$ , a(i:i+chunk-1), mask(i:i+chunk-1) )
+        abatch(1:chunk) = abatch(1:chunk) + merge( a(i:i+chunk-1), zero_${s}$ , mask(i:i+chunk-1) )
     end do
     
     s = zero_${s}$
@@ -100,7 +100,7 @@ pure module function stdlib_sum_kahan_1d_${s}$_mask(a,mask) result(s)
     n = size(a,kind=ilp)
     r = mod(n,chunk)
     
-    sbatch(1:r) = merge( zero_${s}$ , a(1:r) , mask(1:r) )
+    sbatch(1:r) = merge( a(1:r) , zero_${s}$ , mask(1:r) )
     sbatch(r+1:chunk)  = zero_${s}$
     cbatch = zero_${s}$
     do i = r+1, n-r, chunk

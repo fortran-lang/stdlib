@@ -6,7 +6,7 @@ program test_distribution_gamma
     use stdlib_kinds, only : sp, dp, xdp
     use stdlib_error, only : check
     use stdlib_random, only : random_seed
-    use stdlib_stats_distribution_gamma, only : rgamma => rvs_gamma,           &
+    use stdlib_stats, only : rgamma => rvs_gamma,           &
                               gamma_pdf => pdf_gamma, gamma_cdf => cdf_gamma
 
     implicit none

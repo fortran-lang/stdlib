@@ -7,7 +7,7 @@ module stdlib_io_aux
   !> Version: experimental
   !>
   !> Format strings with edit descriptors for each type and kind
-  !> ([Specification](../page/specs/stdlib_io.html))
+  !> (Specification: :doc:`/specs/stdlib_io`)
   character(*), parameter :: &
     !> Format string for integers
     FMT_INT = '(i0)', &

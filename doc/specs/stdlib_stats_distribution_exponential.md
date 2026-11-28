@@ -1,10 +1,9 @@
----
-title: stats_distribution_exponential
----
+# `stdlib_stats_distribution_exponential`
 
-# Statistical Distributions -- Exponential Distribution Module
-
-[TOC]
+```{contents}
+:local:
+:depth: 2
+```
 
 ## `rvs_exp` - exponential distribution random variates
 
@@ -15,30 +14,31 @@ Experimental
 ### Description
 
 An exponential distribution is the distribution of time between events in a Poisson point process.
-The inverse `scale` parameter `lambda` specifies the average time between events (\(\lambda\)), also called the rate of events. The location `loc` specifies the value by which the distribution is shifted.
+The inverse `scale` parameter `lambda` specifies the average time between events ($\lambda$), also called the rate of events. The location `loc` specifies the value by which the distribution is shifted.
 
-Without argument, the function returns a random sample from the unshifted standard exponential distribution \(E(\lambda=1)\) or \(E(loc=0, scale=1)\).
+Without argument, the function returns a random sample from the unshifted standard exponential distribution $E(\lambda=1)$ or $E(loc=0, scale=1)$.
 
-With a single argument of type `real`, the function returns a random sample from the exponential distribution \(E(\lambda=\text{lambda})\). 
+With a single argument of type `real`, the function returns a random sample from the exponential distribution $E(\lambda=\text{lambda})$. 
 For complex arguments, the real and imaginary parts are sampled independently of each other.
 
-With one argument of type `real` and one argument of type `integer`, the function returns a rank-1 array of exponentially distributed random variates for (E(\lambda=\text{lambda})\).
+With one argument of type `real` and one argument of type `integer`, the function returns a rank-1 array of exponentially distributed random variates for $E(\lambda=\text{lambda})$.
 
-With two arguments of type `real`, the function returns a random sample from the exponential distribution \(E(loc=loc, scale=scale)\).
+With two arguments of type `real`, the function returns a random sample from the exponential distribution $E(loc=loc, scale=scale)$.
 For complex arguments, the real and imaginary parts are sampled independently of each other.
 
-With two arguments of type `real` and one argument of type `integer`, the function returns a rank-1 array of exponentially distributed random variates for \(E(loc=loc, scale=scale)\).
+With two arguments of type `real` and one argument of type `integer`, the function returns a rank-1 array of exponentially distributed random variates for $E(loc=loc, scale=scale)$.
 
-@note
+```{note}
 The algorithm used for generating exponential random variates is fundamentally limited to double precision.[^1]
+```
 
 ### Syntax
 
-`result = ` [[stdlib_stats_distribution_exponential(module):rvs_exp(interface)]] `([loc, scale] [[, array_size]])`
+`result = ` `rvs_exp` `([loc, scale] `, array_size`)`
 
 or
 
-`result = ` [[stdlib_stats_distribution_exponential(module):rvs_exp(interface)]] `([lambda] [[, array_size]])`
+`result = ` `rvs_exp` `([lambda] `, array_size`)`
 
 ### Class
 
@@ -66,8 +66,8 @@ If `scale` is non-positive, the result is `NaN`.
 
 ### Example
 
-```fortran
-{!example/stats_distribution_exponential/example_exponential_rvs.f90!}
+```{literalinclude} ../../example/stats_distribution_exponential/example_exponential_rvs.f90
+:language: fortran
 ```
 
 ## `pdf_exp` - exponential distribution probability density function
@@ -80,21 +80,21 @@ Experimental
 
 The probability density function (pdf) of the single real variable exponential distribution is:
 
-$$f(x)=\begin{cases} \lambda e^{-\lambda x} &x\geqslant 0 \\\\ 0 &x< 0\end{cases}$$
+$$f(x)=\begin{cases} \lambda e^{-\lambda x} &x\geqslant 0 \\ 0 &x< 0\end{cases}$$
 
-For a complex variable \(z=(x + y i)\) with independent real \(x\) and imaginary \(y\) parts, the joint probability density function is the product of the corresponding real and imaginary marginal pdfs:[^2]
+For a complex variable $z=(x + y i)$ with independent real $x$ and imaginary $y$ parts, the joint probability density function is the product of the corresponding real and imaginary marginal pdfs:[^2]
 
-$$f(x+\mathit{i}y)=f(x)f(y)=\begin{cases} \lambda_{x} \lambda_{y} e^{-(\lambda_{x} x + \lambda_{y} y)} &x\geqslant 0, y\geqslant 0 \\\\ 0 &\text{otherwise}\end{cases}$$
+$$f(x+\mathit{i}y)=f(x)f(y)=\begin{cases} \lambda_{x} \lambda_{y} e^{-(\lambda_{x} x + \lambda_{y} y)} &x\geqslant 0, y\geqslant 0 \\ 0 &\text{otherwise}\end{cases}$$
 
-Instead of of the inverse scale parameter `lambda`, it is possible to pass `loc` and `scale`, where \(scale = \frac{1}{\lambda}\) and `loc` specifies the value by which the distribution is shifted.
+Instead of the inverse scale parameter `lambda`, it is possible to pass `loc` and `scale`, where $scale = \frac{1}{\lambda}$ and `loc` specifies the value by which the distribution is shifted.
 
 ### Syntax
 
-`result = ` [[stdlib_stats_distribution_exponential(module):pdf_exp(interface)]] `(x, loc, scale)`
+`result = ` `pdf_exp` `(x, loc, scale)`
 
 or
 
-`result = ` [[stdlib_stats_distribution_exponential(module):pdf_exp(interface)]] `(x, lambda)`
+`result = ` `pdf_exp` `(x, lambda)`
 
 ### Class
 
@@ -121,8 +121,8 @@ The result is a scalar or an array, with a shape conformable to the arguments, a
 
 ### Example
 
-```fortran
-{!example/stats_distribution_exponential/example_exponential_pdf.f90!}
+```{literalinclude} ../../example/stats_distribution_exponential/example_exponential_pdf.f90
+:language: fortran
 ```
 
 ## `cdf_exp` - exponential cumulative distribution function
@@ -135,21 +135,21 @@ Experimental
 
 Cumulative distribution function (cdf) of the single real variable exponential distribution:
 
-$$F(x)=\begin{cases}1 - e^{-\lambda x} &x\geqslant 0 \\\\ 0 &x< 0\end{cases}$$
+$$F(x)=\begin{cases}1 - e^{-\lambda x} &x\geqslant 0 \\ 0 &x< 0\end{cases}$$
 
-For a complex variable  \(z=(x + y i)\) with independent real \(x\) and imaginary \(y\) parts, the joint cumulative distribution function is the product of corresponding real and imaginary marginal cdfs:[^2]
+For a complex variable  $z=(x + y i)$ with independent real $x$ and imaginary $y$ parts, the joint cumulative distribution function is the product of corresponding real and imaginary marginal cdfs:[^2]
 
-$$F(x+\mathit{i}y)=F(x)F(y)=\begin{cases} (1 - e^{-\lambda_{x} x})(1 - e^{-\lambda_{y} y}) &x\geqslant 0, \;\; y\geqslant 0 \\\\ 0 & \text{otherwise} \end{cases}$$
+$$F(x+\mathit{i}y)=F(x)F(y)=\begin{cases} (1 - e^{-\lambda_{x} x})(1 - e^{-\lambda_{y} y}) &x\geqslant 0, \;\; y\geqslant 0 \\ 0 & \text{otherwise} \end{cases}$$
 
-Alternative to the inverse scale parameter `lambda`, it is possible to pass `loc` and `scale`, where \(scale = \frac{1}{\lambda}\) and `loc` specifies the value by which the distribution is shifted.
+Alternative to the inverse scale parameter `lambda`, it is possible to pass `loc` and `scale`, where $scale = \frac{1}{\lambda}$ and `loc` specifies the value by which the distribution is shifted.
 
 ### Syntax
 
-`result = ` [[stdlib_stats_distribution_exponential(module):cdf_exp(interface)]] `(x, loc, scale)`
+`result = ` `cdf_exp` `(x, loc, scale)`
 
 or
 
-`result = ` [[stdlib_stats_distribution_exponential(module):cdf_exp(interface)]] `(x, lambda)`
+`result = ` `cdf_exp` `(x, lambda)`
 
 ### Class
 
@@ -175,8 +175,8 @@ The result is a scalar or an array, with a shape conformable to the arguments, a
 
 ### Example
 
-```fortran
-{!example/stats_distribution_exponential/example_exponential_cdf.f90!}
+```{literalinclude} ../../example/stats_distribution_exponential/example_exponential_cdf.f90
+:language: fortran
 ```
 
 [^1]: Marsaglia, George, and Wai Wan Tsang. "The ziggurat method for generating random variables." _Journal of statistical software_ 5 (2000): 1-7.

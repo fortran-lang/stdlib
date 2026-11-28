@@ -15,17 +15,17 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
 
      #:for rk,rt in RC_KINDS_TYPES
      pure module function stdlib_linalg_pure_${rt[0]}$${rk}$determinant(a) result(det)     
-     !!### Summary
+     !!## Summary
      !! Compute determinant of a real square matrix (pure interface).
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the determinant of a real square matrix.
      !!
      !! param: a Input matrix of size [m,n].
      !! return: det Matrix determinant.
      !!
-     !!### Example
+     !!## Example
      !!
      !!```fortran
      !!
@@ -114,10 +114,10 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
      end function stdlib_linalg_pure_${rt[0]}$${rk}$determinant
      
      module function stdlib_linalg_${rt[0]}$${rk}$determinant(a,overwrite_a,err) result(det)
-     !!### Summary
+     !!## Summary
      !! Compute determinant of a square matrix (with error control).
      !!
-     !!### Description
+     !!## Description
      !!
      !! This function computes the determinant of a square matrix with error control.
      !!
@@ -126,7 +126,7 @@ submodule (stdlib_linalg) stdlib_linalg_determinant
      !! param: err State return flag. 
      !! return: det Matrix determinant.
      !!
-     !!### Example
+     !!## Example
      !!
      !!```fortran
      !!
