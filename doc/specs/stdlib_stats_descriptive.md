@@ -64,10 +64,10 @@ Experimental
 
 Returns the covariance of the elements of `array` along dimension `dim` if the corresponding element in `mask` is `true`.
 
-Per default, the covariance is defined as:
+For one array, the covariance is defined as:
 
 ```
- cov(array) = 1/(n-1) sum_i (array(i) - mean(array) * (array(i) - mean(array)))
+ cov(array) = 1/(n-1) sum_i (array(i) - mean(array)) * (array(i) - mean(array))
 ```
 
 where `n` is the number of elements.
@@ -79,9 +79,11 @@ The scaling can be changed with the logical argument `corrected`. If `corrected`
 
 `result = ` {f:iface}`cov` `(array, dim [, mask [, corrected]])`
 
+`result = ` {f:iface}`cov` `(x, y [, corrected])`
+
 ### Class
 
-Generic subroutine
+Generic function
 
 ### Arguments
 
@@ -103,6 +105,22 @@ If `array` is of rank 1, a scalar with the covariance (that is the variance) of 
 If `array` is of rank 2, a rank-2 array is returned.
 
 If `mask` is specified, the result is the covariance of all elements of `array` corresponding to `true` elements of `mask`. If every element of `mask` is `false`, the result is IEEE `NaN`.
+
+If two arrays are provided, `x` and `y` shall be rank-1 arrays with the same
+size. The arrays are treated as two random variables and the result is a `2 x 2`
+matrix:
+
+```
+cov(x, y) = [ cov(x, x)  cov(x, y)
+              cov(y, x)  cov(y, y) ]
+```
+
+For complex arrays, covariance uses the Hermitian convention, so
+`cov(y, x)` is the complex conjugate of `cov(x, y)`. The optional `corrected`
+argument selects normalization by `n-1` when `.true.` (the default), or by `n`
+when `.false.`. If the arrays have different sizes, the procedure raises an
+error. If the selected sample count is insufficient for the requested
+normalization, the result is filled with IEEE `NaN`.
 
 ### Example
 

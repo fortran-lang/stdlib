@@ -39,7 +39,43 @@ program test_cov
 
     call test_cdp(cd1, ds)
 
+    call test_two_array()
+
 contains
+
+    subroutine test_two_array()
+        real(dp) :: x(4), y(4), c(2, 2), expected(2, 2)
+        integer(int32) :: ix(4), iy(4)
+        complex(dp) :: cx(3), cy(3), cc(2, 2)
+
+        x = [1._dp, 2._dp, 3._dp, 4._dp]
+        y = [2._dp, 4._dp, 5._dp, 9._dp]
+        c = cov(x, y)
+        expected = reshape([5._dp/3, 11._dp/3, 11._dp/3, 26._dp/3], [2, 2])
+        call check(all(abs(c - expected) < dptol), 'two-array covariance')
+
+        c = cov(x, y, corrected=.false.)
+        call check(all(abs(c - expected * 3._dp/4) < dptol), &
+            'two-array covariance uncorrected')
+        call check(all(abs(cov(x, x) - reshape([5._dp/3, 5._dp/3, 5._dp/3, 5._dp/3], [2, 2])) < dptol), &
+            'two-array covariance diagonal form')
+
+        ix = int(x, int32)
+        iy = int(y, int32)
+        c = cov(ix, iy)
+        call check(all(abs(c - expected) < dptol), 'integer two-array covariance')
+
+        cx = [cmplx(1._dp, 1._dp, dp), cmplx(2._dp, 2._dp, dp), cmplx(4._dp, 3._dp, dp)]
+        cy = [cmplx(2._dp, -1._dp, dp), cmplx(3._dp, 1._dp, dp), cmplx(7._dp, 2._dp, dp)]
+        cc = cov(cx, cy)
+        call check(abs(cc(1, 2) - dot_product(cx - sum(cx)/3, cy - sum(cy)/3)/2) < dptol, &
+            'complex two-array covariance')
+        call check(abs(cc(2, 1) - conjg(cc(1, 2))) < dptol, &
+            'complex two-array covariance Hermitian')
+
+        c = cov(x(1:1), y(1:1))
+        call check(all(ieee_is_nan(c)), 'two-array covariance empty degrees of freedom')
+    end subroutine test_two_array
 
     subroutine test_sp(x, x2)
         real(sp), intent(in) :: x(:)
