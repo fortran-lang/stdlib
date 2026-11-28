@@ -1,0 +1,52 @@
+changelog:
+  exclude:
+    labels:
+      - ignore-for-release
+      - skip-changelog
+    authors:
+      - dependabot[bot]
+      - github-actions[bot]
+      - pre-commit-ci[bot]
+  categories:
+    - title: "💥 Breaking Changes"
+      labels:
+        - "breaking-change"
+        - "breaking"
+    - title: "🚀 New Features & Enhancements"
+      labels:
+        - "enhancement"
+        - "feature"
+        - "topic: algorithms"
+        - "topic: bitsets"
+        - "topic: constants"
+        - "topic: container"
+        - "topic: datetime"
+        - "topic: interface"
+        - "topic: IO"
+        - "topic: linalg"
+        - "topic: logger"
+        - "topic: mathematics"
+        - "topic: sparse"
+        - "topic: statistics"
+        - "topic: strings"
+        - "topic: utilities"
+    - title: "🐛 Bug Fixes"
+      labels:
+        - "bug"
+        - "fix"
+    - title: "📚 Documentation"
+      labels:
+        - "documentation"
+        - "docs"
+    - title: "⚙️ CI/CD & Build System"
+      labels:
+        - "automation"
+        - "ci"
+        - "build"
+        - "build: cmake"
+        - "build: fpm"
+        - "cmake"
+        - "fpm"
+    - title: "🧰 Other Changes"
+      labels:
+        - "*"
